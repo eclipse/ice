@@ -1,4 +1,4 @@
-ice
+The Eclipse Integrated Computational Environment (ICE)
 ===
 
-Ice Project Main repo
+Eclipse ICE Project Main repo
