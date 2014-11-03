@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ICE</groupId>
+	<artifactId>org.eclipse.ice.build</artifactId>
+	<version>2.0.0</version>
+	<packaging>pom</packaging>
+
+	<!-- this is the parent POM from which all modules inherit common settings -->
+
+	<!-- Custom properties -->
+	<properties>
+		<tycho-version>0.18.1</tycho-version>
+		<pom-filename>${basedir}/pom.xml</pom-filename>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>macosx</id>
+			<activation>
+				<os>
+					<name>mac os x</name>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<ui.test.vmargs>-XstartOnFirstThread</ui.test.vmargs>
+			</properties>
+		</profile>
+		<profile>
+			<id>other-os</id>
+			<activation>
+				<os>
+					<name>not-mac</name>
+					<family>!mac</family>
+				</os>
+			</activation>
+			<properties>
+				<ui.test.vmargs></ui.test.vmargs>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<!-- enable tycho build extension -->
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includes>
+						<include>**/*Tester.class</include>
+					</includes>
+					<argLine>${ui.test.vmargs}</argLine>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includeAllDependencies>true</includeAllDependencies>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<pomDependencies>consider</pomDependencies>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+					<target>
+						<artifact>
+							<groupId>ICE</groupId>
+							<artifactId>org.eclipse.ice.target.kepler</artifactId>
+							<version>2.0.0</version>
+							<classifier>kepler_rcp</classifier>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>Displaying full POM filename:</echo>
+								<echo>[pom-filename] ${pom-filename}</echo>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Flyway Maven Dependencies -->
+			<plugin>
+				<groupId>com.googlecode.flyway</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>2.0.3</version>
+			</plugin>
+
+
+		</plugins>
+	</build>
+
+	<!-- Add the repositorys for the Jersey bundles -->
+	<repositories>
+
+		<repository>
+			<id>jerseyRepository</id>
+			<name>Java.net Jersey Repository for Maven</name>
+			<url>https://maven.java.net/content/repositories/releases/com/sun/jersey</url>
+			<layout>default</layout>
+		</repository>
+
+		<repository>
+			<id>javaxRepository</id>
+			<name>Java.net Repository for Maven</name>
+			<url>https://maven.java.net/content/repositories/releases/javax/</url>
+			<layout>default</layout>
+		</repository>
+
+		<repository>
+			<id>codehaus-jackson</id>
+			<url>http://snapshots.repository.codehaus.org/org/codehaus/jackson/</url>
+			<layout>default</layout>
+		</repository>
+
+		<repository>
+			<id>EclipseLink Repo</id>
+			<url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+		</repository>
+
+		<!-- SpringSource Repositories -->
+		<repository>
+			<id>com.springsource.repository.bundles.release</id>
+			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+			<url>http://repository.springsource.com/maven/bundles/release</url>
+		</repository>
+
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>
+
+	</repositories>
+
+	<!-- Pull down the Jersey dependencies -->
+	<dependencies>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>1.12</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-servlet</artifactId>
+			<version>1.12</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.12</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>1.12</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-jaxrs</artifactId>
+			<version>1.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-xc</artifactId>
+			<version>1.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jettison</groupId>
+			<artifactId>jettison</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+
+		<!-- EclipseLink dependencies -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>org.eclipse.persistence.jpa</artifactId>
+			<version>2.4.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>javax.persistence</artifactId>
+			<scope>provided</scope>
+			<version>2.0.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>org.eclipse.persistence.equinox</artifactId>
+			<scope>provided</scope>
+			<version>2.3.2</version>
+		</dependency>
+
+		<!-- SnakeYAML via SpringSource -->
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>com.springsource.snakeyaml</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+
+	</dependencies>
+
+	<!-- the modules that should be built together -->
+	<modules>
+		<module>../../org.eclipse.ice.target.kepler</module>
+		<module>../../org.eclipse.ice.client</module>
+		<module>../../org.eclipse.ice.client.test</module>
+		<module>../../org.eclipse.ice.client.compatibility</module>
+		<module>../../org.eclipse.ice.client.widgets</module>
+		<module>../../org.eclipse.ice.client.widgets.moose</module>
+		<module>../../org.eclipse.ice.client.widgets.reactoreditor</module>
+		<module>../../org.eclipse.ice.client.widgets.reactoreditor.test</module>
+		<module>../../org.eclipse.ice.client.widgets.reactoreditor.grid</module>
+		<module>../../org.eclipse.ice.client.widgets.reactoreditor.grid.test</module>
+		<module>../../org.eclipse.ice.client.widgets.reactoreditor.lwr</module>
+		<module>../../org.eclipse.ice.client.widgets.reactoreditor.lwr.test</module>
+		<module>../../org.eclipse.ice.client.widgets.reactoreditor.sfr</module>
+		<module>../../org.eclipse.ice.client.widgets.reactoreditor.sfr.test</module>
+		<module>../../org.eclipse.ice.client.widgets.rcp</module>
+		<module>../../org.eclipse.ice.client.widgets.test</module>
+		<module>../../org.eclipse.ice.client.widgets.rcp.test</module>
+		<module>../../org.eclipse.ice.client.rcp</module>
+		<module>../../org.eclipse.ice.datastructures</module>
+		<module>../../org.eclipse.ice.datastructures.test</module>
+		<module>../../org.eclipse.ice.core</module>
+		<module>../../org.eclipse.ice.core.test</module>
+		<module>../../org.eclipse.ice.item</module>
+		<module>../../org.eclipse.ice.item.test</module>
+		<module>../../org.eclipse.ice.database.test</module>
+		<module>../../org.eclipse.ice.persistence.xml</module>
+		<module>../../org.eclipse.ice.persistence.xml.test</module>
+		<module>../../org.eclipse.ice.io</module>
+		<module>../../org.eclipse.ice.io.test</module>
+		<module>../../org.eclipse.ice.analysistool</module>
+		<module>../../org.eclipse.ice.reactor</module>
+		<module>../../org.eclipse.ice.reactor.test</module>
+		<module>../../org.eclipse.ice.reactor.sfr</module>
+		<module>../../org.eclipse.ice.reactor.sfr.test</module>
+		<module>../../org.eclipse.ice.reactor.plant</module>
+		<module>../../org.eclipse.ice.reactor.plant.test</module>
+		<module>../../org.eclipse.ice.reactor.perspective</module>
+		<module>../../org.eclipse.ice.reactorAnalyzer</module>
+		<module>../../org.eclipse.ice.reactorAnalyzer.test</module>
+		<module>../../org.eclipse.ice.caebat</module>
+		<module>../../org.eclipse.ice.caebat.test</module>
+		<module>../../org.eclipse.ice.kdd</module>
+		<module>../../org.eclipse.ice.kdd.test</module>
+		<module>../../org.eclipse.ice.proteus</module>
+		<module>../../org.eclipse.ice.proteus.test</module>
+		<module>../../org.eclipse.ice.mesh</module>
+		<module>../../org.eclipse.ice.mesh.test</module>
+		<module>../../org.eclipse.ice.nek5000</module>
+		<module>../../org.eclipse.ice.nek5000.test</module>
+		<module>../../visit_java_client/gov.lbnl.visit.swt</module>
+		<module>../../org.eclipse.ice.viz</module>
+		<module>../../org.eclipse.ice.viz.test</module>
+		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING TWO BUNDLES MUST 
+			BUILD LAST! -->
+		<module>../../org.eclipse.ice.feature</module>
+		<module>../../org.eclipse.ice.repository</module>
+	</modules>
+</project>

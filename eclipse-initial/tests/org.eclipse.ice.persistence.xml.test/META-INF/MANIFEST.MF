@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ICE XML Persistence Provider Tests
+Bundle-SymbolicName: org.eclipse.ice.persistence.xml.test
+Bundle-Version: 2.1.01
+Fragment-Host: org.eclipse.ice.persistence.xml;bundle-version="2.1.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit
+Import-Package: org.eclipse.ice.item.nuclear

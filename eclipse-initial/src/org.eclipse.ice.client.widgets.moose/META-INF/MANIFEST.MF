@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ICE Moose Widgets
+Bundle-SymbolicName: org.eclipse.ice.client.widgets.moose;singleton:=true
+Bundle-Version: 2.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.ice.client.common,
+ org.eclipse.ice.client.widgets,
+ org.eclipse.ice.client.widgets.reactoreditor.plant,
+ org.eclipse.ice.datastructures.form,
+ org.eclipse.ice.iclient.uiwidgets,
+ org.eclipse.ice.item.nuclear,
+ org.eclipse.ice.reactor.plant,
+ org.eclipse.ui,
+ org.eclipse.ui.views.properties,
+ org.eclipse.ui.views.properties.tabbed
+Require-Bundle: org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
+ org.eclipse.ice.datastructures;bundle-version="2.0.0"
+Service-Component: OSGI-INF/MOOSEEditorComponent.xml
+Export-Package: org.eclipse.ice.client.widgets.moose

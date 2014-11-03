@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Caebat
+Bundle-SymbolicName: org.eclipse.ice.caebat
+Bundle-Version: 2.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGi-INF/caebatModelComponent.xml, OSGi-INF/caebatLauncherComponent.xml,
+ OSGi-INF/caebatKVPairComponent.xml
+Require-Bundle: org.eclipse.ice.item;bundle-version="2.0.0",
+ org.eclipse.ice.datastructures;bundle-version="2.0.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.eclipse.core.resources;bundle-version="3.7.101"
+Export-Package: org.eclipse.ice.caebat.launcher,
+ org.eclipse.ice.caebat.model

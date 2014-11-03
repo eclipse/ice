@@ -1,0 +1,14 @@
+This README details what native dependencies are required to execute the HdfJavaPrototype.
+
+(1) You must download and install the HDF binaries for HDF5 from http://www.hdfgroup.org/HDF5/release/obtain5.html.
+(2) You must download the pre-built binaries for the HDF Java products from http://www.hdfgroup.org/ftp/HDF5/hdf-java/bin/. 
+Inside of this tar file will be three directories: UsersGuide, bin, and lib. The bin directory contains a shell script for 
+launching the HDFView Java application. The lib directory contains the JAR files required create Java applications with HDF, 
+which are included in the deps directory in this bundle. The lib also contains a directory called <operating system>. 
+The <operating system> directory contains the JNI wrappers for your OS. You can put these anywhere you like, but in order 
+for any Java code to use these, you must launch it with -Djava.library.path=<PATH TO WRAPPER>. On a sample Linux system that 
+would be /usr/lib64, for example.
+
+The Javadoc location for the classes used in this prototype is at http://www.hdfgroup.org/hdf-java-html/javadocs/.
+
+Note that the Java Native Interface for HDF5 has many unsupported functions. This list can be found at http://www.hdfgroup.org/hdf-java-html/JNI/jhi5/jhi5_unsupported_functions.html.

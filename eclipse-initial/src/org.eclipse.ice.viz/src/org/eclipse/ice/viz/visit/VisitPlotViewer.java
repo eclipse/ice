@@ -1,0 +1,781 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
+package org.eclipse.ice.viz.visit;
+
+import gov.lbnl.visit.swt.VisItSwtWidget;
+
+import org.eclipse.ice.client.widgets.NextAction;
+import org.eclipse.ice.client.widgets.PlayAction;
+import org.eclipse.ice.client.widgets.PlayableViewPart;
+import org.eclipse.ice.client.widgets.PreviousAction;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.ice.viz.DeletePlotAction;
+import org.eclipse.ice.viz.VizFileViewer;
+import org.eclipse.ice.viz.VizResource;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.part.WorkbenchPart;
+
+/**
+ * This class extends the ViewPart class and provides a view in the
+ * Visualization Perspective to look at the plots that are currently available.
+ * 
+ * @author bkj, tnp, djg
+ */
+public class VisitPlotViewer extends PlayableViewPart implements
+		IUpdateableListener, ISelectionListener, ISelectionChangedListener,
+		IDoubleClickListener {
+
+	/**
+	 * The ID for this view
+	 */
+	public static final String ID = "org.eclipse.ice.viz.visit.VisitPlotViewer";
+
+	/**
+	 * The currently selected VisIt-compatible ICEResource.
+	 */
+	private VizResource resource;
+
+	/**
+	 * A Map of the currently selected resource's plot Entries keyed on their
+	 * integer IDs.
+	 */
+	private final Map<Integer, Entry> entryMap;
+
+	/**
+	 * A List of all plotted Entries.
+	 */
+	private final List<Entry> plottedEntries;
+
+	/**
+	 * A List containing the ICEResource for each of the currently plotted
+	 * Entries.
+	 */
+	private final List<VizResource> entryResources;
+
+	/**
+	 * The active ResourceComponent
+	 */
+	private ResourceComponent resourceComponent;
+
+	/**
+	 * The TreeViewer contained in this ViewPart used for managing resources in
+	 * the view.
+	 */
+	private TreeViewer plotTreeViewer;
+
+	/**
+	 * The Action for selecting the next element in the list.
+	 */
+	private NextAction nextAction;
+
+	/**
+	 * The Action for playing through the list of plots.
+	 */
+	private PlayAction playAction;
+
+	/**
+	 * The Action for selecting the previous element in the list.
+	 */
+	private PreviousAction prevAction;
+
+	/**
+	 * Creates a dialog that lets the user select from the available plots for
+	 * the currently selected VisIt file from the {@link VizFileViewer}.
+	 */
+	private AddVisitPlotAction addPlotAction;
+
+	/**
+	 * Removes the selected plot(s) from the PlotViewer.
+	 */
+	private DeletePlotAction deletePlotAction;
+
+	/**
+	 * This action calls a new dialog to pop open a Python command line console.
+	 */
+	private LaunchPythonScriptDialogAction pythonCLIAction;
+
+	/**
+	 * The default constructor.
+	 */
+	public VisitPlotViewer() {
+
+		// Initialize the variables tied to the current VisIt-compatible
+		// ICEResource.
+		resource = null;
+		entryMap = new HashMap<Integer, Entry>();
+
+		// Initialize the lists for the selected plots.
+		plottedEntries = new ArrayList<Entry>();
+		entryResources = new ArrayList<VizResource>();
+
+		// This will always be a playable view, so set it that way.
+		playable = true;
+
+		return;
+	}
+
+	/**
+	 * Creates the widgets and controls for the PlotViewer. This includes
+	 * {@link #plotTreeViewer}.
+	 * 
+	 * @param parent
+	 *            The parent Composite that will contain this PlotViewer.
+	 * 
+	 * @see ViewPart#createPartControl(Composite)
+	 */
+	public void createPartControl(Composite parent) {
+
+		// Create the tool bar buttons for the view
+		createActions();
+
+		// Initialize the TreeViewer.
+		plotTreeViewer = new TreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.BORDER);
+		plotTreeViewer.addSelectionChangedListener(this);
+		plotTreeViewer.addDoubleClickListener(this);
+
+		// Create content and label providers
+		initializeTreeViewer(plotTreeViewer);
+
+		// Register this view's ListViewer as a SelectionProvider
+		getSite().setSelectionProvider(plotTreeViewer);
+
+		// Register this view as a part listener
+
+		// Register as a listener to the VizFileViewer.
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addPostSelectionListener(VizFileViewer.ID, this);
+
+		return;
+	}
+
+	/**
+	 * Does nothing yet.
+	 * 
+	 * @see WorkbenchPart#setFocus()
+	 */
+	public void setFocus() {
+		return;
+	}
+
+	/**
+	 * This function is called by the NextAction and PlayAction to set the
+	 * selection to the next element in the list.
+	 * 
+	 * @see PlayableViewPart#setToNextResource()
+	 */
+	@Override
+	public void setToNextResource() {
+
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				// Get the currently selected resource in the view. (Or the
+				// first selected resource if multiple resources are
+				// selected even though this has no effect.)
+				TreeItem[] currSelection = plotTreeViewer.getTree()
+						.getSelection();
+				int currIndex = plotTreeViewer.getTree().indexOf(
+						currSelection[0]);
+
+				// Set the selection to the next resource in the tree or the
+				// first resource if the last resource is currently selected.
+				if (!plottedEntries.isEmpty()) {
+					int nextIndex = (currIndex + 1) % plottedEntries.size();
+					plotTreeViewer.setSelection(new StructuredSelection(
+							plottedEntries.get(nextIndex)), true);
+				}
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * This function is called by the PreviousAction to set the selection to the
+	 * previous action in the list.
+	 * 
+	 * @see PlayableViewPart#setToPreviousResource()
+	 */
+	@Override
+	public void setToPreviousResource() {
+
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				// Get the currently selected resource in the view. (Or the
+				// first selected resource if multiple resources are
+				// selected even though this has no effect.)
+				TreeItem[] currSelection = plotTreeViewer.getTree()
+						.getSelection();
+				int currIndex = plotTreeViewer.getTree().indexOf(
+						currSelection[0]);
+
+				// Set the selection to the previous resource in the tree or the
+				// last resource if the first resource is currently selected.
+				if (!plottedEntries.isEmpty()) {
+					int prevIndex = (currIndex - 1) % plottedEntries.size();
+					if (prevIndex < 0) {
+						prevIndex = plottedEntries.size() - 1;
+					}
+					plotTreeViewer.setSelection(new StructuredSelection(
+							plottedEntries.get(prevIndex)), true);
+				}
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * Refreshes the content in the {@link #plotTreeViewer}.
+	 */
+	private void refreshPlotViewer() {
+		// Sync with the display
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				// If possible, reset the plotTreeViewer's input.
+				if (plotTreeViewer != null) {
+
+					System.out.println("VisitPlotViewer message: "
+							+ "Refreshing TreeViewer.");
+
+					// Reset the input for the plotTreeViewer. The viewer just
+					// takes an array of Entry objects.
+					plotTreeViewer.setInput(plottedEntries.toArray());
+
+					plotTreeViewer.refresh();
+					plotTreeViewer.getTree().redraw();
+				}
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * Updates the PlotViewer (specifically, the {@link #plotTreeViewer}) when
+	 * the associated Component is updated.
+	 * 
+	 * @param component
+	 *            The Component that was just updated.
+	 */
+	@Override
+	public void update(IUpdateable component) {
+
+		System.out
+				.println("VisitPlotViewer Message: Incoming resource update.");
+		// Sync with the display
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				// If possible, reset the plotTreeViewer's input.
+				if (plotTreeViewer != null) {
+
+					// TODO Reset the input for the plotTreeViewer.
+					// plotTreeViewer.setInput(null);
+
+					System.out.println("VisitPlotViewer Message: "
+							+ "Updating resource table.");
+					plotTreeViewer.refresh();
+					plotTreeViewer.getTree().redraw();
+				}
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * This operation sets the ResourceComponent that should be used by this
+	 * view. It also registers this view with the ResourceComponent so that it
+	 * can be notified of state changes through the IUpdateableListener
+	 * interface.
+	 * 
+	 * @param component
+	 *            The ResourceComponent
+	 */
+	public void setResourceComponent(ResourceComponent component) {
+
+		// Make sure the ResourceComponent exists.
+		if (component != null) {
+			// If there was an associated ResourceComponent, unregister from it.
+			if (resourceComponent != null) {
+				resourceComponent.unregister(this);
+			}
+
+			// Set the component reference.
+			resourceComponent = component;
+
+			// Register this view with the Component to receive updates.
+			component.register(this);
+
+			// Update the view.
+			update(component);
+		}
+
+		return;
+	}
+
+	/**
+	 * This operation retrieves the active ResourceComponent of this view or
+	 * null if the component does not exist.
+	 * 
+	 * @return The ResourceComponent or null if the component was not previously
+	 *         set.
+	 */
+	public ResourceComponent getResourceComponent() {
+		// begin-user-code
+		return resourceComponent;
+		// end-user-code
+	}
+
+	/**
+	 * Creates the JFace Actions associated with this PlotViewer.
+	 */
+	private void createActions() {
+
+		// Get the IToolBarManager
+		IActionBars actionBars = getViewSite().getActionBars();
+		IToolBarManager toolBarManager = actionBars.getToolBarManager();
+
+		// Create a previous button and add it to the tool bar
+		prevAction = new PreviousAction(this);
+		toolBarManager.add(prevAction);
+		prevAction.setEnabled(!plottedEntries.isEmpty());
+
+		// Create a play button and add it to the tool bar
+		playAction = new PlayAction(this);
+		toolBarManager.add(playAction);
+		playAction.setEnabled(!plottedEntries.isEmpty());
+
+		// Create a next button and add it to the tool bar
+		nextAction = new NextAction(this);
+		toolBarManager.add(nextAction);
+		nextAction.setEnabled(!plottedEntries.isEmpty());
+
+		// Create a delete button and add it to the tool bar
+		deletePlotAction = new DeletePlotAction(this);
+		toolBarManager.add(deletePlotAction);
+		deletePlotAction.setEnabled(!plottedEntries.isEmpty());
+
+		// Create an add button and add it to the tool bar
+		addPlotAction = new AddVisitPlotAction(this);
+		toolBarManager.add(addPlotAction);
+		addPlotAction.setEnabled(resource != null);
+
+		// Create the button for selecting and executing a Python script
+		pythonCLIAction = new LaunchPythonScriptDialogAction(this);
+		toolBarManager.add(pythonCLIAction);
+
+		return;
+	}
+
+	/**
+	 * Initializes the provided TreeViewer based on the current ICEResource for
+	 * this PlotViewer.
+	 * 
+	 * @param inputTreeViewer
+	 *            The TreeViewer that should be configured to display the
+	 *            currently selected plots for a VisIt-compatible ICEResource.
+	 */
+	private void initializeTreeViewer(TreeViewer inputTreeViewer) {
+
+		// Set up the content provider and label provider for the TreeViewer.
+		// The input should be of the type Entry[]. Elements should be the
+		// entries themselves.
+
+		// Set the content provider, which determines how the input (an Entry[])
+		// should produce elements in the TreeViewer.
+		inputTreeViewer.setContentProvider(new ITreeContentProvider() {
+
+			public void inputChanged(Viewer viewer, Object oldInput,
+					Object newInput) {
+				return;
+			}
+
+			public void dispose() {
+				// No image descriptors or non-textual resources to dispose.
+				return;
+			}
+
+			public boolean hasChildren(Object element) {
+				// Currently, we do not have nested elements in the tree.
+				return false;
+			}
+
+			public Object getParent(Object element) {
+				// Currently, we do not have nested elements in the tree.
+				return null;
+			}
+
+			public Object[] getElements(Object inputElement) {
+				Object[] elements;
+				if (inputElement instanceof Object[]) {
+					elements = (Object[]) inputElement;
+				} else {
+					elements = new Object[] {};
+				}
+
+				return elements;
+			}
+
+			public Object[] getChildren(Object parentElement) {
+				// Currently, we do not have nested elements in the tree.
+				return null;
+			}
+		});
+
+		// Set up the label provider, which determines what string is displayed
+		// for each element in the tree. Currently, this only needs to produce
+		// a string for each Entry.
+		inputTreeViewer.setLabelProvider(new LabelProvider() {
+			@Override
+			public String getText(Object element) {
+				// Get the text that should be displayed for Entries in the
+				// TreeViewer.
+				String text;
+				if (element instanceof Entry) {
+					// FIXME We may want to change the text sent back here.
+					Entry entry = (Entry) element;
+					text = entry.getDescription() + " - " + entry.getName()
+							+ " - " + entry.getParent();
+				} else {
+					text = element.toString();
+				}
+				return text;
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * Gets the current VisIt-compatible ICEResource that is being used by this
+	 * PlotViewer.
+	 * 
+	 * @return an ICEResource with plots as the Entry properties.
+	 */
+	public ICEResource getResource() {
+		return resource;
+	}
+
+	/**
+	 * Adds a plot to the current set of VisIt plots. The entry should be a
+	 * property of the current file's ICEResource.
+	 * 
+	 * @param entry
+	 *            The Entry for the plot that is to be added.
+	 */
+	public void addPlot(Entry entry) {
+		// Make sure the entry and current resource are not null, that the entry
+		// is not already plotted, and that the current resource has the exact
+		// entry in its properties.
+		if (entry != null && resource != null
+				&& "false".equals(entry.getValue())
+				&& entry == entryMap.get(entry.getId())) {
+
+			// Add this entry to our bookkeeping.
+			plottedEntries.add(entry);
+			entryResources.add(resource);
+
+			// Mark the entry as being plotted.
+			entry.setValue("true");
+
+			System.out.println("VisitPlotViewer message: Adding plot \""
+					+ entry.getName() + "\".");
+
+			// Update the plotViewer.
+			refreshPlotViewer();
+		}
+
+		return;
+	}
+
+	/**
+	 * Removes a plot from the current set of VisIt plots. The entry should be a
+	 * property of the current file's ICEResource.
+	 * 
+	 * @param entry
+	 *            The Entry for the plot that is to be removed.
+	 */
+	public void removePlot(Entry entry) {
+		// Make sure the entry is not null and that it is marked as plotted.
+		if (entry != null && "true".equals(entry.getValue())) {
+			// Get the index of the entry in the list of plotted entries.
+			int index = -1;
+			for (int i = 0; i < plottedEntries.size(); i++) {
+				if (entry == plottedEntries.get(i)) {
+					index = i;
+					break;
+				}
+			}
+
+			if (index > -1) {
+				// Remove the resource and entry from our bookkeeping.
+				entryResources.remove(index);
+				plottedEntries.remove(index);
+
+				System.out.println("VisitPlotViewer message: Removing plot \""
+						+ entry.getName() + "\".");
+
+				// Mark the plot as not plotted.
+				entry.setValue("false");
+
+				// Update the plotViewer.
+				refreshPlotViewer();
+			}
+		}
+		return;
+	}
+
+	/**
+	 * This method draws the plot for the specified entry if it is one of the
+	 * selected plots.
+	 * 
+	 * @param entry
+	 *            The entry to draw with the VisIt widget.
+	 */
+	public void drawPlot(Entry entry) {
+		// Make sure the entry is not null and that it is marked as plotted.
+		if (entry != null && "true".equals(entry.getValue())) {
+			// Get the index of the entry in the list of plotted entries.
+			int index = -1;
+			for (int i = 0; i < plottedEntries.size(); i++) {
+				if (entry == plottedEntries.get(i)) {
+					index = i;
+					break;
+				}
+			}
+
+			if (index > -1) {
+				// Get the ICEResource associated with this entry.
+
+				System.out.println("VisitPlotViewer message: Drawing plot \""
+						+ entry.getName() + "\"." + entry.getParent());
+
+				// FIXME - This definitely needs a better way to access the
+				// VisIt widget.
+				IEditorPart editorPart = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getActivePage()
+						.getActiveEditor();
+				VisitEditor editor = (VisitEditor) editorPart;
+				VisItSwtWidget widget = editor.getVizWidget();
+
+				// Delete an existing plot
+				widget.getViewerMethods().deleteActivePlots();
+
+				// Add the plot to the widget.
+				widget.getViewerMethods().addPlot("Pseudocolor",
+						entry.getName());
+
+				// Draw the plot using the widget.
+				widget.getViewerMethods().drawPlots();
+			}
+		}
+		return;
+	}
+
+	/**
+	 * Removes all plots selected in {@link #plotTreeViewer}.
+	 */
+	public void removeSelection() {
+		// Make sure the viewer's controls have been created.
+		if (plotTreeViewer != null) {
+			// Get the selection from the plotTreeViewer. It should at least be
+			// an IStructuredSelection (a parent interface of TreeSelections).
+			ISelection selection = plotTreeViewer.getSelection();
+			if (selection instanceof IStructuredSelection) {
+				IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+
+				// Create a List of entries to be unplotted.
+				List<Entry> entries = new ArrayList<Entry>();
+
+				// Loop over the selected elements and add any Entry to the List
+				// of entries to be unplotted.
+				for (Iterator<?> iter = structuredSelection.iterator(); iter
+						.hasNext();) {
+					Object object = iter.next();
+					if (object instanceof Entry) {
+						entries.add((Entry) object);
+					}
+				}
+
+				// Remove all of the entries that were selected.
+				for (Entry entry : entries) {
+					removePlot(entry);
+				}
+			}
+		}
+		return;
+	}
+
+	/**
+	 * Draws all plots selected in {@link #plotTreeViewer}.
+	 */
+	public void drawSelection() {
+		// Get the selection from the plotTreeViewer. It should at least be
+		// an IStructuredSelection (a parent interface of TreeSelections).
+		ISelection selection = plotTreeViewer.getSelection();
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+
+			// Create a List of entries to be unplotted.
+			List<Entry> entries = new ArrayList<Entry>();
+
+			// Loop over the selected elements and add any Entry to the List
+			// of entries to be unplotted.
+			for (Iterator<?> iter = structuredSelection.iterator(); iter
+					.hasNext();) {
+				Object object = iter.next();
+				if (object instanceof Entry) {
+					entries.add((Entry) object);
+				}
+			}
+
+			// Draw all of the entries that were selected.
+			for (Entry entry : entries) {
+				drawPlot(entry);
+			}
+		}
+
+		return;
+	}
+
+	/**
+	 * This method fills in the entryMap based on the current resource.
+	 */
+	public void setEntryMap() {
+
+		// Build a map of the entries for the current resource
+		// keyed on their IDs.
+		entryMap.clear();
+		for (Entry entry : resource.getProperties()) {
+			entryMap.put(entry.getId(), entry);
+		}
+
+		return;
+	}
+
+	// ---- Implements ISelectionListener ---- //
+	/**
+	 * This method is used to listen for changes to the currently selected
+	 * ICEResource in the {@link VizFileViewer}.
+	 */
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		// FIXME - The VizFileViewer may have deleted this ICEResource!
+
+		// Check that the selection's source is the VizFileViewer.
+		// Try to get the ICEResource from the ISelection. We first have to
+		// cast the ISelection to an IStructuredSelection, whose first
+		// element should be an ICEResource.
+		if (part.getSite().getId().equals(VizFileViewer.ID)
+				&& selection != null
+				&& selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			if (!structuredSelection.isEmpty()) {
+				Object object = structuredSelection.getFirstElement();
+				if (object instanceof VizResource) {
+					// Reset the current ICEResource.
+					resource = (VizResource) object;
+
+					System.out.println("VisitPlotViewer message: "
+							+ "The selected file from the VizFileViewer is \""
+							+ resource.getName() + "\".");
+
+					// Enable the AddPlotAction.
+					addPlotAction.setEnabled(true);
+				}
+			}
+
+		}
+
+		return;
+	}
+
+	// --------------------------------------- //
+
+	// ---- Implements ISelectionChangedListener ---- //
+	/**
+	 * This method is used to draw plots whenever a TreeItem in the
+	 * plotTreeViewer is selected. If multi-select is enabled, it draws all of
+	 * the selected plots.
+	 * 
+	 * @param event
+	 *            The SelectionChangedEvent that fired this method.
+	 */
+	public void selectionChanged(SelectionChangedEvent event) {
+
+		// Draw the selection on single clicks
+		drawSelection();
+
+		// Enable the DeletePlotAction if possible.
+		ISelection selection = event.getSelection();
+		if (selection instanceof IStructuredSelection) {
+			deletePlotAction.setEnabled(!selection.isEmpty());
+			prevAction.setEnabled(!selection.isEmpty());
+			playAction.setEnabled(!selection.isEmpty());
+			nextAction.setEnabled(!selection.isEmpty());
+		}
+
+		return;
+	}
+
+	// ---------------------------------------------- //
+
+	// ---- Implements IDoubleClickListener ---- //
+	/**
+	 * This method is used to draw plots whenever a TreeItem in the
+	 * plotTreeViewer is double-clicked. If multi-select is enabled, it draws
+	 * all of the selected plots.
+	 * 
+	 * @param event
+	 *            The DoubleClickEvent that fired this method.
+	 */
+	public void doubleClick(DoubleClickEvent event) {
+
+		// FIXME Consider using double-clicks to draw in a new window. For now,
+		// just draw in the same window.
+		drawSelection();
+	}
+	// ----------------------------------------- //
+
+}

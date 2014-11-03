@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="org.eclipse.ice.client">
+   <implementation class="org.eclipse.ice.client.internal.Client"/>
+   <reference bind="setCoreService" cardinality="1..1" interface="org.eclipse.ice.core.iCore.ICore" name="ICore" policy="dynamic"/>
+   <service>
+      <provide interface="org.eclipse.ice.iclient.IClient"/>
+   </service>
+   <reference bind="setUIWidgetFactory" cardinality="1..1" interface="org.eclipse.ice.iclient.uiwidgets.IWidgetFactory" name="IWidgetFactory" policy="dynamic"/>
+</scr:component>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+
+<plugin>
+
+
+      <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.ice.client.widgets.moose.MOOSEFormEditor"
+            default="false"
+            id="org.eclipse.ice.client.widgets.moose.MOOSEFormEditor"
+            name="MOOSEEditor">
+      </editor>
+   </extension>
+      <extension
+            point="org.eclipse.ui.views">
+         <view
+               allowMultiple="false"
+               class="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer"
+               fastViewWidthRatio="0.125"
+               id="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer"
+               name="MOOSE Data Tree View"
+               restorable="true">
+         </view>
+      </extension>
+	<!-- MOOSETreeCompositeViewer Properties Extensions -->
+    <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor contributorId="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer">
+      	<propertyCategory category="TreeViewer"/>
+      </propertyContributor>      
+   </extension>
+    <extension
+          point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+       <propertyTabs
+             contributorId="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer">
+          <propertyTab
+                category="TreeViewer"
+                id="TreeViewer.Data"
+                label="Data">
+          </propertyTab>
+       </propertyTabs>
+    </extension>
+      <extension
+            point="org.eclipse.ui.views.properties.tabbed.propertySections">
+         <propertySections
+               contributorId="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer">
+            <propertySection
+                  class="org.eclipse.ice.client.widgets.moose.MOOSETypePropertySection"
+                  id="TypeSection"
+                  tab="TreeViewer.Data">
+               <input
+                     type="org.eclipse.ice.datastructures.form.TreeComposite">
+               </input>
+            </propertySection>
+         </propertySections>
+      </extension>
+</plugin>

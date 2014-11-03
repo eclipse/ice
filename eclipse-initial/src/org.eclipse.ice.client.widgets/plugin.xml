@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+
+<plugin>
+
+      <!-- Temporarily disabling Workspace Explorer view
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.eclipse.ui"
+            class="org.eclipse.ice.iceclient.workspaceviewer.WorkspaceExplorer"
+            id="org.eclipse.ice.iceclient.WorkspaceExplorer"
+            name="Workspace Explorer"
+            restorable="true">
+      </view>
+   </extension>
+         -->
+<!-- Temporarily disabling Workspace Explorer view
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="*">
+         <view
+               closeable="false"
+               id="org.eclipse.ice.iceclient.WorkspaceExplorer"
+               minimized="false"
+               moveable="true"
+               ratio="0.15f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
+            -->
+      <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.ice.client.widgets.ICEFormEditor"
+            default="false"
+            id="org.eclipse.ice.client.widgets.ICEFormEditor"
+            name="FormEditor">
+      </editor>
+      <editor
+            class="org.eclipse.ice.client.widgets.geometry.GeometryEditor"
+            default="false"
+            id="org.eclipse.ice.client.widgets.geometry.GeometryEditor"
+            name="GeometryEditor">
+      </editor>
+   </extension>
+      <!-- ICE ItemViewer and TreeCompositeViewer-->
+      <extension
+            point="org.eclipse.ui.views">
+         <view
+               allowMultiple="false"
+               class="org.eclipse.ice.client.common.ItemViewer"
+               fastViewWidthRatio="0.125"
+               id="org.eclipse.ice.client.common.ItemViewer"
+               name="Item Viewer"
+               restorable="true">
+         </view>
+         <view
+               allowMultiple="false"
+               class="org.eclipse.ice.client.common.TreeCompositeViewer"
+               fastViewWidthRatio="0.125"
+               id="org.eclipse.ice.client.common.TreeCompositeViewer"
+               name="ICE Data Tree View"
+               restorable="true">
+         </view>
+      </extension>
+      <!-- Views -->
+      <extension
+            point="org.eclipse.ui.views">
+            <!-- Geometry Editor Views -->
+         <view
+               allowMultiple="false"
+               class="org.eclipse.ice.client.widgets.geometry.ShapeTreeView"
+               fastViewWidthRatio="0.25f"
+               id="org.eclipse.ice.client.widgets.geometry.ShapeTreeView"
+               name="Shapes"
+               restorable="true">
+         </view>
+         <view
+               allowMultiple="false"
+               class="org.eclipse.ice.client.widgets.geometry.TransformationView"
+               fastViewWidthRatio="0.75f"
+               id="org.eclipse.ice.client.widgets.geometry.TransformationView"
+               name="Transformation View"
+               restorable="true">
+         </view>
+         <!-- ICE Resource View -->
+         <view
+               allowMultiple="false"
+               class="org.eclipse.ice.client.widgets.ICEResourceView"
+               fastViewWidthRatio="0.25f"
+               id="org.eclipse.ice.client.widgets.ICEResourceView"
+               name="Resources"
+               restorable="true">
+         </view>
+          <view
+               allowMultiple="false"
+               class="org.eclipse.ice.client.widgets.MeshElementTreeView"
+               fastViewWidthRatio="0.25f"
+               id="org.eclipse.ice.client.widgets.MeshElementTreeView"
+               name="Mesh Elements"
+               restorable="true">
+         </view>
+      </extension>
+      <!-- Perspective definition -->
+      <extension
+            point="org.eclipse.ui.perspectives">
+         <perspective
+               class="org.eclipse.ice.client.widgets.Perspective"
+               fixed="true"
+               id="org.eclipse.ice.client.widgets.perspective"
+               name="ICE">
+         </perspective>
+      </extension>
+      <!-- Perspective line up and view definitions -->
+    <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ice.client.widgets.perspective">
+         <view
+               closeable="false"
+               id="org.eclipse.ice.client.common.ItemViewer"
+               ratio="0.125"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               id="org.eclipse.ice.client.common.TreeCompositeViewer"
+               ratio="0.125"
+               relationship="stack"
+               relative="org.eclipse.ice.client.common.ItemViewer"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.eclipse.ice.client.widgets.ICEResourceView"
+               minimized="false"
+               ratio="0.125"
+               relationship="stack"
+               relative="org.eclipse.ice.client.common.TreeCompositeViewer"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.eclipse.ice.client.widgets.geometry.ShapeTreeView"
+               ratio="0.1"
+               relationship="stack"
+               relative="org.eclipse.ice.client.common.TreeCompositeViewer"
+               visible="true">
+         </view>
+          <view
+               closeable="false"
+               id="org.eclipse.ice.client.widgets.MeshElementTreeView"
+               minimized="false"
+               ratio="0.125"
+               relationship="stack"
+               relative="org.eclipse.ice.client.common.ItemViewer"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.eclipse.ice.client.widgets.geometry.TransformationView"
+               minimized="false"
+               ratio="0.25f"
+               relationship="left"
+               relative="org.eclipse.ui.console.ConsoleView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <!-- ItemViewer Actions -->
+    <extension
+          point="org.eclipse.ui.viewActions">
+       <viewContribution
+             id="org.eclipse.ice.client.common.ItemViewer.createItem"
+             targetID="org.eclipse.ice.client.common.ItemViewer">
+          <action
+                class="org.eclipse.ice.client.common.CreateItemViewActionDelegate"
+                icon="icons/add.png"
+                id="org.eclipse.ice.client.common.ItemViewer.createItem.action"
+                label="Create an Item"
+                style="push"
+                toolbarPath="actions">
+          </action>
+       </viewContribution>
+       <viewContribution
+             id="org.eclipse.ice.client.common.ItemViewer.deleteItem"
+             targetID="org.eclipse.ice.client.common.ItemViewer">
+          <action
+                class="org.eclipse.ice.client.common.DeleteItemViewActionDelegate"
+                icon="icons/delete_X.png"
+                id="org.eclipse.ice.client.common.ItemViewer.deleteItem.action"
+                label="Delete Item"
+                style="push"
+                toolbarPath="actions"
+                tooltip="Delete the Selected Item">
+          </action>
+       </viewContribution>
+    </extension>
+    <!-- TreeCompositeViewer Properties Extensions -->
+    <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor contributorId="org.eclipse.ice.client.common.TreeCompositeViewer">
+      	<propertyCategory category="TreeViewer"/>
+      </propertyContributor>      
+   </extension>
+    <extension point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs contributorId="org.eclipse.ice.client.common.TreeCompositeViewer">
+         <propertyTab
+            category="TreeViewer"
+               id="TreeViewer.Data"
+            label="Data"/>
+      </propertyTabs>
+   </extension>
+      <extension point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections contributorId="org.eclipse.ice.client.common.TreeCompositeViewer">
+         <propertySection
+               class="org.eclipse.ice.client.common.ComponentPropertySection"
+               id="DataSection"
+               tab="TreeViewer.Data">
+            <input type="org.eclipse.ice.datastructures.form.TreeComposite"/>
+         </propertySection>
+      </propertySections>
+   </extension>
+	<!-- MeshElementTreeView Properties Extensions -->
+	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+		<propertyContributor 
+			contributorId="org.eclipse.ice.client.widgets.MeshElementTreeView"
+			tabDescriptorProvider="org.eclipse.ice.client.widgets.mesh.properties.TabDescriptorProvider">
+			<propertyCategory category="MeshSelection"/>
+		</propertyContributor>
+	</extension>
+	<!-- MeshPage Properties Extensions -->
+	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+		<propertyContributor 
+			contributorId="org.eclipse.ice.client.widgets.ICEMeshPage"
+			tabDescriptorProvider="org.eclipse.ice.client.widgets.mesh.properties.TabDescriptorProvider">
+			<propertyCategory category="MeshSelection"/>
+		</propertyContributor>
+	</extension>
+	<!-- MOOSETreeCompositeViewer Properties Extensions -->
+</plugin>
