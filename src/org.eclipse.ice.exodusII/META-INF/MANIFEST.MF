@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ExodusII
+Bundle-SymbolicName: org.eclipse.ice.exodusII
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org.eclipse.ice.exodusII
+Bundle-ClassPath: .
+Bundle-NativeCode: os/linux/x86_64/libexodusII_wrap.so; osname=linux; processor=x86_64
