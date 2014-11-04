@@ -9,5 +9,5 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.eclipse.ice.exodusII.test.main.SimplerLauncher"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.ice.exodusII.test"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.library.path=&quot;${workspace_loc}/org.eclipse.ice.exodusII/os/win32/x86_64;${env_var:ROOT_EXODUS}/lib&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.library.path=&quot;${project_loc}/../../src/org.eclipse.ice.exodusII/os/win32/x86_64;${env_var:ROOT_EXODUS}/lib&quot;"/>
 </launchConfiguration>
