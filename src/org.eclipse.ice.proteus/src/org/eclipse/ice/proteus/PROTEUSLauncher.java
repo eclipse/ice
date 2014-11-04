@@ -26,7 +26,7 @@ import org.eclipse.core.resources.IProject;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj, w5q
+ * @author Jay Jay Billings, w5q
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */

@@ -19,7 +19,7 @@ import org.eclipse.ice.io.hdf.IHdfIORegistry;
  * implementation from the OSGi Declarative Services. This enables classes in
  * this bundle to fetch IO factories for writing and reading reactor files.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class IORegistryHolder {

@@ -28,7 +28,7 @@ import java.util.TreeMap;
  * own geometric coordinate system and 0-based indexes used within this class.
  * <!-- end-UML-doc -->
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class GridManager implements IGridManager {

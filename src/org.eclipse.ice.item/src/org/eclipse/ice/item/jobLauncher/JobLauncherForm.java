@@ -59,7 +59,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -532,24 +532,24 @@ public class JobLauncherForm extends Form {
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
-	 * @param name
-	 * @param desc
-	 * @param files
-	 *            <p>
-	 *            The list of inputFiles available for the job.
-	 *            </p>
+	 * @param name	Name of the input file type.
+	 * @param desc	Description of the file type.
+	 * @param files	List of files available for the job.
+	 * @param isFileEntry	Flag to indicate if Entry created should be
+	 * 						considered a file entry (ie. have a browse button)
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	public void setInputFiles(String name, String desc, ArrayList<String> files) {
+	public void setInputFiles(String name, String desc, 
+			ArrayList<String> files) {
 		// begin-user-code
 
 		// Local Declarations
 		int oldId = 0;
 		Entry oldEntry = null;
 		DataComponent fileComponent = ((DataComponent) getComponent(1));
-		final ArrayList<String> finalFiles = (files != null) ? (ArrayList<String>) files
-				.clone() : new ArrayList<String>();
+		final ArrayList<String> finalFiles = (files != null) ? 
+				(ArrayList<String>) files.clone() : new ArrayList<String>();
 		String oldValue = "";
 
 		// Determine if the Entry already exists in the component and remove it
@@ -568,12 +568,13 @@ public class JobLauncherForm extends Form {
 				// The input file should be one of the files in the "inputFiles"
 				// array.
 				this.allowedValues = finalFiles;
-				this.allowedValueType = AllowedValueType.Discrete;
+				this.allowedValueType = AllowedValueType.File;
 
 				return;
 			}
 
 		};
+		
 		// Set the name and description of the Filename entry
 		fileEntry.setDescription(desc);
 		fileEntry.setName(name);
@@ -594,7 +595,44 @@ public class JobLauncherForm extends Form {
 		return;
 		// end-user-code
 	}
+	
+//	/**
+//	 * This method is the same as {@link #setInputFiles}, except that is does 
+//	 * not take a boolean flag in the parameters. This method calls the other
+//	 * {@link #setInputFiles} with the boolean isFileEntry flag as false.
+//	 * 
+//	 * @param name	Name of the input file type.
+//	 * @param desc	Description of the file type.
+//	 * @param files	List of files available for the job.
+//	 */
+//	public void setInputFiles(String name, String desc, 
+//			ArrayList<String> files) {
+//		
+//		// Call the other method with the boolean flag as false
+//		setInputFiles(name, desc, files, false);
+//		
+//		return;
+//	
+//	}
 
+	/**
+	 * This method removes an input file type from the Form. If null is passed
+	 * in, nothing is changed.
+	 * 
+	 * @param name	The name of the input file type
+	 */
+	public void removeInputFiles(String name) {
+		
+		// Get the file(s) component on the form
+		DataComponent fileComponent = ((DataComponent) getComponent(1));
+		
+		if (name != null && fileComponent.contains(name)) {
+			fileComponent.deleteEntry(name);
+		}
+		
+		return;
+	}
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -623,6 +661,22 @@ public class JobLauncherForm extends Form {
 				.setDescription("Specify the number of OpenMP "
 						+ "threads, TBB Threads, or MPI processes that should be used for the Job.");
 
+		// Create an Entry to hold an account code/project name
+		Entry accountEntry = new Entry() {
+			@Override
+			public void setup() {
+				setId(3);
+				setName("Account Code/Project Code");
+				setDescription("Account code or project name that "
+						+ "should be used when launching the simulation.");
+			    allowedValueType = AllowedValueType.Undefined;
+			    defaultValue = "none";
+				return;
+			}
+		};
+		// Add the Entry to the component
+		parallelismComponent.addEntry(accountEntry);
+		
 		// Add the component
 		addComponent(parallelismComponent);
 

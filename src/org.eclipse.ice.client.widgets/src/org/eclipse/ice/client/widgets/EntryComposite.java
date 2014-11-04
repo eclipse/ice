@@ -12,14 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.io.File;
 import java.util.ArrayList;
 
+import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -36,7 +38,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -107,7 +111,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	private ArrayList<Button> buttons = null;
+	protected ArrayList<Button> buttons = null;
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -118,7 +122,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	private Entry entry;
+	protected Entry entry;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -153,6 +157,61 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * List of allowed values for the entry in lowercase text
 	 */
 	private ArrayList<String> lowercaseAllowedValues = new ArrayList<String>();
+
+	public EntryComposite(Composite parent, int style, Layout compLayout,
+			Object data, Entry refEntry) {
+		super(parent, style);
+
+		setLayout(compLayout);
+		setLayoutData(data);
+		
+		// Set the Entry reference
+		if (refEntry != null) {
+			entry = refEntry;
+		} else {
+			throw new RuntimeException("Entry passed to EntryComposite "
+					+ "constructor cannot be null!");
+		}
+		// Create the Buttons array
+		buttons = new ArrayList<Button>();
+
+		// Create the MessageName String
+		messageName = new String();
+
+		// Setup the allowedBinaryValues for check boxes
+		allowedBinaryValues = new ArrayList<String>();
+		// Setup the list of values that are equivalent to "ready"
+		allowedBinaryValues.add("ready");
+		allowedBinaryValues.add("yes");
+		allowedBinaryValues.add("y");
+		allowedBinaryValues.add("true");
+		allowedBinaryValues.add("enabled");
+		allowedBinaryValues.add("on");
+		// Setup the list of values that are equivalent to "not ready"
+		allowedBinaryValues.add("not ready");
+		allowedBinaryValues.add("no");
+		allowedBinaryValues.add("n");
+		allowedBinaryValues.add("false");
+		allowedBinaryValues.add("disabled");
+		allowedBinaryValues.add("off");
+
+		// Register for updates from the Entry
+		entry.register(this);
+
+		// Add a listener to the Entry that unregisters this composite as a
+		// listener upon disposal.
+		addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				entry.unregister(EntryComposite.this);
+			}
+		});
+
+		// Render the entry
+		render();
+
+		return;
+	}
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -511,6 +570,68 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	}
 
 	/**
+	 * This method creates a browse button on the EntryComposite. Clicking the
+	 * button opens a file browser, and once a file is selected, the file is
+	 * imported into the default workspace.
+	 */
+	private void createBrowseButton() {
+		
+		// Create a new button, set the text
+		Button browseButton = new Button(this, SWT.PUSH);
+		browseButton.setText("Browse...");
+		
+		// Add an event listener that displays a Directory Dialog prompt
+		browseButton.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Notify any listeners that the selection has changed
+				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
+				// Get the Client
+				IClient client = ClientHolder.getClient();
+
+				// Create the dialog and get the files
+				FileDialog fileDialog = new FileDialog(getShell());
+				fileDialog.setText("Select a file to import into ICE");
+				String fileName = fileDialog.open();
+				if (fileName != null) {
+					// Import the files
+					File importedFile = new File(fileName);
+					client.importFile(importedFile.toURI());
+					File file = new File(fileName);
+					EntryComposite.this.setEntryValue(file.getName());
+				}
+
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// Notify any listeners that the selection has changed
+				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
+				// Get the Client
+				IClient client = ClientHolder.getClient();
+
+				// Create the dialog and get the files
+				FileDialog fileDialog = new FileDialog(getShell());
+				fileDialog.setText("Select a file to import into ICE");
+				String fileName = fileDialog.open();
+				if (fileName != null) {
+					// Import the files
+					File importedFile = new File(fileName);
+					client.importFile(importedFile.toURI());
+					EntryComposite.this.setEntryValue(fileName);
+				}
+
+			}
+		});
+		
+		// Add the browse button
+		buttons.add(browseButton);
+		
+		return;
+	}
+
+	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation renders the SWT widgets for the Entry.
@@ -520,7 +641,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	private void render() {
+	protected void render() {
 		// begin-user-code
 
 		// Local Declarations
@@ -547,14 +668,17 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			}
 		}
 
-		// Set the Composite's layout
-		FillLayout layout = new FillLayout(SWT.VERTICAL);
-		layout.marginHeight = 5;
-		layout.marginWidth = 3;
-		layout.spacing = 5;
-		setLayout(layout);
+		if (getLayout() == null) {
+			// Set the Composite's layout
+			FillLayout layout = new FillLayout(SWT.VERTICAL);
+			layout.marginHeight = 5;
+			layout.marginWidth = 3;
+			layout.spacing = 5;
+			setLayout(layout);
+		}
 
-		// If the valueType is Discrete, figure out how to draw it
+		// If the valueType is Discrete and there are some allowed values, 
+		// figure out how to draw it
 		if (valueType == AllowedValueType.Discrete && numAllowedValues > 0) {
 			// We can use Radio buttons if the allowed values are few
 			if (numAllowedValues <= maxShortValues && shortValues) {
@@ -574,40 +698,53 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				createDropdown();
 			}
 		} else if (valueType == AllowedValueType.Discrete) {
+			// If no values were found, throw an error
 			throwMissingValuesError();
+		} else if (valueType == AllowedValueType.File) {
+			// If this is a File entry, draw dropdown (if applicable)
+			// and browse button
+			createLabel();
+			if (numAllowedValues > 0) {
+				createDropdown();
+			}
+			createBrowseButton();		
 		} else {
-			// Create a text field if the type is not discrete
+			// Otherwise create a text field
 			createLabel();
 			createTextfield();
 		}
-
+		
 		return;
 		// end-user-code
 	}
 
 	/**
-	 * This operation will throw an error box on the screen if the Entry does
-	 * not have any values, but requires a value from a discrete set.
+	 * This operation will post a message to the message manager (if one exists)
+	 * if the Entry has no value, but requires a value from a discrete set.
 	 */
 	private void throwMissingValuesError() {
-		String msg = "The entry "
-				+ entry.getName()
-				+ " requires a selection "
-				+ "from a set of values, but does not provide that set. "
-				+ "This most likely means that you are missing some required "
-				+ "data files. In rare instances it may indicate a bug in the "
-				+ "plug-in that you are trying to use. If you feel like you have "
-				+ "configured everything properly, feel free to submit a bug "
-				+ "report at http://projects.eclipse.org/projects/technology.ice"
-				+ " and reference error code #1.";
-		MessageDialog msgDialog = new MessageDialog(getShell(), "Form Error!",
-				null, msg, MessageDialog.ERROR, new String[] { "OK" }, 0);
-
-		// Throw the dialog up on the screen.
-		msgDialog.open();
-
-		// Log the message too
-		System.out.println("EntryComposite Message: " + msg);
+		
+		if (messageManager != null) {
+			// Get the message
+			String errorMessage = entry.getErrorMessage();
+			// Post it if it exists
+			if (errorMessage != null) {
+				// Display the error at the top of the screen
+				if (messageManager != null) {
+					messageManager.addMessage(messageName, errorMessage, null,
+							IMessageProvider.ERROR);
+				}
+				// Highlight the text if it is in a text box
+				if (text != null) {
+					Color color = new Color(Display.getCurrent(), 200, 0, 0);
+					text.setForeground(color);
+					FontData fontData = new FontData();
+					fontData.setStyle(SWT.BOLD);
+					Font font = new Font(getDisplay(), fontData);
+					text.setFont(font);
+				}
+			}
+		}
 
 		return;
 	}
@@ -697,7 +834,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	private void setEntryValue(String value) {
+	protected void setEntryValue(String value) {
 		// begin-user-code
 
 		// Set the value and post a message if necessary

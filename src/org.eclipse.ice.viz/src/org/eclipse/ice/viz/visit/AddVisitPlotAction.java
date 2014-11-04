@@ -60,7 +60,7 @@ import visit.java.client.FileInfo;
  * This Action opens a dialog that allows the user to pick from plots available
  * in the selected file in the {@link VizFileViewer}.
  * 
- * @author tnp, djg
+ * @author tnp, Jordan H. Deyton
  */
 public class AddVisitPlotAction extends Action {
 
@@ -111,7 +111,6 @@ public class AddVisitPlotAction extends Action {
 		// If the editor is null, there is no chance VisIt has been initialized.
 		if (editorPart == null
 				|| !editorPart.getSite().getId().equals(VisitEditor.ID)) {
-			System.out.println("ID = " + editorPart.getSite().getId());
 			// Present an error dialog and return
 			MessageDialog.openError(shell, "VisIt Connection Error",
 					"Please connect to a running VisIt client or "
@@ -366,7 +365,7 @@ public class AddVisitPlotAction extends Action {
 	 * exposes the dialog's {@link CheckboxTreeViewer} to this class and (b)
 	 * allows this class to add an {@link ICheckStateListener} to the viewer.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class ExposedCheckTreeDialog extends CheckedTreeSelectionDialog {
@@ -542,6 +541,17 @@ public class AddVisitPlotAction extends Action {
 					dbPath = resource.getName();
 				}
 
+				// If this is a Windows system, reformat the path to Windows
+				// style by changing the file separators.
+				if (System.getProperty("os.name").toLowerCase()
+						.contains("windows")) {
+					if (dbPath.startsWith("/")) {
+						dbPath = dbPath.substring(1);
+						dbPath = dbPath.replace("/",
+								System.getProperty("file.separator"));
+					}
+				}
+
 				widget.getViewerMethods().openDatabase(dbPath);
 				FileInfo fileInfo = widget.getFileInfo();
 				// --------------------------------------------- //
@@ -549,7 +559,7 @@ public class AddVisitPlotAction extends Action {
 				// Create the groups for meshes, scalars, vectors, and
 				// materials. The method automatically adds them to the entry
 				// list.
-				String parentFile = resource.getName();
+				String parentFile = dbPath;
 				createPlotEntryGroup("Meshes", fileInfo.getMeshes(), entries,
 						parentFile);
 				createPlotEntryGroup("Scalars", fileInfo.getScalars(), entries,

@@ -163,13 +163,23 @@ public class CSVDataLoader {
 			String[] featureLine;
 			int commentLineLength;
 			int featureLineLength = 0;
+			
+			int lineNumber = 1;
+			boolean hasHashFeature = false;
+			int elementOffset;
 			/**
 			 * While loop that parses the comments for the features,
 			 * units,times, and time-units
 			 */
-			while ((line = inputStream.readLine()) != null
-					&& ("#").equals(line.substring(0, 1))) {
+			while ((line = inputStream.readLine()) != null && 
+					(line.contains("#") || lineNumber == 1)) {
 
+				// If we already got the features and the next line contains
+				// data, then just break out of the loop now
+				if (!features.isEmpty() && !line.contains("#")) {
+					break;
+				}
+				
 				/**
 				 * Check for the case where the line contains ":",";","/" For
 				 * example, #features: or #features; or #features/
@@ -194,11 +204,14 @@ public class CSVDataLoader {
 					commentLine[i] = commentLine[i].trim();
 				}
 
+				// Check if the line contains the "#feature" tag (this is used later)
+				hasHashFeature = line.toLowerCase().contains("#features,");
+				
 				/**
 				 * Checks for the features, units, times, and time-units
 				 * keywords
 				 */
-				if (line.toLowerCase().contains("#features,")) {
+				if (!line.contains("#") || hasHashFeature) {
 					/**
 					 * Initialize the pattern for the error and uncertainty of
 					 * the features
@@ -210,7 +223,8 @@ public class CSVDataLoader {
 					 * features. If error/uncertainties exist in the file, they
 					 * are added to the hashmap
 					 */
-					for (int i = 1; i < commentLineLength; i++) {
+					elementOffset = (hasHashFeature ? 1 : 0);
+					for (int i = elementOffset; i < commentLineLength; i++) {
 						/**
 						 * Match the pattern for the error|uncertainty
 						 */
@@ -221,14 +235,32 @@ public class CSVDataLoader {
 							 * the hashmap.
 							 */
 							featureErrorIndices.put(
-									features.indexOf(match.group(1)), i - 1);
+									features.indexOf(
+											match.group(1)), i - elementOffset);
 						}
 						/**
 						 * Add array commentLine to features
 						 */
 						featureLineLength = commentLine.length;
-						features.add(commentLine[i]);
+						features.add(commentLine[i]);						
 					}
+					
+					/**
+					 * If the file had no given features, create a set of features
+					 * x0,x1,x2,...,xn for the fakeDataSet
+					 */
+					if (features.isEmpty()) {
+						
+						// Split the line at each comma
+						featureLine = line.trim().split(",");
+						
+						// Create as many dummy feature names as there were splits
+						featureLineLength = featureLine.length;
+						for (int i = 0; i < featureLine.length; i++) {
+							features.add("x" + i);
+						}
+					}
+					
 				} else if (line.toLowerCase().contains("#units,")) {
 					/**
 					 * Loops through the split line and appends the ArrayList of
@@ -263,16 +295,21 @@ public class CSVDataLoader {
 					// set the data height in the provider
 					dataSet.setDataHeight(dataHeight);
 				}
+				
+				// Increment the line counter
+				lineNumber++;
 			}
-			/**
-			 * The split the first data line
-			 */
-			featureLine = line.trim().split(",");
+			
 			/**
 			 * If the file had no given features, create a set of features
 			 * x0,x1,x2,...,xn for the fakeDataSet
 			 */
 			if (features.isEmpty()) {
+				
+				// Split the line at each comma
+				featureLine = line.trim().split(",");
+				
+				// Create as many dummy feature names as there were splits
 				featureLineLength = featureLine.length;
 				for (int i = 0; i < featureLine.length; i++) {
 					features.add("x" + i);
@@ -364,7 +401,7 @@ public class CSVDataLoader {
 			 * While loop to read the rest of the data lines
 			 */
 			while ((line = inputStream.readLine()) != null
-					&& !("#").equals(line.substring(0, 1))) {
+					&& !line.isEmpty() && !line.startsWith("#")) {
 				/**
 				 * dataLines- for the split input line
 				 */

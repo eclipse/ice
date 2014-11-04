@@ -17,7 +17,7 @@ package org.eclipse.ice.client.widgets.mesh;
  * in a jME3-based MeshApplication has changed. The listener should be able to
  * pull information about the current selection from the MeshApplication.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IMeshSelectionListener {

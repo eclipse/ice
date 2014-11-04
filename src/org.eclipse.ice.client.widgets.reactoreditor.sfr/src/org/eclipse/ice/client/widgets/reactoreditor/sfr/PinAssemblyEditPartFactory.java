@@ -27,7 +27,7 @@ import org.eclipse.gef.EditPartFactory;
  * The PinAssemblyEditPartFactory uses {@link PinAssemblyGridEditPart}s for the
  * Grid and {@link PinAssemblyCellEditPart}s for the Cells.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PinAssemblyEditPartFactory implements EditPartFactory {

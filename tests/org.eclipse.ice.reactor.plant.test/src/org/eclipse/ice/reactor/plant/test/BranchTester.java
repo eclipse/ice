@@ -1,43 +1,31 @@
 /*******************************************************************************
-* Copyright (c) 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.reactor.plant.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import java.util.ArrayList;
+
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.reactor.plant.Branch;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;
-
-import java.util.ArrayList;
-
+import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.junit.Test;
 
 /**
@@ -269,18 +257,18 @@ public class BranchTester {
 	public void checkVisitation() {
 		// begin-user-code
 		// Create a new component to visit.
-		Branch branch = new Branch();
+		Branch component = new Branch();
 
 		// Create an invalid visitor, and try to visit the component.
 		FakeComponentVisitor visitor = null;
-		branch.accept(visitor);
+		component.accept(visitor);
 
 		// Check that the component wasn't visited yet.
 		assertFalse(wasVisited);
 
 		// Create a valid visitor, and try to visit the component.
 		visitor = new FakeComponentVisitor();
-		branch.accept(visitor);
+		component.accept(visitor);
 
 		// Check that the component was visited.
 		assertTrue(wasVisited);
@@ -290,9 +278,35 @@ public class BranchTester {
 
 		// Check that the visitor's component is the same component we initially
 		// created.
-		assertTrue(branch == visitorComponent);
-		assertTrue(branch.equals(visitorComponent));
+		assertTrue(component == visitorComponent);
+		assertTrue(component.equals(visitorComponent));
 
+		// ---- Check PlantComponent visitation. ---- //
+		wasVisited = false;
+
+		// Create an invalid visitor, and try to visit the component.
+		FakePlantComponentVisitor plantVisitor = null;
+		component.accept(plantVisitor);
+
+		// Check that the component wasn't visited yet.
+		assertFalse(wasVisited);
+
+		// Create a valid visitor, and try to visit the component.
+		plantVisitor = new FakePlantComponentVisitor();
+		component.accept(plantVisitor);
+
+		// Check that the component was visited.
+		assertTrue(wasVisited);
+
+		// Grab the visitor's visited component.
+		PlantComponent visitorPlantComponent = plantVisitor.component;
+
+		// Check that the visitor's component is the same component we initially
+		// created.
+		assertTrue(component == visitorPlantComponent);
+		assertTrue(component.equals(visitorPlantComponent));
+
+		return;
 		// end-user-code
 	}
 
@@ -305,11 +319,12 @@ public class BranchTester {
 	 * 
 	 * @author w5q
 	 */
-	private class FakeComponentVisitor implements IComponentVisitor {
+	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 
 		// The fake visitor's visited component.
 		private IReactorComponent component = null;
 
+		@Override
 		public void visit(IReactorComponent component) {
 
 			// Set the IComponentVisitor component (if valid), and flag the
@@ -320,41 +335,29 @@ public class BranchTester {
 			}
 			return;
 		}
-
-		public void visit(DataComponent component) {
-		}
-
-		public void visit(ResourceComponent component) {
-		}
-
-		public void visit(TableComponent component) {
-		}
-
-		public void visit(MatrixComponent component) {
-		}
-
-		public void visit(IShape component) {
-		}
-
-		public void visit(GeometryComponent component) {
-		}
-
-		public void visit(MasterDetailsComponent component) {
-		}
-
-		public void visit(TreeComposite component) {
-		}
-
-		public void visit(TimeDataComponent component) {
-		}
-
-		public void visit(MeshComponent component) {
-		}
-
-		public void visit(BatteryComponent component) {
-		}
-
-		public void visit(AdaptiveTreeComposite component) {
-		}
 	};
+
+	/**
+	 * Fake class to test the PlantComponent visitation routine.
+	 * 
+	 * @author Jordan
+	 * 
+	 */
+	private class FakePlantComponentVisitor extends
+			SelectivePlantComponentVisitor {
+
+		// The fake visitor's visited component.
+		private PlantComponent component = null;
+
+		@Override
+		public void visit(Branch plantComp) {
+			// Set the IComponentVisitor component (if valid), and flag the
+			// component as having been visited.
+			if (plantComp != null) {
+				this.component = plantComp;
+				wasVisited = true;
+			}
+			return;
+		}
+	}
 }

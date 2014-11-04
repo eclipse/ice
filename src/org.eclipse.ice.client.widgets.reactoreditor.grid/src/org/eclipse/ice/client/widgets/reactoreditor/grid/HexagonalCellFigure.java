@@ -23,7 +23,7 @@ import org.eclipse.swt.SWT;
  * includes a draw2d PolygonShape with a PointList of size 6 and can include a
  * Label.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class HexagonalCellFigure extends CellFigure {

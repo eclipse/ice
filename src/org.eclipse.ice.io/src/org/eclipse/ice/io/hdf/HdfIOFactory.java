@@ -45,7 +45,7 @@ import ncsa.hdf.hdf5lib.structs.H5O_info_t;
  * implementation.
  * </p>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class HdfIOFactory implements IHdfIOFactory {

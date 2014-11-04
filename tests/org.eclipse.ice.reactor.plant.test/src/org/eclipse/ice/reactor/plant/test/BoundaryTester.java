@@ -16,28 +16,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import java.util.ArrayList;
+
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.reactor.plant.Boundary;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;
-
-import java.util.ArrayList;
-
+import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.junit.Test;
 
 /**
@@ -269,18 +257,18 @@ public class BoundaryTester {
 	public void checkVisitation() {
 		// begin-user-code
 		// Create a new component to visit.
-		Boundary boundary = new Boundary();
+		Boundary component = new Boundary();
 
 		// Create an invalid visitor, and try to visit the component.
 		FakeComponentVisitor visitor = null;
-		boundary.accept(visitor);
+		component.accept(visitor);
 
 		// Check that the component wasn't visited yet.
 		assertFalse(wasVisited);
 
 		// Create a valid visitor, and try to visit the component.
 		visitor = new FakeComponentVisitor();
-		boundary.accept(visitor);
+		component.accept(visitor);
 
 		// Check that the component was visited.
 		assertTrue(wasVisited);
@@ -290,9 +278,35 @@ public class BoundaryTester {
 
 		// Check that the visitor's component is the same component we initially
 		// created.
-		assertTrue(boundary == visitorComponent);
-		assertTrue(boundary.equals(visitorComponent));
+		assertTrue(component == visitorComponent);
+		assertTrue(component.equals(visitorComponent));
 
+		// ---- Check PlantComponent visitation. ---- //
+		wasVisited = false;
+		
+		// Create an invalid visitor, and try to visit the component.
+		FakePlantComponentVisitor plantVisitor = null;
+		component.accept(plantVisitor);
+
+		// Check that the component wasn't visited yet.
+		assertFalse(wasVisited);
+
+		// Create a valid visitor, and try to visit the component.
+		plantVisitor = new FakePlantComponentVisitor();
+		component.accept(plantVisitor);
+
+		// Check that the component was visited.
+		assertTrue(wasVisited);
+
+		// Grab the visitor's visited component.
+		PlantComponent visitorPlantComponent = plantVisitor.component;
+
+		// Check that the visitor's component is the same component we initially
+		// created.
+		assertTrue(component == visitorPlantComponent);
+		assertTrue(component.equals(visitorPlantComponent));
+		
+		return;
 		// end-user-code
 	}
 
@@ -305,11 +319,12 @@ public class BoundaryTester {
 	 * 
 	 * @author w5q
 	 */
-	private class FakeComponentVisitor implements IComponentVisitor {
+	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 
 		// The fake visitor's visited component.
 		private IReactorComponent component = null;
-
+		
+		@Override
 		public void visit(IReactorComponent component) {
 
 			// Set the IComponentVisitor component (if valid), and flag the
@@ -320,41 +335,29 @@ public class BoundaryTester {
 			}
 			return;
 		}
-
-		public void visit(DataComponent component) {
-		}
-
-		public void visit(ResourceComponent component) {
-		}
-
-		public void visit(TableComponent component) {
-		}
-
-		public void visit(MatrixComponent component) {
-		}
-
-		public void visit(IShape component) {
-		}
-
-		public void visit(GeometryComponent component) {
-		}
-
-		public void visit(MasterDetailsComponent component) {
-		}
-
-		public void visit(TreeComposite component) {
-		}
-
-		public void visit(TimeDataComponent component) {
-		}
-
-		public void visit(MeshComponent component) {
-		}
-
-		public void visit(BatteryComponent component) {
-		}
-
-		public void visit(AdaptiveTreeComposite component) {
-		}
 	};
+
+	/**
+	 * Fake class to test the PlantComponent visitation routine.
+	 * 
+	 * @author Jordan
+	 * 
+	 */
+	private class FakePlantComponentVisitor extends
+			SelectivePlantComponentVisitor {
+
+		// The fake visitor's visited component.
+		private PlantComponent component = null;
+		
+		@Override
+		public void visit(Boundary plantComp) {
+			// Set the IComponentVisitor component (if valid), and flag the
+			// component as having been visited.
+			if (plantComp != null) {
+				this.component = plantComp;
+				wasVisited = true;
+			}
+			return;
+		}
+	}
 }

@@ -29,7 +29,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * Extensions to this class should override add their properties to
  * {@linkplain LWRComponentPropertySource#properties}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ReactorComponentPropertySource implements IPropertySource {

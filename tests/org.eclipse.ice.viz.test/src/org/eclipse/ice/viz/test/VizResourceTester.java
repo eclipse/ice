@@ -14,8 +14,6 @@ package org.eclipse.ice.viz.test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
 import org.eclipse.ice.viz.VizResource;
 import org.junit.Test;
 
@@ -87,13 +85,16 @@ public class VizResourceTester {
 		// Initialize the VizResource
 		vizResource = new VizResource();
 
-		// Default value is false
+		// Set the host to 'localhost'
+		vizResource.setHost("localhost");
+
+		// Check that the resource is not remote
 		assertFalse(vizResource.isRemote());
 
-		// Set to be remote
-		vizResource.setRemote(true);
+		// Set the host to something else
+		vizResource.setHost("notlocalhost");
 
-		// Check that the flag is now true
+		// Not the resource should be remote
 		assertTrue(vizResource.isRemote());
 
 	}

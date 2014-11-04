@@ -26,7 +26,7 @@ import org.junit.Test;
  * This class tests the SFRComponentInfo utility class used in the
  * ReactorEditor's SFR package.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class SFRComponentInfoTester {

@@ -1,70 +1,62 @@
 /*******************************************************************************
-* Copyright (c) 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.reactor.plant.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import java.util.ArrayList;
+
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.reactor.plant.FlowJunction;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;
-
-/**
- * 
- */
-
-
-import java.util.ArrayList;
-
+import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.junit.Test;
 
-/** 
- * <!-- begin-UML-doc -->
- * <!-- end-UML-doc -->
+/**
+ * <!-- begin-UML-doc --> <!-- end-UML-doc -->
+ * 
  * @author w5q
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @generated 
+ *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FlowJunctionTester {
-	/** 
+	/**
 	 * <!-- begin-UML-doc -->
-	 * <p>Boolean flag to mark if the PlantComponent was successfully visited.</p>
+	 * <p>
+	 * Boolean flag to mark if the PlantComponent was successfully visited.
+	 * </p>
 	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean wasVisited = false;
 
-	/** 
+	/**
 	 * <!-- begin-UML-doc -->
-	 * <p>Checks the construction of the component.</p>
+	 * <p>
+	 * Checks the construction of the component.
+	 * </p>
 	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
@@ -77,11 +69,15 @@ public class FlowJunctionTester {
 		// end-user-code
 	}
 
-	/** 
+	/**
 	 * <!-- begin-UML-doc -->
-	 * <p>Checks the getting and setting of the component's attributes.</p>
+	 * <p>
+	 * Checks the getting and setting of the component's attributes.
+	 * </p>
 	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkProperties() {
@@ -119,11 +115,15 @@ public class FlowJunctionTester {
 		// end-user-code
 	}
 
-	/** 
+	/**
 	 * <!-- begin-UML-doc -->
-	 * <p>Checks the hashCode and equality methods of the component.</p>
+	 * <p>
+	 * Checks the hashCode and equality methods of the component.
+	 * </p>
 	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
@@ -158,11 +158,15 @@ public class FlowJunctionTester {
 		// end-user-code
 	}
 
-	/** 
+	/**
 	 * <!-- begin-UML-doc -->
-	 * <p>Checks the copy and clone methods of the component.</p>
+	 * <p>
+	 * Checks the copy and clone methods of the component.
+	 * </p>
 	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
@@ -221,11 +225,15 @@ public class FlowJunctionTester {
 		// end-user-code
 	}
 
-	/** 
+	/**
 	 * <!-- begin-UML-doc -->
-	 * <p>Checks for persistence in the component.</p>
+	 * <p>
+	 * Checks for persistence in the component.
+	 * </p>
 	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkPersistence() {
 		// begin-user-code
@@ -233,28 +241,32 @@ public class FlowJunctionTester {
 		// end-user-code
 	}
 
-	/** 
+	/**
 	 * <!-- begin-UML-doc -->
-	 * <p>Checks the visitation routine of the component.</p>
+	 * <p>
+	 * Checks the visitation routine of the component.
+	 * </p>
 	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
 		// begin-user-code
 		// Create a new component to visit.
-		FlowJunction branch = new FlowJunction();
+		FlowJunction component = new FlowJunction();
 
 		// Create an invalid visitor, and try to visit the component.
 		FakeComponentVisitor visitor = null;
-		branch.accept(visitor);
+		component.accept(visitor);
 
 		// Check that the component wasn't visited yet.
 		assertFalse(wasVisited);
 
 		// Create a valid visitor, and try to visit the component.
 		visitor = new FakeComponentVisitor();
-		branch.accept(visitor);
+		component.accept(visitor);
 
 		// Check that the component was visited.
 		assertTrue(wasVisited);
@@ -262,14 +274,40 @@ public class FlowJunctionTester {
 		// Grab the visitor's visited component.
 		Component visitorComponent = visitor.component;
 
-		// Check that the visitor's component is 
+		// Check that the visitor's component is
 		// the same component we initially created.
-		assertTrue(branch == visitorComponent);
-		assertTrue(branch.equals(visitorComponent));
+		assertTrue(component == visitorComponent);
+		assertTrue(component.equals(visitorComponent));
 
+		// ---- Check PlantComponent visitation. ---- //
+		wasVisited = false;
+
+		// Create an invalid visitor, and try to visit the component.
+		FakePlantComponentVisitor plantVisitor = null;
+		component.accept(plantVisitor);
+
+		// Check that the component wasn't visited yet.
+		assertFalse(wasVisited);
+
+		// Create a valid visitor, and try to visit the component.
+		plantVisitor = new FakePlantComponentVisitor();
+		component.accept(plantVisitor);
+
+		// Check that the component was visited.
+		assertTrue(wasVisited);
+
+		// Grab the visitor's visited component.
+		PlantComponent visitorPlantComponent = plantVisitor.component;
+
+		// Check that the visitor's component is the same component we initially
+		// created.
+		assertTrue(component == visitorPlantComponent);
+		assertTrue(component.equals(visitorPlantComponent));
+
+		return;
 		// end-user-code
 	}
-	
+
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -279,11 +317,12 @@ public class FlowJunctionTester {
 	 * 
 	 * @author w5q
 	 */
-	private class FakeComponentVisitor implements IComponentVisitor {
+	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 
 		// The fake visitor's visited component.
 		private IReactorComponent component = null;
 
+		@Override
 		public void visit(IReactorComponent component) {
 
 			// Set the IComponentVisitor component (if valid), and flag the
@@ -294,41 +333,29 @@ public class FlowJunctionTester {
 			}
 			return;
 		}
-
-		public void visit(DataComponent component) {
-		}
-
-		public void visit(ResourceComponent component) {
-		}
-
-		public void visit(TableComponent component) {
-		}
-
-		public void visit(MatrixComponent component) {
-		}
-
-		public void visit(IShape component) {
-		}
-
-		public void visit(GeometryComponent component) {
-		}
-
-		public void visit(MasterDetailsComponent component) {
-		}
-
-		public void visit(TreeComposite component) {
-		}
-
-		public void visit(TimeDataComponent component) {
-		}
-
-		public void visit(MeshComponent component) {
-		}
-
-		public void visit(BatteryComponent component) {
-		}
-
-		public void visit(AdaptiveTreeComposite component) {
-		}
 	};
+
+	/**
+	 * Fake class to test the PlantComponent visitation routine.
+	 * 
+	 * @author Jordan
+	 * 
+	 */
+	private class FakePlantComponentVisitor extends
+			SelectivePlantComponentVisitor {
+
+		// The fake visitor's visited component.
+		private PlantComponent component = null;
+
+		@Override
+		public void visit(FlowJunction plantComp) {
+			// Set the IComponentVisitor component (if valid), and flag the
+			// component as having been visited.
+			if (plantComp != null) {
+				this.component = plantComp;
+				wasVisited = true;
+			}
+			return;
+		}
+	}
 }

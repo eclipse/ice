@@ -31,7 +31,7 @@ import com.jme3.scene.shape.Box;
  * <b>Operations in this class (not including the constructor) should be called
  * from a SimpleApplication's simpleUpdate() thread.</b>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class HeatExchangerView extends PipeView {

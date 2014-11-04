@@ -12,16 +12,18 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
-
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -55,6 +57,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 * Sets new or existing window name
 	 */
 	private String connectionId;
+
 	/**
 	 * Sets new windowId
 	 */
@@ -197,15 +200,30 @@ public class LaunchVisitWizardPage extends WizardPage {
 	@Override
 	public void createControl(Composite parent) {
 
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout(1, false));
+		// Create the ScrolledComposite, setting its layout data
+		ScrolledComposite scrolledComposite = new ScrolledComposite(parent,
+				SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		scrolledComposite.setLayoutData(GridDataFactory.fillDefaults()
+				.grab(true, true).hint(SWT.DEFAULT, 200).create());
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
 
-		// Fill in the widgets of the dialog
-		createContents(composite);
+		// Create a Composite that contains the rest of the WizardPage and sits
+		// on top of the ScrolledComposite
+		Composite container = new Composite(scrolledComposite, SWT.NULL);
+		container.setLayout(GridLayoutFactory.swtDefaults().numColumns(1)
+				.create());
 
-		setControl(composite);
+		// Create the Launch Dialog contents
+		createContents(container);
 
-		composite.pack();
+		// Set the ScrolledComposite content as the containing composite
+		scrolledComposite.setContent(container);
+		scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT,
+				SWT.DEFAULT));
+
+		// Set the parent as the control for the receiver.
+		setControl(parent);
 
 		return;
 	}
@@ -446,7 +464,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		windowIdCombo.select(0);
 
 		// Create a map to record the created connections
-		HashMap<String, VisItSwtConnection> connectionMap = VisItSwtConnectionManager
+		Map<String, VisItSwtConnection> connectionMap = VisItSwtConnectionManager
 				.getConnMap();
 
 		// Get the existing connection names and add them to the Combo
@@ -477,20 +495,25 @@ public class LaunchVisitWizardPage extends WizardPage {
 					windowIdCombo.add("New Window..");
 					windowIdCombo.select(0);
 
-					Vector<Integer> vec = conn.getWindowIds();
+					// The list of available window IDs
+					List<Integer> windowIdList = conn.getWindowIds();
 
-					for (int i = 0; i < vec.size(); ++i) {
-						windowIdCombo.add(Integer.toString(vec.get(i)));
+					// Add the window IDs to the combo box
+					for (int i = 0; i < windowIdList.size(); ++i) {
+						windowIdCombo.add(Integer.toString(windowIdList.get(i)));
 					}
 
 					// Enable the 'Finish' button
 					setPageComplete(true);
 				}
+
+				return;
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// Not used
+				// Not used at this time
+				return;
 			}
 		});
 	}
@@ -638,30 +661,37 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 */
 	public boolean setFinishFields() {
 
+		// Get the selection from the existing connection combo box
 		int index = connectionCombo.getSelectionIndex();
 
+		// Get the IDs for the connection and the window
 		connectionId = connectionCombo.getText();
-		windowId = windowIdCombo.getText();
+		windowId = "New Window..".equals(windowIdCombo.getText()) ? "-1"
+				: windowIdCombo.getText();
 
-		if ("New Window..".equals(windowId)) {
-			windowId = "-1";
-		}
-
-		// / if this is a brand new connection
-		// / then assign the first window to this
-		// / connection..
+		// If this is a brand new connection, then assign the first window to
+		// this connection. Note: Combo#getSelectionIndex() returns -1 if no
+		// item is selected.
 		if (index == -1) {
 			windowId = "1";
 		}
 
+		// Force the user to set a connection name
 		if (index == 0) {
-			MessageDialog.openError(getShell(), "Invalid Key",
-					"Please select an appropriate name for the connection");
+			MessageDialog.openError(getShell(), "Invalid Key", "Please assign"
+					+ " a name to this connection.");
 			return false;
 		}
 
-		// Set the fields for a local launch if the local launch radio
-		// is selected.
+		// Allow the user to select a previously configured connection
+		if (index > 0) {
+			// TODO: handle pre-existing connection option appropriately.
+			dialogExitSelection = "false";
+			return true;
+		}
+
+		// Set the fields for a local launch if the local launch radio is
+		// selected.
 		if (localRadio.getSelection()) {
 			dialogExitSelection = "Local";
 			// Get the path or prompt an error if the user has left the field
@@ -675,8 +705,8 @@ public class LaunchVisitWizardPage extends WizardPage {
 				return false;
 			}
 			hostname = "localhost";
-			// Get the port number or prompt an error if the user has
-			// left the field empty.
+			// Get the port number or prompt an error if the user has left the
+			// field empty.
 			if (!localPortComp.getPortString().isEmpty()) {
 				port = localPortComp.getPortString();
 			} else {

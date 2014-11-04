@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * PressurizedWaterReactors are very large classes that represent information
  * already stored in an HDF5 file and shouldn't be duplicated.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class PressurizedWaterReactorXMLAdapter extends

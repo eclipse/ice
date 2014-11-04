@@ -12,11 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
-import org.eclipse.ice.client.widgets.mesh.ISyncAction;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.ice.client.widgets.jme.AbstractController;
+import org.eclipse.ice.client.widgets.jme.IRenderQueue;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 
 import com.jme3.math.ColorRGBA;
 
@@ -29,7 +30,7 @@ import com.jme3.math.ColorRGBA;
  * The features exposed by this class should be similar to the features provided
  * for each plant component in Peacock.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public abstract class AbstractPlantController extends AbstractController {
@@ -49,7 +50,6 @@ public abstract class AbstractPlantController extends AbstractController {
 	 * The base color used with the view.
 	 */
 	protected ColorRGBA baseColor;
-
 	// ----------------------------- //
 
 	/**
@@ -60,15 +60,13 @@ public abstract class AbstractPlantController extends AbstractController {
 	 * @param view
 	 *            The view associated with this controller. This needs to be
 	 *            instantiated by the sub-class.
-	 * @param updateQueue
-	 *            The queue (a ConcurrentLinkedQueue of {@link ISyncAction}s)
-	 *            that is processed in the SimpleApplication's simpleUpdate()
-	 *            thread. Any changes to the {@link #view} are performed by
-	 *            adding a new action to this queue.
+	 * @param renderQueue
+	 *            The queue responsible for tasks that need to be performed on
+	 *            the jME rendering thread.
 	 */
 	public AbstractPlantController(IUpdateable model, AbstractPlantView view,
-			ConcurrentLinkedQueue<ISyncAction> updateQueue) {
-		super(model, view, updateQueue);
+			IRenderQueue renderQueue) {
+		super(model, view, renderQueue);
 
 		// Set the view. If it is null, create a new invalid view.
 		this.view = (view != null ? view : new AbstractPlantView(
@@ -93,15 +91,18 @@ public abstract class AbstractPlantController extends AbstractController {
 
 		// If the value has changed from the current value, update wireFrame and
 		// update the view.
-		// If the controller is not disposed, we should try to update the
-		// view's render state.
-		if (this.wireFrame.compareAndSet(!wireFrame, wireFrame)
-				&& !disposed.get()) {
-			updateQueue.add(new ISyncAction() {
-				public void simpleUpdate(float tpf) {
-					view.setWireFrame(wireFrame);
-				}
-			});
+		if (this.wireFrame.compareAndSet(!wireFrame, wireFrame)) {
+
+			// If the controller is not disposed, we should try to update the
+			// view's render state.
+			if (!disposed.get()) {
+				renderQueue.enqueue(new Callable<Boolean>() {
+					public Boolean call() {
+						view.setWireFrame(wireFrame);
+						return true;
+					}
+				});
+			}
 		}
 
 		return;
@@ -123,9 +124,10 @@ public abstract class AbstractPlantController extends AbstractController {
 			// If the controller is not disposed, we should try to update the
 			// view's render state.
 			if (!disposed.get()) {
-				updateQueue.add(new ISyncAction() {
-					public void simpleUpdate(float tpf) {
+				renderQueue.enqueue(new Callable<Boolean>() {
+					public Boolean call() {
 						view.setBaseColor(baseColor);
+						return true;
 					}
 				});
 			}

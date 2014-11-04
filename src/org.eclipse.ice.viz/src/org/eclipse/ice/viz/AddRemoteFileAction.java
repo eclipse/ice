@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 
 import gov.lbnl.visit.swt.VisItRemoteFileDialog;
+import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
 
 import org.eclipse.ice.viz.visit.VisitEditor;
@@ -100,6 +101,16 @@ public class AddRemoteFileAction extends Action {
 			return;
 		}
 
+		// Get the connection from the widget in the editor. If the connection
+		// is back to this machine, use the local file dialog instead.
+		VisItSwtConnection conn = widget.getVisItSwtConnection();
+		if (conn.getHostname().equals("localhost")) {
+			parentAction.getAddLocalFileAction().run();
+			return;
+		}
+
+		// Otherwise, the connection is to a remote machine, so proceed with the
+		// remote file dialog.
 		VisItRemoteFileDialog rdialog = new VisItRemoteFileDialog(
 				widget.getViewerMethods(), shell.getDisplay());
 		String remoteFile = rdialog.open();
@@ -109,7 +120,7 @@ public class AddRemoteFileAction extends Action {
 		}
 		try {
 			VizResource resource = new VizResource(new File(remoteFile));
-			resource.setRemote(true);
+			resource.setHost(conn.getHostname());
 			VizFileViewer vizViewer = (VizFileViewer) viewer;
 			vizViewer.addFile(resource);
 		} catch (IOException e) {

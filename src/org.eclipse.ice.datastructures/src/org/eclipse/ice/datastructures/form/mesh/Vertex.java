@@ -15,13 +15,9 @@ package org.eclipse.ice.datastructures.form.mesh;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -38,12 +34,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author djg, tnp
+ * @author Jordan H. Deyton, tnp
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity()
-@Table(name = "Vertex")
 @XmlRootElement(name = "Vertex")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Vertex extends ICEObject implements IMeshPart {

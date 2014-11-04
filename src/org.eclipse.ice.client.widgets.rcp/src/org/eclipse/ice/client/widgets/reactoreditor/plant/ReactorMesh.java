@@ -41,7 +41,7 @@ import com.jme3.scene.mesh.IndexBuffer;
  * The thickness of the reactor wall can be set with
  * {@link #setThickness(float)}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ReactorMesh extends Mesh {

@@ -50,7 +50,7 @@ import org.eclipse.jface.viewers.Viewer;
  * elements are {@link ICEResource}s for HDF5 reactor files. Their children are
  * {@link IReactorComponent}s in the reactor file.
  * 
- * @author djg, tnp
+ * @author Jordan H. Deyton, tnp
  * 
  */
 public class ReactorTreeContentProvider implements ITreeContentProvider {
@@ -59,7 +59,7 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 	 * A ParentVisitor is used to get the parent object for an
 	 * IReactorComponent.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private interface ParentVisitor extends ILWRComponentVisitor,
@@ -81,7 +81,7 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 	/**
 	 * A ChildrenVisitor is used to get the children of an IReactorComponent.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private interface ChildrenVisitor extends ILWRComponentVisitor,

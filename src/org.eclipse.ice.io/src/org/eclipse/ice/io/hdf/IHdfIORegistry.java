@@ -28,7 +28,7 @@ package org.eclipse.ice.io.hdf;
  * See {@link HdfIORegistry} for a basic implementation of this interface.
  * </p>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IHdfIORegistry {

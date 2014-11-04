@@ -41,7 +41,7 @@ import xmlpp.XMLPersistenceProvider;
 /**
  * This class tests the XMLPersistenceProvider.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class XMLPersistenceProviderTester {
@@ -73,8 +73,10 @@ public class XMLPersistenceProviderTester {
 		URI defaultProjectLocation = null;
 		String projectName = "itemDB";
 		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.dir") + separator + "data"
-				+ separator + "bison.yaml";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "persistenceData";
+		String filePath = userDir + separator + "bison.yaml";
+		String projectPath = userDir + separator + projectName;
 
 		// Debug information
 		System.out.println("MOOSE Test Data File: " + filePath);
@@ -86,9 +88,7 @@ public class XMLPersistenceProviderTester {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				defaultProjectLocation = (new File(
-						System.getProperty("user.dir") + separator
-								+ projectName)).toURI();
+				defaultProjectLocation = (new File(projectPath).toURI());
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(projectName);

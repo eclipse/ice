@@ -21,6 +21,13 @@ import org.eclipse.ice.client.widgets.EclipseFormWidget;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
 
+/**
+ * This class creates and displays a {@link MOOSEFormEditor} for modifying a
+ * MOOSE model according to standard operating procedure in ICE.
+ * 
+ * @author Jordan H. Deyton
+ * 
+ */
 public class MOOSEEclipseFormWidget extends EclipseFormWidget {
 
 	/**

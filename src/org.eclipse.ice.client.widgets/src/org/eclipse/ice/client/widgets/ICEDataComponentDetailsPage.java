@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Listener;
  * <!-- begin-UML-doc -->
  * <p>This class implements the IDetailsPage interface to provide a Details page for ICE DataComponents. The only way to provide the component handle for this class is through the constructor.</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEDataComponentDetailsPage implements IDetailsPage {

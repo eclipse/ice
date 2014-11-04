@@ -21,7 +21,7 @@ package org.eclipse.ice.client.widgets.reactoreditor;
  * <br>
  * For an implementation of this interface, see {@link AnalysisWidgetRegistry}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IAnalysisWidgetRegistry {

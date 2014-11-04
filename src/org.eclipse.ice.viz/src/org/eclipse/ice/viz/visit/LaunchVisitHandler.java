@@ -30,7 +30,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * This class handles the launch of the VisIt client.
  * 
- * @author bkj, tnp
+ * @author Jay Jay Billings, tnp
  * 
  */
 public class LaunchVisitHandler extends AbstractHandler {

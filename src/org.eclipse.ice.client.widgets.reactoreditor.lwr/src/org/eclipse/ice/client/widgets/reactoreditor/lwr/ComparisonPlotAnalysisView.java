@@ -39,7 +39,7 @@ import org.eclipse.jface.action.Action;
  * allows the user to plot the data similarly to the standard
  * {@link PlotAnalysisView}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ComparisonPlotAnalysisView extends PlotAnalysisView {

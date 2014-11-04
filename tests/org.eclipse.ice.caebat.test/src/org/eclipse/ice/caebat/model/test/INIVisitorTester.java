@@ -264,9 +264,7 @@ public class INIVisitorTester {
 		//Check values
 		assertTrue(visitor4.wasVisited());
 		assertEquals("[" + name + "]\n" +
-				"    NAMES = INIT " +  entry1.getValue() + "\n\n" +
-				"    [[INIT]]\n" +
-				"        IMPLEMENTATION = \n" +
+				"    NAMES = " +  entry1.getValue() + "\n\n" +
 				"    [[" + entry1.getValue()+"]]\n" +
 				"        IMPLEMENTATION = " + entry2.getValue() + "\n", visitor4.getINIString() );
 		
@@ -308,9 +306,7 @@ public class INIVisitorTester {
 		//Check values
 		assertTrue(visitor4.wasVisited());
 		assertEquals("[" + name + "]\n" +
-				"    NAMES = INIT " +  manyRows.getRow(0).get(0).getValue() + " " + manyRows.getRow(1).get(0).getValue() + " " + manyRows.getRow(2).get(0).getValue() + "\n\n" +
-				"    [[INIT]]\n" +
-				"        IMPLEMENTATION = \n" +
+				"    NAMES = " +  manyRows.getRow(0).get(0).getValue() + " " + manyRows.getRow(1).get(0).getValue() + " " + manyRows.getRow(2).get(0).getValue() + "\n\n" +
 				"    [[" + manyRows.getRow(0).get(0).getValue()+"]]\n" +
 				"        IMPLEMENTATION = " + manyRows.getRow(0).get(1).getValue() + "\n" +
 				"    [[" + manyRows.getRow(1).get(0).getValue()+"]]\n" +

@@ -20,7 +20,7 @@ package org.eclipse.ice.client.widgets.mesh;
  * getDistanceToTarget() method do not provide the correct distance until after
  * the camera's update() method is called from the application's simpleUpdate().
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface ICameraListener {

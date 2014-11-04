@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import org.eclipse.ice.io.hdf.HdfFileFactory;
 import org.eclipse.ice.io.hdf.HdfReaderFactory;
 
@@ -86,8 +87,9 @@ public class HdfReaderFactoryTester {
 		// Local declarations
 		String separator = System.getProperty("file.separator");
 		String testFileName = "hdfReaderFactoryFile1.h5";
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + testFileName);
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "ioData";
+		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
 		H5File h5File;
 		String subGroupName = "Bob";
@@ -273,8 +275,9 @@ public class HdfReaderFactoryTester {
 		// Local declarations
 		String separator = System.getProperty("file.separator");
 		String testFileName = "hdfReaderFactoryFile2.h5";
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + testFileName);
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "ioData";
+		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
 		H5File h5File = null;
 		String integerName = "Integer1";

@@ -46,7 +46,7 @@ import org.osgi.framework.FrameworkUtil;
  * to "Activate when one of its classes is loaded" in the MANIFEST.MF "Overview"
  * tab. It will then call the Activator class.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class GridViewerLauncher extends Thread {

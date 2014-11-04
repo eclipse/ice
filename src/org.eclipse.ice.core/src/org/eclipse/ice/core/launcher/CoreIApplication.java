@@ -20,7 +20,7 @@ import org.eclipse.equinox.app.IApplicationContext;
  * a stand-alone server in an OSGi framework. It does absolutely nothing other
  * than give Eclipse an entry point for its executable.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  */
 public class CoreIApplication implements IApplication {
 

@@ -22,7 +22,7 @@ import java.util.List;
  * This class provides the model for a grid of Cells. The Grid should keep track
  * of Cells, dimensions, and selected, invalid, and disabled Cell locations.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class Grid {

@@ -25,27 +25,27 @@ import com.jme3.math.ColorRGBA;
 /**
  * This factory is used to create the basic {@link Material}s for
  * {@link PlantComponent}s. It also stores the keys for said Materials when
- * being stored in the PlantApplication.
+ * being stored in the PlantAppState.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PlantMaterialFactory {
 
 	/**
-	 * The PlantApplication that employs this factory.
+	 * The PlantAppState that employs this factory.
 	 */
-	private final PlantApplication app;
+	private final PlantAppState app;
 
 	/**
 	 * The default constructor.
 	 * 
-	 * @param application
-	 *            The PlantApplication that employs this factory. This cannot be
+	 * @param app
+	 *            The PlantAppState that employs this factory. This cannot be
 	 *            changed.
 	 */
-	public PlantMaterialFactory(PlantApplication application) {
-		app = (application != null ? application : new PlantApplication());
+	public PlantMaterialFactory(PlantAppState app) {
+		this.app = (app != null ? app : new PlantAppState());
 	}
 
 	/**
@@ -93,14 +93,26 @@ public class PlantMaterialFactory {
 
 	/**
 	 * Creates the materials for supported {@link PlantComponent}s and adds them
-	 * to the {@link PlantApplication} associated with this factory.
+	 * to the {@link PlantAppState} associated with this factory.
 	 */
 	public void createMaterials() {
-		app.addMaterial("Pipe", app.createLitMaterial(ColorRGBA.Cyan));
-		app.addMaterial("Junction", app.createLitMaterial(ColorRGBA.Gray));
-		app.addMaterial("HeatExchanger", app.createLitMaterial(ColorRGBA.Blue));
-		app.addMaterial("Reactor", app.createLitMaterial(ColorRGBA.White));
-		app.addMaterial("CoreChannel", app.createLitMaterial(ColorRGBA.Red));
+		app.setMaterial("Pipe", app.createLitMaterial(ColorRGBA.Cyan));
+		app.setMaterial("Junction", app.createLitMaterial(ColorRGBA.Gray));
+		app.setMaterial("HeatExchanger", app.createLitMaterial(ColorRGBA.Blue));
+		app.setMaterial("Reactor", app.createLitMaterial(ColorRGBA.White));
+		app.setMaterial("CoreChannel", app.createLitMaterial(ColorRGBA.Red));
+	}
+
+	/**
+	 * Disposes of all materials for supported {@link PlantComponents} and
+	 * removes them from the associated <code>PlantAppState</code>.
+	 */
+	public void disposeMaterials() {
+		app.removeMaterial("Pipe");
+		app.removeMaterial("Junction");
+		app.removeMaterial("HeatExchanger");
+		app.removeMaterial("Reactor");
+		app.removeMaterial("CoreChannel");
 	}
 
 	/**
@@ -108,7 +120,7 @@ public class PlantMaterialFactory {
 	 * for visit operations (which would require synchronization in
 	 * multi-threaded environments).
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class KeyWrapper {

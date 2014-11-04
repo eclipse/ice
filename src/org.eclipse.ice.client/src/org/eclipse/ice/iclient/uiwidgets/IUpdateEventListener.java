@@ -18,7 +18,7 @@ import org.eclipse.ice.datastructures.form.Form;
  * <!-- begin-UML-doc -->
  * <p>Implementations of the IUpdateEventListener are registered with a FormWidget and notified when the Form is updated.</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IUpdateEventListener {

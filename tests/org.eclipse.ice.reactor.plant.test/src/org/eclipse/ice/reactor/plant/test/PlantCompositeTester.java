@@ -24,9 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
+import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.reactor.plant.IPlantCompositeListener;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -34,10 +38,22 @@ import org.junit.Test;
  * Tests PlantComposite, which is a Composite container for multiple
  * PlantComponents.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PlantCompositeTester {
+
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * Boolean flag to mark if the PlantComponent was successfully visited.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 */
+	private boolean wasVisited = false;
 
 	/**
 	 * Checks the construction of a PlantComposite. Its properties inherited
@@ -291,7 +307,7 @@ public class PlantCompositeTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		// Try other invalid objects.
-		assertFalse(object==null);
+		assertFalse(object == null);
 		assertFalse("starscream".equals(object));
 
 		return;
@@ -356,12 +372,121 @@ public class PlantCompositeTester {
 		// end-user-code
 	}
 
+	@Test
+	public void checkVisitation() {
+		// begin-user-code
+
+		// Create a new component to visit.
+		PlantComposite component = new PlantComposite();
+
+		// Create an invalid visitor, and try to visit the component.
+		FakeComponentVisitor visitor = null;
+		component.accept(visitor);
+
+		// Check that the component wasn't visited yet.
+		assertFalse(wasVisited);
+
+		// Create a valid visitor, and try to visit the component.
+		visitor = new FakeComponentVisitor();
+		component.accept(visitor);
+
+		// Check that the component was visited.
+		assertTrue(wasVisited);
+
+		// Grab the visitor's visited component.
+		Component visitorComponent = visitor.component;
+
+		// Check that the visitor's component is the same component we initially
+		// created.
+		assertTrue(component == visitorComponent);
+		assertTrue(component.equals(visitorComponent));
+
+		// ---- Check PlantComponent visitation. ---- //
+		wasVisited = false;
+		
+		// Create an invalid visitor, and try to visit the component.
+		FakePlantComponentVisitor plantVisitor = null;
+		component.accept(plantVisitor);
+
+		// Check that the component wasn't visited yet.
+		assertFalse(wasVisited);
+
+		// Create a valid visitor, and try to visit the component.
+		plantVisitor = new FakePlantComponentVisitor();
+		component.accept(plantVisitor);
+
+		// Check that the component was visited.
+		assertTrue(wasVisited);
+
+		// Grab the visitor's visited component.
+		PlantComponent visitorPlantComponent = plantVisitor.component;
+
+		// Check that the visitor's component is the same component we initially
+		// created.
+		assertTrue(component == visitorPlantComponent);
+		assertTrue(component.equals(visitorPlantComponent));
+		
+		return;
+		// end-user-code
+	}
+
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * Fake class to test the visitation routine of the component.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @author w5q
+	 */
+	private class FakeComponentVisitor extends SelectiveComponentVisitor {
+
+		// The fake visitor's visited component.
+		private IReactorComponent component = null;
+		
+		@Override
+		public void visit(IReactorComponent component) {
+
+			// Set the IComponentVisitor component (if valid), and flag the
+			// component as having been visited.
+			if (component != null) {
+				this.component = component;
+				wasVisited = true;
+			}
+			return;
+		}
+	};
+
+	/**
+	 * Fake class to test the PlantComponent visitation routine.
+	 * 
+	 * @author Jordan
+	 * 
+	 */
+	private class FakePlantComponentVisitor extends
+			SelectivePlantComponentVisitor {
+
+		// The fake visitor's visited component.
+		private PlantComponent component = null;
+		
+		@Override
+		public void visit(PlantComposite plantComp) {
+			// Set the IComponentVisitor component (if valid), and flag the
+			// component as having been visited.
+			if (plantComp != null) {
+				this.component = plantComp;
+				wasVisited = true;
+			}
+			return;
+		}
+	}
+
 	/**
 	 * This listener is a test IJunctionListener. It should be reset between
 	 * tests, and wasNotifed() can be used as a way to determine if it has been
 	 * notified within 250ms.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class TestPlantCompositeListener implements IPlantCompositeListener {

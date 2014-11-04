@@ -26,7 +26,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -54,6 +54,19 @@ public class Parameter {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean required;
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * The flag that indicates whether or not this parameter is enabled (ie. if
+	 * it is commented out or not). False if the parameter is commented out,
+	 * otherwise true.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 */
+	private boolean enabled;
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -138,6 +151,15 @@ public class Parameter {
 		// end-user-code
 	}
 
+	/**
+	 * Returns if the parameter is enabled or not (ie. commented out).
+	 * 
+	 * @return	True if the parameter is enabled, false if it is commented out.
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -256,6 +278,18 @@ public class Parameter {
 		return;
 		// end-user-code
 	}
+	
+	/**
+	 * This method sets if the parameter is currently enabled (ie. not
+	 * commented out).
+	 * 
+	 * @param flag	True if the parameter is enabled, false if it is commented
+	 * 				out.
+	 */
+	public void setEnabled(boolean flag) {
+		enabled = flag;
+		return;
+	}
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -370,6 +404,7 @@ public class Parameter {
 				if (!("bool").equals(Parameter.this.cpp_type)) {
 					allowedValueType = AllowedValueType.Undefined;
 					defaultValue = Parameter.this.getDefault();
+					description = Parameter.this.getDescription();
 				} else {
 					// Otherwise, configure the Entry as a boolean
 					allowedValueType = AllowedValueType.Discrete;
@@ -377,16 +412,17 @@ public class Parameter {
 					allowedValues.add("true");
 					allowedValues.add("false");
 					// Set the default value
-					defaultValue = (Parameter.this.getDefault().equals(0)) ? "false"
-							: "true";
+					defaultValue = (Parameter.this.getDefault().equals(0)) ? 
+							"false" : "true";
+					description = Parameter.this.getDescription();
 				}
 			}
 		};
 		entry.setName(getName());
 		entry.setDescription(getDescription());
-		entry.setTag(getName());
 		entry.setRequired(required);
-
+		entry.setTag(enabled ? "true" : "false");
+		
 		return entry;
 
 		// end-user-code
@@ -441,6 +477,7 @@ public class Parameter {
 			description = entry.getDescription();
 			_default = entry.getValue();
 			required = entry.isRequired();
+			enabled = !"false".equalsIgnoreCase(entry.getTag());
 		}
 
 		// end-user-code

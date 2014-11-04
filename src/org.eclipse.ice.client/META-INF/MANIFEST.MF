@@ -6,9 +6,8 @@ Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.ice.iclient,
  org.eclipse.ice.iclient.uiwidgets
-Import-Package: org.eclipse.ice.core.iCore,
- javax.persistence;version="2.0.3",
- javax.ws.rs.core,
+Import-Package: javax.ws.rs.core,
+ org.eclipse.ice.core.iCore,
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.componentVisitor,
  org.eclipse.ice.datastructures.form,

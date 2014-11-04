@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
@@ -34,6 +34,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
@@ -54,7 +55,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -230,13 +231,13 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	public ArrayList<Component> getComponents() {
 		// begin-user-code
 
-		ArrayList<Component> componentz = new ArrayList<Component>();
+		ArrayList<Component> compList = new ArrayList<Component>();
 
-		componentz.addAll(dataComponents);
-		componentz.addAll(tableComponents);
-		componentz.addAll(matrixComponents);
+		compList.addAll(dataComponents);
+		compList.addAll(tableComponents);
+		compList.addAll(matrixComponents);
 
-		return componentz;
+		return components;
 		// end-user-code
 	}
 
@@ -599,16 +600,17 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	}
 
-	@Override
-	public void visit(BatteryComponent component) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

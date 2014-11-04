@@ -32,7 +32,7 @@ import org.eclipse.swt.graphics.Color;
  * {@link SFRComponent}, usually {@link SFRPin}s, to instead provide an axial or
  * vertical view of the component.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 // FIXME The MouseListeners for the rod shapes aren't working.

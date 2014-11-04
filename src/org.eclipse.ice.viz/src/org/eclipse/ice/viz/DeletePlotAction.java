@@ -16,10 +16,10 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.client.widgets.PlayableViewPart;
 import org.eclipse.ice.viz.visit.VisitPlotViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -27,14 +27,14 @@ import org.osgi.framework.FrameworkUtil;
  * This Action removes selected resources from the it's parent plot viewer by
  * calling {@link VisitPlotViewer#removeSelection()} when it is run.
  * 
- * @author tnp, djg
+ * @author tnp, Jordan H. Deyton
  */
 public class DeletePlotAction extends Action {
 
 	/**
 	 * The ViewPart that owns an object of this class.
 	 */
-	private final ViewPart viewer;
+	private final PlayableViewPart viewer;
 
 	/**
 	 * The constructor
@@ -42,7 +42,7 @@ public class DeletePlotAction extends Action {
 	 * @param parent
 	 *            The ViewPart to whom the object of this class belongs.
 	 */
-	public DeletePlotAction(ViewPart parent) {
+	public DeletePlotAction(PlayableViewPart parent) {
 
 		viewer = parent;
 
@@ -69,7 +69,7 @@ public class DeletePlotAction extends Action {
 
 		// Call the parent view's method to remove the current tree selection
 		// from its TreeViewer
-		((VisitPlotViewer) viewer).removeSelection();
+		viewer.removeSelection();
 
 		return;
 	}

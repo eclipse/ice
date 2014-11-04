@@ -39,7 +39,7 @@ import org.osgi.framework.FrameworkUtil;
  * {@link ReactorEditorRegistry} and tells the {@link ReactorViewer} to send its
  * current selection to one of the Reactor Editors.
  * 
- * @author tnp, djg
+ * @author tnp, Jordan H. Deyton
  */
 public class AnalyzeInReactorEditorAction extends Action {
 

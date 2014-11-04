@@ -31,7 +31,7 @@ import org.junit.Test;
  * Tests the {@link HdfIORegistry}'s ability to register and retrieve new
  * {@link IHdfIOFactory} instances.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class HdfIORegistryTester {

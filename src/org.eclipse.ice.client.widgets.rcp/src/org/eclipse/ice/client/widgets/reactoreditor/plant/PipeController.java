@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
-import org.eclipse.ice.client.widgets.geometry.Tube;
-import org.eclipse.ice.client.widgets.mesh.ISyncAction;
-
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.reactor.plant.Pipe;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Callable;
+
+import org.eclipse.ice.client.widgets.geometry.Tube;
+import org.eclipse.ice.client.widgets.jme.IRenderQueue;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.reactor.plant.Pipe;
 
 import com.jme3.bounding.BoundingBox;
 import com.jme3.math.FastMath;
@@ -32,7 +31,7 @@ import com.jme3.math.Vector3f;
  * associated {@link PipeView}. Any updates to the view should be coordinated
  * through this class.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PipeController extends AbstractPlantController {
@@ -59,15 +58,13 @@ public class PipeController extends AbstractPlantController {
 	 *            a view.
 	 * @param view
 	 *            The view (a {@link PipeView}) associated with this controller.
-	 * @param updateQueue
-	 *            The queue (a ConcurrentLinkedQueue of {@link ISyncAction}s)
-	 *            that is processed in the SimpleApplication's simpleUpdate()
-	 *            thread. Any changes to the {@link #view} are performed by
-	 *            adding a new action to this queue.
+	 * @param renderQueue
+	 *            The queue responsible for tasks that need to be performed on
+	 *            the jME rendering thread.
 	 */
 	public PipeController(Pipe model, PipeView view,
-			ConcurrentLinkedQueue<ISyncAction> updateQueue) {
-		super(model, view, updateQueue);
+			IRenderQueue renderQueue) {
+		super(model, view, renderQueue);
 
 		// Set the model. If it is null, create a new, default model.
 		this.model = (model != null ? model : new Pipe());
@@ -86,7 +83,7 @@ public class PipeController extends AbstractPlantController {
 		} else if (view == null) {
 			throw new IllegalArgumentException(
 					"PipeController error: View is null!");
-		} else if (updateQueue == null) {
+		} else if (renderQueue == null) {
 			throw new IllegalArgumentException(
 					"PipeController error: Update queue is null!");
 		}
@@ -279,8 +276,27 @@ public class PipeController extends AbstractPlantController {
 
 		Quaternion quaternion;
 
+		/*-
+		 * // Normally, you would cross the two vectors and set the quaternion's
+		 * // x, y, and z to the cross product. Then you would set w to:
+		 * // sqrt(length(u)^2 * length(v)^2) + u dot v
+		 * float w = FastMath.sqrt(Vector3f.UNIT_Y.lengthSquared()
+		 * 		* orientation.lengthSquared())
+		 * 		+ Vector3f.UNIT_Y.dot(orientation);
+		 * Vector3f cross = Vector3f.UNIT_Y.cross(orientation);
+		 * quaternion = new Quaternion(cross.x, cross.y, cross.z, w);
+		 */
+
 		// Since one of the vectors involved in the cross product is the unit y
 		// vector, we can skip a lot of arithmetic.
+
+		/*-
+		 * // A slightly briefer version of the above with all the math but
+		 * // still using a vector and a float.
+		 * Vector3f cross = new Vector3f(orientation.z, 0f, -orientation.x);
+		 * float w = orientation.length() + orientation.y;
+		 * quaternion = new Quaternion(cross.x, cross.y, cross.z, w);
+		 */
 
 		// We need to make sure that the orientation vector is not just the
 		// negated unit y vector. If it's not, then we can perform the usual
@@ -321,16 +337,14 @@ public class PipeController extends AbstractPlantController {
 
 			// Add a new ISyncAction to synchronize these properties with the
 			// view.
-			updateQueue.add(new ISyncAction() {
-				public void simpleUpdate(float tpf) {
+			renderQueue.enqueue(new Callable<Boolean>() {
+				public Boolean call() {
 					view.setLocation(location);
 					view.setRotation(rotation);
 					view.refreshMesh();
+					return true;
 				}
 			});
-
-			// Notify IControllerListeners that the pipe has changed.
-			notifyControllerListeners("pipeChanged");
 		}
 
 		return;

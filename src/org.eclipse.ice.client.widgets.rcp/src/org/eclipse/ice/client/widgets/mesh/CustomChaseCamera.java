@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.jme3.input.CameraInput;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
@@ -28,7 +29,7 @@ import com.jme3.scene.Spatial;
  * 1) Can reset the zoom to a default distance.<br>
  * 2) Notifies {@link ICameraListener}s when the zoom changes.<br>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class CustomChaseCamera extends ChaseCamera {
@@ -43,7 +44,7 @@ public class CustomChaseCamera extends ChaseCamera {
 	 * The camera's default zoom or distance from the target.
 	 */
 	private float defaultDistance;
-
+	
 	/**
 	 * The default constructor.
 	 * 
@@ -64,7 +65,17 @@ public class CustomChaseCamera extends ChaseCamera {
 		// Initialize the list of ICameraListeners.
 		cameraListeners = new ArrayList<ICameraListener>(5);
 
+		// Disable all rotation. These must be set to false so the camera is
+		// "locked" in position above the player.
+		canRotate = false;
+		dragToRotate = false;
+
 		return;
+	}
+
+	public void setDragToRotate(boolean dragToRotate) {
+		this.dragToRotate = false;
+		canRotate = false;
 	}
 
 	/**
@@ -185,4 +196,28 @@ public class CustomChaseCamera extends ChaseCamera {
 		notifyCameraListeners(targetDistance);
 	}
 
+	public void unregisterInput() {
+
+        if (!invertYaxis) {
+            inputManager.deleteMapping(CameraInput.CHASECAM_DOWN);
+            inputManager.deleteMapping(CameraInput.CHASECAM_UP);
+        } else {
+            inputManager.deleteMapping(CameraInput.CHASECAM_DOWN);
+            inputManager.deleteMapping(CameraInput.CHASECAM_UP);
+        }
+        inputManager.deleteMapping(CameraInput.CHASECAM_ZOOMIN);
+        inputManager.deleteMapping(CameraInput.CHASECAM_ZOOMOUT);
+        if (!invertXaxis) {
+            inputManager.deleteMapping(CameraInput.CHASECAM_MOVELEFT);
+            inputManager.deleteMapping(CameraInput.CHASECAM_MOVERIGHT);
+        } else {
+            inputManager.deleteMapping(CameraInput.CHASECAM_MOVELEFT);
+            inputManager.deleteMapping(CameraInput.CHASECAM_MOVERIGHT);
+        }
+        inputManager.deleteMapping(CameraInput.CHASECAM_TOGGLEROTATE);
+        inputManager.deleteMapping(CameraInput.CHASECAM_TOGGLEROTATE);
+
+        inputManager.removeListener(this);
+	}
+	
 }

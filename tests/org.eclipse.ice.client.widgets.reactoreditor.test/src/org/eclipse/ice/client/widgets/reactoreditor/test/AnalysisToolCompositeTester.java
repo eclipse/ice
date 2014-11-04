@@ -53,7 +53,7 @@ import org.junit.Test;
  * properly over the life of the ATC so that the interface seen by the users is
  * correct.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AnalysisToolCompositeTester {

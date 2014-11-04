@@ -24,7 +24,7 @@ import org.eclipse.jface.wizard.IWizard;
  * analysis. The ReactorEditorWidgetFactory manages these specialized
  * Composites.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IAnalysisWidgetFactory {

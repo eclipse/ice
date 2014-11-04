@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Menu;
  * 
  * 
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ActionTree {
@@ -252,7 +252,7 @@ public class ActionTree {
 	 * ActionTree. This class is responsible for building Menus based on an
 	 * ActionTree node's children from their IContributionItems.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class MenuCreator implements IMenuCreator {

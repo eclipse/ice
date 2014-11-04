@@ -14,13 +14,9 @@ package org.eclipse.ice.datastructures.form.mesh;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
-
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -39,12 +35,10 @@ import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity()
-@Table(name = "Custom2DShape")
 @XmlRootElement(name = "Custom2DShape")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Custom2DShape extends AbstractShape {

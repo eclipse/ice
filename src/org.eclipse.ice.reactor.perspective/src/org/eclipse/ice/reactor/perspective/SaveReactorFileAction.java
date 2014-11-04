@@ -21,7 +21,7 @@ import org.eclipse.ui.part.ViewPart;
  * This action is used to save an individual reactor file in the
  * {@link ReactorViewer}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class SaveReactorFileAction extends Action {

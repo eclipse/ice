@@ -18,17 +18,9 @@ import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -50,8 +42,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity()
-@Table(name = "GeometryComponent")
 @XmlRootElement(name = "GeometryComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GeometryComponent extends ICEObject implements Component,
@@ -67,7 +57,6 @@ public class GeometryComponent extends ICEObject implements Component,
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	private ArrayList<IUpdateableListener> listeners;
 	/**
 	 * <!-- begin-UML-doc -->
@@ -79,7 +68,6 @@ public class GeometryComponent extends ICEObject implements Component,
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = AbstractShape.class)
 	@XmlAnyElement()
 	@XmlElementRefs(value = {
 			@XmlElementRef(name = "ComplexShape", type = ComplexShape.class),

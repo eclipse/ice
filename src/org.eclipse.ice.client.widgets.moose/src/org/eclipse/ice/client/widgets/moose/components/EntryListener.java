@@ -21,7 +21,7 @@ import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
  * convenience to avoid having to cast IUpdateables to Entries when making an
  * IUpdateableListener.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public abstract class EntryListener implements IUpdateableListener {
@@ -52,10 +52,16 @@ public abstract class EntryListener implements IUpdateableListener {
 	 */
 	public final void update(IUpdateable component) {
 		if (component == entry) {
+			System.out.println("Entry \"" + entry.getName() + "\" updated.");
 			updateEntry();
 		}
 	}
 
+	public void updateEntry1() {
+		System.out.println("Entry \"" + entry.getName() + "\" updated manually.");
+		updateEntry();
+	}
+	
 	/**
 	 * This method is only called if the Entry that was specified in the
 	 * constructor is valid and has been updated.

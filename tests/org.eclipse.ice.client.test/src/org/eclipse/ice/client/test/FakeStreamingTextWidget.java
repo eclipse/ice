@@ -18,7 +18,7 @@ import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
  * <!-- begin-UML-doc -->
  * <p>The FakeStreamingTextWidget is a realization of IStreamingTextWidget that is used for testing. It provides the widgetDisplayed() operation in addition to the IStreamingTextWidget interface for inspection.</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeStreamingTextWidget implements IStreamingTextWidget {

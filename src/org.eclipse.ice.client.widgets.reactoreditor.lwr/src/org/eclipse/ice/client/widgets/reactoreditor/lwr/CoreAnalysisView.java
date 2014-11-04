@@ -52,7 +52,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * the last clicked assembly or the core itself to the ICE Properties View via
  * {@link AnalysisView#selectionProvider}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class CoreAnalysisView extends AnalysisView implements IGridListener {

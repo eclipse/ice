@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Shell;
  * content of the editor. We can still use the GridEditorInput as a means to
  * provide data about the grid to the GraphicalViewer.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class GridEditorDialog extends Dialog {

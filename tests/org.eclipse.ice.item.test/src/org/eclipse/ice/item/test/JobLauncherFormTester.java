@@ -22,12 +22,14 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
@@ -49,7 +51,7 @@ import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -147,7 +149,6 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		// begin-user-code
 
 		// Local Declarations
-		ArrayList<String> hosts = new ArrayList<String>(), retHosts = null;
 		Entry openMPEntry = null;
 		Entry mpiEntry = null;
 		Entry tBBEntry = null;
@@ -180,6 +181,12 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 		// Enable MPI
 		jobLauncherForm.enableMPI(1, 1024, 512);
+		
+		// Check the account code 
+		Entry accountEntry = threadingComponent.retrieveEntry("Account Code/Project Code");
+		assertNotNull(accountEntry);
+		assertEquals("none",accountEntry.getValue());
+		assertEquals(accountEntry.getValueType(),AllowedValueType.Undefined);
 
 		// Get the MPI Entry and check it
 		mpiEntry = threadingComponent.retrieveEntry("Number of MPI Processes");
@@ -832,15 +839,16 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 	}
 
-	@Override
-	public void visit(BatteryComponent component) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
 	}
 }

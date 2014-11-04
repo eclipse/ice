@@ -34,7 +34,7 @@ import java.util.List;
  * registered IJunctionListeners.
  * </p>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IJunction {

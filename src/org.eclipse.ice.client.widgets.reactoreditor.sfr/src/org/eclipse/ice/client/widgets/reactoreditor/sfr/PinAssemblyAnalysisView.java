@@ -67,7 +67,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * assembly itself to the ICE Properties View via
  * {@link AnalysisView#selectionProvider}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PinAssemblyAnalysisView extends AnalysisView implements

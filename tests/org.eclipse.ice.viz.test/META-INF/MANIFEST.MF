@@ -10,4 +10,5 @@ Require-Bundle: org.junit,
  org.eclipse.core.resources,
  org.eclipse.core.runtime;bundle-version="3.9.100"
 Import-Package: org.eclipse.ice.viz,
- org.eclipse.ice.viz.plotviewer
+ org.eclipse.ice.viz.plotviewer,
+ org.eclipse.swt.graphics

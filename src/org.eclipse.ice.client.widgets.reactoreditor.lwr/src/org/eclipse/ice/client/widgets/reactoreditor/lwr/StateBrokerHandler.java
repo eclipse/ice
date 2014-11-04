@@ -70,7 +70,7 @@ import org.eclipse.ice.client.widgets.reactoreditor.StateBroker;
  * This class provides keys for use in a {@link StateBroker}. It is tailored
  * specifically for {@link LWRComponent}s and the LWR analysis views.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class StateBrokerHandler implements IStateBrokerHandler,
@@ -111,7 +111,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * <br>
 	 * <b>It is primarily intended to be used for inner/untyped classes.</b>
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class BaseVisitor implements ILWRComponentVisitor,

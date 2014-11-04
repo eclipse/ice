@@ -40,7 +40,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
  * ReactorFormEditor with the call <code>
  * this.getSite().setSelectionProvider(provider);</code>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class SelectionProvider implements ISelectionProvider {

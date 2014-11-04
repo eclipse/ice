@@ -24,7 +24,7 @@ import org.eclipse.swt.graphics.Color;
  * XYGraph, since there does not appear to be a way to dynamically reset the
  * palette used by XYGraph instances.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ColorFactory {

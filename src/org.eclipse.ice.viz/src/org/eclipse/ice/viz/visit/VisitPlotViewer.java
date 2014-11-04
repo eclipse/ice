@@ -40,18 +40,18 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
@@ -60,11 +60,10 @@ import org.eclipse.ui.part.WorkbenchPart;
  * This class extends the ViewPart class and provides a view in the
  * Visualization Perspective to look at the plots that are currently available.
  * 
- * @author bkj, tnp, djg
+ * @author Jay Jay Billings, tnp, Jordan H. Deyton
  */
 public class VisitPlotViewer extends PlayableViewPart implements
-		IUpdateableListener, ISelectionListener, ISelectionChangedListener,
-		IDoubleClickListener {
+		IUpdateableListener, ISelectionChangedListener, IDoubleClickListener {
 
 	/**
 	 * The ID for this view
@@ -180,12 +179,6 @@ public class VisitPlotViewer extends PlayableViewPart implements
 
 		// Register this view's ListViewer as a SelectionProvider
 		getSite().setSelectionProvider(plotTreeViewer);
-
-		// Register this view as a part listener
-
-		// Register as a listener to the VizFileViewer.
-		getSite().getWorkbenchWindow().getSelectionService()
-				.addPostSelectionListener(VizFileViewer.ID, this);
 
 		return;
 	}
@@ -467,21 +460,34 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		// Set up the label provider, which determines what string is displayed
 		// for each element in the tree. Currently, this only needs to produce
 		// a string for each Entry.
-		inputTreeViewer.setLabelProvider(new LabelProvider() {
+		inputTreeViewer.setLabelProvider(new StyledCellLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				// Get the text that should be displayed for Entries in the
-				// TreeViewer.
-				String text;
+			public void update(ViewerCell cell) {
+				Object element = cell.getElement();
+
+				// Get a String from the Entry if possible.
+				StyledString styledStr = new StyledString();
 				if (element instanceof Entry) {
-					// FIXME We may want to change the text sent back here.
 					Entry entry = (Entry) element;
-					text = entry.getDescription() + " - " + entry.getName()
-							+ " - " + entry.getParent();
-				} else {
-					text = element.toString();
+					// Get the name from the resource
+					styledStr.append(entry.getName());
+					// Append the path stored as the Entry description
+					styledStr.append(" [" + entry.getParent(),
+							StyledString.QUALIFIER_STYLER);
+					// Append the data type stored as the Entry parent
+					styledStr.append("-" + entry.getDescription() + "]",
+							StyledString.QUALIFIER_STYLER);
 				}
-				return text;
+				// If the element isn't an Entry, convert it to a String.
+				else {
+					styledStr.append(element.toString());
+				}
+
+				// Set the text for the cell and call
+				// StyledCellLabelProvider#update()
+				cell.setText(styledStr.toString());
+				cell.setStyleRanges(styledStr.getStyleRanges());
+				super.update(cell);
 			}
 		});
 
@@ -560,6 +566,18 @@ public class VisitPlotViewer extends PlayableViewPart implements
 				// Mark the plot as not plotted.
 				entry.setValue("false");
 
+				// FIXME - This definitely needs a better way to access the
+				// VisIt widget.
+				IEditorPart editorPart = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getActivePage()
+						.getActiveEditor();
+				VisitEditor editor = (VisitEditor) editorPart;
+				VisItSwtWidget widget = editor.getVizWidget();
+				widget.activate();
+
+				// Delete an existing plot
+				widget.getViewerMethods().deleteActivePlots();
+
 				// Update the plotViewer.
 				refreshPlotViewer();
 			}
@@ -599,6 +617,7 @@ public class VisitPlotViewer extends PlayableViewPart implements
 						.getActiveEditor();
 				VisitEditor editor = (VisitEditor) editorPart;
 				VisItSwtWidget widget = editor.getVizWidget();
+				widget.activate();
 
 				// Delete an existing plot
 				widget.getViewerMethods().deleteActivePlots();
@@ -695,43 +714,26 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		return;
 	}
 
-	// ---- Implements ISelectionListener ---- //
 	/**
-	 * This method is used to listen for changes to the currently selected
-	 * ICEResource in the {@link VizFileViewer}.
+	 * This method is called when the selection in the VizFileViewer has
+	 * changed. It is used to listen for changes to the currently selected
+	 * VizResource in the {@link VizFileViewer}.
+	 * 
+	 * @param inResource
+	 *            The VizResource in the {@link VizFileViewer} to set this
+	 *            object's {@link resource} to.
 	 */
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		// FIXME - The VizFileViewer may have deleted this ICEResource!
+	public void setResource(VizResource inResource) {
+		// Reset the VizResource
+		resource = inResource;
+		System.out.println("VisitPlotViewer message: The selected file from "
+				+ "the VizFileViewer is \"" + resource.getName() + "\".");
 
-		// Check that the selection's source is the VizFileViewer.
-		// Try to get the ICEResource from the ISelection. We first have to
-		// cast the ISelection to an IStructuredSelection, whose first
-		// element should be an ICEResource.
-		if (part.getSite().getId().equals(VizFileViewer.ID)
-				&& selection != null
-				&& selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			if (!structuredSelection.isEmpty()) {
-				Object object = structuredSelection.getFirstElement();
-				if (object instanceof VizResource) {
-					// Reset the current ICEResource.
-					resource = (VizResource) object;
-
-					System.out.println("VisitPlotViewer message: "
-							+ "The selected file from the VizFileViewer is \""
-							+ resource.getName() + "\".");
-
-					// Enable the AddPlotAction.
-					addPlotAction.setEnabled(true);
-				}
-			}
-
-		}
+		// Enable the AddPlotAction.
+		addPlotAction.setEnabled(true);
 
 		return;
 	}
-
-	// --------------------------------------- //
 
 	// ---- Implements ISelectionChangedListener ---- //
 	/**

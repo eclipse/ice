@@ -22,7 +22,7 @@ import org.eclipse.swt.SWT;
  * This class provides a circular view for a {@link Cell} model. This Figure
  * includes a draw2d Ellipse and can include a Label.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class CircularCellFigure extends CellFigure {

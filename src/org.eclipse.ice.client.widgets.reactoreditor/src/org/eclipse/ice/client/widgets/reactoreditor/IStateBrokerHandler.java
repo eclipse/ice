@@ -16,7 +16,7 @@ package org.eclipse.ice.client.widgets.reactoreditor;
  * This interface is used to get keys for objects that will be added to a
  * {@link StateBroker}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IStateBrokerHandler {

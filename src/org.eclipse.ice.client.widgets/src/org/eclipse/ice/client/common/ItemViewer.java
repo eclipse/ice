@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.client.common.internal.ClientHolder;
-import org.eclipse.ice.datastructures.ICEObject.*;
+import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -24,8 +24,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
@@ -115,6 +113,7 @@ public class ItemViewer extends ViewPart {
 		// Start the thread
 		drawThread.start();
 
+		return;
 	}
 
 	/**
@@ -179,9 +178,9 @@ public class ItemViewer extends ViewPart {
 					return;
 				}
 				// Get the selection from the table
-				List<Object> list = selection.toList();
+				List<?> list = selection.toList();
 				// Get the Item name
-				String itemName = (String) list.get(0);
+				String itemName = list.get(0).toString();
 				// Since we know that the id is the last set of characters after
 				// the final space, get the index of that final space.
 				int index = itemName.lastIndexOf(" ");

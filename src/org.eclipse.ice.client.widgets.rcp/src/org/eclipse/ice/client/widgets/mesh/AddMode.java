@@ -1,17 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
- *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.eclipse.ice.client.widgets.jme.InputControl;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.Hex;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
@@ -19,48 +12,62 @@ import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import com.jme3.collision.CollisionResults;
+import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.InputListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
-public class AddMode extends MeshApplicationMode implements ICameraListener {
+/**
+ * This {@link MeshAppStateMode} allows the user to add additional polygons to
+ * the {@link MeshAppState}'s {@link MeshComponent} by clicking on the grid.
+ * Vertices can be re-used, and once enough vertices have been placed, the user
+ * can confirm or cancel the new polygon from keyboard input.
+ * 
+ * @author Jordan Deyton
+ * 
+ */
+public class AddMode extends MeshAppStateMode {
 
-	// ---- MeshApplication Variables ---- //
+	// ---- MeshAppState variables ---- //
 	/**
-	 * The host {@link MeshApplication} that is using this mode.
-	 */
-	private MeshApplication app;
-	/**
-	 * The {@link MeshComponent} displayed in the {@link MeshApplication}.
-	 */
-	private MeshComponent mesh;
-	/**
-	 * The floor of the grid in the {@link MeshApplication}.
+	 * The floor of the grid in the <code>MeshAppState</code>.
 	 */
 	private Geometry grid;
 	/**
-	 * The parent {@link Node} containing spatials in the scene for all
-	 * {@link Vertex vertices} in the {@link #mesh}.
+	 * The parent <code>Node</code> containing spatials in the scene for all
+	 * {@link Vertex}es in the {@link #mesh}.
 	 */
 	private Node vertexSpatials;
 	/**
-	 * The update queue for the MeshApplication.
+	 * The update queue for the <code>MeshAppState</code>.
 	 */
 	private ConcurrentLinkedQueue<AbstractMeshController> updateQueue;
+	// -------------------------------- //
+
+	// ---- Custom Controls ---- //
 	/**
-	 * The parent {@link Node} containing all temporary spatials displayed in
-	 * the scene.
+	 * An <code>InputControl</code> that contains the mapping name, listener,
+	 * and trigger for accepting a new polygon for the mesh.
 	 */
-	private Node tempSpatials;
-	// ----------------------------------- //
+	private InputControl acceptAction;
+	/**
+	 * An <code>InputControl</code> that contains the mapping name, listener,
+	 * and trigger for canceling an unaccepted polygon.
+	 */
+	private InputControl cancelAction;
+	// ------------------------- //
+
+	// ---- Temporary spatials ---- //
+	/**
+	 * The parent <code>Node</code> containing all temporary spatials displayed
+	 * in the scene.
+	 */
+	private final Node tempSpatials;
 
 	/**
 	 * The current number of sides supported for polygons.
@@ -93,28 +100,20 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 	 */
 	private final List<EdgeController> edgeControllers;
 
-	// ---- Additional ActionListeners. ---- //
-	/**
-	 * This listener accepts the set of temporary vertices and edges to create a
-	 * new polygon, which is then added to the mesh. It should be triggered
-	 * either by an additional click or the Enter key.
-	 */
-	private final ActionListener acceptListener;
-	/**
-	 * This listener resets the set of temporary vertices and edges, effectively
-	 * cancelling the current element being added to the mesh. It should be
-	 * bound to the Escape, Backspace, and Delete keys.
-	 */
-	private final ActionListener cancelListener;
-
-	// ------------------------------------- //
+	// ---------------------------- //
 
 	/**
-	 * The default constructor. Adds any additional {@link ActionListener}s to
-	 * the map of {@link MeshApplicationMode#listeners listeners}.
+	 * The default constructor.
+	 * 
+	 * @param appState
+	 *            The <code>MeshAppState</code> that this
+	 *            <code>MeshAppStateMode</code> supports.
 	 */
-	public AddMode() {
-		super();
+	public AddMode(MeshAppState appState) {
+		super(appState);
+
+		// Initialize the root Node for temporary spatials.
+		tempSpatials = new Node("AddMode-temp");
 
 		// Initialize any final variables here.
 		vertices = new ArrayList<Vertex>();
@@ -122,102 +121,181 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 		edges = new ArrayList<Edge>();
 		edgeControllers = new ArrayList<EdgeController>();
 
-		// Add any additional listeners here.
-
-		// Create a listener to accept the vertices to create the new polygon.
-		acceptListener = new ActionListener() {
-			public void onAction(String name, boolean isPressed, float tpf) {
-				if (!isPressed && canAcceptPolygon()) {
-					acceptPolygon();
-				}
-			}
-		};
-		listeners.put(Key.Enter, acceptListener);
-
-		// Create a listener to cancel the vertices used to create a new
-		// polygon. It should be triggered by Backspace, Delete, and Escape.
-		cancelListener = new ActionListener() {
-			public void onAction(String name, boolean isPressed, float tpf) {
-				if (!isPressed) {
-					resetPolygon();
-				}
-			}
-		};
-		listeners.put(Key.Backspace, cancelListener);
-		listeners.put(Key.Delete, cancelListener);
-		listeners.put(Key.Escape, cancelListener);
-
 		// Set the initial polygon type to be a quad.
 		polygonSize = 4;
 
 		return;
 	}
 
-	/**
-	 * Overrides the parent method to provide more {@link ActionListener}s.
+	// ---- Extends MeshAppStateMode ---- //
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.mesh.MeshAppStateMode#getName()
 	 */
 	@Override
-	public List<InputListener> getInputListeners() {
-		List<InputListener> listeners = super.getInputListeners();
-
-		// Add any additional listeners here.
-		listeners.add(acceptListener);
-		listeners.add(cancelListener);
-
-		return listeners;
+	public String getName() {
+		return "Add Elements";
 	}
 
-	/**
-	 * Implements the parent method to load any temporary data required for this
-	 * MeshApplicationMode.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.mesh.MeshAppStateMode#getDescription()
 	 */
-	public void load(MeshApplication application) {
+	@Override
+	public String getDescription() {
+		return "Adds elements or polygons by placing vertices on the grid.";
+	}
 
-		// Get fields of interest from the MeshApplication.
-		app = application;
-		mesh = app.getMesh();
-		grid = app.getGrid();
-		vertexSpatials = app.getVertexSpatials();
-		tempSpatials = app.getTemporarySpatialNode();
-		updateQueue = app.getUpdateQueue();
+	// ---------------------------------- //
 
-		// Register as a camera listener so that the temporary vertex
-		// controllers can be updated when the zoom changes.
-		app.getChaseCamera().addCameraListener(this);
+	// ---- Initialization methods ---- //
+	@Override
+	protected void initScene() {
+
+		// Set up all of the variables used to update the scene.
+		grid = appState.getGrid();
+		vertexSpatials = appState.getVertexSpatials();
+		updateQueue = appState.getUpdateQueue();
 
 		return;
 	}
 
 	/**
-	 * Implements the parent method to clear any temporary data managed by this
-	 * MeshApplicationMode.
+	 * Registers custom controls in addition to the default
+	 * {@link MeshAppStateMode} controls.
 	 */
-	public void clear() {
+	@Override
+	protected void initControls() {
+		super.initControls();
 
-		// Detach the temporary spatials node from the scene.
-		app.getRootNode().attachChild(tempSpatials);
+		String name;
+		ActionListener action;
 
-		// Unregister from the CustomChaseCamera.
-		app.getChaseCamera().removeCameraListener(this);
+		// Create a listener to accept the vertices to create the new polygon.
+		name = "accept";
+		action = new ActionListener() {
+			@Override
+			public void onAction(String name, boolean isPressed, float tpf) {
+				if (!isPressed && canAcceptPolygon()) {
+					acceptPolygon();
+				}
+			}
+		};
+		acceptAction = new InputControl(action, name);
+		acceptAction.addTriggers(name, new KeyTrigger(KeyInput.KEY_RETURN));
+
+		// Create a listener to cancel the vertices used to create a new
+		// polygon. It should be triggered by Backspace, Delete, and Escape.
+		name = "cancel";
+		action = new ActionListener() {
+			@Override
+			public void onAction(String name, boolean isPressed, float tpf) {
+				if (!isPressed) {
+					resetPolygon();
+				}
+			}
+		};
+		cancelAction = new InputControl(action, name);
+		cancelAction.addTriggers(name, new KeyTrigger(KeyInput.KEY_BACK),
+				new KeyTrigger(KeyInput.KEY_DELETE), new KeyTrigger(
+						KeyInput.KEY_ESCAPE));
+
+		return;
+	}
+
+	// -------------------------------- //
+
+	// ---- Enable/Disable ---- //
+	@Override
+	public void enableAppState() {
+		super.enableAppState();
+
+		// Attach the temporary spatial Node to the MeshAppState's scene.
+		appState.getRootNode().attachChild(tempSpatials);
+
+		return;
+	}
+
+	/**
+	 * Registers additional controls for adding mesh elements.
+	 */
+	public void registerControls() {
+		super.registerControls();
+
+		// Get the InputManager and register all custom controls with it.
+		InputManager input = getApplication().getInputManager();
+		acceptAction.registerWithInput(input);
+		cancelAction.registerWithInput(input);
+
+		return;
+	}
+
+	@Override
+	public void disableAppState() {
+
+		// Detach the temporary spatial Node from the MeshAppState's scene.
+		appState.getRootNode().detachChild(tempSpatials);
 
 		// Clear any temporary objects.
 		resetPolygon();
 
-		// Clear references to the MeshApplication fields.
-		app = null;
-		mesh = null;
+		super.disableAppState();
+	}
+
+	/**
+	 * Unregisters the additional controls for adding mesh elements.
+	 */
+	public void unregisterControls() {
+		// Unregister all controls from the InputManager.
+		acceptAction.unregisterFromInput();
+		cancelAction.unregisterFromInput();
+
+		super.unregisterControls();
+	}
+
+	// ------------------------ //
+
+	// ---- Cleanup methods ---- //
+	@Override
+	protected void clearScene() {
+
+		// Clear variables used to update the scene.
 		grid = null;
 		vertexSpatials = null;
-		tempSpatials = null;
 		updateQueue = null;
 
 		return;
 	}
 
 	/**
-	 * Implements the left-click behavior for this MeshApplicationMode.
+	 * Unregisters custom controls in addition to the default
+	 * {@link MeshAppStateMode} controls.
 	 */
-	protected void leftClick(boolean isPressed) {
+	@Override
+	protected void clearControls() {
+
+		// Unset the controls.
+		acceptAction = null;
+		cancelAction = null;
+
+		super.clearControls();
+	}
+
+	// ------------------------- //
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.mesh.MeshAppStateMode#leftClick(boolean ,
+	 * float)
+	 */
+	@Override
+	public void leftClick(boolean isPressed, float tpf) {
+
 		if (!isPressed) {
 			// Proceed depending on how many vertices have been created. If not
 			// enough vertices have been created/selected, then add another one.
@@ -228,7 +306,8 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 				int sides = vertices.size();
 
 				// Add a vertex based on the cursor's position at the click.
-				Vertex vertex = addVertexFromRay(app.getCursorRayFromClick());
+				Vertex vertex = addVertexFromRay(appState
+						.getCursorRayFromClick());
 
 				// If possible, add an edge between the last vertex and the
 				// current one.
@@ -245,42 +324,11 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 				acceptPolygon();
 			}
 		}
+
 		return;
 	}
 
-	/**
-	 * Implements the right-click behavior for this MeshApplicationMode.
-	 */
-	protected void rightClick(boolean isPressed) {
-		// Do nothing yet.
-	}
-
-	/**
-	 * Implements the parent method to provide the MeshApplicationMode name.
-	 */
-	public String getName() {
-		return "Add Elements";
-	}
-
-	/**
-	 * Implements the parent method to provide the MeshApplicationMode
-	 * description.
-	 */
-	public String getDescription() {
-		return "Adds elements or polygons by placing vertices on the grid.";
-	}
-
-	/**
-	 * Determines whether or not there are enough temporary vertices and edges
-	 * to construct a polygon of the current size.
-	 * 
-	 * @return True if there are enough vertices to construct a polygon with
-	 *         {@link #polygonSize} sides, false otherwise.
-	 */
-	private boolean canAcceptPolygon() {
-		return (vertices.size() >= polygonSize);
-	}
-
+	// ---- Getters and Setters ---- //
 	/**
 	 * Gets the current size of polygons created by AddMode.
 	 * 
@@ -304,6 +352,20 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 		return;
 	}
 
+	// ----------------------------- //
+
+	// ---- Private utility methods ---- //
+	/**
+	 * Determines whether or not there are enough temporary vertices and edges
+	 * to construct a polygon of the current size.
+	 * 
+	 * @return True if there are enough vertices to construct a polygon with
+	 *         {@link #polygonSize} sides, false otherwise.
+	 */
+	private boolean canAcceptPolygon() {
+		return (vertices.size() >= polygonSize);
+	}
+
 	/**
 	 * Creates a new polygon out of the temporary edges and vertices and adds it
 	 * to the mesh. This also clears the collections of temporary vertices and
@@ -323,6 +385,7 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 		}
 
 		// Add the polygon to the mesh.
+		MeshComponent mesh = appState.getMesh();
 		polygon.setId(mesh.getNextPolygonId());
 		mesh.addPolygon(polygon);
 
@@ -341,18 +404,17 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 		// Remove all vertices.
 		vertices.clear();
 		// Dispose of the VertexControllers and their VertexViews.
-		for (VertexController controller : vertexControllers) {
+		for (VertexController controller : vertexControllers)
 			controller.dispose();
-		}
 		vertexControllers.clear();
 
 		// Remove all edges.
 		edges.clear();
 		// Dispose of the EdgeControllers and their EdgeViews.
-		for (EdgeController controller : edgeControllers) {
+		for (EdgeController controller : edgeControllers)
 			controller.dispose();
-			edgeControllers.clear();
-		}
+		edgeControllers.clear();
+
 		// Reset the new edges counter.
 		newEdges = 0;
 
@@ -374,30 +436,30 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 
 		CollisionResults results;
 
-		if ((results = app.getCollision(vertexSpatials, ray)).size() > 0) {
+		if ((results = getCollision(vertexSpatials, ray)).size() > 0) {
 			// Get the ID from the name of the nearest collision (a VertexView).
 			int id = Integer.parseInt(results.getClosestCollision()
 					.getGeometry().getName());
-			vertex = mesh.getVertex(id);
-		} else if ((results = app.getCollision(grid, ray)).size() > 0) {
+			vertex = appState.getMesh().getVertex(id);
+		} else if ((results = getCollision(grid, ray)).size() > 0) {
 			// Get the collision point and its nearest point to the grid's
 			// bounds.
 			Vector3f point = results.getClosestCollision().getContactPoint();
-			Vector3f gridPoint = app.getClosestGridPoint(point);
+			Vector3f gridPoint = appState.getClosestGridPoint(point);
 
 			// Create a new Vertex from the point on the grid.
 			vertex = new Vertex(gridPoint.x, gridPoint.y, gridPoint.z);
-			vertex.setId(mesh.getNextVertexId() + vertices.size());
+			vertex.setId(appState.getMesh().getNextVertexId() + vertices.size());
 		}
 
 		if (vertex != null) {
 			// Create a controller for the vertex and add it to the scene.
 			controller = new VertexController(vertex, updateQueue,
-					app.createBasicMaterial(null));
+					createBasicMaterial(null));
 			controller.setParentNode(tempSpatials);
 			controller.setState(StateType.Temporary);
-			controller.setSize(app.getVertexSize());
-			controller.setScale(app.getScale());
+			controller.setSize(appState.getVertexSize());
+			controller.setScale(appState.getScale());
 
 			// Add them to the lists of temporary vertices/controllers.
 			vertices.add(vertex);
@@ -420,6 +482,7 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 	private Edge addEdgeFromVertices(Vertex start, Vertex end) {
 
 		// We need to create an Edge and a controller if possible.
+		MeshComponent mesh = appState.getMesh();
 		Edge edge = mesh.getEdgeFromVertices(start.getId(), end.getId());
 		EdgeController controller;
 
@@ -431,11 +494,11 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 
 		// Create a controller for the edge and add it to the scene.
 		controller = new EdgeController(edge, updateQueue,
-				app.createBasicMaterial(null));
+				createBasicMaterial(null));
 		controller.setParentNode(tempSpatials);
 		controller.setState(StateType.Temporary);
-		controller.setSize(app.getEdgeSize());
-		controller.setScale(app.getScale());
+		controller.setSize(appState.getEdgeSize());
+		controller.setScale(appState.getScale());
 
 		// Add them to the lists of temporary edges/controllers.
 		edges.add(edge);
@@ -444,6 +507,8 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 		return edge;
 	}
 
+	// --------------------------------- //
+
 	// ---- Implements ICameraListener ---- //
 	/**
 	 * This method updates all controllers for temporary spatials to account for
@@ -451,13 +516,11 @@ public class AddMode extends MeshApplicationMode implements ICameraListener {
 	 */
 	public void zoomChanged(float distance) {
 		// Update the vertex controllers.
-		float vertexSize = app.getVertexSize();
-		for (VertexController c : vertexControllers) {
+		float vertexSize = appState.getVertexSize();
+		for (VertexController c : vertexControllers)
 			c.setSize(vertexSize);
-		}
 
 		return;
 	}
 	// ------------------------------------ //
-
 }

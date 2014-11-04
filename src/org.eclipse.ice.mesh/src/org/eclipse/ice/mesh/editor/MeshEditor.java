@@ -23,7 +23,7 @@ import org.eclipse.ice.item.Item;
  * This class provides a basic 2D mesh editor, minus the UI elements. All
  * available properties and operations can be used with this default editor.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 @XmlRootElement(name = "MeshEditor")

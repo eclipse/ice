@@ -28,14 +28,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.item.ICompositeItemBuilder;
-import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.SerializedItemBuilder;
 import org.eclipse.ice.item.messaging.Message;
@@ -47,8 +44,6 @@ import java.util.Hashtable;
 import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpService;
 
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
-
 import javax.servlet.ServletException;
 
 import org.osgi.service.http.NamespaceException;
@@ -57,11 +52,6 @@ import org.osgi.service.component.ComponentContext;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -96,7 +86,7 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */

@@ -34,7 +34,7 @@ import org.eclipse.ice.datastructures.form.mesh.Vertex;
  * This class provides an {@link ISection} for displaying the information of a
  * {@link Vertex} in a modifiable manner.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class VertexInfoSection extends GeneralInfoSection {

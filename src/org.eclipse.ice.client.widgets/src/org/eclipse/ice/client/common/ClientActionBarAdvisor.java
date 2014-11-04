@@ -32,7 +32,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
  * This class sets up the Eclipse action bar, registers actions and fixes the
  * coolbar.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class ClientActionBarAdvisor extends ActionBarAdvisor {
@@ -111,7 +111,7 @@ public class ClientActionBarAdvisor extends ActionBarAdvisor {
 		// Create an action for launching a Mesh Editor.
 		launchMeshEditorAction = new LaunchMeshEditorAction();
 		// Create an action for importing input files as Items
-		openImportWizardAction = new OpenImportWizardAction(window);
+		openImportWizardAction = new ImportItemWizardAction(window);
 
 		// Register these actions with the ActionBarAdvisor
 		register(exitAction);

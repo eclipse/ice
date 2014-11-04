@@ -37,7 +37,6 @@ import org.eclipse.ice.kdd.test.fakeobjects.SimpleData;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleDataProvider;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.eclipse.ice.analysistool.IAnalysisAsset;
 import org.eclipse.ice.analysistool.IAnalysisDocument;
 import org.eclipse.ice.analysistool.IData;
@@ -184,6 +183,8 @@ public class KMeansIntegrationTester {
 
 		String workspaceName = "kddtestworkspace";
 		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + workspaceName;
 		project = null;
 
 		try {
@@ -193,8 +194,7 @@ public class KMeansIntegrationTester {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/kddtestworkspace
-				URI projURI = (new File(System.getProperty("user.dir")
-						+ separator + workspaceName)).toURI();
+				URI projURI = (new File(userDir)).toURI();
 				// Create the project description
 				IProjectDescription description = ResourcesPlugin
 						.getWorkspace().newProjectDescription(workspaceName);

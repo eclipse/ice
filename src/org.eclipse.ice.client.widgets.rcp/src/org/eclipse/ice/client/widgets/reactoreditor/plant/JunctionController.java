@@ -12,8 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
-import org.eclipse.ice.client.widgets.mesh.ISyncAction;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.ice.client.widgets.jme.IRenderQueue;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.IJunction;
@@ -23,14 +30,6 @@ import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.Reactor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.jme3.bounding.BoundingBox;
 import com.jme3.math.Vector3f;
 
@@ -39,7 +38,7 @@ import com.jme3.math.Vector3f;
  * model with the {@link JunctionView}. Any updates to the view should be
  * coordinated through this class.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class JunctionController extends AbstractPlantController implements
@@ -102,20 +101,18 @@ public class JunctionController extends AbstractPlantController implements
 	 * @param view
 	 *            The view (a {@link JunctionView}) associated with this
 	 *            controller.
-	 * @param updateQueue
-	 *            The queue (a ConcurrentLinkedQueue of {@link ISyncAction}s)
-	 *            that is processed in the SimpleApplication's simpleUpdate()
-	 *            thread. Any changes to the {@link #view} are performed by
-	 *            adding a new action to this queue.
+	 * @param renderQueue
+	 *            The queue responsible for tasks that need to be performed on
+	 *            the jME rendering thread.
 	 * @param manager
 	 *            A {@link PlantControllerManager} used for looking up
 	 *            {@link PipeController}s for the current {@link Pipe}s
 	 *            connected to the Junction.
 	 */
 	public JunctionController(Junction model, JunctionView view,
-			ConcurrentLinkedQueue<ISyncAction> updateQueue,
+			IRenderQueue renderQueue,
 			PlantControllerManager manager) {
-		super(model, view, updateQueue);
+		super(model, view, renderQueue);
 
 		// Set the model. If it is null, create a new, default model.
 		this.model = (model != null ? model : new Junction());
@@ -140,7 +137,7 @@ public class JunctionController extends AbstractPlantController implements
 		} else if (view == null) {
 			throw new IllegalArgumentException(
 					"JunctionController error: View is null!");
-		} else if (updateQueue == null) {
+		} else if (renderQueue == null) {
 			throw new IllegalArgumentException(
 					"JunctionController error: Update queue is null!");
 		} else if (controllers == null) {
@@ -243,9 +240,10 @@ public class JunctionController extends AbstractPlantController implements
 				// If the bounds have changed, synchronize the view's geometry
 				// with the mesh.
 				if (boundsChanged.get()) {
-					updateQueue.add(new ISyncAction() {
-						public void simpleUpdate(float tpf) {
+					renderQueue.enqueue(new Callable<Boolean>() {
+						public Boolean call() {
 							view.refreshMesh();
+							return true;
 						}
 					});
 				}
@@ -309,9 +307,10 @@ public class JunctionController extends AbstractPlantController implements
 			// If the bounds have changed, synchronize the view's geometry with
 			// the mesh.
 			if (boundsChanged) {
-				updateQueue.add(new ISyncAction() {
-					public void simpleUpdate(float tpf) {
+				renderQueue.enqueue(new Callable<Boolean>() {
+					public Boolean call() {
 						view.refreshMesh();
+						return true;
 					}
 				});
 			}
@@ -394,9 +393,10 @@ public class JunctionController extends AbstractPlantController implements
 			// If the bounds have changed, synchronize the view's geometry with
 			// the mesh.
 			if (boundsChanged) {
-				updateQueue.add(new ISyncAction() {
-					public void simpleUpdate(float tpf) {
+				renderQueue.enqueue(new Callable<Boolean>() {
+					public Boolean call() {
 						view.refreshMesh();
+						return true;
 					}
 				});
 			}
@@ -496,12 +496,7 @@ public class JunctionController extends AbstractPlantController implements
 				// Get the BoundingBox.
 				BoundingBox box = null;
 				if (controller != null) {
-					System.out.println("Adding outlet bounds for pipe "
-							+ plantComp.getId());
 					box = controller.getOutletBounds();
-				} else {
-					System.out.println("Can't add outlet bounds for pipe "
-							+ plantComp.getId());
 				}
 
 				// Add the primary outlet to the ID and BoundingBox lists.
@@ -685,9 +680,10 @@ public class JunctionController extends AbstractPlantController implements
 			// If the bounds have changed, synchronize the view's geometry with
 			// the mesh.
 			if (boundsChanged.get()) {
-				updateQueue.add(new ISyncAction() {
-					public void simpleUpdate(float tpf) {
+				renderQueue.enqueue(new Callable<Boolean>() {
+					public Boolean call() {
 						view.refreshMesh();
+						return true;
 					}
 				});
 			}
@@ -760,9 +756,10 @@ public class JunctionController extends AbstractPlantController implements
 				// If the bounds have changed, synchronize the view's geometry
 				// with the mesh.
 				if (boundsChanged.get()) {
-					updateQueue.add(new ISyncAction() {
-						public void simpleUpdate(float tpf) {
+					renderQueue.enqueue(new Callable<Boolean>() {
+						public Boolean call() {
 							view.refreshMesh();
+							return true;
 						}
 					});
 				}

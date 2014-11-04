@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
  * This class extends the EclipseFormWidget and opens the ReactorFormEditor
  * instead of the ICEFormEditor.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class ReactorEclipseFormWidget extends EclipseFormWidget {

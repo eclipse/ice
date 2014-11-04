@@ -41,7 +41,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * This class provides an {@link ISection} that displays general properties
  * about {@link IMeshPart}s. This includes their name, description, and ID.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class GeneralInfoSection extends AbstractPropertySection {

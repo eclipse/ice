@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -83,6 +83,9 @@ public class ReactorAnalyzerBuilderTester {
 		URI defaultProjectLocation = null;
 		IProject project = null;
 		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator
+				+ "reactorAnalyzerBuilderTesterWorkspace";
 		String filename = null;
 		fakeAnalysisTool = new FakeAnalysisTool();
 
@@ -94,10 +97,7 @@ public class ReactorAnalyzerBuilderTester {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				defaultProjectLocation = (new File(
-						System.getProperty("user.dir") + separator
-								+ "reactorAnalyzerBuilderTesterWorkspace"))
-						.toURI();
+				defaultProjectLocation = (new File(userDir)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(

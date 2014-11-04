@@ -23,7 +23,7 @@ import com.sun.jersey.api.client.filter.LoggingFilter;
 /**
  * This is a simple test class to check the JAXRS interface bindings in ICE.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class JAXRSTester {

@@ -14,13 +14,8 @@ package org.eclipse.ice.datastructures.form.geometry;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,8 +37,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity
-@Table(name = "PrimitiveShape")
 @XmlRootElement(name = "PrimitiveShape")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PrimitiveShape extends AbstractShape {

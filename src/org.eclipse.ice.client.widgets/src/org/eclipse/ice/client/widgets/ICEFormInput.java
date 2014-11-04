@@ -22,7 +22,7 @@ import org.eclipse.ice.datastructures.form.Form;
  * <!-- begin-UML-doc -->
  * <p>This class is a wrapper around the Form class in ICE that realizes the appropriate Eclipse interface and can be used by Eclipse Forms.</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEFormInput implements IEditorInput {

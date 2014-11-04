@@ -16,7 +16,6 @@ import org.eclipse.ice.client.widgets.NextAction;
 import org.eclipse.ice.client.widgets.PlayAction;
 import org.eclipse.ice.client.widgets.PlayableViewPart;
 import org.eclipse.ice.client.widgets.PreviousAction;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
@@ -32,8 +31,6 @@ import java.util.Map;
 
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -49,9 +46,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPersistableElement;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -61,11 +56,10 @@ import org.eclipse.ui.part.WorkbenchPart;
  * This class extends the ViewPart class and provides a view in the
  * Visualization Perspective to display CSV plots that are currently available.
  * 
- * @author bkj, tnp, djg, w8o
+ * @author Jay Jay Billings, tnp, Jordan H. Deyton, w8o
  */
 public class CSVPlotViewer extends PlayableViewPart implements
-		IUpdateableListener, ISelectionListener, ISelectionChangedListener,
-		IDoubleClickListener {
+		IUpdateableListener, ISelectionChangedListener {
 
 	/**
 	 * The ID for this view
@@ -155,17 +149,12 @@ public class CSVPlotViewer extends PlayableViewPart implements
 		plotTreeViewer = new TreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.BORDER);
 		plotTreeViewer.addSelectionChangedListener(this);
-		plotTreeViewer.addDoubleClickListener(this);
 
 		// Create content and label providers
 		initializeTreeViewer(plotTreeViewer);
 
 		// Register this view's ListViewer as a SelectionProvider
 		getSite().setSelectionProvider(plotTreeViewer);
-
-		// Register as a listener to the VizFileViewer.
-		getSite().getWorkbenchWindow().getSelectionService()
-				.addPostSelectionListener(VizFileViewer.ID, this);
 
 		return;
 	}
@@ -529,7 +518,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 				for (Iterator<?> iter = structuredSelection.iterator(); iter
 						.hasNext();) {
 					Object object = iter.next();
-					if (object instanceof Entry) {
+					if (object instanceof PlotProvider) {
 						providers.add((PlotProvider) object);
 					}
 				}
@@ -576,6 +565,36 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	}
 
 	/**
+	 * This method is called when the selection in the VizFileViewer has
+	 * changed. It is used to listen for changes to the currently selected
+	 * VizResource in the {@link VizFileViewer}.
+	 * 
+	 * @param inResource
+	 *            The VizResource in the VizFileViewer to set this object's
+	 *            {@link resource} to.
+	 */
+	public void setResource(VizResource inResource) {
+		// Reset the VizResource
+		resource = inResource;
+		String fileName = "";
+
+		// Get the file set title or file name
+		if (resource.getFileSet() != null && resource.getFileSetTitle() != null) {
+			fileName = resource.getFileSetTitle();
+		} else {
+			fileName = resource.getContents().getAbsolutePath();
+		}
+		System.out.println("CSVPlotViewer message: The "
+				+ "selected file from the VizFileViewer is \"" + fileName
+				+ "\".");
+
+		// Enable the AddPlotAction.
+		addPlotAction.setEnabled(true);
+
+		return;
+	}
+
+	/**
 	 * A Map that keeps track of IEditorInputs for existing, opened PlotEditors
 	 * based on some key shared with the available plots in this PlotViewer.
 	 */
@@ -583,62 +602,6 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	// should use a regular HashMap and some key value shared with items in the
 	// PlotViewer's list.
 	private final Map<PlotProvider, IEditorInput> editorInputs = new IdentityHashMap<PlotProvider, IEditorInput>();
-
-	// ---- Implements ISelectionListener ---- //
-	/**
-	 * This method is called when the selection in the FileViewer has changed.
-	 * It is used to listen for changes to the currently selected VizResource in
-	 * the {@link VizFileViewer}.
-	 */
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		// FIXME - The VizFileViewer may have deleted this VizResource!
-
-		// Check that the selection's source is the VizFileViewer.
-		// Try to get the VizResource from the ISelection. We first have to
-		// cast the ISelection to an IStructuredSelection, whose first
-		// element should be a VizResource.
-		if (part.getSite().getId().equals(VizFileViewer.ID)
-				&& selection != null
-				&& selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			if (!structuredSelection.isEmpty()) {
-				Object object = structuredSelection.getFirstElement();
-
-				if (object instanceof VizResource) {
-					// Reset the VizResource
-					resource = (VizResource) object;
-					String fileName = "";
-
-					// Get the file set title or file name
-					if (resource.getFileSet() != null
-							&& resource.getFileSetTitle() != null) {
-						fileName = resource.getFileSetTitle();
-					} else {
-						fileName = resource.getContents().getAbsolutePath();
-					}
-
-					// If the file is a .csv file...
-					if (fileName.matches(".*\\.csv$")) {
-						// Enable the AddPlotAction.
-						addPlotAction.setEnabled(true);
-
-						// Show the CSVDataTableViewer
-						try {
-							getSite().getWorkbenchWindow().getActivePage()
-									.showView(CSVDataTableViewer.ID);
-						} catch (PartInitException e) {
-							e.printStackTrace();
-						}
-
-					}
-				}
-			}
-		}
-
-		return;
-	}
-
-	// --------------------------------------- //
 
 	// ---- Implements ISelectionChangedListener ---- //
 	/**
@@ -665,6 +628,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 				// See if an IEditorInput has already been created for the
 				// selected plot.
 				IEditorInput editorInput = editorInputs.get(provider);
+				boolean newEditor = false;
 				if (editorInput == null) {
 					editorInput = new IEditorInput() {
 						public Object getAdapter(Class adapter) {
@@ -697,6 +661,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 							return false;
 						}
 					};
+					newEditor = true;
 					// Store the IEditorInput for reference later in case the
 					// same item is selected again.
 					editorInputs.put(provider, editorInput);
@@ -727,11 +692,13 @@ public class CSVPlotViewer extends PlayableViewPart implements
 				}
 
 				// Draw the selection
-				drawSelection();
+				if (newEditor) {
+					drawSelection();
+				}
 			}
 		}
 
-		// Enable the DeletePlotAction if possible.
+		// Enable the other actions in this view if possible.
 		deletePlotAction.setEnabled(notEmptySelection);
 		prevAction.setEnabled(notEmptySelection);
 		playAction.setEnabled(notEmptySelection);
@@ -742,33 +709,17 @@ public class CSVPlotViewer extends PlayableViewPart implements
 
 	// ---------------------------------------------- //
 
-	// ---- Implements IDoubleClickListener ---- //
 	/**
-	 * This method is used to draw plots whenever a TreeItem in the
-	 * plotTreeViewer is double-clicked. If multi-select is enabled, it draws
-	 * all of the selected plots.
+	 * Public method for retrieving the selection in this view.
 	 * 
-	 * @param event
-	 *            The DoubleClickEvent that fired this method.
+	 * @return The PlotProvider selected in this view.
 	 */
-	public void doubleClick(DoubleClickEvent event) {
-
-		// FIXME Consider using double-clicks to draw in a new window. For now,
-		// just draw in the same window.
-		drawSelection();
-	}
-
-	// ----------------------------------------- //
-
 	public PlotProvider getSelection() {
 		// Get the selection from the plotTreeViewer. It should at least be
 		// an IStructuredSelection (a parent interface of TreeSelections).
 		ISelection selection = plotTreeViewer.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-
-			// Create a List of PlotProviders to be unplotted.
-			List<PlotProvider> providers = new ArrayList<PlotProvider>();
 
 			// Loop over the selected elements and add any PlotProviders to
 			// the List of PlotProviders to be unplotted.

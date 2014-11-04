@@ -21,7 +21,7 @@ import java.util.Map;
  * (presumably read from a file), this class uses a map from tags to object
  * classes and a map from object classes to IHdfIOFactories.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class HdfIORegistry implements IHdfIORegistry {

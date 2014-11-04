@@ -20,7 +20,6 @@ import org.eclipse.ice.client.widgets.DataComponentComposite;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
@@ -28,6 +27,7 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
@@ -54,7 +54,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 /**
  * This class is responsible for ICE Components in a TabbedPropertiesWindow.
  * 
- * @author bkj, djg
+ * @author Jay Jay Billings, Jordan H. Deyton
  * 
  */
 public class ComponentPropertySection extends AbstractPropertySection implements
@@ -288,6 +288,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 	/**
 	 * This operation will draw a data component in the properties section.
 	 */
+	@Override
 	public void visit(DataComponent component) {
 
 		// Get the client area of the section
@@ -319,51 +320,63 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 		return;
 	}
 
+	@Override
 	public void visit(ResourceComponent component) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(TableComponent component) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(MatrixComponent component) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(IShape component) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(GeometryComponent component) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(MasterDetailsComponent component) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(TreeComposite component) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(IReactorComponent component) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(TimeDataComponent component) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(MeshComponent component) {
 		// Do nothing.
 	}
 
-	public void visit(BatteryComponent component) {
+	@Override
+	public void visit(AdaptiveTreeComposite component) {
 		// Do nothing.
 	}
 
-	public void visit(AdaptiveTreeComposite component) {
+	@Override
+	public void visit(EMFComponent component) {
 		// Do nothing.
 	}
 }

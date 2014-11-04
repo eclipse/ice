@@ -23,7 +23,7 @@ import org.eclipse.gef.EditPartFactory;
  * appropriate EditParts can be created from the corresponding model. This is
  * for hexagonal grids.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class HexagonalGridEditPartFactory implements EditPartFactory {

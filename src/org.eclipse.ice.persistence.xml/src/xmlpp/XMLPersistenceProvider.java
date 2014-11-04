@@ -53,7 +53,7 @@ import org.eclipse.ice.core.iCore.IPersistenceProvider;
  * 
  * Items that are loaded by the provider are not constructed with a project.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
@@ -69,7 +69,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	 * are stored along with one of the words "persist" or "delete" to denote
 	 * which task should be performed for the given item.
 	 * 
-	 * @author bkj
+	 * @author Jay Jay Billings
 	 * 
 	 */
 	private static class QueuedTask {

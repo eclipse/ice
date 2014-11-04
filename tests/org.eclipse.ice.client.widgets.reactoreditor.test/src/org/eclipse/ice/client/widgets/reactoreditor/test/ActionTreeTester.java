@@ -30,7 +30,7 @@ import org.junit.Test;
  * This class tests the structure of ActionTrees. This does not test how well
  * the UI actually works.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ActionTreeTester {

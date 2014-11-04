@@ -20,7 +20,7 @@ import org.eclipse.draw2d.IFigure;
  * This class provides the Controller for a {@link Cell}. In particular, it is
  * responsible for View creation and EditPolicies for each Cell.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class HexagonalCellEditPart extends CellEditPart {

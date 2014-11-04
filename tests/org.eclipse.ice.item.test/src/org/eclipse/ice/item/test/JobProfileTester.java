@@ -48,7 +48,7 @@ import org.junit.Test;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -198,8 +198,8 @@ public class JobProfileTester {
 		launcher.enableOpenMP(1, 16, 1);
 
 		DataComponent component = (DataComponent) form.getComponents().get(3);
-		Entry mpiEntry = (Entry) component.retrieveAllEntries().get(0);
-		Entry openMPEntry = (Entry) component.retrieveAllEntries().get(1);
+		Entry mpiEntry = (Entry) component.retrieveAllEntries().get(1);
+		Entry openMPEntry = (Entry) component.retrieveAllEntries().get(2);
 		assertEquals("1", mpiEntry.getValue());
 		assertEquals("1", openMPEntry.getValue());
 

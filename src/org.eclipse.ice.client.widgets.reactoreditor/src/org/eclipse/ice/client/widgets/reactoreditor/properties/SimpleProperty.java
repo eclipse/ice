@@ -26,7 +26,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  * method {@linkplain SimpleProperty#getPropertyDescriptor()} should be
  * overridden.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class SimpleProperty {

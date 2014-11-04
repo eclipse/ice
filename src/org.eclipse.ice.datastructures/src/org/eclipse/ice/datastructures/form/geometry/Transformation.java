@@ -14,14 +14,9 @@ package org.eclipse.ice.datastructures.form.geometry;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -45,8 +40,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity
-@Table(name = "Transformation")
 @XmlRootElement(name = "Transformation")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Transformation extends ICEObject {
@@ -114,7 +107,6 @@ public class Transformation extends ICEObject {
 	 */
 	@XmlElement(name = "Translation")
 	@XmlList
-	@Column(name = "Translations")
 	private double[] translation = new double[3];
 
 	/**

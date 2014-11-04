@@ -16,7 +16,7 @@ package org.eclipse.ice.iclient.uiwidgets;
  * <!-- begin-UML-doc -->
  * <p>The IErrorBox interface describes the operations that ICE expects from a Widget that can report errors.</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IErrorBox {

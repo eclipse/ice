@@ -18,6 +18,7 @@ import java.util.HashMap;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+
 /**
  * 
  * @author xxi, w8o
@@ -30,6 +31,7 @@ public class PlotTreeContentProvider implements ITreeContentProvider {
 	 */
 	HashMap<String, PlotProvider> plotProviderMap = new HashMap<String, PlotProvider>();
 
+	
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
@@ -46,7 +48,7 @@ public class PlotTreeContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof ArrayList<?>) {
 			ArrayList<?> plotProviderList = (ArrayList<?>) inputElement;
-			// check size
+			// check size of plotProviderList
 			if (!(plotProviderList.isEmpty())
 					&& plotProviderList.get(0) instanceof PlotProvider) {
 				return plotProviderList.toArray();
@@ -104,44 +106,4 @@ public class PlotTreeContentProvider implements ITreeContentProvider {
 		return false;
 	}
 
-}
-
-class PlotTimeIdentifierMapping {
-	/**
-	 * The provider's source
-	 */
-	private String plotTitle;
-	/**
-	 * The provider's time
-	 */
-	private Double seriesTime;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param providerName
-	 * @param time
-	 */
-	public PlotTimeIdentifierMapping(String plotTitle, Double time) {
-		this.plotTitle = plotTitle;
-		seriesTime = time;
-	}
-
-	/**
-	 * Accessor for the source
-	 * 
-	 * @return
-	 */
-	public String getPlotTitle() {
-		return plotTitle;
-	}
-
-	/**
-	 * Accessor for the time
-	 * 
-	 * @return
-	 */
-	public Double getTime() {
-		return seriesTime;
-	}
 }

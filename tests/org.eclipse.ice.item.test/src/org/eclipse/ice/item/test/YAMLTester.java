@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
+
 import org.junit.Test;
 import org.yaml.snakeyaml.*;
 
@@ -64,11 +65,12 @@ public class YAMLTester {
 		String separator = System.getProperty("file.separator");
 		InputStream input = null;
 		File bisonFile = null;
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "itemData";
 
 		// Load the bison file
 		try {
-			bisonFile = new File(System.getProperty("user.dir") + separator
-					+ "data" + separator + "bison.yaml");
+			bisonFile = new File(userDir + separator + "bison.yaml");
 			input = new FileInputStream(bisonFile);
 		} catch (FileNotFoundException e) {
 			// Complain if the file is not found

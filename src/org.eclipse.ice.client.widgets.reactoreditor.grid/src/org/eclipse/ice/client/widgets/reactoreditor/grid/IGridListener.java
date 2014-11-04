@@ -16,7 +16,7 @@ package org.eclipse.ice.client.widgets.reactoreditor.grid;
  * This interface provides a listener for grid cells. It provides methods for
  * the selection and clicking of cells.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IGridListener {

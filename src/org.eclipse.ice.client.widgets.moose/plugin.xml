@@ -2,6 +2,50 @@
 <?eclipse version="3.4"?>
 
 <plugin>
+      <extension
+            point="org.eclipse.ui.perspectives">
+         <perspective
+               class="org.eclipse.ice.client.widgets.moose.MOOSEPerspective"
+               id="org.eclipse.ice.widgets.moose.MOOSEPerspective"
+               name="MOOSE">
+         </perspective>
+      </extension>
+      <extension
+            point="org.eclipse.ui.perspectiveExtensions">
+         <perspectiveExtension
+               targetID="org.eclipse.ice.widgets.moose.MOOSEPerspective">
+            <view
+                  closeable="false"
+                  id="org.eclipse.ice.client.common.ItemViewer"
+                  ratio="0.25f"
+                  relationship="left"
+                  relative="org.eclipse.ui.editorss"
+                  visible="true">
+            </view>
+            <view
+                  closeable="false"
+                  id="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeView"
+                  relationship="stack"
+                  relative="org.eclipse.ice.client.common.ItemViewer"
+                  visible="true">
+            </view>
+            <view
+                  closeable="false"
+                  id="org.eclipse.ui.console.ConsoleView"
+                  ratio="0.75f"
+                  relationship="bottom"
+                  relative="org.eclipse.ui.editorss"
+                  visible="true">
+            </view>
+            <view
+                  closeable="false"
+                  id="org.eclipse.ui.views.PropertySheet"
+                  relationship="stack"
+                  relative="org.eclipse.ui.console.ConsoleView"
+                  visible="true">
+            </view>
+         </perspectiveExtension>
+      </extension>
 
 
       <extension
@@ -17,23 +61,23 @@
             point="org.eclipse.ui.views">
          <view
                allowMultiple="false"
-               class="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer"
+               class="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeView"
                fastViewWidthRatio="0.125"
-               id="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer"
+               id="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeView"
                name="MOOSE Data Tree View"
                restorable="true">
          </view>
       </extension>
 	<!-- MOOSETreeCompositeViewer Properties Extensions -->
     <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
-      <propertyContributor contributorId="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer">
+      <propertyContributor contributorId="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeView">
       	<propertyCategory category="TreeViewer"/>
       </propertyContributor>      
    </extension>
     <extension
           point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
        <propertyTabs
-             contributorId="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer">
+             contributorId="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeView">
           <propertyTab
                 category="TreeViewer"
                 id="TreeViewer.Data"
@@ -44,9 +88,9 @@
       <extension
             point="org.eclipse.ui.views.properties.tabbed.propertySections">
          <propertySections
-               contributorId="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeViewer">
+               contributorId="org.eclipse.ice.client.widgets.moose.MOOSETreeCompositeView">
             <propertySection
-                  class="org.eclipse.ice.client.widgets.moose.MOOSETypePropertySection"
+                  class="org.eclipse.ice.client.widgets.moose.MOOSETreePropertySection"
                   id="TypeSection"
                   tab="TreeViewer.Data">
                <input

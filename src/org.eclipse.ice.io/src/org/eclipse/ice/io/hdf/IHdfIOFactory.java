@@ -30,7 +30,7 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
  * with the {@link IHdfIORegistry}.
  * </p>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IHdfIOFactory {

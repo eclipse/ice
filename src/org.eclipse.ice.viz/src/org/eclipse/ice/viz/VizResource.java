@@ -36,10 +36,9 @@ public class VizResource extends ICEResource {
 	private String fileSetTitle;
 
 	/**
-	 * Flag the resources as containing a file or file set that resides on a
-	 * remote machine.
+	 * The String representation of the hostname where the resource resides.
 	 */
-	private boolean remoteFileFlag;
+	private String host;
 
 	/**
 	 * Comprehensive constructor
@@ -52,7 +51,6 @@ public class VizResource extends ICEResource {
 		// Set the subclass fields
 		fileSet = null;
 		fileSetTitle = null;
-		remoteFileFlag = false;
 	}
 
 	/**
@@ -70,7 +68,6 @@ public class VizResource extends ICEResource {
 		// Set the subclass fields
 		fileSet = null;
 		fileSetTitle = null;
-		remoteFileFlag = false;
 	}
 
 	/**
@@ -117,9 +114,18 @@ public class VizResource extends ICEResource {
 	 * @param val
 	 *            The boolean value to set resmoteFileFlag to
 	 */
-	public void setRemote(boolean val) {
-		remoteFileFlag = val;
+	public void setHost(String name) {
+		host = name;
 		return;
+	}
+
+	/**
+	 * Retrieve the name of the host for this file.
+	 * 
+	 * @return The String for the name of the host machine.
+	 */
+	public String getHost() {
+		return host;
 	}
 
 	/**
@@ -128,7 +134,7 @@ public class VizResource extends ICEResource {
 	 * @return True if this resource is on a remote machine; false otherwise
 	 */
 	public boolean isRemote() {
-		return remoteFileFlag;
+		return !"localhost".equals(host);
 	}
 
 }

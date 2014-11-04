@@ -23,7 +23,7 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
  * This factory is used to help construct {@link ReactorFormInput} for a
  * {@link ReactorFormEditor}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ReactorFormInputFactory {

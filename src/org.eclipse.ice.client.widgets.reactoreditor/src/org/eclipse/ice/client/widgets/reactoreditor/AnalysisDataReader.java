@@ -32,7 +32,7 @@ import org.eclipse.ice.reactor.LWRDataProvider;
  * standardized in some way. This class should read the files into a array (an
  * "assembly") of data providers.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AnalysisDataReader {

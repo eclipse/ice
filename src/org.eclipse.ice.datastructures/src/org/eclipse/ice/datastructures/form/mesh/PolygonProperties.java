@@ -14,13 +14,9 @@ package org.eclipse.ice.datastructures.form.mesh;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import org.eclipse.ice.datastructures.ICEObject.Persistable;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -45,8 +41,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity()
-@Table(name = "PolygonProperties")
 @XmlRootElement(name = "PolygonProperties")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PolygonProperties implements Persistable {

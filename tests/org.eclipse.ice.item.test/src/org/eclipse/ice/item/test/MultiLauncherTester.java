@@ -25,7 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -38,6 +38,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
@@ -59,7 +60,7 @@ import org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncherBuilder;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -471,15 +472,16 @@ public class MultiLauncherTester implements IComponentVisitor {
 
 	}
 
-	@Override
-	public void visit(BatteryComponent component) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
 	}
 }

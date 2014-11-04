@@ -51,7 +51,7 @@ import org.eclipse.swt.widgets.Composite;
  * This class provides an {@link IAnalysisView} for plotting data for rods,
  * tubes, and other {@link LWRComponent}s.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PlotAnalysisView extends AnalysisView {

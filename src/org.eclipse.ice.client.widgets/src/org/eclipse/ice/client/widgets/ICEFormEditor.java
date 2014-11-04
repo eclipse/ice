@@ -21,7 +21,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -30,6 +30,7 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
@@ -270,6 +271,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		componentMap.put("mesh", new ArrayList<Component>());
 		componentMap.put("tree", new ArrayList<Component>());
 		componentMap.put("reactor", new ArrayList<Component>());
+		componentMap.put("emf", new ArrayList<Component>());
 
 		// end-user-code
 	}
@@ -560,6 +562,45 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
+	private ArrayList<ICEFormPage> createEMFSectionPages() {
+		// Local Declarations
+		EMFComponent emfComponent = null;
+		EMFSectionPage emfPage = null;
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
+		
+		// Get the EMFComponent and create the EMFSectionPage.
+		if (componentMap.get("emf").size() > 0) {
+			for (Component comp : componentMap.get("emf")) {
+				emfComponent = (EMFComponent) comp;
+
+				if (emfComponent != null) {
+
+					// Make the EMFSectionPage
+					emfPage = new EMFSectionPage(this, emfComponent.getName(),
+							emfComponent.getName());
+
+					// Set the EMFComponent
+					emfPage.setEMFComponent(emfComponent);
+					pages.add(emfPage);
+				}
+			}
+
+		}
+
+		return pages;
+	}
+
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * This operation sets the input on the TreeCompositeViewer to the
+	 * TreeComposite or set of TreeComposites in ICE.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 */
 	private void setTreeCompositeViewerInput() {
 		// begin-user-code
 
@@ -701,7 +742,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Create the process label, button and dropdown if the action list is
 		// available
-		if (iceDataForm.getActionList() != null) {
+		if (iceDataForm.getActionList() != null
+				&& !iceDataForm.getActionList().isEmpty()) {
 			// Create the composite for containing the process widgets
 			processComposite = new Composite(gridComposite, SWT.NONE);
 			processComposite.setLayout(new RowLayout());
@@ -989,6 +1031,17 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		}
 
+		if (!(componentMap.get("emf")).isEmpty()) {
+			for (int i = 0; i < this.getPageCount(); i++) {
+				FormPage formPage = (FormPage) this.pages.get(i);
+				EMFComponent comp = (EMFComponent) componentMap.get("emf").get(
+						0);
+				if (formPage.getPartName().equals(comp.getName())) {
+					formPage.doSave(null);
+				}
+			}
+		}
+
 		// end-user-code
 	}
 
@@ -1064,6 +1117,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// Create the page for MeshComponents
 		if (!(componentMap.get("mesh").isEmpty())) {
 			formPages.add(createMeshPage());
+		}
+
+		if (componentMap.get("emf").size() > 0) {
+			for (ICEFormPage p : createEMFSectionPages()) {
+				formPages.add(p);
+			}
 		}
 
 		// Set the TreeCompositeViewer Input
@@ -1404,16 +1463,17 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// end-user-code
 	}
 
-	@Override
-	public void visit(BatteryComponent component) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void visit(EMFComponent component) {
+		System.out.println("Adding EMFComponent: " + component.getName());
+		addComponentToMap(component, "emf");
 	}
 
 }

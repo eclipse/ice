@@ -37,7 +37,7 @@ import org.junit.Test;
  * This class tests ReactorComponentPropertySource and its implementation of
  * IPropertySource.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ReactorComponentPropertySourceTester {
@@ -47,7 +47,7 @@ public class ReactorComponentPropertySourceTester {
 	 * implementation for testing the ReactorComponentPropertySource, which
 	 * takes IReactorComponents.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class TestReactorComponent extends ICEObject implements
@@ -301,7 +301,7 @@ public class ReactorComponentPropertySourceTester {
 	 * This class is for testing only. It exposes the underlying Map of
 	 * SimpleProperties from ReactorComponentPropertySource.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class ReactorComponentProperties extends

@@ -48,7 +48,7 @@ import org.eclipse.ui.forms.IManagedForm;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @authors bkj, tnp
+ * @authors Jay Jay Billings, tnp
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */

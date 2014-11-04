@@ -33,7 +33,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * Component. To get an IPropertySource for a reactor Component, call
  * {@linkplain PropertySourceFactory#getPropertySource(SFRComponent)}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PropertySourceFactory implements ISFRComponentVisitor {

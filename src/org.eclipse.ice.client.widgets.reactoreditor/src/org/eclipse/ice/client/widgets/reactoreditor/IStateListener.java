@@ -17,7 +17,7 @@ package org.eclipse.ice.client.widgets.reactoreditor;
  * listener. The methods in this class are, of course, required for such a
  * class.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IStateListener {

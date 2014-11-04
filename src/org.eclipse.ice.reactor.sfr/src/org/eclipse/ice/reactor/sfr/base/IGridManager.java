@@ -20,7 +20,7 @@ import java.util.List;
  * capabilities based on both the location and the name of a component. <!--
  * end-UML-doc -->
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IGridManager {

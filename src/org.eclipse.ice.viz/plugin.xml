@@ -44,7 +44,7 @@
          <view
                allowMultiple="false"
                class="org.eclipse.ice.viz.visit.VisitPlotViewer"
-               fastViewWidthRatio="0.25f"
+               fastViewWidthRatio="0.23f"
                id="org.eclipse.ice.viz.visit.VisitPlotViewer"
                name="VisIt Plot Viewer"
                restorable="true">
@@ -52,7 +52,7 @@
          <view
                allowMultiple="false"
                class="org.eclipse.ice.viz.plotviewer.CSVPlotViewer"
-               fastViewWidthRatio="0.25f"
+               fastViewWidthRatio="0.23f"
                id="org.eclipse.ice.viz.plotviewer.CSVPlotViewer"
                name="CSV Plot Viewer"
                restorable="true">
@@ -60,7 +60,7 @@
          <view
                allowMultiple="false"
                class="org.eclipse.ice.viz.VizFileViewer"
-               fastViewWidthRatio="0.25f"
+               fastViewWidthRatio="0.85f"
                id="org.eclipse.ice.viz.VizFileViewer"
                name="Visualization File Viewer"
                restorable="true">
@@ -93,7 +93,7 @@
          <view
                closeable="false"
                id="org.eclipse.ice.viz.visit.VisitPlotViewer"
-               ratio="0.25f"
+               ratio="0.23f"
                relationship="left"
                relative="org.eclipse.ui.views"
                visible="true">
@@ -101,14 +101,15 @@
          <view
                closeable="false"
                id="org.eclipse.ice.viz.plotviewer.CSVPlotViewer"
-               ratio="0.25f"
+               ratio="0.23f"
                relationship="stack"
                relative="org.eclipse.ice.viz.visit.VisitPlotViewer"
                visible="true">
          </view>
          <view
+         	   closeable="false"
                id="org.eclipse.ice.viz.VizFileViewer"
-               ratio="0.25f"
+               ratio="0.85f"
                relationship="right"
                relative="org.eclipse.ui.views"
                visible="true">
@@ -116,10 +117,10 @@
          <view
                closeable="true"
                id="org.eclipse.ice.viz.plotviewer.CSVDataTableViewer"
-               minimized="false"
-               ratio="0.25f"
-               relationship="left"
-               relative="org.eclipse.ui.console.ConsoleView">
+               ratio="0.75f"
+               relationship="bottom"
+               relative="org.eclipse.ui.console.ConsoleView"
+               visible="false">
          </view>
       </perspectiveExtension>
    </extension>
@@ -129,7 +130,8 @@
             allPopups="false"
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
-               id="org.eclipse.ice.viz.toolbar">
+               id="org.eclipse.ice.viz.toolbar"
+               label="Visualization Toolbar">
             <command
                   commandId="org.eclipse.ice.viz.LaunchVisitCommand"
                   id="Launch VisIt Command"

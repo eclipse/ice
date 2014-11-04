@@ -26,7 +26,7 @@ import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
  * necessarily share the same StateBroker. Two editors can be linked together by
  * making them share the same StateBroker.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ReactorFormInput extends ICEFormInput {

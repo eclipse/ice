@@ -22,7 +22,7 @@ import java.io.InputStream;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */

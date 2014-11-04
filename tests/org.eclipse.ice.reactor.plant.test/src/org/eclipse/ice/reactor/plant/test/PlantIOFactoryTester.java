@@ -64,7 +64,7 @@ import org.junit.Test;
  * Tests the {@link PlantIOFactory} and its ability to write and read
  * {@link PlantComponent}s to and from a file.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PlantIOFactoryTester {

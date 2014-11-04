@@ -12,12 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.core.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -25,15 +30,14 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Before;
-import org.junit.Test;
-
 import org.eclipse.ice.core.internal.Core;
 import org.eclipse.ice.core.internal.itemmanager.ItemManager;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * <!-- begin-UML-doc -->
@@ -45,7 +49,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -111,18 +115,39 @@ public class CoreTester {
 		FakeModuleBuilder fakeModuleBuilder = new FakeModuleBuilder();
 		FakeCompositeItemBuilder fakeCompositeBuilder = new FakeCompositeItemBuilder();
 		String testItemName = null;
+		boolean found;
 
 		// Register the ItemBuilders
-		this.iCECore.registerItem(fakeModuleBuilder);
-		this.iCECore.registerItem(fakeGeometryBuilder);
+		iCECore.registerItem(fakeModuleBuilder);
+		iCECore.registerItem(fakeGeometryBuilder);
 
 		// Check the ItemManager and make sure the builders were forwarded
-		assertTrue(this.fakeItemManager.getAvailableBuilders().size() > 0);
-		assertTrue(this.fakeItemManager.getAvailableBuilders().size() == 2);
-		testItemName = this.fakeItemManager.getAvailableBuilders().get(0);
-		assertEquals(testItemName, fakeModuleBuilder.getItemName());
-		testItemName = this.fakeItemManager.getAvailableBuilders().get(1);
-		assertEquals(testItemName, fakeGeometryBuilder.getItemName());
+
+		// Make sure the list of available builders contains the 2 fake items.
+		List<String> availableBuilders = fakeItemManager.getAvailableBuilders();
+		assertNotNull(availableBuilders);
+		assertEquals(2, availableBuilders.size());
+
+		// NOTE: The below code has to loop over the list of available builders
+		// because the underlying list is NOT ordered.
+
+		// Make sure the available builders includes the fake module builder.
+		found = false;
+		testItemName = fakeModuleBuilder.getItemName();
+		for (int i = 0; !found && i < availableBuilders.size(); i++) {
+			found = testItemName.equals(availableBuilders.get(i));
+		}
+		assertTrue("ItemManagerTester: " + "FakeModuleBuilder with name "
+				+ testItemName + " not found in available builders!", found);
+
+		// Make sure the available builders includes the fake geometry builder.
+		found = false;
+		testItemName = fakeGeometryBuilder.getItemName();
+		for (int i = 0; !found && i < availableBuilders.size(); i++) {
+			found = testItemName.equals(availableBuilders.get(i));
+		}
+		assertTrue("ItemManagerTester: " + "FakeGeometryBuilder with name "
+				+ testItemName + " not found in available builders!", found);
 
 		// Register the CompositeItemBuilder
 		iCECore.registerCompositeItem(fakeCompositeBuilder);

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
+import org.eclipse.ice.client.widgets.jme.AbstractView;
+
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
@@ -23,7 +25,7 @@ import com.jme3.scene.Geometry;
  * <b>Operations in this class (not including the constructor) should be called
  * from a SimpleApplication's simpleUpdate() thread.</b>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public abstract class AbstractPlantView extends AbstractView {

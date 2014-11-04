@@ -63,9 +63,24 @@
          <view
                closeable="false"
                id="org.eclipse.ice.reactors.perspective.ReactorViewer"
-               ratio="0.125"
+               ratio="0.20"
                relationship="left"
-               relative="org.eclipse.ui.editors"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="org.eclipse.ice.client.widgets.ICEResourceView"
+               relationship="stack"
+               relative="org.eclipse.ice.reactors.perspective.ReactorViewer"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="org.eclipse.ui.views.PropertySheet"
+               ratio="0.70"
+               relationship="bottom"
+               relative="org.eclipse.ice.reactors.perspective.ReactorViewer"
                visible="true">
          </view>
       </perspectiveExtension>

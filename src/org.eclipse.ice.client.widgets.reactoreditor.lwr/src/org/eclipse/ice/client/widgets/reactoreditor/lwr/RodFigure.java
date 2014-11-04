@@ -53,7 +53,7 @@ import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
  * s. It also provides both a geometric view of the component and a data-based
  * view for an associated {@link IDataProvider}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class RodFigure extends CellFigure implements ILWRComponentVisitor {
@@ -62,7 +62,7 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 	 * This enum provides the two possible views for a RodFigure: geometry and
 	 * data.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	public enum DisplayType {

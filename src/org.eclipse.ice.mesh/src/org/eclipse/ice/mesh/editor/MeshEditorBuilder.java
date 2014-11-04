@@ -20,7 +20,7 @@ import org.eclipse.ice.item.ItemType;
 /**
  * This class implements the ItemBuilder interface to create a 2D Mesh Editor.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class MeshEditorBuilder implements ItemBuilder {

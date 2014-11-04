@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * <br>
  * For a basic implementation, see {@link AnalysisView}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IAnalysisView extends IStateListener {

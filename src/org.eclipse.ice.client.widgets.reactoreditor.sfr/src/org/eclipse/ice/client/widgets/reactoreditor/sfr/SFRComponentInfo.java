@@ -31,7 +31,7 @@ import org.eclipse.ice.analysistool.IDataProvider;
  * and column attributes. When an instance is passed, the views have access to
  * both the specific location requested and the SFRComponent in that spot.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class SFRComponentInfo {

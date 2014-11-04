@@ -15,7 +15,6 @@ package org.eclipse.ice.nek5000;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -24,6 +23,7 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
@@ -34,7 +34,6 @@ import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -1138,14 +1137,14 @@ public class NekWriter implements IComponentVisitor {
 	}
 
 	@Override
-	public void visit(BatteryComponent component) {
+	public void visit(AdaptiveTreeComposite component) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void visit(AdaptiveTreeComposite component) {
+	public void visit(EMFComponent component) {
 		// TODO Auto-generated method stub
-
+		
 	}
 }

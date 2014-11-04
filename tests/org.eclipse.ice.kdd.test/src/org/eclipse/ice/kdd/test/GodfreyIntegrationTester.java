@@ -30,12 +30,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.eclipse.ice.analysistool.IAnalysisAsset;
 import org.eclipse.ice.analysistool.IAnalysisDocument;
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.ice.kdd.KDDAnalysisTool;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
@@ -181,8 +179,10 @@ public class GodfreyIntegrationTester {
 		provider = new SimpleDataProvider();
 		refProvider = new SimpleDataProvider();
 
-		String workspaceName = "kddtestworkspace";
+		String workspaceName = "kddtestworkspace";;
 		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + workspaceName;
 		IProject project = null;
 
 		try {
@@ -192,8 +192,7 @@ public class GodfreyIntegrationTester {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				URI projURI = (new File(System.getProperty("user.dir")
-						+ separator + workspaceName)).toURI();
+				URI projURI = (new File(userDir)).toURI();
 				// Create the project description
 				IProjectDescription description = ResourcesPlugin
 						.getWorkspace().newProjectDescription(workspaceName);

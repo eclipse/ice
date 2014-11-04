@@ -15,15 +15,17 @@ package org.eclipse.ice.client.widgets;
 import org.eclipse.ui.forms.IDetailsPageProvider;
 
 import static org.eclipse.ice.client.widgets.ICEDataComponentDetailsPage.*;
+
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ui.forms.IDetailsPage;
 
 /** 
  * <!-- begin-UML-doc -->
  * <p>This class implements the IDetailsPageProvider interface to provide a Details pages for a MasterDetailsBlock. The only way to provide the MasterDetailsComponent handle for this class is through the constructor.</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEDetailsPageProvider implements IDetailsPageProvider {
@@ -101,9 +103,10 @@ public class ICEDetailsPageProvider implements IDetailsPageProvider {
 		String keyId = key.toString().split(" ")[0];
 
 		if (keyId != null) {
-			// Implement switch to get the corresponding page to any key.
+			// Grab the right details
+			DataComponent detailsComp = component.getDetails(Integer.parseInt(keyId));
 			ICEDataComponentDetailsPage = new ICEDataComponentDetailsPage(
-					component.getDetails(Integer.parseInt(keyId)), formEditor);
+					detailsComp, formEditor);
 		}
 
 		return ICEDataComponentDetailsPage;

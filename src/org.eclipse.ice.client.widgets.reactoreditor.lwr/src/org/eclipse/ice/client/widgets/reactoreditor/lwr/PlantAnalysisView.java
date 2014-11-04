@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
+import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantApplication;
-import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantCompositeFactory;
-
+import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.jface.action.Action;
@@ -31,7 +30,7 @@ import org.eclipse.swt.widgets.Composite;
  * reactor or the plant itself to the ICE Properties View via
  * {@link AnalysisView#selectionProvider}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PlantAnalysisView extends AnalysisView {
@@ -49,9 +48,10 @@ public class PlantAnalysisView extends AnalysisView {
 
 	// ---- GUI Components ---- //
 	/**
-	 * The jME3 SimpleApplication used to display a 3D view of an LWR plant.
+	 * The jME3 <code>ViewAppState</code> used to display a 3D view of an LWR
+	 * plant.
 	 */
-	private final PlantApplication plantApp;
+	private final PlantAppState plantApp;
 	/**
 	 * The ActionTree that lets the user select the plant to display its
 	 * properties.
@@ -82,8 +82,7 @@ public class PlantAnalysisView extends AnalysisView {
 		plant = defaultPlant;
 
 		// Create the PlantApplication.
-		plantApp = new PlantApplication();
-		plantApp.setPlant(plant);
+		plantApp = new ViewFactory().createPlantView(plant);
 
 		// Populate the list of actions (for ToolBar and context Menu).
 
@@ -162,8 +161,7 @@ public class PlantAnalysisView extends AnalysisView {
 		container.setLayout(new FillLayout());
 
 		// Create the jME3 view of the plant.
-		PlantCompositeFactory factory = new PlantCompositeFactory();
-		factory.renderPlantComposite(container, plantApp);
+		plantApp.createComposite(container);
 
 		return;
 	}
@@ -189,7 +187,6 @@ public class PlantAnalysisView extends AnalysisView {
 	public String getDescription() {
 		return description;
 	}
-
 	// ---------------------------------- //
 
 	// ---- Implements IStateListener ---- //

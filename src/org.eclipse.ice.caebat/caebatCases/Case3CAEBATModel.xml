@@ -25,7 +25,7 @@
 	</DataComponent>
 	<DataComponent name="Caebat Information" id="2"
 		description="Sets up the Caebat's information">
-		<Entry tag="CAEBAT_ROOT" parent="orphan" secretFlag="false"
+		<!-- <Entry tag="CAEBAT_ROOT" parent="orphan" secretFlag="false"
 			changeState="false" ready="false"
 			value="/data1/projects/caebat/VIBE/trunk/components/" defaultValue="/data1/projects/caebat/VIBE/trunk/components/"
 			name="Caebat Root" id="1" description="The Caebat root directory">
@@ -36,7 +36,7 @@
 				<AllowedValueType>Undefined</AllowedValueType>
 			</BasicEntryContentProvider>
 			<required>false</required>
-		</Entry>
+		</Entry>-->
 		<Entry tag="BIN_DIR" parent="orphan" secretFlag="false"
 			changeState="false" ready="false" value="$CAEBAT_ROOT/bin"
 			defaultValue="$CAEBAT_ROOT/bin" name="Binary Directory Path" id="2"

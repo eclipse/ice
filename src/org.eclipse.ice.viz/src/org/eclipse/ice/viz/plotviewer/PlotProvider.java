@@ -30,7 +30,7 @@ public class PlotProvider {
 	private String plotTitle;
 
 	/**
-	 * The treemap structure that will hold the series for each time
+	 * The TreeMap structure that will hold the series for each time
 	 */
 	private TreeMap<Double, ArrayList<SeriesProvider>> seriesMap;
 

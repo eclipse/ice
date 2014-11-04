@@ -22,7 +22,7 @@ import java.util.Hashtable;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -31,6 +31,7 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
@@ -64,7 +65,7 @@ import org.eclipse.ice.datastructures.updateableComposite.Component;
  * image files collected as ICEResourceComponents.
  * </p>
  * 
- * @authors tnp, bkj
+ * @authors tnp, Jay Jay Billings
  */
 public class ICEResourceView extends PlayableViewPart implements
 		IUpdateableListener, IPartListener2, IComponentVisitor {
@@ -920,6 +921,14 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
+	 * @see PlayableViewPart#removeSelection()
+	 */
+	public void removeSelection() {
+		// Not used at this time
+		return;
+	}
+
+	/**
 	 * <p>
 	 * A private subclass of PropertySource to implement the superclass features
 	 * used by ICEResourceView.
@@ -1018,16 +1027,17 @@ public class ICEResourceView extends PlayableViewPart implements
 
 	}
 
-	@Override
-	public void visit(BatteryComponent component) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

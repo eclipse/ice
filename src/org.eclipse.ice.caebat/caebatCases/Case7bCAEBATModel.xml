@@ -18,13 +18,13 @@
     </Entry>
     </DataComponent>
     <DataComponent name="Caebat Information" id="2" description="Sets up the Caebat's information">
-        <Entry tag="CAEBAT_ROOT" parent="orphan" secretFlag="false" changeState="false" ready="false" value="/data1/projects/caebat/VIBE/trunk/components/" defaultValue="/data1/projects/caebat/VIBE/trunk/components/" name="Caebat Root" id="1" description="The Caebat root directory">
+       <!-- <Entry tag="CAEBAT_ROOT" parent="orphan" secretFlag="false" changeState="false" ready="false" value="/data1/projects/caebat/VIBE/trunk/components/" defaultValue="/data1/projects/caebat/VIBE/trunk/components/" name="Caebat Root" id="1" description="The Caebat root directory">
             <AllowedValueType>Undefined</AllowedValueType>
             <BasicEntryContentProvider Tag="CAEBAT_ROOT" Parent="orphan" DefaultValue="/data1/projects/caebat/VIBE/trunk/components/" name="ICE Object" id="1" description="ICE Object">
                 <AllowedValueType>Undefined</AllowedValueType>
             </BasicEntryContentProvider>
             <required>false</required>
-        </Entry>
+        </Entry>-->
         <Entry tag="BIN_DIR" parent="orphan" secretFlag="false" changeState="false" ready="false" value="$CAEBAT_ROOT/bin" defaultValue="$CAEBAT_ROOT/bin" name="Binary Directory Path" id="2" description="Root of IPS component and binary tree.  Use $CAEBAT_ROOT to specify variable path.">
             <AllowedValueType>Undefined</AllowedValueType>
             <BasicEntryContentProvider Tag="BIN_DIR" Parent="orphan" DefaultValue="$CAEBAT_ROOT/bin" name="ICE Object" id="1" description="ICE Object">
@@ -59,7 +59,7 @@
                 <AllowedValueType>Undefined</AllowedValueType>
             </BasicEntryContentProvider>
             <required>false</required>
-        </Entry>
+        </Entry>-->
         <Entry tag="PLASMA_STATE_WORK_DIR" parent="orphan" secretFlag="false" changeState="false" ready="false" value="$SIM_ROOT/work/battery_state" defaultValue="$SIM_ROOT/work/battery_state" name="Battery State Work Directory" id="7" description="Where to put sate files as the simulation evolves.">
             <AllowedValueType>Undefined</AllowedValueType>
             <BasicEntryContentProvider Tag="PLASMA_STATE_WORK_DIR" Parent="orphan" DefaultValue="$SIM_ROOT/work/battery_state" name="ICE Object" id="1" description="ICE Object">

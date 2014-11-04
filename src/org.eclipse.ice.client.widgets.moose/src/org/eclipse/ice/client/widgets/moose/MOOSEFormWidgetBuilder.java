@@ -21,7 +21,7 @@ import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
  * factory. This lets us tailor the standard ICEFormEditor behavior for MOOSE
  * Model Builders.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class MOOSEFormWidgetBuilder implements IFormWidgetBuilder {

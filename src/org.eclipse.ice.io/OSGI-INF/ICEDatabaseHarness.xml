@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="cleanUp" name="org.eclipse.ice.io.ICEDatabaseHarness">
-<implementation class="org.eclipse.ice.io.ICEDatabaseHarness.ICEDatabaseHarness"/>
-   <service>
-      <provide interface="org.eclipse.ice.core.iCore.IPersistenceProvider"/>
-   </service>
-   <reference bind="setEntityManagerFactory" cardinality="1..n" interface="javax.persistence.EntityManagerFactory" name="EntityManagerFactory" policy="dynamic"/>
-</scr:component>

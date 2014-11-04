@@ -126,7 +126,7 @@ public class PinAnalysisView extends AnalysisView {
 	 * This enum is used to determine the source of changes to the axial level.
 	 * It is particularly useful to smooth out the scale widget.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	public enum AxialLevelWidget {

@@ -23,7 +23,7 @@ import java.util.TreeMap;
  * A PlantComposite is a container for {@link PlantComponent}s. Duplicate
  * components and components with duplicate IDs are not allowed.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PlantComposite extends PlantComponent implements Composite {

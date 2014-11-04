@@ -12,13 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
+import gov.lbnl.visit.swt.VisItSwtWidget;
+
 import java.net.URL;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
@@ -69,11 +73,37 @@ public class LaunchPythonScriptDialogAction extends Action {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 				.getShell();
 
-		// Present an error dialog and return
-		MessageDialog.openError(shell, "Feature Not Available",
-				"This feature is not available yet.");
+		// Get the editor part
+		IEditorPart editorPart = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+
+		// If the editor is null, there is no chance VisIt has been initialized.
+		if (editorPart == null) {
+			// Present an error dialog and return
+			MessageDialog.openError(shell, "VisIt Not Initialized",
+					"Please connect to a running VisIt client prior to "
+							+ "attempting to open a file.");
+			return;
+		}
+
+		// Get the VisItSWTWidget from the editor
+		VisitEditor editor = (VisitEditor) editorPart;
+		final VisItSwtWidget widget = editor.getVizWidget();
+
+		// Make sure the widget is initialized
+		if (widget == null || !widget.hasInitialized()) {
+			// Present an error message and return
+			MessageDialog.openError(shell, "VisIt Not Initialized",
+					"Please connect to a running VisIt client prior to "
+							+ "attempting to open a file.");
+			return;
+		}
+
+		// If we've passed the previous checks, we may proceed with opening the
+		// python dialog.
+		VisitPythonDialog dialog = new VisitPythonDialog(shell, widget);
+		dialog.open();
 
 		return;
 	}
-
 }

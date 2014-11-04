@@ -15,17 +15,17 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.client.widgets.geometry.GeometryCompositeFactory;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.geometry.TransformationView;
+import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.mesh.IMeshSelectionListener;
-import org.eclipse.ice.client.widgets.mesh.MeshApplication;
-import org.eclipse.ice.client.widgets.mesh.MeshApplicationMode;
-import org.eclipse.ice.client.widgets.mesh.MeshApplicationModeFactory;
-import org.eclipse.ice.client.widgets.mesh.MeshApplicationModeFactory.Mode;
+import org.eclipse.ice.client.widgets.mesh.MeshAppState;
+import org.eclipse.ice.client.widgets.mesh.MeshAppStateMode;
+import org.eclipse.ice.client.widgets.mesh.MeshAppStateModeFactory;
+import org.eclipse.ice.client.widgets.mesh.MeshAppStateModeFactory.Mode;
 import org.eclipse.ice.client.widgets.mesh.MeshSelectionManager;
 import org.eclipse.ice.client.widgets.mesh.properties.MeshSelection;
-
-import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
@@ -36,7 +36,7 @@ import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
 import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -66,7 +66,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * This class extends ICEFormPage to provide an area for the jME3 canvas and a
  * toolbar for creating and modifying the mesh.
  * 
- * @author tnp, djg
+ * @author tnp, Jordan H. Deyton
  */
 public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		IMeshSelectionListener, ISelectionProvider,
@@ -88,9 +88,9 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	private MeshElementTreeView meshElementTreeView;
 
 	/**
-	 * The jME3 MeshApplication contained in this page.
+	 * The jME mesh view (a <code>MeshAppState</code>) contained in this page.
 	 */
-	private MeshApplication meshApplication;
+	private MeshAppState meshView;
 
 	/**
 	 * The List of custom JFace Actions. This List and the ActionTrees therein
@@ -222,19 +222,20 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 
 		// Create the tool bar and buttons for the view
 		toolBar = new ToolBar(parent, SWT.NONE);
-		toolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		actionToolBarManager = new ToolBarManager(toolBar);
 
-		// Use the GeometryCompositeFactory to create the mesh canvas
-		GeometryCompositeFactory geomFactory = new GeometryCompositeFactory();
-		geomFactory.renderMeshComposite(parent, meshComp);
+		// Use a ViewFactory to create a jME mesh view.
+		ViewFactory factory = new ViewFactory();
+		meshView = factory.createMeshView(meshComp);
+		// Render the mesh inside the parent Composite. We have to set its
+		// GridData so it will fill all available space!
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		meshView.createComposite(parent).setLayoutData(gridData);
 
-		// Get the MeshApplication from the GeometryCompositeFactory and set it
-		// to the corresponding field of this class.
-		meshApplication = (MeshApplication) geomFactory.getApplication();
 		// The MeshPage should also listen for changes to the MeshApplication's
 		// current selection.
-		meshApplication.getSelectionManager().addMeshApplicationListener(this);
+		meshView.getSelectionManager().addMeshApplicationListener(this);
 
 		// Now that we have a MeshApplication, we need to create the Actions
 		// that fill the ToolBar with configuration settings for the
@@ -262,32 +263,58 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	 */
 	private void createActions() {
 
+		Action action;
+		ActionTree modesActionTree;
+		ActionTree toggleHUDActionTree;
+		ActionTree toggleAxesActionTree;
+		ActionTree deleteActionTree;
+		
 		// Create the drop down for switching between add and modify modes
-		ActionTree modesActionTree = new ActionTree("Mode");
-		// Use a MeshApplicationModeFactory to get the available modes and
-		// create ActionTrees for each one to go in the Mode menu.
-		MeshApplicationModeFactory factory = new MeshApplicationModeFactory();
+		modesActionTree = new ActionTree("Mode");
+		// Use a MeshAppStateModeFactory to get the available modes and create
+		// ActionTrees for each one to go in the Mode menu.
+		MeshAppStateModeFactory factory = meshView.getModeFactory();
 		for (Mode type : factory.getAvailableModes()) {
-			MeshApplicationMode mode = factory.getMode(type);
-			SetMeshModeAction action = new SetMeshModeAction(meshApplication,
-					mode);
+			final MeshAppStateMode mode = factory.getMode(type);
+			action = new Action() {
+				@Override
+				public void run() {
+					meshView.setMode(mode);
+				}
+			};
+			// Set the Action's text and tool tip.
+			action.setText(mode.getName());
+			action.setToolTipText(mode.getDescription());
 			modesActionTree.add(new ActionTree(action));
 		}
 		actions.add(modesActionTree);
 
 		// Create the drop down to reset the camera placement or zoom
-		// TODO: Implement the SetMeshCameraAction class for this functionality
+		// TODO create the camera reset action
 
 		// Create the toggle switch to show or hide the heads-up display
-		ActionTree hudActionTree = new ActionTree(new ShowHideHUDAction(
-				meshApplication));
-		actions.add(hudActionTree);
+		action = new ToggleHUDAction(meshView);
+		toggleHUDActionTree = new ActionTree(action);
+		actions.add(toggleHUDActionTree);
 
-		// Create the button to delete mesh elements
-		ActionTree deleteActionTree = new ActionTree(
-				new DeleteMeshElementAction(meshApplication));
+		// Create the toggle switch to show or hide the axes.
+		action = new ToggleAxesAction(meshView);
+		toggleAxesActionTree = new ActionTree(action);
+		actions.add(toggleAxesActionTree);
+
+		// Create the button to delete mesh elements.
+		action = new Action() {
+			@Override
+			public void run() {
+				meshView.getSelectionManager().deleteSelection();
+			}
+		};
+		action.setText("Delete");
+		action.setToolTipText("Remove the selected element from the mesh");
+		deleteActionTree = new ActionTree(action);
 		actions.add(deleteActionTree);
 
+		return;
 	}
 
 	/**
@@ -379,7 +406,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		if (part.getSite().getId().equals(MeshElementTreeView.ID)) {
 
 			// Get the mesh selection manager from the app.
-			MeshSelectionManager selectionManager = meshApplication
+			MeshSelectionManager selectionManager = meshView
 					.getSelectionManager();
 
 			// Reset any existing selection data in the MeshApplication
@@ -472,8 +499,6 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		listeners.add(listener);
 		return;
 	}
-
-	private ISelection selection = new StructuredSelection();
 
 	/**
 	 * @see ISelectionProvider#getSelection()

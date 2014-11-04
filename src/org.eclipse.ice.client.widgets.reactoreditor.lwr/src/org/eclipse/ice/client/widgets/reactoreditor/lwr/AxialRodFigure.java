@@ -33,7 +33,7 @@ import org.eclipse.swt.graphics.Color;
  * {@link LWRComponent}, usually {@link LWRRod}s, to instead provide an axial or
  * vertical view of the component.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 // FIXME The MouseListeners for the rod shapes aren't working.

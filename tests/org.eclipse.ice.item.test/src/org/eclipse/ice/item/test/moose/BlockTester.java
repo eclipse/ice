@@ -32,7 +32,7 @@ import org.eclipse.ice.item.utilities.moose.Parameter;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -190,13 +190,11 @@ public class BlockTester {
 		param1.setName("Test Param 1");
 		param1.setDefault("Test Param 1");
 		param1.setCpp_type("Test Param 1");
-		param1.setDescription("Test Param 1");
 		param1.setRequired(true);
 		paramList.add(param1);
 		param2.setName("Test Param 2");
-		param2.setDefault("Test Param 2");
+		param2.setDefault("");
 		param2.setCpp_type("Test Param 2");
-		param2.setDescription("Test Param 2");
 		paramList.add(param2);
 		block.setParameters(paramList);
 		blockList.add(subBlock);
@@ -207,7 +205,6 @@ public class BlockTester {
 		param3.setName("Test Param 3");
 		param3.setDefault("Test Param 3");
 		param3.setCpp_type("Test Param 3");
-		param3.setDescription("Test Param 3");
 		param3.setRequired(true);
 		subBlockParamList.add(param3);
 		subBlock.setParameters(subBlockParamList);
@@ -215,9 +212,14 @@ public class BlockTester {
 
 		// Create a GetPot string from the Block and check it
 		// System.out.println(block.toGetPot(null));
-		String testString = "[Snow]\n" + "  Test Param 1 = Test Param 1\n"
-				+ "  [./]\n" + "    Test Param 3 = Test Param 3\n"
-				+ "  [../]\n" + "[]\n";
+		String testString = 
+				"[Snow]                        # Snow always mirrors\n" 
+				+ "  Test Param 1 = Test Param 1\n"
+				+ "# Test Param 2 = \n"
+				+ "  [./]\n" 
+				+ "    Test Param 3 = Test Param 3\n"
+				+ "  [../]\n" 
+				+ "[]\n";
 		// System.out.println(testString);
 		assertEquals(testString, block.toGetPot(null));
 		// Make sure that toString() works as described.
@@ -252,13 +254,11 @@ public class BlockTester {
 		param1.setName("Test Param 1");
 		param1.setDefault("Test Param 1");
 		param1.setCpp_type("Test Param 1");
-		param1.setDescription("Test Param 1");
 		param1.setRequired(true);
 		paramList.add(param1);
 		param2.setName("Test Param 2");
 		param2.setDefault("Test Param 2");
 		param2.setCpp_type("Test Param 2");
-		param2.setDescription("Test Param 2");
 		param2.setRequired(true);
 		paramList.add(param2);
 		block.setParameters(paramList);
@@ -270,7 +270,6 @@ public class BlockTester {
 		param3.setName("Test Param 3");
 		param3.setDefault("Test Param 3");
 		param3.setCpp_type("Test Param 3");
-		param3.setDescription("Test Param 3");
 		param3.setRequired(true);
 		subBlockParamList.add(param3);
 		subBlock.setParameters(subBlockParamList);

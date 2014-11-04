@@ -18,28 +18,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.test.TestComponentListener;
-import org.eclipse.ice.reactor.sfr.base.SFRComponent;
-import org.eclipse.ice.reactor.sfr.base.SFRData;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
+import org.eclipse.ice.datastructures.test.TestComponentListener;
+import org.eclipse.ice.reactor.sfr.base.SFRComponent;
+import org.eclipse.ice.reactor.sfr.base.SFRData;
 import org.junit.Test;
 
 /**
@@ -1026,63 +1013,19 @@ public class SFRComponentTester {
 	 * This is a fake visitor class to test the accept(IComponentVisitor) method
 	 * of SFRComponent.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
-	private class FakeComponentVisitor implements IComponentVisitor {
+	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 		private IReactorComponent component = null;
 
 		protected IReactorComponent getComponent() {
 			return component;
 		}
 
+		@Override
 		public void visit(IReactorComponent component) {
 			this.component = component;
-		}
-
-		public void visit(DataComponent component) {
-		}
-
-		public void visit(ResourceComponent component) {
-		}
-
-		public void visit(TableComponent component) {
-		}
-
-		public void visit(MatrixComponent component) {
-		}
-
-		public void visit(IShape component) {
-		}
-
-		public void visit(GeometryComponent component) {
-		}
-
-		public void visit(MasterDetailsComponent component) {
-		}
-
-		public void visit(TreeComposite component) {
-		}
-
-		public void visit(TimeDataComponent component) {
-		}
-
-		@Override
-		public void visit(MeshComponent component) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void visit(BatteryComponent component) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void visit(AdaptiveTreeComposite component) {
-			// TODO Auto-generated method stub
-
 		}
 	};
 }

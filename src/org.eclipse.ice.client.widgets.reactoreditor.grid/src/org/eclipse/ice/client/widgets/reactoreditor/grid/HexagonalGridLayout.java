@@ -33,7 +33,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * call <code>setPoints()</code>, a method that causes an invalidation, on the
  * child IFigures. Instead, the LayoutManager directly modifies the PointList.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class HexagonalGridLayout extends GridLayout {

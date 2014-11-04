@@ -34,6 +34,14 @@
       </perspectiveExtension>
    </extension>
             -->
+ <extension
+       point="org.eclipse.core.runtime.products">
+    <product
+          application="org.eclipse.ice.client.rcp.application"
+          description="The Eclipse Integrated Computational Environment"
+          name="ICE">
+    </product>
+ </extension>
       <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -49,13 +57,13 @@
             name="GeometryEditor">
       </editor>
    </extension>
-      <!-- ICE ItemViewer and TreeCompositeViewer-->
+      <!-- Views -->
       <extension
             point="org.eclipse.ui.views">
          <view
                allowMultiple="false"
                class="org.eclipse.ice.client.common.ItemViewer"
-               fastViewWidthRatio="0.125"
+               fastViewWidthRatio="0.20"
                id="org.eclipse.ice.client.common.ItemViewer"
                name="Item Viewer"
                restorable="true">
@@ -63,15 +71,11 @@
          <view
                allowMultiple="false"
                class="org.eclipse.ice.client.common.TreeCompositeViewer"
-               fastViewWidthRatio="0.125"
+               fastViewWidthRatio="0.20"
                id="org.eclipse.ice.client.common.TreeCompositeViewer"
                name="ICE Data Tree View"
                restorable="true">
          </view>
-      </extension>
-      <!-- Views -->
-      <extension
-            point="org.eclipse.ui.views">
             <!-- Geometry Editor Views -->
          <view
                allowMultiple="false"
@@ -98,6 +102,16 @@
                name="Resources"
                restorable="true">
          </view>
+         
+         <view
+               allowMultiple="false"
+               class="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer"
+               fastViewWidthRatio="0.125"
+               id="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer"
+               name="EMF Data Tree View"
+               restorable="true">
+         </view>
+         
           <view
                allowMultiple="false"
                class="org.eclipse.ice.client.widgets.MeshElementTreeView"
@@ -125,14 +139,14 @@
          <view
                closeable="false"
                id="org.eclipse.ice.client.common.ItemViewer"
-               ratio="0.125"
+               ratio="0.25f"
                relationship="left"
                relative="org.eclipse.ui.editorss"
                visible="true">
          </view>
          <view
                id="org.eclipse.ice.client.common.TreeCompositeViewer"
-               ratio="0.125"
+               ratio="0.25f"
                relationship="stack"
                relative="org.eclipse.ice.client.common.ItemViewer"
                visible="true">
@@ -141,7 +155,7 @@
                closeable="false"
                id="org.eclipse.ice.client.widgets.ICEResourceView"
                minimized="false"
-               ratio="0.125"
+               ratio="0.25f"
                relationship="stack"
                relative="org.eclipse.ice.client.common.TreeCompositeViewer"
                visible="true">
@@ -149,7 +163,7 @@
          <view
                closeable="false"
                id="org.eclipse.ice.client.widgets.geometry.ShapeTreeView"
-               ratio="0.1"
+               ratio="0.25f"
                relationship="stack"
                relative="org.eclipse.ice.client.common.TreeCompositeViewer"
                visible="true">
@@ -158,7 +172,7 @@
                closeable="false"
                id="org.eclipse.ice.client.widgets.MeshElementTreeView"
                minimized="false"
-               ratio="0.125"
+               ratio="0.25f"
                relationship="stack"
                relative="org.eclipse.ice.client.common.ItemViewer"
                visible="true">
@@ -171,37 +185,12 @@
                relationship="left"
                relative="org.eclipse.ui.console.ConsoleView">
          </view>
+         <newWizardShortcut
+               id="org.eclipse.ice.client.common.CreateItemWizard">
+         </newWizardShortcut>
       </perspectiveExtension>
    </extension>
    <!-- ItemViewer Actions -->
-    <extension
-          point="org.eclipse.ui.viewActions">
-       <viewContribution
-             id="org.eclipse.ice.client.common.ItemViewer.createItem"
-             targetID="org.eclipse.ice.client.common.ItemViewer">
-          <action
-                class="org.eclipse.ice.client.common.CreateItemViewActionDelegate"
-                icon="icons/add.png"
-                id="org.eclipse.ice.client.common.ItemViewer.createItem.action"
-                label="Create an Item"
-                style="push"
-                toolbarPath="actions">
-          </action>
-       </viewContribution>
-       <viewContribution
-             id="org.eclipse.ice.client.common.ItemViewer.deleteItem"
-             targetID="org.eclipse.ice.client.common.ItemViewer">
-          <action
-                class="org.eclipse.ice.client.common.DeleteItemViewActionDelegate"
-                icon="icons/delete_X.png"
-                id="org.eclipse.ice.client.common.ItemViewer.deleteItem.action"
-                label="Delete Item"
-                style="push"
-                toolbarPath="actions"
-                tooltip="Delete the Selected Item">
-          </action>
-       </viewContribution>
-    </extension>
     <!-- TreeCompositeViewer Properties Extensions -->
     <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor contributorId="org.eclipse.ice.client.common.TreeCompositeViewer">
@@ -219,7 +208,7 @@
       <extension point="org.eclipse.ui.views.properties.tabbed.propertySections">
       <propertySections contributorId="org.eclipse.ice.client.common.TreeCompositeViewer">
          <propertySection
-               class="org.eclipse.ice.client.common.ComponentPropertySection"
+               class="org.eclipse.ice.client.widgets.properties.TreePropertySection"
                id="DataSection"
                tab="TreeViewer.Data">
             <input type="org.eclipse.ice.datastructures.form.TreeComposite"/>
@@ -227,6 +216,40 @@
       </propertySections>
    </extension>
 	<!-- MeshElementTreeView Properties Extensions -->
+ <extension
+       point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+    <propertyContributor
+          contributorId="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer">
+       <propertyCategory
+             category="TreeViewer">
+       </propertyCategory>
+    </propertyContributor>
+ </extension>
+ <extension
+       point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+    <propertyTabs
+          contributorId="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer">
+       <propertyTab
+             category="TreeViewer"
+             id="TreeViewer.Data"
+             label="Data">
+       </propertyTab>
+    </propertyTabs>
+ </extension>
+ <extension
+       point="org.eclipse.ui.views.properties.tabbed.propertySections">
+    <propertySections
+          contributorId="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer">
+       <propertySection
+             class="org.eclipse.ice.client.widgets.properties.TreePropertySection"
+             id="DataSection"
+             tab="TreeViewer.Data">
+          <input
+                type="org.eclipse.ice.datastructures.form.TreeComposite">
+          </input>
+       </propertySection>
+    </propertySections>
+ </extension>
 	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
 		<propertyContributor 
 			contributorId="org.eclipse.ice.client.widgets.MeshElementTreeView"
@@ -242,5 +265,170 @@
 			<propertyCategory category="MeshSelection"/>
 		</propertyContributor>
 	</extension>
-	<!-- MOOSETreeCompositeViewer Properties Extensions -->
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="toolbar:org.eclipse.ui.main.toolbar">
+       <toolbar
+             id="org.eclipse.ice.client.widgets.toolbar">
+          <command
+                commandId="org.eclipse.ice.client.widgets.commands.ImportFileWizard"
+                icon="icons/importArrow.gif"
+                id="ImportFileWizard"
+                label="Import a file"
+                style="push"
+                tooltip="Import a file into ICE&apos;s project space for use by your items.">
+          </command>
+          <command
+                commandId="org.eclipse.ice.client.widgets.commands.LaunchMeshEditor"
+                icon="icons/mesh.gif"
+                id="LaunchMeshEditor"
+                label="Launch the Mesh Editor"
+                style="push"
+                tooltip="Launch the MeshEditor for editing 2D meshes.">
+          </command>
+          <command
+                commandId="org.eclipse.ice.client.widgets.commands.ImportItemWizard"
+                icon="icons/itemImport.gif"
+                id="ImportItemWizard"
+                label="Import an Item"
+                mnemonic="I"
+                style="push"
+                tooltip="Import an input file for an Item into ICE.">
+          </command>
+       </toolbar>
+    </menuContribution>
+    <menuContribution
+          allPopups="false"
+          locationURI="toolbar:org.eclipse.ice.client.common.ItemViewer">
+       <command
+             commandId="org.eclipse.ice.client.widgets.commands.CreateItem"
+             icon="icons/add.png"
+             label="Create Item"
+             style="push"
+             tooltip="Create an Item">
+       </command>
+       <command
+             commandId="org.eclipse.ice.client.widgets.commands.DeleteItem"
+             icon="icons/delete_X.png"
+             label="Delete Item"
+             style="push"
+             tooltip="Delete the Selected Item">
+       </command>
+    </menuContribution>
+ </extension>
+ <!-- Commands -->
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          description="Create an Item"
+          id="org.eclipse.ice.client.widgets.commands.CreateItem"
+          name="Create Item">
+    </command>
+    <command
+          description="Delete the selected Item"
+          id="org.eclipse.ice.client.widgets.commands.DeleteItem"
+          name="Delete Item">
+    </command>
+    <command
+          description="Import existing files into the workspace"
+          id="org.eclipse.ice.client.widgets.commands.ImportFileWizard"
+          name="Import File">
+    </command>
+    <command
+          description="Import existing files into an Item"
+          id="org.eclipse.ice.client.widgets.commands.ImportItemWizard"
+          name="Import Item Wizard">
+    </command>
+    <command
+          description="Launch a Mesh Editor"
+          id="org.eclipse.ice.client.widgets.commands.LaunchMeshEditor"
+          name="Launch Mesh Editor">
+    </command>
+ </extension>
+ <!-- Wizards -->
+ <extension
+       point="org.eclipse.ui.handlers">
+    <handler
+          class="org.eclipse.ice.client.common.CreateItemHandler"
+          commandId="org.eclipse.ice.client.widgets.commands.CreateItem">
+    </handler>
+    <handler
+          class="org.eclipse.ice.client.common.DeleteItemHandler"
+          commandId="org.eclipse.ice.client.widgets.commands.DeleteItem">
+       <enabledWhen>
+          <test
+                property="org.eclipse.ice.client.widgets.ItemSelected"
+                value="true">
+          </test>
+       </enabledWhen>
+    </handler>
+    <handler
+          class="org.eclipse.ice.client.common.ImportFileWizardHandler"
+          commandId="org.eclipse.ice.client.widgets.commands.ImportFileWizard">
+    </handler>
+    <handler
+          class="org.eclipse.ice.client.common.ImportItemWizardHandler"
+          commandId="org.eclipse.ice.client.widgets.commands.ImportItemWizard">
+    </handler>
+    <handler
+          class="org.eclipse.ice.client.common.LaunchMeshEditorHandler"
+          commandId="org.eclipse.ice.client.widgets.commands.LaunchMeshEditor">
+    </handler>
+ </extension>
+ <extension
+       point="org.eclipse.core.expressions.propertyTesters">
+    <propertyTester
+          class="org.eclipse.ice.client.common.ItemSelectedPropertyTester"
+          id="org.eclipse.ice.client.widgets.propertyTesters.ItemSelected"
+          namespace="org.eclipse.ice.client.widgets"
+          properties="ItemSelected"
+          type="java.lang.Object">
+    </propertyTester>
+ </extension>
+ <extension point="org.eclipse.ui.newWizards">
+    <category 
+          id="org.eclipse.ice.wizards"
+          name="Computing Wizards">
+    </category>
+    <wizard
+            name="Create Item Wizard"
+            class="org.eclipse.ice.client.widgets.wizards.NewItemWizard"
+            id="org.eclipse.ice.client.common.CreateItemWizard"
+            category="org.eclipse.ice.wizards">
+    </wizard>
+    <primaryWizard
+          id="org.eclipse.ice.client.common.CreateItemWizard">
+    </primaryWizard> 
+ </extension>
+ <extension
+       point="org.eclipse.ui.importWizards">
+    <category
+          id="org.eclipse.ice.wizards"
+          name="ICE">
+    </category>
+    <wizard
+          category="org.eclipse.ice.wizards"
+          class="org.eclipse.ice.client.widgets.wizards.ImportFileWizard"
+          icon="icons/importArrow.gif"
+          id="org.eclipse.ice.client.widgets.wizards.ImportFile"
+          name="Import existing files into the workspace">
+    </wizard>
+    <wizard
+          category="org.eclipse.ice.wizards"
+          class="org.eclipse.ice.client.widgets.wizards.ImportItemWizard"
+          icon="icons/itemImport.gif"
+          id="org.eclipse.ice.client.widgets.wizards.ImportItem"
+          name="Import existing files into an Item">
+    </wizard>
+ </extension>
+ <extension
+       point="org.eclipse.ui.exportWizards">
+    <category
+          id="org.eclipse.ice.wizards"
+          name="ICE">
+    </category>
+ </extension>
+ 
 </plugin>

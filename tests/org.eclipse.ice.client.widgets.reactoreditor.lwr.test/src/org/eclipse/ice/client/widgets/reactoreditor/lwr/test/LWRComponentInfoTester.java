@@ -27,7 +27,7 @@ import org.junit.Test;
  * This class tests the LWRComponentInfo utility class used in the
  * ReactorEditor's LWR package.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class LWRComponentInfoTester {

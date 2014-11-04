@@ -27,7 +27,7 @@ import com.jme3.math.Vector3f;
  * IDs. It provides methods for adding and removing them as well as getters for
  * minimum and maximum x, y, and z values across all stored BoundingBoxes.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class BoundingBoxMap {

@@ -22,7 +22,7 @@ import java.util.TreeMap;
  * locations, this class removes the burden of managing the data providers when
  * that functionality is so closely tied to managing the grid locations.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class GridDataManager extends GridManager {

@@ -24,10 +24,8 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -119,8 +117,10 @@ public class ClusterKDDMatrixTester {
 		ArrayList<IData> rowList = new ArrayList<IData>();
 		ArrayList<IData> colList = new ArrayList<IData>();
 
-		String workspaceName = "kddtestworkspace";
 		String separator = System.getProperty("file.separator");
+		String workspaceName = "kddtestworkspace";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + workspaceName;
 		IProject project = null;
 
 		try {
@@ -130,8 +130,7 @@ public class ClusterKDDMatrixTester {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				URI projURI = (new File(System.getProperty("user.dir")
-						+ separator + workspaceName)).toURI();
+				URI projURI = (new File(userDir)).toURI();
 				// Create the project description
 				IProjectDescription description = ResourcesPlugin
 						.getWorkspace().newProjectDescription(workspaceName);

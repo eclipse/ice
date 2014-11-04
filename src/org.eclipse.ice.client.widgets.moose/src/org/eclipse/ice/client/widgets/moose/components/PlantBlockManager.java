@@ -20,19 +20,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
@@ -41,7 +32,6 @@ import org.eclipse.ice.reactor.plant.Branch;
 import org.eclipse.ice.reactor.plant.CoreChannel;
 import org.eclipse.ice.reactor.plant.DownComer;
 import org.eclipse.ice.reactor.plant.FlowJunction;
-import org.eclipse.ice.reactor.plant.GeometricalComponent;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.IPlantComponentVisitor;
 import org.eclipse.ice.reactor.plant.IdealPump;
@@ -55,9 +45,8 @@ import org.eclipse.ice.reactor.plant.PipeToPipeJunction;
 import org.eclipse.ice.reactor.plant.PipeWithHeatStructure;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
-import org.eclipse.ice.reactor.plant.PointKinetics;
 import org.eclipse.ice.reactor.plant.Pump;
-import org.eclipse.ice.reactor.plant.Reactor;
+import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.eclipse.ice.reactor.plant.SeparatorDryer;
 import org.eclipse.ice.reactor.plant.SolidWall;
 import org.eclipse.ice.reactor.plant.SpecifiedDensityAndVelocityInlet;
@@ -185,11 +174,6 @@ public class PlantBlockManager implements IUpdateableListener {
 			update(tree);
 			// Register with the new components tree.
 			tree.register(this);
-
-			// Make sure all components are synchronized with their entries.
-			for (EntryListener listener : entryListeners) {
-				listener.updateEntry();
-			}
 		}
 
 		return;
@@ -270,6 +254,15 @@ public class PlantBlockManager implements IUpdateableListener {
 			for (TreeComposite child : removedComponents) {
 				PlantComponent plantComp = componentMap.remove(child);
 				plant.removeComponent(plantComp.getId());
+			}
+
+			// TODO This is overkill, but the difficulty lies in making sure
+			// Junctions (or HeatExchangers) are hooked up to their Pipes (or
+			// Junctions) properly. Until we can come up with a better way to
+			// link Entries and the model, this loop will have to suffice.
+			// Sync all of the Entries with the plant model.
+			for (EntryListener listener : entryListeners) {
+				listener.updateEntry();
 			}
 		}
 
@@ -358,7 +351,7 @@ public class PlantBlockManager implements IUpdateableListener {
 
 			// Create a use a visitor that determines the linker to use for the
 			// plant component.
-			IPlantComponentVisitor visitor = new IPlantComponentVisitor() {
+			IPlantComponentVisitor visitor = new SelectivePlantComponentVisitor() {
 				// ---- Base classes ---- //
 				public void visit(Pipe plantComp) {
 					linker.add(pipeLinker);
@@ -370,23 +363,6 @@ public class PlantBlockManager implements IUpdateableListener {
 
 				public void visit(Junction plantComp) {
 					linker.add(junctionLinker);
-				}
-
-				// ---- Unused classes/no linking necessary. ---- //
-				public void visit(PlantComposite plantComp) {
-					// Do nothing.
-				}
-
-				public void visit(Reactor plantComp) {
-					// Do nothing.
-				}
-
-				public void visit(GeometricalComponent plantComp) {
-					// Do nothing.
-				}
-
-				public void visit(PointKinetics plantComp) {
-					// Do nothing.
 				}
 
 				// ---- Pipe sub-classes ---- //
@@ -530,45 +506,10 @@ public class PlantBlockManager implements IUpdateableListener {
 			ArrayList<Component> components = tree.getDataNodes();
 			// Create a visitor that sets found to true only for DataComponents.
 			if (components != null) {
-				IComponentVisitor visitor = new IComponentVisitor() {
+				IComponentVisitor visitor = new SelectiveComponentVisitor() {
+					@Override
 					public void visit(DataComponent component) {
 						found.set(true);
-					}
-
-					public void visit(ResourceComponent component) {
-					}
-
-					public void visit(TableComponent component) {
-					}
-
-					public void visit(MatrixComponent component) {
-					}
-
-					public void visit(IShape component) {
-					}
-
-					public void visit(GeometryComponent component) {
-					}
-
-					public void visit(MasterDetailsComponent component) {
-					}
-
-					public void visit(TreeComposite component) {
-					}
-
-					public void visit(IReactorComponent component) {
-					}
-
-					public void visit(TimeDataComponent component) {
-					}
-
-					public void visit(MeshComponent component) {
-					}
-
-					public void visit(BatteryComponent component) {
-					}
-
-					public void visit(AdaptiveTreeComposite component) {
 					}
 				};
 

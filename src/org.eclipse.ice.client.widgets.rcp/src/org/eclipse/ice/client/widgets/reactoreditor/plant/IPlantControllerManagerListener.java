@@ -21,7 +21,7 @@ import org.eclipse.ice.reactor.plant.PlantComponent;
  * {@link JunctionController}s, which must communicate with the
  * {@link PipeController}s for Pipes that are attached to its model Junction.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IPlantControllerManagerListener {

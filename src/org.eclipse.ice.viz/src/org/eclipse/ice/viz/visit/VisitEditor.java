@@ -40,7 +40,7 @@ import org.eclipse.ui.part.EditorPart;
  * This is an editor for interacting with the VisIt SWT Widget. It is opened by
  * the associated visualization views in org.eclipse.ice.viz.
  * 
- * @authors bkj, tnp
+ * @authors Jay Jay Billings, tnp
  */
 public class VisitEditor extends EditorPart {
 
@@ -63,6 +63,17 @@ public class VisitEditor extends EditorPart {
 	 * The top level composite that holds the editor's contents.
 	 */
 	Composite vizComposite;
+
+	/**
+	 * The object used for managing the mouse input daemon thread.
+	 */
+	VisitMouseManager mouseManager;
+
+	/**
+	 * A flag for keeping track of whether or not the mouse left-click button is
+	 * being pressed.
+	 */
+	private boolean mousePressed;
 
 	/**
 	 * The constructor
@@ -149,6 +160,8 @@ public class VisitEditor extends EditorPart {
 				&& getEditorInput() instanceof VisitEditorInput) {
 			// Create the VisIt widget
 			vizWidget = new VisItSwtWidget(vizComposite, SWT.BORDER);
+			// Create the mouse manager
+			mouseManager = new VisitMouseManager(vizWidget);
 			// Use the mouse wheel to zoom
 			vizWidget.addMouseWheelListener(new MouseWheelListener() {
 				@Override
@@ -161,25 +174,29 @@ public class VisitEditor extends EditorPart {
 			vizWidget.addMouseMoveListener(new MouseMoveListener() {
 				@Override
 				public void mouseMove(MouseEvent e) {
-					vizWidget.mouseMove(e.x, e.y,
-							(e.stateMask & SWT.CTRL) != 0,
-							(e.stateMask & SWT.ALT) != 0);
+					if (mousePressed) {
+						// Pass the event to the manager
+						mouseManager.enqueueMouseLocation(e.x, e.y);
+					}
 				}
 			});
 			// Update the mouse in the widget based on its movements
 			vizWidget.addMouseListener(new MouseListener() {
 				@Override
 				public void mouseUp(MouseEvent e) {
-					vizWidget.mouseStop(e.x, e.y,
-							(e.stateMask & SWT.CTRL) != 0,
-							(e.stateMask & SWT.ALT) != 0);
+					// Set the mouse pressed flag
+					mousePressed = false;
+					// Stop the mouseManager thread
+					mouseManager.stop();
 				}
 
 				@Override
 				public void mouseDown(MouseEvent e) {
-					vizWidget.mouseStart(e.x, e.y,
-							(e.stateMask & SWT.CTRL) != 0,
-							(e.stateMask & SWT.ALT) != 0);
+					// Set the pressed flag
+					mousePressed = true;
+					// Start the mouseManager thread
+					mouseManager.start(e.x, e.y, (e.stateMask & SWT.CTRL) != 0,
+							(e.stateMask & SWT.SHIFT) != 0);
 				}
 
 				@Override

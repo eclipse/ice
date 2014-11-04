@@ -28,7 +28,7 @@ import org.junit.Test;
 /**
  * Tests the SelectionProvider class from the ReactorEditor.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class SelectionProviderTester {
@@ -129,7 +129,7 @@ public class SelectionProviderTester {
 	 * ISelectionChangedListener. It allows the test class to see if the
 	 * listener was updated.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class SelectionChangedListener implements ISelectionChangedListener {

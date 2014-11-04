@@ -39,10 +39,10 @@ public class ReactorReaderFactoryTester {
 		ReactorReaderFactory factory = new ReactorReaderFactory();
 
 		// Set up some URIs in the test folder.
-		String s = System.getProperty("file.separator");
-		String directory = System.getProperty("user.dir") + s
-				+ "reactorReaderTesterWorkspace" + s;
-		URI badURI = new File(directory + "doesNotExist.h5").toURI();
+		String separator = System.getProperty("file.separator");
+		String directory = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "reactorReaderTesterWorkspace";
+		URI badURI = new File(directory + separator + "doesNotExist.h5").toURI();
 
 		// Bad URIs shouldn't work.
 		assertNull(factory.readReactor(null));

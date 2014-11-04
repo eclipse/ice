@@ -19,7 +19,7 @@ import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
  * This class provides the declarative service that registers the Reactor Editor
  * Form Widget with ICE's service for dynamically extending the widget factory.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class ReactorFormWidgetBuilder implements IFormWidgetBuilder {

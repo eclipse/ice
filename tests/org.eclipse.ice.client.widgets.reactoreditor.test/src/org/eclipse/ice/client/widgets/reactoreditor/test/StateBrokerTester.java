@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * This class tests the StateBroker from the ReactorEditor package.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class StateBrokerTester {
@@ -370,7 +370,7 @@ public class StateBrokerTester {
 	 * I use this basic test class to test the broker's ability to store and
 	 * compare class instances. The contents of the class don't really matter.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class TestClass {
@@ -404,7 +404,7 @@ public class StateBrokerTester {
 	 * We need to implement an IStateListener and check the values it receives
 	 * from its broker for a specific key. By default, the value stored is -1.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class TestListener implements IStateListener {

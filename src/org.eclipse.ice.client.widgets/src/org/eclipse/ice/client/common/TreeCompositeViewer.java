@@ -16,33 +16,30 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 
-import org.eclipse.ice.client.widgets.ExtraInfoDialog;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuCreator;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
@@ -58,12 +55,11 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * TreeComposite parents since it cannot directly mark regular components as
  * active.
  * 
- * @author Jay Jay Billings, djg
+ * @author Jay Jay Billings, Jordan H. Deyton
  * 
  */
 public class TreeCompositeViewer extends ViewPart implements
-		IUpdateableListener, IComponentVisitor,
-		ITabbedPropertySheetPageContributor {
+		IUpdateableListener, ITabbedPropertySheetPageContributor {
 
 	/**
 	 * The id
@@ -73,7 +69,7 @@ public class TreeCompositeViewer extends ViewPart implements
 	/**
 	 * The JFace TreeViewer used to display the TreeComposite
 	 */
-	protected CheckboxTreeViewer treeViewer;
+	protected TreeViewer treeViewer;
 
 	/**
 	 * A reference to the Viewer's parent that is passed in to
@@ -89,23 +85,29 @@ public class TreeCompositeViewer extends ViewPart implements
 	 * The Action that deletes a selected TreeComposite node.
 	 */
 	protected DeleteNodeTreeAction deleteAction;
+	/**
+	 * This action is used to rename nodes in the tree. Only non-root level
+	 * nodes can be renamed. Note that the root tree node is not displayed in
+	 * the <code>TreeViewer</code>.
+	 */
+	protected RenameNodeTreeAction renameAction;
 
 	/**
 	 * The input to the TreeViewer. This should be a single TreeComposite.
 	 */
-	private TreeComposite inputTree;
+	protected TreeComposite inputTree;
 
 	/**
 	 * A map of Components displayed in the tree. This map can be used to
 	 * quickly find the parent TreeComposite for an element in the tree.
 	 */
-	private final IdentityHashMap<Component, TreeComposite> parentMap;
+	protected final IdentityHashMap<Component, TreeComposite> parentMap;
 
 	/**
 	 * A map of TreeComposites used to cache the children of loaded
 	 * TreeComposites.
 	 */
-	private final IdentityHashMap<TreeComposite, List<TreeComposite>> childMap;
+	protected final IdentityHashMap<TreeComposite, List<TreeComposite>> childMap;
 
 	/**
 	 * The default constructor.
@@ -133,24 +135,267 @@ public class TreeCompositeViewer extends ViewPart implements
 		// Local Declarations
 		IActionBars actionBars = getViewSite().getActionBars();
 		IToolBarManager toolbarManager = actionBars.getToolBarManager();
-		addAction = new AddNodeTreeAction(this);
-		deleteAction = new DeleteNodeTreeAction();
+
+		// Create the default Actions.
+		createActions();
+		toolbarManager.add(addAction);
+		toolbarManager.add(deleteAction);
 
 		// Set the parent reference
 		viewerParent = parent;
 
-		// Draw the viewer
-		drawViewer();
-
-		// Setup the toolbar
-		toolbarManager.add(addAction);
-		toolbarManager.add(deleteAction);
-
-		// Set the input
+		// Draw the viewer and set the initial tree.
+		treeViewer = createViewer(viewerParent);
 		treeViewer.setInput(inputTree);
-
-		// Register the view as a selection provider
+		// Register the TreeViewer as a selection provider so that other widgets
+		// and parts can get its current selection.
 		getSite().setSelectionProvider(treeViewer);
+
+		// Create a MenuManager that will enable a context menu in the
+		// TreeViewer.
+		MenuManager menuManager = new MenuManager();
+		menuManager.setRemoveAllWhenShown(true);
+		menuManager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				TreeCompositeViewer.this.fillContextMenu(manager);
+			}
+		});
+		Control control = treeViewer.getControl();
+		Menu menu = menuManager.createContextMenu(control);
+		control.setMenu(menu);
+
+		return;
+	}
+
+	/**
+	 * Creates the JFace <code>Action</code>s used in the viewer's
+	 * <code>ToolBar</code>.
+	 */
+	protected void createActions() {
+
+		// Create a sub-menu Action for adding to the currently-selected node.
+		// This just re-directs to the add action.
+		final Action addToCurrentNode = new Action() {
+			@Override
+			public void run() {
+				addAction.addToNode(addAction.getSelectedNode());
+			}
+		};
+		addToCurrentNode.setText("Add to selected node");
+		addToCurrentNode.setEnabled(false);
+
+		// Create a sub-menu Action for adding to the root node. This just re-
+		// directs to the add action.
+		final Action addToRootNode = new Action() {
+			@Override
+			public void run() {
+				addAction.addToNode(inputTree);
+			}
+		};
+		addToRootNode.setText("Add to root node");
+		addToRootNode.setEnabled(false);
+
+		// Create the add action. We need to override some methods to create the
+		// menu that will contain the previous two specialized add actions.
+		addAction = new AddNodeTreeAction() {
+
+			@Override
+			public void run() {
+
+				if (addToCurrentNode.isEnabled()) {
+					addToCurrentNode.run();
+				} else {
+					// Show a dialog that says the selected node cannot accept
+					// children.
+					IWorkbench bench = PlatformUI.getWorkbench();
+					IWorkbenchWindow window = bench.getActiveWorkbenchWindow();
+					MessageDialog.openInformation(window.getShell(),
+							"Child Selector",
+							"Cannot add a child node to selected node.");
+				}
+
+				return;
+			}
+
+			@Override
+			public void selectionChanged(IWorkbenchPart part,
+					ISelection selection) {
+				super.selectionChanged(part, selection);
+
+				// Sync the add-to-selected-node Action with the selection.
+				addToCurrentNode.setEnabled(isEnabled());
+				// Sync the add-to-root-node Action with the TreeViewer's root
+				// node.
+				addToRootNode.setEnabled(canAddNode(inputTree));
+				// Activate the main Action if either of the above are enabled.
+				setEnabled(addToRootNode.isEnabled()
+						|| addToCurrentNode.isEnabled());
+
+				return;
+			}
+		};
+
+		// Set an IMenuCreator for the add action. The menu should contain the
+		// two specialized add actions.
+		addAction.setMenuCreator(new IMenuCreator() {
+
+			/**
+			 * The MenuManager that contains all of the actions that show the
+			 * current selection in a Reactor Editor.
+			 */
+			private MenuManager menuManager = null;
+			/**
+			 * The Menu of actions used in the ToolBar.
+			 */
+			private Menu dropdownMenu = null;
+			/**
+			 * The Menu of actions used in the context Menu in the reactor
+			 * TreeViewer.
+			 */
+			private Menu contextMenu = null;
+
+			public void dispose() {
+
+				// Dispose of the dropdown menu if possible.
+				if (dropdownMenu != null) {
+					dropdownMenu.dispose();
+					dropdownMenu = null;
+				}
+
+				// Dispose of the context menu if possible.
+				if (contextMenu != null) {
+					contextMenu.dispose();
+					contextMenu = null;
+				}
+
+				// Dispose of the MenuManager if possible.
+				if (menuManager != null) {
+					menuManager.removeAll();
+					menuManager.dispose();
+					menuManager = null;
+				}
+
+				return;
+			}
+
+			public Menu getMenu(Control parent) {
+				// Refresh the menu of actions.
+				updateMenuManager();
+
+				// Make sure any stale dropdown menu is disposed.
+				if (dropdownMenu != null) {
+					dropdownMenu.dispose();
+				}
+
+				// Refresh the dropdown menu.
+				dropdownMenu = menuManager.createContextMenu(parent);
+
+				return dropdownMenu;
+			}
+
+			public Menu getMenu(Menu parent) {
+				// Refresh the menu of actions.
+				updateMenuManager();
+
+				// Make sure any stale context menu is disposed.
+				if (contextMenu != null) {
+					contextMenu.dispose();
+				}
+				// Refresh the context menu. We need to loop over the
+				// MenuManager's actions and add each of them to the context
+				// menu.
+				contextMenu = new Menu(parent);
+				for (IContributionItem item : menuManager.getItems()) {
+					item.fill(contextMenu, -1);
+				}
+
+				return contextMenu;
+			}
+
+			/**
+			 * Refreshes the MenuManager with all available Reactor Editors.
+			 */
+			private void updateMenuManager() {
+
+				// Make sure the MenuManager is empty.
+				if (menuManager == null) {
+					menuManager = new MenuManager();
+				} else {
+					menuManager.removeAll();
+				}
+
+				// Add the item for creating a new Reactor Editor, followed by a
+				// separator.
+				menuManager.add(addToRootNode);
+				menuManager.add(addToCurrentNode);
+
+				// Enable or disable the root node action when the menu is
+				// filled out in case the root TreeComposite has changed.
+				addToRootNode.setEnabled(addAction.canAddNode(inputTree));
+
+				return;
+			}
+		});
+
+		// Create the delete action.
+		deleteAction = new DeleteNodeTreeAction();
+
+		// Create the rename node action.
+		renameAction = new RenameNodeTreeAction();
+
+		return;
+	}
+
+	/**
+	 * Creates the {@link #treeViewer} used to display the {@link #inputTree}.
+	 * 
+	 * @param parent
+	 *            The container for the <code>TreeViewer</code>.
+	 * @return A new <code>TreeViewer</code>.
+	 */
+	protected TreeViewer createViewer(Composite parent) {
+
+		TreeViewer treeViewer = null;
+
+		if (parent != null) {
+			// Initialize the TreeViewer.
+			treeViewer = new TreeViewer(parent, SWT.VIRTUAL | SWT.MULTI
+					| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION
+					| SWT.BORDER);
+
+			// Set and configure the content and label providers
+			treeViewer.setContentProvider(new TreeCompositeContentProvider(
+					this, parentMap));
+			treeViewer.setLabelProvider(new TreeCompositeLabelProvider());
+		}
+
+		return treeViewer;
+	}
+
+	/**
+	 * This operation populates the context menu for this view.
+	 * 
+	 * @param menuManager
+	 *            The IMenuManager instance for the context menu to be populated
+	 */
+	protected void fillContextMenu(IMenuManager menuManager) {
+
+		ISelection iSelection = treeViewer.getSelection();
+		if (!iSelection.isEmpty() && iSelection instanceof IStructuredSelection) {
+			IStructuredSelection selection = (IStructuredSelection) iSelection;
+
+			Object object = selection.getFirstElement();
+			if (object instanceof TreeComposite) {
+
+				// Add the rename action.
+				menuManager.add(renameAction);
+
+				// Add a separator and the regular actions.
+				menuManager.add(new Separator());
+				menuManager.add(addAction);
+				menuManager.add(deleteAction);
+			}
+		}
 
 		return;
 	}
@@ -163,16 +408,6 @@ public class TreeCompositeViewer extends ViewPart implements
 	@Override
 	public void setFocus() {
 		// Nothing TODO
-	}
-
-	/**
-	 * Gets the root TreeComposite displayed in the {@link #treeViewer}.
-	 * 
-	 * @return The root TreeComposite for all nodes displayed in the tree
-	 *         viewer. May be null.
-	 */
-	protected TreeComposite getRoot() {
-		return inputTree;
 	}
 
 	/**
@@ -240,48 +475,6 @@ public class TreeCompositeViewer extends ViewPart implements
 
 		// Dispose of the meta data structures.
 		clearMetaData();
-	}
-
-	/**
-	 * This function draws the ItemViewer.
-	 */
-	private void drawViewer() {
-
-		// Initialize the tableviewer
-		treeViewer = new CheckboxTreeViewer(viewerParent, SWT.VIRTUAL
-				| SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION
-				| SWT.BORDER);
-
-		// Set and configure the content and label providers
-		treeViewer.setContentProvider(new TreeCompositeContentProvider(this,
-				parentMap));
-		treeViewer.setCheckStateProvider(new TreeCompositeCheckStateProvider(
-				treeViewer, parentMap));
-		treeViewer.setLabelProvider(new TreeCompositeLabelProvider());
-
-		// Add a double click listener to load components from the viewer
-		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				// Get the selection from the table viewer
-				IStructuredSelection selection = (IStructuredSelection) treeViewer
-						.getSelection();
-				// If the selection is empty, jump ship
-				if (selection.isEmpty()) {
-					return;
-				}
-				// Get the listed of selected objects.
-				List<?> list = selection.toList();
-				// Get the component
-				Component comp = (Component) list.get(0);
-				// Visit the component to figure out what to draw
-				if (comp != null) {
-					comp.accept(TreeCompositeViewer.this);
-				}
-
-			}
-		});
-
-		return;
 	}
 
 	/**
@@ -377,87 +570,6 @@ public class TreeCompositeViewer extends ViewPart implements
 
 	// ---------------------------------------- //
 
-	// ---- Implements IComponentVisitor ---- //
-	/**
-	 * When called, this prompts the user with a dialog to select from a list of
-	 * available Entries from a DataComponent. If no Entries are available, an
-	 * appropriate message is displayed.
-	 */
-	public void visit(DataComponent component) {
-
-		// Open a dialog if there are parameters that can be edited.
-		if (!(component.retrieveAllEntries().isEmpty())) {
-			// Instantiate the dialog, set the DataComponent and set the
-			// listeners
-			ExtraInfoDialog infoDialog = new ExtraInfoDialog(getSite()
-					.getShell());
-			infoDialog.setDataComponent((DataComponent) component);
-			// Open the dialog
-			infoDialog.open();
-		} else {
-			// Otherwise, notify the user that there are no parameters for this
-			// selection.
-			String msg = "No parameters available.";
-			MessageDialog msgBox = new MessageDialog(viewerParent.getShell(),
-					msg, null, msg, MessageDialog.INFORMATION,
-					new String[] { "OK" }, 0);
-			msgBox.open();
-		}
-
-		return;
-	}
-
-	public void visit(ResourceComponent component) {
-		// Do nothing.
-	}
-
-	public void visit(TableComponent component) {
-		// Do nothing.
-	}
-
-	public void visit(MatrixComponent component) {
-		// Do nothing.
-	}
-
-	public void visit(IShape component) {
-		// Do nothing.
-	}
-
-	public void visit(GeometryComponent component) {
-		// Do nothing.
-	}
-
-	public void visit(MasterDetailsComponent component) {
-		// Do nothing.
-	}
-
-	public void visit(TreeComposite component) {
-		// Do nothing.
-	}
-
-	public void visit(IReactorComponent component) {
-		// Do nothing.
-	}
-
-	public void visit(TimeDataComponent component) {
-		// Do nothing.
-	}
-
-	public void visit(MeshComponent component) {
-		// Do nothing.
-	}
-
-	public void visit(BatteryComponent component) {
-		// Do nothing.
-	}
-
-	public void visit(AdaptiveTreeComposite component) {
-		// Do nothing.
-
-	}
-
-	// -------------------------------------- //
-
 	// ---- Implements ITabbedPropertySheetPageContributor ---- //
 	/**
 	 * This operation returns the contributor id of this view.
@@ -465,6 +577,7 @@ public class TreeCompositeViewer extends ViewPart implements
 	public String getContributorId() {
 		return getSite().getId();
 	}
+
 	// -------------------------------------------------------- //
 
 }

@@ -51,10 +51,10 @@ public class NekWriterTester {
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
-		String outputFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "conj_ht_WriterTest.rea";
-		String exampleFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "conj_ht.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String outputFilePath = userDir + separator + "conj_ht_WriterTest.rea";
+		String exampleFilePath = userDir + separator + "conj_ht.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
 		
@@ -223,10 +223,10 @@ public class NekWriterTester {
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
-		String outputFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "eddy_uv_WriterTest.rea";
-		String exampleFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "eddy_uv.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String outputFilePath = userDir + separator + "eddy_uv_WriterTest.rea";
+		String exampleFilePath = userDir + separator + "eddy_uv.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
 		
@@ -396,10 +396,10 @@ public class NekWriterTester {
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
-		String outputFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "kov_WriterTest.rea";
-		String exampleFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "kov.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String outputFilePath = userDir + separator + "kov_WriterTest.rea";
+		String exampleFilePath = userDir + separator + "kov.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
 		
@@ -569,10 +569,10 @@ public class NekWriterTester {
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
-		String outputFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "ray_dd_WriterTest.rea";
-		String exampleFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "ray_dd.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String outputFilePath = userDir + separator + "ray_dd_WriterTest.rea";
+		String exampleFilePath = userDir + separator + "ray_dd.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
 		
@@ -742,10 +742,10 @@ public class NekWriterTester {
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
-		String outputFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "ray_nn_WriterTest.rea";
-		String exampleFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "ray_nn.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String outputFilePath = userDir + separator + "ray_nn_WriterTest.rea";
+		String exampleFilePath = userDir + separator + "ray_nn.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
 		
@@ -915,10 +915,10 @@ public class NekWriterTester {
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
-		String outputFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "v2d_WriterTest.rea";
-		String exampleFilePath = System.getProperty("user.dir") + separator 
-				+ "examples" + separator + "v2d.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String outputFilePath = userDir + separator + "v2d_WriterTest.rea";
+		String exampleFilePath = userDir + separator + "v2d.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
 		

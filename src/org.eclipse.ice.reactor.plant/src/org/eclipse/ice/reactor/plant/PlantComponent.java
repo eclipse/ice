@@ -12,12 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
@@ -33,9 +30,6 @@ import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-
-@Entity()
-@Table(name = "PlantComponent")
 @XmlRootElement(name = "PlantComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PlantComponent extends ICEObject implements IReactorComponent {

@@ -12,28 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import static org.eclipse.ice.client.widgets.ICEDetailsPageProvider.*;
-import static org.eclipse.ice.client.widgets.ICEScrolledPropertiesBlock.*;
-
-import java.util.ArrayList;
-
-import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.resource.ICEResource;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -47,7 +30,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -64,17 +47,6 @@ public class ICEMasterDetailsPage extends ICEFormPage {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private MasterDetailsComponent masterDetailsComponent;
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The IManagedForm for the MasterDetailsPage.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private IManagedForm managedFormRef;
 
 	private ICEFormEditor ICEFormEditor;
 

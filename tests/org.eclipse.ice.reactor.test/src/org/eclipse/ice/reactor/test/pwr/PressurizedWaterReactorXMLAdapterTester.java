@@ -22,7 +22,7 @@ import org.junit.Test;
 /**
  * This class tests the custom XML adapter for PressurizedWaterReactors.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class PressurizedWaterReactorXMLAdapterTester {

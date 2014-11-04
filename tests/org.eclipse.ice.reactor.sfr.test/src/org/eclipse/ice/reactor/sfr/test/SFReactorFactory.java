@@ -39,7 +39,7 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
  * rods/pins, their locations within their respective containers, and their data
  * are generated randomly.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class SFReactorFactory {

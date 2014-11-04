@@ -28,7 +28,7 @@ import org.junit.Test;
  * This class is responsible for testing the NekModelBuilder. It is a very
  * simple test.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class NekModelBuilderTester {

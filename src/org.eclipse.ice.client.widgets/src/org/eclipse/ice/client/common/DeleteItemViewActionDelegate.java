@@ -1,24 +1,22 @@
 /*******************************************************************************
-* Copyright (c) 2013, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.common;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 
 /**
@@ -29,6 +27,10 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
  * 
  */
 public class DeleteItemViewActionDelegate implements IViewActionDelegate {
+
+	// FIXME This class is no longer used in favor of the DeleteItemHandler
+	// added to the ItemViewer's ToolBar via the org.eclipse.ui.menus extension
+	// point.
 
 	/**
 	 * The IViewPart with which this delegate works, in this case the ItemViewer
@@ -76,7 +78,9 @@ public class DeleteItemViewActionDelegate implements IViewActionDelegate {
 				.getWorkbenchWindow());
 
 		// Register the action as a listener
-		viewPart.getSite().getPage().addPostSelectionListener((ISelectionListener) deleteItemAction);
+		viewPart.getSite()
+				.getPage()
+				.addPostSelectionListener((ISelectionListener) deleteItemAction);
 
 	}
 

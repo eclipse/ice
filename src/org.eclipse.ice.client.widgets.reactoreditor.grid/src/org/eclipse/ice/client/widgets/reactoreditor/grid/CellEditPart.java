@@ -29,7 +29,7 @@ import org.eclipse.gef.tools.MarqueeDragTracker;
  * This class provides the Controller for a {@link Cell}. In particular, it is
  * responsible for View creation and EditPolicies for each Cell.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class CellEditPart extends AbstractGraphicalEditPart {
@@ -176,7 +176,7 @@ public class CellEditPart extends AbstractGraphicalEditPart {
 	 * button is released. The default behavior which we overrode here is to
 	 * only toggle EditParts within the tracker's bounding box.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	public static class MyMarquee extends MarqueeDragTracker {

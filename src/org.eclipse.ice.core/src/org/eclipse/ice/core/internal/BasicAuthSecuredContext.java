@@ -40,7 +40,7 @@ import org.osgi.service.http.HttpContext;
  * This class is based on and largely taken from the code in OSGi and Equinox:
  * Creating Highly Modular Java Systems.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class BasicAuthSecuredContext implements HttpContext {

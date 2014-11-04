@@ -60,7 +60,7 @@ public class PinFigure extends HexagonalCellFigure implements
 	 * This enum provides the two possible views for a PinFigure: geometry and
 	 * data.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	public enum DisplayType {

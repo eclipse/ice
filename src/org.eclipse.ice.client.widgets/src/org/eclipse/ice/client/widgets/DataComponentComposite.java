@@ -17,12 +17,14 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -39,7 +41,7 @@ import org.eclipse.ui.forms.IMessageManager;
  * DataComponents. It can take a message manager for posting messages and it can
  * be configured to post save events.
  * 
- * @author bkj, djg
+ * @author Jay Jay Billings, Jordan H. Deyton
  */
 public class DataComponentComposite extends Composite implements
 		IUpdateableListener {
@@ -146,11 +148,17 @@ public class DataComponentComposite extends Composite implements
 
 		// Local Declarations
 		boolean rewrite = false;
+		List<Entry> entries = dataComp.retrieveAllEntries();
+		
+		// If there's an empty label set and it's not longer necessary, dispose
+		if (!entries.isEmpty() && emptyLabel != null) {
+			emptyLabel.dispose();
+			emptyLabel = null;
+		}
 
 		// Check and refresh the Entries. Make sure the view is synced
 		// with the underlying data. Using ArrayList here because we need to
 		// use Entry.equals and not Entry.hashCode
-		List<Entry> entries = dataComp.retrieveAllEntries();
 		for (int i = 0; !rewrite && i < entries.size(); i++) {
 			Entry entry = entries.get(i);
 
@@ -176,7 +184,7 @@ public class DataComponentComposite extends Composite implements
 				disposeEntry(i);
 			}
 		}
-
+		
 		// This was added specifically to handle the issues with adding entries
 		// on the fly. This also forces the entries to be ordered correctly on
 		// the screen based on id/ - 20130608@8:39am SFH
@@ -396,7 +404,18 @@ public class DataComponentComposite extends Composite implements
 		};
 
 		// Create the new Entry
-		tmpComposite = new EntryComposite(this, SWT.FLAT, entry);
+		if (entry.getValueType().equals(AllowedValueType.File)) {
+			GridLayout layout = new GridLayout();
+			layout.numColumns = 3;
+			GridData data = new GridData(GridData.FILL_HORIZONTAL
+					| GridData.GRAB_HORIZONTAL | GridData.FILL_VERTICAL
+					| GridData.VERTICAL_ALIGN_END);
+			tmpComposite = new EntryComposite(this, SWT.FLAT, layout, data,
+					entry);
+		} else {
+			tmpComposite = new EntryComposite(this, SWT.FLAT, entry);
+		}
+
 		tmpComposite.setBackground(Display.getCurrent().getSystemColor(
 				SWT.COLOR_WHITE));
 		// Set the LayoutData. The parent Control should have a GridLayout.

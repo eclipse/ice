@@ -17,10 +17,6 @@ import org.eclipse.ice.datastructures.form.Entry;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 /**
  * <!-- begin-UML-doc -->
  * <p>
@@ -36,8 +32,6 @@ import javax.persistence.Transient;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity
-@Table(name = "PainfullySimpleEntry")
 public class PainfullySimpleEntry extends Entry {
 	/**
 	 * <!-- begin-UML-doc -->
@@ -50,7 +44,6 @@ public class PainfullySimpleEntry extends Entry {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	private String group;
 
 	/**

@@ -12,9 +12,6 @@
 *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.client.widgets.geometry.ShapeTreeView;
-import org.eclipse.ice.client.widgets.geometry.TransformationView;
-
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;

@@ -33,7 +33,7 @@ import javax.security.auth.spi.LoginModule;
  * This class does not provide a very secure authentication solution and it
  * should not be used when more secure options are available.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class SimpleLogin implements LoginModule {

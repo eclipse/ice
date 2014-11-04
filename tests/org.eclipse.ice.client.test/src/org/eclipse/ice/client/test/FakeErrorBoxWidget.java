@@ -18,7 +18,7 @@ import org.eclipse.ice.iclient.uiwidgets.IErrorBox;
  * <!-- begin-UML-doc -->
  * <p>The FakeErrorBoxWidget is a realization of IErrorBox that is used for testing. It provides several methods in addition to the IErrorBox interface that are used for testing and inspection.</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeErrorBoxWidget implements IErrorBox {

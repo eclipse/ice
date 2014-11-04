@@ -34,7 +34,7 @@ import org.junit.Test;
  * This class tests the custom GEF EditPartFactories from the GridEditor
  * package. This must be run as a JUnit Plug-in Test.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class EditPartFactoryTester {

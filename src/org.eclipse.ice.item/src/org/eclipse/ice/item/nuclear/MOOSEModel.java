@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -64,7 +62,7 @@ import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj, w5q, aqw
+ * @author Jay Jay Billings, w5q, aqw
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -82,7 +80,6 @@ public class MOOSEModel extends Item {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	private MOOSEFileHandler handler;
 
 	/**
@@ -97,7 +94,6 @@ public class MOOSEModel extends Item {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	public static final int fileDataComponentId = 1;
 
 	/**
@@ -112,7 +108,6 @@ public class MOOSEModel extends Item {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	public static final int mooseTreeCompositeId = 2;
 
 	/**
@@ -126,21 +121,18 @@ public class MOOSEModel extends Item {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	protected static final String mooseProcessActionString = "Write MOOSE File";
 
 	/**
 	 * The array of mooseApps available for this model.
 	 */
 	@XmlTransient
-	@Transient
 	protected ArrayList<String> mooseApps;
 
 	/**
 	 * The currently loaded MOOSE-based application.
 	 */
 	@XmlTransient
-	@Transient
 	protected String loadedApp;
 
 	/**
@@ -149,7 +141,6 @@ public class MOOSEModel extends Item {
 	 * cross-reference across multiple methods.
 	 */
 	@XmlTransient
-	@Transient
 	private ArrayList<TreeComposite> topLevelYamlTrees = null;
 
 	/**
@@ -158,7 +149,6 @@ public class MOOSEModel extends Item {
 	 * cross-reference across multiple methods.
 	 */
 	@XmlTransient
-	@Transient
 	private ArrayList<TreeComposite> topLevelInputTrees = null;
 
 	/**
@@ -301,7 +291,7 @@ public class MOOSEModel extends Item {
 
 		// Local Declarations
 		Entry mooseAppEntry;
-		String selectAppText = "Select MOOSE app";
+		String selectAppText = "MOOSE app...";
 
 		// Create the Form
 		form = new Form();
@@ -347,7 +337,7 @@ public class MOOSEModel extends Item {
 
 		// Only load up the Entry if some MOOSE apps were discovered.
 		if (!mooseApps.isEmpty()) {
-			// Set the default as null, which will default to "Select MOOSE app"
+			// Set the default as null, which will default to "MOOSE app..."
 			// from the Entry's list of allowed values when Entry.getValue() is
 			// called. This is done intentionally to force the user to select an
 			// app when importing an Item
@@ -427,7 +417,7 @@ public class MOOSEModel extends Item {
 		// Setup the action list. Remove key-value pair support.
 		allowedActions.remove(taggedExportActionString);
 		// Add MOOSE GetPot export action
-		allowedActions.add(mooseProcessActionString);
+		allowedActions.add(0, mooseProcessActionString);
 
 		return;
 		// end-user-code
@@ -453,11 +443,12 @@ public class MOOSEModel extends Item {
 	 *            specification should be loaded into the Form's TreeComposite.
 	 *            </p>
 	 * @throws IOException
+	 * @throws CoreException 
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void loadTreeContents(String mooseExecutableName)
-			throws IOException {
+			throws IOException, CoreException {
 		// begin-user-code
 
 		// Local Declarations
@@ -471,9 +462,13 @@ public class MOOSEModel extends Item {
 			// Get the MOOSE folder
 			IFolder mooseFolder = project.getFolder("MOOSE");
 
-			// Assume the folder always exists for now. Later, add some code to
-			// create it and add the data files from the internal store,
-			// searching it again for the file.
+			// If the MOOSE folder doesn't exist, create it and complain
+			if (!mooseFolder.exists()) {
+				mooseFolder.create(true, true, null);
+				throw new IOException("MOOSEModel Exception: "
+						+ "MOOSE directory is empty. Run YAML/action syntax "
+						+ "generator to populate with necessary data.");
+			}
 
 			// Get the file
 			IFile modelFile = mooseFolder
@@ -532,7 +527,6 @@ public class MOOSEModel extends Item {
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
 		DataComponent mooseFileComponent;
-		String oldLoadedApp = loadedApp;
 
 		// Get the MOOSE file information, if available
 		mooseFileComponent = (DataComponent) preparedForm.getComponent(1);
@@ -548,7 +542,7 @@ public class MOOSEModel extends Item {
 					loadedApp = mooseSpecFileEntry.getValue();
 
 					// If it's the dummy default text, do nothing and stop here
-					if ("Select MOOSE app".equals(loadedApp)) {
+					if ("MOOSE app...".equals(loadedApp) || loadedApp == null) {
 						return FormStatus.ReadyToProcess;
 					}
 
@@ -560,7 +554,7 @@ public class MOOSEModel extends Item {
 					// Re-load the Form's tree based on the YAML spec
 					try {
 						loadTreeContents(loadedApp);
-					} catch (IOException e) {
+					} catch (IOException | CoreException e) {
 						e.printStackTrace();
 					}
 
@@ -569,7 +563,7 @@ public class MOOSEModel extends Item {
 							.getComponent(mooseTreeCompositeId);
 
 					// Merge the input tree into the YAML spec
-					mergeTrees(inputTree, yamlTree, oldLoadedApp);
+					mergeTrees(inputTree, yamlTree);
 
 				}
 				// Update the status
@@ -602,12 +596,8 @@ public class MOOSEModel extends Item {
 	 *            The TreeComposite of imported MOOSE file data.
 	 * @param yamlTree
 	 *            The TreeComposite loaded from the MOOSE YAML spec.
-	 * @param oldLoadedApp
-	 *            The name of the previously loaded app, or null if there was
-	 *            none.
 	 */
-	private void mergeTrees(TreeComposite inputTree, TreeComposite yamlTree,
-			String oldLoadedApp) {
+	private void mergeTrees(TreeComposite inputTree, TreeComposite yamlTree) {
 
 		// Local declarations
 		TreeComposite child = null;
@@ -649,79 +639,12 @@ public class MOOSEModel extends Item {
 		// Now walk through the input tree again, this time
 		// copying over the nodes from the input tree into the YAML
 		// tree
-		mergeInputIntoYaml(inputMap, yamlMap, yamlTree, oldLoadedApp);
-
-		// Lastly, set the blank child exemplar on the tree root so
-		// that the user can add custom blocks at the top level of
-		// the tree
-		TreeComposite formTree = (TreeComposite) form
-				.getComponent(mooseTreeCompositeId);
-		addBlankChildExemplar(formTree);
+		mergeInputIntoYaml(inputMap, yamlMap, yamlTree);
+		
+		// Set all the active data nodes on the tree
+		setActiveDataNodes(yamlTree);
 		
 		return;
-	}
-
-	/**
-	 * This utility method is is responsible for tracking the YAML spec of the
-	 * previously loaded MOOSE app, for cross-reference purposes. This method is
-	 * similar to the {@link #loadTreeContents(String)
-	 * MOOSEModel.loadTreeConents(...)} method, but instead returns the loaded
-	 * TreeComposite, instead of setting it on the Form. Returns null if the
-	 * YAML spec could not be loaded.
-	 * 
-	 * Used exclusively by {@link #reviewEntries(Form)
-	 * MOOSEModel.reviewEntries(...)}.
-	 * 
-	 * @param oldExecutableName
-	 *            The name of the old YAML spec to be loaded.
-	 * @return A TreeComposite structure loaded from the specified YAML file.
-	 * @throws IOException
-	 */
-	private TreeComposite loadOldTreeContents(String oldExecutableName)
-			throws IOException {
-		// begin-user-code
-
-		// Local Declarations
-		ArrayList<TreeComposite> mooseBlocks;
-		TreeComposite oldYamlTree = null;
-
-		// Load the file from the project space if possible
-		if (project != null && project.isAccessible()) {
-
-			// Get the MOOSE folder
-			IFolder mooseFolder = project.getFolder("MOOSE");
-
-			// Assume the folder always exists for now. Later, add some code to
-			// create it and add the data files from the internal store,
-			// searching it again for the file.
-
-			// Get the file
-			IFile modelFile = mooseFolder.getFile(oldExecutableName + ".yaml");
-			// Load the tree if the file exists
-			if (modelFile.exists()) {
-				// Load the file handler
-				handler = new MOOSEFileHandler();
-				// And the file
-				mooseBlocks = handler.loadYAML(modelFile.getLocation()
-						.toOSString());
-				// Add the blocks to the parent tree composite
-				oldYamlTree = new TreeComposite();
-				for (TreeComposite block : mooseBlocks) {
-					oldYamlTree.setNextChild(block);
-				}
-
-			} else {
-				// Complain
-				throw new IOException("MOOSEModel Exception: Executable file, "
-						+ oldExecutableName + ".yaml" + ", not available!");
-			}
-		} else {
-			// Complain
-			throw new IOException(
-					"MOOSEModel Exception: Project space not available!");
-		}
-		return oldYamlTree;
-		// end-user-code
 	}
 
 	/**
@@ -763,9 +686,9 @@ public class MOOSEModel extends Item {
 			newMooseTree.setNextChild(blockClone);
 		}
 
-		// Now walk through the tree, setting all child dataNodes as active
+		// Set all active data nodes
 		setActiveDataNodes(newMooseTree);
-
+		
 		// Set the new MOOSE TreeComposite as the Form's
 		form.removeComponent(2);
 		form.addComponent(newMooseTree);
@@ -885,7 +808,7 @@ public class MOOSEModel extends Item {
 			// to push onto the stack, remove the last "part" of the
 			// path name, as we'll be going back up one level
 			else if (children.isEmpty()) {
-				prevNameIndex = treeName.indexOf("/" + tree.getName());
+				prevNameIndex = treeName.lastIndexOf("/" + tree.getName());
 				treeName = treeName.substring(0, prevNameIndex);
 			}
 
@@ -914,7 +837,7 @@ public class MOOSEModel extends Item {
 		// Local declarations
 		ArrayList<TreeComposite> childExemplars;
 		HashMap<String, TreeComposite> exemplarMap = new HashMap<String, TreeComposite>();
-		TreeComposite tree = null;
+		TreeComposite tree = null, oneUpTree = null;
 		String treeName = "";
 		int prevNameIndex = -1;
 
@@ -944,7 +867,7 @@ public class MOOSEModel extends Item {
 			for (int i = (childExemplars.size() - 1); i >= 0; i--) {
 				treeStack.push(childExemplars.get(i));
 			}
-
+		
 			// While we're here, append a blank exemplar to the tree (so the
 			// user can create custom blocks)
 			addBlankChildExemplar(tree);
@@ -960,8 +883,20 @@ public class MOOSEModel extends Item {
 			// "part" of the path name, as we'll be going back up
 			// one level
 			else if (childExemplars.isEmpty()) {
-				prevNameIndex = treeName.indexOf("/" + tree.getName());
+				
+				// Get the name of the tree one level up
+				prevNameIndex = treeName.lastIndexOf("/" + tree.getName());
 				treeName = treeName.substring(0, prevNameIndex);
+				
+				// Go up another level if the next tree in the stack isn't
+				// a child exemplar of the current tree referenced by treeName
+				oneUpTree = exemplarMap.get(treeName.substring(1));
+				if (oneUpTree != null && !oneUpTree.getChildExemplars().contains(treeStack.peek())) {
+					prevNameIndex = treeName.lastIndexOf("/");
+					treeName = ((prevNameIndex == 0 || prevNameIndex == -1) ? 
+							treeName : treeName.substring(0, prevNameIndex));
+				}
+				
 			}
 
 			// Pop the next tree off the stack
@@ -984,15 +919,12 @@ public class MOOSEModel extends Item {
 		// Create a blank child exemplar
 		TreeComposite blankTree = new TreeComposite();
 		blankTree.setName("BlankBlock");
-		blankTree
-				.setDescription("A customizable block a MOOSE user can create.");
 		DataComponent dataNode = new DataComponent();
-		blankTree.setActiveDataNode(dataNode);
-		blankTree.setActive(true);
+		blankTree.visit(dataNode);
 
 		// Add it to the tree
 		tree.addChildExemplar(blankTree);
-
+		
 		return;
 	}
 
@@ -1023,7 +955,6 @@ public class MOOSEModel extends Item {
 		TreeComposite inputCur = null;
 		int prevNameIndex = -1;
 		String parentKey = "";
-		DataComponent activeNode;
 		TreeType treeType;
 
 		// Iterate through the input map keys
@@ -1039,10 +970,6 @@ public class MOOSEModel extends Item {
 				// Reset our counter, flag, etc.
 				int generationsUp = 0;
 				boolean foundExemplarMatch = false;
-
-				// Set the active data node
-				activeNode = (DataComponent) inputCur.getDataNodes().get(0);
-				inputCur.setActiveDataNode(activeNode);
 
 				// Figure out the parent tree's key
 				prevNameIndex = key.indexOf("/" + inputCur.getName());
@@ -1060,6 +987,7 @@ public class MOOSEModel extends Item {
 					// type
 					treeType = TreeType.fromString(inputCur.getClass()
 							.toString());
+					
 					if (treeType != null
 							&& treeType == TreeType.AdaptiveTreeComposite) {
 						setAdaptiveType((AdaptiveTreeComposite) inputCur);
@@ -1129,14 +1057,8 @@ public class MOOSEModel extends Item {
 	/**
 	 * This utility method is responsible for merging the contents of a HashMap
 	 * of an imported MOOSE input data TreeComposite, into a HashMap of a YAML
-	 * TreeComposite, where both keys match.
-	 * 
-	 * In the event that there is no key match for a top-level node, the
-	 * previous MOOSE app's YAML TreeComposite is loaded (if there was one), for
-	 * comparison. If the "unmatched" TreeComposite is not a relic from the
-	 * previously loaded app, then it will be treated as a "custom" tree not
-	 * found in the YAML spec (but still probably necessary for execution) and
-	 * appended to the end of the YAML TreeComposite.
+	 * TreeComposite, where both keys match. If a key match is not found, the 
+	 * block in particular is discarded.
 	 * 
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
@@ -1144,15 +1066,12 @@ public class MOOSEModel extends Item {
 	 * @param inputMap
 	 *            The HashMap of the imported MOOSE data TreeComposite.
 	 * @param yamlMap
-	 * @param oldLoadedApp
 	 */
 	private void mergeInputIntoYaml(HashMap<String, TreeComposite> inputMap,
-			HashMap<String, TreeComposite> yamlMap, TreeComposite yamlTree,
-			String oldLoadedApp) {
+			HashMap<String, TreeComposite> yamlMap, TreeComposite yamlTree) {
 
 		// Local declarations
 		TreeComposite inputCur = null, yamlCur = null;
-		DataComponent activeNode = null;
 		TreeType treeType;
 		String key;
 
@@ -1162,8 +1081,9 @@ public class MOOSEModel extends Item {
 			// Get the key and corresponding tree
 			key = tree.getName();
 			inputCur = inputMap.get(key);
-
-			// Try to find the key in the new YAML map
+			
+			// Try to find the key in the new YAML map (if not found, will just
+			// be chucked out the window)
 			if (yamlMap.containsKey(key)) {
 				// Get the matching YAML version
 				yamlCur = yamlMap.get(key);
@@ -1173,86 +1093,60 @@ public class MOOSEModel extends Item {
 				// place" flag to true so parent and sibling references are
 				// retained)
 				yamlCur.copy(inputCur, true);
-				// Set the active data node
-				activeNode = (DataComponent) yamlCur.getDataNodes().get(0);
-				yamlCur.setActiveDataNode(activeNode);
 
-				// Lastly, check if this is an AdaptiveTreeComposite
+				// Now, check if this is an AdaptiveTreeComposite
 				// and if it is, set the type
 				treeType = TreeType.fromString(yamlCur.getClass().toString());
 				if (treeType != null
 						&& treeType == TreeType.AdaptiveTreeComposite) {
 					setAdaptiveType((AdaptiveTreeComposite) yamlCur);
 				}
-			}
-			// If there's no exact match found in the YAML map, try appending it
-			// to the YAML tree anyways (if it's unique)
-			else if (topLevelInputTrees.contains(inputCur)) {
-
-				// Check if there was a previously loaded MOOSE app by getting
-				// its YAML spec in a HashMap
-				HashMap<String, TreeComposite> oldYamlMap = (HashMap<String, TreeComposite>) buildOldYamlMap(oldLoadedApp);
-
-				// Check if a map was successfully created
-				if (oldYamlMap != null && !oldYamlMap.isEmpty()) {
-					// If there's NO match in the old YAML spec, then inputCur
-					// must be a unique/custom block (and isn't just leftover
-					// from the last tree), so we can add it
-					if (!oldYamlMap.containsKey(inputCur.getName())) {
-						yamlTree.setNextChild(inputCur);
+				
+				// Lastly, check if any children, subchildren, etc. of this
+				// tree also need to be converted to AdaptiveTreeComposites
+				
+				// TODO This is a quick fix for now and only checks children 1
+				// level deep for now. I will have to implement a more robust 
+				// routine that recursively checks if any of the subchildren 
+				// need to be converted to AdaptiveTreeComposites  --w5q
+				ArrayList<TreeComposite> exemplars = yamlCur.getChildExemplars();
+				for (TreeComposite exemplar : exemplars) {
+					
+					treeType = TreeType.fromString(exemplar.getClass().toString());
+					if (treeType != null
+							&& treeType == TreeType.AdaptiveTreeComposite) {
+						String childName = exemplar.getName();
+						yamlCur.resetChildIterator();
+						TreeComposite childCur = null;
+						
+						// Look for a child matching the name of the exemplar
+						// that is an AdaptiveTreeComposite
+						while ((childCur = yamlCur.getNextChild()) != null) {
+							if (childCur.getName().equals(childName)) {
+								
+								// Clone the exemplar with all the "types" data
+								// already entered
+								AdaptiveTreeComposite adapChild = 
+										(AdaptiveTreeComposite) exemplar.clone();
+								// Set the new AdaptiveTreeComposite in the
+								// yamlCur's list of children
+								yamlCur.removeChild(childCur);
+								yamlCur.setNextChild(adapChild);
+								// Copy the actual child's data in
+								adapChild.copy(childCur);
+								// Set the adaptive type
+								setAdaptiveType(adapChild);
+								// Git off mah lawn!
+								break;
+							}
+						}
 					}
 				}
-				// If there was no previously loaded app, then we can certainly
-				// append the current node
-				else if (oldYamlMap == null) {
-					yamlTree.setNextChild(inputCur);
-				}
+				
 			}
 		}
 
 		return;
-	}
-
-	/**
-	 * This utility method is responsible for checking if another MOOSE app was
-	 * previously loaded, and if so, load the YAML spec into a Map (keyed on
-	 * node pathnames).
-	 * 
-	 * Used exclusively by {@link #mergeInputIntoYaml(HashMap, HashMap, String)
-	 * MOOSEModel.mergeInputIntoYaml(...)}
-	 * 
-	 * @param oldLoadedApp
-	 *            Name of the last loaded MOOSE app, or null if there was none.
-	 * @return The Map of the previously-loaded YAML TreeComposite (keyed on
-	 *         name), or null if no app was previously loaded.
-	 */
-	private Map<String, TreeComposite> buildOldYamlMap(String oldLoadedApp) {
-
-		// Local declarations
-		HashMap<String, TreeComposite> oldYamlMap = null;
-
-		// Check if there was a previously loaded app
-		if (oldLoadedApp != null) {
-
-			// Try to load the old YAML spec
-			TreeComposite oldYamlTree = null;
-			try {
-				oldYamlTree = loadOldTreeContents(oldLoadedApp);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			// Build a HashMap of the old YAML tree's top-level nodes, keyed on
-			// the node name
-			oldYamlMap = new HashMap<String, TreeComposite>();
-			TreeComposite child = null;
-			while ((child = oldYamlTree.getNextChild()) != null) {
-				oldYamlMap.put(child.getName(), child);
-			}
-
-		}
-
-		return oldYamlMap;
 	}
 
 	/**
@@ -1304,9 +1198,6 @@ public class MOOSEModel extends Item {
 	 * DataNode), and setting the AdaptiveTreeComposite.type to be that (if such
 	 * a type exists in its typesMap).
 	 * 
-	 * Used exclusively by {@link #reviewEntries(Form)
-	 * MOOSEModel.reviewEntries(...)}.
-	 * 
 	 * @param tree
 	 *            The AdaptiveTreeComposite to set the type of.
 	 */
@@ -1332,13 +1223,13 @@ public class MOOSEModel extends Item {
 		// If the type is valid, set it
 		if (!typeName.equals(null) && !("").equals(typeName)
 				&& !tree.setType(typeName)) {
+		}
+		else {
+			// Complain
 			System.out.println("MOOSEModel Message: Could not set type: \""
 					+ typeName + "\" of AdaptiveTreeComposite "
 					+ tree.getName());
 		}
-		// The active data node will have be re-set as the data nodes
-		// list changes upon setting the type
-		tree.setActiveDataNode(tree.getDataNodes().get(0));
 
 		return;
 	}

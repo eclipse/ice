@@ -50,7 +50,12 @@ public class CaebatLauncher extends JobLauncher {
 	/**
 	 * The default CAEBAT home directory.
 	 */
-	private String CAEBATHome;
+	private String CAEBAT_ROOT;
+
+	/**
+	 * The default IPS home directory.
+	 */
+	private String IPS_ROOT;
 
 	/**
 	 * A nullary constructor that delegates to the project constructor.
@@ -96,7 +101,8 @@ public class CaebatLauncher extends JobLauncher {
 				+ "physics simulation from ORNL.");
 
 		// Set the name of the home directory
-		CAEBATHome = "/data1/projects/caebat/";
+		CAEBAT_ROOT = "/home/batsim/caebat";
+		IPS_ROOT = "$IPS_ROOT";
 
 		return;
 		// end-user-code
@@ -114,35 +120,34 @@ public class CaebatLauncher extends JobLauncher {
 	public void setupForm() {
 		// begin-user-code
 
-		// Setup the Caebat's executable path.
-		String CAEBATExec = CAEBATHome + "framework/bin/ips.py";
-
+		// Setup the script to copy the data files for case 6
+		String copyCase6 = "cp -r ${installDir}vibe/examples/case6/* .;";
+		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
+				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile};";
+		// Setup the Caebat's launch script
+		String CAEBATExec = "${installDir}ipsframework-code/install/bin/ips.py"
+				+ " -a --log=temp.log --platform=" + IPS_ROOT
+				+ "/workstation.conf --simulation=${inputFile};";
+		
 		// Setup the command stages. An explicit forward slash is used here, so
 		// will only work on linux for now.
-		fullExecCMD = CAEBATExec + " -a --log=temp.log --platform="
-				+ CAEBATHome + "/workstation.conf --simulation=${inputFile}";
+		fullExecCMD = copyCase6 + fixSIMROOT + CAEBATExec;
 
 		// Setup form
 		super.setupForm();
 
-		// setup the executable information
+		// Stop the launcher from trying to append the input file
+		setAppendInputFlag(false);
+		
+		// Setup the executable information
 		setExecutable(getName(), getDescription(), this.fullExecCMD);
 
 		// Add localhost
-		addHost("livingstone.ornl.gov", "linux x86_64", CAEBATExec);
-
-		// Add the workstation conf
+		addHost("livingstone.ornl.gov", "linux x86_64", CAEBAT_ROOT);
 
 		// Add the input files types for the BatML files
-		addInputType("Thermal Configuration File", "thermalFile",
-				"Configuration file for the "
-						+ "thermal properties of the battery", ".xml");
-		addInputType("Electrochemical Configuration File", "electroChemFile",
-				"Configuration file for the "
-						+ "electrochemical properties of the battery", ".xml");
-		addInputType("Electrical Configuration File", "electricalFile",
-				"Configuration file for the "
-						+ "electrical properties of the battery", ".xml");
+		addInputType("Key-value pair file", "keyValueFile",
+				"Key-value pair with case parameters", ".dat");
 
 		return;
 		// end-user-code
@@ -170,41 +175,41 @@ public class CaebatLauncher extends JobLauncher {
 		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
 		InputStream fileStream;
 		Scanner fileScanner;
-		String next, runDir, runDirAppendix = "/work/THERMAL__Amperes_2/";
-		String[] runIDArray;
+		// String next, runDir, runDirAppendix = "/work/THERMAL__Amperes_2/";
+		// String[] runIDArray;
 
 		// Get the input file from the project
-		IFile inputFile = project.getFile(inputFileEntry.getValue());
-		try {
-			// Load a scanner to read the file
-			fileStream = inputFile.getContents();
-			fileScanner = new Scanner(fileStream);
-			fileScanner.useDelimiter(" = ");
-			// Look for the run id by scanning the file
-			while (fileScanner.hasNext()) {
-				next = fileScanner.next();
-				// Assign the run directory to the value in the ID and break out
-				// of the loop
-				if (next.contains("RUN_ID")) {
-					runIDArray = fileScanner.next().split("\n");
-					runDir = runIDArray[0] + runDirAppendix;
-					// Set the remote download directory
-					setRemoteDownloadDirectory(CAEBATHome + runDir);
-					break;
-				}
-			}
-			// Close the underlying stream in the scanner
-			fileScanner.close();
-			return super.process(actionName);
-		} catch (CoreException e) {
-			// Complain
-			System.out.println("CAEBATLauncher Message: "
-					+ "Unable to load input file to determine run directory.");
-			e.printStackTrace();
-		}
+		// IFile inputFile = project.getFile(inputFileEntry.getValue());
+		// try {
+		// Load a scanner to read the file
+		// fileStream = inputFile.getContents();
+		// fileScanner = new Scanner(fileStream);
+		// fileScanner.useDelimiter(" = ");
+		// // Look for the run id by scanning the file
+		// while (fileScanner.hasNext()) {
+		// next = fileScanner.next();
+		// // Assign the run directory to the value in the ID and break out
+		// // of the loop
+		// if (next.contains("RUN_ID")) {
+		// runIDArray = fileScanner.next().split("\n");
+		// runDir = runIDArray[0] + runDirAppendix;
+		// // Set the remote download directory
+		// setRemoteDownloadDirectory(IPS_ROOT + runDir);
+		// break;
+		// }
+		// }
+		// // Close the underlying stream in the scanner
+		// fileScanner.close();
+		return super.process(actionName);
+		// } catch (CoreException e) {
+		// // Complain
+		// System.out.println("CAEBATLauncher Message: "
+		// + "Unable to load input file to determine run directory.");
+		// e.printStackTrace();
+		// }
 
 		// Unable to find the run directory. Return an error.
-		return FormStatus.InfoError;
+		// return FormStatus.InfoError;
 
 		// end-user-code
 

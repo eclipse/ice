@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * The Entry's allow values are "true" or "false", which correspond to being
  * plotted or not plotted, respectively.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  */
 public class PlotEntryContentProvider implements IEntryContentProvider {
 

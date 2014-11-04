@@ -18,48 +18,22 @@ import java.util.List;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.client.widgets.ICESectionPage;
+import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.moose.components.PlantBlockManager;
-import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantApplication;
-import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantCompositeFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
-import org.eclipse.ice.reactor.plant.Boundary;
-import org.eclipse.ice.reactor.plant.Branch;
 import org.eclipse.ice.reactor.plant.CoreChannel;
-import org.eclipse.ice.reactor.plant.DownComer;
-import org.eclipse.ice.reactor.plant.FlowJunction;
-import org.eclipse.ice.reactor.plant.GeometricalComponent;
-import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.IPlantComponentVisitor;
-import org.eclipse.ice.reactor.plant.IdealPump;
-import org.eclipse.ice.reactor.plant.Inlet;
-import org.eclipse.ice.reactor.plant.Junction;
-import org.eclipse.ice.reactor.plant.MassFlowInlet;
-import org.eclipse.ice.reactor.plant.OneInOneOutJunction;
-import org.eclipse.ice.reactor.plant.Outlet;
-import org.eclipse.ice.reactor.plant.Pipe;
-import org.eclipse.ice.reactor.plant.PipeToPipeJunction;
-import org.eclipse.ice.reactor.plant.PipeWithHeatStructure;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
-import org.eclipse.ice.reactor.plant.PointKinetics;
-import org.eclipse.ice.reactor.plant.Pump;
 import org.eclipse.ice.reactor.plant.Reactor;
-import org.eclipse.ice.reactor.plant.SeparatorDryer;
-import org.eclipse.ice.reactor.plant.SolidWall;
-import org.eclipse.ice.reactor.plant.SpecifiedDensityAndVelocityInlet;
-import org.eclipse.ice.reactor.plant.Subchannel;
-import org.eclipse.ice.reactor.plant.SubchannelBranch;
-import org.eclipse.ice.reactor.plant.TDM;
-import org.eclipse.ice.reactor.plant.TimeDependentJunction;
-import org.eclipse.ice.reactor.plant.TimeDependentVolume;
-import org.eclipse.ice.reactor.plant.Turbine;
-import org.eclipse.ice.reactor.plant.Valve;
-import org.eclipse.ice.reactor.plant.VolumeBranch;
-import org.eclipse.ice.reactor.plant.WetWell;
+import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -77,6 +51,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
@@ -88,7 +63,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * This class extends the default {@link ICEFormEditor} to enable it to draw a
  * {@link PlantApplication}, a 3D view built on jME3 for viewing plant models.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class MOOSEFormEditor extends ICEFormEditor {
@@ -99,9 +74,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	public static final String ID = "org.eclipse.ice.client.widgets.moose.MOOSEFormEditor";
 
 	/**
-	 * The PlantApplication rendered on the Plant View page.
+	 * The PlantAppState rendered on the Plant View page.
 	 */
-	private final PlantApplication plantApplication;
+	private PlantAppState plantView;
 
 	/**
 	 * The factory responsible for synchronizing the current "Components"
@@ -118,11 +93,37 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	private TreeComposite components;
 
 	/**
+	 * The underlying plant model that is rendered in the {@link #plantView}.
+	 * When {@link #requiresPlant} is true, any changes to the MOOSE Model's
+	 * tree should be passed to this via the {@link #factory}.
+	 */
+	private final PlantComposite plant;
+
+	/**
+	 * The <code>Entry</code> that contains the list of allowed MOOSE apps and
+	 * the currently selected MOOSE app.
+	 */
+	private Entry mooseAppEntry;
+
+	/**
+	 * This listener is used to set the {@link #requiresPlant} flag when the
+	 * {@link #mooseAppEntry} is updated.
+	 */
+	private final IUpdateableListener mooseAppListener;
+
+	/**
+	 * Whether or not the current MOOSE app setting in the Model Builder
+	 * requires the plant view. If it does, then each call to
+	 * {@link #update(IUpdateable)} will look for the "Components" sub-tree.
+	 */
+	private boolean requiresPlant = false;
+
+	/**
 	 * The default constructor.
 	 */
 	public MOOSEFormEditor() {
 
-		PlantComposite plantComposite = new PlantComposite() {
+		plant = new PlantComposite() {
 
 			private final ArrayList<CoreChannel> coreChannels = new ArrayList<CoreChannel>();
 			private final List<Reactor> reactors = new ArrayList<Reactor>();
@@ -138,30 +139,14 @@ public class MOOSEFormEditor extends ICEFormEditor {
 					// the following:
 					// For new Reactors, add all existing CoreChannels to it.
 					// For new CoreChannels, add it to all existing Reactors.
-					IPlantComponentVisitor visitor = new IPlantComponentVisitor() {
-						public void visit(PlantComposite plantComp) {
-						}
-
-						public void visit(GeometricalComponent plantComp) {
-						}
-
-						public void visit(Junction plantComp) {
-						}
-
+					IPlantComponentVisitor visitor = new SelectivePlantComponentVisitor() {
+						@Override
 						public void visit(Reactor plantComp) {
 							reactors.add(plantComp);
 							plantComp.setCoreChannels(coreChannels);
 						}
 
-						public void visit(PointKinetics plantComp) {
-						}
-
-						public void visit(HeatExchanger plantComp) {
-						}
-
-						public void visit(Pipe plantComp) {
-						}
-
+						@Override
 						public void visit(CoreChannel plantComp) {
 
 							boolean found = false;
@@ -176,79 +161,6 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								}
 							}
 							return;
-						}
-
-						public void visit(Subchannel plantComp) {
-						}
-
-						public void visit(PipeWithHeatStructure plantComp) {
-						}
-
-						public void visit(Branch plantComp) {
-						}
-
-						public void visit(SubchannelBranch plantComp) {
-						}
-
-						public void visit(VolumeBranch plantComp) {
-						}
-
-						public void visit(FlowJunction plantComp) {
-						}
-
-						public void visit(WetWell plantComp) {
-						}
-
-						public void visit(Boundary plantComp) {
-						}
-
-						public void visit(OneInOneOutJunction plantComp) {
-						}
-
-						public void visit(Turbine plantComp) {
-						}
-
-						public void visit(IdealPump plantComp) {
-						}
-
-						public void visit(Pump plantComp) {
-						}
-
-						public void visit(Valve plantComp) {
-						}
-
-						public void visit(PipeToPipeJunction plantComp) {
-						}
-
-						public void visit(Inlet plantComp) {
-						}
-
-						public void visit(MassFlowInlet plantComp) {
-						}
-
-						public void visit(
-								SpecifiedDensityAndVelocityInlet plantComp) {
-						}
-
-						public void visit(Outlet plantComp) {
-						}
-
-						public void visit(SolidWall plantComp) {
-						}
-
-						public void visit(TDM plantComp) {
-						}
-
-						public void visit(TimeDependentJunction plantComp) {
-						}
-
-						public void visit(TimeDependentVolume plantComp) {
-						}
-
-						public void visit(DownComer plantComp) {
-						}
-
-						public void visit(SeparatorDryer plantComp) {
 						}
 					};
 					component.accept(visitor);
@@ -266,16 +178,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 					// the following:
 					// For removed Reactors, update the list of Reactors.
 					// For removed CoreChannels, update all existing Reactors.
-					IPlantComponentVisitor visitor = new IPlantComponentVisitor() {
-						public void visit(PlantComposite plantComp) {
-						}
-
-						public void visit(GeometricalComponent plantComp) {
-						}
-
-						public void visit(Junction plantComp) {
-						}
-
+					IPlantComponentVisitor visitor = new SelectivePlantComponentVisitor() {
+						@Override
 						public void visit(Reactor plantComp) {
 
 							boolean found = false;
@@ -287,16 +191,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								reactors.remove(i - 1);
 							}
 						}
-
-						public void visit(PointKinetics plantComp) {
-						}
-
-						public void visit(HeatExchanger plantComp) {
-						}
-
-						public void visit(Pipe plantComp) {
-						}
-
+						
+						@Override
 						public void visit(CoreChannel plantComp) {
 
 							boolean found = false;
@@ -312,79 +208,6 @@ public class MOOSEFormEditor extends ICEFormEditor {
 							}
 							return;
 						}
-
-						public void visit(Subchannel plantComp) {
-						}
-
-						public void visit(PipeWithHeatStructure plantComp) {
-						}
-
-						public void visit(Branch plantComp) {
-						}
-
-						public void visit(SubchannelBranch plantComp) {
-						}
-
-						public void visit(VolumeBranch plantComp) {
-						}
-
-						public void visit(FlowJunction plantComp) {
-						}
-
-						public void visit(WetWell plantComp) {
-						}
-
-						public void visit(Boundary plantComp) {
-						}
-
-						public void visit(OneInOneOutJunction plantComp) {
-						}
-
-						public void visit(Turbine plantComp) {
-						}
-
-						public void visit(IdealPump plantComp) {
-						}
-
-						public void visit(Pump plantComp) {
-						}
-
-						public void visit(Valve plantComp) {
-						}
-
-						public void visit(PipeToPipeJunction plantComp) {
-						}
-
-						public void visit(Inlet plantComp) {
-						}
-
-						public void visit(MassFlowInlet plantComp) {
-						}
-
-						public void visit(
-								SpecifiedDensityAndVelocityInlet plantComp) {
-						}
-
-						public void visit(Outlet plantComp) {
-						}
-
-						public void visit(SolidWall plantComp) {
-						}
-
-						public void visit(TDM plantComp) {
-						}
-
-						public void visit(TimeDependentJunction plantComp) {
-						}
-
-						public void visit(TimeDependentVolume plantComp) {
-						}
-
-						public void visit(DownComer plantComp) {
-						}
-
-						public void visit(SeparatorDryer plantComp) {
-						}
 					};
 					component.accept(visitor);
 				}
@@ -395,15 +218,77 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 		// Initialize the PlantComponentFactory and PlantApplication.
 		factory = new PlantBlockManager();
-		factory.setPlant(plantComposite);
-		plantApplication = new PlantApplication();
-		plantApplication.setPlant(plantComposite);
+		factory.setPlant(plant);
+
+		// Create a listener that updates the requiresPlant flag when the type
+		// of MOOSE app actually supports a plant view.
+		mooseAppListener = new IUpdateableListener() {
+			@Override
+			public void update(IUpdateable component) {
+				if (component == mooseAppEntry) {
+					requiresPlant = "relap".equals(mooseAppEntry.getValue());
+				}
+			}
+		};
+		
+		return;
+	}
+	
+	/**
+	 * We need to know when the MOOSE Model Builder's tree supports the plant
+	 * view. Override the default init() behavior to additionally update the
+	 * {@link #mooseAppEntry} when the <code>Form</code>'s model is set.
+	 */
+	public void init(IEditorSite site, IEditorInput input) {
+		super.init(site, input);
+		updateMOOSEAppEntry();
+	}
+
+	/**
+	 * We need to know when the MOOSE Model Builder's tree supports the plant
+	 * view. Override the default setInput() behavior to additionally update the
+	 * {@link #mooseAppEntry} when the <code>Form</code>'s model is changed.
+	 */
+	protected void setInput(IEditorInput input) {
+		super.setInput(input);
+		updateMOOSEAppEntry();
+	}
+
+	/**
+	 * We need to know when the MOOSE Model Builder's tree supports the plant
+	 * view. Override the default setInput() behavior to additionally update the
+	 * {@link #mooseAppEntry} when the <code>Form</code>'s model is changed.
+	 */
+	protected void setInputWithNotify(IEditorInput input) {
+		super.setInputWithNotify(input);
+		updateMOOSEAppEntry();
+	}
+
+	/**
+	 * Updates the {@link #mooseAppEntry} to point to the correct
+	 * <code>Entry</code> in the MOOSE Model Builder's <code>Form</code>.
+	 */
+	private void updateMOOSEAppEntry() {
+
+		// Unregister the listener from the previous MOOSE app Entry.
+		if (mooseAppEntry != null) {
+			mooseAppEntry.unregister(mooseAppListener);
+		}
+
+		// Get the Entry that contains the available MOOSE apps.
+		DataComponent dataComp = (DataComponent) iceDataForm
+				.getComponent(MOOSEModel.fileDataComponentId);
+		mooseAppEntry = dataComp.retrieveEntry("MOOSE-Based Application");
+		// Listen to the MOOSE app Entry.
+		mooseAppEntry.register(mooseAppListener);
 
 		return;
 	}
 
 	/**
-	 * 
+	 * Overrides the default <code>ICEFormEditor</code> header and adds the
+	 * widgets for specifiying the output for the MOOSE model (i.e., the input
+	 * file for the MOOSE-based simulation).
 	 */
 	@Override
 	protected void createHeaderContents(IManagedForm headerForm) {
@@ -475,6 +360,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			outputFileText.addFocusListener(new FocusListener() {
 				@Override
 				public void focusGained(FocusEvent e) {
+					// Do nothing.
 				};
 
 				@Override
@@ -483,7 +369,6 @@ public class MOOSEFormEditor extends ICEFormEditor {
 					entry.setValue(outputFileText.getText());
 					// Notify the listeners that a change may have occurred.
 					notifyUpdateListeners();
-
 				};
 			});
 
@@ -597,40 +482,35 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						form.getBody().setLayout(new FillLayout());
 						form.setMinWidth(10);
 
-						// ---- Create the Section with the PlantApplication
-						// ---- //
+						// ---- Create the Section with the PlantView. ---- //
 						// Get the toolkit used to create Composites, Sections,
 						// etc.
 						FormToolkit formToolkit = managedForm.getToolkit();
 
 						// Create a single Section with a single SectionPart.
-						// When
-						// the form updates, it calls the SectionPart's
-						// refresh()
-						// method. This method should call this class'
+						// When the form updates, it calls the SectionPart's
+						// refresh() method. This method should call this class'
 						// refreshContent() method.
+						int style = Section.NO_TITLE | Section.EXPANDED;
 						Section section = formToolkit.createSection(
-								form.getBody(), Section.NO_TITLE
-										| Section.EXPANDED);
+								form.getBody(), style);
 						SectionPart sectionPart = new SectionPart(section);
 						// Add the section part to the form so that updates will
-						// be
-						// sent to the part (and thus will call
+						// be sent to the part (and thus will call
 						// refreshContent()).
 						managedForm.addPart(sectionPart);
 
+						// Create the plant view.
+						plantView = new ViewFactory().createPlantView(plant);
+
 						// Render the PlantApplication in the section.
-						PlantCompositeFactory factory = new PlantCompositeFactory();
-						Composite composite = factory.renderPlantComposite(
-								section, plantApplication);
+						Composite composite = plantView.createComposite(section);
 						section.setClient(composite);
 
 						// Set the background color for the ATC to be the same
-						// as
-						// the section.
+						// as the section.
 						composite.setBackground(section.getBackground());
-						// ------------------------------------------------------
-						// //
+						// ------------------------------------------------ //
 
 						return;
 						// end-user-code
@@ -639,9 +519,6 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			} catch (PartInitException e) {
 				e.printStackTrace();
 			}
-
-			// Update the plant with the Components in the TreeComposite.
-			updateComponents();
 		}
 
 		return;
@@ -669,25 +546,25 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	public void update(IUpdateable component) {
 		super.update(component);
 
-		System.out.println("MOOSEFormEditor message: "
-				+ "Received update from component " + component.getName() + "("
-				+ System.identityHashCode(component) + ").");
-
 		// If the root TreeComposite has been updated, we should look for the
 		// "Components" TreeComposite and send it to the PlantComponentFactory.
 		if (component == iceDataForm
-				.getComponent(MOOSEModel.mooseTreeCompositeId)) {
+				.getComponent(MOOSEModel.mooseTreeCompositeId) && requiresPlant) {
 			updateComponents();
 		}
 
 		return;
 	}
 
+	/**
+	 * Queries the current MOOSE Model for changes to the "Components" sub-tree.
+	 */
 	private void updateComponents() {
+		
 		// Get the root TreeComposite from the form.
 		TreeComposite root = (TreeComposite) iceDataForm
 				.getComponent(MOOSEModel.mooseTreeCompositeId);
-
+		
 		// Find the "Components" TreeComposite and set componentNode. We
 		// need to register with it so we can listen for added
 		// PlantComponents.
@@ -713,7 +590,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 */
 	@Override
 	protected String getTreeCompositeViewerID() {
-		return MOOSETreeCompositeViewer.ID;
+		return MOOSETreeCompositeView.ID;
 	}
 
 }

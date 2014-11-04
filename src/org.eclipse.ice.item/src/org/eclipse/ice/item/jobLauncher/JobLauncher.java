@@ -22,20 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -46,11 +37,9 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-
-import javax.persistence.EntityManager;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -106,7 +95,9 @@ import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
  * <p>
  * These flags can be inserted as part of the executable name and the
  * JobLauncher will automatically replace them for the appropriate host so long
- * as they are provided.
+ * as they are provided. By defeault the JobLauncher appends the name of the
+ * input file to the end of the executable string. This option can be disabled
+ * by calling setAppendInputFlag.
  * </p>
  * <p>
  * The setExecutable() operation should not be called with MPI, OpenMP or Intel
@@ -126,7 +117,7 @@ import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -147,7 +138,6 @@ public class JobLauncher extends Item {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
-	@Column(length = 1000)
 	private String executableCommandName;
 
 	/**
@@ -195,6 +185,20 @@ public class JobLauncher extends Item {
 	private boolean openMPEnabled = false;
 
 	/**
+	 * True if the launcher should append the name of the input file to the
+	 * launch command, false otherwise.
+	 */
+	@XmlAttribute
+	private boolean appendInput;
+
+	/**
+	 * True if the launcher should upload input file(s) to a remote machine,
+	 * otherwise false. Setting this flag to false will still allow the
+	 */
+	@XmlAttribute
+	private boolean uploadInput;
+
+	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of hosts available for the job. In order to use JPA on this
@@ -206,7 +210,6 @@ public class JobLauncher extends Item {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement
-	@Column(length = 1000)
 	private ArrayList<String> hosts;
 
 	/**
@@ -220,7 +223,6 @@ public class JobLauncher extends Item {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement
-	// @Column(length = 1000)
 	private ArrayList<String> inputFiles;
 
 	/**
@@ -249,14 +251,12 @@ public class JobLauncher extends Item {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient()
-	@Transient
 	private String remoteDownloadDir;
 
 	/**
 	 * A map for storing key-value pairs needed by the actions.
 	 */
 	@XmlTransient()
-	@Transient
 	private Dictionary<String, String> actionDataMap;
 
 	/**
@@ -265,14 +265,13 @@ public class JobLauncher extends Item {
 	 * IResource.getModificationTime(), which is exactly why we are tracking it.
 	 */
 	@XmlTransient()
-	@Transient
 	private HashMap<IResource, Long> projectMemberModMap;
 
 	/**
 	 * This is a utility class used to describe a type of file by the
 	 * JobLauncher.
 	 * 
-	 * @author bkj
+	 * @author Jay Jay Billings
 	 */
 	private static class FileType {
 		/**
@@ -305,8 +304,7 @@ public class JobLauncher extends Item {
 	 * A map for storing the names of input files and their file types
 	 */
 	@XmlTransient()
-	@Transient
-	private HashMap<String, FileType> inputFileNameMap;
+	protected HashMap<String, FileType> inputFileNameMap;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -354,7 +352,8 @@ public class JobLauncher extends Item {
 		executableCommandName = execCommand;
 
 		// Set the name of the Form
-		form.setName(execName + " Launcher");
+		String nameAppend = execName.contains("Launcher") ? "" : " Launcher";
+		form.setName(execName + nameAppend);
 
 		// Set the Form description
 		form.setDescription(execDesc);
@@ -499,7 +498,7 @@ public class JobLauncher extends Item {
 	 * so that it contains any files that were created during the processing
 	 * action.
 	 */
-	private void updateResourceComponent() {
+	protected void updateResourceComponent() {
 
 		// Local Declarations
 		int lastId;
@@ -598,7 +597,7 @@ public class JobLauncher extends Item {
 		String filename = null, hostname = null;
 		String installDir = ".";
 		IResource fileResource = null;
-		String os = "linux";
+		String os = "linux", accountCode = "";
 		DataComponent fileData = null, parallelData = null;
 		Entry fileEntry = null, mpiEntry = null;
 		int numProcs = 1, numTBBThreads = 1;
@@ -658,6 +657,8 @@ public class JobLauncher extends Item {
 		os = hostEntries.get(1).getValue();
 		installDir = hostEntries.get(2).getValue();
 
+		// Could put the queue type in the map here
+
 		// Get the parallel launch parameters from the form
 		if (parallelData != null) {
 			// Figure out whether or not MPI should be used. Get the MPI Entry
@@ -676,6 +677,10 @@ public class JobLauncher extends Item {
 				numTBBThreads = Math.max(numTBBThreads,
 						Integer.parseInt(tbbThreadsEntry.getValue()));
 			}
+			// Get the account code
+			Entry accountEntry = parallelData
+					.retrieveEntry("Account Code/Project Code");
+			accountCode = accountEntry.getValue();
 		}
 
 		// Load the dictionary with the remaining parameters. Make sure to put
@@ -683,12 +688,19 @@ public class JobLauncher extends Item {
 		// the execution string has been modified! (c.f.-
 		// JobLaunchAction docs)
 		actionDataMap.put("executable", executableCommandName);
-		if (executableCommandName.contains("${inputFile}")) {
+		// Note: "no upload" is reversed logic from "upload"
+		actionDataMap.put("noUploadInput", (uploadInput) ? "false" : "true");
+		// Note: "no append" is reversed logic from "append". ICE also checks
+		// the command name to determine it too.
+		if (appendInput && !executableCommandName.contains("${inputFile}")) {
+			actionDataMap.put("noAppendInput", "false");
+		} else {
 			actionDataMap.put("noAppendInput", "true");
 		}
 		actionDataMap.put("installDir", installDir);
 		actionDataMap.put("hostname", hostname);
 		actionDataMap.put("os", os);
+		actionDataMap.put("accountCode", accountCode);
 		// Add the number of processors to the action data dictionary. It will
 		// always be at least 1.
 		actionDataMap.put("numProcs", String.valueOf(numProcs));
@@ -839,6 +851,8 @@ public class JobLauncher extends Item {
 		// Add the generic input file type
 		String desc = "The input file that should be used in the launch.";
 		addInputType("Input File", "inputFile", desc, null);
+		appendInput = true;
+		uploadInput = true;
 
 		// Add the host table to the form
 		form.addComponent(hostsTable);
@@ -1302,28 +1316,26 @@ public class JobLauncher extends Item {
 		// begin-user-code
 
 		// If form is not set, return
-		if (form == null) {
-			return;
-		}
-		((JobLauncherForm) form).enableOpenMP(minThreads, maxThreads,
-				defaultThreads);
+		if (form != null) {
+			((JobLauncherForm) form).enableOpenMP(minThreads, maxThreads,
+					defaultThreads);
 
-		// Check to see if it was enabled or not
-		JobLauncherForm form = (JobLauncherForm) this.getForm();
-
-		// If the components are not greater than 2, then it is false
-		if (form.getComponents().size() > 3) {
-			DataComponent dataC = (DataComponent) form
-					.getComponent(JobLauncherForm.parallelId);
-			Entry entry = (Entry) dataC
-					.retrieveEntry("Number of OpenMP Threads");
-			if (entry != null) {
-				this.openMPEnabled = true;
-				return;
+			// If the components are not greater than 2, then it is false
+			if (form.getComponents().size() > 3) {
+				DataComponent dataC = (DataComponent) form
+						.getComponent(JobLauncherForm.parallelId);
+				Entry entry = (Entry) dataC
+						.retrieveEntry("Number of OpenMP Threads");
+				if (entry != null) {
+					openMPEnabled = true;
+					return;
+				}
 			}
+
+			openMPEnabled = false;
 		}
 
-		this.openMPEnabled = false;
+		return;
 		// end-user-code
 	}
 
@@ -1741,6 +1753,12 @@ public class JobLauncher extends Item {
 	 *            from the project space for this input. If this parameter is
 	 *            null, then it will ignored.
 	 *            </p>
+	 * @param isFileEntry
+	 * 			  <p>
+	 * 			  Flags whether or not the Entry created should be handled as
+	 *            a file Entry. Flagging it as a file Entry will cause it to
+	 *            render on the Form with a browse button.
+	 *            </p>
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
@@ -1770,6 +1788,70 @@ public class JobLauncher extends Item {
 
 		return;
 		// end-user-code
+	}
+	
+	/**
+	 * This method is the same as {@link #addInputType}, except that is does 
+	 * not take a boolean flag in the parameters. This method calls the other
+	 * {@link #addInputType} with the boolean isFileEntry flag as false.
+	 * 
+	 * @param name
+	 *            <p>
+	 *            The name of the input file type. ("Input" or
+	 *            "Host configuration" or "Materials information" for example)
+	 *            </p>
+	 * @param varName
+	 *            <p>
+	 *            The name that will be used to refer to this input file when it
+	 *            is referred to by a variable in, for example, the executable
+	 *            string that is used by the JobLauncher. This name must end
+	 *            with the word "file" and, by convention, it should not contain
+	 *            white space or special symbols. If it does not end with the
+	 *            word "file," the JobLauncher will attempt to add it.
+	 *            </p>
+	 *            <p>
+	 *            This parameter may not be null.
+	 *            </p>
+	 * @param description
+	 *            <p>
+	 *            A short description of the input file.
+	 *            </p>
+	 * @param fileExtension
+	 *            <p>
+	 *            The file type extension that should be used to filter files
+	 *            from the project space for this input. If this parameter is
+	 *            null, then it will ignored.
+	 *            </p>
+	 */
+//	public void addInputType(String name, String varName, String description,
+//			String fileExtension) {
+//		
+//		// Call the other method with the boolean flag as false
+//		addInputType(name, varName, description, fileExtension, false);
+//		
+//		return;
+//		
+//	}
+	
+	/**
+	 * This method removes an input file type from the Job Launcher. If the
+	 * file type is not found from the list of already existing types, it will
+	 * do nothing.
+	 * 
+	 * @param name	The name of the input file type to remove.
+	 */
+	public void removeInputType(String name) {
+		
+		if (name != null && inputFileNameMap.containsKey(name)) {
+			
+			// Remove it form the name map
+			inputFileNameMap.remove(name);
+			
+			// Remove the entry from the DataComponent
+			((JobLauncherForm) form).removeInputFiles(name);
+		}
+		
+		return;
 	}
 
 	/**
@@ -1813,17 +1895,26 @@ public class JobLauncher extends Item {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void reloadProjectData() {
+
 		// begin-user-code
 
 		// Local Declarations
 		String name, desc;
+		boolean isFile = false;
 
+		// Get the DataComponent with the input files on it
+		DataComponent dataComp = (DataComponent) form.getComponent(1);
+		
 		// Refresh the files for each type in the set
 		for (FileType type : inputFileNameMap.values()) {
 			name = type.name;
 			desc = type.desc;
+		
+			// Re-set the input files
 			ArrayList<String> files = getProjectFileNames(type.typeExt);
 			((JobLauncherForm) form).setInputFiles(name, desc, files);
+			
+			
 		}
 
 		// Refresh the hostnames
@@ -1832,4 +1923,28 @@ public class JobLauncher extends Item {
 		return;
 		// end-user-code
 	}
+
+	/**
+	 * This operation is to be used by subclasses to notify the JobLauncher if
+	 * it should append the name of the input file to the end of the launch
+	 * command. By default it does.
+	 * 
+	 * @param flag
+	 *            True if the name should be appended, false otherwise.
+	 */
+	protected void setAppendInputFlag(boolean flag) {
+		appendInput = flag;
+	}
+
+	/**
+	 * This operation is to be used by subclasses to notify the JobLauncher if
+	 * it should upload the input file. By default, input files are uploaded.
+	 * 
+	 * @param flag
+	 *            True if the name should be appended, false otherwise.
+	 */
+	protected void setUploadInputFlag(boolean flag) {
+		uploadInput = flag;
+	}
+
 }

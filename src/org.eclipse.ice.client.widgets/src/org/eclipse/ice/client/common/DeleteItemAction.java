@@ -1,40 +1,28 @@
 /*******************************************************************************
-* Copyright (c) 2013, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.common;
+
+import java.util.List;
 
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.iclient.IClient;
-
-import java.net.URL;
-import java.util.List;
-
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.ui.part.ViewPart;
-import org.osgi.framework.Bundle;
 
 /***
  * This class is the Action by which Items are deleted from the ICE database
@@ -45,6 +33,10 @@ import org.osgi.framework.Bundle;
  */
 public class DeleteItemAction extends Action implements ISelectionListener,
 		IWorkbenchAction {
+
+	// FIXME This class is no longer required. Now the ItemViewer uses the
+	// DeleteItemHandler (added to the ItemViewer's ToolBar via the
+	// org.eclipse.ui.menus extension point).
 
 	/**
 	 * Handle to the workbench window
@@ -90,17 +82,17 @@ public class DeleteItemAction extends Action implements ISelectionListener,
 		if (selectedItem != null) {
 			// Get the array from the selection. ItemViewer uses an
 			// IStructuredSelection from its TableViewer.
-			List<Object> list = ((IStructuredSelection) selectedItem).toList();
-			
+			List<?> list = ((IStructuredSelection) selectedItem).toList();
+
 			// Loop over the list of item names
 			for (Object obj : list) {
 				// Cast to a string
-				String itemName = (String) obj;
+				String itemName = obj.toString();
 
 				// Since we know that the id is the last set of characters after
 				// the final space, get the index of that final space.
 				int index = itemName.lastIndexOf(" ");
-				
+
 				// Direct the client to delete the item
 				client.deleteItem(Integer.valueOf(itemName.substring(index + 1)));
 			}

@@ -69,7 +69,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * rod/tube or the assembly itself to the ICE Properties View via
  * {@link AnalysisView#selectionProvider}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AssemblyAnalysisView extends AnalysisView implements IGridListener {

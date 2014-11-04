@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * This class is a content provider for the ICE TreeComposite data structure.
  * 
- * @author Jay Jay Billings, djg
+ * @author Jay Jay Billings, Jordan H. Deyton
  * 
  */
 public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
@@ -75,6 +75,8 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
+		// TODO Review the logic here...
+		
 		// If the viewer has changed, we will need to unregister from the old
 		// viewer and register with the new one.
 		if (viewer != treeViewer) {

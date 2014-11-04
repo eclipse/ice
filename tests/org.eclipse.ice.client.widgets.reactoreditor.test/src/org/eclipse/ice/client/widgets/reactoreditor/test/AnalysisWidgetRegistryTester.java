@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * This class tests the AnalysisWidgetRegistry implementation.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AnalysisWidgetRegistryTester {

@@ -20,7 +20,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
  * <!-- begin-UML-doc -->
  * <p>The ICEFormPage class is the base class for all FormPages in ICE.</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEFormPage extends FormPage {

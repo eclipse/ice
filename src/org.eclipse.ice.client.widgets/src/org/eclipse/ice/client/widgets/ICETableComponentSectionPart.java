@@ -12,6 +12,29 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.util.ArrayList;
+
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ComboBoxViewerCellEditor;
+import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -20,44 +43,16 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
-
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.TableComponent;
-
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CellLabelProvider;
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.ComboBoxViewerCellEditor;
-import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerCell;
-
-import java.util.ArrayList;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.window.ToolTip;
-import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * <!-- begin-UML-doc -->
@@ -72,7 +67,7 @@ import org.eclipse.ice.datastructures.updateableComposite.Component;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -612,8 +607,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		if (sectionClient == null) {
 			return;
 		}
-		// style of table
-		// allow for a border, horizontal scroll, vertical scroll, and
+		// Allow for a border, horizontal scroll, vertical scroll, and
 		// full selection of the row. This style configuration is for the
 		// TableViewer.
 		int style = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
@@ -645,9 +639,6 @@ public class ICETableComponentSectionPart extends SectionPart implements
 			column.getColumn().setText(tableComponent.getColumnNames().get(i));
 			column.getColumn().setToolTipText(
 					tableComponent.getRowTemplate().get(i).getDescription());
-			// Sets the column widths such that they occupy at least enough
-			// space for the title, giving any extra space to the last column
-			column.getColumn().pack();
 			// This is used later for setting up the columnProperties in
 			// TableViewer.
 			colNames[i] = tableComponent.getColumnNames().get(i);
@@ -796,9 +787,6 @@ public class ICETableComponentSectionPart extends SectionPart implements
 						// TODO Auto-generated method stub
 					}
 
-					// This operation requires the object to be casted
-					// as an arraylist of RowWrapper elements.
-					@SuppressWarnings("unchecked")
 					@Override
 					public Object[] getElements(Object element) {
 
@@ -915,6 +903,18 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		// end-user-code
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+	 */
+	public void refresh() {
+		super.refresh();
+
+		// Pack the columns to fit the Table's content.
+		packTableColumns();
+	}
+
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -977,8 +977,9 @@ public class ICETableComponentSectionPart extends SectionPart implements
 								.getRow(i)));
 					}
 
-					// Reset the input
+					// Reset the input and re-pack the table.
 					tableComponentViewer.setInput(rowWrappers);
+					packTableColumns();
 
 					// Mark stale to get a refresh
 					markStale();
@@ -988,5 +989,21 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		});
 
 		// end-user-code
+	}
+
+	/**
+	 * Packs all columns in the {@link #tableComponentViewer}. This can be used
+	 * to resize each column to fit the maximum width of its content.
+	 */
+	private void packTableColumns() {
+
+		if (tableComponentViewer != null) {
+			Table table = tableComponentViewer.getTable();
+			for (TableColumn column : table.getColumns()) {
+				column.pack();
+			}
+		}
+
+		return;
 	}
 }

@@ -19,7 +19,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * package. These GridData objects can keep track of the index and x, y, width,
  * and height offsets for the associated Figure.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class GridData {

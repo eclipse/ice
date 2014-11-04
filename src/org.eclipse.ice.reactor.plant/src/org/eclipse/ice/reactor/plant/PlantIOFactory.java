@@ -26,7 +26,7 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
  * This class provides an implementation of {@link HdfIOFactory} geared toward
  * {@link PlantComponent}s.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PlantIOFactory extends HdfIOFactory {
@@ -44,7 +44,7 @@ public class PlantIOFactory extends HdfIOFactory {
 	/**
 	 * A simple interface for creating {@link PlantComponent}s.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private interface IComponentCreator {

@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.ToolItem;
  * For communication between IAnalysisViews in this or other
  * AnalysisToolComposites, it passes each of its views a {@link StateBroker}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AnalysisToolComposite extends Composite {
@@ -581,7 +581,7 @@ public class AnalysisToolComposite extends Composite {
 	 * Composite (a child of the {@link AnalysisToolComposite#viewComposite
 	 * viewComposite}), and its ToolBar. Its use is limited to the ATC class.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	public class ViewPart {

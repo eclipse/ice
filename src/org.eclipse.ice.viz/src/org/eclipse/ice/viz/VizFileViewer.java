@@ -16,6 +16,9 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.ice.viz.plotviewer.CSVPlotViewer;
+import org.eclipse.ice.viz.visit.VisitPlotViewer;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -24,14 +27,18 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
@@ -40,7 +47,7 @@ import org.eclipse.ui.part.ViewPart;
  * Visualization Perspective to look at the files that are currently available
  * to use for creating plots.
  * 
- * @authors bkj, tnp, djg
+ * @authors Jay Jay Billings, tnp, Jordan H. Deyton
  */
 public class VizFileViewer extends ViewPart implements IUpdateableListener,
 		ISelectionChangedListener {
@@ -281,21 +288,46 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 			}
 		});
 
-		inputTreeViewer.setLabelProvider(new LabelProvider() {
+		inputTreeViewer.setLabelProvider(new StyledCellLabelProvider() {
 			@Override
-			public String getText(Object element) {
+			public void update(ViewerCell cell) {
+				Object element = cell.getElement();
 
-				// Get a String from the ICEResource if possible.
-				String text;
-				if (element instanceof ICEResource) {
-					text = ((ICEResource) element).getName();
+				// Get a String from the VizResource if possible.
+				StyledString styledStr = new StyledString();
+				if (element instanceof VizResource) {
+					VizResource resource = (VizResource) element;
+					// Get the name from the resource
+					styledStr.append(resource.getName());
+
+					String host = resource.getHost();
+					String path = resource.getPath().getPath();
+
+					// Get the host from the resource and append it to the tree
+					// entry String grayed-out and enclosed in square brackets.
+					if (host != null && !host.isEmpty()) {
+						styledStr.append(" [" + host,
+								StyledString.QUALIFIER_STYLER);
+						// Include the path with the host if available
+						if (path != null && !path.isEmpty()
+								&& !resource.isRemote()) {
+							styledStr.append(":" + path,
+									StyledString.QUALIFIER_STYLER);
+						}
+						styledStr.append("]", StyledString.QUALIFIER_STYLER);
+					}
 				}
-				// If the element isn't an ICEResource, convert it to a String.
+
+				// If the element isn't an VizResource, convert it to a String.
 				else {
-					text = element.toString();
+					styledStr.append(element.toString());
 				}
 
-				return text;
+				// Set the text for the cell and call
+				// StyledCellLabelProvider#update()
+				cell.setText(styledStr.toString());
+				cell.setStyleRanges(styledStr.getStyleRanges());
+				super.update(cell);
 			}
 		});
 
@@ -364,18 +396,85 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 	/**
 	 * This listens for selection change events in the fileTreeViewer and
 	 * updates {@link #deleteFileAction} depending on whether or not a file is
-	 * selected.
-	 * 
+	 * selected. Also, this method shows an appropriate plot viewer based on the
+	 * file type of the selection.
 	 * 
 	 * @param event
 	 *            The SelectionChangedEvent that fired this method.
 	 */
 	public void selectionChanged(SelectionChangedEvent event) {
 
-		// Enable the DeleteFileAction if possible.
+		// Get the selection
 		ISelection selection = event.getSelection();
 		if (selection instanceof IStructuredSelection) {
+			// Enable the DeleteFileAction if possible.
 			deleteFileAction.setEnabled(!selection.isEmpty());
+
+			// Get the VizResource of this selection.
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			if (!structuredSelection.isEmpty()) {
+				Object object = structuredSelection.getFirstElement();
+				if (object instanceof VizResource) {
+					VizResource vizResource = (VizResource) object;
+
+					// Extract the file name from the VizResource
+					String fileName = "";
+
+					// Get the file set title or file name
+					if (vizResource.getFileSet() != null
+							&& vizResource.getFileSetTitle() != null) {
+						fileName = vizResource.getFileSetTitle();
+					} else {
+						fileName = vizResource.getContents().getAbsolutePath();
+					}
+
+					// If the file is a .csv file...
+					if (fileName.matches(".*\\.csv$")) {
+						try {
+							// Show the CSV Plot Viewer
+							getSite().getWorkbenchWindow().getActivePage()
+									.showView(CSVPlotViewer.ID);
+							// Get the views of the this page
+							IViewReference[] refs = getSite()
+									.getWorkbenchWindow().getActivePage()
+									.getViewReferences();
+							// Get the CSV Plot Viewer and set its resource
+							for (IViewReference ref : refs) {
+								if ("CSV Plot Viewer".equals(ref.getPartName())) {
+									CSVPlotViewer view = (CSVPlotViewer) ref
+											.getView(false);
+									view.setResource(vizResource);
+								}
+							}
+						} catch (PartInitException e) {
+							e.printStackTrace();
+						}
+					}
+					// If the file is something else...
+					else {
+						// Show the VisIt Plot Viewer
+						try {
+							getSite().getWorkbenchWindow().getActivePage()
+									.showView(VisitPlotViewer.ID);
+							// Get the views of the this page
+							IViewReference[] refs = getSite()
+									.getWorkbenchWindow().getActivePage()
+									.getViewReferences();
+							// Get the VisIt Plot Viewer and set its resource
+							for (IViewReference ref : refs) {
+								if ("VisIt Plot Viewer".equals(ref
+										.getPartName())) {
+									VisitPlotViewer view = (VisitPlotViewer) ref
+											.getView(false);
+									view.setResource(vizResource);
+								}
+							}
+						} catch (PartInitException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
 		}
 
 		return;

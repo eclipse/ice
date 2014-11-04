@@ -32,7 +32,7 @@ import java.util.List;
  * </p>
  * 
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IJunctionListener {

@@ -15,7 +15,7 @@ package org.eclipse.ice.client.widgets.reactoreditor.grid;
 /**
  * This class provides the Model for a Cell in a {@link Grid}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class Cell {
@@ -37,7 +37,7 @@ public class Cell {
 	/**
 	 * This enumerates the possible states for a Cell to have.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	public enum State {

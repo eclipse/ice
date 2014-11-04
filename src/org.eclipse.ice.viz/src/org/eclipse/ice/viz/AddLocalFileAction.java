@@ -74,7 +74,7 @@ public class AddLocalFileAction extends Action {
 		// file dialog and SWT.MULTI to allow multi-selection of files.
 		FileDialog dialog = new FileDialog(shell, SWT.OPEN | SWT.MULTI);
 
-		// Filter files by images (*.silo) or all files.
+		// Filter files by all files, .csv files, or VisIt (*.silo, *.e) files.
 		String[] filterNames = new String[] { "All Files (*)", ".csv Files",
 				"VisIt Files" };
 		String[] filterExtensions = new String[] { "*", "*.csv", "*.silo;*.e" };
@@ -116,6 +116,7 @@ public class AddLocalFileAction extends Action {
 				// the viewer.
 				try {
 					VizResource resource = new VizResource(file);
+					resource.setHost("localhost");
 					vizViewer.addFile(resource);
 				} catch (IOException e) {
 					System.err.println("AddLocalFileAction error: Failed to "

@@ -17,7 +17,7 @@ import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
@@ -25,6 +25,7 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
@@ -55,7 +56,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * This class only cares about the IReactorComponents and DataComponents that
  * are passed to it and all other visitation operations do nothing.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class ReactorPage extends ICEFormPage implements IComponentVisitor,
@@ -390,14 +391,17 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 		// Nothing to do
 	}
 
-	public void visit(BatteryComponent component) {
-		// Nothing to do
-	}
 
 	public void visit(AdaptiveTreeComposite component) {
 		// Nothing to do
 
 	}
 	// -------------------------------------- //
+
+	@Override
+	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

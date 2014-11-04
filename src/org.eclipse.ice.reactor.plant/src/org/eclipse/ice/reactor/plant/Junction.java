@@ -748,7 +748,7 @@ public class Junction extends PlantComponent implements IJunction {
 	 * are unnecessary for this class implemented as doing nothing. Useful visit
 	 * operations are left as abstract.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private abstract class Visitor implements IPlantComponentVisitor {

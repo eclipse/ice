@@ -40,7 +40,7 @@ import org.junit.Test;
  * This class tests the output IPropertySource from the PropertySourceFactory
  * for LWRComponents.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PropertySourceFactoryTester {

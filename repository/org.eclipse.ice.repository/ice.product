@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ICE" uid="ice.product" id="org.eclipse.ice.client.rcp.product" application="org.eclipse.ice.client.rcp.application" version="2.0.0" useFeatures="true" includeLaunchers="true">
+<product name="ICE" uid="ice.product" id="org.eclipse.ice.client.rcp.product" application="org.eclipse.ui.ide.workbench" version="2.0.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog -console -clean</programArgs>
-      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M</vmArgs>
-      <vmArgsLin>-Dosgi.instance.area=@user.home/ICEFiles -Dvisit.binpath=@user.home/visit/bin</vmArgsLin>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Dosgi.instance.area=@user.home/ICEFiles -Dvisit.binpath=@user.home/visit/bin</vmArgsMac>
+      <programArgs>-consoleLog -console -clean
+      </programArgs>
+      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M
+      </vmArgs>
+      <vmArgsLin>-Dosgi.instance.area=@user.home/ICEFiles -Dvisit.binpath=@user.home/visit/bin
+      </vmArgsLin>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Dosgi.instance.area=@user.home/ICEFiles -Dvisit.binpath=@user.home/visit/bin
+      </vmArgsMac>
       <vmArgsWin>-Dosgi.instance.area=@user.home\ICEFiles
 -Dvisit.binpath=C:\PROGRA~1\LLNL\VISIT2~1.2&quot;\r&quot;
--Djava.library.path=C:\PROGRA~1\HDF_Group\HDF-JAVA\2.10.0\lib&quot;\r&quot;</vmArgsWin>
+-Djava.library.path=C:\PROGRA~1\HDF_Group\HDFView\2.10.1\lib&quot;\r&quot;
+      </vmArgsWin>
    </launcherArgs>
 
    <windowImages/>
@@ -99,29 +104,31 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
    </features>
 
    <configurations>
-      <plugin id="javax.persistence" autoStart="true" startLevel="1" />
-      <plugin id="org.apache.derby" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.e4.ui.workbench.addons.swt" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <plugin id="org.eclipse.gemini.dbaccess.derby" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.gemini.dbaccess.util" autoStart="false" startLevel="0" />
-      <plugin id="org.eclipse.gemini.jpa" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.analysistool" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.moose" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client.widgets.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor.grid" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor.lwr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor.sfr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.core" autoStart="true" startLevel="5" />
       <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.dependencies" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.io" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.item" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.kdd" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.materials" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.materials.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.nek5000" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="5" />
@@ -131,14 +138,13 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.reactor.plant" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.sfr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactorAnalyzer" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.sassena" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.xolotl" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
-      <plugin id="org.eclipse.persistence.antlr" autoStart="true" startLevel="3" />
-      <plugin id="org.eclipse.persistence.asm" autoStart="true" startLevel="3" />
-      <plugin id="org.eclipse.persistence.core" autoStart="true" startLevel="3" />
-      <plugin id="org.eclipse.persistence.jpa" autoStart="true" startLevel="3" />
-      <plugin id="org.eclipse.persistence.jpa.jpql" autoStart="false" startLevel="0" />
-      <plugin id="osgi.enterprise" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.platform" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ui.forms" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ui.intro" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>

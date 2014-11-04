@@ -650,7 +650,7 @@ public class CaebatModel extends Item {
 		// launched
 
 		// Load the case
-		loadSpecificCase("Cylindrical Cell", form);
+		loadSpecificCase("Prismatic Cell", form);
 
 		return;
 		// end-user-code
@@ -692,10 +692,10 @@ public class CaebatModel extends Item {
 		// This is separated out cleanly for editing later.
 
 		// These files represent the general selection list for the GUI
-		fileNames.add("Case3CAEBATModel.xml");
+//		fileNames.add("Case3CAEBATModel.xml");
 		fileNames.add("Case6CAEBATModel.xml");
-		fileNames.add("Case7aCAEBATModel.xml");
-		fileNames.add("Case7bCAEBATModel.xml");
+//		fileNames.add("Case7aCAEBATModel.xml");
+//		fileNames.add("Case7bCAEBATModel.xml");
 
 		// Need to have at least one filename
 		if (fileNames.isEmpty()) {
@@ -741,7 +741,6 @@ public class CaebatModel extends Item {
 					+ fileNames.get(i));
 
 			// Create the component, and load it to XML.
-			// Open with Form
 			openedForm = new Form();
 
 			try {
@@ -810,15 +809,13 @@ public class CaebatModel extends Item {
 			runID.setValue(baseID + "_" + shortDate.format(currentDate));
 
 			// Create a copy of the Form that will be written to disk and add
-			// the
-			// CAEBAT information to it.
+			// the CAEBAT information to it.
 			writtenForm.copy(form);
 			writtenForm.addComponent(caebatInfoComp);
 
 			// Use the custom visitor within the package to allow the components
-			// to
-			// determine their types individually. This is much more robust and
-			// scalable in the long run.
+			// to write themselves. This is much more robust and scalable in the
+			// long run.
 			for (int i = 1; i < 6; i++) {
 				// Grab the component
 				Component comp = writtenForm.getComponent(i);

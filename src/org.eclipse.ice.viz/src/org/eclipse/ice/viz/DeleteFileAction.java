@@ -26,7 +26,7 @@ import org.osgi.framework.FrameworkUtil;
  * This Action removes selected resources from the {@link VizFileViewer} by
  * calling {@link VizFileViewer#removeSelection()} when it is run.
  * 
- * @author tnp, djg
+ * @author tnp, Jordan H. Deyton
  */
 public class DeleteFileAction extends Action {
 

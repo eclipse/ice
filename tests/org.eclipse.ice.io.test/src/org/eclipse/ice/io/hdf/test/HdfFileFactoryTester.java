@@ -48,33 +48,6 @@ public class HdfFileFactoryTester {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation conducts any required initialization for the tests.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		// begin-user-code
-		//
-		// //Make sure the files do not exist
-		// String separator = System.getProperty("file.separator");
-		// File dataFile = new File(System.getProperty("user.dir") + separator
-		// + "data" + separator + "test.h5");
-		//
-		// //Delete file if exists
-		// if (dataFile.exists()) {
-		// dataFile.delete();
-		// }
-
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the openH5File, createH5File, and closeH5File
 	 * operations.
 	 * </p>
@@ -93,20 +66,8 @@ public class HdfFileFactoryTester {
 		H5File h5File;
 		int fileHandle = -1;
 		int newFileHandle = -1;
-
-		// Check file creation
-		// Create a nullary file, file will not exist
-		File dataFolder = new File(System.getProperty("user.dir") + separator
-				+ "data");
-		// If the datafolder does not exist, create it
-		if (!dataFolder.exists()) {
-			try {
-				dataFolder.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-				fail();
-			}
-		}
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "ioData";
 
 		// Creating a file:
 
@@ -114,9 +75,9 @@ public class HdfFileFactoryTester {
 		assertNull(HdfFileFactory.createH5File(null));
 
 		// Create a normal file
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + testFileName);
+		File dataFile = new File(userDir + separator + testFileName);
 		// Create a file
+		System.out.println(dataFile.getAbsolutePath());
 		h5File = HdfFileFactory.createH5File(dataFile.toURI());
 		// Make sure it is not null
 		assertNotNull(h5File);

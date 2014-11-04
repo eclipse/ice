@@ -60,8 +60,9 @@ public class PWReactorHDF5IntegrationTester {
 		PressurizedWaterReactor reactor = createPopulatedPWReactor();
 
 		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + "integration_test.h5");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "reactorData";
+		File dataFile = new File(userDir + separator + "integration_test.h5");
 		URI uri = dataFile.toURI();
 
 		LWRComponentWriter writer = new LWRComponentWriter();
@@ -102,10 +103,10 @@ public class PWReactorHDF5IntegrationTester {
 		materialList.add(new Material("guide", MaterialType.SOLID));
 
 		String separator = System.getProperty("file.separator");
-		File pinDataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + "pin_data.txt");
-		File powerDataFile = new File(System.getProperty("user.dir")
-				+ separator + "data" + separator + "power_data.txt");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "reactorData";
+		File pinDataFile = new File(userDir + separator + "pin_data.txt");
+		File powerDataFile = new File(userDir + separator + "power_data.txt");
 
 		try {
 
@@ -203,8 +204,9 @@ public class PWReactorHDF5IntegrationTester {
 		// begin-user-code
 
 		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + "integration_test.h5");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "reactorData";
+		File dataFile = new File(userDir + separator + "integration_test.h5");
 
 		if (dataFile.exists()) {
 			dataFile.delete();

@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.ICheckStateProvider;
  * (TreeComposites and their data nodes) when the corresponding widgets are
  * checked or unchecked.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class TreeCompositeCheckStateProvider implements ICheckStateProvider,

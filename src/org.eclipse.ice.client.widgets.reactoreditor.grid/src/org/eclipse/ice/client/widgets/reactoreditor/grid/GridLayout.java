@@ -28,7 +28,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * There is an accompanying {@link GridData} feature, as well. All child
  * IFigures are expected to have a {@link GridData} as a constraint.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class GridLayout extends AbstractHintLayout {

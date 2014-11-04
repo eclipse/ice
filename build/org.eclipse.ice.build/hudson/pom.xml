@@ -292,6 +292,7 @@
 	<!-- the modules that should be built together -->
 	<modules>
 		<module>../../../org.eclipse.ice.target.kepler</module>
+		<module>../../../src/org.eclipse.ice.dependencies</module>
 		<module>../../../src/org.eclipse.ice.client</module>
 		<module>../../../tests/org.eclipse.ice.client.test</module>
 		<module>../../../src/org.eclipse.ice.client.compatibility</module>
@@ -315,7 +316,6 @@
 		<module>../../../tests/org.eclipse.ice.core.test</module>
 		<module>../../../src/org.eclipse.ice.item</module>
 		<module>../../../tests/org.eclipse.ice.item.test</module>
-		<module>../../../tests/org.eclipse.ice.database.test</module>
 		<module>../../../src/org.eclipse.ice.persistence.xml</module>
 		<module>../../../tests/org.eclipse.ice.persistence.xml.test</module>
 		<module>../../../src/org.eclipse.ice.io</module>
@@ -343,6 +343,16 @@
 		<module>../../../visit_java_client/gov.lbnl.visit.swt</module>
 		<module>../../../src/org.eclipse.ice.viz</module>
 		<module>../../../tests/org.eclipse.ice.viz.test</module>
+		<module>../../../src/org.eclipse.ice.xolotl</module>
+		<module>../../../src/org.eclipse.ice.materials</module>
+		<module>../../../tests/org.eclipse.ice.materials.test</module>
+		<module>../../../src/org.eclipse.ice.materials.ui</module>
+		<module>../../../src/org.eclipse.ice.caebat.batml</module>
+		<module>../../../tests/org.eclipse.ice.caebat.batml.test</module>
+		<module>../../../src/org.eclipse.ice.sassena</module>
+		<module>../../../tests/org.eclipse.ice.sassena.test</module>
+		<module>../../../src/org.eclipse.ice.reflectivity</module>
+		<module>../../../tests/org.eclipse.ice.reflectivity.test</module>
 		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING TWO BUNDLES MUST 
 			BUILD LAST! -->
 		<module>../../../features/org.eclipse.ice.feature</module>

@@ -39,7 +39,7 @@ import org.eclipse.jface.wizard.IWizard;
  * This class implements the IAnalysisWidgetFactory interface for Reactor
  * analysis.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
@@ -49,7 +49,7 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 	 * The necessary parameters for an IAnalysisView are passed into the method
 	 * createView().
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private interface IViewFactory {

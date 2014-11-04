@@ -53,7 +53,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * to the ICE Properties View via its
  * {@linkplain AnalysisView#selectionProvider ISelectionProvider}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class RodAnalysisView extends AnalysisView {
@@ -123,7 +123,7 @@ public class RodAnalysisView extends AnalysisView {
 	 * This enum is used to determine the source of changes to the axial level.
 	 * It is particularly useful to smooth out the scale widget.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	public enum AxialLevelWidget {

@@ -273,14 +273,11 @@ public class DenovoReactorFactory {
 
 		// Open the test data
 		String separator = System.getProperty("file.separator");
-		File pinDataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + "denovoPinPower.txt");
-
-		File powerDataFile = new File(System.getProperty("user.dir")
-				+ separator + "data" + separator + "denovoAxialPower.txt");
-
-		File axialDataFile = new File(System.getProperty("user.dir")
-				+ separator + "data" + separator + "denovoAxialLevels.txt");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "reactorEditorData";
+		File pinDataFile = new File(userDir + separator + "denovoPinPower.txt");
+		File powerDataFile = new File(userDir + separator + "denovoAxialPower.txt");
+		File axialDataFile = new File(userDir + separator + "denovoAxialLevels.txt");
 
 		// Parse the test data into pins and locations
 		try {

@@ -22,7 +22,7 @@ import java.util.Map.Entry;
  * (also a HashMap) of IStateListeners who want to be notified when the value of
  * a certain key is changed.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class StateBroker {

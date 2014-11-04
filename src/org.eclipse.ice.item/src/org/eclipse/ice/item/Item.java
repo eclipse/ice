@@ -43,7 +43,8 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
@@ -74,18 +75,6 @@ import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.core.resources.IFolder;
 
 import java.net.URI;
-
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * <!-- begin-UML-doc -->
@@ -302,14 +291,10 @@ import javax.persistence.Transient;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-
-@Entity
-@Table(name = "Item")
-@Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement(name = "Item")
 public class Item implements IComponentVisitor, Persistable, Identifiable {
 	/**
@@ -330,7 +315,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient()
 	protected Registry registry;
 	/**
@@ -347,7 +331,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	@XmlElementRefs(value = {
 			@XmlElementRef(name = "Form", type = Form.class),
 			@XmlElementRef(name = "JobLauncherForm", type = JobLauncherForm.class) })
-	@Transient
 	protected Form form;
 	/**
 	 * <!-- begin-UML-doc -->
@@ -359,7 +342,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient()
 	protected Action action;
 
@@ -388,7 +370,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient()
 	protected IProject project;
 
@@ -403,7 +384,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
-	@Transient
 	protected FormStatus status;
 
 	/**
@@ -418,7 +398,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	protected ArrayList<Entry> entryList;
 
 	/**
@@ -432,7 +411,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	protected String nativeExportActionString = "Export to ICE Native Format";
 	/**
 	 * <!-- begin-UML-doc -->
@@ -446,7 +424,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	protected String taggedExportActionString = "Export to key-value pair output";
 
 	/**
@@ -458,7 +435,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 */
-	@Transient
 	protected HashMap<String, ArrayList<Component>> componentMap;
 
 	/**
@@ -507,7 +483,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	protected ICEJAXBManipulator jaxbManipulator;
 
 	/**
@@ -522,9 +497,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
-	@Column(name = "DBID_ID_Item")
 	protected int DB_ID;
 
 	/**
@@ -552,7 +524,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	private boolean enabled = true;
 	/**
 	 * <!-- begin-UML-doc -->
@@ -567,7 +538,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	private FormStatus lastStatus;
 
 	/**
@@ -584,7 +554,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	protected File outputFile;
 
 	/**
@@ -597,14 +566,12 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient()
 	protected ArrayList<ItemListener> listeners;
 
 	/**
 	 * A flag that is true if debug mode is enabled, false otherwise.
 	 */
-	@Transient
 	@XmlTransient()
 	protected boolean debuggingEnabled = false;
 
@@ -2423,23 +2390,15 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 		// end-user-code
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(BatteryComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void visit(BatteryComponent component) {
-		// begin-user-code
-		// TODO Auto-generated method stub
-
-		// end-user-code
-	}
-
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
 	}
 }

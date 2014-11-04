@@ -37,7 +37,7 @@ import org.eclipse.ui.IPersistableElement;
  * Cells that are invalid, selected, or disabled should be passed in via a
  * Map<Integer, Cell.State>.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class GridEditorInput implements IEditorInput {

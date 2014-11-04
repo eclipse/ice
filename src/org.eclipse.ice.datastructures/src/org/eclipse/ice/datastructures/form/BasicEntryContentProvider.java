@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.persistence.Entity;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -37,7 +36,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "BasicEntryContentProvider")
-@Entity()
 public class BasicEntryContentProvider extends ICEObject implements
 		IEntryContentProvider {
 	/**

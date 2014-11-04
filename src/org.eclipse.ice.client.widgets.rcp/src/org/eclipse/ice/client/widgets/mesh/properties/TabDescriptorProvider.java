@@ -59,7 +59,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
  * }
  * </pre>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class TabDescriptorProvider implements ITabDescriptorProvider,

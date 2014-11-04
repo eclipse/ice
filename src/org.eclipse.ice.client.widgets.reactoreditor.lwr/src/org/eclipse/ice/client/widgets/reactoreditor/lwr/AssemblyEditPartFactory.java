@@ -28,7 +28,7 @@ import org.eclipse.gef.EditPartFactory;
  * The AssemblyEditPartFactory uses {@link AssemblyGridEditPart}s for the Grid
  * and {@link AssemblyCellEditPart}s for the Cells.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AssemblyEditPartFactory implements EditPartFactory {

@@ -32,7 +32,7 @@ import org.eclipse.ice.client.widgets.reactoreditor.lwr.LWRComponentInfo;
  * and column attributes. When an instance is passed, the views have access to
  * both the specific location requested and the LWRComponent in that spot.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class LWRComponentInfo {

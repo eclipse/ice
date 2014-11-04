@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.ToolItem;
  * This class implements a Listener that enables a drop-down Menu for a ToolItem
  * on a ToolBar.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ToolItemMenuListener implements Listener {

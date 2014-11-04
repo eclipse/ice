@@ -21,7 +21,7 @@ import org.eclipse.draw2d.Shape;
  * and the maximum radius. You can think of this as the proportion of the
  * rectangle's width to the width of the Shape's container.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class MaterialShape extends Shape {

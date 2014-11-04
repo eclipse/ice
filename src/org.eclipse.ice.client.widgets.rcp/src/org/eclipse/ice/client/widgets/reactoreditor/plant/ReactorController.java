@@ -12,20 +12,19 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
-import org.eclipse.ice.client.widgets.mesh.ISyncAction;
-
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.reactor.plant.CoreChannel;
-import org.eclipse.ice.reactor.plant.Pipe;
-import org.eclipse.ice.reactor.plant.PlantComponent;
-import org.eclipse.ice.reactor.plant.Reactor;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Callable;
+
+import org.eclipse.ice.client.widgets.jme.IRenderQueue;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.reactor.plant.CoreChannel;
+import org.eclipse.ice.reactor.plant.Pipe;
+import org.eclipse.ice.reactor.plant.PlantComponent;
+import org.eclipse.ice.reactor.plant.Reactor;
 
 import com.jme3.bounding.BoundingBox;
 
@@ -34,7 +33,7 @@ import com.jme3.bounding.BoundingBox;
  * model with the {@link ReactorView}. Any updates to the view should be
  * coordinated through this class.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ReactorController extends AbstractPlantController implements
@@ -86,20 +85,18 @@ public class ReactorController extends AbstractPlantController implements
 	 * @param view
 	 *            The view (a {@link ReactorView}) associated with this
 	 *            controller.
-	 * @param updateQueue
-	 *            The queue (a ConcurrentLinkedQueue of {@link ISyncAction}s)
-	 *            that is processed in the SimpleApplication's simpleUpdate()
-	 *            thread. Any changes to the {@link #view} are performed by
-	 *            adding a new action to this queue.
+	 * @param renderQueue
+	 *            The queue responsible for tasks that need to be performed on
+	 *            the jME rendering thread.
 	 * @param manager
 	 *            A {@link PlantControllerManager} used for looking up
 	 *            {@link PipeController}s for the current {@link Pipe}s
 	 *            contained by the Reactor.
 	 */
 	public ReactorController(Reactor model, ReactorView view,
-			ConcurrentLinkedQueue<ISyncAction> updateQueue,
+			IRenderQueue renderQueue,
 			PlantControllerManager manager) {
-		super(model, view, updateQueue);
+		super(model, view, renderQueue);
 
 		// Set the model. If it is null, create a new, default model.
 		this.model = (model != null ? model : new Reactor());
@@ -124,7 +121,7 @@ public class ReactorController extends AbstractPlantController implements
 		} else if (view == null) {
 			throw new IllegalArgumentException(
 					"ReactorController error: View is null!");
-		} else if (updateQueue == null) {
+		} else if (renderQueue == null) {
 			throw new IllegalArgumentException(
 					"ReactorController error: Update queue is null!");
 		} else if (controllers == null) {
@@ -220,8 +217,8 @@ public class ReactorController extends AbstractPlantController implements
 			// for the pipes may not have been updated in the simple update
 			// thread yet.
 			if (!removedIds.isEmpty() || !addedPipes.isEmpty()) {
-				updateQueue.add(new ISyncAction() {
-					public void simpleUpdate(float tpf) {
+				renderQueue.enqueue(new Callable<Boolean>() {
+					public Boolean call() {
 						// Remove all old pipes from the view.
 						view.removePipes(removedIds);
 						
@@ -244,6 +241,8 @@ public class ReactorController extends AbstractPlantController implements
 						}
 						// Add all the new pipes to the view.
 						view.putPipes(ids, boxes);
+
+						return true;
 					}
 				});
 			}
@@ -268,10 +267,11 @@ public class ReactorController extends AbstractPlantController implements
 	
 				// Update the view with the pipe's current bounds synchronized
 				// with the simple update thread.
-				updateQueue.add(new ISyncAction() {
-					public void simpleUpdate(float tpf) {
+				renderQueue.enqueue(new Callable<Boolean>() {
+					public Boolean call() {
 						boxes.add(controller.getBounds());
 						view.putPipes(ids, boxes);
+						return true;
 					}
 				});
 			}
@@ -311,10 +311,11 @@ public class ReactorController extends AbstractPlantController implements
 
 				// Update the view with the pipe's current bounds synchronized
 				// with the simple update thread.
-				updateQueue.add(new ISyncAction() {
-					public void simpleUpdate(float tpf) {
+				renderQueue.enqueue(new Callable<Boolean>() {
+					public Boolean call() {
 						boxes.add(pipeController.getBounds());
 						view.putPipes(ids, boxes);
+						return true;
 					}
 				});
 			}
@@ -344,9 +345,10 @@ public class ReactorController extends AbstractPlantController implements
 				ids.add(id);
 
 				// Remove the pipe from the view.
-				updateQueue.add(new ISyncAction() {
-					public void simpleUpdate(float tpf) {
+				renderQueue.enqueue(new Callable<Boolean>() {
+					public Boolean call() {
 						view.removePipes(ids);
+						return true;
 					}
 				});
 			}

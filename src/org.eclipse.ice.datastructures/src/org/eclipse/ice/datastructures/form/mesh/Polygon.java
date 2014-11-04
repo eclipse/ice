@@ -18,18 +18,12 @@ import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeSet;
-
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -46,14 +40,11 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity()
-@Table(name = "Polygon")
 @XmlRootElement(name = "Polygon")
-@Inheritance(strategy = InheritanceType.JOINED)
 @XmlSeeAlso({ Quad.class, Hex.class })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Polygon extends AbstractShape implements IUpdateableListener,

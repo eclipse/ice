@@ -165,6 +165,21 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </p>
  * </td>
  * </tr>
+ *  * <tr>
+ * <td>
+ * <p>
+ * noUploadInput
+ * </p>
+ * </td>
+ * <td>
+ * <p>
+ * If this option is set to true (default), then the JobLaunchAction will
+ * upload the specified input file(s) to the remote location. If this option
+ * is set to false, no input file(s) will be uploaded, with the exception of
+ * the job launching script.
+ * </p>
+ * </td>
+ * </tr>
  * <tr>
  * <td>
  * <p>
@@ -246,6 +261,19 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * <tr>
  * <td>
  * <p>
+ * accountCode
+ * </p>
+ * </td>
+ * <td>
+ * <p>
+ * The account code or project name that should be used for billing on the
+ * remote machine.
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>
+ * <p>
  * downloadDirectory
  * </p>
  * </td>
@@ -289,7 +317,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -391,6 +419,15 @@ public class JobLaunchAction extends Action implements Runnable {
 	 * thread.
 	 */
 	private boolean appendInput = true;
+	
+	/**
+	 * Private flag to indicate if the input file for the JobLaunchAction should
+	 * be uploaded on a remote machine. Be default, the behavior is true. 
+	 * Opposite of the "noUploadInput" argument in the argument map. Setting 
+	 * this flag to false will still allow the "launchJob.sh" script to be
+	 * uploaded, but only this.
+	 */
+	private boolean uploadInput = true;
 
 	/**
 	 * The full command string of all stages that will be executed. If the
@@ -553,9 +590,16 @@ public class JobLaunchAction extends Action implements Runnable {
 		}
 		// Figure out whether or not MPI should be used.
 		if (numProcs > 1) {
-			// Add the MPI command if there are multiple cores
-			fixedExecutableName = "mpirun -np " + numProcs + " "
-					+ fixedExecutableName;
+			// A temporary modification to work with Titan & PBS.
+			if (!execDictionary.get("hostname").equals("titan.ccs.ornl.gov")) {
+				// Add the MPI command if there are multiple cores
+				fixedExecutableName = "mpiexec -n " + numProcs + " "
+						+ fixedExecutableName;
+			} else {
+				// Add the MPI command for aprun if there are multiple cores
+				fixedExecutableName = "aprun -n " + numProcs + " "
+						+ fixedExecutableName;
+			}
 		}
 
 		// Figure out whether or not TBB should be used.
@@ -1057,25 +1101,37 @@ public class JobLaunchAction extends Action implements Runnable {
 				System.out.println("JobLaunchAction Message: "
 						+ "Created directory on remote system, "
 						+ directory.getName());
+				
 				// Loop over all of the files in the file table and upload them
 				for (String shortInputName : fileMap.keySet()) {
+					
 					// Check to see if the job should be cancelled.
 					if (cancelled.get()) {
 						break;
 					}
-					// Get a handle where the input file will be stored remotely
-					IFileStore remoteFileStore = directory
-							.getChild(shortInputName);
-					// Get a file store handle to the local copy of the input
-					// file
-					File localFile = new File(fileMap.get(shortInputName));
-					IFileStore localFileStore = EFS.getLocalFileSystem()
-							.fromLocalFile(localFile);
-					// Copy the local file to the remote file
-					localFileStore.copy(remoteFileStore, EFS.NONE, null);
-					System.out.println("JobLaunchAction Message: "
-							+ "Uploaded file " + shortInputName);
+					
+					// If input file uploading is enabled, OR, if input file
+					// uploading is disabled BUT this is the launch script, then 
+					// upload the file
+					if (uploadInput || 
+							(!uploadInput && shortInputName.equals("launchJob.sh"))) {
+						
+						// Get a handle where the input file will be stored remotely
+						IFileStore remoteFileStore = directory
+								.getChild(shortInputName);
+						// Get a file store handle to the local copy of the input
+						// file
+						File localFile = new File(fileMap.get(shortInputName));
+						IFileStore localFileStore = EFS.getLocalFileSystem()
+								.fromLocalFile(localFile);
+	
+						// Copy the local file to the remote file
+						localFileStore.copy(remoteFileStore, EFS.NONE, null);
+						System.out.println("JobLaunchAction Message: "
+								+ "Uploaded file " + shortInputName);
+					}
 				}
+
 			} catch (CoreException e) {
 				// Print diagnostic information and fail
 				e.printStackTrace();
@@ -1095,11 +1151,17 @@ public class JobLaunchAction extends Action implements Runnable {
 					+ "PTP working directory set to"
 					+ connection.getWorkingDirectory());
 
-			// Loop over all of the commands here
+			// Create the command to launch based on whether this is a normal
+			// machine or Titan.
+			String launchCMD = "";
+			if (!execDictionary.get("hostname").equals("titan.ccs.ornl.gov")) {
+				launchCMD = "./" + launchCMDFileName;
+			} else {
+				launchCMD = "qsub" + launchCMDFileName;
+			}
 			// Create the process builder for the remote job
 			IRemoteProcessBuilder processBuilder = remoteServices
-					.getProcessBuilder(connection, "sh", "./"
-							+ launchCMDFileName);
+					.getProcessBuilder(connection, "sh", launchCMD);
 			// Do not redirect the streams
 			processBuilder.redirectErrorStream(false);
 			try {
@@ -1232,6 +1294,27 @@ public class JobLaunchAction extends Action implements Runnable {
 		File launchFile = new File(launchFileName);
 		FileWriter launchFileWriter = new FileWriter(launchFile);
 		String shortName = "launchJob.sh";
+
+		// Write the header if the target machine is Titan
+		if (execDictionary.get("hostname").equals("titan.ccs.ornl.gov")) {
+			// Get the number of cores
+			int numCores = Math.max(1,
+					Integer.parseInt(execDictionary.get("numProcs")));
+			// Calculate the number of nodes.
+			int numNodes = Math.min(numCores / 16 + 1, 18688);
+			// Write the file
+			launchFileWriter.write("#!/bin/bash\n");
+			launchFileWriter.write("# Begin PBS directives\n");
+			launchFileWriter.write("#PBS -A "
+					+ execDictionary.get("accountCode") + "\n");
+			launchFileWriter
+					.write("#PBS -N " + workingDirectoryBaseName + "\n");
+			launchFileWriter.write("#PBS -j oe\n");
+			launchFileWriter.write("#PBS -l walltime=1:00:00,nodes=" + numNodes
+					+ "\n");
+			launchFileWriter
+					.write("# End PBS directives and begin shell commands\n");
+		}
 
 		// Write each command into the file
 		for (String singleCMD : splitCMD) {
@@ -1389,6 +1472,12 @@ public class JobLaunchAction extends Action implements Runnable {
 			launchDir = homeDir + separator + "ICEFiles" + separator
 					+ "default" + separator + "jobs" + separator
 					+ workingDirectoryBaseName;
+		} else if (execDictionary.get("hostname").equals("titan.ccs.ornl.gov")) {
+			// Get the project directory
+			String projId = execDictionary.get("accountCode");
+			// Set the directory to the $PROJ_WORK/projId directory on Titan
+			launchDir = "$PROJWORK" + separator + projId + separator
+					+ workingDirectoryBaseName;
 		} else {
 			// Otherwise just leave it in the home directory
 			launchDir = workingDirectoryBaseName;
@@ -1443,6 +1532,14 @@ public class JobLaunchAction extends Action implements Runnable {
 				&& ("true").equals(execDictionary.get(("noAppendInput")))) {
 			appendInput = false;
 		}
+		// Do the same for the flag that indicates if input file uploading
+		// should be disabled. Again, treat it specially. Shower it with flowers
+		// and affection. Make it breakfast in bed. Massage its feet.
+		if (execDictionary.get("noUploadInput") != null
+				&& ("true").equals(execDictionary.get(("noUploadInput")))) {
+			uploadInput = false;
+		}
+		
 		// Set the appropriate working directory name
 		setWorkingDirectoryName();
 
@@ -1528,7 +1625,9 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Add the execution command
 		header += "# Command Executed: " + fullCMD + "\n";
 		// Add the input file name
-		header += "# Input file: " + execDictionary.get("inputFile") + "\n";
+		if (uploadInput) {
+			header += "# Input file: " + execDictionary.get("inputFile") + "\n";
+		}
 		// Add the working directory
 		header += "# Working directory: " + execDictionary.get("workingDir")
 				+ "\n";

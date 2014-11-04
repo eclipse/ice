@@ -36,7 +36,7 @@ import org.eclipse.ice.client.widgets.reactoreditor.StateBroker;
  * This class provides keys for use in a {@link StateBroker}. It is tailored
  * specifically for {@link SFRComponent}s and the SFR analysis views.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class StateBrokerHandler implements IStateBrokerHandler,
@@ -78,7 +78,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * <b>It is primarily intended to be used for inner/untyped classes and
 	 * eliminate unused visit methods elsewhere in this class.</b>
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class BaseVisitor implements ISFRComponentVisitor {

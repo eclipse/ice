@@ -24,7 +24,7 @@ import org.junit.Test;
  * This class is responsible for testing the MeshEditor to make sure that it is
  * correctly constructed.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class MeshEditorTester {

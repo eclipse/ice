@@ -16,7 +16,6 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,10 +26,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -53,12 +48,10 @@ import javax.xml.bind.annotation.XmlTransient;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity()
-@Table(name = "MeshComponent")
 @XmlRootElement(name = "MeshComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MeshComponent extends ICEObject implements Component, IMeshPart {
@@ -84,7 +77,6 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient
 	private TreeMap<Integer, Vertex> vertices;
 	/**
@@ -97,7 +89,6 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient
 	private TreeMap<Integer, Edge> edges;
 
@@ -112,7 +103,6 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient
 	private TreeMap<Integer, TreeSet<Integer>> vertexPolygons;
 	/**
@@ -126,7 +116,6 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient
 	private TreeMap<Integer, TreeSet<Integer>> edgePolygons;
 	/**
@@ -140,7 +129,6 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient
 	private TreeMap<Integer, TreeSet<Integer>> vertexEdges;
 
@@ -155,7 +143,6 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient
 	private final AtomicBoolean copying;
 

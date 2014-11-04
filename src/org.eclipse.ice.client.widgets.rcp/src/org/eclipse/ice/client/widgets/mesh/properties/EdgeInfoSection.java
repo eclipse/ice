@@ -28,7 +28,7 @@ import org.eclipse.ui.views.properties.tabbed.ISection;
  * This class provides an {@link ISection} for displaying the information of an
  * {@link Edge} in a modifiable manner.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class EdgeInfoSection extends GeneralInfoSection {

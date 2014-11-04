@@ -21,7 +21,7 @@ import org.junit.Test;
 /**
  * This class tests the SimpleProperty class.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class SimplePropertyTester {

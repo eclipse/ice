@@ -52,7 +52,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * Eventually, this may include the ability to modify the locations of multiple
  * vertices in a single selection.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class VertexSection extends AbstractPropertySection {

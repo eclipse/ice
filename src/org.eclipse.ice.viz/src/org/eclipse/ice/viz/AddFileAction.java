@@ -32,7 +32,7 @@ import org.osgi.framework.FrameworkUtil;
  * This Action is used to open a FileDialog that allows the user to select
  * compatible files as {@link ICEResource}s into a {@link VizFileViewer}.
  * 
- * @author tnp, djg
+ * @author tnp, Jordan H. Deyton
  */
 public class AddFileAction extends Action implements IMenuCreator {
 
@@ -167,6 +167,15 @@ public class AddFileAction extends Action implements IMenuCreator {
 		}
 
 		return menu;
+	}
+
+	/**
+	 * Retrieve the AddLocalFileAction.
+	 * 
+	 * @return The AddLocalFileAction that is part of this Actions dropdown
+	 */
+	public Action getAddLocalFileAction() {
+		return addActions.get(0);
 	}
 
 }

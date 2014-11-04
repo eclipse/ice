@@ -21,7 +21,7 @@ import org.eclipse.ui.PlatformUI;
  * <!-- begin-UML-doc -->
  * <p>This class implements IErrorBox interface to display an error box using elements of SWT/JFace and the Eclipse Rich Client Platform.</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EclipseErrorBoxWidget implements IErrorBox {

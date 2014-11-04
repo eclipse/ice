@@ -12,13 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
-import org.eclipse.ice.client.widgets.mesh.ISyncAction;
+import java.util.concurrent.Callable;
 
+import org.eclipse.ice.client.widgets.jme.IRenderQueue;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.Junction;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.jme3.bounding.BoundingBox;
 import com.jme3.math.Quaternion;
@@ -29,7 +28,7 @@ import com.jme3.math.Vector3f;
  * {@link HeatExchanger} model with the {@link HeatExchangerView}. Any updates
  * to the view should be coordinated through this class.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class HeatExchangerController extends PipeController {
@@ -61,23 +60,21 @@ public class HeatExchangerController extends PipeController {
 	 * @param view
 	 *            The view (a {@link JunctionView}) associated with this
 	 *            controller.
-	 * @param updateQueue
-	 *            The queue (a ConcurrentLinkedQueue of {@link ISyncAction}s)
-	 *            that is processed in the SimpleApplication's simpleUpdate()
-	 *            thread. Any changes to the {@link #view} are performed by
-	 *            adding a new action to this queue.
+	 * @param renderQueue
+	 *            The queue responsible for tasks that need to be performed on
+	 *            the jME rendering thread.
 	 * @param manager
 	 *            A {@link PlantControllerManager} used for looking up
 	 *            {@link JunctionController}s for the current {@link Junction}s
 	 *            connected to the HeatExchanger as secondary input/output.
 	 */
 	public HeatExchangerController(HeatExchanger model, HeatExchangerView view,
-			ConcurrentLinkedQueue<ISyncAction> updateQueue) {
+			IRenderQueue renderQueue) {
 		
 		// This controller extends PipeController, so the super constructor
 		// needs a Pipe. We need to check for null before we can send the
 		// primary Pipe to the super constructor.
-		super((model != null ? model.getPrimaryPipe() : null), view, updateQueue);
+		super((model != null ? model.getPrimaryPipe() : null), view, renderQueue);
 
 		// Set the model. If it is null, create a new, default model.
 		this.model = (model != null ? model : new HeatExchanger());
@@ -98,7 +95,7 @@ public class HeatExchangerController extends PipeController {
 		} else if (view == null) {
 			throw new IllegalArgumentException(
 					"HeatExchangerController error: View is null!");
-		} else if (updateQueue == null) {
+		} else if (renderQueue == null) {
 			throw new IllegalArgumentException(
 					"HeatExchangerController error: Update queue is null!");
 		}
@@ -137,11 +134,12 @@ public class HeatExchangerController extends PipeController {
 		// Update the location and orientation of the secondary pipe mesh before
 		// querying the view for the secondary pipe's BoundingBox.
 		view.updateSecondaryMesh(input, (float) model.getInnerRadius(), tmp);
-		
+
 		// Sync the view's mesh and geometry.
-		updateQueue.add(new ISyncAction() {
-			public void simpleUpdate(float tpf) {
+		renderQueue.enqueue(new Callable<Boolean>() {
+			public Boolean call() {
 				view.refreshSecondaryMesh(input);
+				return true;
 			}
 		});
 	}

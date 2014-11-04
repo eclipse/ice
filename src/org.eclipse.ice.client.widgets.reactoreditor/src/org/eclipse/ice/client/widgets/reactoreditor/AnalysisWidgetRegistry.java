@@ -25,7 +25,7 @@ import java.util.Map;
  * the corresponding <code>AnalysisWidgetRegistry.xml</code>. There should also
  * be a bundle somewhere that consumes (references) this service.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AnalysisWidgetRegistry implements IAnalysisWidgetRegistry {

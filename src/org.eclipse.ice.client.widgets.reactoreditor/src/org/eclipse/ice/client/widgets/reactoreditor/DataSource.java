@@ -20,7 +20,7 @@ package org.eclipse.ice.client.widgets.reactoreditor;
  * To get the String for a particular value, use {@link DataSource#toString()}.<br>
  * To get the value for a particular String, use {@link DataSource#valueOf(String)}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public enum DataSource {

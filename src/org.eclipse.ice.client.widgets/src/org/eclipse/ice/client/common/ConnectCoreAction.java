@@ -33,7 +33,7 @@ import org.osgi.framework.Bundle;
  * ConnectCoreAction inherits JFace Action and defines the action that occurs
  * when a user attempts to connect Client to a Core
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class ConnectCoreAction extends Action implements ISelectionListener,

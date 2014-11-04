@@ -38,7 +38,7 @@ import org.eclipse.ui.forms.IManagedForm;
  * This class extends the default ICEFormEditor to enable it to draw data from
  * the ReactorAnalyzer better.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
  */
 public class ReactorFormEditor extends ICEFormEditor {

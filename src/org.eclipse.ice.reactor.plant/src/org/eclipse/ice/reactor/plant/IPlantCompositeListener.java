@@ -20,7 +20,7 @@ import java.util.List;
  * or removed so that the listener does not need to look for the components that
  * have been removed or added.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public interface IPlantCompositeListener {

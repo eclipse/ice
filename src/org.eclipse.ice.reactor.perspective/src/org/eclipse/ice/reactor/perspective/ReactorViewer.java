@@ -48,7 +48,7 @@ import org.eclipse.ui.part.WorkbenchPart;
  * This class extends the ViewPart class to display opened reactor files and
  * their components.
  * 
- * @author tnp, djg
+ * @author tnp, Jordan H. Deyton
  */
 public class ReactorViewer extends ViewPart implements
 		ISelectionChangedListener, IUpdateableListener {

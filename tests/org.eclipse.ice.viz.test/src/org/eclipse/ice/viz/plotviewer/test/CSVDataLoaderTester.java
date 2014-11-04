@@ -131,6 +131,8 @@ public class CSVDataLoaderTester {
 		IProject project = null;
 		URI defaultProjectLocation = null;
 		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "CSVLoaderTesterWorkspace";
 
 		// Setup the project
 		try {
@@ -139,9 +141,8 @@ public class CSVDataLoaderTester {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				defaultProjectLocation = (new File(
-						System.getProperty("user.dir") + separator
-								+ "CSVLoaderTesterWorkspace")).toURI();
+				defaultProjectLocation = (new File(userDir)).toURI();
+				System.out.println(defaultProjectLocation);
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription("CSVLoaderTesterWorkspace");
@@ -160,9 +161,9 @@ public class CSVDataLoaderTester {
 		}
 
 		// Initialize the file names to the correct name and path
-		file260Name = "CSVLoaderTesterWorkspace/LiCl_260K.csv";
-		file290Name = "CSVLoaderTesterWorkspace/LiCl_290K.csv";
-		contourFileName = "CSVLoaderTesterWorkspace/sqe0.5.csv";
+		file260Name = userDir + separator + "LiCl_260K.csv";
+		file290Name = userDir + separator + "LiCl_290K.csv";
+		contourFileName = userDir + separator + "sqe0.5.csv";
 
 		// Create a array of string file names
 		fileNameSet = new String[2];

@@ -52,7 +52,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * initialize the container Composite yourself, or use a different container and
  * override {@link #getComposite()}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AnalysisView implements IAnalysisView, IStateListener {

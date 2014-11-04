@@ -12,27 +12,32 @@
  *******************************************************************************/
 package org.eclipse.ice.core.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.core.internal.itemmanager.ItemManager;
-
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * <!-- begin-UML-doc -->
@@ -48,7 +53,7 @@ import org.junit.*;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -155,16 +160,33 @@ public class ItemManagerTester {
 
 		// Local Declarations
 		String testItemName;
+		boolean found;
 
-		// Make sure that the list of available Items lists the Fakes, Geometry
-		// first
-		assertNotNull(itemManager.getAvailableBuilders());
-		assertEquals(2, itemManager.getAvailableBuilders().size());
-		testItemName = itemManager.getAvailableBuilders().get(0);
-		// Now Modules
-		assertEquals(testItemName, fakeModuleBuilder.getItemName());
-		testItemName = itemManager.getAvailableBuilders().get(1);
-		assertEquals(testItemName, fakeGeometryBuilder.getItemName());
+		// Make sure the list of builders has exactly 2 items.
+		List<String> availableBuilders = itemManager.getAvailableBuilders();
+		assertNotNull(availableBuilders);
+		assertEquals(2, availableBuilders.size());
+
+		// NOTE: The below code has to loop over the list of available builders
+		// because the underlying list is NOT ordered.
+
+		// Make sure the available builders includes the fake module builder.
+		found = false;
+		testItemName = fakeModuleBuilder.getItemName();
+		for (int i = 0; !found && i < availableBuilders.size(); i++) {
+			found = testItemName.equals(availableBuilders.get(i));
+		}
+		assertTrue("ItemManagerTester: " + "FakeModuleBuilder with name "
+				+ testItemName + " not found in available builders!", found);
+
+		// Make sure the available builders includes the fake geometry builder.
+		found = false;
+		testItemName = fakeGeometryBuilder.getItemName();
+		for (int i = 0; !found && i < availableBuilders.size(); i++) {
+			found = testItemName.equals(availableBuilders.get(i));
+		}
+		assertTrue("ItemManagerTester: " + "FakeGeometryBuilder with name "
+				+ testItemName + " not found in available builders!", found);
 
 		// Get the builders by type, Geometry first
 		assertNotNull(itemManager.getAvailableBuilders(ItemType.Geometry));
@@ -174,10 +196,10 @@ public class ItemManagerTester {
 				0);
 		assertEquals(testItemName, fakeGeometryBuilder.getItemName());
 		// Now Modules
-		assertNotNull(itemManager.getAvailableBuilders(ItemType.Module));
-		assertEquals(1, itemManager.getAvailableBuilders(ItemType.Module)
-				.size());
-		testItemName = itemManager.getAvailableBuilders().get(0);
+		availableBuilders = itemManager.getAvailableBuilders(ItemType.Module);
+		assertNotNull(availableBuilders);
+		assertEquals(1, availableBuilders.size());
+		testItemName = availableBuilders.get(0);
 		assertEquals(testItemName, fakeModuleBuilder.getItemName());
 
 		// Unregister the FakeItemBuilder

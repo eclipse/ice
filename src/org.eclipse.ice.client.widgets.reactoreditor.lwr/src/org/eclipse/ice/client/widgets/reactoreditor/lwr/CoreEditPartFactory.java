@@ -29,7 +29,7 @@ import org.eclipse.gef.EditPartFactory;
  * (nothing special is required to represent the core) and
  * {@link CoreCellEditPart}s for the Cells.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class CoreEditPartFactory implements EditPartFactory {

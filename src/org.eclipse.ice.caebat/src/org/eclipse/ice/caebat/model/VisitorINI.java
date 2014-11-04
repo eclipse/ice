@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -25,6 +25,7 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
@@ -177,7 +178,6 @@ public class VisitorINI implements IComponentVisitor {
 			this.iniFormat = "";
 
 			for (int i = 0; i < component.getRowIds().size(); i++) {
-				int rowId = component.getRowIds().get(i);
 
 				// Add preliminary table information if the iterator is 0
 				if (i == 0) {
@@ -186,15 +186,12 @@ public class VisitorINI implements IComponentVisitor {
 					this.iniFormat += "[" + component.getName() + "]\n"
 							+ "    NAMES =";
 
-					// Add implementation hook. Required to get this file to
-					// work correctly
-					this.iniFormat += " INIT";
-
-					for (int j = 0; j < component.getRowIds().size(); j++) {
-						int rowId2 = component.getRowIds().get(j);
-						this.iniFormat += " "
-								+ component.getRow(rowId2).get(0).getValue();
-
+					// Add component names
+					ArrayList<Integer> rowIds = component.getRowIds();
+					int size = rowIds.size();
+					for (int j = 0; j < size; j++) {
+						ArrayList<Entry> row = component.getRow(j);
+						this.iniFormat += " " + row.get(0).getValue();
 					}
 
 					// Add two newlines
@@ -202,17 +199,17 @@ public class VisitorINI implements IComponentVisitor {
 
 					// Add implementation hook. Required to get this file to
 					// work correctly
-					this.iniFormat += "    [[INIT]]\n"
-							+ "        IMPLEMENTATION = \n";
+					// this.iniFormat += "    [[INIT]]\n"
+					// + "        IMPLEMENTATION = \n";
 
 				}
 
 				// For every iteration of rowId, add information about the port
 				// name and value
 				this.iniFormat += "    [["
-						+ component.getRow(rowId).get(0).getValue() + "]]\n"
+						+ component.getRow(i).get(0).getValue() + "]]\n"
 						+ "        IMPLEMENTATION = "
-						+ component.getRow(rowId).get(1).getValue() + "\n";
+						+ component.getRow(i).get(1).getValue() + "\n";
 
 			}
 
@@ -434,13 +431,13 @@ public class VisitorINI implements IComponentVisitor {
 	}
 
 	@Override
-	public void visit(BatteryComponent component) {
+	public void visit(AdaptiveTreeComposite component) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void visit(AdaptiveTreeComposite component) {
+	public void visit(EMFComponent component) {
 		// TODO Auto-generated method stub
 
 	}

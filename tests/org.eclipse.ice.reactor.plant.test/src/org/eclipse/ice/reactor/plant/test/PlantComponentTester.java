@@ -19,26 +19,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
-import org.eclipse.ice.reactor.plant.PlantComponent;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
+import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.junit.Test;
 
 /**
@@ -359,11 +346,12 @@ public class PlantComponentTester {
 	 * 
 	 * @author w5q
 	 */
-	private class FakeComponentVisitor implements IComponentVisitor {
+	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 
 		// The fake visitor's visited component.
 		private IReactorComponent component = null;
 
+		@Override
 		public void visit(IReactorComponent component) {
 
 			// Set the IComponentVisitor component (if valid), and flag the
@@ -373,43 +361,6 @@ public class PlantComponentTester {
 				wasVisited = true;
 			}
 			return;
-		}
-
-		public void visit(DataComponent component) {
-		}
-
-		public void visit(ResourceComponent component) {
-		}
-
-		public void visit(TableComponent component) {
-		}
-
-		public void visit(MatrixComponent component) {
-		}
-
-		public void visit(IShape component) {
-		}
-
-		public void visit(GeometryComponent component) {
-		}
-
-		public void visit(MasterDetailsComponent component) {
-		}
-
-		public void visit(TreeComposite component) {
-		}
-
-		public void visit(TimeDataComponent component) {
-		}
-
-		public void visit(MeshComponent component) {
-		}
-
-		public void visit(BatteryComponent component) {
-		}
-
-		public void visit(AdaptiveTreeComposite component) {
-
 		}
 	};
 }

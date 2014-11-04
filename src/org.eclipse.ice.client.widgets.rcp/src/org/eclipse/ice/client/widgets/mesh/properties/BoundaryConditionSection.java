@@ -55,7 +55,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * This class provides an {@link ISection} for displaying the information of an
  * {@link BoundaryCondition} in a modifiable manner.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class BoundaryConditionSection extends AbstractPropertySection {

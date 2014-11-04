@@ -98,71 +98,74 @@ public class CSVDataTableViewer extends ViewPart implements ISelectionListener {
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
-		// Check that the selection's source is the VizFileViewer.
-		// Try to get the VizResource from the ISelection. We first have to
-		// cast the ISelection to an IStructuredSelection, whose first
-		// element should be a VizResource.
-		if (part.getSite().getId().equals(VizFileViewer.ID)
-				&& selection != null
-				&& selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			if (!structuredSelection.isEmpty()) {
-				Object object = structuredSelection.getFirstElement();
+		// FIXME Disabling this until the issues are resolved;
 
-				if (object instanceof VizResource) {
-					VizResource resource = (VizResource) object;
-					String fileName = "";
-
-					if (resource.getFileSet() != null
-							&& resource.getFileSetTitle() != null) {
-						fileName = resource.getFileSetTitle();
-					} else {
-						fileName = resource.getContents().getAbsolutePath();
-					}
-
-					// Create a CSVDataLoader and CSVDataProvider if the
-					// selection is a .csv file set
-					CSVDataProvider newDataProvider = null;
-					CSVDataLoader newCSVDataLoader = null;
-
-					// Handle a CSV file
-					if (fileName.matches(".*\\.csv$")) {
-
-						// Initialize the CSVDataLoader
-						newCSVDataLoader = new CSVDataLoader();
-
-						// Create the CSVDataProvider from a file set
-						if (resource.getFileSet() != null
-								&& resource.getFileSetTitle() != null) {
-
-							// Initialize the CSVDataProvider
-							newDataProvider = newCSVDataLoader
-									.loadAsFileSet(resource.getFileSet());
-
-							// Set the source as the file name
-							newDataProvider.setSource(resource
-									.getFileSetTitle());
-						}
-
-						// Or create the CSVDataProvider from a file
-						else {
-
-							// Initialize the CSVDataProvider
-							newDataProvider = newCSVDataLoader.load(fileName);
-
-							// Set the source as the file name
-							File file = resource.getContents();
-							newDataProvider.setSource(file.getName());
-						}
-					} else {
-						return;
-					}
-
-					// Refresh this view based on the selection
-					refreshDataTable(newDataProvider);
-				}
-			}
-		}
+		// // Check that the selection's source is the VizFileViewer.
+		// // Try to get the VizResource from the ISelection. We first have to
+		// // cast the ISelection to an IStructuredSelection, whose first
+		// // element should be a VizResource.
+		// if (part.getSite().getId().equals(VizFileViewer.ID)
+		// && selection != null
+		// && selection instanceof IStructuredSelection) {
+		// IStructuredSelection structuredSelection = (IStructuredSelection)
+		// selection;
+		// if (!structuredSelection.isEmpty()) {
+		// Object object = structuredSelection.getFirstElement();
+		//
+		// if (object instanceof VizResource) {
+		// VizResource resource = (VizResource) object;
+		// String fileName = "";
+		//
+		// if (resource.getFileSet() != null
+		// && resource.getFileSetTitle() != null) {
+		// fileName = resource.getFileSetTitle();
+		// } else {
+		// fileName = resource.getContents().getAbsolutePath();
+		// }
+		//
+		// // Create a CSVDataLoader and CSVDataProvider if the
+		// // selection is a .csv file set
+		// CSVDataProvider newDataProvider = null;
+		// CSVDataLoader newCSVDataLoader = null;
+		//
+		// // Handle a CSV file
+		// if (fileName.matches(".*\\.csv$")) {
+		//
+		// // Initialize the CSVDataLoader
+		// newCSVDataLoader = new CSVDataLoader();
+		//
+		// // Create the CSVDataProvider from a file set
+		// if (resource.getFileSet() != null
+		// && resource.getFileSetTitle() != null) {
+		//
+		// // Initialize the CSVDataProvider
+		// newDataProvider = newCSVDataLoader
+		// .loadAsFileSet(resource.getFileSet());
+		//
+		// // Set the source as the file name
+		// newDataProvider.setSource(resource
+		// .getFileSetTitle());
+		// }
+		//
+		// // Or create the CSVDataProvider from a file
+		// else {
+		//
+		// // Initialize the CSVDataProvider
+		// newDataProvider = newCSVDataLoader.load(fileName);
+		//
+		// // Set the source as the file name
+		// File file = resource.getContents();
+		// newDataProvider.setSource(file.getName());
+		// }
+		// } else {
+		// return;
+		// }
+		//
+		// // Refresh this view based on the selection
+		// refreshDataTable(newDataProvider);
+		// }
+		// }
+		// }
 
 		return;
 	}
@@ -176,8 +179,8 @@ public class CSVDataTableViewer extends ViewPart implements ISelectionListener {
 	 */
 	public void refreshDataTable(CSVDataProvider newDataProvider) {
 
-		System.out.println("Refreshing the data table: "
-				+ newDataProvider.getSourceInfo());
+		System.out.println("CSVDataTableViewer Message: Refreshing the data "
+				+ "table: " + newDataProvider.getSourceInfo());
 
 		// Iterates through the times
 		for (Double time : newDataProvider.getTimes()) {

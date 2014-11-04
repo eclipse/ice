@@ -13,6 +13,7 @@
 package org.eclipse.ice.client.widgets.reactoreditor.test;
 
 import static org.junit.Assert.assertEquals;
+
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisDataReader;
 
@@ -26,7 +27,7 @@ import org.junit.Test;
 /**
  * This class tests the AnalysisDataReader.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class AnalysisDataReaderTester {
@@ -41,12 +42,10 @@ public class AnalysisDataReaderTester {
 		AnalysisDataReader dataReader = new AnalysisDataReader();
 
 		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + "TestAnalysisData.txt");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "reactorEditorData";
+		File dataFile = new File(userDir + separator + "TestAnalysisData.txt");
 		URI uri = dataFile.toURI();
-		// uri = new
-		// URI("file://C:/Users/djg/workspace/org.eclipse.ice.client.widgets.reactoreditor.prototype.test/src/org/eclipse/ice/client/widgets/reactoreditor/prototype/test/TestAnalysisData.txt");
-		// URI uri = new URI();
 		dataReader.readData(uri);
 
 		// I would do this in a separate function, but... test isolation.

@@ -14,17 +14,6 @@ package org.eclipse.ice.datastructures.form.geometry;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import java.util.ArrayList;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -46,9 +35,6 @@ import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity
-@Table(name = "AbstractShape")
-@Inheritance(strategy = InheritanceType.JOINED)
 @XmlSeeAlso({ PrimitiveShape.class, ComplexShape.class })
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractShape extends ICEObject implements IShape {
@@ -74,7 +60,6 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Column(name = "stringValues")
 	@XmlElement(name = "Values")
 	private ArrayList<String> values;
 	/**
@@ -96,7 +81,6 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = Transformation.class)
 	@XmlElement(name = "Transformation")
 	protected Transformation transformation;
 
@@ -111,7 +95,6 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	@Transient
 	private IShape parent;
 
 	/**

@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
  * This class is used to launch the test GridViewerLauncher. It could also be
  * launched through OSGi services, but that method has not been implemented.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class Activator implements BundleActivator {

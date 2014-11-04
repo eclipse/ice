@@ -50,8 +50,9 @@ public class NekReaderTester {
 		NekReader reader = new NekReader();
 		
 		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.dir") + separator + "examples"
-				+ separator + "conj_ht.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String filePath = userDir + separator + "conj_ht.rea";
 		File testFile = new File(filePath);
 		
 		// Try to read in invalid .rea file
@@ -387,8 +388,9 @@ public class NekReaderTester {
 		NekReader reader = new NekReader();
 		
 		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.dir") + separator + "examples"
-				+ separator + "eddy_uv.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String filePath = userDir + separator + "eddy_uv.rea";
 		File testFile = new File(filePath);
 		
 		// Try to read in invalid .rea file
@@ -718,8 +720,9 @@ public class NekReaderTester {
 		NekReader reader = new NekReader();
 		
 		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.dir") + separator + "examples"
-				+ separator + "kov.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String filePath = userDir + separator + "kov.rea";
 		File testFile = new File(filePath);
 		
 		// Try to read in invalid .rea file
@@ -1050,8 +1053,9 @@ public class NekReaderTester {
 		NekReader reader = new NekReader();
 		
 		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.dir") + separator + "examples"
-				+ separator + "ray_dd.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String filePath = userDir + separator + "ray_dd.rea";
 		File testFile = new File(filePath);
 		
 		// Try to read in invalid .rea file
@@ -1383,8 +1387,9 @@ public class NekReaderTester {
 		NekReader reader = new NekReader();
 		
 		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.dir") + separator + "examples"
-				+ separator + "ray_nn.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String filePath = userDir + separator + "ray_nn.rea";
 		File testFile = new File(filePath);
 		
 		// Try to read in invalid .rea file
@@ -1716,8 +1721,9 @@ public class NekReaderTester {
 		NekReader reader = new NekReader();
 		
 		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.dir") + separator + "examples"
-				+ separator + "v2d.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String filePath = userDir + separator + "v2d.rea";
 		File testFile = new File(filePath);
 		
 		// Try to read in invalid .rea file

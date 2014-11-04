@@ -54,7 +54,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -64,7 +64,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	 * A content provider that provides the proper names for Masters added to
 	 * the Masters block.
 	 * 
-	 * @author gml
+	 * @author Jay Jay Billings
 	 * 
 	 */
 	class MasterContentProvider implements IStructuredContentProvider {
@@ -80,7 +80,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		@Override
 		public Object[] getElements(Object inputElement) {
 
-			// Local Declaration
+			// Local Declarations
 			MasterDetailsComponent comp = (MasterDetailsComponent) inputElement;
 			ArrayList<String> contents = new ArrayList<String>();
 			int numberOfMasters = masterDetailsComponent.numberOfMasters();
@@ -243,12 +243,12 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		layout.marginWidth = 2;
 		layout.marginHeight = 2;
 		client.setLayout(layout);
-		Table t = toolkit.createTable(client, SWT.NULL);
+		Table table = toolkit.createTable(client, SWT.NULL);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 20;
 		gd.widthHint = 100;
 		gd.verticalSpan = 2;
-		t.setLayoutData(gd);
+		table.setLayoutData(gd);
 		toolkit.paintBordersFor(client);
 
 		// Setup the section's client and add it to the part lifecycle with a
@@ -258,7 +258,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		managedForm.addPart(spart);
 
 		// Use a standard tableviewer from JFace to hold the list of masters.
-		final TableViewer viewer = new TableViewer(t);
+		final TableViewer viewer = new TableViewer(table);
 		this.viewer = viewer;
 		final IManagedForm finalManagedForm = managedForm;
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {

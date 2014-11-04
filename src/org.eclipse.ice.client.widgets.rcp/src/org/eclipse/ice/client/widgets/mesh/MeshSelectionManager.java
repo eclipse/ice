@@ -29,7 +29,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * This class manages a selection of polygons, edges, and vertices for a
  * MeshComponent.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class MeshSelectionManager {
@@ -44,7 +44,7 @@ public class MeshSelectionManager {
 	 * A list of listeners that listen for updates to the MeshApplication's
 	 * current selection.
 	 */
-	private final List<IMeshSelectionListener> applicationListeners;
+	private final List<IMeshSelectionListener> listeners;
 
 	// ---- The current selection. ---- //
 	/**
@@ -85,7 +85,7 @@ public class MeshSelectionManager {
 	 */
 	public MeshSelectionManager() {
 		// Initialize the current selection collections.
-		applicationListeners = new ArrayList<IMeshSelectionListener>();
+		listeners = new ArrayList<IMeshSelectionListener>();
 		selectedVertices = new TreeMap<Integer, Vertex>();
 		selectedEdges = new TreeMap<Integer, Edge>();
 		selectedPolygons = new TreeMap<Integer, Polygon>();
@@ -133,8 +133,8 @@ public class MeshSelectionManager {
 	 */
 	public void addMeshApplicationListener(IMeshSelectionListener listener) {
 		// Only add non-null and non-duplicate listeners.
-		if (listener != null && !applicationListeners.contains(listener)) {
-			applicationListeners.add(listener);
+		if (listener != null && !listeners.contains(listener)) {
+			listeners.add(listener);
 		}
 		return;
 	}
@@ -147,7 +147,7 @@ public class MeshSelectionManager {
 	 */
 	public void removeMeshApplicationListener(IMeshSelectionListener listener) {
 		if (listener != null) {
-			applicationListeners.remove(listener);
+			listeners.remove(listener);
 		}
 		return;
 	}
@@ -158,14 +158,14 @@ public class MeshSelectionManager {
 	 */
 	private void notifyMeshApplicationListeners() {
 		// Only process the update if there are listeners
-		if (!applicationListeners.isEmpty()) {
+		if (!listeners.isEmpty()) {
 			// Create a thread on which to notify the listeners.
 			Thread notifierThread = new Thread() {
 				@Override
 				public void run() {
 					// Loop over all listeners and update them
-					for (int i = 0; i < applicationListeners.size(); i++) {
-						applicationListeners.get(i).selectionChanged();
+					for (int i = 0; i < listeners.size(); i++) {
+						listeners.get(i).selectionChanged();
 					}
 					return;
 				}

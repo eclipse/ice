@@ -1,48 +1,48 @@
 /*******************************************************************************
-* Copyright (c) 2013, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.common;
 
-import org.eclipse.ice.client.common.internal.ClientHolder;
-import org.eclipse.ice.iclient.IClient;
-
-import java.awt.Window;
 import java.io.File;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.client.common.internal.ClientHolder;
+import org.eclipse.ice.client.widgets.wizards.ImportFileWizard;
+import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This class is an action for importing files.
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * 
+ * @see ImportFileWizardHandler
+ * @see ImportFileWizard
  */
-public class ImportFileAction extends Action implements ISelectionListener,
+public class ImportFileAction extends Action implements
 		IWorkbenchAction {
+
+	// FIXME This class is no longer used due to using the
+	// org.eclipse.ui.commands extensions to add the ImportFileWizardHandler to
+	// the main toolbar.
 
 	// Handle to the workbench window
 	private final IWorkbenchWindow workbenchWindow;
@@ -54,28 +54,23 @@ public class ImportFileAction extends Action implements ISelectionListener,
 	 * Constructor
 	 */
 	public ImportFileAction(IWorkbenchWindow window) {
-		// Local Declarations
-		Bundle bundle = null;
-		Path importerPath = null;
-		URL importerImageURL = null;
-		ImageDescriptor importerImage = null;
-
-		// Find the client bundle
-		bundle = Platform.getBundle("org.eclipse.ice.client.widgets");
-
-		// Create the image descriptor for the create item action
-		importerPath = new Path("icons/importArrow.gif");
-		importerImageURL = FileLocator.find(bundle, importerPath, null);
-		importerImage = ImageDescriptor.createFromURL(importerImageURL);
 
 		// Set the action ID, Menu Text, and a tool tip.
 		workbenchWindow = window;
+
+		// Set the text properties.
 		setId(ID);
 		setText("&Import a file");
 		setToolTipText("Import a file into ICE's "
 				+ "project space for use by your items.");
-		setImageDescriptor(importerImage);
-		
+
+		// Find the client bundle
+		Bundle bundle = FrameworkUtil.getBundle(ImportFileAction.class);
+		Path imagePath = new Path("icons"
+				+ System.getProperty("file.separator") + "importArrow.gif");
+		URL imageURL = FileLocator.find(bundle, imagePath, null);
+		setImageDescriptor(ImageDescriptor.createFromURL(imageURL));
+
 		return;
 	}
 
@@ -87,7 +82,7 @@ public class ImportFileAction extends Action implements ISelectionListener,
 
 		// Get the Client
 		IClient client = ClientHolder.getClient();
-		
+
 		// Create the dialog and get the files
 		FileDialog fileDialog = new FileDialog(workbenchWindow.getShell(),
 				SWT.MULTI);
@@ -97,7 +92,7 @@ public class ImportFileAction extends Action implements ISelectionListener,
 		// Import the files
 		String filterPath = fileDialog.getFilterPath();
 		for (String name : fileDialog.getFileNames()) {
-			File importedFile = new File(filterPath,name);
+			File importedFile = new File(filterPath, name);
 			client.importFile(importedFile.toURI());
 		}
 
@@ -111,20 +106,7 @@ public class ImportFileAction extends Action implements ISelectionListener,
 	 */
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.
-	 * IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
-	 */
-	@Override
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		// TODO Auto-generated method stub
-
+		// Nothing to do.
 	}
 
 }

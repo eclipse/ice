@@ -52,7 +52,7 @@ import org.junit.Test;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  */
 public class ItemTester implements ItemListener {
 	/**

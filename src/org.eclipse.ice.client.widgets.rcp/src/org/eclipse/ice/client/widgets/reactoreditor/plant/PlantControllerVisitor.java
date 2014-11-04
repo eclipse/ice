@@ -54,7 +54,7 @@ import org.eclipse.ice.reactor.plant.WetWell;
  * visits. Un-used visit operations (like GeometricalComponent) are implemented
  * as unused.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public abstract class PlantControllerVisitor implements IPlantComponentVisitor {
@@ -71,11 +71,9 @@ public abstract class PlantControllerVisitor implements IPlantComponentVisitor {
 	public void visit(CoreChannel plantComp) {
 		visit((Pipe) plantComp);
 	}
-
 	public void visit(Subchannel plantComp) {
 		visit((Pipe) plantComp);
 	}
-
 	public void visit(PipeWithHeatStructure plantComp) {
 		visit((Pipe) plantComp);
 	}
@@ -84,101 +82,79 @@ public abstract class PlantControllerVisitor implements IPlantComponentVisitor {
 	public void visit(Branch plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(SubchannelBranch plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(VolumeBranch plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(FlowJunction plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(WetWell plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(Boundary plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(OneInOneOutJunction plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(Turbine plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(IdealPump plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(Pump plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(Valve plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(PipeToPipeJunction plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(Inlet plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(MassFlowInlet plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(SpecifiedDensityAndVelocityInlet plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(Outlet plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(SolidWall plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(TDM plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(TimeDependentJunction plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(TimeDependentVolume plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(DownComer plantComp) {
 		visit((Junction) plantComp);
 	}
-
 	public void visit(SeparatorDryer plantComp) {
 		visit((Junction) plantComp);
 	}
 
 	// Un-used visit operations.
 	public void visit(PlantComposite plantComp) {
+		// Do nothing.
 	}
-
 	public void visit(GeometricalComponent plantComp) {
 		// Do nothing.
 	}
-
 	public void visit(PointKinetics plantComp) {
 		// Do nothing.
 	}
-
+	
 }

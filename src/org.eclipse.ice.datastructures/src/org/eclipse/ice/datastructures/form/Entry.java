@@ -15,19 +15,16 @@ package org.eclipse.ice.datastructures.form;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+
 import java.util.ArrayList;
+
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -35,10 +32,8 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * <!-- begin-UML-doc -->
@@ -117,12 +112,10 @@ import javax.xml.bind.annotation.XmlType;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Entity
-@Table(name = "Entry")
 @XmlRootElement(name = "Entry")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Entry extends ICEObject implements IUpdateable {
@@ -288,7 +281,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient
 	protected String continuousErrMsg = "'${incorrectValue}' is an unacceptable value. The value must be between ${lowerBound} and ${upperBound}.";
 
@@ -303,7 +295,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	@Transient
 	@XmlTransient
 	protected String discreteErrMsg = "'${incorrectValue}' is an unacceptable value. The value must be one of ${allowedValues}.";
 
@@ -315,7 +306,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 */
 	@XmlAnyElement()
 	@XmlElementRef(name = "BasicEntryContentProvider", type = BasicEntryContentProvider.class)
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = ICEObject.class)
 	protected IEntryContentProvider iEntryContentProvider;
 
 	/**
@@ -330,7 +320,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected boolean required = false;
-
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -456,7 +446,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-
 	public ArrayList<String> getAllowedValues() {
 		// begin-user-code
 		return this.iEntryContentProvider.getAllowedValues();
@@ -499,7 +488,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-
 	public String getValue() {
 		// begin-user-code
 
@@ -541,7 +529,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-
 	public AllowedValueType getValueType() {
 		// begin-user-code
 		return this.iEntryContentProvider.getAllowedValueType();
@@ -562,7 +549,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-
 	public boolean isReady() {
 		// begin-user-code
 		return this.ready;
@@ -590,7 +576,7 @@ public class Entry extends ICEObject implements IUpdateable {
 		return this.changeState;
 		// end-user-code
 	}
-
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -635,7 +621,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-
 	public String getParent() {
 		// begin-user-code
 
@@ -729,8 +714,10 @@ public class Entry extends ICEObject implements IUpdateable {
 					returnCode = false;
 				}
 			}
-		} else if (this.iEntryContentProvider.getAllowedValueType().equals(
-				AllowedValueType.Undefined)) {
+		} else if (this.iEntryContentProvider.getAllowedValueType()
+						.equals(AllowedValueType.Undefined)
+				|| this.iEntryContentProvider.getAllowedValueType()
+						.equals(AllowedValueType.File)) {
 			this.value = newValue;
 			returnCode = true;
 		}
@@ -803,7 +790,7 @@ public class Entry extends ICEObject implements IUpdateable {
 		return returnCode;
 		// end-user-code
 	}
-
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -896,7 +883,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-
 	protected void setup() {
 		// begin-user-code
 
@@ -1158,7 +1144,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-
 	public String getTag() {
 		// begin-user-code
 		return this.iEntryContentProvider.getTag();
@@ -1182,10 +1167,10 @@ public class Entry extends ICEObject implements IUpdateable {
 	public void setTag(String tagValue) {
 		// begin-user-code
 
+		this.tag = tagValue;
 		this.iEntryContentProvider.setTag(tagValue);
 
 		return;
-
 		// end-user-code
 	}
 

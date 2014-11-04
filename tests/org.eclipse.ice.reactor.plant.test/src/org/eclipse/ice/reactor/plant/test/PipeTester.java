@@ -19,44 +19,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.datastructures.updateableComposite.Component;
-import org.eclipse.ice.reactor.plant.Boundary;
-import org.eclipse.ice.reactor.plant.Branch;
-import org.eclipse.ice.reactor.plant.CoreChannel;
-import org.eclipse.ice.reactor.plant.DownComer;
-import org.eclipse.ice.reactor.plant.FlowJunction;
-import org.eclipse.ice.reactor.plant.GeometricalComponent;
-import org.eclipse.ice.reactor.plant.HeatExchanger;
-import org.eclipse.ice.reactor.plant.IPlantComponentVisitor;
-import org.eclipse.ice.reactor.plant.IdealPump;
-import org.eclipse.ice.reactor.plant.Inlet;
-import org.eclipse.ice.reactor.plant.Junction;
-import org.eclipse.ice.reactor.plant.MassFlowInlet;
-import org.eclipse.ice.reactor.plant.OneInOneOutJunction;
-import org.eclipse.ice.reactor.plant.Outlet;
-import org.eclipse.ice.reactor.plant.Pipe;
-import org.eclipse.ice.reactor.plant.PipeToPipeJunction;
-import org.eclipse.ice.reactor.plant.PipeWithHeatStructure;
-import org.eclipse.ice.reactor.plant.PlantComposite;
-import org.eclipse.ice.reactor.plant.PointKinetics;
-import org.eclipse.ice.reactor.plant.Pump;
-import org.eclipse.ice.reactor.plant.Reactor;
-import org.eclipse.ice.reactor.plant.SeparatorDryer;
-import org.eclipse.ice.reactor.plant.SolidWall;
-import org.eclipse.ice.reactor.plant.SpecifiedDensityAndVelocityInlet;
-import org.eclipse.ice.reactor.plant.Subchannel;
-import org.eclipse.ice.reactor.plant.SubchannelBranch;
-import org.eclipse.ice.reactor.plant.TDM;
-import org.eclipse.ice.reactor.plant.TimeDependentJunction;
-import org.eclipse.ice.reactor.plant.TimeDependentVolume;
-import org.eclipse.ice.reactor.plant.Turbine;
-import org.eclipse.ice.reactor.plant.Valve;
-import org.eclipse.ice.reactor.plant.VolumeBranch;
-import org.eclipse.ice.reactor.plant.WetWell;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
+import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.reactor.plant.Pipe;
+import org.eclipse.ice.reactor.plant.PlantComponent;
+import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.junit.Test;
 
 /**
@@ -416,6 +387,31 @@ public class PipeTester {
 		assertTrue(component == visitorComponent);
 		assertTrue(component.equals(visitorComponent));
 
+		// ---- Check PlantComponent visitation. ---- //
+		wasVisited = false;
+		
+		// Create an invalid visitor, and try to visit the component.
+		FakePlantComponentVisitor plantVisitor = null;
+		component.accept(plantVisitor);
+
+		// Check that the component wasn't visited yet.
+		assertFalse(wasVisited);
+
+		// Create a valid visitor, and try to visit the component.
+		plantVisitor = new FakePlantComponentVisitor();
+		component.accept(plantVisitor);
+
+		// Check that the component was visited.
+		assertTrue(wasVisited);
+
+		// Grab the visitor's visited component.
+		PlantComponent visitorPlantComponent = plantVisitor.component;
+
+		// Check that the visitor's component is the same component we initially
+		// created.
+		assertTrue(component == visitorPlantComponent);
+		assertTrue(component.equals(visitorPlantComponent));
+		
 		return;
 		// end-user-code
 	}
@@ -429,14 +425,39 @@ public class PipeTester {
 	 * 
 	 * @author w5q
 	 */
-	private class FakeComponentVisitor implements IPlantComponentVisitor {
+	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 
 		// The fake visitor's visited component.
-		private Pipe component = null;
+		private IReactorComponent component = null;
+		
+		@Override
+		public void visit(IReactorComponent component) {
 
+			// Set the IComponentVisitor component (if valid), and flag the
+			// component as having been visited.
+			if (component != null) {
+				this.component = component;
+				wasVisited = true;
+			}
+			return;
+		}
+	};
+
+	/**
+	 * Fake class to test the PlantComponent visitation routine.
+	 * 
+	 * @author Jordan
+	 * 
+	 */
+	private class FakePlantComponentVisitor extends
+			SelectivePlantComponentVisitor {
+
+		// The fake visitor's visited component.
+		private PlantComponent component = null;
+		
+		@Override
 		public void visit(Pipe plantComp) {
-
-			// Set the IPlantComponentVisitor component (if valid), and flag the
+			// Set the IComponentVisitor component (if valid), and flag the
 			// component as having been visited.
 			if (plantComp != null) {
 				this.component = plantComp;
@@ -444,160 +465,5 @@ public class PipeTester {
 			}
 			return;
 		}
-
-		public void visit(PlantComposite plantComp) {
-			// Do nothing.
-		}
-
-		public void visit(Junction plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(Reactor plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(PointKinetics plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(HeatExchanger plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(CoreChannel plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(Subchannel plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(PipeWithHeatStructure plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(Branch plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(SubchannelBranch plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(VolumeBranch plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(FlowJunction plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(WetWell plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(Boundary plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(OneInOneOutJunction plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(Turbine plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(IdealPump plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(Pump plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(Valve plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(PipeToPipeJunction plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(Inlet plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(MassFlowInlet plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(SpecifiedDensityAndVelocityInlet plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(Outlet plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(SolidWall plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(TDM plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(TimeDependentJunction plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(TimeDependentVolume plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(DownComer plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(SeparatorDryer plantComp) {
-			// Do nothing.
-
-		}
-
-		public void visit(GeometricalComponent plantComp) {
-			// Do nothing.
-
-		}
-
-	};
+	}
 }

@@ -36,7 +36,7 @@ import org.junit.Test;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  */
 public class EntryTester {
 	/**
@@ -458,6 +458,7 @@ public class EntryTester {
 		copyOfEntry.setParent(parentName);
 		copyOfEntry.setTag("ChevyChase");
 		copyOfEntry.setRequired(true);
+		
 		// Setup a different Entry
 		otherEntry = new Entry();
 

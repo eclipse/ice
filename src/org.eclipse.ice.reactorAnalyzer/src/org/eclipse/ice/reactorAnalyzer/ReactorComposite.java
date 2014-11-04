@@ -12,27 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.reactorAnalyzer;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
-import org.eclipse.ice.datastructures.updateableComposite.Composite;
-
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
+import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.updateableComposite.Composite;
 
 /**
  * This class is intended to contain {@link IReactorComponents} by implementing
@@ -40,7 +29,7 @@ import java.util.TreeMap;
  * associating them with an ID, which is not necessarily the same as the
  * component IDs.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ReactorComposite extends ICEObject implements IReactorComponent,
@@ -111,47 +100,10 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 
 			// Visit the child and put it into the map if it's an
 			// IReactorComponent.
-			IComponentVisitor visitor = new IComponentVisitor() {
-
+			IComponentVisitor visitor = new SelectiveComponentVisitor() {
+				@Override
 				public void visit(IReactorComponent component) {
 					reactorComponents.put(id, component);
-				}
-
-				// The below visit operations do not do anything.
-				public void visit(DataComponent component) {
-				}
-
-				public void visit(ResourceComponent component) {
-				}
-
-				public void visit(TableComponent component) {
-				}
-
-				public void visit(MatrixComponent component) {
-				}
-
-				public void visit(IShape component) {
-				}
-
-				public void visit(GeometryComponent component) {
-				}
-
-				public void visit(MasterDetailsComponent component) {
-				}
-
-				public void visit(TreeComposite component) {
-				}
-
-				public void visit(TimeDataComponent component) {
-				}
-
-				public void visit(MeshComponent component) {
-				}
-
-				public void visit(BatteryComponent component) {
-				}
-
-				public void visit(AdaptiveTreeComposite component) {
 				}
 			};
 			child.accept(visitor);

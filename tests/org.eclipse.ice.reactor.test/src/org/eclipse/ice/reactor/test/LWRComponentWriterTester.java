@@ -446,8 +446,9 @@ public class LWRComponentWriterTester {
 		// Try it with a non-null argument
 		// Local declarations
 		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + "writer_test.h5");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "reactorData";
+		File dataFile = new File(userDir + separator + "writer_test.h5");
 		URI uri = dataFile.toURI();
 
 		LWRComponentWriter lWRComponentWriter = new LWRComponentWriter();

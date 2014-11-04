@@ -12,14 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.perspective;
 
-import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetFactory;
-import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetRegistry;
-import org.eclipse.ice.client.widgets.reactoreditor.IWizardProvider;
-
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetRegistry;
 import org.eclipse.ice.reactor.perspective.internal.ReactorEditorRegistry;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;

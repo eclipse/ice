@@ -21,7 +21,7 @@ import org.junit.Test;
 /**
  * Tests the out-of-the-box writing and reading ability of {@link HdfIOFactory}.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 @Ignore

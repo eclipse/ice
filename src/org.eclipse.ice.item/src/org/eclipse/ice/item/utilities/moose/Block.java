@@ -30,7 +30,7 @@ import org.eclipse.ice.datastructures.updateableComposite.Component;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -350,7 +350,7 @@ public class Block {
 	 */
 	public TreeComposite toTreeComposite() {
 		// begin-user-code
-
+		
 		// Local Declarations
 		TreeComposite treeComp = new TreeComposite();
 		DataComponent dataComp = new DataComponent();
@@ -458,10 +458,14 @@ public class Block {
 				if (singleParamMap.get("default") != null) {
 					param.setDefault((String) singleParamMap.get("default"));
 				}
-				// Get the boolean required flag - required
+				// Get the boolean required flag
 				if (singleParamMap.get("required") != null) {
-					param.setRequired((Boolean) singleParamMap.get("required"));
+					boolean isRequired = 
+							(Boolean) singleParamMap.get("required");
+					param.setRequired(isRequired);
+					param.setEnabled(isRequired);
 				}
+
 				// Add the parameter to the list
 				parameters.add(param);
 			}
@@ -491,7 +495,11 @@ public class Block {
 	 * This operation converts the Block to a standard GetPot-compatible format
 	 * and returns it as a string. If the name of the Block starts with "/", the
 	 * prefix will be changed so that the name will not start with ".//" or
-	 * "..//". Only active blocks (isActive == true) are written.
+	 * "..//". Only active blocks (isActive == true) are evaluated for writing.
+	 * All active parameters marked as required (isRequired == true) are written
+	 * to output. Additionally, parameters that may not be required, but are
+	 * enabled, are also written out. All other parameters are written, but
+	 * commented out.
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
@@ -526,7 +534,8 @@ public class Block {
 				: name;
 		String closingSection = (realPrefix.equals(Block.actualSectionPrefix)) ? parentSectionPrefix
 				: "";
-		String potString = "";
+		String potString = "", commentString = "", whiteSpaceString = "", hash = "";
+		boolean hasComment = false;
 
 		// Fix the indentation
 		indent += (realPrefix.equals(actualSectionPrefix)) ? "  " : "";
@@ -535,14 +544,70 @@ public class Block {
 		if (isActive()) {
 
 			// Open the section
-			potString = indent + "[" + openingSection + "]\n";
-
+			potString = indent + "[" + openingSection + "]";
+			
+			// Check if this section block has a comment, if it does, append it
+			hasComment = !description.isEmpty();
+			if (hasComment) {
+				// Remove newline characters from comment
+				commentString = description.replaceAll("[\n\r]", "");
+				// Append the line
+				whiteSpaceString = makeWhiteSpaceString(potString);
+				potString += String.format("%s# %s\n", whiteSpaceString, commentString);
+			} else {
+				potString += "\n";
+			}
+			
 			// Add the parameters to the string
 			if (parameters != null) {
 				for (int i = 0; i < parameters.size(); i++) {
+					
+					// Get the parameter, determine if it has a comment
 					Parameter param = parameters.get(i);
+					hasComment = !param.getDescription().isEmpty();
+					
+					// Always write out required parameters
 					if (param.isRequired()) {
-						potString += indent + "  " + param.toString() + "\n";
+						
+						if (hasComment) {
+							// Remove newline characters from comment
+							commentString = param.getDescription().
+									replaceAll("[\n\r]", "");
+							// Append the line
+							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
+							potString += String.format("%s  %s%s# %s\n",
+									indent, param.toString(), whiteSpaceString,commentString);
+						} else {
+							potString += indent + "  " + param.toString() + "\n";
+						}
+					}
+					// If the parameter is not explicitly required, check if it
+					// is currently enabled
+					else if (param.isEnabled()) {
+						if (hasComment) {
+							// Remove newline characters from comment
+							commentString = param.getDescription().
+									replaceAll("[\n\r]", "");
+							// Append the line
+							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
+							potString += String.format("%s  %s%s# %s\n",
+									indent, param.toString(), whiteSpaceString, commentString);
+						} else {
+							potString += indent + "  " + param.toString() + "\n";
+						}
+					} 
+					else {
+						if (hasComment) {
+							// Remove newline characters from comment
+							commentString = param.getDescription().
+									replaceAll("[\n\r]", "");
+							// Append the line
+							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
+							potString += String.format("%s# %s%s# %s\n",
+									indent, param.toString(), whiteSpaceString, commentString);
+						} else {
+							potString += indent + "# " + param.toString() + "\n";
+						}
 					}
 				}
 			}
@@ -568,6 +633,40 @@ public class Block {
 		// end-user-code
 	}
 
+	/**
+	 * This is a utility method that will construct and return a String of
+	 * whitespaces, depending on the length of the current line. This is used
+	 * by the toGetPot() method when appending comments, to try to make comments
+	 * align in columns for neatness' sake.
+	 * 
+	 * @param getPotLine	Current line that the comment will be appended to
+	 * @return				A string of whitespace characters that will separate
+	 * 						the current line's text from its comment
+	 */
+	private String makeWhiteSpaceString(String getPotLine) {
+	
+		String whiteSpaceString = "";
+		int whiteSpaceCount = 0, lineLength = 0;
+		
+		lineLength = getPotLine.length();
+		
+		if (lineLength < 30) {
+			whiteSpaceCount = 30 - lineLength;
+		} else if (lineLength < 45) {
+			whiteSpaceCount = 45 - lineLength;
+		} else if (lineLength < 60) {
+			whiteSpaceCount = 60 - lineLength;
+		} else {
+			whiteSpaceCount = 15;
+		}
+		
+		for (int i = 0; i < whiteSpaceCount; i++) {
+			whiteSpaceString += " ";
+		}
+		
+		return whiteSpaceString;
+	}
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -633,17 +732,54 @@ public class Block {
 		// Local declarations
 		int subBlockCounter = 0, subBlockLineId = 0;
 		String line = "", subBlockLine = "";
-		String parameterName = "", parameterValue = "";
+		String parameterName = "", parameterValue = "", parameterComment = "";
 
-		// Get the name of the block
-		name = potLines.get(0).trim().substring(1);
+		// Get the name of the block, set it as active
+		name = potLines.get(0).trim();
+		active = true;
+			
+		// Check if this block has a comment, separate it if it does
+		if (name.contains("#")) {
+			
+			// Determine if the whole line is commented out, or there's an
+			// in-line comment
+			int firstHash = name.indexOf("#");
+			int lastHash = name.lastIndexOf("#");
+			String comment = "";
+			
+			// If the whole line is commented out w/o an in-line comment
+			if (firstHash == 0 && firstHash == lastHash) {
+				// Set the name (without the hash), mark as inactive
+				name = name.substring(1).trim();
+				active = false;
+			}
+			// If there's only an in-line comment
+			else if (firstHash > 0 && firstHash == lastHash) {
+				// Split the name and comment up
+				comment = name.substring(firstHash + 1).trim();
+		
+				// Set the name and comment separately
+				description = comment;
+				name = name.substring(0, firstHash).trim();
+			}
+			// If the whole line is commented out with an in-line comment too
+			else {
+				// Split the name and comment up
+				comment = name.substring(lastHash + 1).trim();
+		
+				// Set the name and comment separately, set as inactive
+				description = comment;
+				name = name.substring(firstHash + 1, lastHash).trim();
+				active = false;
+			}
+			
+		}
+		
+		
 		// The name has to be checked to determine whether or not it is a
 		// subblock and the opening characters should be skipped.
-		name = (name.contains("./")) ? name.substring(2, name.length() - 1)
-				: name.substring(0, name.length() - 1);
-		// Mark the block as active since it is presumably coming from a real
-		// file and will be reused.
-		active = true;
+		name = (name.contains("./")) ? name.substring(3, name.length() - 1)
+				: name.substring(1, name.length() - 1);
 
 		// What is this?! ~JJB 20140701 12:16
 		boolean debug = false;
@@ -651,17 +787,58 @@ public class Block {
 			debug = false;
 		}
 
+		boolean parameterEnabled = true;
 		// Loop over the remaining lines and load the parameters and sub blocks.
 		for (int i = 1; i < potLines.size(); i++) {
 			// Get the line and trim it
 			line = potLines.get(i).trim();
+			
+			// Reset the enabled flag if it's been used
+			parameterComment = "";
+			parameterEnabled = true;
+			
 			// Load the line as a parameter if it doesn't start with # or [ and
 			// contains =.
-			if (!line.startsWith("[") && !line.startsWith("#")
-					&& line.contains("=")) {
+			if (!line.startsWith("[") && line.contains("=")) {
 
 				// Split the line at the "="
 				String[] parameterPieces = line.split("=");
+				
+				// A basic 'name = value' parameter would have 2 elements in
+				// parameterPieces, but if for whatever reason there are more
+				// than 2 (a '=' in the comment), merge elements 1 to n together
+				if (parameterPieces.length > 2) {
+					for (int j = 1; j < parameterPieces.length; j++) {
+						parameterPieces[1] += "=" + parameterPieces[j];
+					}
+				}
+
+				// Check if this parameter has a comment
+				if (parameterPieces[0].contains("#") || 
+						(parameterPieces.length > 1 
+								&& parameterPieces[1].contains("#"))) {
+					
+					// Check if the whole line is commented out
+					if (parameterPieces[0].startsWith("#")) {
+						parameterPieces[0] = 
+								parameterPieces[0].substring(1).trim();
+						parameterEnabled = false;
+						
+					}
+					
+					// Check if there's an inline comment as well
+					if (parameterPieces.length > 1 
+							&& parameterPieces[1].contains("#")) {
+						// Split the parameter value and comment up
+						int commentIndex = parameterPieces[1].lastIndexOf("#");
+						parameterComment = parameterPieces[1]
+								.substring(commentIndex + 1).trim();
+						
+						// Chop the comment off the parameter value
+						parameterPieces[1] = parameterPieces[1]
+								.substring(0, commentIndex).trim();
+					}
+				}
 
 				// Check if the next line contains a "=" (new parameter) or
 				// is the end of the block; if yes to either, then proceed
@@ -714,13 +891,15 @@ public class Block {
 					// Update i to skip over the lines we just read
 					i += (numValueLines - 1);
 				}
-
+				
 				// Create the new parameter
 				Parameter tmpParam = new Parameter();
 				tmpParam.setName(parameterName);
 				tmpParam.setDefault(parameterValue);
+				tmpParam.setDescription(parameterComment);
 				// Mark the parameter as required since it will be reused
-				tmpParam.setRequired(true);
+//				tmpParam.setRequired(true);
+				tmpParam.setEnabled(parameterEnabled);
 
 				if (debug) {
 					System.out.println("[Block] Adding Parameter "
@@ -729,7 +908,7 @@ public class Block {
 				// Load it into the list
 				parameters.add(tmpParam);
 
-			} else if (line.startsWith("[./")) {
+			} else if (line.contains("[./")) {
 				// Increment the subblock counter so that we can correctly count
 				// through the blocks. We have to count them so that we know
 				// when to break out of the loop because blocks can be nested.
@@ -749,9 +928,9 @@ public class Block {
 					}
 					// Note that another block has been encountered if the [
 					// character is found.
-					if (subBlockLine.startsWith("[./")) {
+					if (subBlockLine.contains("[./")) {
 						++subBlockCounter;
-					} else if (subBlockLine.startsWith("[../]")) {
+					} else if (subBlockLine.contains("[../]")) {
 						--subBlockCounter;
 					}
 				}
@@ -790,9 +969,7 @@ public class Block {
 	 * 
 	 * This operation expects that it will be given a single, complete block
 	 * that starts with the name and ends with the closing characters. It will
-	 * not handle multiple blocks. It ignores comments and whitespace inside the
-	 * block. Comments should not appear BEFORE the block name or AFTER the
-	 * final closing characters.
+	 * not handle multiple blocks.
 	 * 
 	 * @param getPotString
 	 *            The string that contains the Block information in GetPot

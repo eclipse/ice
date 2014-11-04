@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,22 +15,23 @@ package org.eclipse.ice.item.utilities.moose;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
@@ -61,8 +62,7 @@ import org.yaml.snakeyaml.Yaml;
  * is, so they must be setup as child exemplars on a TreeComposite.
  * </p>
  * <!-- end-UML-doc -->
- * 
- * @author bkj
+ *  * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -169,6 +169,144 @@ public class MOOSEFileHandler {
 	}
 
 	/**
+	 * This operations loads a MOOSE GetPot file at the specified path and
+	 * returns a fully-configured set of ICE TreeComposites.
+	 * 
+	 * @param filePath
+	 *            The file path from which the MOOSE blocks written in GetPot
+	 *            should be read. If the path is null or empty, the operation
+	 *            returns without doing any work.
+	 * @return The MOOSE input file specification as read from the GetPot input
+	 *         and stored in TreeComposites. Each TreeComposite contains both
+	 *         parameters and exemplar children. Any parameters in a
+	 *         TreeComposite are contained in a DataComponent. The id of the
+	 *         data component is 1.
+	 */
+	public ArrayList<TreeComposite> loadFromGetPot(String filePath) {
+
+		// Local Declarations
+		ArrayList<TreeComposite> trees = new ArrayList<TreeComposite>();
+		byte[] fileByteArray = null;
+		String mooseFileString = null, potLine = null;
+
+		// Quit if the path is boned
+		if (filePath == null || filePath.isEmpty()) {
+			return null;
+		}
+
+		// Post some debug info
+		if (debugFlag) {
+			System.out.println("MOOSEFileHandler Message: "
+					+ "Attempting to loading GetPot file " + filePath);
+		}
+
+		// Load the GetPot file
+		try {
+			RandomAccessFile mooseFile = new RandomAccessFile(filePath, "r");
+			// Put it into a byte array
+			fileByteArray = new byte[(int) mooseFile.length()];
+			mooseFile.read(fileByteArray);
+			// And then a string
+			mooseFileString = new String(fileByteArray);
+			// Close the file
+			mooseFile.close();
+			// Post some more debug info
+			if (debugFlag) {
+				System.out.println("MOOSEFileHandler Message: File loaded.");
+			}
+		} catch (IOException e) {
+			// Complain if the file is not found
+			System.err.println("MOOSEFileHandler Message: "
+					+ "Unable to load GetPot file!");
+			e.printStackTrace();
+		}
+
+		// Check the string before proceeding
+		if (mooseFileString != null && !mooseFileString.isEmpty()) {
+			// Create an array list from the string
+			ArrayList<String> potLines = new ArrayList<String>(
+					Arrays.asList(mooseFileString.split("\n")));
+
+			// Remove (non-parameter) commented lines and white space
+			String trimmedPotLine = "";
+			for (int i = 0; i < potLines.size(); i++) {
+				
+				trimmedPotLine = potLines.get(i).trim();
+				
+				if (trimmedPotLine.startsWith("#") 
+						&& !trimmedPotLine.contains("=")
+						&& !trimmedPotLine.contains("[")
+						&& !trimmedPotLine.contains("]")) {
+					// Lines that start with "#" but have no "=" are comments
+					// that aren't parameters and should be removed
+					potLines.remove(i);
+					// Update "i" so that we read correctly
+					--i;
+				} else 
+					if (potLines.get(i).isEmpty()) {
+					// Remove empty lines
+					potLines.remove(i);
+					// Update "i" so that we read correctly
+					--i;
+				}
+				else {
+					// All other lines should be trimmed
+					potLines.set(i, potLines.get(i).trim());
+				}
+			}
+			
+			// Read all of the lines again, create blocks and load them.
+			int counter = 0, endCounter = 1;
+			while (counter < potLines.size()) {
+				// Get the line and shift the counters
+				potLine = potLines.get(counter);
+				++counter;
+				
+				// The start of a full block is a line with the name in brackets
+				// and without the "./" sequence.
+				if (potLine.contains("[") && potLine.contains("]")) {
+					// Go to the next line
+					potLine = potLines.get(endCounter);			
+					
+					// Loop over the block and find the end
+					while (!potLine.contains("[]")) {
+						// Update the line and the counter
+						potLine = potLines.get(endCounter);
+						++endCounter;
+					}
+					// Create a new block
+					Block block = new Block();
+					ArrayList<String> blockLines = new ArrayList<String>(
+							potLines.subList(counter - 1, endCounter));
+					StringBuilder stringBuilder = new StringBuilder(
+							blockLines.get(0));
+					blockLines.set(0, stringBuilder.toString());
+					block.fromGetPot(blockLines);
+					// Add the block to the list
+					trees.add(block.toTreeComposite());
+					// Update the counter to point to the last read line
+					counter = endCounter;
+					// Print some debug information
+					if (debugFlag) {
+						System.out.println("\nMOOSEFileHandler Message: "
+								+ "Block output read from GetPot file "
+								+ filePath + " follows.");
+						// Dump each line of the newly created block
+						for (String line : blockLines) {
+							System.out.println(line);
+						}
+					}
+				}
+			}
+		} else if (debugFlag) {
+			System.err.println("MOOSEFileHandler Message: "
+					+ "String loaded from " + filePath + " is null or empty.");
+		}
+
+		return trees;
+	}
+	
+	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations loads a MOOSE YAML file at the specified path and returns
@@ -189,39 +327,34 @@ public class MOOSEFileHandler {
 	 *         TreeComposite are contained in a DataComponent. The id of the
 	 *         data component is 1.
 	 *         </p>
+	 * @throws IOException 
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	public ArrayList<TreeComposite> loadYAML(String filePath) {
+	public ArrayList<TreeComposite> loadYAML(String filePath) throws IOException {
 		// begin-user-code
 
 		// Local Declarations
-		File mooseFile = null;
-		FileInputStream input = null;
+		InputStream input = null;
 		String syntaxFilePath, treeName;
 		ArrayList<String> hardPathsList = null;
 		ArrayList<TreeComposite> trees = new ArrayList<TreeComposite>();
 		Map<String, TreeComposite> treeMap = null;
+		TreeComposite oneUpTree = null;
 
 		// Quit if the path is boned
 		if (filePath == null || filePath.isEmpty()) {
 			return null;
 		}
-
-		// Create the file handle to load from YAML
-		// Load the bison file
-		try {
-			mooseFile = new File(filePath);
-			input = new FileInputStream(mooseFile);
-		} catch (FileNotFoundException e) {
-			// Complain if the file is not found
-			e.printStackTrace();
-		}
-
+		
+		// Get a handle on the YAML file
+		File yamlFile = new File(filePath);
+		input = new FileInputStream(yamlFile);
+				
 		// Load the YAML tree
 		if (debugFlag) {
 			System.out.println("MOOSEFileHandler Message: Loading YAML file "
-					+ mooseFile.toString());
+					+ filePath.toString());
 		}
 		Yaml yaml = new Yaml();
 		ArrayList list = (ArrayList) yaml.load(input);
@@ -271,11 +404,12 @@ public class MOOSEFileHandler {
 		while (tree != null) {
 
 			// Append to the tree name
-			treeName += "/" + tree.getName();
+			treeName += "/" + tree.getName();			
+			
 			// Put the tree in the Map, keyed on path name
 			treeMap.put(
-					(treeName.startsWith("/") ? treeName.substring(1,
-							treeName.length()) : treeName), tree);
+					(treeName.startsWith("/") ? 
+							treeName.substring(1) : treeName), tree);
 
 			// Push child exemplars to the top of the tree stack
 			childExemplars = tree.getChildExemplars();
@@ -293,8 +427,20 @@ public class MOOSEFileHandler {
 			// push onto the stack, remove the last "part" of the path name, as
 			// we'll be going back up one level
 			else if (childExemplars.isEmpty()) {
-				prevNameIndex = treeName.indexOf("/" + tree.getName());
-				treeName = treeName.substring(0, prevNameIndex);
+				
+				// Get the name of the tree one level up
+				prevNameIndex = treeName.lastIndexOf("/" + tree.getName());
+				treeName = treeName.substring(0, prevNameIndex);				
+				
+				// Go up another level if the next tree in the stack isn't
+				// a child exemplar of the current tree referenced by treeName
+				oneUpTree = treeMap.get(treeName.substring(1));
+				if (oneUpTree != null && !oneUpTree.getChildExemplars().contains(treeStack.peek())) {
+					prevNameIndex = treeName.lastIndexOf("/");
+					treeName = ((prevNameIndex == 0 || prevNameIndex == -1) ? 
+							treeName : treeName.substring(0, prevNameIndex));
+				}
+				
 			}
 
 			// Pop the next tree off the stack
@@ -443,144 +589,6 @@ public class MOOSEFileHandler {
 	}
 
 	/**
-	 * This operations loads a MOOSE GetPot file at the specified path and
-	 * returns a fully-configured set of ICE TreeComposites.
-	 * 
-	 * @param filePath
-	 *            The file path from which the MOOSE blocks written in GetPot
-	 *            should be read. If the path is null or empty, the operation
-	 *            returns without doing any work.
-	 * @return The MOOSE input file specification as read from the GetPot input
-	 *         and stored in TreeComposites. Each TreeComposite contains both
-	 *         parameters and exemplar children. Any parameters in a
-	 *         TreeComposite are contained in a DataComponent. The id of the
-	 *         data component is 1.
-	 */
-	public ArrayList<TreeComposite> loadFromGetPot(String filePath) {
-
-		// Local Declarations
-		ArrayList<TreeComposite> trees = new ArrayList<TreeComposite>();
-		byte[] fileByteArray = null;
-		String mooseFileString = null, potLine = null;
-
-		// Quit if the path is boned
-		if (filePath == null || filePath.isEmpty()) {
-			return null;
-		}
-
-		// Post some debug info
-		if (debugFlag) {
-			System.out.println("MOOSEFileHandler Message: "
-					+ "Attempting to loading GetPot file " + filePath);
-		}
-
-		// Load the GetPot file
-		try {
-			RandomAccessFile mooseFile = new RandomAccessFile(filePath, "r");
-			// Put it into a byte array
-			fileByteArray = new byte[(int) mooseFile.length()];
-			mooseFile.read(fileByteArray);
-			// And then a string
-			mooseFileString = new String(fileByteArray);
-			// Close the file
-			mooseFile.close();
-			// Post some more debug info
-			if (debugFlag) {
-				System.out.println("MOOSEFileHandler Message: File loaded.");
-			}
-		} catch (IOException e) {
-			// Complain if the file is not found
-			System.err.println("MOOSEFileHandler Message: "
-					+ "Unable to load GetPot file!");
-			e.printStackTrace();
-		}
-
-		// Check the string before proceeding
-		if (mooseFileString != null && !mooseFileString.isEmpty()) {
-			// Create an array list from the string
-			ArrayList<String> potLines = new ArrayList<String>(
-					Arrays.asList(mooseFileString.split("\n")));
-
-			// Remove comments and white space
-			for (int i = 0; i < potLines.size(); i++) {
-				if (potLines.get(i).startsWith("#")) {
-					// Lines that start with "#" are comments and should be
-					// removed
-					potLines.remove(i);
-					// Update "i" so that we read correctly
-					--i;
-				} else if (potLines.get(i).isEmpty()) {
-					// Remove empty lines
-					potLines.remove(i);
-					// Update "i" so that we read correctly
-					--i;
-				} else if (potLines.get(i).contains("#")) {
-					// AQW Added code here to remove trailing comments on line
-					int indexOfComment = potLines.get(i).indexOf("#");
-					potLines.set(i, potLines.get(i)
-							.substring(0, indexOfComment));
-					potLines.set(i, potLines.get(i).trim());
-					if (potLines.get(i).trim().length() == 0) {
-						potLines.remove(i);
-						i--;
-					}
-				} else {
-					// All other lines should be trimmed
-					potLines.set(i, potLines.get(i).trim());
-				}
-			}
-
-			// Read all of the lines again, create blocks and load them.
-			int counter = 0, endCounter = 1;
-			while (counter < potLines.size()) {
-				// Get the line and shift the counters
-				potLine = potLines.get(counter);
-				++counter;
-				// The start of a full block is a line with the name in brackets
-				// and without the "./" sequence.
-
-				if (potLine.startsWith("[") && potLine.endsWith("]")) {
-					// Go to the next line
-					potLine = potLines.get(endCounter);
-					// Loop over the block and find the end
-					while (!potLine.contains("[]")) {
-						// Update the line and the counter
-						potLine = potLines.get(endCounter);
-						++endCounter;
-					}
-					// Create a new block
-					Block block = new Block();
-					ArrayList<String> blockLines = new ArrayList<String>(
-							potLines.subList(counter - 1, endCounter));
-					StringBuilder stringBuilder = new StringBuilder(
-							blockLines.get(0));
-					blockLines.set(0, stringBuilder.toString());
-					block.fromGetPot(blockLines);
-					// Add the block to the list
-					trees.add(block.toTreeComposite());
-					// Update the counter to point to the last read line
-					counter = endCounter;
-					// Print some debug information
-					if (debugFlag) {
-						System.out.println("\nMOOSEFileHandler Message: "
-								+ "Block output read from GetPot file "
-								+ filePath + " follows.");
-						// Dump each line of the newly created block
-						for (String line : blockLines) {
-							System.out.println(line);
-						}
-					}
-				}
-			}
-		} else if (debugFlag) {
-			System.err.println("MOOSEFileHandler Message: "
-					+ "String loaded from " + filePath + " is null or empty.");
-		}
-
-		return trees;
-	}
-
-	/**
 	 * This method is responsible for loading the action syntax file associated
 	 * with a MOOSE app. It reads through the list of paths and returns the
 	 * names of any that are "hard" paths (ie. have no asterisks). It also only
@@ -597,10 +605,8 @@ public class MOOSEFileHandler {
 			throws IOException {
 
 		// Local declarations
-		boolean startSyntaxFound = false;
-		byte[] fileByteArray = null;
 		ArrayList<String> actionSyntax = null;
-		String actionSyntaxString, currLine, previousLine = "";
+		String currLine, previousLine = "";
 
 		// Check if the filepath is valid
 		if (filePath == null || filePath.isEmpty()) {
@@ -616,19 +622,9 @@ public class MOOSEFileHandler {
 			System.out.println("MOOSEFileHandler Message: Loading action "
 					+ "syntax file: " + filePath);
 		}
-		RandomAccessFile actionSyntaxFile = new RandomAccessFile(filePath, "r");
-
-		// Read the action syntax file and put it into a byte array
-		fileByteArray = new byte[(int) actionSyntaxFile.length()];
-		actionSyntaxFile.read(fileByteArray);
-		// Convert to a string
-		actionSyntaxString = new String(fileByteArray);
-		// Close the file
-		actionSyntaxFile.close();
-
-		// Break up the string at each newline character, put in an ArrayList
-		String[] bufferSplit = actionSyntaxString.split("\n");
-		actionSyntax = new ArrayList<String>(Arrays.asList(bufferSplit));
+		
+		actionSyntax = (ArrayList<String>) 
+				Files.readAllLines(Paths.get(filePath), Charset.defaultCharset());
 
 		// Iterate through the list and eliminate non-hard-paths and
 		// duplicate entries
@@ -638,56 +634,24 @@ public class MOOSEFileHandler {
 			// Get the current line
 			currLine = actionSyntax.get(i);
 
-			// If we've found the start of the action syntax, begin reading
-			if (startSyntaxFound) {
-
-				// Check for an asterisk at the end of the line
-				if (currLine.endsWith("*\r")) {
-
-					// If we reached the very specific line which denotes
-					// the end of the action syntax, remove all lines that
-					// follow and break
-					if (currLine.contains("**END SYNTAX DATA**")) {
-						int k = i;
-						while (k < actionSyntax.size()) {
-							// Remove all remaining lines > i
-							currLine = actionSyntax.get(k);
-							actionSyntax.remove(currLine);
-						}
-
-						break;
-					}
-					// Otherwise the line is an action syntax path, but is
-					// not a hard path, so remove from the ArrayList
-					else {
-						actionSyntax.remove(currLine);
-					}
-				}
-				// Remove from the ArrayList if it's the same as the last line
-				else if (previousLine.equals(currLine)) {
-					actionSyntax.remove(currLine);
-				}
-				// Otherwise it's a unique hard-path, and move to the next line
-				else {
-					previousLine = currLine;
-					i++;
-				}
-			}
-
-			// Check if this is the line that begins the action syntax data
-			else if (currLine.contains("**START SYNTAX DATA**")) {
-				startSyntaxFound = true;
+			// Check for an asterisk at the end of the line
+			if (currLine.endsWith("*\r") || currLine.endsWith("*")) {
 				actionSyntax.remove(currLine);
 			}
-
-			// If this is some sort of preamble text, remove it
+			
+			// Remove from the ArrayList if it's the same as the last line
+			else if (previousLine.equals(currLine)) {
+				actionSyntax.remove(currLine);
+			}
+			
+			// Otherwise it's a unique hard-path, and move to the next line
 			else {
-				actionSyntax.remove(currLine);
+				previousLine = currLine;
+				i++;
 			}
-
 		}
 
 		return actionSyntax;
 	}
-
+	
 }

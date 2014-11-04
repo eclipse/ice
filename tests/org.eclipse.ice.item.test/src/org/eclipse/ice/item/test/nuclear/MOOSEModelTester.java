@@ -52,7 +52,7 @@ import org.junit.Test;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -84,10 +84,10 @@ public class MOOSEModelTester {
 		IProject project = null;
 		String projectName = "MOOSEModelTesterWorkspace";
 		String separator = System.getProperty("file.separator");
-		String yamlFile = System.getProperty("user.dir") + separator + "data"
-				+ separator + "bison.yaml";
-		String filePath = System.getProperty("user.dir") + separator + "data"
-				+ separator + "input_coarse10.i";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "itemData";
+		String yamlFile = userDir + separator + "bison.yaml";
+		String filePath = userDir + separator + "input_coarse10.i";
 
 		// Debug information
 		System.out.println("MOOSE Test Data File: " + filePath);
@@ -101,7 +101,7 @@ public class MOOSEModelTester {
 				// Set the location as
 				// ${workspace_loc}/MOOSEModelTesterWorkspace
 				defaultProjectLocation = (new File(
-						System.getProperty("user.dir") + separator
+						userDir + separator
 								+ projectName)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
@@ -185,7 +185,7 @@ public class MOOSEModelTester {
 				.retrieveEntry("MOOSE-Based Application");
 		assertNotNull(mooseAppEntry);
 		assertEquals(1, mooseAppEntry.getId());
-		assertEquals("Select MOOSE app", mooseAppEntry.getValue());
+		assertEquals("MOOSE app...", mooseAppEntry.getValue());
 
 		// Check the output file Entry
 		Entry outputFileEntry = ((DataComponent) form

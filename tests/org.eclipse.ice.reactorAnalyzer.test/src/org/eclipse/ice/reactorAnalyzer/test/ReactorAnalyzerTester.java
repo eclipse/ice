@@ -19,7 +19,6 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import org.eclipse.ice.analysistool.IAnalysisTool;
-
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -56,7 +55,7 @@ import org.junit.BeforeClass;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -144,6 +143,8 @@ public class ReactorAnalyzerTester {
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
 		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "reactorAnalyzerTesterWorkspace";
 
 		// Initialize fake analysis tool
 		fakeAnalysisTool = new FakeAnalysisTool();
@@ -160,9 +161,7 @@ public class ReactorAnalyzerTester {
 			// If the project does not exist, create it
 			if (!projectSpace.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				defaultProjectLocation = (new File(
-						System.getProperty("user.dir") + separator
-								+ "reactorAnalyzerTesterWorkspace")).toURI();
+				defaultProjectLocation = (new File(userDir)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin
 						.getWorkspace()

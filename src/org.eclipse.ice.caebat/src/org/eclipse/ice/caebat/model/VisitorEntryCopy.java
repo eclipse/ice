@@ -14,7 +14,7 @@ package org.eclipse.ice.caebat.model;
 
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BatteryComponent;
+
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -23,6 +23,7 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
@@ -303,15 +304,15 @@ public class VisitorEntryCopy implements IComponentVisitor {
 	}
 
 	@Override
-	public void visit(BatteryComponent component) {
+	public void visit(AdaptiveTreeComposite component) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void visit(AdaptiveTreeComposite component) {
+	public void visit(EMFComponent component) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

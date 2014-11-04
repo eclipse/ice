@@ -18,7 +18,7 @@ import org.eclipse.ice.datastructures.form.Form;
  * <!-- begin-UML-doc -->
  * <p>The IExtraInfoWidget interface describes the operations that ICE expects to use when it need to request additional information from a user that was originally requested in an IFormWidget. The content in an IExtraInfoWidget is dynamic and unexpected during runtime (thus the reason it wasn't originally in the IFormWidget), but it will always be of a form consist with the output created during ICore.process() if it needs. @see IClient</p>
  * <!-- end-UML-doc -->
- * @author bkj
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IExtraInfoWidget {

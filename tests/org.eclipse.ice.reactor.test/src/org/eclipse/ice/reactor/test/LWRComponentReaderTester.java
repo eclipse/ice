@@ -468,8 +468,9 @@ public class LWRComponentReaderTester {
 		// begin-user-code
 
 		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "data" + separator + "reader_test.h5");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "reactorData";
+		File dataFile = new File(userDir + separator + "reader_test.h5");
 		URI uri = dataFile.toURI();
 
 		// Create a new read

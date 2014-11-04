@@ -40,7 +40,7 @@ import com.jme3.scene.Node;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -129,7 +129,7 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 * view at a given time. Previously, all properties were synced at once
 	 * regardless of whether or not they had changed.
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	protected class PropertyHandler {

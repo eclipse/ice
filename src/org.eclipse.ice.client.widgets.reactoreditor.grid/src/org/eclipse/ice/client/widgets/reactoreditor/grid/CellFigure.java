@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.Color;
  * represented by a Figure. This Figure may contain a geometric Figure, e.g., a
  * RectangleFigure, or a Label, depending on the requirements.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class CellFigure extends Figure {

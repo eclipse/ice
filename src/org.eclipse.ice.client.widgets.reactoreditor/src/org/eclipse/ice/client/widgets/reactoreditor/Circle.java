@@ -23,7 +23,7 @@ import org.eclipse.swt.SWT;
  * radius. You can think of this as the proportion of the circle's diameter to
  * the minimum diameter of the Shape's container.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class Circle extends Shape {

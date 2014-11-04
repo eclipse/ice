@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
-import org.eclipse.ice.client.widgets.mesh.ISyncAction;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.eclipse.ice.client.widgets.jme.IRenderQueue;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.Junction;
 import org.eclipse.ice.reactor.plant.Pipe;
@@ -37,23 +37,15 @@ import com.jme3.material.Material;
  * views are managed strictly by the controllers, so this class does not provide
  * access to the created {@link AbstractPlantView}s.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PlantControllerManager {
 
-	// FIXME We may be able to remove this reference to the application.
 	/**
-	 * The jME3 PlantApplication for which this class manages controllers (and
-	 * views).
+	 * The queue responsible for performing tasks on the jME rendering thread.
 	 */
-	private final PlantApplication app;
-	/**
-	 * The PlantApplication's thread-safe queue of actions. This is required for
-	 * the managed controllers to synchronize their views with the jME3
-	 * application's simpleUpdate() thread.
-	 */
-	private final ConcurrentLinkedQueue<ISyncAction> updateQueue;
+	private final IRenderQueue renderQueue;
 
 	/**
 	 * A map of all managed PipeControllers keyed on their models' IDs.
@@ -100,7 +92,7 @@ public class PlantControllerManager {
 	 * application is not set.
 	 */
 	public PlantControllerManager() {
-		this(null, null);
+		this(null);
 	}
 
 	/**
@@ -108,20 +100,21 @@ public class PlantControllerManager {
 	 * should be null.
 	 * 
 	 * @param app
-	 *            The jME3 PlantApplication for which this class manages
+	 *            The jME3 PlantAppState for which this class manages
 	 *            controllers (and views).
 	 * @param updateQueue
-	 *            The PlantApplication's thread-safe queue of actions. This is
+	 *            The PlantAppState's thread-safe queue of actions. This is
 	 *            required for the managed controllers to synchronize their
 	 *            views with the jME3 application's simpleUpdate() thread.
 	 */
-	public PlantControllerManager(PlantApplication app,
-			ConcurrentLinkedQueue<ISyncAction> updateQueue) {
+	public PlantControllerManager(PlantAppState app) {
 
 		// Set the references to the jME3 app and its update queue if possible.
-		this.app = (app != null ? app : new PlantApplication());
-		this.updateQueue = (updateQueue != null ? updateQueue
-				: new ConcurrentLinkedQueue<ISyncAction>());
+		this.renderQueue = (app != null ? app : new IRenderQueue() {
+			public <T> Future<T> enqueue(Callable<T> callable) {
+				return null;
+			}
+		});
 
 		// Create the maps of controllers.
 		pipeControllers = new HashMap<Integer, PipeController>();
@@ -186,7 +179,7 @@ public class PlantControllerManager {
 						JunctionView view = new JunctionView(plantComp
 								.getName(), material);
 						JunctionController junctionController = new JunctionController(
-								plantComp, view, updateQueue,
+								plantComp, view, renderQueue,
 								PlantControllerManager.this);
 
 						// Store the controller in its map, and set the
@@ -214,7 +207,7 @@ public class PlantControllerManager {
 						ReactorView view = new ReactorView(plantComp.getName(),
 								material);
 						ReactorController reactorController = new ReactorController(
-								plantComp, view, updateQueue,
+								plantComp, view, renderQueue,
 								PlantControllerManager.this);
 
 						// Store the controller in its map, and set the
@@ -242,7 +235,7 @@ public class PlantControllerManager {
 						HeatExchangerView view = new HeatExchangerView(
 								plantComp.getName(), material);
 						HeatExchangerController pipeController = new HeatExchangerController(
-								plantComp, view, updateQueue);
+								plantComp, view, renderQueue);
 
 						// Store the controller in its map, and set the
 						// AbstractPlantController reference to point to the new
@@ -269,7 +262,7 @@ public class PlantControllerManager {
 						PipeView view = new PipeView(plantComp.getName(),
 								material);
 						PipeController pipeController = new PipeController(
-								plantComp, view, updateQueue);
+								plantComp, view, renderQueue);
 
 						// Store the controller in its map, and set the
 						// AbstractPlantController reference to point to the new
@@ -384,7 +377,7 @@ public class PlantControllerManager {
 					public void visit(Junction plantComp) {
 						wrapper.controller = junctionControllers.get(id);
 						if (wrapper.controller != null
-								&& plantComp == wrapper.controller.model) {
+								&& plantComp == wrapper.controller.getModel()) {
 							junctionControllers.remove(id);
 						} else {
 							wrapper.controller = null;
@@ -394,7 +387,7 @@ public class PlantControllerManager {
 					public void visit(Reactor plantComp) {
 						wrapper.controller = reactorControllers.get(id);
 						if (wrapper.controller != null
-								&& plantComp == wrapper.controller.model) {
+								&& plantComp == wrapper.controller.getModel()) {
 							reactorControllers.remove(id);
 						} else {
 							wrapper.controller = null;
@@ -404,7 +397,7 @@ public class PlantControllerManager {
 					public void visit(HeatExchanger plantComp) {
 						wrapper.controller = pipeControllers.get(id);
 						if (wrapper.controller != null
-								&& plantComp == wrapper.controller.model) {
+								&& plantComp == wrapper.controller.getModel()) {
 							pipeControllers.remove(id);
 						} else {
 							wrapper.controller = null;
@@ -414,7 +407,7 @@ public class PlantControllerManager {
 					public void visit(Pipe plantComp) {
 						wrapper.controller = pipeControllers.get(id);
 						if (wrapper.controller != null
-								&& plantComp == wrapper.controller.model) {
+								&& plantComp == wrapper.controller.getModel()) {
 							pipeControllers.remove(id);
 						} else {
 							wrapper.controller = null;
@@ -581,7 +574,7 @@ public class PlantControllerManager {
 	 * class variable for visit operations (which would require synchronization
 	 * in multi-threaded environments).
 	 * 
-	 * @author djg
+	 * @author Jordan H. Deyton
 	 * 
 	 */
 	private class ControllerWrapper {

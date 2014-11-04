@@ -14,7 +14,7 @@ package org.eclipse.ice.client.widgets.mesh;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.jme3.app.FlyCamAppState;
@@ -40,7 +40,7 @@ import com.jme3.system.awt.AwtPanel;
  * be extended to provide 3D views inside an ICE editor or view. It is
  * configured to use the AwtPanelsContext to render the 3D view.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public abstract class AbstractApplication extends SimpleApplication {
@@ -60,15 +60,6 @@ public abstract class AbstractApplication extends SimpleApplication {
 	 */
 	private AwtPanel renderPanel;
 	// ------------------------------------ //
-
-	// ---- Application Update/Synchronization ---- //
-	/**
-	 * This is a queue of actions that must be performed on the simpleUpdate()
-	 * thread. This is a preferred way of doing updates to the jME3 scene or
-	 * objects in the scene.
-	 */
-	protected final ConcurrentLinkedQueue<ISyncAction> syncActions;
-	// -------------------------------------------- //
 
 	// ---- Materials ---- //
 	/**
@@ -135,10 +126,6 @@ public abstract class AbstractApplication extends SimpleApplication {
 		// ---- Application Initialization ---- //
 		initialized = new AtomicBoolean(false);
 		// ------------------------------------ //
-
-		// ---- Application Update/Synchronization ---- //
-		syncActions = new ConcurrentLinkedQueue<ISyncAction>();
-		// -------------------------------------------- //
 
 		// ---- Materials ---- //
 		materials = new HashMap<String, Material>();
@@ -312,19 +299,10 @@ public abstract class AbstractApplication extends SimpleApplication {
 
 	// ---- Application Update/Synchronization ---- //
 	/**
-	 * Provides a basic implementation of simpleUpdate that runs each
-	 * {@link ISyncAction} in {@link #syncActions}. <b>Sub-classes should call
-	 * this method at the start of the overridden simpleUpdate().</b>
+	 * Does nothing by default.
 	 */
 	@Override
 	public void simpleUpdate(float tpf) {
-
-		// Perform all pending synchronization actions.
-		ISyncAction syncAction;
-		while ((syncAction = syncActions.poll()) != null) {
-			syncAction.simpleUpdate(tpf);
-		}
-
 		return;
 	}
 
@@ -392,14 +370,14 @@ public abstract class AbstractApplication extends SimpleApplication {
 	 */
 	public void setDisplayHUD(final boolean enabled) {
 		if (displayHUD.compareAndSet(!enabled, enabled)) {
-			syncActions.add(new ISyncAction() {
-				public void simpleUpdate(float tpf) {
+			enqueue(new Callable<Boolean>() {
+				public Boolean call() {
 					if (enabled) {
 						guiNode.attachChild(HUD);
 					} else {
 						guiNode.detachChild(HUD);
 					}
-					return;
+					return true;
 				}
 			});
 		}
@@ -432,14 +410,14 @@ public abstract class AbstractApplication extends SimpleApplication {
 	 */
 	public void setDisplayAxes(final boolean enabled) {
 		if (displayAxes.compareAndSet(!enabled, enabled)) {
-			syncActions.add(new ISyncAction() {
-				public void simpleUpdate(float tpf) {
+			enqueue(new Callable<Boolean>() {
+				public Boolean call() {
 					if (enabled) {
 						rootNode.attachChild(axes);
 					} else {
 						rootNode.detachChild(axes);
 					}
-					return;
+					return true;
 				}
 			});
 		}
@@ -540,7 +518,6 @@ public abstract class AbstractApplication extends SimpleApplication {
 		if (collidable != null && ray != null) {
 			collidable.collideWith(ray, results);
 		}
-		// Print the results.
 
 		return results;
 	}

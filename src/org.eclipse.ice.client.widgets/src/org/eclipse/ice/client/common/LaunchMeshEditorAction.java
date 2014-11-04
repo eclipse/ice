@@ -30,7 +30,7 @@ import org.osgi.framework.Bundle;
  * specifically, this action creates a Mesh Editor item, which produces the 2D
  * Mesh Editor.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class LaunchMeshEditorAction extends Action implements IWorkbenchAction {
@@ -53,7 +53,7 @@ public class LaunchMeshEditorAction extends Action implements IWorkbenchAction {
 
 		// Set the text and tool tip.
 		setText("Launch the Mesh Editor");
-		setToolTipText("Launch the MeshEditor for " + "editing 2D meshes.");
+		setToolTipText("Launch the MeshEditor for editing 2D meshes.");
 
 		// Set the image used for the button to the custom Mesh gif.
 		Bundle bundle = Platform

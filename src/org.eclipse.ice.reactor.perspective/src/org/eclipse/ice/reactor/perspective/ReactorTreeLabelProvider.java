@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.LabelProvider;
  * displays their names and IDs. For other objects, it returns uses the object's
  * toString() method.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class ReactorTreeLabelProvider extends LabelProvider {

@@ -29,7 +29,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
  * model. It is responsible for adding a {@link CellEditPart} to the Grid. It
  * must also add row and column labels when necessary.
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class GridEditPart extends AbstractGraphicalEditPart {

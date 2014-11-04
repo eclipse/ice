@@ -14,12 +14,27 @@ package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
 import com.jme3.math.Vector3f;
 
+/**
+ * This class contains utility methods for calculations routinely done for the
+ * jME plant view.
+ * 
+ * @author Jordan Deyton
+ * 
+ */
 public abstract class PlantMath {
 
+	/**
+	 * Converts an array of double values into a {@link Vector3f} (which is made
+	 * of floats).
+	 * 
+	 * @param array
+	 *            The double array to convert.
+	 * @return A Vector3f containing
+	 */
 	public static Vector3f getVector(double[] array) {
-		return new Vector3f((float) array[0], (float) array[1], (float) array[2]);
+		// Check that the parameter is a non-null double array of size 3 before
+		// constructing a Vector3f. Return null otherwise.
+		return (array != null && array.length == 3 ? new Vector3f(
+				(float) array[0], (float) array[1], (float) array[2]) : null);
 	}
-	
-	
-	
 }

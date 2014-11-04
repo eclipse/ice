@@ -48,7 +48,7 @@ import org.junit.Test;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author bkj
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -73,8 +73,9 @@ public class NekModelTester {
 		IProject project = null;
 		String projectName = "NekModelTesterWorkspace";
 		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.dir") + separator
-				+ "examples" + separator + "conj_ht.rea";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "nek5000Data";
+		String filePath = userDir + separator + "conj_ht.rea";
 
 		// Enable debugging
 		System.setProperty("DebugICE", "");

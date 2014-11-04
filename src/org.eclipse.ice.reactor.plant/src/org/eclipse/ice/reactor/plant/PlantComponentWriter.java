@@ -34,7 +34,7 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
  * writing for each type of PlantComponent.
  * </p>
  * 
- * @author djg
+ * @author Jordan H. Deyton
  * 
  */
 public class PlantComponentWriter implements IPlantComponentVisitor {
