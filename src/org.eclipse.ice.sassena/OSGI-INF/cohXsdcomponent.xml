@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ice.sassena.coherent">
+   <implementation class="org.eclipse.ice.sassena.SassenaCoherentModelBuilder"/>
+   <service>
+      <provide interface="org.eclipse.ice.item.ItemBuilder"/>
+   </service>
+</scr:component>
