@@ -19,9 +19,11 @@ import org.eclipse.ice.exodusII.ex_entity_type;
 import org.eclipse.ice.exodusII.ex_init_params;
 import org.eclipse.ice.exodusII.exodusII;
 import org.eclipse.ice.exodusII.exodusIIConstants;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 public class SimplerLauncher {
@@ -29,14 +31,53 @@ public class SimplerLauncher {
 	private static int elementId = 0;
 	private static int edgeId = 0;
 
+	// TODO Scaling needs to be applied via the Mesh Editor.
+	private static final float scale = 1f;
+	
 	public static void main(String argv[]) throws IOException {
 
+		// Create the Display.
+		Display display = new Display();
+
+		// Create the Shell (window).
+		Shell shell = new Shell(display);
+		shell.setText("Exodus Mesh Tester");
+		shell.setSize(1024, 768);
+		shell.setLayout(new FillLayout());
+
+		// Create the mesh model to contain the Exodus mesh.
+		MeshComponent mesh = new MeshComponent();
+		
+		// Construct the JME3 SimpleApplication inside the Shell.
+		ViewFactory viewFactory = new ViewFactory(true);
+		MeshAppState meshApp = viewFactory.createMeshView(mesh);
+		Composite meshComposite = meshApp.createComposite(shell);
+
+		// Open the shell.
+		shell.open();
+		
 		// Load the Exodus library and our wrapper
 		System.loadLibrary("exodus");
 		System.loadLibrary("exodus_wrap");
 
+		// Create a dialog to pick the Exodus mesh file.
+		FileDialog dialog = new FileDialog(shell, SWT.OPEN);
+		dialog.setText("Select an Exodus mesh file to display.");
+		dialog.setFilterPath(System.getProperty("user.home")
+				+ System.getProperty("file.separator") + "ICEFiles");
+		String[] extensions = { "*.e" };
+		dialog.setFilterExtensions(extensions);
+		String selectedMesh = dialog.open();
+		
+		if (selectedMesh == null) {
+			System.out.println("SimplerLauncher message: "
+					+ "You did not pick a mesh file. "
+					+ "This will display a square mesh.");
+			selectedMesh = "square.e";
+		}
+		
 		// Open the file.
-		int exoid = openFile("coarse10_rz.e");
+		int exoid = openFile(selectedMesh);
 
 		if (exodusII.ex_int64_status(exoid) != 0) {
 			System.out
@@ -58,20 +99,14 @@ public class SimplerLauncher {
 		// Create a list of vertices/nodes to store the node information.
 		List<Vertex> nodes = getNodeCoordinates(exoid, numNodes, numDims);
 
-		// Print out the nodes.
-		System.out.println("The node coordinates are:");
-		for (Vertex node : nodes) {
-			float[] location = node.getLocation();
-			System.out.println(location[0] + ", " + location[1] + ", "
-					+ location[2]);
-		}
-
 		// Get the element blocks from the file.
 		List<List<Polygon>> elementBlocks = getElementBlocks(exoid,
 				numElementBlocks, nodes);
 
+		// TODO We get ConcurrentModificationExceptions when updating the mesh
+		// model live. Use a new one for now.
+		mesh = new MeshComponent();
 		// Add all of the elements in each element block to a mesh.
-		MeshComponent mesh = new MeshComponent();
 		for (List<Polygon> elementBlock : elementBlocks) {
 			System.out.println("Adding block");
 			for (Polygon element : elementBlock) {
@@ -80,26 +115,10 @@ public class SimplerLauncher {
 			}
 			System.out.println("Finished adding block");
 		}
+		meshApp.setMesh(mesh);
 
 		// Close the file.
 		closeFile(exoid);
-
-		// Create the Display.
-		Display display = new Display();
-
-		// Create the Shell (window).
-		Shell shell = new Shell(display);
-		shell.setText("Exodus Mesh Tester");
-		shell.setSize(1024, 768);
-		shell.setLayout(new FillLayout());
-
-		// Construct the JME3 SimpleApplication inside the Shell.
-		ViewFactory viewFactory = new ViewFactory(true);
-		MeshAppState meshApp = viewFactory.createMeshView(mesh);
-		Composite meshComposite = meshApp.createComposite(shell);
-
-		// Open the shell.
-		shell.open();
 
 		// SOP UI loop.
 		while (!shell.isDisposed()) {
@@ -117,7 +136,7 @@ public class SimplerLauncher {
 
 		return;
 	}
-
+	
 	/**
 	 * This operation opens the Exodus file and returns a handle to it.
 	 * 
@@ -238,8 +257,6 @@ public class SimplerLauncher {
 			throw new IOException(
 					"Unable to load coordinates from file. Aborting.");
 		}
-
-		float scale = 100f;
 		
 		// Create the nodes and add them to the list.
 		Vertex node;
