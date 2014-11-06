@@ -1,5 +1,6 @@
 package org.eclipse.ice.client.widgets.mesh;
 
+import java.nio.FloatBuffer;
 import java.util.concurrent.Callable;
 
 import org.eclipse.ice.client.widgets.jme.SimpleAppState;
@@ -104,105 +105,62 @@ public class GridGraphics {
 	 */
 	public void init() {
 
-		Geometry geometry;
-		Node node;
 		Quad quad;
-		Grid wireGrid;
 		Material material;
 
-		Quaternion rotation = new Quaternion(new float[] { FastMath.HALF_PI,
-				0f, 0f });
-
-		float width = dimensions.getXWorldLength();
-		float length = dimensions.getYWorldLength();
-		float minX = dimensions.getXWorldMin();
-		float minY = dimensions.getYWorldMin();
-
 		// Create the GridGraphics' own "root" Node.
-		node = new Node("gridGraphics");
-		this.node = node;
+		node = new Node("grid");
 
 		// Create a background that lies beneath the blue grid.
-		quad = new Quad(width * 4f, length * 4f);
-		geometry = new Geometry("gridBackground", quad);
-		geometry.setMaterial(app.createBasicMaterial(ColorRGBA.Gray));
-		// Center the background on the origin.
-		geometry.setLocalTranslation(width * 4f * -0.5f, length * 4f * -0.5f,
-				-5f);
-		node.attachChild(geometry);
-		background = geometry;
+		quad = new Quad(1f, 1f);
+		background = new Geometry("background", quad);
+		background.setMaterial(app.createBasicMaterial(ColorRGBA.Gray));
+		node.attachChild(background);
 
 		// Create the blue (major) grid.
-		wireGrid = new Grid((int) length + 1, (int) width + 1, 1f);
-		wireGrid.setLineWidth(2f);
-		geometry = new Geometry("gridMajor", wireGrid);
+		majorGrid = new Geometry("majorGrid");
 		material = app.createBasicMaterial(ColorRGBA.Blue);
 		material.getAdditionalRenderState().setWireframe(true);
-		geometry.setMaterial(material);
-		// Rotate the grid and center it on the origin.
-		geometry.setLocalRotation(rotation);
-		geometry.setLocalTranslation(width * -0.5f, length * 0.5f, 0f);
-		node.attachChild(geometry);
-		majorGrid = geometry;
+		majorGrid.setMaterial(material);
+		node.attachChild(majorGrid);
 
 		// Create the minor grid.
-		wireGrid = new Grid((int) length * 4 + 1, (int) width * 4 + 1, 0.25f);
-		wireGrid.setLineWidth(1f);
-		geometry = new Geometry("gridMinor", wireGrid);
+		minorGrid = new Geometry("minorGrid");
 		material = app.createBasicMaterial(ColorRGBA.Blue);
 		material.getAdditionalRenderState().setWireframe(true);
-		geometry.setMaterial(material);
-		// Rotate the grid and center it on the origin.
-		geometry.setLocalRotation(rotation);
-		geometry.setLocalTranslation(width * -0.5f, length * 0.5f, 0f);
-		node.attachChild(geometry);
-		minorGrid = geometry;
+		minorGrid.setMaterial(material);
+		node.attachChild(minorGrid);
 
 		// Create the invisible surface of the grid that will register ray hits.
-		quad = new Quad(width * 4f, length * 4f);
-		geometry = new Geometry("gridSurface", quad);
+		quad = new Quad(1f, 1f);
+		surface = new Geometry("surface", quad);
 		material = app.createBasicMaterial(ColorRGBA.BlackNoAlpha);
 		material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-		geometry.setMaterial(material);
-		geometry.setQueueBucket(Bucket.Transparent);
-		// Center the surface on the origin.
-		geometry.setLocalTranslation(width * 4f * -0.5f, length * 4f * -0.5f,
-				0f);
-		node.attachChild(geometry);
-		surface = geometry;
+		surface.setMaterial(material);
+		surface.setQueueBucket(Bucket.Transparent);
+		node.attachChild(surface);
 
 		// Create the mesh surrounding the grid. This is basically a large Quad
 		// with a hole in the middle for the grid.
 		Mesh mesh = new Mesh();
-		// Set the distance from the grid over which the mesh should extend to
-		// hide the gray background.
-		float d = 50f;
-		float w = width, l = length;
-		Vector3f vertices[] = { new Vector3f(-d, -d, 0f),
-				new Vector3f(0f, -d, 0f), new Vector3f(w + d, -d, 0f),
-				new Vector3f(0f, 0f, 0f), new Vector3f(w, 0f, 0f),
-				new Vector3f(w + d, 0f, 0f), new Vector3f(-d, l, 0f),
-				new Vector3f(0f, l, 0f), new Vector3f(w, l, 0f),
-				new Vector3f(-d, l + d, 0f), new Vector3f(w, l + d, 0f),
-				new Vector3f(w + d, l + d, 0f) };
-		for (Vector3f vertex : vertices) {
-			vertex.addLocal(minX, minY, 0f);
-		}
+		// Create the float buffers for the vertex locations and the indices of
+		// said vertices. The indices will never change, so we set them here.
 		int indices[] = { 0, 7, 6, 0, 1, 7, 1, 2, 3, 2, 5, 3, 4, 5, 11, 4, 11,
 				10, 8, 10, 9, 6, 8, 9 };
-		mesh.setBuffer(Type.Position, 3,
-				BufferUtils.createFloatBuffer(vertices));
+		mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(12 * 3));
 		mesh.setBuffer(Type.Index, 3, BufferUtils.createIntBuffer(indices));
 
 		// Create a Geometry from the mesh and set its material.
-		geometry = new Geometry("background", mesh);
-		geometry.setMaterial(app.createBasicMaterial(ColorRGBA.Black));
+		border = new Geometry("border", mesh);
+		border.setMaterial(app.createBasicMaterial(ColorRGBA.Black));
 		// This call is necessary so that the mesh updates its bounds properly.
-		geometry.updateModelBound();
+		border.updateModelBound();
 
 		// Add the cover mesh to the scene.
-		node.attachChild(geometry);
-		border = geometry;
+		node.attachChild(border);
+
+		// Make sure all of the graphics are correctly sized/positioned.
+		refresh();
 
 		return;
 	}
@@ -211,7 +169,80 @@ public class GridGraphics {
 	 * Refreshes the grid graphics, assuming they have already been initialized.
 	 */
 	private void refresh() {
-		// TODO
+
+		Mesh mesh;
+		Quad quad;
+		Grid wireGrid;
+
+		Quaternion wireGridRotation = new Quaternion(new float[] {
+				FastMath.HALF_PI, 0f, 0f });
+
+		// Get the jME dimensions for the grid.
+		float width = dimensions.getXWorldLength();
+		float length = dimensions.getYWorldLength();
+		float minX = dimensions.getXWorldMin();
+		float minY = dimensions.getYWorldMin();
+
+		// Update the background. We need to resize its mesh with the updated
+		// mesh and reset its position since the quad is not already centered at
+		// the origin.
+		quad = (Quad) background.getMesh();
+		quad.updateGeometry(width * 4f, length * 4f);
+		background.setLocalTranslation(width * 4f * -0.5f, length * 4f * -0.5f,
+				-5f);
+
+		// Update the blue (major) grid's mesh.
+		wireGrid = new Grid((int) length + 1, (int) width + 1, 1f);
+		wireGrid.setLineWidth(2f);
+		majorGrid.setMesh(wireGrid);
+		// Rotate the grid and center it on the origin..
+		majorGrid.setLocalRotation(wireGridRotation);
+		majorGrid.setLocalTranslation(width * -0.5f, length * 0.5f, 0f);
+
+		// Update the minor grid's mesh.
+		wireGrid = new Grid((int) length * 4 + 1, (int) width * 4 + 1, 0.25f);
+		wireGrid.setLineWidth(1f);
+		minorGrid.setMesh(wireGrid);
+		// Rotate the grid and center it on the origin.
+		minorGrid.setLocalRotation(wireGridRotation);
+		minorGrid.setLocalTranslation(width * -0.5f, length * 0.5f, 0f);
+
+		// Update the invisible surface of the grid.
+		quad = (Quad) surface.getMesh();
+		quad.updateGeometry(width * 4f, length * 4f);
+		// Center the surface on the origin.
+		surface.setLocalTranslation(width * 4f * -0.5f, length * 4f * -0.5f,
+				0f);
+		
+		// Update the border's mesh.
+		mesh = border.getMesh();
+		
+		// Set the distance from the grid over which the mesh should extend to
+		// hide the gray background.
+		float d = 50f;
+		float w = width, l = length;
+
+		// Get the buffer and rewind it so that we start from the beginning.
+		FloatBuffer pb = mesh.getFloatBuffer(Type.Position);
+		pb.rewind();
+		// Put all of the new vertex locations directly to the float buffer.
+		pb.put(minX - d).put(minY - d).put(0f);
+		pb.put(minX).put(minY - d).put(0f);
+		pb.put(minX + w + d).put(minY - d).put(0f);
+		pb.put(minX).put(minY).put(0f);
+		pb.put(minX + w).put(minY).put(0f);
+		pb.put(minX + w + d).put(minY).put(0f);
+		pb.put(minX - d).put(minY + l).put(0f);
+		pb.put(minX).put(minY + l).put(0f);
+		pb.put(minX + w).put(minY + l).put(0f);
+		pb.put(minX - d).put(minY + l + d).put(0f);
+		pb.put(minX + w).put(minY + l + d).put(0f);
+		pb.put(minX + w + d).put(minY + l + d).put(0f);
+		// Forces the mesh to updates its bounds properly.
+		mesh.updateBound();
+		border.updateModelBound();
+		
+		return;
 	}
 
 	/**
