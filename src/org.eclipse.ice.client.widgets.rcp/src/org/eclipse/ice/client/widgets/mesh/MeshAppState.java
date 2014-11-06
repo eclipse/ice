@@ -67,12 +67,14 @@ public class MeshAppState extends ViewAppState implements
 	// They will need to be updated to something newer that works the same way.
 
 	// ---- Scene components ---- //
+	protected final GridGraphics grid = new GridGraphics(this);
+	
 	/**
 	 * The surface of the grid. Although it is invisible, it is located in the
 	 * same plane as the grid lines. It is used to determine locations based on
 	 * ray collisions.
 	 */
-	private Geometry grid;
+	private Geometry gridGeometry;
 
 	/**
 	 * This <code>Node</code> contains the spatials for all vertices.
@@ -87,36 +89,6 @@ public class MeshAppState extends ViewAppState implements
 	 */
 	private final Node tempRoot;
 	// -------------------------- //
-
-	// ---- Grid properties ---- //
-	/**
-	 * The width (x-length) of the grid. The value should be a whole number.
-	 * Changing this changes the size of each grid component.
-	 */
-	private final float width = 32f;
-	/**
-	 * The length (y-length) of the grid. The value should be a whole number.
-	 * Changing this changes the size of each grid component.
-	 */
-	private final float length = 16f;
-
-	/**
-	 * The minimum possible x value on the grid. This is in jME world units!
-	 */
-	private final float minX = width * -0.5f;
-	/**
-	 * The minimum possible y value on the grid. This is in jME world units!
-	 */
-	private final float minY = length * -0.5f;
-	/**
-	 * The maximum possible x value on the grid. This is in jME world units!
-	 */
-	private final float maxX = width * 0.5f;
-	/**
-	 * The maximum possible y value on the grid. This is in jME world units!
-	 */
-	private final float maxY = length * 0.5f;
-	// ------------------------- //
 
 	// ---- Player properties. ---- //
 	/**
@@ -436,7 +408,7 @@ public class MeshAppState extends ViewAppState implements
 		Geometry geometry;
 		Node node;
 		Quad quad;
-		Grid grid;
+		Grid wireGrid;
 		Material material;
 
 		// Initialize the physics system for the player and the walls.
@@ -446,6 +418,11 @@ public class MeshAppState extends ViewAppState implements
 		Quaternion rotation = new Quaternion(new float[] { FastMath.HALF_PI,
 				0f, 0f });
 
+		float width = grid.dimensions.getXWorldLength();
+		float length = grid.dimensions.getYWorldLength();
+		float minX = grid.dimensions.getXWorldMin();
+		float minY = grid.dimensions.getYWorldMin();
+		
 		/* ---- Create the grid. ---- */
 		// Create the Node containing the components of the grid.
 		node = new Node("gridNode");
@@ -461,9 +438,9 @@ public class MeshAppState extends ViewAppState implements
 		node.attachChild(geometry);
 
 		// Create the blue (major) grid.
-		grid = new Grid((int) length + 1, (int) width + 1, 1f);
-		grid.setLineWidth(2f);
-		geometry = new Geometry("gridMajor", grid);
+		wireGrid = new Grid((int) length + 1, (int) width + 1, 1f);
+		wireGrid.setLineWidth(2f);
+		geometry = new Geometry("gridMajor", wireGrid);
 		material = createBasicMaterial(ColorRGBA.Blue);
 		material.getAdditionalRenderState().setWireframe(true);
 		geometry.setMaterial(material);
@@ -473,9 +450,9 @@ public class MeshAppState extends ViewAppState implements
 		node.attachChild(geometry);
 
 		// Create the minor grid.
-		grid = new Grid((int) length * 4 + 1, (int) width * 4 + 1, 0.25f);
-		grid.setLineWidth(1f);
-		geometry = new Geometry("gridMinor", grid);
+		wireGrid = new Grid((int) length * 4 + 1, (int) width * 4 + 1, 0.25f);
+		wireGrid.setLineWidth(1f);
+		geometry = new Geometry("gridMinor", wireGrid);
 		material = createBasicMaterial(ColorRGBA.Blue);
 		material.getAdditionalRenderState().setWireframe(true);
 		geometry.setMaterial(material);
@@ -497,7 +474,7 @@ public class MeshAppState extends ViewAppState implements
 		node.attachChild(geometry);
 
 		// Set the grid geometry used for ray collisions.
-		this.grid = geometry;
+		this.gridGeometry = geometry;
 
 		// Create the mesh surrounding the grid. This is basically a large Quad
 		// with a hole in the middle for the grid.
@@ -513,8 +490,9 @@ public class MeshAppState extends ViewAppState implements
 				new Vector3f(0f, l, 0f), new Vector3f(w, l, 0f),
 				new Vector3f(-d, l + d, 0f), new Vector3f(w, l + d, 0f),
 				new Vector3f(w + d, l + d, 0f) };
-		for (Vector3f vertex : vertices)
+		for (Vector3f vertex : vertices) {
 			vertex.addLocal(minX, minY, 0f);
+		}
 		int indices[] = { 0, 7, 6, 0, 1, 7, 1, 2, 3, 2, 5, 3, 4, 5, 11, 4, 11,
 				10, 8, 10, 9, 6, 8, 9 };
 		mesh.setBuffer(Type.Position, 3,
@@ -758,7 +736,7 @@ public class MeshAppState extends ViewAppState implements
 		node.detachAllChildren();
 
 		// Unset the grid geometry used for ray collisions.
-		this.grid = null;
+		this.gridGeometry = null;
 		;
 		/* -------------------------- */
 
@@ -800,20 +778,20 @@ public class MeshAppState extends ViewAppState implements
 
 		// Process left-right movement.
 		if (left != right) {
-			if (left && playerLocation.x > minX) {
+			if (left && playerLocation.x > grid.dimensions.getXWorldMin()) {
 				walkDirection.x = -moveFactor;
 				playerMoved = true;
-			} else if (right && playerLocation.x < maxX) {
+			} else if (right && playerLocation.x < grid.dimensions.getXWorldMax()) {
 				walkDirection.x = moveFactor;
 				playerMoved = true;
 			}
 		}
 		// Process up-down movement.
 		if (up != down) {
-			if (up && playerLocation.y < maxY) {
+			if (up && playerLocation.y < grid.dimensions.getYWorldMax()) {
 				walkDirection.y = moveFactor;
 				playerMoved = true;
-			} else if (down && playerLocation.y > minY) {
+			} else if (down && playerLocation.y > grid.dimensions.getYWorldMin()) {
 				walkDirection.y = -moveFactor;
 				playerMoved = true;
 			}
@@ -837,7 +815,7 @@ public class MeshAppState extends ViewAppState implements
 			// Update the cursor's coordinates in the HUD. The cursor's position
 			// can change by the cursor's movement, the player's movement, or by
 			// zooming. It's simpler just to always update its location.
-			CollisionResults results = getCollision(grid,
+			CollisionResults results = getCollision(gridGeometry,
 					getCursorRay(view.getCamera()));
 
 			// Update the cursor's location in the HUD if possible.
@@ -1187,7 +1165,7 @@ public class MeshAppState extends ViewAppState implements
 	 * @return A <code>Geometry</code> for the <code>MeshAppState</code>'s grid.
 	 */
 	protected Geometry getGrid() {
-		return grid;
+		return gridGeometry;
 	}
 
 	/**
@@ -1316,7 +1294,7 @@ public class MeshAppState extends ViewAppState implements
 
 	/**
 	 * Creates a {@link CustomChaseCamera} that follows the {@link #player}
-	 * around the {@link #grid}.
+	 * around the {@link #gridGeometry}.
 	 */
 	@Override
 	public Object createViewCamera(EmbeddedView view) {
@@ -1489,9 +1467,8 @@ public class MeshAppState extends ViewAppState implements
 	 *         vector.
 	 */
 	protected Vector3f getClosestGridPoint(Vector3f point) {
-		Vector3f newPoint = new Vector3f(FastMath.clamp(point.x, minX, maxX),
-				FastMath.clamp(point.y, minY, maxY), 0f);
-		return newPoint.multLocal(getScale());
+		// TODO Remove this method...
+		return grid.getClosestGridPoint(point);
 	}
 
 	// ---- Camera/Zoom methods. ---- //
@@ -1593,6 +1570,10 @@ public class MeshAppState extends ViewAppState implements
 
 	// ------------------------------ //
 
+	private void refreshGrid() {
+		
+	}
+	
 	/**
 	 * Updates {@link #moveSpeed} depending on whether shift or control are
 	 * pressed.
