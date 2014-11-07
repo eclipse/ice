@@ -1,13 +1,11 @@
 package org.eclipse.ice.client.widgets.moose;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.ice.client.common.AddNodeTreeAction;
 import org.eclipse.ice.client.common.DeleteNodeTreeAction;
 import org.eclipse.ice.client.common.RenameNodeTreeAction;
-import org.eclipse.ice.client.common.TreeCompositeCheckStateProvider;
 import org.eclipse.ice.client.common.TreeCompositeContentProvider;
 import org.eclipse.ice.client.common.TreeCompositeLabelProvider;
 import org.eclipse.ice.client.common.TreeCompositeViewer;
@@ -17,15 +15,12 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.jface.action.ControlContribution;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -360,38 +355,12 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 					this, parentMap));
 			treeViewer.setLabelProvider(new TreeCompositeLabelProvider());
 
-			// Non-default behavior below...
-
 			// Add a provider to tell the viewer when elements should be
 			// checked. This is NOT default behavior.
-			checkboxTreeViewer
-					.setCheckStateProvider(new TreeCompositeCheckStateProvider(
-							checkboxTreeViewer, parentMap));
-
-			// Add a listener to uncheck all child nodes when a parent node is
-			// unchecked. This is NOT default behavior.
-			checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
-				@Override
-				public void checkStateChanged(CheckStateChangedEvent event) {
-
-					// If the tree is unchecked, we need to uncheck all child
-					// tree nodes.
-					if (event.getChecked() == false) {
-						TreeComposite tree = (TreeComposite) event.getElement();
-						// Get a breadth-first iterator so we can walk the tree.
-						Iterator<TreeComposite> iterator;
-						iterator = new BreadthFirstTreeCompositeIterator(tree);
-						// Skip the root node.
-						iterator.next();
-						// Loop over and deactivate the children.
-						while (iterator.hasNext()) {
-							iterator.next().setActive(false);
-						}
-					}
-
-					return;
-				}
-			});
+			MOOSETreeCheckStateManager checkManager;
+			checkManager = new MOOSETreeCheckStateManager();
+			checkboxTreeViewer.setCheckStateProvider(checkManager);
+			checkboxTreeViewer.addCheckStateListener(checkManager);
 		}
 
 		return treeViewer;
