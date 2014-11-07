@@ -7,6 +7,7 @@ import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIte
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
+import org.eclipse.jface.viewers.TreeViewer;
 
 /**
  * The behavior of the {@link MOOSETreeCompositeView} is not standard. This
@@ -42,13 +43,19 @@ public class MOOSETreeCheckStateManager implements ICheckStateProvider,
 
 		if (event != null && event.getElement() instanceof TreeComposite) {
 			// Get the checked/unchecked node.
+			TreeViewer treeViewer = (TreeViewer) event.getSource();
 			TreeComposite node = (TreeComposite) event.getElement();
 
 			// If checked, all ancestor nodes should also be checked. This is
 			// done by setting their active flags.
 			if (event.getChecked()) {
 				while (node != null) {
-					node.setActive(true);
+					// If the state of the node changes, we need to tell the
+					// TreeViewer to refresh that element.
+					if (!node.isActive()) {
+						node.setActive(true);
+						treeViewer.update(node, null);
+					}
 					node = node.getParent();
 				}
 			}
@@ -60,7 +67,13 @@ public class MOOSETreeCheckStateManager implements ICheckStateProvider,
 				iterator = new BreadthFirstTreeCompositeIterator(node);
 				// Loop over and deactivate the children.
 				while (iterator.hasNext()) {
-					iterator.next().setActive(false);
+					node = iterator.next();
+					// If the state of the node changes, we need to tell the
+					// TreeViewer to refresh that element.
+					if (node.isActive()) {
+						node.setActive(false);
+						treeViewer.update(node, null);
+					}
 				}
 			}
 		}
