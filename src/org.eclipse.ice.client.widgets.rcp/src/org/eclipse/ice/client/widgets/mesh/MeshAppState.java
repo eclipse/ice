@@ -58,6 +58,9 @@ public class MeshAppState extends ViewAppState implements
 	// They will need to be updated to something newer that works the same way.
 
 	// ---- Scene components ---- //
+	/**
+	 * The class that manages the Mesh Editor's grid and its graphics.
+	 */
 	protected final GridGraphics grid = new GridGraphics(this);
 
 	/**
@@ -1053,6 +1056,16 @@ public class MeshAppState extends ViewAppState implements
 	 */
 	protected Geometry getGrid() {
 		return grid.getSurface();
+	}
+
+	/**
+	 * Gets the manager for the Mesh Editor's grid and its associated graphics.
+	 * 
+	 * @return The Mesh Editor's {@link #grid}.
+	 */
+	public GridGraphics getGridGraphics() {
+		// TODO Replace the above method getGrid() with this one.
+		return grid;
 	}
 
 	/**

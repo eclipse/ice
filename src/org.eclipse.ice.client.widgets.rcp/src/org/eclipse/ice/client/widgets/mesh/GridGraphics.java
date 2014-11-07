@@ -71,7 +71,7 @@ public class GridGraphics {
 
 	/**
 	 * The dimensions of the grid. Apply any changes directly to this variable
-	 * via {@link GridDimensions#setDimensions(float, float, float)}. Any valid
+	 * via {@link GridDimensions#set(float, float, float)}. Any valid
 	 * changes will result in a call to {@link #refresh()} to update the
 	 * graphics.
 	 */
@@ -96,14 +96,14 @@ public class GridGraphics {
 	 *            required so changes to the grid's {@link #dimensions} will be
 	 *            reflected in the scene graphics.
 	 */
-	public GridGraphics(SimpleAppState app) {
+	protected GridGraphics(SimpleAppState app) {
 		this.app = app;
 	}
 
 	/**
 	 * Initializes the grid graphics.
 	 */
-	public void init() {
+	protected void init() {
 
 		Quad quad;
 		Material material;
@@ -239,6 +239,9 @@ public class GridGraphics {
 		pb.put(minX + w).put(minY + l + d).put(0f);
 		pb.put(minX + w + d).put(minY + l + d).put(0f);
 		// Forces the mesh to updates its bounds properly.
+		// We have to set the buffer again to get the Mesh#updateBound() method
+		// to work properly.
+		mesh.setBuffer(Type.Position, 3, pb);
 		mesh.updateBound();
 		border.updateModelBound();
 		
@@ -251,7 +254,7 @@ public class GridGraphics {
 	 * 
 	 * @return The {@code GridGraphics}' "root" {@code Node}.
 	 */
-	public Node getNode() {
+	protected Node getNode() {
 		return node;
 	}
 
@@ -260,7 +263,7 @@ public class GridGraphics {
 	 * 
 	 * @return The grid surface.
 	 */
-	public Geometry getSurface() {
+	protected Geometry getSurface() {
 		return surface;
 	}
 

@@ -57,7 +57,7 @@ public class GridDimensionsTester {
 		float yWorld = 5f;
 
 		// Set the dimensions and compare.
-		dims.setDimensions(scale, x, y);
+		dims.set(scale, x, y);
 		compareValues(dims, scale, x, y, xWorld, yWorld);
 
 		// Set the desired values. This scales the dimensions by 100%,
@@ -69,7 +69,7 @@ public class GridDimensionsTester {
 		yWorld = 22f;
 
 		// Set the dimensions and compare.
-		dims.setDimensions(scale, x, y);
+		dims.set(scale, x, y);
 		compareValues(dims, scale, x, y, xWorld, yWorld);
 
 		// TODO Test the upper and lower bounds on the scale and the min/max
