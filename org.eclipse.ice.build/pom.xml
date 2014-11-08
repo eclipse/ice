@@ -148,7 +148,6 @@
 				<version>2.0.3</version>
 			</plugin>
 
-
 		</plugins>
 	</build>
 
@@ -178,6 +177,7 @@
 		<repository>
 			<id>EclipseLink Repo</id>
 			<url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+			<layout>default</layout>
 		</repository>
 
 		<!-- SpringSource Repositories -->
@@ -291,71 +291,71 @@
 
 	<!-- the modules that should be built together -->
 	<modules>
-		<module>../../org.eclipse.ice.target.kepler</module>
+		<module>../org.eclipse.ice.target.kepler</module>
 		<module>../../org.eclipse.ice.dependencies</module>
-		<module>../../org.eclipse.ice.client</module>
-		<module>../../org.eclipse.ice.client.test</module>
-		<module>../../org.eclipse.ice.client.compatibility</module>
-		<module>../../org.eclipse.ice.client.widgets</module>
-		<module>../../org.eclipse.ice.client.widgets.moose</module>
-		<module>../../org.eclipse.ice.client.widgets.reactoreditor</module>
-		<module>../../org.eclipse.ice.client.widgets.reactoreditor.test</module>
-		<module>../../org.eclipse.ice.client.widgets.reactoreditor.grid</module>
-		<module>../../org.eclipse.ice.client.widgets.reactoreditor.grid.test</module>
-		<module>../../org.eclipse.ice.client.widgets.reactoreditor.lwr</module>
-		<module>../../org.eclipse.ice.client.widgets.reactoreditor.lwr.test</module>
-		<module>../../org.eclipse.ice.client.widgets.reactoreditor.sfr</module>
-		<module>../../org.eclipse.ice.client.widgets.reactoreditor.sfr.test</module>
-		<module>../../org.eclipse.ice.client.widgets.rcp</module>
-		<module>../../org.eclipse.ice.client.widgets.test</module>
-		<module>../../org.eclipse.ice.client.widgets.rcp.test</module>
-		<module>../../org.eclipse.ice.client.rcp</module>
-		<module>../../org.eclipse.ice.datastructures</module>
-		<module>../../org.eclipse.ice.datastructures.test</module>
-		<module>../../org.eclipse.ice.core</module>
-		<module>../../org.eclipse.ice.core.test</module>
-		<module>../../org.eclipse.ice.item</module>
-		<module>../../org.eclipse.ice.item.test</module>
-		<module>../../org.eclipse.ice.persistence.xml</module>
-		<module>../../org.eclipse.ice.persistence.xml.test</module>
-		<module>../../org.eclipse.ice.io</module>
-		<module>../../org.eclipse.ice.io.test</module>
-		<module>../../org.eclipse.ice.analysistool</module>
-		<module>../../org.eclipse.ice.reactor</module>
-		<module>../../org.eclipse.ice.reactor.test</module>
-		<module>../../org.eclipse.ice.reactor.sfr</module>
-		<module>../../org.eclipse.ice.reactor.sfr.test</module>
-		<module>../../org.eclipse.ice.reactor.plant</module>
-		<module>../../org.eclipse.ice.reactor.plant.test</module>
-		<module>../../org.eclipse.ice.reactor.perspective</module>
-		<module>../../org.eclipse.ice.reactorAnalyzer</module>
-		<module>../../org.eclipse.ice.reactorAnalyzer.test</module>
-		<module>../../org.eclipse.ice.caebat</module>
-		<module>../../org.eclipse.ice.caebat.test</module>
-		<module>../../org.eclipse.ice.kdd</module>
-		<module>../../org.eclipse.ice.kdd.test</module>
-		<module>../../org.eclipse.ice.proteus</module>
-		<module>../../org.eclipse.ice.proteus.test</module>
-		<module>../../org.eclipse.ice.mesh</module>
-		<module>../../org.eclipse.ice.mesh.test</module>
-		<module>../../org.eclipse.ice.nek5000</module>
-		<module>../../org.eclipse.ice.nek5000.test</module>
+		<module>../src/org.eclipse.ice.client</module>
+		<module>../tests/org.eclipse.ice.client.test</module>
+		<module>../src/org.eclipse.ice.client.compatibility</module>
+		<module>../src/org.eclipse.ice.client.widgets</module>
+		<module>../src/org.eclipse.ice.client.widgets.moose</module>
+		<module>../src/org.eclipse.ice.client.widgets.reactoreditor</module>
+		<module>../tests/org.eclipse.ice.client.widgets.reactoreditor.test</module>
+		<module>../src/org.eclipse.ice.client.widgets.reactoreditor.grid</module>
+		<module>../tests/org.eclipse.ice.client.widgets.reactoreditor.grid.test</module>
+		<module>../src/org.eclipse.ice.client.widgets.reactoreditor.lwr</module>
+		<module>../tests/org.eclipse.ice.client.widgets.reactoreditor.lwr.test</module>
+		<module>../src/org.eclipse.ice.client.widgets.reactoreditor.sfr</module>
+		<module>../tests/org.eclipse.ice.client.widgets.reactoreditor.sfr.test</module>
+		<module>../src/org.eclipse.ice.client.widgets.rcp</module>
+		<module>../tests/org.eclipse.ice.client.widgets.test</module>
+		<module>../tests/org.eclipse.ice.client.widgets.rcp.test</module>
+		<module>../src/org.eclipse.ice.client.rcp</module>
+		<module>../src/org.eclipse.ice.datastructures</module>
+		<module>../tests/org.eclipse.ice.datastructures.test</module>
+		<module>../src/org.eclipse.ice.core</module>
+		<module>../tests/org.eclipse.ice.core.test</module>
+		<module>../src/org.eclipse.ice.item</module>
+		<module>../tests/org.eclipse.ice.item.test</module>
+		<module>../src/org.eclipse.ice.persistence.xml</module>
+		<module>../tests/org.eclipse.ice.persistence.xml.test</module>
+		<module>../src/org.eclipse.ice.io</module>
+		<module>../tests/org.eclipse.ice.io.test</module>
+		<module>../src/org.eclipse.ice.analysistool</module>
+		<module>../src/org.eclipse.ice.reactor</module>
+		<module>../tests/org.eclipse.ice.reactor.test</module>
+		<module>../src/org.eclipse.ice.reactor.sfr</module>
+		<module>../tests/org.eclipse.ice.reactor.sfr.test</module>
+		<module>../src/org.eclipse.ice.reactor.plant</module>
+		<module>../tests/org.eclipse.ice.reactor.plant.test</module>
+		<module>../src/org.eclipse.ice.reactor.perspective</module>
+		<module>../src/org.eclipse.ice.reactorAnalyzer</module>
+		<module>../tests/org.eclipse.ice.reactorAnalyzer.test</module>
+		<module>../src/org.eclipse.ice.caebat</module>
+		<module>../tests/org.eclipse.ice.caebat.test</module>
+		<module>../src/org.eclipse.ice.kdd</module>
+		<module>../tests/org.eclipse.ice.kdd.test</module>
+		<module>../src/org.eclipse.ice.proteus</module>
+		<module>../tests/org.eclipse.ice.proteus.test</module>
+		<module>../src/org.eclipse.ice.mesh</module>
+		<module>../tests/org.eclipse.ice.mesh.test</module>
+		<module>../src/org.eclipse.ice.nek5000</module>
+		<module>../tests/org.eclipse.ice.nek5000.test</module>
 		<module>../../visit_java_client/gov.lbnl.visit.swt</module>
-		<module>../../org.eclipse.ice.viz</module>
-		<module>../../org.eclipse.ice.viz.test</module>
-		<module>../../org.eclipse.ice.xolotl</module>
-		<module>../../org.eclipse.ice.materials</module>
-		<module>../../org.eclipse.ice.materials.test</module>
-		<module>../../org.eclipse.ice.materials.ui</module>
-		<module>../../org.eclipse.ice.caebat.batml</module>
-		<module>../../org.eclipse.ice.caebat.batml.test</module>
-		<module>../../org.eclipse.ice.sassena</module>
-		<module>../../org.eclipse.ice.sassena.test</module>
-		<module>../../org.eclipse.ice.reflectivity</module>
-		<module>../../org.eclipse.ice.reflectivity.test</module>
+		<module>../src/org.eclipse.ice.viz</module>
+		<module>../tests/org.eclipse.ice.viz.test</module>
+		<module>../src/org.eclipse.ice.xolotl</module>
+		<module>../src/org.eclipse.ice.materials</module>
+		<module>../tests/org.eclipse.ice.materials.test</module>
+		<module>../src/org.eclipse.ice.materials.ui</module>
+		<module>../src/org.eclipse.ice.caebat.batml</module>
+		<module>../tests/org.eclipse.ice.caebat.batml.test</module>
+		<module>../src/org.eclipse.ice.sassena</module>
+		<module>../tests/org.eclipse.ice.sassena.test</module>
+		<module>../src/org.eclipse.ice.reflectivity</module>
+		<module>../tests/org.eclipse.ice.reflectivity.test</module>
 		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING TWO BUNDLES MUST 
 			BUILD LAST! -->
-		<module>../../org.eclipse.ice.feature</module>
-		<module>../../org.eclipse.ice.repository</module>
+		<module>../features/org.eclipse.ice.feature</module>
+		<module>../repository/org.eclipse.ice.repository</module>
 	</modules>
 </project>
