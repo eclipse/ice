@@ -34,7 +34,9 @@ public class MasterApplicationFactory implements IMasterApplicationFactory {
 	 */
 	@Override
 	public void disposeApplication(MasterApplication app) {
-		app.stop();
+		if (app != null) {
+			app.stop();
+		}
 	}
 
 }
