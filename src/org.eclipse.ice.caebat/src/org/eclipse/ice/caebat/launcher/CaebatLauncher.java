@@ -143,7 +143,7 @@ public class CaebatLauncher extends JobLauncher {
 		setExecutable(getName(), getDescription(), this.fullExecCMD);
 
 		// Add localhost
-		addHost("livingstone.ornl.gov", "linux x86_64", CAEBAT_ROOT);
+		addHost("localhost", "linux x86_64", CAEBAT_ROOT);
 
 		// Add the input files types for the BatML files
 		addInputType("Key-value pair file", "keyValueFile",

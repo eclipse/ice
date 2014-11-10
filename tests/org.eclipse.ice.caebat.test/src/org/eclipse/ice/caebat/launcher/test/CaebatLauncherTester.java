@@ -126,7 +126,7 @@ public class CaebatLauncherTester {
 		assertEquals(1, CaebatLauncher.getAllHosts().size());
 
 		// check the contents of the hosts
-		assertEquals("livingstone.ornl.gov", CaebatLauncher.getAllHosts()
+		assertEquals("localhost", CaebatLauncher.getAllHosts()
 				.get(0));
 
 		// end-user-code

@@ -118,7 +118,7 @@ public class CaebatLauncherBuilderTester {
 		assertEquals(1, caebatMPLauncher.getAllHosts().size());
 
 		// check the contents of the hosts
-		assertEquals("livingstone.ornl.gov", caebatMPLauncher.getAllHosts()
+		assertEquals("localhost", caebatMPLauncher.getAllHosts()
 				.get(0));
 
 		// call the build operation with project is not null
@@ -140,7 +140,7 @@ public class CaebatLauncherBuilderTester {
 		assertEquals(1, caebatMPLauncher.getAllHosts().size());
 
 		// Check hosts
-		assertEquals("livingstone.ornl.gov", caebatMPLauncher.getAllHosts()
+		assertEquals("localhost", caebatMPLauncher.getAllHosts()
 				.get(0));
 
 		// end-user-code

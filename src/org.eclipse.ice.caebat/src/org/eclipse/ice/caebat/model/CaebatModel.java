@@ -644,7 +644,7 @@ public class CaebatModel extends Item {
 
 		// Add an action to the list to allow for the INI exports
 		customTaggedExportString = "Export to Caebat INI format";
-		allowedActions.add(customTaggedExportString);
+		allowedActions.add(0, customTaggedExportString);
 
 		// ----- Finish setting up the Form so that it can be immediately
 		// launched

@@ -330,6 +330,11 @@ public class CAEBATKVPairItem extends Item {
 		form.addComponent(electricalComponent);
 		form.addComponent(electroChemComponent);
 		
+		// We only need the export to key-value pair process, 
+		// so get rid of this one to conserve 'clicks'
+		// Did Emmy Noether ever speak of click conservation???
+		allowedActions.remove("Export to ICE Native Format");
+		
 		return;
 	}
 
