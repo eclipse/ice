@@ -66,7 +66,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * This class extends ICEFormPage to provide an area for the jME3 canvas and a
  * toolbar for creating and modifying the mesh.
  * 
- * @author tnp, Jordan H. Deyton
+ * @author Taylor Patterson, Jordan H. Deyton
  */
 public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		IMeshSelectionListener, ISelectionProvider,

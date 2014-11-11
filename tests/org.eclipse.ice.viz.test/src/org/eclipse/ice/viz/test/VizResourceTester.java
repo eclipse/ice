@@ -20,7 +20,7 @@ import org.junit.Test;
 /**
  * This class is responsible for checking the VizResource class
  * 
- * @author tnp
+ * @author Taylor Patterson
  * 
  */
 public class VizResourceTester {

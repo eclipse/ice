@@ -51,7 +51,7 @@ import visit.java.client.AttributeSubject.AttributeSubjectCallback;
  * This class extends {@link Dialog} to create a dialog for executing Python
  * scripts on the active VisIt plot.
  * 
- * @author tnp
+ * @author Taylor Patterson
  * 
  */
 public class VisitPythonDialog extends TitleAreaDialog {

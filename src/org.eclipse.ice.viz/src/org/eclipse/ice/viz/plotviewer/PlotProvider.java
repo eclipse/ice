@@ -19,7 +19,7 @@ import java.util.TreeMap;
  * The provider for the plot which will include plot attributes and a structure
  * for the series
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class PlotProvider {

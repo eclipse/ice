@@ -40,7 +40,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
  * This class extends {@link TreeCompositeViewer} to add a {@link Combo} for
  * selecting MOOSE tools.
  * 
- * @author tnp, Jordan H. Deyton, w5q
+ * @author Taylor Patterson, Jordan H. Deyton, w5q
  * 
  */
 public class EMFTreeCompositeViewer extends TreeCompositeViewer implements

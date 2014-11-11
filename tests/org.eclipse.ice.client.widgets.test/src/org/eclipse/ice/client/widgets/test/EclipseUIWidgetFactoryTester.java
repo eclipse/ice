@@ -48,7 +48,7 @@ public class EclipseUIWidgetFactoryTester {
 	 * This is a utility class for testing the declarative services ability of
 	 * the EclipseUIWidgetFactory.
 	 * 
-	 * @author jaybilly
+	 * @author Jay Jay Billings
 	 * 
 	 */
 	private class FakeFormWidgetBuilder implements IFormWidgetBuilder {

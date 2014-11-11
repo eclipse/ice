@@ -32,7 +32,7 @@ import org.osgi.framework.FrameworkUtil;
  * This Action is used to open a FileDialog that allows the user to select
  * compatible files as {@link ICEResource}s into a {@link VizFileViewer}.
  * 
- * @author tnp, Jordan H. Deyton
+ * @author Taylor Patterson, Jordan H. Deyton
  */
 public class AddFileAction extends Action implements IMenuCreator {
 

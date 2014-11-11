@@ -60,7 +60,7 @@ import org.eclipse.ui.part.WorkbenchPart;
  * This class extends the ViewPart class and provides a view in the
  * Visualization Perspective to look at the plots that are currently available.
  * 
- * @author Jay Jay Billings, tnp, Jordan H. Deyton
+ * @author Jay Jay Billings, Taylor Patterson, Jordan H. Deyton
  */
 public class VisitPlotViewer extends PlayableViewPart implements
 		IUpdateableListener, ISelectionChangedListener, IDoubleClickListener {

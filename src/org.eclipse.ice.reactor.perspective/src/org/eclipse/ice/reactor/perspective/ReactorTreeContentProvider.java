@@ -50,7 +50,7 @@ import org.eclipse.jface.viewers.Viewer;
  * elements are {@link ICEResource}s for HDF5 reactor files. Their children are
  * {@link IReactorComponent}s in the reactor file.
  * 
- * @author Jordan H. Deyton, tnp
+ * @author Jordan H. Deyton, Taylor Patterson
  * 
  */
 public class ReactorTreeContentProvider implements ITreeContentProvider {

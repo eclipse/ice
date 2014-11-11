@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Label;
  * content of the page is determined by the type of selection input to the
  * constructor.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class AddReactorPartWizardPage extends WizardPage {
 

@@ -34,7 +34,7 @@ import org.osgi.framework.FrameworkUtil;
  * This Action is used to open a FileDialog that allows the user to select
  * compatible files as {@link ICEResource}s into a {@link ResourceViewer}.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class OpenReactorFileAction extends Action {
 

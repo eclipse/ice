@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Shell;
  * The SelectTimeDialog is a custom dialog that prompts the user for which time
  * to plot in the provider
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class SelectTimeDialog extends Dialog {

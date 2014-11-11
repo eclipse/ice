@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * 
- * @author xxi, w8o
+ * @author Claire Saunders, Matthew Wang
  * 
  */
 public class PlotTreeContentProvider implements ITreeContentProvider {

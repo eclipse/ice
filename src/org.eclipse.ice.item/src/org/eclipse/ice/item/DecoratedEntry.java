@@ -26,7 +26,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author jaybilly
+ * @author Jay Jay Billings
  */
 class DecoratedEntry extends Entry {
 	/**

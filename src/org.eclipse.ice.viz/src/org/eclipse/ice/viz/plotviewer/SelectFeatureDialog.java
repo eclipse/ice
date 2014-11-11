@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Shell;
  * The SelectFeatureDialog is a custom dialog which prompts the user to select
  * an X feature and Y feature to plot against.
  * 
- * @author w8o,xxi
+ * @author Matthew Wang,Claire Saunders
  * 
  */
 public class SelectFeatureDialog extends Dialog {

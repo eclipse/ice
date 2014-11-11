@@ -20,7 +20,7 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 /**
  * The VizResource is used for loading a data set used in the CSV Plotting
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class VizResource extends ICEResource {

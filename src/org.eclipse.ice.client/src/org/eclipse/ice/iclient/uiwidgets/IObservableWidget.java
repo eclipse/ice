@@ -16,7 +16,7 @@ package org.eclipse.ice.iclient.uiwidgets;
  * <!-- begin-UML-doc -->
  * <p>The IObservableWidget interface describes the operations that must be realized by Widgets that are observable vian ICE event listeners (i.e. - IProcessEventListener, IUpdateEventListener, etc.).</p>
  * <!-- end-UML-doc -->
- * @author jaybilly
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IObservableWidget {

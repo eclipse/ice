@@ -21,7 +21,7 @@ import org.eclipse.ice.item.ItemType;
  * <!-- begin-UML-doc -->
  * <p>The SimulationBuilder is an ItemBuilder for the Simulation Item and is defined as an OSGi component in ICE. It dynamically registers the creation of Simulations as a service in ICE.</p>
  * <!-- end-UML-doc -->
- * @author jaybilly
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FileSimulationBuilder implements ItemBuilder {

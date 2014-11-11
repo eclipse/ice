@@ -33,7 +33,7 @@ import org.junit.Test;
 /**
  * This class test the functionality of the CSVDataLoader.
  * 
- * @author xxi
+ * @author Claire Saunders
  * 
  */
 public class CSVDataLoaderTester {

@@ -34,7 +34,7 @@ import org.junit.Test;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @authors Jordan H. Deyton, tnp
+ * @authors Jordan H. Deyton, Taylor Patterson
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */

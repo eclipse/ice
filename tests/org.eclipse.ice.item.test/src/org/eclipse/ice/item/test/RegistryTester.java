@@ -29,7 +29,7 @@ import org.junit.*;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author jaybilly
+ * @author Jay Jay Billings
  */
 public class RegistryTester {
 

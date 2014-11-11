@@ -31,7 +31,7 @@ import org.eclipse.ui.part.ViewPart;
  * This Action presents a {@link VisItRemoteFileDialog} to select files from a
  * remote file system and add them to the {@link VizFileViewer}.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class AddRemoteFileAction extends Action {
 

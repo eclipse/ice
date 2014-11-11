@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
  * The AddPlotDialog is a custom dialog that asks the user which type of plot
  * (line, scatter, bar, etc.) to plot.
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class AddPlotDialog extends Dialog {

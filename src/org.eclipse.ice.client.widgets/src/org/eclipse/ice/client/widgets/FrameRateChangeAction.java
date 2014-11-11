@@ -25,7 +25,7 @@ import org.eclipse.ui.PlatformUI;
  * either a set frame rate or access to a custom frame rate dialog.
  * </p>
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class FrameRateChangeAction extends Action {
 

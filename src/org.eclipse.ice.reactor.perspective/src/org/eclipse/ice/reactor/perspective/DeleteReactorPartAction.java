@@ -24,7 +24,7 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class DeleteReactorPartAction extends Action {
 

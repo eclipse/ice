@@ -22,7 +22,7 @@ import org.eclipse.jface.wizard.Wizard;
  * file in the Reactor Viewer. The content of the wizard is determined by the
  * type of selection input to the constructor.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class AddReactorPartWizard extends Wizard {
 

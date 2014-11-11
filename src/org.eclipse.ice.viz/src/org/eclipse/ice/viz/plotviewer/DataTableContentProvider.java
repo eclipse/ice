@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class DataTableContentProvider implements IStructuredContentProvider {

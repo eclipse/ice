@@ -39,7 +39,7 @@ import org.eclipse.ui.part.ViewPart;
  * Visualization Perspective to display the raw data associated with currently
  * displayed CSV plot.
  * 
- * @author tnp, w8o
+ * @author Taylor Patterson, Matthew Wang
  * 
  */
 public class CSVDataTableViewer extends ViewPart implements ISelectionListener {

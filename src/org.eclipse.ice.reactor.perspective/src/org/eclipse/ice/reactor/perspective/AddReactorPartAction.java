@@ -31,7 +31,7 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class AddReactorPartAction extends Action {
 

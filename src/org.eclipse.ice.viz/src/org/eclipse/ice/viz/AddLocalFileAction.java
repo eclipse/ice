@@ -26,7 +26,7 @@ import org.eclipse.ui.part.ViewPart;
  * This Action presents a FileDialog to select files from the local file system
  * and add them to the {@link VizFileViewer}.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class AddLocalFileAction extends Action {
 

@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Text;
  * to establish a VisIt client connection. This connection may be via a local or
  * remote launch or by connecting to a running VisIt session.
  * 
- * @author tnp, hkq
+ * @author Taylor Patterson, hkq
  * 
  */
 public class LaunchVisitWizardPage extends WizardPage {
@@ -803,7 +803,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 * This class extends Composite to create a collection of widgets for
 	 * selecting the path to VisIt.
 	 * 
-	 * @author tnp
+	 * @author Taylor Patterson
 	 */
 	private class PathComposite extends Composite {
 
@@ -891,7 +891,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 * This interface is implemented Composites that contain check buttons with
 	 * associated Text widgets.
 	 * 
-	 * @author tnp
+	 * @author Taylor Patterson
 	 */
 	private interface ICheckComposite {
 
@@ -915,7 +915,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 * This class extends Composite to create a collection of widgets for
 	 * setting the port for VisIt to communicate on.
 	 * 
-	 * @author tnp
+	 * @author Taylor Patterson
 	 */
 	private class PortComposite extends Composite implements ICheckComposite {
 
@@ -1005,7 +1005,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 * This class extends Composite to create a collection of widgets for
 	 * setting the password for incoming VisIt to connections.
 	 * 
-	 * @author tnp
+	 * @author Taylor Patterson
 	 */
 	private class PasswordComposite extends Composite implements
 			ICheckComposite {
@@ -1099,7 +1099,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 * This class extends Composite to create a collection of widgets for
 	 * setting the host to launch VisIt on or where VisIt is running.
 	 * 
-	 * @author tnp
+	 * @author Taylor Patterson
 	 */
 	private class HostComposite extends Composite {
 
@@ -1153,7 +1153,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 * This class extends Composite to create a collection of widgets for
 	 * setting the gateway URL and port.
 	 * 
-	 * @author tnp
+	 * @author Taylor Patterson
 	 */
 	private class GatewayComposite extends Composite implements ICheckComposite {
 

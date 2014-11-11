@@ -21,7 +21,7 @@ import org.eclipse.ice.item.ItemType;
  * <!-- begin-UML-doc -->
  * <p>An ItemBuilder for building PROTEUS models.</p>
  * <!-- end-UML-doc -->
- * @author jaybilly
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PROTEUSModelBuilder implements ItemBuilder {

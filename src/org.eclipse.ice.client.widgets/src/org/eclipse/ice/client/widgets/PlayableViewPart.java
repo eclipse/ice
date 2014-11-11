@@ -19,7 +19,7 @@ import org.eclipse.ui.part.ViewPart;
  * (NextAction, PlayAction, PreviousAction) to cycle through a list of
  * resources.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public abstract class PlayableViewPart extends ViewPart {
 

@@ -16,7 +16,7 @@ package org.eclipse.ice.iclient.uiwidgets;
  * <!-- begin-UML-doc -->
  * <p>The IWidgetFactory interface defines the operations used to create widgets for implementations of IClient. It is implemented separately from the client to separate the code needed for drawing to the screen from the code needed to communicate with instances of ICore. An instance of this class must be set before implementations of IClient can be used.</p>
  * <!-- end-UML-doc -->
- * @author jaybilly
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IWidgetFactory {

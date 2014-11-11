@@ -27,7 +27,7 @@ import java.util.HashMap;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author jaybilly
+ * @author Jay Jay Billings
  */
 public class Registry {
 

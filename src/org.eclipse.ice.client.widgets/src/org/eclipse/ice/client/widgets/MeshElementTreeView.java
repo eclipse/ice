@@ -46,7 +46,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * This class extends ViewPart to create a tree of elements (polygons, edges,
  * vertices) in the MeshComponent.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class MeshElementTreeView extends ViewPart implements
 		IUpdateableListener, IPartListener2, ISelectionListener,

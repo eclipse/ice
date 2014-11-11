@@ -35,7 +35,7 @@ import com.jme3.system.JmeCanvasContext;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author jaybilly, tnp, Jordan H. Deyton
+ * @author Jay Jay Billings, Taylor Patterson, Jordan H. Deyton
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */

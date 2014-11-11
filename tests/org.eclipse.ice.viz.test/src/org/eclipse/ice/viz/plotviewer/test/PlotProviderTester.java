@@ -25,7 +25,7 @@ import org.junit.Test;
 /**
  * This class is responsible for testing the PlotProvider
  * 
- * @author xxi
+ * @author Claire Saunders
  * 
  */
 public class PlotProviderTester {

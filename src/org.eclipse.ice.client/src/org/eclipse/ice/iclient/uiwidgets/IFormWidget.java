@@ -18,7 +18,7 @@ import org.eclipse.ice.datastructures.form.Form;
  * <!-- begin-UML-doc -->
  * <p>The IFormWidget interface describes the operations that ICE expects from a Widget that can display Forms.</p>
  * <!-- end-UML-doc -->
- * @author jaybilly
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IFormWidget extends IObservableWidget {

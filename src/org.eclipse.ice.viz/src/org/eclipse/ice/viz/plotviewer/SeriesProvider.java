@@ -16,7 +16,7 @@ package org.eclipse.ice.viz.plotviewer;
  * The series provider class will provide the data for a trace/series as well as
  * meta data such as the title, the type, and the uncertainty
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class SeriesProvider {

@@ -27,7 +27,7 @@ import org.osgi.framework.FrameworkUtil;
  * This Action removes selected resources from the it's parent plot viewer by
  * calling {@link VisitPlotViewer#removeSelection()} when it is run.
  * 
- * @author tnp, Jordan H. Deyton
+ * @author Taylor Patterson, Jordan H. Deyton
  */
 public class DeletePlotAction extends Action {
 

@@ -28,7 +28,7 @@ import org.eclipse.ice.analysistool.IData;
 /**
  * CSVDataLoader instantiates a CSVDataProvider and returns it
  * 
- * @author xxi
+ * @author Claire Saunders
  * 
  */
 public class CSVDataLoader {

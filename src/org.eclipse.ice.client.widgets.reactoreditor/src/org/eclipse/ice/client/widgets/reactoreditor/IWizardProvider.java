@@ -18,7 +18,7 @@ import org.eclipse.jface.wizard.IWizard;
  * This interface is used by implementing classes to provide an IWizard
  * instance.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public interface IWizardProvider {
 

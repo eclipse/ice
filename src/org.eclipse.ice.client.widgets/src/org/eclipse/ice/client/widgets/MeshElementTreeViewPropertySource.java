@@ -28,7 +28,7 @@ import org.eclipse.ice.datastructures.form.mesh.Vertex;
  * This class extends PropertySource to manage property data provided by entries
  * in the MeshElementTreeView and populate the Properties view.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class MeshElementTreeViewPropertySource extends PropertySource {
 
@@ -86,7 +86,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 	 * Classes that implement this interface will be used to handle property
 	 * value retrieval.
 	 * 
-	 * @author tnp
+	 * @author Taylor Patterson
 	 */
 	interface IPropertyTypeHandler {
 

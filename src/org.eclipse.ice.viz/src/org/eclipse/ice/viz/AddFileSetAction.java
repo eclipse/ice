@@ -22,7 +22,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * The action to add a file set where each file is a separate time
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class AddFileSetAction extends Action {

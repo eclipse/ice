@@ -77,7 +77,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author jaybilly
+ * @author Jay Jay Billings
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */

@@ -65,7 +65,7 @@ import org.eclipse.ice.datastructures.updateableComposite.Component;
  * image files collected as ICEResourceComponents.
  * </p>
  * 
- * @authors tnp, Jay Jay Billings
+ * @authors Taylor Patterson, Jay Jay Billings
  */
 public class ICEResourceView extends PlayableViewPart implements
 		IUpdateableListener, IPartListener2, IComponentVisitor {

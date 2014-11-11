@@ -30,7 +30,7 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
 
 /**
- * @author tnp
+ * @author Taylor Patterson
  * 
  */
 public class WizardProvider implements IWizardProvider, ISFRComponentVisitor {

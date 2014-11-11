@@ -22,7 +22,7 @@ import org.junit.Test;
 /**
  * This class tests the functionality of the SeriesProvider.
  * 
- * @author xxi
+ * @author Claire Saunders
  * 
  */
 public class SeriesProviderTester {

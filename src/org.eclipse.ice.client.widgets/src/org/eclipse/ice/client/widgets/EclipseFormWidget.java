@@ -28,7 +28,7 @@ import org.eclipse.ui.PlatformUI;
  * <!-- begin-UML-doc -->
  * <p>This class implements the IFormWidget interface to display a Form using elements of SWT/JFace and the Eclipse Rich Client Platform. It is a wrapper and delegates almost all work, including drawing and event processing, to the ICEFormEditor. It wraps the Form from ICE in an instance of ICEFormInput to conform to Eclipse's Editor interface.</p>
  * <!-- end-UML-doc -->
- * @author jaybilly
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EclipseFormWidget implements IFormWidget {

@@ -27,7 +27,7 @@ import org.eclipse.ui.part.ViewPart;
  * This Action opens a dialog that allows the user to pick from plots available
  * in the selected file in the {@link VizFileViewer}.
  * 
- * @author w8o, tnp
+ * @author Matthew Wang, Taylor Patterson
  */
 public class CreateCSVPlotAction extends Action {
 

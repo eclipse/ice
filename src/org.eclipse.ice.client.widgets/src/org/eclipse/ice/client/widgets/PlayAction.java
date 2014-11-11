@@ -38,7 +38,7 @@ import org.osgi.framework.FrameworkUtil;
  * roles to act as a pause for the play loop.
  * </p>
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class PlayAction extends Action implements IMenuCreator {
 

@@ -32,7 +32,7 @@ import org.eclipse.swt.graphics.Point;
  * image to rotate according to the location of the mouse whenever
  * AtomicReference<Point>#get() is called in the thread.
  * 
- * @author tnp
+ * @author Taylor Patterson
  * 
  */
 public class VisitMouseManager {

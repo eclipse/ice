@@ -23,7 +23,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEObject;
  * <!-- begin-UML-doc -->
  * <p>IClient is an interface that must be realized by clients of ICE. It describes the possible interactions between the Eclipse User and ICE.</p>
  * <!-- end-UML-doc -->
- * @author jaybilly
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IClient {

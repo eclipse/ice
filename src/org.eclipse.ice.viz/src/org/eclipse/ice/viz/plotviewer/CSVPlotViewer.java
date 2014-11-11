@@ -56,7 +56,7 @@ import org.eclipse.ui.part.WorkbenchPart;
  * This class extends the ViewPart class and provides a view in the
  * Visualization Perspective to display CSV plots that are currently available.
  * 
- * @author Jay Jay Billings, tnp, Jordan H. Deyton, w8o
+ * @author Jay Jay Billings, Taylor Patterson, Jordan H. Deyton, Matthew Wang
  */
 public class CSVPlotViewer extends PlayableViewPart implements
 		IUpdateableListener, ISelectionChangedListener {

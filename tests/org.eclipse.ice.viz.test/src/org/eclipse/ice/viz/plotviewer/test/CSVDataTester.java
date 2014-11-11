@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * This class is responsible for testing the CSVData to make sure that it is
  * correctly constructed.
  * 
- * @author xxi
+ * @author Claire Saunders
  * 
  */
 public class CSVDataTester {

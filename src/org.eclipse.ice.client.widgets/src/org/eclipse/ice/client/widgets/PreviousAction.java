@@ -27,7 +27,7 @@ import org.osgi.framework.FrameworkUtil;
  * ICEResourceView.
  * </p>
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class PreviousAction extends Action {
 

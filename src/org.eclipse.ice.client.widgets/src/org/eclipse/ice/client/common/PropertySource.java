@@ -23,7 +23,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  * the properties view.
  * </p>
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class PropertySource implements IPropertySource {
 

@@ -19,7 +19,7 @@ import org.eclipse.ui.IPerspectiveFactory;
  * This class implements IPerspectiveFactory to create the Visualization
  * Perspective.
  * 
- * @author tnp
+ * @author Taylor Patterson
  * 
  */
 public class ReactorsPerspective implements IPerspectiveFactory {

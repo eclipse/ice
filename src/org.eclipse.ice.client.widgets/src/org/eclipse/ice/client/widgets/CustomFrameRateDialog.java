@@ -32,7 +32,7 @@ import org.eclipse.ui.PlatformUI;
  * This class extends Dialog to present the user with a means to provide frame
  * rates beyond few pre-set selections.
  * 
- * @author tnp
+ * @author Taylor Patterson
  */
 public class CustomFrameRateDialog extends Dialog {
 

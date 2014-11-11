@@ -36,7 +36,7 @@ import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 
 /**
- * @author tnp
+ * @author Taylor Patterson
  * 
  */
 public class WizardProvider implements IWizardProvider, ILWRComponentVisitor {

@@ -28,7 +28,7 @@ import org.eclipse.ui.part.ViewPart;
  * This Action opens a dialog that allows the user to create a series plot from
  * the selected {@link VizResource} in the {@link VizFileViewer}.
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class AddCSVSeriesAction extends Action {

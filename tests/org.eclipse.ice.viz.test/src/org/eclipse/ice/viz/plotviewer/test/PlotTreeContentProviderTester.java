@@ -16,7 +16,7 @@ import org.junit.Test;
 /**
  * This class is responsible for testing the PlotTreeContentProvider
  * 
- * @author xxi
+ * @author Claire Saunders
  * 
  */
 public class PlotTreeContentProviderTester {

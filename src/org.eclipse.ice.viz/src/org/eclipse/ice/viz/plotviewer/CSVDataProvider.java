@@ -23,7 +23,7 @@ import org.eclipse.ice.analysistool.IDataProvider;
 /**
  * This class is the implementation of IDataProvider for the PlotViewer tool.
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class CSVDataProvider implements IDataProvider {

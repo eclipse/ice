@@ -22,7 +22,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEObject;
  * This class is the implementation of IData and inherits from NiCEObject for
  * the PlotViewer tool.
  * 
- * @author w8o, xxi
+ * @author Matthew Wang, Claire Saunders
  * 
  */
 

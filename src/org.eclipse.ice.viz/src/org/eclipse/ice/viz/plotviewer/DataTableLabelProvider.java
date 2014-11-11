@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * 
- * @author w8o
+ * @author Matthew Wang
  * 
  */
 public class DataTableLabelProvider implements ITableLabelProvider {

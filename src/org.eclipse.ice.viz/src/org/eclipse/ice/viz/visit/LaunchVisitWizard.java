@@ -18,7 +18,7 @@ import org.eclipse.jface.wizard.Wizard;
  * This class extends Wizard to manage the WizardDialog for establishing a VisIt
  * client connection.
  * 
- * @author tnp
+ * @author Taylor Patterson
  * 
  */
 public class LaunchVisitWizard extends Wizard {

@@ -60,7 +60,7 @@ import visit.java.client.FileInfo;
  * This Action opens a dialog that allows the user to pick from plots available
  * in the selected file in the {@link VizFileViewer}.
  * 
- * @author tnp, Jordan H. Deyton
+ * @author Taylor Patterson, Jordan H. Deyton
  */
 public class AddVisitPlotAction extends Action {
 

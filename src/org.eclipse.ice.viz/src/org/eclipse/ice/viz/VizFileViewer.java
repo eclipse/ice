@@ -47,7 +47,7 @@ import org.eclipse.ui.part.ViewPart;
  * Visualization Perspective to look at the files that are currently available
  * to use for creating plots.
  * 
- * @authors Jay Jay Billings, tnp, Jordan H. Deyton
+ * @authors Jay Jay Billings, Taylor Patterson, Jordan H. Deyton
  */
 public class VizFileViewer extends ViewPart implements IUpdateableListener,
 		ISelectionChangedListener {

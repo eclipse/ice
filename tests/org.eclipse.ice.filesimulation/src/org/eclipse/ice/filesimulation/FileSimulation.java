@@ -22,7 +22,7 @@ import org.eclipse.ice.item.jobLauncher.JobLauncher;
  * <!-- begin-UML-doc -->
  * <p>The FileSimulation class launches the "File" command a Linux system to determine the type of a specified file. It requires the name of a file and, when launched with ICE, the identity of a local or remote machine. The only actions available for this class are local and remote job launch.</p><p>It defines two entries, one for the filename and one for the computing platform, and one data component in its Form.</p>
  * <!-- end-UML-doc -->
- * @author jaybilly
+ * @author Jay Jay Billings
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "FileSimulation")
