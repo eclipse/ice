@@ -71,7 +71,7 @@ public class LaunchVisitHandler extends AbstractHandler {
 		inputMap.put("url", wizard.getPage().getHostname());
 		inputMap.put("port", wizard.getPage().getVisItPort());
 		inputMap.put("visDir", wizard.getPage().getVisItDir());
-		inputMap.put("isRemote", wizard.getPage().getIsRemote());
+		inputMap.put("isLaunch", wizard.getPage().getIsLaunch());
 
 		// Create the input
 		VisitEditorInput input = new VisitEditorInput(inputMap);

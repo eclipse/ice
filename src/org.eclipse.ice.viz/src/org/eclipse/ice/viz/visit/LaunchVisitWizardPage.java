@@ -48,7 +48,7 @@ import org.eclipse.swt.widgets.Text;
 public class LaunchVisitWizardPage extends WizardPage {
 
 	/**
-	 * The user's selection to exit the dialog ("Local" to launch, "Remote" to
+	 * The user's selection to exit the dialog ("Launch" to launch, "Connect" to
 	 * connect to service, null to cancel)
 	 */
 	private String dialogExitSelection;
@@ -610,8 +610,8 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 * @return The string representation of whether or not to connect to a
 	 *         running VisIt service.
 	 */
-	public String getIsRemote() {
-		if ("Remote".equals(dialogExitSelection)) {
+	public String getIsLaunch() {
+		if ("Launch".equals(dialogExitSelection)) {
 			return "true";
 		} else {
 			return "false";
@@ -693,7 +693,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		// Set the fields for a local launch if the local launch radio is
 		// selected.
 		if (localRadio.getSelection()) {
-			dialogExitSelection = "Local";
+			dialogExitSelection = "Launch";
 			// Get the path or prompt an error if the user has left the field
 			// empty.
 			if (!localPathComp.getPathString().isEmpty()) {
@@ -722,7 +722,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		// Set the fields for a remote launch if this is the user's
 		// selection.
 		else if (remoteRadio.getSelection()) {
-			dialogExitSelection = "Local";
+			dialogExitSelection = "Launch";
 			// Get the hostname or prompt an error if the user has left the
 			// field empty.
 			if (!remoteHostComp.getHostString().isEmpty()) {
@@ -762,7 +762,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		// Set the fields for connecting to a running VisIt service if
 		// this is the user's selection.
 		else if (serviceRadio.getSelection()) {
-			dialogExitSelection = "Remote";
+			dialogExitSelection = "Connect";
 			// Get the hostname or prompt an error if the user has left the
 			// field empty.
 			if (!serviceHostComp.getHostString().isEmpty()) {
