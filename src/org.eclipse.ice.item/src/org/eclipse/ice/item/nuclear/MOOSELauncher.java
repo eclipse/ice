@@ -77,9 +77,11 @@ public class MOOSELauncher extends SuiteLauncher {
 	protected void setupForm() {
 
 		// Local Declarations
-		String localInstallDir = "/home/moose";
-		String remoteInstallDir = "/home/bkj/moose";
-//		String remoteInstallDir = "/home/moose";	// For testing
+		String userHome = System.getProperty("user.home");
+		String separator = System.getProperty("file.separator");
+		
+		String localInstallDir = userHome + separator + "projects";
+		String remoteInstallDir = "/home/moose";
 
 		// Create the list of executables
 		ArrayList<String> executables = new ArrayList<String>();
@@ -107,7 +109,6 @@ public class MOOSELauncher extends SuiteLauncher {
 		// Add hosts
 		addHost("localhost", "linux", localInstallDir);
 		addHost("habilis.ornl.gov", "linux", remoteInstallDir);
-//		addHost("megafluffy.ornl.gov", "linux", remoteInstallDir);	// For testing
 
 		// Enable MPI
 		enableMPI(1, 10000, 1);
@@ -143,6 +144,8 @@ public class MOOSELauncher extends SuiteLauncher {
 
 		// Create the command that will launch the MOOSE product
 		String launchCommand = null;
+		setUploadInputFlag(true);
+		
 		if ("MOOSE_TEST".equals(executable)) {
 			launchCommand = "${installDir}" + "moose/test/" 
 					+ executableMap.get(executable) 
@@ -153,44 +156,42 @@ public class MOOSELauncher extends SuiteLauncher {
 			setAppendInputFlag(false);
 			
 			// Disable input file uploading
-			if (yamlSyntaxGenerator.equals(execName)) {
-				setUploadInputFlag(false);
-			}
+			setUploadInputFlag(false);
 			
 			launchCommand = 
 					// BISON files					
 					"if [ -d ${installDir}bison ] "
-					+ "&& [ -f ${installDir}bison/bison-opt ]; then;"
-					+ "    ${installDir}bison/bison-opt --yaml > bison.yaml;"
-					+ "    ${installDir}bison/bison-opt --syntax > bison.syntax;"
-					+ "    echo 'Generating BISON files';" 
-					+ "fi;"
+					+ "&& [ -f ${installDir}bison/bison-opt ]\n then\n"
+					+ "    ${installDir}bison/bison-opt --yaml > bison.yaml\n"
+					+ "    ${installDir}bison/bison-opt --syntax > bison.syntax\n"
+					+ "    echo 'Generating BISON files'\n" 
+					+ "fi\n"
 					// MARMOT files
 					+ "if [ -d ${installDir}marmot ] "
-					+ "&& [ -f ${installDir}marmot/marmot-opt ]; then;"
-					+ "    ${installDir}marmot/marmot-opt --yaml > marmot.yaml;"
-					+ "    ${installDir}marmot/marmot-opt --syntax > marmot.syntax;"
-					+ "    echo 'Generating MARMOT files';" 
-					+ "fi;"			
+					+ "&& [ -f ${installDir}marmot/marmot-opt ]\n then\n"
+					+ "    ${installDir}marmot/marmot-opt --yaml > marmot.yaml\n"
+					+ "    ${installDir}marmot/marmot-opt --syntax > marmot.syntax\n"
+					+ "    echo 'Generating MARMOT files'\n" 
+					+ "fi\n"			
 					// RELAP-7 files
 					+ "if [ -d ${installDir}relap-7 ] "
-					+ "&& [ -f ${installDir}relap-7/relap-7-opt ]; then;"
-					+ "    ${installDir}relap-7/relap-7-opt --yaml > relap.yaml;"
-					+ "    ${installDir}relap-7/relap-7-opt --syntax > relap.syntax;"
-					+ "    echo 'Generating RELAP-7 files';" 
+					+ "&& [ -f ${installDir}relap-7/relap-7-opt ]\n then\n"
+					+ "    ${installDir}relap-7/relap-7-opt --yaml > relap.yaml\n"
+					+ "    ${installDir}relap-7/relap-7-opt --syntax > relap.syntax\n"
+					+ "    echo 'Generating RELAP-7 files'\n" 
 					+ "elif [ -d ${installDir}r7_moose ] " // Old name
-					+ "&& [ -f ${installDir}r7_moose/r7_moose-opt ]; then;"
-					+ "    ${installDir}r7_moose/r7_moose-opt --yaml > relap.yaml;"
-					+ "    ${installDir}r7_moose/r7_moose-opt --syntax > relap.syntax;"
-					+ "    echo 'Generating RELAP-7 files';"
-					+ "fi;"
+					+ "&& [ -f ${installDir}r7_moose/r7_moose-opt ]\n then\n"
+					+ "    ${installDir}r7_moose/r7_moose-opt --yaml > relap.yaml\n"
+					+ "    ${installDir}r7_moose/r7_moose-opt --syntax > relap.syntax\n"
+					+ "    echo 'Generating RELAP-7 files'\n"
+					+ "fi\n"
 					// RAVEN files
 					+ "if [ -d ${installDir}raven ] "
-					+ "&& [ -f ${installDir}raven/RAVEN-opt ]; then;"
-					+ "    ${installDir}raven/RAVEN-opt --yaml > raven.yaml;"
-					+ "    ${installDir}raven/RAVEN-opt --syntax > raven.syntax;"
-					+ "    echo 'Generating RAVEN files';" 
-					+ "fi;";
+					+ "&& [ -f ${installDir}raven/RAVEN-opt ]\n then\n"
+					+ "    ${installDir}raven/RAVEN-opt --yaml > raven.yaml\n"
+					+ "    ${installDir}raven/RAVEN-opt --syntax > raven.syntax\n"
+					+ "    echo 'Generating RAVEN files'\n" 
+					+ "fi\n";
 		} else if ("RAVEN".equals(executable)) {
 			// RAVEN directory is lowercase, but the executable is uppercase
 			launchCommand = "${installDir}" + executableMap.get(executable)

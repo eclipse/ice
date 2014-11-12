@@ -33,6 +33,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -45,7 +47,6 @@ import org.eclipse.ptp.remote.core.IRemoteProcessBuilder;
 import org.eclipse.ptp.remote.core.IRemoteServices;
 import org.eclipse.ptp.remote.core.RemoteServices;
 import org.eclipse.ptp.remote.core.exception.RemoteConnectionException;
-
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -165,7 +166,8 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </p>
  * </td>
  * </tr>
- *  * <tr>
+ * *
+ * <tr>
  * <td>
  * <p>
  * noUploadInput
@@ -173,10 +175,10 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </td>
  * <td>
  * <p>
- * If this option is set to true (default), then the JobLaunchAction will
- * upload the specified input file(s) to the remote location. If this option
- * is set to false, no input file(s) will be uploaded, with the exception of
- * the job launching script.
+ * If this option is set to true (default), then the JobLaunchAction will upload
+ * the specified input file(s) to the remote location. If this option is set to
+ * false, no input file(s) will be uploaded, with the exception of the job
+ * launching script.
  * </p>
  * </td>
  * </tr>
@@ -419,11 +421,11 @@ public class JobLaunchAction extends Action implements Runnable {
 	 * thread.
 	 */
 	private boolean appendInput = true;
-	
+
 	/**
 	 * Private flag to indicate if the input file for the JobLaunchAction should
-	 * be uploaded on a remote machine. Be default, the behavior is true. 
-	 * Opposite of the "noUploadInput" argument in the argument map. Setting 
+	 * be uploaded on a remote machine. Be default, the behavior is true.
+	 * Opposite of the "noUploadInput" argument in the argument map. Setting
 	 * this flag to false will still allow the "launchJob.sh" script to be
 	 * uploaded, but only this.
 	 */
@@ -552,24 +554,30 @@ public class JobLaunchAction extends Action implements Runnable {
 			if (key.toLowerCase().endsWith("file")) {
 				// Default to the normal name of the file on the local machine
 				fixedFileName = execDictionary.get(key);
-				// Replace the variable for remote machines
-				if (!isLocal.get()) {
-					// The name has to be changed on a remote machine to conform
-					// to the target file system. Shorten the input name - look
-					// for the last / or \
-					shortInputName = execDictionary.get(key);
-					if (shortInputName.contains("/")) {
-						shortInputName = shortInputName
-								.substring(shortInputName.lastIndexOf("/") + 1);
-					} else if (shortInputName.contains("\\")) {
-						shortInputName = shortInputName
-								.substring(shortInputName.lastIndexOf("\\") + 1);
-					}
-					// Update the fixed file name
-					fixedFileName = shortInputName;
-					// Put the file name in the map
-					fileMap.put(shortInputName, execDictionary.get(key));
+
+				// NOTE, we used to only shorten these file paths for a remote
+				// launch
+				// but now we create a temp working dir for local launches to,
+				// so we must
+				// do this for both remote and local launches.
+
+				// if (!isLocal.get()) {
+				// The name has to be changed on a remote machine to conform
+				// to the target file system. Shorten the input name - look
+				// for the last / or \
+				shortInputName = execDictionary.get(key);
+				if (shortInputName.contains("/")) {
+					shortInputName = shortInputName.substring(shortInputName
+							.lastIndexOf("/") + 1);
+				} else if (shortInputName.contains("\\")) {
+					shortInputName = shortInputName.substring(shortInputName
+							.lastIndexOf("\\") + 1);
 				}
+				// Update the fixed file name
+				fixedFileName = shortInputName;
+				// Put the file name in the map
+				fileMap.put(shortInputName, execDictionary.get(key));
+				// }
 				// Update the executable name to account for any changes that
 				// may result because of it being on a remote machine.
 				fixedExecutableName = fixedExecutableName.replace("${" + key
@@ -792,6 +800,11 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// Local Declarations
 		FormStatus launchStatus;
+		String separator = System.getProperty("file.separator");
+		String userHome = System.getProperty("user.home");
+		String localProjectDir = userHome + separator + "ICEFiles" + separator
+				+ "default";
+		File workingDirectory = new File(execDictionary.get("workingDir"));
 
 		// Loop over the stages and launch them so long as the status marks them
 		// as processed. This needs to be done sequentially, so use a regular,
@@ -811,6 +824,23 @@ public class JobLaunchAction extends Action implements Runnable {
 				// is over.
 				status = FormStatus.InfoError;
 				return;
+			}
+		}
+
+		// For local launches, any files generated by the job are created in 
+		// the temp working directory. Here we need to pull back our resultant 
+		// files from that directory to the project workspace
+		for (File file : workingDirectory.listFiles()) {
+			// Only get those that weren't already in the project space
+			if (!fileMap.keySet().contains(file.getName())) {
+				try {
+					Files.copy(
+							Paths.get(file.getAbsolutePath()),
+							Paths.get(localProjectDir + separator
+									+ file.getName()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -848,6 +878,24 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Create the directory if it doesn't already exist
 		if (!directory.exists()) {
 			directory.mkdirs();
+		}
+
+		// IF YOU ARE GOING TO LAUNCH FROM A SPECIFIED WORKING DIR
+		// YOU MUST HAVE THE FILES THERE!!!
+		for (String fileString : fileMap.keySet()) {
+
+			// Get the local file to copy and create the File
+			// reference to where it should be copied
+			File localFile = new File(fileMap.get(fileString));
+			File copyToDirFile = new File(directory.getAbsolutePath()
+					+ System.getProperty("file.separator") + fileString);
+			try {
+				Files.copy(Paths.get(localFile.toURI()),
+						Paths.get(copyToDirFile.toURI()));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		// Launch the command. The command must be split on spaces to run
@@ -1022,9 +1070,30 @@ public class JobLaunchAction extends Action implements Runnable {
 				.get("downloadDirectory");
 		String separator = System.getProperty("file.separator");
 		String inputFile = execDictionary.get("inputFile");
-		int lastIndex = inputFile.lastIndexOf(separator);
-		String localFilePrefix = inputFile.substring(0, lastIndex);
-		File localStorageDir = new File(localFilePrefix);
+		int lastIndex = 0;
+		String localFilePrefix = "";
+		File localStorageDir = null;
+
+		// Ok here we have to make sure that the
+		// inputFile has been provided, if it is not set
+		// then we should make sure that the Item specified
+		// not uploading input. If that is the case then we
+		// will just set the local download dir to the project space
+		// The other scenario is that the inputFile is null and we
+		// have been asked to uploadInput, in which case we fail.
+		if (inputFile != null) {
+			lastIndex = inputFile.lastIndexOf(separator);
+			localFilePrefix = inputFile.substring(0, lastIndex);
+			localStorageDir = new File(localFilePrefix);
+		} else if (inputFile == null && !uploadInput) {
+			localFilePrefix = System.getProperty("user.home") + separator
+					+ "ICEFiles" + separator + "default";
+			localStorageDir = new File(localFilePrefix);
+		} else {
+			status = FormStatus.InfoError;
+			return;
+		}
+
 		// Get the directory where local files should be stored
 		IFileStore localDirectory = EFS.getLocalFileSystem().fromLocalFile(
 				localStorageDir);
@@ -1101,30 +1170,33 @@ public class JobLaunchAction extends Action implements Runnable {
 				System.out.println("JobLaunchAction Message: "
 						+ "Created directory on remote system, "
 						+ directory.getName());
-				
+
 				// Loop over all of the files in the file table and upload them
 				for (String shortInputName : fileMap.keySet()) {
-					
+
 					// Check to see if the job should be cancelled.
 					if (cancelled.get()) {
 						break;
 					}
-					
+
 					// If input file uploading is enabled, OR, if input file
-					// uploading is disabled BUT this is the launch script, then 
+					// uploading is disabled BUT this is the launch script, then
 					// upload the file
-					if (uploadInput || 
-							(!uploadInput && shortInputName.equals("launchJob.sh"))) {
-						
-						// Get a handle where the input file will be stored remotely
+					if (uploadInput
+							|| (!uploadInput && shortInputName
+									.equals("launchJob.sh"))) {
+
+						// Get a handle where the input file will be stored
+						// remotely
 						IFileStore remoteFileStore = directory
 								.getChild(shortInputName);
-						// Get a file store handle to the local copy of the input
+						// Get a file store handle to the local copy of the
+						// input
 						// file
 						File localFile = new File(fileMap.get(shortInputName));
 						IFileStore localFileStore = EFS.getLocalFileSystem()
 								.fromLocalFile(localFile);
-	
+
 						// Copy the local file to the remote file
 						localFileStore.copy(remoteFileStore, EFS.NONE, null);
 						System.out.println("JobLaunchAction Message: "
@@ -1516,11 +1588,13 @@ public class JobLaunchAction extends Action implements Runnable {
 			stdOutFileName = execDictionary.get("stdOutFileName");
 			stdErrFileName = execDictionary.get("stdErrFileName");
 			hostname = execDictionary.get("hostname");
+			uploadInput = Boolean.valueOf(execDictionary.get("uploadInput"));
 		}
 
 		// Check the info and return if it is not available
-		if (executable == null || inputFile == null || stdOutFileName == null
-				|| stdErrFileName == null || hostname == null) {
+		if (executable == null || (uploadInput && inputFile == null)
+				|| stdOutFileName == null || stdErrFileName == null
+				|| hostname == null) {
 			status = FormStatus.InfoError;
 			return;
 		}
@@ -1535,11 +1609,12 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Do the same for the flag that indicates if input file uploading
 		// should be disabled. Again, treat it specially. Shower it with flowers
 		// and affection. Make it breakfast in bed. Massage its feet.
-		if (execDictionary.get("noUploadInput") != null
-				&& ("true").equals(execDictionary.get(("noUploadInput")))) {
-			uploadInput = false;
-		}
-		
+		// System.out.println("UPLOAD INPUT IS " + uploadInput);
+		// if (execDictionary.get("noUploadInput") != null
+		// && ("true").equals(execDictionary.get(("noUploadInput")))) {
+		// uploadInput = false;
+		// }
+
 		// Set the appropriate working directory name
 		setWorkingDirectoryName();
 
@@ -1623,7 +1698,7 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Add the target machine
 		header += "# Target host: " + execDictionary.get("hostname") + "\n";
 		// Add the execution command
-		header += "# Command Executed: " + fullCMD + "\n";
+		header += "# Command Executed: " + fullCMD.replace("\n", ";") + "\n";
 		// Add the input file name
 		if (uploadInput) {
 			header += "# Input file: " + execDictionary.get("inputFile") + "\n";
