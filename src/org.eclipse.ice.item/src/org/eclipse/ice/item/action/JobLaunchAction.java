@@ -170,7 +170,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * <tr>
  * <td>
  * <p>
- * noUploadInput
+ * uploadInput
  * </p>
  * </td>
  * <td>
@@ -425,9 +425,8 @@ public class JobLaunchAction extends Action implements Runnable {
 	/**
 	 * Private flag to indicate if the input file for the JobLaunchAction should
 	 * be uploaded on a remote machine. Be default, the behavior is true.
-	 * Opposite of the "noUploadInput" argument in the argument map. Setting
-	 * this flag to false will still allow the "launchJob.sh" script to be
-	 * uploaded, but only this.
+	 * Setting this flag to false will still allow the "launchJob.sh" script to 
+	 * be uploaded, but only this.
 	 */
 	private boolean uploadInput = true;
 
@@ -1606,14 +1605,6 @@ public class JobLaunchAction extends Action implements Runnable {
 				&& ("true").equals(execDictionary.get(("noAppendInput")))) {
 			appendInput = false;
 		}
-		// Do the same for the flag that indicates if input file uploading
-		// should be disabled. Again, treat it specially. Shower it with flowers
-		// and affection. Make it breakfast in bed. Massage its feet.
-		// System.out.println("UPLOAD INPUT IS " + uploadInput);
-		// if (execDictionary.get("noUploadInput") != null
-		// && ("true").equals(execDictionary.get(("noUploadInput")))) {
-		// uploadInput = false;
-		// }
 
 		// Set the appropriate working directory name
 		setWorkingDirectoryName();

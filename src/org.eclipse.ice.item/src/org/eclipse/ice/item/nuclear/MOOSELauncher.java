@@ -150,14 +150,7 @@ public class MOOSELauncher extends SuiteLauncher {
 			launchCommand = "${installDir}" + "moose/test/" 
 					+ executableMap.get(executable) 
 					+ "-opt -i ${inputFile} --no-color";
-		} else if (yamlSyntaxGenerator.equals(executable)) {
-			// Disable the input file appending functionality thingy because
-			// this is just a script
-			setAppendInputFlag(false);
-			
-			// Disable input file uploading
-			setUploadInputFlag(false);
-			
+		} else if (yamlSyntaxGenerator.equals(executable)) {			
 			launchCommand = 
 					// BISON files					
 					"if [ -d ${installDir}bison ] "
@@ -266,6 +259,10 @@ public class MOOSELauncher extends SuiteLauncher {
 				// any) and specify additional fuel files will need to be added 
 				// to the form.
 				if ("BISON".equals(execName)) {
+					
+					// Set the input upload flag to true in case it's been
+					// previously set to false (by the YAML generator)
+					setUploadInputFlag(true);
 
 					// Remove RAVEN input files (does nothing if types don't 
 					// exist)
@@ -294,6 +291,10 @@ public class MOOSELauncher extends SuiteLauncher {
 					
 				} else if ("RAVEN".equals(execName)) {
 
+					// Set the input upload flag to true in case it's been
+					// previously set to false (by the YAML generator)
+					setUploadInputFlag(true);
+					
 					// Remove BISON input files (if any)
 					removeInputType("Mesh");
 					removeInputType("Power History");
@@ -310,6 +311,12 @@ public class MOOSELauncher extends SuiteLauncher {
 
 					
 				} else if (yamlSyntaxGenerator.equals(execName)) {
+					
+					// Disable input file appending (no input file to append)
+					setAppendInputFlag(false);
+					
+					// Disable input file uploading
+					setUploadInputFlag(false);
 				
 					// Remove any extra input files (if any)
 					removeInputType("Input File");
@@ -322,6 +329,10 @@ public class MOOSELauncher extends SuiteLauncher {
 					
 				} else {
 
+					// Set the input upload flag to true in case it's been
+					// previously set to false (by the YAML generator)
+					setUploadInputFlag(true);
+					
 					// Remove any extra input files (if any)
 					removeInputType("Mesh");
 					removeInputType("Power History");
