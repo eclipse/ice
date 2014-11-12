@@ -688,8 +688,11 @@ public class JobLauncher extends Item {
 		// the execution string has been modified! (c.f.-
 		// JobLaunchAction docs)
 		actionDataMap.put("executable", executableCommandName);
-		// Note: "no upload" is reversed logic from "upload"
+		
+		// Set the upload input flag on the execDicitonary for the 
+		// JobLaunchAction to use. 
 		actionDataMap.put("uploadInput", String.valueOf(uploadInput));
+		
 		// Note: "no append" is reversed logic from "append". ICE also checks
 		// the command name to determine it too.
 		if (appendInput && !executableCommandName.contains("${inputFile}")) {
