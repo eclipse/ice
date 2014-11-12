@@ -109,17 +109,17 @@ public class VisitPlotViewer extends PlayableViewPart implements
 	/**
 	 * The Action for selecting the next element in the list.
 	 */
-	private NextAction nextAction;
+	//private NextAction nextAction;
 
 	/**
 	 * The Action for playing through the list of plots.
 	 */
-	private PlayAction playAction;
+	//private PlayAction playAction;
 
 	/**
 	 * The Action for selecting the previous element in the list.
 	 */
-	private PreviousAction prevAction;
+	//private PreviousAction prevAction;
 
 	/**
 	 * Creates a dialog that lets the user select from the available plots for
@@ -791,9 +791,9 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		ISelection selection = event.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			deletePlotAction.setEnabled(!selection.isEmpty());
-			prevAction.setEnabled(!selection.isEmpty());
-			playAction.setEnabled(!selection.isEmpty());
-			nextAction.setEnabled(!selection.isEmpty());
+			//prevAction.setEnabled(!selection.isEmpty());
+			//playAction.setEnabled(!selection.isEmpty());
+			//nextAction.setEnabled(!selection.isEmpty());
 		}
 
 		return;
