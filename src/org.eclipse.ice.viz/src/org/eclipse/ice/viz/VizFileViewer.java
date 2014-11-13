@@ -257,6 +257,26 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 
 			@Override
 			public boolean hasChildren(Object element) {
+
+				// Make sure we have a VizResource
+				if (element instanceof VizResource) {
+					// Cast it to make life easier
+					VizResource resource = (VizResource) element;
+
+					// If this resource has a valid fileset...
+					if (resource.getFileSet() != null) {
+						// Then return true if it is not empty
+						return resource.getFileSet().length != 0;
+
+						// If the fileset was null, but we have children
+						// resources...
+					} else if (resource.getChildrenResources() != null) {
+						// then return true if the children list is not empty
+						return !resource.getChildrenResources().isEmpty();
+					}
+				}
+
+				// All else, we have no children
 				return false;
 			}
 
@@ -284,7 +304,28 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 
 			@Override
 			public Object[] getChildren(Object parentElement) {
+
+				// Make sure this is a VizResource
+				if (parentElement instanceof VizResource) {
+					// Cast to make life easier
+					VizResource resource = (VizResource) parentElement;
+
+					// If we have children...
+					if (resource.getChildrenResources() != null
+							&& !resource.getChildrenResources().isEmpty()) {
+						// Return all Child resources
+						return (Object[]) resource.getChildrenResources().toArray();
+						
+					} else if (resource.getFileSet() != null && resource.getFileSet().length != 0) {
+						// If we didn't have VizResourc children, then check that we 
+						// have file names to return 
+						return (Object[]) resource.getFileSet();
+					}
+				}
+
+				// Otherwise return null
 				return null;
+
 			}
 		});
 

@@ -86,7 +86,9 @@ public class AddFileAction extends Action implements IMenuCreator {
 		addActions.add(addRemote);
 		AddFileSetAction addSet = new AddFileSetAction(parent, this);
 		addActions.add(addSet);
-
+		AddTimeDependentSILOSetAction addSilo = new AddTimeDependentSILOSetAction(parent, this);
+		addActions.add(addSilo);
+		
 		// Set the default Action to AddLocalFileAction
 		defaultAction = addLocal;
 
