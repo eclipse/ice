@@ -14,6 +14,7 @@ package org.eclipse.ice.viz;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.resource.ICEResource;
 
@@ -35,6 +36,11 @@ public class VizResource extends ICEResource {
 	 */
 	private String fileSetTitle;
 
+	/**
+	 * Reference to possible children VizResources
+	 */
+	private ArrayList<VizResource> childrenResources;
+	
 	/**
 	 * The String representation of the hostname where the resource resides.
 	 */
@@ -70,6 +76,29 @@ public class VizResource extends ICEResource {
 		fileSetTitle = null;
 	}
 
+	/**
+	 * The Constructor. This allows for the creation 
+	 * of a VizResource that is composed of other VizResources.
+	 * 
+	 * @param resourceFile
+	 * @param children
+	 * @throws IOException
+	 */
+	public VizResource(File resourceFile, ArrayList<VizResource> children) throws IOException {
+		this(resourceFile);
+		childrenResources = children;
+		
+	}
+	
+	/**
+	 * Return any possible children VizResources.
+	 * 
+	 * @return
+	 */
+	public ArrayList<VizResource> getChildrenResources() {
+		return childrenResources;
+	}
+	
 	/**
 	 * Mutator for the file set
 	 * 

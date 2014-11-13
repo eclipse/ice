@@ -13,6 +13,13 @@
 package org.eclipse.ice.viz.visit;
 
 import gov.lbnl.visit.swt.VisItSwtWidget;
+import gov.lbnl.visit.swt.widgets.TimeSliderWidget;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.ice.client.widgets.NextAction;
 import org.eclipse.ice.client.widgets.PlayAction;
@@ -26,13 +33,6 @@ import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.viz.DeletePlotAction;
 import org.eclipse.ice.viz.VizFileViewer;
 import org.eclipse.ice.viz.VizResource;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -48,11 +48,14 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
@@ -106,17 +109,17 @@ public class VisitPlotViewer extends PlayableViewPart implements
 	/**
 	 * The Action for selecting the next element in the list.
 	 */
-	private NextAction nextAction;
+	//private NextAction nextAction;
 
 	/**
 	 * The Action for playing through the list of plots.
 	 */
-	private PlayAction playAction;
+	//private PlayAction playAction;
 
 	/**
 	 * The Action for selecting the previous element in the list.
 	 */
-	private PreviousAction prevAction;
+	//private PreviousAction prevAction;
 
 	/**
 	 * Creates a dialog that lets the user select from the available plots for
@@ -133,6 +136,12 @@ public class VisitPlotViewer extends PlayableViewPart implements
 	 * This action calls a new dialog to pop open a Python command line console.
 	 */
 	private LaunchPythonScriptDialogAction pythonCLIAction;
+
+	/**
+	 * The TimeSliderWidget that provides controls to allow the user to step
+	 * through time-dependent data contained in a single plot.
+	 */
+	private TimeSliderWidget timeSlider;
 
 	/**
 	 * The default constructor.
@@ -168,9 +177,29 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		// Create the tool bar buttons for the view
 		createActions();
 
+		// The parent Composite has a FillLayout. We want to display the
+		// TimeSliderWidget (a Composite) above the plotTreeViewer, so we must
+		// create an intermediate Composite with a GridLayout (1 column) to
+		// contain them.
+		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
+		Composite partComposite = toolkit.createComposite(parent);
+		// Dispose the toolkit since we no longer need it.
+		toolkit.dispose();
+		partComposite.setLayout(new GridLayout(1, true));
+
+		// Add the TimeSliderWidget.
+		timeSlider = new TimeSliderWidget(partComposite, SWT.BORDER);
+		// The time slider should grab excess horizontal space, but not the
+		// vertical space.
+		timeSlider
+				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
 		// Initialize the TreeViewer.
-		plotTreeViewer = new TreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.BORDER);
+		plotTreeViewer = new TreeViewer(partComposite, SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.BORDER);
+		// The TreeViewer should grab all horizontal AND vertical space.
+		plotTreeViewer.getControl().setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, true));
 		plotTreeViewer.addSelectionChangedListener(this);
 		plotTreeViewer.addDoubleClickListener(this);
 
@@ -370,20 +399,25 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		IActionBars actionBars = getViewSite().getActionBars();
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
 
-		// Create a previous button and add it to the tool bar
-		prevAction = new PreviousAction(this);
-		toolBarManager.add(prevAction);
-		prevAction.setEnabled(!plottedEntries.isEmpty());
-
-		// Create a play button and add it to the tool bar
-		playAction = new PlayAction(this);
-		toolBarManager.add(playAction);
-		playAction.setEnabled(!plottedEntries.isEmpty());
-
-		// Create a next button and add it to the tool bar
-		nextAction = new NextAction(this);
-		toolBarManager.add(nextAction);
-		nextAction.setEnabled(!plottedEntries.isEmpty());
+		// TODO Removing the previous, play/pause, and next buttons from this
+		// view to eliminate confusion between these and the
+		// gov.lbnl.visit.swt.widgets.TimeSliderWidget. Commentted out as a
+		// temporary solution until we decide that we definitely want to include
+		// or exclude these buttons.
+		// // Create a previous button and add it to the tool bar
+		// prevAction = new PreviousAction(this);
+		// toolBarManager.add(prevAction);
+		// prevAction.setEnabled(!plottedEntries.isEmpty());
+		//
+		// // Create a play button and add it to the tool bar
+		// playAction = new PlayAction(this);
+		// toolBarManager.add(playAction);
+		// playAction.setEnabled(!plottedEntries.isEmpty());
+		//
+		// // Create a next button and add it to the tool bar
+		// nextAction = new NextAction(this);
+		// toolBarManager.add(nextAction);
+		// nextAction.setEnabled(!plottedEntries.isEmpty());
 
 		// Create a delete button and add it to the tool bar
 		deletePlotAction = new DeletePlotAction(this);
@@ -628,6 +662,10 @@ public class VisitPlotViewer extends PlayableViewPart implements
 
 				// Draw the plot using the widget.
 				widget.getViewerMethods().drawPlots();
+
+				// Set the TimeSliderWidget's VisIt connection
+				timeSlider
+						.setVisItSwtConnection(widget.getVisItSwtConnection());
 			}
 		}
 		return;
@@ -753,9 +791,9 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		ISelection selection = event.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			deletePlotAction.setEnabled(!selection.isEmpty());
-			prevAction.setEnabled(!selection.isEmpty());
-			playAction.setEnabled(!selection.isEmpty());
-			nextAction.setEnabled(!selection.isEmpty());
+			//prevAction.setEnabled(!selection.isEmpty());
+			//playAction.setEnabled(!selection.isEmpty());
+			//nextAction.setEnabled(!selection.isEmpty());
 		}
 
 		return;
