@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.jme3.input.CameraInput;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
@@ -44,7 +43,7 @@ public class CustomChaseCamera extends ChaseCamera {
 	 * The camera's default zoom or distance from the target.
 	 */
 	private float defaultDistance;
-	
+
 	/**
 	 * The default constructor.
 	 * 
@@ -196,28 +195,25 @@ public class CustomChaseCamera extends ChaseCamera {
 		notifyCameraListeners(targetDistance);
 	}
 
+	/**
+	 * Unregisters the camera from the application's {@link InputManager}.
+	 */
 	public void unregisterInput() {
 
-        if (!invertYaxis) {
-            inputManager.deleteMapping(CameraInput.CHASECAM_DOWN);
-            inputManager.deleteMapping(CameraInput.CHASECAM_UP);
-        } else {
-            inputManager.deleteMapping(CameraInput.CHASECAM_DOWN);
-            inputManager.deleteMapping(CameraInput.CHASECAM_UP);
-        }
-        inputManager.deleteMapping(CameraInput.CHASECAM_ZOOMIN);
-        inputManager.deleteMapping(CameraInput.CHASECAM_ZOOMOUT);
-        if (!invertXaxis) {
-            inputManager.deleteMapping(CameraInput.CHASECAM_MOVELEFT);
-            inputManager.deleteMapping(CameraInput.CHASECAM_MOVERIGHT);
-        } else {
-            inputManager.deleteMapping(CameraInput.CHASECAM_MOVELEFT);
-            inputManager.deleteMapping(CameraInput.CHASECAM_MOVERIGHT);
-        }
-        inputManager.deleteMapping(CameraInput.CHASECAM_TOGGLEROTATE);
-        inputManager.deleteMapping(CameraInput.CHASECAM_TOGGLEROTATE);
+		// Remove all of the input mappings.
+		inputManager.deleteMapping(ChaseCamDown);
+		inputManager.deleteMapping(ChaseCamUp);
+		inputManager.deleteMapping(ChaseCamMoveLeft);
+		inputManager.deleteMapping(ChaseCamMoveRight);
+		inputManager.deleteMapping(ChaseCamZoomIn);
+		inputManager.deleteMapping(ChaseCamZoomOut);
+		inputManager.deleteMapping(ChaseCamToggleRotate);
 
-        inputManager.removeListener(this);
+		// Unregister from the InputManager so key/mouse input events are not
+		// received.
+		inputManager.removeListener(this);
+
+		return;
 	}
-	
+
 }
