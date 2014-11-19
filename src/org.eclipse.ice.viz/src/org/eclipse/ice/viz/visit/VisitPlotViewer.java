@@ -21,16 +21,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.NextAction;
-import org.eclipse.ice.client.widgets.PlayAction;
-import org.eclipse.ice.client.widgets.PlayableViewPart;
-import org.eclipse.ice.client.widgets.PreviousAction;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.viz.DeletePlotAction;
+import org.eclipse.ice.viz.IDeletePlotActionViewPart;
 import org.eclipse.ice.viz.VizFileViewer;
 import org.eclipse.ice.viz.VizResource;
 import org.eclipse.jface.action.IToolBarManager;
@@ -41,17 +38,18 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -65,8 +63,9 @@ import org.eclipse.ui.part.WorkbenchPart;
  * 
  * @author Jay Jay Billings, Taylor Patterson, Jordan H. Deyton
  */
-public class VisitPlotViewer extends PlayableViewPart implements
-		IUpdateableListener, ISelectionChangedListener, IDoubleClickListener {
+public class VisitPlotViewer extends ViewPart implements
+		IDeletePlotActionViewPart, IUpdateableListener,
+		ISelectionChangedListener, IDoubleClickListener {
 
 	/**
 	 * The ID for this view
@@ -107,21 +106,6 @@ public class VisitPlotViewer extends PlayableViewPart implements
 	private TreeViewer plotTreeViewer;
 
 	/**
-	 * The Action for selecting the next element in the list.
-	 */
-	//private NextAction nextAction;
-
-	/**
-	 * The Action for playing through the list of plots.
-	 */
-	//private PlayAction playAction;
-
-	/**
-	 * The Action for selecting the previous element in the list.
-	 */
-	//private PreviousAction prevAction;
-
-	/**
 	 * Creates a dialog that lets the user select from the available plots for
 	 * the currently selected VisIt file from the {@link VizFileViewer}.
 	 */
@@ -144,6 +128,23 @@ public class VisitPlotViewer extends PlayableViewPart implements
 	private TimeSliderWidget timeSlider;
 
 	/**
+	 * The Combo that allows the user to select the plot type for the selection
+	 * in the {@link #plotTreeViewer}.
+	 */
+	private Combo plotTypeCombo;
+
+	/**
+	 * A Map of variable types (Materials, Meshes, Scalars, Vectors) to
+	 * available plot types (Contour, Mesh, Pseudocolor, etc.).
+	 */
+	private Map<String, String[]> varTypePlotTypeMap;
+
+	/**
+	 * The currently selected plot type.
+	 */
+	private String selectedPlotType = null;
+
+	/**
 	 * The default constructor.
 	 */
 	public VisitPlotViewer() {
@@ -157,8 +158,14 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		plottedEntries = new ArrayList<Entry>();
 		entryResources = new ArrayList<VizResource>();
 
-		// This will always be a playable view, so set it that way.
-		playable = true;
+		// Initialize the Map of variable types to plot types
+		varTypePlotTypeMap = new HashMap<String, String[]>();
+		varTypePlotTypeMap.put("Materials", new String[] { "Boundary",
+				"FilledBoundary" });
+		varTypePlotTypeMap.put("Meshes", new String[] { "Mesh" });
+		varTypePlotTypeMap.put("Scalars", new String[] { "Contour",
+				"Pseudocolor", "Volume" });
+		varTypePlotTypeMap.put("Vectors", new String[] { "Vector" });
 
 		return;
 	}
@@ -178,14 +185,34 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		createActions();
 
 		// The parent Composite has a FillLayout. We want to display the
-		// TimeSliderWidget (a Composite) above the plotTreeViewer, so we must
-		// create an intermediate Composite with a GridLayout (1 column) to
-		// contain them.
+		// plotTypeCombo and TimeSliderWidget (a Composite) above the
+		// plotTreeViewer, so we must create an intermediate Composite with a
+		// GridLayout (1 column) to contain them.
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		Composite partComposite = toolkit.createComposite(parent);
+		partComposite.setLayout(new GridLayout(1, true));
 		// Dispose the toolkit since we no longer need it.
 		toolkit.dispose();
-		partComposite.setLayout(new GridLayout(1, true));
+
+		// Add the Combo for selecting from the available plot types
+		plotTypeCombo = new Combo(partComposite, SWT.READ_ONLY);
+		plotTypeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false));
+		// Add the selection listener
+		plotTypeCombo.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				selectedPlotType = plotTypeCombo.getText();
+				drawSelection();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				selectedPlotType = plotTypeCombo.getText();
+				drawSelection();
+			}
+		});
 
 		// Add the TimeSliderWidget.
 		timeSlider = new TimeSliderWidget(partComposite, SWT.BORDER);
@@ -218,73 +245,6 @@ public class VisitPlotViewer extends PlayableViewPart implements
 	 * @see WorkbenchPart#setFocus()
 	 */
 	public void setFocus() {
-		return;
-	}
-
-	/**
-	 * This function is called by the NextAction and PlayAction to set the
-	 * selection to the next element in the list.
-	 * 
-	 * @see PlayableViewPart#setToNextResource()
-	 */
-	@Override
-	public void setToNextResource() {
-
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				// Get the currently selected resource in the view. (Or the
-				// first selected resource if multiple resources are
-				// selected even though this has no effect.)
-				TreeItem[] currSelection = plotTreeViewer.getTree()
-						.getSelection();
-				int currIndex = plotTreeViewer.getTree().indexOf(
-						currSelection[0]);
-
-				// Set the selection to the next resource in the tree or the
-				// first resource if the last resource is currently selected.
-				if (!plottedEntries.isEmpty()) {
-					int nextIndex = (currIndex + 1) % plottedEntries.size();
-					plotTreeViewer.setSelection(new StructuredSelection(
-							plottedEntries.get(nextIndex)), true);
-				}
-			}
-		});
-
-		return;
-	}
-
-	/**
-	 * This function is called by the PreviousAction to set the selection to the
-	 * previous action in the list.
-	 * 
-	 * @see PlayableViewPart#setToPreviousResource()
-	 */
-	@Override
-	public void setToPreviousResource() {
-
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				// Get the currently selected resource in the view. (Or the
-				// first selected resource if multiple resources are
-				// selected even though this has no effect.)
-				TreeItem[] currSelection = plotTreeViewer.getTree()
-						.getSelection();
-				int currIndex = plotTreeViewer.getTree().indexOf(
-						currSelection[0]);
-
-				// Set the selection to the previous resource in the tree or the
-				// last resource if the first resource is currently selected.
-				if (!plottedEntries.isEmpty()) {
-					int prevIndex = (currIndex - 1) % plottedEntries.size();
-					if (prevIndex < 0) {
-						prevIndex = plottedEntries.size() - 1;
-					}
-					plotTreeViewer.setSelection(new StructuredSelection(
-							plottedEntries.get(prevIndex)), true);
-				}
-			}
-		});
-
 		return;
 	}
 
@@ -398,26 +358,6 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		// Get the IToolBarManager
 		IActionBars actionBars = getViewSite().getActionBars();
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
-
-		// TODO Removing the previous, play/pause, and next buttons from this
-		// view to eliminate confusion between these and the
-		// gov.lbnl.visit.swt.widgets.TimeSliderWidget. Commentted out as a
-		// temporary solution until we decide that we definitely want to include
-		// or exclude these buttons.
-		// // Create a previous button and add it to the tool bar
-		// prevAction = new PreviousAction(this);
-		// toolBarManager.add(prevAction);
-		// prevAction.setEnabled(!plottedEntries.isEmpty());
-		//
-		// // Create a play button and add it to the tool bar
-		// playAction = new PlayAction(this);
-		// toolBarManager.add(playAction);
-		// playAction.setEnabled(!plottedEntries.isEmpty());
-		//
-		// // Create a next button and add it to the tool bar
-		// nextAction = new NextAction(this);
-		// toolBarManager.add(nextAction);
-		// nextAction.setEnabled(!plottedEntries.isEmpty());
 
 		// Create a delete button and add it to the tool bar
 		deletePlotAction = new DeletePlotAction(this);
@@ -657,8 +597,10 @@ public class VisitPlotViewer extends PlayableViewPart implements
 				widget.getViewerMethods().deleteActivePlots();
 
 				// Add the plot to the widget.
-				widget.getViewerMethods().addPlot("Pseudocolor",
-						entry.getName());
+				String plotType = (plotTypeCombo.getText() != "") ? plotTypeCombo
+						.getText()
+						: varTypePlotTypeMap.get(entry.getParent())[0];
+				widget.getViewerMethods().addPlot(plotType, entry.getName());
 
 				// Draw the plot using the widget.
 				widget.getViewerMethods().drawPlots();
@@ -715,11 +657,11 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
-			// Create a List of entries to be unplotted.
+			// Create a List of entries to be plotted.
 			List<Entry> entries = new ArrayList<Entry>();
 
 			// Loop over the selected elements and add any Entry to the List
-			// of entries to be unplotted.
+			// of entries to be plotted.
 			for (Iterator<?> iter = structuredSelection.iterator(); iter
 					.hasNext();) {
 				Object object = iter.next();
@@ -730,6 +672,7 @@ public class VisitPlotViewer extends PlayableViewPart implements
 
 			// Draw all of the entries that were selected.
 			for (Entry entry : entries) {
+				// Draw the plot
 				drawPlot(entry);
 			}
 		}
@@ -784,6 +727,9 @@ public class VisitPlotViewer extends PlayableViewPart implements
 	 */
 	public void selectionChanged(SelectionChangedEvent event) {
 
+		// Update the plot type selection Combo.
+		updatePlotTypeCombo();
+
 		// Draw the selection on single clicks
 		drawSelection();
 
@@ -791,9 +737,6 @@ public class VisitPlotViewer extends PlayableViewPart implements
 		ISelection selection = event.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			deletePlotAction.setEnabled(!selection.isEmpty());
-			//prevAction.setEnabled(!selection.isEmpty());
-			//playAction.setEnabled(!selection.isEmpty());
-			//nextAction.setEnabled(!selection.isEmpty());
 		}
 
 		return;
@@ -814,8 +757,49 @@ public class VisitPlotViewer extends PlayableViewPart implements
 
 		// FIXME Consider using double-clicks to draw in a new window. For now,
 		// just draw in the same window.
+		// Update the plot type selection Combo.
+		updatePlotTypeCombo();
+
 		drawSelection();
 	}
+
 	// ----------------------------------------- //
+
+	/**
+	 * Update the contents of the plot type selection <code>Combo<\code>.
+	 */
+	private void updatePlotTypeCombo() {
+		// Get the selection from the plotTreeViewer. It should at least be
+		// an IStructuredSelection (a parent interface of TreeSelections).
+		ISelection selection = plotTreeViewer.getSelection();
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+
+			// Just get the first selection from the {@link #plotTreeViewer}.
+			Object element = structuredSelection.getFirstElement();
+			// Make sure this is an Entry
+			if (element instanceof Entry) {
+				Entry entry = (Entry) element;
+
+				// Update the contents of the plot type selection Combo based on
+				// the selection in the plotTreeViewer.
+				String[] plotTypes = varTypePlotTypeMap.get(entry.getParent());
+				plotTypeCombo.setItems(plotTypes);
+
+				// Set the default plot type. If the variable type has not
+				// changed, the plot type can remain the same. Otherwise, just
+				// default to the first available plot type.
+				for (int i = 0; i < plotTypes.length; i++) {
+					if (plotTypes[i] == selectedPlotType) {
+						plotTypeCombo.setText(selectedPlotType);
+						return;
+					}
+				}
+				// If we get here, the variable type has changed.
+				selectedPlotType = plotTypes[0];
+				plotTypeCombo.setText(selectedPlotType);
+			}
+		}
+	}
 
 }
