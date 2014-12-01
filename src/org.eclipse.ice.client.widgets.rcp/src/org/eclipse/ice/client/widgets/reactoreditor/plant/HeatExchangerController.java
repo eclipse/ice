@@ -50,7 +50,7 @@ public class HeatExchangerController extends PipeController {
 
 	// ---- Model/View synchronization ---- //
 	// ------------------------------------ //
-	
+
 	/**
 	 * The default constructor.
 	 * 
@@ -70,16 +70,17 @@ public class HeatExchangerController extends PipeController {
 	 */
 	public HeatExchangerController(HeatExchanger model, HeatExchangerView view,
 			IRenderQueue renderQueue) {
-		
+
 		// This controller extends PipeController, so the super constructor
 		// needs a Pipe. We need to check for null before we can send the
 		// primary Pipe to the super constructor.
-		super((model != null ? model.getPrimaryPipe() : null), view, renderQueue);
+		super((model != null ? model.getPrimaryPipe() : null), view,
+				renderQueue);
 
 		// Set the model. If it is null, create a new, default model.
 		this.model = (model != null ? model : new HeatExchanger());
 		this.model.register(this);
-		
+
 		// Set the view. If it is null, create a new, default view.
 		this.view = (view != null ? view : new HeatExchangerView(
 				"Invalid View", null));
@@ -112,25 +113,28 @@ public class HeatExchangerController extends PipeController {
 		return;
 	}
 
-	@Override 
+	@Override
 	public BoundingBox setSecondaryInletPosition(Vector3f center) {
 		updateSecondaryPipePosition(center, true);
 		return super.setSecondaryInletPosition(center);
 	}
-	
+
 	@Override
 	public BoundingBox setSecondaryOutletPosition(Vector3f center) {
-		updateSecondaryPipePosition(center, false);		
+		updateSecondaryPipePosition(center, false);
 		return super.setSecondaryOutletPosition(center);
 	}
-	
-	private void updateSecondaryPipePosition(Vector3f center, final boolean input) {
+
+	private void updateSecondaryPipePosition(Vector3f center,
+			final boolean input) {
 		// Determine the center point with the local translation and rotation
 		// applied in reverse. These will be re-applied later.
-		Vector3f tmp = center.subtract(PlantMath.getVector(model.getPosition()));
-		Quaternion q = getQuaternionFromOrientation(PlantMath.getVector(model.getOrientation()));
+		Vector3f tmp = center
+				.subtract(PlantMath.getVector(model.getPosition()));
+		Quaternion q = getQuaternionFromOrientation(PlantMath.getVector(model
+				.getOrientation()));
 		q.inverseLocal().multLocal(tmp);
-		
+
 		// Update the location and orientation of the secondary pipe mesh before
 		// querying the view for the secondary pipe's BoundingBox.
 		view.updateSecondaryMesh(input, (float) model.getInnerRadius(), tmp);
@@ -150,11 +154,21 @@ public class HeatExchangerController extends PipeController {
 	public void update(IUpdateable component) {
 		if (component == model) {
 			super.update(model.getPrimaryPipe());
-			
-			// TODO Implement this!!!
+
+			// If any other model properties need to be synced with the view, do
+			// that here.
 		}
 
 		return;
+	}
+
+	/**
+	 * Overrides the default return value because the parent classes return the
+	 * primary {@code Pipe} instead of the {@code HeatExchanger} itself.
+	 */
+	@Override
+	public IUpdateable getModel() {
+		return model;
 	}
 
 }
