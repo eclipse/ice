@@ -53,9 +53,4 @@ public abstract class PlayableViewPart extends ViewPart {
 	 */
 	public abstract void setToPreviousResource();
 
-	/**
-	 * Remove the current selection from the list this view displays.
-	 */
-	public abstract void removeSelection();
-
 }

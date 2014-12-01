@@ -5,6 +5,7 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +18,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
 import com.jme3.font.BitmapFont;
 import com.jme3.system.AppSettings;
+import com.jme3.system.Natives;
+import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanel;
 import com.jme3.system.awt.AwtPanelsContext;
 import com.jme3.system.awt.PaintMode;
@@ -182,6 +185,17 @@ public class MasterApplication extends SimpleApplication {
 		AppSettings settings = new AppSettings(true);
 		settings.setFrameRate(80);
 		settings.setCustomRenderer(AwtPanelsContext.class);
+		// Disable audio. There is a bug where setting the audio renderer to
+		// null prevents jME from extracting the native LWJGL binaries. To get
+		// around this, you can manually extract them first. This is drawn from
+		// http://hub.jmonkeyengine.org/forum/topic/setting-audio-renderer-to-null-results-in-a-failure-to-load-lwjgl-native-library/
+		try {
+			Natives.extractNativeLibs(JmeSystem.getPlatform(), settings);
+		} catch (IOException e) {
+			throw new RuntimeException("MasterApplication error: "
+					+ "Cannot load native libraries.");
+		}
+		settings.setAudioRenderer(null);
 		application.setSettings(settings);
 		application.setPauseOnLostFocus(false);
 

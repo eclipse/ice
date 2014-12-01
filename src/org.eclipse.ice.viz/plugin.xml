@@ -60,7 +60,7 @@
          <view
                allowMultiple="false"
                class="org.eclipse.ice.viz.VizFileViewer"
-               fastViewWidthRatio="0.85f"
+               fastViewWidthRatio="0.23f"
                id="org.eclipse.ice.viz.VizFileViewer"
                name="Visualization File Viewer"
                restorable="true">
@@ -69,7 +69,7 @@
          <view
                allowMultiple="false"
                class="org.eclipse.ice.viz.plotviewer.CSVDataTableViewer"
-               fastViewWidthRatio="0.75f"
+               fastViewWidthRatio="0.77f"
                id="org.eclipse.ice.viz.plotviewer.CSVDataTableViewer"
                name="CSV Data View"
                restorable="true">
@@ -91,11 +91,19 @@
       <perspectiveExtension
             targetID="org.eclipse.ice.viz.VisualizationPerspective">
          <view
-               closeable="false"
-               id="org.eclipse.ice.viz.visit.VisitPlotViewer"
+         	   closeable="false"
+               id="org.eclipse.ice.viz.VizFileViewer"
                ratio="0.23f"
                relationship="left"
                relative="org.eclipse.ui.views"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.eclipse.ice.viz.visit.VisitPlotViewer"
+               ratio="0.23f"
+               relationship="bottom"
+               relative="org.eclipse.ice.viz.VizFileViewer"
                visible="true">
          </view>
          <view
@@ -104,14 +112,6 @@
                ratio="0.23f"
                relationship="stack"
                relative="org.eclipse.ice.viz.visit.VisitPlotViewer"
-               visible="true">
-         </view>
-         <view
-         	   closeable="false"
-               id="org.eclipse.ice.viz.VizFileViewer"
-               ratio="0.85f"
-               relationship="right"
-               relative="org.eclipse.ui.views"
                visible="true">
          </view>
          <view

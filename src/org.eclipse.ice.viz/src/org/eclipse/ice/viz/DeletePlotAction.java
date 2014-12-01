@@ -16,7 +16,6 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.client.widgets.PlayableViewPart;
 import org.eclipse.ice.viz.visit.VisitPlotViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -34,7 +33,7 @@ public class DeletePlotAction extends Action {
 	/**
 	 * The ViewPart that owns an object of this class.
 	 */
-	private final PlayableViewPart viewer;
+	private final IDeletePlotActionViewPart viewer;
 
 	/**
 	 * The constructor
@@ -42,7 +41,7 @@ public class DeletePlotAction extends Action {
 	 * @param parent
 	 *            The ViewPart to whom the object of this class belongs.
 	 */
-	public DeletePlotAction(PlayableViewPart parent) {
+	public DeletePlotAction(IDeletePlotActionViewPart parent) {
 
 		viewer = parent;
 
