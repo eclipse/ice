@@ -14,4 +14,5 @@ Import-Package: org.eclipse.ice.core.iCore
 Service-Component: OSGI-INF/HdfIORegistry.xml,
  OSGI-INF/HdfIOFactory.xml
 Comment: Service-Component: OSGI-INF/ICEDatabaseHarness.xml
-Export-Package: org.eclipse.ice.io.hdf
+Export-Package: org.eclipse.ice.io.hdf,
+ org.eclipse.ice.io.ips
