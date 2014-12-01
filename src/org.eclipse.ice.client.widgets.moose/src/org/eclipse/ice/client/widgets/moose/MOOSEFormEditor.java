@@ -34,12 +34,15 @@ import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.reactor.plant.Reactor;
 import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -50,6 +53,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -117,6 +121,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * {@link #update(IUpdateable)} will look for the "Components" sub-tree.
 	 */
 	private boolean requiresPlant = false;
+
+	/**
+	 * Whether or not to render the plant view with wireframes.
+	 */
+	private boolean wireframe = false;
 
 	/**
 	 * The default constructor.
@@ -191,7 +200,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								reactors.remove(i - 1);
 							}
 						}
-						
+
 						@Override
 						public void visit(CoreChannel plantComp) {
 
@@ -230,10 +239,10 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				}
 			}
 		};
-		
+
 		return;
 	}
-	
+
 	/**
 	 * We need to know when the MOOSE Model Builder's tree supports the plant
 	 * view. Override the default init() behavior to additionally update the
@@ -500,16 +509,46 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						// refreshContent()).
 						managedForm.addPart(sectionPart);
 
+						// Get the background color to use later.
+						Color background = section.getBackground();
+
+						// Create an analysis composite to contain a ToolBar and
+						// an analysis-based view.
+						Composite analysisComposite = new Composite(section,
+								SWT.NONE);
+						section.setClient(analysisComposite);
+						analysisComposite.setBackground(background);
+						analysisComposite.setLayout(new GridLayout(1, false));
+
+						// Create a ToolBarManager so we can add JFace Actions
+						// to it.
+						ToolBarManager toolBarManager = new ToolBarManager();
+						// Add an action that toggles the wireframe boolean.
+						// Also clear the wireframe setting.
+						wireframe = false;
+						toolBarManager.add(new Action("Wireframe") {
+							@Override
+							public void run() {
+								wireframe = !wireframe;
+								plantView.setWireframe(wireframe);
+							}
+						});
+						// Create the ToolBar and set its layout.
+						ToolBar toolBar = toolBarManager
+								.createControl(analysisComposite);
+						toolBar.setBackground(background);
+						toolBar.setLayoutData(new GridData(SWT.FILL,
+								SWT.CENTER, true, false));
+
 						// Create the plant view.
 						plantView = new ViewFactory().createPlantView(plant);
 
-						// Render the PlantApplication in the section.
-						Composite composite = plantView.createComposite(section);
-						section.setClient(composite);
-
-						// Set the background color for the ATC to be the same
-						// as the section.
-						composite.setBackground(section.getBackground());
+						// Render the plant view in the analysis Composite.
+						Composite plantComposite = plantView
+								.createComposite(analysisComposite);
+						plantComposite.setBackground(background);
+						plantComposite.setLayoutData(new GridData(SWT.FILL,
+								SWT.FILL, true, true));
 						// ------------------------------------------------ //
 
 						return;
@@ -560,11 +599,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * Queries the current MOOSE Model for changes to the "Components" sub-tree.
 	 */
 	private void updateComponents() {
-		
+
 		// Get the root TreeComposite from the form.
 		TreeComposite root = (TreeComposite) iceDataForm
 				.getComponent(MOOSEModel.mooseTreeCompositeId);
-		
+
 		// Find the "Components" TreeComposite and set componentNode. We
 		// need to register with it so we can listen for added
 		// PlantComponents.
