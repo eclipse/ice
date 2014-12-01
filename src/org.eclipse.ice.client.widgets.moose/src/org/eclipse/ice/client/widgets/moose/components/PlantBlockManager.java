@@ -213,7 +213,6 @@ public class PlantBlockManager implements IUpdateableListener {
 		// Update the plant and meta data based on the current children of the
 		// components tree.
 		if (component == tree) {
-
 			// Create a set containing all TreeComposites in the component map.
 			// When a TreeComposite is found to still be a child of the
 			// "Components" TreeComposite, it will be removed from this set. Any
@@ -239,7 +238,10 @@ public class PlantBlockManager implements IUpdateableListener {
 						plantComp.setId(id++);
 						plantComp.setName(child.getName());
 						plantComp.setDescription(child.getDescription());
-						plant.addPlantComponent(plantComp);
+						// Only add the child to the plant if it is active.
+						if (child.isActive()) {
+							plant.addPlantComponent(plantComp);
+						}
 					}
 					componentMap.put(child, plantComp);
 				} else {
@@ -263,6 +265,16 @@ public class PlantBlockManager implements IUpdateableListener {
 			// Sync all of the Entries with the plant model.
 			for (EntryListener listener : entryListeners) {
 				listener.updateEntry();
+			}
+		} else if (componentMap.containsKey(component)) {
+			// If a node's active flag has changed, add or remove the associated
+			// PlantComponent to or from the plant.
+			TreeComposite treeNode = (TreeComposite) component;
+			PlantComponent plantComp = componentMap.get(component);
+			if (treeNode.isActive()) {
+				plant.addPlantComponent(plantComp);
+			} else {
+				plant.removeComponent(plantComp.getId());
 			}
 		}
 
