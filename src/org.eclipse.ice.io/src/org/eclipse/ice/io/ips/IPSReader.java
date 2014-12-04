@@ -23,6 +23,9 @@ import java.util.Iterator;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 
 /**
@@ -70,7 +73,6 @@ public class IPSReader {
 		
 		// Make sure the file is valid, otherwise just stop here
 		if (iniFile == null || !iniFile.isFile()) {
-			System.out.println("COULD NOT LOAD " + iniFile);
 			return null;
 		}
 		
@@ -82,34 +84,108 @@ public class IPSReader {
         Iterator<String> iniIterator = lines.iterator();
 
         // Read in the global configuration and ports data
-        DataComponent globalConfiguration = loadGlobalConfiguration(iniIterator);
-        DataComponent portsData = loadPortsData(iniIterator);
+        TableComponent globalConfiguration = loadGlobalConfiguration(iniIterator);
+        TableComponent portsData = loadPortsData(iniIterator);
        
         // Determine the number of components that were specified in
         // the ports table and then read them in
-        int numberPorts = portsData.retrieveAllEntries().size();
+        int numberPorts = portsData.numberOfRows();
         ArrayList<DataComponent> ipsComponents = new ArrayList<DataComponent>();
+        ArrayList<String> names = new ArrayList<String>();
+        
         for (int i=0; i<numberPorts; i++) {
                 DataComponent ipsComponent = loadComponent(iniIterator);
                 ipsComponents.add(ipsComponent);
+                names.add(ipsComponent.getName());
         }
-
+        
+        
+        // Build a MasterDetailsComponent out of the DataComponents 
+        MasterDetailsComponent portsMaster = buildMasterDetailsComponent(ipsComponents);
+        
         // Read in the time loop specification
         DataComponent timeLoopComponent = loadTimeLoopComponent(iniIterator);
 
         // Put all of the components together in the order they were read in
+        components.add(timeLoopComponent);
         components.add(globalConfiguration);
         components.add(portsData);
-        for (DataComponent ipsComponent : ipsComponents) {
-            components.add(ipsComponent);
-        }
-        components.add(timeLoopComponent);
+        components.add(portsMaster);
+
 	
 		// Return the components
 		return components;
 	}
 
-	
+	/**
+	 * Constructs the MasterDetailsComponent that allows the user to add and 
+	 * delete Ports entries.  Supplies some limitations on the types of ports
+	 * that are allowed in the MasterDetailsComponent that aligns with the 
+	 * IPS framework.
+	 * 
+	 * @param ipsComponents
+	 *          The DataComponents to be put into the MasterDetailsComponent
+	 * @return the resultant MasterDetailsComponent
+	 */
+	private MasterDetailsComponent buildMasterDetailsComponent(
+			ArrayList<DataComponent> ipsComponents) {
+		MasterDetailsComponent masterDetails = new MasterDetailsComponent();
+		masterDetails.setName("Ports Master");
+		masterDetails.setDescription("Setup for each of the ports in the simulation.");
+		String portName;
+        int masterId;
+
+        
+        // Set the allowed ports so that users don't try to go too far and end
+        // up with settings that don't exist
+        String[] allowedPortNames = {"INIT", "INIT_STATE", "AMPERES_THERMAL", 
+        		"AMPERES_ELECTRICAL","CANTR", 
+        		"CHARTRAN_ELECTRICAL_THERMAL_DRIVER", "NTG", "DUALFOIL", 
+        		"CUBIT_MESHGEN","MESHGEN_CHARTRAN_ELECTRICAL_THERMAL_DRIVER"};
+        ArrayList<String> allowedPortList = 
+        		new ArrayList<String>(Arrays.asList(allowedPortNames));
+        ArrayList<DataComponent> portTemplates = new ArrayList<DataComponent>(); 
+        Boolean portAdded;
+        
+        // Set up the master details template for all available ports
+        for (String port : allowedPortList) {
+        	portAdded = false;
+        	// Check to see if the port was in the file and use the 
+        	// correct data component if it was.
+        	for (int i = 0; i < ipsComponents.size(); i++) {
+        		DataComponent data = ipsComponents.get(i);
+        		if (port.equals(data.getName())) {
+        			portTemplates.add(data);
+        			portAdded = true;
+        		}
+        	}
+        	// If it wasn't in the file then just add it with a basic
+        	// template.
+        	if (!portAdded) {       		
+    			portTemplates.add(ipsComponents.get(0));
+    		}
+        }
+        
+        
+        // Set the template and add a dummy for indexing purposes
+        masterDetails.setTemplates(allowedPortList, portTemplates);
+    	masterId = masterDetails.addMaster();
+        // Add the ports to the MasterDetailsComponent
+        for (DataComponent data : ipsComponents) {
+        	portName = data.getName();
+        	masterId = masterDetails.addMaster();
+        	masterDetails.getDetailsAtIndex(masterId-1).copy(data);
+            masterDetails.setMasterInstanceValue(masterId-1, portName);
+
+        }
+        // Delete the first dummy master that was added so that 
+        // the details are correct.
+        masterDetails.deleteMaster(masterDetails.numberOfMasters());
+
+        return masterDetails;
+	}
+
+
 	/**
 	 * Load the Time Loop Data from the INI file and return the data as
 	 * a DataComponent.  Each parameter in the section is added to the 
@@ -131,7 +207,10 @@ public class IPSReader {
 		if ( it.hasNext() ) {
 			line = it.next();
 		} else {
-			// Do some error stuff here
+			System.err.println("Unexpectedly reached the end of file.  "
+					+ "Please check the INI file you have chosen and"
+					+ " try again.");
+			return null;
 		}
 		
 		while (!line.contains("[TIME_LOOP]") && it.hasNext()) {
@@ -139,8 +218,8 @@ public class IPSReader {
 		}
 		
 		// Pull the port name and start parsing through the parameters
-		timeLoopData.setName("TIME_LOOP");
-		timeLoopData.setDescription("A port in an IPS file.");
+		timeLoopData.setName("Time Loop Data");
+		timeLoopData.setDescription("");
 		timeLoopData.setId(currID);
 		currID++;
 		
@@ -193,7 +272,7 @@ public class IPSReader {
 		String[] splitLine = null;
 
 		// Scan until we get to the next port component
-		String line = it.next();
+		String line = it.next(	);
 		while (!line.contains("[") && !line.contains("]") && it.hasNext()) {
 			line = it.next();
 		}
@@ -249,17 +328,25 @@ public class IPSReader {
 	 * @return A DataComponent of Entries representing the contents in the 
 	 *         ports table of the INI file.
 	 */
-	private DataComponent loadPortsData(Iterator<String> it) {
+	private TableComponent loadPortsData(Iterator<String> it) {
 		
 		// Create the ports component
-		DataComponent portsTable = new DataComponent();
-		portsTable.setName("PORTS");
+		TableComponent portsTable = new TableComponent();
+		portsTable.setName("Ports Table");
 		portsTable.setDescription("Entries in the Ports table of "
 				+ "an IPS framework INI input file");
 		portsTable.setId(currID);
 		currID++;
-		Entry entry;
-		String[] splitLine = null;
+		
+		// Build the template for the ports table
+		ArrayList<Entry> entries = new ArrayList<Entry>();
+		Entry portNameTemplate = makeIPSEntry();
+		Entry implementationTemplate = makeIPSEntry();
+		portNameTemplate.setName("Port Name");
+		implementationTemplate.setName("Implementation");
+		entries.add(portNameTemplate);
+		entries.add(implementationTemplate);
+		portsTable.setRowTemplate(entries);
 		
 		// Make sure that the file keeps going.  After the completion of the 
 		// loadGlobalConfiguration() method the current line that the iterator
@@ -285,7 +372,6 @@ public class IPSReader {
 			System.exit(1);
 		}
 		
-		
 		// Get the names specified in the NAMES entry by splitting on the =
 		// sign and then keeping everything after, which we then split on each
 		// space, and turn that into an ArrayList for easier searching later
@@ -299,22 +385,31 @@ public class IPSReader {
 			// Check if this line contains an entry
 			if (line.contains("[[") && line.contains("]]")){
 				
+				// Take care of comments
+				if (line.contains("#")) {
+					line = line.split("#", 2)[0];
+				}
+				
 				// Get the port name of the entry & make sure that it is in 
 				// the list of portNames.
-				String portName = line.replaceAll("[^a-zA-Z0-9]","");
-				entry = makeIPSEntry();
+				int rowID = portsTable.addRow();
+				ArrayList<Entry> row = portsTable.getRow(rowID);
+				
+				String portName = line.replaceAll("[^a-zA-Z0-9_]","");
 				if (portNames.contains(portName)) {
-					
 					// Set the details for the entry
-					entry.setName(portName);		
-					entry.setId(currID);
-					currID++;
+					row.get(0).setValue(portName);		
 				
 					// The next line should give details of the implementation
 					line = it.next();
+					if (line.contains("#")) {
+						line = line.split("#", 2)[0];
+					}
+					
+					// See if the information we are looking for is there
 					if (line.contains("IMPLEMENTATION = ")) {
 						String implementation = line.split(" = ", 2)[1];
-						entry.setValue(implementation);
+						row.get(1).setValue(implementation);
 					} else {
 						System.err.println("Unexpected token after ports entry, " 
 								+ "check your input file and try again.");
@@ -324,14 +419,13 @@ public class IPSReader {
 					// Found a complete port entry, now remove the port from the 
 					// list of remaining ports to be found.
 					portNames.remove(portName);
-					portsTable.addEntry(entry);
 				}
 			}
 			// read another line
 			line = it.next();
 
 		}
-		
+
 		return portsTable;
 	}
 
@@ -345,9 +439,9 @@ public class IPSReader {
 	 * @return A DataComponent of Entries representing the contents at the
 	 *         top of the INI file.
 	 */
-	private DataComponent loadGlobalConfiguration(Iterator<String> it) {
+	private TableComponent loadGlobalConfiguration(Iterator<String> it) {
 		// Create the global configuration component
-		DataComponent globalConfiguration = new DataComponent();
+		TableComponent globalConfiguration = new TableComponent();
 		globalConfiguration.setName("Global Configuration");
 		globalConfiguration.setDescription("Entries at the top of an "
 				+ "IPS framework INI input file.");
@@ -355,6 +449,16 @@ public class IPSReader {
 		currID++;
 		Entry entry;
 		String[] splitLine = null;
+		
+		// Build the template for the ports table
+		ArrayList<Entry> entries = new ArrayList<Entry>();
+		Entry portNameTemplate = makeIPSEntry();
+		Entry implementationTemplate = makeIPSEntry();
+		portNameTemplate.setName("Name");
+		implementationTemplate.setName("Value");
+		entries.add(portNameTemplate);
+		entries.add(implementationTemplate);
+		globalConfiguration.setRowTemplate(entries);
 		
 		// Read in new parameters until we reach the PORTS entry or the end
 		// while only taking in lines that have variable assignments
@@ -374,13 +478,12 @@ public class IPSReader {
 				// Get the content for the entry
 				splitLine = line.split("=", 2);
 				
-				// Set up the entry
-				entry = makeIPSEntry();
-				entry.setName(splitLine[0]);
-				entry.setValue(splitLine[1]);
-				entry.setId(currID); 
-				currID++;
-				globalConfiguration.addEntry(entry);
+				// Set up the data in the table
+				ArrayList<Entry> row = new ArrayList<Entry>();
+				int rowID = globalConfiguration.addRow();
+				row = globalConfiguration.getRow(rowID);
+				row.get(0).setValue(splitLine[0]);
+				row.get(1).setValue(splitLine[1]);
 			}
 			
 			// Read in another line
@@ -431,8 +534,8 @@ public class IPSReader {
 	
 	
 	/**
-	 * Initialize a default entry for a Caebat model
-	 * @return the default Caebat entry
+	 * Initialize a default entry for an IPS model
+	 * @return the default IPS entry
 	 */
 	private Entry makeIPSEntry() {
 		Entry entry = new Entry() {

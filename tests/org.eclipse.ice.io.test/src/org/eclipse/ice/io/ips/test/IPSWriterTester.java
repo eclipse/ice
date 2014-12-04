@@ -55,7 +55,8 @@ public class IPSWriterTester {
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "caebatTesterWorkspace" + separator + "Caebat_Model";
+				+ "ICETests" + separator + "caebatTesterWorkspace" 
+				+ separator + "Caebat_Model";
 		String outputFilePath = userDir + separator + "ips_WriterTest.conf";
 		String exampleFilePath = userDir + separator + "example_ini.conf";
 		File outputFile = new File(outputFilePath);
@@ -134,7 +135,7 @@ public class IPSWriterTester {
 			writer.writeINIFile(components, fakeFile);
 		} catch (IOException e) {
 			e.printStackTrace();
-			fail("Failed to write conj_ht_WriterTester.rea with invalid parameters");
+			fail("Failed to write with invalid parameters");
 		}
 
 		// Check that the file is still empty
@@ -156,6 +157,7 @@ public class IPSWriterTester {
 			fail("Failed to read from example_ini.conf file");
 			e2.printStackTrace();
 		}
+		assertNotNull(components);
 		
 		// Try to write with valid parameters
 		try {
@@ -166,18 +168,25 @@ public class IPSWriterTester {
 		}
 		
 		// Check that the file is not empty and has the correct number of lines
+		try {
+			fileReader = new FileReader(outputFile);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+			fail("Failed to create FileReader for output file: ips_WriterTester.conf");
+		}
+		buffer = new BufferedReader(fileReader);
 		int numLines = 0;
 		try {
-			while (buffer.read() != -1) {
-				assertTrue(buffer.readLine() != null);
+			while (buffer.readLine() != null) {
 				numLines++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
+		
 		//TODO: FIX THE ASSERT TO MATCH
-		assertEquals(103, numLines);
+		assertEquals(113, numLines);
 		
 		// Close the buffered reader
 		try {

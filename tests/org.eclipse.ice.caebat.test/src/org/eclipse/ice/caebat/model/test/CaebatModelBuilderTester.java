@@ -15,10 +15,16 @@ package org.eclipse.ice.caebat.model.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ice.caebat.model.CaebatModel;
 import org.eclipse.ice.caebat.model.CaebatModelBuilder;
-
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.item.ItemType;
 import org.junit.Test;
 
@@ -71,24 +77,20 @@ public class CaebatModelBuilderTester {
 
 		// Local declarations
 		CaebatModelBuilder caebatBuilder = new CaebatModelBuilder();
-		CaebatModel CaebatModel = null;
-		DataComponent dataComponent;
+		CaebatModel caebatModel = null;
 
 		// Builder can be passed a null project.
-		CaebatModel = (CaebatModel) caebatBuilder.build(null);
+		caebatModel = (CaebatModel) caebatBuilder.build(null);
 
 		// Check that the item builder name is set
 		assertEquals(caebatBuilder.getItemName(),
-				CaebatModel.getItemBuilderName());
+				caebatModel.getItemBuilderName());
 
 		// A form is created
-		assertNotNull(CaebatModel.getForm());
-		assertTrue(CaebatModel.getForm().getComponents().isEmpty());
+		assertNotNull(caebatModel.getForm());
 
-		// Make sure there are at least one data component stored on the form.
-		//dataComponent = (DataComponent) CaebatModel.getForm().getComponents()
-		//		.get(0);
-		//assertTrue(dataComponent.retrieveAllEntries().size() > 0);
+		// Make sure there is something on the form
+		assertTrue(caebatModel.getForm().getComponents().isEmpty());
 
 		// end-user-code
 

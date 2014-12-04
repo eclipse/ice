@@ -12,13 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.caebat.launcher;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
-import java.io.Reader;
-import java.nio.charset.Charset;
 import java.util.Scanner;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,9 +21,7 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 
 /**
  * <!-- begin-UML-doc -->
@@ -121,7 +113,7 @@ public class CaebatLauncher extends JobLauncher {
 		// begin-user-code
 
 		// Setup the script to copy the data files for case 6
-		String copyCase6 = "cp -r ${installDir}vibe/examples/case6/* .;";
+		// String copyCase6 = "cp -r ${installDir}vibe/examples/case6/* .;";
 		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
 				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile};";
 		// Setup the Caebat's launch script
@@ -131,8 +123,9 @@ public class CaebatLauncher extends JobLauncher {
 		
 		// Setup the command stages. An explicit forward slash is used here, so
 		// will only work on linux for now.
-		fullExecCMD = copyCase6 + fixSIMROOT + CAEBATExec;
-
+		// fullExecCMD = copyCase6 + fixSIMROOT + CAEBATExec;
+		fullExecCMD = fixSIMROOT + CAEBATExec;
+		
 		// Setup form
 		super.setupForm();
 
@@ -175,41 +168,8 @@ public class CaebatLauncher extends JobLauncher {
 		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
 		InputStream fileStream;
 		Scanner fileScanner;
-		// String next, runDir, runDirAppendix = "/work/THERMAL__Amperes_2/";
-		// String[] runIDArray;
 
-		// Get the input file from the project
-		// IFile inputFile = project.getFile(inputFileEntry.getValue());
-		// try {
-		// Load a scanner to read the file
-		// fileStream = inputFile.getContents();
-		// fileScanner = new Scanner(fileStream);
-		// fileScanner.useDelimiter(" = ");
-		// // Look for the run id by scanning the file
-		// while (fileScanner.hasNext()) {
-		// next = fileScanner.next();
-		// // Assign the run directory to the value in the ID and break out
-		// // of the loop
-		// if (next.contains("RUN_ID")) {
-		// runIDArray = fileScanner.next().split("\n");
-		// runDir = runIDArray[0] + runDirAppendix;
-		// // Set the remote download directory
-		// setRemoteDownloadDirectory(IPS_ROOT + runDir);
-		// break;
-		// }
-		// }
-		// // Close the underlying stream in the scanner
-		// fileScanner.close();
 		return super.process(actionName);
-		// } catch (CoreException e) {
-		// // Complain
-		// System.out.println("CAEBATLauncher Message: "
-		// + "Unable to load input file to determine run directory.");
-		// e.printStackTrace();
-		// }
-
-		// Unable to find the run directory. Return an error.
-		// return FormStatus.InfoError;
 
 		// end-user-code
 

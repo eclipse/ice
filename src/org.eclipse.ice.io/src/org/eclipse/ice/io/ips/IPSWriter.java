@@ -27,6 +27,8 @@ import java.net.UnknownHostException;
 
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 
 public class IPSWriter {
@@ -57,12 +59,13 @@ public class IPSWriter {
 			int numComponents = components.size();
 			
 			writeICEHeader(stream);
-			writeGlobalConfig((DataComponent) components.get(0), stream);
-			writePortsTable((DataComponent) components.get(1), stream);
-			for ( int i = 2; i < numComponents-1; i++) {
-				writeComponent((DataComponent) components.get(i), stream);
+			writeGlobalConfig((TableComponent) components.get(1), stream);
+			writePortsTable((TableComponent) components.get(2), stream);
+			MasterDetailsComponent masterDetails = (MasterDetailsComponent) components.get(3);
+			for ( int i = 0; i < masterDetails.numberOfMasters(); i++) {
+				writeComponent((DataComponent) masterDetails.getDetailsAtIndex(i), stream);
 			}
-			writeTimeLoopData((DataComponent) components.get(numComponents-1), stream);
+			writeTimeLoopData((DataComponent) components.get(0), stream);
 			stream.close();
 		}
 		
@@ -116,18 +119,24 @@ public class IPSWriter {
 	 * @throws IOException
 	 *           Thrown when writing to OutputStream fails
 	 */
-	private void writeGlobalConfig(DataComponent component, OutputStream stream) 
+	private void writeGlobalConfig(TableComponent component, OutputStream stream) 
 			throws IOException {
-		// Get all of the entries
-		ArrayList<Entry> globalConfigs = component.retrieveAllEntries();
-		String parameter;
+		
+		// Local Declarations
+		String configString = "";
+		ArrayList<Entry> row;
 		byte[] byteArray;
-		// Write the entries as "name = value"
-		for ( Entry config : globalConfigs ) {
-			parameter = config.getName() + " = " + config.getValue() + "\n";
-			byteArray = parameter.getBytes();
-			stream.write(byteArray);
+		
+		// Build the output by going through each row
+		for (int i = 0; i < component.numberOfRows(); i++) {
+			row = component.getRow(i);
+			configString += row.get(0).getValue() + " = " + row.get(1).getValue() + "\n";
 		}
+		configString += "\n";
+		
+		// Write it out
+		byteArray = configString.getBytes();
+		stream.write(byteArray);
 	}
 
 	/**
@@ -142,41 +151,30 @@ public class IPSWriter {
 	 * @throws IOException
 	 *           Thrown when writing to OutputStream fails
 	 */
-	private void writePortsTable(DataComponent component, OutputStream stream) 
+	private void writePortsTable(TableComponent component, OutputStream stream) 
 			throws IOException {
-		// Get all of the entries
-		ArrayList<Entry> ports = component.retrieveAllEntries();
-		StringBuilder names = new StringBuilder();
-		String currLine = "\n[PORTS]\n";
-		byte[] byteArray = currLine.getBytes();
-		stream.write(byteArray);
 		
-		// Write the NAMES = PORT1 PORT2 ... section
-		names.append("\tNAMES = ");
-		for ( Entry port : ports ) {
-			names.append(port.getName() + " ");
+		// Local Declarations
+		String configString = "[PORTS]\n\tNAMES = ";
+		ArrayList<Entry> row;
+		byte[] byteArray;
+		
+		// Build the output by going through each row
+		for (int i = 0; i < component.numberOfRows(); i++) {
+			row = component.getRow(i);
+			configString += row.get(0).getValue() + " ";
 		}
-		names.append("\n\n");
-		currLine = names.toString();
-		byteArray = currLine.getBytes();
-		stream.write(byteArray);
+		configString += "\n\n";
 		
-		// Write each port entry
-		for ( Entry port : ports) {
-			// Write the port header
-			currLine = "\t[[" + port.getName() + "]]\n";
-			byteArray = currLine.getBytes();
-			stream.write(byteArray);
-			
-			// Write the port implementation
-			currLine = "\t\tIMPLEMENTATION = " + port.getValue() + "\n";
-			byteArray = currLine.getBytes();
-			stream.write(byteArray);
+		for (int i = 0; i < component.numberOfRows(); i++) {
+			row = component.getRow(i);
+			configString += "\t[[" + row.get(0).getValue() + "]]\n\t\t"
+					+ "IMPLEMENTATION = " + row.get(1).getValue() + "\n";
 		}
+		configString += "\n";
 		
-		// Write a blank line for a spacer
-		currLine = "\n";
-		byteArray = currLine.getBytes();
+		// Write it out
+		byteArray = configString.getBytes();
 		stream.write(byteArray);
 		
 	}
@@ -256,6 +254,11 @@ public class IPSWriter {
 			byteArray = currLine.getBytes();
 			stream.write(byteArray);
 		}
+		
+		// Write out a final blank line
+		currLine = "\n";
+		byteArray = currLine.getBytes();
+		stream.write(byteArray);
 
 	}
 

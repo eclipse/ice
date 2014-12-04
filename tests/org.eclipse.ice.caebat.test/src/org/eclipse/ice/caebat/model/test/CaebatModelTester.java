@@ -89,11 +89,10 @@ public class CaebatModelTester {
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
 				+ "ICETests" + separator + "caebatTesterWorkspace";
-		//String filePath = userDir + separator + "example_ini.conf";
-		
+		String filePath = userDir + separator + "example_ini.conf";
+
 		// Enable Debugging
 		System.setProperty("DebugICE", "");
-		//System.out.println("Caebat Test Data File: " + filePath);
 
 		// Setup the project
 		try {
@@ -130,7 +129,6 @@ public class CaebatModelTester {
 		return;
 		// end-user-code
 	}
-	
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -161,7 +159,7 @@ public class CaebatModelTester {
 		// work.
 		caebatModel = new CaebatModel(null);
 
-		// Check contents - see that there are 5 components
+		// Check contents, null model should be empty
 		form = caebatModel.getForm();
 		assertNotNull(form.getComponents());
 		assertEquals(0, form.getComponents().size());
@@ -183,15 +181,6 @@ public class CaebatModelTester {
 
 		// begin-user-code
 
-		/*
-		 * This test will demonstrate the behavior of the writeToXML" file
-		 * process, INI, and dat file creation. It should run through other
-		 * process operations as needed, and demonstrate when the wrong process
-		 * operation is used.
-		 * 
-		 * The dat file creation should create a dat file.
-		 */
-
 		// Local Declarations
 		CaebatModel caebat;
 		Form form = new Form();
@@ -202,7 +191,7 @@ public class CaebatModelTester {
 		// Check default contents
 		form = caebat.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(9, form.getComponents().size());
+		assertEquals(5, form.getComponents().size());
 
 		// Check the name and description of the item and allowedActions
 		assertEquals("Caebat Model", caebat.getName());
@@ -215,14 +204,16 @@ public class CaebatModelTester {
 		assertEquals(FormStatus.InfoError,
 				caebat.process("I AM A VAGUE, INAPPROPRIATE PROCESS!"));
 
-		/*
-		 * This part will verify the custom ini process
-		 */
-		// Resubmit the form
-		assertEquals(FormStatus.ReadyToProcess, caebat.submitForm(form));
-		
+		// Check default contents
+		form = caebat.getForm();
+		assertNotNull(form.getComponents());
+		assertEquals(5, form.getComponents().size());
+
 		assertEquals(FormStatus.Processed,
 				caebat.process("Export to Caebat INI format"));
+		form = caebat.getForm();
+		assertNotNull(form.getComponents());
+		assertEquals(5, form.getComponents().size());
 		assertTrue(projectSpace.getFile(
 				"Caebat_Model_" + caebat.getId() + ".conf").exists());
 

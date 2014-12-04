@@ -42,21 +42,8 @@ import org.eclipse.ice.item.Item;
  * <!-- begin-UML-doc -->
  * <p>
  * This class is the model representation of the CAEBAT model. It inherits from
- * the Item Class. It will obtain it's specified entries for each DataComponent
- * from XML files stored in the plugin's directory under a folder titled
- * caebatModel. The files are hard coded in the loadDataComponent's operation,
- * and should be adjusted as DataComponent files are added or deleted. Once all
- * the data is correctly specified, an xml file will be generated to be used by
- * the launcher or a dat file (to be deprecated) for Caebat's runtime. All of
- * the required DataComponents need to exist inside the project's workspace
- * under Caebat's folder with the correct extension, otherwise it will refuse to
- * process the item.
- * 
- * This class will also grab complete forms that store entire "use cases" under
- * a folder called "caebatCases".
- * 
- * All files must be specified within their operations in order to be picked up,
- * otherwise they will be completely ignored.
+ * the Item Class. It will get template files from ICEFiles/Caebat_Model that can 
+ * be used to launch simulations from the Caebat Launcher Item.
  * </p>
  * <!-- end-UML-doc -->
  * 
@@ -123,10 +110,10 @@ public class CaebatModel extends Item {
 		// This method will create a new Form and add all the dataComponents to
 		// the form. These dataComponents will be accessed later in
 		// loadDataComponents.
+
 		form = new Form();
 		ArrayList<String> problemFiles = null;
 		String separator = System.getProperty("file.separator");
-
 		// Setup Item information
 		setName("Caebat Model");
 		setDescription("This model creates input for CAEBAT.");
@@ -135,8 +122,7 @@ public class CaebatModel extends Item {
 		if (project != null && project.isAccessible()) {
 
 			IFolder caebatFolder = getPreferencesDirectory();
-
-			if (caebatFolder != null && caebatFolder.exists()) {
+			if (caebatFolder.exists() && caebatFolder != null) {
 				try {
 
 					// Grab the list of problem files in the Caebat directory
@@ -152,6 +138,11 @@ public class CaebatModel extends Item {
 						// Push the work onto the loader
 						loadExample(caebatFolder.getLocation().toOSString()
 								+ separator + problemFiles.get(0));
+					} else {
+						System.err
+								.println("Caebat Model Message: No valid files found in "
+										+ caebatFolder.getLocation()
+												.toOSString());
 					}
 
 				} catch (FileNotFoundException e) {
@@ -179,11 +170,6 @@ public class CaebatModel extends Item {
 		// ----- Finish setting up the Form so that it can be immediately
 		// launched
 
-		// start with a thing that scans for files in the workspace
-		// then a user will select one of the files
-		// the file will be read in via the ipsReader
-		// each of the data components will be parsed into their spots
-
 		return;
 		// end-user-code
 
@@ -204,51 +190,48 @@ public class CaebatModel extends Item {
 
 		// begin-user-code
 		FormStatus retStatus = FormStatus.ReadyToProcess;
-		DataComponent dataComp = null;
+		Component dataComp = null;
 		Entry problemEntry = null;
 		String problemName = null;
 		String separator = System.getProperty("file.separator");
 
 		// Grab the data component from the Form and only proceed if it exists
-		dataComp = (DataComponent) preparedForm.getComponent(1);
+		ArrayList<Component> components = preparedForm.getComponents();
+		dataComp = components.get(0);
+
 		if (dataComp != null
 				&& "Caebat Input Problems".equals(dataComp.getName())) {
 
-			problemEntry = dataComp.retrieveAllEntries().get(0);
+			problemEntry = ((DataComponent) dataComp).retrieveAllEntries().get(
+					0);
 			problemName = problemEntry.getValue();
-
-			if (!problemName.equals(exampleName)) {
-
-				IFolder caebatFolder = getPreferencesDirectory();
-				String problemPathName = caebatFolder.getLocation()
-						.toOSString() + separator + problemName;
-				try {
-					loadExample(problemPathName);
-					System.out.println("CaebatModel Message: Loading File: "
-							+ problemName);
-					exampleName = problemName;
-				} catch (FileNotFoundException e) {
-					if (debuggingEnabled) {
-						System.out
-								.println("CaebatModel Message: Could not find file "
-										+ problemName);
-					}
-					e.printStackTrace();
-				} catch (IOException e) {
-					if (debuggingEnabled) {
-						System.out
-								.println("CaebatModel Message: Could not read file "
-										+ problemName);
-					}
-					e.printStackTrace();
+			IFolder caebatFolder = getPreferencesDirectory();
+			String problemPathName = caebatFolder.getLocation().toOSString()
+					+ separator + problemName;
+			try {
+				loadExample(problemPathName);
+				System.out.println("CaebatModel Message: Loading File: "
+						+ problemPathName);
+			} catch (FileNotFoundException e) {
+				if (debuggingEnabled) {
+					System.out
+							.println("CaebatModel Message: Could not find file "
+									+ problemName);
 				}
+				e.printStackTrace();
+			} catch (IOException e) {
+				if (debuggingEnabled) {
+					System.out
+							.println("CaebatModel Message: Could not read file "
+									+ problemName);
+				}
+				e.printStackTrace();
 			}
+
 		} else {
-			// somehow verify that the form is filled in correctly
-			// Call super submitForm
+			// Otherwise something went wrong
 			retStatus = FormStatus.InfoError;
 		}
-
 		return retStatus;
 	}
 
@@ -277,7 +260,13 @@ public class CaebatModel extends Item {
 
 			// Get the data from the form
 			ArrayList<Component> components = form.getComponents();
-			if (components.size() > 4) {
+
+			if (components.get(0).getName() == "Caebat Input Problems") {
+				components = new ArrayList<Component>(components.subList(1,
+						components.size()));
+			}
+
+			if (components.size() > 3) {
 
 				// create a new IPSWriter with the output file
 				IPSWriter writer = new IPSWriter();
@@ -309,6 +298,7 @@ public class CaebatModel extends Item {
 
 		// Otherwise let item deal with the process
 		else {
+			System.out.println("Not enough components to write new file!");
 			retStatus = super.process(actionName);
 		}
 
@@ -331,35 +321,35 @@ public class CaebatModel extends Item {
 	private ArrayList<String> getProjectFiles(IFolder caebatFolder) {
 
 		// Local Declarations
-		ArrayList<String> files = new ArrayList<String>();
+		ArrayList<String> files = null;
 
 		// Look for files in the project space and add them to the form
-		// if (project != null) {
-		try {
-			// Get the Caebat folder
-			// IFolder caebatFolder = getPreferencesDirectory();
-			// if it exists, get any existing .conf files out
-			// if (caebatFolder.exists()) {
-			// Get all of the resources
-			//files = new ArrayList<String>();
-			//IResource[] resources = caebatFolder.members();
-			for (IResource resource : caebatFolder.members()) {
-				if (debuggingEnabled) {
-					System.out.println("CaebatModel Message: " + "Found file "
-							+ resource.getName() + ".");
+		if (project != null) {
+			try {
+				// Get the Caebat folder
+				// if it exists, get any existing .conf files out
+				if (caebatFolder.exists()) {
+					// Get all of the resources
+					files = new ArrayList<String>();
+					IResource[] resources = caebatFolder.members();
+					for (IResource resource : resources) {
+						if (debuggingEnabled) {
+							System.out.println("CaebatModel Message: "
+									+ "Found file " + resource.getLocationURI()
+									+ ".");
+						}
+						// Only add the .conf files
+						if (resource.getType() == IResource.FILE
+								&& resource.getProjectRelativePath()
+										.lastSegment().contains(".conf")) {
+							files.add(resource.getName());
+						}
+					}
 				}
-				// Only add the .conf files
-				if (resource.getType() == IResource.FILE
-						&& resource.getProjectRelativePath().lastSegment()
-								.contains(".conf")) {
-					files.add(resource.getName());
-				}
+			} catch (CoreException e) {
+				e.printStackTrace();
 			}
-			// }
-		} catch (CoreException e) {
-			e.printStackTrace();
 		}
-		// }
 
 		return files;
 	}
@@ -367,12 +357,13 @@ public class CaebatModel extends Item {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * 
+	 * Creates a component to select from the available input files.
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
 	 * @param files
-	 * @return
+	 *            The list of available input files
+	 * @return a data component with a selector for the input files
 	 */
 	private DataComponent createSelectorComponent(final ArrayList<String> files) {
 
@@ -442,31 +433,32 @@ public class CaebatModel extends Item {
 		IPSReader reader = new IPSReader();
 		ArrayList<Component> components = reader.loadINIFile(file);
 		ArrayList<Component> existingComponents = form.getComponents();
-
+		
 		// Update the components by copying the new ones
-		if (components != null) {
-			// Add a dummy to account for the form's first entry
-			// components.add(0, new DataComponent());
+		if (components.size() == 4) {
 
-			// Remove the old components
-			for (int i = 0; i < existingComponents.size(); i++) {
-				form.removeComponent(i);
+			// Replace the old components
+			if (existingComponents.size() == 5) {
+				((DataComponent) existingComponents.get(1))
+						.copy((DataComponent) components.get(0));
+				((TableComponent) existingComponents.get(2))
+						.copy((TableComponent) components.get(1));
+				((TableComponent) existingComponents.get(3))
+						.copy((TableComponent) components.get(2));
+				((MasterDetailsComponent) existingComponents.get(4))
+						.copy((MasterDetailsComponent) components.get(3));
+			} else {
+				// Add the new components
+				form.addComponent((DataComponent) components.get(0));
+				form.addComponent((TableComponent) components.get(1));
+				form.addComponent((TableComponent) components.get(2));
+				form.addComponent((MasterDetailsComponent) components.get(3));	
 			}
 
-			// Add the new components
-			// form.addComponent(buildPortsTable((DataComponent)
-			// components.get(1)));
-			for (int i = 0; i < components.size(); i++) {
-				form.addComponent(components.get(i));
-			}
+
+		} else {
+			System.out.println("Caebat Model Message: Could not read in "
+					+ file.getAbsolutePath() + " for processing.");
 		}
 	}
-
-	private TableComponent buildPortsTable(DataComponent component) {
-		TableComponent portsTable = new TableComponent();
-		ArrayList<Entry> portsEntries = new ArrayList<Entry>();
-		portsTable.setRowTemplate(portsEntries);
-		return portsTable;
-	}
-
 }
