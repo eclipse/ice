@@ -13,6 +13,7 @@
 package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -36,6 +37,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -148,7 +150,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		 * <!-- end-UML-doc -->
 		 * 
 		 */
-		private ArrayList<Entry> list;
+		private List<Entry> list;
 
 		/**
 		 * <!-- begin-UML-doc -->
@@ -163,7 +165,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		 *            </p>
 		 * 
 		 */
-		public RowWrapper(ArrayList<Entry> list) {
+		public RowWrapper(List<Entry> list) {
 			this.list = list;
 		}
 
@@ -175,7 +177,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		 * <!-- end-UML-doc -->
 		 * 
 		 */
-		public ArrayList<Entry> getRowWrapper() {
+		public List<Entry> getRowWrapper() {
 			return list;
 		}
 	}
@@ -482,8 +484,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 
 		// Setup the selection listener for adding rows.
 		SelectionListener sl;
-		sl = new SelectionListener() {
-
+		sl = new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 
@@ -508,14 +509,6 @@ public class ICETableComponentSectionPart extends SectionPart implements
 
 				}
 			}
-
-			// Required for SectionListener - nothing implemented (not necessary
-			// at this time)
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
 		};
 		// add the listener to the button
 		addButton.addSelectionListener(sl);
@@ -539,8 +532,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 
 		// setup selection listener for delete button
 		SelectionListener sl2;
-		sl2 = new SelectionListener() {
-
+		sl2 = new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 
@@ -564,12 +556,6 @@ public class ICETableComponentSectionPart extends SectionPart implements
 					// Make the editor dirty
 					editor.setDirty(true);
 				}
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-
 			}
 		};
 		// Add the delete row button to the selection listener
@@ -645,7 +631,6 @@ public class ICETableComponentSectionPart extends SectionPart implements
 
 			// Add the LabelProvider for each cell
 			column.setLabelProvider(new ICECellLabelProvider(i));
-
 		}
 
 		// Setup the content provider and label provider
@@ -943,7 +928,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 				boolean rowStatus = true;
 				if (rows.length == tableComponent.numberOfRows()) {
 					for (int j = 0; j < rows.length; j++) {
-						ArrayList<Entry> rowList = rows[j].list;
+						List<Entry> rowList = rows[j].list;
 
 						// If the number of entries are not the same, needs to
 						// be fixed.
@@ -966,8 +951,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 
 				// If the row length is different from the tablecomponent,
 				// then we must update the tableViewer content
-				if (rows.length != tableComponent.numberOfRows()
-						|| !rowStatus) {
+				if (rows.length != tableComponent.numberOfRows() || !rowStatus) {
 					// Reset input for tableViewer
 					RowWrapper[] rowWrappers = new RowWrapper[tableComponent
 							.getRowIds().size()];
