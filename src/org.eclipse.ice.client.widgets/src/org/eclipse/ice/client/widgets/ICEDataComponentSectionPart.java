@@ -181,6 +181,10 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 		sectionClient = dataComposite;
 		formToolkit.adapt(dataComposite);
 
+		// Set the DataComponentComposite's reference to the FormToolKit so that
+		// its child Composites can be decorated.
+		dataComposite.formToolkit = formToolkit;
+
 		// Create a listener that will mark the form as dirty when the event is
 		// received.
 		Listener listener = new Listener() {
@@ -197,7 +201,8 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 		dataComposite.setMessageManager(editor.getHeaderForm()
 				.getMessageManager());
 
-		// Set the data composite's layout to a single column GridLayout.
+		// Set the data composite's layout to a single column GridLayout. This
+		// overrides the default layout used by DataComponentComposite.
 		sectionClient.setLayout(new GridLayout());
 
 		// Give the Section its client

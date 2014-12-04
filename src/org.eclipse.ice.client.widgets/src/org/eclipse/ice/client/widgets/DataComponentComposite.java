@@ -24,7 +24,6 @@ import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -35,6 +34,7 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IMessageManager;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * This class is an SWT Composite that is specialized to render ICE
@@ -85,7 +85,15 @@ public class DataComponentComposite extends Composite implements
 	 * reason: when there are no Entries, a label is displayed. A different
 	 * layout is necessary to display the label by itself.
 	 */
-	private Layout layout = new GridLayout(3, true);
+	private Layout layout;
+
+	/**
+	 * The {@code FormToolkit} used by the parent {@code Form}. This should be
+	 * set by the customized {@code Form} or {@code Page} that created this
+	 * {@code DataComponentComposite} in order to properly decorate the rendered
+	 * {@code EntryComposite}s. Otherwise, some default decorations are applied.
+	 */
+	public FormToolkit formToolkit = null;
 
 	/**
 	 * The constructor.
@@ -116,8 +124,9 @@ public class DataComponentComposite extends Composite implements
 			dataComp.register(this);
 		}
 
-		// Set the initial layout for the parent class.
-		super.setLayout(layout);
+		// Set the initial layout for the parent class. This should default to
+		// a GridLayout with 3 equally sized columns.
+		setLayout(new GridLayout(3, true));
 
 		// Render the Entries.
 		renderEntries();
@@ -149,7 +158,7 @@ public class DataComponentComposite extends Composite implements
 		// Local Declarations
 		boolean rewrite = false;
 		List<Entry> entries = dataComp.retrieveAllEntries();
-		
+
 		// If there's an empty label set and it's not longer necessary, dispose
 		if (!entries.isEmpty() && emptyLabel != null) {
 			emptyLabel.dispose();
@@ -184,7 +193,7 @@ public class DataComponentComposite extends Composite implements
 				disposeEntry(i);
 			}
 		}
-		
+
 		// This was added specifically to handle the issues with adding entries
 		// on the fly. This also forces the entries to be ordered correctly on
 		// the screen based on id/ - 20130608@8:39am SFH
@@ -387,7 +396,7 @@ public class DataComponentComposite extends Composite implements
 		// begin-user-code
 
 		// Local Declarations
-		EntryComposite tmpComposite = null;
+		EntryComposite entryComposite = null;
 
 		// Create a listener for the Entry composite that will pass events to
 		// any other listeners.
@@ -405,26 +414,29 @@ public class DataComponentComposite extends Composite implements
 
 		// Create the new Entry
 		if (entry.getValueType().equals(AllowedValueType.File)) {
-			GridLayout layout = new GridLayout();
-			layout.numColumns = 3;
-			GridData data = new GridData(GridData.FILL_HORIZONTAL
-					| GridData.GRAB_HORIZONTAL | GridData.FILL_VERTICAL
-					| GridData.VERTICAL_ALIGN_END);
-			tmpComposite = new EntryComposite(this, SWT.FLAT, layout, data,
+			GridLayout layout = new GridLayout(3, false);
+			GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
+			entryComposite = new EntryComposite(this, SWT.FLAT, layout, data,
 					entry);
 		} else {
-			tmpComposite = new EntryComposite(this, SWT.FLAT, entry);
+			entryComposite = new EntryComposite(this, SWT.FLAT, entry);
 		}
 
-		tmpComposite.setBackground(Display.getCurrent().getSystemColor(
-				SWT.COLOR_WHITE));
-		// Set the LayoutData. The parent Control should have a GridLayout.
-		tmpComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true,
-				true));
-		// Set the Listener
-		tmpComposite.addListener(SWT.Selection, entryListener);
+		// Decorate the EntryComposite. Use the FormToolKit if possible.
+		if (formToolkit != null) {
+			formToolkit.adapt(entryComposite);
+		} else {
+			entryComposite.setBackground(getBackground());
+		}
+
+		// Set the LayoutData. The DataComponentComposite has a GridLayout. The
+		// EntryComposite should grab all available horizontal space.
+		entryComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING,
+				true, false));
+		// Set the Listener.
+		entryComposite.addListener(SWT.Selection, entryListener);
 		// Add the EntryComposite to the Map
-		entryMap.put(index, tmpComposite);
+		entryMap.put(index, entryComposite);
 
 		return;
 		// end-user-code
@@ -453,6 +465,7 @@ public class DataComponentComposite extends Composite implements
 		if (composite != null) {
 			composite.dispose();
 		}
+
 		return;
 		// end-user-code
 	}
@@ -498,6 +511,7 @@ public class DataComponentComposite extends Composite implements
 				composite.setMessageManager(messageManager);
 			}
 		}
+
 		return;
 	}
 
