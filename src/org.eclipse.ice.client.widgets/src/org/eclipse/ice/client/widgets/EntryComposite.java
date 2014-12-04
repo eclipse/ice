@@ -14,6 +14,7 @@ package org.eclipse.ice.client.widgets;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
@@ -23,16 +24,21 @@ import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -111,7 +117,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	protected ArrayList<Button> buttons = null;
+	protected final List<Button> buttons;
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -151,67 +157,19 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	/**
 	 * Entry map of binary/boolean-type allowed values
 	 */
-	private ArrayList<String> allowedBinaryValues = new ArrayList<String>();
+	private final List<String> allowedBinaryValues = new ArrayList<String>();
 
 	/**
 	 * List of allowed values for the entry in lowercase text
 	 */
-	private ArrayList<String> lowercaseAllowedValues = new ArrayList<String>();
+	private final List<String> lowercaseAllowedValues = new ArrayList<String>();
 
-	public EntryComposite(Composite parent, int style, Layout compLayout,
-			Object data, Entry refEntry) {
-		super(parent, style);
-
-		setLayout(compLayout);
-		setLayoutData(data);
-		
-		// Set the Entry reference
-		if (refEntry != null) {
-			entry = refEntry;
-		} else {
-			throw new RuntimeException("Entry passed to EntryComposite "
-					+ "constructor cannot be null!");
-		}
-		// Create the Buttons array
-		buttons = new ArrayList<Button>();
-
-		// Create the MessageName String
-		messageName = new String();
-
-		// Setup the allowedBinaryValues for check boxes
-		allowedBinaryValues = new ArrayList<String>();
-		// Setup the list of values that are equivalent to "ready"
-		allowedBinaryValues.add("ready");
-		allowedBinaryValues.add("yes");
-		allowedBinaryValues.add("y");
-		allowedBinaryValues.add("true");
-		allowedBinaryValues.add("enabled");
-		allowedBinaryValues.add("on");
-		// Setup the list of values that are equivalent to "not ready"
-		allowedBinaryValues.add("not ready");
-		allowedBinaryValues.add("no");
-		allowedBinaryValues.add("n");
-		allowedBinaryValues.add("false");
-		allowedBinaryValues.add("disabled");
-		allowedBinaryValues.add("off");
-
-		// Register for updates from the Entry
-		entry.register(this);
-
-		// Add a listener to the Entry that unregisters this composite as a
-		// listener upon disposal.
-		addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				entry.unregister(EntryComposite.this);
-			}
-		});
-
-		// Render the entry
-		render();
-
-		return;
-	}
+	/**
+	 * This listens to the {@code EntryComposite}'s resize events and adjusts
+	 * the size of the dropdown if necessary. This is currently only used for
+	 * file entries.
+	 */
+	private ControlListener resizeListener = null;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -257,7 +215,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		messageName = new String();
 
 		// Setup the allowedBinaryValues for check boxes
-		allowedBinaryValues = new ArrayList<String>();
 		// Setup the list of values that are equivalent to "ready"
 		allowedBinaryValues.add("ready");
 		allowedBinaryValues.add("yes");
@@ -311,11 +268,10 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		// begin-user-code
 
 		// Create the Label
-		label = new Label(this, 0);
+		label = new Label(this, SWT.WRAP);
 		label.setText(entry.getName() + ":");
 		label.setToolTipText(entry.getDescription());
-		label.setBackground(Display.getCurrent()
-				.getSystemColor(SWT.COLOR_WHITE));
+		label.setBackground(getBackground());
 
 		return;
 		// end-user-code
@@ -348,13 +304,11 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			tmpButton.setSelection(false);
 		}
 		// Add the listeners
-		tmpButton.addSelectionListener(new SelectionListener() {
-
+		tmpButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// Notify any listeners that the selection has
-				// changed
-				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
+				// Notify any listeners that the selection has changed
+				notifyListeners(SWT.Selection, new Event());
 				// Get the index of the value
 				int index = lowercaseAllowedValues.indexOf(entry.getValue()
 						.toLowerCase());
@@ -362,33 +316,16 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				String value = null;
 				value = (index == 0) ? entry.getAllowedValues().get(1) : entry
 						.getAllowedValues().get(0);
-				EntryComposite.this.setEntryValue(value);
+				setEntryValue(value);
 				System.out.println("EntryComposite Message: Updated Entry "
 						+ entry.getName() + " with value=" + entry.getValue());
-			}
 
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// Notify any listeners that the selection has
-				// changed
-				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
-				// Get the index of the value
-				int index = lowercaseAllowedValues.indexOf(entry.getValue()
-						.toLowerCase());
-				// Set the correct value
-				String value = null;
-				value = (index == 0) ? entry.getAllowedValues().get(1) : entry
-						.getAllowedValues().get(0);
-				EntryComposite.this.setEntryValue(value);
-				System.out.println("EntryComposite Message: Updated Entry "
-						+ entry.getName() + " in registry with value="
-						+ entry.getValue());
+				return;
 			}
 		});
 
 		// Add the button to the list
-		tmpButton.setBackground(Display.getCurrent().getSystemColor(
-				SWT.COLOR_WHITE));
+		tmpButton.setBackground(getBackground());
 		buttons.add(tmpButton);
 
 		// end-user-code
@@ -421,33 +358,17 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				tmpButton.setSelection(true);
 			}
 			// Add the listeners
-			tmpButton.addSelectionListener(new SelectionListener() {
-
+			tmpButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					// Notify any listeners that the selection has
-					// changed
-					EntryComposite.this.notifyListeners(SWT.Selection,
-							new Event());
+					// Notify any listeners that the selection has changed
+					notifyListeners(SWT.Selection, new Event());
 					// Set the value of the Entry
-					EntryComposite.this.setEntryValue(((Button) e.getSource())
-							.getText());
-				}
-
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
-					// Notify any listeners that the selection has
-					// changed
-					EntryComposite.this.notifyListeners(SWT.Selection,
-							new Event());
-					// Set the value of the Entry
-					EntryComposite.this.setEntryValue(((Button) e.getSource())
-							.getText());
+					setEntryValue(((Button) e.getSource()).getText());
 				}
 			});
 			// Fix the color
-			tmpButton.setBackground(Display.getCurrent().getSystemColor(
-					SWT.COLOR_WHITE));
+			tmpButton.setBackground(getBackground());
 			// Add the button to the list
 			buttons.add(tmpButton);
 		}
@@ -472,8 +393,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		// Create a drop-down menu
 		dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL
 				| SWT.H_SCROLL | SWT.READ_ONLY);
-		dropDown.setBackground(Display.getCurrent().getSystemColor(
-				SWT.COLOR_WHITE));
+		dropDown.setBackground(getBackground());
 
 		// Add the data to the dropdown menu
 		for (String i : entry.getAllowedValues()) {
@@ -482,25 +402,13 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		// Set the default selection
 		dropDown.select(dropDown.indexOf(entry.getValue()));
 		// Add the listener
-		dropDown.addSelectionListener(new SelectionListener() {
-
+		dropDown.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// Notify any listeners that the selection has changed
-				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
+				notifyListeners(SWT.Selection, new Event());
 				// Set the value of the Entry
-				EntryComposite.this.setEntryValue(dropDown.getItem(dropDown
-						.getSelectionIndex()));
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// Notify any listeners that the selection has changed
-				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
-				// Set the value of the Entry
-				EntryComposite.this.setEntryValue(dropDown.getItem(dropDown
-						.getSelectionIndex()));
-
+				setEntryValue(dropDown.getItem(dropDown.getSelectionIndex()));
 			}
 		});
 
@@ -529,24 +437,17 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		}
 		text.setToolTipText(entry.getDescription());
 		text.setText(entry.getValue());
-		text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+		text.setBackground(getBackground());
 
 		// Add the Focus Listeners
-		text.addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent e) {
-			};
-
+		text.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
 				// Notify any listeners that the selection has changed
-				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
+				notifyListeners(SWT.Selection, new Event());
 				// Set the value of the Entry
-				EntryComposite.this.setEntryValue(text.getText());
-
+				setEntryValue(text.getText());
 			};
-
 		});
 
 		// Add a listener for the "DefaultSelection" key (return/enter). It
@@ -556,10 +457,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		Listener enterListener = new Listener() {
 			public void handleEvent(Event e) {
 				// Notify any listeners that the selection has changed
-				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
+				notifyListeners(SWT.Selection, new Event());
 				// Set the value of the Entry
-				EntryComposite.this.setEntryValue(text.getText());
-
+				setEntryValue(text.getText());
 			}
 		};
 		this.addListener(SWT.DefaultSelection, enterListener);
@@ -575,18 +475,17 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * imported into the default workspace.
 	 */
 	private void createBrowseButton() {
-		
+
 		// Create a new button, set the text
 		Button browseButton = new Button(this, SWT.PUSH);
 		browseButton.setText("Browse...");
-		
-		// Add an event listener that displays a Directory Dialog prompt
-		browseButton.addSelectionListener(new SelectionListener() {
 
+		// Add an event listener that displays a Directory Dialog prompt
+		browseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// Notify any listeners that the selection has changed
-				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
+				notifyListeners(SWT.Selection, new Event());
 				// Get the Client
 				IClient client = ClientHolder.getClient();
 
@@ -598,36 +497,16 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					// Import the files
 					File importedFile = new File(fileName);
 					client.importFile(importedFile.toURI());
-					File file = new File(fileName);
-					EntryComposite.this.setEntryValue(file.getName());
+					setEntryValue(fileName);
 				}
 
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// Notify any listeners that the selection has changed
-				EntryComposite.this.notifyListeners(SWT.Selection, new Event());
-				// Get the Client
-				IClient client = ClientHolder.getClient();
-
-				// Create the dialog and get the files
-				FileDialog fileDialog = new FileDialog(getShell());
-				fileDialog.setText("Select a file to import into ICE");
-				String fileName = fileDialog.open();
-				if (fileName != null) {
-					// Import the files
-					File importedFile = new File(fileName);
-					client.importFile(importedFile.toURI());
-					EntryComposite.this.setEntryValue(fileName);
-				}
-
+				return;
 			}
 		});
-		
+
 		// Add the browse button
 		buttons.add(browseButton);
-		
+
 		return;
 	}
 
@@ -677,7 +556,14 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			setLayout(layout);
 		}
 
-		// If the valueType is Discrete and there are some allowed values, 
+		// Set the default layout to a vertical FillLayout.
+		FillLayout fillLayout = new FillLayout(SWT.VERTICAL);
+		fillLayout.marginHeight = 5;
+		fillLayout.marginWidth = 3;
+		fillLayout.spacing = 5;
+		Layout layout = fillLayout;
+
+		// If the valueType is Discrete and there are some allowed values,
 		// figure out how to draw it
 		if (valueType == AllowedValueType.Discrete && numAllowedValues > 0) {
 			// We can use Radio buttons if the allowed values are few
@@ -707,13 +593,82 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			if (numAllowedValues > 0) {
 				createDropdown();
 			}
-			createBrowseButton();		
+			createBrowseButton();
+
+			// FIXME We should use either this GridLayout or the RowLayout below
+//			// Instead of the default FillLayout, use a 3-column GridLayout.
+//			GridLayout gridLayout = new GridLayout(3, false);
+//			
+//			layout = gridLayout;
+//			// Since we use a GridLayout, set the GridData on the new widgets.
+//			label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+//			
+//			GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+//			gridData.minimumWidth = 50;
+//			dropDown.setLayoutData(gridData);
+//			
+//			for (Button button : buttons) {
+//				button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+//						false));
+//			}
+
+			// The dropdown Combo should get all excess space, but we must also
+			// wrap the widgets when the EntryComposite is too small. Thus, we
+			// must use a RowLayout and manually resize the dropdown.
+
+			// Use a RowLayout so we can wrap widgets.
+			final RowLayout rowLayout = new RowLayout();
+			rowLayout.wrap = true;
+			rowLayout.fill = false;
+			rowLayout.center = true;
+			layout = rowLayout;
+
+			// Use a RowData for the dropdown Combo so it can get excess space.
+			final RowData rowData = new RowData();
+			dropDown.setLayoutData(rowData);
+			// Set a minimum width of 50 for the dropdown.
+			final int minWidth = 50;
+
+			// Compute the space taken up by the label and browse button.
+			final int unwrappedWidth;
+			Button button = buttons.get(0);
+			int labelWidth = label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+			int buttonWidth = button.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+			int padding = 2 * rowLayout.spacing + rowLayout.marginLeft
+					+ rowLayout.marginWidth * 2 + rowLayout.marginRight + 30;
+			unwrappedWidth = labelWidth + buttonWidth + padding;
+
+			// Size the dropdown based on the currently available space.
+			int availableWidth = getClientArea().width - unwrappedWidth;
+			rowData.width = (availableWidth > minWidth ? availableWidth
+					: minWidth);
+
+			// If necessary, remove the old resize listener.
+			if (resizeListener != null) {
+				removeControlListener(resizeListener);
+			}
+
+			// Add a resize listener to the EntryComposite to update the size of
+			// the dropdown.
+			resizeListener = new ControlAdapter() {
+				@Override
+				public void controlResized(ControlEvent e) {
+					int availableWidth = getClientArea().width - unwrappedWidth;
+					rowData.width = (availableWidth > minWidth ? availableWidth
+							: minWidth);
+					layout();
+				}
+			};
+			addControlListener(resizeListener);
 		} else {
 			// Otherwise create a text field
 			createLabel();
 			createTextfield();
 		}
-		
+
+		// Apply the layout.
+		setLayout(layout);
+
 		return;
 		// end-user-code
 	}
@@ -723,7 +678,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * if the Entry has no value, but requires a value from a discrete set.
 	 */
 	private void throwMissingValuesError() {
-		
+
 		if (messageManager != null) {
 			// Get the message
 			String errorMessage = entry.getErrorMessage();
@@ -773,17 +728,27 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		// Dispose of the old widgets
 		if (dropDown != null) {
 			dropDown.dispose();
+			dropDown = null;
 		}
 		if (label != null) {
 			label.dispose();
+			label = null;
 		}
 		if (text != null) {
 			text.dispose();
+			text = null;
 		}
 		for (Button button : buttons) {
 			if (!button.isDisposed()) {
 				button.dispose();
 			}
+		}
+		// Remove all of the previous buttons.
+		buttons.clear();
+		// Remove the resize listener.
+		if (resizeListener != null) {
+			removeControlListener(resizeListener);
+			resizeListener = null;
 		}
 
 		// Re-render the Composite

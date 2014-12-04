@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
@@ -412,15 +411,8 @@ public class DataComponentComposite extends Composite implements
 			}
 		};
 
-		// Create the new Entry
-		if (entry.getValueType().equals(AllowedValueType.File)) {
-			GridLayout layout = new GridLayout(3, false);
-			GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
-			entryComposite = new EntryComposite(this, SWT.FLAT, layout, data,
-					entry);
-		} else {
-			entryComposite = new EntryComposite(this, SWT.FLAT, entry);
-		}
+		// Create the EntryComposite.
+		entryComposite = new EntryComposite(this, SWT.FLAT, entry);
 
 		// Decorate the EntryComposite. Use the FormToolKit if possible.
 		if (formToolkit != null) {
