@@ -227,9 +227,6 @@ public class CheckboxCellContentProvider extends
 			Shell shell = new Shell(display, SWT.NO_TRIM);
 			Button checkbox = new Button(shell, SWT.CHECK);
 
-			// Set the widget's background to the default widget color.
-			// checkbox.setBackground(display
-			// .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 			// Set the widget's background to the viewer's cell background.
 			checkbox.setBackground(background);
 

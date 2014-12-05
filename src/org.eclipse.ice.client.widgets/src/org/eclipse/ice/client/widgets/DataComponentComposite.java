@@ -109,10 +109,10 @@ public class DataComponentComposite extends Composite implements
 		super(parentComposite, style);
 		// If ICE is in debug mode, draw a red border around this composite,
 		// otherwise set it to white.
-		if (System.getProperty("DebugICE") != null) {
-			setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+		if (System.getProperty("DebugICE") == null) {
+			setBackground(parentComposite.getBackground());
 		} else {
-			setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+			setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 		}
 
 		// Save the data component.
