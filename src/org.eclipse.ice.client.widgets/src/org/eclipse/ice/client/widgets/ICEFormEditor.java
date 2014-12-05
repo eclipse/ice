@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
-import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
-import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
-import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.client.common.TreeCompositeViewer;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -37,19 +36,17 @@ import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
+import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
+import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
+import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -567,7 +564,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		EMFComponent emfComponent = null;
 		EMFSectionPage emfPage = null;
 		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-		
+
 		// Get the EMFComponent and create the EMFSectionPage.
 		if (componentMap.get("emf").size() > 0) {
 			for (Component comp : componentMap.get("emf")) {
@@ -702,59 +699,52 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	protected void createHeaderContents(IManagedForm headerForm) {
 		// begin-user-code
 
-		// Local Declarations
-		org.eclipse.ui.forms.widgets.Form pageForm = null;
+		// Get the Form that provides the common header and decorate it.
+		org.eclipse.ui.forms.widgets.Form form = headerForm.getForm().getForm();
+		headerForm.getToolkit().decorateFormHeading(form);
 
-		// Get the Form that provides the common header
-		pageForm = headerForm.getForm().getForm();
+		// Create a composite for the overall head layout.
+		Composite headClient = new Composite(form.getHead(), SWT.NONE);
 
-		// Set the decoration
-		headerForm.getToolkit().decorateFormHeading(pageForm);
-
-		// Create a composite for the overall head layout
-		Composite head = pageForm.getHead();
-		Composite gridComposite = new Composite(head, SWT.NONE);
-		Composite processComposite = null;
-
-		// Set the composite's layout
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
-		gridComposite.setLayout(gridLayout);
+		// Set the layout to a GridLayout. It will contain separate columns for
+		// the description and, if applicable, process widgets (a label, a
+		// dropdown, and go/cancel buttons).
+		GridLayout gridLayout = new GridLayout(1, false);
+		headClient.setLayout(gridLayout);
 
 		// Create a label to take up the first space and provide the
 		// description of the Form.
-		Label descLabel = new Label(gridComposite, SWT.WRAP);
+		Label descLabel = new Label(headClient, SWT.WRAP);
 		descLabel.setText(iceDataForm.getDescription());
 
 		// Create the GridData for the label. It must take up all of the
-		// available horizontal space, but resize with the shell to within
-		// the widthHint.
-		GridData labelGridData = new GridData(GridData.GRAB_HORIZONTAL);
-		labelGridData.horizontalSpan = 1;
-		labelGridData.widthHint = 10;
-		labelGridData.horizontalAlignment = SWT.FILL;
-		descLabel.setLayoutData(labelGridData);
-		// The next trick actually gets it to work. It forces the Composite
-		// to calculate the correct size and then updates the size of the label.
-		gridComposite.pack();
-		labelGridData.widthHint = descLabel.getBounds().width;
-		gridComposite.pack();
+		// available horizontal space, but capable of shrinking down to the
+		// minimum width.
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		// For the minimum width, pick a length based on the average character
+		// width with the label's font. Use, say, 35 characters.
+		GC gc = new GC(descLabel);
+		int widthOf50Chars = gc.getFontMetrics().getAverageCharWidth() * 35;
+		gc.dispose();
+		// We set the min width so the label won't shrink below that width. We
+		// set the width hint to the same value so the widget won't compute its
+		// size base on SWT.DEFAULT (if this is the case, it won't wrap).
+		gridData.minimumWidth = widthOf50Chars;
+		gridData.widthHint = widthOf50Chars;
+		descLabel.setLayoutData(gridData);
 
 		// Create the process label, button and dropdown if the action list is
-		// available
+		// available.
 		if (iceDataForm.getActionList() != null
 				&& !iceDataForm.getActionList().isEmpty()) {
-			// Create the composite for containing the process widgets
-			processComposite = new Composite(gridComposite, SWT.NONE);
-			processComposite.setLayout(new RowLayout());
 
 			// Create a label for the process buttons
-			Label processLabel = new Label(processComposite, SWT.NONE);
+			Label processLabel = new Label(headClient, SWT.NONE);
 			processLabel.setText("Process:");
 
 			// Create the dropdown menu
-			processDropDown = new Combo(processComposite, SWT.DROP_DOWN
-					| SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+			processDropDown = new Combo(headClient, SWT.DROP_DOWN | SWT.SINGLE
+					| SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
 			for (String i : iceDataForm.getActionList()) {
 				processDropDown.add(i);
 			}
@@ -762,17 +752,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			processName = iceDataForm.getActionList().get(0);
 			processDropDown.select(0);
 			// Add the dropdown listener
-			processDropDown.addSelectionListener(new SelectionListener() {
-
+			processDropDown.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					// Set the action value to use when processing
-					processName = processDropDown.getItem(processDropDown
-							.getSelectionIndex());
-				}
-
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
 					// Set the action value to use when processing
 					processName = processDropDown.getItem(processDropDown
 							.getSelectionIndex());
@@ -780,44 +762,51 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			});
 
 			// Create the button to process the Form
-			goButton = new Button(processComposite, SWT.PUSH);
+			goButton = new Button(headClient, SWT.PUSH);
 			goButton.setText("Go!");
 
 			// Set the button's listener and process command
 			goButton.addSelectionListener(new SelectionAdapter() {
-
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// Process the Form
 					notifyProcessListeners(processName);
 				}
-
 			});
 
 			// Create the button to cancel the process
-			cancelButton = new Button(processComposite, SWT.PUSH);
+			cancelButton = new Button(headClient, SWT.PUSH);
 			cancelButton.setText("Cancel");
 
 			// Set the button's listener and process command
 			cancelButton.addSelectionListener(new SelectionAdapter() {
-
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// Process the Form
 					notifyCancelListeners(processName);
 				}
-
 			});
 
+			// Since we have more widgets, add more columns to the GridLayout.
+			// All of these new widgets should grab what horizontal space they
+			// need but be vertically centered.
+			gridLayout.numColumns += 4;
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			processLabel.setLayoutData(gridData);
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			processDropDown.setLayoutData(gridData);
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			goButton.setLayoutData(gridData);
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			cancelButton.setLayoutData(gridData);
 		}
 		// Set the processComposite as the Form's head client
-		pageForm.setHeadClient(gridComposite);
+		form.setHeadClient(headClient);
 
 		// Set Form name
-		pageForm.setText(iceDataForm.getName() + " " + iceDataForm.getId());
+		form.setText(iceDataForm.getName() + " " + iceDataForm.getId());
 
 		return;
-
 		// end-user-code
 	}
 
@@ -1462,7 +1451,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// end-user-code
 	}
-
 
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
