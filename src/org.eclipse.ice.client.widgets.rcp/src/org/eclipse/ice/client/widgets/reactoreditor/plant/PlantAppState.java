@@ -3,6 +3,8 @@ package org.eclipse.ice.client.widgets.reactoreditor.plant;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.client.widgets.jme.EmbeddedView;
+import org.eclipse.ice.client.widgets.jme.FlightCamera;
 import org.eclipse.ice.client.widgets.jme.ViewAppState;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
@@ -350,6 +352,28 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 		return;
 	}
 	// ---------------------------------------- //
+
+	/**
+	 * Overrides the default {@link FlightCamera} and initializes it to look at
+	 * the origin from the positive x axis, with the positive z axis up and
+	 * positive y axis right.
+	 */
+	@Override
+	public Object createViewCamera(EmbeddedView view) {
+		Object cam = super.createViewCamera(view);
+
+		if (cam != null) {
+			FlightCamera flyCam = (FlightCamera) cam;
+
+			// Position the camera 10 units up the x axis.
+			flyCam.setPosition(new Vector3f(10f, 0f, 0f));
+			// Orient the camera to look down the x axis, with the positive z
+			// axis pointing up.
+			flyCam.setOrientation(new Vector3f(-1f, 0f, 0f), Vector3f.UNIT_Z);
+		}
+
+		return cam;
+	}
 
 	// ---- Getters and Setters ---- //
 	/**
