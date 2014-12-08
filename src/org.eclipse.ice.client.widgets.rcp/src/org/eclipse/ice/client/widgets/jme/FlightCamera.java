@@ -293,16 +293,12 @@ public class FlightCamera {
 		// tailoring the rotations for pitch, yaw, and roll. (The matrix should
 		// always be roughly the same for each case.)
 
-		matrix.mult(up, up);
-		matrix.mult(left, left);
-		matrix.mult(dir, dir);
-
-		// TODO We can probably combine the multiplication with the
-		// normalization here.
-
-		up.normalizeLocal();
-		left.normalizeLocal();
-		dir.normalizeLocal();
+		// Apply the overall rotation to the direction vectors. Note that we do
+		// not update the dragUp vector, since it should not be updated when
+		// using the mouse drag to rotate.
+		matrix.multLocal(up).normalizeLocal();
+		matrix.multLocal(left).normalizeLocal();
+		matrix.multLocal(dir).normalizeLocal();
 
 		camera.setAxes(left, up, dir);
 	}
@@ -364,6 +360,10 @@ public class FlightCamera {
 		// Update the local orientation vectors. Since this is a right-handed
 		// system, get the left vector by crossing up with the direction.
 		this.up.set(up).cross(this.dir.set(direction), this.left);
+
+		// We also need to set the up vector for dragging, otherwise trying to
+		// drag to rotate will use the old dragUp vector for yaw rotation.
+		dragUp.set(up);
 
 		// Update the camera itself.
 		camera.setAxes(this.left, this.up, this.dir);
