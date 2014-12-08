@@ -309,6 +309,68 @@ public class FlightCamera {
 
 	// ---------------------------------------- //
 
+	/**
+	 * Sets the position of the camera at once, as opposed to incremental
+	 * positioning.
+	 * 
+	 * @param position
+	 *            The new position. If null, an exception is thrown.
+	 * 
+	 * @see #thrustCamera(float)
+	 * @see #strafeCamera(float)
+	 * @see #raiseCamera(float)
+	 */
+	public void setPosition(Vector3f position) {
+		// Check for nulls first.
+		if (position == null) {
+			throw new IllegalArgumentException("FlightCamera error: "
+					+ "Null arguments not accepted for positioning the camera.");
+		}
+
+		// Update the local position and the camera.
+		camera.setLocation(this.position.set(position));
+
+		return;
+	}
+
+	/**
+	 * Sets the orientation of the camera at once, as opposed to incremental
+	 * orientation.
+	 * 
+	 * @param direction
+	 *            The new direction in which the camera will point. If null, an
+	 *            exception is thrown.
+	 * @param up
+	 *            The new up direction. If null or if it is not orthogonal to
+	 *            the camera direction, an exception is thrown.
+	 * 
+	 * @see #rollCamera(float)
+	 * @see #pitchCamera(float)
+	 * @see #yawCamera(float)
+	 */
+	public void setOrientation(Vector3f direction, Vector3f up) {
+		// Check for nulls first.
+		if (direction == null || up == null) {
+			throw new IllegalArgumentException("FlightCamera error: "
+					+ "Null arguments not accepted for orienting the camera.");
+		}
+		// Make sure the direction and up vectors are orthogonal.
+		else if (FastMath.abs(direction.dot(up)) > 1e-5f
+				|| direction.equals(up)) {
+			throw new IllegalArgumentException("FlightCamera error: "
+					+ "Direction and up vector are not orthogonal.");
+		}
+
+		// Update the local orientation vectors. Since this is a right-handed
+		// system, get the left vector by crossing up with the direction.
+		this.up.set(up).cross(this.dir.set(direction), this.left);
+
+		// Update the camera itself.
+		camera.setAxes(this.left, this.up, this.dir);
+
+		return;
+	}
+
 	// ---- Enabling and Registering Controls ---- //
 	/**
 	 * Gets whether or not the camera is enabled.
