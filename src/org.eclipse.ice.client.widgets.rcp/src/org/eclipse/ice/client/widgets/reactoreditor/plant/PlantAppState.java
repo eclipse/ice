@@ -2,6 +2,7 @@ package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.eclipse.ice.client.widgets.jme.EmbeddedView;
 import org.eclipse.ice.client.widgets.jme.FlightCamera;
@@ -18,6 +19,7 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -62,6 +64,20 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 	 */
 	private final List<Light> lights;
 	// -------------------------- //
+
+	/**
+	 * The default position of the view's camera.
+	 */
+	private final Vector3f defaultPosition = new Vector3f(10f, 0f, 0f);
+	/**
+	 * The default direction in which the view's camera points.
+	 */
+	private final Vector3f defaultDirection = new Vector3f(-1f, 0f, 0f);
+	/**
+	 * The default up direction for the view's camera. This should always be
+	 * orthogonal to the default direction vector.
+	 */
+	private final Vector3f defaultUp = new Vector3f(Vector3f.UNIT_Z);
 
 	/**
 	 * The default constructor.
@@ -354,9 +370,8 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 	// ---------------------------------------- //
 
 	/**
-	 * Overrides the default {@link FlightCamera} and initializes it to look at
-	 * the origin from the positive x axis, with the positive z axis up and
-	 * positive y axis right.
+	 * Overrides the default view camera to set its initial location based on
+	 * the default position and orientation.
 	 */
 	@Override
 	public Object createViewCamera(EmbeddedView view) {
@@ -365,14 +380,89 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 		if (cam != null) {
 			FlightCamera flyCam = (FlightCamera) cam;
 
-			// Position the camera 10 units up the x axis.
-			flyCam.setPosition(new Vector3f(10f, 0f, 0f));
-			// Orient the camera to look down the x axis, with the positive z
-			// axis pointing up.
-			flyCam.setOrientation(new Vector3f(-1f, 0f, 0f), Vector3f.UNIT_Z);
+			// Set the default position and orientation.
+			flyCam.setPosition(defaultPosition);
+			flyCam.setOrientation(defaultDirection, defaultUp);
 		}
 
 		return cam;
+	}
+
+	/**
+	 * Sets the default position of the view's camera.
+	 * 
+	 * @param position
+	 *            The new default position. If null, an exception is thrown.
+	 */
+	public void setDefaultCameraPosition(Vector3f position) {
+		// Check for nulls first.
+		if (position == null) {
+			throw new IllegalArgumentException(
+					"PlantAppState error: "
+							+ "Null arguments not accepted for setting the default camera position.");
+		}
+
+		// Update the default position.
+		defaultPosition.set(position);
+
+		return;
+	}
+
+	/**
+	 * Sets the default orientation of the view's camera.
+	 * 
+	 * @param direction
+	 *            The new default direction in which the camera will point. If
+	 *            null, an exception is thrown.
+	 * @param up
+	 *            The new default up direction. If null or if it is not
+	 *            orthogonal to the camera direction, an exception is thrown.
+	 */
+	public void setDefaultCameraOrientation(Vector3f direction, Vector3f up) {
+		// Check for nulls first.
+		if (direction == null || up == null) {
+			throw new IllegalArgumentException("FlightCamera error: "
+					+ "Null arguments not accepted for orienting the camera.");
+		}
+		// Make sure the direction and up vectors are orthogonal.
+		else if (FastMath.abs(direction.dot(up)) > 1e-5f
+				|| direction.equals(up)) {
+			throw new IllegalArgumentException("FlightCamera error: "
+					+ "Direction and up vector are not orthogonal.");
+		}
+
+		// Update the default orientation.
+		defaultDirection.set(direction);
+		defaultUp.set(up);
+
+		return;
+	}
+
+	/**
+	 * Resets the plant view's camera to its default position and orientation.
+	 * 
+	 * @see #setDefaultCameraPosition(Vector3f)
+	 * @see #setDefaultCameraOrientation(Vector3f, Vector3f)
+	 */
+	public void resetCamera() {
+		// Get the camera if it exists.
+		final EmbeddedView view = getEmbeddedView();
+		final FlightCamera flyCam = (view != null ? (FlightCamera) view
+				.getViewCamera() : null);
+
+		// If the camera exists, reset its position and orientation.
+		if (flyCam != null) {
+			enqueue(new Callable<Boolean>() {
+				@Override
+				public Boolean call() throws Exception {
+					flyCam.setPosition(defaultPosition);
+					flyCam.setOrientation(defaultDirection, defaultUp);
+					return true;
+				}
+			});
+		}
+
+		return;
 	}
 
 	// ---- Getters and Setters ---- //
