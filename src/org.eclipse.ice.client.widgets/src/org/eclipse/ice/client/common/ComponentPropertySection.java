@@ -106,8 +106,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 		super.createControls(parent, aTabbedPropertySheetPage);
 
 		// Get the default background color (white).
-		Color backgroundColor = Display.getCurrent().getSystemColor(
-				SWT.COLOR_WHITE);
+		Color backgroundColor = parent.getBackground();
 
 		// Create a section for the data composites.
 		section = getWidgetFactory().createSection(parent,

@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
@@ -27,7 +25,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.widgets.ColumnLayout;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -66,37 +64,6 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * The number of times that the SectionPart has been updated from the UI.
-	 * This attribute is used to determine if a redraw is necessary because of a
-	 * change to the DataComponent that the ICESectionPart is observing. If all
-	 * of the udpates happen through the ICESectionPart, this number will be
-	 * exactly equal to the total number of updates, totalNumUpdates.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private int uiUpdateCount;
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The total number of updates from both the UI and unspecified changes to
-	 * the underlying DataComponent (reported through the Listener). This number
-	 * is compared to the number of updates from the UI, uiUpdateCount, to
-	 * determine if a redraw is necessary. If uiUpdateCount is less than
-	 * totalNumUpdates, a redraw is required. If the two numbers are equal, no
-	 * redraw is required.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private int totalNumUpdates;
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Eclipse Managed Form in which the SectionPart will be rendered.
 	 * </p>
 	 * <!-- end-UML-doc -->
@@ -126,11 +93,6 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 	 * The custom data component composite that is used for this section.
 	 */
 	private DataComponentComposite dataComposite = null;
-
-	/**
-	 * A map of Entries to the Composites that define them
-	 */
-	private ConcurrentHashMap<Integer, EntryComposite> entryMap = new ConcurrentHashMap<Integer, EntryComposite>();
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -177,6 +139,8 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 			throw new RuntimeException("ManagedForm in ICEFormSectionPart "
 					+ "constructor cannot be null.");
 		}
+
+		return;
 		// end-user-code
 	}
 
@@ -195,7 +159,8 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 		// begin-user-code
 
 		// Local Declarations
-		Section section = this.getSection();
+		final Section section = getSection();
+		final FormToolkit formToolkit = editor.getHeaderForm().getToolkit();
 
 		// Set an expansion listener
 		section.addExpansionListener(new ExpansionAdapter() {
@@ -209,24 +174,26 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 		// Set the section properties
 		setSectionProperties();
 
-		// Create the SectionClient
-		sectionClient = parentForm.getToolkit().createComposite(section,
-				SWT.NONE);
-		// Use the custom data component composite to render the data component
-		dataComposite = new DataComponentComposite(dataComp, sectionClient,
-				SWT.FLAT);
+		// Create the Section client. Note that in this case it is a
+		// DataComponentComposite. Since it is a custom Composite, we must adapt
+		// it to the default Form style.
+		dataComposite = new DataComponentComposite(dataComp, section, SWT.FLAT);
+		sectionClient = dataComposite;
+		formToolkit.adapt(dataComposite);
+
+		// Set the DataComponentComposite's reference to the FormToolKit so that
+		// its child Composites can be decorated.
+		dataComposite.formToolkit = formToolkit;
 
 		// Create a listener that will mark the form as dirty when the event is
 		// received.
 		Listener listener = new Listener() {
 			@Override
 			public void handleEvent(Event e) {
-
 				// Change the editor state
 				editor.setDirty(true);
 			}
 		};
-
 		// Register the Listener
 		dataComposite.addListener(SWT.Selection, listener);
 
@@ -234,21 +201,14 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 		dataComposite.setMessageManager(editor.getHeaderForm()
 				.getMessageManager());
 
-		// Set the data composite's layout. This arranges the composite to be a
-		// tight column.
-
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.marginLeft = 5;
-		gridLayout.marginTop = 5;
-		gridLayout.marginRight = 5;
-		gridLayout.marginBottom = 5;
-		gridLayout.verticalSpacing = 0;
-		dataComposite.setLayout(gridLayout);
-		sectionClient.setLayout(new ColumnLayout());
+		// Set the data composite's layout to a single column GridLayout. This
+		// overrides the default layout used by DataComponentComposite.
+		sectionClient.setLayout(new GridLayout());
 
 		// Give the Section its client
 		section.setClient(sectionClient);
 
+		return;
 		// end-user-code
 	}
 
@@ -297,7 +257,6 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 	 */
 	public DataComponent getDataComponent() {
 		// begin-user-code
-
 		return dataComposite.getDataComponent();
 		// end-user-code
 	}

@@ -15,7 +15,9 @@ package org.eclipse.ice.client.widgets.moose;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
+import org.eclipse.ice.client.widgets.ICEFormInput;
 import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.client.widgets.ICESectionPage;
 import org.eclipse.ice.client.widgets.jme.ViewFactory;
@@ -37,20 +39,18 @@ import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -62,6 +62,8 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+
+import com.jme3.math.Vector3f;
 
 /**
  * This class extends the default {@link ICEFormEditor} to enable it to draw a
@@ -302,76 +304,63 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	@Override
 	protected void createHeaderContents(IManagedForm headerForm) {
 
-		// Local Declarations
-		org.eclipse.ui.forms.widgets.Form pageForm = null;
+		// Get the Form that provides the common header and decorate it.
+		org.eclipse.ui.forms.widgets.Form form = headerForm.getForm().getForm();
+		FormToolkit formToolkit = headerForm.getToolkit();
+		formToolkit.decorateFormHeading(form);
 
-		// Get the Form that provides the common header
-		pageForm = headerForm.getForm().getForm();
+		// Create a composite for the overall head layout.
+		Composite headClient = new Composite(form.getHead(), SWT.NONE);
 
-		// Set the decoration
-		headerForm.getToolkit().decorateFormHeading(pageForm);
-
-		// Create a composite for the overall head layout
-		Composite head = pageForm.getHead();
-		Composite gridComposite = new Composite(head, SWT.NONE);
-		Composite processComposite = null;
-
-		// Set the composite's layout
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
-		gridComposite.setLayout(gridLayout);
+		// Set the layout to a GridLayout. It will contain separate columns for
+		// the description and, if applicable, process widgets (a label, a
+		// dropdown, and go/cancel buttons).
+		GridLayout gridLayout = new GridLayout(1, false);
+		headClient.setLayout(gridLayout);
 
 		// Create a label to take up the first space and provide the
 		// description of the Form.
-		Label descLabel = new Label(gridComposite, SWT.WRAP);
+		Label descLabel = new Label(headClient, SWT.WRAP);
 		descLabel.setText(iceDataForm.getDescription());
 
 		// Create the GridData for the label. It must take up all of the
-		// available horizontal space, but resize with the shell to within
-		// the widthHint.
-		GridData labelGridData = new GridData(GridData.GRAB_HORIZONTAL);
-		labelGridData.horizontalSpan = 1;
-		labelGridData.widthHint = 10;
-		labelGridData.horizontalAlignment = SWT.FILL;
-		descLabel.setLayoutData(labelGridData);
-		// The next trick actually gets it to work. It forces the Composite
-		// to calculate the correct size and then updates the size of the label.
-		gridComposite.pack();
-		labelGridData.widthHint = descLabel.getBounds().width;
-		gridComposite.pack();
+		// available horizontal space, but capable of shrinking down to the
+		// minimum width.
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		// For the minimum width, pick a length based on the average character
+		// width with the label's font. Use, say, 35 characters.
+		GC gc = new GC(descLabel);
+		int widthOf50Chars = gc.getFontMetrics().getAverageCharWidth() * 35;
+		gc.dispose();
+		// We set the min width so the label won't shrink below that width. We
+		// set the width hint to the same value so the widget won't compute its
+		// size base on SWT.DEFAULT (if this is the case, it won't wrap).
+		gridData.minimumWidth = widthOf50Chars;
+		gridData.widthHint = widthOf50Chars;
+		descLabel.setLayoutData(gridData);
 
 		// Create the process label, button and dropdown if the action list is
 		// available
 		if (iceDataForm.getActionList() != null) {
-			// Create the composite for containing the process widgets
-			processComposite = new Composite(gridComposite, SWT.NONE);
-			processComposite.setLayout(new RowLayout());
 
 			// Create the output file label
-			Label outputLabel = new Label(processComposite, SWT.NONE);
+			Label outputLabel = new Label(headClient, SWT.NONE);
 			outputLabel.setText("Output File Name:");
 
 			// Create the output file text box
-			final Text outputFileText = new Text(processComposite, SWT.LEFT
+			final Text outputFileText = new Text(headClient, SWT.LEFT
 					| SWT.BORDER);
-			IEditorInput editorInput = this.getEditorInput();
-			Form form = ((org.eclipse.ice.client.widgets.ICEFormInput) editorInput)
-					.getForm();
-			DataComponent dataComp = (DataComponent) form
+			ICEFormInput formInput = (ICEFormInput) getEditorInput();
+			Form dataForm = formInput.getForm();
+			DataComponent dataComp = (DataComponent) dataForm
 					.getComponent(MOOSEModel.fileDataComponentId);
-			final org.eclipse.ice.datastructures.form.Entry entry = dataComp
-					.retrieveEntry("Output File Name");
+			final Entry entry = dataComp.retrieveEntry("Output File Name");
 			outputFileText.setToolTipText(entry.getDescription());
 			outputFileText.setText(entry.getValue());
-			outputFileText.setBackground(Display.getCurrent().getSystemColor(
-					SWT.COLOR_WHITE));
+			// Adapt the text's visual appearance to Form defaults.
+			formToolkit.adapt(outputFileText, true, false);
 			// Add the Focus Listeners
-			outputFileText.addFocusListener(new FocusListener() {
-				@Override
-				public void focusGained(FocusEvent e) {
-					// Do nothing.
-				};
-
+			outputFileText.addFocusListener(new FocusAdapter() {
 				@Override
 				public void focusLost(FocusEvent e) {
 					// Set the value of the Entry
@@ -382,11 +371,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			});
 
 			// Create a label for the process buttons
-			Label processLabel = new Label(processComposite, SWT.NONE);
+			Label processLabel = new Label(headClient, SWT.NONE);
 			processLabel.setText("Process:");
 
 			// Create the dropdown menu
-			processDropDown = new Combo(processComposite, SWT.DROP_DOWN
+			processDropDown = new Combo(headClient, SWT.DROP_DOWN
 					| SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
 			for (String i : iceDataForm.getActionList()) {
 				processDropDown.add(i);
@@ -395,17 +384,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			processName = iceDataForm.getActionList().get(0);
 			processDropDown.select(0);
 			// Add the dropdown listener
-			processDropDown.addSelectionListener(new SelectionListener() {
-
+			processDropDown.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					// Set the action value to use when processing
-					processName = processDropDown.getItem(processDropDown
-							.getSelectionIndex());
-				}
-
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
 					// Set the action value to use when processing
 					processName = processDropDown.getItem(processDropDown
 							.getSelectionIndex());
@@ -413,41 +394,53 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			});
 
 			// Create the button to process the Form
-			goButton = new Button(processComposite, SWT.PUSH);
+			goButton = new Button(headClient, SWT.PUSH);
 			goButton.setText("Go!");
 
 			// Set the button's listener and process command
 			goButton.addSelectionListener(new SelectionAdapter() {
-
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// Process the Form
 					notifyProcessListeners(processName);
 				}
-
 			});
 
 			// Create the button to cancel the process
-			cancelButton = new Button(processComposite, SWT.PUSH);
+			cancelButton = new Button(headClient, SWT.PUSH);
 			cancelButton.setText("Cancel");
 
 			// Set the button's listener and process command
 			cancelButton.addSelectionListener(new SelectionAdapter() {
-
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// Process the Form
 					notifyCancelListeners(processName);
 				}
-
 			});
 
+			// Since we have more widgets, add more columns to the GridLayout.
+			// All of these new widgets should grab what horizontal space they
+			// need but be vertically centered.
+			gridLayout.numColumns += 6;
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			outputLabel.setLayoutData(gridData);
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			outputFileText.setLayoutData(gridData);
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			processLabel.setLayoutData(gridData);
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			processDropDown.setLayoutData(gridData);
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			goButton.setLayoutData(gridData);
+			gridData = new GridData(SWT.FILL, SWT.CENTER, false, true);
+			cancelButton.setLayoutData(gridData);
 		}
 		// Set the processComposite as the Form's head client
-		pageForm.setHeadClient(gridComposite);
+		form.setHeadClient(headClient);
 
 		// Set Form name
-		pageForm.setText(iceDataForm.getName() + " " + iceDataForm.getId());
+		form.setText(iceDataForm.getName() + " " + iceDataForm.getId());
 
 		return;
 	}
@@ -533,6 +526,59 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								plantView.setWireframe(wireframe);
 							}
 						});
+
+						// Add a new menu with the following options:
+						// Reset the camera - resets the camera's orientation
+						// YZ - sets the camera to view the YZ plane
+						// XY - sets the camera to view the XY plane
+						// ZX - sets the camera to view the ZX plane
+						ActionTree cameraTree = new ActionTree(
+								"Camera Orientation");
+						cameraTree.add(new ActionTree(new Action(
+								"Reset to current default") {
+							@Override
+							public void run() {
+								plantView.resetCamera();
+							}
+						}));
+						cameraTree.add(new ActionTree(new Action(
+								"YZ (Y right, Z up - initial default)") {
+							@Override
+							public void run() {
+								Vector3f position = new Vector3f(10f, 0f, 0f);
+								Vector3f dir = new Vector3f(-1f, 0f, 0f);
+								Vector3f up = Vector3f.UNIT_Z;
+								plantView.setDefaultCameraPosition(position);
+								plantView.setDefaultCameraOrientation(dir, up);
+								plantView.resetCamera();
+							}
+						}));
+						cameraTree.add(new ActionTree(new Action(
+								"XY (X right, Y up)") {
+							@Override
+							public void run() {
+								Vector3f position = new Vector3f(0f, 0f, 10f);
+								Vector3f dir = new Vector3f(0f, 0f, -1f);
+								Vector3f up = Vector3f.UNIT_Y;
+								plantView.setDefaultCameraPosition(position);
+								plantView.setDefaultCameraOrientation(dir, up);
+								plantView.resetCamera();
+							}
+						}));
+						cameraTree.add(new ActionTree(new Action(
+								"ZX (Z right, X up)") {
+							@Override
+							public void run() {
+								Vector3f position = new Vector3f(0f, 10f, 0f);
+								Vector3f dir = new Vector3f(0f, -1f, 0f);
+								Vector3f up = Vector3f.UNIT_X;
+								plantView.setDefaultCameraPosition(position);
+								plantView.setDefaultCameraOrientation(dir, up);
+								plantView.resetCamera();
+							}
+						}));
+						toolBarManager.add(cameraTree.getContributionItem());
+
 						// Create the ToolBar and set its layout.
 						ToolBar toolBar = toolBarManager
 								.createControl(analysisComposite);
@@ -542,7 +588,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 						// Create the plant view.
 						plantView = new ViewFactory().createPlantView(plant);
-
+						
 						// Render the plant view in the analysis Composite.
 						Composite plantComposite = plantView
 								.createComposite(analysisComposite);

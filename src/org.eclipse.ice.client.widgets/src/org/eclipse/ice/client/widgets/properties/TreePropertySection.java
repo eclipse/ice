@@ -192,9 +192,8 @@ public class TreePropertySection extends AbstractPropertySection implements
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 
-		// Get the default background color (white).
-		Color backgroundColor = Display.getCurrent().getSystemColor(
-				SWT.COLOR_WHITE);
+		// Get the default background color.
+		Color backgroundColor = parent.getBackground();
 
 		// Create a section for the data composites.
 		section = getWidgetFactory().createSection(parent,

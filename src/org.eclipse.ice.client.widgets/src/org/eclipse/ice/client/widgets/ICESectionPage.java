@@ -12,39 +12,32 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.ice.datastructures.form.MatrixComponent;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.form.TimeDataComponent;
+import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
+import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ice.datastructures.form.geometry.IShape;
+import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.forms.events.IExpansionListener;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -114,17 +107,6 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * The number of columns in the page's layout.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private int numColumns;
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The list of MatrixComponents that is formed by visiting the Components
 	 * assigned to this page.
 	 * </p>
@@ -134,8 +116,6 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<MatrixComponent> matrixComponents;
-
-	private int colspan;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -178,6 +158,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		dataComponents = new ArrayList<DataComponent>();
 		tableComponents = new ArrayList<TableComponent>();
 		matrixComponents = new ArrayList<MatrixComponent>();
+
+		return;
 		// end-user-code
 	}
 
@@ -194,10 +176,14 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	protected void createFormContent(IManagedForm managedForm) {
 		// begin-user-code
 
-		// Local Declarations
-		final ScrolledForm form = managedForm.getForm();
+		// Get the parent form.
+		final ScrolledForm scrolledForm = managedForm.getForm();
+
+		// Set a GridLayout with a single column. Remove the default margins.
 		GridLayout layout = new GridLayout(1, false);
-		form.getBody().setLayout(layout);
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		scrolledForm.getBody().setLayout(layout);
 
 		// Set the class reference to the managed form
 		managedFormRef = managedForm;
@@ -258,43 +244,9 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 */
 	public void addComponent(Component component) {
 		// begin-user-code
-
 		if (component != null) {
 			// Visit the components so that they can be sorted
 			component.accept(this);
-
-		}
-
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation determines the proper layout and number of columns for the
-	 * ICESectionPage based on the number of DataComponents and TableComponents
-	 * and their properties.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private void setProperLayout() {
-		// begin-user-code
-
-		// Determine contents of the list
-		// Set layout properties according to the list contents
-		if (tableComponents.isEmpty()) {
-			numColumns = 4;
-		} else {
-			numColumns = 2;
-		}
-
-		if (dataComponents.size() == 1) {
-			colspan = 1;
-		} else {
-			colspan = 2;
 		}
 		// end-user-code
 	}
@@ -315,35 +267,60 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	private void createDataComponentSections() {
 		// begin-user-code
 
-		// Local Declarations
+		// Get the parent form and the ToolKit to create decorated Sections.
 		final ScrolledForm scrolledForm = managedFormRef.getForm();
-		FormToolkit formToolkit = managedFormRef.getToolkit();
-		Composite editorComposite = formToolkit.createComposite(
-				scrolledForm.getBody(), SWT.NONE);
-		ICEDataComponentSectionPart tmpSectionPart = null;
+		final FormToolkit formToolkit = managedFormRef.getToolkit();
 
-		// Create the DataComponents
-		for (int i = 0; i < dataComponents.size(); i++) {
+		// Each DataComponent will get its own Section. These Sections will be
+		// spread horizontally and will take all available horizontal (but not
+		// vertical) space offered by the Form.
+
+		// We want each DataComponent Section to be at least 100 pixels wide.
+		// Compute the total width used by these Sections.
+		int numDataComponents = dataComponents.size();
+		int minWidth = numDataComponents * 100;
+
+		// Create a Composite with horizontal GridLayout to contain the
+		// Sections. Use the custom Composite with the computed min width so the
+		// horizontal scroll bar is not used unless the width is less than the
+		// computed min width.
+		Composite dataGridComposite = new ScrollClientComposite(
+				scrolledForm.getBody(), SWT.NONE, minWidth);
+		// Since we cannot use the FormToolKit to create the custom Composite,
+		// we must "adapt" the custom Composite.
+		formToolkit.adapt(dataGridComposite);
+		GridLayout layout = new GridLayout(numDataComponents, true);
+		// Remove the margins from the layout.
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		dataGridComposite.setLayout(layout);
+
+		// The DataComponent Sections should only grab what vertical space they
+		// need, so set the containing Composite's GridData to only grab and
+		// fill excess horizontal space.
+		dataGridComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				false));
+
+		// Create the DataComponent Sections.
+		for (int i = 0; i < numDataComponents; i++) {
+			// Create a new Section for the current DataComponent.
 			DataComponent dataComponent = dataComponents.get(i);
-			// Create a Section
-			Section section = formToolkit.createSection(editorComposite,
+			Section section = formToolkit.createSection(dataGridComposite,
 					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
 							| Section.EXPANDED | Section.COMPACT);
-			// Create a SectionPart
-			tmpSectionPart = new ICEDataComponentSectionPart(section, editor,
-					managedFormRef);
-			tmpSectionPart.setDataComponent(dataComponent);
-			tmpSectionPart.renderSection();
-			// Add the part to the ManagedForm's update lifecycle
-			managedFormRef.addPart(tmpSectionPart);
-			// Set the color gradient on the Form's menu bar. The Form in this
-			// case is the instance of the Form owned by the ScrolledForm.
-			formToolkit.decorateFormHeading(scrolledForm.getForm());
-		}
+			// Each Section should grab all available space it can get within
+			// the containing Composite created above this loop.
+			section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		// Layout the composite and sash form
-		editorComposite.setLayout(new FillLayout());
-		editorComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			// To populate the Section, use a new ICEDataComponentSectionPart.
+			ICEDataComponentSectionPart sectionPart;
+			sectionPart = new ICEDataComponentSectionPart(section, editor,
+					managedFormRef);
+			sectionPart.setDataComponent(dataComponent);
+			sectionPart.renderSection();
+			// Add the part to the ManagedForm's update lifecycle.
+			managedFormRef.addPart(sectionPart);
+		}
 
 		return;
 		// end-user-code
@@ -365,31 +342,37 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	private void createTableComponentSections() {
 		// begin-user-code
 
-		// Local Declarations
+		// Get the parent form and the ToolKit to create decorated Sections.
 		final ScrolledForm scrolledForm = managedFormRef.getForm();
-		FormToolkit formToolkit = managedFormRef.getToolkit();
-		ICETableComponentSectionPart tmpSectionPart = null;
+		final FormToolkit formToolkit = managedFormRef.getToolkit();
 
-		// Create the TableComponents
+		// Each TableComponent will get is own Section that occupies a single
+		// row in the parent GridLayout (that is, the Form's GridLayout). The
+		// rows will grab all excess vertical and horizontal space available in
+		// the Form.
+
+		// Create the TableComponent Sections.
+		Composite container = scrolledForm.getBody();
 		for (int i = 0; i < tableComponents.size(); i++) {
+			// Create a new Section for the current TableComponent.
 			TableComponent tableComponent = tableComponents.get(i);
-			// Create a Section
-			Section section = formToolkit.createSection(scrolledForm.getBody(),
+			Section section = formToolkit.createSection(container,
 					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
 							| Section.EXPANDED);
-			section.setLayoutData(new GridData(GridData.FILL_BOTH));
-			// Create a SectionPart
-			tmpSectionPart = new ICETableComponentSectionPart(section, editor,
+			// Each Section should fill all available horizontal and vertical
+			// space in the parent GridLayout, but it should only grab excess
+			// horizontal space.
+			section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+			// To populate the Section, use an ICETableComponentSectionPart.
+			ICETableComponentSectionPart sectionPart;
+			sectionPart = new ICETableComponentSectionPart(section, editor,
 					managedFormRef);
-			tmpSectionPart.setTableComponent(tableComponent);
-			tmpSectionPart.renderSection();
-			// Add the part to the ManagedForm's update lifecycle
-			managedFormRef.addPart(tmpSectionPart);
-			// Set the color gradient on the Form's menu bar. The Form in this
-			// case is the instance of the Form owned by the ScrolledForm.
-			formToolkit.decorateFormHeading(scrolledForm.getForm());
+			sectionPart.setTableComponent(tableComponent);
+			sectionPart.renderSection();
+			// Add the part to the ManagedForm's update lifecycle.
+			managedFormRef.addPart(sectionPart);
 		}
-		// Layout the composite and sash form
 
 		return;
 		// end-user-code
@@ -411,34 +394,43 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	private void createMatrixComponentSections() {
 		// begin-user-code
 
-		// Local Declarations
+		// Get the parent form and the ToolKit to create decorated Sections.
 		final ScrolledForm scrolledForm = managedFormRef.getForm();
-		FormToolkit formToolkit = managedFormRef.getToolkit();
-		Composite editorComposite = formToolkit.createComposite(
-				scrolledForm.getBody(), SWT.NONE);
-		ICEMatrixComponentSectionPart tmpSectionPart = null;
+		final FormToolkit formToolkit = managedFormRef.getToolkit();
 
+		// Each MatrixComponent will get its own Section. These Sections will be
+		// spread horizontally and will take all remaining available horizontal
+		// and vertical space offered by the Form.
+
+		// Create a Composite to wrap the MatrixComponent Sections. As specified
+		// above, it should have a default horizontal FillLayout.
+		Composite matrixGridComposite = formToolkit.createComposite(
+				scrolledForm.getBody(), SWT.NONE);
+		matrixGridComposite.setLayout(new FillLayout());
+
+		// The MatrixComponentSections should grab all remaining space.
+		matrixGridComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+				true, true));
+
+		// Create the MatrixComponent Sections.
 		for (int i = 0; i < matrixComponents.size(); i++) {
+			// Create a new Section for the current MatrixComponent.
 			MatrixComponent matrixComponent = matrixComponents.get(i);
-			// Create a Section
-			Section section = formToolkit.createSection(editorComposite,
+			Section section = formToolkit.createSection(matrixGridComposite,
 					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
 							| Section.EXPANDED);
-			// Create a SectionPart
-			tmpSectionPart = new ICEMatrixComponentSectionPart(section, editor,
-					managedFormRef);
-			tmpSectionPart.setMatrixComponent(matrixComponent);
-			tmpSectionPart.renderSection();
-			// Add the part to the ManagedForm's update lifecycle
-			managedFormRef.addPart(tmpSectionPart);
-			// Set the color gradient on the Form's menu bar. The Form in this
-			// case is the instance of the Form owned by the ScrolledForm.
-			formToolkit.decorateFormHeading(scrolledForm.getForm());
+			// No layout data needs to be set because the matrixGridComposite
+			// uses a FillLayout.
 
+			// To populate the Section, use an ICEMatrixComponentSectionPart.
+			ICEMatrixComponentSectionPart sectionPart;
+			sectionPart = new ICEMatrixComponentSectionPart(section, editor,
+					managedFormRef);
+			sectionPart.setMatrixComponent(matrixComponent);
+			sectionPart.renderSection();
+			// Add the part to the ManagedForm's update lifecycle
+			managedFormRef.addPart(sectionPart);
 		}
-		// Layout the composite and sash form
-		editorComposite.setLayout(new FillLayout());
-		editorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		return;
 		// end-user-code
@@ -471,8 +463,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 */
 	public void visit(ResourceComponent component) {
 		// begin-user-code
-		// TODO Auto-generated method stub
-
+		// Nothing to do yet.
 		// end-user-code
 	}
 
@@ -521,8 +512,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 */
 	public void visit(IShape component) {
 		// begin-user-code
-		// TODO Auto-generated method stub
-
+		// Nothing to do yet.
 		// end-user-code
 	}
 
@@ -535,8 +525,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 */
 	public void visit(GeometryComponent component) {
 		// begin-user-code
-		// TODO Auto-generated method stub
-
+		// Nothing to do yet.
 		// end-user-code
 	}
 
@@ -549,8 +538,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 */
 	public void visit(MasterDetailsComponent component) {
 		// begin-user-code
-		// TODO Auto-generated method stub
-
+		// Nothing to do yet.
 		// end-user-code
 	}
 
@@ -563,8 +551,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 */
 	public void visit(TreeComposite component) {
 		// begin-user-code
-		// TODO Auto-generated method stub
-
+		// Nothing to do yet.
 		// end-user-code
 	}
 
@@ -577,11 +564,17 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 */
 	public void visit(IReactorComponent component) {
 		// begin-user-code
-		// TODO Auto-generated method stub
-
+		// Nothing to do yet.
 		// end-user-code
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
+	 * (org.eclipse.ice.datastructures.form.TimeDataComponent)
+	 */
 	@Override
 	public void visit(TimeDataComponent component) {
 
@@ -594,23 +587,40 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
+	 * (org.eclipse.ice.datastructures.form.mesh.MeshComponent)
+	 */
 	@Override
 	public void visit(MeshComponent component) {
-		// TODO Auto-generated method stub
-
+		// Nothing to do yet.
 	}
 
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
+	 * (org.eclipse.ice.datastructures.form.AdaptiveTreeComposite)
+	 */
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
-		// TODO Auto-generated method stub
-
+		// Nothing to do yet.
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
+	 * (org.eclipse.ice.datastructures.form.emf.EMFComponent)
+	 */
 	@Override
 	public void visit(EMFComponent component) {
-		// TODO Auto-generated method stub
-		
+		// Nothing to do yet.
 	}
 
 }

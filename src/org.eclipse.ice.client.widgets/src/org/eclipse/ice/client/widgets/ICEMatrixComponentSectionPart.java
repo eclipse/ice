@@ -14,15 +14,13 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.SectionPart;
-
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
-
+import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -36,11 +34,9 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.window.ToolTip;
-import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -48,11 +44,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * <!-- begin-UML-doc -->
@@ -143,7 +141,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		 * <!-- end-UML-doc -->
 		 * 
 		 */
-		private ArrayList<Double> list;
+		private List<Double> list;
 
 		/**
 		 * <!-- begin-UML-doc -->
@@ -180,7 +178,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		 * <!-- end-UML-doc -->
 		 * 
 		 */
-		public ArrayList<Double> getRowWrapper() {
+		public List<Double> getRowWrapper() {
 			return list;
 		}
 
@@ -452,8 +450,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 
 				try {
 					input = Double.parseDouble((String) value);
-					boolean success = matrixComponent.setElementValue(
-							row.getRowIndex(), counter, input);
+					matrixComponent.setElementValue(row.getRowIndex(), counter,
+							input);
 				} catch (NumberFormatException ex) {
 					System.out.println("Invalid Matrix Element.");
 				}
@@ -571,7 +569,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		// Also create a String array list to handle conversion of
 		// MatrixComponents AllowedValues from Double to String (needed by JFace
 		// Viewer Model)
-		ArrayList<String> stringArray = new ArrayList<String>();
+		List<String> stringArray = new ArrayList<String>();
 
 		// For each Column, set the appropriate CellEditor
 		for (int i = 0; i < matrixComponent.numberOfColumns(); i++) {
@@ -724,6 +722,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		// Set the Composite on this Section
 		section.setClient(sectionClient);
 
+		return;
 		// end-user-code
 	}
 
@@ -818,14 +817,13 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							for (int i = nCols + 1; i <= matrixComponent
 									.numberOfColumns(); i++) {
 
-								ArrayList list = new ArrayList(Arrays
-										.asList(matrixViewer.getCellEditors()));
+								List<CellEditor> editorList = new ArrayList<CellEditor>(
+										Arrays.asList(matrixViewer
+												.getCellEditors()));
 								// Create an Array to hold default Strings for
-								// the
-								// case
-								// when this MatrixComponent has Discrete
-								// AllowedValueType
-								ArrayList<String> stringArray = new ArrayList<String>();
+								// the case when this MatrixComponent has
+								// Discrete AllowedValueType
+								List<String> stringArray = new ArrayList<String>();
 								// If this Matrix is Discrete, set up Combo Cell
 								// Editors
 								if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
@@ -837,10 +835,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 									((ComboBoxViewerCellEditor) ed)
 											.setContentProvider(new ArrayContentProvider());
 									// Here we need to convert the Doubles to
-									// Strings,
-									// because the underlying JFace Viewer model
-									// is
-									// expecting Strings.
+									// Strings, because the underlying JFace
+									// Viewer model is expecting Strings.
 									for (Double d : matrixComponent
 											.getAllowedValues()) {
 										stringArray.add(d.toString());
@@ -851,32 +847,32 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 											.setInput(stringArray);
 									stringArray.clear();
 									// Add the new Cell Editor to the list
-									list.add(ed);
+									editorList.add(ed);
 								} else {
 									// If the elements do not have to be
-									// Discrete,
-									// just add
-									// a new TextCellEditor
-									list.add(new TextCellEditor(matrixViewer
-											.getTable()));
+									// Discrete, just add a new TextCellEditor
+									editorList.add(new TextCellEditor(
+											matrixViewer.getTable()));
 								}
 								// Create a primitive Array of these new
 								// CellEditors
-								CellEditor[] editors = new CellEditor[list
+								CellEditor[] editors = new CellEditor[editorList
 										.size()];
-								list.toArray(editors);
+								editorList.toArray(editors);
 								// Set the CellEditors
 								matrixViewer.setCellEditors(editors);
 
 								// We must do the same thing with the Column
 								// Properties
-								list = new ArrayList(Arrays.asList(matrixViewer
-										.getColumnProperties()));
-								list.add(String.valueOf(matrixComponent
-										.numberOfColumns() - 1));
-								String[] columnProperties = new String[list
+								List<Object> columnPropertyList = new ArrayList<Object>(
+										Arrays.asList(matrixViewer
+												.getColumnProperties()));
+								columnPropertyList.add(String
+										.valueOf(matrixComponent
+												.numberOfColumns() - 1));
+								String[] columnProperties = new String[columnPropertyList
 										.size()];
-								list.toArray(columnProperties);
+								columnPropertyList.toArray(columnProperties);
 								// Set the Column Properties
 								matrixViewer
 										.setColumnProperties(columnProperties);
@@ -980,24 +976,22 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				addButton.setText("+");
 
 				// Set a selection listener
-				addButton.addSelectionListener(new SelectionListener() {
+				addButton.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						if (matrixComponent != null && matrixViewer != null) {
 							// Add a Row to the MatrixComponent. Since it is
-							// square,
-							// this will also add a Column
+							// square, this will also add a Column
 							matrixComponent.addRow();
 
 							// We need to get the old set of CellEditors and add
 							// to it
-							ArrayList list = new ArrayList(Arrays
-									.asList(matrixViewer.getCellEditors()));
+							List<CellEditor> cellEditorList = new ArrayList<CellEditor>(
+									Arrays.asList(matrixViewer.getCellEditors()));
 							// Create an Array to hold default Strings for the
-							// case
-							// when this MatrixComponent has Discrete
+							// case when this MatrixComponent has Discrete
 							// AllowedValueType
-							ArrayList<String> stringArray = new ArrayList<String>();
+							List<String> stringArray = new ArrayList<String>();
 							// If this Matrix is Discrete, set up Combo Cell
 							// Editors
 							if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
@@ -1008,9 +1002,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 								((ComboBoxViewerCellEditor) ed)
 										.setContentProvider(new ArrayContentProvider());
 								// Here we need to convert the Doubles to
-								// Strings,
-								// because the underlying JFace Viewer model is
-								// expecting Strings.
+								// Strings, because the underlying JFace Viewer
+								// model is expecting Strings.
 								for (Double d : matrixComponent
 										.getAllowedValues()) {
 									stringArray.add(d.toString());
@@ -1021,28 +1014,30 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 										.setInput(stringArray);
 								stringArray.clear();
 								// Add the new Cell Editor to the list
-								list.add(ed);
+								cellEditorList.add(ed);
 							} else {
 								// If the elements do not have to be Discrete,
-								// just add
-								// a new TextCellEditor
-								list.add(new TextCellEditor(matrixViewer
-										.getTable()));
+								// just add a new TextCellEditor
+								cellEditorList.add(new TextCellEditor(
+										matrixViewer.getTable()));
 							}
 							// Create a primitive Array of these new CellEditors
-							CellEditor[] editors = new CellEditor[list.size()];
-							list.toArray(editors);
+							CellEditor[] editors = new CellEditor[cellEditorList
+									.size()];
+							cellEditorList.toArray(editors);
 							// Set the CellEditors
 							matrixViewer.setCellEditors(editors);
 
 							// We must do the same thing with the Column
 							// Properties
-							list = new ArrayList(Arrays.asList(matrixViewer
-									.getColumnProperties()));
-							list.add(String.valueOf(matrixComponent
-									.numberOfColumns() - 1));
-							String[] columnProperties = new String[list.size()];
-							list.toArray(columnProperties);
+							List<Object> columnPropertyList = new ArrayList<Object>(
+									Arrays.asList(matrixViewer
+											.getColumnProperties()));
+							columnPropertyList.add(String
+									.valueOf(matrixComponent.numberOfColumns() - 1));
+							String[] columnProperties = new String[columnPropertyList
+									.size()];
+							columnPropertyList.toArray(columnProperties);
 							// Set the Column Properties
 							matrixViewer.setColumnProperties(columnProperties);
 
@@ -1060,8 +1055,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 									matrixComponent.numberOfColumns() - 1));
 
 							// Create a new Input to set in the JFace Viewer
-							// model that is taken
-							// from the old input
+							// model that is taken from the old input
 							RowWrapper[] rows = (RowWrapper[]) matrixViewer
 									.getInput();
 							RowWrapper[] newRows = new RowWrapper[rows.length + 1];
@@ -1100,10 +1094,6 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							matrixViewer.refresh();
 						}
 					}
-
-					@Override
-					public void widgetDefaultSelected(SelectionEvent e) {
-					}
 				});
 
 				// Sets the GridData to keep the "+" button on the right and
@@ -1125,27 +1115,25 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				deleteButton.setText("-");
 
 				// Add a selection listener
-				deleteButton.addSelectionListener(new SelectionListener() {
+				deleteButton.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						if (matrixComponent != null && matrixViewer != null
 								&& matrixComponent.numberOfRows() > 1) {
 							// Make sure we don't delete a row or column if this
-							// is a 1x1 matrix
-							// Delete a Row from the Matrix Component
-							// This also removes a Column since this matrix
-							// is square
+							// is a 1x1 matrix Delete a Row from the Matrix
+							// Component This also removes a Column since this
+							// matrix is square
 							matrixComponent.deleteRow();
 
 							// We need to get the old set of CellEditors and
 							// add to it
-							ArrayList list = new ArrayList(Arrays
-									.asList(matrixViewer.getCellEditors()));
+							List<CellEditor> cellEditorList = new ArrayList<CellEditor>(
+									Arrays.asList(matrixViewer.getCellEditors()));
 							// Create an Array to hold default Strings for
-							// the case
-							// when this MatrixComponent has Discrete
+							// the case when this MatrixComponent has Discrete
 							// AllowedValueType
-							ArrayList<String> stringArray = new ArrayList<String>();
+							List<String> stringArray = new ArrayList<String>();
 							// If this Matrix is Discrete, set up Combo Cell
 							// Editors
 							if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
@@ -1156,9 +1144,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 								((ComboBoxViewerCellEditor) ed)
 										.setContentProvider(new ArrayContentProvider());
 								// Here we need to convert the Doubles to
-								// Strings,
-								// because the underlying JFace Viewer model
-								// is expecting Strings.
+								// Strings, because the underlying JFace Viewer
+								// model is expecting Strings.
 								for (Double d : matrixComponent
 										.getAllowedValues()) {
 									stringArray.add(d.toString());
@@ -1169,29 +1156,31 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 										.setInput(stringArray);
 								stringArray.clear();
 								// Add the new Cell Editor to the list
-								list.add(ed);
+								cellEditorList.add(ed);
 							} else {
-								// If the elements do not have to be
-								// Discrete, just add
-								// a new TextCellEditor
-								list.add(new TextCellEditor(matrixViewer
-										.getTable()));
+								// If the elements do not have to be Discrete,
+								// just add a new TextCellEditor
+								cellEditorList.add(new TextCellEditor(
+										matrixViewer.getTable()));
 							}
 							// Create a primitive Array of these new
 							// CellEditors
-							CellEditor[] editors = new CellEditor[list.size()];
-							list.toArray(editors);
+							CellEditor[] editors = new CellEditor[cellEditorList
+									.size()];
+							cellEditorList.toArray(editors);
 							// Set the CellEditors
 							matrixViewer.setCellEditors(editors);
 
 							// We must do the same thing with the Column
 							// Properties
-							list = new ArrayList(Arrays.asList(matrixViewer
-									.getColumnProperties()));
-							list.remove(String.valueOf(matrixComponent
-									.numberOfColumns()));
-							String[] columnProperties = new String[list.size()];
-							list.toArray(columnProperties);
+							List<Object> columnPropertyList = new ArrayList<Object>(
+									Arrays.asList(matrixViewer
+											.getColumnProperties()));
+							columnPropertyList.remove(String
+									.valueOf(matrixComponent.numberOfColumns()));
+							String[] columnProperties = new String[columnPropertyList
+									.size()];
+							columnPropertyList.toArray(columnProperties);
 							// Set the Column Properties
 							matrixViewer.setColumnProperties(columnProperties);
 
@@ -1209,8 +1198,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							RowWrapper[] newRows = new RowWrapper[rows.length - 1];
 
 							for (int i = 0; i < matrixComponent.numberOfRows(); i++) {
-								// Remove a column entry from the row
-								// wrappers
+								// Remove a column entry from the row wrappers
 								rows[i].remove();
 								newRows[i] = rows[i];
 							}
@@ -1230,10 +1218,6 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							matrixViewer.refresh();
 
 						}
-					}
-
-					@Override
-					public void widgetDefaultSelected(SelectionEvent e) {
 					}
 				});
 
@@ -1258,72 +1242,56 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				addNonSquareButton.setText("+");
 
 				// Add the Selection Listener
-				addNonSquareButton
-						.addSelectionListener(new SelectionListener() {
+				addNonSquareButton.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						if (matrixComponent != null && matrixViewer != null) {
+							// Add just a single row to this
+							// MatrixComponent
+							matrixComponent.addRow();
 
-							@Override
-							public void widgetSelected(SelectionEvent e) {
-								if (matrixComponent != null
-										&& matrixViewer != null) {
-									// Add just a single row to this
-									// MatrixComponent
-									matrixComponent.addRow();
+							// Create a new input from the old input
+							RowWrapper[] rows = (RowWrapper[]) matrixViewer
+									.getInput();
+							RowWrapper[] newRows = new RowWrapper[rows.length + 1];
 
-									// Create a new input from the old input
-									RowWrapper[] rows = (RowWrapper[]) matrixViewer
-											.getInput();
-									RowWrapper[] newRows = new RowWrapper[rows.length + 1];
-
-									// Add the old rows to the new input, but
-									// add a new row at the end
-									for (int i = 0; i < matrixComponent
-											.numberOfRows(); i++) {
-										if (i == (matrixComponent
-												.numberOfRows() - 1)) {
-											newRows[i] = new RowWrapper(
-													matrixComponent.getRow(i),
-													i);
-										} else {
-											newRows[i] = rows[i];
-										}
-									}
-
-									// Set that Input
-									matrixViewer.setInput(newRows);
-
-									// Resize the column widths
-									int columnWidth = matrixViewer.getTable()
-											.getSize().x
-											/ matrixViewer.getTable()
-													.getColumnCount();
-									for (TableColumn col : matrixViewer
-											.getTable().getColumns()) {
-										col.setWidth(columnWidth);
-									}
-
-									// Refresh the Viewer
-									matrixViewer.refresh();
+							// Add the old rows to the new input, but
+							// add a new row at the end
+							for (int i = 0; i < matrixComponent.numberOfRows(); i++) {
+								if (i == (matrixComponent.numberOfRows() - 1)) {
+									newRows[i] = new RowWrapper(matrixComponent
+											.getRow(i), i);
+								} else {
+									newRows[i] = rows[i];
 								}
 							}
 
-							@Override
-							public void widgetDefaultSelected(SelectionEvent e) {
+							// Set that Input
+							matrixViewer.setInput(newRows);
+
+							// Resize the column widths
+							int columnWidth = matrixViewer.getTable().getSize().x
+									/ matrixViewer.getTable().getColumnCount();
+							for (TableColumn col : matrixViewer.getTable()
+									.getColumns()) {
+								col.setWidth(columnWidth);
 							}
 
-						});
+							// Refresh the Viewer
+							matrixViewer.refresh();
+						}
+					}
+				});
 
 				// Sets the GridData to keep the "+" button on the right and
-				// next
-				// the
-				// "-" button
+				// next the "-" button
 				GridData plusNonSquareData = new GridData();
 				// Sets the position of the button in its cell upward and
 				// rightward
 				plusNonSquareData.horizontalAlignment = SWT.END;
 				plusNonSquareData.verticalAlignment = SWT.END;
 				// Sets an initial height and width that are unchangeable for
-				// the
-				// button
+				// the button
 				plusNonSquareData.widthHint = 30;
 				plusNonSquareData.heightHint = 30;
 				// Applies this instance of GridData to the addButton
@@ -1333,8 +1301,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				deleteRowNonSquareButton.setText("-");
 
 				deleteRowNonSquareButton
-						.addSelectionListener(new SelectionListener() {
-
+						.addSelectionListener(new SelectionAdapter() {
 							@Override
 							public void widgetSelected(SelectionEvent e) {
 								if (matrixComponent != null
@@ -1370,23 +1337,17 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 									matrixViewer.refresh();
 								}
 							}
-
-							@Override
-							public void widgetDefaultSelected(SelectionEvent e) {
-							}
 						});
 
 				// Sets the GridData to keep the "-" button on the right and
-				// next the
-				// "+" button
+				// next the "+" button
 				GridData minusNonSquareRowData = new GridData();
 				// Sets the position of the button in its cell downward and
 				// rightward
 				minusNonSquareRowData.horizontalAlignment = SWT.END;
 				minusNonSquareRowData.verticalAlignment = SWT.BEGINNING;
 				// Sets an initial height and width that are unchangeable for
-				// the
-				// button
+				// the button
 				minusNonSquareRowData.widthHint = 30;
 				minusNonSquareRowData.heightHint = 30;
 				// Applies this instance of GridData to the deleteButton
@@ -1396,8 +1357,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				Button colDeleteButton = new Button(sectionClient, 0);
 				colDeleteButton.setText("-");
 
-				colDeleteButton.addSelectionListener(new SelectionListener() {
-
+				colDeleteButton.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						if (matrixComponent != null && matrixViewer != null
@@ -1406,13 +1366,12 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 
 							// We need to get the old set of CellEditors and add
 							// to it
-							ArrayList list = new ArrayList(Arrays
-									.asList(matrixViewer.getCellEditors()));
+							List<CellEditor> cellEditorList = new ArrayList<CellEditor>(
+									Arrays.asList(matrixViewer.getCellEditors()));
 							// Create an Array to hold default Strings for the
-							// case
-							// when this MatrixComponent has Discrete
+							// case when this MatrixComponent has Discrete
 							// AllowedValueType
-							ArrayList<String> stringArray = new ArrayList<String>();
+							List<String> stringArray = new ArrayList<String>();
 							// If this Matrix is Discrete, set up Combo Cell
 							// Editors
 							if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
@@ -1423,9 +1382,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 								((ComboBoxViewerCellEditor) ed)
 										.setContentProvider(new ArrayContentProvider());
 								// Here we need to convert the Doubles to
-								// Strings,
-								// because the underlying JFace Viewer model is
-								// expecting Strings.
+								// Strings, because the underlying JFace Viewer
+								// model is expecting Strings.
 								for (Double d : matrixComponent
 										.getAllowedValues()) {
 									stringArray.add(d.toString());
@@ -1436,28 +1394,30 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 										.setInput(stringArray);
 								stringArray.clear();
 								// Add the new Cell Editor to the list
-								list.add(ed);
+								cellEditorList.add(ed);
 							} else {
 								// If the elements do not have to be Discrete,
-								// just add
-								// a new TextCellEditor
-								list.add(new TextCellEditor(matrixViewer
-										.getTable()));
+								// just add a new TextCellEditor
+								cellEditorList.add(new TextCellEditor(
+										matrixViewer.getTable()));
 							}
 							// Create a primitive Array of these new CellEditors
-							CellEditor[] editors = new CellEditor[list.size()];
-							list.toArray(editors);
+							CellEditor[] editors = new CellEditor[cellEditorList
+									.size()];
+							cellEditorList.toArray(editors);
 							// Set the CellEditors
 							matrixViewer.setCellEditors(editors);
 
 							// We must do the same thing with the Column
 							// Properties
-							list = new ArrayList(Arrays.asList(matrixViewer
-									.getColumnProperties()));
-							list.remove(String.valueOf(matrixComponent
-									.numberOfColumns()));
-							String[] columnProperties = new String[list.size()];
-							list.toArray(columnProperties);
+							List<Object> columnPropertyList = new ArrayList<Object>(
+									Arrays.asList(matrixViewer
+											.getColumnProperties()));
+							columnPropertyList.remove(String
+									.valueOf(matrixComponent.numberOfColumns()));
+							String[] columnProperties = new String[columnPropertyList
+									.size()];
+							columnPropertyList.toArray(columnProperties);
 							// Set the Column Properties
 							matrixViewer.setColumnProperties(columnProperties);
 
@@ -1494,11 +1454,6 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							matrixViewer.refresh();
 						}
 					}
-
-					@Override
-					public void widgetDefaultSelected(SelectionEvent e) {
-					}
-
 				});
 
 				// Sets the GridData to keep the "-" button on the right and
@@ -1509,8 +1464,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				colGridData3.horizontalAlignment = SWT.END;
 				colGridData3.verticalAlignment = SWT.BEGINNING;
 				// Sets an initial height and width that are unchangeable for
-				// the
-				// button
+				// the button
 				colGridData3.widthHint = 30;
 				colGridData3.heightHint = 30;
 				// Applies this instance of GridData to the colDeleteButton
@@ -1520,8 +1474,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				Button colAddButton = new Button(sectionClient, 0);
 				colAddButton.setText("+");
 
-				colAddButton.addSelectionListener(new SelectionListener() {
-
+				colAddButton.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						if (matrixComponent != null && matrixViewer != null) {
@@ -1530,13 +1483,12 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 
 							// We need to get the old set of CellEditors and add
 							// to it
-							ArrayList list = new ArrayList(Arrays
-									.asList(matrixViewer.getCellEditors()));
+							List<CellEditor> cellEditorList = new ArrayList<CellEditor>(
+									Arrays.asList(matrixViewer.getCellEditors()));
 							// Create an Array to hold default Strings for the
-							// case
-							// when this MatrixComponent has Discrete
+							// case when this MatrixComponent has Discrete
 							// AllowedValueType
-							ArrayList<String> stringArray = new ArrayList<String>();
+							List<String> stringArray = new ArrayList<String>();
 							// If this Matrix is Discrete, set up Combo Cell
 							// Editors
 							if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
@@ -1547,9 +1499,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 								((ComboBoxViewerCellEditor) ed)
 										.setContentProvider(new ArrayContentProvider());
 								// Here we need to convert the Doubles to
-								// Strings,
-								// because the underlying JFace Viewer model is
-								// expecting Strings.
+								// Strings, because the underlying JFace Viewer
+								// model is expecting Strings.
 								for (Double d : matrixComponent
 										.getAllowedValues()) {
 									stringArray.add(d.toString());
@@ -1560,28 +1511,30 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 										.setInput(stringArray);
 								stringArray.clear();
 								// Add the new Cell Editor to the list
-								list.add(ed);
+								cellEditorList.add(ed);
 							} else {
 								// If the elements do not have to be Discrete,
-								// just add
-								// a new TextCellEditor
-								list.add(new TextCellEditor(matrixViewer
-										.getTable()));
+								// just add a new TextCellEditor
+								cellEditorList.add(new TextCellEditor(
+										matrixViewer.getTable()));
 							}
 							// Create a primitive Array of these new CellEditors
-							CellEditor[] editors = new CellEditor[list.size()];
-							list.toArray(editors);
+							CellEditor[] editors = new CellEditor[cellEditorList
+									.size()];
+							cellEditorList.toArray(editors);
 							// Set the CellEditors
 							matrixViewer.setCellEditors(editors);
 
 							// We must do the same thing with the Column
 							// Properties
-							list = new ArrayList(Arrays.asList(matrixViewer
-									.getColumnProperties()));
-							list.add(String.valueOf(matrixComponent
-									.numberOfColumns() - 1));
-							String[] columnProperties = new String[list.size()];
-							list.toArray(columnProperties);
+							List<Object> columnPropertyList = new ArrayList<Object>(
+									Arrays.asList(matrixViewer
+											.getColumnProperties()));
+							columnPropertyList.add(String
+									.valueOf(matrixComponent.numberOfColumns() - 1));
+							String[] columnProperties = new String[columnPropertyList
+									.size()];
+							columnPropertyList.toArray(columnProperties);
 							// Set the Column Properties
 							matrixViewer.setColumnProperties(columnProperties);
 
@@ -1628,11 +1581,6 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 						}
 
 					}
-
-					@Override
-					public void widgetDefaultSelected(SelectionEvent e) {
-					}
-
 				});
 
 				// Sets the GridData to keep the "+" button on the right and
@@ -1643,8 +1591,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				colGridData2.horizontalAlignment = SWT.END;
 				colGridData2.verticalAlignment = SWT.END;
 				// Sets an initial height and width that are unchangeable for
-				// the
-				// button
+				// the button
 				colGridData2.widthHint = 30;
 				colGridData2.heightHint = 30;
 				// Applies this instance of GridData to the colAddButton
