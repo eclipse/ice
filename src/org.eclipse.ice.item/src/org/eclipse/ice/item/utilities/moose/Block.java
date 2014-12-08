@@ -449,6 +449,10 @@ public class Block {
 				if (singleParamMap.get("cpp_type") != null) {
 					param.setCpp_type((String) singleParamMap.get("cpp_type"));
 				}
+				// options
+				if (singleParamMap.get("options") != null) {
+					param.setOptions((String) singleParamMap.get("options"));
+				}
 				// group_name
 				if (singleParamMap.get("group_name") != null) {
 					param.setGroup_name((String) singleParamMap
