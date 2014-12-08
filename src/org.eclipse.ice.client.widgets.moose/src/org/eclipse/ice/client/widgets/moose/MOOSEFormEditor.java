@@ -15,6 +15,7 @@ package org.eclipse.ice.client.widgets.moose;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
 import org.eclipse.ice.client.widgets.ICEFormPage;
@@ -61,6 +62,8 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+
+import com.jme3.math.Vector3f;
 
 /**
  * This class extends the default {@link ICEFormEditor} to enable it to draw a
@@ -523,6 +526,59 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								plantView.setWireframe(wireframe);
 							}
 						});
+
+						// Add a new menu with the following options:
+						// Reset the camera - resets the camera's orientation
+						// YZ - sets the camera to view the YZ plane
+						// XY - sets the camera to view the XY plane
+						// ZX - sets the camera to view the ZX plane
+						ActionTree cameraTree = new ActionTree(
+								"Camera Orientation");
+						cameraTree.add(new ActionTree(new Action(
+								"Reset to current default") {
+							@Override
+							public void run() {
+								plantView.resetCamera();
+							}
+						}));
+						cameraTree.add(new ActionTree(new Action(
+								"YZ (Y right, Z up - initial default)") {
+							@Override
+							public void run() {
+								Vector3f position = new Vector3f(10f, 0f, 0f);
+								Vector3f dir = new Vector3f(-1f, 0f, 0f);
+								Vector3f up = Vector3f.UNIT_Z;
+								plantView.setDefaultCameraPosition(position);
+								plantView.setDefaultCameraOrientation(dir, up);
+								plantView.resetCamera();
+							}
+						}));
+						cameraTree.add(new ActionTree(new Action(
+								"XY (X right, Y up)") {
+							@Override
+							public void run() {
+								Vector3f position = new Vector3f(0f, 0f, 10f);
+								Vector3f dir = new Vector3f(0f, 0f, -1f);
+								Vector3f up = Vector3f.UNIT_Y;
+								plantView.setDefaultCameraPosition(position);
+								plantView.setDefaultCameraOrientation(dir, up);
+								plantView.resetCamera();
+							}
+						}));
+						cameraTree.add(new ActionTree(new Action(
+								"ZX (Z right, X up)") {
+							@Override
+							public void run() {
+								Vector3f position = new Vector3f(0f, 10f, 0f);
+								Vector3f dir = new Vector3f(0f, -1f, 0f);
+								Vector3f up = Vector3f.UNIT_X;
+								plantView.setDefaultCameraPosition(position);
+								plantView.setDefaultCameraOrientation(dir, up);
+								plantView.resetCamera();
+							}
+						}));
+						toolBarManager.add(cameraTree.getContributionItem());
+
 						// Create the ToolBar and set its layout.
 						ToolBar toolBar = toolBarManager
 								.createControl(analysisComposite);
@@ -532,7 +588,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 						// Create the plant view.
 						plantView = new ViewFactory().createPlantView(plant);
-
+						
 						// Render the plant view in the analysis Composite.
 						Composite plantComposite = plantView
 								.createComposite(analysisComposite);
