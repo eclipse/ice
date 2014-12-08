@@ -31,7 +31,11 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
 /**
@@ -43,19 +47,18 @@ import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
  */
 
 @XmlRootElement(name = "MOOSELauncher")
-public class MOOSELauncher extends SuiteLauncher {
+public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener {
 
 	/**
 	 * The currently selected MOOSE application. Set by reviewEntries().
 	 */
 	private String execName = "";
-	
+
 	/**
 	 * The name of the YAML/action syntax generator
 	 */
-	private static final String yamlSyntaxGenerator = 
-			"Generate YAML/action syntax";
-	
+	private static final String yamlSyntaxGenerator = "Generate YAML/action syntax";
+
 	/**
 	 * Nullary constructor.
 	 */
@@ -79,7 +82,7 @@ public class MOOSELauncher extends SuiteLauncher {
 		// Local Declarations
 		String userHome = System.getProperty("user.home");
 		String separator = System.getProperty("file.separator");
-		
+
 		String localInstallDir = userHome + separator + "projects";
 		String remoteInstallDir = "/home/moose";
 
@@ -97,15 +100,14 @@ public class MOOSELauncher extends SuiteLauncher {
 
 		// Setup the Form
 		super.setupForm();
-		
+
 		// Grab the DataComponent responsible for managing Input Files
-		DataComponent inputFilesComp = (DataComponent) form
-				.getComponent(1);
+		DataComponent inputFilesComp = (DataComponent) form.getComponent(1);
 		// Set the input file to only *.i files (to reduce workspace clutter)
 		inputFilesComp.deleteEntry("Input File");
-		addInputType("Input File", "inputFile", 
+		addInputType("Input File", "inputFile",
 				"The MOOSE input file that defines the problem.", ".i");
-		
+
 		// Add hosts
 		addHost("localhost", "linux", localInstallDir);
 		addHost("habilis.ornl.gov", "linux", remoteInstallDir);
@@ -115,6 +117,14 @@ public class MOOSELauncher extends SuiteLauncher {
 
 		// Enable TBB
 		enableTBB(1, 256, 1);
+
+		inputFilesComp.retrieveEntry("Input File").register(this);
+
+		if (!inputFilesComp.retrieveEntry("Input File").getValue().isEmpty()
+				&& inputFilesComp.retrieveEntry("Input File").getValue()
+						.contains(".i")) {
+			updateFileEntries();
+		}
 
 		return;
 	}
@@ -145,33 +155,33 @@ public class MOOSELauncher extends SuiteLauncher {
 		// Create the command that will launch the MOOSE product
 		String launchCommand = null;
 		setUploadInputFlag(true);
-		
+
 		if ("MOOSE_TEST".equals(executable)) {
-			launchCommand = "${installDir}" + "moose/test/" 
-					+ executableMap.get(executable) 
+			launchCommand = "${installDir}" + "moose/test/"
+					+ executableMap.get(executable)
 					+ "-opt -i ${inputFile} --no-color";
-		} else if (yamlSyntaxGenerator.equals(executable)) {			
-			launchCommand = 
-					// BISON files					
-					"if [ -d ${installDir}bison ] "
+		} else if (yamlSyntaxGenerator.equals(executable)) {
+			launchCommand =
+			// BISON files
+			"if [ -d ${installDir}bison ] "
 					+ "&& [ -f ${installDir}bison/bison-opt ]\n then\n"
 					+ "    ${installDir}bison/bison-opt --yaml > bison.yaml\n"
 					+ "    ${installDir}bison/bison-opt --syntax > bison.syntax\n"
-					+ "    echo 'Generating BISON files'\n" 
+					+ "    echo 'Generating BISON files'\n"
 					+ "fi\n"
 					// MARMOT files
 					+ "if [ -d ${installDir}marmot ] "
 					+ "&& [ -f ${installDir}marmot/marmot-opt ]\n then\n"
 					+ "    ${installDir}marmot/marmot-opt --yaml > marmot.yaml\n"
 					+ "    ${installDir}marmot/marmot-opt --syntax > marmot.syntax\n"
-					+ "    echo 'Generating MARMOT files'\n" 
-					+ "fi\n"			
+					+ "    echo 'Generating MARMOT files'\n"
+					+ "fi\n"
 					// RELAP-7 files
 					+ "if [ -d ${installDir}relap-7 ] "
 					+ "&& [ -f ${installDir}relap-7/relap-7-opt ]\n then\n"
 					+ "    ${installDir}relap-7/relap-7-opt --yaml > relap.yaml\n"
 					+ "    ${installDir}relap-7/relap-7-opt --syntax > relap.syntax\n"
-					+ "    echo 'Generating RELAP-7 files'\n" 
+					+ "    echo 'Generating RELAP-7 files'\n"
 					+ "elif [ -d ${installDir}r7_moose ] " // Old name
 					+ "&& [ -f ${installDir}r7_moose/r7_moose-opt ]\n then\n"
 					+ "    ${installDir}r7_moose/r7_moose-opt --yaml > relap.yaml\n"
@@ -183,13 +193,12 @@ public class MOOSELauncher extends SuiteLauncher {
 					+ "&& [ -f ${installDir}raven/RAVEN-opt ]\n then\n"
 					+ "    ${installDir}raven/RAVEN-opt --yaml > raven.yaml\n"
 					+ "    ${installDir}raven/RAVEN-opt --syntax > raven.syntax\n"
-					+ "    echo 'Generating RAVEN files'\n" 
-					+ "fi\n";
+					+ "    echo 'Generating RAVEN files'\n" + "fi\n";
 		} else if ("RAVEN".equals(executable)) {
 			// RAVEN directory is lowercase, but the executable is uppercase
 			launchCommand = "${installDir}" + executableMap.get(executable)
 					+ "/" + executable + "-opt -i ${inputFile} --no-color";
-	
+
 		} else {
 			// BISON, MARMOT and RELAP-7 following the same execution pattern
 			launchCommand = "${installDir}" + executableMap.get(executable)
@@ -247,104 +256,101 @@ public class MOOSELauncher extends SuiteLauncher {
 					.getComponent(5);
 
 			if (execDataComp != null) {
-				// Grab the name of the current executable selected by the client
-				execName = execDataComp.retrieveAllEntries().get(0)
-						.getValue();
+				// Grab the name of the current executable selected by the
+				// client
+				execName = execDataComp.retrieveAllEntries().get(0).getValue();
 			}
 
 			// Check the DataComponent is valid
 			if ("Available Executables".equals(execDataComp.getName())) {
 
 				// If the current executable is BISON, remove RAVEN inputs (if
-				// any) and specify additional fuel files will need to be added 
+				// any) and specify additional fuel files will need to be added
 				// to the form.
 				if ("BISON".equals(execName)) {
-					
+
 					// Set the input upload flag to true in case it's been
 					// previously set to false (by the YAML generator)
 					setUploadInputFlag(true);
 
-					// Remove RAVEN input files (does nothing if types don't 
+					// Remove RAVEN input files (does nothing if types don't
 					// exist)
-					removeInputType("Control Logic");
-					
-					// Add new input types (does nothing if types already exist)
-					addInputType("Input File", "inputFile", 
-							"MOOSE input file that defines the problem.", 
-							".i");
-					addInputType("Mesh", "meshFile", "Fuel pin mesh file.",
-							".e");
-					addInputType(
-							"Power History", "powerHistoryFile",
-							"Input file containing average rod input power "
-							+ "over time.", ".csv");
-					addInputType("Peaking Factors", "peakingFactorsFile",
-							"An input file containing the axial power profile "
-							+ "as a function of time.", ".csv");
-					addInputType("Clad Wall Temp", "cladTempFile",
-							"Input file containing cladding wall temperature "
-							+ "data.", ".csv");
-					addInputType("Fast Neutron Flux", "fastFluxFile", "Input "
-							+ "file containing fast neutron flux data.", 
-							".csv");
+					// removeInputType("Control Logic");
+					//
+					// // Add new input types (does nothing if types already
+					// exist)
+					// addInputType("Input File", "inputFile",
+					// "MOOSE input file that defines the problem.", ".i");
+					// addInputType("Mesh", "meshFile", "Fuel pin mesh file.",
+					// ".e");
+					// addInputType("Power History", "powerHistoryFile",
+					// "Input file containing average rod input power "
+					// + "over time.", ".csv");
+					// addInputType("Peaking Factors", "peakingFactorsFile",
+					// "An input file containing the axial power profile "
+					// + "as a function of time.", ".csv");
+					// addInputType("Clad Wall Temp", "cladTempFile",
+					// "Input file containing cladding wall temperature "
+					// + "data.", ".csv");
+					// addInputType("Fast Neutron Flux", "fastFluxFile",
+					// "Input "
+					// + "file containing fast neutron flux data.", ".csv");
 
-					
 				} else if ("RAVEN".equals(execName)) {
 
 					// Set the input upload flag to true in case it's been
 					// previously set to false (by the YAML generator)
 					setUploadInputFlag(true);
-					
+
 					// Remove BISON input files (if any)
-					removeInputType("Mesh");
-					removeInputType("Power History");
-					removeInputType("Peaking Factors");
-					removeInputType("Clad Wall Temp");
-					removeInputType("Fast Neutron Flux");
+					// removeInputType("Mesh");
+					// removeInputType("Power History");
+					// removeInputType("Peaking Factors");
+					// removeInputType("Clad Wall Temp");
+					// removeInputType("Fast Neutron Flux");
+					//
+					// // Add new input types (if any)
+					// addInputType("Input File", "inputFile",
+					// "The MOOSE input file that defines the problem.",
+					// ".i");
+					// addInputType("Control Logic", "logicFile",
+					// "Python control " + "logic input file.", ".py");
 
-					// Add new input types (if any)
-					addInputType("Input File", "inputFile", 
-							"The MOOSE input file that defines the problem.", 
-							".i");
-					addInputType("Control Logic", "logicFile", "Python control "
-							+ "logic input file.", ".py");
-
-					
 				} else if (yamlSyntaxGenerator.equals(execName)) {
-					
+
 					// Disable input file appending (no input file to append)
 					setAppendInputFlag(false);
-					
+
 					// Disable input file uploading
 					setUploadInputFlag(false);
-				
+
 					// Remove any extra input files (if any)
-					removeInputType("Input File");
-					removeInputType("Mesh");
-					removeInputType("Power History");
-					removeInputType("Peaking Factors");
-					removeInputType("Control Logic");
-					removeInputType("Clad Wall Temp");
-					removeInputType("Fast Neutron Flux");
-					
+					// removeInputType("Input File");
+					// removeInputType("Mesh");
+					// removeInputType("Power History");
+					// removeInputType("Peaking Factors");
+					// removeInputType("Control Logic");
+					// removeInputType("Clad Wall Temp");
+					// removeInputType("Fast Neutron Flux");
+
 				} else {
 
 					// Set the input upload flag to true in case it's been
 					// previously set to false (by the YAML generator)
 					setUploadInputFlag(true);
-					
+
 					// Remove any extra input files (if any)
-					removeInputType("Mesh");
-					removeInputType("Power History");
-					removeInputType("Peaking Factors");
-					removeInputType("Control Logic");
-					removeInputType("Clad Wall Temp");
-					removeInputType("Fast Neutron Flux");
-					
-					// Add input file (if necessary)
-					addInputType("Input File", "inputFile", 
-							"The MOOSE input file that defines the problem.", 
-							".i");
+					// removeInputType("Mesh");
+					// removeInputType("Power History");
+					// removeInputType("Peaking Factors");
+					// removeInputType("Control Logic");
+					// removeInputType("Clad Wall Temp");
+					// removeInputType("Fast Neutron Flux");
+					//
+					// // Add input file (if necessary)
+					// addInputType("Input File", "inputFile",
+					// "The MOOSE input file that defines the problem.",
+					// ".i");
 				}
 
 			}
@@ -360,8 +366,8 @@ public class MOOSELauncher extends SuiteLauncher {
 	/**
 	 * Override of the JobLauncher.updateResourceComponent() method to also
 	 * process the downloaded *.yaml and *.syntax files after the super method
-	 * is executed. Any extraneous header/footer text is removed, and the 
-	 * resulting file is placed in the default/MOOSE folder (which is created, 
+	 * is executed. Any extraneous header/footer text is removed, and the
+	 * resulting file is placed in the default/MOOSE folder (which is created,
 	 * if it doesn't already exist). Any old *.yaml and *.syntax files in the
 	 * MOOSE directory will be overwritten.
 	 */
@@ -384,8 +390,8 @@ public class MOOSELauncher extends SuiteLauncher {
 					// Check if the MOOSE folder exists; create it if it doesn't
 					if (!mooseFolder.exists()) {
 						mooseFolder.create(true, true, null);
-					}					
-					
+					}
+
 					// Get the files in the default folder
 					IResource[] resources = project.members();
 
@@ -404,8 +410,8 @@ public class MOOSELauncher extends SuiteLauncher {
 
 							// Clean the file of excess headers/footers and
 							// move it into the MOOSE directory
-							createCleanMOOSEFile(
-									resource.getLocation().toOSString());
+							createCleanMOOSEFile(resource.getLocation()
+									.toOSString());
 						}
 					}
 				} catch (CoreException | IOException e) {
@@ -422,10 +428,10 @@ public class MOOSELauncher extends SuiteLauncher {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
-	
+
 	/**
 	 * This method is intended to take a filePath corresponding to a MOOSE YAML
 	 * or action syntax file, and remove any extraneous header or footer lines
@@ -433,20 +439,21 @@ public class MOOSELauncher extends SuiteLauncher {
 	 * re-writes the file. If no changes were made (no header/footer to remove),
 	 * it does nothing.
 	 * 
-	 * @param filePath	The filepath to the YAML or action syntax file.
+	 * @param filePath
+	 *            The filepath to the YAML or action syntax file.
 	 * @throws IOException
-	 * @throws CoreException 
+	 * @throws CoreException
 	 */
-	private void createCleanMOOSEFile(String filePath) throws 
-			IOException, CoreException {
-		
+	private void createCleanMOOSEFile(String filePath) throws IOException,
+			CoreException {
+
 		// Local declarations
 		String fileExt, execName, fileType = null;
 		boolean hasHeader = false, hasFooter = false;
 		int headerLine = 0, footerLine = 0;
 		String separator = System.getProperty("file.separator");
 		ArrayList<String> fileLines;
-		
+
 		// Check if the MOOSE folder exists; create it if it doesn't
 		IFolder mooseFolder = project.getFolder("MOOSE");
 
@@ -454,14 +461,14 @@ public class MOOSELauncher extends SuiteLauncher {
 		if (!mooseFolder.exists()) {
 			mooseFolder.create(true, true, null);
 		}
-		
+
 		// Define where the "clean" MOOSE file will be written
 		fileExt = filePath.substring(filePath.lastIndexOf("."));
-		execName = filePath.substring(filePath.lastIndexOf(separator) + 1, 
+		execName = filePath.substring(filePath.lastIndexOf(separator) + 1,
 				filePath.lastIndexOf(fileExt));
-		String cleanFilePath = 
-				filePath.substring(0, filePath.lastIndexOf(separator)) 
-				+ separator + "MOOSE" + separator + execName + fileExt;				
+		String cleanFilePath = filePath.substring(0,
+				filePath.lastIndexOf(separator))
+				+ separator + "MOOSE" + separator + execName + fileExt;
 
 		if (".yaml".equals(fileExt)) {
 			fileType = "YAML";
@@ -475,57 +482,113 @@ public class MOOSELauncher extends SuiteLauncher {
 
 		// Read in the MOOSE file into an ArrayList of Strings
 		java.nio.file.Path readPath = Paths.get(filePath);
-		fileLines = (ArrayList<String>) 
-				Files.readAllLines(readPath, Charset.defaultCharset());
-		
+		fileLines = (ArrayList<String>) Files.readAllLines(readPath,
+				Charset.defaultCharset());
+
 		// Define what the header/footer lines look like
 		String header = "**START " + fileType + " DATA**";
 		String footer = "**END " + fileType + " DATA**";
-		
+
 		// Determine if there is a header and/or footer
 		hasHeader = fileLines.contains(header);
 		hasFooter = fileLines.contains(footer);
-		
+
 		// Cut off the footer, if there is one
 		if (hasFooter) {
-			
+
 			// Record the line number of the footer
 			footerLine = fileLines.indexOf(footer);
-			
+
 			// Remove the footer line and anything after it
 			int i = footerLine;
 			while (i < fileLines.size()) {
 				fileLines.remove(i);
 			}
 		}
-		
+
 		// Cut off the header, if there is one
 		if (hasHeader) {
-			
+
 			// Record the line number
 			headerLine = fileLines.indexOf(header);
-			
+
 			// Remove the header line and anything before it
 			for (int i = headerLine; i >= 0; i--) {
 				fileLines.remove(i);
 			}
 		}
-		
+
 		// If there was any changes made to the file, write it out and replace
 		// the original one
 		if (hasHeader || hasFooter) {
-			
+
 			// Write out to the clean file now
 			java.nio.file.Path writePath = Paths.get(cleanFilePath);
-			Files.write(writePath, fileLines, Charset.defaultCharset(), 
+			Files.write(writePath, fileLines, Charset.defaultCharset(),
 					StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-			
+
 			// Delete the old file
 			File oldFile = new File(filePath);
 			oldFile.delete();
 		}
-		
+
 		return;
 	}
-	
+
+	/**
+	 * 
+	 */
+	private void updateFileEntries() {
+		// Get the MOOSELauncher's Input Files DataComponent,
+		// we'll use it to get the current Input File Entry
+		MOOSEModel model = new MOOSEModel(this.project);
+		
+		DataComponent inputFiles = (DataComponent) form.getComponent(1);
+		Entry inputFile = (Entry) inputFiles.retrieveEntry("Input File");
+
+		inputFiles.clearEntries();
+		inputFiles.addEntry(inputFile);
+		
+		// Now load the Tree representing the Input File
+		// System.out.println("Loading " + inputFile.getValue());
+		model.loadInput(inputFile.getValue());
+		TreeComposite yamlTree = (TreeComposite) model.getForm()
+				.getComponent(2);
+
+		// Walk the tree and get all Entries that may represent a file
+		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+				yamlTree);
+		while (iter.hasNext()) {
+			TreeComposite child = iter.next();
+			// Make sure we have a valid DataComponent
+			if (child.getActiveDataNode() != null) {
+				DataComponent data = (DataComponent) child.getActiveDataNode();
+				for (Entry e : data.retrieveAllEntries()) {
+					if (e.getName().toLowerCase().contains("file")
+							&& !e.getName().toLowerCase().contains("profile")) {
+
+						// Here I want to keep knowledge of the file type,
+						// so I'll use the MOOSELauncher addInputType method
+						// to correclty generate the Entries with the correct
+						// file set
+						addInputType(child.getName(), child.getName()
+								.replaceAll(" ", ""), e.getDescription(), "."
+								+ e.getValue().split("\\.(?=[^\\.]+$)")[1]);
+					}
+				}
+			}
+
+		}
+
+		return;
+	}
+
+	@Override
+	public void update(IUpdateable component) {
+
+		if (component instanceof Entry && component != null) {
+			updateFileEntries();
+		}
+	}
+
 }
