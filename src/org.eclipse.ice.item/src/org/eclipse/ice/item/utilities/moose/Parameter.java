@@ -562,6 +562,7 @@ public class Parameter {
 			_default = entry.getValue();
 			required = entry.isRequired();
 			enabled = !"false".equalsIgnoreCase(entry.getTag());
+			options = entry.getAllowedValues();
 		}
 
 		// end-user-code

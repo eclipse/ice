@@ -15,6 +15,7 @@ package org.eclipse.ice.item.test.moose;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.item.utilities.moose.Parameter;
 
@@ -46,8 +47,9 @@ public class ParameterTester {
 
 		// Local Declarations
 		String name = "Clara", description = "Companion", defaultValue = "Oswin";
-		String group_name = "Oswald", cpp_type = "std::string";
+		String group_name = "Oswald", cpp_type = "MooseEnum";
 		boolean required = true;
+		String options = "option1 option2 option3";
 		Parameter param = new Parameter();
 
 		// Setup the parameter
@@ -57,6 +59,7 @@ public class ParameterTester {
 		param.setDescription(description);
 		param.setGroup_name(group_name);
 		param.setRequired(required);
+		param.setOptions(options);
 
 		// Check the parameter
 		assertEquals(name, param.getName());
@@ -65,6 +68,7 @@ public class ParameterTester {
 		assertEquals(required, param.isRequired());
 		assertEquals(cpp_type, param.getCpp_type());
 		assertEquals(defaultValue, param.getDefault());
+		assertEquals(param.getOptions().toString(), "[option1, option2, option3]");
 
 		// Check switching the required mode off
 		param.setRequired(false);
@@ -90,9 +94,10 @@ public class ParameterTester {
 		// begin-user-code
 
 		// Local Declarations
-		String name = "Souffle Girl", description = "Companion", defaultValue = "Oswin";
-		String group_name = "Clara", cpp_type = "std::string";
+		String name = "Souffle Girl", description = "Companion", defaultValue = "option1";
+		String group_name = "Clara", cpp_type = "MooseEnum";
 		boolean required = true;
+		String options = "option1 option2 option3";
 		Parameter param = new Parameter();
 
 		// Setup the parameter
@@ -102,6 +107,7 @@ public class ParameterTester {
 		param.setDescription(description);
 		param.setGroup_name(group_name);
 		param.setRequired(required);
+		param.setOptions(options);
 
 		// Get the Entry
 		Entry entry = param.toEntry();
@@ -111,6 +117,9 @@ public class ParameterTester {
 		assertEquals(description, entry.getDescription());
 		assertEquals(defaultValue, entry.getDefaultValue());
 		assertEquals(required, entry.isRequired());
+		assertEquals(entry.getValueType(), AllowedValueType.Discrete);
+		assertEquals(entry.getAllowedValues().toString(), 
+										"[option1, option2, option3]");
 
 		return;
 		// end-user-code
@@ -189,9 +198,10 @@ public class ParameterTester {
 		// begin-user-code
 
 		// Local Declarations
-		String name = "Amy", description = "Companion", defaultValue = "Pond";
-		String group_name = "Pond", cpp_type = "std::string";
+		String name = "Amy", description = "Companion", defaultValue = "option2";
+		String group_name = "Pond", cpp_type = "MooseEnum";
 		boolean required = true;
+		String options = "option1 option2 option3";
 		Parameter param = new Parameter(), testParam = null;
 		Entry paramEntry = null;
 
@@ -202,6 +212,7 @@ public class ParameterTester {
 		param.setDescription(description);
 		param.setGroup_name(group_name);
 		param.setRequired(required);
+		param.setOptions(options);
 
 		// Create an Entry from the parameter
 		paramEntry = param.toEntry();
@@ -217,6 +228,7 @@ public class ParameterTester {
 		assertEquals(param.getDescription(), testParam.getDescription());
 		assertEquals(param.getDefault(), testParam.getDefault());
 		assertEquals(param.isRequired(), testParam.isRequired());
+		assertEquals(param.getOptions(), testParam.getOptions());
 
 		return;
 		// end-user-code

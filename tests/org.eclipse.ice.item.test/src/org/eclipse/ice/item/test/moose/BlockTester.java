@@ -15,9 +15,11 @@ package org.eclipse.ice.item.test.moose;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.utilities.moose.Block;
@@ -58,7 +60,7 @@ public class BlockTester {
 		ArrayList<Parameter> paramList = new ArrayList<Parameter>();
 		Block block = new Block(), subBlock = new Block();
 		ArrayList<Block> blockList = new ArrayList<Block>();
-
+		
 		// Setup the block
 		block.setName(name);
 		block.setType(type);
@@ -83,9 +85,9 @@ public class BlockTester {
 		assertEquals(name, block.getName());
 		assertEquals(description, block.getDescription());
 		assertEquals(type, block.getType());
-		assertEquals(paramList.size(), block.getParameters().size());
 		assertEquals(blockList.size(), block.getSubblocks().size());
 		assertEquals(true, block.isActive());
+		assertEquals(paramList.size(), block.getParameters().size());
 
 		// Check switching the required mode off
 		block.setActive(false);
@@ -128,6 +130,7 @@ public class BlockTester {
 		param1.setCpp_type("Test Param 1");
 		param1.setDescription("Test Param 1");
 		param1.setRequired(true);
+		
 		paramList.add(param1);
 		param2.setName("Test Param 2");
 		param2.setDefault("Test Param 2");
