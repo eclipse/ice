@@ -589,7 +589,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			// If this is a File entry, draw dropdown (if applicable)
 			// and browse button
 			createLabel();
-			createDropdown();
+			if (numAllowedValues > 0) {
+				createDropdown();
+			}
 			createBrowseButton();
 
 			// FIXME We should use either this GridLayout or the RowLayout below
@@ -620,43 +622,51 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			rowLayout.center = true;
 			layout = rowLayout;
 
-			// Use a RowData for the dropdown Combo so it can get excess space.
-			final RowData rowData = new RowData();
-			dropDown.setLayoutData(rowData);
-			// Set a minimum width of 50 for the dropdown.
-			final int minWidth = 50;
+			// If the file list Combo is rendered, we need to give it RowData so
+			// it will grab excess horizontal space. Otherwise, the default
+			// RowLayout above will suffice.
+			if (numAllowedValues > 0) {
+				// Use a RowData for the dropdown Combo so it can get excess
+				// space.
+				final RowData rowData = new RowData();
+				dropDown.setLayoutData(rowData);
+				// Set a minimum width of 50 for the dropdown.
+				final int minWidth = 50;
 
-			// Compute the space taken up by the label and browse button.
-			final int unwrappedWidth;
-			Button button = buttons.get(0);
-			int labelWidth = label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-			int buttonWidth = button.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-			int padding = 2 * rowLayout.spacing + rowLayout.marginLeft
-					+ rowLayout.marginWidth * 2 + rowLayout.marginRight + 30;
-			unwrappedWidth = labelWidth + buttonWidth + padding;
+				// Compute the space taken up by the label and browse button.
+				final int unwrappedWidth;
+				Button button = buttons.get(0);
+				int labelWidth = label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+				int buttonWidth = button.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+				int padding = 2 * rowLayout.spacing + rowLayout.marginLeft
+						+ rowLayout.marginWidth * 2 + rowLayout.marginRight
+						+ 30;
+				unwrappedWidth = labelWidth + buttonWidth + padding;
 
-			// Size the dropdown based on the currently available space.
-			int availableWidth = getClientArea().width - unwrappedWidth;
-			rowData.width = (availableWidth > minWidth ? availableWidth
-					: minWidth);
+				// Size the dropdown based on the currently available space.
+				int availableWidth = getClientArea().width - unwrappedWidth;
+				rowData.width = (availableWidth > minWidth ? availableWidth
+						: minWidth);
 
-			// If necessary, remove the old resize listener.
-			if (resizeListener != null) {
-				removeControlListener(resizeListener);
-			}
-
-			// Add a resize listener to the EntryComposite to update the size of
-			// the dropdown.
-			resizeListener = new ControlAdapter() {
-				@Override
-				public void controlResized(ControlEvent e) {
-					int availableWidth = getClientArea().width - unwrappedWidth;
-					rowData.width = (availableWidth > minWidth ? availableWidth
-							: minWidth);
-					layout();
+				// If necessary, remove the old resize listener.
+				if (resizeListener != null) {
+					removeControlListener(resizeListener);
 				}
-			};
-			addControlListener(resizeListener);
+
+				// Add a resize listener to the EntryComposite to update the
+				// size of the dropdown.
+				resizeListener = new ControlAdapter() {
+					@Override
+					public void controlResized(ControlEvent e) {
+						int availableWidth = getClientArea().width
+								- unwrappedWidth;
+						rowData.width = (availableWidth > minWidth ? availableWidth
+								: minWidth);
+						layout();
+					}
+				};
+				addControlListener(resizeListener);
+			}
 		} else {
 			// Otherwise create a text field
 			createLabel();
