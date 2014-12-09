@@ -395,12 +395,20 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				| SWT.H_SCROLL | SWT.READ_ONLY);
 		dropDown.setBackground(getBackground());
 
-		// Add the data to the dropdown menu
-		for (String i : entry.getAllowedValues()) {
-			dropDown.add(i);
+		// Determine the current value of the entry.
+		String currentValue = entry.getValue();
+
+		// Add the allowed values to the dropdown menu. If the allowed value
+		// matches the current value, select it.
+		List<String> allowedValues = entry.getAllowedValues();
+		for (int i = 0; i < allowedValues.size(); i++) {
+			String allowedValue = allowedValues.get(i);
+			dropDown.add(allowedValue);
+			if (allowedValue.equals(currentValue)) {
+				dropDown.select(i);
+			}
 		}
-		// Set the default selection
-		dropDown.select(dropDown.indexOf(entry.getValue()));
+
 		// Add the listener
 		dropDown.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -492,12 +500,12 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				// Create the dialog and get the files
 				FileDialog fileDialog = new FileDialog(getShell());
 				fileDialog.setText("Select a file to import into ICE");
-				String fileName = fileDialog.open();
-				if (fileName != null) {
+				String filePath = fileDialog.open();
+				if (filePath != null) {
 					// Import the files
-					File importedFile = new File(fileName);
+					File importedFile = new File(filePath);
 					client.importFile(importedFile.toURI());
-					setEntryValue(fileName);
+					setEntryValue(importedFile.getName());
 				}
 
 				return;
@@ -545,15 +553,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				shortValues = false;
 				break;
 			}
-		}
-
-		if (getLayout() == null) {
-			// Set the Composite's layout
-			FillLayout layout = new FillLayout(SWT.VERTICAL);
-			layout.marginHeight = 5;
-			layout.marginWidth = 3;
-			layout.spacing = 5;
-			setLayout(layout);
 		}
 
 		// Set the default layout to a vertical FillLayout.
@@ -623,43 +622,51 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			rowLayout.center = true;
 			layout = rowLayout;
 
-			// Use a RowData for the dropdown Combo so it can get excess space.
-			final RowData rowData = new RowData();
-			dropDown.setLayoutData(rowData);
-			// Set a minimum width of 50 for the dropdown.
-			final int minWidth = 50;
+			// If the file list Combo is rendered, we need to give it RowData so
+			// it will grab excess horizontal space. Otherwise, the default
+			// RowLayout above will suffice.
+			if (numAllowedValues > 0) {
+				// Use a RowData for the dropdown Combo so it can get excess
+				// space.
+				final RowData rowData = new RowData();
+				dropDown.setLayoutData(rowData);
+				// Set a minimum width of 50 for the dropdown.
+				final int minWidth = 50;
 
-			// Compute the space taken up by the label and browse button.
-			final int unwrappedWidth;
-			Button button = buttons.get(0);
-			int labelWidth = label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-			int buttonWidth = button.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-			int padding = 2 * rowLayout.spacing + rowLayout.marginLeft
-					+ rowLayout.marginWidth * 2 + rowLayout.marginRight + 30;
-			unwrappedWidth = labelWidth + buttonWidth + padding;
+				// Compute the space taken up by the label and browse button.
+				final int unwrappedWidth;
+				Button button = buttons.get(0);
+				int labelWidth = label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+				int buttonWidth = button.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+				int padding = 2 * rowLayout.spacing + rowLayout.marginLeft
+						+ rowLayout.marginWidth * 2 + rowLayout.marginRight
+						+ 30;
+				unwrappedWidth = labelWidth + buttonWidth + padding;
 
-			// Size the dropdown based on the currently available space.
-			int availableWidth = getClientArea().width - unwrappedWidth;
-			rowData.width = (availableWidth > minWidth ? availableWidth
-					: minWidth);
+				// Size the dropdown based on the currently available space.
+				int availableWidth = getClientArea().width - unwrappedWidth;
+				rowData.width = (availableWidth > minWidth ? availableWidth
+						: minWidth);
 
-			// If necessary, remove the old resize listener.
-			if (resizeListener != null) {
-				removeControlListener(resizeListener);
-			}
-
-			// Add a resize listener to the EntryComposite to update the size of
-			// the dropdown.
-			resizeListener = new ControlAdapter() {
-				@Override
-				public void controlResized(ControlEvent e) {
-					int availableWidth = getClientArea().width - unwrappedWidth;
-					rowData.width = (availableWidth > minWidth ? availableWidth
-							: minWidth);
-					layout();
+				// If necessary, remove the old resize listener.
+				if (resizeListener != null) {
+					removeControlListener(resizeListener);
 				}
-			};
-			addControlListener(resizeListener);
+
+				// Add a resize listener to the EntryComposite to update the
+				// size of the dropdown.
+				resizeListener = new ControlAdapter() {
+					@Override
+					public void controlResized(ControlEvent e) {
+						int availableWidth = getClientArea().width
+								- unwrappedWidth;
+						rowData.width = (availableWidth > minWidth ? availableWidth
+								: minWidth);
+						layout();
+					}
+				};
+				addControlListener(resizeListener);
+			}
 		} else {
 			// Otherwise create a text field
 			createLabel();
