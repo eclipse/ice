@@ -395,12 +395,20 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				| SWT.H_SCROLL | SWT.READ_ONLY);
 		dropDown.setBackground(getBackground());
 
-		// Add the data to the dropdown menu
-		for (String i : entry.getAllowedValues()) {
-			dropDown.add(i);
+		// Determine the current value of the entry.
+		String currentValue = entry.getValue();
+
+		// Add the allowed values to the dropdown menu. If the allowed value
+		// matches the current value, select it.
+		List<String> allowedValues = entry.getAllowedValues();
+		for (int i = 0; i < allowedValues.size(); i++) {
+			String allowedValue = allowedValues.get(i);
+			dropDown.add(allowedValue);
+			if (allowedValue.equals(currentValue)) {
+				dropDown.select(i);
+			}
 		}
-		// Set the default selection
-		dropDown.select(dropDown.indexOf(entry.getValue()));
+
 		// Add the listener
 		dropDown.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -492,12 +500,12 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				// Create the dialog and get the files
 				FileDialog fileDialog = new FileDialog(getShell());
 				fileDialog.setText("Select a file to import into ICE");
-				String fileName = fileDialog.open();
-				if (fileName != null) {
+				String filePath = fileDialog.open();
+				if (filePath != null) {
 					// Import the files
-					File importedFile = new File(fileName);
+					File importedFile = new File(filePath);
 					client.importFile(importedFile.toURI());
-					setEntryValue(fileName);
+					setEntryValue(importedFile.getName());
 				}
 
 				return;
@@ -547,15 +555,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			}
 		}
 
-		if (getLayout() == null) {
-			// Set the Composite's layout
-			FillLayout layout = new FillLayout(SWT.VERTICAL);
-			layout.marginHeight = 5;
-			layout.marginWidth = 3;
-			layout.spacing = 5;
-			setLayout(layout);
-		}
-
 		// Set the default layout to a vertical FillLayout.
 		FillLayout fillLayout = new FillLayout(SWT.VERTICAL);
 		fillLayout.marginHeight = 5;
@@ -590,9 +589,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			// If this is a File entry, draw dropdown (if applicable)
 			// and browse button
 			createLabel();
-			if (numAllowedValues > 0) {
-				createDropdown();
-			}
+			createDropdown();
 			createBrowseButton();
 
 			// FIXME We should use either this GridLayout or the RowLayout below

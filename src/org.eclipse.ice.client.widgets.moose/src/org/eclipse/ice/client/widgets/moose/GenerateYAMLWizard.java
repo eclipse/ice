@@ -1,12 +1,28 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
 import java.util.ArrayList;
 
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbenchWindow;
 
+/**
+ * 
+ * @author Alex McCaskey
+ *
+ */
 public class GenerateYAMLWizard extends Wizard {
 
 	/**
@@ -14,18 +30,25 @@ public class GenerateYAMLWizard extends Wizard {
 	 */
 	protected IWorkbenchWindow workbenchWindow;
 
+	/**
+	 * 
+	 */
 	private GenerateYAMLWizardPage page;
 	
-	private ArrayList<String> host_name_password;
+	/**
+	 * 
+	 */
+	private ArrayList<String> launchData;
 	
 	/**
 	 * A nullary constructor. This is used by the platform. <b>If called from an
 	 * {@link IHandler}, use {@link #NewItemWizard(IWorkbenchWindow)} </b>.
 	 */
 	public GenerateYAMLWizard() {
-		// Nothing to do.
-		page = new GenerateYAMLWizardPage("NAME");
-
+		page = new GenerateYAMLWizardPage("Generate MOOSE YAML/Action Syntax Files");
+		setWindowTitle("MOOSE YAML/Action Syntax File Generation");
+		this.setForcePreviousAndNextButtons(false);
+		
 	}
 
 	/**
@@ -40,17 +63,10 @@ public class GenerateYAMLWizard extends Wizard {
 		this();
 		// Store a reference to the workbench window.
 		workbenchWindow = window;
-		page = new GenerateYAMLWizardPage("NAME");
+		page = new GenerateYAMLWizardPage("Generate MOOSE YAML/Action Syntax Files");
 		
 	}
 
-	@Override
-	public IWizardPage getNextPage(IWizardPage currentPage) {
-	
-		
-		return null;
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -58,25 +74,54 @@ public class GenerateYAMLWizard extends Wizard {
 	 */
 	@Override
 	public void addPages() {
-		//if (page == null) {
-			//page = new NewItemWizardPage("Select an Item to create");
-	//	}
 		addPage(page);
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		host_name_password = new ArrayList<String>();
 		
-		host_name_password.add(page.getHostName());
-		host_name_password.add(page.getUsername());
-		host_name_password.add(page.getPassword());
+		// Gather up all the data entered by the user
+		launchData = new ArrayList<String>();
+		launchData.add(page.getHostName());
+		launchData.add(page.getExecPath());
+		launchData.add(page.getUsername());
+		launchData.add(page.getPassword());
 		
 		return true;
 	}
 
-	public ArrayList<String> getData() {
-		return host_name_password;
+	/**
+	 * 
+	 * @return
+	 */
+	public String getHostName() {
+		return launchData.get(0);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getExecPath() {
+		return launchData.get(1);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getUsername() {
+		return launchData.get(2);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getPassword() {
+		return launchData.get(3);
 	}
 }

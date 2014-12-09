@@ -298,7 +298,6 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 */
 	@Override
 	protected void updateResourceComponent() {
-		System.out.println("INVOKING UPDATE RESOURCE COMPONENT");
 		// Call the super
 		super.updateResourceComponent();
 

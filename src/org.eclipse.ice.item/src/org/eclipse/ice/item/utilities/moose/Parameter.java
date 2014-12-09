@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.item.utilities.moose;
 
+import java.util.ArrayList;
+
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 
@@ -89,6 +91,18 @@ public class Parameter {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String cpp_type = "";
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * The list of options of the parameter (if any). Not all parameters have
+	 * options.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 */
+	private ArrayList<String> options = null;
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -198,6 +212,25 @@ public class Parameter {
 		// end-user-code
 	}
 
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * This operation retrieves the list of options (if any)
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @return <p>
+	 *         The list of options.
+	 *         </p>
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 */
+	public ArrayList<String> getOptions() {
+		// begin-user-code
+		return options;
+		// end-user-code
+	}
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -332,6 +365,39 @@ public class Parameter {
 		return;
 		// end-user-code
 	}
+	
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * This operation sets options of the parameter (if any).
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @param type
+	 *            <p>
+	 *            The type
+	 *            </p>
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 */
+	public void setOptions(String optionsStr) {
+		// begin-user-code
+		
+		// Initiate the ArrayList if it hasn't been already
+		if (options == null) {
+			options = new ArrayList<String>();
+		}
+		
+		// Break up the input string of options at each whitespace
+		String[] splitOptionsStr = optionsStr.split("\\s+");
+		
+		// Add them to the ArrayList
+		for (int i = 0; i < splitOptionsStr.length; i++) {
+			options.add(splitOptionsStr[i]);
+		}
+		
+		return;
+		// end-user-code
+	}
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -398,22 +464,40 @@ public class Parameter {
 		// Setup the Entry Entry
 		entry = new Entry() {
 			@Override
+			// Check the cpp_type and determine what to set the allowed
+			// value types as
 			protected void setup() {
-				// Set the allowed value type based on the cpp_type being
-				// something other than a boolean.
-				if (!("bool").equals(Parameter.this.cpp_type)) {
-					allowedValueType = AllowedValueType.Undefined;
-					defaultValue = Parameter.this.getDefault();
+				// If the type is discrete (MooseEnum) and the options list
+				// isn't empty
+				if ((("MooseEnum").equals(Parameter.this.cpp_type)
+						|| ("MultiMooseEnum").equals(Parameter.this.cpp_type))
+						&& options != null && !options.isEmpty()) {
+					// Limit the type to discrete values
+					allowedValueType = AllowedValueType.Discrete;
+					// Set the allowed values
+					allowedValues = options;
+					// Set the default value and description
+					String value = Parameter.this.getDefault();
+					defaultValue = (allowedValues.contains(value) ?  
+											value : allowedValues.get(0));
 					description = Parameter.this.getDescription();
-				} else {
-					// Otherwise, configure the Entry as a boolean
+				}
+				// If the value type is boolean
+				else if (("bool").equals(Parameter.this.cpp_type)) {
+					// Limit the type to discrete values
 					allowedValueType = AllowedValueType.Discrete;
 					// Set the allowed values
 					allowedValues.add("true");
 					allowedValues.add("false");
-					// Set the default value
+					// Set the default value and description
 					defaultValue = (Parameter.this.getDefault().equals(0)) ? 
 							"false" : "true";
+					description = Parameter.this.getDescription();
+				} 
+				// Otherwise, for all other parameters
+				else {
+					allowedValueType = AllowedValueType.Undefined;
+					defaultValue = Parameter.this.getDefault();
 					description = Parameter.this.getDescription();
 				}
 			}
@@ -478,6 +562,7 @@ public class Parameter {
 			_default = entry.getValue();
 			required = entry.isRequired();
 			enabled = !"false".equalsIgnoreCase(entry.getTag());
+			options = entry.getAllowedValues();
 		}
 
 		// end-user-code

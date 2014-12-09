@@ -327,6 +327,7 @@ public class CaebatModel extends Item {
 		if (project != null) {
 			try {
 				// Get the Caebat folder
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 				// if it exists, get any existing .conf files out
 				if (caebatFolder.exists()) {
 					// Get all of the resources
@@ -342,8 +343,8 @@ public class CaebatModel extends Item {
 						if (resource.getType() == IResource.FILE
 								&& resource.getProjectRelativePath()
 										.lastSegment().contains(".conf")) {
-							files.add(resource.getName());
-						}
+											files.add(resource.getName());
+										}
 					}
 				}
 			} catch (CoreException e) {

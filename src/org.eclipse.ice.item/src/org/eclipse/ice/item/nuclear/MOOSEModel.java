@@ -626,15 +626,18 @@ public class MOOSEModel extends Item {
 		HashMap<String, TreeComposite> inputMap = 
 				(HashMap<String, TreeComposite>) buildInputMap(inputTree);
 
-		// Lastly, now create a HashMap of the exemplar children
-		// defined in the YAML spec tree
+		// Lastly, now create a HashMap of the exemplar children defined in the 
+		// YAML spec tree
 		HashMap<String, TreeComposite> exemplarMap = 
 				(HashMap<String, TreeComposite>) buildExemplarMap(yamlTree);
 
-		// Now we loop over the input map, and look for matches in
-		// the exemplar map, so that all children, subchildren, etc.
-		// will have their child exemplars set correctly
-		setChildExemplars(inputMap, exemplarMap);
+		// Now we loop over the input map, and look for matches in the exemplar 
+		// map, and copy any pertinent data over. This namely copies over
+		// exemplar child lists; it also checks which parameters are
+		// supposed to have a AllowedValueType.Discrete according to the 
+		// exemplar map and fixes the appropriately matching parameters in the 
+		// input map.
+		setExemplarData(inputMap, exemplarMap);
 
 		// Now walk through the input tree again, this time
 		// copying over the nodes from the input tree into the YAML
@@ -948,13 +951,16 @@ public class MOOSEModel extends Item {
 	 *            The HashMap of TreeComposites constructed from the child
 	 *            exemplars of a loaded MOOSE YAML spec, and keyed on pathname.
 	 */
-	private void setChildExemplars(HashMap<String, TreeComposite> inputMap,
+	private void setExemplarData(HashMap<String, TreeComposite> inputMap,
 			HashMap<String, TreeComposite> exemplarMap) {
 
 		// Local declarations
-		TreeComposite inputCur = null;
+		TreeComposite inputCur = null, exemplarCur = null;
+		DataComponent inputNode = null;
 		int prevNameIndex = -1;
-		String parentKey = "";
+		String parentKey = "", typeName = "";
+		int generationsUp = 0;
+		boolean foundExemplarMatch = false;
 		TreeType treeType;
 
 		// Iterate through the input map keys
@@ -963,28 +969,119 @@ public class MOOSEModel extends Item {
 
 			// Get the tree from the input map
 			inputCur = inputMap.get(key);
+			
+			// Reset our counter, flag, etc. if they've been used
+			generationsUp = 0;
+			foundExemplarMatch = false;
+			typeName = "";
 
-			// Proceed only if this isn't a top-level tree
-			if (!topLevelInputTrees.contains(inputCur)) {
+			// Figure out the parent tree's key
+			prevNameIndex = key.indexOf("/" + inputCur.getName());
 
-				// Reset our counter, flag, etc.
-				int generationsUp = 0;
-				boolean foundExemplarMatch = false;
-
-				// Figure out the parent tree's key
-				prevNameIndex = key.indexOf("/" + inputCur.getName());
+			if (prevNameIndex == -1) {
+				// If this is a top-level block, skip it
+				continue;
+			} else {
+				// Get the name of the parent tree
 				parentKey = key.substring(0, prevNameIndex);
+			}
 
-				// First, using the exemplar map, see if this tree
-				// is an exact match to an exemplar child of
-				// something
-				if (exemplarMap.containsKey(key)) {
+			/*
+			 * Starting here, there are 4 circumstances in which we'll look for
+			 * a matching block in the exemplar map. Say our current inputCur
+			 * points to the node located at /Block/Subblock/foo/bar. Priority
+			 * for matching, in descending order:
+			 * 
+			 * 1. Exact match
+			 * 		An exact match to /Block/Subblock/foo/bar is found in the
+			 * 		exemplar HashMap
+			 * 
+			 * 2. Renamed (with type)
+			 * 		bar might have been previously named something else, but
+			 * 		was renamed. If bar has a parameter named "type" on it, get
+			 * 		the parameter value and check the exemplar HashMap for
+			 * 		/Block/Subblock/foo/parameter_value
+			 * 
+			 * 3. Renamed (without type)
+			 * 		bar might have been previously named something else, but
+			 * 		was renamed. If /foo/ has an exemplar child named "*",
+			 * 		check the exemplar HashMap for /Block/Subblock/foo/*
+			 * 		
+			 * 4. Multi-level Renamed
+			 * 		If no match to /Block/Subblock/foo/* is found in exemplar
+			 * 		HashMap, begin traversing upwards replacing more wildchars
+			 * 		in the pathname until a match is found, or the top-level of
+			 * 		the tree is reached.
+			 * 
+			 * 			First search: 	//Block//Subblock//*//*
+			 * 			Second search: 	//Block//*//*//*
+			 * 			Third search:	Reached top-level, stop, no match found
+			 */
+			
+			// First, using the exemplar map, see if this tree is an exact 
+			// match to an exemplar child (search method #1)
+			if (exemplarMap.containsKey(key)) {
+				
+				// Get a handle on the matching exemplar block
+				exemplarCur = exemplarMap.get(key);
+				
+				// Simply copy the exemplar children
+				inputCur.setChildExemplars(exemplarCur.getChildExemplars());
+				
+				// Check if this is an AdaptiveTreeComposite and if it is, set
+				// the type
+				treeType = TreeType.fromString(inputCur.getClass()
+						.toString());
+				
+				if (treeType != null
+						&& treeType == TreeType.AdaptiveTreeComposite) {
+					setAdaptiveType((AdaptiveTreeComposite) inputCur);
+				}
+				
+				// While we're here, a bit of administrative work...
+				// Fix any parameters in inputCur that are Discrete type in
+				// the exemplarCur
+				setDiscreteParams(exemplarCur, inputCur);
+
+			} 
+			
+			// Otherwise, there are a couple other places to search...
+			// (search methods #2-4)
+			else {
+				
+				// Get the data node which contains the parameters
+				inputNode = (DataComponent) inputCur.getDataNodes().get(0);
+				
+				// Begin searching the parameters associated to the inputCur
+				// and try to find one named "type"
+				for (Entry param : inputNode.retrieveAllEntries()) {
+					
+					// If there's a "type" parameter, make note of its value
+					if ("type".equals(param.getName()))	{
+						typeName = param.getValue();
+					}
+				}
+
+				// Check if this is a block that has been renamed, but has a 
+				// "type" parameter which indicates what the original name 
+				// might have been. (search method #3)
+				//
+				// For example, the subblocks of AuxKernel have a "type" 
+				// parameter which indicates what kind of subblock it is;
+				// this is handy when the blocks have been renamed. Note that
+				// this "type" parameter is not related to the "type" of
+				// AdaptiveTreeComposites.
+				if (!typeName.isEmpty() && 
+						exemplarMap.containsKey(parentKey + "/" + typeName)) {
+					
+					// Get a handle on the matching exemplar block
+					exemplarCur = exemplarMap.get(parentKey + "/" + typeName);
+					
 					// Simply copy the exemplar children
-					inputCur.setChildExemplars(exemplarMap.get(key)
-							.getChildExemplars());
-					// Lastly, check if this is an
-					// AdaptiveTreeComposite and if it is, set the
-					// type
+					inputCur.setChildExemplars(exemplarCur.getChildExemplars());
+					
+					// Check if this is an AdaptiveTreeComposite and if it is, 
+					// set the type
 					treeType = TreeType.fromString(inputCur.getClass()
 							.toString());
 					
@@ -992,68 +1089,284 @@ public class MOOSEModel extends Item {
 							&& treeType == TreeType.AdaptiveTreeComposite) {
 						setAdaptiveType((AdaptiveTreeComposite) inputCur);
 					}
+					
+					// While we're here, a bit of administrative work...
+					// Fix any parameters in inputCur that are Discrete type in
+					// the exemplarCur
+					setDiscreteParams(exemplarCur, inputCur);
+					
 				}
-
-				// If it's not an exact exemplar match, see if the
-				// parent has an exemplar just named "*" (meaning
-				// the tree can have a custom name)
+				
+				// Check if the parent has an exemplar just named "*"
 				else if (exemplarMap.containsKey(parentKey + "/*")) {
+					
+					// Get a handle on the matching exemplar block
+					exemplarCur = exemplarMap.get(parentKey + "/*");
+							
 					// Copy the wildchar's exemplar children
-					inputCur.setChildExemplars(exemplarMap
-							.get(parentKey + "/*").getChildExemplars());
+					inputCur.setChildExemplars(exemplarCur.getChildExemplars());
+					
+					// While we're here, a bit of administrative work...
+					// Fix any parameters in inputCur that are Discrete type in
+					// the exemplarCur
+					setDiscreteParams(exemplarCur, inputCur);
+					
 				}
-				// Otherwise, things are going to start getting
-				// funky now (cue disco ball...). This means that
-				// the parent of this tree might also be a custom-
-				// named wildchar tree (ie. Block/SubBlock/*/*)
+				// Otherwise, things are going to start getting funky now. 
+				// This means that the parent of this tree might also be a 
+				// wildchar block, ie. Block/SubBlock/*/* (search method #4)
 				else {
-					// Begin traversing up the tree, looking at the
-					// parent's parents until you find an exact
-					// match in the exemplar tree (something that
-					// isn't a wildchar)
+					
+					// Begin traversing up the tree, looking at the parent's 
+					// parents until you find an exact match in the exemplar 
+					// tree
 					while (!foundExemplarMatch) {
-
+	
 						// Get the parent's parent's name
 						prevNameIndex = parentKey.lastIndexOf("/");
-						// Can't go any higher than the root node, so exit. This
-						// happens when the input TreeComposite has blocks not
-						// defined in the YAML spec.
+						
+						// We can't go any higher than the root node, so exit
+						// if we've gone up to the top-level blocks
 						if (prevNameIndex == -1) {
 							break;
 						}
+						
 						parentKey = key.substring(0, prevNameIndex);
-
-						// Increase our counter to indicate we've
-						// moved on generation up
+	
+						// Increase our counter to indicate we've moved one
+						// generation up
 						generationsUp++;
-
+	
 						// Look for it in the exemplar map
 						if (exemplarMap.containsKey(parentKey)) {
 							foundExemplarMatch = true;
 						}
 					}
-					// If a match was found, set the exemplars
+					
+					// If a match was found, we can begin transferring data
+					// from the exemplar HashMap into the input HashMap
 					if (foundExemplarMatch) {
-						// Construct the correct wildchar path
-						// to this tree's parent
+						
+						// Construct the correct path to this tree's parent
+						// depending on how many generations up it went
 						String wildcharPath = parentKey;
 						for (int i = 0; i < generationsUp; i++) {
 							wildcharPath += "/*";
 						}
+						
 						// Make sure it exists in the exemplar map
 						if (exemplarMap.containsKey(wildcharPath)) {
-							// Get the parent's exemplar list and
-							// set it as
-							// this tree's
-							inputCur.setChildExemplars(exemplarMap.get(
-									wildcharPath).getChildExemplars());
+							
+							// Get a handle on the matching exemplar block
+							exemplarCur = exemplarMap.get(wildcharPath);
+							
+							// Get the parent's exemplar list and set it as
+							// this tree's exemplar list
+							inputCur.setChildExemplars(
+									exemplarCur.getChildExemplars());
+	
+							// While we're here, a bit of administrative work...
+							// Fix any parameters in inputCur that are Discrete 
+							// type in the exemplarCur
+							setDiscreteParams(exemplarCur, inputCur);
+							
 						}
 					}
 				}
 			}
 		}
 	}
+	
+	private void setDiscreteParams(TreeComposite exemplarCur, 
+			TreeComposite inputCur) {
+		
+		// Local declarations
+		DataComponent exemplarNode = null, inputNode = null;
+		Entry exemplarParam = null;
+		
+		// Get the DataComponent on the exemplarCur
+		exemplarNode = (DataComponent) exemplarCur.getDataNodes().get(0);
+		
+		// Check if any of its entries are discrete type
+		for (int i = 0; i < exemplarNode.retrieveAllEntries().size(); i++) {
 
+			exemplarParam = exemplarNode.retrieveAllEntries().get(i);
+			
+			if ((AllowedValueType.Discrete)
+					.equals(exemplarParam.getValueType())) {
+				
+				// Get the data node on the input tree
+				inputNode = (DataComponent) inputCur.getDataNodes().get(0);
+				
+				// Check if inputCur has the same parameter on it
+				for (int j = 0; j < inputNode.retrieveAllEntries().size(); j++) {
+					
+					// Get the next inputParameter
+					Entry inputParameter = inputNode.retrieveAllEntries().get(j);
+												
+					if (inputParameter.getName().equals(exemplarParam.getName())) {
+						
+						// Clone the YAML parameter
+						Entry paramClone = (Entry) exemplarParam.clone();
+						
+						// Merge Data from the input parameter into it
+						paramClone.setDescription(inputParameter.getDescription());
+						paramClone.setId(inputParameter.getId());
+						paramClone.setTag(inputParameter.getTag());
+						paramClone.setRequired(inputParameter.isRequired());
+						paramClone.setReady(inputParameter.isReady());
+						
+						// Set the value
+						String oldValue = inputParameter.getValue();
+						paramClone.setValue(
+								paramClone.getAllowedValues()
+									.contains(oldValue) ? 
+										oldValue : 
+										paramClone.getAllowedValues().get(0));
+
+						// Set the new parameter on the data node
+						inputNode.deleteEntry(inputParameter.getName());
+						inputNode.addEntry(paramClone);
+						
+					}
+				}					
+			}
+		}
+	}
+
+//	/**
+//	 * This method checks the currently loaded input tree and compares all
+//	 * blocks against the exemplar HashMap for any parameters that should be
+//	 * AllowedValueType.Discrete. This method converts parameters to the
+//	 * Discrete value type where appropriate.
+//	 */
+//	private void setDiscreteParameters(HashMap<String, TreeComposite> inputMap,
+//			HashMap<String, TreeComposite> exemplarMap) {
+//		
+//		TreeComposite inputCur = null, exemplarCur = null;
+//		DataComponent inputNode = null, exemplarNode = null;
+//		boolean foundExemplarMatch = false;
+//		int prevNameIndex = -1, generationsUp = 0;
+//		String parentKey = "";
+//		
+//		// Iterate through the input map keys
+//		Set<String> inputKeys = inputMap.keySet();
+//		for (String key : inputKeys) {
+//
+//			// Get the tree from the input map
+//			inputCur = inputMap.get(key);
+//			exemplarCur = exemplarMap.get(key);
+//			
+//			// If there was no match found, figure out if the block has a custom
+//			// name
+//			if (exemplarCur == null) {
+//				
+//				// Re-set flags if they were used in a previous iteration
+//				foundExemplarMatch = false;
+//				generationsUp = 0;
+//				
+//				// Figure out the parent tree's key
+//				prevNameIndex = key.indexOf("/" + inputCur.getName());
+//				parentKey = key.substring(0, prevNameIndex);
+//				
+//				// Check first if there's a match 1 level up to a wildchar block
+//				if (exemplarMap.containsKey(parentKey + "/*")) {
+//					foundExemplarMatch = true;
+//					generationsUp++;
+//				}
+//				
+//				// Otherwise, the parent of this tree might also be a custom
+//				// wildchar tree -- keep traversing up the line until either
+//				// the correct parent is found, or we get to the top of the tree
+//				else {
+//										
+//					while (!foundExemplarMatch) {
+//						// Get the parent's parent's name
+//						prevNameIndex = parentKey.lastIndexOf("/");
+//						// Can't go any higher than the root node, so exit. This
+//						// happens when the input TreeComposite has blocks not
+//						// defined in the YAML spec.
+//						if (prevNameIndex == -1) {
+//							break;
+//						}
+//						parentKey = key.substring(0, prevNameIndex);
+//	
+//						// Increase our counter to indicate we've
+//						// moved on generation up
+//						generationsUp++;
+//	
+//						// Look for it in the exemplar map
+//						if (exemplarMap.containsKey(parentKey)) {
+//							foundExemplarMatch = true;
+//						}
+//					}
+//				}
+//					
+//				// If a match was found, set the exemplarCur correctly
+//				if (foundExemplarMatch) {
+//					// Construct the correct path to this tree's parent
+//					String wildcharPath = parentKey;
+//					for (int i = 0; i < generationsUp; i++) {
+//						wildcharPath += "/*";
+//					}
+//					// Make sure it exists in the exemplar map
+//					if (exemplarMap.containsKey(wildcharPath)) { 
+//						
+//						// Set the exemplarCur correctly
+//						exemplarCur = exemplarMap.get(wildcharPath);
+//					}
+//				}
+//				
+//				
+//			} 
+//			
+//			// If we now have a handle on the correct block in the exemplar
+//			// map, then go ahead and copy the parameter info  into the current 
+//			// input block
+//			if (exemplarCur != null) {
+//				
+//				// Get the DataComponent on the exemplarCur
+//				exemplarNode = (DataComponent) exemplarCur.getDataNodes().get(0);
+//				
+//				// Check if any of its entries are discrete type
+//				for (Entry yamlParameter : exemplarNode.retrieveAllEntries()) {
+//	
+//					if ((AllowedValueType.Discrete)
+//							.equals(yamlParameter.getValueType())) {
+//						
+//						// Get the data node on the input tree
+//						inputNode = (DataComponent) inputCur.getDataNodes().get(0);
+//						
+//						// Check if inputCur has the same parameter on it
+//						for (int i = 0; i < inputNode.retrieveAllEntries().size(); i++) {
+//							
+//							// Get the next inputParameter
+//							Entry inputParameter = inputNode.retrieveAllEntries().get(i);
+//														
+//							if (inputParameter.getName().equals(yamlParameter.getName())) {
+//								
+//								// Clone the YAML parameter
+//								Entry paramClone = (Entry) yamlParameter.clone();
+//								// Merge Data from the input parameter into it
+//								paramClone.setDescription(inputParameter.getDescription());
+//								paramClone.setId(inputParameter.getId());
+//								paramClone.setTag(inputParameter.getTag());
+//								paramClone.setRequired(inputParameter.isRequired());
+//								paramClone.setReady(inputParameter.isReady());
+//	
+//								// Set the new parameter on the data node
+//								inputNode.deleteEntry(inputParameter.getName());
+//								inputNode.addEntry(paramClone);
+//								
+//							}
+//						}					
+//					}
+//				}
+//			}
+//		}
+//	}
+	
+	
 	/**
 	 * This utility method is responsible for merging the contents of a HashMap
 	 * of an imported MOOSE input data TreeComposite, into a HashMap of a YAML
@@ -1156,8 +1469,8 @@ public class MOOSEModel extends Item {
 	 * sibling and child references be set correctly on all TreeComposites to be
 	 * successful.
 	 * 
-	 * Used exclusively by {@link #reviewEntries(Form)
-	 * MOOSEModel.reviewEntries(...)}.
+	 * Used exclusively by 
+	 * 				{@link #reviewEntries(Form) MOOSEModel.reviewEntries(...)}
 	 * 
 	 * @param tree
 	 *            The tree that will have all active data nodes set.
@@ -1179,7 +1492,7 @@ public class MOOSEModel extends Item {
 			if (tree.getActiveDataNode() == null && !dataNodes.isEmpty()) {
 				tree.setActiveDataNode(dataNodes.get(0));
 			}
-
+			
 			// Add all of the current tree's children to the stack in reverse.
 			for (int i = tree.getNumberOfChildren() - 1; i >= 0; i--) {
 				treeStack.push(tree.getChildAtIndex(i));
