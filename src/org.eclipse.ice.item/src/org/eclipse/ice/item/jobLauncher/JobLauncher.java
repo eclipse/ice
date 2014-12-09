@@ -1043,6 +1043,7 @@ public class JobLauncher extends Item {
 						// Sleep for a bit
 						Thread.currentThread();
 						Thread.sleep(100);
+						status = action.getStatus();
 					}
 					// Close stdout
 					stdoutBufferredReader.close();

@@ -33,7 +33,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
@@ -118,8 +117,12 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Enable TBB
 		enableTBB(1, 256, 1);
 
+		// Register this MooseLauncher as a listener of the
+		// Input File Entry. When it is set to something we can react
+		// with a search of related moose files.
 		inputFilesComp.retrieveEntry("Input File").register(this);
 
+		// Go ahead and create the list of files related to the Input File
 		if (!inputFilesComp.retrieveEntry("Input File").getValue().isEmpty()
 				&& inputFilesComp.retrieveEntry("Input File").getValue()
 						.contains(".i")) {
@@ -264,59 +267,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 			// Check the DataComponent is valid
 			if ("Available Executables".equals(execDataComp.getName())) {
 
-				// If the current executable is BISON, remove RAVEN inputs (if
-				// any) and specify additional fuel files will need to be added
-				// to the form.
-				if ("BISON".equals(execName)) {
-
-					// Set the input upload flag to true in case it's been
-					// previously set to false (by the YAML generator)
-					setUploadInputFlag(true);
-
-					// Remove RAVEN input files (does nothing if types don't
-					// exist)
-					// removeInputType("Control Logic");
-					//
-					// // Add new input types (does nothing if types already
-					// exist)
-					// addInputType("Input File", "inputFile",
-					// "MOOSE input file that defines the problem.", ".i");
-					// addInputType("Mesh", "meshFile", "Fuel pin mesh file.",
-					// ".e");
-					// addInputType("Power History", "powerHistoryFile",
-					// "Input file containing average rod input power "
-					// + "over time.", ".csv");
-					// addInputType("Peaking Factors", "peakingFactorsFile",
-					// "An input file containing the axial power profile "
-					// + "as a function of time.", ".csv");
-					// addInputType("Clad Wall Temp", "cladTempFile",
-					// "Input file containing cladding wall temperature "
-					// + "data.", ".csv");
-					// addInputType("Fast Neutron Flux", "fastFluxFile",
-					// "Input "
-					// + "file containing fast neutron flux data.", ".csv");
-
-				} else if ("RAVEN".equals(execName)) {
-
-					// Set the input upload flag to true in case it's been
-					// previously set to false (by the YAML generator)
-					setUploadInputFlag(true);
-
-					// Remove BISON input files (if any)
-					// removeInputType("Mesh");
-					// removeInputType("Power History");
-					// removeInputType("Peaking Factors");
-					// removeInputType("Clad Wall Temp");
-					// removeInputType("Fast Neutron Flux");
-					//
-					// // Add new input types (if any)
-					// addInputType("Input File", "inputFile",
-					// "The MOOSE input file that defines the problem.",
-					// ".i");
-					// addInputType("Control Logic", "logicFile",
-					// "Python control " + "logic input file.", ".py");
-
-				} else if (yamlSyntaxGenerator.equals(execName)) {
+				setUploadInputFlag(true);
+				if (yamlSyntaxGenerator.equals(execName)) {
 
 					// Disable input file appending (no input file to append)
 					setAppendInputFlag(false);
@@ -324,38 +276,11 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					// Disable input file uploading
 					setUploadInputFlag(false);
 
-					// Remove any extra input files (if any)
-					// removeInputType("Input File");
-					// removeInputType("Mesh");
-					// removeInputType("Power History");
-					// removeInputType("Peaking Factors");
-					// removeInputType("Control Logic");
-					// removeInputType("Clad Wall Temp");
-					// removeInputType("Fast Neutron Flux");
-
-				} else {
-
-					// Set the input upload flag to true in case it's been
-					// previously set to false (by the YAML generator)
-					setUploadInputFlag(true);
-
-					// Remove any extra input files (if any)
-					// removeInputType("Mesh");
-					// removeInputType("Power History");
-					// removeInputType("Peaking Factors");
-					// removeInputType("Control Logic");
-					// removeInputType("Clad Wall Temp");
-					// removeInputType("Fast Neutron Flux");
-					//
-					// // Add input file (if necessary)
-					// addInputType("Input File", "inputFile",
-					// "The MOOSE input file that defines the problem.",
-					// ".i");
 				}
 
-			}
+				retStatus = FormStatus.ReadyToProcess;
 
-			else {
+			} else {
 				retStatus = FormStatus.InfoError;
 			}
 		}
@@ -373,7 +298,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 */
 	@Override
 	protected void updateResourceComponent() {
-
+		System.out.println("INVOKING UPDATE RESOURCE COMPONENT");
 		// Call the super
 		super.updateResourceComponent();
 
@@ -542,13 +467,13 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Get the MOOSELauncher's Input Files DataComponent,
 		// we'll use it to get the current Input File Entry
 		MOOSEModel model = new MOOSEModel(this.project);
-		
+
 		DataComponent inputFiles = (DataComponent) form.getComponent(1);
 		Entry inputFile = (Entry) inputFiles.retrieveEntry("Input File");
 
 		inputFiles.clearEntries();
 		inputFiles.addEntry(inputFile);
-		
+
 		// Now load the Tree representing the Input File
 		// System.out.println("Loading " + inputFile.getValue());
 		model.loadInput(inputFile.getValue());
