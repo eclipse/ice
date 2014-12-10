@@ -24,7 +24,6 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -174,7 +173,7 @@ public class MOOSEModelTester {
 		// Check the form
 		Form form = model.getForm();
 		assertNotNull(form);
-		assertEquals(2, form.getComponents().size());
+		assertEquals(3, form.getComponents().size());
 
 		// Check the data component
 		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) instanceof DataComponent);
@@ -195,26 +194,11 @@ public class MOOSEModelTester {
 		assertEquals(2, outputFileEntry.getId());
 		assertEquals("mooseModel.i", outputFileEntry.getValue());
 
-		// Check the tree composite.
+		// Check the input tree composite.
 		assertTrue(form.getComponent(2) instanceof TreeComposite);
-		// FIXME the default app will be set to null now; the older tests
-		// below assumed that the bison YAML tree was loaded in setupForm().
-		// TreeComposite parentTree = (TreeComposite) form
-		// .getComponent(MOOSEModel.mooseTreeCompositeId);
-		// assertEquals(34, parentTree.getComponents().size());
-		// TreeComposite adaptivityTree = parentTree.getNextChild();
-		// // Check the block
-		// assertNotNull(adaptivityTree);
-		// assertEquals(1, adaptivityTree.getComponents().size());
-		// assertEquals("Adaptivity", adaptivityTree.getName());
-		// // It should have several parameters
-		// DataComponent parameters = (DataComponent) adaptivityTree
-		// .getComponent(1);
-		// assertNotNull(parameters);
-		// assertEquals(3, parameters.retrieveAllEntries().size());
-		// // And it should also have a couple of exemplar children
-		// assertTrue(adaptivityTree.hasChildExemplars());
-		// assertEquals(2, adaptivityTree.getChildExemplars().size());
+		
+		// Check the YAML tree composite
+		assertTrue(form.getComponent(3) instanceof TreeComposite);
 
 		return;
 		// end-user-code
@@ -237,7 +221,6 @@ public class MOOSEModelTester {
 
 		// Local Declarations
 		String testFilename = "bison_test_file.inp";
-		TreeComposite indicators = null, analyticalIndicator = null, fluxJumpIndicator = null;
 
 		// Create a MOOSEModel to test
 		MOOSEModel model = setupMOOSEItem();
@@ -254,31 +237,6 @@ public class MOOSEModelTester {
 		Entry outputFileEntry = ((DataComponent) form.getComponent(1))
 				.retrieveEntry("Output File Name");
 		outputFileEntry.setValue(testFilename);
-
-		// FIXME YAML specs are now read in when reviewEntries() is triggered by
-		// the MOOSETreeViewer, so the tests below are obsolete, as the
-		// TreeComposite on the form is empty
-
-		// TreeComposite parentTree = (TreeComposite) form.getComponent(2);
-		// TreeComposite adaptivityTree = parentTree.getNextChild();
-		// // Modify the tree. Get an analytical indicator
-		// indicators = (TreeComposite)
-		// adaptivityTree.getChildExemplars().get(0)
-		// .clone();
-		// analyticalIndicator = (TreeComposite) indicators.getChildExemplars()
-		// .get(1).clone();
-		// fluxJumpIndicator = (TreeComposite) indicators.getChildExemplars()
-		// .get(2).clone();
-		// // Add these to the block. It *MUST* be done in this order.
-		// adaptivityTree.setNextChild(indicators);
-		// indicators.setNextChild(analyticalIndicator);
-		// analyticalIndicator.setActive(true);
-		// indicators.setNextChild(fluxJumpIndicator);
-		// // Make the blocks active, except for fluxJumpIndicator.
-		// adaptivityTree.setActive(true);
-		// indicators.setActive(true);
-		// analyticalIndicator.setActive(true);
-		// fluxJumpIndicator.setActive(true);
 
 		// Resubmit the form
 		assertEquals(FormStatus.ReadyToProcess, model.submitForm(form));
