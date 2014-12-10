@@ -19,19 +19,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
+
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
@@ -61,12 +65,12 @@ import org.yaml.snakeyaml.Yaml;
  * input itself. The nodes of this tree are what could be configured, not what
  * is, so they must be setup as child exemplars on a TreeComposite.
  * </p>
- * <!-- end-UML-doc -->
- *  * @author Jay Jay Billings
+ * <!-- end-UML-doc --> * @author Jay Jay Billings
+ * 
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-public class MOOSEFileHandler {
+public class MOOSEFileHandler implements IReader, IWriter {
 
 	/**
 	 * A flag to denote whether or not debugging is enabled
@@ -230,10 +234,10 @@ public class MOOSEFileHandler {
 			// Remove (non-parameter) commented lines and white space
 			String trimmedPotLine = "";
 			for (int i = 0; i < potLines.size(); i++) {
-				
+
 				trimmedPotLine = potLines.get(i).trim();
-				
-				if (trimmedPotLine.startsWith("#") 
+
+				if (trimmedPotLine.startsWith("#")
 						&& !trimmedPotLine.contains("=")
 						&& !trimmedPotLine.contains("[")
 						&& !trimmedPotLine.contains("]")) {
@@ -242,32 +246,30 @@ public class MOOSEFileHandler {
 					potLines.remove(i);
 					// Update "i" so that we read correctly
 					--i;
-				} else 
-					if (potLines.get(i).isEmpty()) {
+				} else if (potLines.get(i).isEmpty()) {
 					// Remove empty lines
 					potLines.remove(i);
 					// Update "i" so that we read correctly
 					--i;
-				}
-				else {
+				} else {
 					// All other lines should be trimmed
 					potLines.set(i, potLines.get(i).trim());
 				}
 			}
-			
+
 			// Read all of the lines again, create blocks and load them.
 			int counter = 0, endCounter = 1;
 			while (counter < potLines.size()) {
 				// Get the line and shift the counters
 				potLine = potLines.get(counter);
 				++counter;
-				
+
 				// The start of a full block is a line with the name in brackets
 				// and without the "./" sequence.
 				if (potLine.contains("[") && potLine.contains("]")) {
 					// Go to the next line
-					potLine = potLines.get(endCounter);			
-					
+					potLine = potLines.get(endCounter);
+
 					// Loop over the block and find the end
 					while (!potLine.contains("[]")) {
 						// Update the line and the counter
@@ -305,7 +307,7 @@ public class MOOSEFileHandler {
 
 		return trees;
 	}
-	
+
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -327,11 +329,12 @@ public class MOOSEFileHandler {
 	 *         TreeComposite are contained in a DataComponent. The id of the
 	 *         data component is 1.
 	 *         </p>
-	 * @throws IOException 
+	 * @throws IOException
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	public ArrayList<TreeComposite> loadYAML(String filePath) throws IOException {
+	public ArrayList<TreeComposite> loadYAML(String filePath)
+			throws IOException {
 		// begin-user-code
 
 		// Local Declarations
@@ -346,11 +349,11 @@ public class MOOSEFileHandler {
 		if (filePath == null || filePath.isEmpty()) {
 			return null;
 		}
-		
+
 		// Get a handle on the YAML file
 		File yamlFile = new File(filePath);
 		input = new FileInputStream(yamlFile);
-				
+
 		// Load the YAML tree
 		if (debugFlag) {
 			System.out.println("MOOSEFileHandler Message: Loading YAML file "
@@ -404,12 +407,11 @@ public class MOOSEFileHandler {
 		while (tree != null) {
 
 			// Append to the tree name
-			treeName += "/" + tree.getName();			
-			
+			treeName += "/" + tree.getName();
+
 			// Put the tree in the Map, keyed on path name
-			treeMap.put(
-					(treeName.startsWith("/") ? 
-							treeName.substring(1) : treeName), tree);
+			treeMap.put((treeName.startsWith("/") ? treeName.substring(1)
+					: treeName), tree);
 
 			// Push child exemplars to the top of the tree stack
 			childExemplars = tree.getChildExemplars();
@@ -427,20 +429,22 @@ public class MOOSEFileHandler {
 			// push onto the stack, remove the last "part" of the path name, as
 			// we'll be going back up one level
 			else if (childExemplars.isEmpty()) {
-				
+
 				// Get the name of the tree one level up
 				prevNameIndex = treeName.lastIndexOf("/" + tree.getName());
-				treeName = treeName.substring(0, prevNameIndex);				
-				
+				treeName = treeName.substring(0, prevNameIndex);
+
 				// Go up another level if the next tree in the stack isn't
 				// a child exemplar of the current tree referenced by treeName
 				oneUpTree = treeMap.get(treeName.substring(1));
-				if (oneUpTree != null && !oneUpTree.getChildExemplars().contains(treeStack.peek())) {
+				if (oneUpTree != null
+						&& !oneUpTree.getChildExemplars().contains(
+								treeStack.peek())) {
 					prevNameIndex = treeName.lastIndexOf("/");
-					treeName = ((prevNameIndex == 0 || prevNameIndex == -1) ? 
-							treeName : treeName.substring(0, prevNameIndex));
+					treeName = ((prevNameIndex == 0 || prevNameIndex == -1) ? treeName
+							: treeName.substring(0, prevNameIndex));
 				}
-				
+
 			}
 
 			// Pop the next tree off the stack
@@ -622,9 +626,9 @@ public class MOOSEFileHandler {
 			System.out.println("MOOSEFileHandler Message: Loading action "
 					+ "syntax file: " + filePath);
 		}
-		
-		actionSyntax = (ArrayList<String>) 
-				Files.readAllLines(Paths.get(filePath), Charset.defaultCharset());
+
+		actionSyntax = (ArrayList<String>) Files.readAllLines(
+				Paths.get(filePath), Charset.defaultCharset());
 
 		// Iterate through the list and eliminate non-hard-paths and
 		// duplicate entries
@@ -638,12 +642,12 @@ public class MOOSEFileHandler {
 			if (currLine.endsWith("*\r") || currLine.endsWith("*")) {
 				actionSyntax.remove(currLine);
 			}
-			
+
 			// Remove from the ArrayList if it's the same as the last line
 			else if (previousLine.equals(currLine)) {
 				actionSyntax.remove(currLine);
 			}
-			
+
 			// Otherwise it's a unique hard-path, and move to the next line
 			else {
 				previousLine = currLine;
@@ -653,5 +657,90 @@ public class MOOSEFileHandler {
 
 		return actionSyntax;
 	}
-	
+
+	@Override
+	public void write(ICEObject objectToWrite, URI uri) {
+		// TODO Auto-generated method stub
+
+		if (objectToWrite instanceof TreeComposite) {
+			ArrayList<TreeComposite> children = new ArrayList<TreeComposite>();
+			TreeComposite mooseTree = (TreeComposite) objectToWrite;
+
+			for (int i = 0; i < mooseTree.getNumberOfChildren(); i++) {
+				children.add(mooseTree.getChildAtIndex(i));
+			}
+
+			dumpInputFile(uri.getPath(), children);
+		}
+
+		return;
+
+	}
+
+	@Override
+	public void replace(String regex, ICEObject value) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public String getWriterType() {
+		return "moose";
+	}
+
+	@Override
+	public ICEObject read(URI uri) {
+
+		// Make sure we have a valid URI
+		if (uri != null) {
+			// Local Declarations
+			ArrayList<TreeComposite> blocks = null;
+			TreeComposite rootNode = new TreeComposite();
+			String fileExt = uri.getPath().split("\\.(?=[^\\.]+$)")[1];
+
+			try {
+				// Parse the extension to see if we are loading 
+				// YAML or input files. 
+				if (fileExt.equals("yaml")) {
+					blocks = loadYAML(uri.getPath());
+				} else if (fileExt.equals(".i")) {
+					blocks = loadFromGetPot(uri.getPath());
+				}
+
+				// If we got a valid file, then construct 
+				// a Root TreeComposite to return 
+				if (blocks != null) {
+					for (TreeComposite block : blocks) {
+						// Clone the block
+						TreeComposite blockClone = (TreeComposite) block
+								.clone();
+						// Set the parent and sibling references correctly
+						blockClone.setActive(true);
+						blockClone.setParent(rootNode);
+						rootNode.setNextChild(blockClone);
+					}
+					
+					// Return the tree 
+					return rootNode;
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public ArrayList<ICEObject> findAll(String regexp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getReaderType() {
+		return "moose";
+	}
+
 }
