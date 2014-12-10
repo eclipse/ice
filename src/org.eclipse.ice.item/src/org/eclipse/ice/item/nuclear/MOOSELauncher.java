@@ -233,10 +233,10 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 	/**
 	 * This operation overrides Item.reviewEntries(). This override is required
-	 * in the event that the BISON executable is chosen, in which case
-	 * additional files (mesh, power history, peaking factors) will need to be
-	 * specified by the client. This method will toggle the additional input
-	 * file menus on and off depending on the selected executable.
+	 * in the event that the YAML/action syntax generator is selected, in
+	 * which case certain JobLaunch flags (related to file uploading) must be
+	 * turned off. Conversely, these flags must be turned back on for any
+	 * other executable.
 	 * 
 	 * @param preparedForm
 	 *            The Form to review.
@@ -269,6 +269,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 			if ("Available Executables".equals(execDataComp.getName())) {
 
 				setUploadInputFlag(true);
+				
 				if (yamlSyntaxGenerator.equals(execName)) {
 
 					// Disable input file appending (no input file to append)
@@ -276,12 +277,12 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 					// Disable input file uploading
 					setUploadInputFlag(false);
-
 				}
 
 				retStatus = FormStatus.ReadyToProcess;
 
 			} else {
+				
 				retStatus = FormStatus.InfoError;
 			}
 		}
@@ -350,7 +351,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 			try {
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 
@@ -472,50 +473,85 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	}
 
 	/**
+	 * This method is responsible for determining the available list of input
+	 * files for the MOOSE Launcher. If there is at least one *.i file in the
+	 * workspace, the method will attempt to load the contents into a 
+	 * TreeComposite structure, and traverse through it searching for 
+	 * references to additional/external files.
 	 * 
+	 * Additional files will be added to the MOOSE Launcher Form's input file(s)
+	 * DataComponent (id=1). Any previously existing input files will be
+	 * removed.
 	 */
 	private void updateFileEntries() {
-		// Get the MOOSELauncher's Input Files DataComponent,
-		// we'll use it to get the current Input File Entry
+		// Get the MOOSELauncher's Input Files DataComponent; use it to get the 
+		// current Input File Entry
 		MOOSEModel model = new MOOSEModel(this.project);
-
 		DataComponent inputFiles = (DataComponent) form.getComponent(1);
 		Entry inputFile = (Entry) inputFiles.retrieveEntry("Input File");
 
-		inputFiles.clearEntries();
-		inputFiles.addEntry(inputFile);
-
-		// Now load the Tree representing the Input File
-		// System.out.println("Loading " + inputFile.getValue());
-		model.loadInput(inputFile.getValue());
-		TreeComposite yamlTree = (TreeComposite) model.getForm()
-				.getComponent(2);
-
-		// Walk the tree and get all Entries that may represent a file
-		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-				yamlTree);
-		while (iter.hasNext()) {
-			TreeComposite child = iter.next();
-			// Make sure we have a valid DataComponent
-			if (child.getActiveDataNode() != null) {
-				DataComponent data = (DataComponent) child.getActiveDataNode();
-				for (Entry e : data.retrieveAllEntries()) {
-					if (e.getName().toLowerCase().contains("file")
-							&& !e.getName().toLowerCase().contains("profile")) {
-
-						// Here I want to keep knowledge of the file type,
-						// so I'll use the MOOSELauncher addInputType method
-						// to correclty generate the Entries with the correct
-						// file set
-						addInputType(child.getName(), child.getName()
-								.replaceAll(" ", ""), e.getDescription(), "."
-								+ e.getValue().split("\\.(?=[^\\.]+$)")[1]);
+		// If there is more than one file left-over from sometime before,
+		// remove them
+		if (inputFiles.retrieveAllEntries().size() > 1) {
+			inputFiles.clearEntries();
+			inputFiles.addEntry(inputFile);
+		}
+		
+		// Continue only if there is a valid input file to load up
+		if (inputFile.getValue() != null && !inputFile.getValue().isEmpty()) {
+			
+			// Now load the TreeComposite representing the Input File
+			model.loadInput(inputFile.getValue());
+			TreeComposite yamlTree = 
+					(TreeComposite) model.getForm().getComponent(2);
+	
+			// Walk the tree and get all Entries that may represent a file
+			BreadthFirstTreeCompositeIterator iter = 
+					new BreadthFirstTreeCompositeIterator(yamlTree);
+			while (iter.hasNext()) {
+				TreeComposite child = iter.next();
+				
+				// Make sure we have a valid DataComponent
+				if (child.getActiveDataNode() != null) {
+					
+					// Get the active data node
+					DataComponent data = 
+							(DataComponent) child.getActiveDataNode();
+					
+					// Iterate through the Entries and look for enabled
+					// parameters that reference additional files
+					for (Entry e : data.retrieveAllEntries()) {
+						
+							// Ignore parameters that are commented out
+							if (!"false".equals(e.getTag())) {
+								
+								if (e.getName().toLowerCase().contains("file")
+									&& !e.getName().toLowerCase().contains("profile")) {
+		
+								// Here we want to keep knowledge of the file type,
+								// so I'll use the MOOSELauncher addInputType method
+								// to correctly generate the Entries with the correct
+								// file set
+								
+								// Split the value between filename and extension
+								String[] fileLine = 
+										e.getValue().split("\\.(?=[^\\.]+$)");
+								
+								// Check that the Entry had both a valid name and
+								// value
+								if (fileLine.length > 1) {
+									addInputType(child.getName(), 
+											child.getName().replaceAll("\\s+", ""), 
+											e.getDescription(), 
+											"." + fileLine[1]);
+								}
+							}
+						}
 					}
 				}
 			}
-
 		}
-
+		
 		return;
 	}
 
@@ -526,5 +562,4 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 			updateFileEntries();
 		}
 	}
-
 }
