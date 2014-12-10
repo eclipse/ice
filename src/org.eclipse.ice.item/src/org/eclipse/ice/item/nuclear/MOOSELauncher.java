@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -446,11 +447,22 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// the original one
 		if (hasHeader || hasFooter) {
 
+			
+			// If there's an already existing file to where we want to write,
+			// get rid of it
+			IFile cleanFile = mooseFolder.getFile(execName + fileExt);
+			if (cleanFile.exists()) {
+				cleanFile.delete(true, null);
+			}
+			
 			// Write out to the clean file now
 			java.nio.file.Path writePath = Paths.get(cleanFilePath);
-			Files.write(writePath, fileLines, Charset.defaultCharset(),
-					StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
+			Files.write(writePath, fileLines, Charset.defaultCharset(), 
+					StandardOpenOption.CREATE);
+			System.out.println("MOOSELauncher Message: "
+					+ "Placing file in /ICEFiles/default/MOOSE: "
+					+ execName + fileExt);
+			
 			// Delete the old file
 			File oldFile = new File(filePath);
 			oldFile.delete();
