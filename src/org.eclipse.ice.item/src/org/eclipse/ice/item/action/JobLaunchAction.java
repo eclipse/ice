@@ -845,7 +845,6 @@ public class JobLaunchAction extends Action implements Runnable {
 			}
 		}
 
-		System.out.println("SETTING FORMSTATUS TO PROCESSED");
 		// Return the right flag if everything worked
 		status = FormStatus.Processed;
 

@@ -105,7 +105,7 @@
                defaultHandler="org.eclipse.ice.client.widgets.moose.GenerateYAMLHandler"
                description="Generate YAML and Action Syntax"
                id="org.eclipse.ice.client.widgets.moose.command.GenerateYAML"
-               name="GenerateYAML">
+               name="Generate MOOSE YAML and Action syntax files">
          </command>
       </extension>
       <extension
@@ -117,7 +117,8 @@
                   id="org.eclipse.ice.client.widgets.toolbar">
                <command
                      commandId="org.eclipse.ice.client.widgets.moose.command.GenerateYAML"
-                     id="GenerateYAML"
+                     icon="icons/file_obj.gif"
+                     id="Generate MOOSE YAML and Action syntax files"
                      label="Generate YAML and Action Syntax"
                      style="push">
                </command>
