@@ -1457,6 +1457,13 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// end-user-code
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
+	 * (org.eclipse.ice.datastructures.form.TimeDataComponent)
+	 */
 	@Override
 	public void visit(TimeDataComponent component) {
 
@@ -1469,6 +1476,13 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
+	 * (org.eclipse.ice.datastructures.form.mesh.MeshComponent)
+	 */
 	public void visit(MeshComponent component) {
 		// begin-user-code
 
@@ -1478,12 +1492,26 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// end-user-code
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
+	 * (org.eclipse.ice.datastructures.form.AdaptiveTreeComposite)
+	 */
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
-		// TODO Auto-generated method stub
-
+		// Proceed with the usual TreeComposite operation.
+		visit((TreeComposite) component);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
+	 * (org.eclipse.ice.datastructures.form.emf.EMFComponent)
+	 */
 	@Override
 	public void visit(EMFComponent component) {
 		System.out.println("Adding EMFComponent: " + component.getName());
