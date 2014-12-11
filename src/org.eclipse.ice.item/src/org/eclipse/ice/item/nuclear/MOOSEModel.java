@@ -42,10 +42,14 @@ import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
  * <!-- begin-UML-doc -->
  * <p>
  * An MOOSE Item for creating MOOSE input files. This Item expects to find the
- * input templates generated from MOOSE in the ${workspace}/MOOSE directory. The
- * templates can be generated from a MOOSE application by running
- * "./application --yaml > application.yaml" from the application's build
- * directory.
+ * YAML and action syntax files necessary in the ${workspace}/MOOSE directory. 
+ * These files can be generated automatically using the ICE YAML/action syntax 
+ * generator, or manually at the command line with the command(s):
+ * 
+ * <br>./{moose-app}-opt --yaml > {moose-app}.yaml
+ * <br>./{moose-app}-opt --syntax > {moose-app}.syntax
+ 
+ * These lines must be executed for each MOOSE-based code to be used by ICE.
  * </p>
  * <p>
  * This class' Item builder defaults the MOOSE-based application to null,
@@ -62,7 +66,7 @@ import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings, w5q, aqw
+ * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -110,6 +114,20 @@ public class MOOSEModel extends Item {
 	@XmlTransient
 	public static final int mooseTreeCompositeId = 2;
 
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * The identification number of the TreeComposite containing the YAML data.
+	 * tree.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 */
+	@XmlTransient
+	public static final int yamlTreeCompositeId = 3;
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -272,14 +290,25 @@ public class MOOSEModel extends Item {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation sets up the Form for the MOOSEModel. The Form contains a
-	 * DataComponent with id=1 that contains Entries for the names of the MOOSE
-	 * application for which input should be modeled and for the output file and
-	 * a TreeComposite with id=2 that contains the MOOSE input tree.
+	 * This operation sets up the Form for the MOOSEModel. The form is designed
+	 * to contain 3 Components.</p>
+	 * 	 * <p>
+	 * The Form component with id=1 is a DataComponent containing Entries
+	 * related to which MOOSE-based codes are available, as well as the output
+	 * file created from the MOOSE Model. These Entries in the DataComponent 
+	 * are named "MOOSE-Based Application" with id=1 and "Output File Name" 
+	 * with id=2.
 	 * </p>
 	 * <p>
-	 * The Entries in the DataComponent are named "MOOSE-Based Application" with
-	 * id = 1 and "Output File Name" with id=2. The TreeComposite is empty.
+	 * The Form component with id=2 is a TreeComposite containing the structure
+	 * of the MOOSE input tree. By default, this Tree is empty until blocks are
+	 * added to it by the user.
+	 * </p>
+	 * <p>
+	 * The last Form component with id=3 is another TreeComposite containing
+	 * the "pure" YAML tree for the particular MOOSE-based application. By
+	 * default, this Tree is empty until a YAML file is correctly loaded by
+	 * reviewEntries(). This is to provide UI widgets access to the YAML.
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
@@ -384,8 +413,16 @@ public class MOOSEModel extends Item {
 		mooseDataTree.setId(mooseTreeCompositeId);
 		mooseDataTree
 				.setDescription("The tree of input data for this problem.");
-		mooseDataTree.setName("Input Data");
+		mooseDataTree.setName("MOOSE Tree");
 		form.addComponent(mooseDataTree);
+		
+		// Create the YAML TreeComposite
+		TreeComposite yamlDataTree = new TreeComposite();
+		yamlDataTree.setId(yamlTreeCompositeId);
+		yamlDataTree
+				.setDescription("The tree of YAML data for this problem.");
+		mooseDataTree.setName("YAML Data");
+		form.addComponent(yamlDataTree);
 
 		return;
 		// end-user-code
@@ -510,8 +547,9 @@ public class MOOSEModel extends Item {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation reviews the Entries in the MOOSEModel to determine
-	 * primarily if the underlying MOOSE-app file has changed and load it.
+	 * This operation reviews the Entries in the MOOSEModel to determine if the
+	 * currently selected MOOSE app has changed. If it has, it loads up the new
+	 * app's YAML tree and merges it with any existing tree data (if any).
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
@@ -561,6 +599,17 @@ public class MOOSEModel extends Item {
 					// Get the empty YAML TreeComposite
 					TreeComposite yamlTree = (TreeComposite) form
 							.getComponent(mooseTreeCompositeId);
+					
+					// Put a copy of the YAML tree on the form at id=3 (this is
+					// used elsewhere by the UI widgets, but must be done here 
+					// before the YAML tree is modified)
+					TreeComposite formYamlTree = (TreeComposite) form.getComponent(yamlTreeCompositeId);
+					TreeComposite tmpTree = (TreeComposite) formYamlTree.clone();
+
+					formYamlTree.copy(yamlTree);
+					formYamlTree.setName(tmpTree.getName());
+					formYamlTree.setDescription(tmpTree.getDescription());
+					formYamlTree.setId(yamlTreeCompositeId);
 
 					// Merge the input tree into the YAML spec
 					mergeTrees(inputTree, yamlTree);
@@ -576,22 +625,25 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
+	 * <p>
 	 * This method is responsible for merging the TreeComposite of imported
 	 * MOOSE data from an input file, with the corresponding YAML spec for that
 	 * MOOSE application.
-	 * 
+	 * </p>
+	 * <p>
 	 * We will construct three HashMaps: one for the YAML tree, one for the
 	 * input tree, and one for the exemplar children of the YAML tree. All Maps
 	 * will be keyed on a tree's pathname relative to the root. (For the sake
 	 * semantics here, any reference to "top-level" trees is referring to the
 	 * trees directly beneath the root.)
-	 * 
+	 * </p>
+	 * <p>
 	 * Then, we will traverse the input map (this includes all children,
 	 * subchildren, etc.) and copy over any applicable exemplar children from
 	 * the exemplar map. Once all exemplar children are set in the input tree,
 	 * then we will copy over the top-level trees (trees right below the root)
 	 * from the input map into the YAML map.
-	 * 
+	 * </p>
 	 * @param inputTree
 	 *            The TreeComposite of imported MOOSE file data.
 	 * @param yamlTree
