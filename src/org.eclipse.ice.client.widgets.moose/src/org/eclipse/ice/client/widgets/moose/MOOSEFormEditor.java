@@ -375,8 +375,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			processLabel.setText("Process:");
 
 			// Create the dropdown menu
-			processDropDown = new Combo(headClient, SWT.DROP_DOWN
-					| SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+			processDropDown = new Combo(headClient, SWT.DROP_DOWN | SWT.SINGLE
+					| SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
 			for (String i : iceDataForm.getActionList()) {
 				processDropDown.add(i);
 			}
@@ -588,7 +588,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 						// Create the plant view.
 						plantView = new ViewFactory().createPlantView(plant);
-						
+
 						// Render the plant view in the analysis Composite.
 						Composite plantComposite = plantView
 								.createComposite(analysisComposite);
@@ -676,6 +676,15 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	@Override
 	protected String getTreeCompositeViewerID() {
 		return MOOSETreeCompositeView.ID;
+	}
+
+	/**
+	 * Tells the FormEditor to use the MOOSE input tree instead of the first
+	 * available tree added to the Form.
+	 */
+	@Override
+	protected int getTreeCompositeViewerInputID() {
+		return MOOSEModel.mooseTreeCompositeId;
 	}
 
 }
