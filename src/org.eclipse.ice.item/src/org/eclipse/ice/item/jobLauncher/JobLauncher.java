@@ -2016,6 +2016,7 @@ public class JobLauncher extends Item {
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
 					e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
+			
 		}
 
 	}

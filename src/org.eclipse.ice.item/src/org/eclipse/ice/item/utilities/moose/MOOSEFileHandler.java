@@ -759,7 +759,13 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					if (!"false".equals(e.getTag())
 							&& e.getName().toLowerCase().contains(regex)
 							&& !e.getName().toLowerCase().contains("profile")) {
-						e.setName(child.getName());
+						// If this Entry does not have a very descriptive name
+						// we should reset its name to the block it belongs to
+						if ("file".equals(e.getName().toLowerCase())
+								|| "data_file"
+										.equals(e.getName().toLowerCase())) {
+							e.setName(child.getName());
+						}
 						retEntries.add((Entry) e.clone());
 					}
 				}
@@ -786,8 +792,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 * sibling and child references be set correctly on all TreeComposites to be
 	 * successful.
 	 * 
-	 * Used exclusively by 
-	 * {@link #reviewEntries(Form) MOOSEModel.reviewEntries(...)}
+	 * Used exclusively by {@link #reviewEntries(Form)
+	 * MOOSEModel.reviewEntries(...)}
 	 * 
 	 * @param tree
 	 *            The tree that will have all active data nodes set.
@@ -809,7 +815,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			if (tree.getActiveDataNode() == null && !dataNodes.isEmpty()) {
 				tree.setActiveDataNode(dataNodes.get(0));
 			}
-			
+
 			// Add all of the current tree's children to the stack in reverse.
 			for (int i = tree.getNumberOfChildren() - 1; i >= 0; i--) {
 				treeStack.push(tree.getChildAtIndex(i));
