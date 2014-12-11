@@ -14,6 +14,7 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.client.common.TreeCompositeViewer;
@@ -602,7 +603,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// begin-user-code
 
 		// Only go through the trouble if there is a TreeComposite to be had
-		if (!(componentMap.get("tree").isEmpty())) {
+		List<Component> trees = componentMap.get("tree");
+		if (!trees.isEmpty()) {
 			// Show the view
 			try {
 				getSite().getWorkbenchWindow().getActivePage()
@@ -611,9 +613,22 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 				e.printStackTrace();
 			}
 
-			// Get the TreeComposite.
-			TreeComposite tree = (TreeComposite) componentMap.get("tree")
-					.get(0);
+			// Get the TreeComposite to pass to the tree view.
+			int id = getTreeCompositeViewerInputID();
+			TreeComposite tree = null;
+			if (id != -1) {
+				// If the ID is specified, find the matching tree.
+				for (Component formTree : trees) {
+					if (id == formTree.getId()) {
+						tree = (TreeComposite) formTree;
+						break;
+					}
+				}
+			}
+			// If no tree was found, get the first available one.
+			if (tree == null) {
+				tree = (TreeComposite) trees.get(0);
+			}
 
 			// Get the TreeCompositeViewer
 			TreeCompositeViewer treeView = (TreeCompositeViewer) getSite()
@@ -645,6 +660,17 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 */
 	protected String getTreeCompositeViewerID() {
 		return TreeCompositeViewer.ID;
+	}
+
+	/**
+	 * This operation retrieves the ID of the TreeComposite that is passed as
+	 * input to the TreeCompositeViewer.
+	 * 
+	 * @return The integer ID of the TreeComposite to show in the
+	 *         TreeCompositeViewer.
+	 */
+	protected int getTreeCompositeViewerInputID() {
+		return -1;
 	}
 
 	/**
