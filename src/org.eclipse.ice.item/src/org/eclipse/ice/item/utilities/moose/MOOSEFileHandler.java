@@ -68,7 +68,8 @@ import org.yaml.snakeyaml.Yaml;
  * input itself. The nodes of this tree are what could be configured, not what
  * is, so they must be setup as child exemplars on a TreeComposite.
  * </p>
- * <!-- end-UML-doc --> * @author Jay Jay Billings
+ * <!-- end-UML-doc --> 
+ * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  * 
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
@@ -715,9 +716,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			try {
 				// Parse the extension to see if we are loading 
 				// YAML or input files.
-				if (fileExt.equals("yaml")) {
+				if (fileExt.toLowerCase().equals("yaml")) {
 					blocks = loadYAML(uri.getPath());
-				} else if (fileExt.equals("i")) {
+				} else if (fileExt.toLowerCase().equals("i")) {
 					blocks = loadFromGetPot(uri.getPath());
 				}
 
@@ -758,6 +759,11 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
 		TreeComposite tree = (TreeComposite) read(uri);
 
+		// Make sure the tree is valid
+		if (tree == null || tree.getNumberOfChildren() < 1) {
+			return retEntries;
+		}
+		
 		// Walk the tree and get all Entries that may represent a file
 		BreadthFirstTreeCompositeIterator iter = 
 				new BreadthFirstTreeCompositeIterator(tree);
