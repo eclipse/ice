@@ -754,10 +754,13 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			if (child.getActiveDataNode() != null) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
 				for (Entry e : data.retrieveAllEntries()) {
-					if (e.getName().toLowerCase().contains(regex)
+					// If the Entry's tag is "false" it is a commented out
+					// parameter.
+					if (!"false".equals(e.getTag())
+							&& e.getName().toLowerCase().contains(regex)
 							&& !e.getName().toLowerCase().contains("profile")) {
 						e.setName(child.getName());
-						retEntries.add((Entry)e.clone());
+						retEntries.add((Entry) e.clone());
 					}
 				}
 			}
