@@ -126,7 +126,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Go ahead and create the list of files related to the Input File
 		if (!inputFilesComp.retrieveEntry("Input File").getValue().isEmpty()
 				&& inputFilesComp.retrieveEntry("Input File").getValue()
-						.contains(".i")) {
+						.contains(".i") && getReader() != null) {
 			update(inputFilesComp.retrieveEntry("Input File"));
 		}
 

@@ -584,7 +584,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	 * Reference to the IOService. 
 	 */
 	@XmlTransient()
-	protected static IOService ioService;
+	private static IOService ioService;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -710,7 +710,11 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	 * @return
 	 */
 	protected IReader getReader() {
-		return ioService.getReader(getIOType());
+		if (ioService != null) {
+			return ioService.getReader(getIOType());
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -721,7 +725,11 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	 * @return
 	 */
 	protected IWriter getWriter() {
-		return ioService.getWriter(getIOType());
+		if (ioService != null) {
+			return ioService.getWriter(getIOType());
+		} else {
+			return null;
+		}
 	}
 
 	/**

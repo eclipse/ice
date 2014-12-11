@@ -39,8 +39,10 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.nuclear.MOOSELauncher;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
+import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -151,6 +153,10 @@ public class MOOSELauncherTester {
 		projectSpace = project;
 
 		launcher = new MOOSELauncher(projectSpace);
+		IOService service = new IOService();
+		service.addReader(new MOOSEFileHandler());
+		launcher.setIOService(service);
+		
 		
 		return;
 		// end-user-code
@@ -161,14 +167,20 @@ public class MOOSELauncherTester {
 		// Local Declarations
 
 		DataComponent fileDataComp = (DataComponent) launcher.getForm().getComponent(1);
+		assertTrue(fileDataComp.retrieveEntry("Input File").setValue("input_coarse10.i"));
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		assertEquals(4, fileDataComp.retrieveAllEntries().size());
 		
 		// Now change the file name
-		fileDataComp.retrieveEntry("Input File").setValue("input_coarse10_filetest.i");
-		
+		assertTrue(fileDataComp.retrieveEntry("Input File").setValue("input_coarse10_filetest.i"));
 		
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
