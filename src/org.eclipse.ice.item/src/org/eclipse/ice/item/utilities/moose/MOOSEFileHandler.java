@@ -693,15 +693,27 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	@Override
 	public ICEObject read(URI uri) {
 
+		// Local declarations
+		String fileExt = "";
+		
 		// Make sure we have a valid URI
 		if (uri != null) {
 			// Local Declarations
 			ArrayList<TreeComposite> blocks = null;
 			TreeComposite rootNode = new TreeComposite();
-			String fileExt = uri.getPath().split("\\.(?=[^\\.]+$)")[1];
+			
+			String[] splitPath = uri.getPath().split("\\.(?=[^\\.]+$)");
+			if (splitPath.length > 1) {
+				fileExt = splitPath[1];
+			} else {
+				System.out.println("MOOSEFileHandler Message:"
+						+ "File did not have file extension: "
+						+ uri.toString());
+				return null;
+			}
 
 			try {
-				// Parse the extension to see if we are loading
+				// Parse the extension to see if we are loading 
 				// YAML or input files.
 				if (fileExt.equals("yaml")) {
 					blocks = loadYAML(uri.getPath());
@@ -742,12 +754,13 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	@Override
 	public ArrayList<Entry> findAll(URI uri, String regex) {
 
+		// Local declarations
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
 		TreeComposite tree = (TreeComposite) read(uri);
 
 		// Walk the tree and get all Entries that may represent a file
-		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-				tree);
+		BreadthFirstTreeCompositeIterator iter = 
+				new BreadthFirstTreeCompositeIterator(tree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
 			// Make sure we have a valid DataComponent
@@ -757,6 +770,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
 					if (!"false".equals(e.getTag())
+							&& e.getValue() != null && !e.getValue().isEmpty()
 							&& e.getName().toLowerCase().contains(regex)
 							&& !e.getName().toLowerCase().contains("profile")) {
 						e.setName(child.getName());
