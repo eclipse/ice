@@ -32,7 +32,10 @@ import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
+import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 
@@ -698,16 +701,16 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			String fileExt = uri.getPath().split("\\.(?=[^\\.]+$)")[1];
 
 			try {
-				// Parse the extension to see if we are loading 
-				// YAML or input files. 
+				// Parse the extension to see if we are loading
+				// YAML or input files.
 				if (fileExt.equals("yaml")) {
 					blocks = loadYAML(uri.getPath());
-				} else if (fileExt.equals(".i")) {
+				} else if (fileExt.equals("i")) {
 					blocks = loadFromGetPot(uri.getPath());
 				}
 
-				// If we got a valid file, then construct 
-				// a Root TreeComposite to return 
+				// If we got a valid file, then construct
+				// a Root TreeComposite to return
 				if (blocks != null) {
 					for (TreeComposite block : blocks) {
 						// Clone the block
@@ -718,8 +721,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 						blockClone.setParent(rootNode);
 						rootNode.setNextChild(blockClone);
 					}
-					
-					// Return the tree 
+
+					setActiveDataNodes(rootNode);
+					// Return the tree
 					return rootNode;
 				}
 
@@ -732,15 +736,87 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
-	public ArrayList<ICEObject> findAll(String regexp) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Entry> findAll(URI uri, String regex) {
+
+		ArrayList<Entry> retEntries = new ArrayList<Entry>();
+		TreeComposite tree = (TreeComposite) read(uri);
+
+		// Walk the tree and get all Entries that may represent a file
+		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+				tree);
+		while (iter.hasNext()) {
+			TreeComposite child = iter.next();
+			// Make sure we have a valid DataComponent
+			if (child.getActiveDataNode() != null) {
+				DataComponent data = (DataComponent) child.getActiveDataNode();
+				for (Entry e : data.retrieveAllEntries()) {
+					if (e.getName().toLowerCase().contains(regex)
+							&& !e.getName().toLowerCase().contains("profile")) {
+						e.setName(child.getName());
+						retEntries.add((Entry)e.clone());
+					}
+				}
+			}
+
+		}
+
+		return retEntries;
+
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public String getReaderType() {
 		return "moose";
+	}
+
+	/**
+	 * This method will take in a TreeComposite, traverse through all levels of
+	 * child, subchild, etc. TreeComposites, and set the active data nodes on
+	 * all that have activeDataNode=null. This method requires that all parent,
+	 * sibling and child references be set correctly on all TreeComposites to be
+	 * successful.
+	 * 
+	 * Used exclusively by 
+	 * {@link #reviewEntries(Form) MOOSEModel.reviewEntries(...)}
+	 * 
+	 * @param tree
+	 *            The tree that will have all active data nodes set.
+	 */
+	private void setActiveDataNodes(TreeComposite tree) {
+
+		// Perform a pre-order traversal of the tree. For each TreeComposite, we
+		// should set an active data node if none is already set.
+
+		// Create an empty stack. Put in a null value so we do not hit an
+		// EmptyStackException and so we can use a null check in the while loop.
+		Stack<TreeComposite> treeStack = new Stack<TreeComposite>();
+		treeStack.push(null);
+		while (tree != null) {
+
+			// Operate on the next TreeComposite. This sets its active data node
+			// if a data node exists and is not already set.
+			ArrayList<Component> dataNodes = tree.getDataNodes();
+			if (tree.getActiveDataNode() == null && !dataNodes.isEmpty()) {
+				tree.setActiveDataNode(dataNodes.get(0));
+			}
+			
+			// Add all of the current tree's children to the stack in reverse.
+			for (int i = tree.getNumberOfChildren() - 1; i >= 0; i--) {
+				treeStack.push(tree.getChildAtIndex(i));
+			}
+
+			// Get the next TreeComposite in the Stack.
+			tree = treeStack.pop();
+		}
+
+		return;
 	}
 
 }

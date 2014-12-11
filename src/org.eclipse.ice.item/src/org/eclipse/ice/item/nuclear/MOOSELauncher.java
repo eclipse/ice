@@ -127,7 +127,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		if (!inputFilesComp.retrieveEntry("Input File").getValue().isEmpty()
 				&& inputFilesComp.retrieveEntry("Input File").getValue()
 						.contains(".i")) {
-			updateFileEntries();
+			update(inputFilesComp.retrieveEntry("Input File"));
 		}
 
 		return;
@@ -473,6 +473,23 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	}
 
 	/**
+	 * 
+	 */
+	@Override
+	protected String getFileDependenciesSearchString() {
+		return "file"; // FIXME THIS SHOULD BE REPLACED WITH REG EXP
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#getIOType()
+	 */
+	@Override
+	public String getIOType() {
+		return "moose";
+	}
+	
+	/**
 	 * This method is responsible for determining the available list of input
 	 * files for the MOOSE Launcher. If there is at least one *.i file in the
 	 * workspace, the method will attempt to load the contents into a 
@@ -483,7 +500,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * DataComponent (id=1). Any previously existing input files will be
 	 * removed.
 	 */
-	private void updateFileEntries() {
+	/**private void updateFileEntries() {
 		// Get the MOOSELauncher's Input Files DataComponent; use it to get the 
 		// current Input File Entry
 		MOOSEModel model = new MOOSEModel(this.project);
@@ -561,5 +578,5 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		if (component instanceof Entry && component != null) {
 			updateFileEntries();
 		}
-	}
+	}**/
 }

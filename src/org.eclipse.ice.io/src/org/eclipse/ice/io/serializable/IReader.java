@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.form.Entry;
 
 /**
  * 
@@ -36,7 +37,7 @@ public interface IReader {
 	 * @param regexp
 	 * @return
 	 */
-	public ArrayList<ICEObject> findAll(String regexp);
+	public ArrayList<Entry> findAll(URI uri, String regex);
 	
 	/**
 	 * 

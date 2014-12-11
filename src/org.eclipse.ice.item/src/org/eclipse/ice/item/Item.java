@@ -43,7 +43,6 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -68,6 +67,11 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
@@ -296,7 +300,8 @@ import java.net.URI;
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Item")
-public class Item implements IComponentVisitor, Persistable, Identifiable {
+public class Item implements IComponentVisitor, Persistable, Identifiable,
+		IUpdateableListener {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -576,6 +581,12 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	protected boolean debuggingEnabled = false;
 
 	/**
+	 * Reference to the IOService. 
+	 */
+	@XmlTransient()
+	protected static IOService ioService;
+
+	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor. Subclasses of Item should implement their own
@@ -691,6 +702,52 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 		// end-user-code
 	}
 
+	/**
+	 * This method should be used by subclasses to get a reference to the
+	 * desired IReader.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	protected IReader getReader() {
+		return ioService.getReader(getIOType());
+	}
+
+	/**
+	 * This method should be used by subclasses to get a reference to the
+	 * desired IWriter.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	protected IWriter getWriter() {
+		return ioService.getWriter(getIOType());
+	}
+
+	/**
+	 * Return the IO Type string. This method is to be 
+	 * overriden by subclasses to indicate which IReader and 
+	 * IWriter the Item subclass needs to use. 
+	 * 
+	 * @return
+	 */
+	protected String getIOType() {
+		return null;
+	}
+
+	/**
+	 * This method is used by the underlying OSGi framework 
+	 * to set the IOService that has been exposed as a 
+	 * Declarative Service. 
+	 * 
+	 * @param service
+	 */
+	public void setIOService(IOService service) {
+		if (service != null) {
+			ioService = service;
+		}
+	}
+	
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -2399,6 +2456,11 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	@Override
 	public void visit(EMFComponent component) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public void update(IUpdateable component) {
+		// Leave this for subclasses.
 	}
 }
