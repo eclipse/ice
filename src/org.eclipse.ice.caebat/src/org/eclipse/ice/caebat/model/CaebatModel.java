@@ -123,42 +123,23 @@ public class CaebatModel extends Item {
 
 			IFolder caebatFolder = getPreferencesDirectory();
 			if (caebatFolder.exists() && caebatFolder != null) {
-				try {
+				// Grab the list of problem files in the Caebat directory
+				problemFiles = getProjectFiles(caebatFolder);
 
-					// Grab the list of problem files in the Caebat directory
-					problemFiles = getProjectFiles(caebatFolder);
+				// Create the DataComponent that selects which problem
+				// to load
+				form.addComponent(createSelectorComponent(problemFiles));
 
-					// Create the DataComponent that selects which problem
-					// to load
-					form.addComponent(createSelectorComponent(problemFiles));
+				// If the list of problem files is valid
+				if (problemFiles != null && !(problemFiles.isEmpty())) {
 
-					// If the list of problem files is valid
-					if (problemFiles != null && !(problemFiles.isEmpty())) {
-
-						// Push the work onto the loader
-						loadExample(caebatFolder.getLocation().toOSString()
-								+ separator + problemFiles.get(0));
-					} else {
-						System.err
-								.println("Caebat Model Message: No valid files found in "
-										+ caebatFolder.getLocation()
-												.toOSString());
-					}
-
-				} catch (FileNotFoundException e) {
-					// Complain
-					if (debuggingEnabled) {
-						System.err.println("CaebatModel Message: "
-								+ "Unable to find INI file.");
-					}
-					e.printStackTrace();
-				} catch (IOException e) {
-					// Complain
-					if (debuggingEnabled) {
-						System.err.println("CaebatModel Message: "
-								+ "Unable to load INI file.");
-					}
-					e.printStackTrace();
+					// Push the work onto the loader
+					loadInput(problemFiles.get(0));
+				} else {
+					System.err
+							.println("Caebat Model Message: No valid files found in "
+									+ caebatFolder.getLocation()
+											.toOSString());
 				}
 			}
 		}
@@ -208,25 +189,9 @@ public class CaebatModel extends Item {
 			IFolder caebatFolder = getPreferencesDirectory();
 			String problemPathName = caebatFolder.getLocation().toOSString()
 					+ separator + problemName;
-			try {
-				loadExample(problemPathName);
-				System.out.println("CaebatModel Message: Loading File: "
-						+ problemPathName);
-			} catch (FileNotFoundException e) {
-				if (debuggingEnabled) {
-					System.out
-							.println("CaebatModel Message: Could not find file "
-									+ problemName);
-				}
-				e.printStackTrace();
-			} catch (IOException e) {
-				if (debuggingEnabled) {
-					System.out
-							.println("CaebatModel Message: Could not read file "
-									+ problemName);
-				}
-				e.printStackTrace();
-			}
+			loadInput(problemPathName);
+			System.out.println("CaebatModel Message: Loading File: "
+					+ problemPathName);
 
 		} else {
 			// Otherwise something went wrong
@@ -334,6 +299,7 @@ public class CaebatModel extends Item {
 					files = new ArrayList<String>();
 					IResource[] resources = caebatFolder.members();
 					for (IResource resource : resources) {
+						System.out.println(resource.getName());
 						if (debuggingEnabled) {
 							System.out.println("CaebatModel Message: "
 									+ "Found file " + resource.getLocationURI()
@@ -423,43 +389,52 @@ public class CaebatModel extends Item {
 	 * 
 	 * @param name
 	 *            The path name of the example file name to load.
-	 * @throws IOException
-	 * @throws FileNotFoundException
 	 */
-	private void loadExample(String name) throws FileNotFoundException,
-			IOException {
+	public void loadInput(String name) {
 
 		// Load the components from the file
-		File file = new File(name);
+		String path = project.getFolder("Caebat_Model").getLocation().toOSString() +
+				System.getProperty("file.separator") + name;
+		File file = new File(path);
 		IPSReader reader = new IPSReader();
-		ArrayList<Component> components = reader.loadINIFile(file);
-		ArrayList<Component> existingComponents = form.getComponents();
-		
-		// Update the components by copying the new ones
-		if (components.size() == 4) {
+		ArrayList<Component> components;
+		try {
+			components = reader.loadINIFile(file);
+			ArrayList<Component> existingComponents = form.getComponents();
+			
+			// Update the components by copying the new ones
+			if (components.size() == 4) {
 
-			// Replace the old components
-			if (existingComponents.size() == 5) {
-				((DataComponent) existingComponents.get(1))
-						.copy((DataComponent) components.get(0));
-				((TableComponent) existingComponents.get(2))
-						.copy((TableComponent) components.get(1));
-				((TableComponent) existingComponents.get(3))
-						.copy((TableComponent) components.get(2));
-				((MasterDetailsComponent) existingComponents.get(4))
-						.copy((MasterDetailsComponent) components.get(3));
+				// Replace the old components
+				if (existingComponents.size() == 5) {
+					((DataComponent) existingComponents.get(1))
+							.copy((DataComponent) components.get(0));
+					((TableComponent) existingComponents.get(2))
+							.copy((TableComponent) components.get(1));
+					((TableComponent) existingComponents.get(3))
+							.copy((TableComponent) components.get(2));
+					((MasterDetailsComponent) existingComponents.get(4))
+							.copy((MasterDetailsComponent) components.get(3));
+				} else {
+					// Add the new components
+					form.addComponent((DataComponent) components.get(0));
+					form.addComponent((TableComponent) components.get(1));
+					form.addComponent((TableComponent) components.get(2));
+					form.addComponent((MasterDetailsComponent) components.get(3));	
+				}
+
+
 			} else {
-				// Add the new components
-				form.addComponent((DataComponent) components.get(0));
-				form.addComponent((TableComponent) components.get(1));
-				form.addComponent((TableComponent) components.get(2));
-				form.addComponent((MasterDetailsComponent) components.get(3));	
-			}
-
-
-		} else {
-			System.out.println("Caebat Model Message: Could not read in "
-					+ file.getAbsolutePath() + " for processing.");
+				System.out.println("Caebat Model Message: Could not read in "
+						+ file.getAbsolutePath() + " for processing.");
+			}			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 	}
 }

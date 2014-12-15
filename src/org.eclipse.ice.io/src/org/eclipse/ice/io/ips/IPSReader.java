@@ -310,7 +310,12 @@ public class IPSReader {
 			// Read in another line
 			line = it.next();
 		} 
-		
+		// Make sure that we are not at the end of the file
+		if (!it.hasNext()) {
+			System.err.println("IPS Reader Message: Reached unexpected " +
+					"end of file while reading the port configuration.");
+			return null;
+		}
 		// Return the parameters
 		return portComponent;
 	}
@@ -423,7 +428,13 @@ public class IPSReader {
 			}
 			// read another line
 			line = it.next();
-
+		}
+		
+		// Make sure that we are not at the end of the file
+		if (!it.hasNext()) {
+			System.err.println("IPS Reader Message: Reached unexpected " +
+					"end of file while reading the ports table.");
+			return null;
 		}
 
 		return portsTable;
@@ -485,9 +496,16 @@ public class IPSReader {
 				row.get(0).setValue(splitLine[0]);
 				row.get(1).setValue(splitLine[1]);
 			}
-			
+
 			// Read in another line
 			line = it.next();
+		}
+
+		// Make sure that we are not at the end of the file
+		if (!it.hasNext()) {
+			System.err.println("IPS Reader Message: Reached unexpected " +
+					"end of file while reading the global configuration.");
+			return null;
 		}
 		
 		// Return the parameters
