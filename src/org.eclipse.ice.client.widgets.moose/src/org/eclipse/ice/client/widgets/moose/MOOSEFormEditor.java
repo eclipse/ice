@@ -579,6 +579,13 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						}));
 						toolBarManager.add(cameraTree.getContributionItem());
 
+						toolBarManager.add(new Action("Save Image") {
+							@Override
+							public void run() {
+								plantView.exportImage();
+							}
+						});
+
 						// Create the ToolBar and set its layout.
 						ToolBar toolBar = toolBarManager
 								.createControl(analysisComposite);
