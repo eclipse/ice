@@ -195,7 +195,8 @@ public class CaebatLauncherBuilderTester {
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
 				defaultProjectLocation = (new File(
-						System.getProperty("user.dir") + separator
+						System.getProperty("user.home") + separator
+								+ "ICETests" + separator
 								+ "caebatTesterWorkspace")).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
