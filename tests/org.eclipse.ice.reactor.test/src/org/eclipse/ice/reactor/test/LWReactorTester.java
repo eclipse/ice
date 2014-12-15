@@ -38,7 +38,7 @@ import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWReactor;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
  * <!-- begin-UML-doc --> <!-- end-UML-doc -->

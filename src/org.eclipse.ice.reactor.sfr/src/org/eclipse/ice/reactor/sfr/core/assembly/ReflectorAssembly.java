@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.core.assembly;
 
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.reactor.sfr.base.GridDataManager;
 import org.eclipse.ice.reactor.sfr.base.ISFRComponentVisitor;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;

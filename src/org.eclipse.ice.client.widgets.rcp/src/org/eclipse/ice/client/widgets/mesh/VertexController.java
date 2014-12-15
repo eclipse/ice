@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item;
 
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 
 import java.util.ArrayList;
 import java.util.HashMap;

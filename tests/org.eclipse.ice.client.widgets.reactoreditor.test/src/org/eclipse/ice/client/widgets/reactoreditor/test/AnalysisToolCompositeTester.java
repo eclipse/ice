@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisToolComposite;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisToolComposite.ViewPart;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
@@ -30,7 +31,7 @@ import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetRegistry;
 import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
 import org.eclipse.ice.client.widgets.reactoreditor.SelectionProvider;
 import org.eclipse.ice.client.widgets.reactoreditor.StateBroker;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

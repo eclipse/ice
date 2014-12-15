@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.client.widgets.jme.AbstractController;
 import org.eclipse.ice.client.widgets.jme.IRenderQueue;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 
 import com.jme3.math.ColorRGBA;
 

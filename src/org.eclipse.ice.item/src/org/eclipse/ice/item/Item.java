@@ -17,6 +17,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import java.io.File;
 
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.Persistable;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 
@@ -43,7 +44,6 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -67,7 +67,6 @@ import java.io.InputStreamReader;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;

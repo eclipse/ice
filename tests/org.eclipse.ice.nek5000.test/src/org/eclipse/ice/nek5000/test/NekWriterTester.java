@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.junit.Test;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.nek5000.NekReader;
 import org.eclipse.ice.nek5000.NekWriter;
 import org.eclipse.ice.nek5000.ProblemProperties;

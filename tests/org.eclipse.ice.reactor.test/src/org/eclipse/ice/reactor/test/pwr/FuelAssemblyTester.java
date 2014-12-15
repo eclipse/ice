@@ -43,7 +43,7 @@ import org.eclipse.ice.reactor.Tube;
 import org.eclipse.ice.reactor.pwr.FuelAssembly;
 import org.eclipse.ice.reactor.pwr.PWRAssembly;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
  * <!-- begin-UML-doc -->

@@ -14,10 +14,12 @@ package org.eclipse.ice.datastructures.form.mesh;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor;
 
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 
 import java.util.List;
 

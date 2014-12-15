@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 
 public class IPSWriter {
 

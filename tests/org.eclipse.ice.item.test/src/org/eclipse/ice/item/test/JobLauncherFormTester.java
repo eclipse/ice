@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 import static org.junit.Assert.*;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 import org.junit.Test;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
-
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.Form;
@@ -38,7 +38,6 @@ import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 
 /**

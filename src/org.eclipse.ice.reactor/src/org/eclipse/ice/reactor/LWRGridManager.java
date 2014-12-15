@@ -30,7 +30,7 @@ import ncsa.hdf.hdflib.*;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.io.hdf.*;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
  * <!-- begin-UML-doc -->
