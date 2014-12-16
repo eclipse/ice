@@ -413,7 +413,7 @@ public class MOOSEModel extends Item {
 		mooseDataTree.setId(mooseTreeCompositeId);
 		mooseDataTree
 				.setDescription("The tree of input data for this problem.");
-		mooseDataTree.setName("MOOSE Tree");
+		mooseDataTree.setName("Input Data");
 		form.addComponent(mooseDataTree);
 		
 		// Create the YAML TreeComposite
@@ -421,7 +421,7 @@ public class MOOSEModel extends Item {
 		yamlDataTree.setId(yamlTreeCompositeId);
 		yamlDataTree
 				.setDescription("The tree of YAML data for this problem.");
-		mooseDataTree.setName("YAML Data");
+		yamlDataTree.setName("YAML Data");
 		form.addComponent(yamlDataTree);
 
 		return;
