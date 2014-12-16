@@ -570,7 +570,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	}
 
 	/**
-	 * Creates a default {@link CustomFlyByCamera} for the specified
+	 * Creates a default {@link FlightCamera} for the specified
 	 * <code>EmbeddedView</code>.
 	 */
 	@Override
@@ -598,7 +598,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	}
 
 	/**
-	 * Enables or disables the default {@link CustomFlyByCamera} associated with
+	 * Enables or disables the default {@link FlightCamera} associated with
 	 * the <code>EmbeddedView</code>.
 	 */
 	@Override
