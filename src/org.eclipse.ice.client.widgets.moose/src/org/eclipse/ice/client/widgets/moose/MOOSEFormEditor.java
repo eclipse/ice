@@ -745,7 +745,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Roll Left (Q)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().rollCamera(rotateRate);
+				plantView.getFlightCamera().rollCamera(-rotateRate);
 			}
 		};
 		imagePath = new Path("icons" + System.getProperty("file.separator")
@@ -759,7 +759,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Roll Right (E)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().rollCamera(-rotateRate);
+				plantView.getFlightCamera().rollCamera(rotateRate);
 			}
 		};
 		imagePath = new Path("icons" + System.getProperty("file.separator")
