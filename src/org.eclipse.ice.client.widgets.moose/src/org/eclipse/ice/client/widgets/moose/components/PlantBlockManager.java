@@ -46,6 +46,7 @@ import org.eclipse.ice.reactor.plant.PipeWithHeatStructure;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.reactor.plant.Pump;
+import org.eclipse.ice.reactor.plant.Reactor;
 import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.eclipse.ice.reactor.plant.SeparatorDryer;
 import org.eclipse.ice.reactor.plant.SolidWall;
@@ -60,6 +61,14 @@ import org.eclipse.ice.reactor.plant.Valve;
 import org.eclipse.ice.reactor.plant.VolumeBranch;
 import org.eclipse.ice.reactor.plant.WetWell;
 
+/**
+ * This class connects the MOOSE Component block (in the form of a
+ * {@link TreeComposite} with a {@link PlantComposite}. Any changes made to the
+ * block should be reflected in the {@code PlantComposite}.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class PlantBlockManager implements IUpdateableListener {
 
 	/**
@@ -73,7 +82,7 @@ public class PlantBlockManager implements IUpdateableListener {
 	 * added to and removed from this plant based on the contents of the
 	 * Components {@link #tree}.
 	 */
-	private PlantComposite plant;
+	private final PlantComposite plant;
 
 	/**
 	 * This is a Map used to contain all of the PlantComponents added to the
@@ -121,7 +130,7 @@ public class PlantBlockManager implements IUpdateableListener {
 	public PlantBlockManager() {
 		// Initialize a default plant and tree.
 		tree = new TreeComposite();
-		plant = new PlantComposite();
+		plant = new MOOSEPlantComposite();
 
 		// Initialize the Map of PlantComponents.
 		componentMap = new IdentityHashMap<TreeComposite, PlantComponent>();
@@ -148,7 +157,6 @@ public class PlantBlockManager implements IUpdateableListener {
 	 *            The new tree of components.
 	 */
 	public void setTree(TreeComposite tree) {
-
 		// Check the parameter before proceeding.
 		if (tree != null && tree != this.tree) {
 			// Unregister from the old components tree.
@@ -180,27 +188,12 @@ public class PlantBlockManager implements IUpdateableListener {
 	}
 
 	/**
-	 * Sets the current {@link #plant} that is rendered in an editor. All
-	 * components from the {@link #tree} will be added to this plant.
+	 * Gets the current {@link #plant} connected to the MOOSE Component block.
 	 * 
-	 * @param plant
-	 *            The new plant.
+	 * @return The {@link #plant}.
 	 */
-	public void setPlant(PlantComposite plant) {
-
-		// Check the parameter before proceeding.
-		if (plant != null && plant != this.plant) {
-			// Set the reference to the new plant.
-			this.plant = plant;
-
-			// Add all current PlantComponents to the new PlantComposite.
-			for (PlantComponent plantComp : componentMap.values()) {
-				if (plantComp != null) {
-					plant.addPlantComponent(plantComp);
-				}
-			}
-		}
-		return;
+	public PlantComposite getPlant() {
+		return plant;
 	}
 
 	/**
@@ -543,4 +536,105 @@ public class PlantBlockManager implements IUpdateableListener {
 		return dataComp;
 	}
 
+	/**
+	 * This version of a {@link PlantComposite} stores special references to
+	 * {@link Reactor}s and {@link CoreChannel}s. When a reactor is added, all
+	 * core channels are added to it. When a core channel is added, it is added
+	 * to all reactors.
+	 * 
+	 * @author Jordan Deyton
+	 *
+	 */
+	private class MOOSEPlantComposite extends PlantComposite {
+
+		private final ArrayList<CoreChannel> coreChannels = new ArrayList<CoreChannel>();
+		private final List<Reactor> reactors = new ArrayList<Reactor>();
+
+		public void addPlantComponent(PlantComponent component) {
+			if (component != null
+					&& getPlantComponent(component.getId()) == null) {
+
+				// Add the component in the usual manner.
+				super.addPlantComponent(component);
+
+				// Create a visitor that, when adding a component, will do
+				// the following:
+				// For new Reactors, add all existing CoreChannels to it.
+				// For new CoreChannels, add it to all existing Reactors.
+				IPlantComponentVisitor visitor = new SelectivePlantComponentVisitor() {
+					@Override
+					public void visit(Reactor plantComp) {
+						reactors.add(plantComp);
+						plantComp.setCoreChannels(coreChannels);
+					}
+
+					@Override
+					public void visit(CoreChannel plantComp) {
+
+						boolean found = false;
+						int size = coreChannels.size();
+						for (int i = 0; !found && i < size; i++) {
+							found = (plantComp == coreChannels.get(i));
+						}
+						if (!found) {
+							coreChannels.add(plantComp);
+							for (Reactor reactor : reactors) {
+								reactor.setCoreChannels(coreChannels);
+							}
+						}
+						return;
+					}
+				};
+				component.accept(visitor);
+			}
+
+			return;
+		}
+
+		public void removeComponent(int childId) {
+			PlantComponent component = getPlantComponent(childId);
+			if (component != null) {
+				super.removeComponent(childId);
+
+				// Create a visitor that, when adding a component, will do
+				// the following:
+				// For removed Reactors, update the list of Reactors.
+				// For removed CoreChannels, update all existing Reactors.
+				IPlantComponentVisitor visitor = new SelectivePlantComponentVisitor() {
+					@Override
+					public void visit(Reactor plantComp) {
+
+						boolean found = false;
+						int i, size = reactors.size();
+						for (i = 0; !found && i < size; i++) {
+							found = (plantComp == reactors.get(i));
+						}
+						if (found) {
+							reactors.remove(i - 1);
+						}
+					}
+
+					@Override
+					public void visit(CoreChannel plantComp) {
+
+						boolean found = false;
+						int i, size = coreChannels.size();
+						for (i = 0; !found && i < size; i++) {
+							found = (plantComp == coreChannels.get(i));
+						}
+						if (found) {
+							coreChannels.remove(i - 1);
+							for (Reactor reactor : reactors) {
+								reactor.setCoreChannels(coreChannels);
+							}
+						}
+						return;
+					}
+				};
+				component.accept(visitor);
+			}
+
+			return;
+		}
+	}
 }
