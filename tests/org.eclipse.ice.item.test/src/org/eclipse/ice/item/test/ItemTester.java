@@ -43,6 +43,7 @@ import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -1017,6 +1018,112 @@ public class ItemTester implements ItemListener {
 		// end-user-code
 	}
 
+	public void checkFileCapabilities() {
+		// Local Declarations
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		URI defaultProjectLocation = null;
+		IProject project = null;
+		String separator = System.getProperty("file.separator");
+
+		// Setup the project
+		try {
+			// Get the project handle
+			project = workspaceRoot.getProject("itemData");
+			// If the project does not exist, create it
+			if (!project.exists()) {
+				// Set the location as ${workspace_loc}/ItemTesterWorkspace
+				defaultProjectLocation = new File(
+						System.getProperty("user.home") + separator + "ICETests" + separator
+								+ "itemData").toURI();
+				// Create the project description
+				IProjectDescription desc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription("itemData");
+				// Set the location of the project
+				desc.setLocationURI(defaultProjectLocation);
+				// Create the project
+				project.create(desc, null);
+			}
+			// Open the project if it is not already open
+			if (project.exists() && !project.isOpen()) {
+				project.open(null);
+			}
+		} catch (CoreException e) {
+			// Catch for creating the project
+			e.printStackTrace();
+			fail();
+		}
+
+		System.out.println(project.getLocation().toOSString() + " " + project.getFile("bison.yaml").exists());
+		// Setup a project using the constructor
+		TestItem testItem = new TestItem(project);
+		assertTrue(testItem.hasProject());
+		
+		// Verify that Item.getFiles() works as expected
+		ArrayList<String> files = testItem.getYAMLFiles(project.getLocation().toOSString());
+		assertNotNull(files);
+		assertEquals(3, files.size());
+		assertTrue(files.contains("bison.yaml"));
+		assertTrue(files.contains("bison_short.yaml"));
+		assertTrue(files.contains("bison_medium.yaml"));
+
+		// Give it something that is not a directory and make sure we 
+		// get no files
+		files = testItem.getYAMLFiles(project.getLocation().toOSString() + separator + "bison.yaml");
+		assertTrue(files.isEmpty());
+		
+		// Create a new temp directory
+		IFolder tempDir = project.getFolder("tempDir");
+		if (!tempDir.exists()) {
+			try {
+				tempDir.create(true, true, null);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// Now let's check that we can move files from one place to another
+		// The test here is that the move operation makes a new file in the 
+		// target and deletes the file in the source
+		testItem.moveTestFile(project.getLocation().toOSString(), tempDir.getLocation().toOSString(), "bison.yaml");
+		assertFalse(project.getFile("bison.yaml").exists());
+		assertTrue(tempDir.getFile("bison.yaml").exists());
+		
+		// Move it back to keep our workspace pristine for other item tests
+		testItem.moveTestFile(tempDir.getLocation().toOSString(), project.getLocation().toOSString(), "bison.yaml");
+		assertTrue(project.getFile("bison.yaml").exists());
+		assertFalse(tempDir.getFile("bison.yaml").exists());
+		
+		// Check that we can copy, that is a new copied file is created 
+		// in the target and the source file is left intact
+		testItem.copyTestFile(project.getLocation().toOSString(), tempDir.getLocation().toOSString(), "bison.yaml");
+		assertTrue(project.getFile("bison.yaml").exists());
+		assertTrue(tempDir.getFile("bison.yaml").exists());
+		
+		// Make sure we can move multiple files at time
+		testItem.moveMultipleFiles(project.getLocation().toOSString(), tempDir.getLocation().toOSString(), ".yaml");
+		assertTrue(tempDir.getFile("bison.yaml").exists());
+		assertTrue(tempDir.getFile("bison_short.yaml").exists());
+		assertTrue(tempDir.getFile("bison_medium.yaml").exists());
+		
+		// Let's check copying multiple files
+		testItem.copyMultipleFiles(tempDir.getLocation().toOSString(), project.getLocation().toOSString(), ".yaml");
+		assertTrue(project.getFile("bison.yaml").exists());
+		assertTrue(project.getFile("bison_short.yaml").exists());
+		assertTrue(project.getFile("bison_medium.yaml").exists());
+
+		// Check we can delete directories
+		testItem.deleteTestDirectory(tempDir.getLocation().toOSString());
+		assertFalse(project.getFolder("tempDir").exists());
+		
+		try {
+			project.close(null);
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return;
+	}
+	
 	/**
 	 * (non-Javadoc)
 	 * 

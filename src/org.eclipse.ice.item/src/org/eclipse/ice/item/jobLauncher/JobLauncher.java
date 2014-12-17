@@ -1944,5 +1944,14 @@ public class JobLauncher extends Item {
 	protected void setUploadInputFlag(boolean flag) {
 		uploadInput = flag;
 	}
+	
+	/**
+	 * This method returns the working directory for the job launch. 
+	 * 
+	 * @return directory The directory where the job is launched from.
+	 */
+	protected String getWorkingDirectory() {
+		return actionDataMap.get("workingDir");
+	}
 
 }

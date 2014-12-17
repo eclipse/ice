@@ -43,7 +43,6 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -75,6 +74,14 @@ import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.core.resources.IFolder;
 
 import java.net.URI;
+import java.nio.file.CopyOption;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 
 /**
  * <!-- begin-UML-doc -->
@@ -2026,6 +2033,223 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	}
 
 	/**
+	 * This utility method can be used by subclasses to refresh the project
+	 * space after the addition or removal of files and folders.
+	 */
+	protected void refreshProjectSpace() {
+		// Refresh the Project just in case
+		if (project != null) {
+			try {
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+
+	/**
+	 * Return a list of files with the provided fileExtension String. The files
+	 * are returned as a list of 'file names'. For example, the file
+	 * /path/to/file.txt is returned as file.txt.
+	 * 
+	 * @param directory
+	 *            The directory where the Item should search for files with the
+	 *            given type
+	 * @param fileExtension
+	 *            The file extension that the Item should search for.
+	 * @return A list of file names found with the given fileExtension. For a
+	 *         file at /path/to/file.txt, this list contains the element
+	 *         file.txt
+	 */
+	protected ArrayList<String> getFiles(String directory, String fileExtension) {
+
+		// Local Declarations
+		ArrayList<String> files = new ArrayList<String>();
+
+		// Refresh the Project just in case
+		refreshProjectSpace();
+
+		// Make sure we were given a valid directory
+		if (Files.isDirectory(Paths.get(directory))) {
+			// Read through the directory searching for files with the
+			// given file extension.
+			try (DirectoryStream<Path> directoryStream = Files
+					.newDirectoryStream(Paths.get(directory))) {
+				for (Path path : directoryStream) {
+					if (path.toString().endsWith(fileExtension)) {
+						files.add(path.toFile().getName());
+					}
+				}
+
+				// Refresh the Project just in case
+				refreshProjectSpace();
+
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				files.clear();
+			}
+		}
+
+		return files;
+	}
+
+	/**
+	 * Copy the file with the name 'fileName' from the source directory given by
+	 * the sourceDir absolute path String to the destination directory given by
+	 * the absolute path String. This method creates an exact copy of the file
+	 * in the destination directory, leaving the source file intact.
+	 * 
+	 * @param sourceDir
+	 *            The absolute path for the source directory.
+	 * @param destinationDir
+	 *            The absolute path for the destination directory
+	 * @param fileName
+	 *            The name of the file to be copied.
+	 */
+	protected void copyFile(String sourceDir, String destinationDir,
+			String fileName) {
+
+		// Local Declarations
+		String separator = System.getProperty("file.separator");
+
+		// Make sure this file exists...
+		if (Files.exists(Paths.get(sourceDir + separator + fileName))) {
+			try {
+				// Try to copy the file from the source directory to the target
+				// directory. This leaves the source file intact.
+				Files.copy(Paths.get(sourceDir + separator + fileName),
+						Paths.get(destinationDir + separator + fileName),
+						StandardCopyOption.REPLACE_EXISTING);
+				// Refresh the Project just in case
+				refreshProjectSpace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return;
+	}
+
+	/**
+	 * Move the file with the name 'fileName' from the source directory given by
+	 * the sourceDir absolute path String to the destination directory given by
+	 * the absolute path String. This method creates an exact copy of the file
+	 * in the destination directory, but removes the file from the source
+	 * directory.
+	 * 
+	 * @param sourceDir
+	 *            The absolute path for the source directory.
+	 * @param destinationDir
+	 *            The absolute path for the destination directory.
+	 * @param fileName
+	 *            The name of the file to be moved.
+	 */
+	protected void moveFile(String sourceDir, String destinationDir,
+			String fileName) {
+
+		// Local Declarations
+		String separator = System.getProperty("file.separator");
+
+		// Make sure the file to be moved is valid.
+		if (Files.exists(Paths.get(sourceDir + separator + fileName))) {
+			try {
+				// Move the file, this deletes the file in sourceDir.
+				Files.move(Paths.get(sourceDir + separator + fileName),
+						Paths.get(destinationDir + separator + fileName),
+						StandardCopyOption.REPLACE_EXISTING);
+				// Refresh the Project just in case
+				refreshProjectSpace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+
+	/**
+	 * This method deletes the directory, and its contents, corresponding to the
+	 * given absolute path String.
+	 * 
+	 * @param directory
+	 *            The absolute path of the directory to be deleted.
+	 */
+	protected void deleteDirectory(String directory) {
+
+		// Make sure the given absolute path is a directory
+		if (Files.isDirectory(Paths.get(directory))) {
+			try {
+
+				// Walk the directory tree, deleting all the files it contains.
+				Files.walkFileTree(Paths.get(directory),
+						new SimpleFileVisitor<Path>() {
+							@Override
+							public FileVisitResult visitFile(
+									Path file,
+									java.nio.file.attribute.BasicFileAttributes attrs)
+									throws IOException {
+								Files.delete(file);
+								return FileVisitResult.CONTINUE;
+							}
+
+							@Override
+							public FileVisitResult postVisitDirectory(Path dir,
+									IOException exc) throws IOException {
+								Files.delete(dir);
+								return FileVisitResult.CONTINUE;
+							}
+
+						});
+
+				// Refresh the Project just in case
+				refreshProjectSpace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * This method serves as a utility for moving multiple files with the same
+	 * file extension from one directory to another.
+	 * 
+	 * @param sourceDir
+	 *            The directory where the Item should search for files with the
+	 *            given type
+	 * @param destinationDir
+	 *            The directory where the Item should move the found files
+	 * @param fileExtension
+	 *            The file extension that the Item should search for.
+	 */
+	protected void moveFiles(String sourceDir, String destinationDir,
+			String fileExtension) {
+		for (String fileName : getFiles(sourceDir, fileExtension)) {
+			moveFile(sourceDir, destinationDir, fileName);
+		}
+
+		return;
+	}
+
+	/**
+	 * This method serves as a utility for copying multiple files with the same
+	 * file extension from one directory to another.
+	 * 
+	 * @param sourceDir
+	 *            The directory where the Item should search for files with the
+	 *            given type
+	 * @param destinationDir
+	 *            The directory where the Item should move the found files
+	 * @param fileExtension
+	 *            The file extension that the Item should search for.
+	 */
+	protected void copyFiles(String sourceDir, String destinationDir,
+			String fileExtension) {
+		for (String fileName : getFiles(sourceDir, fileExtension)) {
+			copyFile(sourceDir, destinationDir, fileName);
+		}
+	}
+
+	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation loads data into the Item from an input file. This
@@ -2399,6 +2623,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	@Override
 	public void visit(EMFComponent component) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
