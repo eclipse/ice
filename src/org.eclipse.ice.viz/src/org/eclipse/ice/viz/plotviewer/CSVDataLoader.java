@@ -110,15 +110,38 @@ public class CSVDataLoader {
 	}
 
 	/**
-	 * CSVDataProvider
+	 * This method calls the regular 
+	 * {@link #load(File, boolean) CSVDataProvider.load(...)} method without 
+	 * any special delimiters enabled.
 	 * 
 	 * @param csvInputFile
-	 *            // An ArrayList of table items ArrayList<TableItem>
-	 *            dataTableItem = new ArrayList<TableItem>();
-	 * @return
-	 * @throws Exception
+	 * 				The CSV file to load
+	 * @return		The contents of the CSV file as a CSVDataProvider object
 	 */
 	public CSVDataProvider load(File csvInputFile) {
+		
+		// Call the load method with special delimiters disabled
+		return load(csvInputFile, false);
+		
+	}
+	
+	/**
+	 * This method loads a CSV input file and returns the contents as a
+	 * CSVDataProvider object. By default, commas (,) are the only valid
+	 * delimiters. However, if the specialDelimitersEnabled flag is set to true,
+	 * colons (:), semicolons (;) and forward-slashes (/) will also be
+	 * considered delimiters in feature names only.
+	 * 
+	 * @param csvInputFile
+	 * 				The CSV input file to load
+	 * @param specialDelimitersEnabled
+	 * 				Indicates if colons, semicolons and forward-slashes in
+	 * 				feature names should also be considered delimiters.
+	 * @return		The contents of the CSV file as a CSVDataProvider object
+	 * @throws Exception
+	 */
+	public CSVDataProvider load(File csvInputFile, 
+									boolean specialDelimitersEnabled) {
 		/**
 		 * Instantiate the dataSet
 		 */
@@ -180,20 +203,22 @@ public class CSVDataLoader {
 					break;
 				}
 				
-				/**
-				 * Check for the case where the line contains ":",";","/" For
-				 * example, #features: or #features; or #features/
-				 */
-				if (line.toLowerCase().contains(":")
-						|| line.toLowerCase().contains(";")
-						|| line.toLowerCase().contains("/")) {
+				if (specialDelimitersEnabled) {
 					/**
-					 * If the line does contain ":", ";","/" replace with a
-					 * comma and split the line
+					 * Check for the case where the line contains ":",";","/" For
+					 * example, #features: or #features; or #features/
 					 */
-					line = line.replaceAll(":", ",");
-					line = line.replaceAll(";", ",");
-					line = line.replaceAll("/", ",");
+					if (line.toLowerCase().contains(":")
+							|| line.toLowerCase().contains(";")
+							|| line.toLowerCase().contains("/")) {
+						/**
+						 * If the line does contain ":", ";","/" replace with a
+						 * comma and split the line
+						 */
+						line = line.replaceAll(":", ",");
+						line = line.replaceAll(";", ",");
+						line = line.replaceAll("/", ",");
+					}
 				}
 				/**
 				 * Split the line
@@ -917,33 +942,60 @@ public class CSVDataLoader {
 	}
 
 	/**
-	 * Loads the FileName via the CSVDataProvider
+	 * This method calls the regular 
+	 * {@link #load(String, boolean) CSVDataLoader.load(...)} method with special 
+	 * delimiters disabled.
 	 * 
 	 * @param csvFileName
 	 * @return
 	 */
 	public CSVDataProvider load(String csvFileName) {
+		
+		// Call the load method with special delimiters disabled
+		return load(csvFileName, false);
+	}
+	
+	/**
+	 * Loads the FileName via the CSVDataProvider
+	 * 
+	 * @param csvFileName
+	 * @return
+	 */
+	public CSVDataProvider load(String csvFileName,
+										boolean specialDelimitersEnabled) {
 		/**
 		 * Invocation of setCSVInputString(csvFileName) and setCSVInputFile(new
 		 * File(csvFileName)). Returns the load method.
 		 */
 		this.setCSVInputString(csvFileName);
 		this.setCSVInputFile(new File(csvFileName));
-		return load();
+		return load(specialDelimitersEnabled);
 	}
 
+	/**
+	 * This method calls the regular 
+	 * {@link #load(boolean) CSVDataLoader.load(...)} method with special 
+	 * delimiters disabled.
+	 * @return
+	 */
+	public CSVDataProvider load() {
+		
+		// Call the load method with special delimiters disabled
+		return this.load(false);
+	}
+	
 	/**
 	 * Loads csvInputFile via the CSVDataProvider
 	 * 
 	 * @return
 	 */
-	public CSVDataProvider load() {
+	public CSVDataProvider load(boolean specialDelimitersEnabled) {
 		/**
 		 * Checks that the InputFile is not null before it returns load
 		 */
 		if (this.csvInputFile != null) {
 			try {
-				return load(csvInputFile);
+				return load(csvInputFile, specialDelimitersEnabled);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
