@@ -12,9 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
 import org.eclipse.ice.client.widgets.ICEFormPage;
@@ -36,7 +40,9 @@ import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.reactor.plant.Reactor;
 import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -61,6 +67,10 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+
+import com.jme3.math.Vector3f;
 
 /**
  * This class extends the default {@link ICEFormEditor} to enable it to draw a
@@ -512,7 +522,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 						// Create a ToolBarManager so we can add JFace Actions
 						// to it.
-						ToolBarManager toolBarManager = new ToolBarManager();
+						ToolBarManager toolBarManager = new ToolBarManager(
+								SWT.RIGHT);
 						// Add an action that toggles the wireframe boolean.
 						// Also clear the wireframe setting.
 						wireframe = false;
@@ -523,12 +534,84 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								plantView.setWireframe(wireframe);
 							}
 						});
+
+						// Add a new menu with the following options:
+						// Reset the camera - resets the camera's orientation
+						// YZ - sets the camera to view the YZ plane
+						// XY - sets the camera to view the XY plane
+						// ZX - sets the camera to view the ZX plane
+						ActionTree cameraTree = new ActionTree(
+								"Camera Orientation");
+						cameraTree.add(new ActionTree(new Action(
+								"Reset to current default") {
+							@Override
+							public void run() {
+								plantView.resetCamera();
+							}
+						}));
+						cameraTree.add(new ActionTree(new Action(
+								"YZ (Y right, Z up - initial default)") {
+							@Override
+							public void run() {
+								Vector3f position = new Vector3f(10f, 0f, 0f);
+								Vector3f dir = new Vector3f(-1f, 0f, 0f);
+								Vector3f up = Vector3f.UNIT_Z;
+								plantView.setDefaultCameraPosition(position);
+								plantView.setDefaultCameraOrientation(dir, up);
+								plantView.resetCamera();
+							}
+						}));
+						cameraTree.add(new ActionTree(new Action(
+								"XY (X right, Y up)") {
+							@Override
+							public void run() {
+								Vector3f position = new Vector3f(0f, 0f, 10f);
+								Vector3f dir = new Vector3f(0f, 0f, -1f);
+								Vector3f up = Vector3f.UNIT_Y;
+								plantView.setDefaultCameraPosition(position);
+								plantView.setDefaultCameraOrientation(dir, up);
+								plantView.resetCamera();
+							}
+						}));
+						cameraTree.add(new ActionTree(new Action(
+								"ZX (Z right, X up)") {
+							@Override
+							public void run() {
+								Vector3f position = new Vector3f(0f, 10f, 0f);
+								Vector3f dir = new Vector3f(0f, -1f, 0f);
+								Vector3f up = Vector3f.UNIT_X;
+								plantView.setDefaultCameraPosition(position);
+								plantView.setDefaultCameraOrientation(dir, up);
+								plantView.resetCamera();
+							}
+						}));
+						toolBarManager.add(cameraTree.getContributionItem());
+
+						Action action = new Action("Save Image") {
+							@Override
+							public void run() {
+								plantView.exportImage();
+							}
+						};
+						// Set the action's image (a camera).
+						Bundle bundle = FrameworkUtil.getBundle(getClass());
+						Path imagePath = new Path("icons"
+								+ System.getProperty("file.separator")
+								+ "camera.png");
+						URL imageURL = FileLocator
+								.find(bundle, imagePath, null);
+						ImageDescriptor imageDescriptor = ImageDescriptor
+								.createFromURL(imageURL);
+						action.setImageDescriptor(imageDescriptor);
+						ActionTree saveImageTree = new ActionTree(action);
+						toolBarManager.add(saveImageTree.getContributionItem());
+
 						// Create the ToolBar and set its layout.
 						ToolBar toolBar = toolBarManager
 								.createControl(analysisComposite);
 						toolBar.setBackground(background);
 						toolBar.setLayoutData(new GridData(SWT.FILL,
-								SWT.CENTER, true, false));
+								SWT.BEGINNING, true, false));
 
 						// Create the plant view.
 						plantView = new ViewFactory().createPlantView(plant);
@@ -539,6 +622,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						plantComposite.setBackground(background);
 						plantComposite.setLayoutData(new GridData(SWT.FILL,
 								SWT.FILL, true, true));
+						
+						fillPlantTools(toolBarManager);
+						toolBarManager.update(true);
 						// ------------------------------------------------ //
 
 						return;
@@ -549,6 +635,197 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				e.printStackTrace();
 			}
 		}
+
+		return;
+	}
+
+	private void fillPlantTools(ToolBarManager toolBar) {
+		Action action;
+
+		// Set the action's image (a camera).
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
+		Path imagePath;
+		URL imageURL;
+		ImageDescriptor image;
+
+		// TODO Use an ImageRegistry instead.
+		final float moveRate = 1f;
+		final float rotateRate = (float) (Math.PI * 0.1);
+
+		// ---- Movement Arrow Buttons ---- //
+		// Strafe left
+		action = new Action("Move left (A)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().strafeCamera(-1f);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-left-perspective-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+
+		// Move forward
+		action = new Action("Move forward (W)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().thrustCamera(moveRate);				
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-up-perspective-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+
+		// Move backward
+		action = new Action("Move backward (S)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().thrustCamera(-moveRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-down-perspective-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+
+		// Strafe right
+		action = new Action("Move right (D)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().strafeCamera(moveRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-right-perspective-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+
+		// Move up
+		action = new Action("Move up (SPACE)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().raiseCamera(moveRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-up-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+
+		// Move down
+		action = new Action("Move down (C)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().raiseCamera(-moveRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-down-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+		// -------------------------------- //
+
+		toolBar.add(new Separator());
+		
+		// ---- Rotation Arrow Buttons ---- //
+		// Roll left
+		action = new Action("Roll Left (Q)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().rollCamera(-rotateRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-roll-left-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+		
+		// Roll right
+		action = new Action("Roll Right (E)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().rollCamera(rotateRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-roll-right-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+		
+		// Pitch up
+		action = new Action("Pitch Up (up arrow)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().pitchCamera(rotateRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-pitch-up-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+		// Pitch down
+		action = new Action("Pitch down (down arrow)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().pitchCamera(-rotateRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-pitch-down-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+		
+		// Yaw left
+		action = new Action("Yaw Left (left arrow)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().yawCamera(-rotateRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-yaw-left-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+		// Yaw right
+		action = new Action("Yaw Right (right arrow)") {
+			@Override
+			public void run() {
+				plantView.getFlightCamera().yawCamera(rotateRate);
+			}
+		};
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-yaw-right-16.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		image = ImageDescriptor.createFromURL(imageURL);
+		action.setImageDescriptor(image);
+		toolBar.add(action);
+		// -------------------------------- //
+
+		// ---- Zoom Buttons ---- //
+		// ---------------------- //
 
 		return;
 	}

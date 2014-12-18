@@ -6,19 +6,33 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.imageio.ImageIO;
 
 import com.jme3.app.Application;
 import com.jme3.input.InputManager;
+import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.system.awt.AwtPanel;
 import com.jme3.system.awt.AwtPanelsContext;
 import com.jme3.system.awt.PaintMode;
+import com.jme3.texture.FrameBuffer;
+import com.jme3.util.BufferUtils;
 
 /**
  * This class provides a jME-based view that can be embedded within an AWT
@@ -56,7 +70,7 @@ import com.jme3.system.awt.PaintMode;
  * @author Jordan
  * 
  */
-public class EmbeddedView {
+public class EmbeddedView implements SceneProcessor {
 
 	// ---- Constant properties ---- //
 	/**
@@ -89,7 +103,7 @@ public class EmbeddedView {
 	 * The <code>Application</code> that is responsible for rendering this view.
 	 */
 	private final Application app;
-	
+
 	/**
 	 * This listens for focus events from the {@link #renderPanel} and forwards
 	 * them to the {@link #client} so the client can activate or deactivate its
@@ -118,7 +132,7 @@ public class EmbeddedView {
 	 */
 	private Thread resizeThread;
 	// ------------------------------------- //
-	
+
 	// ---- Client-dependent properties ---- //
 	/**
 	 * The current client that is using this <code>EmbeddedView</code>. Only one
@@ -143,7 +157,41 @@ public class EmbeddedView {
 	 * currently embedded.
 	 */
 	private final AtomicReference<Frame> embeddedFrame;
+
 	// ------------------------------------- //
+
+	// ---- Screenshot variables ---- //
+	/**
+	 * The renderer associated with the {@link #viewPort}.
+	 */
+	private Renderer renderer;
+	/**
+	 * The output buffer used to generate a screenshot image from the
+	 * {@link #renderer}.
+	 */
+	private ByteBuffer outputBuffer;
+	/**
+	 * The AWT image that will be written to the file as the screenshot.
+	 */
+	private BufferedImage image;
+	/**
+	 * The current width of the {@link #viewPort}.
+	 */
+	private int width;
+	/**
+	 * The current height of the {@link #viewPort}.
+	 */
+	private int height;
+	/**
+	 * Whether or not to take a screenshot on the next render pass.
+	 */
+	private final AtomicBoolean takeScreenshot = new AtomicBoolean(false);
+	/**
+	 * The file to which the screenshot will be written.
+	 */
+	private File screenshotFile;
+
+	// ------------------------------ //
 
 	/**
 	 * The default constructor. <b>The ID should be unique for this view and
@@ -183,6 +231,9 @@ public class EmbeddedView {
 		viewPort = renderManager.createMainView("view-" + id, camRenderer);
 		viewPort.setClearFlags(true, true, true);
 		renderPanel.attachTo(false, viewPort);
+		// Add this to the main ViewPort as a SceneProcessor to let us take
+		// screenshots of the EmbeddedView.
+		viewPort.addProcessor(this);
 
 		// Create the guiNode ViewPort. This is used for the HUD.
 		guiViewPort = renderManager
@@ -417,7 +468,7 @@ public class EmbeddedView {
 			// Set the resize throttling thread to null. It should terminate on
 			// its own now that embeddedFrame is null.
 			resizeThread = null;
-			
+
 			// If necessary, disable the client's camera.
 			if (client != null) {
 				client.updateViewCamera(this, false);
@@ -434,7 +485,7 @@ public class EmbeddedView {
 		// TODO At the moment, the only thing we can do to "dispose" each
 		// EmbeddedView is to detach it from its client. This is done by calling
 		// cleanup();
-		cleanup();
+		cleanupView();
 	}
 
 	// ---- Getters and Setters ---- //
@@ -478,6 +529,7 @@ public class EmbeddedView {
 	public Node getHUD() {
 		return HUD;
 	}
+
 	// ----------------------------- //
 
 	/**
@@ -485,7 +537,7 @@ public class EmbeddedView {
 	 * lazy or uninformed and forgot to clean up the <code>EmbeddedView</code>
 	 * before releasing it for re-use.
 	 */
-	protected void cleanup() {
+	protected void cleanupView() {
 
 		// We should make sure the client is unregistered first.
 		if (client != null) {
@@ -592,5 +644,168 @@ public class EmbeddedView {
 				return;
 			}
 		};
+	}
+
+	// ---- Implements SceneProcessor ---- //
+	// This interface is used to take screenshots. The code in this section is
+	// based off of jME's ScreenshotAppState.
+
+	/**
+	 * Cleans up resources used by this class as a {@link SceneProcessor}.
+	 */
+	@Override
+	public void cleanup() {
+		renderer = null;
+		outputBuffer = null;
+		image = null;
+	}
+
+	/**
+	 * Initializes the view as a {@link SceneProcessor}.
+	 */
+	@Override
+	public void initialize(RenderManager rm, ViewPort vp) {
+		if (vp == viewPort) {
+			renderer = rm.getRenderer();
+			// We already have a reference to the viewport.
+			reshape(vp, camRenderer.getWidth(), camRenderer.getHeight());
+		}
+	}
+
+	/**
+	 * Updates the known dimensions of the associated {@link #viewPort}.
+	 */
+	@Override
+	public void reshape(ViewPort vp, int w, int h) {
+		if (vp == viewPort) {
+			width = w;
+			height = h;
+			outputBuffer = BufferUtils.createByteBuffer(width * height * 4);
+			image = new BufferedImage(width, height,
+					BufferedImage.TYPE_4BYTE_ABGR);
+		}
+	}
+
+	/**
+	 * Checks that the view has been initialized as a {@link SceneProcessor}.
+	 */
+	@Override
+	public boolean isInitialized() {
+		return renderer != null;
+	}
+
+	/**
+	 * Does nothing.
+	 */
+	@Override
+	public void preFrame(float tpf) {
+		// Nothing to do.
+	}
+
+	/**
+	 * Does nothing.
+	 */
+	@Override
+	public void postQueue(RenderQueue rq) {
+		// Nothing to do.
+	}
+
+	/**
+	 * Takes the screenshot after the frame has been rendered.
+	 */
+	@Override
+	public void postFrame(FrameBuffer out) {
+		if (takeScreenshot.compareAndSet(true, false)) {
+
+			// The code between this comment and the next big one comes from
+			// com.jme.app.state.ScreenShotAppState.
+			int viewX = (int) (camRenderer.getViewPortLeft() * camRenderer
+					.getWidth());
+			int viewY = (int) (camRenderer.getViewPortBottom() * camRenderer
+					.getHeight());
+			int viewWidth = (int) ((camRenderer.getViewPortRight() - camRenderer
+					.getViewPortLeft()) * camRenderer.getWidth());
+			int viewHeight = (int) ((camRenderer.getViewPortTop() - camRenderer
+					.getViewPortBottom()) * camRenderer.getHeight());
+
+			renderer.setViewPort(0, 0, width, height);
+			renderer.readFrameBuffer(out, outputBuffer);
+			renderer.setViewPort(viewX, viewY, viewWidth, viewHeight);
+
+			// The code below is pulled from com.jme3.util.Screenshots.java.
+			// The original code has a bug in the outer loop where, for odd
+			// height, the screen capture produces a bad horizontal line across
+			// the output image. It used y < height / 2, which is the same for
+			// each even height and the odd height one greater.
+			WritableRaster wr = image.getRaster();
+			DataBufferByte db = (DataBufferByte) wr.getDataBuffer();
+			byte[] cpuArray = db.getData();
+
+			outputBuffer.clear();
+			outputBuffer.get(cpuArray);
+			outputBuffer.clear();
+
+			int width = wr.getWidth();
+			int height = wr.getHeight();
+
+			// flip the components the way AWT likes them
+			for (int y = 0; y < Math.ceil(height * 0.5); y++) {
+				int inOffset = y * width;
+				int outOffset = (height - y - 1) * width;
+				for (int x = 0; x < width; x++) {
+					int inPtr = (inOffset + x) * 4;
+					int outPtr = (outOffset + x) * 4;
+
+					// Copy the original bgra values.
+					byte b1 = cpuArray[inPtr + 0];
+					byte g1 = cpuArray[inPtr + 1];
+					byte r1 = cpuArray[inPtr + 2];
+					byte a1 = cpuArray[inPtr + 3];
+
+					// Move in the new abgr values according to AWT.
+					cpuArray[inPtr + 0] = cpuArray[outPtr + 3];
+					cpuArray[inPtr + 1] = cpuArray[outPtr + 0];
+					cpuArray[inPtr + 2] = cpuArray[outPtr + 1];
+					cpuArray[inPtr + 3] = cpuArray[outPtr + 2];
+
+					// Move the original agbr values.
+					cpuArray[outPtr + 0] = a1;
+					cpuArray[outPtr + 1] = b1;
+					cpuArray[outPtr + 2] = g1;
+					cpuArray[outPtr + 3] = r1;
+				}
+			}
+
+			// Write the image to the file.
+			try {
+				ImageIO.write(image, "png", screenshotFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// Unset the screenshot file reference now that we have taken the
+			// screenshot.
+			screenshotFile = null;
+		}
+
+		return;
+	}
+
+	// ----------------------------------- //
+
+	/**
+	 * Exports the {@code EmbeddedView} as an image file.
+	 * 
+	 * @param file
+	 *            The location to write the file. Any pre-existing image file
+	 *            will be overwritten. If null or cannot write to this file,
+	 *            nothing will happen.
+	 */
+	public void exportImage(File file) {
+		if (file != null
+				&& (!file.exists() || file.isFile() && file.canWrite())) {
+			screenshotFile = file;
+			takeScreenshot.set(true);
+		}
 	}
 }

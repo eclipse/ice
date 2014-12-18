@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -29,12 +28,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
@@ -233,10 +228,10 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 	/**
 	 * This operation overrides Item.reviewEntries(). This override is required
-	 * in the event that the YAML/action syntax generator is selected, in
-	 * which case certain JobLaunch flags (related to file uploading) must be
-	 * turned off. Conversely, these flags must be turned back on for any
-	 * other executable.
+	 * in the event that the YAML/action syntax generator is selected, in which
+	 * case certain JobLaunch flags (related to file uploading) must be turned
+	 * off. Conversely, these flags must be turned back on for any other
+	 * executable.
 	 * 
 	 * @param preparedForm
 	 *            The Form to review.
@@ -269,7 +264,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 			if ("Available Executables".equals(execDataComp.getName())) {
 
 				setUploadInputFlag(true);
-				
+
 				if (yamlSyntaxGenerator.equals(execName)) {
 
 					// Disable input file appending (no input file to append)
@@ -282,7 +277,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 				retStatus = FormStatus.ReadyToProcess;
 
 			} else {
-				
+
 				retStatus = FormStatus.InfoError;
 			}
 		}
@@ -303,59 +298,59 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Call the super
 		super.updateResourceComponent();
 
+		// Get the working directory for the job launch
+		String workingDirectory = getWorkingDirectory();
+
 		// If this is the YAML/action syntax process, we need a few extra steps
 		if (yamlSyntaxGenerator.equals(execName)) {
 
-			if (project != null && project.isAccessible()) {
+			// Get the MOOSE folder
+			IFolder mooseFolder = project.getFolder("MOOSE");
 
-				String fileName = "";
+			// Check if the MOOSE folder exists; create it if it doesn't
+			if (!mooseFolder.exists()) {
 				try {
-					// Get the MOOSE folder
-					IFolder mooseFolder = project.getFolder("MOOSE");
-
-					// Check if the MOOSE folder exists; create it if it doesn't
-					if (!mooseFolder.exists()) {
-						mooseFolder.create(true, true, null);
-					}
-
-					// Get the files in the default folder
-					IResource[] resources = project.members();
-
-					// Check the resources and retrieve the .yaml and .syntax
-					// files
-					for (IResource resource : resources) {
-
-						// Get the filename of the current resource
-						fileName = resource.getProjectRelativePath()
-								.lastSegment();
-
-						// If the file is *.yaml or *.syntax
-						if (resource.getType() == IResource.FILE
-								&& (fileName.contains(".yaml") || fileName
-										.contains(".syntax"))) {
-
-							// Clean the file of excess headers/footers and
-							// move it into the MOOSE directory
-							createCleanMOOSEFile(resource.getLocation()
-									.toOSString());
-						}
-					}
-				} catch (CoreException | IOException e) {
-					// Complain
+					mooseFolder.create(true, true, null);
+				} catch (CoreException e) {
 					e.printStackTrace();
 				}
-
 			}
 
-			// Refresh the project
-			try {
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			} catch (CoreException e) {
+			// Get all files that end with .yaml or .syntax and move them from
+			// the
+			// MooseLauncher working directory to the MOOSE folder.
+			moveFiles(workingDirectory, mooseFolder.getLocation().toOSString(),
+					".yaml");
+			moveFiles(workingDirectory, mooseFolder.getLocation().toOSString(),
+					".syntax");
 
+			// Clean up the MOOSE yaml/syntax files.
+			try {
+				mooseFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
+				for (IResource resource : mooseFolder.members()) {
+					if (resource.getType() == IResource.FILE
+							&& resource.getProjectRelativePath().lastSegment()
+									.contains(".yaml")
+							|| resource.getProjectRelativePath().lastSegment()
+									.contains(".syntax")) {
+						createCleanMOOSEFile(resource.getLocation()
+								.toOSString());
+
+					}
+				}
+
+			} catch (CoreException | IOException e) {
 				e.printStackTrace();
 			}
 
+			// Since this is just the GenerateYAML Executable, we don't
+			// really need to keep the working directory, so delete it here.
+			deleteDirectory(workingDirectory);
+
+			// Refresh the project space
+			refreshProjectSpace();
 		}
+
 	}
 
 	/**
@@ -394,7 +389,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 				filePath.lastIndexOf(fileExt));
 		String cleanFilePath = filePath.substring(0,
 				filePath.lastIndexOf(separator))
-				+ separator + "MOOSE" + separator + execName + fileExt;
+				+ separator + execName + fileExt;
 
 		if (".yaml".equals(fileExt)) {
 			fileType = "YAML";
@@ -406,6 +401,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					+ fileExt);
 		}
 
+		System.out.println("THE CLEAN FILE PATH IS " + filePath);
 		// Read in the MOOSE file into an ArrayList of Strings
 		java.nio.file.Path readPath = Paths.get(filePath);
 		fileLines = (ArrayList<String>) Files.readAllLines(readPath,
@@ -448,25 +444,24 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// the original one
 		if (hasHeader || hasFooter) {
 
-			
 			// If there's an already existing file to where we want to write,
 			// get rid of it
 			IFile cleanFile = mooseFolder.getFile(execName + fileExt);
 			if (cleanFile.exists()) {
 				cleanFile.delete(true, null);
 			}
-			
+
 			// Write out to the clean file now
 			java.nio.file.Path writePath = Paths.get(cleanFilePath);
-			Files.write(writePath, fileLines, Charset.defaultCharset(), 
+			Files.write(writePath, fileLines, Charset.defaultCharset(),
 					StandardOpenOption.CREATE);
 			System.out.println("MOOSELauncher Message: "
-					+ "Placing file in /ICEFiles/default/MOOSE: "
-					+ execName + fileExt);
-			
+					+ "Placing file in /ICEFiles/default/MOOSE: " + execName
+					+ fileExt);
+
 			// Delete the old file
-			File oldFile = new File(filePath);
-			oldFile.delete();
+			// File oldFile = new File(filePath);
+			// oldFile.delete();
 		}
 
 		return;
@@ -482,101 +477,11 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.Item#getIOType()
 	 */
 	@Override
 	public String getIOType() {
 		return "moose";
 	}
-	
-	/**
-	 * This method is responsible for determining the available list of input
-	 * files for the MOOSE Launcher. If there is at least one *.i file in the
-	 * workspace, the method will attempt to load the contents into a 
-	 * TreeComposite structure, and traverse through it searching for 
-	 * references to additional/external files.
-	 * 
-	 * Additional files will be added to the MOOSE Launcher Form's input file(s)
-	 * DataComponent (id=1). Any previously existing input files will be
-	 * removed.
-	 */
-	/**private void updateFileEntries() {
-		// Get the MOOSELauncher's Input Files DataComponent; use it to get the 
-		// current Input File Entry
-		MOOSEModel model = new MOOSEModel(this.project);
-		DataComponent inputFiles = (DataComponent) form.getComponent(1);
-		Entry inputFile = (Entry) inputFiles.retrieveEntry("Input File");
-
-		// If there is more than one file left-over from sometime before,
-		// remove them
-		if (inputFiles.retrieveAllEntries().size() > 1) {
-			inputFiles.clearEntries();
-			inputFiles.addEntry(inputFile);
-		}
-		
-		// Continue only if there is a valid input file to load up
-		if (inputFile.getValue() != null && !inputFile.getValue().isEmpty()) {
-			
-			// Now load the TreeComposite representing the Input File
-			model.loadInput(inputFile.getValue());
-			TreeComposite yamlTree = 
-					(TreeComposite) model.getForm().getComponent(2);
-	
-			// Walk the tree and get all Entries that may represent a file
-			BreadthFirstTreeCompositeIterator iter = 
-					new BreadthFirstTreeCompositeIterator(yamlTree);
-			while (iter.hasNext()) {
-				TreeComposite child = iter.next();
-				
-				// Make sure we have a valid DataComponent
-				if (child.getActiveDataNode() != null) {
-					
-					// Get the active data node
-					DataComponent data = 
-							(DataComponent) child.getActiveDataNode();
-					
-					// Iterate through the Entries and look for enabled
-					// parameters that reference additional files
-					for (Entry e : data.retrieveAllEntries()) {
-						
-							// Ignore parameters that are commented out
-							if (!"false".equals(e.getTag())) {
-								
-								if (e.getName().toLowerCase().contains("file")
-									&& !e.getName().toLowerCase().contains("profile")) {
-		
-								// Here we want to keep knowledge of the file type,
-								// so I'll use the MOOSELauncher addInputType method
-								// to correctly generate the Entries with the correct
-								// file set
-								
-								// Split the value between filename and extension
-								String[] fileLine = 
-										e.getValue().split("\\.(?=[^\\.]+$)");
-								
-								// Check that the Entry had both a valid name and
-								// value
-								if (fileLine.length > 1) {
-									addInputType(child.getName(), 
-											child.getName().replaceAll("\\s+", ""), 
-											e.getDescription(), 
-											"." + fileLine[1]);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		return;
-	}
-
-	@Override
-	public void update(IUpdateable component) {
-
-		if (component instanceof Entry && component != null) {
-			updateFileEntries();
-		}
-	}**/
 }

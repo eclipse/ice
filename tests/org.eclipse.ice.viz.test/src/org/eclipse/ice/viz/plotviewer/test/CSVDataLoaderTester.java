@@ -249,13 +249,13 @@ public class CSVDataLoaderTester {
 
 		// Load the default data set by putting the file name in the load
 		// command
-		defaultProvider = newDataLoaderDefault.load(file260Name);
+		defaultProvider = newDataLoaderDefault.load(file260Name, true);
 		// Load using the input file already specified in the comprehensive
 		// constructor
-		fileProvider = newDataLoaderFile.load();
+		fileProvider = newDataLoaderFile.load(true);
 		// Load using the LiCl_260.csv file name already specified in the
 		// comprehensive constructor
-		filenameProvider = newDataLoaderFilename.load();
+		filenameProvider = newDataLoaderFilename.load(true);
 
 		// Add the providers to the provider list
 		dataProviderList.add(defaultProvider);
@@ -268,7 +268,7 @@ public class CSVDataLoaderTester {
 
 		// Load the contour plot which has the matrix specifications within
 		CSVDataLoader newDataContourLoader = new CSVDataLoader();
-		contourProvider = newDataContourLoader.load(contourFileName);
+		contourProvider = newDataContourLoader.load(contourFileName, true);
 		// Hardcode the width and height
 		contourWidth = 100;
 		contourHeight = 200;

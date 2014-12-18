@@ -130,7 +130,7 @@ public class IPSWriter {
 		// Build the output by going through each row
 		for (int i = 0; i < component.numberOfRows(); i++) {
 			row = component.getRow(i);
-			configString += row.get(0).getValue() + " = " + row.get(1).getValue() + "\n";
+			configString += row.get(0).getValue().trim() + "=" + row.get(1).getValue().trim() + "\n";
 		}
 		configString += "\n";
 		
@@ -162,14 +162,14 @@ public class IPSWriter {
 		// Build the output by going through each row
 		for (int i = 0; i < component.numberOfRows(); i++) {
 			row = component.getRow(i);
-			configString += row.get(0).getValue() + " ";
+			configString += row.get(0).getValue().trim() + " ";
 		}
 		configString += "\n\n";
 		
 		for (int i = 0; i < component.numberOfRows(); i++) {
 			row = component.getRow(i);
-			configString += "\t[[" + row.get(0).getValue() + "]]\n\t\t"
-					+ "IMPLEMENTATION = " + row.get(1).getValue() + "\n";
+			configString += "\t[[" + row.get(0).getValue().trim() + "]]\n\t\t"
+					+ "IMPLEMENTATION = " + row.get(1).getValue().trim() + "\n";
 		}
 		configString += "\n";
 		
@@ -204,12 +204,12 @@ public class IPSWriter {
 		// Write each of the port parameters
 		for ( Entry param : portParams ) {
 			// Write the port header
-			currLine = "\t" + param.getName() + " = ";
+			currLine = "\t" + param.getName().trim() + " = ";
 			byteArray = currLine.getBytes();
 			stream.write(byteArray);
 			
 			// Write the port implementation
-			currLine = param.getValue() + "\n";
+			currLine = param.getValue().trim() + "\n";
 			byteArray = currLine.getBytes();
 			stream.write(byteArray);
 		}
@@ -245,12 +245,12 @@ public class IPSWriter {
 		// Write each of the port parameters
 		for ( Entry param : timeLoopParams ) {
 			// Write the port header
-			currLine = "\t" + param.getName() + " = ";
+			currLine = "\t" + param.getName().trim() + " = ";
 			byteArray = currLine.getBytes();
 			stream.write(byteArray);
 			
 			// Write the port implementation
-			currLine = param.getValue() + "\n";
+			currLine = param.getValue().trim() + "\n";
 			byteArray = currLine.getBytes();
 			stream.write(byteArray);
 		}

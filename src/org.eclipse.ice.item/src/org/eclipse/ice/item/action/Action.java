@@ -17,8 +17,6 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import java.util.Dictionary;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * The Action class performs actions, such as launching a job or script, for
  * ICE. It requires a Form with relevant information to execute property and it
  * may, at its own discretion, request additional information using a secondary,
@@ -30,12 +28,11 @@ import java.util.Dictionary;
  * additional information. Instead, it should be considered for
  * "emergency use only" and used for those types of information that are truly
  * unpredictable or not time-independent.
- * </p>
- * <!-- end-UML-doc -->
+ * 
+ * Actions may update the dictionary passed to execute() at their discretion, so
+ * keep in mind that it may change if you depend on it in the client class.
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public abstract class Action {
 	/**
