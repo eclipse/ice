@@ -281,59 +281,21 @@ public class TubeMesh extends Mesh {
 	}
 
 	/**
-	 * Gets the number of vertices (not necessarily unique) in the mesh.
-	 * <p>
-	 * <b>Note:</b> To get "sharp" edges for normals, the top and bottom edges
-	 * and the inside and outside cylinders all have their own sets of vertices
-	 * with their own normals.
-	 * </p>
-	 * 
-	 * @return The number of vertices. This number is reduced if the inner
-	 *         radius is greater than or equal to the outer radius.
-	 */
-	private int getNumberOfVertices() {
-
-		// Add the outer and inner cylinders with their own vertices.
-		int vertices = 2 * radialSamples * (axialSamples + 1);
-
-		// If the outer and inner radii are different, add the top and bottom
-		// edges with their own vertices.
-		if (outerRadius > innerRadius) {
-			vertices += radialSamples * 4;
-		}
-
-		return vertices;
-	}
-
-	/**
-	 * Gets the number of unique faces (each composed of two triangles) in the
-	 * mesh.
-	 * 
-	 * @return The number of faces. This number is reduced if the inner radius
-	 *         is greater than or equal to the outer radius.
-	 */
-	private int getNumberOfFaces() {
-
-		// Add the outer and inner cylinders with their own faces.
-		int faces = 2 * axialSamples * radialSamples;
-
-		// If the outer and inner radii are different, add the top and bottom
-		// edges with their own faces.
-		if (outerRadius > innerRadius) {
-			faces += radialSamples * 2;
-		}
-
-		return faces;
-	}
-
-	/**
 	 * Re-allocates the buffers for vertex positions, vertex normals, and face
 	 * indices.
 	 */
 	private void updateBuffers() {
 
-		int numVertices = getNumberOfVertices();
-		int numFaces = getNumberOfFaces();
+		// Get the number of vertices and faces required for the inner and outer
+		// cylinders.
+		int numVertices = 2 * radialSamples * (axialSamples + 1);
+		int numFaces = 2 * axialSamples * radialSamples;
+		// If we can render the top and bottom edges, add their vertex and face
+		// counts.
+		if (outerRadius > innerRadius) {
+			numVertices += radialSamples * 4;
+			numFaces += radialSamples * 2;
+		}
 
 		// A single normal is required for each specified vertex. However, to
 		// create the "sharp" edges (with respect to lighting) we require two
