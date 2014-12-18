@@ -67,7 +67,7 @@ public class MOOSELauncherTester {
 	private static IProject projectSpace;
 
 	private static MOOSELauncher launcher;
-	
+
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -104,9 +104,8 @@ public class MOOSELauncherTester {
 			if (!project.exists()) {
 				// Set the location as
 				// ${workspace_loc}/MOOSEModelTesterWorkspace
-				defaultProjectLocation = (new File(
-						userDir + separator
-								+ projectName)).toURI();
+				defaultProjectLocation = (new File(userDir + separator
+						+ projectName)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(projectName);
@@ -120,7 +119,6 @@ public class MOOSELauncherTester {
 				project.open(null);
 			}
 
-
 			// Create the File handle and input stream for the Bison input
 			// file
 			IPath moosePath = new Path(filePath);
@@ -128,15 +126,19 @@ public class MOOSELauncherTester {
 			FileInputStream mooseStream = new FileInputStream(mooseFile);
 			// Create the file in the workspace for the Bison input file
 			IFile bisonInputFile = project.getFile("input_coarse10.i");
-			bisonInputFile.create(mooseStream, true, null);
+			if (!bisonInputFile.exists()) {
+				bisonInputFile.create(mooseStream, true, null);
+			}
 
 			IPath moosePath2 = new Path(filePath2);
 			File mooseFile2 = moosePath2.toFile();
 			FileInputStream mooseStream2 = new FileInputStream(mooseFile2);
 			// Create the file in the workspace for the Bison input file
-			IFile bisonInputFile2 = project.getFile("input_coarse10_filetest.i");
-			bisonInputFile2.create(mooseStream2, true, null);
-			
+			IFile bisonInputFile2 = project
+					.getFile("input_coarse10_filetest.i");
+			if (!bisonInputFile2.exists()) {
+				bisonInputFile2.create(mooseStream2, true, null);
+			}
 			// Refresh the workspace
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
@@ -156,8 +158,7 @@ public class MOOSELauncherTester {
 		IOService service = new IOService();
 		service.addReader(new MOOSEFileHandler());
 		launcher.setIOService(service);
-		
-		
+
 		return;
 		// end-user-code
 	}
@@ -166,8 +167,10 @@ public class MOOSELauncherTester {
 	public void checkDynamicFileGeneration() {
 		// Local Declarations
 
-		DataComponent fileDataComp = (DataComponent) launcher.getForm().getComponent(1);
-		assertTrue(fileDataComp.retrieveEntry("Input File").setValue("input_coarse10.i"));
+		DataComponent fileDataComp = (DataComponent) launcher.getForm()
+				.getComponent(1);
+		assertTrue(fileDataComp.retrieveEntry("Input File").setValue(
+				"input_coarse10.i"));
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
@@ -175,10 +178,11 @@ public class MOOSELauncherTester {
 			e1.printStackTrace();
 		}
 		assertEquals(4, fileDataComp.retrieveAllEntries().size());
-		
+
 		// Now change the file name
-		assertTrue(fileDataComp.retrieveEntry("Input File").setValue("input_coarse10_filetest.i"));
-		
+		assertTrue(fileDataComp.retrieveEntry("Input File").setValue(
+				"input_coarse10_filetest.i"));
+
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {

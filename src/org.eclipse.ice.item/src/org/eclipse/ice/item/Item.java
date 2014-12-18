@@ -589,7 +589,8 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	protected boolean debuggingEnabled = false;
 
 	/**
-	 * Reference to the IOService. 
+	 * Reference to the IOService that provides IReaders and IWriters for the
+	 * Item.
 	 */
 	@XmlTransient()
 	private static IOService ioService;
@@ -712,38 +713,37 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 
 	/**
 	 * This method should be used by subclasses to get a reference to the
-	 * desired IReader.
+	 * desired IReader. To get the desired IReader, subclasses must specify the
+	 * IO type String by implementing the Item.getIOType() method.
 	 * 
-	 * @param type
 	 * @return
 	 */
 	protected IReader getReader() {
 		if (ioService != null) {
 			return ioService.getReader(getIOType());
-		} else {
-			return null;
 		}
+
+		return null;
 	}
 
 	/**
 	 * This method should be used by subclasses to get a reference to the
-	 * desired IWriter.
+	 * desired IWriter. To get the desired IWriter, subclasses must specify the
+	 * IO type String by implementing the Item.getIOType() method.
 	 * 
-	 * @param type
 	 * @return
 	 */
 	protected IWriter getWriter() {
 		if (ioService != null) {
 			return ioService.getWriter(getIOType());
-		} else {
-			return null;
 		}
+
+		return null;
 	}
 
 	/**
-	 * Return the IO Type string. This method is to be 
-	 * overriden by subclasses to indicate which IReader and 
-	 * IWriter the Item subclass needs to use. 
+	 * Return the IO Type string. This method is to be used by subclasses to
+	 * indicate which IReader and IWriter the Item subclass needs to use.
 	 * 
 	 * @return
 	 */
@@ -752,9 +752,8 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	}
 
 	/**
-	 * This method is used by the underlying OSGi framework 
-	 * to set the IOService that has been exposed as a 
-	 * Declarative Service. 
+	 * This method is used by the underlying OSGi framework to set the IOService
+	 * that has been exposed as a Declarative Service.
 	 * 
 	 * @param service
 	 */
@@ -763,7 +762,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 			ioService = service;
 		}
 	}
-	
+
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -2689,7 +2688,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	@Override
 	public void visit(EMFComponent component) {
 		// TODO Auto-generated method stub
-
 
 	}
 

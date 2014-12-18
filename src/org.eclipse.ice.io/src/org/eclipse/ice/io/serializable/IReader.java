@@ -15,10 +15,13 @@ package org.eclipse.ice.io.serializable;
 import java.net.URI;
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
 
 /**
+ * The IReader interface defines the functionality needed to read files into an
+ * expected ICE internal object representation. It also allows clients to search
+ * a file for all occurrences of a specific pattern.
  * 
  * @author Alex McCaskey
  *
@@ -26,23 +29,33 @@ import org.eclipse.ice.datastructures.form.Entry;
 public interface IReader {
 
 	/**
+	 * Return a Form representation of the input file with given URI.
 	 * 
 	 * @param uri
-	 * @return
+	 *            The URI of the file to be read.
+	 * @return A Form object containing the data read in from the file.
 	 */
-	public ICEObject read(URI uri);
-	
+	public Form read(URI uri);
+
 	/**
+	 * This method can be used by realizations of this interface to provide the
+	 * functionality needed to find all occurrences of a String regular
+	 * expression in a file with the given URI and return a list of Entries
+	 * representing those occurrences.
 	 * 
 	 * @param regexp
-	 * @return
+	 *            The regular expression to search.
+	 * @return A list of Entries representing occurrences of the given regular
+	 *         expression.
 	 */
 	public ArrayList<Entry> findAll(URI uri, String regex);
-	
+
 	/**
+	 * This method is used by the IOService to store unique references of
+	 * IReaders. It is used as the key in the IOService's IReader mapping.
 	 * 
-	 * @return
+	 * @return The String name of this IReader.
 	 */
 	public String getReaderType();
-	
+
 }

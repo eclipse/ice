@@ -88,7 +88,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		executables.add("RELAP-7");
 		executables.add("RAVEN");
 		executables.add("MOOSE_TEST");
-		executables.add(yamlSyntaxGenerator);
+		//executables.add(yamlSyntaxGenerator);
 
 		// Add the list to the suite
 		addExecutables(executables);
@@ -401,7 +401,6 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					+ fileExt);
 		}
 
-		System.out.println("THE CLEAN FILE PATH IS " + filePath);
 		// Read in the MOOSE file into an ArrayList of Strings
 		java.nio.file.Path readPath = Paths.get(filePath);
 		fileLines = (ArrayList<String>) Files.readAllLines(readPath,

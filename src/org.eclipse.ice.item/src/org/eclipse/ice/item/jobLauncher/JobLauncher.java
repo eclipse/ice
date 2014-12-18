@@ -1954,9 +1954,9 @@ public class JobLauncher extends Item {
 	protected void setUploadInputFlag(boolean flag) {
 		uploadInput = flag;
 	}
-	
+
 	/**
-	 * This method returns the working directory for the job launch. 
+	 * This method returns the working directory for the job launch.
 	 * 
 	 * @return directory The directory where the job is launched from.
 	 */
@@ -1965,7 +1965,9 @@ public class JobLauncher extends Item {
 	}
 
 	/**
-	 * 
+	 * This method provides a implementation of the IUpdateable interface that
+	 * listens for changes in the JobLauncher Input File and updates its file
+	 * DataComponent based on other referenced files in the input file.
 	 */
 	@Override
 	public void update(IUpdateable component) {
@@ -1993,11 +1995,11 @@ public class JobLauncher extends Item {
 	}
 
 	/**
-	 * This method should be used by the JobLauncher and its subclasses 
-	 * to dynamically update the Input Files DataComponent based on the 
-	 * contents of the main Input File. This implementation uses the 
-	 * subclass-defined IReader to search the input file for all occurrences 
-	 * of the provided regular expression, and return associate File Entries.  
+	 * This method should be used by the JobLauncher and its subclasses to
+	 * dynamically update the Input Files DataComponent based on the contents of
+	 * the main Input File. This implementation uses the subclass-defined
+	 * IReader to search the input file for all occurrences of the provided
+	 * regular expression, and return associate File Entries.
 	 * 
 	 * @param uri
 	 * @param regex
@@ -2025,15 +2027,15 @@ public class JobLauncher extends Item {
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
 					e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
-			
+
 		}
 
 	}
 
 	/**
-	 * This method can be used by subclasses to indicate what 
-	 * the JobLauncher should search for when updating the File Entries 
-	 * representing the file dependencies in the main input file. 
+	 * This method can be used by subclasses to indicate what the JobLauncher
+	 * should search for when updating the File Entries representing the file
+	 * dependencies in the main input file.
 	 * 
 	 * @return
 	 */
