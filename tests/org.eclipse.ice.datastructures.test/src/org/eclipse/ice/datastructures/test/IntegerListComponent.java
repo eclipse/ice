@@ -37,10 +37,10 @@ public class IntegerListComponent extends AbstractListComponent<Integer> {
 	 * 
 	 * @see Persistable#loadFromXML(InputStream inputStream)
 	 */
-	@Override
-	public void loadFromXML(InputStream inputStream) {
-
-	}
+//	@Override
+//	public void loadFromXML(InputStream inputStream) {
+//
+//	}
 
 	/**
 	 * (non-Javadoc)
