@@ -107,4 +107,23 @@ public class IOService {
 		
 		return null;
 	}
+	
+	/**
+	 * Return the total number of stored IReader realizations.
+	 * 
+	 * @return The number of IReaders. 
+	 */
+	public int getNumberOfReaders() {
+		return readerMap.size();
+	}
+	
+	/**
+	 * Return the total number of stored IWriter realizations.
+	 * 
+	 * @return The number of IWriters. 
+	 */
+	public int getNumberOfWriters() {
+		return writerMap.size();
+	}
+	
 }
