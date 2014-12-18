@@ -15,10 +15,10 @@ package org.eclipse.ice.client.widgets.reactoreditor.plant;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.eclipse.ice.client.widgets.jme.AbstractView;
 import org.eclipse.ice.reactor.plant.Pipe;
 
 import com.jme3.material.Material;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
 /**
@@ -50,18 +50,13 @@ public class PipeView extends AbstractPlantView {
 	 * can be changed at a later date.
 	 */
 	protected static final int radialSamples = 10;
-	/**
-	 * The default "centralAngle" used for the tube mesh. This is 2*pi so the
-	 * entire tube is rendered.
-	 */
-	protected static final float centralAngle = FastMath.TWO_PI;
 
 	/**
 	 * The mesh for the {@link AbstractPlantView#geometry}. This is a tube that
 	 * represents a pipe. The inner and outer radius are usually the same, and
 	 * the radial elements should be 10.
 	 */
-	private final CustomTube tube;
+	private final TubeMesh tube;
 
 	/**
 	 * The lock that should be used when reading mesh information.
@@ -87,8 +82,8 @@ public class PipeView extends AbstractPlantView {
 		super(name, material);
 
 		// Create the mesh (a tube) for the geometry.
-		tube = new CustomTube(defaultRadius, defaultRadius, defaultLength,
-				axialSamples, radialSamples, centralAngle);
+		tube = new TubeMesh(defaultLength, defaultRadius, axialSamples,
+				radialSamples);
 		geometry.setMesh(tube);
 
 		// Get the read/write locks from a ReentrantReadWriteLock.
@@ -124,8 +119,10 @@ public class PipeView extends AbstractPlantView {
 		// new mesh dimensions.
 		writeLock.lock();
 		try {
-			tube.updateGeometry(radius, radius, length, axialSamples,
-					radialSamples, FastMath.TWO_PI);
+			tube.setLength(length);
+			tube.setRadius(radius);
+			tube.setAxialSamples(axialSamples);
+			tube.refresh(true);
 		} finally {
 			writeLock.unlock();
 		}
