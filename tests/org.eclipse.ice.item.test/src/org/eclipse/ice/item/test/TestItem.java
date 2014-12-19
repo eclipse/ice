@@ -21,6 +21,8 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.messaging.Message;
 
@@ -357,11 +359,10 @@ public class TestItem extends Item {
 	 * @param toDir
 	 * @param newName
 	 */
-	public void copyMultipleFiles(String src, String dest,
-			String ext) {
-		
+	public void copyMultipleFiles(String src, String dest, String ext) {
+
 		copyFiles(src, dest, ext);
-		
+
 	}
 
 	/**
@@ -376,5 +377,31 @@ public class TestItem extends Item {
 		moveFiles(src, dest, ext);
 	}
 
-	
+	/**
+	 * Return the IO type, this is used for the ItemTester.checkIOService.
+	 */
+	@Override
+	protected String getIOType() {
+		return "fake";
+	}
+
+	/**
+	 * This method is just a utility for ItemTester to check that the IReader
+	 * reference is valid.
+	 * 
+	 * @return
+	 */
+	public IReader getTestReader() {
+		return getReader();
+	}
+
+	/**
+	 * This method is just a utility for ItemTester to check that the IWriter
+	 * reference is valid.
+	 * 
+	 * @return
+	 */
+	public IWriter getTestWriter() {
+		return getWriter();
+	}
 }

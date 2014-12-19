@@ -67,6 +67,11 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
@@ -303,7 +308,8 @@ import java.nio.file.StandardCopyOption;
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Item")
-public class Item implements IComponentVisitor, Persistable, Identifiable {
+public class Item implements IComponentVisitor, Persistable, Identifiable,
+		IUpdateableListener {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -583,6 +589,13 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	protected boolean debuggingEnabled = false;
 
 	/**
+	 * Reference to the IOService that provides IReaders and IWriters for the
+	 * Item.
+	 */
+	@XmlTransient()
+	private static IOService ioService;
+
+	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor. Subclasses of Item should implement their own
@@ -696,6 +709,58 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 		this(null);
 
 		// end-user-code
+	}
+
+	/**
+	 * This method should be used by subclasses to get a reference to the
+	 * desired IReader. To get the desired IReader, subclasses must specify the
+	 * IO type String by implementing the Item.getIOType() method.
+	 * 
+	 * @return
+	 */
+	protected IReader getReader() {
+		if (ioService != null) {
+			return ioService.getReader(getIOType());
+		}
+
+		return null;
+	}
+
+	/**
+	 * This method should be used by subclasses to get a reference to the
+	 * desired IWriter. To get the desired IWriter, subclasses must specify the
+	 * IO type String by implementing the Item.getIOType() method.
+	 * 
+	 * @return
+	 */
+	protected IWriter getWriter() {
+		if (ioService != null) {
+			return ioService.getWriter(getIOType());
+		}
+
+		return null;
+	}
+
+	/**
+	 * Return the IO Type string. This method is to be used by subclasses to
+	 * indicate which IReader and IWriter the Item subclass needs to use.
+	 * 
+	 * @return
+	 */
+	protected String getIOType() {
+		return null;
+	}
+
+	/**
+	 * This method is used by the underlying OSGi framework to set the IOService
+	 * that has been exposed as a Declarative Service.
+	 * 
+	 * @param service
+	 */
+	public void setIOService(IOService service) {
+		if (service != null) {
+			ioService = service;
+		}
 	}
 
 	/**
@@ -2624,5 +2689,10 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	public void visit(EMFComponent component) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void update(IUpdateable component) {
+		// Leave this for subclasses.
 	}
 }

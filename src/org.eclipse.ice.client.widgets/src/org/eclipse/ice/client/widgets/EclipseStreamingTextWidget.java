@@ -30,7 +30,7 @@ import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 /**
  * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
+ * @author bkj
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */

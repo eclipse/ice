@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
 /**
@@ -41,7 +42,7 @@ import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
  */
 
 @XmlRootElement(name = "MOOSELauncher")
-public class MOOSELauncher extends SuiteLauncher {
+public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener {
 
 	/**
 	 * The currently selected MOOSE application. Set by reviewEntries().
@@ -87,7 +88,7 @@ public class MOOSELauncher extends SuiteLauncher {
 		executables.add("RELAP-7");
 		executables.add("RAVEN");
 		executables.add("MOOSE_TEST");
-		executables.add(yamlSyntaxGenerator);
+		//executables.add(yamlSyntaxGenerator);
 
 		// Add the list to the suite
 		addExecutables(executables);
@@ -111,6 +112,18 @@ public class MOOSELauncher extends SuiteLauncher {
 
 		// Enable TBB
 		enableTBB(1, 256, 1);
+
+		// Register this MooseLauncher as a listener of the
+		// Input File Entry. When it is set to something we can react
+		// with a search of related moose files.
+		inputFilesComp.retrieveEntry("Input File").register(this);
+
+		// Go ahead and create the list of files related to the Input File
+		if (!inputFilesComp.retrieveEntry("Input File").getValue().isEmpty()
+				&& inputFilesComp.retrieveEntry("Input File").getValue()
+						.contains(".i") && getReader() != null) {
+			update(inputFilesComp.retrieveEntry("Input File"));
+		}
 
 		return;
 	}
@@ -215,10 +228,10 @@ public class MOOSELauncher extends SuiteLauncher {
 
 	/**
 	 * This operation overrides Item.reviewEntries(). This override is required
-	 * in the event that the BISON executable is chosen, in which case
-	 * additional files (mesh, power history, peaking factors) will need to be
-	 * specified by the client. This method will toggle the additional input
-	 * file menus on and off depending on the selected executable.
+	 * in the event that the YAML/action syntax generator is selected, in which
+	 * case certain JobLaunch flags (related to file uploading) must be turned
+	 * off. Conversely, these flags must be turned back on for any other
+	 * executable.
 	 * 
 	 * @param preparedForm
 	 *            The Form to review.
@@ -250,96 +263,21 @@ public class MOOSELauncher extends SuiteLauncher {
 			// Check the DataComponent is valid
 			if ("Available Executables".equals(execDataComp.getName())) {
 
-				// If the current executable is BISON, remove RAVEN inputs (if
-				// any) and specify additional fuel files will need to be added
-				// to the form.
-				if ("BISON".equals(execName)) {
+				setUploadInputFlag(true);
 
-					// Set the input upload flag to true in case it's been
-					// previously set to false (by the YAML generator)
-					setUploadInputFlag(true);
-
-					// Remove RAVEN input files (does nothing if types don't
-					// exist)
-					removeInputType("Control Logic");
-
-					// Add new input types (does nothing if types already exist)
-					addInputType("Input File", "inputFile",
-							"MOOSE input file that defines the problem.", ".i");
-					addInputType("Mesh", "meshFile", "Fuel pin mesh file.",
-							".e");
-					addInputType("Power History", "powerHistoryFile",
-							"Input file containing average rod input power "
-									+ "over time.", ".csv");
-					addInputType("Peaking Factors", "peakingFactorsFile",
-							"An input file containing the axial power profile "
-									+ "as a function of time.", ".csv");
-					addInputType("Clad Wall Temp", "cladTempFile",
-							"Input file containing cladding wall temperature "
-									+ "data.", ".csv");
-					addInputType("Fast Neutron Flux", "fastFluxFile", "Input "
-							+ "file containing fast neutron flux data.", ".csv");
-
-				} else if ("RAVEN".equals(execName)) {
-
-					// Set the input upload flag to true in case it's been
-					// previously set to false (by the YAML generator)
-					setUploadInputFlag(true);
-
-					// Remove BISON input files (if any)
-					removeInputType("Mesh");
-					removeInputType("Power History");
-					removeInputType("Peaking Factors");
-					removeInputType("Clad Wall Temp");
-					removeInputType("Fast Neutron Flux");
-
-					// Add new input types (if any)
-					addInputType("Input File", "inputFile",
-							"The MOOSE input file that defines the problem.",
-							".i");
-					addInputType("Control Logic", "logicFile",
-							"Python control " + "logic input file.", ".py");
-
-				} else if (yamlSyntaxGenerator.equals(execName)) {
+				if (yamlSyntaxGenerator.equals(execName)) {
 
 					// Disable input file appending (no input file to append)
 					setAppendInputFlag(false);
 
 					// Disable input file uploading
 					setUploadInputFlag(false);
-
-					// Remove any extra input files (if any)
-					removeInputType("Input File");
-					removeInputType("Mesh");
-					removeInputType("Power History");
-					removeInputType("Peaking Factors");
-					removeInputType("Control Logic");
-					removeInputType("Clad Wall Temp");
-					removeInputType("Fast Neutron Flux");
-
-				} else {
-
-					// Set the input upload flag to true in case it's been
-					// previously set to false (by the YAML generator)
-					setUploadInputFlag(true);
-
-					// Remove any extra input files (if any)
-					removeInputType("Mesh");
-					removeInputType("Power History");
-					removeInputType("Peaking Factors");
-					removeInputType("Control Logic");
-					removeInputType("Clad Wall Temp");
-					removeInputType("Fast Neutron Flux");
-
-					// Add input file (if necessary)
-					addInputType("Input File", "inputFile",
-							"The MOOSE input file that defines the problem.",
-							".i");
 				}
 
-			}
+				retStatus = FormStatus.ReadyToProcess;
 
-			else {
+			} else {
+
 				retStatus = FormStatus.InfoError;
 			}
 		}
@@ -357,7 +295,6 @@ public class MOOSELauncher extends SuiteLauncher {
 	 */
 	@Override
 	protected void updateResourceComponent() {
-
 		// Call the super
 		super.updateResourceComponent();
 
@@ -412,8 +349,8 @@ public class MOOSELauncher extends SuiteLauncher {
 
 			// Refresh the project space
 			refreshProjectSpace();
-
 		}
+
 	}
 
 	/**
@@ -464,7 +401,6 @@ public class MOOSELauncher extends SuiteLauncher {
 					+ fileExt);
 		}
 
-		System.out.println("THE CLEAN FILE PATH IS " + filePath);
 		// Read in the MOOSE file into an ArrayList of Strings
 		java.nio.file.Path readPath = Paths.get(filePath);
 		fileLines = (ArrayList<String>) Files.readAllLines(readPath,
@@ -530,4 +466,21 @@ public class MOOSELauncher extends SuiteLauncher {
 		return;
 	}
 
+	/**
+	 * 
+	 */
+	@Override
+	protected String getFileDependenciesSearchString() {
+		return "file"; // FIXME THIS SHOULD BE REPLACED WITH REG EXP
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.item.Item#getIOType()
+	 */
+	@Override
+	public String getIOType() {
+		return "moose";
+	}
 }

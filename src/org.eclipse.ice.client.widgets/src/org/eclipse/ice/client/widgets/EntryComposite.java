@@ -595,21 +595,24 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			createBrowseButton();
 
 			// FIXME We should use either this GridLayout or the RowLayout below
-//			// Instead of the default FillLayout, use a 3-column GridLayout.
-//			GridLayout gridLayout = new GridLayout(3, false);
-//			
-//			layout = gridLayout;
-//			// Since we use a GridLayout, set the GridData on the new widgets.
-//			label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-//			
-//			GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-//			gridData.minimumWidth = 50;
-//			dropDown.setLayoutData(gridData);
-//			
-//			for (Button button : buttons) {
-//				button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-//						false));
-//			}
+			// // Instead of the default FillLayout, use a 3-column GridLayout.
+			// GridLayout gridLayout = new GridLayout(3, false);
+			//
+			// layout = gridLayout;
+			// // Since we use a GridLayout, set the GridData on the new
+			// widgets.
+			// label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+			// false));
+			//
+			// GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true,
+			// false);
+			// gridData.minimumWidth = 50;
+			// dropDown.setLayoutData(gridData);
+			//
+			// for (Button button : buttons) {
+			// button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+			// false));
+			// }
 
 			// The dropdown Combo should get all excess space, but we must also
 			// wrap the widgets when the EntryComposite is too small. Thus, we
@@ -726,12 +729,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	public void refresh() {
 		// begin-user-code
 
-		// Print an error if this Entry has been prematurely disposed.
-		if (isDisposed()) {
-			System.out.println("EntryComposite Message: "
-					+ "This composite has been prematurely disposed!");
-		}
-
 		// Dispose of the old widgets
 		if (dropDown != null) {
 			dropDown.dispose();
@@ -752,6 +749,14 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		}
 		// Remove all of the previous buttons.
 		buttons.clear();
+
+		// Print an error if this Entry has been prematurely disposed.
+		if (isDisposed()) {
+			System.out.println("EntryComposite Message: "
+					+ "This composite has been prematurely disposed!");
+			return;
+		}
+		
 		// Remove the resize listener.
 		if (resizeListener != null) {
 			removeControlListener(resizeListener);
@@ -763,7 +768,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 		// Re-draw the Composite
 		layout();
-
+		
 		return;
 		// end-user-code
 	}
