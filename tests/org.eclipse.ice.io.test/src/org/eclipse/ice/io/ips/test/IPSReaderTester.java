@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
@@ -29,6 +30,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -51,7 +54,14 @@ public class IPSReaderTester {
 		String separator = System.getProperty("file.separator");
 		String filePath = System.getProperty("user.home") + separator + "ICETests" 
 				+ separator + "caebatTesterWorkspace" + separator 
-				+ "Caebat_Model" + separator + "example_ini.conf";		
+				+ "Caebat_Model" + separator + "example_ini.conf";
+		URI inputURI = null;
+		try {
+			inputURI = new URI("file:" + filePath);
+		} catch (URISyntaxException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		BufferedReader testReader = null;
 		try {
 			testReader = new BufferedReader(new FileReader(new File(filePath)));
@@ -65,22 +75,14 @@ public class IPSReaderTester {
 		assertNotNull(reader);
 		
 		// Try to read in invalid INI file
-		BufferedReader fakeReader = null;
-		ArrayList<Component> components = null;
-		try {
-			components = reader.loadINIFile(fakeReader);
-		} catch (FileNotFoundException e) {
-			fail("Failed to find fake IPS input file");
-			e.printStackTrace();
-		} catch (IOException e) {
-			fail("Failed to read from fake IPS input file");
-			e.printStackTrace();
-		}
-		assertTrue(components == null);
+		URI fakeURI = null;
+		Form form = null;
+		form = reader.read(fakeURI);
+		assertTrue(form == null);
 		
 		// Load the INI file and parse the contents into Components
 		try {
-			components = reader.loadINIFile(testReader);
+			form = reader.read(inputURI);
 			testReader.close();
 		} catch (FileNotFoundException e) {
 			fail("Failed to find IPS input file: " + filePath);
@@ -91,6 +93,7 @@ public class IPSReaderTester {
 		}
 		
 		// Make sure we found some components
+		ArrayList<Component> components = form.getComponents();
 		assertEquals(4,components.size());	
 		DataComponent timeLoopData = (DataComponent) components.get(0);
 		TableComponent globalConfig = (TableComponent) components.get(1);

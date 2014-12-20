@@ -23,15 +23,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.net.InetAddress;
+import java.net.URI;
 import java.net.UnknownHostException;
 
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
 
-public class IPSWriter {
+public class IPSWriter implements IWriter{
 
 	/**
 	 * Nullary constructor
@@ -47,26 +51,47 @@ public class IPSWriter {
 	 *           An ArrayList of DataComponents holding the data for the INI file.
 	 * @param outputFile
 	 *           The file to write to.
-	 * @throws FileNotFoundException
-	 *           Thrown when the output file could not be found.
-	 * @throws IOException
-	 *           Thrown when writing to OutputStream fails
 	 */
-	public void writeINIFile(ArrayList<Component> components, File outputFile)
-			throws FileNotFoundException, IOException  {
-		if (components != null && components.size() > 3 && outputFile.isFile()) {
-			OutputStream stream = new FileOutputStream(outputFile);
-			int numComponents = components.size();
-			
-			writeICEHeader(stream);
-			writeGlobalConfig((TableComponent) components.get(1), stream);
-			writePortsTable((TableComponent) components.get(2), stream);
-			MasterDetailsComponent masterDetails = (MasterDetailsComponent) components.get(3);
-			for ( int i = 0; i < masterDetails.numberOfMasters(); i++) {
-				writeComponent((DataComponent) masterDetails.getDetailsAtIndex(i), stream);
+	public void write(Form form, URI outputURI)  {
+		// Make sure the input isn't null
+		if (form == null || outputURI == null) {
+			return;
+		}
+		
+		ArrayList<Component> components = form.getComponents();
+		File outputFile = new File(outputURI.getPath());
+		if (!outputFile.exists()) {
+			try {
+				outputFile.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			writeTimeLoopData((DataComponent) components.get(0), stream);
-			stream.close();
+		}
+		if (components != null && components.size() > 3 && outputFile.isFile()) {
+			try {
+				OutputStream stream = new FileOutputStream(outputFile);
+				int numComponents = components.size();
+				
+				writeICEHeader(stream);
+				writeGlobalConfig((TableComponent) components.get(1), stream);
+				writePortsTable((TableComponent) components.get(2), stream);
+				MasterDetailsComponent masterDetails = (MasterDetailsComponent) components.get(3);
+				for ( int i = 0; i < masterDetails.numberOfMasters(); i++) {
+					writeComponent((DataComponent) masterDetails.getDetailsAtIndex(i), stream);
+				}
+				writeTimeLoopData((DataComponent) components.get(0), stream);
+				stream.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -260,6 +285,16 @@ public class IPSWriter {
 		byteArray = currLine.getBytes();
 		stream.write(byteArray);
 
+	}
+
+	@Override
+	public void replace(URI fileURI, String regex, String value) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public String getWriterType() {
+		return "IPSWriter";
 	}
 
 }

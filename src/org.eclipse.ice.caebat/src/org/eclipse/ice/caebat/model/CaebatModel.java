@@ -33,6 +33,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -191,8 +192,13 @@ public class CaebatModel extends Item {
 					+ ".conf";
 			IFile outputFile = project.getFile(filename);
 			// Get the file path
-			String outputFilePath = outputFile.getLocation().toString();
-			File iniFile = new File(outputFilePath);
+			URI outputFilePath = null;
+			try {
+				outputFilePath = new URI(outputFile.getLocation().toOSString());
+			} catch (URISyntaxException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 
 			// Get the data from the form
 			ArrayList<Component> components = form.getComponents();
@@ -207,15 +213,9 @@ public class CaebatModel extends Item {
 				// create a new IPSWriter with the output file
 				IPSWriter writer = new IPSWriter();
 				try {
-					iniFile.createNewFile();
-					writer.writeINIFile(components, iniFile);
+					writer.write(form, outputFilePath);
 					// Refresh the project space
 					project.refreshLocal(IResource.DEPTH_ONE, null);
-				} catch (IOException e1) {
-					// Complain
-					System.err.println("CaebatModel Message: "
-							+ "Failed to write the file.");
-					e1.printStackTrace();
 				} catch (CoreException e) {
 					// Complain
 					System.err.println("CaebatModel Message: "
@@ -257,26 +257,22 @@ public class CaebatModel extends Item {
 
 		// Give a default value if nothing has been specified
 		BufferedReader in = null;
+		URI uri = null;
 		if (name == null) {
-			name = "platform:/plugin/org.eclipse.ice.caebat/data/case_6.conf";
-			URL url;
-			InputStream inputStream;
 			try {
-			    url = new URL(name);
-			    inputStream = url.openConnection().getInputStream();
-			    in = new BufferedReader(new InputStreamReader(inputStream));
-			} catch (IOException e) {
-			    e.printStackTrace();
+				uri = new URI("platform:/plugin/org.eclipse.ice.caebat/data/case_6.conf");
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		// Load the imported file
 		} else {
 			String separator = System.getProperty("file.separator");
 			String userDir = System.getProperty("user.home") + separator
 					+ "ICEFiles" + separator + "default";
-			File f = new File(userDir + separator + name);
 			try {
-				in = new BufferedReader(new FileReader(f));
-			} catch (FileNotFoundException e) {
+				uri = new URI("file:" + userDir + separator + name);
+			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -284,44 +280,37 @@ public class CaebatModel extends Item {
 		
 		// Load the components from the file
 		IPSReader reader = new IPSReader();
-		ArrayList<Component> components;
-		try {
-			components = reader.loadINIFile(in);
-			
-			ArrayList<Component> existingComponents = form.getComponents();
-			
-			// Update the components by copying the new ones
-			if (components != null && components.size() == 4) {
+		Form newForm = null;
+		newForm = reader.read(uri);
+		
+		ArrayList<Component> components = newForm.getComponents();
+		ArrayList<Component> existingComponents = form.getComponents();
+		
+		// Update the components by copying the new ones
+		if (components != null && components.size() == 4) {
 
-				// Replace the old components
-				if (existingComponents.size() == 4) {
-					((DataComponent) existingComponents.get(0))
-							.copy((DataComponent) components.get(0));
-					((TableComponent) existingComponents.get(1))
-							.copy((TableComponent) components.get(1));
-					((TableComponent) existingComponents.get(2))
-							.copy((TableComponent) components.get(2));
-					((MasterDetailsComponent) existingComponents.get(3))
-							.copy((MasterDetailsComponent) components.get(3));
-				} else {
-					// Add the new components
-					form.addComponent((DataComponent) components.get(0));
-					form.addComponent((TableComponent) components.get(1));
-					form.addComponent((TableComponent) components.get(2));
-					form.addComponent((MasterDetailsComponent) components.get(3));	
-				}
-
-
+			// Replace the old components
+			if (existingComponents.size() == 4) {
+				((DataComponent) existingComponents.get(0))
+						.copy((DataComponent) components.get(0));
+				((TableComponent) existingComponents.get(1))
+						.copy((TableComponent) components.get(1));
+				((TableComponent) existingComponents.get(2))
+						.copy((TableComponent) components.get(2));
+				((MasterDetailsComponent) existingComponents.get(3))
+						.copy((MasterDetailsComponent) components.get(3));
 			} else {
-				System.out.println("Caebat Model Message: Could not read in "
-						+ "a valid case for processing.");
-			}			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+				// Add the new components
+				form.addComponent((DataComponent) components.get(0));
+				form.addComponent((TableComponent) components.get(1));
+				form.addComponent((TableComponent) components.get(2));
+				form.addComponent((MasterDetailsComponent) components.get(3));	
+			}
+
+
+		} else {
+			System.out.println("Caebat Model Message: Could not read in "
+					+ "a valid case for processing.");
 		}
 		
 	}

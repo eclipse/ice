@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
@@ -28,6 +29,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -42,9 +47,11 @@ public class IPSWriterTester {
 
 	/**
 	 * Tests the IPSWriter
+	 * @throws IOException 
+	 * @throws MalformedURLException 
 	 */
 	@Test
-	public void checkIPSWriter() {
+	public void checkIPSWriter() throws MalformedURLException, IOException {
 
 		// Local declarations
 		IPSWriter writer = null;
@@ -58,7 +65,23 @@ public class IPSWriterTester {
 				+ "Caebat_Model";
 		String outputFilePath = userDir + separator + "ips_WriterTest.conf";	
 		String exampleFilePath = userDir + separator + "example_ini.conf";
-		File outputFile = new File(outputFilePath);
+		File outFile = new File(outputFilePath);
+		
+		if (!outFile.exists()) {
+			outFile.createNewFile();
+		}
+		
+		
+		URI outputURI = null;
+		URI inputURI = null;
+		try {
+			outputURI = new URI("file:" + outputFilePath);
+			inputURI = new URI("file:" + exampleFilePath);
+		} catch (URISyntaxException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
 		BufferedReader exampleReader = null;
 		try {
 			exampleReader = new BufferedReader(new FileReader(new File(
@@ -68,45 +91,11 @@ public class IPSWriterTester {
 			e1.printStackTrace();
 		}
 
-		// If the tester output file doesn't exist, create it
-		if (!outputFile.exists()) {
-			try {
-				outputFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-				fail("Failed to create output file: ips_WriterTester.conf");
-			}
-		}
-
-		// Otherwise, if it already exists, clear its contents
-		else {
-			FileOutputStream emptyFileStream = null;
-			try {
-				emptyFileStream = new FileOutputStream(outputFile);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				fail("Failed to set FileOutputStream to output file: ips_WriterTester.conf");
-			}
-			try {
-				emptyFileStream.write("".getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-				fail("Failed to clear contents of output file: ips_WriterTester.conf");
-			}
-		}
-
 		// Create a buffered reader to access the contents of the output file
-		try {
-			fileReader = new FileReader(outputFile);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-			fail("Failed to create FileReader for output file: ips_WriterTester.conf");
-		}
-		buffer = new BufferedReader(fileReader);
+		buffer = new BufferedReader(new InputStreamReader(outputURI.toURL().openStream()));
 
 		// Test that the output file is valid but empty
-		assertNotNull(outputFile);
-		assertTrue(outputFile.isFile());
+		assertNotNull(buffer);
 		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
@@ -118,25 +107,12 @@ public class IPSWriterTester {
 		writer = new IPSWriter();
 		assertNotNull(writer);
 
-		// Check that the file is still empty
-		try {
-			assertTrue(buffer.read() == -1);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("Failed to read BufferedReader");
-		}
-
 		/* --- Testing WRITING --- */
 		// Try to write with invalid parameters
-		ArrayList<Component> components = null;
-		File fakeFile = null;
+		Form fakeForm = null;
+		URI fakeFile = null;
 
-		try {
-			writer.writeINIFile(components, fakeFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("Failed to write with invalid parameters");
-		}
+		writer.write(fakeForm, fakeFile);
 
 		// Check that the file is still empty
 		try {
@@ -147,34 +123,26 @@ public class IPSWriterTester {
 		}
 
 		// Generate valid Components to test with
+		Form inputForm = null;
 		reader = new IPSReader();
-		try {
-			components = reader.loadINIFile(exampleReader);
-		} catch (FileNotFoundException e2) {
-			e2.printStackTrace();
-			fail("Failed to find example_ini.conf file for reading");
-		} catch (IOException e2) {
-			fail("Failed to read from example_ini.conf file");
-			e2.printStackTrace();
-		}
-		assertNotNull(components);
+		inputForm = reader.read(inputURI);
+		assertNotNull(inputForm);
 
 		// Try to write with valid parameters
-		try {
-			writer.writeINIFile(components, outputFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("Failed to write ips_WriterTest.conf with valid parameters");
-		}
+		writer.write(inputForm, outputURI);
 
-		// Check that the file is not empty and has the correct number of lines
+		// Load up a buffered reader so we can check what came out
 		try {
-			fileReader = new FileReader(outputFile);
-		} catch (FileNotFoundException e1) {
+			buffer = new BufferedReader(new InputStreamReader(outputURI.toURL().openStream()));
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			fail("Failed to create FileReader for output file: ips_WriterTester.conf");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		buffer = new BufferedReader(fileReader);
+		
+		// Check that the file is not empty and has the correct number of lines
 		int numLines = 0;
 		try {
 			while (buffer.readLine() != null) {
@@ -188,29 +156,14 @@ public class IPSWriterTester {
 		// TODO: FIX THE ASSERT TO MATCH
 		assertEquals(113, numLines);
 
-		BufferedReader outputReader = null;
-		try {
-			outputReader = new BufferedReader(new FileReader(new File(
-					outputFilePath)));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
+	
 		// Now try reading from the test file and creating another set of
 		// Components to compare to the ones read from the example file
-		ArrayList<Component> testComponents = new ArrayList<Component>();
-		try {
-			testComponents = reader.loadINIFile(outputReader);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			fail("Failed to find ips_WriterTest.conf file for reading.");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("Failed to read from ips_WriterTest.conf file.");
-		}
+		Form outputForm = reader.read(outputURI);
 
 		// Compare the two sets
+		ArrayList<Component> components = outputForm.getComponents();
+		ArrayList<Component> testComponents = inputForm.getComponents();
 		assertEquals(components.size(), testComponents.size());
 		for (int i = 0; i < components.size(); i++) {
 			assertTrue(components.get(i).getName()
@@ -226,7 +179,11 @@ public class IPSWriterTester {
 			e.printStackTrace();
 			fail("Failed to close BufferedReader");
 		}
-		outputFile.delete();
+		
+		// Remove the output file
+		if (outFile.exists()) {
+			outFile.delete();
+		}
 
 		return;
 	}

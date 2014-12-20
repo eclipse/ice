@@ -17,12 +17,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
 
+
+
+
+import org.eclipse.ice.datastructures.form.Form;
 //import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.datastructures.form.ListComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
@@ -31,6 +36,7 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.io.serializable.IReader;
 
 /**
  * IPSReader class is responsible for reading the contents of an IPS INI (.conf)
@@ -39,7 +45,7 @@ import org.eclipse.ice.datastructures.updateableComposite.Component;
  * @author bzq
  *
  */
-public class IPSReader { // implements IReader {
+public class IPSReader implements IReader {
 
 	/**
 	 * Keeps track of the current ID for entries. Since we don't know how many
@@ -72,11 +78,11 @@ public class IPSReader { // implements IReader {
 	 *             Thrown when if the readFileLines(...) method fails to read in
 	 *             the file.
 	 */
-	public ArrayList<Component> loadINIFile(BufferedReader reader)
+	public ArrayList<Component> loadINIFile(URI iniURI)
 			throws FileNotFoundException, IOException {
 
 		// Make sure the file is valid, otherwise just stop here
-		if (reader == null) {
+		if (iniURI == null) {
 			return null;
 		}
 
@@ -84,6 +90,7 @@ public class IPSReader { // implements IReader {
 		ArrayList<Component> components = new ArrayList<Component>();
 
 		// Read in the ini file and create the iterator
+		BufferedReader reader = new BufferedReader(new InputStreamReader(iniURI.toURL().openStream()));
 		ArrayList<String> lines = readFileLines(reader);
 		Iterator<String> iniIterator = lines.iterator();
 
@@ -566,14 +573,16 @@ public class IPSReader { // implements IReader {
 		return entry;
 	}
 	
-/*  METHODS FOR IMPLEMENTING IREADER INTERFACE
- * 
 	@Override
-	public ICEObject read(URI uri) {
+	public Form read(URI uri) {
+		if (uri == null) {
+			return null;
+		}
+		Form form = new Form();
 		File file = new File(uri.toString());
-		ListComposite ipsComposite = null;
+		ArrayList<Component> ipsComponents = null;
 		try {
-			ipsComposite = new ListComposite(loadINIFile(file));
+			ipsComponents = loadINIFile(uri);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -581,7 +590,16 @@ public class IPSReader { // implements IReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return ipsComposite;
+		
+		// Add the components to the form
+		if (ipsComponents.size() == 4) {
+			form.addComponent((DataComponent) ipsComponents.get(0));
+			form.addComponent((TableComponent) ipsComponents.get(1));
+			form.addComponent((TableComponent) ipsComponents.get(2));
+			form.addComponent((MasterDetailsComponent) ipsComponents.get(3));
+		}
+		
+		return form;
 	}
 
 	@Override
@@ -589,7 +607,7 @@ public class IPSReader { // implements IReader {
 		// TODO Auto-generated method stub
 		return null;
 	}
-*/
+
 	/**
 	 * Returns a string saying this is an IPSReader
 	 * 
