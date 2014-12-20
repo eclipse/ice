@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -34,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -45,10 +47,13 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.action.JobLaunchAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
+import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 
 /**
  * <!-- begin-UML-doc -->
@@ -855,6 +860,10 @@ public class JobLauncher extends Item {
 		// Add the host table to the form
 		form.addComponent(hostsTable);
 
+		// Every JobLauncher should observe the Input File Entry
+		((DataComponent) form.getComponent(JobLauncherForm.filesId))
+				.retrieveEntry("Input File").register(this);
+
 		return;
 		// end-user-code
 	}
@@ -1043,6 +1052,7 @@ public class JobLauncher extends Item {
 						// Sleep for a bit
 						Thread.currentThread();
 						Thread.sleep(100);
+						status = action.getStatus();
 					}
 					// Close stdout
 					stdoutBufferredReader.close();
@@ -1752,9 +1762,9 @@ public class JobLauncher extends Item {
 	 *            null, then it will ignored.
 	 *            </p>
 	 * @param isFileEntry
-	 * 			  <p>
-	 * 			  Flags whether or not the Entry created should be handled as
-	 *            a file Entry. Flagging it as a file Entry will cause it to
+	 *            <p>
+	 *            Flags whether or not the Entry created should be handled as a
+	 *            file Entry. Flagging it as a file Entry will cause it to
 	 *            render on the Form with a browse button.
 	 *            </p>
 	 * @generated 
@@ -1787,10 +1797,10 @@ public class JobLauncher extends Item {
 		return;
 		// end-user-code
 	}
-	
+
 	/**
-	 * This method is the same as {@link #addInputType}, except that is does 
-	 * not take a boolean flag in the parameters. This method calls the other
+	 * This method is the same as {@link #addInputType}, except that is does not
+	 * take a boolean flag in the parameters. This method calls the other
 	 * {@link #addInputType} with the boolean isFileEntry flag as false.
 	 * 
 	 * @param name
@@ -1821,34 +1831,35 @@ public class JobLauncher extends Item {
 	 *            null, then it will ignored.
 	 *            </p>
 	 */
-//	public void addInputType(String name, String varName, String description,
-//			String fileExtension) {
-//		
-//		// Call the other method with the boolean flag as false
-//		addInputType(name, varName, description, fileExtension, false);
-//		
-//		return;
-//		
-//	}
-	
+	// public void addInputType(String name, String varName, String description,
+	// String fileExtension) {
+	//
+	// // Call the other method with the boolean flag as false
+	// addInputType(name, varName, description, fileExtension, false);
+	//
+	// return;
+	//
+	// }
+
 	/**
-	 * This method removes an input file type from the Job Launcher. If the
-	 * file type is not found from the list of already existing types, it will
-	 * do nothing.
+	 * This method removes an input file type from the Job Launcher. If the file
+	 * type is not found from the list of already existing types, it will do
+	 * nothing.
 	 * 
-	 * @param name	The name of the input file type to remove.
+	 * @param name
+	 *            The name of the input file type to remove.
 	 */
 	public void removeInputType(String name) {
-		
+
 		if (name != null && inputFileNameMap.containsKey(name)) {
-			
+
 			// Remove it form the name map
 			inputFileNameMap.remove(name);
-			
+
 			// Remove the entry from the DataComponent
 			((JobLauncherForm) form).removeInputFiles(name);
 		}
-		
+
 		return;
 	}
 
@@ -1902,17 +1913,16 @@ public class JobLauncher extends Item {
 
 		// Get the DataComponent with the input files on it
 		DataComponent dataComp = (DataComponent) form.getComponent(1);
-		
+
 		// Refresh the files for each type in the set
 		for (FileType type : inputFileNameMap.values()) {
 			name = type.name;
 			desc = type.desc;
-		
+
 			// Re-set the input files
 			ArrayList<String> files = getProjectFileNames(type.typeExt);
 			((JobLauncherForm) form).setInputFiles(name, desc, files);
-			
-			
+
 		}
 
 		// Refresh the hostnames
@@ -1945,4 +1955,91 @@ public class JobLauncher extends Item {
 		uploadInput = flag;
 	}
 
+	/**
+	 * This method returns the working directory for the job launch.
+	 * 
+	 * @return directory The directory where the job is launched from.
+	 */
+	protected String getWorkingDirectory() {
+		return actionDataMap.get("workingDir");
+	}
+
+	/**
+	 * This method provides a implementation of the IUpdateable interface that
+	 * listens for changes in the JobLauncher Input File and updates its file
+	 * DataComponent based on other referenced files in the input file.
+	 */
+	@Override
+	public void update(IUpdateable component) {
+
+		if (component instanceof Entry) {
+
+			// If this is an Entry, cast it
+			Entry entry = (Entry) component;
+			if (entry.getName().equals("Input File")) {
+				// The input file has changed, so let's make sure
+				// we are showing the correct related files
+
+				// Get the regex from the subclass
+				String regex = getFileDependenciesSearchString();
+				URI fileURI = project.getFile(entry.getValue())
+						.getLocationURI();
+
+				// Make sure the data is valid then update the file component
+				if (regex != null && fileURI != null) {
+					updateFileDependencies(fileURI, regex);
+				}
+			}
+		}
+		return;
+	}
+
+	/**
+	 * This method should be used by the JobLauncher and its subclasses to
+	 * dynamically update the Input Files DataComponent based on the contents of
+	 * the main Input File. This implementation uses the subclass-defined
+	 * IReader to search the input file for all occurrences of the provided
+	 * regular expression, and return associate File Entries.
+	 * 
+	 * @param uri
+	 * @param regex
+	 */
+	protected void updateFileDependencies(URI uri, String regex) {
+
+		// Get the old file component and clear the old Entries
+		ArrayList<String> entryNames = new ArrayList<String>();
+		DataComponent fileComp = (DataComponent) form
+				.getComponent(JobLauncherForm.filesId);
+		for (Entry e : fileComp.retrieveAllEntries()) {
+			entryNames.add(e.getName());
+		}
+
+		for (String s : entryNames) {
+			if (!"Input File".equals(s)) {
+				fileComp.deleteEntry(s);
+			}
+		}
+
+		// Use the IReader to find all occurrances of the given Regular
+		// Expression
+		// For each of those add a new Input file Entry
+		for (Entry e : getReader().findAll(uri, regex)) {
+			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
+					e.getDescription(),
+					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
+
+		}
+
+	}
+
+	/**
+	 * This method can be used by subclasses to indicate what the JobLauncher
+	 * should search for when updating the File Entries representing the file
+	 * dependencies in the main input file.
+	 * 
+	 * @return
+	 */
+	protected String getFileDependenciesSearchString() {
+		return null;
+	}
 }
