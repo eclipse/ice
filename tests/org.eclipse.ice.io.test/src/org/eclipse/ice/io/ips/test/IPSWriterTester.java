@@ -32,7 +32,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-
 /**
  * Tests the methods of the IPSWriter class.
  * 
@@ -46,22 +45,29 @@ public class IPSWriterTester {
 	 */
 	@Test
 	public void checkIPSWriter() {
-		
+
 		// Local declarations
 		IPSWriter writer = null;
 		IPSReader reader = null;
-		
+
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "caebatTesterWorkspace" 
-				+ separator + "Caebat_Model";
-		String outputFilePath = userDir + separator + "ips_WriterTest.conf";
+				+ "ICETests" + separator + "caebatTesterWorkspace" + separator
+				+ "Caebat_Model";
+		String outputFilePath = userDir + separator + "ips_WriterTest.conf";	
 		String exampleFilePath = userDir + separator + "example_ini.conf";
 		File outputFile = new File(outputFilePath);
-		File exampleFile = new File(exampleFilePath);
-		
+		BufferedReader exampleReader = null;
+		try {
+			exampleReader = new BufferedReader(new FileReader(new File(
+					exampleFilePath)));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		// If the tester output file doesn't exist, create it
 		if (!outputFile.exists()) {
 			try {
@@ -71,7 +77,7 @@ public class IPSWriterTester {
 				fail("Failed to create output file: ips_WriterTester.conf");
 			}
 		}
-		
+
 		// Otherwise, if it already exists, clear its contents
 		else {
 			FileOutputStream emptyFileStream = null;
@@ -87,14 +93,8 @@ public class IPSWriterTester {
 				e.printStackTrace();
 				fail("Failed to clear contents of output file: ips_WriterTester.conf");
 			}
-			try {
-				emptyFileStream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				fail("Failed to close FileOutputStream");
-			}
 		}
-		
+
 		// Create a buffered reader to access the contents of the output file
 		try {
 			fileReader = new FileReader(outputFile);
@@ -103,29 +103,29 @@ public class IPSWriterTester {
 			fail("Failed to create FileReader for output file: ips_WriterTester.conf");
 		}
 		buffer = new BufferedReader(fileReader);
-		
+
 		// Test that the output file is valid but empty
 		assertNotNull(outputFile);
 		assertTrue(outputFile.isFile());
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing CONSTRUCTION --- */
 		writer = new IPSWriter();
 		assertNotNull(writer);
-		
+
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing WRITING --- */
 		// Try to write with invalid parameters
 		ArrayList<Component> components = null;
@@ -139,17 +139,17 @@ public class IPSWriterTester {
 		}
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		// Generate valid Components to test with
 		reader = new IPSReader();
 		try {
-			components = reader.loadINIFile(exampleFile);
+			components = reader.loadINIFile(exampleReader);
 		} catch (FileNotFoundException e2) {
 			e2.printStackTrace();
 			fail("Failed to find example_ini.conf file for reading");
@@ -158,7 +158,7 @@ public class IPSWriterTester {
 			e2.printStackTrace();
 		}
 		assertNotNull(components);
-		
+
 		// Try to write with valid parameters
 		try {
 			writer.writeINIFile(components, outputFile);
@@ -166,7 +166,7 @@ public class IPSWriterTester {
 			e.printStackTrace();
 			fail("Failed to write ips_WriterTest.conf with valid parameters");
 		}
-		
+
 		// Check that the file is not empty and has the correct number of lines
 		try {
 			fileReader = new FileReader(outputFile);
@@ -184,23 +184,24 @@ public class IPSWriterTester {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
-		//TODO: FIX THE ASSERT TO MATCH
+
+		// TODO: FIX THE ASSERT TO MATCH
 		assertEquals(113, numLines);
-		
-		// Close the buffered reader
+
+		BufferedReader outputReader = null;
 		try {
-			buffer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("Failed to close BufferedReader");
+			outputReader = new BufferedReader(new FileReader(new File(
+					outputFilePath)));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
-		// Now try reading from the test file and creating another set of 
+		// Now try reading from the test file and creating another set of
 		// Components to compare to the ones read from the example file
 		ArrayList<Component> testComponents = new ArrayList<Component>();
 		try {
-			testComponents = reader.loadINIFile(outputFile);
+			testComponents = reader.loadINIFile(outputReader);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			fail("Failed to find ips_WriterTest.conf file for reading.");
@@ -208,16 +209,25 @@ public class IPSWriterTester {
 			e.printStackTrace();
 			fail("Failed to read from ips_WriterTest.conf file.");
 		}
-		
+
 		// Compare the two sets
 		assertEquals(components.size(), testComponents.size());
-		for ( int i = 0; i < components.size(); i++ ) {
-			assertTrue(components.get(i).getName().equals(testComponents.get(i).getName()));
+		for (int i = 0; i < components.size(); i++) {
+			assertTrue(components.get(i).getName()
+					.equals(testComponents.get(i).getName()));
 		}
-		
+
 		// Delete the test output file
+		// Close the buffered reader
+		try {
+			buffer.close();
+			exampleReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Failed to close BufferedReader");
+		}
 		outputFile.delete();
-		
+
 		return;
 	}
 }

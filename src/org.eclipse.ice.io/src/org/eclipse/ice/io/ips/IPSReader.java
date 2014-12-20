@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.io.ips;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,6 +21,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+
 
 //import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.datastructures.form.ListComposite;
@@ -70,11 +72,11 @@ public class IPSReader { // implements IReader {
 	 *             Thrown when if the readFileLines(...) method fails to read in
 	 *             the file.
 	 */
-	public ArrayList<Component> loadINIFile(File iniFile)
+	public ArrayList<Component> loadINIFile(BufferedReader reader)
 			throws FileNotFoundException, IOException {
 
 		// Make sure the file is valid, otherwise just stop here
-		if (iniFile == null || !iniFile.isFile()) {
+		if (reader == null) {
 			return null;
 		}
 
@@ -82,7 +84,7 @@ public class IPSReader { // implements IReader {
 		ArrayList<Component> components = new ArrayList<Component>();
 
 		// Read in the ini file and create the iterator
-		ArrayList<String> lines = readFileLines(iniFile);
+		ArrayList<String> lines = readFileLines(reader);
 		Iterator<String> iniIterator = lines.iterator();
 
 		// Read in the global configuration and ports data
@@ -521,26 +523,22 @@ public class IPSReader { // implements IReader {
 	 * @throws IOException
 	 *             Thrown when the INI file cannot be read or closed.
 	 */
-	private ArrayList<String> readFileLines(File iniFile)
+	private ArrayList<String> readFileLines(BufferedReader reader)
 			throws FileNotFoundException, IOException {
 		// Convert to FileInputStream
-		FileInputStream fileStream = null;
-		fileStream = new FileInputStream(iniFile);
 
 		// Read the FileInputStream and append to a StringBuffer
 		StringBuffer buffer = new StringBuffer();
 		int fileByte;
-		while ((fileByte = fileStream.read()) != -1) {
+		while ((fileByte = reader.read()) != -1) {
 			buffer.append((char) fileByte);
 		}
-
-		// Close the stream
-		fileStream.close();
-
+		
 		// Break up the StringBuffer at each newline character
 		String[] bufferSplit = (buffer.toString()).split("\n");
 		ArrayList<String> fileLines = new ArrayList<String>(
 				Arrays.asList(bufferSplit));
+		fileLines.add("EOF");
 
 		// Return the ArrayList
 		return fileLines;

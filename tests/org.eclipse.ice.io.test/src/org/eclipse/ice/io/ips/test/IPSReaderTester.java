@@ -24,8 +24,10 @@ import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.io.ips.IPSReader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -50,17 +52,23 @@ public class IPSReaderTester {
 		String filePath = System.getProperty("user.home") + separator + "ICETests" 
 				+ separator + "caebatTesterWorkspace" + separator 
 				+ "Caebat_Model" + separator + "example_ini.conf";		
-		File testFile = new File(filePath);
+		BufferedReader testReader = null;
+		try {
+			testReader = new BufferedReader(new FileReader(new File(filePath)));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		//Create an IPSReader to test
 		IPSReader reader = new IPSReader();
 		assertNotNull(reader);
 		
 		// Try to read in invalid INI file
-		File fakeFile = null;
+		BufferedReader fakeReader = null;
 		ArrayList<Component> components = null;
 		try {
-			components = reader.loadINIFile(fakeFile);
+			components = reader.loadINIFile(fakeReader);
 		} catch (FileNotFoundException e) {
 			fail("Failed to find fake IPS input file");
 			e.printStackTrace();
@@ -72,12 +80,13 @@ public class IPSReaderTester {
 		
 		// Load the INI file and parse the contents into Components
 		try {
-			components = reader.loadINIFile(testFile);
+			components = reader.loadINIFile(testReader);
+			testReader.close();
 		} catch (FileNotFoundException e) {
-			fail("Failed to find IPS input file: " + testFile.toString());
+			fail("Failed to find IPS input file: " + filePath);
 			e.printStackTrace();
 		} catch (IOException e) {
-			fail("Failed to read from IPS input file: " + testFile.toString());
+			fail("Failed to read from IPS input file: " + filePath);
 			e.printStackTrace();
 		}
 		

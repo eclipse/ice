@@ -12,9 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.caebat.model;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,6 +32,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -37,6 +46,8 @@ import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.item.Item;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * <!-- begin-UML-doc -->
@@ -118,31 +129,7 @@ public class CaebatModel extends Item {
 		setName("Caebat Model");
 		setDescription("This model creates input for CAEBAT.");
 
-		// Get the Caebat IPS files from the project
-		if (project != null && project.isAccessible()) {
-
-			IFolder caebatFolder = getPreferencesDirectory();
-			if (caebatFolder.exists() && caebatFolder != null) {
-				// Grab the list of problem files in the Caebat directory
-				problemFiles = getProjectFiles(caebatFolder);
-
-				// Create the DataComponent that selects which problem
-				// to load
-				form.addComponent(createSelectorComponent(problemFiles));
-
-				// If the list of problem files is valid
-				if (problemFiles != null && !(problemFiles.isEmpty())) {
-
-					// Push the work onto the loader
-					loadInput(problemFiles.get(0));
-				} else {
-					System.err
-							.println("Caebat Model Message: No valid files found in "
-									+ caebatFolder.getLocation()
-											.toOSString());
-				}
-			}
-		}
+		loadInput(null);
 
 		// Add an action to the list to allow for the INI exports
 		customTaggedExportString = "Export to Caebat INI format";
@@ -172,29 +159,13 @@ public class CaebatModel extends Item {
 		// begin-user-code
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 		Component dataComp = null;
-		Entry problemEntry = null;
-		String problemName = null;
-		String separator = System.getProperty("file.separator");
-
+		
 		// Grab the data component from the Form and only proceed if it exists
 		ArrayList<Component> components = preparedForm.getComponents();
 		dataComp = components.get(0);
 
-		if (dataComp != null
-				&& "Caebat Input Problems".equals(dataComp.getName())) {
-
-			problemEntry = ((DataComponent) dataComp).retrieveAllEntries().get(
-					0);
-			problemName = problemEntry.getValue();
-			IFolder caebatFolder = getPreferencesDirectory();
-			String problemPathName = caebatFolder.getLocation().toOSString()
-					+ separator + problemName;
-			loadInput(problemPathName);
-			System.out.println("CaebatModel Message: Loading File: "
-					+ problemPathName);
-
-		} else {
-			// Otherwise something went wrong
+		// Make sure the form has some data
+		if (dataComp == null || !"Time Loop Data".equals(dataComp.getName())) {
 			retStatus = FormStatus.InfoError;
 		}
 		return retStatus;
@@ -226,7 +197,7 @@ public class CaebatModel extends Item {
 			// Get the data from the form
 			ArrayList<Component> components = form.getComponents();
 
-			if (components.get(0).getName() == "Caebat Input Problems") {
+			if (components.size() > 0 && components.get(0).getName() == "Caebat Input Problems") {
 				components = new ArrayList<Component>(components.subList(1,
 						components.size()));
 			}
@@ -275,114 +246,6 @@ public class CaebatModel extends Item {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * Return a list of IPS files in the Caebat_Model folder of the project
-	 * space or null if the folder doesn't exist
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @return the list of input files
-	 * 
-	 */
-	private ArrayList<String> getProjectFiles(IFolder caebatFolder) {
-
-		// Local Declarations
-		ArrayList<String> files = null;
-
-		// Look for files in the project space and add them to the form
-		if (project != null) {
-			try {
-				// Get the Caebat folder
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-				// if it exists, get any existing .conf files out
-				if (caebatFolder.exists()) {
-					// Get all of the resources
-					files = new ArrayList<String>();
-					IResource[] resources = caebatFolder.members();
-					for (IResource resource : resources) {
-						System.out.println(resource.getName());
-						if (debuggingEnabled) {
-							System.out.println("CaebatModel Message: "
-									+ "Found file " + resource.getLocationURI()
-									+ ".");
-						}
-						// Only add the .conf files
-						if (resource.getType() == IResource.FILE
-								&& resource.getProjectRelativePath()
-										.lastSegment().contains(".conf")) {
-											files.add(resource.getName());
-										}
-					}
-				}
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return files;
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * Creates a component to select from the available input files.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param files
-	 *            The list of available input files
-	 * @return a data component with a selector for the input files
-	 */
-	private DataComponent createSelectorComponent(final ArrayList<String> files) {
-
-		// Local Declaration
-		DataComponent filesComp = new DataComponent();
-		Entry filesEntry = null;
-		final String noFilesValue = "No input files available.";
-		String entryName = "Available input files";
-		String entryDesc = "The input problem file that will be loaded.";
-
-		// Setup the data component
-		filesComp.setName("Caebat Input Problems");
-		filesComp.setDescription("The following is a list of Caebat input "
-				+ "problems available to modify in ICE.");
-		// Get the last component id in the form
-		// Get the id based on the last component in the Form
-		filesComp.setId(1);
-
-		// Configure the values of the file Entry
-		if (files != null && !(files.isEmpty())) {
-			// Setup the Entry with the list of files
-			filesEntry = new Entry() {
-				protected void setup() {
-					allowedValues.addAll(files);
-					allowedValueType = AllowedValueType.Discrete;
-				}
-			};
-		} else {
-			// Setup the Entry with only value to describe that there are no
-			// examples.
-			filesEntry = new Entry() {
-				protected void setup() {
-					allowedValues.add(noFilesValue);
-					allowedValueType = AllowedValueType.Discrete;
-				}
-			};
-		}
-
-		// Setup the file Entry's descriptive information
-		filesEntry.setName(entryName);
-		filesEntry.setDescription(entryDesc);
-		filesEntry.setId(1);
-
-		// Add the Entry to the Component
-		filesComp.addEntry(filesEntry);
-
-		return filesComp;
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation loads the given example into the Form.
 	 * </p>
 	 * <!-- end-UML-doc -->
@@ -392,28 +255,53 @@ public class CaebatModel extends Item {
 	 */
 	public void loadInput(String name) {
 
+		// Give a default value if nothing has been specified
+		BufferedReader in = null;
+		if (name == null) {
+			name = "platform:/plugin/org.eclipse.ice.caebat/data/case_6.conf";
+			URL url;
+			InputStream inputStream;
+			try {
+			    url = new URL(name);
+			    inputStream = url.openConnection().getInputStream();
+			    in = new BufferedReader(new InputStreamReader(inputStream));
+			} catch (IOException e) {
+			    e.printStackTrace();
+			}
+		// Load the imported file
+		} else {
+			String separator = System.getProperty("file.separator");
+			String userDir = System.getProperty("user.home") + separator
+					+ "ICEFiles" + separator + "default";
+			File f = new File(userDir + separator + name);
+			try {
+				in = new BufferedReader(new FileReader(f));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		// Load the components from the file
-		String path = project.getFolder("Caebat_Model").getLocation().toOSString() +
-				System.getProperty("file.separator") + name;
-		File file = new File(path);
 		IPSReader reader = new IPSReader();
 		ArrayList<Component> components;
 		try {
-			components = reader.loadINIFile(file);
+			components = reader.loadINIFile(in);
+			
 			ArrayList<Component> existingComponents = form.getComponents();
 			
 			// Update the components by copying the new ones
-			if (components.size() == 4) {
+			if (components != null && components.size() == 4) {
 
 				// Replace the old components
-				if (existingComponents.size() == 5) {
-					((DataComponent) existingComponents.get(1))
+				if (existingComponents.size() == 4) {
+					((DataComponent) existingComponents.get(0))
 							.copy((DataComponent) components.get(0));
-					((TableComponent) existingComponents.get(2))
+					((TableComponent) existingComponents.get(1))
 							.copy((TableComponent) components.get(1));
-					((TableComponent) existingComponents.get(3))
+					((TableComponent) existingComponents.get(2))
 							.copy((TableComponent) components.get(2));
-					((MasterDetailsComponent) existingComponents.get(4))
+					((MasterDetailsComponent) existingComponents.get(3))
 							.copy((MasterDetailsComponent) components.get(3));
 				} else {
 					// Add the new components
@@ -426,7 +314,7 @@ public class CaebatModel extends Item {
 
 			} else {
 				System.out.println("Caebat Model Message: Could not read in "
-						+ file.getAbsolutePath() + " for processing.");
+						+ "a valid case for processing.");
 			}			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

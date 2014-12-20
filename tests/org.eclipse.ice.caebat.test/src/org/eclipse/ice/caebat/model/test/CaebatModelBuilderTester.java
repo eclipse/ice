@@ -90,7 +90,7 @@ public class CaebatModelBuilderTester {
 		assertNotNull(caebatModel.getForm());
 
 		// Make sure there is something on the form
-		assertTrue(caebatModel.getForm().getComponents().isEmpty());
+		assertEquals(caebatModel.getForm().getComponents().size(),4);
 
 		// end-user-code
 
