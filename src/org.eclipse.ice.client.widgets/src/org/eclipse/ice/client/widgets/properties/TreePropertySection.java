@@ -12,29 +12,24 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.properties;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
-import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.ToolTip;
@@ -42,20 +37,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.Section;
@@ -89,11 +79,6 @@ public class TreePropertySection extends AbstractPropertySection implements
 	 * widget that can set the type of adaptive tree.
 	 */
 	private boolean isAdaptive;
-
-	/**
-	 * The currently selected property or parameter in the {@link #tableViewer}.
-	 */
-	private Entry selectedEntry;
 
 	// ---- Ancestor Controls ---- //
 	// We keep track of these so we can fill the Properties View with the table.
@@ -131,15 +116,24 @@ public class TreePropertySection extends AbstractPropertySection implements
 	private Section section;
 
 	/**
-	 * The <code>Composite</code> that contains the {@link #type} selection
-	 * widget and other related <code>Controls</code>.
+	 * The ToolBar shown above the {@link #tableViewer}. It should contain the
+	 * add/remove buttons and any other property widgets.
 	 */
-	private Composite typeComposite;
+	private ToolBarManager toolBarManager;
 	/**
-	 * The widget used to select the type of the {@link #tree} if it is an
-	 * {@link AdaptiveTreeComposite}.
+	 * The ToolBar action that adds new, blank properties to the {@link #tree}.
 	 */
-	private ComboViewer type;
+	private final AddPropertyAction addAction = new AddPropertyAction();
+	/**
+	 * The ToolBar action that removes properties that are selected in the
+	 * {@link #tableViewer}.
+	 */
+	private final RemovePropertyAction removeAction = new RemovePropertyAction();
+	/**
+	 * The ToolBar action that lets the user select the type of {@link #tree}
+	 * for adaptive trees.
+	 */
+	private final ActionTree typeTree = new ActionTree("Type");
 
 	/**
 	 * The JFace <code>TableViewer</code> that contains the properties of the
@@ -155,18 +149,6 @@ public class TreePropertySection extends AbstractPropertySection implements
 	 */
 	private TableViewerColumn valueColumn;
 
-	/**
-	 * The <code>Button</code> for adding a new <code>Entry</code> (aka property
-	 * or parameter) to the {@link #tableViewer}'s underlying {@link #tree}.
-	 */
-	private Button add;
-	/**
-	 * The <code>Button</code> for deleting the {@link #selectedEntry} (aka
-	 * property or parameter) from the {@link #tableViewer}'s underlying
-	 * {@link #tree}.
-	 */
-	private Button delete;
-
 	// -------------------------- //
 
 	/**
@@ -177,7 +159,6 @@ public class TreePropertySection extends AbstractPropertySection implements
 		// Initialize the widgets and initial tree to null.
 		tree = null;
 		isAdaptive = false;
-		selectedEntry = null;
 
 		return;
 	}
@@ -193,7 +174,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 		super.createControls(parent, aTabbedPropertySheetPage);
 
 		// Get the default background color.
-		Color backgroundColor = parent.getBackground();
+		Color background = parent.getBackground();
 
 		// Create a section for the data composites.
 		section = getWidgetFactory().createSection(parent,
@@ -201,11 +182,11 @@ public class TreePropertySection extends AbstractPropertySection implements
 		section.setText("Node properties");
 		section.setDescription("All properties available for "
 				+ "this node can be modified here.");
-		section.setBackground(backgroundColor);
+		section.setBackground(background);
 
 		// Create the Composite that contains all DataComponentComposites.
 		final Composite client = new Composite(section, SWT.NONE);
-		GridLayout clientLayout = new GridLayout(2, false);
+		GridLayout clientLayout = new GridLayout();
 		// Set the margins and spacing based on the tabbed property constants.
 		clientLayout.marginLeft = ITabbedPropertyConstants.HMARGIN;
 		clientLayout.marginRight = ITabbedPropertyConstants.HMARGIN;
@@ -215,14 +196,8 @@ public class TreePropertySection extends AbstractPropertySection implements
 		clientLayout.verticalSpacing = ITabbedPropertyConstants.VSPACE;
 		client.setLayout(clientLayout);
 
-		// Make the background of the section client white unless ICE is in
-		// debug mode.
-		if (System.getProperty("DebugICE") == null) {
-			client.setBackground(backgroundColor);
-		} else {
-			client.setBackground(Display.getCurrent().getSystemColor(
-					SWT.COLOR_RED));
-		}
+		// Style the client after its parent.
+		client.setBackground(background);
 
 		// Set the client area for the section.
 		section.setClient(client);
@@ -243,13 +218,11 @@ public class TreePropertySection extends AbstractPropertySection implements
 			}
 		});
 
-		// Create the type Combo Composite.
-		typeComposite = createTypeComposite(client);
-		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		gridData.horizontalSpan = 2;
-		typeComposite.setLayoutData(gridData);
-		// Refresh the contents of the type Combo and its containing Composite.
-		refreshTypeWidgets();
+		// Create the ToolBar that contains the add/remove and other widgets.
+		toolBarManager = new ToolBarManager(SWT.RIGHT);
+		ToolBar toolBar = toolBarManager.createControl(client);
+		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		toolBar.setBackground(background);
 
 		// Create the table of properties.
 		tableViewer = createTableViewer(client);
@@ -258,12 +231,10 @@ public class TreePropertySection extends AbstractPropertySection implements
 		tableViewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		// Create the add/delete buttons.
-		Composite buttonComposite = createButtons(client);
-		// The button Composite shouldn't grab any space. Align it along the
-		// center and top of the space to the right of the table.
-		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false,
-				false));
+		// Fill the ToolBar. We do this here because the remove action needs to
+		// listen to the TableViewer for its selection.
+		fillToolBar(toolBarManager);
+		toolBarManager.update(true);
 
 		return;
 	}
@@ -305,10 +276,6 @@ public class TreePropertySection extends AbstractPropertySection implements
 
 						// Unset the isAdaptive flag.
 						isAdaptive = false;
-
-						System.out.println("TreePropertySection message: "
-								+ "Setting the input to tree " + tree.getName()
-								+ ".");
 					}
 
 					return;
@@ -323,12 +290,8 @@ public class TreePropertySection extends AbstractPropertySection implements
 			((Component) input).accept(visitor);
 		}
 
-		// Enable or disable the add button depending on whether the input is
-		// valid.
-		if (add != null) {
-			boolean canAdd = (canAdd(tree) != null);
-			add.setEnabled(canAdd);
-		}
+		addAction.setTree(tree);
+		removeAction.setTree(tree);
 
 		// Refresh the type Combo widget.
 		refreshTypeWidgets();
@@ -423,7 +386,6 @@ public class TreePropertySection extends AbstractPropertySection implements
 		// Clear the references to the selected Tree and selected property
 		// Entry.
 		tree = null;
-		selectedEntry = null;
 
 		// Clear the references to the Property View's ScrolledComposite and its
 		// client.
@@ -437,83 +399,46 @@ public class TreePropertySection extends AbstractPropertySection implements
 		tableViewer = null;
 		nameColumn = null;
 		valueColumn = null;
-		add = null;
-		delete = null;
 
 		return;
 	}
 
 	// ----------------------------------------- //
 
-	// ---- AdaptiveTreeComposite type selection widgets ---- //
+	// ---- ToolBar (Add/Remove/Type) widgets ---- //
 	/**
-	 * Creates the {@link #type} selection widget for changing the type of the
-	 * current <code>AdaptiveTreeComposite</code>. These widgets are
+	 * Fills the tool bar above the {@link #tableViewer}. The default behavior
+	 * provides (in the listed order) the following actions:
+	 * <ol>
+	 * <li>Add - Adds a new property</li>
+	 * <li>Remove - Removes the selected property(ies)</li>
+	 * <li>Type (if applicable) - Sets the type for
+	 * {@link AdaptiveTreeComposite}s.</li>
+	 * </ol>
 	 * 
-	 * @param client
-	 *            The client <code>Composite</code> that should contain the type
-	 *            selection widgets.
-	 * @return The <code>Composite</code> that contains the type selection
-	 *         widgets.
+	 * @param toolBarManager
+	 *            The JFace {@code ToolBarManager} that handles the
+	 *            {@code ToolBar}.
 	 */
-	private Composite createTypeComposite(Composite client) {
+	private void fillToolBar(ToolBarManager toolBarManager) {
 
-		// Get the client's background color.
-		Color backgroundColor = client.getBackground();
+		// Create the add action tree.
+		// TODO Make this an ActionTree whose default action is to add a new,
+		// blank property, but with an option to add pre-defined properties.
+		toolBarManager.add(addAction);
 
-		// Create the type sub-section Composite that will contain the
-		// type label and combo (dropdown).
-		Composite typeComposite = new Composite(client, SWT.NONE);
-		typeComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
-				false, true));
-		typeComposite.setBackground(backgroundColor);
+		// Create the remove action.
+		tableViewer.addSelectionChangedListener(removeAction);
+		toolBarManager.add(removeAction);
 
-		// Set the layout of the Composite to a vertical fill layout.
-		// This ensures the type Label is above the Combo and that both
-		// consume all available space.
-		FillLayout typeCompositeLayout = new FillLayout(SWT.VERTICAL);
-		typeCompositeLayout.marginHeight = 5;
-		typeCompositeLayout.marginWidth = 3;
-		typeCompositeLayout.spacing = 5;
-		typeComposite.setLayout(typeCompositeLayout);
+		// Create the type action tree (if applicable).
+		refreshTypeWidgets();
+		toolBarManager.add(typeTree.getContributionItem());
 
-		// Add the type Label and an empty Combo.
-		Label typeLabel = new Label(typeComposite, SWT.NONE);
-		typeLabel.setText("Type:");
-		typeLabel.setBackground(backgroundColor);
-
-		// Create the ComboViewer for selecting the adaptive type.
-		type = new ComboViewer(typeComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
-		type.getCombo().setBackground(backgroundColor);
-		// Use an ArrayContentProvider so we can set the List of type Strings as
-		// input to the ComboViewer.
-		type.setContentProvider(ArrayContentProvider.getInstance());
-		// The labels for each value should just be their String value.
-		type.setLabelProvider(new LabelProvider() {
-			@Override
-			public String getText(Object element) {
-				return (element != null ? element.toString() : "");
-			}
-		});
-
-		// Add a listener to set the type of the AdaptiveTreeComposite when the
-		// Combo's selection changes.
-		ISelectionChangedListener listener = new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection selection = event.getSelection();
-				if (!selection.isEmpty()
-						&& selection instanceof IStructuredSelection) {
-					IStructuredSelection s = (IStructuredSelection) selection;
-					String type = (String) s.getFirstElement();
-					((AdaptiveTreeComposite) tree).setType(type);
-				}
-			}
-		};
-		type.addSelectionChangedListener(listener);
-
-		return typeComposite;
+		return;
 	}
+
+	// ------------------------------------------- //
 
 	/**
 	 * Refreshes the contents of the {@link #type} selection widget. If the
@@ -522,38 +447,37 @@ public class TreePropertySection extends AbstractPropertySection implements
 	 */
 	private void refreshTypeWidgets() {
 
-		// Set the default empty list of types and the default empty selection.
-		List<String> types = new ArrayList<String>(1);
-		ISelection selection = new StructuredSelection();
+		// Remove all previous types from the tree.
+		typeTree.removeAll();
 
-		// Get the list of adaptive types if possible.
+		// TODO Use checkboxes for the adaptive type menu.
+		// TODO Show/hide the type menu instead of enabling/disabling it.
+
 		if (tree != null && isAdaptive) {
-			// Update the available types in the type Combo widget.
-			AdaptiveTreeComposite adaptiveTree = (AdaptiveTreeComposite) tree;
-			types = adaptiveTree.getTypes();
-			String adaptiveType = adaptiveTree.getType();
-			if (adaptiveType != null) {
-				selection = new StructuredSelection(adaptiveType);
+			final AdaptiveTreeComposite adaptiveTree;
+			adaptiveTree = (AdaptiveTreeComposite) tree;
+
+			List<String> types = adaptiveTree.getTypes();
+			for (final String type : types) {
+				typeTree.add(new ActionTree(new Action(type) {
+					@Override
+					public void run() {
+						adaptiveTree.setType(type);
+					}
+				}));
 			}
+
+			// Enable/show the ToolItem.
+			typeTree.setEnabled(true);
+			// typeTree.setVisible(true);
+		} else {
+			// Disable/hide the ToolItem.
+			typeTree.setEnabled(false);
+			// typeTree.setVisible(false);
 		}
-
-		// Set the ComboViewer's contents to the List of type Strings.
-		type.setInput(types);
-		type.setSelection(selection);
-
-		// Hide the type selection widgets if the List is empty.
-		boolean hide = types.isEmpty();
-		typeComposite.setVisible(!hide);
-		((GridData) typeComposite.getLayoutData()).exclude = hide;
-
-		// Re-adjust the size of the type Composite.
-		typeComposite.pack();
-		typeComposite.getParent().layout();
 
 		return;
 	}
-
-	// ------------------------------------------------------ //\
 
 	// ---- TreeComposite property Table widgets ---- //
 	/**
@@ -641,200 +565,6 @@ public class TreePropertySection extends AbstractPropertySection implements
 
 	// ---------------------------------------------- //
 
-	// ---- Add/Delete property widgets ---- //
-	/**
-	 * Creates {@link #add} and {@link #delete} buttons for changing the
-	 * parameters displayed in the properties.
-	 * 
-	 * @param client
-	 *            The client <code>Composite</code> that should contain the
-	 *            buttons.
-	 * @return The <code>Composite</code> that contains the add and delete
-	 *         buttons.
-	 */
-	private Composite createButtons(Composite client) {
-
-		// Create the two buttons to add/remove parameters next to the table.
-		// Create a Composite to hold these buttons.
-		Composite composite = new Composite(client, SWT.NONE);
-		composite.setBackground(client.getBackground());
-		// The buttons should sit in a column.
-		composite.setLayout(new GridLayout());
-
-		// Create the add button.
-		add = new Button(composite, SWT.PUSH);
-		add.setBackground(client.getBackground());
-		add.setText("+");
-		add.setToolTipText("Add a new property.");
-		// Set the layout data. It should default to at least 30 pixels wide.
-		GridData gridData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
-		gridData.heightHint = 30;
-		gridData.widthHint = 30;
-		add.setLayoutData(gridData);
-
-		// Add should only be enabled if something's properties are displayed.
-		// Delete should only be enabled if a property is selected.
-		boolean canAdd = (tree != null);
-		add.setEnabled(canAdd);
-
-		// Add a listener to add a new property/parameter when the add button is
-		// clicked.
-		add.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				addParameter();
-			}
-		});
-
-		// Create the delete button.
-		delete = new Button(composite, SWT.PUSH);
-		delete.setBackground(client.getBackground());
-		delete.setText("-");
-		delete.setToolTipText("Delete the selected property.");
-		// Set the layout data. It should default to at least 30 pixels wide.
-		gridData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
-		gridData.heightHint = 30;
-		gridData.widthHint = 30;
-		delete.setLayoutData(gridData);
-
-		// Listen for changes to the TableViewer's selection and enable/disable
-		// the delete button if a property is selected.
-		delete.setEnabled(false);
-		ISelectionChangedListener listener = new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-
-				// Disable the option to delete.
-				selectedEntry = null;
-				delete.setEnabled(false);
-
-				// Try to get the selected Entry from the selection.
-				ISelection selection = event.getSelection();
-				if (!selection.isEmpty()
-						&& selection instanceof IStructuredSelection) {
-					Entry entry = ((TreeProperty) ((IStructuredSelection) selection)
-							.getFirstElement()).getEntry();
-
-					// If the Entry is not required, we can delete it.
-					if (canDelete(entry)) {
-						selectedEntry = entry;
-						delete.setEnabled(true);
-					}
-				}
-
-				return;
-			}
-		};
-		tableViewer.addSelectionChangedListener(listener);
-
-		// Add a listener to delete the currently selected property/parameter
-		// when the delete button is clicked.
-		delete.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				deleteParameter();
-			}
-		});
-
-		return composite;
-	}
-
-	// TODO We may need a different requirement on when we can add an Entry to
-	// the selected tree or where we can add it.
-	/**
-	 * Gets whether or not the specified <code>TreeComposite</code> can have an
-	 * <code>Entry</code> (aka property or parameter) added to it. The
-	 * <code>DataComponent</code> that can receive the new <code>Entry</code> is
-	 * returned.
-	 * 
-	 * @param tree
-	 *            The tree to which we would like to add a new property or
-	 *            parameter.
-	 * @return The tree's data node that can receive a new property or
-	 *         parameter, or null if one cannot be added.
-	 */
-	private DataComponent canAdd(TreeComposite tree) {
-
-		DataComponent dataNode = null;
-
-		// Look for the active data node. If there is no active data node, get
-		// the first available data node.
-		if (tree != null) {
-			dataNode = (DataComponent) tree.getActiveDataNode();
-			if (dataNode == null && !tree.getDataNodes().isEmpty()) {
-				dataNode = (DataComponent) tree.getDataNodes().get(0);
-			}
-		}
-
-		return dataNode;
-	}
-
-	/**
-	 * Adds a new <code>Entry</code> (aka property or parameter) to the active
-	 * or first available data node in the {@link #tree}.
-	 */
-	private void addParameter() {
-
-		// Get either the active data node or the first available data node.
-		DataComponent dataNode = canAdd(tree);
-
-		// If there is a data node, add a new Entry to it.
-		if (dataNode != null && !dataNode.contains("New parameter")) {
-			// Create an Entry with a BasicEntryContentProvider.
-			Entry entry = new Entry(new BasicEntryContentProvider());
-			// Set the Entry's initial properties.
-			entry.setName("new_parameter");
-			entry.setDescription("");
-			entry.setTag(entry.getName());
-			entry.setRequired(false);
-			entry.setValue("");
-			// Add the Entry to the data node.
-			dataNode.addEntry(entry);
-		}
-
-		return;
-	}
-
-	/**
-	 * Gets whether or not the specified <code>Entry</code> (aka property or
-	 * parameter) can be deleted from its containing <code>DataComponent</code>
-	 * or data node in the {@link #tree}. Any parameter can be deleted.
-	 * 
-	 * @param entry
-	 *            The property or parameter that is a candidate for deletion.
-	 * @return True if the entry can be deleted, false otherwise.
-	 */
-	private boolean canDelete(Entry entry) {
-		return (entry != null && !entry.isRequired());
-	}
-
-	/**
-	 * Deletes the <code>Entry</code> (aka property or parameter) that is
-	 * currently selected in the {@link #tableViewer}. A reference to this
-	 * <code>Entry</code> is stored as {@link #selectedEntry} when selected in
-	 * the <code>TableViewer</code>.
-	 */
-	private void deleteParameter() {
-
-		if (canDelete(selectedEntry)) {
-			String entryName = selectedEntry.getName();
-			// Find the data node that has the selected Entry. If the Entry is
-			// found, remove it from the containing data node and stop.
-			for (Component component : tree.getDataNodes()) {
-				DataComponent dataNode = (DataComponent) component;
-				if (dataNode.contains(entryName)
-						&& dataNode.retrieveEntry(entryName) == selectedEntry) {
-					dataNode.deleteEntry(entryName);
-					break;
-				}
-			}
-		}
-
-		return;
-	}
-
-	// ------------------------------------- //
-
 	/**
 	 * Gets the <code>TreeComposite</code> whose properties are displayed in
 	 * this section.
@@ -850,6 +580,9 @@ public class TreePropertySection extends AbstractPropertySection implements
 	 * {@link ScrolledComposite} to account for GridLayouts in the client.
 	 */
 	private void resizePropertyView() {
+		// TODO This could be simplified using the same technique used on the
+		// DataComponentComposite in the ICESectionPage.
+
 		// Disable re-drawing for the ScrolledComposite.
 		scrollComposite.setRedraw(false);
 
@@ -909,16 +642,12 @@ public class TreePropertySection extends AbstractPropertySection implements
 		// If the adaptive tree's type was changed, we should update the type
 		// Combo widget.
 		if (component != null && component == tree && isAdaptive) {
-			// Create a selection from the adaptive tree's current type.
-			String adaptiveType = ((AdaptiveTreeComposite) component).getType();
-			final StructuredSelection selection;
-			selection = new StructuredSelection(adaptiveType);
-
 			// Use the UI thread to update the type ComboViewer's selection.
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					type.setSelection(selection);
+					// TODO When the type tree uses radio buttons or checkboxes,
+					// we need to update the selected one here.
 				}
 			});
 		}
