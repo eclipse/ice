@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICEItem
-Bundle-SymbolicName: org.eclipse.ice.item
+Bundle-SymbolicName: org.eclipse.ice.item;singleton:=true
 Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.jcraft.jsch;version="0.1.41",
@@ -10,9 +10,11 @@ Import-Package: com.jcraft.jsch;version="0.1.41",
  org.eclipse.ice.datastructures.form,
  org.eclipse.ice.datastructures.form.emf,
  org.eclipse.ice.datastructures.form.geometry,
+ org.eclipse.ice.datastructures.form.iterator,
  org.eclipse.ice.datastructures.form.mesh,
  org.eclipse.ice.datastructures.form.painfullySimpleForm,
  org.eclipse.ice.datastructures.resource,
+ org.eclipse.ice.io.serializable,
  org.eclipse.ptp.remote.core,
  org.yaml.snakeyaml
 Export-Package: org.eclipse.ice.item,

@@ -465,6 +465,20 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 		return;
 	}
 
+	/**
+	 * Gets the flying camera associated with the plant view.
+	 * 
+	 * @return The plant view's fly cam.
+	 */
+	public FlightCamera getFlightCamera() {
+		FlightCamera cam = null;
+		EmbeddedView view = getEmbeddedView();
+		if (view != null) {
+			cam = (FlightCamera) view.getViewCamera();
+		}
+		return cam;
+	}
+
 	// ---- Getters and Setters ---- //
 	/**
 	 * Sets the root PlantComponent that contains the pipes, junctions,

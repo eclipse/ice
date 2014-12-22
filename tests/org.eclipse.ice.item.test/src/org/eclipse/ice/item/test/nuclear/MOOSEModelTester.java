@@ -41,6 +41,7 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -55,6 +56,7 @@ import org.junit.Test;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
+@Ignore
 public class MOOSEModelTester {
 
 	/**
@@ -409,7 +411,7 @@ public class MOOSEModelTester {
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		try {
 			projectSpace.close(null);
-			workspaceRoot.delete(true, true, null);
+			//workspaceRoot.delete(true, true, null);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

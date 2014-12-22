@@ -2,12 +2,15 @@ package org.eclipse.ice.client.widgets.jme;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.io.File;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 
 import com.jme3.app.Application;
 import com.jme3.math.ColorRGBA;
@@ -100,6 +103,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	 * <code>IEmbeddedViewClient</code> for each view.</b>
 	 */
 	private EmbeddedView embeddedView;
+
 	// ----------------------- //
 
 	/**
@@ -181,6 +185,30 @@ public abstract class ViewAppState extends CompositeAppState implements
 		}
 
 		return composite;
+	}
+
+	/**
+	 * Exports the view to an image file. The user is prompted for the image
+	 * location.
+	 */
+	public void exportImage() {
+		if (embeddedView != null) {
+			// Make the array of strings needed to pass to the file dialog.
+			String[] extensionStrings = new String[] { ".png" };
+
+			// Create the file save dialog.
+			FileDialog fileDialog = new FileDialog(Display.getCurrent()
+					.getActiveShell(), SWT.SAVE);
+			fileDialog.setFilterExtensions(extensionStrings);
+			fileDialog.setOverwrite(true);
+
+			// Get the path of the new/overwritten image file.
+			String path = fileDialog.open();
+			if (path != null) {
+				embeddedView.exportImage(new File(path));
+			}
+		}
+		return;
 	}
 
 	/**
@@ -542,7 +570,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	}
 
 	/**
-	 * Creates a default {@link CustomFlyByCamera} for the specified
+	 * Creates a default {@link FlightCamera} for the specified
 	 * <code>EmbeddedView</code>.
 	 */
 	@Override
@@ -570,7 +598,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	}
 
 	/**
-	 * Enables or disables the default {@link CustomFlyByCamera} associated with
+	 * Enables or disables the default {@link FlightCamera} associated with
 	 * the <code>EmbeddedView</code>.
 	 */
 	@Override
