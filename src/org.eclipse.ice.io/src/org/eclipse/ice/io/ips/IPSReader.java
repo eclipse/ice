@@ -18,14 +18,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-
-
-
-
 
 import org.eclipse.ice.datastructures.form.Form;
 //import org.eclipse.ice.io.serializable.IReader;
@@ -63,67 +60,89 @@ public class IPSReader implements IReader {
 	}
 
 	/**
-	 * Reads in an INI file, and returns an ArrayList of Components representing
-	 * the contents of the file. Each section in an INI file is returned as one
-	 * Component. If the input file is invalid the method returns a null
-	 * ArrayList.
+	 * Reads in the given URI to the CaebatModel datastructures.  There are 
+	 * four components in each IPS INI file that are parsed and arranged into
+	 * the form that will be displayed to the user.  Returns a form composed of
+	 * the data read in from the specified location which can be modified and
+	 * written out by the user.
 	 * 
-	 * @param iniFile
-	 *            The file to read the data from.
-	 * @return An ArrayList of the DataComponents that contain the data from
-	 *         each of the sections of the INI file.
-	 * @throws FileNotFoundException
-	 *             Thrown when the input file cannot be found
-	 * @throws IOException
-	 *             Thrown when if the readFileLines(...) method fails to read in
-	 *             the file.
+	 * @param uri 
+	 *           The uri to the data to be read in 
+	 * @return a form with the imported data
 	 */
-	public ArrayList<Component> loadINIFile(URI iniURI)
-			throws FileNotFoundException, IOException {
-
-		// Make sure the file is valid, otherwise just stop here
-		if (iniURI == null) {
+	@Override
+	public Form read(URI uri) {
+		if (uri == null) {
 			return null;
 		}
-
-		// Create a space for the data from the INI file
-		ArrayList<Component> components = new ArrayList<Component>();
-
+		Form form = new Form();
+	
 		// Read in the ini file and create the iterator
-		BufferedReader reader = new BufferedReader(new InputStreamReader(iniURI.toURL().openStream()));
-		ArrayList<String> lines = readFileLines(reader);
+		ArrayList<String> lines = null;
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(uri
+					.toURL().openStream()));
+			lines = readFileLines(reader);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Get an iterator over the input to pass to the loading methods
 		Iterator<String> iniIterator = lines.iterator();
-
+	
 		// Read in the global configuration and ports data
 		TableComponent globalConfiguration = loadGlobalConfiguration(iniIterator);
 		TableComponent portsData = loadPortsData(iniIterator);
-
+	
 		// Determine the number of components that were specified in
 		// the ports table and then read them in
 		int numberPorts = portsData.numberOfRows();
 		ArrayList<DataComponent> ipsComponents = new ArrayList<DataComponent>();
 		ArrayList<String> names = new ArrayList<String>();
-
+	
+		// Read in each of the ports individually
 		for (int i = 0; i < numberPorts; i++) {
 			DataComponent ipsComponent = loadComponent(iniIterator);
 			ipsComponents.add(ipsComponent);
 			names.add(ipsComponent.getName());
 		}
-
+	
 		// Build a MasterDetailsComponent out of the DataComponents
 		MasterDetailsComponent portsMaster = buildMasterDetailsComponent(ipsComponents);
-
+	
 		// Read in the time loop specification
 		DataComponent timeLoopComponent = loadTimeLoopComponent(iniIterator);
+	
+		// Add the components to the form
+		form.addComponent(timeLoopComponent);
+		form.addComponent(globalConfiguration);
+		form.addComponent(portsData);
+		form.addComponent(portsMaster);
+	
+		// Return the form
+		return form;
+	}
 
-		// Put all of the components together in the order they were read in
-		components.add(timeLoopComponent);
-		components.add(globalConfiguration);
-		components.add(portsData);
-		components.add(portsMaster);
+	@Override
+	public ArrayList<Entry> findAll(URI uri, String regex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-		// Return the components
-		return components;
+	/**
+	 * Returns a string saying this is an IPSReader
+	 * 
+	 * @return the type of reader
+	 */
+	public String getReaderType() {
+		return "IPSReader";
 	}
 
 	/**
@@ -479,7 +498,6 @@ public class IPSReader implements IReader {
 
 		// Read in new parameters until we reach the PORTS entry or the end
 		// while only taking in lines that have variable assignments
-
 		String line = it.next();
 		while (!line.contains("[PORTS]") && it.hasNext()) {
 
@@ -532,7 +550,6 @@ public class IPSReader implements IReader {
 	 */
 	private ArrayList<String> readFileLines(BufferedReader reader)
 			throws FileNotFoundException, IOException {
-		// Convert to FileInputStream
 
 		// Read the FileInputStream and append to a StringBuffer
 		StringBuffer buffer = new StringBuffer();
@@ -540,11 +557,14 @@ public class IPSReader implements IReader {
 		while ((fileByte = reader.read()) != -1) {
 			buffer.append((char) fileByte);
 		}
-		
+
 		// Break up the StringBuffer at each newline character
 		String[] bufferSplit = (buffer.toString()).split("\n");
 		ArrayList<String> fileLines = new ArrayList<String>(
 				Arrays.asList(bufferSplit));
+		
+		// Add a dummy EOF line so that the last line of the file is 
+		// read in correctly
 		fileLines.add("EOF");
 
 		// Return the ArrayList
@@ -571,49 +591,5 @@ public class IPSReader implements IReader {
 		};
 
 		return entry;
-	}
-	
-	@Override
-	public Form read(URI uri) {
-		if (uri == null) {
-			return null;
-		}
-		Form form = new Form();
-		File file = new File(uri.toString());
-		ArrayList<Component> ipsComponents = null;
-		try {
-			ipsComponents = loadINIFile(uri);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		// Add the components to the form
-		if (ipsComponents.size() == 4) {
-			form.addComponent((DataComponent) ipsComponents.get(0));
-			form.addComponent((TableComponent) ipsComponents.get(1));
-			form.addComponent((TableComponent) ipsComponents.get(2));
-			form.addComponent((MasterDetailsComponent) ipsComponents.get(3));
-		}
-		
-		return form;
-	}
-
-	@Override
-	public ArrayList<Entry> findAll(URI uri, String regex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Returns a string saying this is an IPSReader
-	 * 
-	 * @return the type of reader
-	 */
-	public String getReaderType() {
-		return "IPSReader";
 	}
 }

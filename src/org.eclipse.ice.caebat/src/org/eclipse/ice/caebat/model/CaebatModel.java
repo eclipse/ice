@@ -54,8 +54,9 @@ import org.osgi.framework.FrameworkUtil;
  * <!-- begin-UML-doc -->
  * <p>
  * This class is the model representation of the CAEBAT model. It inherits from
- * the Item Class. It will get template files from ICEFiles/Caebat_Model that can 
- * be used to launch simulations from the Caebat Launcher Item.
+ * the Item Class. It will load INI conf files into a form that can be written to 
+ * create new input for CAEBAT Simulations.  If no conf file is given to the 
+ * loadInput method the CaebatModel will automatically load the case 6 example.
  * </p>
  * <!-- end-UML-doc -->
  * 
@@ -122,7 +123,6 @@ public class CaebatModel extends Item {
 		// This method will create a new Form and add all the dataComponents to
 		// the form. These dataComponents will be accessed later in
 		// loadDataComponents.
-
 		form = new Form();
 		ArrayList<String> problemFiles = null;
 		String separator = System.getProperty("file.separator");
@@ -130,6 +130,8 @@ public class CaebatModel extends Item {
 		setName("Caebat Model");
 		setDescription("This model creates input for CAEBAT.");
 
+		// If loading from the new item button we should just
+		// load up the default case 6 file by passing in null
 		loadInput(null);
 
 		// Add an action to the list to allow for the INI exports
@@ -190,29 +192,27 @@ public class CaebatModel extends Item {
 			// Get the file from the project space to create the output
 			String filename = getName().replaceAll("\\s+", "_") + "_" + getId()
 					+ ".conf";
+			
+			// Get the file path and build the URI that will be used to write
 			IFile outputFile = project.getFile(filename);
-			// Get the file path
 			URI outputFilePath = null;
 			try {
 				outputFilePath = new URI(outputFile.getLocation().toOSString());
 			} catch (URISyntaxException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
+				System.err.println("CaebatModel Message:  Error!  Could not create" 
+						+ "output at " + filename);
 			}
 
 			// Get the data from the form
 			ArrayList<Component> components = form.getComponents();
 
-			if (components.size() > 0 && components.get(0).getName() == "Caebat Input Problems") {
-				components = new ArrayList<Component>(components.subList(1,
-						components.size()));
-			}
-
+			// A valid CaebatModel needs 4 components
 			if (components.size() > 3) {
 
 				// create a new IPSWriter with the output file
 				IPSWriter writer = new IPSWriter();
 				try {
+					// Write the output file
 					writer.write(form, outputFilePath);
 					// Refresh the project space
 					project.refreshLocal(IResource.DEPTH_ONE, null);
@@ -222,19 +222,17 @@ public class CaebatModel extends Item {
 							+ "Failed to refresh the project space.");
 					e.printStackTrace();
 				}
-				// ensure that the new file is all good
 				// return a success
 				retStatus = FormStatus.Processed;
 			} else {
+				// return an error
 				System.err.println("Not enough components to write new file!");
 				retStatus = FormStatus.InfoError;
 			}
-
 		}
 
 		// Otherwise let item deal with the process
 		else {
-			System.out.println("Not enough components to write new file!");
 			retStatus = super.process(actionName);
 		}
 
@@ -255,15 +253,15 @@ public class CaebatModel extends Item {
 	 */
 	public void loadInput(String name) {
 
-		// Give a default value if nothing has been specified
-		BufferedReader in = null;
+		// If nothing is specified, load case 6 from inside the plugin
 		URI uri = null;
 		if (name == null) {
 			try {
+				// Path to the default file
 				uri = new URI("platform:/plugin/org.eclipse.ice.caebat/data/case_6.conf");
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("CaebatModel Message: Error!  Could not load the default" 
+						+ " Caebat case data!");
 			}
 		// Load the imported file
 		} else {
@@ -273,45 +271,17 @@ public class CaebatModel extends Item {
 			try {
 				uri = new URI("file:" + userDir + separator + name);
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("CaebatModel Message: Error!  Could not load the specified " 
+						+ "file from "+ userDir +".  Check your data and try again.");
 			}
 		}
 		
 		// Load the components from the file
 		IPSReader reader = new IPSReader();
-		Form newForm = null;
-		newForm = reader.read(uri);
+		Form newForm = reader.read(uri);
 		
-		ArrayList<Component> components = newForm.getComponents();
-		ArrayList<Component> existingComponents = form.getComponents();
-		
-		// Update the components by copying the new ones
-		if (components != null && components.size() == 4) {
-
-			// Replace the old components
-			if (existingComponents.size() == 4) {
-				((DataComponent) existingComponents.get(0))
-						.copy((DataComponent) components.get(0));
-				((TableComponent) existingComponents.get(1))
-						.copy((TableComponent) components.get(1));
-				((TableComponent) existingComponents.get(2))
-						.copy((TableComponent) components.get(2));
-				((MasterDetailsComponent) existingComponents.get(3))
-						.copy((MasterDetailsComponent) components.get(3));
-			} else {
-				// Add the new components
-				form.addComponent((DataComponent) components.get(0));
-				form.addComponent((TableComponent) components.get(1));
-				form.addComponent((TableComponent) components.get(2));
-				form.addComponent((MasterDetailsComponent) components.get(3));	
-			}
-
-
-		} else {
-			System.out.println("Caebat Model Message: Could not read in "
-					+ "a valid case for processing.");
-		}
-		
+		// Put the loaded information in the CaebatModel form
+		// TODO : Should I just reassign?  .. form = reader.read(uri) ??
+		form.copy(newForm);
 	}
 }

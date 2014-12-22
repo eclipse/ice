@@ -58,27 +58,36 @@ public class IPSWriter implements IWriter{
 			return;
 		}
 		
+		// Get the components from the form and make sure we have a 
+		// valid place that we can write the file out to 
 		ArrayList<Component> components = form.getComponents();
 		File outputFile = new File(outputURI.getPath());
 		if (!outputFile.exists()) {
 			try {
 				outputFile.createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("IPSWriter Message: Error! Could not" 
+						+ " create output file at " + outputURI.getPath());
 			}
 		}
+		
+		// Make sure that the form had data that looks correct, and the output
+		// file exists
 		if (components != null && components.size() > 3 && outputFile.isFile()) {
 			try {
+				// Get an output stream to the file
 				OutputStream stream = new FileOutputStream(outputFile);
 				int numComponents = components.size();
 				
+				// Write a header portion and each of the components 
 				writeICEHeader(stream);
 				writeGlobalConfig((TableComponent) components.get(1), stream);
 				writePortsTable((TableComponent) components.get(2), stream);
-				MasterDetailsComponent masterDetails = (MasterDetailsComponent) components.get(3);
+				MasterDetailsComponent masterDetails = 
+						(MasterDetailsComponent) components.get(3);
 				for ( int i = 0; i < masterDetails.numberOfMasters(); i++) {
-					writeComponent((DataComponent) masterDetails.getDetailsAtIndex(i), stream);
+					writeComponent((DataComponent) 
+							masterDetails.getDetailsAtIndex(i), stream);
 				}
 				writeTimeLoopData((DataComponent) components.get(0), stream);
 				stream.close();
