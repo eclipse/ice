@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item.utilities.trilinos;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.Persistable;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -201,7 +201,7 @@ public class Parameter implements Persistable {
 		// begin-user-code
 
 		// Initialize JAXBManipulator
-		ICEJAXBManipulator jaxbManipulator = new ICEJAXBManipulator();
+		ICEJAXBHandler jaxbManipulator = new ICEJAXBHandler();
 
 		// Call the read() on jaxbManipulator to create a new Object instance
 		// from the inputStream
@@ -238,7 +238,7 @@ public class Parameter implements Persistable {
 		// begin-user-code
 
 		// Initialize JAXBManipulator
-		ICEJAXBManipulator jaxbManipulator = new ICEJAXBManipulator();
+		ICEJAXBHandler jaxbManipulator = new ICEJAXBHandler();
 
 		// Call the write() on jaxbManipulator to write to outputStream
 		try {

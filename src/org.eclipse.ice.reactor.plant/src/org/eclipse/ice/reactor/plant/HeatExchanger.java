@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -415,7 +415,7 @@ public class HeatExchanger extends GeometricalComponent {
 		// begin-user-code
 
 		// Initialize JAXBManipulator.
-		jaxbManipulator = new ICEJAXBManipulator();
+		jaxbManipulator = new ICEJAXBHandler();
 
 		// Call the read() on jaxbManipulator to create a new Object instance
 		// from the inputStream.

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.InputStream;
@@ -114,7 +114,7 @@ public class Quad extends Polygon {
 		// begin-user-code
 
 		// Initialize a JAXBManipulator.
-		jaxbManipulator = new ICEJAXBManipulator();
+		jaxbManipulator = new ICEJAXBHandler();
 
 		// Call the read() on jaxbManipulator to create a new Object instance
 		// from the inputStream.

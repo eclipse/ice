@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 
 import java.io.File;
 
@@ -488,7 +488,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * The ICEJAXBManipulator used to marshal Items to and from XML.
+	 * The ICEJAXBHandler used to marshal Items to and from XML.
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
@@ -496,7 +496,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	protected ICEJAXBManipulator jaxbManipulator;
+	protected ICEJAXBHandler jaxbManipulator;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -774,7 +774,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 		// begin-user-code
 
 		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
+		jaxbManipulator = new ICEJAXBHandler();
 
 		// Call the write() on jaxbManipulator to write to outputStream
 		try {
@@ -1637,7 +1637,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 		// begin-user-code
 
 		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
+		jaxbManipulator = new ICEJAXBHandler();
 
 		// Call the read() on jaxbManipulator to create a new Object instance
 		// from the inputStream

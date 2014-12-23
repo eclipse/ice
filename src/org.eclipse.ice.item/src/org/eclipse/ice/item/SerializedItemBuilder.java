@@ -14,7 +14,7 @@ package org.eclipse.ice.item;
 
 import static org.eclipse.ice.item.Item.*;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 import java.io.BufferedReader;
@@ -121,7 +121,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 		char[] buffer = null;
 		Writer writer = null;
 		Reader reader = null;
-		ICEJAXBManipulator xmlMarshaller = new ICEJAXBManipulator();
+		ICEJAXBHandler xmlMarshaller = new ICEJAXBHandler();
 		boolean tryAgain = false;
 
 		// The input stream should be legit
