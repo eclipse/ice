@@ -20,6 +20,8 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
 
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -30,6 +32,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.caebat.kvPair.CAEBATKVPairBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.nuclear.MOOSEModelBuilder;
 import org.junit.AfterClass;
@@ -128,11 +131,18 @@ public class XMLPersistenceProviderTester {
 
 		// Setup the XMLPersistenceProvider
 		xmlpp = new XMLPersistenceProvider(project);
-		xmlpp.start();
-
-		// Register the MOOSE model builder with it so that it can determine
-		// class information for unmarshalling Items.
+		// Register the MOOSE model and the CAEBAT key-value pair builders with
+		// it so that it can determine class information for unmarshalling
+		// Items.
 		xmlpp.addBuilder(new MOOSEModelBuilder());
+		xmlpp.addBuilder(new CAEBATKVPairBuilder());
+		try {
+			// Start the service
+			xmlpp.start();
+		} catch (JAXBException e) {
+			e.printStackTrace();
+			fail();
+		}
 
 		return;
 	}
@@ -271,6 +281,7 @@ public class XMLPersistenceProviderTester {
 
 		// Create a MOOSE item
 		MOOSEModelBuilder builder = new MOOSEModelBuilder();
+		CAEBATKVPairBuilder caebatBuilder = new CAEBATKVPairBuilder();
 		Item item = builder.build(project);
 		String name;
 		int passedCount = 0;
@@ -324,6 +335,24 @@ public class XMLPersistenceProviderTester {
 		// Check the project and make sure it is gone
 		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
 		assertFalse(checkPersistedFile(name));
+
+		// Add a CAEBAT KVPair item, which has a hyphenated name, to make sure
+		// the the provider can handle it.
+		Item caebatItem = caebatBuilder.build(project);
+		caebatItem.setId(5);
+		assertTrue(xmlpp.persistItem(caebatItem));
+		pause(2);
+		items = xmlpp.loadItems();
+		// Check the list
+		passedCount = 0;
+		for (Item listItem : items) {
+			// Look for the correct name and item ids
+			if (listItem.getName().equals(CAEBATKVPairBuilder.name)
+					&& listItem.getId() == 5) {
+				passedCount++;
+			}
+		}
+		assertEquals(1,passedCount);
 
 		return;
 	}

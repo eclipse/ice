@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.core.resources.IFile;
@@ -35,7 +36,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
-
 import org.eclipse.ice.core.iCore.IPersistenceProvider;
 
 /**
@@ -52,6 +52,11 @@ import org.eclipse.ice.core.iCore.IPersistenceProvider;
  * blocking.
  * 
  * Items that are loaded by the provider are not constructed with a project.
+ * 
+ * This provider should always be started AFTER all of the Items are registered
+ * with it because registering Items while it is running would require stopping
+ * the thread and recreating the JAXB context. That is easiest enough to do, but
+ * it won't be implemented here until we get a feature request for it.
  * 
  * @author Jay Jay Billings
  * 
@@ -117,6 +122,12 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	private Hashtable<Integer, String> itemIdMap = new Hashtable<Integer, String>();
 
 	/**
+	 * The JAXBContext that is used to create (un)marshalling tools for the XML
+	 * files.
+	 */
+	JAXBContext context;
+
+	/**
 	 * Empty default constructor. No work to do.
 	 */
 	public XMLPersistenceProvider() {
@@ -153,7 +164,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 				// for <itemName>_<itemId>.xml.
 				if (resource.getType() == IResource.FILE
 						&& resource.getName().matches(
-								"^[a-zA-Z0-9_]*_\\d+\\.xml$")) {
+								"^[a-zA-Z0-9_\\-]*_\\d+\\.xml$")) {
 					names.add(resource.getName());
 				}
 			}
@@ -183,16 +194,67 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	}
 
 	/**
-	 * This operation is called to start the XMLPersistenceProvider by the OSGi
-	 * Declarative Services engine. It sets up the project space and starts the
-	 * event loop.
+	 * This operation is responsible for creating the project space used by the
+	 * XMLPersistenceProvider.
 	 */
-	public void start() {
+	private void createProjectSpace() {
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		String projectName = "itemDB";
 		System.getProperty("file.separator");
+
+		try {
+			// Get the project handle
+			project = workspaceRoot.getProject(projectName);
+			// If the project does not exist, create it
+			if (!project.exists()) {
+				// Create the project description
+				IProjectDescription desc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription(projectName);
+				// Create the project
+				project.create(desc, null);
+			}
+			// Open the project if it is not already open
+			if (project.exists() && !project.isOpen()) {
+				project.open(null);
+			}
+		} catch (CoreException e) {
+			// Catch exception for creating the project
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This operation creates the JAXBContext used by the provider to create XML
+	 * (un)marshallers.
+	 * 
+	 * @throws JAXBException
+	 *             An exception indicating that the JAXB Context could not be
+	 *             created.
+	 */
+	private void createJAXBContext() throws JAXBException {
+		// Make an array to store the class list of registered Items
+		ArrayList<Class> classList = new ArrayList<Class>();
+		Class[] classArray = {};
+		// Create the list of classes for the JAXBContext
+		for (Item refItem : referenceItems) {
+			classList.add(refItem.getClass());
+		}
+		// Create new JAXB class context and unmarshaller
+		context = JAXBContext.newInstance(classList.toArray(classArray));
+	}
+
+	/**
+	 * This operation is called to start the XMLPersistenceProvider by the OSGi
+	 * Declarative Services engine. It sets up the project space and starts the
+	 * event loop.
+	 * 
+	 * @throws JAXBException
+	 *             An exception indicating that the JAXB Context could not be
+	 *             created.
+	 */
+	public void start() throws JAXBException {
 
 		// Debug information
 		System.out.println("XMLPersistenceProvider Message: "
@@ -201,26 +263,11 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 		// Setup the project if needed. Setup may not be needed if the
 		// alternative constructor was used.
 		if (project == null) {
-			try {
-				// Get the project handle
-				project = workspaceRoot.getProject(projectName);
-				// If the project does not exist, create it
-				if (!project.exists()) {
-					// Create the project description
-					IProjectDescription desc = ResourcesPlugin.getWorkspace()
-							.newProjectDescription(projectName);
-					// Create the project
-					project.create(desc, null);
-				}
-				// Open the project if it is not already open
-				if (project.exists() && !project.isOpen()) {
-					project.open(null);
-				}
-			} catch (CoreException e) {
-				// Catch exception for creating the project
-				e.printStackTrace();
-			}
+			createProjectSpace();
 		}
+
+		// Create the JAXB context
+		createJAXBContext();
 
 		// Get the names and ids for all of the Items that have been persisted.
 		loadItemIdMap();
@@ -308,6 +355,33 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	}
 
 	/**
+	 * This operation returns an output stream containing the XML representation
+	 * of an Item stored in a QueuedTask.
+	 * 
+	 * @param currentTask The task that should have its Item converted to XML
+	 * @return the output stream containing the Item as XML
+	 */
+	private ByteArrayOutputStream createItemXMLStream(QueuedTask currentTask) {
+		// Get the XML
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		// Create the marshaller and write the item
+		Marshaller marshaller;
+		try {
+			marshaller = context.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+					Boolean.TRUE);
+			marshaller.marshal(currentTask.item, outputStream);
+		} catch (JAXBException e) {
+			// Complain
+			e.printStackTrace();
+			System.out.println("XMLPersistenceProvider Message: "
+					+ "Failed to persist " + currentTask.item.getName() + " "
+					+ currentTask.item.getId());
+		}
+		return outputStream;
+	}
+	
+	/**
 	 * A utility operation for processing tasks in the event loop.
 	 * 
 	 * @param currentTask
@@ -329,16 +403,16 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 				// Process persists
 				if ("persist".equals(currentTask.task)
 						&& !(currentTask.item instanceof ReactorAnalyzer)) {
-					// Get the XML
-					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-					// Skip ReactorAnalyzers
-					currentTask.item.persistToXML(outputStream);
+					// Create an output stream containing the XML
+					ByteArrayOutputStream outputStream = createItemXMLStream(currentTask);
 					// Dump it to the file
 					ByteArrayInputStream inputStream = new ByteArrayInputStream(
 							outputStream.toByteArray());
+					// Update the output file if it already exists
 					if (file.exists()) {
 						file.setContents(inputStream, IResource.FORCE, null);
 					} else {
+						// Or create it from scratch
 						file.create(inputStream, IResource.FORCE, null);
 					}
 					// Update the item id map
@@ -453,20 +527,12 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 		// Local Declarations
 		Item item = null;
 		String fileName;
-		ArrayList<Class> classList = new ArrayList<Class>();
-		Class[] classArray = {};
 
 		try {
 			// If the map contains the item, load it.
 			fileName = itemIdMap.get(itemID);
 			if (fileName != null) {
-				// Create the list of classes for the JAXBContext
-				for (Item refItem : referenceItems) {
-					classList.add(refItem.getClass());
-				}
-				// Create new JAXB class context and unmarshaller
-				JAXBContext context = JAXBContext.newInstance(classList
-						.toArray(classArray));
+				// Create the unmarshaller and load the item
 				Unmarshaller unmarshaller = context.createUnmarshaller();
 				item = (Item) unmarshaller.unmarshal(project.getFile(fileName)
 						.getContents());
