@@ -34,7 +34,8 @@ public interface IWriter {
 	 * @param formToWrite
 	 *            The Form to persist to file.
 	 * @param file
-	 *            The filename where the contents should be written.
+	 *            The filename where the contents should be written. If this
+	 *            file does not exist, it shall be created.
 	 */
 	public void write(Form formToWrite, IFile file);
 
@@ -45,7 +46,8 @@ public interface IWriter {
 	 * replace it with the given value.
 	 * 
 	 * @param file
-	 *            The filename where the contents should be written.
+	 *            The filename where the contents should be written. If it does
+	 *            not exist, this operation will fail.
 	 * @param regex
 	 *            The regular expression to search.
 	 * @param value

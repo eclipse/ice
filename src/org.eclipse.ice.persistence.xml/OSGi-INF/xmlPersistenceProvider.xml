@@ -3,6 +3,8 @@
    <implementation class="xmlpp.XMLPersistenceProvider"/>
    <service>
       <provide interface="org.eclipse.ice.core.iCore.IPersistenceProvider"/>
+      <provide interface="org.eclipse.ice.io.serializable.IWriter"/>
+      <provide interface="org.eclipse.ice.io.serializable.IReader"/>
    </service>
    <reference bind="addBuilder" cardinality="1..n" interface="org.eclipse.ice.item.ItemBuilder" name="ItemBuilder" policy="dynamic"/>
 </scr:component>

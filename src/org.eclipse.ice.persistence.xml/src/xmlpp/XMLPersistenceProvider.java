@@ -14,6 +14,7 @@ package xmlpp;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -85,7 +86,9 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	/**
 	 * This is a private class used to store queue events. The Item or its id
 	 * are stored along with one of the words "persist" or "delete" to denote
-	 * which task should be performed for the given item.
+	 * which task should be performed for the given item. Alternatively, if the
+	 * task says "write" the file attribute of the task is used to write the
+	 * Form to the specified IFile to satisfy the IWriter interface.
 	 * 
 	 * @author Jay Jay Billings
 	 * 
@@ -96,9 +99,18 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 		 */
 		public Item item;
 		/**
-		 * The task that should be performed; one of "persist" or "delete."
+		 * The task that should be performed; one of "persist," "delete," or
+		 * "write."
 		 */
 		public String task;
+		/**
+		 * The Form that should be persisted as part of the IWriter interface.
+		 */
+		public Form form;
+		/**
+		 * The file to which the Form should be written.
+		 */
+		public IFile file;
 	}
 
 	/**
@@ -371,11 +383,11 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * This operation returns an output stream containing the XML representation
 	 * of an Item stored in a QueuedTask.
 	 * 
-	 * @param currentTask
-	 *            The task that should have its Item converted to XML
+	 * @param obj
+	 *            the object to write to the stream
 	 * @return the output stream containing the Item as XML
 	 */
-	private ByteArrayOutputStream createItemXMLStream(QueuedTask currentTask) {
+	private ByteArrayOutputStream createXMLStream(Object obj) {
 		// Get the XML
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		// Create the marshaller and write the item
@@ -384,15 +396,43 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
 					Boolean.TRUE);
-			marshaller.marshal(currentTask.item, outputStream);
+			marshaller.marshal(obj, outputStream);
 		} catch (JAXBException e) {
 			// Complain
 			e.printStackTrace();
 			System.out.println("XMLPersistenceProvider Message: "
-					+ "Failed to persist " + currentTask.item.getName() + " "
-					+ currentTask.item.getId());
+					+ "Failed to execute persistence task for " + obj);
 		}
 		return outputStream;
+	}
+
+	/**
+	 * This operation writes the specified object to the file in XML.
+	 * 
+	 * @param obj
+	 *            The object to be written
+	 * @param file
+	 *            The file to where it should be written
+	 */
+	private void writeFile(Object obj, IFile file) {
+		// Create an output stream containing the XML.
+		ByteArrayOutputStream outputStream = createXMLStream(obj);
+		// Convert it to an input stream so it can be pushed to file
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(
+				outputStream.toByteArray());
+		try {
+			// Update the output file if it already exists
+			if (file.exists()) {
+				file.setContents(inputStream, IResource.FORCE, null);
+			} else {
+				// Or create it from scratch
+				file.create(inputStream, IResource.FORCE, null);
+			}
+		} catch (CoreException e) {
+			// Complain
+			e.printStackTrace();
+		}
+		return;
 	}
 
 	/**
@@ -405,30 +445,24 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 
 		// Local Declarations
 		String name = null;
+		IFile file = null;
 
 		try {
 			// Handle the task if it is available
 			if (currentTask != null) {
-				// Setup the file name
-				name = currentTask.item.getName().replaceAll("\\s+", "_") + "_"
-						+ currentTask.item.getId() + ".xml";
-				// Get the file in the project
-				IFile file = project.getFile(name);
+				// Get the file name if this is a persist or delete
+				if ("persist".equals(currentTask.task) || "delete".equals(currentTask.task)) {
+					// Setup the file name
+					name = currentTask.item.getName().replaceAll("\\s+", "_") + "_"
+							+ currentTask.item.getId() + ".xml";
+					// Get the file in the project
+					file = project.getFile(name);
+				}
 				// Process persists
 				if ("persist".equals(currentTask.task)
 						&& !(currentTask.item instanceof ReactorAnalyzer)) {
-					// Create an output stream containing the XML
-					ByteArrayOutputStream outputStream = createItemXMLStream(currentTask);
-					// Dump it to the file
-					ByteArrayInputStream inputStream = new ByteArrayInputStream(
-							outputStream.toByteArray());
-					// Update the output file if it already exists
-					if (file.exists()) {
-						file.setContents(inputStream, IResource.FORCE, null);
-					} else {
-						// Or create it from scratch
-						file.create(inputStream, IResource.FORCE, null);
-					}
+					// Send the Item off to be written to the file
+					writeFile(currentTask.item, file);
 					// Update the item id map
 					itemIdMap.put(currentTask.item.getId(), file.getName());
 				} else if ("delete".equals(currentTask.task) && file.exists()) {
@@ -436,6 +470,10 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 					file.delete(true, null);
 					// Update the item id map
 					itemIdMap.remove(currentTask.item.getId());
+				} else if ("write".equals(currentTask.task)) {
+					// Deal with simple Form write requests from the IWriter
+					// interface.
+					writeFile(currentTask.form, currentTask.file);
 				}
 			} else {
 				// Otherwise sleep for a bit
@@ -489,7 +527,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * @return True if the task was submitted, false if there was some exception
 	 *         or the Item was null.
 	 */
-	private boolean submitTask(Item item, String taskName) {
+	private boolean submitTask(Item item, String taskName, Form form, IFile file) {
 
 		// Local Declarations
 		boolean retVal = true;
@@ -508,7 +546,22 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 				exception.printStackTrace();
 				retVal = false;
 			}
+		} else if (form != null && file != null) {
+			// Otherwise submit the task if the Form and IFile are good (for the
+			// IWriter interface). Setup the task.
+			task.task = taskName;
+			task.form = form;
+			task.file = file;
+			// Submit the task
+			try {
+				taskQueue.add(task);
+			} catch (Exception exception) {
+				// Complain
+				exception.printStackTrace();
+				retVal = false;
+			}
 		} else {
+			// The submission was invalid
 			retVal = false;
 		}
 		return retVal;
@@ -525,7 +578,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 */
 	public boolean persistItem(Item item) {
 		// Submit the job
-		return submitTask(item, "persist");
+		return submitTask(item, "persist", null, null);
 	}
 
 	/**
@@ -577,7 +630,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 */
 	public boolean deleteItem(Item item) {
 		// Submit the job
-		return submitTask(item, "delete");
+		return submitTask(item, "delete", null, null);
 	}
 
 	/**
@@ -594,7 +647,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 */
 	public boolean updateItem(Item item) {
 		// Submit the job
-		return submitTask(item, "persist");
+		return submitTask(item, "persist", null, null);
 	}
 
 	/**
@@ -628,8 +681,9 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 */
 	@Override
 	public void write(Form formToWrite, IFile file) {
-		// TODO Auto-generated method stub
-
+		// Submit the job
+		submitTask(null, "write", formToWrite, file);
+		return;
 	}
 
 	/*
@@ -667,8 +721,23 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 */
 	@Override
 	public Form read(IFile file) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Form form = null;
+
+		try {
+			// Create the marshaller
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			// Grab the form
+			form = (Form) unmarshaller.unmarshal(file.getContents());
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return form;
 	}
 
 	/*
