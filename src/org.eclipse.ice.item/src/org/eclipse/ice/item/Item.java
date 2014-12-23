@@ -1163,24 +1163,12 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 		if (allowedActions.contains(actionName) && enabled) {
 			// Write the file to XML if requested
 			if (actionName.equals(nativeExportActionString)) {
-				// Write the Form to an output stream
-				form.persistToXML(outputStream);
 				// Setup the IFile handle
 				outputFile = project.getFile(filename + ".xml");
-				try {
-					// If the output file already exists, delete it
-					if (outputFile.exists()) {
-						outputFile.delete(false, null);
-					}
-					// Create the contents of the IFile from the output stream
-					outputFile
-							.create(new ByteArrayInputStream(outputStream
-									.toByteArray()), false, null);
-					retStatus = FormStatus.Processed;
-				} catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// Get the XML io service
+				IWriter xmlWriter = ioService.getWriter("xml");
+				// Write the file
+				xmlWriter.write(form, outputFile);
 			} else if (actionName.equals(taggedExportActionString)) {
 				// Otherwise write the file to a tagged output if requested -
 				// first create the action
@@ -2521,6 +2509,16 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 		}
 		return copiedFileHandle;
 		// end-user-code
+	}
+
+	/**
+	 * This operation returns the IO service for subclasses without giving them
+	 * access to the private handle.
+	 * 
+	 * @return The IOService instance
+	 */
+	protected IOService getIOService() {
+		return ioService;
 	}
 
 	/**

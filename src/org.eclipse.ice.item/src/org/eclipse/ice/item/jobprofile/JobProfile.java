@@ -14,21 +14,29 @@ package org.eclipse.ice.item.jobprofile;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 
 /**
  * <!-- begin-UML-doc -->
@@ -112,6 +120,40 @@ public class JobProfile extends Item {
 		// end-user-code
 	}
 
+	/**
+	 * This operation writes a launcher to an Item XML file
+	 * @param launcher the launcher to write
+	 * @param file the file where the launcher should be written
+	 */
+	private void writeLauncherItemToFile(JobLauncher launcher, IFile file) {
+		// Create an input stream for the file by first writing it to an
+		// output stream
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		// Use the JAXB handler to dump this to a file
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(JobLauncher.class);
+		classList.add(Form.class);
+		try {
+			// Write the file to the output stream
+			xmlHandler.write(launcher, outputStream);
+			// Write the file to the input stream.
+			ByteArrayInputStream fileInputStream = new ByteArrayInputStream(
+					outputStream.toByteArray());
+			// Write the file contents
+			if (file.exists()) {
+				file.setContents(fileInputStream, IResource.FORCE, null);
+			} else {
+				// Write the file
+				file.create(fileInputStream, false, null);
+			}
+		} catch (NullPointerException | JAXBException | IOException
+				| CoreException e1) {
+			// Complain
+			e1.printStackTrace();
+		}
+	}
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -248,28 +290,9 @@ public class JobProfile extends Item {
 			// Persist to XML JobLauncher.
 			IFile file = jobProfileFolder.getFile(launcher.getName()
 					.replaceAll("\\s+", "_") + ".xml");
+			// Dump the launcher
+			writeLauncherItemToFile(launcher,file);
 
-			// Create an input stream for the file by first writing it to an
-			// output stream
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			launcher.persistToXML(outputStream);
-			// Write the file to the input stream - Forest, is there a better
-			// way to do this? ~JJB 20120919 17:40
-			InputStream fileInputStream = new ByteArrayInputStream(outputStream
-					.toString().getBytes());
-
-			// Persist the XML file
-			try {
-				// Delete it if it is already there.
-				if (file.exists()) {
-					file.delete(true, null);
-				}
-				// Write the file
-				file.create(fileInputStream, false, null);
-			} catch (CoreException e) {
-				// Complain
-				e.printStackTrace();
-			}
 			// Update the status
 			status = FormStatus.Processed;
 		} else {
