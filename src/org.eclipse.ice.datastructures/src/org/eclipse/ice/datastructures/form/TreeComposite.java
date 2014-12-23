@@ -1159,7 +1159,7 @@ public class TreeComposite extends ICEObject implements Composite,
 
 		// Check that the incoming list is valid
 		if (exemplars != null) {
-			childExemplars = (ArrayList<TreeComposite>) exemplars.clone();
+			childExemplars = new ArrayList<TreeComposite>(exemplars);
 		}
 
 		return;
@@ -1219,7 +1219,7 @@ public class TreeComposite extends ICEObject implements Composite,
 	 */
 	public ArrayList<TreeComposite> getChildExemplars() {
 		// begin-user-code
-		return (ArrayList<TreeComposite>) childExemplars.clone();
+		return new ArrayList<TreeComposite>(childExemplars);
 		// end-user-code
 	}
 
