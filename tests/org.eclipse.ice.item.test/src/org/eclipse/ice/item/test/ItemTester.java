@@ -1148,12 +1148,12 @@ public class ItemTester implements ItemListener {
 		IReader fakeReader = new IReader() {
 
 			@Override
-			public Form read(URI uri) {
+			public Form read(IFile file) {
 				return new Form();
 			}
 
 			@Override
-			public ArrayList<Entry> findAll(URI uri, String regex) {
+			public ArrayList<Entry> findAll(IFile file, String regex) {
 				ArrayList<Entry> fakeEntry = new ArrayList<Entry>();
 				return fakeEntry;
 			}
@@ -1169,12 +1169,12 @@ public class ItemTester implements ItemListener {
 		IWriter fakeWriter = new IWriter() {
 
 			@Override
-			public void write(Form formToWrite, URI fileURI) {
+			public void write(Form formToWrite, IFile file) {
 				return;
 			}
 
 			@Override
-			public void replace(URI fileURI, String regex, String value) {
+			public void replace(IFile file, String regex, String value) {
 				return;
 			}
 

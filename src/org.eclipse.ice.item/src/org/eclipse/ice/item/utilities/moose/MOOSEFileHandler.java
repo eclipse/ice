@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -40,6 +41,8 @@ import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 
 import java.util.Map;
+
+import javax.naming.OperationNotSupportedException;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -676,7 +679,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *            The URI of the file to be written.
 	 */
 	@Override
-	public void write(Form formToWrite, URI uri) {
+	public void write(Form formToWrite, IFile file) {
 
 		// Make sure we have a good Form.
 		if (formToWrite == null) {
@@ -694,7 +697,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			for (int i = 0; i < mooseTree.getNumberOfChildren(); i++) {
 				children.add(mooseTree.getChildAtIndex(i));
 			}
-
+			URI uri = file.getLocationURI();
 			dumpInputFile(uri.getPath(), children);
 		} else {
 			throw new IllegalArgumentException(
@@ -707,11 +710,22 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	}
 
-	/**
+	/*
+	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.resources
+	 * .IFile, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void replace(URI fileURI, String regex, String value) {
+	public void replace(IFile file, String regex, String value) {
+		try {
+			throw new OperationNotSupportedException("MOOSEFileHandler Error: "
+					+ "IWriter.replace() is not supported.");
+		} catch (OperationNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -735,11 +749,12 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *            The URI of the file to be read.
 	 */
 	@Override
-	public Form read(URI uri) {
+	public Form read(IFile file) {
 
 		// Local declarations
 		String fileExt = "";
 		Form returnForm = new Form();
+		URI uri = file.getLocationURI();
 
 		// Make sure we have a valid URI
 		if (uri != null) {
@@ -823,11 +838,11 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 * 
 	 */
 	@Override
-	public ArrayList<Entry> findAll(URI uri, String regex) {
+	public ArrayList<Entry> findAll(IFile file, String regex) {
 
 		// Local declarations
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
-		Form form = read(uri);
+		Form form = read(file);
 
 		TreeComposite tree = (TreeComposite) form
 				.getComponent(MOOSEModel.mooseTreeCompositeId);

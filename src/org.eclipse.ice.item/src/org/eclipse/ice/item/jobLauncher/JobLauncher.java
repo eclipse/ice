@@ -1982,12 +1982,11 @@ public class JobLauncher extends Item {
 
 				// Get the regex from the subclass
 				String regex = getFileDependenciesSearchString();
-				URI fileURI = project.getFile(entry.getValue())
-						.getLocationURI();
+				IFile file = project.getFile(entry.getValue());
 
 				// Make sure the data is valid then update the file component
-				if (regex != null && fileURI != null) {
-					updateFileDependencies(fileURI, regex);
+				if (regex != null && file.exists()) {
+					updateFileDependencies(file, regex);
 				}
 			}
 		}
@@ -2001,10 +2000,10 @@ public class JobLauncher extends Item {
 	 * IReader to search the input file for all occurrences of the provided
 	 * regular expression, and return associate File Entries.
 	 * 
-	 * @param uri
-	 * @param regex
+	 * @param file the file to update
+	 * @param regex the regular expression that should be found in the file
 	 */
-	protected void updateFileDependencies(URI uri, String regex) {
+	protected void updateFileDependencies(IFile file, String regex) {
 
 		// Get the old file component and clear the old Entries
 		ArrayList<String> entryNames = new ArrayList<String>();
@@ -2023,7 +2022,7 @@ public class JobLauncher extends Item {
 		// Use the IReader to find all occurrances of the given Regular
 		// Expression
 		// For each of those add a new Input file Entry
-		for (Entry e : getReader().findAll(uri, regex)) {
+		for (Entry e : getReader().findAll(file, regex)) {
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
 					e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);

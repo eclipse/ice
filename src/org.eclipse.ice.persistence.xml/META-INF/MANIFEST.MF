@@ -6,6 +6,7 @@ Bundle-Version: 2.1.01
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.ice.core.iCore,
  org.eclipse.ice.datastructures.ICEObject,
+ org.eclipse.ice.io.serializable,
  org.eclipse.ice.item,
  org.eclipse.ice.reactorAnalyzer
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.8.1",

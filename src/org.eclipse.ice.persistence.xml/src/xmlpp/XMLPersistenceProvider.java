@@ -14,6 +14,7 @@ package xmlpp;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
@@ -21,6 +22,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.naming.OperationNotSupportedException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -33,10 +35,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
 import org.eclipse.ice.core.iCore.IPersistenceProvider;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
 
 /**
  * This class implements the IPersistenceProvider interface using the native XML
@@ -58,10 +64,17 @@ import org.eclipse.ice.core.iCore.IPersistenceProvider;
  * the thread and recreating the JAXB context. That is easiest enough to do, but
  * it won't be implemented here until we get a feature request for it.
  * 
+ * The provider also implements the IReader and IWriter interfaces and is
+ * registered with the framework as an XML IO Service. It does not support the
+ * find and replace operations from the IReader and IWriter interfaces and it
+ * will throw an exception if either is called. In the case of find() it returns
+ * null.
+ * 
  * @author Jay Jay Billings
  * 
  */
-public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
+public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
+		IReader, IWriter {
 
 	/**
 	 * An atomic boolean used to manage the event loop. It is set to true when
@@ -358,7 +371,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	 * This operation returns an output stream containing the XML representation
 	 * of an Item stored in a QueuedTask.
 	 * 
-	 * @param currentTask The task that should have its Item converted to XML
+	 * @param currentTask
+	 *            The task that should have its Item converted to XML
 	 * @return the output stream containing the Item as XML
 	 */
 	private ByteArrayOutputStream createItemXMLStream(QueuedTask currentTask) {
@@ -380,7 +394,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 		}
 		return outputStream;
 	}
-	
+
 	/**
 	 * A utility operation for processing tasks in the event loop.
 	 * 
@@ -603,6 +617,87 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 		}
 
 		return items;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.io.serializable.IWriter#write(org.eclipse.ice.datastructures
+	 * .form.Form, java.net.URI)
+	 */
+	@Override
+	public void write(Form formToWrite, IFile file) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IWriter#replace(java.net.URI,
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void replace(IFile file, String regex, String value) {
+		try {
+			throw new OperationNotSupportedException(
+					"XMLPersistenceProvider Error: "
+							+ "IWriter.replace() is not supported.");
+		} catch (OperationNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IWriter#getWriterType()
+	 */
+	@Override
+	public String getWriterType() {
+		return "xml";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IReader#read(java.net.URI)
+	 */
+	@Override
+	public Form read(IFile file) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IReader#findAll(java.net.URI,
+	 * java.lang.String)
+	 */
+	@Override
+	public ArrayList<Entry> findAll(IFile file, String regex) {
+		try {
+			throw new OperationNotSupportedException(
+					"XMLPersistenceProvider Error: "
+							+ "IReader.findAll() is not supported.");
+		} catch (OperationNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IReader#getReaderType()
+	 */
+	@Override
+	public String getReaderType() {
+		return "xml";
 	}
 
 }

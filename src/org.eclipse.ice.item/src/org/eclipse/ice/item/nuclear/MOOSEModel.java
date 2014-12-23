@@ -42,37 +42,27 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * An MOOSE Item for creating MOOSE input files. This Item expects to find the
  * YAML and action syntax files necessary in the ${workspace}/MOOSE directory.
  * These files can be generated automatically using the ICE YAML/action syntax
  * generator, or manually at the command line with the command(s):
  * 
- * <br>
  * ./{moose-app}-opt --yaml > {moose-app}.yaml <br>
  * ./{moose-app}-opt --syntax > {moose-app}.syntax
  * 
  * These lines must be executed for each MOOSE-based code to be used by ICE.
- * </p>
- * <p>
  * This class' Item builder defaults the MOOSE-based application to null,
  * forcing the user to select the app. Once an app is selected, reviewEntries()
  * is triggered and loads the YAML spec. If the Item was imported from an input
  * file, any data from the input file is consolidated with the YAML file in the
  * reviewEntries() method as well.
- * </p>
- * <p>
+ *
  * It is not, in general, necessary to subclass this Item and all
  * reconfiguration can be done by the builder by setting the executable name
  * since the only thing that changes from application to application is the YAML
  * input file.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "MOOSEModel")
 public class MOOSEModel extends Item {
@@ -240,7 +230,7 @@ public class MOOSEModel extends Item {
 			IFile outputFile = project.getFile(outputFilename);
 			
 			// Write the Moose tree to file
-			writer.write(form, outputFile.getLocationURI());
+			writer.write(form, outputFile);
 		
 			// Refresh the Project space
 			refreshProjectSpace();
@@ -494,7 +484,7 @@ public class MOOSEModel extends Item {
 			if (modelFile.exists() && reader != null) {
 				
 				// Read the file and get the returned Form
-				Form readerForm = reader.read(modelFile.getLocationURI());
+				Form readerForm = reader.read(modelFile);
 				
 				// Get the TreeComposite from the read-in Form
 				tmpParentTree = (TreeComposite) readerForm.getComponent(mooseTreeCompositeId);
@@ -696,7 +686,7 @@ public class MOOSEModel extends Item {
 		
 		// Make sure we have a valid IReader
 		if (reader != null) {
-			readForm = reader.read(inputFile.getLocationURI());
+			readForm = reader.read(inputFile);
 		}
 
 		// Make sure we have a valid Form

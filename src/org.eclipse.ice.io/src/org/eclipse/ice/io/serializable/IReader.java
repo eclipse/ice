@@ -15,6 +15,7 @@ package org.eclipse.ice.io.serializable;
 import java.net.URI;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 
@@ -35,7 +36,7 @@ public interface IReader {
 	 *            The URI of the file to be read.
 	 * @return A Form object containing the data read in from the file.
 	 */
-	public Form read(URI uri);
+	public Form read(IFile file);
 
 	/**
 	 * This method can be used by realizations of this interface to provide the
@@ -43,16 +44,21 @@ public interface IReader {
 	 * expression in a file with the given URI and return a list of Entries
 	 * representing those occurrences.
 	 * 
+	 * @param file
+	 *            The file to search
 	 * @param regexp
 	 *            The regular expression to search.
 	 * @return A list of Entries representing occurrences of the given regular
 	 *         expression.
 	 */
-	public ArrayList<Entry> findAll(URI uri, String regex);
+	public ArrayList<Entry> findAll(IFile file, String regex);
 
 	/**
 	 * This method is used by the IOService to store unique references of
 	 * IReaders. It is used as the key in the IOService's IReader mapping.
+	 * 
+	 * This type should not include dots or other special characters. It should
+	 * just be the name of the format.
 	 * 
 	 * @return The String name of this IReader.
 	 */
