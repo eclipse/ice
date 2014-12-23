@@ -12,13 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.Persistable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -48,7 +42,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "EdgeProperties")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class EdgeProperties implements Persistable {
+public class EdgeProperties {
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -445,79 +439,5 @@ public class EdgeProperties implements Persistable {
 		return object;
 		// end-user-code
 	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * Loads--or unmarshals--an EdgeProperties from XML. Required by the
-	 * Persistable interface.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputStream
-	 *            An input stream from which the persistable should be loaded.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		ICEJAXBHandler jaxbManipulator = new ICEJAXBHandler();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((EdgeProperties) dataObject);
-
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return;
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * Persists--or marshals--an EdgeProperties to XML. Required by the
-	 * Persistable interface.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param outputStream
-	 *            An output stream to which the object should be stored.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void persistToXML(OutputStream outputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		ICEJAXBHandler jaxbManipulator = new ICEJAXBHandler();
-
-		// Call the write() on jaxbManipulator to write to outputStream
-		try {
-			jaxbManipulator.write(this, outputStream);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return;
-		// end-user-code
-	}
-
+	
 }

@@ -136,7 +136,7 @@ public class JobProfile extends Item {
 		classList.add(Form.class);
 		try {
 			// Write the file to the output stream
-			xmlHandler.write(launcher, outputStream);
+			xmlHandler.write(launcher, classList, outputStream);
 			// Write the file to the input stream.
 			ByteArrayInputStream fileInputStream = new ByteArrayInputStream(
 					outputStream.toByteArray());

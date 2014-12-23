@@ -16,13 +16,17 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import javax.xml.bind.JAXBException;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -297,25 +301,23 @@ public class BasicEntryContentProviderTester {
 		// Check contents - nothing has changed
 		assertTrue(contentProvider.equals(contentProviderCopy));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * Checks the xml persistence (load/persist) operations.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkXMLPersistence() {
-		// begin-user-code
+	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
+
 		// Local Declarations
 		BasicEntryContentProvider persistProvider, loadedProvider = null;
 		ArrayList<String> allowedValues = new ArrayList<String>();
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(BasicEntryContentProvider.class);
 
 		allowedValues.add("3");
 		allowedValues.add("5");
@@ -329,7 +331,7 @@ public class BasicEntryContentProviderTester {
 
 		// persist to an output stream
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		persistProvider.persistToXML(outputStream);
+		xmlHandler.write(persistProvider, classList, outputStream);
 
 		// Demonstrate a basic read in. Create file in memory and convert to an
 		// inputstream.
@@ -338,28 +340,10 @@ public class BasicEntryContentProviderTester {
 
 		// Initialize object and pass inputStream to read()
 		loadedProvider = new BasicEntryContentProvider();
-		loadedProvider.loadFromXML(inputStream);
+		loadedProvider = (BasicEntryContentProvider) xmlHandler.read(classList, inputStream);
 
 		// Check contents
 		assertTrue(persistProvider.equals(loadedProvider));
 
-		// The next following tests demonstrate behavior for when you pass null
-		// args for read()
-
-		// test for read - null args
-
-		// load from XML
-		loadedProvider.loadFromXML(null);
-
-		// checkContents - nothing has changed
-		assertTrue(loadedProvider.equals(persistProvider));
-
-		// args for write() - null args
-		outputStream = null;
-		persistProvider.persistToXML(outputStream);
-		// Since operation returns, outputStream should still be null
-		assertNull(outputStream);
-
-		// end-user-code
 	}
 }

@@ -18,7 +18,6 @@ import java.io.File;
 
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.Persistable;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 
 import java.util.ArrayList;
@@ -308,7 +307,7 @@ import java.nio.file.StandardCopyOption;
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Item")
-public class Item implements IComponentVisitor, Persistable, Identifiable,
+public class Item implements IComponentVisitor, Identifiable,
 		IUpdateableListener {
 	/**
 	 * <!-- begin-UML-doc -->
@@ -761,39 +760,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 		if (service != null) {
 			ioService = service;
 		}
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Persistable#persistToXML(OutputStream outputStream)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void persistToXML(OutputStream outputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBHandler();
-
-		// Call the write() on jaxbManipulator to write to outputStream
-		try {
-			jaxbManipulator.write(this, outputStream);
-
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		return;
-
-		// end-user-code
 	}
 
 	/**
@@ -1604,55 +1570,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 
 		// end-user-code
 
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation overrides the ICEObject.loadFromXML() operation to
-	 * properly load the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputstream
-	 *            <p>
-	 *            The InputStream from which the Item should be loaded.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputstream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBHandler();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputstream);
-			// Copy contents of new object into current data structure
-			this.copy((Item) dataObject);
-		} catch (NullPointerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		// Setup the Entry list and register dependencies
-		setupEntryList();
-
-		return;
-		// end-user-code
 	}
 
 	/**

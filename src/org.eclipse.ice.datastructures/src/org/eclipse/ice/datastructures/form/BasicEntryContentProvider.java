@@ -367,49 +367,6 @@ public class BasicEntryContentProvider extends ICEObject implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * Loads the data from xml stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            The inputStream.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBHandler();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((BasicEntryContentProvider) dataObject);
-		} catch (NullPointerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		// end-user-code
-	}
-
-	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#getTag()

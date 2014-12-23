@@ -12,15 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.item.utilities.trilinos;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.Persistable;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -38,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Parameter")
-public class Parameter implements Persistable {
+public class Parameter {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -184,76 +177,6 @@ public class Parameter implements Persistable {
 			name = entry.getName();
 			value = entryValue;
 		}
-
-		return;
-
-		// end-user-code
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Persistable#loadFromXML(InputStream inputStream)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		ICEJAXBHandler jaxbManipulator = new ICEJAXBHandler();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.name = ((Parameter) dataObject).name;
-			this.type = ((Parameter) dataObject).type;
-			this.value = ((Parameter) dataObject).value;
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		return;
-		// end-user-code
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Persistable#persistToXML(OutputStream outputStream)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void persistToXML(OutputStream outputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		ICEJAXBHandler jaxbManipulator = new ICEJAXBHandler();
-
-		// Call the write() on jaxbManipulator to write to outputStream
-		try {
-			jaxbManipulator.write(this, outputStream);
-
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
 
 		return;
 

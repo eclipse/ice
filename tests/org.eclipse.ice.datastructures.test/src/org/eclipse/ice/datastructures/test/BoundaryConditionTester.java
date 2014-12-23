@@ -17,12 +17,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
 import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
@@ -288,21 +294,26 @@ public class BoundaryConditionTester {
 	 * itself to XML and to load itself from an XML input stream.
 	 * </p>
 	 * <!-- end-UML-doc -->
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 * 
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
-	public void checkLoadingFromXML() {
-		// begin-user-code
+	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
 
+		// Local Declarations
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(BoundaryCondition.class);
 		BoundaryCondition condition = new BoundaryCondition();
 
 		/* ---- Perform the XML test. ---- */
 		// Load it into XML.
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		condition.persistToXML(outputStream);
-		assertNotNull(outputStream);
+		xmlHandler.write(condition, classList, outputStream);
 
 		// Convert the output stream data to an input stream.
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -310,23 +321,12 @@ public class BoundaryConditionTester {
 
 		// Load the input stream's contents into a new component.
 		BoundaryCondition loadedCondition = new BoundaryCondition();
-		loadedCondition.loadFromXML(inputStream);
+		loadedCondition = (BoundaryCondition) xmlHandler.read(classList, inputStream);
 
 		// Make sure the two components match.
 		assertTrue(condition.equals(loadedCondition));
 
 		// Check invalid parameters.
-
-		// Try passing null and make sure the components match.
-		inputStream = null;
-		loadedCondition.loadFromXML(inputStream);
-		assertTrue(condition.equals(loadedCondition));
-
-		// Try passing a bad input stream and make sure the components match.
-		inputStream = new ByteArrayInputStream("invalidstreamasdf1".getBytes());
-		loadedCondition.loadFromXML(inputStream);
-		assertTrue(condition.equals(loadedCondition));
-		/* ------------------------------- */
 
 		return;
 		// end-user-code

@@ -189,47 +189,6 @@ public class Custom2DShape extends AbstractShape {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation loads the Custom2DShape from persistent storage as XML.
-	 * This operation will throw an IOException if it fails.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            An input stream from which the ICEObject should be loaded.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBHandler();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((Custom2DShape) dataObject);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return;
-
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the hash value of the Custom2DShape.
 	 * </p>
 	 * <!-- end-UML-doc -->

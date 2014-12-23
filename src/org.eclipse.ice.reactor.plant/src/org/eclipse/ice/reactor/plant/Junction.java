@@ -508,44 +508,6 @@ public class Junction extends PlantComponent implements IJunction {
 		// end-user-code
 	}
 
-	/**
-	 * <p>
-	 * This operation loads the component from the XML stream.
-	 * </p>
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            The stream containing the XML for this object.
-	 *            </p>
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator.
-		jaxbManipulator = new ICEJAXBHandler();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream.
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((Junction) dataObject);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator.
-		jaxbManipulator = null;
-
-		return;
-		// end-user-code
-	}
-
 	// ---- Implements IJunction ---- //
 	public void registerJunctionListener(IJunctionListener listener) {
 		// begin-user-code

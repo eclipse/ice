@@ -69,28 +69,6 @@ public class PolynomialEdge extends Edge {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation loads the PolynomialEdge from persistent storage as XML.
-	 * This operation will throw an IOException if it fails.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            An input stream from which the ICEObject should be loaded.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-		// TODO Auto-generated method stub
-
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the hash value of the PolynomialEdge.
 	 * </p>
 	 * <!-- end-UML-doc -->

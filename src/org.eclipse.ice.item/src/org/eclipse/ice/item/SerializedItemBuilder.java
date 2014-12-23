@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshalException;
@@ -123,6 +124,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 		Reader reader = null;
 		ICEJAXBHandler xmlMarshaller = new ICEJAXBHandler();
 		boolean tryAgain = false;
+		ArrayList<Class> classList = new ArrayList<Class>();
 
 		// The input stream should be legit
 		if (inputStream != null) {
@@ -155,7 +157,8 @@ public class SerializedItemBuilder implements ItemBuilder {
 			// Start by trying load the Item as a JobLauncher. Catch any
 			// exceptions so that we can try again.
 			try {
-				originalItem = (Item) xmlMarshaller.read(JobLauncher.class,
+				classList.add(JobLauncher.class);
+				originalItem = (Item) xmlMarshaller.read(classList,
 						itemReadStream);
 			} catch (NullPointerException e) {
 				e.printStackTrace();
@@ -174,7 +177,8 @@ public class SerializedItemBuilder implements ItemBuilder {
 				// Reset the flag
 				tryAgain = false;
 				try {
-					originalItem = (Item) xmlMarshaller.read(Item.class,
+					classList.add(Item.class);
+					originalItem = (Item) xmlMarshaller.read(classList,
 							itemReadStream);
 				} catch (NullPointerException e) {
 					e.printStackTrace();
