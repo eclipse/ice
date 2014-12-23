@@ -241,30 +241,10 @@ public class PROTEUSModel extends Item {
 
 		// Get the neutronics spec file from the project
 		if (project != null && project.isAccessible()) {
-			// Get the PROTEUS folder
-			IFolder proteusFolder = this.getPreferencesDirectory();
-			// Get the files from it if it exists
-			if (proteusFolder.exists()) {
-				try {
-					IResource[] resources = proteusFolder.members();
-					// Check the resources and retrieve the spec file.
-					for (IResource resource : resources) {
-						if (resource.getType() == IResource.FILE
-								&& resource.getProjectRelativePath()
-										.lastSegment()
-										.contains("ICEProteusInput")) {
-							// Get the File
-							InputStream stream = ((IFile) resource)
-									.getContents();
-							// Load the Form from the stream
-							form.loadFromXML(stream);
-						}
-					}
-				} catch (CoreException e) {
-					// Complain
-					e.printStackTrace();
-				}
-			}
+			// Get the PROTEUS spec file
+			IFile specFile = getPreferencesDirectory().getFile("ICEProteusInput.xml");
+			// Try to get the Form from it
+			form = getIOService().getReader("xml").read(specFile);
 		}
 
 		return;

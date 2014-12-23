@@ -242,30 +242,10 @@ public class SHARPModel extends Item {
 
 		// Get the neutronics spec file from the project
 		if (project != null && project.isAccessible()) {
-			// Get the SHARP folder
-			IFolder sharpFolder = project.getFolder("SHARP");
-			// Get the files from it if it exists
-			if (sharpFolder.exists()) {
-				try {
-					IResource[] resources = sharpFolder.members();
-					// Check the resources and retrieve the spec file.
-					for (IResource resource : resources) {
-						if (resource.getType() == IResource.FILE
-								&& resource.getProjectRelativePath()
-										.lastSegment()
-										.contains("ICEProteusInput")) {
-							// Get the File
-							InputStream stream = ((IFile) resource)
-									.getContents();
-							// Load the form
-							form.loadFromXML(stream);
-						}
-					}
-				} catch (CoreException e) {
-					// Complain
-					e.printStackTrace();
-				}
-			}
+			// Get the SHARP spec file
+			IFile specFile = getPreferencesDirectory().getFile("ICEProteusInput.xml");
+			// Try to get the Form from it
+			form = getIOService().getReader("xml").read(specFile);
 		}
 
 		return;
