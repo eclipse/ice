@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.proteus;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.emf.ICEXMLProcessor;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
@@ -24,6 +26,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -244,7 +248,18 @@ public class PROTEUSModel extends Item {
 			// Get the PROTEUS spec file
 			IFile specFile = getPreferencesDirectory().getFile("ICEProteusInput.xml");
 			// Try to get the Form from it
-			form = getIOService().getReader("xml").read(specFile);
+			ArrayList<Class> classList = new ArrayList<Class>();
+			classList.add(Form.class);
+			ICEJAXBHandler handler = new ICEJAXBHandler();
+			try {
+				form = (Form) handler.read(classList, specFile.getContents());
+			} catch (NullPointerException | JAXBException | IOException
+					| CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// This should only take one line!!! What do we need to do to fix this?
+			// form = getIOService().getReader("xml").read(specFile);
 		}
 
 		return;

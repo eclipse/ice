@@ -1135,6 +1135,8 @@ public class Item implements IComponentVisitor, Identifiable,
 				IWriter xmlWriter = ioService.getWriter("xml");
 				// Write the file
 				xmlWriter.write(form, outputFile);
+				// Set the status
+				retStatus = FormStatus.Processed;
 			} else if (actionName.equals(taggedExportActionString)) {
 				// Otherwise write the file to a tagged output if requested -
 				// first create the action

@@ -21,9 +21,14 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
@@ -252,15 +257,23 @@ public class HeatExchangerTester {
 	 * Checks for persistence in the component.
 	 * </p>
 	 * <!-- end-UML-doc -->
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 * 
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Ignore
 	@Test
-	public void checkPersistence() {
+	public void checkPersistence() throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
 
+		// Local Declarations
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(HeatExchanger.class);
+		
 		// Construct a component to test against.
 		HeatExchanger writeComponent = new HeatExchanger();
 		writeComponent.setInnerRadius(2.0);
@@ -271,8 +284,7 @@ public class HeatExchangerTester {
 
 		// Create an output stream and persist the component to XML.
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		writeComponent.persistToXML(outputStream);
-		writeComponent.persistToXML(System.out); // Debugging
+		xmlHandler.write(writeComponent, classList, outputStream);
 
 		// Create an input stream and feed the output stream into it.
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -282,26 +294,10 @@ public class HeatExchangerTester {
 		HeatExchanger loadComponent = new HeatExchanger();
 
 		// Load the inputStream into the component.
-		loadComponent.loadFromXML(inputStream);
-		loadComponent.persistToXML(System.out);
+		loadComponent = (HeatExchanger) xmlHandler.read(classList, inputStream);
 
 		// Compare the two components, they should be the same.
 		assertEquals(writeComponent, loadComponent);
-
-		/* ---- Check reading/loading with invalid values ---- */
-
-		// Try to load with an invalid stream.
-		loadComponent.loadFromXML(null);
-
-		// Check that the component remains unchanged.
-		assertEquals(writeComponent, loadComponent);
-
-		// Try to write to an invalid stream.
-		outputStream = null;
-		loadComponent.persistToXML(outputStream);
-
-		// Check that the output stream remains unchanged (is null).
-		assertNull(outputStream);
 
 		return;
 

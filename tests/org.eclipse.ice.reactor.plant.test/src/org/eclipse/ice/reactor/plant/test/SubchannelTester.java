@@ -21,8 +21,13 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.reactor.plant.PlantComponent;
@@ -308,19 +313,19 @@ public class SubchannelTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * Checks for persistence in the component.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Ignore
-	public void checkPersistence() {
-		// begin-user-code
+	public void checkPersistence() throws NullPointerException, JAXBException, IOException {
 
+		// Local Declarations
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Subchannel.class);
+		
 		// Create a component for XML writing.
 		Subchannel writeComponent = new Subchannel();
 		writeComponent.setName("Catelyn Tully");
@@ -336,8 +341,7 @@ public class SubchannelTester {
 
 		// Create an output stream and persist the component to XML.
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		writeComponent.persistToXML(outputStream);
-		// writeComponent.persistToXML(System.out); // Debugging
+		xmlHandler.write(writeComponent, classList, outputStream);
 
 		// Create an input stream and feed the output stream into it.
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -347,25 +351,10 @@ public class SubchannelTester {
 		Subchannel loadComponent = new Subchannel();
 
 		// Load the inputStream into the component.
-		loadComponent.loadFromXML(inputStream);
+		loadComponent = (Subchannel) xmlHandler.read(classList, inputStream);
 
 		// Compare the two components, they should be the same.
 		assertTrue(writeComponent.equals(loadComponent));
-
-		/* ---- Check reading/loading with invalid values ---- */
-
-		// Try to load with an invalid stream.
-		loadComponent.loadFromXML(null);
-
-		// Check that the component remains unchanged.
-		assertTrue(writeComponent.equals(loadComponent));
-
-		// Try to write to an invalid stream.
-		outputStream = null;
-		loadComponent.persistToXML(outputStream);
-
-		// Check that the output stream remains unchanged (is null).
-		assertNull(outputStream);
 
 		return;
 		// end-user-code

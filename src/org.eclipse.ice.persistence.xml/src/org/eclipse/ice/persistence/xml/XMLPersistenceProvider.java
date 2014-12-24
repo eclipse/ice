@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package xmlpp;
+package org.eclipse.ice.persistence.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

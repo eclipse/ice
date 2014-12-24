@@ -41,11 +41,10 @@ import org.eclipse.ice.caebat.kvPair.CAEBATKVPairBuilder;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.nuclear.MOOSEModelBuilder;
+import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import xmlpp.XMLPersistenceProvider;
 
 /**
  * This class tests the XMLPersistenceProvider.

@@ -16,10 +16,15 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.junit.Test;
+import javax.xml.bind.JAXBException;
 
+import org.junit.Test;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
@@ -30,17 +35,9 @@ import org.eclipse.ice.datastructures.form.geometry.ShapeType;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * Tests the Transformation class
- * </p>
- * <p>
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class TransformationTester {
 	/**
@@ -160,19 +157,19 @@ public class TransformationTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the Transformation to persist itself
 	 * to XML and to load itself from an XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkLoadingFromXML() {
-		// begin-user-code
+	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
+
+		// Local Declarations
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Transformation.class);
 
 		// Instantiate a Transformation
 		Transformation transformation = new Transformation();
@@ -187,9 +184,7 @@ public class TransformationTester {
 
 		// Load it into XML
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		transformation.persistToXML(outputStream);
-
-		assertNotNull(outputStream);
+		xmlHandler.write(transformation, classList, outputStream);
 
 		// convert information inside of outputStream to inputStream
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -200,36 +195,11 @@ public class TransformationTester {
 
 		// load contents into xml
 		Transformation loadTransformation = new Transformation();
-		loadTransformation.loadFromXML(inputStream);
+		loadTransformation = (Transformation) xmlHandler.read(classList, inputStream);
 
 		// Check contents
 		assertTrue(loadTransformation.equals(transformation));
 
-		// Try to pass null into the operations
-
-		loadTransformation.loadFromXML(null);
-		// Nothing happens - check comparison
-
-		// Check contents
-		assertTrue(loadTransformation.equals(transformation));
-
-		// Pass a bad file
-		String xmlFile = "p98]8[}&{7[97[9.7(&<(&*>(}%^npv59%>^*@$>}^@467p3\0"
-				+ "5tu8mp3%*}%8454958muy3cpt983t,oe#^@#(_$^#_F _#$ @#421214 T4"
-				+ "#TM$ )M W$@$4564456t456 456er43tse8s64d3r43d@#$_!@+_+_+++P "
-				+ "><><<<Q#><$><TQ>ETBQ<G< G<>Q #$<TB<Q#L:<$Y:Q<ER>YBQEY:E<>YB"
-				+ "BADFILEBADFILEBADFILEBADFILEBADFILEBADFILEBADFILEBADFILEBAD"
-				+ "</xml>";
-
-		inputStream = new ByteArrayInputStream(xmlFile.getBytes());
-
-		// Run operation
-		loadTransformation.loadFromXML(inputStream);
-
-		// Check contents
-		assertTrue(loadTransformation.equals(transformation));
-
-		// end-user-code
 	}
 
 	/**
