@@ -19,6 +19,7 @@ import java.io.File;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -2611,5 +2612,11 @@ public class Item implements IComponentVisitor, Identifiable,
 	@Override
 	public void update(IUpdateable component) {
 		// Leave this for subclasses.
+	}
+
+	@Override
+	public void visit(ListComponent component) {
+		// TODO Auto-generated method stub
+		
 	}
 }

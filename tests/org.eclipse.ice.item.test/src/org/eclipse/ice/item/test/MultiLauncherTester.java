@@ -13,6 +13,7 @@
 package org.eclipse.ice.item.test;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 import static org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncher.*;
@@ -480,6 +481,12 @@ public class MultiLauncherTester implements IComponentVisitor {
 
 	@Override
 	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
 		
 	}

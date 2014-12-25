@@ -16,8 +16,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IFile;
@@ -33,7 +31,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.item.Item;

@@ -14,6 +14,7 @@ package org.eclipse.ice.item.test;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 import static org.junit.Assert.*;
@@ -840,6 +841,12 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 	@Override
 	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
 		
 	}

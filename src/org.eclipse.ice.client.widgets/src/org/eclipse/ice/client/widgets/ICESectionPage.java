@@ -15,6 +15,7 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -621,6 +622,12 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	@Override
 	public void visit(EMFComponent component) {
 		// Nothing to do yet.
+	}
+
+	@Override
+	public void visit(ListComponent component) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

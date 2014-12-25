@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ice.client.widgets.DataComponentComposite;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -377,5 +378,11 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 	@Override
 	public void visit(EMFComponent component) {
 		// Do nothing.
+	}
+
+	@Override
+	public void visit(ListComponent component) {
+		// Do nothing.
+		
 	}
 }

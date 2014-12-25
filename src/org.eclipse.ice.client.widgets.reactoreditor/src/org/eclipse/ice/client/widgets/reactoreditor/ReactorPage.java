@@ -17,6 +17,7 @@ import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -399,6 +400,12 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 
 	@Override
 	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
 		
 	}

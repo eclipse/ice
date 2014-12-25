@@ -22,6 +22,7 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -1486,7 +1487,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	public void visit(MeshComponent component) {
 		// begin-user-code
 
-		// Add the GeometryComponent to the map of components
+		// Add the MeshComponent to the map of components
 		addComponentToMap(component, "mesh");
 
 		// end-user-code
@@ -1516,6 +1517,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	public void visit(EMFComponent component) {
 		System.out.println("Adding EMFComponent: " + component.getName());
 		addComponentToMap(component, "emf");
+	}
+
+	@Override
+	public void visit(ListComponent component) {
+		// Add the ListComponent to the map of components
+		addComponentToMap(component, "list");		
 	}
 
 }
