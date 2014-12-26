@@ -954,7 +954,7 @@ public class Block {
 
 				i += subBlockLineId;
 
-				// AQW Added code here to fix bug
+				// Alex McCaskey Added code here to fix bug
 				subBlockCounter = 0;
 				subBlockLineId = 0;
 			}

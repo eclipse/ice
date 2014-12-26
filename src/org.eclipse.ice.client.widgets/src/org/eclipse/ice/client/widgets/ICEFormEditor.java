@@ -271,6 +271,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		componentMap.put("tree", new ArrayList<Component>());
 		componentMap.put("reactor", new ArrayList<Component>());
 		componentMap.put("emf", new ArrayList<Component>());
+		componentMap.put("list", new ArrayList<Component>());
 
 		// end-user-code
 	}

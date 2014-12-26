@@ -44,6 +44,7 @@ import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
 import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.Material;
 
 /**
  * This class implements the IPersistenceProvider interface using the native XML
@@ -243,6 +244,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			// Open the project if it is not already open
 			if (project.exists() && !project.isOpen()) {
 				project.open(null);
+				// Refresh the project in case users manipulated files.
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			}
 		} catch (CoreException e) {
 			// Catch exception for creating the project
@@ -266,6 +269,11 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 		for (Item refItem : referenceItems) {
 			classList.add(refItem.getClass());
 		}
+		// We need to explicitly add some classes to the list so that they will
+		// be handled appropriately. For example, Material does not have a
+		// component so it will not get added to the class list when the Form is
+		// read from all of the Items above.
+		classList.add(Material.class);
 		// Create new JAXB class context and unmarshaller
 		context = JAXBContext.newInstance(classList.toArray(classArray));
 	}
@@ -451,10 +459,11 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			// Handle the task if it is available
 			if (currentTask != null) {
 				// Get the file name if this is a persist or delete
-				if ("persist".equals(currentTask.task) || "delete".equals(currentTask.task)) {
+				if ("persist".equals(currentTask.task)
+						|| "delete".equals(currentTask.task)) {
 					// Setup the file name
-					name = currentTask.item.getName().replaceAll("\\s+", "_") + "_"
-							+ currentTask.item.getId() + ".xml";
+					name = currentTask.item.getName().replaceAll("\\s+", "_")
+							+ "_" + currentTask.item.getId() + ".xml";
 					// Get the file in the project
 					file = project.getFile(name);
 				}

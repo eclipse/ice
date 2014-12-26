@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
-import org.eclipse.ice.materials.Material;
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**

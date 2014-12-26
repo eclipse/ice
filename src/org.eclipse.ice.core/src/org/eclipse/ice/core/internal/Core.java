@@ -854,13 +854,12 @@ public class Core extends Application implements ICore {
 			// an "else if" because it always needs to be checked.
 			if (project.exists() && !project.isOpen()) {
 				project.open(null);
+				// Always refresh the project too in case users manipulated the
+				// files.
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			}
 			// Add the project to the master table
 			projectTable.put("defaultUser", project);
-
-			// Setup Derby Location
-			System.setProperty("derby.system.home", workspaceRoot.getLocation()
-					.toOSString() + separator + "derby");
 		} catch (CoreException e) {
 			// Catch for creating the project
 			e.printStackTrace();
