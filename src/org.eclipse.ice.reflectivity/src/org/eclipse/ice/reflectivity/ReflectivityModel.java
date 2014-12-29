@@ -142,9 +142,9 @@ public class ReflectivityModel extends Item {
 		// Add this to the form
 		form.addComponent(table);
 
-		ListComponent<Material> matList = new ListComponent<Material>();
-		matList.add(new Material());
-		form.addComponent(matList);
+//		ListComponent<Material> matList = new ListComponent<Material>();
+//		matList.add(new Material());
+//		form.addComponent(matList);
 
 		// end-user-code
 	}
