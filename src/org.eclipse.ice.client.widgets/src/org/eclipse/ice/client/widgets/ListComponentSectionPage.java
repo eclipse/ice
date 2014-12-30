@@ -11,10 +11,20 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.awt.Toolkit;
+
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
+
+import ca.odell.glazedlists.swt.DefaultEventTableViewer;
 
 /**
  * This is a FormPage that can render ListComponents into pages usable by the
@@ -29,6 +39,11 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 * The IManagedForm for the SectionPage.
 	 */
 	private IManagedForm managedFormRef;
+
+	/**
+	 * The ListComponent that is the input for this page.
+	 */
+	private ListComponent list;
 
 	/**
 	 * The Constructor
@@ -46,13 +61,17 @@ public class ListComponentSectionPage extends ICEFormPage {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
+	 * 
+	 * @see
+	 * org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui
+	 * .forms.IManagedForm)
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
 		// begin-user-code
 
-		// Get the parent form.
+		// Get the parent form and the toolkit
 		final ScrolledForm scrolledForm = managedForm.getForm();
+		final FormToolkit formToolkit = managedFormRef.getToolkit();
 
 		// Set a GridLayout with a single column. Remove the default margins.
 		GridLayout layout = new GridLayout(1, false);
@@ -63,9 +82,32 @@ public class ListComponentSectionPage extends ICEFormPage {
 		// Set the class reference to the managed form
 		managedFormRef = managedForm;
 
+		// Only create something if there is valid input.
+		if (list != null) {
+			Composite parent = managedForm.getForm().getBody();
+			Section listSection = formToolkit.createSection(parent,
+					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
+							| Section.EXPANDED | Section.COMPACT);
+			Composite sectionClient = new Composite(parent, SWT.FLAT);
+			Table table = formToolkit.createTable(sectionClient, SWT.FLAT);
+			DefaultEventTableViewer tableViewer = new DefaultEventTableViewer(list, table, list);
+			
+			listSection.setClient(sectionClient);
+		}
+
 		return;
 		// end-user-code
 	}
-	
-	
+
+	/**
+	 * This operation sets the ListComponent that should be used as input for
+	 * the section page.
+	 * 
+	 * @param list
+	 *            The ListComponent
+	 */
+	public void setList(ListComponent list) {
+		this.list = list;
+	}
+
 }

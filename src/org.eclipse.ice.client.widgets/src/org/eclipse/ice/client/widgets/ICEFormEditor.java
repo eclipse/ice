@@ -566,19 +566,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		if (componentMap.get("emf").size() > 0) {
 			for (Component comp : componentMap.get("emf")) {
 				emfComponent = (EMFComponent) comp;
-
 				if (emfComponent != null) {
-
 					// Make the EMFSectionPage
 					emfPage = new EMFSectionPage(this, emfComponent.getName(),
 							emfComponent.getName());
-
 					// Set the EMFComponent
 					emfPage.setEMFComponent(emfComponent);
 					pages.add(emfPage);
 				}
 			}
-
 		}
 
 		return pages;
@@ -592,17 +588,19 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 */
 	private ArrayList<ICEFormPage> createListSectionPages() {
 		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-		
+
 		ArrayList<Component> lists = componentMap.get("list");
 		if (lists.size() > 0) {
 			for (int i = 0; i < lists.size(); i++) {
 				ListComponent list = (ListComponent) lists.get(i);
 				if (list != null) {
-					ICEFormPage page = new ListComponentSectionPage(this,list.getName(),list.getName());
+					ListComponentSectionPage page = new ListComponentSectionPage(this,
+							list.getName(), list.getName());
+					page.setList(list);
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
