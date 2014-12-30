@@ -14,8 +14,10 @@ package org.eclipse.ice.client.widgets;
 import java.awt.Toolkit;
 
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.IManagedForm;
@@ -26,19 +28,16 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import ca.odell.glazedlists.swt.DefaultEventTableViewer;
 
+import org.eclipse.swt.layout.GridData;
+
 /**
  * This is a FormPage that can render ListComponents into pages usable by the
  * ICEFormEditor.
  * 
  * @author Jay Jay Billings
- *
+ * 
  */
 public class ListComponentSectionPage extends ICEFormPage {
-
-	/**
-	 * The IManagedForm for the SectionPage.
-	 */
-	private IManagedForm managedFormRef;
 
 	/**
 	 * The ListComponent that is the input for this page.
@@ -71,27 +70,59 @@ public class ListComponentSectionPage extends ICEFormPage {
 
 		// Get the parent form and the toolkit
 		final ScrolledForm scrolledForm = managedForm.getForm();
-		final FormToolkit formToolkit = managedFormRef.getToolkit();
+		final FormToolkit formToolkit = managedForm.getToolkit();
 
 		// Set a GridLayout with a single column. Remove the default margins.
-		GridLayout layout = new GridLayout(1, false);
+		GridLayout layout = new GridLayout(1, true);
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
 		scrolledForm.getBody().setLayout(layout);
 
-		// Set the class reference to the managed form
-		managedFormRef = managedForm;
-
 		// Only create something if there is valid input.
 		if (list != null) {
+
+			// Get the parent
 			Composite parent = managedForm.getForm().getBody();
+			// Create the section and set its layout info
 			Section listSection = formToolkit.createSection(parent,
 					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
 							| Section.EXPANDED | Section.COMPACT);
-			Composite sectionClient = new Composite(parent, SWT.FLAT);
-			Table table = formToolkit.createTable(sectionClient, SWT.FLAT);
-			DefaultEventTableViewer tableViewer = new DefaultEventTableViewer(list, table, list);
-			
+			listSection.setLayout(new GridLayout(1, false));
+			listSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+					true, 1, 1));
+			// Create the section client, which is the client area of the
+			// section that will actually render data.
+			Composite sectionClient = new Composite(listSection, SWT.FLAT);
+			sectionClient.setLayout(new GridLayout(2, false));
+			sectionClient.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+					true, 1, 1));
+
+			// Create the table to hold the ListComponent.
+			Table listTable = formToolkit.createTable(sectionClient, SWT.FLAT);
+			DefaultEventTableViewer listTableViewer = new DefaultEventTableViewer(
+					list, listTable, list);
+			listTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+					true, 1, 1));
+
+			// Create a composite for holding Add/Delete buttons to manipulate
+			// the table and lay it out.
+			Composite listButtonComposite = new Composite(sectionClient,
+					SWT.NONE);
+			listButtonComposite.setLayout(new GridLayout(1, false));
+			listButtonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL,
+					false, true, 1, 1));
+
+			// Create the add button to add a new element to the list.
+			Button addMaterialButton = new Button(listButtonComposite, SWT.PUSH);
+			addMaterialButton.setText("Add");
+
+			// Create the delete button to delete the currently selected element
+			// from the list.
+			Button deleteMaterialButton = new Button(listButtonComposite,
+					SWT.PUSH);
+			deleteMaterialButton.setText("Delete");
+
+			// Set the section client.
 			listSection.setClient(sectionClient);
 		}
 

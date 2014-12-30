@@ -587,21 +587,30 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @return The pages.
 	 */
 	private ArrayList<ICEFormPage> createListSectionPages() {
+
+		// Create the list of pages to return
 		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
 
+		// Get the lists from the component map
 		ArrayList<Component> lists = componentMap.get("list");
+		// If there are some lists, render sections for them
 		if (lists.size() > 0) {
 			for (int i = 0; i < lists.size(); i++) {
 				ListComponent list = (ListComponent) lists.get(i);
+				// Make sure the list isn't null since that value can be put in
+				// a collection
 				if (list != null) {
-					ListComponentSectionPage page = new ListComponentSectionPage(this,
-							list.getName(), list.getName());
+					// Create a new page for the list
+					ListComponentSectionPage page = new ListComponentSectionPage(
+							this, list.getName(), list.getName());
 					page.setList(list);
+					// Add the page to the return list
+					pages.add(page);
 				}
 			}
 		}
 
-		return null;
+		return pages;
 	}
 
 	/**
@@ -1062,6 +1071,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		}
 
+		// Refresh the EMF pages
 		if (!(componentMap.get("emf")).isEmpty()) {
 			for (int i = 0; i < this.getPageCount(); i++) {
 				FormPage formPage = (FormPage) this.pages.get(i);
