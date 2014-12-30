@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -254,6 +255,19 @@ public class MaterialDetailsPage implements IDetailsPage {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
+		// Add a composite for holding the Add and Delete buttons for adding
+		// or removing properties
+		Composite buttonComposite = new Composite(sectionClient, SWT.NONE);
+		buttonComposite.setLayout(new GridLayout(1, false));
+		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false,
+				true, 1, 1));
+		// Create the Add button
+		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
+		addMaterialButton.setText("Add");
+		// Create the Delete button
+		Button deleteMaterialButton = new Button(buttonComposite, SWT.PUSH);
+		deleteMaterialButton.setText("Delete");
+		
 		return;
 	}
 

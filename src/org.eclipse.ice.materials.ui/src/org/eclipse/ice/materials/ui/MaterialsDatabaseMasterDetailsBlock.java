@@ -18,8 +18,10 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
@@ -120,6 +122,19 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 				mForm.fireSelectionChanged(sectionPart, event.getSelection());
 			}
 		});
+
+		// Add a composite for holding the Add and Delete buttons for adding
+		// or removing materials
+		Composite buttonComposite = new Composite(sectionClient, SWT.NONE);
+		buttonComposite.setLayout(new GridLayout(1, false));
+		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false,
+				true, 1, 1));
+		// Create the Add button
+		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
+		addMaterialButton.setText("Add");
+		// Create the Delete button
+		Button deleteMaterialButton = new Button(buttonComposite, SWT.PUSH);
+		deleteMaterialButton.setText("Delete");
 
 		return;
 	}
