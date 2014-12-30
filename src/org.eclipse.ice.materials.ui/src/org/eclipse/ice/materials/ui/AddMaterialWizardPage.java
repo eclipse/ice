@@ -15,17 +15,29 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Jay Jay Billings
  *
  */
 public class AddMaterialWizardPage extends WizardPage {
+	private Table stoichiometryTable;
+	private Text nameText;
+	private Text densityText;
 
 	/**
 	 * The constructor
-	 * @param pageName the page name
-	 * 	@wbp.parser.constructor
+	 * 
+	 * @param pageName
+	 *            the page name
+	 * @wbp.parser.constructor
 	 */
 	public AddMaterialWizardPage(String pageName) {
 		super(pageName);
@@ -33,9 +45,13 @@ public class AddMaterialWizardPage extends WizardPage {
 
 	/**
 	 * An alternative constructor for creating the wizard page
-	 * @param pageName the name of the page
-	 * @param title the title to show in the title bar
-	 * @param titleImage an image to go along with the title
+	 * 
+	 * @param pageName
+	 *            the name of the page
+	 * @param title
+	 *            the title to show in the title bar
+	 * @param titleImage
+	 *            an image to go along with the title
 	 */
 	public AddMaterialWizardPage(String pageName, String title,
 			ImageDescriptor titleImage) {
@@ -54,13 +70,76 @@ public class AddMaterialWizardPage extends WizardPage {
 
 		// Create the base container for the wizard
 		Composite container = new Composite(parent, SWT.NULL);
-		
+		container.setLayout(new GridLayout(1, true));
+
 		// Add the composite to hold the name and density blocks
 		Composite nameAndDensityComposite = new Composite(container, SWT.None);
-		
+		nameAndDensityComposite.setLayout(new GridLayout(2, true));
+		nameAndDensityComposite.setLayoutData(new GridData(SWT.FILL,
+				SWT.CENTER, true, false, 1, 1));
+
+		Composite nameComposite = new Composite(nameAndDensityComposite,
+				SWT.NONE);
+		GridData nameCompositeGridData = new GridData(SWT.FILL, SWT.FILL, true,
+				false, 1, 1);
+		nameCompositeGridData.widthHint = 1;
+		nameCompositeGridData.minimumWidth = 1;
+		nameComposite.setLayoutData(nameCompositeGridData);
+		nameComposite.setLayout(new GridLayout(2, false));
+
+		Label nameLabel = new Label(nameComposite, SWT.NONE);
+		nameLabel.setText("Name:");
+
+		nameText = new Text(nameComposite, SWT.BORDER);
+		nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
+				1));
+
+		Composite densityComposite = new Composite(nameAndDensityComposite,
+				SWT.NONE);
+		densityComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				false, 1, 1));
+		densityComposite.setLayout(new GridLayout(2, false));
+
+		Label densityLabel = new Label(densityComposite, SWT.NONE);
+		densityLabel.setText("Density:");
+
+		densityText = new Text(densityComposite, SWT.BORDER);
+		densityText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
+
+		Composite stoichiometryComposite = new Composite(container, SWT.NONE);
+		stoichiometryComposite.setLayout(new GridLayout(2, false));
+		stoichiometryComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+				true, true, 1, 1));
+
+		Composite stoichiometryTableComposite = new Composite(
+				stoichiometryComposite, SWT.NONE);
+		stoichiometryTableComposite.setLayout(new GridLayout(2, false));
+		stoichiometryTableComposite.setLayoutData(new GridData(SWT.FILL,
+				SWT.FILL, true, true, 1, 1));
+		stoichiometryTableComposite.setBounds(0, 0, 64, 64);
+
+		TableViewer stoichiometryTableViewer = new TableViewer(
+				stoichiometryTableComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		stoichiometryTable = stoichiometryTableViewer.getTable();
+		stoichiometryTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, 1, 1));
+
+		Composite stoichiometryButtonComposite = new Composite(
+				stoichiometryComposite, SWT.NONE);
+		stoichiometryButtonComposite.setLayout(new GridLayout(2, false));
+		stoichiometryButtonComposite.setLayoutData(new GridData(SWT.RIGHT,
+				SWT.FILL, false, true, 1, 1));
+
+		Button addMaterialButton = new Button(stoichiometryButtonComposite,
+				SWT.PUSH);
+		addMaterialButton.setText("Add");
+
+		Button deleteMaterialButton = new Button(stoichiometryButtonComposite,
+				SWT.PUSH);
+		deleteMaterialButton.setText("Delete");
+
 		// Set the control to the base container
 		setControl(container);
-
 	}
-
 }
