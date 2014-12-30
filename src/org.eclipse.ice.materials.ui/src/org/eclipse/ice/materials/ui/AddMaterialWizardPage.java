@@ -24,12 +24,29 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 /**
+ * This class provides all of the necessary UI for defining a new material and a
+ * configuring its stoichiometry.
+ * 
+ * It was developed using the SWT WindowBuilder.
+ * 
  * @author Jay Jay Billings
  * 
  */
 public class AddMaterialWizardPage extends WizardPage {
+
+	/**
+	 * The table that holds the stoichiometric information for the new material.
+	 */
 	private Table stoichiometryTable;
+
+	/**
+	 * The text widget that holds the name for the new material.
+	 */
 	private Text nameText;
+
+	/**
+	 * The text widget that holds the density for the new material.
+	 */
 	private Text densityText;
 
 	/**
@@ -67,7 +84,13 @@ public class AddMaterialWizardPage extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		
+
+		setMessage("Provide a name, density and "
+				+ "stoichiometry for the new material.");
+
+		// FIXME! - Add more documentation to this operation once the layout and
+		// actions are finalized. ~JJB 20141230 11:44
+
 		// Create the base container for the wizard
 		Composite container = new Composite(parent, SWT.NULL);
 		container.setLayout(new GridLayout(1, true));
