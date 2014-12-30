@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Jay Jay Billings
- *
+ * 
  */
 public class AddMaterialWizardPage extends WizardPage {
 	private Table stoichiometryTable;
@@ -67,7 +67,7 @@ public class AddMaterialWizardPage extends WizardPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-
+		
 		// Create the base container for the wizard
 		Composite container = new Composite(parent, SWT.NULL);
 		container.setLayout(new GridLayout(1, true));
@@ -114,10 +114,9 @@ public class AddMaterialWizardPage extends WizardPage {
 
 		Composite stoichiometryTableComposite = new Composite(
 				stoichiometryComposite, SWT.NONE);
-		stoichiometryTableComposite.setLayout(new GridLayout(2, false));
+		stoichiometryTableComposite.setLayout(new GridLayout(1, false));
 		stoichiometryTableComposite.setLayoutData(new GridData(SWT.FILL,
 				SWT.FILL, true, true, 1, 1));
-		stoichiometryTableComposite.setBounds(0, 0, 64, 64);
 
 		TableViewer stoichiometryTableViewer = new TableViewer(
 				stoichiometryTableComposite, SWT.BORDER | SWT.FULL_SELECTION);
@@ -127,7 +126,7 @@ public class AddMaterialWizardPage extends WizardPage {
 
 		Composite stoichiometryButtonComposite = new Composite(
 				stoichiometryComposite, SWT.NONE);
-		stoichiometryButtonComposite.setLayout(new GridLayout(2, false));
+		stoichiometryButtonComposite.setLayout(new GridLayout(1, false));
 		stoichiometryButtonComposite.setLayoutData(new GridData(SWT.RIGHT,
 				SWT.FILL, false, true, 1, 1));
 
