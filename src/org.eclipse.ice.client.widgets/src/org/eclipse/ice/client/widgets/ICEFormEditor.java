@@ -552,15 +552,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation sets the input on the TreeCompositeViewer to the
-	 * TreeComposite or set of TreeComposites in ICE.
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * This operation creates a list of ICEFormPages for EMFComponents.
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The ICEFormPages for each EMF Component in the list.
 	 */
 	private ArrayList<ICEFormPage> createEMFSectionPages() {
 		// Local Declarations
@@ -588,6 +582,28 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return pages;
+	}
+
+	/**
+	 * This operation creates a set of ICEFormPages for ListComponents that are
+	 * stored in the component map.
+	 * 
+	 * @return The pages.
+	 */
+	private ArrayList<ICEFormPage> createListSectionPages() {
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
+		
+		ArrayList<Component> lists = componentMap.get("list");
+		if (lists.size() > 0) {
+			for (int i = 0; i < lists.size(); i++) {
+				ListComponent list = (ListComponent) lists.get(i);
+				if (list != null) {
+					ICEFormPage page = new ListComponentSectionPage(this,list.getName(),list.getName());
+				}
+			}
+		}
+		
+		return null;
 	}
 
 	/**
@@ -1136,8 +1152,16 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			formPages.add(createMeshPage());
 		}
 
+		// Create pages for the EMF components
 		if (componentMap.get("emf").size() > 0) {
 			for (ICEFormPage p : createEMFSectionPages()) {
+				formPages.add(p);
+			}
+		}
+
+		// Create pages for list components
+		if (componentMap.get("list").size() > 0) {
+			for (ICEFormPage p : createListSectionPages()) {
 				formPages.add(p);
 			}
 		}
@@ -1523,7 +1547,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	@Override
 	public void visit(ListComponent component) {
 		// Add the ListComponent to the map of components
-		addComponentToMap(component, "list");		
+		addComponentToMap(component, "list");
 	}
 
 }

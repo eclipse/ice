@@ -78,15 +78,6 @@ public class ReflectivityModel extends Item {
 	protected void setupForm() {
 		// begin-user-code
 
-		ArrayList<Entry> template = new ArrayList<Entry>();
-		Entry id = new Entry();
-		Entry mat = new Entry();
-		Entry thickness = new Entry();
-		Entry roughness = new Entry();
-		Entry sld = new Entry();
-		Entry mu_abs = new Entry();
-		Entry mu_inc = new Entry();
-
 		// Create the Form
 		form = new Form();
 		TableComponent table = new TableComponent();
@@ -94,57 +85,12 @@ public class ReflectivityModel extends Item {
 		table.setName("Reflectivity Input Data");
 		table.setDescription("");
 
-		int idNum = 1;
-
-		// Configure the entry information
-		id.setName("ID");
-		id.setDescription("Unique ID for this layer.");
-		id.setId(idNum);
-		mat.setName("Material");
-		// Need stoichometry and mass density to define a compound.
-		mat.setDescription("Chemical compound for this layer.");
-		mat.setId(++idNum);
-		thickness.setName("Thickness");
-		thickness.setDescription("The thickness of this material as an "
-				+ "initial guess or the actual calculated value if the "
-				+ "fit has been run. (Angstroms)");
-		thickness.setId(++idNum);
-		roughness.setName("Roughness");
-		roughness.setDescription("The width of the region of intermixing "
-				+ "between layer n-1 and layer n. It goes up and not "
-				+ "down. (Angstroms)");
-		roughness.setId(++idNum);
-		sld.setName("Scattering Length Density");
-		sld.setDescription("The product of the mass density and its "
-				+ "stoichiometry. It is a proxy for the refractive index. "
-				+ "(Angstroms^-2)");
-		sld.setId(++idNum);
-		mu_abs.setName("Mu_abs");
-		mu_abs.setDescription("The absorption coefficient divided by the wavelength. "
-				+ "(Angstroms^-2)");
-		mu_abs.setId(++idNum);
-		mu_inc.setName("Mu_inc");
-		mu_inc.setDescription("The effective incoherent absorption "
-				+ "coefficient. (Angstroms^-1)");
-		mu_inc.setId(++idNum);
-
-		// Add everything to the row template.
-		template.add(id);
-		template.add(mat);
-		template.add(sld);
-		template.add(mu_abs);
-		template.add(mu_inc);
-		template.add(thickness);
-		template.add(roughness);
-		// Set the template
-		table.setRowTemplate(template);
-
-		// Add this to the form
-		form.addComponent(table);
-
-//		ListComponent<Material> matList = new ListComponent<Material>();
-//		matList.add(new Material());
-//		form.addComponent(matList);
+		ListComponent<Material> matList = new ListComponent<Material>();
+		matList.setId(1);
+		matList.setName("Reflectivity Input Data");
+		matList.setDescription("Reflectivity Input Data");
+		matList.add(new Material());
+		form.addComponent(matList);
 
 		// end-user-code
 	}
