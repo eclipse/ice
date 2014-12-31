@@ -15,8 +15,8 @@ package org.eclipse.ice.viz.plotviewer;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.VizFileViewer;
-import org.eclipse.ice.viz.VizResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
