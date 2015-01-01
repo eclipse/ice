@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ICE Visualization Service
+Bundle-SymbolicName: org.eclipse.ice.viz.service
+Bundle-Version: 2.0.0
+Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
