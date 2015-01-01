@@ -5,3 +5,5 @@ Bundle-SymbolicName: org.eclipse.ice.viz.service
 Bundle-Version: 2.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.eclipse.ice.client.widgets.viz.service
+Export-Package: org.eclipse.ice.viz.service
