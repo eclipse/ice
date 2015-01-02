@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.client.common.TreeCompositeViewer;
+import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -87,6 +88,11 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * ID for Eclipse
 	 */
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEFormEditor";
+
+	/**
+	 * The component handle for the visualization service factory.
+	 */
+	private static IVizServiceFactory vizFactory;
 
 	/**
 	 * Dirty state for Eclipse
@@ -277,15 +283,22 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * This is a static operation to set the IVizServiceFactory component
+	 * reference for the FormEditor.
+	 * 
+	 * @param factory
+	 *            The service factory that should be used for generating
+	 *            visualizations.
+	 */
+	public static void setVizServiceFactory(IVizServiceFactory factory) {
+		vizFactory = factory;
+		System.out.println("ICEFormEditor Message: IVizServiceFactory set!");
+	}
+
+	/**
 	 * This operation changes the dirty state of the FormEditor.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param value
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	void setDirty(boolean value) {
 		// begin-user-code
@@ -381,6 +394,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 						resourceComponent.getName(),
 						resourceComponent.getName());
 				// Set the ResourceComponent
+				resourceComponentPage.setVizService(vizFactory);
 				resourceComponentPage.setResourceComponent(resourceComponent);
 			}
 		}
@@ -1145,11 +1159,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			formPages.addAll(createMasterDetailsComponentPages());
 		}
 
-		// Create the page for ResourceComponents
-		if (!(componentMap.get("output").isEmpty())) {
-			formPages.add(createResourceComponentPage());
-		}
-
 		// Create the page for GeometryComponents
 		if (!(componentMap.get("geometry").isEmpty())) {
 			formPages.add(createGeometryPage());
@@ -1182,6 +1191,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			System.out.println("ICEFormEditor Message: "
 					+ componentMap.get("reactor").size()
 					+ " IReactorComponents not rendered.");
+		}
+
+		// Create the page for ResourceComponents. This one should always be
+		// last on the list!
+		if (!(componentMap.get("output").isEmpty())) {
+			formPages.add(createResourceComponentPage());
 		}
 
 		// Add the Pages

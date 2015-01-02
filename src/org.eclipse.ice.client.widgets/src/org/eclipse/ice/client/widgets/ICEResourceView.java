@@ -62,7 +62,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.swt.DefaultEventTableViewer;
 
 /**
@@ -132,11 +131,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	private ListComponent<VizResource> plotList = new ListComponent<VizResource>();
 	
 	/**
-	 * The IVizService that should be used to create plots
-	 */
-	private IVizService vizService;
-	
-	/**
 	 * The Constructor
 	 */
 	public ICEResourceView() {
@@ -147,14 +141,6 @@ public class ICEResourceView extends PlayableViewPart implements
 
 		return;
 		// end-user-code
-	}
-
-	/**
-	 * This operation sets the IVizService that should be used to create plots.
-	 * @param service The service that should be used
-	 */
-	public void setVizService(IVizService service) {
-		vizService = service;
 	}
 	
 	/**

@@ -29,4 +29,5 @@ Export-Package: org.eclipse.ice.client.common,
  org.eclipse.ice.client.widgets,
  org.eclipse.ice.client.widgets.properties,
  org.eclipse.ice.client.widgets.viz.service
-Service-Component: OSGI-INF/eclipseWidgetsComponent.xml, OSGI-INF/commonComponent.xml
+Service-Component: OSGI-INF/eclipseWidgetsComponent.xml, OSGI-INF/commonComponent.xml,
+ OSGI-INF/formEditorVizService.xml

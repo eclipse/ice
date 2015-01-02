@@ -67,20 +67,11 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation registers an IFormWidgetBuilder with the Factory. The
 	 * IFormWidgetBuilder is used to extend the abilities of the default set of
 	 * EclipseUIWidgets to draw ICE's Form's.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
 	 * @param builder
-	 *            <p>
 	 *            The builder that will generate the custom IFormWidget.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerFormWidgetBuilder(IFormWidgetBuilder builder) {
 		// begin-user-code
@@ -97,12 +88,10 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 		// end-user-code
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see IWidgetFactory#getFormWidget(String formName)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IFormWidget getFormWidget(String formName) {
 		// begin-user-code

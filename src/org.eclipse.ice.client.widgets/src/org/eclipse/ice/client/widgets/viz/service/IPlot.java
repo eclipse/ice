@@ -29,6 +29,10 @@ import org.eclipse.swt.widgets.Composite;
  * as private variables and not exposed in the properties map unless absolutely
  * necessary.
  * 
+ * A proper implementation of IPlot is one that can be used in standalone tools,
+ * workbench-based tools, and embedded in composites in larger, existing tools.
+ * Implementations should not be restricted to one usage scenario.
+ * 
  * @author Jay Jay Billings
  *
  */
