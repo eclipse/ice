@@ -16,12 +16,14 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.csv.CSVVizService;
 
 /**
  * This class is the basic implementation of the IVizServiceFactory in ICE. It
  * is registered with the platform as an OSGi service.
  * 
- * The default IVizService if "ice-plot" if it is registered.
+ * The default IVizService is "ice-plot" and it is registered when the service
+ * is started.
  * 
  * @author Jay Jay Billings
  *
@@ -47,6 +49,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	 */
 	public void start() {
 		// Initialize "ice-plot" viz service
+		register(new CSVVizService());
 	}
 
 	/*

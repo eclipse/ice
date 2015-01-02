@@ -96,8 +96,7 @@ public class CSVVizService implements IVizService {
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return new CSVPlot(file);
 	}
 
 }
