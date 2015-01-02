@@ -13,6 +13,7 @@
 package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.ice.client.common.PropertySource;
@@ -32,6 +33,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
@@ -90,6 +92,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 	private StackLayout layout;
 
 	/**
+	 * The map that holds any plots that are created
+	 */
+	Map<String,IPlot> plotMap;
+	
+	/**
 	 * The Constructor
 	 * 
 	 * @param editor
@@ -109,6 +116,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 		} else {
 			System.out.println("ICEResourcePage Message: Invalid FormEditor.");
 		}
+		
+		// Setup the plot map
+		plotMap = new Hashtable<String, IPlot>();
 
 		return;
 	}
@@ -148,8 +158,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 				.getActivePage().findView(ICEResourceView.ID);
 		resourceView.setResourceComponent(resourceComponent);
 
-		// Get the parent and set its layout
+		// Setup the Form layout
 		form.getBody().setLayout(new GridLayout());
+		form.getBody().setLayoutData(new GridData(GridData.FILL_BOTH));
+		// Get the parent and set its layout
 		parent = new Composite(form.getBody(), SWT.None);
 		parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 		layout = new StackLayout();
@@ -200,7 +212,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 			// Set the browser to the first resource if available.
 			// Otherwise, display a default message.
 			currentResource = resourceView.setDefaultResourceSelection();
-			if (currentResource != null) {
+			if (currentResource != null && !(currentResource instanceof VizResource)) {
 				browser.setUrl(currentResource.getPath().toString());
 			} else {
 				browser.setText("<html><body><center>No resources available.</center></body></html>");
@@ -261,15 +273,16 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 				// Switch to the plot composite
 				layout.topControl = plotComposite;
 				try {
-					// Create the plot
-					IPlot plot = vizFactory.get().createPlot(selectedResource.getPath());
+					// Get the plot from the hash table since the user clicked on it
+					IPlot plot = plotMap.get(selectedResource.getPath().toString());
 					// Get the plot types and pick a plot type
 					Map<String,String[]> plotTypes = plot.getPlotTypes();
 					ArrayList<String> keys = new ArrayList<String>(plotTypes.keySet());
 					String category = keys.get(0);
 					String type = plotTypes.get(category)[0];
 					// Draw the plot
-					plot.draw(category, type, plotComposite);					
+					plot.draw(category, type, plotComposite);	
+					plotComposite.layout();
 				} catch (Exception e) {
 					// Complain
 					e.printStackTrace();
@@ -311,6 +324,19 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 		if (component != null) {
 			// Set the component reference
 			resourceComponent = component;
+			// Run through the component and create plots for any VizResources it may have
+			for (ICEResource resource : resourceComponent.getResources()) {
+				if (resource instanceof VizResource) {
+					try {
+						IPlot plot = vizFactory.get().createPlot(resource.getPath());
+						// Cram the plot in the hashtable until the user clicks on it
+						plotMap.put(plot.getDataSource().toString(), plot);
+					} catch (Exception e) {
+						// Complain
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 
 		return;

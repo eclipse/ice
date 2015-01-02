@@ -83,7 +83,16 @@ public class ReflectivityModel extends Item {
 		// begin-user-code
 
 		// Create an empty stream for the output files
-		ByteArrayInputStream stream = new ByteArrayInputStream(" ".getBytes());
+		
+		// FIXME! Simple data entered now for testing
+		String line1 = "#features,t, p_x, p_y\n";
+		String line2 = "#units,t,p_x,p_y\n";
+		String line3 = "1.0,1.0,1.0\n";
+		String line4 = "2.0,4.0,8.0\n";
+		String line5 = "3.0,9.0,27.0\n";
+		String allLines = line1+line2+line3+line4+line5;
+		
+		ByteArrayInputStream stream = new ByteArrayInputStream(allLines.getBytes());
 
 		// Create the Form
 		form = new Form();
@@ -117,6 +126,7 @@ public class ReflectivityModel extends Item {
 				if (scatteringFile.exists()) {
 					scatteringFile.delete(true, null);
 				}
+				stream.reset();
 				scatteringFile.create(stream, true, null);
 				
 				// Create the VizResource to hold the reflectivity data

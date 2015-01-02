@@ -147,12 +147,11 @@ public class CSVPlotEditor extends EditorPart {
 
 		// Create a top level composite to hold the canvas or text
 		vizComposite = new Composite(parent, SWT.FILL);
-		vizComposite.setLayout(new GridLayout(1, false));
-		vizComposite.setLayoutData(new GridData(SWT.LEFT,SWT.FILL,true,true,1,1));
+		vizComposite.setLayout(new GridLayout());
+		vizComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		Canvas plotCanvas = new Canvas(vizComposite, SWT.BORDER);
-		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-				1, 1));
+		plotCanvas.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		lws = new LightweightSystem(plotCanvas);
 

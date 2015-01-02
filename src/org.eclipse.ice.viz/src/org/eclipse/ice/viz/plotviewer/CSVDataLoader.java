@@ -141,66 +141,34 @@ public class CSVDataLoader {
 	 */
 	public CSVDataProvider load(File csvInputFile,
 			boolean specialDelimitersEnabled) {
-		/**
-		 * Instantiate the dataSet
-		 */
+		// Local Declarations
 		CSVDataProvider dataSet = new CSVDataProvider();
-		/**
-		 * ArrayList of String to hold features
-		 */
 		ArrayList<String> features = new ArrayList<String>();
-		/**
-		 * ArrayList of String to hold units
-		 */
 		ArrayList<String> units = new ArrayList<String>();
-		/**
-		 * HashMap for the Errors and their indices
-		 */
 		HashMap<Integer, Integer> featureErrorIndices = new HashMap<Integer, Integer>();
-
-		/**
-		 * File Reader
-		 */
 		BufferedReader inputStream = null;
-
-		/**
-		 * Reading in the data file line by line and passing to the provider
-		 */
+		String line;
+		String[] commentLine;
+		String[] featureLine;
+		int commentLineLength;
+		int featureLineLength = 0;
+		boolean hasHashFeature = false;
+		int elementOffset;
+		
+		//Reading in the data file line by line and passing to the provider
 		try {
 			/**
 			 * Initialize an input BufferedReader stream
 			 */
 			inputStream = new BufferedReader(new FileReader(csvInputFile));
-			/**
-			 * String variable for each line of the file
-			 */
-			String line;
-			/**
-			 * Array for splitting the line by comma commentLine - for splitting
-			 * comments (like units, time-Units, and times) featureLine for
-			 * splitting features commentLineDelim used to deal with other
-			 * delimiters that may be in the line
-			 */
-			String[] commentLine;
-			String[] featureLine;
-			int commentLineLength;
-			int featureLineLength = 0;
 
-			int lineNumber = 1;
-			boolean hasHashFeature = false;
-			int elementOffset;
 			/**
 			 * While loop that parses the comments for the features,
 			 * units,times, and time-units
 			 */
 			while ((line = inputStream.readLine()) != null
-					&& (line.contains("#") || lineNumber == 1)) {
-				// If we already got the features and the next line contains
-				// data, then just break out of the loop now
-				if (!features.isEmpty() && !line.contains("#")) {
-					break;
-				}
-
+					&& line.contains("#")) {
+				// Replace special characters if parsing them is not enabled
 				if (specialDelimitersEnabled) {
 					/**
 					 * Check for the case where the line contains ":",";","/"
@@ -235,7 +203,7 @@ public class CSVDataLoader {
 				 * Checks for the features, units, times, and time-units
 				 * keywords
 				 */
-				if (!line.contains("#") || hasHashFeature) {
+				if (hasHashFeature) {
 					/**
 					 * Initialize the pattern for the error and uncertainty of
 					 * the features
@@ -267,23 +235,6 @@ public class CSVDataLoader {
 						 */
 						featureLineLength = commentLine.length;
 						features.add(commentLine[i]);
-					}
-
-					/**
-					 * If the file had no given features, create a set of
-					 * features x0,x1,x2,...,xn for the fakeDataSet
-					 */
-					if (features.isEmpty()) {
-
-						// Split the line at each comma
-						featureLine = line.trim().split(",");
-
-						// Create as many dummy feature names as there were
-						// splits
-						featureLineLength = featureLine.length;
-						for (int i = 0; i < featureLine.length; i++) {
-							features.add("x" + i);
-						}
 					}
 
 				} else if (line.toLowerCase().contains("#units,")) {
@@ -321,10 +272,8 @@ public class CSVDataLoader {
 					dataSet.setDataHeight(dataHeight);
 				}
 
-				// Increment the line counter
-				lineNumber++;
 			}
-
+			
 			/**
 			 * If the file had no given features, create a set of features
 			 * x0,x1,x2,...,xn for the fakeDataSet
@@ -335,7 +284,6 @@ public class CSVDataLoader {
 				featureLine = line.trim().split(",");
 
 				// Create as many dummy feature names as there were splits
-				featureLineLength = featureLine.length;
 				for (int i = 0; i < featureLine.length; i++) {
 					features.add("x" + i);
 				}

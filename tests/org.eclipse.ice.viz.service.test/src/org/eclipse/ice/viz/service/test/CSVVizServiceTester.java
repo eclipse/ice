@@ -69,7 +69,8 @@ public class CSVVizServiceTester {
 	 * Test method for
 	 * {@link org.eclipse.ice.viz.service.csv.CSVVizService#createPlot(java.net.URI)}
 	 * .
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	@Test
 	public void testCreatePlot() throws Exception {
@@ -85,8 +86,11 @@ public class CSVVizServiceTester {
 		// matter for this test anyway. (At least not yet.)
 		IPlot plot = service.createPlot(file.toURI());
 		assertNotNull(plot);
-		assertEquals(file.toURI(),plot.getDataSource());
-		
+		assertEquals(file.toURI(), plot.getDataSource());
+
+		// In the future this should somehow test that the plot was actually
+		// loaded.
+
 		return;
 	}
 }
