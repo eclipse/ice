@@ -7,9 +7,12 @@ Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.client.widgets.viz.service,
  org.eclipse.ice.viz.plotviewer,
+ org.eclipse.jface,
  org.eclipse.jface.dialogs,
+ org.eclipse.jface.resource,
  org.eclipse.swt.widgets,
  org.eclipse.ui
 Export-Package: org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.csv
 Service-Component: OSGI-INF/vizFactory.xml
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.100"

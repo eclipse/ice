@@ -29,8 +29,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.eclipse.gef.finder.SWTBotGefTestCase;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -44,12 +51,7 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(SWTBotJunit4ClassRunner.class)
-public class CSVPlotTester {
-
-	/**
-	 * The SWTBot instance used by the test
-	 */
-	private static SWTBot bot;
+public class CSVPlotTester extends SWTBotGefTestCase {
 
 	/**
 	 * The test file that holds the small CSV plot
@@ -61,8 +63,6 @@ public class CSVPlotTester {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		// Create the bot for the UI test
-		bot = new SWTBot();
 
 		// Create a small CSV file for testing the plot
 		String separator = System.getProperty("file.separator");
@@ -102,9 +102,6 @@ public class CSVPlotTester {
 		if (file.exists()) {
 			file.delete();
 		}
-
-		// Put the bot to sleep so everything can finish up
-		bot.sleep(2000);
 	}
 
 	/**
@@ -213,28 +210,42 @@ public class CSVPlotTester {
 		// Create and load the plot
 		final CSVPlot plot = new CSVPlot(file.toURI());
 		plot.load();
+		// Give a couple of seconds for the load() thread to run.
 		Thread.currentThread();
 		Thread.sleep(2000);
 
-		// Grab the shell to render the plot
-		Shell shell = new Shell(Display.getDefault(),SWT.SHELL_TRIM);
+		// Grab the shell to render the plot.
+		Shell shell = new Shell(Display.getDefault(), SWT.SHELL_TRIM);
 		shell.setFullScreen(true);
 		shell.setText("TITLEBAR!!!!");
-		shell.setLayout(new GridLayout(1,false));
-		// Create a composite for it
+		shell.setLayout(new GridLayout(1, false));
+		// Create a composite for it.
 		Composite testComposite = new Composite(shell, SWT.None);
-		testComposite.setLayout(new GridLayout(1, false));
-		testComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true,
+		testComposite.setLayout(new GridLayout(1, true));
+		testComposite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true,
 				true, 1, 1));
-		testComposite.layout();
-		shell.pack();
-		Label label = new Label(testComposite, SWT.FLAT);
-		label.setText("Test Label");
+
+		// Draw the plot in the test composite.
 		plot.draw("scatter", "t vs. p_x", testComposite);
 
+		// Open the shell and lay it out before running the tests.
+		shell.open();
+		shell.layout();
+
+		// Grab the active shell and make sure it is the correct one.
+		SWTBotShell botShell = bot.activeShell();
+		assertEquals(botShell.getText(), shell.getText());
+
+		// Check for a few simple things just to make sure the plot area was
+		// rendered.
+		SWTBotLabel sliderLabel = bot.label("Slider: ");
+		SWTBotButton upButton = bot.button(">");
+		SWTBotButton downButton = bot.button("<");
+
+		// Cleaning up just seems like the right proper thing to do.
 		shell.dispose();
-		
-		fail("Not yet implemented.");
+
+		return;
 	}
 
 }

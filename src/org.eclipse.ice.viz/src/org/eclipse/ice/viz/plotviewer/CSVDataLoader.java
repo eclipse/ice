@@ -340,12 +340,6 @@ public class CSVDataLoader {
 					features.add("x" + i);
 				}
 			}
-
-			System.out.println("features");
-			for (String i : features) {
-				System.out.println(i);
-			}
-			System.out.println(line);
 			/**
 			 * Declare an IData object to store the data
 			 */
@@ -359,7 +353,6 @@ public class CSVDataLoader {
 			 * Loop handles the columns of the first line of data
 			 */
 			for (int i = 0; i < dataLines.length; i++) {
-				System.out.println(dataLines[i]);
 				/**
 				 * Check if error/uncertainties are present in the data file
 				 */
@@ -391,7 +384,6 @@ public class CSVDataLoader {
 						 * add without time
 						 */
 						if (!(times.isEmpty())) {
-							System.out.println("times " + times.get(i));
 							dataSet.addData(times.get(i), data);
 						} else {
 							dataSet.addData(data);
@@ -433,7 +425,6 @@ public class CSVDataLoader {
 			 */
 			while ((line = inputStream.readLine()) != null && !line.isEmpty()
 					&& !line.startsWith("#")) {
-				System.out.println(line);
 				/**
 				 * dataLines- for the split input line
 				 */
@@ -483,7 +474,6 @@ public class CSVDataLoader {
 						/**
 						 * Instantiate a new CSVData object
 						 */
-						System.out.println("CSVData " + features.get(i) + " " + dataLines[i]);
 						data = new CSVData(features.get(i),
 								Double.parseDouble(dataLines[i]));
 						/**

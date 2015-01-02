@@ -100,9 +100,6 @@ public class CreateCSVPlotAction extends Action {
 
 		CSVDataProvider newDataProvider = null;
 
-		System.out.println("CreateCSVPlotAction Message: "
-				+ "Plotting single file.");
-
 		if (fileName.matches(".*\\.csv$")) {
 			// Handle a CSV file
 			CSVDataLoader newCSVDataLoader = new CSVDataLoader();

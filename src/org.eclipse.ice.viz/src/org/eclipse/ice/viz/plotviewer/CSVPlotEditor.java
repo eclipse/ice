@@ -145,12 +145,6 @@ public class CSVPlotEditor extends EditorPart {
 	@Override
 	public void createPartControl(Composite parent) {
 
-		String[] emptyStrArr = { "OK" };
-		MessageDialog dialog = new MessageDialog(parent.getShell(), "Title",
-				null, "MSG", MessageDialog.CONFIRM, emptyStrArr, 0);
-		dialog.create();
-		dialog.open();
-
 		// Create a top level composite to hold the canvas or text
 		vizComposite = new Composite(parent, SWT.FILL);
 		vizComposite.setLayout(new GridLayout(1, false));

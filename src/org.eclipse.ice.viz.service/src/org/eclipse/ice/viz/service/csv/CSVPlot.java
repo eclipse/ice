@@ -80,11 +80,11 @@ public class CSVPlot implements IPlot {
 	public void load() {
 
 		if (source != null) {
-//			// Create the loading thread
-//			Thread loadingThread = new Thread(new Runnable() {
-//
-//				@Override
-//				public void run() {
+			// Create the loading thread
+			Thread loadingThread = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
 					// Create a file handle from the source
 					File file = new File(source);
 					// Get a CSV loader and try to load the file
@@ -98,7 +98,8 @@ public class CSVPlot implements IPlot {
 						// Get the variables
 						ArrayList<String> variables = provider.getFeatureList();
 						// Set the first feature as an independent variable
-						provider.setFeatureAsIndependentVariable(variables.get(0));
+						provider.setFeatureAsIndependentVariable(variables
+								.get(0));
 						// Create lists to hold the plot types
 						ArrayList<String> plotTypes = new ArrayList<String>(
 								variables.size());
@@ -119,16 +120,13 @@ public class CSVPlot implements IPlot {
 						// Add the qualifier
 						types.put("scatter",
 								plotTypes.toArray(emptyStringArray));
-						for (String i : provider.getFeatureList()) {
-							System.out.println(i);
-						}
 					}
 
 				}
-//			});
-//			// Start the thread
-//			loadingThread.start();
-//		}
+			});
+			// Start the thread
+			loadingThread.start();
+		}
 
 		return;
 	}
@@ -245,8 +243,6 @@ public class CSVPlot implements IPlot {
 			// Set the time - not entirely why they get it and set it here.
 			// Whatevs.
 			provider.setTime(plotTime);
-			System.out.println("Plot time = " + plotTime);
-			System.out.println(provider.getFeaturesAtCurrentTime());
 			// Create a new series title for the new series
 			String seriesTitle = axis1 + " vs. " + axis2 + " at " + plotTime;
 			// Create a new series provider
