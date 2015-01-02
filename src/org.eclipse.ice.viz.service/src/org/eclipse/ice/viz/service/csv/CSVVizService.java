@@ -96,7 +96,10 @@ public class CSVVizService implements IVizService {
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		return new CSVPlot(file);
+		// Create and load the plot
+		CSVPlot plot = new CSVPlot(file);
+		plot.load();
+		return plot;
 	}
 
 }
