@@ -26,6 +26,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
@@ -48,7 +50,7 @@ public class CSVPlotTester {
 	 * The SWTBot instance used by the test
 	 */
 	private static SWTBot bot;
-	
+
 	/**
 	 * The test file that holds the small CSV plot
 	 */
@@ -65,7 +67,8 @@ public class CSVPlotTester {
 		// Create a small CSV file for testing the plot
 		String separator = System.getProperty("file.separator");
 		String home = System.getProperty("user.home");
-		file = new File(home + separator + "ICETests" + separator + "CSVPlot.csv");
+		file = new File(home + separator + "ICETests" + separator
+				+ "CSVPlot.csv");
 		String line1 = "#features,t, p_x, p_y";
 		String line2 = "#units,t,p_x,p_y";
 		String line3 = "1.0,1.0,1.0";
@@ -85,7 +88,7 @@ public class CSVPlotTester {
 		bWriter.newLine();
 		bWriter.close();
 		writer.close();
-		
+
 		return;
 	}
 
@@ -107,7 +110,8 @@ public class CSVPlotTester {
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.viz.service.csv.CSVPlot#getPlotTypes()}.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	@Test
 	public void testGetPlotTypes() throws Exception {
@@ -117,10 +121,10 @@ public class CSVPlotTester {
 		plot.load();
 		Thread.currentThread();
 		Thread.sleep(2000);
-		
+
 		// Get the types
-		Map<String,String[]> types = plot.getPlotTypes();
-		
+		Map<String, String[]> types = plot.getPlotTypes();
+
 		// Check them
 		assertTrue(types.containsKey("line"));
 		assertTrue(types.containsKey("scatter"));
@@ -140,7 +144,7 @@ public class CSVPlotTester {
 		assertTrue(scatterTypes.contains("p_x vs. p_y"));
 		assertTrue(scatterTypes.contains("p_y vs. t"));
 		assertTrue(scatterTypes.contains("p_y vs. p_x"));
-		
+
 		return;
 	}
 
@@ -163,7 +167,7 @@ public class CSVPlotTester {
 	 */
 	@Test
 	public void testGetProperties() throws Exception {
-		
+
 		IPlot plot = new CSVPlot(null);
 		Map<String, String> props = plot.getProperties();
 		// The CSVPlot should always have an empty property map, at least for
@@ -175,7 +179,7 @@ public class CSVPlotTester {
 		props = null;
 		props = plot.getProperties();
 		assertTrue(props.isEmpty());
-		
+
 		return;
 	}
 
@@ -185,42 +189,51 @@ public class CSVPlotTester {
 	 */
 	@Test
 	public void testGetDataSource() {
-		
+
 		// Create the plot using the source file
 		IPlot plot = new CSVPlot(file.toURI());
 		// Make sure the plot reports the right file
-		assertEquals(file.toURI(),plot.getDataSource());
+		assertEquals(file.toURI(), plot.getDataSource());
 		// Make sure it reports the right host details, namely localhost
 		assertFalse(plot.isSourceRemote());
-		
-		return;		
+
+		return;
 	}
 
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.viz.service.csv.CSVPlot#draw(java.lang.String, org.eclipse.swt.widgets.Composite)}
 	 * .
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	@Test
 	public void testDraw() throws Exception {
-		
-		// Grab the shell to render the plot
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+
 		// Create and load the plot
-		CSVPlot plot = new CSVPlot(file.toURI());
+		final CSVPlot plot = new CSVPlot(file.toURI());
 		plot.load();
 		Thread.currentThread();
 		Thread.sleep(2000);
-		
-		// Create a composite to hold the plot
-		Composite testComposite = new Composite(shell, SWT.None);
-		testComposite.setLayout(new GridLayout(1,false));
-		testComposite.setLayoutData(new GridData(SWT.RIGHT,
-				SWT.FILL, false, true, 1, 1));
-		plot.draw("scatter","t vs. p_x", testComposite);
-		testComposite.layout();
 
+		// Grab the shell to render the plot
+		Shell shell = new Shell(Display.getDefault(),SWT.SHELL_TRIM);
+		shell.setFullScreen(true);
+		shell.setText("TITLEBAR!!!!");
+		shell.setLayout(new GridLayout(1,false));
+		// Create a composite for it
+		Composite testComposite = new Composite(shell, SWT.None);
+		testComposite.setLayout(new GridLayout(1, false));
+		testComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true,
+				true, 1, 1));
+		testComposite.layout();
+		shell.pack();
+		Label label = new Label(testComposite, SWT.FLAT);
+		label.setText("Test Label");
+		plot.draw("scatter", "t vs. p_x", testComposite);
+
+		shell.dispose();
+		
 		fail("Not yet implemented.");
 	}
 
