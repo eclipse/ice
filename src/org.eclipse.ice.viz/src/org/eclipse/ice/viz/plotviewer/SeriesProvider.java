@@ -172,10 +172,10 @@ public class SeriesProvider {
 	 */
 	public double[] getXData() {
 		// Set the time for the dataProvider
+		System.out.println("TIME" + timeForDataProvider + " " + xDataFeature);
 		dataProviderForSeries.setTime(timeForDataProvider);
 		// Return the data
-		return this.dataProviderForSeries
-				.getPositionAtCurrentTime(xDataFeature);
+		return dataProviderForSeries.getPositionAtCurrentTime(xDataFeature);
 	}
 
 	/**

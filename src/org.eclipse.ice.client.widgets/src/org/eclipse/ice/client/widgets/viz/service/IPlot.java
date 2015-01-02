@@ -40,9 +40,12 @@ public interface IPlot {
 	 * where each individual key is a type of plot - mesh, scalar, line, etc. -
 	 * with a list of values of all of the plots it can create of that given
 	 * type from the data source. For example, for a CSV file with three columns
-	 * x, y1, y2, y3, the map might be: key | value line | "x vs y1", "x vs y2",
-	 * "x vs y3" scatter | "x vs y1", "x vs y2", "x vs y3" contour | "x vs y1",
-	 * "x vs y2", "x vs y3"
+	 * x, y1, y2, y3, the map might be:
+	 * <p>
+	 * key | value<br>
+	 * line | "x vs y1", "x vs y2", "x vs y3"<br>
+	 * scatter | "x vs y1", "x vs y2", "x vs y3"<br>
+	 * contour | "x vs y1", "x vs y2", "x vs y3"
 	 * 
 	 * @return The map of valid plot types this plot can be
 	 * @throws Exception
@@ -62,6 +65,10 @@ public interface IPlot {
 	 * necessary, or to otherwise manage its own drawing service. There is no
 	 * guarantee that the caller will clear the parent.
 	 * 
+	 * @param category
+	 *            The category of the plot to create. That is, the key in the
+	 *            map; something "line" or "scatter" using the example from
+	 *            getPlotTypes();
 	 * @param plotType
 	 *            The type of plot that this IPlot should show
 	 * @param parent
@@ -70,7 +77,8 @@ public interface IPlot {
 	 *             This exception indicates that they IPlot could not be drawn
 	 *             with either the given type or parent and explains why.
 	 */
-	public void draw(String plotType, Composite parent) throws Exception;
+	public void draw(String category, String plotType, Composite parent)
+			throws Exception;
 
 	/**
 	 * This operation returns the number of axes of the plot.

@@ -6,5 +6,11 @@ Bundle-Version: 2.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.client.widgets.viz.service,
- org.eclipse.ice.viz.service
-Require-Bundle: org.junit
+ org.eclipse.ice.viz.service,
+ org.eclipse.ice.viz.service.csv,
+ org.eclipse.swt.widgets
+Require-Bundle: org.junit,
+ org.eclipse.swtbot.eclipse.core;bundle-version="2.2.1",
+ org.eclipse.swtbot.go;bundle-version="2.2.1",
+ org.eclipse.swtbot.junit4_x;bundle-version="2.2.1",
+ org.eclipse.swtbot.swt.finder;bundle-version="2.2.1"

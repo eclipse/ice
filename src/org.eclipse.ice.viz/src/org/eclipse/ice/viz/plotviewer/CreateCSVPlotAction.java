@@ -100,6 +100,9 @@ public class CreateCSVPlotAction extends Action {
 
 		CSVDataProvider newDataProvider = null;
 
+		System.out.println("CreateCSVPlotAction Message: "
+				+ "Plotting single file.");
+
 		if (fileName.matches(".*\\.csv$")) {
 			// Handle a CSV file
 			CSVDataLoader newCSVDataLoader = new CSVDataLoader();
@@ -323,8 +326,7 @@ public class CreateCSVPlotAction extends Action {
 			}
 			SelectFeatureDialog featureDialog = new SelectFeatureDialog(shell);
 			// Set the independent variables from the provider
-			// to
-			// be plotted
+			// to be plotted
 			featureDialog.setXAxisFeatures(newDataSetProvider
 					.getIndependentVariables());
 			// Set the features from the provider to be plotted
@@ -335,8 +337,7 @@ public class CreateCSVPlotAction extends Action {
 					&& featureDialog.getYAxisFeature() != null) {
 
 				// If it has made it here, then plotting is
-				// ready
-				// Create a new plot provider
+				// ready. Create a new plot provider.
 				PlotProvider newPlotProvider = new PlotProvider();
 
 				// Set the title for the new plot provider

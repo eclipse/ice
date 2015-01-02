@@ -85,7 +85,9 @@ public interface IVizService {
 	 * at initial connection properties and if the properties are not updated a
 	 * call to connect() should attempt to connect using the default properties.
 	 * 
-	 * @return True if the connect was successfully made, false otherwise.
+	 * @return True if the connection was successfully made, false otherwise.
+	 *         Also true if the implementation did not need to make a connection
+	 *         (connected by default).
 	 */
 	public boolean connect();
 

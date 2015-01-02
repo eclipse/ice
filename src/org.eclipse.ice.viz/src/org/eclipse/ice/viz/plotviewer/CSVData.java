@@ -64,9 +64,9 @@ public class CSVData extends ICEObject implements IData {
 	 * @param newFeature
 	 * @param newValue
 	 */
-	public CSVData(String newFeature, Double newValue) {
-		this.feature = newFeature;
-		this.value = newValue;
+	public CSVData(String feature, Double value) {
+		this.feature = feature;
+		this.value = value;
 		this.position = new ArrayList<Double>();
 		this.units = null;
 		this.setUncertainty(0.0);

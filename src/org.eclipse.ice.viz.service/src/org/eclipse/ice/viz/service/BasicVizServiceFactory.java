@@ -38,7 +38,15 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	 */
 	public BasicVizServiceFactory() {
 		// Create the map to hold the services
-		serviceMap = new HashMap<String,IVizService>();
+		serviceMap = new HashMap<String, IVizService>();
+	}
+
+	/**
+	 * This operation starts the service, including registering the basic CSV
+	 * plotter viz service, "ice-plot," with the platform.
+	 */
+	public void start() {
+		// Initialize "ice-plot" viz service
 	}
 
 	/*
@@ -78,10 +86,10 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	 */
 	@Override
 	public String[] getServiceNames() {
-		
-		String [] names = {};
+
+		String[] names = {};
 		names = serviceMap.keySet().toArray(names);
-		
+
 		return names;
 	}
 
@@ -94,13 +102,13 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	 */
 	@Override
 	public IVizService get(String serviceName) {
-		
+
 		IVizService service = null;
-		
+
 		if (serviceMap.containsKey(serviceName)) {
 			service = serviceMap.get(serviceName);
 		}
-		
+
 		return service;
 	}
 

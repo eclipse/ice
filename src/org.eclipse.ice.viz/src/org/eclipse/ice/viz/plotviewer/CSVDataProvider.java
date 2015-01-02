@@ -31,7 +31,7 @@ public class CSVDataProvider implements IDataProvider {
 	/**
 	 * Structure to contain all the data for each feature at each time step
 	 */
-	private TreeMap<Double, HashMap<String, ArrayList<IData>>> dataSet;
+	private HashMap<Double, HashMap<String, ArrayList<IData>>> dataSet;
 
 	/**
 	 * Units for the time
@@ -82,7 +82,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * Default constructor
 	 */
 	public CSVDataProvider() {
-		dataSet = new TreeMap<Double, HashMap<String, ArrayList<IData>>>();
+		dataSet = new HashMap<Double, HashMap<String, ArrayList<IData>>>();
 		currentTime = defaultTime;
 		timeUnits = null;
 		source = null;
@@ -100,6 +100,9 @@ public class CSVDataProvider implements IDataProvider {
 	public void addData(double time, IData data) {
 		// Get the feature of the data item
 		String feature = data.getFeature();
+		System.out.println("addData");
+		System.out.println(feature);
+		System.out.println(time);
 		// Check if the given time already exists
 		if (dataSet.containsKey(time)) {
 			// Check if the feature already exists for a given time
@@ -112,6 +115,7 @@ public class CSVDataProvider implements IDataProvider {
 				// Add data to the ArrayList
 				dataSet.get(time).get(feature).add(data);
 			}
+			System.out.println("Added " + time + " " + feature);
 		} else {
 			// The time does not exist so need a new HashMap for the given time
 			HashMap<String, ArrayList<IData>> dataSetComponent = new HashMap<String, ArrayList<IData>>();
@@ -122,6 +126,11 @@ public class CSVDataProvider implements IDataProvider {
 			dataSetComponent.get(feature).add(data);
 			// Add this new HashMap to the dataSet
 			dataSet.put(time, dataSetComponent);
+			System.out.println("Updated " + time + " " + feature);
+		}
+		
+		for (String i : dataSet.get(time).keySet()) {
+			System.out.println(i);
 		}
 
 	}
@@ -470,7 +479,11 @@ public class CSVDataProvider implements IDataProvider {
 		double[] position = null;
 
 		// Get the features at the current time
-		ArrayList<String> features = this.getFeaturesAtCurrentTime();
+		ArrayList<String> features = getFeaturesAtCurrentTime();
+		System.out.println("positions");
+		for (String i : features) {
+			System.out.println(i);
+		}
 		// Check that the dataSet at the current time has the specified
 		// independent variable
 		if (independentVars.contains(independentVar)) {
@@ -541,7 +554,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * Returns the features at the current time
 	 */
 	public ArrayList<String> getFeaturesAtCurrentTime() {
-		// TODO Auto-generated method stub
+		System.out.println("Current time " + currentTime);
 		return new ArrayList<String>(dataSet.get(currentTime).keySet());
 	}
 
