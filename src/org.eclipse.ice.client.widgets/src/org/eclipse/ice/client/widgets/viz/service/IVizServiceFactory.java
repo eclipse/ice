@@ -25,6 +25,10 @@ public interface IVizServiceFactory {
 	 * This operation registers an IVizService with the factory so that it can
 	 * be retrieved and used by clients.
 	 * 
+	 * The factory will register the IVizService's preference page with the
+	 * platform when this operation is called and if the IVizService has
+	 * properties.
+	 * 
 	 * @param service
 	 *            The visualization service to register
 	 */

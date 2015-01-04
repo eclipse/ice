@@ -14,6 +14,8 @@ package org.eclipse.ice.client.widgets.viz.service;
 import java.net.URI;
 import java.util.Map;
 
+import org.eclipse.jface.preference.IPreferencePage;
+
 /**
  * This is a pluggable service interface whereby visualization engines can
  * publish their services to the platform. It is designed to be implemented as a
@@ -24,6 +26,12 @@ import java.util.Map;
  * visualization engine provides. Its primary purpose a means to configure a
  * valid connection to the visualization service, if required, and to act as a
  * factory for creating IPlots.
+ * 
+ * IVizServices are responsible for managing their own preferences and providing
+ * both an IPreferencesPage that can be registered with the Platform and a
+ * simple map of preferences. (The simplest way to do this is to keep everything
+ * in a bundle preferences store, register listeners on the page, and handle
+ * merges from setConnectionProperties manually.)
  * 
  * @author Jay Jay Billings
  */
@@ -45,6 +53,15 @@ public interface IVizService {
 	 * @return The version of the IVizService
 	 */
 	public String getVersion();
+
+	/**
+	 * This operation tells whether or not the IVizService has connection
+	 * properties. It is merely a convenience method since it can also be
+	 * checked by examining the map returns from getConnectionProperties().
+	 * 
+	 * @return True if the service has connection properties, false otherwise.
+	 */
+	public boolean hasConnectionProperties();
 
 	/**
 	 * This operation returns the current set of connection properties for the
@@ -71,6 +88,16 @@ public interface IVizService {
 	 *            The new property values
 	 */
 	public void setConnectionProperties(Map<String, String> props);
+
+	/**
+	 * This operation returns a fully configured IPreferencePage that contains
+	 * the preferences for the IVizService that can be configured by users.
+	 * 
+	 * @return The IPreferencePage that will be registered with the Platform and
+	 *         available in the Preferences menu or null if there are no
+	 *         connection properties.
+	 */
+	public IPreferencePage getPreferencesPage();
 
 	/**
 	 * This operation directs the IVizService to "connect" to any pieces of its

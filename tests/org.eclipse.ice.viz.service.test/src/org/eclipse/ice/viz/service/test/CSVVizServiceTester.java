@@ -26,7 +26,7 @@ import org.junit.Test;
  * This class is responsible for testing the CSVVizService.
  * 
  * @author Jay Jay Billings
- *
+ * 
  */
 public class CSVVizServiceTester {
 
@@ -63,6 +63,16 @@ public class CSVVizServiceTester {
 
 		// Make sure the connect() operation always returns true.
 		assertTrue(service.connect());
+
+		// Make sure that the service says it doesn't need properties from the
+		// convenience method.
+		assertFalse(service.hasConnectionProperties());
+
+		// Make sure the preferences page that it returns is null since it
+		// doesn't need properties.
+		assertNull(service.getPreferencesPage());
+		
+		return;
 	}
 
 	/**
