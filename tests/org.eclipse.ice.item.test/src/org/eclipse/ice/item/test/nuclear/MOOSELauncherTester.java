@@ -65,6 +65,11 @@ public class MOOSELauncherTester {
 	 * The project space used to create the workspace for the tests.
 	 */
 	private static IProject projectSpace;
+	
+	/**
+	 * the IO Service used to read/write via MOOSEFileHandler.
+	 */
+	private static IOService service;
 
 	private static MOOSELauncher launcher;
 
@@ -154,8 +159,9 @@ public class MOOSELauncherTester {
 		// Set the global project reference.
 		projectSpace = project;
 
+		// Set up an IO service and add a reader
 		launcher = new MOOSELauncher(projectSpace);
-		IOService service = new IOService();
+		service = new IOService();
 		service.addReader(new MOOSEFileHandler());
 		launcher.setIOService(service);
 
@@ -198,11 +204,16 @@ public class MOOSELauncherTester {
 	 */
 	@AfterClass
 	public static void afterTests() {
-		// Close and delete the fake workspace created
+
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		try {
+			// Close and delete the fake workspace created
 			projectSpace.close(null);
 			workspaceRoot.delete(true, true, null);
+			
+			// Nullify the IO service
+			service = null;
+			
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

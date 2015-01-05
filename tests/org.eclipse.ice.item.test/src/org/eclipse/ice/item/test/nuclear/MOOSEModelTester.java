@@ -38,7 +38,11 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IWriter;
+import org.eclipse.ice.item.nuclear.MOOSELauncher;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
+import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -56,13 +60,17 @@ import org.junit.Test;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-@Ignore
 public class MOOSEModelTester {
 
 	/**
 	 * The project space used to create the workspace for the tests.
 	 */
 	private static IProject projectSpace;
+	
+	/**
+	 * The IO Service used to read/write via MOOSEFileHandler.
+	 */
+	private static IOService service;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -153,6 +161,11 @@ public class MOOSEModelTester {
 
 		// Set the global project reference.
 		projectSpace = project;
+		
+		// Set up an IO service and add a reader and writer
+		service = new IOService();
+		service.addWriter(new MOOSEFileHandler());
+		service.addReader(new MOOSEFileHandler());
 
 		return;
 		// end-user-code
@@ -179,7 +192,7 @@ public class MOOSEModelTester {
 		// Check the form
 		Form form = model.getForm();
 		assertNotNull(form);
-		assertEquals(3, form.getComponents().size());
+		assertEquals(2, form.getComponents().size());
 
 		// Check the data component
 		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) instanceof DataComponent);
@@ -224,9 +237,12 @@ public class MOOSEModelTester {
 
 		// Local Declarations
 		String testFilename = "bison_test_file.inp";
-
+		
 		// Create a MOOSEModel to test
 		MOOSEModel model = setupMOOSEItem();
+		
+		// Set the IOService on the model so we can write out
+		model.setIOService(service);
 
 		// Check the form
 		Form form = model.getForm();
@@ -266,7 +282,10 @@ public class MOOSEModelTester {
 
 		// Create a MOOSE Item
 		MOOSEModel mooseItem = setupMOOSEItem();
-
+		
+		// Set the IO service on the item so we can read/load data in
+		mooseItem.setIOService(service);
+		
 		// Load the input
 		mooseItem.loadInput("input_coarse10.i");
 
@@ -408,11 +427,13 @@ public class MOOSEModelTester {
 	 */
 	@AfterClass
 	public static void afterTests() {
-		// Close and delete the fake workspace created
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		try {
+			// Close and delete the fake workspace created
 			projectSpace.close(null);
-			//workspaceRoot.delete(true, true, null);
+
+			// Nullify the IO service
+			service = null;
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
