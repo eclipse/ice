@@ -19,6 +19,11 @@ import org.eclipse.ice.reflectivity.ReflectivityModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * This class is responsible for testing the ReflectivityModel.
+ * @author Jay Jay Billings
+ *
+ */
 public class ReflectivityModelTester {
 
 	/**

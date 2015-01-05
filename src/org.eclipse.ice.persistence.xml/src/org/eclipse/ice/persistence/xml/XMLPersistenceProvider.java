@@ -10,10 +10,12 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package xmlpp;
+package org.eclipse.ice.persistence.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
@@ -21,8 +23,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.naming.OperationNotSupportedException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.core.resources.IFile;
@@ -32,11 +36,15 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
-
 import org.eclipse.ice.core.iCore.IPersistenceProvider;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.Material;
 
 /**
  * This class implements the IPersistenceProvider interface using the native XML
@@ -53,10 +61,22 @@ import org.eclipse.ice.core.iCore.IPersistenceProvider;
  * 
  * Items that are loaded by the provider are not constructed with a project.
  * 
+ * This provider should always be started AFTER all of the Items are registered
+ * with it because registering Items while it is running would require stopping
+ * the thread and recreating the JAXB context. That is easiest enough to do, but
+ * it won't be implemented here until we get a feature request for it.
+ * 
+ * The provider also implements the IReader and IWriter interfaces and is
+ * registered with the framework as an XML IO Service. It does not support the
+ * find and replace operations from the IReader and IWriter interfaces and it
+ * will throw an exception if either is called. In the case of find() it returns
+ * null.
+ * 
  * @author Jay Jay Billings
  * 
  */
-public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
+public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
+		IReader, IWriter {
 
 	/**
 	 * An atomic boolean used to manage the event loop. It is set to true when
@@ -67,7 +87,9 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	/**
 	 * This is a private class used to store queue events. The Item or its id
 	 * are stored along with one of the words "persist" or "delete" to denote
-	 * which task should be performed for the given item.
+	 * which task should be performed for the given item. Alternatively, if the
+	 * task says "write" the file attribute of the task is used to write the
+	 * Form to the specified IFile to satisfy the IWriter interface.
 	 * 
 	 * @author Jay Jay Billings
 	 * 
@@ -78,9 +100,18 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 		 */
 		public Item item;
 		/**
-		 * The task that should be performed; one of "persist" or "delete."
+		 * The task that should be performed; one of "persist," "delete," or
+		 * "write."
 		 */
 		public String task;
+		/**
+		 * The Form that should be persisted as part of the IWriter interface.
+		 */
+		public Form form;
+		/**
+		 * The file to which the Form should be written.
+		 */
+		public IFile file;
 	}
 
 	/**
@@ -115,6 +146,12 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	 * of disk and updated when Items are persisted.
 	 */
 	private Hashtable<Integer, String> itemIdMap = new Hashtable<Integer, String>();
+
+	/**
+	 * The JAXBContext that is used to create (un)marshalling tools for the XML
+	 * files.
+	 */
+	JAXBContext context;
 
 	/**
 	 * Empty default constructor. No work to do.
@@ -153,7 +190,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 				// for <itemName>_<itemId>.xml.
 				if (resource.getType() == IResource.FILE
 						&& resource.getName().matches(
-								"^[a-zA-Z0-9_]*_\\d+\\.xml$")) {
+								"^[a-zA-Z0-9_\\-]*_\\d+\\.xml$")) {
 					names.add(resource.getName());
 				}
 			}
@@ -183,16 +220,74 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	}
 
 	/**
-	 * This operation is called to start the XMLPersistenceProvider by the OSGi
-	 * Declarative Services engine. It sets up the project space and starts the
-	 * event loop.
+	 * This operation is responsible for creating the project space used by the
+	 * XMLPersistenceProvider.
 	 */
-	public void start() {
+	private void createProjectSpace() {
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		String projectName = "itemDB";
 		System.getProperty("file.separator");
+
+		try {
+			// Get the project handle
+			project = workspaceRoot.getProject(projectName);
+			// If the project does not exist, create it
+			if (!project.exists()) {
+				// Create the project description
+				IProjectDescription desc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription(projectName);
+				// Create the project
+				project.create(desc, null);
+			}
+			// Open the project if it is not already open
+			if (project.exists() && !project.isOpen()) {
+				project.open(null);
+				// Refresh the project in case users manipulated files.
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			}
+		} catch (CoreException e) {
+			// Catch exception for creating the project
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This operation creates the JAXBContext used by the provider to create XML
+	 * (un)marshallers.
+	 * 
+	 * @throws JAXBException
+	 *             An exception indicating that the JAXB Context could not be
+	 *             created.
+	 */
+	private void createJAXBContext() throws JAXBException {
+		// Make an array to store the class list of registered Items
+		ArrayList<Class> classList = new ArrayList<Class>();
+		Class[] classArray = {};
+		// Create the list of classes for the JAXBContext
+		for (Item refItem : referenceItems) {
+			classList.add(refItem.getClass());
+		}
+		// We need to explicitly add some classes to the list so that they will
+		// be handled appropriately. For example, Material does not have a
+		// component so it will not get added to the class list when the Form is
+		// read from all of the Items above.
+		classList.add(Material.class);
+		// Create new JAXB class context and unmarshaller
+		context = JAXBContext.newInstance(classList.toArray(classArray));
+	}
+
+	/**
+	 * This operation is called to start the XMLPersistenceProvider by the OSGi
+	 * Declarative Services engine. It sets up the project space and starts the
+	 * event loop.
+	 * 
+	 * @throws JAXBException
+	 *             An exception indicating that the JAXB Context could not be
+	 *             created.
+	 */
+	public void start() throws JAXBException {
 
 		// Debug information
 		System.out.println("XMLPersistenceProvider Message: "
@@ -201,26 +296,11 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 		// Setup the project if needed. Setup may not be needed if the
 		// alternative constructor was used.
 		if (project == null) {
-			try {
-				// Get the project handle
-				project = workspaceRoot.getProject(projectName);
-				// If the project does not exist, create it
-				if (!project.exists()) {
-					// Create the project description
-					IProjectDescription desc = ResourcesPlugin.getWorkspace()
-							.newProjectDescription(projectName);
-					// Create the project
-					project.create(desc, null);
-				}
-				// Open the project if it is not already open
-				if (project.exists() && !project.isOpen()) {
-					project.open(null);
-				}
-			} catch (CoreException e) {
-				// Catch exception for creating the project
-				e.printStackTrace();
-			}
+			createProjectSpace();
 		}
+
+		// Create the JAXB context
+		createJAXBContext();
 
 		// Get the names and ids for all of the Items that have been persisted.
 		loadItemIdMap();
@@ -308,6 +388,62 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	}
 
 	/**
+	 * This operation returns an output stream containing the XML representation
+	 * of an Item stored in a QueuedTask.
+	 * 
+	 * @param obj
+	 *            the object to write to the stream
+	 * @return the output stream containing the Item as XML
+	 */
+	private ByteArrayOutputStream createXMLStream(Object obj) {
+		// Get the XML
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		// Create the marshaller and write the item
+		Marshaller marshaller;
+		try {
+			marshaller = context.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+					Boolean.TRUE);
+			marshaller.marshal(obj, outputStream);
+		} catch (JAXBException e) {
+			// Complain
+			e.printStackTrace();
+			System.out.println("XMLPersistenceProvider Message: "
+					+ "Failed to execute persistence task for " + obj);
+		}
+		return outputStream;
+	}
+
+	/**
+	 * This operation writes the specified object to the file in XML.
+	 * 
+	 * @param obj
+	 *            The object to be written
+	 * @param file
+	 *            The file to where it should be written
+	 */
+	private void writeFile(Object obj, IFile file) {
+		// Create an output stream containing the XML.
+		ByteArrayOutputStream outputStream = createXMLStream(obj);
+		// Convert it to an input stream so it can be pushed to file
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(
+				outputStream.toByteArray());
+		try {
+			// Update the output file if it already exists
+			if (file.exists()) {
+				file.setContents(inputStream, IResource.FORCE, null);
+			} else {
+				// Or create it from scratch
+				file.create(inputStream, IResource.FORCE, null);
+			}
+		} catch (CoreException e) {
+			// Complain
+			e.printStackTrace();
+		}
+		return;
+	}
+
+	/**
 	 * A utility operation for processing tasks in the event loop.
 	 * 
 	 * @param currentTask
@@ -317,30 +453,25 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 
 		// Local Declarations
 		String name = null;
+		IFile file = null;
 
 		try {
 			// Handle the task if it is available
 			if (currentTask != null) {
-				// Setup the file name
-				name = currentTask.item.getName().replaceAll("\\s+", "_") + "_"
-						+ currentTask.item.getId() + ".xml";
-				// Get the file in the project
-				IFile file = project.getFile(name);
+				// Get the file name if this is a persist or delete
+				if ("persist".equals(currentTask.task)
+						|| "delete".equals(currentTask.task)) {
+					// Setup the file name
+					name = currentTask.item.getName().replaceAll("\\s+", "_")
+							+ "_" + currentTask.item.getId() + ".xml";
+					// Get the file in the project
+					file = project.getFile(name);
+				}
 				// Process persists
 				if ("persist".equals(currentTask.task)
 						&& !(currentTask.item instanceof ReactorAnalyzer)) {
-					// Get the XML
-					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-					// Skip ReactorAnalyzers
-					currentTask.item.persistToXML(outputStream);
-					// Dump it to the file
-					ByteArrayInputStream inputStream = new ByteArrayInputStream(
-							outputStream.toByteArray());
-					if (file.exists()) {
-						file.setContents(inputStream, IResource.FORCE, null);
-					} else {
-						file.create(inputStream, IResource.FORCE, null);
-					}
+					// Send the Item off to be written to the file
+					writeFile(currentTask.item, file);
 					// Update the item id map
 					itemIdMap.put(currentTask.item.getId(), file.getName());
 				} else if ("delete".equals(currentTask.task) && file.exists()) {
@@ -348,6 +479,10 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 					file.delete(true, null);
 					// Update the item id map
 					itemIdMap.remove(currentTask.item.getId());
+				} else if ("write".equals(currentTask.task)) {
+					// Deal with simple Form write requests from the IWriter
+					// interface.
+					writeFile(currentTask.form, currentTask.file);
 				}
 			} else {
 				// Otherwise sleep for a bit
@@ -401,7 +536,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	 * @return True if the task was submitted, false if there was some exception
 	 *         or the Item was null.
 	 */
-	private boolean submitTask(Item item, String taskName) {
+	private boolean submitTask(Item item, String taskName, Form form, IFile file) {
 
 		// Local Declarations
 		boolean retVal = true;
@@ -420,7 +555,22 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 				exception.printStackTrace();
 				retVal = false;
 			}
+		} else if (form != null && file != null) {
+			// Otherwise submit the task if the Form and IFile are good (for the
+			// IWriter interface). Setup the task.
+			task.task = taskName;
+			task.form = form;
+			task.file = file;
+			// Submit the task
+			try {
+				taskQueue.add(task);
+			} catch (Exception exception) {
+				// Complain
+				exception.printStackTrace();
+				retVal = false;
+			}
 		} else {
+			// The submission was invalid
 			retVal = false;
 		}
 		return retVal;
@@ -437,7 +587,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	 */
 	public boolean persistItem(Item item) {
 		// Submit the job
-		return submitTask(item, "persist");
+		return submitTask(item, "persist", null, null);
 	}
 
 	/**
@@ -453,20 +603,12 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 		// Local Declarations
 		Item item = null;
 		String fileName;
-		ArrayList<Class> classList = new ArrayList<Class>();
-		Class[] classArray = {};
 
 		try {
 			// If the map contains the item, load it.
 			fileName = itemIdMap.get(itemID);
 			if (fileName != null) {
-				// Create the list of classes for the JAXBContext
-				for (Item refItem : referenceItems) {
-					classList.add(refItem.getClass());
-				}
-				// Create new JAXB class context and unmarshaller
-				JAXBContext context = JAXBContext.newInstance(classList
-						.toArray(classArray));
+				// Create the unmarshaller and load the item
 				Unmarshaller unmarshaller = context.createUnmarshaller();
 				item = (Item) unmarshaller.unmarshal(project.getFile(fileName)
 						.getContents());
@@ -497,7 +639,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	 */
 	public boolean deleteItem(Item item) {
 		// Submit the job
-		return submitTask(item, "delete");
+		return submitTask(item, "delete", null, null);
 	}
 
 	/**
@@ -514,7 +656,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 	 */
 	public boolean updateItem(Item item) {
 		// Submit the job
-		return submitTask(item, "persist");
+		return submitTask(item, "persist", null, null);
 	}
 
 	/**
@@ -537,6 +679,103 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable {
 		}
 
 		return items;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.io.serializable.IWriter#write(org.eclipse.ice.datastructures
+	 * .form.Form, java.net.URI)
+	 */
+	@Override
+	public void write(Form formToWrite, IFile file) {
+		// Submit the job
+		submitTask(null, "write", formToWrite, file);
+		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IWriter#replace(java.net.URI,
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void replace(IFile file, String regex, String value) {
+		try {
+			throw new OperationNotSupportedException(
+					"XMLPersistenceProvider Error: "
+							+ "IWriter.replace() is not supported.");
+		} catch (OperationNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IWriter#getWriterType()
+	 */
+	@Override
+	public String getWriterType() {
+		return "xml";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IReader#read(java.net.URI)
+	 */
+	@Override
+	public Form read(IFile file) {
+
+		Form form = null;
+
+		try {
+			// Create the marshaller
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			// Grab the form
+			form = (Form) unmarshaller.unmarshal(file.getContents());
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return form;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IReader#findAll(java.net.URI,
+	 * java.lang.String)
+	 */
+	@Override
+	public ArrayList<Entry> findAll(IFile file, String regex) {
+		try {
+			throw new OperationNotSupportedException(
+					"XMLPersistenceProvider Error: "
+							+ "IReader.findAll() is not supported.");
+		} catch (OperationNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IReader#getReaderType()
+	 */
+	@Override
+	public String getReaderType() {
+		return "xml";
 	}
 
 }

@@ -14,6 +14,8 @@ package org.eclipse.ice.materials;
 
 import java.util.List;
 
+import org.eclipse.ice.datastructures.form.Material;
+
 /**
  * This is a simple interface for managing and dealing with a Materials
  * database. The "database" is a persistent collection of Materials data

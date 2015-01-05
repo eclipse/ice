@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.kvPair;
+package org.eclipse.ice.caebat.kvPair;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -213,10 +213,10 @@ public class CAEBATKVPairItem extends Item {
 
 		// Reset the counter for the next component;
 		idCounter = 0;
-		
+
 		// Setup the entries for the electrical component. ICSHORT is reused
 		// from above.
-		
+
 		// CurrentFlux
 		Entry currentFluxEntry = new Entry() {
 			@Override
@@ -227,7 +227,7 @@ public class CAEBATKVPairItem extends Item {
 			}
 		};
 		currentFluxEntry.setId(++idCounter);
-		
+
 		// Add the entries to the electrical component
 		electricalComponent.addEntry(currentFluxEntry);
 
@@ -314,7 +314,7 @@ public class CAEBATKVPairItem extends Item {
 			}
 		};
 		uPolyDegEntry.setId(++idCounter);
-		
+
 		// Add the entries to the electrochemical component
 		electroChemComponent.addEntry(crateEntry);
 		electroChemComponent.addEntry(currentDensityEntry);
@@ -329,12 +329,12 @@ public class CAEBATKVPairItem extends Item {
 		form.addComponent(thermalComponent);
 		form.addComponent(electricalComponent);
 		form.addComponent(electroChemComponent);
-		
-		// We only need the export to key-value pair process, 
+
+		// We only need the export to key-value pair process,
 		// so get rid of this one to conserve 'clicks'
 		// Did Emmy Noether ever speak of click conservation???
 		allowedActions.remove("Export to ICE Native Format");
-		
+
 		return;
 	}
 
@@ -347,7 +347,9 @@ public class CAEBATKVPairItem extends Item {
 		// Setup everything
 		setName(CAEBATKVPairBuilder.name);
 		itemType = CAEBATKVPairBuilder.type;
-		setDescription("A simple item to generate CAEBAT key-value pair files.");
+		setItemBuilderName(CAEBATKVPairBuilder.name);
+		setDescription("A simple item to generate CAEBAT "
+				+ "key-value pair files.");
 	}
 
 }

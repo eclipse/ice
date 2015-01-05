@@ -16,24 +16,26 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.form.Form;
-//import org.eclipse.ice.io.serializable.IReader;
-import org.eclipse.ice.datastructures.form.ListComposite;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.datastructures.form.TimeDataComponent;
 
 /**
  * IPSReader class is responsible for reading the contents of an IPS INI (.conf)
@@ -71,17 +73,19 @@ public class IPSReader implements IReader {
 	 * @return a form with the imported data
 	 */
 	@Override
-	public Form read(URI uri) {
-		if (uri == null) {
+	public Form read(IFile ifile) {
+		if (ifile == null) {
 			return null;
 		}
 		Form form = new Form();
-	
+		
 		// Read in the ini file and create the iterator
+		File file = null;
 		ArrayList<String> lines = null;
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(uri
-					.toURL().openStream()));
+			file = new File(ifile.getFullPath().toOSString());
+			BufferedReader reader = new BufferedReader(new FileReader(
+					file));
 			lines = readFileLines(reader);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -130,11 +134,6 @@ public class IPSReader implements IReader {
 		return form;
 	}
 
-	@Override
-	public ArrayList<Entry> findAll(URI uri, String regex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/**
 	 * Returns a string saying this is an IPSReader
@@ -591,5 +590,11 @@ public class IPSReader implements IReader {
 		};
 
 		return entry;
+	}
+
+	@Override
+	public ArrayList<Entry> findAll(IFile file, String regex) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -14,6 +14,7 @@ package org.eclipse.ice.io.serializable;
 
 import java.net.URI;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.Form;
 
@@ -32,10 +33,11 @@ public interface IWriter {
 	 * 
 	 * @param formToWrite
 	 *            The Form to persist to file.
-	 * @param uri
-	 *            The URI of the file to be written.
+	 * @param file
+	 *            The filename where the contents should be written. If this
+	 *            file does not exist, it shall be created.
 	 */
-	public void write(Form formToWrite, URI fileURI);
+	public void write(Form formToWrite, IFile file);
 
 	/**
 	 * This method provides clients with a basic search and replace
@@ -43,17 +45,23 @@ public interface IWriter {
 	 * given URI for all occurrences of the given regular expression, and
 	 * replace it with the given value.
 	 * 
+	 * @param file
+	 *            The filename where the contents should be written. If it does
+	 *            not exist, this operation will fail.
 	 * @param regex
 	 *            The regular expression to search.
 	 * @param value
 	 *            The value that should replace all occurrences of the given
 	 *            regular expression.
 	 */
-	public void replace(URI fileURI, String regex, String value);
+	public void replace(IFile file, String regex, String value);
 
 	/**
 	 * This method is used by the IOService to store unique references of
 	 * IWriters. It is used as the key in the IOService's IWriter mapping.
+	 * 
+	 * This type should not include dots or other special characters. It should
+	 * just be the name of the format.
 	 * 
 	 * @return The String name of this IWriter.
 	 */

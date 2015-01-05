@@ -16,9 +16,9 @@ import org.eclipse.ui.forms.IDetailsPageProvider;
 
 import static org.eclipse.ice.client.widgets.ICEDataComponentDetailsPage.*;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ui.forms.IDetailsPage;
 
 /** 

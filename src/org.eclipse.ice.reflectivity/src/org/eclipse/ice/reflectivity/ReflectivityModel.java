@@ -12,45 +12,32 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
- * </p>
- * <!-- end-UML-doc -->
+ * This classes calculates the reflectivity profile of a set of materials
+ * layered on top of each other. It... <add more after you figure out the
+ * calculations>
  * 
- * @author Jay Jay Billings, aqw
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Alex McCaskey
  */
 @XmlRootElement(name = "ReflectivityModel")
 public class ReflectivityModel extends Item {
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>`
 	 * The constructor.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ReflectivityModel() {
 		// begin-user-code
@@ -59,67 +46,35 @@ public class ReflectivityModel extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The constructor with a project space in which files should be
-	 * manipulated.
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * The constructor with a project space in which files should be handled.
 	 * 
 	 * @param projectSpace
-	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ReflectivityModel(IProject projectSpace) {
-		// begin-user-code
-
 		// Call super
 		super(projectSpace);
-
-		// end-user-code
 	}
 
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param actionName
-	 *            <p>
-	 *            The name of action that should be performed using the
-	 *            processed Form data.
-	 *            </p>
-	 * @return <p>
-	 *         The status of the Item after processing the Form and executing
-	 *         the action. It returns FormStatus.InfoError if it is unable to
-	 *         run for any reason, including being asked to run actions that are
-	 *         not in the list of available actions.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @see org.eclipse.ice.item.Item#process(java.lang.String)
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 		// begin-user-code
 		return super.process(actionName);
 		// end-user-code
 	}
 
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @see org.eclipse.ice.item.Item#setupForm()
 	 */
+	@Override
 	protected void setupForm() {
 		// begin-user-code
 
@@ -187,18 +142,16 @@ public class ReflectivityModel extends Item {
 		// Add this to the form
 		form.addComponent(table);
 
+//		ListComponent<Material> matList = new ListComponent<Material>();
+//		matList.add(new Material());
+//		form.addComponent(matList);
+
 		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation is used to setup the name and description of the model.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * This operation is used to setup the name and description of the model as
+	 * well as register its builder.
 	 */
 	protected void setupItemInfo() {
 		// begin-user-code
@@ -207,32 +160,13 @@ public class ReflectivityModel extends Item {
 		String desc = "This item builds models for " + "Reflectivity.";
 
 		// Describe the Item
-		setName("Reflectivity Model Builder");
+		setName(ReflectivityModelBuilder.name);
+		setItemBuilderName(ReflectivityModelBuilder.name);
 		setDescription(desc);
-		itemType = ItemType.Model;
-
-		// Setup the action list. Remove key-value pair support.
-		// allowedActions.remove(taggedExportActionString);
+		itemType = ReflectivityModelBuilder.type;
 
 		return;
 		// end-user-code
 	}
 
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param preparedForm
-	 *            The form prepared for review.
-	 * @return The Form's status if the review was successful or not.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	protected FormStatus reviewEntries(Form preparedForm) {
-		// begin-user-code
-		return super.reviewEntries(preparedForm);
-		// end-user-code
-	}
 }

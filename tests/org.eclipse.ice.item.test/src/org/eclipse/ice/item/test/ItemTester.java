@@ -27,6 +27,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -34,10 +36,12 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
@@ -45,6 +49,7 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
+import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -504,18 +509,16 @@ public class ItemTester implements ItemListener {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the Item to persist itself to XML
 	 * and to load itself from an XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException
+	 * @throws JAXBException
+	 * @throws NullPointerException
 	 */
 	@Test
-	public void checkXMLPersistence() {
+	public void checkXMLPersistence() throws NullPointerException,
+			JAXBException, IOException {
 		// begin-user-code
 		/*
 		 * The following sets of operations will be used to test the
@@ -527,6 +530,9 @@ public class ItemTester implements ItemListener {
 
 		// Local declarations
 		Item loadedItem = new Item();
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Item.class);
 
 		// Set up item
 		Item persistedItem = new Item();
@@ -537,14 +543,11 @@ public class ItemTester implements ItemListener {
 
 		// persist to an output stream
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		persistedItem.persistToXML(outputStream);
+		xmlHandler.write(persistedItem, classList, outputStream);
 
 		// Load an Item from the first
-		loadedItem.loadFromXML(new ByteArrayInputStream(outputStream
-				.toByteArray()));
-		// Dump the XML so that it can be inspected
-		persistedItem.persistToXML(System.out);
-		loadedItem.persistToXML(System.out);
+		loadedItem = (Item) xmlHandler.read(classList,
+				new ByteArrayInputStream(outputStream.toByteArray()));
 		// Make sure they match
 		assertEquals(persistedItem, loadedItem);
 
@@ -554,23 +557,6 @@ public class ItemTester implements ItemListener {
 		assertEquals(persistedItem.getDescription(),
 				loadedItem.getDescription());
 		assertEquals(persistedItem.getForm(), loadedItem.getForm());
-		assertEquals(persistedItem.getId(), loadedItem.getId());
-		assertEquals(persistedItem.getItemType(), loadedItem.getItemType());
-		assertEquals(persistedItem.getName(), loadedItem.getName());
-		assertEquals(persistedItem.getStatus(), loadedItem.getStatus());
-
-		// The next following tests demonstrate behavior for when you pass null
-		// args for read()
-
-		// test for read - null args
-		loadedItem.loadFromXML(null);
-
-		// check contents - nothing has changed
-		assertEquals(persistedItem.getAvailableActions(),
-				loadedItem.getAvailableActions());
-		assertEquals(persistedItem.getDescription(),
-				loadedItem.getDescription());
-		assertTrue(persistedItem.getForm().equals(loadedItem.getForm()));
 		assertEquals(persistedItem.getId(), loadedItem.getId());
 		assertEquals(persistedItem.getItemType(), loadedItem.getItemType());
 		assertEquals(persistedItem.getName(), loadedItem.getName());
@@ -720,8 +706,6 @@ public class ItemTester implements ItemListener {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the Item to make sure that by default it offers two
 	 * actions, one for writing the Form to XML and another for writing the
 	 * Entries in the Form as a set of key-value pairs. It also makes sure that
@@ -730,14 +714,14 @@ public class ItemTester implements ItemListener {
 	 * pulls the output file handle from the Item and makes sure that the
 	 * default name of the file is set according to the default in the class
 	 * documentation.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException
+	 * @throws JAXBException
+	 * @throws NullPointerException
+	 * @throws CoreException 
 	 */
 	@Test
-	public void checkProcessing() {
+	public void checkProcessing() throws NullPointerException, JAXBException,
+			IOException, CoreException {
 		// begin-user-code
 
 		// Local Declarations
@@ -746,6 +730,9 @@ public class ItemTester implements ItemListener {
 		IProject project = null;
 		String separator = System.getProperty("file.separator");
 		String filename = null;
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Item.class);
 
 		// Setup the project
 		try {
@@ -777,6 +764,13 @@ public class ItemTester implements ItemListener {
 
 		// Create the Item
 		item = new TestItem(project);
+		// Configure the IOService for the Item
+		IOService ioService = new IOService();
+		XMLPersistenceProvider xmlpp = new XMLPersistenceProvider(project);
+		xmlpp.addBuilder(new TestItemBuilder());
+		xmlpp.start();
+		ioService.addWriter(xmlpp);
+		item.setIOService(ioService);
 
 		// Get the available actions. They should be
 		// "Export to ICE Native Format" and "Export to key-value pair output"
@@ -806,6 +800,13 @@ public class ItemTester implements ItemListener {
 		// Direct the Item to write the Form to XML
 		assertEquals(FormStatus.Processed,
 				item.process("Export to ICE Native Format"));
+		// Pause the thread so it can have some time to write the file
+		try {
+			Thread.currentThread().sleep(2000);
+		} catch (InterruptedException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 
 		// Get the file that was written when the Item was processed, make sure
 		// it exists, load it and compare to the original form.
@@ -813,13 +814,7 @@ public class ItemTester implements ItemListener {
 				"\\s+", "_");
 		IFile formXMLFile = project.getFile(filename);
 		assertTrue(formXMLFile.exists());
-		Form loadedForm = new Form();
-		try {
-			loadedForm.loadFromXML(formXMLFile.getContents());
-		} catch (CoreException e) {
-			e.printStackTrace();
-			fail();
-		}
+		Form loadedForm = (Form) xmlHandler.read(classList, formXMLFile.getContents());
 		assertEquals(form, loadedForm);
 
 		// Delete the file
@@ -1148,12 +1143,12 @@ public class ItemTester implements ItemListener {
 		IReader fakeReader = new IReader() {
 
 			@Override
-			public Form read(URI uri) {
+			public Form read(IFile file) {
 				return new Form();
 			}
 
 			@Override
-			public ArrayList<Entry> findAll(URI uri, String regex) {
+			public ArrayList<Entry> findAll(IFile file, String regex) {
 				ArrayList<Entry> fakeEntry = new ArrayList<Entry>();
 				return fakeEntry;
 			}
@@ -1169,12 +1164,12 @@ public class ItemTester implements ItemListener {
 		IWriter fakeWriter = new IWriter() {
 
 			@Override
-			public void write(Form formToWrite, URI fileURI) {
+			public void write(Form formToWrite, IFile file) {
 				return;
 			}
 
 			@Override
-			public void replace(URI fileURI, String regex, String value) {
+			public void replace(IFile file, String regex, String value) {
 				return;
 			}
 

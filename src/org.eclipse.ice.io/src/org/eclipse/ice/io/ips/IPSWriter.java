@@ -26,14 +26,16 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
+
 
 public class IPSWriter implements IWriter{
 
@@ -52,22 +54,23 @@ public class IPSWriter implements IWriter{
 	 * @param outputFile
 	 *           The file to write to.
 	 */
-	public void write(Form form, URI outputURI)  {
+	@Override
+	public void write(Form form, IFile ifile)  {
 		// Make sure the input isn't null
-		if (form == null || outputURI == null) {
+		if (form == null || ifile == null) {
 			return;
 		}
 		
 		// Get the components from the form and make sure we have a 
 		// valid place that we can write the file out to 
 		ArrayList<Component> components = form.getComponents();
-		File outputFile = new File(outputURI.getPath());
+		File outputFile = new File(ifile.getFullPath().toOSString());
 		if (!outputFile.exists()) {
 			try {
 				outputFile.createNewFile();
 			} catch (IOException e) {
 				System.err.println("IPSWriter Message: Error! Could not" 
-						+ " create output file at " + outputURI.getPath());
+						+ " create output file at " + ifile.getFullPath().toOSString());
 			}
 		}
 		
@@ -296,14 +299,17 @@ public class IPSWriter implements IWriter{
 
 	}
 
-	@Override
-	public void replace(URI fileURI, String regex, String value) {
-		// TODO Auto-generated method stub
-	}
 
 	@Override
 	public String getWriterType() {
 		return "IPSWriter";
+	}
+
+
+	@Override
+	public void replace(IFile file, String regex, String value) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -108,7 +108,6 @@ public abstract class Action {
 	 */
 	public Form getForm() {
 		// begin-user-code
-		// TODO Auto-generated method stub
 		return actionForm;
 		// end-user-code
 	}

@@ -26,6 +26,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
+import org.eclipse.ice.datastructures.form.Material;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;

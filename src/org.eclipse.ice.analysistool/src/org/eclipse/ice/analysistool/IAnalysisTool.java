@@ -18,7 +18,7 @@ import java.net.URI;
  * <!-- begin-UML-doc -->
  * <p>IAnalysisTools are tools that can be used to analyze data. There is one instance of each IAnalysisTool in ICE and they are responsible for creating IAnalysisDocument for their respective tool. Each IAnalysisTool should have a name and a version number that are unique so that they can be distinguished from each other.</p>
  * <!-- end-UML-doc -->
- * @author aqw
+ * @author Alex McCaskey
  * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IAnalysisTool {

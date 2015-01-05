@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh;
 
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 
 import java.util.HashMap;
 import java.util.Map;

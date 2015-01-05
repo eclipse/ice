@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
-
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
+import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 
 /**
  * <!-- begin-UML-doc -->
@@ -56,6 +56,9 @@ public class ICEListTester {
 		// Local Declarations
 		ICEList<String> iceList = new ICEList<String>();
 		ArrayList<String> inputList = new ArrayList<String>(), outputList = null;
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(ICEList.class);
 
 		// Add some strings to the list
 		inputList.add("The Next Contestant");
@@ -72,13 +75,13 @@ public class ICEListTester {
 
 		// Check for XMLPersistence
 
-		// create an instance of ICEJAXBManipulator and outputStream
+		// create an instance of ICEJAXBHandler and outputStream
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		ICEJAXBManipulator manipulator = new ICEJAXBManipulator();
+		ICEJAXBHandler manipulator = new ICEJAXBHandler();
 
 		// try to persist
 		try {
-			manipulator.write(iceList, os);
+			manipulator.write(iceList,classList, os);
 		} catch (Exception e) {
 			// Should not happen
 			e.printStackTrace();
@@ -92,7 +95,7 @@ public class ICEListTester {
 		ICEList iceList2 = null;
 
 		try {
-			iceList2 = (ICEList) manipulator.read(ICEList.class, is);
+			iceList2 = (ICEList) manipulator.read(classList, is);
 		} catch (Exception e) {
 			// Should not happen
 			System.out.println(e.getMessage());
@@ -125,6 +128,9 @@ public class ICEListTester {
 		// Local Declarations
 		ICEList<Integer> iceList = new ICEList<Integer>();
 		ArrayList<Integer> inputList = new ArrayList<Integer>(), outputList = null;
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(ICEList.class);
 
 		// Add some strings to the list
 		inputList.add(1);
@@ -139,13 +145,13 @@ public class ICEListTester {
 		assertNotNull(outputList);
 		assertEquals(inputList, outputList);
 
-		// create an instance of ICEJAXBManipulator and outputStream
+		// create an instance of ICEJAXBHandler and outputStream
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		ICEJAXBManipulator manipulator = new ICEJAXBManipulator();
+		ICEJAXBHandler manipulator = new ICEJAXBHandler();
 
 		// try to persist
 		try {
-			manipulator.write(iceList, os);
+			manipulator.write(iceList, classList, os);
 		} catch (Exception e) {
 			// Should not happen
 			System.out.println(e.getMessage());
@@ -161,7 +167,7 @@ public class ICEListTester {
 		ICEList iceList2 = null;
 
 		try {
-			iceList2 = (ICEList) manipulator.read(ICEList.class, is);
+			iceList2 = (ICEList) manipulator.read(classList, is);
 		} catch (Exception e) {
 			// Should not happen
 			System.out.println(e.getMessage());
@@ -193,6 +199,9 @@ public class ICEListTester {
 		// Local Declarations
 		ICEList<Double> iceList = new ICEList<Double>();
 		ArrayList<Double> inputList = new ArrayList<Double>(), outputList = null;
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(ICEList.class);
 
 		// Add some strings to the list
 		inputList.add(1.0);
@@ -207,13 +216,13 @@ public class ICEListTester {
 		assertNotNull(outputList);
 		assertEquals(inputList, outputList);
 
-		// create an instance of ICEJAXBManipulator and outputStream
+		// create an instance of ICEJAXBHandler and outputStream
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		ICEJAXBManipulator manipulator = new ICEJAXBManipulator();
+		ICEJAXBHandler manipulator = new ICEJAXBHandler();
 
 		// try to persist
 		try {
-			manipulator.write(iceList, os);
+			manipulator.write(iceList, classList, os);
 		} catch (Exception e) {
 			// Should not happen
 			System.out.println(e.getMessage());
@@ -227,7 +236,7 @@ public class ICEListTester {
 		ICEList iceList2 = null;
 
 		try {
-			iceList2 = (ICEList) manipulator.read(ICEList.class, is);
+			iceList2 = (ICEList) manipulator.read(classList, is);
 		} catch (Exception e) {
 			// Should not happen
 			System.out.println(e.getMessage());

@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -34,44 +35,34 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * An MOOSE Item for creating MOOSE input files. This Item expects to find the
  * YAML and action syntax files necessary in the ${workspace}/MOOSE directory.
  * These files can be generated automatically using the ICE YAML/action syntax
  * generator, or manually at the command line with the command(s):
  * 
- * <br>
  * ./{moose-app}-opt --yaml > {moose-app}.yaml <br>
  * ./{moose-app}-opt --syntax > {moose-app}.syntax
  * 
  * These lines must be executed for each MOOSE-based code to be used by ICE.
- * </p>
- * <p>
  * This class' Item builder defaults the MOOSE-based application to null,
  * forcing the user to select the app. Once an app is selected, reviewEntries()
  * is triggered and loads the YAML spec. If the Item was imported from an input
  * file, any data from the input file is consolidated with the YAML file in the
  * reviewEntries() method as well.
- * </p>
- * <p>
+ *
  * It is not, in general, necessary to subclass this Item and all
  * reconfiguration can be done by the builder by setting the executable name
  * since the only thing that changes from application to application is the YAML
  * input file.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "MOOSEModel")
 public class MOOSEModel extends Item {
@@ -103,20 +94,6 @@ public class MOOSEModel extends Item {
 	 */
 	@XmlTransient
 	public static final int mooseTreeCompositeId = 2;
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The identification number of the TreeComposite containing the YAML data.
-	 * tree.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	@XmlTransient
-	public static final int yamlTreeCompositeId = 3;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -239,7 +216,7 @@ public class MOOSEModel extends Item {
 			IFile outputFile = project.getFile(outputFilename);
 			
 			// Write the Moose tree to file
-			writer.write(form, outputFile.getLocationURI());
+			writer.write(form, outputFile);
 		
 			// Refresh the Project space
 			refreshProjectSpace();
@@ -280,12 +257,6 @@ public class MOOSEModel extends Item {
 	 * The Form component with id=2 is a TreeComposite containing the structure
 	 * of the MOOSE input tree. By default, this Tree is empty until blocks are
 	 * added to it by the user.
-	 * </p>
-	 * <p>
-	 * The last Form component with id=3 is another TreeComposite containing the
-	 * "pure" YAML tree for the particular MOOSE-based application. By default,
-	 * this Tree is empty until a YAML file is correctly loaded by
-	 * reviewEntries(). This is to provide UI widgets access to the YAML.
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
@@ -372,7 +343,7 @@ public class MOOSEModel extends Item {
 		// Add it to the DataComponent
 		fileDataComponent.addEntry(mooseAppEntry);
 
-		// Create the output file Entry
+		// Create the output file Entry on the form
 		Entry outputFileEntry = new Entry() {
 			protected void setup() {
 				defaultValue = "mooseModel.i";
@@ -385,20 +356,13 @@ public class MOOSEModel extends Item {
 		// Add it to the DataComponent
 		fileDataComponent.addEntry(outputFileEntry);
 
-		// Create the TreeComposite
+		// Create the TreeComposite on the form
 		TreeComposite mooseDataTree = new TreeComposite();
 		mooseDataTree.setId(mooseTreeCompositeId);
 		mooseDataTree
 				.setDescription("The tree of input data for this problem.");
 		mooseDataTree.setName("Input Data");
 		form.addComponent(mooseDataTree);
-
-		// Create the YAML TreeComposite
-		TreeComposite yamlDataTree = new TreeComposite();
-		yamlDataTree.setId(yamlTreeCompositeId);
-		yamlDataTree.setDescription("The tree of YAML data for this problem.");
-		yamlDataTree.setName("YAML Data");
-		form.addComponent(yamlDataTree);
 
 		return;
 		// end-user-code
@@ -493,7 +457,7 @@ public class MOOSEModel extends Item {
 			if (modelFile.exists() && reader != null) {
 				
 				// Read the file and get the returned Form
-				Form readerForm = reader.read(modelFile.getLocationURI());
+				Form readerForm = reader.read(modelFile);
 				
 				// Get the TreeComposite from the read-in Form
 				tmpParentTree = (TreeComposite) readerForm.getComponent(mooseTreeCompositeId);
@@ -571,19 +535,6 @@ public class MOOSEModel extends Item {
 					// Get the empty YAML TreeComposite
 					TreeComposite yamlTree = (TreeComposite) form
 							.getComponent(mooseTreeCompositeId);
-
-					// Put a copy of the YAML tree on the form at id=3 (this is
-					// used elsewhere by the UI widgets, but must be done here
-					// before the YAML tree is modified)
-					TreeComposite formYamlTree = (TreeComposite) form
-							.getComponent(yamlTreeCompositeId);
-					TreeComposite tmpTree = (TreeComposite) formYamlTree
-							.clone();
-
-					formYamlTree.copy(yamlTree);
-					formYamlTree.setName(tmpTree.getName());
-					formYamlTree.setDescription(tmpTree.getDescription());
-					formYamlTree.setId(yamlTreeCompositeId);
 
 					// Merge the input tree into the YAML spec
 					mergeTrees(inputTree, yamlTree);
@@ -695,7 +646,7 @@ public class MOOSEModel extends Item {
 		
 		// Make sure we have a valid IReader
 		if (reader != null) {
-			readForm = reader.read(inputFile.getLocationURI());
+			readForm = reader.read(inputFile);
 		}
 
 		// Make sure we have a valid Form

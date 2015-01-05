@@ -15,7 +15,7 @@ package org.eclipse.ice.reactor.pwr;
 import org.eclipse.ice.io.hdf.HdfReaderFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 
 import java.util.HashMap;
 import java.util.Iterator;

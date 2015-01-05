@@ -15,15 +15,16 @@ package org.eclipse.ice.caebat.model;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -31,10 +32,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -42,8 +46,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.item.Item;
@@ -192,16 +194,12 @@ public class CaebatModel extends Item {
 			// Get the file from the project space to create the output
 			String filename = getName().replaceAll("\\s+", "_") + "_" + getId()
 					+ ".conf";
+			String filePath = project.getLocation().toOSString() + 
+					System.getProperty("file.separator") + filename;
 			
 			// Get the file path and build the URI that will be used to write
-			IFile outputFile = project.getFile(filename);
-			URI outputFilePath = null;
-			try {
-				outputFilePath = new URI(outputFile.getLocation().toOSString());
-			} catch (URISyntaxException e2) {
-				System.err.println("CaebatModel Message:  Error!  Could not create" 
-						+ "output at " + filename);
-			}
+			IFile outputFile = ResourcesPlugin.getWorkspace().getRoot()
+					.getFile(new Path(filePath));
 
 			// Get the data from the form
 			ArrayList<Component> components = form.getComponents();
@@ -213,7 +211,7 @@ public class CaebatModel extends Item {
 				IPSWriter writer = new IPSWriter();
 				try {
 					// Write the output file
-					writer.write(form, outputFilePath);
+					writer.write(form, outputFile);
 					// Refresh the project space
 					project.refreshLocal(IResource.DEPTH_ONE, null);
 				} catch (CoreException e) {
@@ -254,31 +252,60 @@ public class CaebatModel extends Item {
 	public void loadInput(String name) {
 
 		// If nothing is specified, load case 6 from inside the plugin
-		URI uri = null;
+		IFile inputFile = null;
 		if (name == null) {
 			try {
 				// Path to the default file
-				uri = new URI("platform:/plugin/org.eclipse.ice.caebat/data/case_6.conf");
+				String defaultFilePath = null;
+				if (project != null) {
+					defaultFilePath = project.getLocation().toOSString() + 
+							System.getProperty("file.separator") + "case_6.conf";
+				} else {
+					defaultFilePath = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+							.toOSString() + System.getProperty("file.separator") + "case_6.conf";
+				}
+
+				File temp = new File(defaultFilePath);
+				if (!temp.exists()) {
+					temp.createNewFile();
+				}
+				URI uri = new URI("platform:/plugin/org.eclipse.ice.caebat/data/case_6.conf");
+				InputStream reader  = uri.toURL().openStream();
+				FileOutputStream outStream = new FileOutputStream(temp);
+				
+				int fileByte;
+				while ((fileByte = reader.read()) != -1) {
+					outStream.write(fileByte);
+				}
+				inputFile = ResourcesPlugin.getWorkspace().getRoot()
+						.getFile(new Path(defaultFilePath));
+				
 			} catch (URISyntaxException e) {
 				System.err.println("CaebatModel Message: Error!  Could not load the default" 
 						+ " Caebat case data!");
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		// Load the imported file
 		} else {
-			String separator = System.getProperty("file.separator");
-			String userDir = System.getProperty("user.home") + separator
-					+ "ICEFiles" + separator + "default";
-			try {
-				uri = new URI("file:" + userDir + separator + name);
-			} catch (URISyntaxException e) {
-				System.err.println("CaebatModel Message: Error!  Could not load the specified " 
-						+ "file from "+ userDir +".  Check your data and try again.");
+			String filePath = null;
+			if (project != null) {
+				filePath = project.getLocation().toOSString() + 
+						System.getProperty("file.separator") + name;
+			} else {
+				filePath = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+						.toOSString() + System.getProperty("file.separator") + name;
 			}
+			inputFile = ResourcesPlugin.getWorkspace().getRoot()
+					.getFile(new Path(filePath));
 		}
 		
 		// Load the components from the file
 		IPSReader reader = new IPSReader();
-		Form newForm = reader.read(uri);
+		Form newForm = reader.read(inputFile);
 		
 		// Put the loaded information in the CaebatModel form
 		// TODO : Should I just reassign?  .. form = reader.read(uri) ??

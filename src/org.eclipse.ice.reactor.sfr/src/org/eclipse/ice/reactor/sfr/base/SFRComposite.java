@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.base;
 
-import org.eclipse.ice.datastructures.updateableComposite.Composite;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.Composite;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 
 /**
  * <!-- begin-UML-doc -->

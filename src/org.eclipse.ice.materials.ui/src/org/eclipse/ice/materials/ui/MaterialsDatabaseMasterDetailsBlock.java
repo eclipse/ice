@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.IMaterialsDatabase;
-import org.eclipse.ice.materials.Material;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;

@@ -17,9 +17,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
 
@@ -58,41 +62,29 @@ public class IPSWriterTester {
 		IPSReader reader = null;
 
 		FileReader fileReader = null;
-		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
 				+ "ICETests" + separator + "caebatTesterWorkspace" + separator
 				+ "Caebat_Model";
 		String outputFilePath = userDir + separator + "ips_WriterTest.conf";	
 		String exampleFilePath = userDir + separator + "example_ini.conf";
+		
+		IPath fileIPath = new Path(outputFilePath);
+		IPath inputIPath = new Path(exampleFilePath);
+		
+		IFile outIFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
+		IFile inIFile = ResourcesPlugin.getWorkspace().getRoot().getFile(inputIPath);
+		
+		File exampleFile = new File(exampleFilePath);
 		File outFile = new File(outputFilePath);
 		
 		if (!outFile.exists()) {
 			outFile.createNewFile();
 		}
 		
-		
-		URI outputURI = null;
-		URI inputURI = null;
-		try {
-			outputURI = new URI("file:" + outputFilePath);
-			inputURI = new URI("file:" + exampleFilePath);
-		} catch (URISyntaxException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-		
-		BufferedReader exampleReader = null;
-		try {
-			exampleReader = new BufferedReader(new FileReader(new File(
-					exampleFilePath)));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
 		// Create a buffered reader to access the contents of the output file
-		buffer = new BufferedReader(new InputStreamReader(outputURI.toURL().openStream()));
+		BufferedReader exampleReader = new BufferedReader(new FileReader(exampleFile));
+		BufferedReader buffer = new BufferedReader(new FileReader(outFile));
 
 		// Test that the output file is valid but empty
 		assertNotNull(buffer);
@@ -110,7 +102,7 @@ public class IPSWriterTester {
 		/* --- Testing WRITING --- */
 		// Try to write with invalid parameters
 		Form fakeForm = null;
-		URI fakeFile = null;
+		IFile fakeFile = null;
 
 		writer.write(fakeForm, fakeFile);
 
@@ -125,18 +117,15 @@ public class IPSWriterTester {
 		// Generate valid Components to test with
 		Form inputForm = null;
 		reader = new IPSReader();
-		inputForm = reader.read(inputURI);
+		inputForm = reader.read(inIFile);
 		assertNotNull(inputForm);
 
 		// Try to write with valid parameters
-		writer.write(inputForm, outputURI);
+		writer.write(inputForm, outIFile);
 
 		// Load up a buffered reader so we can check what came out
 		try {
-			buffer = new BufferedReader(new InputStreamReader(outputURI.toURL().openStream()));
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			buffer = new BufferedReader(new FileReader(outFile));
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -159,7 +148,7 @@ public class IPSWriterTester {
 	
 		// Now try reading from the test file and creating another set of
 		// Components to compare to the ones read from the example file
-		Form outputForm = reader.read(outputURI);
+		Form outputForm = reader.read(outIFile);
 
 		// Compare the two sets
 		ArrayList<Component> components = outputForm.getComponents();

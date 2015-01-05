@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.kvPair;
+package org.eclipse.ice.caebat.kvPair;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.item.Item;

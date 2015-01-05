@@ -17,12 +17,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.io.ips.IPSReader;
 
 import java.io.BufferedReader;
@@ -51,17 +56,14 @@ public class IPSReaderTester {
 	public void checkIPSReader() {
 		
 		// Set up where to look
+
 		String separator = System.getProperty("file.separator");
 		String filePath = System.getProperty("user.home") + separator + "ICETests" 
 				+ separator + "caebatTesterWorkspace" + separator 
 				+ "Caebat_Model" + separator + "example_ini.conf";
-		URI inputURI = null;
-		try {
-			inputURI = new URI("file:" + filePath);
-		} catch (URISyntaxException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		IPath fileIPath = new Path(filePath);
+		IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
+		
 		BufferedReader testReader = null;
 		try {
 			testReader = new BufferedReader(new FileReader(new File(filePath)));
@@ -75,14 +77,14 @@ public class IPSReaderTester {
 		assertNotNull(reader);
 		
 		// Try to read in invalid INI file
-		URI fakeURI = null;
+		IFile fakeFile = null;
 		Form form = null;
-		form = reader.read(fakeURI);
+		form = reader.read(fakeFile);
 		assertTrue(form == null);
 		
 		// Load the INI file and parse the contents into Components
 		try {
-			form = reader.read(inputURI);
+			form = reader.read(inputFile);
 			testReader.close();
 		} catch (FileNotFoundException e) {
 			fail("Failed to find IPS input file: " + filePath);

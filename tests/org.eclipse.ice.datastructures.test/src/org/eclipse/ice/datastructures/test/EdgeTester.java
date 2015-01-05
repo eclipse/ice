@@ -17,14 +17,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
@@ -466,16 +472,22 @@ public class EdgeTester {
 	 * and to load itself from an XML input stream.
 	 * </p>
 	 * <!-- end-UML-doc -->
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 * 
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
-	public void checkLoadingFromXML() {
+	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
 
 		// We need vertices to supply to created edges.
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Edge.class);
 
 		// For our test, we'll just make an edge along the x axis from the
 		// origin of length 5.
@@ -493,8 +505,7 @@ public class EdgeTester {
 
 		// Load it into XML.
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		edge.persistToXML(outputStream);
-		assertNotNull(outputStream);
+		xmlHandler.write(edge, classList, outputStream);
 
 		// Convert the output stream data to an input stream.
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -502,21 +513,9 @@ public class EdgeTester {
 
 		// Load the input stream's contents into a new component.
 		Edge loadedEdge = new Edge();
-		loadedEdge.loadFromXML(inputStream);
+		loadedEdge = (Edge) xmlHandler.read(classList, inputStream);
 
 		// Make sure the two components match.
-		assertTrue(edge.equals(loadedEdge));
-
-		// Check invalid parameters.
-
-		// Try passing null and make sure the components match.
-		inputStream = null;
-		loadedEdge.loadFromXML(inputStream);
-		assertTrue(edge.equals(loadedEdge));
-
-		// Try passing a bad input stream and make sure the components match.
-		inputStream = new ByteArrayInputStream("jkl;2invalidstream".getBytes());
-		loadedEdge.loadFromXML(inputStream);
 		assertTrue(edge.equals(loadedEdge));
 
 		return;

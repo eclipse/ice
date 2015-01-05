@@ -10,20 +10,21 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.materials.test;
+package org.eclipse.ice.datastructures.test;
 
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
-import org.eclipse.ice.materials.Material;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.Material;
 import org.junit.Test;
 
 /**
@@ -156,8 +157,13 @@ public class MaterialTester {
 	@Test
 	public void checkPersistence() {
 
+		// Local Declarations
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Material.class);
+		
 		// Use the ICE JAXB Manipulator instead of raw JAXB. Waste not want not.
-		ICEJAXBManipulator jaxbHandler = new ICEJAXBManipulator();
+		ICEJAXBHandler jaxbHandler = new ICEJAXBHandler();
 
 		// Create a Material that will be written to XML
 		Material material = TestMaterialFactory.createCO2();
@@ -166,13 +172,13 @@ public class MaterialTester {
 			// Write the material to a byte stream so that it can be converted
 			// easily and read back in.
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			jaxbHandler.write(material, outputStream);
+			jaxbHandler.write(material, classList, outputStream);
 
 			// Read it back from the stream into a second Material by converting
 			// the output stream into a byte array and then an input stream.
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(
 					outputStream.toByteArray());
-			Material readMaterial = (Material) jaxbHandler.read(Material.class,
+			Material readMaterial = (Material) jaxbHandler.read(classList,
 					inputStream);
 			
 			// They should be equal.

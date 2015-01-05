@@ -32,12 +32,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -124,7 +124,9 @@ public class MOOSEModelTester {
 			FileInputStream bisonStream = new FileInputStream(bisonFile);
 			// Create the file in the workspace for the Bison YAML file
 			IFile bisonYAMLFile = project.getFile("bison.yaml");
-			bisonYAMLFile.create(bisonStream, true, null);
+			if (!bisonYAMLFile.exists()) {
+				bisonYAMLFile.create(bisonStream, true, null);
+			}
 
 			// Create the File handle and input stream for the Bison input
 			// file
@@ -133,7 +135,9 @@ public class MOOSEModelTester {
 			FileInputStream mooseStream = new FileInputStream(mooseFile);
 			// Create the file in the workspace for the Bison input file
 			IFile bisonInputFile = project.getFile("input_coarse10.i");
-			bisonInputFile.create(mooseStream, true, null);
+			if (!bisonInputFile.exists()) {
+				bisonInputFile.create(mooseStream, true, null);
+			}
 
 			// Refresh the workspace
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -198,9 +202,6 @@ public class MOOSEModelTester {
 
 		// Check the input tree composite.
 		assertTrue(form.getComponent(2) instanceof TreeComposite);
-		
-		// Check the YAML tree composite
-		assertTrue(form.getComponent(3) instanceof TreeComposite);
 
 		return;
 		// end-user-code

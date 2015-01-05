@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.ICEObject;
 
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
 import java.util.ArrayList;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -58,7 +57,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "ICEObject")
-public class ICEObject implements IUpdateable, Persistable {
+public class ICEObject implements IUpdateable {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -97,28 +96,14 @@ public class ICEObject implements IUpdateable, Persistable {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * The ICEJAXBManipulator used to marshal ICEObjects to and from XML.
+	 * The ICEJAXBHandler used to marshal ICEObjects to and from XML.
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	protected ICEJAXBManipulator jaxbManipulator;
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * A specifically attribute designed to be utilized by the JPA database.
-	 * This variable should not be accessed normally by ICE, only by JPA. DO NOT
-	 * OVERRIDE THIS VARIABLE!
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	protected int DB_ID;
+	protected ICEJAXBHandler jaxbManipulator;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -256,88 +241,11 @@ public class ICEObject implements IUpdateable, Persistable {
 	}
 
 	/**
-	 * (non-Javadoc)
+	 * This operation copies the contents of an ICEObject into the current
+	 * object using a deep copy.
 	 * 
-	 * @see Persistable#loadFromXML(InputStream inputStream)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((ICEObject) dataObject);
-
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		return;
-		// end-user-code
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Persistable#persistToXML(OutputStream outputStream)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void persistToXML(OutputStream outputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the write() on jaxbManipulator to write to outputStream
-		try {
-			jaxbManipulator.write(this, outputStream);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		return;
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation copies the contents of a Identifiable entity into the
-	 * current object using a deep copy.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param entity
-	 *            <p>
-	 *            The Identifiable entity from which the values should be
+	 * @param entity The Identifiable entity from which the values should be
 	 *            copied.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(ICEObject entity) {
 		// begin-user-code
@@ -433,9 +341,8 @@ public class ICEObject implements IUpdateable, Persistable {
 		boolean retVal = false;
 		ICEObject castedOtherObject = null;
 
-		// Check the ICEObject, null and base type check first. Note that the
-		// instanceof operator must be used because subclasses of ICEObject
-		// can be anonymous.
+		// Check null and base type first. Note that the instanceof operator
+		// must be used because subclasses of ICEObject can be anonymous.
 		if (otherObject != null && (otherObject instanceof ICEObject)) {
 			// See if they are the same reference on the heap
 			if (this == otherObject) {
@@ -447,8 +354,7 @@ public class ICEObject implements IUpdateable, Persistable {
 						&& (this.objectName
 								.equals(castedOtherObject.objectName))
 						&& (this.objectDescription
-								.equals(castedOtherObject.objectDescription))
-				/* && (this.DB_ID == castedOtherObject.DB_ID) */;
+								.equals(castedOtherObject.objectDescription));
 			}
 		}
 
@@ -472,12 +378,10 @@ public class ICEObject implements IUpdateable, Persistable {
 		// Compute the hashcode from this ICEObject's data
 		hash = 31 * hash + uniqueId;
 		// If objectName is null, add 0, otherwise add String.hashcode()
-		hash = 31 * hash
-				+ (null == objectName ? 0 : objectName.hashCode());
+		hash = 31 * hash + (null == objectName ? 0 : objectName.hashCode());
 		hash = 31
 				* hash
-				+ (null == objectDescription ? 0 : objectDescription
-						.hashCode());
+				+ (null == objectDescription ? 0 : objectDescription.hashCode());
 		// Return the computed hash code
 		return hash;
 

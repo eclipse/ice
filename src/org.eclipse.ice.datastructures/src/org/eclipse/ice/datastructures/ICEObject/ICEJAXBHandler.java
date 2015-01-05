@@ -13,9 +13,12 @@
 package org.eclipse.ice.datastructures.ICEObject;
 
 import javax.xml.bind.JAXBException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -32,7 +35,7 @@ import javax.xml.bind.Unmarshaller;
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-public class ICEJAXBManipulator {
+public class ICEJAXBHandler {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -59,15 +62,16 @@ public class ICEJAXBManipulator {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	public Object read(Class objectClass, InputStream inputStream)
+	public Object read(ArrayList<Class> classList, InputStream inputStream)
 			throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
 
 		// Initialize local variables
 		JAXBContext context;
+		Class[] clazzArray = {};
 
 		// If the input args are null, throw an exception
-		if (objectClass == null) {
+		if (classList == null) {
 			throw new NullPointerException("NullPointerException: "
 					+ "objectClass argument can not be null");
 		}
@@ -77,7 +81,7 @@ public class ICEJAXBManipulator {
 		}
 
 		// Create new instance of object from file and then return it.
-		context = JAXBContext.newInstance(objectClass);
+		context = JAXBContext.newInstance(classList.toArray(clazzArray));
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 		// New object created
 		Object dataFromFile = unmarshaller.unmarshal(inputStream);
@@ -113,11 +117,13 @@ public class ICEJAXBManipulator {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	public void write(Object dataObject, OutputStream outputStream)
-			throws NullPointerException, JAXBException, IOException {
+	public void write(Object dataObject, ArrayList<Class> classList,
+			OutputStream outputStream) throws NullPointerException,
+			JAXBException, IOException {
 		// begin-user-code
 
 		JAXBContext jaxbContext = null;
+		Class[] classArray = {};
 
 		// Throw exceptions if input args are null
 		if (dataObject == null) {
@@ -128,23 +134,39 @@ public class ICEJAXBManipulator {
 			throw new NullPointerException(
 					"NullPointerException: outputStream can not be null");
 		}
-		// Create context from args and write a filled out object to file
 
-		// If it is an anonymous class, then it needs to use the super class.
-		// Otherwise, use runtime class.
-		if (!dataObject.getClass().isAnonymousClass()) {
-			jaxbContext = JAXBContext.newInstance(dataObject.getClass());
+		// Create the class list with which to initialize the context. If the
+		// data object is an ListComponent, it is important to give it
+		// both the type of the container and the generic.
+		if (dataObject instanceof ListComponent) {
+			// Cast the object to a generic, type-less list
+			ListComponent list = (ListComponent) dataObject;
+			// Don't pop the container open if it is empty
+			if (list.size() > 0
+					&& !classList.contains(ListComponent.class)) {
+				classList.add(ListComponent.class);
+				classList.add(list.get(0).getClass());
+			}
+		} else if (!dataObject.getClass().isAnonymousClass()) {
+			// Otherwise just get the class if it is not anonymous
+			classList.add(dataObject.getClass());
 		} else {
-			jaxbContext = JAXBContext.newInstance(dataObject.getClass()
-					.getSuperclass());
+			// Or get the base class if it is anonymous
+			classList.add(dataObject.getClass().getSuperclass());
 		}
 
-		Marshaller marshaller = jaxbContext.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		// Create the context and marshal the data if classes were determined
+		if (classList.size() > 0) {
+			jaxbContext = JAXBContext
+					.newInstance(classList.toArray(classArray));
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+					Boolean.TRUE);
+			// Write to file
+			marshaller.marshal(dataObject, outputStream);
+		}
 
-		// Write to file
-		marshaller.marshal(dataObject, outputStream);
-
+		return;
 		// end-user-code
 	}
 }

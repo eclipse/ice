@@ -12,13 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.item;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 
 import java.io.File;
 
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.ICEObject.Persistable;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,9 +67,8 @@ import java.io.InputStreamReader;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
@@ -308,7 +308,7 @@ import java.nio.file.StandardCopyOption;
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Item")
-public class Item implements IComponentVisitor, Persistable, Identifiable,
+public class Item implements IComponentVisitor, Identifiable,
 		IUpdateableListener {
 	/**
 	 * <!-- begin-UML-doc -->
@@ -488,7 +488,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * The ICEJAXBManipulator used to marshal Items to and from XML.
+	 * The ICEJAXBHandler used to marshal Items to and from XML.
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
@@ -496,7 +496,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	protected ICEJAXBManipulator jaxbManipulator;
+	protected ICEJAXBHandler jaxbManipulator;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -761,39 +761,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 		if (service != null) {
 			ioService = service;
 		}
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Persistable#persistToXML(OutputStream outputStream)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void persistToXML(OutputStream outputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the write() on jaxbManipulator to write to outputStream
-		try {
-			jaxbManipulator.write(this, outputStream);
-
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		return;
-
-		// end-user-code
 	}
 
 	/**
@@ -1163,24 +1130,14 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 		if (allowedActions.contains(actionName) && enabled) {
 			// Write the file to XML if requested
 			if (actionName.equals(nativeExportActionString)) {
-				// Write the Form to an output stream
-				form.persistToXML(outputStream);
 				// Setup the IFile handle
 				outputFile = project.getFile(filename + ".xml");
-				try {
-					// If the output file already exists, delete it
-					if (outputFile.exists()) {
-						outputFile.delete(false, null);
-					}
-					// Create the contents of the IFile from the output stream
-					outputFile
-							.create(new ByteArrayInputStream(outputStream
-									.toByteArray()), false, null);
-					retStatus = FormStatus.Processed;
-				} catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// Get the XML io service
+				IWriter xmlWriter = ioService.getWriter("xml");
+				// Write the file
+				xmlWriter.write(form, outputFile);
+				// Set the status
+				retStatus = FormStatus.Processed;
 			} else if (actionName.equals(taggedExportActionString)) {
 				// Otherwise write the file to a tagged output if requested -
 				// first create the action
@@ -1616,55 +1573,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 
 		// end-user-code
 
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation overrides the ICEObject.loadFromXML() operation to
-	 * properly load the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputstream
-	 *            <p>
-	 *            The InputStream from which the Item should be loaded.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputstream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputstream);
-			// Copy contents of new object into current data structure
-			this.copy((Item) dataObject);
-		} catch (NullPointerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		// Setup the Entry list and register dependencies
-		setupEntryList();
-
-		return;
-		// end-user-code
 	}
 
 	/**
@@ -2524,6 +2432,16 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	}
 
 	/**
+	 * This operation returns the IO service for subclasses without giving them
+	 * access to the private handle.
+	 * 
+	 * @return The IOService instance
+	 */
+	protected IOService getIOService() {
+		return ioService;
+	}
+
+	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
@@ -2694,5 +2612,11 @@ public class Item implements IComponentVisitor, Persistable, Identifiable,
 	@Override
 	public void update(IUpdateable component) {
 		// Leave this for subclasses.
+	}
+
+	@Override
+	public void visit(ListComponent component) {
+		// TODO Auto-generated method stub
+		
 	}
 }

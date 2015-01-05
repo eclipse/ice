@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.core.resources.IFile;
@@ -47,7 +47,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
@@ -1681,52 +1681,7 @@ public class JobLauncher extends Item {
 		return clone;
 		// end-user-code
 	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation overrides the ICEObject.loadFromXML() operation to
-	 * properly load the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            The InputStream from which the Item should be loaded.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((JobLauncher) dataObject);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		// Setup the Entry list and register dependencies
-
-		return;
-
-		// end-user-code
-	}
-
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -1982,12 +1937,11 @@ public class JobLauncher extends Item {
 
 				// Get the regex from the subclass
 				String regex = getFileDependenciesSearchString();
-				URI fileURI = project.getFile(entry.getValue())
-						.getLocationURI();
+				IFile file = project.getFile(entry.getValue());
 
 				// Make sure the data is valid then update the file component
-				if (regex != null && fileURI != null) {
-					updateFileDependencies(fileURI, regex);
+				if (regex != null && file.exists()) {
+					updateFileDependencies(file, regex);
 				}
 			}
 		}
@@ -2001,10 +1955,10 @@ public class JobLauncher extends Item {
 	 * IReader to search the input file for all occurrences of the provided
 	 * regular expression, and return associate File Entries.
 	 * 
-	 * @param uri
-	 * @param regex
+	 * @param file the file to update
+	 * @param regex the regular expression that should be found in the file
 	 */
-	protected void updateFileDependencies(URI uri, String regex) {
+	protected void updateFileDependencies(IFile file, String regex) {
 
 		// Get the old file component and clear the old Entries
 		ArrayList<String> entryNames = new ArrayList<String>();
@@ -2023,7 +1977,7 @@ public class JobLauncher extends Item {
 		// Use the IReader to find all occurrances of the given Regular
 		// Expression
 		// For each of those add a new Input file Entry
-		for (Entry e : getReader().findAll(uri, regex)) {
+		for (Entry e : getReader().findAll(file, regex)) {
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
 					e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
