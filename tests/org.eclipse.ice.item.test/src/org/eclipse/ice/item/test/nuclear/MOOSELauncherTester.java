@@ -13,7 +13,6 @@
 package org.eclipse.ice.item.test.nuclear;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -21,10 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.ArrayList;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -34,14 +30,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.nuclear.MOOSELauncher;
-import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -67,7 +57,7 @@ public class MOOSELauncherTester {
 	private static IProject projectSpace;
 	
 	/**
-	 * the IO Service used to read/write via MOOSEFileHandler.
+	 * The IO Service used to read/write via MOOSEFileHandler.
 	 */
 	private static IOService service;
 
