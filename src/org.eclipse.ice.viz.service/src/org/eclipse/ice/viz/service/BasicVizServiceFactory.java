@@ -17,6 +17,11 @@ import java.util.Map;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.csv.CSVVizService;
+import org.eclipse.jface.preference.IPreferencePage;
+import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.preference.PreferenceNode;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * This class is the basic implementation of the IVizServiceFactory in ICE. It
@@ -26,7 +31,7 @@ import org.eclipse.ice.viz.service.csv.CSVVizService;
  * is started.
  * 
  * @author Jay Jay Billings
- *
+ * 
  */
 public class BasicVizServiceFactory implements IVizServiceFactory {
 
@@ -52,6 +57,34 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		register(new CSVVizService());
 	}
 
+	/**
+	 * This operation registers IPreferencePages from IVizServices with the
+	 * platform.
+	 * 
+	 * @param The
+	 *            service for which a preference page should be registered.
+	 */
+	private void registerPreferences(IVizService service) {
+		// Only register the preferences if they exist
+		if (service.hasConnectionProperties()) {
+			// Grab its preferences page and set its title to its name and
+			// version so it can be uniquely identified.
+			IPreferencePage page = service.getPreferencePage();
+			String nodeId = service.getName() + " " + service.getVersion();
+			page.setTitle(nodeId);
+
+			// Grab the preference manager
+			PreferenceManager preferenceManager = PlatformUI.getWorkbench()
+					.getPreferenceManager();
+
+			// Create a preference node and register it
+			PreferenceNode node = new PreferenceNode(nodeId, page);
+			preferenceManager.addToRoot(node);
+		}
+		
+		return;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -62,7 +95,10 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	@Override
 	public void register(IVizService service) {
 		if (service != null) {
+			// Put the service in service map so it can be retrieved later
 			serviceMap.put(service.getName(), service);
+			// Try to register the preferences page
+			registerPreferences(service);
 		}
 	}
 
@@ -125,4 +161,8 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		return get("ice-plot");
 	}
 
+	public void setWorkbench(IWorkbench workbench) {
+		
+	}
+	
 }

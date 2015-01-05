@@ -97,7 +97,7 @@ public interface IVizService {
 	 *         available in the Preferences menu or null if there are no
 	 *         connection properties.
 	 */
-	public IPreferencePage getPreferencesPage();
+	public IPreferencePage getPreferencePage();
 
 	/**
 	 * This operation directs the IVizService to "connect" to any pieces of its

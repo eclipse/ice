@@ -123,7 +123,7 @@ public class CSVVizService implements IVizService {
 	 * ()
 	 */
 	@Override
-	public IPreferencePage getPreferencesPage() {
+	public IPreferencePage getPreferencePage() {
 		// TODO Auto-generated method stub
 		return null;
 	}

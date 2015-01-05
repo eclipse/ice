@@ -5,4 +5,5 @@
       <provide interface="org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory"/>
    </service>
    <reference bind="register" cardinality="0..n" interface="org.eclipse.ice.client.widgets.viz.service.IVizService" name="IVizService" policy="dynamic"/>
+   <reference cardinality="1..1" interface="org.eclipse.ui.IWorkbench" name="IWorkbench" policy="static"/>
 </scr:component>

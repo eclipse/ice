@@ -121,7 +121,7 @@ public class FakeVizService implements IVizService {
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getPreferencesPage()
 	 */
 	@Override
-	public IPreferencePage getPreferencesPage() {
+	public IPreferencePage getPreferencePage() {
 		// TODO Auto-generated method stub
 		return null;
 	}

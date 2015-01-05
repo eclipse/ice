@@ -70,7 +70,7 @@ public class CSVVizServiceTester {
 
 		// Make sure the preferences page that it returns is null since it
 		// doesn't need properties.
-		assertNull(service.getPreferencesPage());
+		assertNull(service.getPreferencePage());
 		
 		return;
 	}
