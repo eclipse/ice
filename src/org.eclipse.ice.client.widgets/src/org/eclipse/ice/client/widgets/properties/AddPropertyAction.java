@@ -77,6 +77,16 @@ public class AddPropertyAction extends Action {
 	}
 
 	/**
+	 * Gets the current {@link TreeComposite} to which properties (in the form
+	 * of {@link Entry}s) can be added.
+	 * 
+	 * @return The associated tree. This may be null.
+	 */
+	protected TreeComposite getTree() {
+		return tree;
+	}
+
+	/**
 	 * Gets whether or not the specified <code>TreeComposite</code> can have an
 	 * <code>Entry</code> (aka property or parameter) added to it. The
 	 * <code>DataComponent</code> that can receive the new <code>Entry</code> is
@@ -88,7 +98,7 @@ public class AddPropertyAction extends Action {
 	 * @return The tree's data node that can receive a new property or
 	 *         parameter, or null if one cannot be added.
 	 */
-	private DataComponent canAdd(TreeComposite tree) {
+	protected DataComponent canAdd(TreeComposite tree) {
 
 		DataComponent dataNode = null;
 

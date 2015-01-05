@@ -124,6 +124,8 @@ public class TreePropertySection extends AbstractPropertySection implements
 	 * The ToolBar action that adds new, blank properties to the {@link #tree}.
 	 */
 	private final AddPropertyAction addAction = new AddPropertyAction();
+	// TODO documentation...
+	private final AddTemplatePropertyAction addTemplatePropertyAction = new AddTemplatePropertyAction();
 	/**
 	 * The ToolBar action that removes properties that are selected in the
 	 * {@link #tableViewer}.
@@ -291,8 +293,10 @@ public class TreePropertySection extends AbstractPropertySection implements
 		}
 
 		addAction.setTree(tree);
+		addTemplatePropertyAction.setTree(tree);
 		removeAction.setTree(tree);
 
+		// TODO Change this to be like the above 3 calls.
 		// Refresh the type Combo widget.
 		refreshTypeWidgets();
 
@@ -426,6 +430,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 		// TODO Make this an ActionTree whose default action is to add a new,
 		// blank property, but with an option to add pre-defined properties.
 		toolBarManager.add(addAction);
+		toolBarManager.add(addTemplatePropertyAction);
 
 		// Create the remove action.
 		tableViewer.addSelectionChangedListener(removeAction);
