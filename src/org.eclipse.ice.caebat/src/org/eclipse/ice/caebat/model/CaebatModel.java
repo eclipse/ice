@@ -12,52 +12,36 @@
  *******************************************************************************/
 package org.eclipse.ice.caebat.model;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.item.Item;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * <!-- begin-UML-doc -->
  * <p>
  * This class is the model representation of the CAEBAT model. It inherits from
- * the Item Class. It will load INI conf files into a form that can be written to 
- * create new input for CAEBAT Simulations.  If no conf file is given to the 
+ * the Item Class. It will load INI conf files into a form that can be written
+ * to create new input for CAEBAT Simulations. If no conf file is given to the
  * loadInput method the CaebatModel will automatically load the case 6 example.
  * </p>
  * <!-- end-UML-doc -->
@@ -78,6 +62,8 @@ public class CaebatModel extends Item {
 
 	// The name of the example chosen
 	protected String exampleName; // Default for now
+	
+	private ArrayList<String> actionItems;
 
 	/**
 	 * A nullary constructor that delegates to the project constructor.
@@ -126,19 +112,14 @@ public class CaebatModel extends Item {
 		// the form. These dataComponents will be accessed later in
 		// loadDataComponents.
 		form = new Form();
-		ArrayList<String> problemFiles = null;
-		String separator = System.getProperty("file.separator");
+
 		// Setup Item information
-		setName("Caebat Model");
-		setDescription("This model creates input for CAEBAT.");
+		//setName("Caebat Model");
+		//setDescription("This model creates input for CAEBAT.");
 
 		// If loading from the new item button we should just
 		// load up the default case 6 file by passing in null
 		loadInput(null);
-
-		// Add an action to the list to allow for the INI exports
-		customTaggedExportString = "Export to Caebat INI format";
-		allowedActions.add(0, customTaggedExportString);
 
 		// ----- Finish setting up the Form so that it can be immediately
 		// launched
@@ -146,6 +127,31 @@ public class CaebatModel extends Item {
 		return;
 		// end-user-code
 
+	}
+
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * This operation overrides the Item.setupItemInfo() operation.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 */
+	protected void setupItemInfo() {
+		// begin-user-code
+
+		// This method will create a new Form and add all the dataComponents to
+		// the form. These dataComponents will be accessed later in
+		// loadDataComponents.
+	
+		// Setup Item information
+		setName("Caebat Model");
+		setDescription("This model creates input for CAEBAT.");
+
+		// Add an action to the list to allow for the INI exports
+		customTaggedExportString = "Export to Caebat INI format";
+		allowedActions.add(0, customTaggedExportString);
+		actionItems = getAvailableActions();
+		// end-user-code
 	}
 
 	/**
@@ -164,13 +170,14 @@ public class CaebatModel extends Item {
 		// begin-user-code
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 		Component dataComp = null;
-		
+
 		// Grab the data component from the Form and only proceed if it exists
 		ArrayList<Component> components = preparedForm.getComponents();
-		dataComp = components.get(0);
 
-		// Make sure the form has some data
-		if (dataComp == null || !"Time Loop Data".equals(dataComp.getName())) {
+		// Make sure the form has the right amount of data
+		if (components.size() != 4) {
+			System.out.println("CaebatModel Message: Could not find enough data to write a complete input format." +
+					" 4 Components are required, but " + components.size() + " were found.");
 			retStatus = FormStatus.InfoError;
 		}
 		return retStatus;
@@ -188,15 +195,18 @@ public class CaebatModel extends Item {
 		// begin-user-code
 		FormStatus retStatus;
 
+		System.out.println("Writing out with id " + form.getId() );
+		System.out.println(actionName);
+		
 		// If it is the custom operation, call this here.
 		if (this.customTaggedExportString.equals(actionName)) {
 
 			// Get the file from the project space to create the output
 			String filename = getName().replaceAll("\\s+", "_") + "_" + getId()
 					+ ".conf";
-			String filePath = project.getLocation().toOSString() + 
-					System.getProperty("file.separator") + filename;
-			
+			String filePath = project.getLocation().toOSString()
+					+ System.getProperty("file.separator") + filename;
+
 			// Get the file path and build the URI that will be used to write
 			IFile outputFile = ResourcesPlugin.getWorkspace().getRoot()
 					.getFile(new Path(filePath));
@@ -253,36 +263,48 @@ public class CaebatModel extends Item {
 
 		// If nothing is specified, load case 6 from inside the plugin
 		IFile inputFile = null;
+		File temp = null;
 		if (name == null) {
 			try {
 				// Path to the default file
 				String defaultFilePath = null;
+				// Create a filepath for the default file
 				if (project != null) {
-					defaultFilePath = project.getLocation().toOSString() + 
-							System.getProperty("file.separator") + "case_6.conf";
+					defaultFilePath = project.getLocation().toOSString()
+							+ System.getProperty("file.separator")
+							+ "case_6.conf";
 				} else {
-					defaultFilePath = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-							.toOSString() + System.getProperty("file.separator") + "case_6.conf";
+					defaultFilePath = ResourcesPlugin.getWorkspace().getRoot()
+							.getLocation().toOSString()
+							+ System.getProperty("file.separator")
+							+ "case_6.conf";
 				}
-
-				File temp = new File(defaultFilePath);
+				
+				// Create a temporary location to load the default file
+				temp = new File(defaultFilePath);
 				if (!temp.exists()) {
 					temp.createNewFile();
 				}
-				URI uri = new URI("platform:/plugin/org.eclipse.ice.caebat/data/case_6.conf");
-				InputStream reader  = uri.toURL().openStream();
-				FileOutputStream outStream = new FileOutputStream(temp);
 				
+				// Pull the default file from inside the plugin
+				URI uri = new URI(
+						"platform:/plugin/org.eclipse.ice.caebat/data/case_6.conf");
+				InputStream reader = uri.toURL().openStream();
+				FileOutputStream outStream = new FileOutputStream(temp);
+
+				// Write out the default file from the plugin to the temp location
 				int fileByte;
 				while ((fileByte = reader.read()) != -1) {
 					outStream.write(fileByte);
 				}
+				outStream.close();
 				inputFile = ResourcesPlugin.getWorkspace().getRoot()
 						.getFile(new Path(defaultFilePath));
-				
+
 			} catch (URISyntaxException e) {
-				System.err.println("CaebatModel Message: Error!  Could not load the default" 
-						+ " Caebat case data!");
+				System.err
+						.println("CaebatModel Message: Error!  Could not load the default"
+								+ " Caebat case data!");
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -291,24 +313,37 @@ public class CaebatModel extends Item {
 				e.printStackTrace();
 			}
 		} else {
+			// Load a custom file
 			String filePath = null;
+			// Get the path to where the file will be
 			if (project != null) {
-				filePath = project.getLocation().toOSString() + 
-						System.getProperty("file.separator") + name;
+				filePath = project.getLocation().toOSString()
+						+ System.getProperty("file.separator") + name;
 			} else {
-				filePath = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-						.toOSString() + System.getProperty("file.separator") + name;
+				filePath = ResourcesPlugin.getWorkspace().getRoot()
+						.getLocation().toOSString()
+						+ System.getProperty("file.separator") + name;
 			}
+			// Get the file
 			inputFile = ResourcesPlugin.getWorkspace().getRoot()
 					.getFile(new Path(filePath));
 		}
 		
-		// Load the components from the file
+		// Load the components from the file and setup the form
+		System.out.println("CaebatModel Message: Loading" + inputFile.getFullPath().toOSString());
+
+
 		IPSReader reader = new IPSReader();
-		Form newForm = reader.read(inputFile);
+		form = reader.read(inputFile);
+		form.setName(getName());
+		form.setDescription(getDescription());
+		form.setId(getId());
+		form.setItemID(getId());
+		form.setActionList(actionItems);
 		
-		// Put the loaded information in the CaebatModel form
-		// TODO : Should I just reassign?  .. form = reader.read(uri) ??
-		form.copy(newForm);
+		// Delete default file if it was copied into the workspace
+		if (temp != null) {
+			temp.delete();
+		}
 	}
 }
