@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
-import org.eclipse.jface.preference.IPreferencePage;
 
 /**
  * This is an implementation of the IVizService interface for the VisIt
@@ -104,11 +103,6 @@ public class VisItVizService implements IVizService {
 	public IPlot createPlot(URI file) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public IPreferencePage getPreferencePage() {
-		return new VisItPreferencePage();
 	}
 
 }

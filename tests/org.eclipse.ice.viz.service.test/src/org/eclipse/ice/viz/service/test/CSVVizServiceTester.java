@@ -67,10 +67,6 @@ public class CSVVizServiceTester {
 		// Make sure that the service says it doesn't need properties from the
 		// convenience method.
 		assertFalse(service.hasConnectionProperties());
-
-		// Make sure the preferences page that it returns is null since it
-		// doesn't need properties.
-		assertNull(service.getPreferencePage());
 		
 		return;
 	}
