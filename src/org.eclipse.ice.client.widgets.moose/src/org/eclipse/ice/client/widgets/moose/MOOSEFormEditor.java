@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets.moose;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -33,17 +32,14 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
-import org.eclipse.ice.reactor.plant.CoreChannel;
-import org.eclipse.ice.reactor.plant.IPlantComponentVisitor;
-import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
-import org.eclipse.ice.reactor.plant.Reactor;
-import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -59,8 +55,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
@@ -96,212 +90,12 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * TreeComposite with the {@link #plantApplication}'s current
 	 * {@link PlantComposite}.
 	 */
-	private final PlantBlockManager factory;
-
-	/**
-	 * The TreeComposite that contains the plant components. This is the
-	 * "Components" TreeComposite that should be a child of the root
-	 * TreeComposite.
-	 */
-	private TreeComposite components;
-
-	/**
-	 * The underlying plant model that is rendered in the {@link #plantView}.
-	 * When {@link #requiresPlant} is true, any changes to the MOOSE Model's
-	 * tree should be passed to this via the {@link #factory}.
-	 */
-	private final PlantComposite plant;
-
-	/**
-	 * The <code>Entry</code> that contains the list of allowed MOOSE apps and
-	 * the currently selected MOOSE app.
-	 */
-	private Entry mooseAppEntry;
-
-	/**
-	 * This listener is used to set the {@link #requiresPlant} flag when the
-	 * {@link #mooseAppEntry} is updated.
-	 */
-	private final IUpdateableListener mooseAppListener;
-
-	/**
-	 * Whether or not the current MOOSE app setting in the Model Builder
-	 * requires the plant view. If it does, then each call to
-	 * {@link #update(IUpdateable)} will look for the "Components" sub-tree.
-	 */
-	private boolean requiresPlant = false;
+	private final PlantBlockManager factory = new PlantBlockManager();
 
 	/**
 	 * Whether or not to render the plant view with wireframes.
 	 */
-	private boolean wireframe = false;
-
-	/**
-	 * The default constructor.
-	 */
-	public MOOSEFormEditor() {
-
-		plant = new PlantComposite() {
-
-			private final ArrayList<CoreChannel> coreChannels = new ArrayList<CoreChannel>();
-			private final List<Reactor> reactors = new ArrayList<Reactor>();
-
-			public void addPlantComponent(PlantComponent component) {
-				if (component != null
-						&& getPlantComponent(component.getId()) == null) {
-
-					// Add the component in the usual manner.
-					super.addPlantComponent(component);
-
-					// Create a visitor that, when adding a component, will do
-					// the following:
-					// For new Reactors, add all existing CoreChannels to it.
-					// For new CoreChannels, add it to all existing Reactors.
-					IPlantComponentVisitor visitor = new SelectivePlantComponentVisitor() {
-						@Override
-						public void visit(Reactor plantComp) {
-							reactors.add(plantComp);
-							plantComp.setCoreChannels(coreChannels);
-						}
-
-						@Override
-						public void visit(CoreChannel plantComp) {
-
-							boolean found = false;
-							int size = coreChannels.size();
-							for (int i = 0; !found && i < size; i++) {
-								found = (plantComp == coreChannels.get(i));
-							}
-							if (!found) {
-								coreChannels.add(plantComp);
-								for (Reactor reactor : reactors) {
-									reactor.setCoreChannels(coreChannels);
-								}
-							}
-							return;
-						}
-					};
-					component.accept(visitor);
-				}
-
-				return;
-			}
-
-			public void removeComponent(int childId) {
-				PlantComponent component = getPlantComponent(childId);
-				if (component != null) {
-					super.removeComponent(childId);
-
-					// Create a visitor that, when adding a component, will do
-					// the following:
-					// For removed Reactors, update the list of Reactors.
-					// For removed CoreChannels, update all existing Reactors.
-					IPlantComponentVisitor visitor = new SelectivePlantComponentVisitor() {
-						@Override
-						public void visit(Reactor plantComp) {
-
-							boolean found = false;
-							int i, size = reactors.size();
-							for (i = 0; !found && i < size; i++) {
-								found = (plantComp == reactors.get(i));
-							}
-							if (found) {
-								reactors.remove(i - 1);
-							}
-						}
-
-						@Override
-						public void visit(CoreChannel plantComp) {
-
-							boolean found = false;
-							int i, size = coreChannels.size();
-							for (i = 0; !found && i < size; i++) {
-								found = (plantComp == coreChannels.get(i));
-							}
-							if (found) {
-								coreChannels.remove(i - 1);
-								for (Reactor reactor : reactors) {
-									reactor.setCoreChannels(coreChannels);
-								}
-							}
-							return;
-						}
-					};
-					component.accept(visitor);
-				}
-
-				return;
-			}
-		};
-
-		// Initialize the PlantComponentFactory and PlantApplication.
-		factory = new PlantBlockManager();
-		factory.setPlant(plant);
-
-		// Create a listener that updates the requiresPlant flag when the type
-		// of MOOSE app actually supports a plant view.
-		mooseAppListener = new IUpdateableListener() {
-			@Override
-			public void update(IUpdateable component) {
-				if (component == mooseAppEntry) {
-					requiresPlant = "relap".equals(mooseAppEntry.getValue());
-				}
-			}
-		};
-
-		return;
-	}
-
-	/**
-	 * We need to know when the MOOSE Model Builder's tree supports the plant
-	 * view. Override the default init() behavior to additionally update the
-	 * {@link #mooseAppEntry} when the <code>Form</code>'s model is set.
-	 */
-	public void init(IEditorSite site, IEditorInput input) {
-		super.init(site, input);
-		updateMOOSEAppEntry();
-	}
-
-	/**
-	 * We need to know when the MOOSE Model Builder's tree supports the plant
-	 * view. Override the default setInput() behavior to additionally update the
-	 * {@link #mooseAppEntry} when the <code>Form</code>'s model is changed.
-	 */
-	protected void setInput(IEditorInput input) {
-		super.setInput(input);
-		updateMOOSEAppEntry();
-	}
-
-	/**
-	 * We need to know when the MOOSE Model Builder's tree supports the plant
-	 * view. Override the default setInput() behavior to additionally update the
-	 * {@link #mooseAppEntry} when the <code>Form</code>'s model is changed.
-	 */
-	protected void setInputWithNotify(IEditorInput input) {
-		super.setInputWithNotify(input);
-		updateMOOSEAppEntry();
-	}
-
-	/**
-	 * Updates the {@link #mooseAppEntry} to point to the correct
-	 * <code>Entry</code> in the MOOSE Model Builder's <code>Form</code>.
-	 */
-	private void updateMOOSEAppEntry() {
-
-		// Unregister the listener from the previous MOOSE app Entry.
-		if (mooseAppEntry != null) {
-			mooseAppEntry.unregister(mooseAppListener);
-		}
-
-		// Get the Entry that contains the available MOOSE apps.
-		DataComponent dataComp = (DataComponent) iceDataForm
-				.getComponent(MOOSEModel.fileDataComponentId);
-		mooseAppEntry = dataComp.retrieveEntry("MOOSE-Based Application");
-		// Listen to the MOOSE app Entry.
-		mooseAppEntry.register(mooseAppListener);
-
-		return;
-	}
+	private boolean wireframe;
 
 	/**
 	 * Overrides the default <code>ICEFormEditor</code> header and adds the
@@ -461,10 +255,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	@Override
 	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
 
-		// Just create and return a blank page
+		// Add an empty page for future additions to the MOOSE Model Builder.
 		ArrayList<ICEFormPage> sectionPages = new ArrayList<ICEFormPage>();
 		sectionPages.add(new ICESectionPage(this, "MOOSE Page", "MOOSE Page"));
-
 		return sectionPages;
 	}
 
@@ -509,122 +302,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						// refreshContent()).
 						managedForm.addPart(sectionPart);
 
-						// Get the background color to use later.
-						Color background = section.getBackground();
-
-						// Create an analysis composite to contain a ToolBar and
-						// an analysis-based view.
-						Composite analysisComposite = new Composite(section,
-								SWT.NONE);
-						section.setClient(analysisComposite);
-						analysisComposite.setBackground(background);
-						analysisComposite.setLayout(new GridLayout(1, false));
-
-						// Create a ToolBarManager so we can add JFace Actions
-						// to it.
-						ToolBarManager toolBarManager = new ToolBarManager(
-								SWT.RIGHT);
-						// Add an action that toggles the wireframe boolean.
-						// Also clear the wireframe setting.
-						wireframe = false;
-						toolBarManager.add(new Action("Wireframe") {
-							@Override
-							public void run() {
-								wireframe = !wireframe;
-								plantView.setWireframe(wireframe);
-							}
-						});
-
-						// Add a new menu with the following options:
-						// Reset the camera - resets the camera's orientation
-						// YZ - sets the camera to view the YZ plane
-						// XY - sets the camera to view the XY plane
-						// ZX - sets the camera to view the ZX plane
-						ActionTree cameraTree = new ActionTree(
-								"Camera Orientation");
-						cameraTree.add(new ActionTree(new Action(
-								"Reset to current default") {
-							@Override
-							public void run() {
-								plantView.resetCamera();
-							}
-						}));
-						cameraTree.add(new ActionTree(new Action(
-								"YZ (Y right, Z up - initial default)") {
-							@Override
-							public void run() {
-								Vector3f position = new Vector3f(10f, 0f, 0f);
-								Vector3f dir = new Vector3f(-1f, 0f, 0f);
-								Vector3f up = Vector3f.UNIT_Z;
-								plantView.setDefaultCameraPosition(position);
-								plantView.setDefaultCameraOrientation(dir, up);
-								plantView.resetCamera();
-							}
-						}));
-						cameraTree.add(new ActionTree(new Action(
-								"XY (X right, Y up)") {
-							@Override
-							public void run() {
-								Vector3f position = new Vector3f(0f, 0f, 10f);
-								Vector3f dir = new Vector3f(0f, 0f, -1f);
-								Vector3f up = Vector3f.UNIT_Y;
-								plantView.setDefaultCameraPosition(position);
-								plantView.setDefaultCameraOrientation(dir, up);
-								plantView.resetCamera();
-							}
-						}));
-						cameraTree.add(new ActionTree(new Action(
-								"ZX (Z right, X up)") {
-							@Override
-							public void run() {
-								Vector3f position = new Vector3f(0f, 10f, 0f);
-								Vector3f dir = new Vector3f(0f, -1f, 0f);
-								Vector3f up = Vector3f.UNIT_X;
-								plantView.setDefaultCameraPosition(position);
-								plantView.setDefaultCameraOrientation(dir, up);
-								plantView.resetCamera();
-							}
-						}));
-						toolBarManager.add(cameraTree.getContributionItem());
-
-						Action action = new Action("Save Image") {
-							@Override
-							public void run() {
-								plantView.exportImage();
-							}
-						};
-						// Set the action's image (a camera).
-						Bundle bundle = FrameworkUtil.getBundle(getClass());
-						Path imagePath = new Path("icons"
-								+ System.getProperty("file.separator")
-								+ "camera.png");
-						URL imageURL = FileLocator
-								.find(bundle, imagePath, null);
-						ImageDescriptor imageDescriptor = ImageDescriptor
-								.createFromURL(imageURL);
-						action.setImageDescriptor(imageDescriptor);
-						ActionTree saveImageTree = new ActionTree(action);
-						toolBarManager.add(saveImageTree.getContributionItem());
-
-						// Create the ToolBar and set its layout.
-						ToolBar toolBar = toolBarManager
-								.createControl(analysisComposite);
-						toolBar.setBackground(background);
-						toolBar.setLayoutData(new GridData(SWT.FILL,
-								SWT.BEGINNING, true, false));
-
-						// Create the plant view.
-						plantView = new ViewFactory().createPlantView(plant);
-
-						// Render the plant view in the analysis Composite.
-						Composite plantComposite = plantView
-								.createComposite(analysisComposite);
-						plantComposite.setBackground(background);
-						plantComposite.setLayoutData(new GridData(SWT.FILL,
-								SWT.FILL, true, true));
-						
-						fillPlantTools(toolBarManager);
-						toolBarManager.update(true);
+						// Create the plant view as the Section's client.
+						Composite client = createPlantViewComposite(section);
+						section.setClient(client);
 						// ------------------------------------------------ //
 
 						return;
@@ -639,7 +319,64 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		return;
 	}
 
-	private void fillPlantTools(ToolBarManager toolBar) {
+	/**
+	 * Creates the content used for the plant view.
+	 * 
+	 * @param parent
+	 *            The parent (intended to be the parent {@code Section} in the
+	 *            plant view page).
+	 * @return The top-level {@code Composite} required for the plant view.
+	 */
+	private Composite createPlantViewComposite(Composite parent) {
+		// Get the background color to use later.
+		Color background = parent.getBackground();
+
+		// Create an analysis composite to contain a ToolBar and an
+		// analysis-based view.
+		Composite analysisComposite = new Composite(parent, SWT.NONE);
+		analysisComposite.setBackground(background);
+		analysisComposite.setLayout(new GridLayout(1, false));
+
+		// Create a ToolBarManager so we can add JFace Actions to it.
+		ToolBarManager toolBarManager = new ToolBarManager(SWT.RIGHT);
+		// Fill the ToolBar with customized controls.
+		fillPlantViewToolBar(toolBarManager);
+		toolBarManager.update(true);
+		// Add it to the view.
+		ToolBar toolBar = toolBarManager.createControl(analysisComposite);
+		toolBar.setBackground(background);
+		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+
+		// Create the plant view.
+		TreeComposite components = findComponentBlock();
+		factory.setTree(components);
+		PlantComposite plant = factory.getPlant();
+		plantView = new ViewFactory().createPlantView(plant);
+
+		// Render the plant view in the analysis Composite.
+		Composite plantComposite = plantView.createComposite(analysisComposite);
+		plantComposite.setBackground(background);
+		plantComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
+
+		// Make sure the factory/plant is reset when the plant view is disposed.
+		plantComposite.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				factory.setTree(new TreeComposite());
+			}
+		});
+
+		return analysisComposite;
+	}
+
+	/**
+	 * Fills the plant view's {@code ToolBar} with supported actions.
+	 * 
+	 * @param toolBar
+	 *            The plant view's {@code ToolBar}'s manager.
+	 */
+	private void fillPlantViewToolBar(ToolBarManager toolBar) {
 		Action action;
 
 		// Set the action's image (a camera).
@@ -648,9 +385,88 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		URL imageURL;
 		ImageDescriptor image;
 
-		// TODO Use an ImageRegistry instead.
+		// TODO Use an ImageRegistry instead of hard-coded ImageDescriptors.
+
 		final float moveRate = 1f;
 		final float rotateRate = (float) (Math.PI * 0.1);
+
+		// Add an action that toggles the wireframe boolean.
+		// Also clear the wireframe setting.
+		wireframe = false;
+		toolBar.add(new Action("Wireframe") {
+			@Override
+			public void run() {
+				wireframe = !wireframe;
+				plantView.setWireframe(wireframe);
+			}
+		});
+
+		// Add a new menu with the following options:
+		// Reset the camera - resets the camera's orientation
+		// YZ - sets the camera to view the YZ plane
+		// XY - sets the camera to view the XY plane
+		// ZX - sets the camera to view the ZX plane
+		ActionTree cameraTree = new ActionTree("Camera Orientation");
+		cameraTree.add(new ActionTree(new Action("Reset to current default") {
+			@Override
+			public void run() {
+				plantView.resetCamera();
+			}
+		}));
+		cameraTree.add(new ActionTree(new Action(
+				"YZ (Y right, Z up - initial default)") {
+			@Override
+			public void run() {
+				Vector3f position = new Vector3f(10f, 0f, 0f);
+				Vector3f dir = new Vector3f(-1f, 0f, 0f);
+				Vector3f up = Vector3f.UNIT_Z;
+				plantView.setDefaultCameraPosition(position);
+				plantView.setDefaultCameraOrientation(dir, up);
+				plantView.resetCamera();
+			}
+		}));
+		cameraTree.add(new ActionTree(new Action("XY (X right, Y up)") {
+			@Override
+			public void run() {
+				Vector3f position = new Vector3f(0f, 0f, 10f);
+				Vector3f dir = new Vector3f(0f, 0f, -1f);
+				Vector3f up = Vector3f.UNIT_Y;
+				plantView.setDefaultCameraPosition(position);
+				plantView.setDefaultCameraOrientation(dir, up);
+				plantView.resetCamera();
+			}
+		}));
+		cameraTree.add(new ActionTree(new Action("ZX (Z right, X up)") {
+			@Override
+			public void run() {
+				Vector3f position = new Vector3f(0f, 10f, 0f);
+				Vector3f dir = new Vector3f(0f, -1f, 0f);
+				Vector3f up = Vector3f.UNIT_X;
+				plantView.setDefaultCameraPosition(position);
+				plantView.setDefaultCameraOrientation(dir, up);
+				plantView.resetCamera();
+			}
+		}));
+		toolBar.add(cameraTree.getContributionItem());
+
+		// TODO Move this elsewhere in the ToolBar.
+		action = new Action("Save Image") {
+			@Override
+			public void run() {
+				plantView.exportImage();
+			}
+		};
+		// Set the action's image (a camera).
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "camera.png");
+		imageURL = FileLocator.find(bundle, imagePath, null);
+		ImageDescriptor imageDescriptor = ImageDescriptor
+				.createFromURL(imageURL);
+		action.setImageDescriptor(imageDescriptor);
+		ActionTree saveImageTree = new ActionTree(action);
+		toolBar.add(saveImageTree.getContributionItem());
+
+		toolBar.add(new Separator());
 
 		// ---- Movement Arrow Buttons ---- //
 		// Strafe left
@@ -671,7 +487,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Move forward (W)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().thrustCamera(moveRate);				
+				plantView.getFlightCamera().thrustCamera(moveRate);
 			}
 		};
 		imagePath = new Path("icons" + System.getProperty("file.separator")
@@ -739,7 +555,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// -------------------------------- //
 
 		toolBar.add(new Separator());
-		
+
 		// ---- Rotation Arrow Buttons ---- //
 		// Roll left
 		action = new Action("Roll Left (Q)") {
@@ -754,7 +570,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
 		toolBar.add(action);
-		
+
 		// Roll right
 		action = new Action("Roll Right (E)") {
 			@Override
@@ -768,7 +584,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
 		toolBar.add(action);
-		
+
 		// Pitch up
 		action = new Action("Pitch Up (up arrow)") {
 			@Override
@@ -795,7 +611,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
 		toolBar.add(action);
-		
+
 		// Yaw left
 		action = new Action("Yaw Left (left arrow)") {
 			@Override
@@ -845,27 +661,13 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	}
 
 	/**
-	 * In addition to the parent class' behavior, this method sets the
-	 * "Components" TreeComposite for the plant factory.
+	 * Finds the "Components" block in the MOOSE tree.
+	 * 
+	 * @return The "Components" block, or an empty, default tree if one could
+	 *         not be found.
 	 */
-	@Override
-	public void update(IUpdateable component) {
-		super.update(component);
-
-		// If the root TreeComposite has been updated, we should look for the
-		// "Components" TreeComposite and send it to the PlantComponentFactory.
-		if (component == iceDataForm
-				.getComponent(MOOSEModel.mooseTreeCompositeId) && requiresPlant) {
-			updateComponents();
-		}
-
-		return;
-	}
-
-	/**
-	 * Queries the current MOOSE Model for changes to the "Components" sub-tree.
-	 */
-	private void updateComponents() {
+	private TreeComposite findComponentBlock() {
+		TreeComposite componentBlock = null;
 
 		// Get the root TreeComposite from the form.
 		TreeComposite root = (TreeComposite) iceDataForm
@@ -877,15 +679,14 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		for (int i = 0; i < root.getNumberOfChildren(); i++) {
 			TreeComposite child = root.getChildAtIndex(i);
 			if ("Components".equals(child.getName())) {
+				componentBlock = child;
 				// Break from the loop.
 				i = root.getNumberOfChildren();
-				// Set the "Components" TreeComposite.
-				components = child;
-				factory.setTree(components);
 			}
 		}
 
-		return;
+		// Return either the component block or an empty tree.
+		return (componentBlock != null ? componentBlock : new TreeComposite());
 	}
 
 	/**
