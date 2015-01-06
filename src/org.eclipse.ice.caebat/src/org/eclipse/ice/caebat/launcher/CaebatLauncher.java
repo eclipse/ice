@@ -111,9 +111,14 @@ public class CaebatLauncher extends JobLauncher {
 	 */
 	public void setupForm() {
 		// begin-user-code
-
+		
 		// Setup the script to copy the data files for case 6
-		// String copyCase6 = "cp -r ${installDir}vibe/examples/case6/* .;";
+		//TableComponent hostTable = (TableComponent) form.getComponent(4);
+		//CAEBAT_ROOT = hostTable.getRow(0).get(2).getValue();	
+		//String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT + ";";
+		//String copyCase = "source `pwd`/${inputFile} >> /dev/null && cp -r $SIM_ROOT/* .;";
+		
+		String copyCase = "cp -r ${installDir}vibe/examples/case6/* .;";
 		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
 				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile};";
 		// Setup the Caebat's launch script
@@ -123,9 +128,7 @@ public class CaebatLauncher extends JobLauncher {
 		
 		// Setup the command stages. An explicit forward slash is used here, so
 		// will only work on linux for now.
-		// fullExecCMD = copyCase6 + fixSIMROOT + CAEBATExec;
-		fullExecCMD = fixSIMROOT + CAEBATExec;
-		
+		fullExecCMD =  copyCase + fixSIMROOT + CAEBATExec;
 		// Setup form
 		super.setupForm();
 
@@ -174,5 +177,4 @@ public class CaebatLauncher extends JobLauncher {
 		// end-user-code
 
 	}
-
 }

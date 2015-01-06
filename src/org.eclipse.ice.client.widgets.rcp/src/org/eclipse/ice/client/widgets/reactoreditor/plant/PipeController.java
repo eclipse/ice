@@ -18,7 +18,7 @@ import java.util.concurrent.Callable;
 
 import org.eclipse.ice.client.widgets.geometry.Tube;
 import org.eclipse.ice.client.widgets.jme.IRenderQueue;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.reactor.plant.Pipe;
 
 import com.jme3.bounding.BoundingBox;

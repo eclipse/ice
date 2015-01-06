@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
@@ -20,9 +23,6 @@ import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 
 import java.util.ArrayList;
 import java.util.Collections;

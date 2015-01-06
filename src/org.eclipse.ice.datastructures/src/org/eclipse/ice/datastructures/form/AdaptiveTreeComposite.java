@@ -25,10 +25,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 
 /**
  * This class extends {@link TreeComposite} to create TreeComposites that have
@@ -384,41 +385,4 @@ public class AdaptiveTreeComposite extends TreeComposite {
 
 		// end-user-code
 	}
-	
-	/**
-	 * This method overloads the {@link org.eclipse.ice.datastructures.ICEObject#loadFromXML(InputStream) ICEObject.loadFromXML(...)} 
-	 * method to properly load the AdaptiveTreeComposite.
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            The InputStream containing XML from which the
-	 *            AdaptiveTreeComposite should be loaded.
-	 *            </p>
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((AdaptiveTreeComposite) dataObject);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-		
-		return;
-	}
-
 }

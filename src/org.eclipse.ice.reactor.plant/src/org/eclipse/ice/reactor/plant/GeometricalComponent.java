@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidParameterException;
@@ -483,43 +483,4 @@ public class GeometricalComponent extends PlantComponent {
 		return;
 		// end-user-code
 	}
-
-	/**
-	 * <p>
-	 * This operation loads the component from the XML stream.
-	 * </p>
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            The stream containing the XML for this object.
-	 *            </p>
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator.
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream.
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((GeometricalComponent) dataObject);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator.
-		jaxbManipulator = null;
-
-		return;
-		// end-user-code
-	}
-
 }

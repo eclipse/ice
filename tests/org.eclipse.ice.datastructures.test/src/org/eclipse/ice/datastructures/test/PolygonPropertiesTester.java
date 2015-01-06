@@ -16,10 +16,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.form.mesh.PolygonProperties;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
@@ -88,21 +95,28 @@ public class PolygonPropertiesTester {
 	 * persist itself to XML and to load itself from an XML input stream.
 	 * </p>
 	 * <!-- end-UML-doc -->
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 * 
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
-	public void checkLoadingFromXML() {
+	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
+
+		// Local Declarations
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(PolygonProperties.class);
 
 		// Create a Polygon to test.
 		PolygonProperties properties = new PolygonProperties("mid", 1);
 
 		// Load it into XML.
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		properties.persistToXML(outputStream);
-		assertNotNull(outputStream);
+		xmlHandler.write(properties, classList, outputStream);
 
 		// Convert the output stream data to an input stream.
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -110,21 +124,9 @@ public class PolygonPropertiesTester {
 
 		// Load the input stream's contents into a new component.
 		PolygonProperties loadedProperties = new PolygonProperties();
-		loadedProperties.loadFromXML(inputStream);
+		loadedProperties = (PolygonProperties) xmlHandler.read(classList, inputStream);
 
 		// Make sure the two components match.
-		assertTrue(properties.equals(loadedProperties));
-
-		// Check invalid parameters.
-
-		// Try passing null and make sure the components match.
-		inputStream = null;
-		loadedProperties.loadFromXML(inputStream);
-		assertTrue(properties.equals(loadedProperties));
-
-		// Try passing a bad input stream and make sure the components match.
-		inputStream = new ByteArrayInputStream("jkl;2invalidstream".getBytes());
-		loadedProperties.loadFromXML(inputStream);
 		assertTrue(properties.equals(loadedProperties));
 
 		return;

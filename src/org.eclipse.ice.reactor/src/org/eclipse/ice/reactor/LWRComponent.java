@@ -12,17 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.io.hdf.HdfReaderFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.io.hdf.IHdfReadable;
-import java.util.ArrayList;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+
 import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.HObject;

@@ -17,14 +17,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
 import org.eclipse.ice.proteus.PROTEUSModel;
+import org.eclipse.ice.proteus.PROTEUSModelBuilder;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -35,6 +39,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -159,10 +165,11 @@ public class PROTEUSModelTester {
 	 * model's Form contains 6 DataComponents, each containing 5 fake entries.
 	 * 
 	 * @author w5q
+	 * @throws JAXBException 
 	 * 
 	 */
 	@Test
-	public void checkFormSetup() {
+	public void checkFormSetup() throws JAXBException {
 
 		// Setup the fake project and generate a test XML input file
 		setupFakeProject();
@@ -362,6 +369,9 @@ public class PROTEUSModelTester {
 		actionList.add("Export to key-value pair output");
 		actionList.add("Write PROTEUS File");
 		form.setActionList(actionList);
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(PROTEUSModel.class);
 
 		// Create 6 DataComponents and append them to the form
 		for (int i = 1; i <= 6; i++) {
@@ -437,7 +447,18 @@ public class PROTEUSModelTester {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 		// Persist the form to XML
-		form.persistToXML(outputStream);
+		try {
+			xmlHandler.write(form, classList, outputStream);
+		} catch (NullPointerException e1) {
+			e1.printStackTrace();
+			fail();
+		} catch (JAXBException e1) {
+			e1.printStackTrace();
+			fail();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			fail();
+		}
 
 		// Create the file
 		ByteArrayInputStream source;

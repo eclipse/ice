@@ -229,7 +229,7 @@ public class ReactorMesh extends Mesh {
 				createVector3Buffer(getFloatBuffer(Type.Normal),
 						getVertexCount()));
 
-		// Two specify two triangles per face, we need numBoxes * 4 rendered
+		// To specify two triangles per face, we need numBoxes * 4 rendered
 		// sides * 6 integers (to specify the two triangles).
 		setBuffer(
 				Type.Index,

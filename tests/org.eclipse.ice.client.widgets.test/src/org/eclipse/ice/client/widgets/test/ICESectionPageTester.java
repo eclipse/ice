@@ -20,12 +20,11 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 
 import org.junit.Test;
-
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICESectionPage;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 
 /**
  * <!-- begin-UML-doc -->

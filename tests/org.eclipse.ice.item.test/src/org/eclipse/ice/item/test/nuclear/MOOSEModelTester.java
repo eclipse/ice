@@ -32,13 +32,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
+import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,6 +63,11 @@ public class MOOSEModelTester {
 	 * The project space used to create the workspace for the tests.
 	 */
 	private static IProject projectSpace;
+	
+	/**
+	 * The IO Service used to read/write via MOOSEFileHandler.
+	 */
+	private static IOService service;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -122,7 +129,9 @@ public class MOOSEModelTester {
 			FileInputStream bisonStream = new FileInputStream(bisonFile);
 			// Create the file in the workspace for the Bison YAML file
 			IFile bisonYAMLFile = project.getFile("bison.yaml");
-			bisonYAMLFile.create(bisonStream, true, null);
+			if (!bisonYAMLFile.exists()) {
+				bisonYAMLFile.create(bisonStream, true, null);
+			}
 
 			// Create the File handle and input stream for the Bison input
 			// file
@@ -131,7 +140,9 @@ public class MOOSEModelTester {
 			FileInputStream mooseStream = new FileInputStream(mooseFile);
 			// Create the file in the workspace for the Bison input file
 			IFile bisonInputFile = project.getFile("input_coarse10.i");
-			bisonInputFile.create(mooseStream, true, null);
+			if (!bisonInputFile.exists()) {
+				bisonInputFile.create(mooseStream, true, null);
+			}
 
 			// Refresh the workspace
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -147,6 +158,11 @@ public class MOOSEModelTester {
 
 		// Set the global project reference.
 		projectSpace = project;
+		
+		// Set up an IO service and add a reader and writer
+		service = new IOService();
+		service.addWriter(new MOOSEFileHandler());
+		service.addReader(new MOOSEFileHandler());
 
 		return;
 		// end-user-code
@@ -173,7 +189,7 @@ public class MOOSEModelTester {
 		// Check the form
 		Form form = model.getForm();
 		assertNotNull(form);
-		assertEquals(3, form.getComponents().size());
+		assertEquals(2, form.getComponents().size());
 
 		// Check the data component
 		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) instanceof DataComponent);
@@ -196,9 +212,6 @@ public class MOOSEModelTester {
 
 		// Check the input tree composite.
 		assertTrue(form.getComponent(2) instanceof TreeComposite);
-		
-		// Check the YAML tree composite
-		assertTrue(form.getComponent(3) instanceof TreeComposite);
 
 		return;
 		// end-user-code
@@ -221,9 +234,12 @@ public class MOOSEModelTester {
 
 		// Local Declarations
 		String testFilename = "bison_test_file.inp";
-
+		
 		// Create a MOOSEModel to test
 		MOOSEModel model = setupMOOSEItem();
+		
+		// Set the IOService on the model so we can write out
+		model.setIOService(service);
 
 		// Check the form
 		Form form = model.getForm();
@@ -263,7 +279,10 @@ public class MOOSEModelTester {
 
 		// Create a MOOSE Item
 		MOOSEModel mooseItem = setupMOOSEItem();
-
+		
+		// Set the IO service on the item so we can read/load data in
+		mooseItem.setIOService(service);
+		
 		// Load the input
 		mooseItem.loadInput("input_coarse10.i");
 
@@ -405,11 +424,13 @@ public class MOOSEModelTester {
 	 */
 	@AfterClass
 	public static void afterTests() {
-		// Close and delete the fake workspace created
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		try {
+			// Close and delete the fake workspace created
 			projectSpace.close(null);
-			workspaceRoot.delete(true, true, null);
+
+			// Nullify the IO service
+			service = null;
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

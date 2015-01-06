@@ -16,6 +16,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 
 import static org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncherForm.*;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 import java.net.URI;
@@ -32,7 +33,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.core.resources.IFile;

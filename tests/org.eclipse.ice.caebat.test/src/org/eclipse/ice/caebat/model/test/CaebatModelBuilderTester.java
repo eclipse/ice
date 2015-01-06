@@ -23,8 +23,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ice.caebat.model.CaebatModel;
 import org.eclipse.ice.caebat.model.CaebatModelBuilder;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.item.ItemType;
 import org.junit.Test;
 

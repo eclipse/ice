@@ -15,9 +15,8 @@ package org.eclipse.ice.datastructures.test;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 
 /**
  * <!-- begin-UML-doc -->

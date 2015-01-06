@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.properties;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 
 import java.util.HashMap;
 import java.util.Map;

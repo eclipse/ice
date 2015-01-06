@@ -13,11 +13,10 @@
 package org.eclipse.ice.reactor.perspective;
 
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.reactor.perspective.internal.ReactorEditorRegistry;
 
 import java.util.ArrayList;

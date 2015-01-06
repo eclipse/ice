@@ -16,9 +16,14 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
-
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
@@ -212,20 +217,20 @@ public class PrimitiveShapeTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the PrimitiveShape to persist itself
 	 * to XML and to load itself from an XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkLoadingFromXML() {
-		// begin-user-code
+	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
+
+		// Local Declarations
 		PrimitiveShape loadPrimitiveShape;
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(PrimitiveShape.class);
 
 		// Instantiate PrimitiveShape
 		PrimitiveShape primitiveShape = new PrimitiveShape();
@@ -242,9 +247,7 @@ public class PrimitiveShapeTester {
 
 		// Load it into XML
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		primitiveShape.persistToXML(outputStream);
-
-		assertNotNull(outputStream);
+		xmlHandler.write(primitiveShape, classList, outputStream);
 
 		// convert information inside of outputStream to inputStream
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -255,26 +258,7 @@ public class PrimitiveShapeTester {
 
 		// load contents into xml
 		loadPrimitiveShape = new PrimitiveShape();
-		loadPrimitiveShape.loadFromXML(inputStream);
-
-		// Check contents
-		assertTrue(loadPrimitiveShape.equals(primitiveShape));
-
-		// Try to pass null into the operations
-
-		loadPrimitiveShape.loadFromXML(null);
-		// Nothing happens - check comparison
-
-		// Check contents
-		assertTrue(loadPrimitiveShape.equals(primitiveShape));
-
-		// Pass a bad file
-		String xmlFile = "I AM NOT AN XML FILE!  NO LEFT OR RIGHT CARROTS!";
-
-		inputStream = new ByteArrayInputStream(xmlFile.getBytes());
-
-		// Run operation
-		loadPrimitiveShape.loadFromXML(inputStream);
+		loadPrimitiveShape = (PrimitiveShape) xmlHandler.read(classList, inputStream);
 
 		// Check contents
 		assertTrue(loadPrimitiveShape.equals(primitiveShape));

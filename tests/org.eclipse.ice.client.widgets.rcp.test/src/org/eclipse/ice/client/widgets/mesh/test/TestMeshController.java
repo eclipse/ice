@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.client.widgets.mesh.AbstractMeshController;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 
 /**
  * <!-- begin-UML-doc -->

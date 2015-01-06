@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.Composite;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
-import org.eclipse.ice.datastructures.updateableComposite.Composite;
 
 /**
  * This class is intended to contain {@link IReactorComponents} by implementing

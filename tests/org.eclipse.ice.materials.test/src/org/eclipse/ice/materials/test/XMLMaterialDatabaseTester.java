@@ -24,7 +24,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
-import org.eclipse.ice.materials.Material;
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.XMLMaterialsDatabase;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

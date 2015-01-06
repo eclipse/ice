@@ -12,18 +12,23 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
-
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.Form;
@@ -38,7 +43,7 @@ import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 
 /**
@@ -497,17 +502,13 @@ public class JobLauncherFormTester implements IComponentVisitor {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * An operation that tests xml persistence on JobLauncherForm.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkXMLPersistence() {
+	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
 
 		/*
@@ -522,6 +523,9 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		JobLauncherForm jobForm = new JobLauncherForm();
 		JobLauncherForm loadedForm = new JobLauncherForm();
 		ArrayList<String> actions = new ArrayList<String>();
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(JobLauncherForm.class);
 
 		// Setup a JobLauncherForm
 		jobForm.setName("I AM NEW!");
@@ -538,25 +542,14 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 		// persist to an output stream
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		jobForm.persistToXML(outputStream);
+		xmlHandler.write(jobForm, classList, outputStream);
 
 		// Load an Item from the first
-		loadedForm.loadFromXML(new ByteArrayInputStream(outputStream
+		loadedForm = (JobLauncherForm) xmlHandler.read(classList, new ByteArrayInputStream(outputStream
 				.toByteArray()));
-		// Dump the XML so that it can be inspected
-		// jobForm.persistToXML(System.out);
-		// loadedForm.persistToXML(System.out);
 		// Make sure they match
 		assertTrue(jobForm.equals(loadedForm));
 
-		// test for read - null args
-		// Pass null argument, should fail.
-		loadedForm.loadFromXML(null);
-
-		// Make sure they match - null does not effect previously set data.
-		assertTrue(jobForm.equals(loadedForm));
-
-		// end-user-code
 	}
 
 	/**
@@ -848,6 +841,12 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 	@Override
 	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -18,7 +18,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.client.common.TreeCompositeViewer;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -34,9 +38,6 @@ import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
@@ -270,6 +271,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		componentMap.put("tree", new ArrayList<Component>());
 		componentMap.put("reactor", new ArrayList<Component>());
 		componentMap.put("emf", new ArrayList<Component>());
+		componentMap.put("list", new ArrayList<Component>());
 
 		// end-user-code
 	}
@@ -1486,7 +1488,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	public void visit(MeshComponent component) {
 		// begin-user-code
 
-		// Add the GeometryComponent to the map of components
+		// Add the MeshComponent to the map of components
 		addComponentToMap(component, "mesh");
 
 		// end-user-code
@@ -1516,6 +1518,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	public void visit(EMFComponent component) {
 		System.out.println("Adding EMFComponent: " + component.getName());
 		addComponentToMap(component, "emf");
+	}
+
+	@Override
+	public void visit(ListComponent component) {
+		// Add the ListComponent to the map of components
+		addComponentToMap(component, "list");		
 	}
 
 }

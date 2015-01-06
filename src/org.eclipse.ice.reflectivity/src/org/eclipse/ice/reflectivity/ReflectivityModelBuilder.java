@@ -17,18 +17,44 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
+/**
+ * The ItemBuilder for creating reflectivity models.
+ * @author Jay Jay Billings
+ */
 public class ReflectivityModelBuilder implements ItemBuilder {
 
+	/**
+	 * The name of the builder and the default name of the Item.
+	 */
+	public static final String name = "Reflectivity Model";
+	
+	/**
+	 * The type of the Item.
+	 */
+	public static final ItemType type = ItemType.Model;
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#getItemName()
+	 */
 	@Override
 	public String getItemName() {
-		return "Reflectivity Model";
+		return name;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#getItemType()
+	 */
 	@Override
 	public ItemType getItemType() {
-		return ItemType.Model;
+		return type;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#build(org.eclipse.core.resources.IProject)
+	 */
 	@Override
 	public Item build(IProject projectSpace) {
 		return new ReflectivityModel(projectSpace);

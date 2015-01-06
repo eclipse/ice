@@ -17,6 +17,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -24,8 +27,11 @@ import org.eclipse.ice.datastructures.form.Entry;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
@@ -458,7 +464,7 @@ public class EntryTester {
 		copyOfEntry.setParent(parentName);
 		copyOfEntry.setTag("ChevyChase");
 		copyOfEntry.setRequired(true);
-		
+
 		// Setup a different Entry
 		otherEntry = new Entry();
 
@@ -572,6 +578,9 @@ public class EntryTester {
 		Entry entry, entry2;
 		String notAnXMLString = "A String not in XML";
 		String parentName = "Clark Griswald";
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Entry.class);
 
 		// Fill out Entry and override setup
 		Entry myEntry = new Entry() {
@@ -595,69 +604,32 @@ public class EntryTester {
 		myEntry.setTag("ChevyChase");
 
 		// Demonstrate a basic "write" to file. Should not fail
+		try {
+			// persist to an output stream
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			xmlHandler.write(myEntry, classList, outputStream);
+			System.err.println(outputStream.toString());
 
-		// persist to an output stream
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		myEntry.persistToXML(outputStream);
-		System.err.println(outputStream.toString());
+			// Demonstrate a basic read in. Create file in memory and convert to
+			// an
+			// inputstream.
+			InputStream inputStream = new ByteArrayInputStream(
+					outputStream.toByteArray());
 
-		// Demonstrate a basic read in. Create file in memory and convert to an
-		// inputstream.
-		InputStream inputStream = new ByteArrayInputStream(
-				outputStream.toByteArray());
+			// Initialize object and pass inputStream to read()
+			entry2 = (Entry) xmlHandler.read(classList, inputStream);
+			System.out.println(entry2.getAllowedValues());
 
-		// Initialize object and pass inputStream to read()
-		entry2 = new Entry();
-		entry2.loadFromXML(inputStream);
-		System.out.println(entry2.getAllowedValues());
+			// Check contents - currently broken due to isReady() needs to return a
+			// class Boolean
+			// not an attribute s4h
+			assertTrue(myEntry.equals(entry2));
 
-		// Check contents - currently broken due to isReady() needs to return a
-		// class Boolean
-		// not an attribute s4h
-		assertTrue(myEntry.equals(entry2));
-
-		// The next following tests demonstrate behavior for when you pass null
-		// args for read()
-
-		// test for read - null args
-		entry = new Entry();
-		entry.setId(1);
-		entry.setName("Simple Entry");
-
-		// Set entry equal to entry2
-		entry2 = (Entry) entry.clone();
-
-		// load from XML
-		entry.loadFromXML(null);
-
-		// checkContents - nothing has changed
-		assertTrue(entry2.equals(entry));
-
-		// args for write() - null args
-		entry = new Entry();
-		outputStream = null;
-		entry.persistToXML(outputStream);
-		// Since operation returns, outputStream should still be null
-		assertNull(outputStream);
-
-		// This test will demonstrate what happens when inputStream is not an
-		// XMLFile for read()
-
-		// Initialize variables
-		inputStream = new ByteArrayInputStream(notAnXMLString.getBytes());
-		entry = new Entry();
-		entry.setId(1);
-		entry.setName("Simple Entry");
-
-		// Set entry equal to entry2
-		entry2 = (Entry) entry.clone();
-
-		// run method
-		entry.loadFromXML(inputStream);
-
-		// checkContents - nothing has changed
-		assertTrue(entry2.equals(entry));
-
+		} catch (NullPointerException | JAXBException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail();
+		}
 		// end-user-code
 	}
 

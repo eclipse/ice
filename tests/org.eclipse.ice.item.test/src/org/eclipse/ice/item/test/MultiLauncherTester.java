@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 import static org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncher.*;
@@ -25,7 +27,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.Form;
-
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -44,7 +45,6 @@ import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
@@ -481,6 +481,12 @@ public class MultiLauncherTester implements IComponentVisitor {
 
 	@Override
 	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
 		
 	}

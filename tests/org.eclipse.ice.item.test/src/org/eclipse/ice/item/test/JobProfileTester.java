@@ -23,10 +23,15 @@ import java.io.InputStreamReader;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
+import javax.xml.bind.JAXBException;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.jobprofile.JobProfile;
@@ -63,20 +68,16 @@ public class JobProfileTester {
 	private JobProfile jobProfile;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the JobProfile by processing it and reviewing
 	 * comparing the Item it creates to the original. It also checks the
 	 * quantities in the XML to make sure that they are consistent with the
 	 * specification and useful for launching jobs.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkProfileWriting() {
+	public void checkProfileWriting() throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
 
 		// setup a link to the projectspace
@@ -156,8 +157,11 @@ public class JobProfileTester {
 		// load file from inputstream to object
 		JobLauncher launcher = new JobLauncher();
 
-		launcher.loadFromXML(inputStream);
-
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(JobLauncher.class);
+		launcher = (JobLauncher) xmlHandler.read(classList, inputStream);
+		
 		// check contents of JobLauncher (item portion). Should be default
 		// values besides form:
 		JobLauncher comparisonLauncher = new JobLauncher();

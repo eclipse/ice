@@ -12,13 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.item;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 
 import java.io.File;
 
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.ICEObject.Persistable;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,6 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -67,7 +67,11 @@ import java.io.InputStreamReader;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
@@ -75,6 +79,14 @@ import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.core.resources.IFolder;
 
 import java.net.URI;
+import java.nio.file.CopyOption;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 
 /**
  * <!-- begin-UML-doc -->
@@ -296,7 +308,8 @@ import java.net.URI;
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Item")
-public class Item implements IComponentVisitor, Persistable, Identifiable {
+public class Item implements IComponentVisitor, Identifiable,
+		IUpdateableListener {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -475,7 +488,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * The ICEJAXBManipulator used to marshal Items to and from XML.
+	 * The ICEJAXBHandler used to marshal Items to and from XML.
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
@@ -483,7 +496,7 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	protected ICEJAXBManipulator jaxbManipulator;
+	protected ICEJAXBHandler jaxbManipulator;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -574,6 +587,13 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	 */
 	@XmlTransient()
 	protected boolean debuggingEnabled = false;
+
+	/**
+	 * Reference to the IOService that provides IReaders and IWriters for the
+	 * Item.
+	 */
+	@XmlTransient()
+	private static IOService ioService;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -692,36 +712,55 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	}
 
 	/**
-	 * (non-Javadoc)
+	 * This method should be used by subclasses to get a reference to the
+	 * desired IReader. To get the desired IReader, subclasses must specify the
+	 * IO type String by implementing the Item.getIOType() method.
 	 * 
-	 * @see Persistable#persistToXML(OutputStream outputStream)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return
 	 */
-	public void persistToXML(OutputStream outputStream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the write() on jaxbManipulator to write to outputStream
-		try {
-			jaxbManipulator.write(this, outputStream);
-
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	protected IReader getReader() {
+		if (ioService != null) {
+			return ioService.getReader(getIOType());
 		}
 
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
+		return null;
+	}
 
-		return;
+	/**
+	 * This method should be used by subclasses to get a reference to the
+	 * desired IWriter. To get the desired IWriter, subclasses must specify the
+	 * IO type String by implementing the Item.getIOType() method.
+	 * 
+	 * @return
+	 */
+	protected IWriter getWriter() {
+		if (ioService != null) {
+			return ioService.getWriter(getIOType());
+		}
 
-		// end-user-code
+		return null;
+	}
+
+	/**
+	 * Return the IO Type string. This method is to be used by subclasses to
+	 * indicate which IReader and IWriter the Item subclass needs to use.
+	 * 
+	 * @return
+	 */
+	protected String getIOType() {
+		return null;
+	}
+
+	/**
+	 * This method is used by the underlying OSGi framework to set the IOService
+	 * that has been exposed as a Declarative Service.
+	 * 
+	 * @param service
+	 */
+	public void setIOService(IOService service) {
+		if (service != null) {
+			ioService = service;
+		}
 	}
 
 	/**
@@ -1091,24 +1130,14 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 		if (allowedActions.contains(actionName) && enabled) {
 			// Write the file to XML if requested
 			if (actionName.equals(nativeExportActionString)) {
-				// Write the Form to an output stream
-				form.persistToXML(outputStream);
 				// Setup the IFile handle
 				outputFile = project.getFile(filename + ".xml");
-				try {
-					// If the output file already exists, delete it
-					if (outputFile.exists()) {
-						outputFile.delete(false, null);
-					}
-					// Create the contents of the IFile from the output stream
-					outputFile
-							.create(new ByteArrayInputStream(outputStream
-									.toByteArray()), false, null);
-					retStatus = FormStatus.Processed;
-				} catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// Get the XML io service
+				IWriter xmlWriter = ioService.getWriter("xml");
+				// Write the file
+				xmlWriter.write(form, outputFile);
+				// Set the status
+				retStatus = FormStatus.Processed;
 			} else if (actionName.equals(taggedExportActionString)) {
 				// Otherwise write the file to a tagged output if requested -
 				// first create the action
@@ -1549,55 +1578,6 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation overrides the ICEObject.loadFromXML() operation to
-	 * properly load the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputstream
-	 *            <p>
-	 *            The InputStream from which the Item should be loaded.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputstream) {
-		// begin-user-code
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputstream);
-			// Copy contents of new object into current data structure
-			this.copy((Item) dataObject);
-		} catch (NullPointerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		// Setup the Entry list and register dependencies
-		setupEntryList();
-
-		return;
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation loads the SerializedItem from a Painfully Simple Form file
 	 * format. If it is unable to load the InputStream or determines that the
 	 * contents of the stream are not consistent with the PSF format, then it
@@ -2026,6 +2006,223 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	}
 
 	/**
+	 * This utility method can be used by subclasses to refresh the project
+	 * space after the addition or removal of files and folders.
+	 */
+	protected void refreshProjectSpace() {
+		// Refresh the Project just in case
+		if (project != null) {
+			try {
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+
+	/**
+	 * Return a list of files with the provided fileExtension String. The files
+	 * are returned as a list of 'file names'. For example, the file
+	 * /path/to/file.txt is returned as file.txt.
+	 * 
+	 * @param directory
+	 *            The directory where the Item should search for files with the
+	 *            given type
+	 * @param fileExtension
+	 *            The file extension that the Item should search for.
+	 * @return A list of file names found with the given fileExtension. For a
+	 *         file at /path/to/file.txt, this list contains the element
+	 *         file.txt
+	 */
+	protected ArrayList<String> getFiles(String directory, String fileExtension) {
+
+		// Local Declarations
+		ArrayList<String> files = new ArrayList<String>();
+
+		// Refresh the Project just in case
+		refreshProjectSpace();
+
+		// Make sure we were given a valid directory
+		if (Files.isDirectory(Paths.get(directory))) {
+			// Read through the directory searching for files with the
+			// given file extension.
+			try (DirectoryStream<Path> directoryStream = Files
+					.newDirectoryStream(Paths.get(directory))) {
+				for (Path path : directoryStream) {
+					if (path.toString().endsWith(fileExtension)) {
+						files.add(path.toFile().getName());
+					}
+				}
+
+				// Refresh the Project just in case
+				refreshProjectSpace();
+
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				files.clear();
+			}
+		}
+
+		return files;
+	}
+
+	/**
+	 * Copy the file with the name 'fileName' from the source directory given by
+	 * the sourceDir absolute path String to the destination directory given by
+	 * the absolute path String. This method creates an exact copy of the file
+	 * in the destination directory, leaving the source file intact.
+	 * 
+	 * @param sourceDir
+	 *            The absolute path for the source directory.
+	 * @param destinationDir
+	 *            The absolute path for the destination directory
+	 * @param fileName
+	 *            The name of the file to be copied.
+	 */
+	protected void copyFile(String sourceDir, String destinationDir,
+			String fileName) {
+
+		// Local Declarations
+		String separator = System.getProperty("file.separator");
+
+		// Make sure this file exists...
+		if (Files.exists(Paths.get(sourceDir + separator + fileName))) {
+			try {
+				// Try to copy the file from the source directory to the target
+				// directory. This leaves the source file intact.
+				Files.copy(Paths.get(sourceDir + separator + fileName),
+						Paths.get(destinationDir + separator + fileName),
+						StandardCopyOption.REPLACE_EXISTING);
+				// Refresh the Project just in case
+				refreshProjectSpace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return;
+	}
+
+	/**
+	 * Move the file with the name 'fileName' from the source directory given by
+	 * the sourceDir absolute path String to the destination directory given by
+	 * the absolute path String. This method creates an exact copy of the file
+	 * in the destination directory, but removes the file from the source
+	 * directory.
+	 * 
+	 * @param sourceDir
+	 *            The absolute path for the source directory.
+	 * @param destinationDir
+	 *            The absolute path for the destination directory.
+	 * @param fileName
+	 *            The name of the file to be moved.
+	 */
+	protected void moveFile(String sourceDir, String destinationDir,
+			String fileName) {
+
+		// Local Declarations
+		String separator = System.getProperty("file.separator");
+
+		// Make sure the file to be moved is valid.
+		if (Files.exists(Paths.get(sourceDir + separator + fileName))) {
+			try {
+				// Move the file, this deletes the file in sourceDir.
+				Files.move(Paths.get(sourceDir + separator + fileName),
+						Paths.get(destinationDir + separator + fileName),
+						StandardCopyOption.REPLACE_EXISTING);
+				// Refresh the Project just in case
+				refreshProjectSpace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+
+	/**
+	 * This method deletes the directory, and its contents, corresponding to the
+	 * given absolute path String.
+	 * 
+	 * @param directory
+	 *            The absolute path of the directory to be deleted.
+	 */
+	protected void deleteDirectory(String directory) {
+
+		// Make sure the given absolute path is a directory
+		if (Files.isDirectory(Paths.get(directory))) {
+			try {
+
+				// Walk the directory tree, deleting all the files it contains.
+				Files.walkFileTree(Paths.get(directory),
+						new SimpleFileVisitor<Path>() {
+							@Override
+							public FileVisitResult visitFile(
+									Path file,
+									java.nio.file.attribute.BasicFileAttributes attrs)
+									throws IOException {
+								Files.delete(file);
+								return FileVisitResult.CONTINUE;
+							}
+
+							@Override
+							public FileVisitResult postVisitDirectory(Path dir,
+									IOException exc) throws IOException {
+								Files.delete(dir);
+								return FileVisitResult.CONTINUE;
+							}
+
+						});
+
+				// Refresh the Project just in case
+				refreshProjectSpace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * This method serves as a utility for moving multiple files with the same
+	 * file extension from one directory to another.
+	 * 
+	 * @param sourceDir
+	 *            The directory where the Item should search for files with the
+	 *            given type
+	 * @param destinationDir
+	 *            The directory where the Item should move the found files
+	 * @param fileExtension
+	 *            The file extension that the Item should search for.
+	 */
+	protected void moveFiles(String sourceDir, String destinationDir,
+			String fileExtension) {
+		for (String fileName : getFiles(sourceDir, fileExtension)) {
+			moveFile(sourceDir, destinationDir, fileName);
+		}
+
+		return;
+	}
+
+	/**
+	 * This method serves as a utility for copying multiple files with the same
+	 * file extension from one directory to another.
+	 * 
+	 * @param sourceDir
+	 *            The directory where the Item should search for files with the
+	 *            given type
+	 * @param destinationDir
+	 *            The directory where the Item should move the found files
+	 * @param fileExtension
+	 *            The file extension that the Item should search for.
+	 */
+	protected void copyFiles(String sourceDir, String destinationDir,
+			String fileExtension) {
+		for (String fileName : getFiles(sourceDir, fileExtension)) {
+			copyFile(sourceDir, destinationDir, fileName);
+		}
+	}
+
+	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation loads data into the Item from an input file. This
@@ -2235,6 +2432,16 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 	}
 
 	/**
+	 * This operation returns the IO service for subclasses without giving them
+	 * access to the private handle.
+	 * 
+	 * @return The IOService instance
+	 */
+	protected IOService getIOService() {
+		return ioService;
+	}
+
+	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
@@ -2398,6 +2605,17 @@ public class Item implements IComponentVisitor, Persistable, Identifiable {
 
 	@Override
 	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void update(IUpdateable component) {
+		// Leave this for subclasses.
+	}
+
+	@Override
+	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
 		
 	}

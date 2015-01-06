@@ -30,22 +30,21 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.Composite;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
-import org.eclipse.ice.datastructures.updateableComposite.Composite;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * The TreeComposite realizes the Composite interface to provide a multi-level
  * hierarchical tree of ICE Components. TreeComposites are n-ary trees, meaning
  * that they can have any number of children and data per node. A "sibling" is a
@@ -132,12 +131,8 @@ import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
  * the list returned by getChildExemplars() is submitted. Special care should be
  * taken that children from this list are added to the TreeComposite *before*
  * they themselves are modified.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "TreeComposite")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -1099,48 +1094,6 @@ public class TreeComposite extends ICEObject implements Composite,
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation overloads the ICEObject.loadFromXML() operation to
-	 * properly load the TreeComposite.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            The InputStream containing XML from which the TreeComposite
-	 *            should be loaded.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((TreeComposite) dataObject);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-		// end-user-code
-
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation adds a list of TreeComposites that must be used to create
 	 * children for this TreeComposite. If a list of allowed child nodes exists,
 	 * a TreeComposite will overwrite it.
@@ -1744,6 +1697,12 @@ public class TreeComposite extends ICEObject implements Composite,
 
 	@Override
 	public void visit(EMFComponent component) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
 		
 	}

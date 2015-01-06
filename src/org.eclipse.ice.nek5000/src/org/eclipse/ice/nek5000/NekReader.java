@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -29,7 +30,6 @@ import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 
 /**
  * NekReader class is responsible for reading in the contents of a Nek5000 .rea
