@@ -13,78 +13,42 @@
 package org.eclipse.ice.item.messaging;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * The Message class is a simple Java Bean that contains information from an ICE
  * subsystem, a remote ICE subsystem or an external third process about the
  * progress of worked performed by ICE.
- * </p>
- * <p>
+ * 
  * Messages cannot be copied or cloned.
- * </p>
- * <!-- end-UML-doc -->
+ * 
+ * Messages are used, for example, to post real time updates.
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class Message {
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * An optional id for this message.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int id;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The id of the Item which which this Message should be associated.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int itemId;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The type of the message. One of FILE_CREATED, FILE_MODIFIED,
 	 * FILE_DELETED, MESSAGE_POSTED, PROGRESS_UPDATED, CONVERGENCE_UPDATED,
 	 * UPDATER_STARTED, or UPDATER_STOPPED.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String type;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The contents of the Message.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String message;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The constructor.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Message() {
 		// begin-user-code
@@ -98,17 +62,9 @@ public class Message {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the id of the Message.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The id
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The id
 	 */
 	public int getId() {
 		// begin-user-code
@@ -117,18 +73,10 @@ public class Message {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the id of the Item with which the Message is
 	 * associated.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The ItemId
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The ItemId
 	 */
 	public int getItemId() {
 		// begin-user-code
@@ -137,17 +85,9 @@ public class Message {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the type of the Message.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The type
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The type
 	 */
 	public String getType() {
 		// begin-user-code
@@ -156,17 +96,9 @@ public class Message {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the content of the Message.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The content
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The content
 	 */
 	public String getMessage() {
 		// begin-user-code
@@ -175,18 +107,9 @@ public class Message {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the id of the Message.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param id
-	 *            <p>
-	 *            The id
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param id The id
 	 */
 	public void setId(int id) {
 		// begin-user-code
@@ -196,19 +119,10 @@ public class Message {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the id of the Item with which the Message is
 	 * associated.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param itemId
-	 *            <p>
-	 *            The ItemId
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param itemId The ItemId
 	 */
 	public void setItemId(int itemId) {
 		// begin-user-code
@@ -218,18 +132,9 @@ public class Message {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the type of the Message.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param type
-	 *            <p>
-	 *            The type
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param type The type
 	 */
 	public void setType(String type) {
 		// begin-user-code
@@ -239,18 +144,9 @@ public class Message {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the content of the Message.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param content
-	 *            <p>
-	 *            The content
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param content The content
 	 */
 	public void setMessage(String content) {
 		// begin-user-code
