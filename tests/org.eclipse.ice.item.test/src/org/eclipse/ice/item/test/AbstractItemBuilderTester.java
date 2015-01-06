@@ -13,10 +13,18 @@ package org.eclipse.ice.item.test;
 
 import static org.junit.Assert.*;
 
+import org.eclipse.ice.item.AbstractItemBuilder;
+import org.eclipse.ice.item.IActionFactory;
+import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.ItemType;
 import org.junit.Test;
 
 /**
  * This class is responsible for testing the AbstractItemBuilder.
+ * 
+ * It use a simple subclass of AbstractItemBuilder that provides the internal
+ * state and makes sure 1.) that the base class can return it correctly and 2.)
+ * that the base class can construct an Item correctly.
  * 
  * @author Jay Jay Billings
  * 
@@ -29,7 +37,22 @@ public class AbstractItemBuilderTester {
 	 */
 	@Test
 	public void testGetItemName() {
-		fail("Not yet implemented");
+
+		// Local Declarations
+		String name = "test name";
+		ItemType type = ItemType.AnalysisSession;
+
+		// Create a FakeItemBuilder
+		FakeItemBuilder builder = new FakeItemBuilder();
+		builder.setNameForTest(name);
+		builder.setTypeForTest(type);
+
+		// Check them. Again, this is to make sure that the *getters* and the
+		// (internal) setters work, not that FakeItemBuilder behaves.
+		assertEquals(name, builder.getItemName());
+		assertEquals(type, builder.getItemType());
+
+		return;
 	}
 
 	/**
@@ -39,7 +62,27 @@ public class AbstractItemBuilderTester {
 	 */
 	@Test
 	public void testBuild() {
-		fail("Not yet implemented");
+
+		// Local Declarations
+		String name = "test name";
+		ItemType type = ItemType.AnalysisSession;
+		IActionFactory fakeFactory = new FakeActionFactory();
+
+		// Create a FakeItemBuilder
+		FakeItemBuilder builder = new FakeItemBuilder();
+		builder.setNameForTest(name);
+		builder.setTypeForTest(type);
+
+		// Set the Fake Action Factory Service
+		builder.setActionFactory(fakeFactory);
+
+		// Do the build
+		Item item = builder.build(null);
+
+		// Check the fake
+		IActionFactory returnedFactory = ((TestJobLauncher) item).getActionFactoryForTest();
+		assertNotNull(returnedFactory);
+
 	}
 
 }

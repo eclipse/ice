@@ -31,9 +31,25 @@ import org.eclipse.core.resources.IProject;
  * base class can perform its registrations.
  * 
  * @author Jay Jay Billings
- *
+ * 
  */
 public class AbstractItemBuilder implements ItemBuilder {
+
+	/**
+	 * The name of the Item that will be built and the name of this builder.
+	 */
+	private String name;
+
+	/**
+	 * The type of the Item that will be built.
+	 */
+	private ItemType type;
+
+	/**
+	 * The IActionFactory that will provide Actions to the Items created by this
+	 * Builder.
+	 */
+	private static IActionFactory actionFactory;
 
 	/*
 	 * (non-Javadoc)
@@ -42,8 +58,7 @@ public class AbstractItemBuilder implements ItemBuilder {
 	 */
 	@Override
 	public String getItemName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 	/*
@@ -53,8 +68,7 @@ public class AbstractItemBuilder implements ItemBuilder {
 	 */
 	@Override
 	public ItemType getItemType() {
-		// TODO Auto-generated method stub
-		return null;
+		return type;
 	}
 
 	/*
@@ -67,7 +81,15 @@ public class AbstractItemBuilder implements ItemBuilder {
 	@Override
 	public Item build(IProject projectSpace) {
 		// TODO Auto-generated method stub
-		return null;
+
+		// Create the Item and set its builder name
+		Item item = getInstance(projectSpace);
+		item.setItemBuilderName(this.getItemName());
+
+		// Set the services
+		setServices(item);
+
+		return item;
 	}
 
 	/**
@@ -77,8 +99,8 @@ public class AbstractItemBuilder implements ItemBuilder {
 	 * @param factory
 	 *            The Action Factory
 	 */
-	protected void setActionFactory(IActionFactory factory) {
-		// Nothing TODO yet
+	public void setActionFactory(IActionFactory factory) {
+		actionFactory = factory;
 	}
 
 	/**
@@ -89,7 +111,8 @@ public class AbstractItemBuilder implements ItemBuilder {
 	 *            The new Item with which the services should be registered.
 	 */
 	protected void setServices(Item item) {
-		// Nothing TODO yet
+		// Configure the Item to use the ActionFactory
+		item.setActionFactory(actionFactory);
 	}
 
 	/**
@@ -98,11 +121,32 @@ public class AbstractItemBuilder implements ItemBuilder {
 	 * thereby allowing the AbstractItemBuilder to perform the other work
 	 * without knowing the concrete type of the Item.
 	 * 
-	 * @param project The Item's project space
+	 * @param project
+	 *            The Item's project space
 	 * @return the newly constructed Item
 	 */
 	protected Item getInstance(IProject project) {
 		return new Item(project);
+	}
+
+	/**
+	 * This operation sets the name of the Item built by the builder.
+	 * 
+	 * @param name
+	 *            The name
+	 */
+	protected void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * This operation sets the type of the Item built by the builder.
+	 * 
+	 * @param type
+	 *            The ItemType
+	 */
+	protected void setType(ItemType type) {
+		this.type = type;
 	}
 
 }

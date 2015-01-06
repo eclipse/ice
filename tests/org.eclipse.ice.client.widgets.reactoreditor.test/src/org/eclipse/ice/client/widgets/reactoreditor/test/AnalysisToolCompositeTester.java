@@ -41,11 +41,17 @@ import java.util.Map;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * This class tests what it can of the {@link AnalysisToolComposite}. The
@@ -57,7 +63,21 @@ import org.junit.Test;
  * @author Jordan H. Deyton
  * 
  */
+@RunWith(SWTBotJunit4ClassRunner.class)
 public class AnalysisToolCompositeTester {
+
+	/* --------------------------------------------------- */
+
+	/* ---- Instances necessary for creating the ATC. ---- */
+	private static StateBroker broker;
+	private static SelectionProvider selectionProvider;
+	private static IAnalysisWidgetRegistry registry;
+	/* --------------------------------------------------- */
+
+	/**
+	 * The AnalysisToolComposite that we will be testing.
+	 */
+	private AnalysisToolComposite atc;
 
 	/* ---- Fake views, models (data), and factories. ---- */
 	// Fake views.
@@ -156,19 +176,16 @@ public class AnalysisToolCompositeTester {
 			return null;
 		}
 	};
-	/* --------------------------------------------------- */
 
-	/* ---- Instances necessary for creating the ATC. ---- */
-	private final Shell parent = new Shell();
-	private final StateBroker broker = new StateBroker();
-	private final SelectionProvider selectionProvider = new SelectionProvider();
-	private final IAnalysisWidgetRegistry registry = new AnalysisWidgetRegistry();
-	/* --------------------------------------------------- */
+	@BeforeClass
+	public static void setup() {
 
-	/**
-	 * The AnalysisToolComposite that we will be testing.
-	 */
-	private AnalysisToolComposite atc;
+		// Setup the dependencies
+		broker = new StateBroker();
+		selectionProvider = new SelectionProvider();
+		registry = new AnalysisWidgetRegistry();
+
+	}
 
 	/**
 	 * Test the fields and widgets that need to be updated when views become
@@ -192,9 +209,18 @@ public class AnalysisToolCompositeTester {
 		 * after simulating SelectionEvents for the view Menu buttons.
 		 */
 
+		final SWTWorkbenchBot bot = new SWTWorkbenchBot();
+		
 		// Create the ATC.
-		atc = new AnalysisToolComposite(parent, broker, registry,
-				selectionProvider);
+		Display.getDefault().syncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				Shell parent = bot.activeShell().widget;
+				atc = new AnalysisToolComposite(parent, broker, registry,
+						selectionProvider);
+			}
+		});
 
 		// FIXME - I really don't like doing this, but it makes little sense to
 		// make the ATC's fields and methods non-private. We could make them
