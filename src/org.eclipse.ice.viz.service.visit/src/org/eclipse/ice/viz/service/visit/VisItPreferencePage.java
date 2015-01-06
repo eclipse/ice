@@ -11,28 +11,25 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
+import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
 
 /**
- * This class provides a preferences page for the VisItVisService.
+ * This class provides a preferences page for the VisIt visualization service.
  * 
  * @author Jay Jay Billings
  * 
  */
-public class VisItPreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+public class VisItPreferencePage extends AbstractVizPreferencePage {
 
 	/**
-	 * The constructor
-	 */	
+	 * The default constructor.
+	 */
 	public VisItPreferencePage() {
 		super(GRID);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -41,7 +38,6 @@ public class VisItPreferencePage extends FieldEditorPreferencePage implements
 	 */
 	@Override
 	public void init(IWorkbench workbench) {
-		setPreferenceStore(PlatformUI.getPreferenceStore());
 		setDescription("VisIt 2.8.2 Connection Preferences");
 	}
 
@@ -54,8 +50,8 @@ public class VisItPreferencePage extends FieldEditorPreferencePage implements
 	 */
 	@Override
 	protected void createFieldEditors() {
-	    addField(new BooleanFieldEditor("BOOLEAN_VALUE",
-	            "&theQuestion = (toBe || !toBe)", getFieldEditorParent()));
+		// TODO Add preferences...
+		addField(new BooleanFieldEditor("BOOLEAN_VALUE",
+				"&theQuestion = (toBe || !toBe)", getFieldEditorParent()));
 	}
-
 }

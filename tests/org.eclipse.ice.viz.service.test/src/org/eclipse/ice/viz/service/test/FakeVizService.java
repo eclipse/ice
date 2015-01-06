@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
-import org.eclipse.jface.preference.IPreferencePage;
 
 /**
  * This is a fake IVizService that is used in testing. The only thing it really
@@ -114,16 +113,6 @@ public class FakeVizService implements IVizService {
 	public boolean hasConnectionProperties() {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getPreferencesPage()
-	 */
-	@Override
-	public IPreferencePage getPreferencePage() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

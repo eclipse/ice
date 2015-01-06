@@ -14,8 +14,6 @@ package org.eclipse.ice.client.widgets.viz.service;
 import java.net.URI;
 import java.util.Map;
 
-import org.eclipse.jface.preference.IPreferencePage;
-
 /**
  * This is a pluggable service interface whereby visualization engines can
  * publish their services to the platform. It is designed to be implemented as a
@@ -88,16 +86,6 @@ public interface IVizService {
 	 *            The new property values
 	 */
 	public void setConnectionProperties(Map<String, String> props);
-
-	/**
-	 * This operation returns a fully configured IPreferencePage that contains
-	 * the preferences for the IVizService that can be configured by users.
-	 * 
-	 * @return The IPreferencePage that will be registered with the Platform and
-	 *         available in the Preferences menu or null if there are no
-	 *         connection properties.
-	 */
-	public IPreferencePage getPreferencePage();
 
 	/**
 	 * This operation directs the IVizService to "connect" to any pieces of its

@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
-import org.eclipse.jface.preference.IPreferencePage;
 
 /**
  * This class implements the IVizService interface to provide CSV plotting tools
@@ -113,19 +112,6 @@ public class CSVVizService implements IVizService {
 	public boolean hasConnectionProperties() {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizService#getPreferencesPage
-	 * ()
-	 */
-	@Override
-	public IPreferencePage getPreferencePage() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
