@@ -25,8 +25,6 @@ import org.eclipse.ice.client.widgets.ICESectionPage;
 import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.moose.components.PlantBlockManager;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -667,26 +665,54 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 *         not be found.
 	 */
 	private TreeComposite findComponentBlock() {
-		TreeComposite componentBlock = null;
-
+		// This is a convenience method. Currently, it is very similar to
+		// findMeshBlock(), so the code has been relocated and shared in
+		// findNamedRootBlock(), although this may change soon.
+		return findNamedRootBlock("Components");
+	}
+	
+	/**
+	 * Finds the "Mesh" block in the MOOSE tree.
+	 * 
+	 * @return The "Mesh" block, or an empty, default tree if one could not be
+	 *         found.
+	 */
+	private TreeComposite findMeshBlock() {
+		// This is a convenience method. Currently, it is very similar to
+		// findComponentBlock(), so the code has been relocated and shared in
+		// findNamedRootBlock(), although this may change soon.
+		return findNamedRootBlock("Mesh");
+	}
+	
+	/**
+	 * Finds a block with the specified name under the top level of the MOOSE
+	 * data tree.
+	 * 
+	 * @param name
+	 *            The name of the block to find. This is not checked for null
+	 *            since this is a private method.
+	 * @return The first block ({@code TreeComposite}) with a matching name, or
+	 *         a default, empty TreeComposite.
+	 */
+	private TreeComposite findNamedRootBlock(String name) {
+		TreeComposite namedRootBlock = null;
+		
 		// Get the root TreeComposite from the form.
 		TreeComposite root = (TreeComposite) iceDataForm
 				.getComponent(MOOSEModel.mooseTreeCompositeId);
 
-		// Find the "Components" TreeComposite and set componentNode. We
-		// need to register with it so we can listen for added
-		// PlantComponents.
+		// Find the "Mesh" TreeComposite. We will need to pull the mesh from
+		// this node as a file resource.
 		for (int i = 0; i < root.getNumberOfChildren(); i++) {
 			TreeComposite child = root.getChildAtIndex(i);
-			if ("Components".equals(child.getName())) {
-				componentBlock = child;
+			if (name.equals(child.getName())) {
+				namedRootBlock = child;
 				// Break from the loop.
 				i = root.getNumberOfChildren();
 			}
 		}
 
-		// Return either the component block or an empty tree.
-		return (componentBlock != null ? componentBlock : new TreeComposite());
+		return (namedRootBlock != null ? namedRootBlock : new TreeComposite());		
 	}
 
 	/**
@@ -696,7 +722,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * @return The String ID of the MOOSETreeCompositeViewer
 	 */
 	@Override
-	protected String getTreeCompositeViewerID() {
+ 	protected String getTreeCompositeViewerID() {
 		return MOOSETreeCompositeView.ID;
 	}
 
