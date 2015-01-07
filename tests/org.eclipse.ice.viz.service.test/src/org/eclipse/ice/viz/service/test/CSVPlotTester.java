@@ -51,6 +51,11 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 	private static File file;
 
 	/**
+	 * The test shell
+	 */
+	private Shell shell;
+	
+	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
@@ -207,26 +212,34 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		Thread.sleep(2000);
 
 		// Grab the shell to render the plot.
-		Shell shell = new Shell(Display.getDefault(), SWT.SHELL_TRIM);
-		shell.setFullScreen(true);
-		shell.setText("TITLEBAR!!!!");
-		shell.setLayout(new GridLayout(1, false));
-		// Create a composite for it.
-		Composite testComposite = new Composite(shell, SWT.None);
-		testComposite.setLayout(new GridLayout(1, true));
-		testComposite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true,
-				true, 1, 1));
+		Display.getDefault().syncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				shell = new Shell(Display.getDefault(), SWT.SHELL_TRIM);
+				shell.setFullScreen(true);
+				shell.setText("TITLEBAR!!!!");
+				shell.setLayout(new GridLayout(1, false));
+				// Create a composite for it.
+				Composite testComposite = new Composite(shell, SWT.None);
+				testComposite.setLayout(new GridLayout(1, true));
+				testComposite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true,
+						true, 1, 1));
 
-		// Draw the plot in the test composite.
-		plot.draw("scatter", "t vs. p_x", testComposite);
+				// Draw the plot in the test composite.
+				try {
+					plot.draw("scatter", "t vs. p_x", testComposite);
+				} catch (Exception e) {
+					// Complain
+					e.printStackTrace();
+					fail();
+				}
 
-		// Open the shell and lay it out before running the tests.
-		shell.open();
-		shell.layout();
-
-		// Grab the active shell and make sure it is the correct one.
-		SWTBotShell botShell = bot.activeShell();
-		assertEquals(botShell.getText(), shell.getText());
+				// Open the shell and lay it out before running the tests.
+				shell.open();
+				shell.layout();
+			}
+		}); 
 
 		// Check for a few simple things just to make sure the plot area was
 		// rendered.
@@ -235,8 +248,14 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		SWTBotButton downButton = bot.button("<");
 
 		// Cleaning up just seems like the right proper thing to do.
-		shell.dispose();
+		Display.getDefault().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				shell.dispose();
 
+			}
+		});
 		return;
 	}
 
