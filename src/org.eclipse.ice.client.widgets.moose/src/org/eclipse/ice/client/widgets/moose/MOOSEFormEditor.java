@@ -50,12 +50,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
+import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -77,6 +79,15 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * ID for Eclipse, used for the bundle's editor extension point.
 	 */
 	public static final String ID = "org.eclipse.ice.client.widgets.moose.MOOSEFormEditor";
+
+	/**
+	 * The Eclipse IFormPage ID used for the Plant View page.
+	 */
+	private static final String PLANT_PAGE_ID = "Plant";
+	/**
+	 * The Eclipse IFormPage ID used for the Mesh View page.
+	 */
+	private static final String MESH_PAGE_ID = "Mesh";
 
 	/**
 	 * The PlantAppState rendered on the Plant View page.
@@ -264,49 +275,23 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * with RELAP-7.
 	 */
 	public void addPlantPage() {
-
-		String id = "Plant";
-
-		// Do not add more than one Plant page.
-		if (findPage(id) == null) {
+		// Do not add more than one plant page.
+		if (findPage(PLANT_PAGE_ID) == null) {
 
 			// Add a page with a plant view.
 			try {
-				addPage(new ICEFormPage(this, id, "Plant View") {
+				addPage(new ICEFormPage(this, PLANT_PAGE_ID, "Plant View") {
 					@Override
 					protected void createFormContent(IManagedForm managedForm) {
-						// begin-user-code
-
-						// Local Declarations
-						final ScrolledForm form = managedForm.getForm();
-						form.getBody().setLayout(new FillLayout());
-						form.setMinWidth(10);
-
-						// ---- Create the Section with the PlantView. ---- //
-						// Get the toolkit used to create Composites, Sections,
-						// etc.
-						FormToolkit formToolkit = managedForm.getToolkit();
-
-						// Create a single Section with a single SectionPart.
-						// When the form updates, it calls the SectionPart's
-						// refresh() method. This method should call this class'
-						// refreshContent() method.
-						int style = Section.NO_TITLE | Section.EXPANDED;
-						Section section = formToolkit.createSection(
-								form.getBody(), style);
-						SectionPart sectionPart = new SectionPart(section);
-						// Add the section part to the form so that updates will
-						// be sent to the part (and thus will call
-						// refreshContent()).
-						managedForm.addPart(sectionPart);
+						// Create a default Section.
+						Section section = createDefaultSection(managedForm);
 
 						// Create the plant view as the Section's client.
-						Composite client = createPlantViewComposite(section);
+						Composite client = createPlantViewComposite(
+								managedForm.getToolkit(), section);
 						section.setClient(client);
-						// ------------------------------------------------ //
 
 						return;
-						// end-user-code
 					}
 				});
 			} catch (PartInitException e) {
@@ -318,14 +303,48 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	}
 
 	/**
+	 * Creates the default {@code Section} used by both the plant and mesh view
+	 * pages.
+	 * 
+	 * @param managedForm
+	 *            The {@code IManagedForm} passed into the custom
+	 *            {@code ICEFormPage}'s {@code createFormContent()} method.
+	 * @return A default styled {@code Section}.
+	 */
+	private Section createDefaultSection(IManagedForm managedForm) {
+		final ScrolledForm form = managedForm.getForm();
+		form.getBody().setLayout(new FillLayout());
+		form.setMinWidth(10);
+
+		// Get the toolkit used to create Composites, Sections, etc.
+		FormToolkit formToolkit = managedForm.getToolkit();
+
+		// Create a single Section with a single SectionPart. When the form
+		// updates, it calls the SectionPart's refresh() method. This method
+		// should call this class' refreshContent() method.
+		int style = Section.NO_TITLE | Section.EXPANDED;
+		Section section = formToolkit.createSection(form.getBody(), style);
+		SectionPart sectionPart = new SectionPart(section);
+		// Add the section part to the form so that updates will be sent to the
+		// part (and thus will call refreshContent()).
+		managedForm.addPart(sectionPart);
+
+		return section;
+	}
+
+	/**
 	 * Creates the content used for the plant view.
 	 * 
+	 * @param formToolkit
+	 *            The toolkit used to make SWT components appear standardized,
+	 *            if desired.
 	 * @param parent
 	 *            The parent (intended to be the parent {@code Section} in the
 	 *            plant view page).
 	 * @return The top-level {@code Composite} required for the plant view.
 	 */
-	private Composite createPlantViewComposite(Composite parent) {
+	private Composite createPlantViewComposite(FormToolkit formToolkit,
+			Composite parent) {
 		// Get the background color to use later.
 		Color background = parent.getBackground();
 
@@ -648,14 +667,82 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * Removes the Plant View page if possible.
 	 */
 	public void removePlantPage() {
+		removePageWithID(PLANT_PAGE_ID);
+	}
 
-		String id = "Plant";
+	/**
+	 * Provides a Mesh View page with a view of the MOOSE data tree's mesh
+	 * rendered by the current applicable visualization service.
+	 */
+	public void addMeshPage() {
+		// Do not add more than one mesh page.
+		if (findPage(MESH_PAGE_ID) == null) {
 
-		// Do not add more than one Plant page.
-		if (findPage(id) != null) {
-			removePage(1);
+			// Add a page with a plant view.
+			try {
+				addPage(new ICEFormPage(this, MESH_PAGE_ID, "Mesh View") {
+					@Override
+					protected void createFormContent(IManagedForm managedForm) {
+						// Create a default Section.
+						Section section = createDefaultSection(managedForm);
+
+						// Create the plant view as the Section's client.
+						Composite client = createMeshViewComposite(
+								managedForm.getToolkit(), section);
+						section.setClient(client);
+
+						return;
+					}
+				});
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			}
 		}
+
 		return;
+	}
+
+	/**
+	 * Creates the content used for the mesh view.
+	 * 
+	 * @param formToolkit
+	 *            The toolkit used to make SWT components appear standardized,
+	 *            if desired.
+	 * @param parent
+	 *            The parent (intended to be the parent {@code Section} in the
+	 *            mesh view page).
+	 * @return The top-level {@code Composite} required for the plant view.
+	 */
+	private Composite createMeshViewComposite(FormToolkit formToolkit,
+			Composite parent) {
+
+		// TODO Fill this out with a vis-service-powered mesh view.
+
+		Composite c = formToolkit.createComposite(parent);
+		c.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+		
+		return c;
+	}
+
+	/**
+	 * Removes the Mesh View page if possible.
+	 */
+	public void removeMeshPage() {
+		removePageWithID(MESH_PAGE_ID);
+	}
+
+	/**
+	 * Removes the page with the specified ID.
+	 * 
+	 * @param id
+	 *            The ID of the page, e.g. {@link #PLANT_PAGE_ID} or
+	 *            {@link #MESH_PAGE_ID}.
+	 */
+	private void removePageWithID(String id) {
+		IFormPage page = findPage(id);
+		if (page != null) {
+			removePage(page.getIndex());
+		}
 	}
 
 	/**
@@ -670,7 +757,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// findNamedRootBlock(), although this may change soon.
 		return findNamedRootBlock("Components");
 	}
-	
+
 	/**
 	 * Finds the "Mesh" block in the MOOSE tree.
 	 * 
@@ -683,7 +770,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// findNamedRootBlock(), although this may change soon.
 		return findNamedRootBlock("Mesh");
 	}
-	
+
 	/**
 	 * Finds a block with the specified name under the top level of the MOOSE
 	 * data tree.
@@ -696,7 +783,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 */
 	private TreeComposite findNamedRootBlock(String name) {
 		TreeComposite namedRootBlock = null;
-		
+
 		// Get the root TreeComposite from the form.
 		TreeComposite root = (TreeComposite) iceDataForm
 				.getComponent(MOOSEModel.mooseTreeCompositeId);
@@ -712,7 +799,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			}
 		}
 
-		return (namedRootBlock != null ? namedRootBlock : new TreeComposite());		
+		return (namedRootBlock != null ? namedRootBlock : new TreeComposite());
 	}
 
 	/**
@@ -722,7 +809,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * @return The String ID of the MOOSETreeCompositeViewer
 	 */
 	@Override
- 	protected String getTreeCompositeViewerID() {
+	protected String getTreeCompositeViewerID() {
 		return MOOSETreeCompositeView.ID;
 	}
 

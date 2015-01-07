@@ -499,13 +499,22 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 			String appStr = allowedValues.get(selection);
 			appsEntry.setValue(appStr);
 
+			MOOSEFormEditor mooseEditor = (MOOSEFormEditor) editor;
+			
 			// If the selection is for RELAP-7, create a Plant View page
 			// if one doesn't already exist. If the selection is NOT for
 			// RELAP-7, delete any existing Plant View page.
 			if ("relap".equals(appStr)) {
-				((MOOSEFormEditor) editor).addPlantPage();
+				mooseEditor.addPlantPage();
 			} else {
-				((MOOSEFormEditor) editor).removePlantPage();
+				mooseEditor.removePlantPage();
+			}
+
+			// TODO There may be more apps that use the mesh page!
+			if ("bison".equals(appStr)) {
+				mooseEditor.addMeshPage();
+			} else {
+				mooseEditor.removeMeshPage();
 			}
 
 			// Refresh the TreeViewer's selection for the add and
@@ -590,14 +599,22 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 			appCombo.setSelection(new StructuredSelection(currentApp));
 			// ------------------------------------------------------------ //
 
-			// If the selection is for RELAP-7, create a Plant View page if one
-			// doesn't already exist. If the selection is NOT for RELAP-7,
-			// delete
-			// any existing Plant View page.
-			if ("relap".equals(appsEntry.getValue())) {
-				((MOOSEFormEditor) editor).addPlantPage();
+			MOOSEFormEditor mooseEditor = (MOOSEFormEditor) editor;
+			
+			// If the selection is for RELAP-7, create a Plant View page
+			// if one doesn't already exist. If the selection is NOT for
+			// RELAP-7, delete any existing Plant View page.
+			String appStr = appsEntry.getValue();
+			if ("relap".equals(appStr)) {
+				mooseEditor.addPlantPage();
 			} else {
-				((MOOSEFormEditor) editor).removePlantPage();
+				mooseEditor.removePlantPage();
+			}
+			// TODO There may be more apps that use the mesh page!
+			if ("bison".equals(appStr)) {
+				mooseEditor.addMeshPage();
+			} else {
+				mooseEditor.removeMeshPage();
 			}
 
 			// Refresh the ToolBar with the updated app selection widget.
