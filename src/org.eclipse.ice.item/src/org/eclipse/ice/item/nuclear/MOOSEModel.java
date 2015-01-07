@@ -98,20 +98,6 @@ public class MOOSEModel extends Item {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * The identification number of the TreeComposite containing the YAML data.
-	 * tree.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	@XmlTransient
-	public static final int yamlTreeCompositeId = 3;
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The process tag for writing the MOOSE output file.
 	 * </p>
 	 * <!-- end-UML-doc -->
@@ -272,12 +258,6 @@ public class MOOSEModel extends Item {
 	 * of the MOOSE input tree. By default, this Tree is empty until blocks are
 	 * added to it by the user.
 	 * </p>
-	 * <p>
-	 * The last Form component with id=3 is another TreeComposite containing the
-	 * "pure" YAML tree for the particular MOOSE-based application. By default,
-	 * this Tree is empty until a YAML file is correctly loaded by
-	 * reviewEntries(). This is to provide UI widgets access to the YAML.
-	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
 	 * @generated 
@@ -363,7 +343,7 @@ public class MOOSEModel extends Item {
 		// Add it to the DataComponent
 		fileDataComponent.addEntry(mooseAppEntry);
 
-		// Create the output file Entry
+		// Create the output file Entry on the form
 		Entry outputFileEntry = new Entry() {
 			protected void setup() {
 				defaultValue = "mooseModel.i";
@@ -376,20 +356,13 @@ public class MOOSEModel extends Item {
 		// Add it to the DataComponent
 		fileDataComponent.addEntry(outputFileEntry);
 
-		// Create the TreeComposite
+		// Create the TreeComposite on the form
 		TreeComposite mooseDataTree = new TreeComposite();
 		mooseDataTree.setId(mooseTreeCompositeId);
 		mooseDataTree
 				.setDescription("The tree of input data for this problem.");
 		mooseDataTree.setName("Input Data");
 		form.addComponent(mooseDataTree);
-
-		// Create the YAML TreeComposite
-		TreeComposite yamlDataTree = new TreeComposite();
-		yamlDataTree.setId(yamlTreeCompositeId);
-		yamlDataTree.setDescription("The tree of YAML data for this problem.");
-		yamlDataTree.setName("YAML Data");
-		form.addComponent(yamlDataTree);
 
 		return;
 		// end-user-code
@@ -562,19 +535,6 @@ public class MOOSEModel extends Item {
 					// Get the empty YAML TreeComposite
 					TreeComposite yamlTree = (TreeComposite) form
 							.getComponent(mooseTreeCompositeId);
-
-					// Put a copy of the YAML tree on the form at id=3 (this is
-					// used elsewhere by the UI widgets, but must be done here
-					// before the YAML tree is modified)
-					TreeComposite formYamlTree = (TreeComposite) form
-							.getComponent(yamlTreeCompositeId);
-					TreeComposite tmpTree = (TreeComposite) formYamlTree
-							.clone();
-
-					formYamlTree.copy(yamlTree);
-					formYamlTree.setName(tmpTree.getName());
-					formYamlTree.setDescription(tmpTree.getDescription());
-					formYamlTree.setId(yamlTreeCompositeId);
 
 					// Merge the input tree into the YAML spec
 					mergeTrees(inputTree, yamlTree);
