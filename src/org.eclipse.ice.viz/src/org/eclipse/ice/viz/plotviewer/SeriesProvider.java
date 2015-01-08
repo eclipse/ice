@@ -174,8 +174,7 @@ public class SeriesProvider {
 		// Set the time for the dataProvider
 		dataProviderForSeries.setTime(timeForDataProvider);
 		// Return the data
-		return this.dataProviderForSeries
-				.getPositionAtCurrentTime(xDataFeature);
+		return dataProviderForSeries.getPositionAtCurrentTime(xDataFeature);
 	}
 
 	/**

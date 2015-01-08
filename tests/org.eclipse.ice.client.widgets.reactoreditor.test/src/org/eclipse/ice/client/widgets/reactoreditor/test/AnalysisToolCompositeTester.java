@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.test;
 
+import static org.eclipse.swtbot.swt.finder.SWTBotAssert.assertEnabled;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -19,6 +20,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisToolComposite;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisToolComposite.ViewPart;
@@ -31,21 +37,21 @@ import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetRegistry;
 import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
 import org.eclipse.ice.client.widgets.reactoreditor.SelectionProvider;
 import org.eclipse.ice.client.widgets.reactoreditor.StateBroker;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarDropDownButton;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * This class tests what it can of the {@link AnalysisToolComposite}. The
@@ -57,7 +63,25 @@ import org.junit.Test;
  * @author Jordan H. Deyton
  * 
  */
+@RunWith(SWTBotJunit4ClassRunner.class)
 public class AnalysisToolCompositeTester {
+
+	/* --------------------------------------------------- */
+
+	/* ---- Instances necessary for creating the ATC. ---- */
+	private static StateBroker broker;
+	private static SelectionProvider selectionProvider;
+	private static IAnalysisWidgetRegistry registry;
+	/* --------------------------------------------------- */
+
+	private ViewPart viewPart1;
+	private ViewPart viewPart2;
+	private ViewPart viewPart3;
+
+	/**
+	 * The AnalysisToolComposite that we will be testing.
+	 */
+	private AnalysisToolComposite atc;
 
 	/* ---- Fake views, models (data), and factories. ---- */
 	// Fake views.
@@ -156,19 +180,16 @@ public class AnalysisToolCompositeTester {
 			return null;
 		}
 	};
-	/* --------------------------------------------------- */
 
-	/* ---- Instances necessary for creating the ATC. ---- */
-	private final Shell parent = new Shell();
-	private final StateBroker broker = new StateBroker();
-	private final SelectionProvider selectionProvider = new SelectionProvider();
-	private final IAnalysisWidgetRegistry registry = new AnalysisWidgetRegistry();
-	/* --------------------------------------------------- */
+	@BeforeClass
+	public static void setup() {
 
-	/**
-	 * The AnalysisToolComposite that we will be testing.
-	 */
-	private AnalysisToolComposite atc;
+		// Setup the dependencies
+		broker = new StateBroker();
+		selectionProvider = new SelectionProvider();
+		registry = new AnalysisWidgetRegistry();
+
+	}
 
 	/**
 	 * Test the fields and widgets that need to be updated when views become
@@ -192,9 +213,26 @@ public class AnalysisToolCompositeTester {
 		 * after simulating SelectionEvents for the view Menu buttons.
 		 */
 
+		final SWTWorkbenchBot bot = new SWTWorkbenchBot();
+
+		// Some of these are unused because SWTBot cannot be used for more than
+		// one MenuItem click in context menus.
+		SWTBotToolbarDropDownButton viewsButton;
+		SWTBotMenu inputMenu;
+		SWTBotMenu refMenu;
+		SWTBotMenu compMenu;
+		SWTBotMenu menuItem;
+
 		// Create the ATC.
-		atc = new AnalysisToolComposite(parent, broker, registry,
-				selectionProvider);
+		Display.getDefault().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				Shell parent = bot.activeShell().widget;
+				atc = new AnalysisToolComposite(parent, broker, registry,
+						selectionProvider);
+			}
+		});
 
 		// FIXME - I really don't like doing this, but it makes little sense to
 		// make the ATC's fields and methods non-private. We could make them
@@ -206,15 +244,15 @@ public class AnalysisToolCompositeTester {
 				atc, "factoryMap");
 		Map<String, ViewPart> viewPartMap = (Map<String, ViewPart>) getPrivateField(
 				atc, "viewPartMap");
-		Map<DataSource, MenuItem> dataSourceItems = (Map<DataSource, MenuItem>) getPrivateField(
+		final Map<DataSource, MenuItem> dataSourceItems = (Map<DataSource, MenuItem>) getPrivateField(
 				atc, "dataSourceItems");
 
 		// Get the widgets and variables used to keep track of the top view
 		// widgets.
-		StackLayout leftToolBarStack = (StackLayout) getPrivateField(atc,
+		final StackLayout leftToolBarStack = (StackLayout) getPrivateField(atc,
 				"leftToolBarStack");
-		StackLayout viewCompositeStack = (StackLayout) getPrivateField(atc,
-				"viewCompositeStack");
+		final StackLayout viewCompositeStack = (StackLayout) getPrivateField(
+				atc, "viewCompositeStack");
 
 		// Initially, the factory and ViewPart maps should be empty.
 		assertEquals(0, factoryMap.size());
@@ -223,11 +261,16 @@ public class AnalysisToolCompositeTester {
 		// There should already be one MenuItem for each data source in the view
 		// Menu (all with empty Menus and disabled).
 		assertEquals(3, dataSourceItems.size());
-		for (MenuItem item : dataSourceItems.values()) {
-			assertTrue(!item.getEnabled());
-			assertNotNull(item.getMenu());
-			assertEquals(0, item.getMenu().getItemCount());
-		}
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				for (MenuItem item : dataSourceItems.values()) {
+					assertTrue(!item.getEnabled());
+					assertNotNull(item.getMenu());
+					assertEquals(0, item.getMenu().getItemCount());
+				}
+			}
+		});
 
 		// Register our two test factories.
 		registry.addAnalysisWidgetFactory(factoryOne);
@@ -235,8 +278,13 @@ public class AnalysisToolCompositeTester {
 
 		/* ---- Test adding a model for factoryOne. ---- */
 		// Add a model that uses factoryOne.
-		One modelOne = new One();
-		atc.setData(DataSource.Input.toString(), modelOne);
+		final One modelOne = new One();
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				atc.setData(DataSource.Input.toString(), modelOne);
+			}
+		});
 
 		// The factoryMap should now have factoryOne.
 		assertEquals(1, factoryMap.size());
@@ -244,37 +292,49 @@ public class AnalysisToolCompositeTester {
 
 		// The viewPartMap should now have 2 view parts. Check them.
 		assertEquals(2, viewPartMap.size());
-		ViewPart viewPart1 = viewPartMap.get(DataSource.Input.toString()
-				+ "-View1");
+		viewPart1 = viewPartMap.get(DataSource.Input.toString() + "-View1");
 		assertNotNull(viewPart1);
 		assertTrue(viewPart1.getView() instanceof View1);
-		ViewPart viewPart2 = viewPartMap.get(DataSource.Input.toString()
-				+ "-View2");
+		viewPart2 = viewPartMap.get(DataSource.Input.toString() + "-View2");
 		assertNotNull(viewPart2);
 		assertTrue(viewPart2.getView() instanceof View2);
 
 		// The view Menu's input item should have an entry for View1 and View2.
-		MenuItem inputItem = dataSourceItems.get(DataSource.Input);
-		Menu inputMenu = inputItem.getMenu();
-		assertEquals(2, inputMenu.getItemCount());
-		assertEquals("View1", inputMenu.getItem(0).getText());
-		assertEquals("View2", inputMenu.getItem(1).getText());
+		final MenuItem inputItem = dataSourceItems.get(DataSource.Input);
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				Menu inputMenu = inputItem.getMenu();
+				assertEquals(2, inputMenu.getItemCount());
+				assertEquals("View1", inputMenu.getItem(0).getText());
+				assertEquals("View2", inputMenu.getItem(1).getText());
 
-		// Set the active view and check the top Composite/ToolBar.
-		// This command simulates a button click on Input -> View1.
-		inputMenu.getItem(0).notifyListeners(SWT.Selection, new Event());
-		assertSame(viewPart1.getToolBar(), leftToolBarStack.topControl);
-		assertSame(viewPart1.getContainer(), viewCompositeStack.topControl);
-		// Repeat this for View2.
-		inputMenu.getItem(1).notifyListeners(SWT.Selection, new Event());
-		assertSame(viewPart2.getToolBar(), leftToolBarStack.topControl);
-		assertSame(viewPart2.getContainer(), viewCompositeStack.topControl);
+				// Set the active view and check the top Composite/ToolBar.
+				// This command simulates a button click on Input -> View1.
+				inputMenu.getItem(0)
+						.notifyListeners(SWT.Selection, new Event());
+				assertSame(viewPart1.getToolBar(), leftToolBarStack.topControl);
+				assertSame(viewPart1.getContainer(),
+						viewCompositeStack.topControl);
+				// Repeat this for View2.
+				inputMenu.getItem(1)
+						.notifyListeners(SWT.Selection, new Event());
+				assertSame(viewPart2.getToolBar(), leftToolBarStack.topControl);
+				assertSame(viewPart2.getContainer(),
+						viewCompositeStack.topControl);
+			}
+		});
 		/* --------------------------------------------- */
 
 		/* ---- Test adding a model for factoryTwo. ---- */
 		// Add a model that uses factoryTwo.
-		Two modelTwo = new Two();
-		atc.setData(DataSource.Reference.toString(), modelTwo);
+		final Two modelTwo = new Two();
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				atc.setData(DataSource.Reference.toString(), modelTwo);
+			}
+		});
 
 		// The factoryMap should now have factoryTwo.
 		assertEquals(2, factoryMap.size());
@@ -289,40 +349,77 @@ public class AnalysisToolCompositeTester {
 		viewPart2 = viewPartMap.get(DataSource.Reference.toString() + "-View2");
 		assertNotNull(viewPart2);
 		assertTrue(viewPart2.getView() instanceof View2);
-		ViewPart viewPart3 = viewPartMap.get(DataSource.Reference.toString()
-				+ "-View3");
+		viewPart3 = viewPartMap.get(DataSource.Reference.toString() + "-View3");
 		assertNotNull(viewPart3);
 		assertTrue(viewPart3.getView() instanceof View3);
 
 		// The view Menu's ref item should have an entry for View1 and View2.
-		MenuItem refItem = dataSourceItems.get(DataSource.Reference);
-		Menu refMenu = refItem.getMenu();
-		assertEquals(3, refMenu.getItemCount());
-		assertEquals("View1", refMenu.getItem(0).getText());
-		assertEquals("View2", refMenu.getItem(1).getText());
-		assertEquals("View3", refMenu.getItem(2).getText());
-
+		final MenuItem refItem = dataSourceItems.get(DataSource.Reference);
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				Menu refMenu = refItem.getMenu();
+				assertEquals(3, refMenu.getItemCount());
+				assertEquals("View1", refMenu.getItem(0).getText());
+				assertEquals("View2", refMenu.getItem(1).getText());
+				assertEquals("View3", refMenu.getItem(2).getText());
+			}
+		});
 		// Make sure the Input menu hasn't changed.
-		assertEquals(2, inputMenu.getItemCount());
-		assertEquals("View1", inputMenu.getItem(0).getText());
-		assertEquals("View2", inputMenu.getItem(1).getText());
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				Menu inputMenu = inputItem.getMenu();
+				assertEquals(2, inputMenu.getItemCount());
+				assertEquals("View1", inputMenu.getItem(0).getText());
+				assertEquals("View2", inputMenu.getItem(1).getText());
+			}
+		});
 
 		// Set the active view and check the top Composite/ToolBar.
 		// This command simulates a button click on Reference -> View1.
-		refMenu.getItem(0).notifyListeners(SWT.Selection, new Event());
+		// FIXME SWTBot will work on the first MenuItem click, but not on
+		// subsequent ones. After this, we have to manually "simulate" mouse
+		// clicks on the buttons.
+		viewsButton = bot.toolbarDropDownButton("Views");
+		refMenu = viewsButton.menuItem("Reference");
+		assertEnabled(refMenu);
+		menuItem = refMenu.menu("View1");
+		assertEnabled(menuItem);
+		menuItem.click();
+		// Check that viewPart1 is at the front.
 		assertSame(viewPart1.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPart1.getContainer(), viewCompositeStack.topControl);
 		// Repeat this for View2.
-		refMenu.getItem(1).notifyListeners(SWT.Selection, new Event());
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				Menu refMenu = refItem.getMenu();
+				refMenu.getItem(1).notifyListeners(SWT.Selection, new Event());
+			}
+		});
 		assertSame(viewPart2.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPart2.getContainer(), viewCompositeStack.topControl);
 		// Repeat this for View3.
-		refMenu.getItem(2).notifyListeners(SWT.Selection, new Event());
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				Menu refMenu = refItem.getMenu();
+				refMenu.getItem(2).notifyListeners(SWT.Selection, new Event());
+			}
+		});
 		assertSame(viewPart3.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPart3.getContainer(), viewCompositeStack.topControl);
 
 		// Make sure we can still select something from the Input menu!
-		inputMenu.getItem(1).notifyListeners(SWT.Selection, new Event());
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				Menu inputMenu = inputItem.getMenu();
+				inputMenu.getItem(1)
+						.notifyListeners(SWT.Selection, new Event());
+			}
+		});
 		assertSame(viewPartMap.get(DataSource.Input.toString() + "-View2")
 				.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPartMap.get(DataSource.Input.toString() + "-View2")
@@ -331,8 +428,13 @@ public class AnalysisToolCompositeTester {
 
 		/* ---- Overwrite the Reference with new modelOne data. ---- */
 		// Add a reference model using an instance of model One.
-		One clobberinTime = new One();
-		atc.setData(DataSource.Reference.toString(), clobberinTime);
+		final One clobberinTime = new One();
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				atc.setData(DataSource.Reference.toString(), clobberinTime);
+			}
+		});
 
 		// The factoryMap should now have factoryOne twice.
 		assertEquals(2, factoryMap.size());
@@ -368,23 +470,47 @@ public class AnalysisToolCompositeTester {
 		assertNull(viewPartMap.get(DataSource.Reference.toString() + "-View3"));
 
 		// The view Menu's ref item should have an entry for View1 and View2.
-		assertEquals(2, refMenu.getItemCount());
-		assertEquals("View1", refMenu.getItem(0).getText());
-		assertEquals("View2", refMenu.getItem(1).getText());
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				Menu refMenu = refItem.getMenu();
+				assertEquals(2, refMenu.getItemCount());
+				assertEquals("View1", refMenu.getItem(0).getText());
+				assertEquals("View2", refMenu.getItem(1).getText());
+			}
+		});
 
 		// Set the active view and check the top Composite/ToolBar.
 		// This command simulates a button click on Reference -> View1.
-		refMenu.getItem(0).notifyListeners(SWT.Selection, new Event());
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				refItem.getMenu().getItem(0)
+						.notifyListeners(SWT.Selection, new Event());
+			}
+		});
 		assertSame(viewPart1.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPart1.getContainer(), viewCompositeStack.topControl);
 		// Make sure we can still select something from the Input menu!
-		inputMenu.getItem(0).notifyListeners(SWT.Selection, new Event());
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				inputItem.getMenu().getItem(0)
+						.notifyListeners(SWT.Selection, new Event());
+			}
+		});
 		assertSame(viewPartMap.get(DataSource.Input.toString() + "-View1")
 				.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPartMap.get(DataSource.Input.toString() + "-View1")
 				.getContainer(), viewCompositeStack.topControl);
 		// Repeat the first step for View2.
-		refMenu.getItem(1).notifyListeners(SWT.Selection, new Event());
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				refItem.getMenu().getItem(1)
+						.notifyListeners(SWT.Selection, new Event());
+			}
+		});
 		assertSame(viewPart2.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPart2.getContainer(), viewCompositeStack.topControl);
 		/* --------------------------------------------------------- */

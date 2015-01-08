@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.visualization.widgets.datadefinition.ColorMap;
 import org.eclipse.nebula.visualization.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.nebula.visualization.widgets.figures.IntensityGraphFigure;
@@ -146,11 +147,11 @@ public class CSVPlotEditor extends EditorPart {
 
 		// Create a top level composite to hold the canvas or text
 		vizComposite = new Composite(parent, SWT.FILL);
-		vizComposite.setLayout(new GridLayout(1, false));
+		vizComposite.setLayout(new GridLayout());
+		vizComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		Canvas plotCanvas = new Canvas(vizComposite, SWT.BORDER);
-		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-				1, 1));
+		plotCanvas.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		lws = new LightweightSystem(plotCanvas);
 

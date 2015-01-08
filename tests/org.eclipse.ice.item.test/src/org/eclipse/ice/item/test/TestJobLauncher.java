@@ -13,6 +13,7 @@
 package org.eclipse.ice.item.test;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.IActionFactory;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
@@ -62,4 +63,12 @@ public class TestJobLauncher extends JobLauncher {
 		// end-user-code
 	}
 
+	/**
+	 * This operation returns the ActionFactory so that the tests can make sure
+	 * the Items received the services.
+	 */
+	public IActionFactory getActionFactoryForTest() {
+		return getActionFactory();
+	}
+	
 }

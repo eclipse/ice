@@ -596,6 +596,13 @@ public class Item implements IComponentVisitor, Identifiable,
 	private static IOService ioService;
 
 	/**
+	 * The IActionFactory that provides the set of Actions that can be used by
+	 * this Item in processing.
+	 */
+	@XmlTransient()
+	private IActionFactory actionFactory;
+
+	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor. Subclasses of Item should implement their own
@@ -752,14 +759,29 @@ public class Item implements IComponentVisitor, Identifiable,
 	}
 
 	/**
-	 * This method is used by the underlying OSGi framework to set the IOService
-	 * that has been exposed as a Declarative Service.
+	 * This operation is used by the underlying OSGi framework to set the
+	 * IOService that has been exposed as a Declarative Service.
 	 * 
 	 * @param service
 	 */
 	public void setIOService(IOService service) {
 		if (service != null) {
 			ioService = service;
+		}
+	}
+
+	/**
+	 * This operation sets the service reference for the IActionFactory that
+	 * should be used by Items to find and execute Items during their process
+	 * phase.
+	 * 
+	 * @param factory
+	 *            The IActionFactory, which should never be null when this is
+	 *            called.
+	 */
+	public void setActionFactory(IActionFactory factory) {
+		if (factory != null) {
+			actionFactory = factory;
 		}
 	}
 
@@ -2442,6 +2464,16 @@ public class Item implements IComponentVisitor, Identifiable,
 	}
 
 	/**
+	 * This operation returns the ActionFactory for subclasses without giving
+	 * them access to the private handle.
+	 * 
+	 * @return The ActionFactory
+	 */
+	protected IActionFactory getActionFactory() {
+		return actionFactory;
+	}
+
+	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
@@ -2617,6 +2649,6 @@ public class Item implements IComponentVisitor, Identifiable,
 	@Override
 	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

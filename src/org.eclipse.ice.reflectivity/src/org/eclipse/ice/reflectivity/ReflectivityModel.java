@@ -12,19 +12,23 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
-import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemType;
 
 /**
  * This classes calculates the reflectivity profile of a set of materials
@@ -78,14 +82,17 @@ public class ReflectivityModel extends Item {
 	protected void setupForm() {
 		// begin-user-code
 
-		ArrayList<Entry> template = new ArrayList<Entry>();
-		Entry id = new Entry();
-		Entry mat = new Entry();
-		Entry thickness = new Entry();
-		Entry roughness = new Entry();
-		Entry sld = new Entry();
-		Entry mu_abs = new Entry();
-		Entry mu_inc = new Entry();
+		// Create an empty stream for the output files
+		
+		// FIXME! Simple data entered now for testing
+		String line1 = "#features,t, p_x, p_y\n";
+		String line2 = "#units,t,p_x,p_y\n";
+		String line3 = "1.0,1.0,1.0\n";
+		String line4 = "2.0,4.0,8.0\n";
+		String line5 = "3.0,9.0,27.0\n";
+		String allLines = line1+line2+line3+line4+line5;
+		
+		ByteArrayInputStream stream = new ByteArrayInputStream(allLines.getBytes());
 
 		// Create the Form
 		form = new Form();
@@ -94,58 +101,67 @@ public class ReflectivityModel extends Item {
 		table.setName("Reflectivity Input Data");
 		table.setDescription("");
 
-		int idNum = 1;
+		// Create the list that will contain all of the material information
+		ListComponent<Material> matList = new ListComponent<Material>();
+		matList.setId(1);
+		matList.setName("Reflectivity Input Data");
+		matList.setDescription("Reflectivity Input Data");
+		matList.add(new Material());
+		form.addComponent(matList);
 
-		// Configure the entry information
-		id.setName("ID");
-		id.setDescription("Unique ID for this layer.");
-		id.setId(idNum);
-		mat.setName("Material");
-		// Need stoichometry and mass density to define a compound.
-		mat.setDescription("Chemical compound for this layer.");
-		mat.setId(++idNum);
-		thickness.setName("Thickness");
-		thickness.setDescription("The thickness of this material as an "
-				+ "initial guess or the actual calculated value if the "
-				+ "fit has been run. (Angstroms)");
-		thickness.setId(++idNum);
-		roughness.setName("Roughness");
-		roughness.setDescription("The width of the region of intermixing "
-				+ "between layer n-1 and layer n. It goes up and not "
-				+ "down. (Angstroms)");
-		roughness.setId(++idNum);
-		sld.setName("Scattering Length Density");
-		sld.setDescription("The product of the mass density and its "
-				+ "stoichiometry. It is a proxy for the refractive index. "
-				+ "(Angstroms^-2)");
-		sld.setId(++idNum);
-		mu_abs.setName("Mu_abs");
-		mu_abs.setDescription("The absorption coefficient divided by the wavelength. "
-				+ "(Angstroms^-2)");
-		mu_abs.setId(++idNum);
-		mu_inc.setName("Mu_inc");
-		mu_inc.setDescription("The effective incoherent absorption "
-				+ "coefficient. (Angstroms^-1)");
-		mu_inc.setId(++idNum);
+		if (project != null) {
+			// FIXME! ID is always 1 at this point!
+			String basename = "reflectivityModel_" + getId() + "_";
+			// Create the output file for the reflectivity data
+			IFile reflectivityFile = project.getFile(basename + "rfd.csv");
+			// Create the output file for the scattering density data
+			IFile scatteringFile = project.getFile(basename + "scdens.csv");
+			try {
+				// Reflectivity first
+				if (reflectivityFile.exists()) {
+					reflectivityFile.delete(true, null);
+				}
+				reflectivityFile.create(stream, true, null);
+				// Then the scattering file
+				if (scatteringFile.exists()) {
+					scatteringFile.delete(true, null);
+				}
+				stream.reset();
+				scatteringFile.create(stream, true, null);
+				
+				// Create the VizResource to hold the reflectivity data
+				VizResource reflectivitySource = new VizResource(
+						reflectivityFile.getLocation().toFile());
+				reflectivitySource.setName("Reflectivity Data File");
+				reflectivitySource.setId(1);
+				reflectivitySource
+						.setDescription("Data from reflectivity calculation");
+				
+				// Create the VizResource to hold the scatDensity data
+				VizResource scatDensitySource = new VizResource(scatteringFile
+						.getLocation().toFile());
+				scatDensitySource.setName("Scattering Density Data File");
+				scatDensitySource.setId(2);
+				scatDensitySource.setDescription("Data from Stattering "
+						+ "Density calculation");
 
-		// Add everything to the row template.
-		template.add(id);
-		template.add(mat);
-		template.add(sld);
-		template.add(mu_abs);
-		template.add(mu_inc);
-		template.add(thickness);
-		template.add(roughness);
-		// Set the template
-		table.setRowTemplate(template);
+				// Create a component to hold the output
+				ResourceComponent resources = new ResourceComponent();
+				resources.setName("Results");
+				resources.setDescription("Results and Output");
+				resources.setId(2);
+				resources.addResource(reflectivitySource);
+				resources.addResource(scatDensitySource);
+				form.addComponent(resources);
+			} catch (CoreException | IOException e) {
+				// Complain
+				System.err.println("ReflectivityModel Error: "
+						+ "Problem creating reflectivity files!");
+				e.printStackTrace();
+			}
+		}
 
-		// Add this to the form
-		form.addComponent(table);
-
-//		ListComponent<Material> matList = new ListComponent<Material>();
-//		matList.add(new Material());
-//		form.addComponent(matList);
-
+		return;
 		// end-user-code
 	}
 

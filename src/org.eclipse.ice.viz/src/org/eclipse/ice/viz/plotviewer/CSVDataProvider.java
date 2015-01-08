@@ -14,7 +14,9 @@ package org.eclipse.ice.viz.plotviewer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.eclipse.ice.analysistool.IData;
@@ -31,7 +33,7 @@ public class CSVDataProvider implements IDataProvider {
 	/**
 	 * Structure to contain all the data for each feature at each time step
 	 */
-	private TreeMap<Double, HashMap<String, ArrayList<IData>>> dataSet;
+	private HashMap<Double, HashMap<String, ArrayList<IData>>> dataSet;
 
 	/**
 	 * Units for the time
@@ -82,7 +84,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * Default constructor
 	 */
 	public CSVDataProvider() {
-		dataSet = new TreeMap<Double, HashMap<String, ArrayList<IData>>>();
+		dataSet = new HashMap<Double, HashMap<String, ArrayList<IData>>>();
 		currentTime = defaultTime;
 		timeUnits = null;
 		source = null;
@@ -123,7 +125,6 @@ public class CSVDataProvider implements IDataProvider {
 			// Add this new HashMap to the dataSet
 			dataSet.put(time, dataSetComponent);
 		}
-
 	}
 
 	/**
@@ -470,7 +471,7 @@ public class CSVDataProvider implements IDataProvider {
 		double[] position = null;
 
 		// Get the features at the current time
-		ArrayList<String> features = this.getFeaturesAtCurrentTime();
+		ArrayList<String> features = getFeaturesAtCurrentTime();
 		// Check that the dataSet at the current time has the specified
 		// independent variable
 		if (independentVars.contains(independentVar)) {
@@ -541,7 +542,6 @@ public class CSVDataProvider implements IDataProvider {
 	 * Returns the features at the current time
 	 */
 	public ArrayList<String> getFeaturesAtCurrentTime() {
-		// TODO Auto-generated method stub
 		return new ArrayList<String>(dataSet.get(currentTime).keySet());
 	}
 
@@ -550,28 +550,22 @@ public class CSVDataProvider implements IDataProvider {
 	 * Returns the times in the data set
 	 */
 	public ArrayList<Double> getTimes() {
-		// TODO Auto-generated method stub
-		ArrayList<Double> times = new ArrayList<Double>();
-		// Loop through the times in the TreeMap and add to the ArrayList
-		for (Double t : dataSet.keySet()) {
-			times.add(t);
-		}
+		// Get the list of times from the key set, sort it, and return it.
+		ArrayList<Double> times = new ArrayList<Double>(dataSet.keySet());
+		Collections.sort(times);
+		times = new ArrayList<Double>(times);
 		return times;
 	}
 
 	@Override
 	/**
-	 * Returns the integer time step at 
+	 * Returns the integer time step at the given time
+	 * @param the time
 	 */
 	public int getTimeStep(double time) {
-		// TODO Auto-generated method stub
-		Double[] times = new Double[dataSet.size()];
-		int index = 0;
-		for (Double t : dataSet.keySet()) {
-			times[index++] = t;
-		}
-		index = Arrays.binarySearch(times, time);
-		return index;
+		// Get the times and then pull the time step if it is in there.
+		ArrayList<Double> times = getTimes();
+		return times.indexOf(time);
 	}
 
 	@Override
