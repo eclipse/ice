@@ -91,7 +91,7 @@ public class SuiteLauncher extends JobLauncher {
 	/**
 	 * The entry that holds the name of the executable in the component;
 	 */
-	private Entry execEntry;
+	protected Entry execEntry;
 
 	/**
 	 * The content provider for the entry that holds all of the names of the

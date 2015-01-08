@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,10 +30,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
 /**
@@ -89,7 +94,9 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		executables.add("RELAP-7");
 		executables.add("RAVEN");
 		executables.add("MOOSE_TEST");
-		//executables.add(yamlSyntaxGenerator);
+		executables.add("PUMA");
+
+		// executables.add(yamlSyntaxGenerator);
 
 		// Add the list to the suite
 		addExecutables(executables);
@@ -126,6 +133,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 			update(inputFilesComp.retrieveEntry("Input File"));
 		}
 
+		execEntry.register(this);
+
 		return;
 	}
 
@@ -150,6 +159,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		executableMap.put("RELAP-7", "relap-7");
 		executableMap.put("RAVEN", "raven");
 		executableMap.put("MOOSE_TEST", "moose_test");
+		executableMap.put("PUMA", "puma");
 		executableMap.put(yamlSyntaxGenerator, yamlSyntaxGenerator);
 
 		// Create the command that will launch the MOOSE product
@@ -465,6 +475,61 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		}
 
 		return;
+	}
+
+	@Override
+	public void update(IUpdateable component) {
+
+		refreshProjectSpace();
+
+		//if (component instanceof Entry) {
+
+		//	Entry incomingEntry = (Entry) component;
+			
+			
+			
+			super.update(component);
+
+			if (execEntry.getValue().equals("PUMA")) {
+
+				DataComponent fileData = (DataComponent) form
+						.getComponent(JobLauncherForm.filesId);
+				Entry proteusFile = fileData
+						.retrieveEntry("external_code_input_file");
+				if (proteusFile != null) {
+					IFile file = project.getFile(proteusFile.getValue());
+					if (file.exists()) {
+						try {
+							BufferedReader reader = new BufferedReader(
+									new InputStreamReader(file.getContents()));
+							String line = "";
+
+							while ((line = reader.readLine()) != null) {
+								if (line.contains("FILE")
+										&& !line.startsWith("!")
+										&& !line.contains("EXPORT")) {
+									line = line.replaceAll("\\s+", " ");
+									String[] split = line.split(" ");
+									System.out.println("LINE: " + line + " "
+											+ split.length + " " + split[0]
+											+ " " + split[1]);
+									addInputType(
+											split[0],
+											split[0].replaceAll(" ", ""),
+											"FILE DESCRIPTION",
+											"."
+													+ split[1]
+															.split("\\.(?=[^\\.]+$)")[1]);
+								}
+							}
+						} catch (CoreException | IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+		//}
 	}
 
 	/**
