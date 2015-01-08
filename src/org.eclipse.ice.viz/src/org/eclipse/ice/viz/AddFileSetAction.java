@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz;
 
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;

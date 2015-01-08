@@ -69,7 +69,6 @@ public class MaterialsDatabaseMasterDetailsPage extends FormPage {
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
 
-		FormToolkit toolkit = managedForm.getToolkit();
 		Composite parent = managedForm.getForm().getBody();
 		// The layout of the form body MUST be set or nothing will render!
 		parent.setLayout(new GridLayout(1, true));

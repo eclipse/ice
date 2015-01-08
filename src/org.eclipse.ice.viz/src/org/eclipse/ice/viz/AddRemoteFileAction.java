@@ -19,6 +19,7 @@ import gov.lbnl.visit.swt.VisItRemoteFileDialog;
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
 
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.visit.VisitEditor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;

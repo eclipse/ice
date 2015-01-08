@@ -68,14 +68,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	private ArrayList<Component> components;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The IManagedForm for the SectionPage.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IManagedForm managedFormRef;
 
@@ -164,15 +157,9 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		// end-user-code
 	}
 
-	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @param managedForm
-	 *            <p>
-	 *            The Form widget on which the ICESectionPage exists.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
 		// begin-user-code

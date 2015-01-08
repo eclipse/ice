@@ -17,36 +17,24 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>The ICEFormPage class is the base class for all FormPages in ICE.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEFormPage extends FormPage {
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>The Form from ICE that contains the data to be displayed in this on this Page.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected Form iceForm;
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>A handle to the Editor that is injected in the Constructor.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected ICEFormEditor editor;
 
 	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>The Constructor</p>
-	 * <!-- end-UML-doc -->
-	 * @param editor <p>The FormEditor for which the Page should be constructed.</p>
-	 * @param id <p>The id of the page.</p>
-	 * @param title <p>The title of the page.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * The Constructor
+	 * @param editor The FormEditor for which the Page should be constructed.
+	 * @param id The id of the page.
+	 * @param title The title of the page.
 	 */
 	public ICEFormPage(FormEditor editor, String id, String title) {
 		// begin-user-code
