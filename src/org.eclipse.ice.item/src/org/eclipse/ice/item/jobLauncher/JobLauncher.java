@@ -1974,11 +1974,10 @@ public class JobLauncher extends Item {
 			}
 		}
 
-		// Use the IReader to find all occurrences of the given Regular
+		// Use the IReader to find all occurrances of the given Regular
 		// Expression
 		// For each of those add a new Input file Entry
 		for (Entry e : getReader().findAll(file, regex)) {
-			System.out.println("E: " + e.getName() + " " + e.getValue());
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
 					e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
