@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.visit.test;
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -21,6 +22,7 @@ import org.junit.Test;
  * @author Jay Jay Billings
  * 
  */
+@Ignore
 public class VisItVizServiceTester {
 
 	/**
