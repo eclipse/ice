@@ -50,7 +50,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -716,12 +715,22 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	private Composite createMeshViewComposite(FormToolkit formToolkit,
 			Composite parent) {
 
-		// TODO Fill this out with a vis-service-powered mesh view.
+		// Create the mesh view.
+		MeshViewComposite composite = new MeshViewComposite(parent, SWT.NONE);
+		formToolkit.adapt(composite);
 
-		Composite c = formToolkit.createComposite(parent);
-		c.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-		
-		return c;
+		// ---- Find the mesh file's Entry in the MOOSE tree. ---- //
+		// Find the "file" Entry among the "Mesh" block's parameters.
+		TreeComposite meshBlock = findMeshBlock();
+		DataComponent activeNode = (DataComponent) meshBlock
+				.getActiveDataNode();
+		// Send the Entry (if possible) to the mesh view for processing.
+		if (activeNode != null) {
+			composite.setFileEntry(activeNode.retrieveEntry("file"));
+		}
+		// ------------------------------------------------------- //
+
+		return composite;
 	}
 
 	/**
