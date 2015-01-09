@@ -12,7 +12,7 @@
 package org.eclipse.ice.viz.service.visit;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
-import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 
 /**
@@ -50,8 +50,13 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 	 */
 	@Override
 	protected void createFieldEditors() {
-		// TODO Add preferences...
-		addField(new BooleanFieldEditor("BOOLEAN_VALUE",
-				"&theQuestion = (toBe || !toBe)", getFieldEditorParent()));
+
+		// TODO These preferences will each need to be custom tailored.
+		for (ConnectionPreference p : ConnectionPreference.values()) {
+			addField(new StringFieldEditor(p.toString(), p.getName(),
+					getFieldEditorParent()));
+		}
+
+		return;
 	}
 }

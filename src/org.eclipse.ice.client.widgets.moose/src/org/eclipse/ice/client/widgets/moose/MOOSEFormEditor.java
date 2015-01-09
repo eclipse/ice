@@ -26,6 +26,8 @@ import org.eclipse.ice.client.widgets.ICESectionPage;
 import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.moose.components.PlantBlockManager;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
+import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -714,6 +716,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		Section section = toolkit.createSection(parent, style);
 		section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
+				// FIXME This may be causing NPEs....
 				managedForm.reflow(true);
 			}
 		});
@@ -768,7 +771,15 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		sectionClient.setBackground(Display.getCurrent().getSystemColor(
 				SWT.COLOR_BLACK));
 
+		// Try to connect to VisIt.
+		IVizServiceFactory vizFactory = getVizServiceFactory();
+		IVizService vizService = null;
+		if (vizFactory != null && (vizService = vizFactory.get("VisIt")) != null) {
+			vizService.connect();
+		}
+		
 		// TODO Plug into the VisIt (or currently configured) vis service.
+		return;
 	}
 
 	/**

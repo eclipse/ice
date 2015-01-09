@@ -11,11 +11,21 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
+import gov.lbnl.visit.swt.VisItSwtConnectionManager;
+
 import java.net.URI;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This is an implementation of the IVizService interface for the VisIt
@@ -25,6 +35,13 @@ import org.eclipse.ice.client.widgets.viz.service.IVizService;
  * 
  */
 public class VisItVizService implements IVizService {
+
+	/**
+	 * A reference to the associated preference page's {@link IPreferenceStore}.
+	 * If this has been determined previously, then it should be returned in
+	 * {@link #getPreferenceStore()}.
+	 */
+	private IPreferenceStore preferenceStore = null;
 
 	/*
 	 * (non-Javadoc)
@@ -65,8 +82,15 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public Map<String, String> getConnectionProperties() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, String> preferences = new TreeMap<String, String>();
+		IPreferenceStore store = getPreferenceStore();
+
+		for (ConnectionPreference p : ConnectionPreference.values()) {
+			String preferenceId = p.toString();
+			preferences.put(preferenceId, store.getString(preferenceId));
+		}
+
+		return preferences;
 	}
 
 	/*
@@ -77,8 +101,21 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public void setConnectionProperties(Map<String, String> props) {
-		// TODO Auto-generated method stub
+		if (props != null) {
+			IPreferenceStore store = getPreferenceStore();
 
+			for (Entry<String, String> prop : props.entrySet()) {
+				String preferenceId = prop.getKey();
+				try {
+					ConnectionPreference.valueOf(preferenceId);
+					store.setValue(preferenceId, prop.getValue());
+				} catch (IllegalArgumentException e) {
+					// Could not process the current property.
+				}
+			}
+		}
+
+		return;
 	}
 
 	/*
@@ -88,8 +125,24 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public boolean connect() {
-		// TODO Auto-generated method stub
-		return false;
+		boolean connected = false;
+		IPreferenceStore store = getPreferenceStore();
+
+		String connectionId = store.getString(ConnectionPreference.ConnectionID
+				.getID());
+		VisItSwtConnection connection;
+		if (VisItSwtConnectionManager.hasConnection(connectionId)) {
+			connection = VisItSwtConnectionManager.getConnection(connectionId);
+		} else {
+			connection = VisItSwtConnectionManager.createConnection(
+					connectionId, Display.getDefault(),
+					getConnectionProperties());
+		}
+
+		connected = (connection != null);
+		System.out.println("Connected to VisIt: " + connected);
+
+		return connected;
 	}
 
 	/*
@@ -103,6 +156,21 @@ public class VisItVizService implements IVizService {
 	public IPlot createPlot(URI file) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * Gets the {@link IPreferenceStore} for the associated preference page.
+	 * 
+	 * @return The {@code IPreferenceStore} whose defaults should be set.
+	 */
+	private IPreferenceStore getPreferenceStore() {
+		if (preferenceStore == null) {
+			// Get the PreferenceStore for the bundle.
+			String id = FrameworkUtil.getBundle(getClass()).getSymbolicName();
+			preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE,
+					id);
+		}
+		return preferenceStore;
 	}
 
 }

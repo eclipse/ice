@@ -25,7 +25,12 @@ public class VisItPreferenceInitializer extends
 		IPreferenceStore store = getPreferenceStore();
 
 		// Set all defaults.
-		store.setDefault("BOOLEAN_VALUE", true);
+
+		// TODO Each of these preferences will need to be customtailored, e.g.,
+		// some may be booleans.
+		for (ConnectionPreference p : ConnectionPreference.values()) {
+			store.setDefault(p.toString(), p.getDefaultValue());
+		}
 
 		return;
 	}
