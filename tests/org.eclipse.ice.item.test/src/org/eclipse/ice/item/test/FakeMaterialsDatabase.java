@@ -16,6 +16,9 @@ import java.util.List;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.gui.TableFormat;
+
 /**
  * A fake implementation of the IMaterialsDatabase used for testing.
  * 
@@ -96,6 +99,18 @@ public class FakeMaterialsDatabase implements IMaterialsDatabase {
 	public void restoreDefaults() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public EventList<Material> getElements() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TableFormat<Material> getTableFormat() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
