@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Form;
@@ -28,7 +27,7 @@ import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.resource.VizResource;
-import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.model.Model;
 
 /**
  * This classes calculates the reflectivity profile of a set of materials
@@ -38,7 +37,7 @@ import org.eclipse.ice.item.Item;
  * @author Jay Jay Billings, Alex McCaskey
  */
 @XmlRootElement(name = "ReflectivityModel")
-public class ReflectivityModel extends Item {
+public class ReflectivityModel extends Model {
 
 	/**
 	 * The constructor.
@@ -165,10 +164,11 @@ public class ReflectivityModel extends Item {
 		// end-user-code
 	}
 
-	/**
-	 * This operation is used to setup the name and description of the model as
-	 * well as register its builder.
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#setupItemInfo()
 	 */
+	@Override
 	protected void setupItemInfo() {
 		// begin-user-code
 
@@ -183,6 +183,14 @@ public class ReflectivityModel extends Item {
 
 		return;
 		// end-user-code
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
+	 */
+	@Override
+	public void setupFormWithServices() {
 	}
 
 }

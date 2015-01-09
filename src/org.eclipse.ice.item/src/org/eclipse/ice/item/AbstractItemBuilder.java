@@ -89,6 +89,10 @@ public class AbstractItemBuilder implements ItemBuilder {
 		// Set the services
 		setServices(item);
 
+		// Tell the Item it can configure any data on its Form that requires the
+		// services
+		item.setupFormWithServices();
+
 		return item;
 	}
 

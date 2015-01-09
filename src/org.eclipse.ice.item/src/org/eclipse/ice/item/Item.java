@@ -99,6 +99,9 @@ import java.nio.file.StandardCopyOption;
  * Items are initialized with an acceptable set of default parameters such that
  * they could be processed immediately.
  * 
+ * Subclasses that require platform services to fully configure their form
+ * should see and override setupFormWithServices() in addition to setupForm().
+ * 
  * Instances of classes that realize the IUpdateable interface can be registered
  * to receive updates from others in the Item with the Registry. Subclasses
  * should override registerUpdateables(). This operation performs parent-child
@@ -130,7 +133,7 @@ import java.nio.file.StandardCopyOption;
  * The Item class realizes the IComponent Visitor interface so that it can map
  * the Components in the Form and determine their types.
  * 
- * The Item behaves as follows for each state: </p>
+ * The Item behaves as follows for each state:
  * <table border="1">
  * <col width="50.0%"></col><col width="50.0%"></col>
  * <tr>
@@ -238,10 +241,10 @@ import java.nio.file.StandardCopyOption;
  * </td>
  * </tr>
  * </table>
- * <p>
+ * 
  * Items can be stored to JPA databases. See the *Database() operations for more
  * information.
- * </p>
+ * 
  * Items can be disabled and put in to a "read-only" mode where their forms can
  * be read, but the Item will not accept updated Forms or process actions.
  * Attempts to process the Item or submit a form will return
@@ -263,8 +266,8 @@ import java.nio.file.StandardCopyOption;
  * no good way to pass a read-only file in Java because that is an OS dependent
  * operation.
  * 
- * If the project space for the Item has not be set upon construction, the
- * output file will not be configured and getOutputFile() will be null.
+ * If the project space for the Item is not set upon construction, the output
+ * file will not be configured and getOutputFile() will be null.
  * 
  * Items can also be observed by ItemListeners. Subclasses must implement the
  * calls to update the listeners on their own, although some protected utility
@@ -1025,10 +1028,17 @@ public class Item implements IComponentVisitor, Identifiable,
 
 	/**
 	 * This protected operation setups the Entries, DataComponents and Form for
-	 * a subclass of Item. The default implementation of setupForm() will add
-	 * Entries with parents to the Registry if the Item is loaded from a file,
-	 * otherwise it will do nothing. Subclasses should tailor this operation as
-	 * needed. The list of allowed Actions may also be specified here.
+	 * a subclass of Item. Subclasses should tailor this operation as needed.
+	 * The list of allowed Actions may also be specified here.
+	 * 
+	 * This operation should always be called first in a subclasses
+	 * implementation to instantiate the Form.
+	 * 
+	 * Subclasses that need platform services, such as the IOService, should
+	 * override setupFormWithServices() in addition to this operation. In that
+	 * scenario, setupForm() will contain the code necessary to instantiate and
+	 * add empty data structures to the Form and setupFormWithServices() will
+	 * fill those structures with data.
 	 */
 	protected void setupForm() {
 
@@ -1048,6 +1058,28 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * override it.
 	 */
 	protected void setupItemInfo() {
+
+		// Do nothing by default
+
+	}
+
+	/**
+	 * This operation directs the Item to setup its Form using the services that
+	 * were registered with it after construction. It is separate from
+	 * setupForm() because services are not injected upon construction, but it
+	 * is still necessary to construct the Form in some rudimentary way.
+	 * 
+	 * Subclasses should override this operation as well as setupForm() whenever
+	 * they need to use services, such as the IOService, to completely
+	 * initialize their Form.
+	 * 
+	 * This operation should always be called after an Item is constructed and
+	 * its services are set.
+	 * 
+	 * It is not necessary to call the base class implementation of this
+	 * operation before doing work as is suggested for setupForm().
+	 */
+	public void setupFormWithServices() {
 
 		// Do nothing by default
 
