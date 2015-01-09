@@ -17,6 +17,7 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -30,11 +31,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 import org.junit.Ignore;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.action.LoginInfoForm;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
@@ -42,16 +45,11 @@ import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.xml.bind.JAXBException;
+
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class is responsible for testing the JobLauncher class.
- * </p>
- * <!-- end-UML-doc -->
- * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class JobLauncherTester {
 	/**
@@ -716,18 +714,14 @@ public class JobLauncherTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the JobLauncher to persist itself to
 	 * XML and to load itself from an XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkXMLPersistence() {
+	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
 		/*
 		 * The following sets of operations will be used to test the
@@ -739,6 +733,9 @@ public class JobLauncherTester {
 
 		// Local declarations
 		JobLauncher loadedItem = new JobLauncher();
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(JobLauncher.class);
 
 		// Set up item
 		JobLauncher persistedItem = new JobLauncher();
@@ -749,14 +746,11 @@ public class JobLauncherTester {
 
 		// persist to an output stream
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		persistedItem.persistToXML(outputStream);
+		xmlHandler.write(persistedItem, classList, outputStream);
 
 		// Load an Item from the first
-		loadedItem.loadFromXML(new ByteArrayInputStream(outputStream
+		loadedItem = (JobLauncher) xmlHandler.read(classList,new ByteArrayInputStream(outputStream
 				.toByteArray()));
-		// Dump the XML so that it can be inspected
-		persistedItem.persistToXML(System.out);
-		loadedItem.persistToXML(System.out);
 		// Make sure they match
 		assertEquals(persistedItem, loadedItem);
 
@@ -766,24 +760,6 @@ public class JobLauncherTester {
 		assertEquals(persistedItem.getDescription(),
 				loadedItem.getDescription());
 		assertEquals(persistedItem.getForm(), loadedItem.getForm());
-		assertEquals(persistedItem.getId(), loadedItem.getId());
-		assertEquals(persistedItem.getItemType(), loadedItem.getItemType());
-		assertEquals(persistedItem.getName(), loadedItem.getName());
-		assertEquals(persistedItem.getStatus(), loadedItem.getStatus());
-		assertTrue(persistedItem.getAllHosts().equals(loadedItem.getAllHosts()));
-
-		// The next following tests demonstrate behavior for when you pass null
-		// args for read()
-
-		// test for read - null args
-		loadedItem.loadFromXML(null);
-
-		// check contents - nothing has changed
-		assertEquals(persistedItem.getAvailableActions(),
-				loadedItem.getAvailableActions());
-		assertEquals(persistedItem.getDescription(),
-				loadedItem.getDescription());
-		assertTrue(persistedItem.getForm().equals(loadedItem.getForm()));
 		assertEquals(persistedItem.getId(), loadedItem.getId());
 		assertEquals(persistedItem.getItemType(), loadedItem.getItemType());
 		assertEquals(persistedItem.getName(), loadedItem.getName());

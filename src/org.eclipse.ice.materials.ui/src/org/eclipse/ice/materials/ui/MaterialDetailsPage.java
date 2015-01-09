@@ -12,15 +12,19 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.IMaterialsDatabase;
-import org.eclipse.ice.materials.Material;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -165,7 +169,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 	 */
 	@Override
 	public void selectionChanged(IFormPart part, ISelection selection) {
-		
+
 		// Grab the selection
 		Object structuredSelection = ((IStructuredSelection) selection)
 				.getFirstElement();
@@ -253,6 +257,46 @@ public class MaterialDetailsPage implements IDetailsPage {
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
+
+		// Add a composite for holding the Add and Delete buttons for adding
+		// or removing properties
+		Composite buttonComposite = new Composite(sectionClient, SWT.NONE);
+		buttonComposite.setLayout(new GridLayout(1, false));
+		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false,
+				true, 1, 1));
+		// Create a listener that will throw up an error message since the Add
+		// and Delete operations are not yet supported. The error message is
+		// just a simple JFace message dialog that is opened when either button
+		// is pressed.
+		String title = "Operation Unsupported";
+		String msg = "Adding and deleting properties"
+				+ " is not yet supported.";
+		String[] labels = { "OK" };
+		final MessageDialog dialog = new MessageDialog(parent.getShell(),
+				title, null, msg, MessageDialog.ERROR, labels, 0);
+		SelectionListener errorListener = new SelectionListener() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				dialog.open();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				dialog.open();
+			}
+		};
+		// Create the Add button
+		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
+		addMaterialButton.setText("Add");
+		// Set the error listener for now until the delete operation is
+		// supported.
+		addMaterialButton.addSelectionListener(errorListener);
+		// Create the Delete button
+		Button deleteMaterialButton = new Button(buttonComposite, SWT.PUSH);
+		deleteMaterialButton.setText("Delete");
+		// Set the error listener for now until the delete operation is
+		// supported
+		deleteMaterialButton.addSelectionListener(errorListener);
 
 		return;
 	}

@@ -65,7 +65,7 @@ public class HeatExchangerView extends PipeView {
 	/**
 	 * The tube mesh for the secondary input (inlet).
 	 */
-	private final CustomTube secondaryInput;
+	private final TubeMesh secondaryInput;
 	/**
 	 * The {@link Geometry} that contains the {@link #secondaryInput} tube mesh.
 	 */
@@ -84,7 +84,7 @@ public class HeatExchangerView extends PipeView {
 	/**
 	 * The tube mesh for the secondary output (outlet).
 	 */
-	private final CustomTube secondaryOutput;
+	private final TubeMesh secondaryOutput;
 	/**
 	 * The {@link Geometry} that contains the {@link #secondaryOutput} tube
 	 * mesh.
@@ -125,8 +125,8 @@ public class HeatExchangerView extends PipeView {
 		// Add the secondary input pipe.
 		secondaryInputOffset = new Vector3f();
 		secondaryInputRotation = new Quaternion();
-		secondaryInput = new CustomTube(defaultRadius, defaultRadius,
-				defaultLength, axialSamples, radialSamples, centralAngle);
+		secondaryInput = new TubeMesh(defaultLength, defaultRadius,
+				axialSamples, radialSamples);
 		secondaryInputGeometry = new Geometry("secondaryInput", secondaryInput);
 		secondaryInputGeometry.setMaterial(material);
 		viewNode.attachChild(secondaryInputGeometry);
@@ -134,8 +134,8 @@ public class HeatExchangerView extends PipeView {
 		// Add the secondary output pipe.
 		secondaryOutputOffset = new Vector3f();
 		secondaryOutputRotation = new Quaternion();
-		secondaryOutput = new CustomTube(defaultRadius, defaultRadius,
-				defaultLength, axialSamples, radialSamples, centralAngle);
+		secondaryOutput = new TubeMesh(defaultLength, defaultRadius,
+				axialSamples, radialSamples);
 		secondaryOutputGeometry = new Geometry("secondaryOutput",
 				secondaryOutput);
 		secondaryOutputGeometry.setMaterial(material);
@@ -286,7 +286,7 @@ public class HeatExchangerView extends PipeView {
 		// Computations done after this block do not depend on whether the
 		// secondary pipe is input or output for the heat exchanger. Determine
 		// which tube mesh, translation, and rotation will be modified.
-		CustomTube tube;
+		TubeMesh tube;
 		Vector3f translation;
 		Quaternion rotation;
 		if (input) {
@@ -347,8 +347,9 @@ public class HeatExchangerView extends PipeView {
 		// Update the pipe mesh, the translation, and the rotation.
 		writeLock.lock();
 		try {
-			tube.updateGeometry(radius, radius, length, 1, radialSamples,
-					centralAngle);
+			tube.setLength(length);
+			tube.setRadius(radius);
+			tube.refresh(false);
 			translation.set(location);
 			rotation.set(PipeController
 					.getQuaternionFromOrientation(orientation));

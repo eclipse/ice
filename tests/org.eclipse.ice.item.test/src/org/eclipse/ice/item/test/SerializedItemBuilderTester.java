@@ -214,26 +214,4 @@ public class SerializedItemBuilderTester {
 
 		// end-user-code
 	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation checks the SerializedItemBuilder using an XML file created
-	 * from a call to Item.persistToXML() or by following the schema for an
-	 * Item. It checks the name and type of the Item and tries to create and
-	 * check a SerializedItem initialized from the XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	// @Test
-	public void checkLoadingFromXML() {
-		// begin-user-code
-
-		fail();
-
-		// end-user-code
-	}
 }

@@ -3,9 +3,9 @@ package org.eclipse.ice.client.widgets.mesh;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 
 /**
  * This class handles queuing {@link MeshComponent} updates for a

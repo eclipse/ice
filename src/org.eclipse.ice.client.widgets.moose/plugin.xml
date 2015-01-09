@@ -99,4 +99,30 @@
             </propertySection>
          </propertySections>
       </extension>
+      <extension
+            point="org.eclipse.ui.commands">
+         <command
+               defaultHandler="org.eclipse.ice.client.widgets.moose.GenerateYAMLHandler"
+               description="Generate YAML and Action Syntax"
+               id="org.eclipse.ice.client.widgets.moose.command.GenerateYAML"
+               name="Generate MOOSE YAML and Action syntax files">
+         </command>
+      </extension>
+      <extension
+            point="org.eclipse.ui.menus">
+         <menuContribution
+               allPopups="false"
+               locationURI="toolbar:org.eclipse.ui.main.toolbar">
+            <toolbar
+                  id="org.eclipse.ice.client.widgets.toolbar">
+               <command
+                     commandId="org.eclipse.ice.client.widgets.moose.command.GenerateYAML"
+                     icon="icons/file_obj.gif"
+                     id="Generate MOOSE YAML and Action syntax files"
+                     label="Generate YAML and Action Syntax"
+                     style="push">
+               </command>
+            </toolbar>
+         </menuContribution>
+      </extension>
 </plugin>

@@ -39,7 +39,7 @@ import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.pwr.PWRAssembly;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
  * <!-- begin-UML-doc -->

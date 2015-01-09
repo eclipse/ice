@@ -32,12 +32,12 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
 import org.eclipse.emf.ecore.xmi.util.XMLProcessor;
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBManipulator;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFEntry;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 
 /**
  * 
@@ -508,44 +508,6 @@ public class EMFTreeComposite extends TreeComposite {
 		// Return the tree
 		return emfTreeComposite;
 		// end-user-code
-	}
-
-	/**
-	 * This method overloads the
-	 * {@link org.eclipse.ice.datastructures.ICEObject#loadFromXML(InputStream)
-	 * ICEObject.loadFromXML(...)} method to properly load the EMFTreeComposite.
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            The InputStream containing XML from which the
-	 *            AdaptiveTreeComposite should be loaded.
-	 *            </p>
-	 */
-	@Override
-	public void loadFromXML(InputStream inputStream) {
-
-		// Initialize JAXBManipulator
-		jaxbManipulator = new ICEJAXBManipulator();
-
-		// Call the read() on jaxbManipulator to create a new Object instance
-		// from the inputStream
-		Object dataObject;
-		try {
-			dataObject = jaxbManipulator.read(this.getClass(), inputStream);
-			// Copy contents of new object into current data structure
-			this.copy((EMFTreeComposite) dataObject);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Nullerize jaxbManipilator
-		jaxbManipulator = null;
-
-		return;
 	}
 
 	/** THIS IS FOR DEBUGGING **/

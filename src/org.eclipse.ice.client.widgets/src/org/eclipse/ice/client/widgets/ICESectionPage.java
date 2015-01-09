@@ -14,6 +14,8 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -28,7 +30,6 @@ import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -67,14 +68,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	private ArrayList<Component> components;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The IManagedForm for the SectionPage.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IManagedForm managedFormRef;
 
@@ -163,15 +157,9 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		// end-user-code
 	}
 
-	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @param managedForm
-	 *            <p>
-	 *            The Form widget on which the ICESectionPage exists.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
 		// begin-user-code
@@ -621,6 +609,12 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	@Override
 	public void visit(EMFComponent component) {
 		// Nothing to do yet.
+	}
+
+	@Override
+	public void visit(ListComponent component) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

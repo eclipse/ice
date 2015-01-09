@@ -14,11 +14,18 @@ package xmlpp.test;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -30,13 +37,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.caebat.kvPair.CAEBATKVPairBuilder;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.nuclear.MOOSEModelBuilder;
+import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import xmlpp.XMLPersistenceProvider;
 
 /**
  * This class tests the XMLPersistenceProvider.
@@ -128,11 +136,18 @@ public class XMLPersistenceProviderTester {
 
 		// Setup the XMLPersistenceProvider
 		xmlpp = new XMLPersistenceProvider(project);
-		xmlpp.start();
-
-		// Register the MOOSE model builder with it so that it can determine
-		// class information for unmarshalling Items.
+		// Register the MOOSE model and the CAEBAT key-value pair builders with
+		// it so that it can determine class information for unmarshalling
+		// Items.
 		xmlpp.addBuilder(new MOOSEModelBuilder());
+		xmlpp.addBuilder(new CAEBATKVPairBuilder());
+		try {
+			// Start the service
+			xmlpp.start();
+		} catch (JAXBException e) {
+			e.printStackTrace();
+			fail();
+		}
 
 		return;
 	}
@@ -271,6 +286,7 @@ public class XMLPersistenceProviderTester {
 
 		// Create a MOOSE item
 		MOOSEModelBuilder builder = new MOOSEModelBuilder();
+		CAEBATKVPairBuilder caebatBuilder = new CAEBATKVPairBuilder();
 		Item item = builder.build(project);
 		String name;
 		int passedCount = 0;
@@ -325,6 +341,101 @@ public class XMLPersistenceProviderTester {
 		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
 		assertFalse(checkPersistedFile(name));
 
+		// Add a CAEBAT KVPair item, which has a hyphenated name, to make sure
+		// the the provider can handle it.
+		Item caebatItem = caebatBuilder.build(project);
+		caebatItem.setId(5);
+		assertTrue(xmlpp.persistItem(caebatItem));
+		pause(2);
+		items = xmlpp.loadItems();
+		// Check the list
+		passedCount = 0;
+		for (Item listItem : items) {
+			// Look for the correct name and item ids
+			if (listItem.getName().equals(CAEBATKVPairBuilder.name)
+					&& listItem.getId() == 5) {
+				passedCount++;
+			}
+		}
+		assertEquals(1, passedCount);
+
+		return;
+	}
+
+	/**
+	 * This operation insures that IWriter interface is implemented as described
+	 * by the XML persistence provider and that the operations function.
+	 * 
+	 * @throws JAXBException
+	 *             JAXB wasn't able to load
+	 * @throws CoreException
+	 *             Eclipse Resources failed to load the file
+	 */
+	@Test
+	public void checkIWriterOperations() throws JAXBException, CoreException {
+
+		// Create a Form
+		Form form = new Form();
+		form.setName("The artist formerly known as Prince");
+		IFile file = project.getFile("iwriter_test_form.xml");
+
+		// Try to persist it
+		xmlpp.write(form, file);
+		pause(2);
+
+		// Check the project to see if it was written
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		assertTrue(file.exists());
+		// Read it back in and compare the results. Create new instance of
+		// object from file and then return it.
+		JAXBContext context = JAXBContext.newInstance(Form.class);
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		// New object created
+		Form loadedForm = (Form) unmarshaller.unmarshal(file.getContents());
+		assertEquals(form, loadedForm);
+
+		return;
+	}
+
+	/**
+	 * This operation insures that IReader interface is implemented as described
+	 * by the XML persistence provider and that the operations function.
+	 * 
+	 * @throws JAXBException
+	 *             JAXB could not load
+	 * @throws CoreException
+	 *             Eclispe Resources could not read the file
+	 */
+	@Test
+	public void checkIReaderOperations() throws JAXBException, CoreException {
+
+		// Create a Form
+		Form form = new Form();
+		form.setName("The artist formerly known as Prince");
+		IFile file = project.getFile("ireader_test_form.xml");
+
+		// Create a context and write the Form to a stream
+		JAXBContext jaxbContext = JAXBContext.newInstance(Form.class);
+		Marshaller marshaller = jaxbContext.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		marshaller.marshal(form, outputStream);
+		// Convert it to an input stream so it can be pushed to file
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(
+				outputStream.toByteArray());
+		// Update the output file if it already exists
+		if (file.exists()) {
+			file.setContents(inputStream, IResource.FORCE, null);
+		} else {
+			// Or create it from scratch
+			file.create(inputStream, IResource.FORCE, null);
+		}
+
+		// Read the Form back in with the provider
+		Form loadedForm = xmlpp.read(file);
+		assertNotNull(loadedForm);
+		assertEquals(loadedForm,form);
+		
 		return;
 	}
 

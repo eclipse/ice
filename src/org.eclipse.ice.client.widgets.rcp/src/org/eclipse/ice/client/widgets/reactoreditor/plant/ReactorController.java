@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.eclipse.ice.client.widgets.jme.IRenderQueue;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.reactor.plant.CoreChannel;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;

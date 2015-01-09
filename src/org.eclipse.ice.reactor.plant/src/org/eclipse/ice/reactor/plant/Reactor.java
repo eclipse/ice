@@ -243,24 +243,4 @@ public class Reactor extends PlantComponent {
 		return;
 		// end-user-code
 	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The operation loads the component from the XML stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param inputStream
-	 *            <p>
-	 *            The stream containing the SML for this object.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void loadFromXML(InputStream inputStream) {
-		// begin-user-code
-
-		// end-user-code
-	}
 }

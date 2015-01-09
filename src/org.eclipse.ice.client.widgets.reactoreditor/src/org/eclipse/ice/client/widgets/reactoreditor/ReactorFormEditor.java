@@ -16,12 +16,11 @@ import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.client.widgets.ICEMasterDetailsPage;
 import org.eclipse.ice.client.widgets.ICEResourcePage;
-
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
 import org.eclipse.ice.reactorAnalyzer.ReactorComposite;
 

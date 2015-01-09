@@ -17,6 +17,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
 import org.eclipse.ice.datastructures.form.mesh.Polygon;
@@ -25,20 +28,16 @@ import org.eclipse.ice.datastructures.form.mesh.Vertex;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * Tests the Quad class.
- * </p>
- * <!-- end-UML-doc -->
- * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class QuadTester {
 	/**
@@ -330,23 +329,22 @@ public class QuadTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the Quad to persist itself to XML
 	 * and to load itself from an XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkLoadingFromXML() {
+	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
 
 		// We need edges and vertices to supply to created Polygons.
 		ArrayList<Edge> edges = new ArrayList<Edge>();
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Quad.class);
 
 		// Construct the quad's edges and vertices.
 		vertices.add(new Vertex(0f, 0f, 0f));
@@ -368,8 +366,7 @@ public class QuadTester {
 
 		// Load it into XML.
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		quad.persistToXML(outputStream);
-		assertNotNull(outputStream);
+		xmlHandler.write(quad, classList, outputStream);
 
 		// Convert the output stream data to an input stream.
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -377,21 +374,9 @@ public class QuadTester {
 
 		// Load the input stream's contents into a new component.
 		Quad loadedQuad = new Quad();
-		loadedQuad.loadFromXML(inputStream);
+		loadedQuad = (Quad) xmlHandler.read(classList, inputStream);
 
 		// Make sure the two components match.
-		assertTrue(quad.equals(loadedQuad));
-
-		// Check invalid parameters.
-
-		// Try passing null and make sure the components match.
-		inputStream = null;
-		loadedQuad.loadFromXML(inputStream);
-		assertTrue(quad.equals(loadedQuad));
-
-		// Try passing a bad input stream and make sure the components match.
-		inputStream = new ByteArrayInputStream("jkl;2invalidstream".getBytes());
-		loadedQuad.loadFromXML(inputStream);
 		assertTrue(quad.equals(loadedQuad));
 
 		return;

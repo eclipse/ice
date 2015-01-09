@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.ice.materials.Material;
 
 import java.util.ArrayList;
 import java.util.List;

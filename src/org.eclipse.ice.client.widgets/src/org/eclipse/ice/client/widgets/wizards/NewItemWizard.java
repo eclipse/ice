@@ -31,7 +31,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  * to the workbench new wizards).
  * </p>
  * 
- * @author Jay Jay Billings, Jordan
+ * @author Jay Jay Billings, Jordan Deyton
  * 
  */
 public class NewItemWizard extends Wizard implements INewWizard {
@@ -98,7 +98,8 @@ public class NewItemWizard extends Wizard implements INewWizard {
 	@Override
 	public boolean performFinish() {
 
-		// Setup the return value. Default to false.
+		// Setup the return value. Default to false so "finished" cannot be
+		// clicked.
 		boolean finished = false;
 
 		// Get the client reference

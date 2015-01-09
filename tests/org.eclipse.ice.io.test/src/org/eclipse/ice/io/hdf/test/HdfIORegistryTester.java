@@ -44,7 +44,7 @@ public class HdfIORegistryTester {
 	/**
 	 * Stub classes to act as supported classes for the FakeHdfIOFactory
 	 * 
-	 * @author aqw
+	 * @author Alex McCaskey
 	 * 
 	 */
 	private class SupportedOne {
@@ -57,7 +57,7 @@ public class HdfIORegistryTester {
 	 * Fake HdfIOFactory to be used in the testing the registration
 	 * functionality of the IHdfIORegistry
 	 * 
-	 * @author aqw
+	 * @author Alex McCaskey
 	 * 
 	 */
 	private class FakeHdfIOFactory extends HdfIOFactory {

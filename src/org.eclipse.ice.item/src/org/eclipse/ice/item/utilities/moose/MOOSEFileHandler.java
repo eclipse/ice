@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,11 +28,21 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
+import org.eclipse.ice.item.nuclear.MOOSEModel;
+
 import java.util.Map;
+
+import javax.naming.OperationNotSupportedException;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -61,11 +72,13 @@ import org.yaml.snakeyaml.Yaml;
  * is, so they must be setup as child exemplars on a TreeComposite.
  * </p>
  * <!-- end-UML-doc -->
- *  * @author Jay Jay Billings
+ * 
+ * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
+ * 
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
-public class MOOSEFileHandler {
+public class MOOSEFileHandler implements IReader, IWriter {
 
 	/**
 	 * A flag to denote whether or not debugging is enabled
@@ -229,10 +242,10 @@ public class MOOSEFileHandler {
 			// Remove (non-parameter) commented lines and white space
 			String trimmedPotLine = "";
 			for (int i = 0; i < potLines.size(); i++) {
-				
+
 				trimmedPotLine = potLines.get(i).trim();
-				
-				if (trimmedPotLine.startsWith("#") 
+
+				if (trimmedPotLine.startsWith("#")
 						&& !trimmedPotLine.contains("=")
 						&& !trimmedPotLine.contains("[")
 						&& !trimmedPotLine.contains("]")) {
@@ -241,32 +254,30 @@ public class MOOSEFileHandler {
 					potLines.remove(i);
 					// Update "i" so that we read correctly
 					--i;
-				} else 
-					if (potLines.get(i).isEmpty()) {
+				} else if (potLines.get(i).isEmpty()) {
 					// Remove empty lines
 					potLines.remove(i);
 					// Update "i" so that we read correctly
 					--i;
-				}
-				else {
+				} else {
 					// All other lines should be trimmed
 					potLines.set(i, potLines.get(i).trim());
 				}
 			}
-			
+
 			// Read all of the lines again, create blocks and load them.
 			int counter = 0, endCounter = 1;
 			while (counter < potLines.size()) {
 				// Get the line and shift the counters
 				potLine = potLines.get(counter);
 				++counter;
-				
+
 				// The start of a full block is a line with the name in brackets
 				// and without the "./" sequence.
 				if (potLine.contains("[") && potLine.contains("]")) {
 					// Go to the next line
-					potLine = potLines.get(endCounter);			
-					
+					potLine = potLines.get(endCounter);
+
 					// Loop over the block and find the end
 					while (!potLine.contains("[]")) {
 						// Update the line and the counter
@@ -304,7 +315,7 @@ public class MOOSEFileHandler {
 
 		return trees;
 	}
-	
+
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -326,11 +337,12 @@ public class MOOSEFileHandler {
 	 *         TreeComposite are contained in a DataComponent. The id of the
 	 *         data component is 1.
 	 *         </p>
-	 * @throws IOException 
+	 * @throws IOException
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	public ArrayList<TreeComposite> loadYAML(String filePath) throws IOException {
+	public ArrayList<TreeComposite> loadYAML(String filePath)
+			throws IOException {
 		// begin-user-code
 
 		// Local Declarations
@@ -345,11 +357,11 @@ public class MOOSEFileHandler {
 		if (filePath == null || filePath.isEmpty()) {
 			return null;
 		}
-		
+
 		// Get a handle on the YAML file
 		File yamlFile = new File(filePath);
 		input = new FileInputStream(yamlFile);
-				
+
 		// Load the YAML tree
 		if (debugFlag) {
 			System.out.println("MOOSEFileHandler Message: Loading YAML file "
@@ -403,12 +415,11 @@ public class MOOSEFileHandler {
 		while (tree != null) {
 
 			// Append to the tree name
-			treeName += "/" + tree.getName();			
-			
+			treeName += "/" + tree.getName();
+
 			// Put the tree in the Map, keyed on path name
-			treeMap.put(
-					(treeName.startsWith("/") ? 
-							treeName.substring(1) : treeName), tree);
+			treeMap.put((treeName.startsWith("/") ? treeName.substring(1)
+					: treeName), tree);
 
 			// Push child exemplars to the top of the tree stack
 			childExemplars = tree.getChildExemplars();
@@ -426,20 +437,22 @@ public class MOOSEFileHandler {
 			// push onto the stack, remove the last "part" of the path name, as
 			// we'll be going back up one level
 			else if (childExemplars.isEmpty()) {
-				
+
 				// Get the name of the tree one level up
 				prevNameIndex = treeName.lastIndexOf("/" + tree.getName());
-				treeName = treeName.substring(0, prevNameIndex);				
-				
+				treeName = treeName.substring(0, prevNameIndex);
+
 				// Go up another level if the next tree in the stack isn't
 				// a child exemplar of the current tree referenced by treeName
 				oneUpTree = treeMap.get(treeName.substring(1));
-				if (oneUpTree != null && !oneUpTree.getChildExemplars().contains(treeStack.peek())) {
+				if (oneUpTree != null
+						&& !oneUpTree.getChildExemplars().contains(
+								treeStack.peek())) {
 					prevNameIndex = treeName.lastIndexOf("/");
-					treeName = ((prevNameIndex == 0 || prevNameIndex == -1) ? 
-							treeName : treeName.substring(0, prevNameIndex));
+					treeName = ((prevNameIndex == 0 || prevNameIndex == -1) ? treeName
+							: treeName.substring(0, prevNameIndex));
 				}
-				
+
 			}
 
 			// Pop the next tree off the stack
@@ -621,9 +634,9 @@ public class MOOSEFileHandler {
 			System.out.println("MOOSEFileHandler Message: Loading action "
 					+ "syntax file: " + filePath);
 		}
-		
-		actionSyntax = (ArrayList<String>) 
-				Files.readAllLines(Paths.get(filePath), Charset.defaultCharset());
+
+		actionSyntax = (ArrayList<String>) Files.readAllLines(
+				Paths.get(filePath), Charset.defaultCharset());
 
 		// Iterate through the list and eliminate non-hard-paths and
 		// duplicate entries
@@ -637,12 +650,12 @@ public class MOOSEFileHandler {
 			if (currLine.endsWith("*\r") || currLine.endsWith("*")) {
 				actionSyntax.remove(currLine);
 			}
-			
+
 			// Remove from the ArrayList if it's the same as the last line
 			else if (previousLine.equals(currLine)) {
 				actionSyntax.remove(currLine);
 			}
-			
+
 			// Otherwise it's a unique hard-path, and move to the next line
 			else {
 				previousLine = currLine;
@@ -652,5 +665,282 @@ public class MOOSEFileHandler {
 
 		return actionSyntax;
 	}
-	
+
+	/**
+	 * This realization of IWriter.write() gets a valid TreeComposite from the
+	 * provided Form and writes it to the given file reference as a valid MOOSE 
+	 * *.i input file. It throws an uncaught IllegalArgumentException if the 
+	 * Form is not valid.
+	 * 
+	 * @param formToWrite
+	 *            The Form containing a valid TreeComposite to be written to the
+	 *            MOOSE input format.
+	 * @param file
+	 *            Reference to the file we are writing to.
+	 */
+	@Override
+	public void write(Form formToWrite, IFile file) {
+
+		// Make sure we have a good Form.
+		if (formToWrite == null) {
+			throw new IllegalArgumentException(
+					"Error: MOOSEFileHandler.write() - the provided Form was null.");
+		}
+
+		TreeComposite mooseTree = (TreeComposite) formToWrite
+				.getComponent(MOOSEModel.mooseTreeCompositeId);
+		ArrayList<TreeComposite> children = new ArrayList<TreeComposite>();
+
+		// We may very well not have a valid TreeComposite in this Form
+		// Make sure we do
+		if (mooseTree != null) {
+			for (int i = 0; i < mooseTree.getNumberOfChildren(); i++) {
+				children.add(mooseTree.getChildAtIndex(i));
+			}
+			URI uri = file.getLocationURI();
+			dumpInputFile(uri.getPath(), children);
+		} else {
+			throw new IllegalArgumentException(
+					"Error: MOOSEFileHandler.write() expects a Form "
+							+ "with a MOOSE TreeComposite with Id = MOOSEModel.mooseTreeCompositeId. "
+							+ "Write failed.");
+		}
+
+		return;
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.resources
+	 * .IFile, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void replace(IFile file, String regex, String value) {
+		try {
+			throw new OperationNotSupportedException("MOOSEFileHandler Error: "
+					+ "IWriter.replace() is not supported.");
+		} catch (OperationNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Return the Writer type String that the IOService can use as a key in its
+	 * IWriter mapping.
+	 * 
+	 * @param type
+	 *            String type indicating the unique name of this IWriter.
+	 */
+	@Override
+	public String getWriterType() {
+		return "moose";
+	}
+
+	/**
+	 * This realization of IReader.read() takes the given file reference, gets
+	 * its file extension, and calls the appropriate routines to either load a
+	 * MOOSE input file or a MOOSE YAML specification.
+	 * 
+	 * @param file
+	 *            Reference to the file to be read.
+	 */
+	@Override
+	public Form read(IFile file) {
+
+		// Local declarations
+		String fileExt = "";
+		Form returnForm = new Form();
+
+		// Make sure we have a valid file reference
+		if (file != null && file.exists()) {
+			// Local Declarations
+			File mooseFile = new File(file.getLocationURI());
+			ArrayList<TreeComposite> blocks = null;
+			TreeComposite rootNode = new TreeComposite();
+
+			String[] splitPath = mooseFile.getAbsolutePath().split("\\.(?=[^\\.]+$)");
+			if (splitPath.length > 1) {
+				fileExt = splitPath[1];
+			} else {
+				System.out
+						.println("MOOSEFileHandler Message:"
+								+ "File did not have file extension: "
+								+ mooseFile.getAbsolutePath());
+				return null;
+			}
+
+			try {
+				// Parse the extension to see if we are loading
+				// YAML or input files.
+				if (fileExt.toLowerCase().equals("yaml")) {
+					blocks = loadYAML(mooseFile.getAbsolutePath());
+				} else if (fileExt.toLowerCase().equals("i")) {
+					blocks = loadFromGetPot(mooseFile.getAbsolutePath());
+				}
+
+				// If we got a valid file, then construct
+				// a Root TreeComposite to return
+				if (blocks != null) {
+					for (TreeComposite block : blocks) {
+						// Clone the block
+						TreeComposite blockClone = (TreeComposite) block
+								.clone();
+
+						// Don't want to do this if the file is a YAML file.
+						if (!fileExt.toLowerCase().equals("yaml")) {
+							// Set the parent and sibling references correctly
+							blockClone.setActive(true);
+							blockClone.setParent(rootNode);
+						}
+						rootNode.setNextChild(blockClone);
+					}
+
+					// Don't want to do this if the file is a YAML file.
+					if (!fileExt.toLowerCase().equals("yaml")) {
+						// Set the active data nodes
+						setActiveDataNodes(rootNode);
+					}
+
+					// Set the Identifiable data on the TreeComposite
+					rootNode.setId(MOOSEModel.mooseTreeCompositeId);
+					rootNode.setDescription("The tree of input data for this problem.");
+					rootNode.setName("Input Data");
+
+					// Add it to the return Form
+					returnForm.addComponent(rootNode);
+
+					// Return the tree
+					return returnForm;
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * This realization of IReader.findAll() reads a Form in from the given file
+	 * reference and walks the corresponding TreeComposite for occurences of the 
+	 * given regular expression.
+	 * 
+	 * @param file
+	 *            The reference to the file we are searching in.
+	 * @param regex
+	 *            The regular expression we should search for.
+	 * 
+	 */
+	@Override
+	public ArrayList<Entry> findAll(IFile file, String regex) {
+
+		// Local declarations
+		ArrayList<Entry> retEntries = new ArrayList<Entry>();
+		Form form = read(file);
+
+		TreeComposite tree = (TreeComposite) form
+				.getComponent(MOOSEModel.mooseTreeCompositeId);
+
+		// Make sure the tree is valid
+		if (tree == null || tree.getNumberOfChildren() < 1) {
+			return retEntries;
+		}
+
+		// Walk the tree and get all Entries that may represent a file
+		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+				tree);
+		while (iter.hasNext()) {
+			TreeComposite child = iter.next();
+			// Make sure we have a valid DataComponent
+			if (child.getActiveDataNode() != null) {
+				DataComponent data = (DataComponent) child.getActiveDataNode();
+				for (Entry e : data.retrieveAllEntries()) {
+					// If the Entry's tag is "false" it is a commented out
+					// parameter.
+					if (!"false".equals(e.getTag()) && e.getValue() != null
+							&& !e.getValue().isEmpty()
+							&& e.getName().toLowerCase().contains(regex) // FIXME
+																			// USE
+																			// REG
+																			// EXPS
+							&& !e.getName().toLowerCase().contains("profile")) {
+						// If this Entry does not have a very descriptive name
+						// we should reset its name to the block it belongs to
+						if ("file".equals(e.getName().toLowerCase())
+								|| "data_file"
+										.equals(e.getName().toLowerCase())) {
+							e.setName(child.getName());
+						}
+						retEntries.add((Entry) e.clone());
+					}
+				}
+			}
+
+		}
+
+		return retEntries;
+
+	}
+
+	/**
+	 * Return the Reader type String that the IOService can use as a key in its
+	 * IReader mapping.
+	 * 
+	 * @param type
+	 *            String type indicating the unique name of this IReader.
+	 */
+	@Override
+	public String getReaderType() {
+		return "moose";
+	}
+
+	/**
+	 * This method will take in a TreeComposite, traverse through all levels of
+	 * child, subchild, etc. TreeComposites, and set the active data nodes on
+	 * all that have activeDataNode=null. This method requires that all parent,
+	 * sibling and child references be set correctly on all TreeComposites to be
+	 * successful.
+	 * 
+	 * Used exclusively by {@link #reviewEntries(Form)
+	 * MOOSEModel.reviewEntries(...)}
+	 * 
+	 * @param tree
+	 *            The tree that will have all active data nodes set.
+	 */
+	private void setActiveDataNodes(TreeComposite tree) {
+
+		// Perform a pre-order traversal of the tree. For each TreeComposite, we
+		// should set an active data node if none is already set.
+
+		// Create an empty stack. Put in a null value so we do not hit an
+		// EmptyStackException and so we can use a null check in the while loop.
+		Stack<TreeComposite> treeStack = new Stack<TreeComposite>();
+		treeStack.push(null);
+		while (tree != null) {
+
+			// Operate on the next TreeComposite. This sets its active data node
+			// if a data node exists and is not already set.
+			ArrayList<Component> dataNodes = tree.getDataNodes();
+			if (tree.getActiveDataNode() == null && !dataNodes.isEmpty()) {
+				tree.setActiveDataNode(dataNodes.get(0));
+			}
+
+			// Add all of the current tree's children to the stack in reverse.
+			for (int i = tree.getNumberOfChildren() - 1; i >= 0; i--) {
+				treeStack.push(tree.getChildAtIndex(i));
+			}
+
+			// Get the next TreeComposite in the Stack.
+			tree = treeStack.pop();
+		}
+
+		return;
+	}
+
 }

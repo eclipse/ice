@@ -12,45 +12,36 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
- * </p>
- * <!-- end-UML-doc -->
+ * This classes calculates the reflectivity profile of a set of materials
+ * layered on top of each other. It... <add more after you figure out the
+ * calculations>
  * 
- * @author Jay Jay Billings, aqw
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Alex McCaskey
  */
 @XmlRootElement(name = "ReflectivityModel")
 public class ReflectivityModel extends Item {
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>`
 	 * The constructor.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ReflectivityModel() {
 		// begin-user-code
@@ -59,78 +50,49 @@ public class ReflectivityModel extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The constructor with a project space in which files should be
-	 * manipulated.
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * The constructor with a project space in which files should be handled.
 	 * 
 	 * @param projectSpace
-	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ReflectivityModel(IProject projectSpace) {
-		// begin-user-code
-
 		// Call super
 		super(projectSpace);
-
-		// end-user-code
 	}
 
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param actionName
-	 *            <p>
-	 *            The name of action that should be performed using the
-	 *            processed Form data.
-	 *            </p>
-	 * @return <p>
-	 *         The status of the Item after processing the Form and executing
-	 *         the action. It returns FormStatus.InfoError if it is unable to
-	 *         run for any reason, including being asked to run actions that are
-	 *         not in the list of available actions.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @see org.eclipse.ice.item.Item#process(java.lang.String)
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 		// begin-user-code
 		return super.process(actionName);
 		// end-user-code
 	}
 
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @see org.eclipse.ice.item.Item#setupForm()
 	 */
+	@Override
 	protected void setupForm() {
 		// begin-user-code
 
-		ArrayList<Entry> template = new ArrayList<Entry>();
-		Entry id = new Entry();
-		Entry mat = new Entry();
-		Entry thickness = new Entry();
-		Entry roughness = new Entry();
-		Entry sld = new Entry();
-		Entry mu_abs = new Entry();
-		Entry mu_inc = new Entry();
+		// Create an empty stream for the output files
+		
+		// FIXME! Simple data entered now for testing
+		String line1 = "#features,t, p_x, p_y\n";
+		String line2 = "#units,t,p_x,p_y\n";
+		String line3 = "1.0,1.0,1.0\n";
+		String line4 = "2.0,4.0,8.0\n";
+		String line5 = "3.0,9.0,27.0\n";
+		String allLines = line1+line2+line3+line4+line5;
+		
+		ByteArrayInputStream stream = new ByteArrayInputStream(allLines.getBytes());
 
 		// Create the Form
 		form = new Form();
@@ -139,66 +101,73 @@ public class ReflectivityModel extends Item {
 		table.setName("Reflectivity Input Data");
 		table.setDescription("");
 
-		int idNum = 1;
+		// Create the list that will contain all of the material information
+		ListComponent<Material> matList = new ListComponent<Material>();
+		matList.setId(1);
+		matList.setName("Reflectivity Input Data");
+		matList.setDescription("Reflectivity Input Data");
+		matList.add(new Material());
+		form.addComponent(matList);
 
-		// Configure the entry information
-		id.setName("ID");
-		id.setDescription("Unique ID for this layer.");
-		id.setId(idNum);
-		mat.setName("Material");
-		// Need stoichometry and mass density to define a compound.
-		mat.setDescription("Chemical compound for this layer.");
-		mat.setId(++idNum);
-		thickness.setName("Thickness");
-		thickness.setDescription("The thickness of this material as an "
-				+ "initial guess or the actual calculated value if the "
-				+ "fit has been run. (Angstroms)");
-		thickness.setId(++idNum);
-		roughness.setName("Roughness");
-		roughness.setDescription("The width of the region of intermixing "
-				+ "between layer n-1 and layer n. It goes up and not "
-				+ "down. (Angstroms)");
-		roughness.setId(++idNum);
-		sld.setName("Scattering Length Density");
-		sld.setDescription("The product of the mass density and its "
-				+ "stoichiometry. It is a proxy for the refractive index. "
-				+ "(Angstroms^-2)");
-		sld.setId(++idNum);
-		mu_abs.setName("Mu_abs");
-		mu_abs.setDescription("The absorption coefficient divided by the wavelength. "
-				+ "(Angstroms^-2)");
-		mu_abs.setId(++idNum);
-		mu_inc.setName("Mu_inc");
-		mu_inc.setDescription("The effective incoherent absorption "
-				+ "coefficient. (Angstroms^-1)");
-		mu_inc.setId(++idNum);
+		if (project != null) {
+			// FIXME! ID is always 1 at this point!
+			String basename = "reflectivityModel_" + getId() + "_";
+			// Create the output file for the reflectivity data
+			IFile reflectivityFile = project.getFile(basename + "rfd.csv");
+			// Create the output file for the scattering density data
+			IFile scatteringFile = project.getFile(basename + "scdens.csv");
+			try {
+				// Reflectivity first
+				if (reflectivityFile.exists()) {
+					reflectivityFile.delete(true, null);
+				}
+				reflectivityFile.create(stream, true, null);
+				// Then the scattering file
+				if (scatteringFile.exists()) {
+					scatteringFile.delete(true, null);
+				}
+				stream.reset();
+				scatteringFile.create(stream, true, null);
+				
+				// Create the VizResource to hold the reflectivity data
+				VizResource reflectivitySource = new VizResource(
+						reflectivityFile.getLocation().toFile());
+				reflectivitySource.setName("Reflectivity Data File");
+				reflectivitySource.setId(1);
+				reflectivitySource
+						.setDescription("Data from reflectivity calculation");
+				
+				// Create the VizResource to hold the scatDensity data
+				VizResource scatDensitySource = new VizResource(scatteringFile
+						.getLocation().toFile());
+				scatDensitySource.setName("Scattering Density Data File");
+				scatDensitySource.setId(2);
+				scatDensitySource.setDescription("Data from Stattering "
+						+ "Density calculation");
 
-		// Add everything to the row template.
-		template.add(id);
-		template.add(mat);
-		template.add(sld);
-		template.add(mu_abs);
-		template.add(mu_inc);
-		template.add(thickness);
-		template.add(roughness);
-		// Set the template
-		table.setRowTemplate(template);
+				// Create a component to hold the output
+				ResourceComponent resources = new ResourceComponent();
+				resources.setName("Results");
+				resources.setDescription("Results and Output");
+				resources.setId(2);
+				resources.addResource(reflectivitySource);
+				resources.addResource(scatDensitySource);
+				form.addComponent(resources);
+			} catch (CoreException | IOException e) {
+				// Complain
+				System.err.println("ReflectivityModel Error: "
+						+ "Problem creating reflectivity files!");
+				e.printStackTrace();
+			}
+		}
 
-		// Add this to the form
-		form.addComponent(table);
-
+		return;
 		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation is used to setup the name and description of the model.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * This operation is used to setup the name and description of the model as
+	 * well as register its builder.
 	 */
 	protected void setupItemInfo() {
 		// begin-user-code
@@ -207,32 +176,13 @@ public class ReflectivityModel extends Item {
 		String desc = "This item builds models for " + "Reflectivity.";
 
 		// Describe the Item
-		setName("Reflectivity Model Builder");
+		setName(ReflectivityModelBuilder.name);
+		setItemBuilderName(ReflectivityModelBuilder.name);
 		setDescription(desc);
-		itemType = ItemType.Model;
-
-		// Setup the action list. Remove key-value pair support.
-		// allowedActions.remove(taggedExportActionString);
+		itemType = ReflectivityModelBuilder.type;
 
 		return;
 		// end-user-code
 	}
 
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param preparedForm
-	 *            The form prepared for review.
-	 * @return The Form's status if the review was successful or not.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	protected FormStatus reviewEntries(Form preparedForm) {
-		// begin-user-code
-		return super.reviewEntries(preparedForm);
-		// end-user-code
-	}
 }

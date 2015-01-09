@@ -303,7 +303,7 @@ public class MasterApplication extends SimpleApplication {
 		// add it to the collection of unused views for re-use later.
 		if (usedViews.remove(embeddedView)) {
 			// Clean up the EmbeddedView before letting it be re-used elsewhere.
-			embeddedView.cleanup();
+			embeddedView.cleanupView();
 			unusedViews.add(embeddedView);
 		}
 

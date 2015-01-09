@@ -20,25 +20,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import javax.xml.bind.JAXBException;
+
 import org.junit.Test;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.utilities.trilinos.Parameter;
 import org.eclipse.ice.item.utilities.trilinos.ParameterList;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class checks the Parameter and ParameterList classes to make sure that
  * their toEntry() and toTreeComposite() operations work as described.
- * </p>
- * <!-- end-UML-doc -->
- * 
- * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ParameterListTester {
 	/**
@@ -265,18 +261,14 @@ public class ParameterListTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks that a parameter lists can be loaded to and from
 	 * XML properly.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkXMLPersistence() {
+	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
 
 		// Local Declarations
@@ -285,6 +277,9 @@ public class ParameterListTester {
 		Parameter param = new Parameter(), loadedParam = null, secondParam = new Parameter();
 		ParameterList pList = new ParameterList(), secondPList = new ParameterList();
 		ParameterList loadedList = null, secondLoadedList = null;
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(ParameterList.class);
 
 		System.out.println("----- Testing Parameter XML Persistence -----");
 
@@ -294,13 +289,12 @@ public class ParameterListTester {
 		param.type = "string";
 
 		// Write it to XML
-		param.persistToXML(outputStream);
-		param.persistToXML(System.out);
+		xmlHandler.write(param, classList, outputStream);
 
 		// Read it from XML
 		inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 		loadedParam = new Parameter();
-		loadedParam.loadFromXML(inputStream);
+		loadedParam = (Parameter) xmlHandler.read(classList, inputStream);
 
 		// Check the name
 		assertEquals(param.name, loadedParam.name);
@@ -338,13 +332,12 @@ public class ParameterListTester {
 
 		// Write the tree
 		outputStream = new ByteArrayOutputStream();
-		pList.persistToXML(outputStream);
-		pList.persistToXML(System.out);
+		xmlHandler.write(pList, classList, outputStream);
 
 		// Load the tree
 		inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 		loadedList = new ParameterList();
-		loadedList.loadFromXML(inputStream);
+		loadedList = (ParameterList) xmlHandler.read(classList, inputStream);
 
 		// Check the name
 		assertEquals(pList.name, loadedList.name);

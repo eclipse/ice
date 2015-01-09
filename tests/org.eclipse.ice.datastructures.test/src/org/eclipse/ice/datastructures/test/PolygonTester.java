@@ -17,6 +17,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
 import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
@@ -27,7 +30,10 @@ import org.eclipse.ice.datastructures.form.mesh.Vertex;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
@@ -566,23 +572,23 @@ public class PolygonTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the Polygon to persist itself to XML
 	 * and to load itself from an XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkLoadingFromXML() {
+	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
 		// begin-user-code
 
 		// We need edges and vertices to supply to created Polygons.
 		ArrayList<Edge> edges = new ArrayList<Edge>();
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		// Local Declarations
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Polygon.class);
 
 		// For our test, we'll just make a triangle with one point at the origin
 		// and the other two on the x and z axes at a distance of 5.
@@ -620,8 +626,7 @@ public class PolygonTester {
 
 		// Load it into XML.
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		polygon.persistToXML(outputStream);
-		assertNotNull(outputStream);
+		xmlHandler.write(polygon, classList, outputStream);
 
 		// Convert the output stream data to an input stream.
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -629,21 +634,9 @@ public class PolygonTester {
 
 		// Load the input stream's contents into a new component.
 		Polygon loadedPolygon = new Polygon();
-		loadedPolygon.loadFromXML(inputStream);
+		loadedPolygon = (Polygon) xmlHandler.read(classList, inputStream);
 
 		// Make sure the two components match.
-		assertTrue(polygon.equals(loadedPolygon));
-
-		// Check invalid parameters.
-
-		// Try passing null and make sure the components match.
-		inputStream = null;
-		loadedPolygon.loadFromXML(inputStream);
-		assertTrue(polygon.equals(loadedPolygon));
-
-		// Try passing a bad input stream and make sure the components match.
-		inputStream = new ByteArrayInputStream("jkl;2invalidstream".getBytes());
-		loadedPolygon.loadFromXML(inputStream);
 		assertTrue(polygon.equals(loadedPolygon));
 
 		return;

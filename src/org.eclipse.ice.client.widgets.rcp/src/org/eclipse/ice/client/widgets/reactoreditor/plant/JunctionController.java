@@ -21,7 +21,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.client.widgets.jme.IRenderQueue;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.IJunction;
 import org.eclipse.ice.reactor.plant.IJunctionListener;

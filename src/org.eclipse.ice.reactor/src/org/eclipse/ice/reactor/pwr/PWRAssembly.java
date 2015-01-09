@@ -23,7 +23,7 @@ import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWRRod;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;

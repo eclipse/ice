@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose.components;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 
 /**
  * This class can be used to listen to an {@link Entry}. This is just for

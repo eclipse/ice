@@ -35,9 +35,9 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRAssembly;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
 import org.eclipse.ice.reactorAnalyzer.ReactorReaderFactory;
+import org.eclipse.ice.datastructures.ICEObject.Composite;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.updateableComposite.Composite;
 
 import java.util.ArrayList;
 import java.util.List;

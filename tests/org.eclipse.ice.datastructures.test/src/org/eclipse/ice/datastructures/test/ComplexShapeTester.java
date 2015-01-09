@@ -14,8 +14,13 @@ package org.eclipse.ice.datastructures.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.xml.bind.JAXBException;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
@@ -23,8 +28,8 @@ import org.eclipse.ice.datastructures.form.geometry.Transformation;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
-
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -292,19 +297,19 @@ public class ComplexShapeTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the ComplexShape to persist itself
 	 * to XML and to load itself from an XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkLoadingFromXML() {
-		// begin-user-code
+	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
+
+		// Local Declarations
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(ComplexShape.class);
 		ComplexShape loadComplexShape;
 
 		// Instantiate PrimitiveShape
@@ -322,9 +327,7 @@ public class ComplexShapeTester {
 
 		// Load it into XML
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		primitiveShape.persistToXML(outputStream);
-
-		assertNotNull(outputStream);
+		xmlHandler.write(primitiveShape, classList, outputStream);
 
 		// convert information inside of outputStream to inputStream
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -335,31 +338,11 @@ public class ComplexShapeTester {
 
 		// load contents into xml
 		loadComplexShape = new ComplexShape();
-		loadComplexShape.loadFromXML(inputStream);
+		loadComplexShape = (ComplexShape) xmlHandler.read(classList, inputStream);
 
 		// Check contents
 		assertTrue(loadComplexShape.equals(primitiveShape));
 
-		// Try to pass null into the operations
-
-		loadComplexShape.loadFromXML(null);
-		// Nothing happens - check comparison
-
-		// Check contents
-		assertTrue(loadComplexShape.equals(primitiveShape));
-
-		// Pass a bad file
-		String xmlFile = "pq3n48 tyq9y82 34p5y89 4qv3u4tliylr alfh";
-
-		inputStream = new ByteArrayInputStream(xmlFile.getBytes());
-
-		// Run operation
-		loadComplexShape.loadFromXML(inputStream);
-
-		// Check contents
-		assertTrue(loadComplexShape.equals(primitiveShape));
-
-		// end-user-code
 	}
 
 	/**

@@ -16,15 +16,13 @@ import java.awt.Canvas;
 import java.awt.EventQueue;
 import java.awt.Frame;
 
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
 import static org.eclipse.ice.client.widgets.geometry.ShapeTreeView.*;
 import static org.eclipse.ice.client.widgets.geometry.TransformationView.*;
+
 import org.eclipse.ice.client.widgets.geometry.GeometryApplication;
 import org.eclipse.ice.client.widgets.geometry.GeometryCompositeFactory;
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeView;
 import org.eclipse.ice.client.widgets.geometry.TransformationView;
-
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.swt.SWT;
@@ -33,12 +31,12 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.PartInitException;
-
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 
 /**
  * <!-- begin-UML-doc -->

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.test;
 
-import org.eclipse.ice.materials.Material;
+import org.eclipse.ice.datastructures.form.Material;
 
 /**
  * This is a utility class used by the Material tests to create materials with a

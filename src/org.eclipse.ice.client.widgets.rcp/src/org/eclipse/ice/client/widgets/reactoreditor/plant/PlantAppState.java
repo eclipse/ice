@@ -7,8 +7,8 @@ import java.util.concurrent.Callable;
 import org.eclipse.ice.client.widgets.jme.EmbeddedView;
 import org.eclipse.ice.client.widgets.jme.FlightCamera;
 import org.eclipse.ice.client.widgets.jme.ViewAppState;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateable;
-import org.eclipse.ice.datastructures.updateableComposite.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.reactor.plant.IPlantCompositeListener;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
@@ -463,6 +463,20 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 		}
 
 		return;
+	}
+
+	/**
+	 * Gets the flying camera associated with the plant view.
+	 * 
+	 * @return The plant view's fly cam.
+	 */
+	public FlightCamera getFlightCamera() {
+		FlightCamera cam = null;
+		EmbeddedView view = getEmbeddedView();
+		if (view != null) {
+			cam = (FlightCamera) view.getViewCamera();
+		}
+		return cam;
 	}
 
 	// ---- Getters and Setters ---- //

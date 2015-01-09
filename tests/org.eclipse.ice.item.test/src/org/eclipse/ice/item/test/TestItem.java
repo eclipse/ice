@@ -21,6 +21,9 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
+import org.eclipse.ice.item.IActionFactory;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.messaging.Message;
 
@@ -302,5 +305,104 @@ public class TestItem extends Item {
 		super.update(msg);
 		updated = true;
 		return true;
+	}
+
+	/**
+	 * This method is used by ItemTester to test that Item.getFiles functions
+	 * appropriately.
+	 * 
+	 * @param directory
+	 * @return
+	 */
+	public ArrayList<String> getYAMLFiles(String directory) {
+		return getFiles(directory, ".yaml");
+	}
+
+	/**
+	 * This method is used by the ItemTester to test that the Item.moveFile
+	 * method functions correctly.
+	 * 
+	 * @param fromDir
+	 * @param toDir
+	 * @param fileName
+	 */
+	public void moveTestFile(String fromDir, String toDir, String fileName) {
+		moveFile(fromDir, toDir, fileName);
+	}
+
+	/**
+	 * This method is used by the ItemTester to test that the
+	 * Item.deleteDirectory method functions correctly.
+	 * 
+	 * @param dir
+	 */
+	public void deleteTestDirectory(String dir) {
+		deleteDirectory(dir);
+	}
+
+	/**
+	 * This method is used by the ItemTester to test that the Item.copyFile
+	 * method functions correctly.
+	 * 
+	 * @param fromDir
+	 * @param toDir
+	 * @param newName
+	 */
+	public void copyTestFile(String fromDir, String toDir, String newName) {
+		copyFile(fromDir, toDir, newName);
+	}
+
+	/**
+	 * This method is used by the ItemTester to test that the Item.copyFiles
+	 * method functions correctly.
+	 * 
+	 * @param fromDir
+	 * @param toDir
+	 * @param newName
+	 */
+	public void copyMultipleFiles(String src, String dest, String ext) {
+
+		copyFiles(src, dest, ext);
+
+	}
+
+	/**
+	 * This method is used by the ItemTester to test that the Item.moveiles
+	 * method functions correctly.
+	 * 
+	 * @param fromDir
+	 * @param toDir
+	 * @param newName
+	 */
+	public void moveMultipleFiles(String src, String dest, String ext) {
+		moveFiles(src, dest, ext);
+	}
+
+	/**
+	 * Return the IO type, this is used for the ItemTester.checkIOService.
+	 */
+	@Override
+	protected String getIOType() {
+		return "fake";
+	}
+
+	/**
+	 * This method is just a utility for ItemTester to check that the IReader
+	 * reference is valid.
+	 * 
+	 * @return
+	 */
+	public IReader getTestReader() {
+		return getReader();
+	}
+
+	/**
+	 * This method is just a utility for ItemTester to check that the IWriter
+	 * reference is valid.
+	 * 
+	 * @return
+	 */
+	public IWriter getTestWriter() {
+		return getWriter();
 	}
 }

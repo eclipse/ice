@@ -17,12 +17,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
@@ -264,19 +271,18 @@ public class VertexTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the Vertex to persist itself to XML
 	 * and to load itself from an XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
 	 */
 	@Test
-	public void checkLoadingFromXML() {
-		// begin-user-code
+	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
+		// Local Declarations
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(Vertex.class);
 
 		// Create a vertex at the origin
 		float[] location = { 0f, 0f, 0f };
@@ -286,8 +292,7 @@ public class VertexTester {
 
 		// Load it into XML.
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		vertex.persistToXML(outputStream);
-		assertNotNull(outputStream);
+		xmlHandler.write(vertex, classList, outputStream);
 
 		// Convert the output stream data to an input stream.
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
@@ -295,21 +300,9 @@ public class VertexTester {
 
 		// Load the input stream's contents into a new component.
 		Vertex loadedVertex = new Vertex();
-		loadedVertex.loadFromXML(inputStream);
+		loadedVertex = (Vertex) xmlHandler.read(classList, inputStream);
 
 		// Make sure the two components match.
-		assertTrue(vertex.equals(loadedVertex));
-
-		// Check invalid parameters.
-
-		// Try passing null and make sure the components match.
-		inputStream = null;
-		loadedVertex.loadFromXML(inputStream);
-		assertTrue(vertex.equals(loadedVertex));
-
-		// Try passing a bad input stream and make sure the components match.
-		inputStream = new ByteArrayInputStream("jkl;2invalidstream".getBytes());
-		loadedVertex.loadFromXML(inputStream);
 		assertTrue(vertex.equals(loadedVertex));
 
 		return;

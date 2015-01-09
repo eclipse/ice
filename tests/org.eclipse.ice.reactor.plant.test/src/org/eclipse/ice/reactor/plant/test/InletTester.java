@@ -18,9 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
-import org.eclipse.ice.datastructures.updateableComposite.Component;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.Inlet;
 import org.eclipse.ice.reactor.plant.Pipe;

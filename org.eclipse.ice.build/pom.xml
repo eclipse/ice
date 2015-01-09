@@ -60,6 +60,10 @@
 						<include>**/*Tester.class</include>
 					</includes>
 					<argLine>${ui.test.vmargs}</argLine>
+					<useUIHarness>true</useUIHarness>
+                    <useUIThread>false</useUIThread>
+                    <product>org.eclipse.sdk.ide</product>
+                    <application>org.eclipse.ui.ide.workbench</application>
 				</configuration>
 			</plugin>
 
@@ -343,6 +347,10 @@
 		<module>../../visit_java_client/gov.lbnl.visit.swt</module>
 		<module>../src/org.eclipse.ice.viz</module>
 		<module>../tests/org.eclipse.ice.viz.test</module>
+		<module>../src/org.eclipse.ice.viz.service</module>
+		<module>../tests/org.eclipse.ice.viz.service.test</module>
+		<module>../src/org.eclipse.ice.viz.service.visit</module>
+		<module>../tests/org.eclipse.ice.viz.service.visit.test</module>
 		<module>../src/org.eclipse.ice.xolotl</module>
 		<module>../src/org.eclipse.ice.materials</module>
 		<module>../tests/org.eclipse.ice.materials.test</module>

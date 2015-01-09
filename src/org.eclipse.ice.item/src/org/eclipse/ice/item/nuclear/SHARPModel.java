@@ -17,8 +17,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -242,33 +246,24 @@ public class SHARPModel extends Item {
 
 		// Get the neutronics spec file from the project
 		if (project != null && project.isAccessible()) {
-			// Get the SHARP folder
-			IFolder sharpFolder = project.getFolder("SHARP");
-			// Get the files from it if it exists
-			if (sharpFolder.exists()) {
-				try {
-					IResource[] resources = sharpFolder.members();
-					// Check the resources and retrieve the spec file.
-					for (IResource resource : resources) {
-						if (resource.getType() == IResource.FILE
-								&& resource.getProjectRelativePath()
-										.lastSegment()
-										.contains("ICEProteusInput")) {
-							// Get the File
-							InputStream stream = ((IFile) resource)
-									.getContents();
-							// Load the form
-							form.loadFromXML(stream);
-						}
-					}
-				} catch (CoreException e) {
-					// Complain
-					e.printStackTrace();
-				}
+			// Get the SHARP spec file
+			IFile specFile = getPreferencesDirectory().getFile("ICEProteusInput.xml");
+			// Try to get the Form from it
+			ArrayList<Class> classList = new ArrayList<Class>();
+			classList.add(Form.class);
+			ICEJAXBHandler handler = new ICEJAXBHandler();
+			try {
+				form = (Form) handler.read(classList, specFile.getContents());
+			} catch (NullPointerException | JAXBException | IOException
+					| CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			// This should only take one line!!! What do we need to do to fix this?
+			// form = getIOService().getReader("xml").read(specFile);
 		}
 
-		return;
+		return;	
 		// end-user-code
 	}
 

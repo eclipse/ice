@@ -13,5 +13,6 @@ Require-Bundle: org.eclipse.ice.item;bundle-version="2.0.0",
  org.eclipse.ice.datastructures;bundle-version="2.0.0",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.core.resources;bundle-version="3.7.101"
-Export-Package: org.eclipse.ice.caebat.launcher,
+Export-Package: org.eclipse.ice.caebat.kvPair,
+ org.eclipse.ice.caebat.launcher,
  org.eclipse.ice.caebat.model
