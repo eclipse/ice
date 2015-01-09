@@ -100,7 +100,8 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
 
    <features>
       <feature id="org.eclipse.ice" version="2.0.0"/>
-      <feature id="org.eclipse.rcp" version="4.3.2.v20140221-1700"/>
+      <feature id="org.eclipse.rcp" version="4.4.0.v20140925-0400"/>
+      <feature id="org.eclipse.equinox.executable" version="3.6.100.v20140819-1617"/>
    </features>
 
    <configurations>

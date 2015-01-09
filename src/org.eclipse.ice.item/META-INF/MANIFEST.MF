@@ -16,7 +16,6 @@ Import-Package: com.jcraft.jsch;version="0.1.41",
  org.eclipse.ice.datastructures.resource,
  org.eclipse.ice.io.serializable,
  org.eclipse.ice.materials,
- org.eclipse.ptp.remote.core,
  org.yaml.snakeyaml
 Export-Package: org.eclipse.ice.item,
  org.eclipse.ice.item.action,
@@ -26,9 +25,9 @@ Export-Package: org.eclipse.ice.item,
  org.eclipse.ice.item.nuclear
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",
  org.eclipse.core.runtime;bundle-version="3.7.0",
- org.eclipse.ptp.remote.core,
  org.eclipse.core.filesystem;bundle-version="1.3.200",
- org.eclipse.ice.datastructures;bundle-version="2.0.0"
+ org.eclipse.ice.datastructures;bundle-version="2.0.0",
+ org.eclipse.remote.core;bundle-version="1.0.0"
 Service-Component: OSGi-INF/*.xml
 Meta-Persistence: META-INF/persistence.xml
 JPA-PersistenceUnits: org.eclipse.ice.item
