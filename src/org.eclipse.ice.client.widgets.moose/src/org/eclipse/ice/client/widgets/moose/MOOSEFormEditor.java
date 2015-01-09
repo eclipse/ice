@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.ice.client.widgets.ICEDataComponentSectionPart;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
 import org.eclipse.ice.client.widgets.ICEFormPage;
@@ -50,15 +51,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.eclipse.ui.forms.events.ExpansionAdapter;
+import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -282,13 +284,20 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				addPage(new ICEFormPage(this, PLANT_PAGE_ID, "Plant View") {
 					@Override
 					protected void createFormContent(IManagedForm managedForm) {
-						// Create a default Section.
-						Section section = createDefaultSection(managedForm);
 
-						// Create the plant view as the Section's client.
-						Composite client = createPlantViewComposite(
-								managedForm.getToolkit(), section);
-						section.setClient(client);
+						// The plant view should consume the whole page.
+						Section section;
+						FormToolkit toolkit = managedForm.getToolkit();
+
+						// Set up the overall layout (FillLayout).
+						Composite body = managedForm.getForm().getBody();
+						body.setLayout(new FillLayout());
+
+						// Create a Section for the plant view.
+						section = toolkit.createSection(body, Section.NO_TITLE
+								| Section.EXPANDED);
+						populatePlantViewSection(section, toolkit);
+						// No layout data to set for FillLayouts.
 
 						return;
 					}
@@ -302,56 +311,24 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	}
 
 	/**
-	 * Creates the default {@code Section} used by both the plant and mesh view
-	 * pages.
-	 * 
-	 * @param managedForm
-	 *            The {@code IManagedForm} passed into the custom
-	 *            {@code ICEFormPage}'s {@code createFormContent()} method.
-	 * @return A default styled {@code Section}.
-	 */
-	private Section createDefaultSection(IManagedForm managedForm) {
-		final ScrolledForm form = managedForm.getForm();
-		form.getBody().setLayout(new FillLayout());
-		form.setMinWidth(10);
-
-		// Get the toolkit used to create Composites, Sections, etc.
-		FormToolkit formToolkit = managedForm.getToolkit();
-
-		// Create a single Section with a single SectionPart. When the form
-		// updates, it calls the SectionPart's refresh() method. This method
-		// should call this class' refreshContent() method.
-		int style = Section.NO_TITLE | Section.EXPANDED;
-		Section section = formToolkit.createSection(form.getBody(), style);
-		SectionPart sectionPart = new SectionPart(section);
-		// Add the section part to the form so that updates will be sent to the
-		// part (and thus will call refreshContent()).
-		managedForm.addPart(sectionPart);
-
-		return section;
-	}
-
-	/**
 	 * Creates the content used for the plant view.
 	 * 
-	 * @param formToolkit
-	 *            The toolkit used to make SWT components appear standardized,
-	 *            if desired.
-	 * @param parent
-	 *            The parent (intended to be the parent {@code Section} in the
-	 *            plant view page).
-	 * @return The top-level {@code Composite} required for the plant view.
+	 * @param section
+	 *            The {@code Section} that should contain the plant view.
+	 * @param toolkit
+	 *            The {@code FormToolkit} used to decorate widgets as necessary.
 	 */
-	private Composite createPlantViewComposite(FormToolkit formToolkit,
-			Composite parent) {
+	private void populatePlantViewSection(Section section, FormToolkit toolkit) {
 		// Get the background color to use later.
-		Color background = parent.getBackground();
+		Color background = section.getBackground();
 
 		// Create an analysis composite to contain a ToolBar and an
 		// analysis-based view.
-		Composite analysisComposite = new Composite(parent, SWT.NONE);
+		Composite analysisComposite = new Composite(section, SWT.NONE);
 		analysisComposite.setBackground(background);
 		analysisComposite.setLayout(new GridLayout(1, false));
+		// Set the overall client of the plant view's Section.
+		section.setClient(analysisComposite);
 
 		// Create a ToolBarManager so we can add JFace Actions to it.
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.RIGHT);
@@ -383,7 +360,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			}
 		});
 
-		return analysisComposite;
+		return;
 	}
 
 	/**
@@ -682,13 +659,33 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				addPage(new ICEFormPage(this, MESH_PAGE_ID, "Mesh View") {
 					@Override
 					protected void createFormContent(IManagedForm managedForm) {
-						// Create a default Section.
-						Section section = createDefaultSection(managedForm);
 
-						// Create the plant view as the Section's client.
-						Composite client = createMeshViewComposite(
-								managedForm.getToolkit(), section);
-						section.setClient(client);
+						// On the left should be a DataComponentComposite for
+						// the "Mesh" block's active data node. On the right
+						// should be a view of the mesh, if applicable.
+						Section section;
+						FormToolkit toolkit = managedForm.getToolkit();
+
+						// Set up the overall layout. Use a GridLayout to get
+						// the horizontal layout of the DataComponent and mesh.
+						Composite body = managedForm.getForm().getBody();
+						body.setLayout(new GridLayout(2, false));
+
+						// Create a Section for the "Mesh" block's active data
+						// node (DataComponent).
+						section = createDefaultSection(managedForm);
+						// The data node should not get excess horizontal space.
+						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+								false, true));
+						populateMeshDataComponentSection(section, toolkit,
+								managedForm);
+
+						// Create a Section for the mesh view.
+						section = createDefaultSection(managedForm);
+						populateMeshViewSection(section, toolkit);
+						// The mesh view should grab all excess space.
+						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+								true, true));
 
 						return;
 					}
@@ -702,36 +699,131 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	}
 
 	/**
-	 * Creates the content used for the mesh view.
+	 * Creates a default, titled, collapsible {@code Section} inside the managed
+	 * form.
 	 * 
-	 * @param formToolkit
-	 *            The toolkit used to make SWT components appear standardized,
-	 *            if desired.
-	 * @param parent
-	 *            The parent (intended to be the parent {@code Section} in the
-	 *            mesh view page).
-	 * @return The top-level {@code Composite} required for the plant view.
+	 * @param managedForm
+	 *            The container for the new {@code Section}.
+	 * @return The new {@code Section}.
 	 */
-	private Composite createMeshViewComposite(FormToolkit formToolkit,
-			Composite parent) {
+	private Section createDefaultSection(final IManagedForm managedForm) {
+		Composite parent = managedForm.getForm().getBody();
+		FormToolkit toolkit = managedForm.getToolkit();
+		Section section = toolkit.createSection(parent, Section.DESCRIPTION
+				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
+		section.addExpansionListener(new ExpansionAdapter() {
+			public void expansionStateChanged(ExpansionEvent e) {
+				managedForm.reflow(true);
+			}
+		});
+		return section;
+	}
 
-		// Create the mesh view.
-		MeshViewComposite composite = new MeshViewComposite(parent, SWT.NONE);
-		formToolkit.adapt(composite);
+	/**
+	 * Creates the content used for the "Mesh" block's active data node (a
+	 * {@code DataComponent}).
+	 * 
+	 * @param section
+	 *            The {@code Section} that should contain the active data node.
+	 * @param toolkit
+	 *            The {@code FormToolkit} used to decorate widgets as necessary.
+	 * @param managedForm
+	 *            The managed form. This is required to create a
+	 *            {@link ICEDataComponentSectionPart}.
+	 */
+	private void populateMeshDataComponentSection(Section section,
+			FormToolkit toolkit, IManagedForm managedForm) {
 
-		// ---- Find the mesh file's Entry in the MOOSE tree. ---- //
 		// Find the "file" Entry among the "Mesh" block's parameters.
 		TreeComposite meshBlock = findMeshBlock();
 		DataComponent activeNode = (DataComponent) meshBlock
 				.getActiveDataNode();
-		// Send the Entry (if possible) to the mesh view for processing.
-		if (activeNode != null) {
-			composite.setFileEntry(activeNode.retrieveEntry("file"));
-		}
-		// ------------------------------------------------------- //
 
-		return composite;
+		// Create the content for the DataComponent's Section.
+		ICEDataComponentSectionPart activeNodeSectionPart = new ICEDataComponentSectionPart(
+				section, this, managedForm);
+		// Send the active data node to the DataComponentSectionPart.
+		activeNodeSectionPart.setDataComponent(activeNode);
+		activeNodeSectionPart.renderSection();
+
+		return;
 	}
+
+	/**
+	 * Creates the content used for the mesh view.
+	 * 
+	 * @param section
+	 *            The {@code Section} that should contain the mesh view.
+	 * @param toolkit
+	 *            The {@code FormToolkit} used to decorate widgets as necessary.
+	 */
+	private void populateMeshViewSection(Section section, FormToolkit toolkit) {
+		section.setText("Mesh");
+		section.setDescription("The current mesh configured for MOOSE input.");
+
+		Composite sectionClient = toolkit.createComposite(section);
+		sectionClient.setLayout(new FillLayout());
+		section.setClient(sectionClient);
+		sectionClient.setBackground(Display.getCurrent().getSystemColor(
+				SWT.COLOR_BLACK));
+	}
+
+	// /**
+	// * Creates the content used for the mesh view.
+	// *
+	// * @param formToolkit
+	// * The toolkit used to make SWT components appear standardized,
+	// * if desired.
+	// * @param parent
+	// * The parent (intended to be the parent {@code Section} in the
+	// * mesh view page).
+	// * @param managedForm
+	// * The form hosted in this page.
+	// * @return The top-level {@code Composite} required for the plant view.
+	// */
+	// private Composite createMeshPage(FormToolkit formToolkit, Composite
+	// parent,
+	// final IManagedForm managedForm) {
+	//
+	// // We want to create two sections: one to hold the "Mesh" block's
+	// // DataComponent, and one to hold the rendered mesh.
+	// Composite sectionClient = formToolkit.createComposite(parent, SWT.NONE);
+	// sectionClient.setLayout(new GridLayout(2, false));
+	// int sectionStyle = Section.DESCRIPTION | Section.TITLE_BAR;
+	//
+	// // ---- DataComponent Section ---- //
+	// // Create a decorated Section to contain the "Mesh" block's active data
+	// // node (a DataComponent).
+	// Section activeNodeSection = formToolkit.createSection(sectionClient,
+	// sectionStyle);
+	// activeNodeSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+	// true));
+	// // Create the content for the DataComponent's Section.
+	// ICEDataComponentSectionPart activeNodeSectionPart = new
+	// ICEDataComponentSectionPart(
+	// (Section) parent, this, managedForm);
+	// // Send the active data node to the DataComponentSectionPart.
+	// activeNodeSectionPart.setDataComponent(activeNode);
+	// activeNodeSectionPart.renderSection();
+	// // ------------------------------- //
+	//
+	// // ---- Mesh Section ---- //
+	// // Create a decorated Section to contain the rendered mesh.
+	// Section meshSection = formToolkit.createSection(sectionClient,
+	// sectionStyle);
+	// meshSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+	// // Create the content for the mesh's Section.
+	// MeshViewComposite meshSectionClient = new MeshViewComposite(parent,
+	// SWT.NONE);
+	// formToolkit.adapt(meshSectionClient);
+	// // Send the Entry (if possible) to the mesh view for processing.
+	// if (activeNode != null) {
+	// meshSectionClient.setFileEntry(activeNode.retrieveEntry("file"));
+	// }
+	// // ---------------------- //
+	//
+	// return sectionClient;
+	// }
 
 	/**
 	 * Removes the Mesh View page if possible.
