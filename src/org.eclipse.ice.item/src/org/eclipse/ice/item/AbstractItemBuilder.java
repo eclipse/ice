@@ -49,7 +49,7 @@ public class AbstractItemBuilder implements ItemBuilder {
 	 * The IActionFactory that will provide Actions to the Items created by this
 	 * Builder.
 	 */
-	private static IActionFactory actionFactory;
+	private IActionFactory actionFactory;
 
 	/*
 	 * (non-Javadoc)
