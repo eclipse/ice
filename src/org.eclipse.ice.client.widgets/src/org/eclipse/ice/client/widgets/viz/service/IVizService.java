@@ -19,17 +19,19 @@ import java.util.Map;
  * publish their services to the platform. It is designed to be implemented as a
  * pluggable, declarative OSGi service that is provided dynamically to an
  * implementation of the IVizServiceFactory.
- * 
+ * <p>
  * IVizServices should be considered handles to the services that a particular
  * visualization engine provides. Its primary purpose a means to configure a
  * valid connection to the visualization service, if required, and to act as a
  * factory for creating IPlots.
- * 
+ * </p>
+ * <p>
  * IVizServices are responsible for managing their own preferences and providing
  * both an IPreferencesPage that can be registered with the Platform and a
  * simple map of preferences. (The simplest way to do this is to keep everything
  * in a bundle preferences store, register listeners on the page, and handle
  * merges from setConnectionProperties manually.)
+ * </p>
  * 
  * @author Jay Jay Billings
  */
@@ -66,8 +68,9 @@ public interface IVizService {
 	 * IVizService. The Connection Properties are any properties that are
 	 * required to connect to additional pieces of the IVizService, such as a
 	 * remote server or local socket.
-	 * 
+	 * <p>
 	 * The contents of the properties are up to the IVizService implementation
+	 * </p>
 	 * 
 	 * @return The properties or an empty (but not null) map if the IVizService
 	 *         does not require making a connection.
@@ -78,9 +81,10 @@ public interface IVizService {
 	 * This operation updates the connection properties based on updates from a
 	 * client. These properties should be persisted through service and platform
 	 * restarts.
-	 * 
+	 * <p>
 	 * If the IVizService does not require a connection to other components, it
 	 * may ignore this operation.
+	 * </p>
 	 * 
 	 * @param props
 	 *            The new property values
@@ -95,10 +99,11 @@ public interface IVizService {
 	 * remotely. Some services, such as those implemented completely in Java
 	 * and/or as OSGi services, may not need to perform a connection; developers
 	 * should read the documentation for each IVizService carefully.
-	 * 
+	 * <p>
 	 * Each IVizService that requires a connection should provide a "best guess"
 	 * at initial connection properties and if the properties are not updated a
 	 * call to connect() should attempt to connect using the default properties.
+	 * </p>
 	 * 
 	 * @return True if the connection was successfully made, false otherwise.
 	 *         Also true if the implementation did not need to make a connection
