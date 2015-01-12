@@ -205,13 +205,13 @@ public class MultiLauncherTester implements IComponentVisitor {
 		// MultiLauncherBuilder
 		for (int i = 0; i < numBuilders; i++) {
 			builder = new FakeItemBuilder();
-			builder.setName("Sally " + i);
+			builder.setNameForTest("Sally " + i);
 			builders.add(builder);
 		}
 		// Add one more that is not a JobLauncher
 		builder = new FakeItemBuilder();
-		builder.setName("Love Hitchiker");
-		builder.setType(ItemType.ModelOutputPackage);
+		builder.setNameForTest("Love Hitchiker");
+		builder.setTypeForTest(ItemType.ModelOutputPackage);
 		builders.add(builder);
 
 		// Set the list of builders
@@ -299,7 +299,7 @@ public class MultiLauncherTester implements IComponentVisitor {
 		// MultiLauncherBuilder
 		for (int i = 0; i < numBuilders; i++) {
 			builder = new FakeItemBuilder();
-			builder.setName("Sally " + i);
+			builder.setNameForTest("Sally " + i);
 			builders.add(builder);
 		}
 		// Set the list of builders

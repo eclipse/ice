@@ -12,70 +12,49 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.eclipse.ice.client.common.PropertySource;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
-
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.swt.custom.StackLayout;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class is a FormPage that creates a page with table and metadata viewing
  * area for an ICE ResourceComponent.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @authors Jay Jay Billings, Taylor Patterson
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The ResourceComponent drawn by this page.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ResourceComponent resourceComponent;
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The ISimpleResourceProvider that should be used to load ICEResources.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private ISimpleResourceProvider resourceProvider;
 
 	/**
 	 * A browser to display the files/images
@@ -83,35 +62,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 	private Browser browser;
 
 	/**
-	 * The ICEFormEditor used by this page
-	 */
-	private ICEFormEditor formEditor;
-
-	/**
-	 * The IManagedForm used by the page and its parts
-	 */
-	private IManagedForm managedForm;
-
-	/**
 	 * The current resource being managed by this page.
 	 */
 	private ICEResource currentResource = null;
-
-	/**
-	 * The data component of resource properties available for a given resource
-	 * is managed with this SectionPart.
-	 */
-	private ICEDataComponentSectionPart propertiesPart;
-
-	/**
-	 * The section that actually renders the properties.
-	 */
-	private Section propertiesSection;
-
-	/**
-	 * The composite that holds the properties section part.
-	 */
-	private Composite propertiesComposite;
 
 	/**
 	 * The ICEResourceView that holds resources for this page to display.
@@ -119,239 +72,53 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 	private ICEResourceView resourceView;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * The primary composite for rendering the page.
+	 */
+	private Composite parent;
+
+	/**
+	 * The service factory for visualization tools.
+	 */
+	private IVizServiceFactory vizFactory;
+
+	/**
+	 * The composite responsible for holding the plot
+	 */
+	private Composite plotComposite;
+
+	/**
+	 * The layout that stacks the plot and browser composites.
+	 */
+	private StackLayout layout;
+
+	/**
+	 * The map that holds any plots that are created
+	 */
+	Map<String,IPlot> plotMap;
+	
+	/**
 	 * The Constructor
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param editor
-	 *            <p>
 	 *            The FormEditor for which the Page should be constructed.
-	 *            </p>
 	 * @param id
-	 *            <p>
 	 *            The id of the page.
-	 *            </p>
 	 * @param title
-	 *            <p>
 	 *            The title of the page.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEResourcePage(FormEditor editor, String id, String title) {
-		// begin-user-code
 
 		// Call the super constructor
 		super(editor, id, title);
 
 		// Set the ICEFormEditor
 		if (editor instanceof ICEFormEditor) {
-			formEditor = (ICEFormEditor) editor;
 		} else {
 			System.out.println("ICEResourcePage Message: Invalid FormEditor.");
 		}
-
-		return;
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation sets the ResourceComponent that should be used by the
-	 * ICEResourcePage. It also registers the ICEResourcePage with the
-	 * ResourceComponent so that it can be notified of state changes through the
-	 * IUpdateableListener interface.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param component
-	 *            <p>
-	 *            The ResourceComponent
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void setResourceComponent(ResourceComponent component) {
-		// begin-user-code
-
-		// Make sure the ResourceComponent exists
-		if (component != null) {
-			// Set the component reference
-			resourceComponent = component;
-		}
-
-		return;
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation retrieves the ResourceComponent that has been rendered by
-	 * the ICEResourcePage or null if the component does not exist.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @return <p>
-	 *         The ResourceComponent or null if the component was not previously
-	 *         set.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public ResourceComponent getResourceComponent() {
-		// begin-user-code
-		return resourceComponent;
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation sets the ISimpleResource provider that should be used by
-	 * the output page to load ICEResources.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param provider
-	 *            <p>
-	 *            The ISimpleResourceProvider
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public void setResourceProvider(ISimpleResourceProvider provider) {
-		// begin-user-code
-
-		// Set the provider if it is not null
-		if (provider != null) {
-			resourceProvider = provider;
-		}
-		return;
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation draws a browser on the page that displays the selected
-	 * ICEResource.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param formToolkit
-	 *            <p>
-	 *            The FormToolkit that is used to create SWT widgets for this
-	 *            page.
-	 *            </p>
-	 * @param form
-	 *            <p>
-	 *            The IManagedForm on which the table should be drawn.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	protected void drawBrowser(FormToolkit formToolkit, IManagedForm form) {
-		// begin-user-code
-
-		// Local Declarations
-		final ScrolledForm scrolledForm = form.getForm();
-
-		// Setup the initial browser configuration.
-		try {
-			// Setup the browser's layout
-			GridData gridData = new GridData();
-			gridData.grabExcessVerticalSpace = true;
-			gridData.grabExcessHorizontalSpace = true;
-			gridData.verticalAlignment = GridData.FILL;
-			gridData.horizontalAlignment = GridData.FILL;
-
-			// Initialize the browser and apply the layout
-			browser = new Browser(scrolledForm.getBody(), SWT.NONE);
-			browser.setLayoutData(gridData);
-			browser.setLayout(new FillLayout());
-
-			// Set the browser to the first resource if available.
-			// Otherwise, display a default message.
-			currentResource = resourceView.setDefaultResourceSelection();
-			if (currentResource != null) {
-				browser.setUrl(currentResource.getPath().toString());
-			} else {
-				browser.setText("<html><body><center>No resources available.</center></body></html>");
-			}
-		} catch (SWTError e) {
-			System.out.println("Client Message: "
-					+ "Could not instantiate Browser: " + e.getMessage());
-		}
-
-		// Initialize the composite that will hold the properties
-		propertiesComposite = formToolkit.createComposite(scrolledForm
-				.getBody());
-		propertiesComposite.setLayout(new FillLayout());
-
-		return;
-		// end-user-code
-	}
-
-	/**
-	 * <p>
-	 * This operation updates the properties section to reflect the data of the
-	 * selected resource.
-	 * </p>
-	 */
-	protected void updatePropertiesSection() {
-
-		// Sync with the display
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-
-				// Redraw the properties section if needed
-				if (!(currentResource.getProperties().isEmpty())) {
-					// Dispose the old pieces
-					for (Control childControl : propertiesComposite
-							.getChildren()) {
-						childControl.dispose();
-					}
-					// Create a SectionPart for the Resource properties
-					propertiesSection = managedForm.getToolkit().createSection(
-							propertiesComposite,
-							Section.TITLE_BAR | Section.DESCRIPTION
-									| Section.TWISTIE | Section.EXPANDED);
-					propertiesSection.setText("Selected Resource Properties");
-					propertiesSection.setDescription("The following"
-							+ " editable properties are available for"
-							+ " this resource. Changing the properties"
-							+ " will change the resource after the"
-							+ " server is updated.");
-					// Setup the properties DataComponentSectionPart
-					propertiesPart = new ICEDataComponentSectionPart(
-							propertiesSection, formEditor, managedForm);
-					// Create the properties component, just completely redraw
-					// it and the section
-					DataComponent propsComponents = new DataComponent();
-					propsComponents.setName("Selected Resource Properties");
-					propertiesSection.setDescription("The following"
-							+ " editable properties are available for"
-							+ " this resource. Changing the properties"
-							+ " will change the resource after the"
-							+ " server is updated.");
-					// Get all of the Entries from the resource
-					for (Entry i : currentResource.getProperties()) {
-						propsComponents.addEntry(i);
-					}
-					// Set the component and re-render
-					propertiesPart.initialize(managedForm);
-					propertiesPart.setDataComponent(propsComponents);
-					propertiesPart.renderSection();
-					// Layout the section
-					propertiesComposite.layout(true);
-					managedForm.reflow(true);
-				}
-			}
-		});
+		
+		// Setup the plot map
+		plotMap = new Hashtable<String, IPlot>();
 
 		return;
 	}
@@ -386,16 +153,25 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
+		// Set the view's data
 		resourceView = (ICEResourceView) getSite().getWorkbenchWindow()
 				.getActivePage().findView(ICEResourceView.ID);
 		resourceView.setResourceComponent(resourceComponent);
 
-		// Setup the layout
-		GridLayout gridLayout = new GridLayout();
-		form.getBody().setLayout(gridLayout);
+		// Setup the Form layout
+		form.getBody().setLayout(new GridLayout());
+		form.getBody().setLayoutData(new GridData(GridData.FILL_BOTH));
+		// Get the parent and set its layout
+		parent = new Composite(form.getBody(), SWT.None);
+		parent.setLayoutData(new GridData(GridData.FILL_BOTH));
+		layout = new StackLayout();
+		parent.setLayout(layout);
 
-		// Set the managed form reference
-		this.managedForm = managedForm;
+		plotComposite = new Composite(parent, SWT.NONE);
+		managedForm.getToolkit().adapt(plotComposite);
+		managedForm.getToolkit().paintBordersFor(plotComposite);
+		plotComposite.setLayout(new GridLayout(1, true));
+		plotComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		// Draw the browser
 		drawBrowser(toolkit, managedForm);
@@ -414,20 +190,55 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 	}
 
 	/**
-	 * <p>
+	 * This operation draws a browser on the page that displays the selected
+	 * ICEResource.
+	 * 
+	 * @param formToolkit
+	 *            The FormToolkit that is used to create SWT widgets for this
+	 *            page.
+	 * @param form
+	 *            The IManagedForm on which the table should be drawn.
+	 */
+	protected void drawBrowser(FormToolkit formToolkit, IManagedForm form) {
+		// begin-user-code
+
+		// Setup the initial browser configuration.
+		try {
+
+			// Initialize the browser and apply the layout
+			browser = new Browser(parent, SWT.NONE);
+			browser.setLayout(new FillLayout());
+
+			// Set the browser to the first resource if available.
+			// Otherwise, display a default message.
+			currentResource = resourceView.setDefaultResourceSelection();
+			if (currentResource != null && !(currentResource instanceof VizResource)) {
+				browser.setUrl(currentResource.getPath().toString());
+			} else {
+				browser.setText("<html><body><center>No resources available.</center></body></html>");
+			}
+			
+			// Set the stack layout appropriately
+			layout.topControl = browser;
+			parent.layout();
+		} catch (SWTError e) {
+			System.out.println("Client Message: "
+					+ "Could not instantiate Browser: " + e.getMessage());
+		}
+
+		return;
+		// end-user-code
+	}
+
+	/**
 	 * This operation overrides the default/abstract implementation of
 	 * ISelectionListener.selectionChanged to display the resource selected in
 	 * the ICEResourceView.
-	 * </p>
 	 * 
 	 * @param part
-	 *            <p>
 	 *            The IWorkbenchPart that called this function.
-	 *            </p>
 	 * @param selection
-	 *            <p>
 	 *            The ISelection chosen in the part parameter.
-	 *            </p>
 	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
@@ -444,19 +255,121 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 				PropertySource source = (PropertySource) selectedElement;
 				selectedResource = (ICEResource) source.getWrappedData();
 			}
-			// If the resource is not null, set the current
-			// resource value and update the browser and
-			// properties
-			if (selectedResource != null && browser != null
-					&& !browser.isDisposed()) {
-				currentResource = selectedResource;
-				// Update the browser
-				browser.setUrl(currentResource.getPath().toString());
-				// Update the properties section
-				updatePropertiesSection();
+			// If the resource is not null, set the current resource value and
+			// update the browser or plot as needed
+			if (selectedResource != null
+					&& !(selectedResource instanceof VizResource)) {
+				// Sometimes the browser breaks, so make sure it is working
+				// first.
+				if (browser != null && !browser.isDisposed()) {
+					currentResource = selectedResource;
+					// Update the browser
+					browser.setUrl(currentResource.getPath().toString());
+					// Update the stack to show the browser
+					layout.topControl = browser;
+					parent.layout();
+				}
+			} else if (selectedResource != null) {
+				// Switch to the plot composite
+				layout.topControl = plotComposite;
+				try {
+					// Get the plot from the hash table since the user clicked on it
+					IPlot plot = plotMap.get(selectedResource.getPath().toString());
+					// Get the plot types and pick a plot type
+					Map<String,String[]> plotTypes = plot.getPlotTypes();
+					ArrayList<String> keys = new ArrayList<String>(plotTypes.keySet());
+					String category = keys.get(0);
+					String type = plotTypes.get(category)[0];
+					// Draw the plot
+					plot.draw(category, type, plotComposite);	
+					plotComposite.layout();
+				} catch (Exception e) {
+					// Complain
+					e.printStackTrace();
+				}
+				// Layout the parent
+				parent.layout();
 			}
 		}
 
 		return;
+	}
+
+	/**
+	 * This operation sets the IVizServiceFactory that should be used to create
+	 * plots.
+	 * 
+	 * @param service
+	 *            The service factory that should be used
+	 */
+	public void setVizService(IVizServiceFactory factory) {
+		vizFactory = factory;
+	}
+
+	/**
+	 * This operation sets the ResourceComponent that should be used by the
+	 * ICEResourcePage. It also registers the ICEResourcePage with the
+	 * ResourceComponent so that it can be notified of state changes through the
+	 * IUpdateableListener interface.
+	 * 
+	 * @param component
+	 *            <p>
+	 *            The ResourceComponent
+	 *            </p>
+	 */
+	public void setResourceComponent(ResourceComponent component) {
+		// begin-user-code
+
+		// Make sure the ResourceComponent exists
+		if (component != null) {
+			// Set the component reference
+			resourceComponent = component;
+			// Run through the component and create plots for any VizResources it may have
+			for (ICEResource resource : resourceComponent.getResources()) {
+				if (resource instanceof VizResource) {
+					try {
+						IPlot plot = vizFactory.get().createPlot(resource.getPath());
+						// Cram the plot in the hashtable until the user clicks on it
+						plotMap.put(plot.getDataSource().toString(), plot);
+					} catch (Exception e) {
+						// Complain
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		return;
+		// end-user-code
+	}
+
+	/**
+	 * This operation retrieves the ResourceComponent that has been rendered by
+	 * the ICEResourcePage or null if the component does not exist.
+	 * 
+	 * @return The ResourceComponent or null if the component was not previously
+	 *         set.
+	 */
+	public ResourceComponent getResourceComponent() {
+		// begin-user-code
+		return resourceComponent;
+		// end-user-code
+	}
+
+	/**
+	 * This operation sets the ISimpleResource provider that should be used by
+	 * the output page to load ICEResources.
+	 * 
+	 * @param provider
+	 *            The ISimpleResourceProvider
+	 */
+	public void setResourceProvider(ISimpleResourceProvider provider) {
+		// begin-user-code
+
+		// Set the provider if it is not null
+		if (provider != null) {
+		}
+		return;
+		// end-user-code
 	}
 }

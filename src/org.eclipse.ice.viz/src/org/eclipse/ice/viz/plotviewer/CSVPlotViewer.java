@@ -19,10 +19,10 @@ import org.eclipse.ice.client.widgets.PreviousAction;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.DeletePlotAction;
 import org.eclipse.ice.viz.IDeletePlotActionViewPart;
 import org.eclipse.ice.viz.VizFileViewer;
-import org.eclipse.ice.viz.VizResource;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;

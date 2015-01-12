@@ -393,13 +393,13 @@ public class CSVDataProviderTester {
 		dataSet.addDataSeries(secondTime, dataSeries2);
 
 		// Get the time step for firstTime, should be 0
-		assertEquals(dataSet.getTimeStep(firstTime), 0);
+		assertEquals(0,dataSet.getTimeStep(firstTime));
 
 		// Get the time step for secondTime, should be 1
-		assertEquals(dataSet.getTimeStep(secondTime), 1);
+		assertEquals(1,dataSet.getTimeStep(secondTime));
 
 		// Get the number of time steps, should be 2
-		assertEquals(dataSet.getNumberOfTimeSteps(), 2);
+		assertEquals(2,dataSet.getNumberOfTimeSteps());
 
 	}
 
@@ -423,6 +423,7 @@ public class CSVDataProviderTester {
 		assertEquals(times.size(), 2);
 
 		// Confirm it is ordered least to greatest
+		System.out.println(times);
 		assertTrue(times.get(0) <= times.get(1));
 	}
 

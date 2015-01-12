@@ -13,7 +13,6 @@
 package org.eclipse.ice.item.test.nuclear;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -21,10 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.ArrayList;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -34,14 +30,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.nuclear.MOOSELauncher;
-import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -65,6 +55,11 @@ public class MOOSELauncherTester {
 	 * The project space used to create the workspace for the tests.
 	 */
 	private static IProject projectSpace;
+	
+	/**
+	 * The IO Service used to read/write via MOOSEFileHandler.
+	 */
+	private static IOService service;
 
 	private static MOOSELauncher launcher;
 
@@ -154,8 +149,9 @@ public class MOOSELauncherTester {
 		// Set the global project reference.
 		projectSpace = project;
 
+		// Set up an IO service and add a reader
 		launcher = new MOOSELauncher(projectSpace);
-		IOService service = new IOService();
+		service = new IOService();
 		service.addReader(new MOOSEFileHandler());
 		launcher.setIOService(service);
 
@@ -198,11 +194,16 @@ public class MOOSELauncherTester {
 	 */
 	@AfterClass
 	public static void afterTests() {
-		// Close and delete the fake workspace created
+
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		try {
+			// Close and delete the fake workspace created
 			projectSpace.close(null);
 			workspaceRoot.delete(true, true, null);
+			
+			// Nullify the IO service
+			service = null;
+			
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

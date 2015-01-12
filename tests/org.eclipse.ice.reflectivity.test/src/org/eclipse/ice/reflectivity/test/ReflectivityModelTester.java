@@ -14,6 +14,8 @@ package org.eclipse.ice.reflectivity.test;
 
 import static org.junit.Assert.*;
 
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.reflectivity.ReflectivityModel;
 import org.junit.BeforeClass;
@@ -59,8 +61,8 @@ public class ReflectivityModelTester {
 		// begin-user-code
 
 		// Local Declarations
-		int tableCompID = 1;
-		TableComponent table = null;
+		int listID = 1;
+		ListComponent<Material> list;
 		
 		// Just create one with the nullary constructor
 		// No need to check the Item with a IProject instance
@@ -71,13 +73,11 @@ public class ReflectivityModelTester {
 		assertEquals(1, model.getForm().getComponents().size());
 		
 		// Get the table component
-		table = (TableComponent) model.getForm().getComponent(tableCompID);
+		list = (ListComponent<Material>) model.getForm().getComponent(listID);
 		
 		// Make sure it's not null and the name is correct
-		assertNotNull(table);
-		assertEquals("Reflectivity Input Data", table.getName());
-
-		assertEquals(7, table.getRowTemplate().size());
+		assertNotNull(list);
+		assertEquals("Reflectivity Input Data", list.getName());
 		
 		// end-user-code
 	}

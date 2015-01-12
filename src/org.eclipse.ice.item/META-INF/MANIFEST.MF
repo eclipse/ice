@@ -15,6 +15,7 @@ Import-Package: com.jcraft.jsch;version="0.1.41",
  org.eclipse.ice.datastructures.form.painfullySimpleForm,
  org.eclipse.ice.datastructures.resource,
  org.eclipse.ice.io.serializable,
+ org.eclipse.ice.materials,
  org.eclipse.ptp.remote.core,
  org.yaml.snakeyaml
 Export-Package: org.eclipse.ice.item,
