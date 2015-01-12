@@ -167,7 +167,19 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </p>
  * </td>
  * </tr>
- * *
+ * <tr>
+ * <td>
+ * <p>
+ * projectSpaceDir
+ * </p>
+ * </td>
+ * <td>
+ * <p>
+ * The absolute path string of the ICE project directory. This can be found with
+ * IProject.getLocation().toOSString().
+ * </p>
+ * </td>
+ * </tr>
  * <tr>
  * <td>
  * <p>
@@ -341,6 +353,12 @@ public class JobLaunchAction extends Action implements Runnable {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String username;
+
+	/**
+	 * The absolute path of the IProject being used by this job launch. It can
+	 * be retrieved with IProject.getLocation().toOSString().
+	 */
+	private String projectSpaceDir;
 
 	/**
 	 * <!-- begin-UML-doc -->
@@ -804,11 +822,12 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// Local Declarations
 		FormStatus launchStatus;
-		String separator = System.getProperty("file.separator");
-		String userHome = System.getProperty("user.home");
-		String localProjectDir = userHome + separator + "ICEFiles" + separator
-				+ "default";
-		File workingDirectory = new File(execDictionary.get("workingDir"));
+		// String separator = System.getProperty("file.separator");
+		// String userHome = System.getProperty("user.home");
+		// String localProjectDir = userHome + separator + "ICEFiles" +
+		// separator
+		// + "default";
+		// File workingDirectory = new File(execDictionary.get("workingDir"));
 
 		// Loop over the stages and launch them so long as the status marks them
 		// as processed. This needs to be done sequentially, so use a regular,
@@ -1062,18 +1081,17 @@ public class JobLaunchAction extends Action implements Runnable {
 		String homeDir = System.getProperty("user.home");
 		String localDirectoryPath = "";
 
-		// Create a local directory where created files can be downloaded 
+		// Create a local directory where created files can be downloaded
 		// from the remote host
-		localDirectoryPath = homeDir + separator + "ICEFiles" + separator
-				+ "default" + separator + "jobs" + separator
+		localDirectoryPath = projectSpaceDir + separator + "jobs" + separator
 				+ "remoteIceLaunch_" + shortDate.format(currentDate);
 		localStorageDir = new File(localDirectoryPath);
-		
+
 		// Create the directory if it doesn't already exist
 		if (!localStorageDir.exists()) {
 			localStorageDir.mkdirs();
 		}
-		
+
 		// Place this in the action map so others can reference it later
 		execDictionary.put("workingDir", localDirectoryPath);
 
@@ -1524,8 +1542,7 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Set the name of the working directory properly if it is a local
 		// launch
 		if (isLocal.get()) {
-			launchDir = homeDir + separator + "ICEFiles" + separator
-					+ "default" + separator + "jobs" + separator
+			launchDir = projectSpaceDir + separator + "jobs" + separator
 					+ workingDirectoryBaseName;
 		} else if (execDictionary.get("hostname").equals("titan.ccs.ornl.gov")) {
 			// Get the project directory
@@ -1571,6 +1588,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			stdOutFileName = execDictionary.get("stdOutFileName");
 			stdErrFileName = execDictionary.get("stdErrFileName");
 			hostname = execDictionary.get("hostname");
+			projectSpaceDir = execDictionary.get("projectSpaceDir");
 			uploadInput = Boolean.valueOf(execDictionary.get("uploadInput"));
 		}
 
