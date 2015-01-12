@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
+import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -26,6 +28,7 @@ import org.eclipse.ice.client.widgets.ICESectionPage;
 import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.moose.components.PlantBlockManager;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
+import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -776,9 +779,17 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		IVizService vizService = null;
 		if (vizFactory != null && (vizService = vizFactory.get("VisIt")) != null) {
 			vizService.connect();
+			
+			File file = new File("C:\\Users\\USER\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
+			//File file = new File("/home/USER/nice-data/coarse10_rz.e");
+			try {
+				IPlot plot = vizService.createPlot(file.toURI());
+				plot.draw("Mesh", "Mesh", sectionClient);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		
-		// TODO Plug into the VisIt (or currently configured) vis service.
+
 		return;
 	}
 

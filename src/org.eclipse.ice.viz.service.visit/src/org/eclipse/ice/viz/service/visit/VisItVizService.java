@@ -15,6 +15,7 @@ import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -128,15 +129,17 @@ public class VisItVizService implements IVizService {
 		boolean connected = false;
 		IPreferenceStore store = getPreferenceStore();
 
-		String connectionId = store.getString(ConnectionPreference.ConnectionID
-				.getID());
-		VisItSwtConnection connection;
-		if (VisItSwtConnectionManager.hasConnection(connectionId)) {
-			connection = VisItSwtConnectionManager.getConnection(connectionId);
+		Map<String, String> visitPreferences = new HashMap<String, String>();
+		for (ConnectionPreference p : ConnectionPreference.values()) {
+			visitPreferences.put(p.getID(), store.getString(p.toString()));
+		}
+		
+		String id = store.getString(ConnectionPreference.ConnectionID.getID());
+		if (VisItSwtConnectionManager.hasConnection(id)) {
+			connection = VisItSwtConnectionManager.getConnection(id);
 		} else {
-			connection = VisItSwtConnectionManager.createConnection(
-					connectionId, Display.getDefault(),
-					getConnectionProperties());
+			connection = VisItSwtConnectionManager.createConnection(id,
+					Display.getDefault(), visitPreferences);
 		}
 
 		connected = (connection != null);
@@ -144,6 +147,8 @@ public class VisItVizService implements IVizService {
 
 		return connected;
 	}
+	
+	private VisItSwtConnection connection;
 
 	/*
 	 * (non-Javadoc)
@@ -154,8 +159,10 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		VisItPlot plot = new VisItPlot(file, connection);
+		plot.setProperties(getConnectionProperties()); // FIXME It should have
+														// other properties...
+		return plot;
 	}
 
 	/**
