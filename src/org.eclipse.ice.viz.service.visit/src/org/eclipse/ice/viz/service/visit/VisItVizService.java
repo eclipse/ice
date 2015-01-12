@@ -44,6 +44,8 @@ public class VisItVizService implements IVizService {
 	 */
 	private IPreferenceStore preferenceStore = null;
 
+	private VisItSwtConnection localConnection;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -126,29 +128,29 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public boolean connect() {
-		boolean connected = false;
-		IPreferenceStore store = getPreferenceStore();
+		// TODO Connect to local and/or remote connections, not just local.
+		if (localConnection == null) {
+			IPreferenceStore store = getPreferenceStore();
 
-		Map<String, String> visitPreferences = new HashMap<String, String>();
-		for (ConnectionPreference p : ConnectionPreference.values()) {
-			visitPreferences.put(p.getID(), store.getString(p.toString()));
+			// Construct the input map required to start VisIt.
+			Map<String, String> visitPreferences = new HashMap<String, String>();
+			for (ConnectionPreference p : ConnectionPreference.values()) {
+				visitPreferences.put(p.getID(), store.getString(p.toString()));
+			}
+
+			// Get a VisItSwtConnection.
+			String id = store.getString(ConnectionPreference.ConnectionID
+					.getID());
+			if (VisItSwtConnectionManager.hasConnection(id)) {
+				localConnection = VisItSwtConnectionManager.getConnection(id);
+			} else {
+				localConnection = VisItSwtConnectionManager.createConnection(
+						id, Display.getDefault(), visitPreferences);
+			}
 		}
-		
-		String id = store.getString(ConnectionPreference.ConnectionID.getID());
-		if (VisItSwtConnectionManager.hasConnection(id)) {
-			connection = VisItSwtConnectionManager.getConnection(id);
-		} else {
-			connection = VisItSwtConnectionManager.createConnection(id,
-					Display.getDefault(), visitPreferences);
-		}
 
-		connected = (connection != null);
-		System.out.println("Connected to VisIt: " + connected);
-
-		return connected;
+		return localConnection != null;
 	}
-	
-	private VisItSwtConnection connection;
 
 	/*
 	 * (non-Javadoc)
@@ -159,9 +161,13 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		VisItPlot plot = new VisItPlot(file, connection);
-		plot.setProperties(getConnectionProperties()); // FIXME It should have
-														// other properties...
+		VisItPlot plot = null;
+		if (file != null) {
+
+			plot = new VisItPlot(file, getLocalConnection());
+			plot.setProperties(getConnectionProperties()); // FIXME Use
+															// something else.
+		}
 		return plot;
 	}
 
@@ -178,6 +184,13 @@ public class VisItVizService implements IVizService {
 					id);
 		}
 		return preferenceStore;
+	}
+
+	private VisItSwtConnection getLocalConnection() {
+		if (localConnection == null) {
+			connect();
+		}
+		return localConnection;
 	}
 
 }

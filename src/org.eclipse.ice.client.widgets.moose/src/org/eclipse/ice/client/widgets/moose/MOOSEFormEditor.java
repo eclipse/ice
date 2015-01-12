@@ -16,6 +16,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -780,11 +781,21 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		if (vizFactory != null && (vizService = vizFactory.get("VisIt")) != null) {
 			vizService.connect();
 			
-			File file = new File("C:\\Users\\USER\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
+//			File file = new File("C:\\Users\\djg\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
+			File file = new File("C:\\Users\\djg\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
 			//File file = new File("/home/USER/nice-data/coarse10_rz.e");
 			try {
 				IPlot plot = vizService.createPlot(file.toURI());
-				plot.draw("Mesh", "Mesh", sectionClient);
+				
+				Map<String, String[]> plots = plot.getPlotTypes();
+				for (java.util.Map.Entry<String, String[]> plotType : plots.entrySet()) {
+					System.out.println("Plot Type: " + plotType.getKey());
+					for (String plotName : plotType.getValue()) {
+						System.out.println(plotName);
+					}
+				}
+				
+				plot.draw("Mesh", plots.get("Mesh")[0], sectionClient);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
