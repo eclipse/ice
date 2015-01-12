@@ -1,15 +1,15 @@
 /*******************************************************************************
-* Copyright (c) 2012, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.test;
 
 import static org.junit.Assert.*;
@@ -26,31 +26,22 @@ import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 
-/** 
- * <!-- begin-UML-doc -->
- * <p>This class is responsible for testing the ItemProcessor class.</p>
- * <!-- end-UML-doc -->
+/**
+ * This class is responsible for testing the ItemProcessor class.
+ * 
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ItemProcessorTester {
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>The ItemProcessor to test.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/**
+	 * The ItemProcessor to test.
 	 */
 	private ItemProcessor itemProcessor;
 
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>This operation checks the accessor operations of the ItemProcessor class.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/**
+	 * This operation checks the accessor operations of the ItemProcessor class.
 	 */
 	@Test
 	public void checkAccessors() {
-		// begin-user-code
 
 		// Allocate the ItemProcessor
 		itemProcessor = new ItemProcessor();
@@ -111,14 +102,13 @@ public class ItemProcessorTester {
 		assertEquals(100, itemProcessor.getPollTime());
 
 		return;
-		// end-user-code
 	}
 
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>This operation checks the ItemProcessor to make sure that it can properly process an Item. It resets the polling time to 50ms and waits for 75ms on the thread to make sure that setting the polling time actually affects the thread.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/**
+	 * This operation checks the ItemProcessor to make sure that it can properly
+	 * process an Item. It resets the polling time to 50ms and waits for 75ms on
+	 * the thread to make sure that setting the polling time actually affects
+	 * the thread.
 	 */
 	@Test
 	public void checkProcessing() {
@@ -136,7 +126,7 @@ public class ItemProcessorTester {
 
 		// Put a dummy form on the widget
 		formWidget.setForm(new Form());
-		
+
 		// Allocate the ItemProcessor
 		itemProcessor = new ItemProcessor();
 
@@ -172,8 +162,8 @@ public class ItemProcessorTester {
 
 		// Check the process status with the core to make sure the event was
 		// processed.
-		assertEquals(FormStatus.Processed, core.getLastProcessStatus());	
-		
+		assertEquals(FormStatus.Processed, core.getLastProcessStatus());
+
 		// Reset the FakeCore's Process state
 		core.reset();
 
@@ -221,7 +211,8 @@ public class ItemProcessorTester {
 		// Make sure the Form was resubmitted to the core
 		assertTrue(core.itemUpdated());
 
-		// Check that the label was set. It should be set before being displayed.
+		// Check that the label was set. It should be set before being
+		// displayed.
 		assertTrue(textWidget.labelSet());
 		// Check that the streaming text widget was displayed
 		assertTrue(textWidget.widgetDisplayed());
@@ -246,7 +237,7 @@ public class ItemProcessorTester {
 
 		// Check the process status to make sure the client made the call
 		assertTrue(core.wasCancelled());
-		
+
 		return;
 		// end-user-code
 	}
