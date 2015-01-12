@@ -11,14 +11,15 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import java.awt.Toolkit;
-
+import org.eclipse.ice.datastructures.ICEObject.IElementSource;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -44,6 +45,17 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 */
 	private ListComponent list;
 
+	/**
+	 * The IElementSource from the ListComponent that is used to feed it new
+	 * entries.
+	 */
+	private IElementSource source;
+
+	/**
+	 * The shell used for the dialog
+	 */
+	private Shell shell;
+	
 	/**
 	 * The Constructor
 	 * 
@@ -83,6 +95,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 
 			// Get the parent
 			Composite parent = managedForm.getForm().getBody();
+			shell = parent.getShell();
 			// Create the section and set its layout info
 			Section listSection = formToolkit.createSection(parent,
 					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
@@ -115,6 +128,41 @@ public class ListComponentSectionPage extends ICEFormPage {
 			// Create the add button to add a new element to the list.
 			Button addMaterialButton = new Button(listButtonComposite, SWT.PUSH);
 			addMaterialButton.setText("Add");
+			addMaterialButton.addSelectionListener(new SelectionListener() {
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					// We need to add the element based on whether or not the
+					// IElementSource is available to provide selections.
+					if (source == null) {
+						// If it is not available, just duplicate the last one
+						// on the list. I'm not entirely sure if this will work
+						// because it will just be adding the same element twice
+						// and may result in both being updated. We don't have a
+						// good test case for it at the moment, so we will have
+						// to cross that bridge when we get to it.
+						int index = list.size() - 1;
+						list.add(list.get(index));
+						System.out.println("A");
+					} else {
+						// Otherwise, if the IElementSource is available, throw
+						// up the source selection dialog
+						ElementSourceDialog dialog = new ElementSourceDialog(shell, source);
+						dialog.open();
+						
+						System.out.println("B");
+						// Get and copy the selection
+						
+						// Add the selection to the list
+					}
+				}
+
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e) {
+					// TODO Auto-generated method stub
+					System.out.println("B");
+				}
+			});
 
 			// Create the delete button to delete the currently selected element
 			// from the list.
@@ -139,6 +187,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 */
 	public void setList(ListComponent list) {
 		this.list = list;
+		this.source = list.getElementSource();
 	}
 
 }

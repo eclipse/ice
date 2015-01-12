@@ -53,11 +53,13 @@ public class MaterialWritableTableFormatTester {
 
 		// Create the Material for the test
 		material = new Material();
+		material.setName("Fluffy");
 		material.setProperty("A", 1.0);
 		material.setProperty("B", 2.0);
 
 		// Store the property names
-		columnNames = new ArrayList<String>(material.getProperties().keySet());
+		columnNames = new ArrayList<String>();
+		columnNames.addAll(material.getProperties().keySet());
 
 		// Create the table format
 		tableFormat = new MaterialWritableTableFormat(columnNames);
@@ -72,7 +74,9 @@ public class MaterialWritableTableFormatTester {
 	 */
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(columnNames.size(), tableFormat.getColumnCount());
+		// It should contain all of the properties names + 1 because of the
+		// "Name" column.
+		assertEquals(columnNames.size() + 1, tableFormat.getColumnCount());
 	}
 
 	/**
@@ -83,9 +87,12 @@ public class MaterialWritableTableFormatTester {
 	@Test
 	public void testGetColumnName() {
 
+		// Check the "Name" column.
+		assertEquals("Name",tableFormat.getColumnName(0));
+		
 		// Just make sure the column names exist. Checking the order is a little
-		// overkill.
-		for (int i = 0; i < columnNames.size(); i++) {
+		// overkill. Start at 1 because "Name" is always there.
+		for (int i = 1; i < columnNames.size(); i++) {
 			assertTrue(columnNames.contains(tableFormat.getColumnName(i)));
 		}
 
@@ -104,12 +111,16 @@ public class MaterialWritableTableFormatTester {
 		material.setProperty("A", 1.0);
 		material.setProperty("B", 2.0);
 
-		// Check that the value is either the value for A or the value for B. Since there is no guarantee on order, this is the only good way to do it.
-		Double value = (Double) tableFormat.getColumnValue(material, 0);
-		assertTrue(value.equals(1.0) || value.equals(2.0));
-		value = (Double) tableFormat.getColumnValue(material, 1);
-		assertTrue(value.equals(1.0) || value.equals(2.0));
-		
+		// Check that the value is either the value for A or the value for B.
+		// Since there is no guarantee on order, this is the only good way to do
+		// it.
+		Object value = tableFormat.getColumnValue(material, 0);
+		assertEquals(value, "Fluffy");
+		Double dValue = (Double) tableFormat.getColumnValue(material, 1);
+		assertTrue(dValue.equals(1.0) || dValue.equals(2.0));
+		dValue = (Double) tableFormat.getColumnValue(material, 2);
+		assertTrue(dValue.equals(1.0) || dValue.equals(2.0));
+
 		return;
 	}
 

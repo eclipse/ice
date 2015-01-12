@@ -50,6 +50,7 @@ public class Model extends Item {
 	 *            The database
 	 */
 	public void setMaterialsDatabase(IMaterialsDatabase database) {
+		System.out.println("Model Message: IMaterialsDatabase Registered!");
 		materialsDatabase = database;
 	}
 

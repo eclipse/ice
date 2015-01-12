@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.materials;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.form.Material;
@@ -48,10 +49,15 @@ public class MaterialWritableTableFormat implements
 	 * @param propertiesList
 	 *            The list of properties that provides the keys needed to read
 	 *            the Material properties of the List with which this format is
-	 *            associated.
+	 *            associated. The value "Name" is prepended to create a column
+	 *            fo the material name.
 	 */
 	public MaterialWritableTableFormat(List<String> propertiesList) {
-		properties = propertiesList;
+		// Add everything from the original list, but put in the Material name
+		// at the beginning.
+		properties = new ArrayList<String>();
+		properties.add("Name");
+		properties.addAll(propertiesList);
 	}
 
 	/*
@@ -71,7 +77,15 @@ public class MaterialWritableTableFormat implements
 	 */
 	@Override
 	public String getColumnName(int column) {
-		return properties.get(column);
+		// If the column is zero, then it should return "Name,"
+		// otherwise it should return the property.
+		String value = null;
+		if (column == 0) {
+			value = "Name";
+		} else {
+			value = properties.get(column);
+		}
+		return value;
 	}
 
 	/*
@@ -83,8 +97,15 @@ public class MaterialWritableTableFormat implements
 	 */
 	@Override
 	public Object getColumnValue(Material baseObject, int column) {
-		// Get the property off of the base object
-		return baseObject.getProperty(properties.get(column));
+		// If it is column zero, then it needs to return the name
+		Object value = null;
+		if (column == 0) {
+			value = baseObject.getName();
+		} else {
+			// Get the property off of the base object
+			value = baseObject.getProperty(properties.get(column));
+		}
+		return value;
 	}
 
 	/*
@@ -110,9 +131,11 @@ public class MaterialWritableTableFormat implements
 	@Override
 	public Material setColumnValue(Material baseObject, Object editedValue,
 			int column) {
-		// Set the property
-		baseObject.setProperty(properties.get(column),
-				Double.valueOf(editedValue.toString()));
+		// Set the property if it is not the name
+		if (column != 0) {
+			baseObject.setProperty(properties.get(column),
+					Double.valueOf(editedValue.toString()));
+		}
 		// Just return the material
 		return baseObject;
 	}
