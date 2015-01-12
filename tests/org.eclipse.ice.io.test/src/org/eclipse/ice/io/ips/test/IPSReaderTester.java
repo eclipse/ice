@@ -17,28 +17,24 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.io.ips.IPSReader;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.io.ips.IPSReader;
 import org.junit.Test;
 
 /**
@@ -56,7 +52,6 @@ public class IPSReaderTester {
 	public void checkIPSReader() {
 		
 		// Set up where to look
-
 		String separator = System.getProperty("file.separator");
 		String filePath = System.getProperty("user.home") + separator + "ICETests" 
 				+ separator + "caebatTesterWorkspace" + separator 
@@ -68,13 +63,14 @@ public class IPSReaderTester {
 		try {
 			testReader = new BufferedReader(new FileReader(new File(filePath)));
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
+			fail("Failed to find file at " + filePath);
 			e1.printStackTrace();
 		}
 		
-		//Create an IPSReader to test
+		// Create an IPSReader to test
 		IPSReader reader = new IPSReader();
 		assertNotNull(reader);
+		assertEquals(reader.getReaderType(), "IPSReader");
 		
 		// Try to read in invalid INI file
 		IFile fakeFile = null;
@@ -136,6 +132,16 @@ public class IPSReaderTester {
 			assertNotNull(timeLoopData.retrieveAllEntries().get(i));
 		}		
 		
+		/* --- Test the findAll method --- */
+		String regex = "SIM_ROOT = .*";
+		String fakex = "Sassafras my mass";
+		ArrayList<Entry> matches = reader.findAll(inputFile, regex);
+		ArrayList<Entry> fakes = reader.findAll(inputFile, fakex);
+		assertEquals(fakes.size(),0);
+		assertEquals(matches.size(),1);
+		assertEquals(matches.get(0).getValue(), "SIM_ROOT = $CAEBAT_ROOT/vibe/trunk/examples/${SIM_NAME}");
+		
+		// Okay good job
 		return;
 	}
 }

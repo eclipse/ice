@@ -714,10 +714,11 @@ public class ItemTester implements ItemListener {
 	 * pulls the output file handle from the Item and makes sure that the
 	 * default name of the file is set according to the default in the class
 	 * documentation.
+	 * 
 	 * @throws IOException
 	 * @throws JAXBException
 	 * @throws NullPointerException
-	 * @throws CoreException 
+	 * @throws CoreException
 	 */
 	@Test
 	public void checkProcessing() throws NullPointerException, JAXBException,
@@ -814,7 +815,8 @@ public class ItemTester implements ItemListener {
 				"\\s+", "_");
 		IFile formXMLFile = project.getFile(filename);
 		assertTrue(formXMLFile.exists());
-		Form loadedForm = (Form) xmlHandler.read(classList, formXMLFile.getContents());
+		Form loadedForm = (Form) xmlHandler.read(classList,
+				formXMLFile.getContents());
 		assertEquals(form, loadedForm);
 
 		// Delete the file
@@ -1121,7 +1123,7 @@ public class ItemTester implements ItemListener {
 		// Check we can delete directories
 		testItem.deleteTestDirectory(tempDir.getLocation().toOSString());
 		assertFalse(project.getFolder("tempDir").exists());
-
+	
 		try {
 			project.close(null);
 		} catch (CoreException e) {

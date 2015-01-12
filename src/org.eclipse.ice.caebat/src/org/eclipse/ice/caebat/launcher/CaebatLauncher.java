@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.io.ips.IPSReader;
+import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.core.resources.IProject;
 
@@ -169,12 +171,24 @@ public class CaebatLauncher extends JobLauncher {
 		// Local Declarations
 		DataComponent fileComponent = (DataComponent) form.getComponent(1);
 		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
-		InputStream fileStream;
-		Scanner fileScanner;
+		
+		IPSReader reader = new IPSReader();
+		IPSWriter writer = new IPSWriter();
 
 		return super.process(actionName);
 
 		// end-user-code
 
+	}
+	
+	
+	/**
+	 * 
+	 * 
+	 * @param src
+	 * @param dest
+	 */
+	public void copyInputDirectory(String src, String dest) {
+		copyDirectory(src, dest);
 	}
 }

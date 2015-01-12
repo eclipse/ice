@@ -332,7 +332,6 @@ public class CaebatModel extends Item {
 		// Load the components from the file and setup the form
 		System.out.println("CaebatModel Message: Loading" + inputFile.getFullPath().toOSString());
 
-
 		IPSReader reader = new IPSReader();
 		form = reader.read(inputFile);
 		form.setName(getName());

@@ -37,7 +37,9 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.junit.Test;
 
@@ -142,7 +144,7 @@ public class IPSWriterTester {
 			fail("Failed to read BufferedReader");
 		}
 
-		// TODO: FIX THE ASSERT TO MATCH
+		// Make sure we got the length right
 		assertEquals(113, numLines);
 
 	
@@ -173,7 +175,38 @@ public class IPSWriterTester {
 		if (outFile.exists()) {
 			outFile.delete();
 		}
+		
+		// Test the replace method
+		File tempFile = new File(inIFile.getFullPath().toOSString().split("[.]")[0] + "_test.conf");
+		if (tempFile.exists()) tempFile.delete();
+		Files.copy(exampleFile.toPath(), tempFile.toPath());
+		assertTrue(tempFile.exists());
+		
+		// Call the replace method
+		String replace = "AHAHAHAHAHA";
+		System.out.println("Searching in " + inIFile.getFullPath().toOSString());
+		writer.replace(inIFile, "SIM_ROOT = .*", replace);
 
+		// Check if the file contains the replacement
+		boolean foundReplacement = false;
+		try {
+			Scanner scanner = new Scanner(exampleFile);
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				if (line.contains(replace)) {
+					foundReplacement = true;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		assertTrue(foundReplacement);
+		
+		// Copy back the original file and delete the backup
+		if (exampleFile.exists()) exampleFile.delete();
+		Files.copy(tempFile.toPath(),exampleFile.toPath());
+		tempFile.delete();
+		
 		return;
 	}
 }
