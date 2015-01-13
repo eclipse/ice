@@ -190,20 +190,47 @@ public class CaebatLauncher extends JobLauncher {
 		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
 		IPath fileIPath = new Path(project.getLocation().toOSString() + separator + inputFileEntry.getValue()); 
 		IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
-		ArrayList<Entry> caseNameMatches = reader.findAll(inputFile, "SIM_NAME=.*");
-		ArrayList<Entry> simRootMatches = reader.findAll(inputFile, "SIM_ROOT=.*"); 
-		String caseName = caseNameMatches.get(0).getName().split("=")[1];
-		String dataDir = simRootMatches.get(0).getName().split("=")[1];
+
+		String runID = "";
+		ArrayList<Entry> runIDMatches = reader.findAll(inputFile, "RUN_ID=.*");
+		if (!runIDMatches.isEmpty()) {
+			runID = runIDMatches.get(0).getName().split("=")[1];
+		}
+		
+		String caseName = "";
+		ArrayList<Entry> caseNameMatches = reader.findAll(inputFile, "SIM_NAME=.*");		
+		if (!caseNameMatches.isEmpty()) {
+			caseName = caseNameMatches.get(0).getName().split("=")[1];
+		}
+		if (caseName.contains("${RUN_ID}")) {
+			caseName = runID;
+		}
+		
+		String dataDir = "";
+		ArrayList<Entry> simRootMatches = reader.findAll(inputFile, "SIM_ROOT=.*");
+		if (!simRootMatches.isEmpty()) {
+			dataDir = simRootMatches.get(0).getName().split("=")[1];
+		}
+		if (dataDir.endsWith("/$SIM_NAME")) {
+			dataDir = dataDir.substring(0, dataDir.length() - 10);
+		} else if (dataDir.endsWith("${SIM_NAME}")) {
+			dataDir = dataDir.substring(0, dataDir.length() - 12);		
+		}
 		
 		TableComponent hostTable = (TableComponent) form.getComponent(4);
 		CAEBAT_ROOT = hostTable.getRow(0).get(2).getValue();
-		String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT + "/vibe/components;";
-		String copyCase = "cp -r " + dataDir + "/" + caseName + "/* .;";
+		
+		System.out.println(dataDir);
+		System.out.println(caseName);
+		System.out.println(runID);
+		
+		String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT + "/vibe/components && ";
+		String copyCase = "cp -r " + dataDir + "/" + caseName + "/* . && ";
 		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
-				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile};";
+				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile} && ";
 		String CAEBATExec = "${installDir}ipsframework-code/install/bin/ips.py"
 				+ " -a --log=temp.log --platform=" + IPS_ROOT
-				+ "/workstation.conf --simulation=${inputFile};";
+				+ "/workstation.conf --simulation=${inputFile}; ";
 		fullExecCMD = exportRoot + copyCase + fixSIMROOT + CAEBATExec;
 
 		// Setup the executable information
