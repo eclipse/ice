@@ -20,16 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -209,7 +202,7 @@ public class VisItPlot implements IPlot {
 
 		// Create the VisIt Canvas if necessary.
 		if (canvas == null) {
-			canvas = createCanvas(parent, SWT.BORDER);
+			canvas = createCanvas(parent, SWT.BORDER | SWT.DOUBLE_BUFFERED);
 			// Create a mouse manager to handle mouse events inside the canvas.
 			new VisItMouseManager(canvas);
 		}

@@ -13,7 +13,6 @@
 package org.eclipse.ice.client.widgets.moose;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
@@ -57,7 +56,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -769,37 +768,58 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		section.setText("Mesh");
 		section.setDescription("The current mesh configured for MOOSE input.");
 
-		Composite sectionClient = toolkit.createComposite(section);
-		sectionClient.setLayout(new FillLayout());
-		section.setClient(sectionClient);
-		sectionClient.setBackground(Display.getCurrent().getSystemColor(
-				SWT.COLOR_BLACK));
+		// The client for the section.
+		Control sectionClient = null;
 
 		// Try to connect to VisIt.
 		IVizServiceFactory vizFactory = getVizServiceFactory();
 		IVizService vizService = null;
-		if (vizFactory != null && (vizService = vizFactory.get("VisIt")) != null) {
+		if (vizFactory != null
+				&& (vizService = vizFactory.get("VisIt")) != null) {
+			// Connect the viz service as necessary. This should initiate the
+			// connection process so that plots can be drawn later.
 			vizService.connect();
-			
-//			File file = new File("C:\\Users\\djg\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
-			File file = new File("C:\\Users\\djg\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
-			//File file = new File("/home/USER/nice-data/coarse10_rz.e");
+
+			// File("C:\\Users\\USER\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
+			File file = new File(
+					"C:\\Users\\USER\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
+			// File file = new File("/home/USER/nice-data/coarse10_rz.e");
 			try {
+				// Get a plot for the source file.
 				IPlot plot = vizService.createPlot(file.toURI());
-				
+
+				// Print out all plot types.
+				// TODO We need to make these available somewhere.
 				Map<String, String[]> plots = plot.getPlotTypes();
-				for (java.util.Map.Entry<String, String[]> plotType : plots.entrySet()) {
+				for (java.util.Map.Entry<String, String[]> plotType : plots
+						.entrySet()) {
 					System.out.println("Plot Type: " + plotType.getKey());
 					for (String plotName : plotType.getValue()) {
 						System.out.println(plotName);
 					}
 				}
-				
-				plot.draw("Mesh", plots.get("Mesh")[0], sectionClient);
+
+				// Draw the mesh. We have to create an intermediate Composite
+				// because we must set the section's client.
+				Composite plotComposite = toolkit.createComposite(section);
+				plotComposite.setLayout(new FillLayout());
+				sectionClient = plotComposite;
+				plot.draw("Mesh", plots.get("Mesh")[0], plotComposite);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+
+		// If the mesh could not be rendered, create a placeholder to notify the
+		// user of the problem.
+		if (sectionClient == null) {
+			Composite errorComposite = toolkit.createComposite(section);
+			sectionClient = errorComposite;
+			toolkit.createLabel(errorComposite, "Could not connect to VisIt.");
+		}
+
+		// Set the client for the section according to SOP.
+		section.setClient(sectionClient);
 
 		return;
 	}
