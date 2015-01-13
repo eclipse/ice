@@ -23,7 +23,6 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.viz.visit.VisitMouseManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -211,7 +210,8 @@ public class VisItPlot implements IPlot {
 		// Create the VisIt Canvas if necessary.
 		if (canvas == null) {
 			canvas = createCanvas(parent, SWT.BORDER);
-			createCanvasMouseListeners(canvas);
+			// Create a mouse manager to handle mouse events inside the canvas.
+			new VisItMouseManager(canvas);
 		}
 		// Make sure the Canvas is activated.
 		canvas.activate();
@@ -296,63 +296,6 @@ public class VisItPlot implements IPlot {
 		}
 
 		return canvas;
-	}
-	
-	// FIXME This needs to be cleaned up a bit.
-	private void createCanvasMouseListeners(final VisItSwtWidget canvas) {
-		
-		final VisitMouseManager mouseManager = new VisitMouseManager(canvas);
-		
-		final AtomicBoolean mousePressed = new AtomicBoolean(false);
-		
-		// Use the mouse wheel to zoom
-		canvas.addMouseWheelListener(new MouseWheelListener() {
-			@Override
-			public void mouseScrolled(MouseEvent e) {
-				String direction = (e.count > 0) ? "in" : "out";
-				canvas.zoom(direction);
-			}
-		});
-		// Use mouse click to move the plot
-		canvas.addMouseMoveListener(new MouseMoveListener() {
-			@Override
-			public void mouseMove(MouseEvent e) {
-				if (mousePressed.get()) {
-					// Pass the event to the manager
-					mouseManager.enqueueMouseLocation(e.x, e.y);
-				}
-			}
-		});
-		// Update the mouse in the widget based on its movements
-		canvas.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				// Set the mouse pressed flag
-				mousePressed.set(false);
-				// Stop the mouseManager thread
-				mouseManager.stop();
-			}
-
-			@Override
-			public void mouseDown(MouseEvent e) {
-				// Set the pressed flag
-				mousePressed.set(true);
-				// Start the mouseManager thread
-				mouseManager.start(e.x, e.y, (e.stateMask & SWT.CTRL) != 0,
-						(e.stateMask & SWT.SHIFT) != 0);
-			}
-
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-			}
-		});
-		// Shut down the widget
-		canvas.addDisposeListener(new DisposeListener() {
-
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-			}
-		});
 	}
 
 }
