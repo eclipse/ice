@@ -60,10 +60,10 @@ public class IPSReader implements IReader {
 
 	/**
 	 * <p>
-	 * Reads in the given IFile to the CaebatModel datastructures. There are four
-	 * components in each IPS INI file that are parsed and arranged into the
-	 * form that will be displayed to the user. Returns a form composed of the
-	 * data read in from the specified location which can be modified and
+	 * Reads in the given IFile to the CaebatModel datastructures. There are
+	 * four components in each IPS INI file that are parsed and arranged into
+	 * the form that will be displayed to the user. Returns a form composed of
+	 * the data read in from the specified location which can be modified and
 	 * written out by the user.
 	 * </p>
 	 * 
@@ -84,13 +84,15 @@ public class IPSReader implements IReader {
 		try {
 			lines = readFileLines(ifile);
 		} catch (FileNotFoundException e) {
-			System.out.println("IPSReader Message: Error!  Could not find file for loading.");
+			System.out
+					.println("IPSReader Message: Error!  Could not find file for loading.");
 			return null;
 		} catch (IOException e) {
-			System.out.println("IPSReader Message: Error!  Trouble reading file.");
+			System.out
+					.println("IPSReader Message: Error!  Trouble reading file.");
 			return null;
 		}
-		
+
 		// Get an iterator over the input to pass to the loading methods
 		Iterator<String> iniIterator = lines.iterator();
 
@@ -127,24 +129,23 @@ public class IPSReader implements IReader {
 		return form;
 	}
 
-
 	/**
 	 * <p>
 	 * Searches a given IFile for content that matches a given regular
-	 * expression.  Returns all instances that match.
+	 * expression. Returns all instances that match.
 	 * </p>
 	 * 
 	 * @param ifile
 	 *            The file to search in
 	 * @param regex
-	 * 			  A string representing a regular expression containing
-	 *            the specification of what to search for
-	 * @return an ArrayList<Entry> with the description set to the regex
-	 *         and the value set to the results.
+	 *            A string representing a regular expression containing the
+	 *            specification of what to search for
+	 * @return an ArrayList<Entry> with the description set to the regex and the
+	 *         value set to the results.
 	 */
 	@Override
 	public ArrayList<Entry> findAll(IFile ifile, String regex) {
-		// Make sure there's something to look in 
+		// Make sure there's something to look in
 		if (ifile == null) {
 			System.out.println("IPSReader Message: Error!  Null file given.");
 			return null;
@@ -157,24 +158,26 @@ public class IPSReader implements IReader {
 		try {
 			lines = readFileLines(ifile);
 		} catch (FileNotFoundException e) {
-			System.out.println("IPSReader Message: Error!  Could not find file for loading.");
+			System.out
+					.println("IPSReader Message: Error!  Could not find file for loading.");
 			return null;
 		} catch (IOException e) {
-			System.out.println("IPSReader Message: Error!  Trouble reading file.");
+			System.out
+					.println("IPSReader Message: Error!  Trouble reading file.");
 			return null;
 		}
-		
+
 		// Go through each line and look for matches
 		for (String line : lines) {
-				if (line.matches(regex)) {
-					foundEntry = makeIPSEntry();
-					foundEntry.setName(line);
-					foundEntry.setDescription(regex);
-					foundEntry.setValue(line);
-					matchedEntries.add(foundEntry);
-				}
+			if (line.matches(regex)) {
+				foundEntry = makeIPSEntry();
+				foundEntry.setName(line);
+				foundEntry.setDescription(regex);
+				foundEntry.setValue(line);
+				matchedEntries.add(foundEntry);
+			}
 		}
-		
+
 		return matchedEntries;
 	}
 
@@ -203,28 +206,27 @@ public class IPSReader implements IReader {
 	 */
 	private ArrayList<String> readFileLines(IFile ifile)
 			throws FileNotFoundException, IOException {
-	
+
 		// Read in the ini file and create the iterator
 		File file = new File(ifile.getFullPath().toOSString());
 		BufferedReader reader = new BufferedReader(new FileReader(file));
-	
-	
+
 		// Read the FileInputStream and append to a StringBuffer
 		StringBuffer buffer = new StringBuffer();
 		int fileByte;
 		while ((fileByte = reader.read()) != -1) {
 			buffer.append((char) fileByte);
 		}
-	
+
 		// Break up the StringBuffer at each newline character
 		String[] bufferSplit = (buffer.toString()).split("\n");
 		ArrayList<String> fileLines = new ArrayList<String>(
 				Arrays.asList(bufferSplit));
-	
+
 		// Add a dummy EOF line so that the last line of the file is
 		// read in correctly
 		fileLines.add("EOF");
-	
+
 		// Return the ArrayList
 		return fileLines;
 	}
@@ -248,7 +250,7 @@ public class IPSReader implements IReader {
 		currID++;
 		Entry entry;
 		String[] splitLine = null;
-	
+
 		// Build the template for the ports table
 		ArrayList<Entry> entries = new ArrayList<Entry>();
 		Entry portNameTemplate = makeIPSEntry();
@@ -258,24 +260,24 @@ public class IPSReader implements IReader {
 		entries.add(portNameTemplate);
 		entries.add(implementationTemplate);
 		globalConfiguration.setRowTemplate(entries);
-	
+
 		// Read in new parameters until we reach the PORTS entry or the end
 		// while only taking in lines that have variable assignments
 		String line = it.next();
 		while (!line.contains("[PORTS]") && it.hasNext()) {
-	
+
 			// The format in this section is: KEY = VALUE # Comment
 			// First check if the line contains a parameter
 			if (line.contains("=")) {
-	
+
 				// If the line has a comment split on it and disregard it
 				if (line.contains("#")) {
 					line = line.split("#", 2)[0];
 				}
-	
+
 				// Get the content for the entry
 				splitLine = line.split("=", 2);
-	
+
 				// Set up the data in the table
 				ArrayList<Entry> row = new ArrayList<Entry>();
 				int rowID = globalConfiguration.addRow();
@@ -283,18 +285,18 @@ public class IPSReader implements IReader {
 				row.get(0).setValue(splitLine[0]);
 				row.get(1).setValue(splitLine[1]);
 			}
-	
+
 			// Read in another line
 			line = it.next();
 		}
-	
+
 		// Make sure that we are not at the end of the file
 		if (!it.hasNext()) {
 			System.err.println("IPS Reader Message: Reached unexpected "
 					+ "end of file while reading the global configuration.");
 			return null;
 		}
-	
+
 		// Return the parameters
 		return globalConfiguration;
 	}
@@ -307,11 +309,11 @@ public class IPSReader implements IReader {
 	 * 
 	 * @param it
 	 *            Iterator over the lines of the INI file as an ArrayList
-	 * @return A TableComponent of Entries representing the contents in the ports
-	 *         table of the INI file.
+	 * @return A TableComponent of Entries representing the contents in the
+	 *         ports table of the INI file.
 	 */
 	private TableComponent loadPortsData(Iterator<String> it) {
-	
+
 		// Create the ports component
 		TableComponent portsTable = new TableComponent();
 		portsTable.setName("Ports Table");
@@ -319,7 +321,7 @@ public class IPSReader implements IReader {
 				+ "an IPS framework INI input file");
 		portsTable.setId(currID);
 		currID++;
-	
+
 		// Build the template for the ports table
 		ArrayList<Entry> entries = new ArrayList<Entry>();
 		Entry portNameTemplate = makeIPSEntry();
@@ -329,7 +331,7 @@ public class IPSReader implements IReader {
 		entries.add(portNameTemplate);
 		entries.add(implementationTemplate);
 		portsTable.setRowTemplate(entries);
-	
+
 		// Make sure that the file keeps going. After the completion of the
 		// loadGlobalConfiguration() method the current line that the iterator
 		// is at should be [PORTS]
@@ -340,7 +342,7 @@ public class IPSReader implements IReader {
 							+ "try again.");
 			return null;
 		}
-	
+
 		// Iterate until we get to the entries in the Ports Table. The first
 		// entry is an enumeration of the ports that will follow. We need to
 		// record those before going on so that we can verify that all of the
@@ -349,52 +351,52 @@ public class IPSReader implements IReader {
 		while (it.hasNext() && !line.contains("NAMES = ")) {
 			line = it.next();
 		}
-		
+
 		// There should be more to the file after the port names has been read
 		// in, so make sure that we've not accidentally parsed over the entire
-		// thing.  If we have, tell the user that their file may be incorrect.
+		// thing. If we have, tell the user that their file may be incorrect.
 		if (!it.hasNext()) {
 			System.err
 					.println("Reached unexpected end of file while trying to "
-							+ "read the Ports Table.  " 
+							+ "read the Ports Table.  "
 							+ "Please check your input file and try again.");
 			return null;
 		}
-	
+
 		// Get the names specified in the NAMES entry by splitting on the =
 		// sign and then keeping everything after, which we then split on each
 		// space, and turn that into an ArrayList for easier searching later
 		ArrayList<String> portNames = new ArrayList<String>(Arrays.asList(line
 				.split(" = ")[1].split(" ")));
-	
+
 		// Go through the rest of the ports table and add the entries as we
 		// find them, while making sure that we find all of them.
 		while (portNames.size() > 0 && it.hasNext()) {
-	
+
 			// Check if this line contains an entry
 			if (line.contains("[[") && line.contains("]]")) {
-	
+
 				// Take care of comments
 				if (line.contains("#")) {
 					line = line.split("#", 2)[0];
 				}
-	
+
 				// Get the port name of the entry & make sure that it is in
 				// the list of portNames.
 				int rowID = portsTable.addRow();
 				ArrayList<Entry> row = portsTable.getRow(rowID);
-	
+
 				String portName = line.replaceAll("[^a-zA-Z0-9_]", "");
 				if (portNames.contains(portName)) {
 					// Set the details for the entry
 					row.get(0).setValue(portName);
-	
+
 					// The next line should give details of the implementation
 					line = it.next();
 					if (line.contains("#")) {
 						line = line.split("#", 2)[0];
 					}
-	
+
 					// See if the information we are looking for is there
 					if (line.contains("IMPLEMENTATION = ")) {
 						String implementation = line.split(" = ", 2)[1];
@@ -405,7 +407,7 @@ public class IPSReader implements IReader {
 										+ "check your input file and try again.");
 						System.exit(1);
 					}
-	
+
 					// Found a complete port entry, now remove the port from the
 					// list of remaining ports to be found.
 					portNames.remove(portName);
@@ -414,14 +416,14 @@ public class IPSReader implements IReader {
 			// read another line
 			line = it.next();
 		}
-	
+
 		// Make sure that we are not at the end of the file
 		if (!it.hasNext()) {
 			System.err.println("IPS Reader Message: Reached unexpected "
 					+ "end of file while reading the ports table.");
 			return null;
 		}
-	
+
 		return portsTable;
 	}
 
@@ -440,34 +442,34 @@ public class IPSReader implements IReader {
 		DataComponent portComponent = new DataComponent();
 		Entry entry;
 		String[] splitLine = null;
-	
+
 		// Scan until we get to the next port component
 		String line = it.next();
 		while (!line.contains("[") && !line.contains("]") && it.hasNext()) {
 			line = it.next();
 		}
-	
+
 		// Pull the port name and start parsing through the parameters
 		String portName = line.replaceAll("[^a-zA-Z0-9_]", "");
 		portComponent.setName(portName);
 		portComponent.setDescription("A port in an IPS file.");
 		portComponent.setId(currID);
 		currID++;
-	
+
 		// Read parameters until reaching a whitespace line that separates ports
 		while (line.trim().length() > 0) {
 			// The format in this section is: KEY = VALUE # Comment
 			// First check if the line contains a parameter
 			if (line.contains("=")) {
-	
+
 				// If the line has a comment split on it and disregard it
 				if (line.contains("#")) {
 					line = line.split("#", 2)[0];
 				}
-	
+
 				// Get the content for the entry
 				splitLine = line.split("=", 2);
-	
+
 				// Set up the entry
 				entry = makeIPSEntry();
 				entry.setName(splitLine[0]);
@@ -476,7 +478,7 @@ public class IPSReader implements IReader {
 				currID++;
 				portComponent.addEntry(entry);
 			}
-	
+
 			// Read in another line
 			line = it.next();
 		}

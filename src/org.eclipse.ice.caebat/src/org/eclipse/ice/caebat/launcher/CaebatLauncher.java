@@ -13,6 +13,7 @@
 package org.eclipse.ice.caebat.launcher;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,10 +21,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 /**
  * <!-- begin-UML-doc -->
@@ -113,13 +119,12 @@ public class CaebatLauncher extends JobLauncher {
 	 */
 	public void setupForm() {
 		// begin-user-code
-		
 		// Setup the script to copy the data files for case 6
-		//TableComponent hostTable = (TableComponent) form.getComponent(4);
-		//CAEBAT_ROOT = hostTable.getRow(0).get(2).getValue();	
-		//String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT + ";";
-		//String copyCase = "source `pwd`/${inputFile} >> /dev/null && cp -r $SIM_ROOT/* .;";
-		
+		// TableComponent hostTable = (TableComponent) form.getComponent(4);
+		// CAEBAT_ROOT = hostTable.getRow(0).get(2).getValue();
+		// String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT + ";";
+		// String copyCase =
+		// "source `pwd`/${inputFile} >> /dev/null && cp -r $SIM_ROOT/* .;";
 		String copyCase = "cp -r ${installDir}vibe/examples/case6/* .;";
 		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
 				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile};";
@@ -127,26 +132,20 @@ public class CaebatLauncher extends JobLauncher {
 		String CAEBATExec = "${installDir}ipsframework-code/install/bin/ips.py"
 				+ " -a --log=temp.log --platform=" + IPS_ROOT
 				+ "/workstation.conf --simulation=${inputFile};";
-		
 		// Setup the command stages. An explicit forward slash is used here, so
 		// will only work on linux for now.
-		fullExecCMD =  copyCase + fixSIMROOT + CAEBATExec;
+		fullExecCMD = copyCase + fixSIMROOT + CAEBATExec;
 		// Setup form
 		super.setupForm();
-
 		// Stop the launcher from trying to append the input file
 		setAppendInputFlag(false);
-		
 		// Setup the executable information
 		setExecutable(getName(), getDescription(), this.fullExecCMD);
-
 		// Add localhost
 		addHost("localhost", "linux x86_64", CAEBAT_ROOT);
-
 		// Add the input files types for the BatML files
 		addInputType("Key-value pair file", "keyValueFile",
 				"Key-value pair with case parameters", ".dat");
-
 		return;
 		// end-user-code
 	}
@@ -167,21 +166,55 @@ public class CaebatLauncher extends JobLauncher {
 	public FormStatus process(String actionName) {
 
 		// begin-user-code
-
+		/*
+		 * This section will be used in future iterations String separator =
+		 * System.getProperty("file.separator"); IPSReader reader = new
+		 * IPSReader(); IPSWriter writer = new IPSWriter();
+		 * 
+		 * DataComponent fileComponent = (DataComponent) form.getComponent(1);
+		 * Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
+		 * 
+		 * IPath fileIPath = new Path(project.getLocation().toOSString() +
+		 * separator + inputFileEntry.getValue()); IFile inputFile =
+		 * ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
+		 * ArrayList<Entry> simRootMatches = reader.findAll(inputFile, "SIM_ROOT=.*"); 
+		 * dataDir = simRootMatches.get(0).getName().split("=")[1];
+		 * 
+		 * writer.replace(inputFile, "SIM_ROOT=.*", "SIM_ROOT=" +
+		 * getLaunchDirectory());
+		 */
 		// Local Declarations
-		DataComponent fileComponent = (DataComponent) form.getComponent(1);
-		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
-		
+		String separator = System.getProperty("file.separator");
 		IPSReader reader = new IPSReader();
-		IPSWriter writer = new IPSWriter();
+	    DataComponent fileComponent = (DataComponent) form.getComponent(1);
+		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
+		IPath fileIPath = new Path(project.getLocation().toOSString() + separator + inputFileEntry.getValue()); 
+		IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
+		ArrayList<Entry> caseNameMatches = reader.findAll(inputFile, "SIM_NAME=.*");
+		ArrayList<Entry> simRootMatches = reader.findAll(inputFile, "SIM_ROOT=.*"); 
+		String caseName = caseNameMatches.get(0).getName().split("=")[1];
+		String dataDir = simRootMatches.get(0).getName().split("=")[1];
+		
+		TableComponent hostTable = (TableComponent) form.getComponent(4);
+		CAEBAT_ROOT = hostTable.getRow(0).get(2).getValue();
+		String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT + "/vibe/components;";
+		String copyCase = "cp -r " + dataDir + "/" + caseName + "/* .;";
+		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
+				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile};";
+		String CAEBATExec = "${installDir}ipsframework-code/install/bin/ips.py"
+				+ " -a --log=temp.log --platform=" + IPS_ROOT
+				+ "/workstation.conf --simulation=${inputFile};";
+		fullExecCMD = exportRoot + copyCase + fixSIMROOT + CAEBATExec;
+
+		// Setup the executable information
+		setExecutable(getName(), getDescription(), this.fullExecCMD);
 
 		return super.process(actionName);
 
 		// end-user-code
 
 	}
-	
-	
+
 	/**
 	 * 
 	 * 
@@ -190,5 +223,13 @@ public class CaebatLauncher extends JobLauncher {
 	 */
 	public void copyInputDirectory(String src, String dest) {
 		copyDirectory(src, dest);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private String getLaunchDirectory() {
+		return getWorkingDirectory();
 	}
 }
