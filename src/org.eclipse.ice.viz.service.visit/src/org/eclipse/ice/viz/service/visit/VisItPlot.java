@@ -23,6 +23,7 @@ import java.util.TreeMap;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -102,6 +103,12 @@ public class VisItPlot implements IPlot {
 
 		// Determine the VisIt FileInfo for the data source.
 		FileInfo info = findFileInfo();
+		// FIXME When the FileInfo can be retrieved from the ViewerMethods
+		// class, remove the above line (and remove the method!) and uncomment
+		// the below lines. 
+//		ViewerMethods methods = connection.getViewerMethods();
+//		methods.openDatabase(sourcePath);
+//		FileInfo info = methods.getFileInfo();
 
 		// Get all of the plot types and plots in the file.
 		List<String> plots;
@@ -125,8 +132,8 @@ public class VisItPlot implements IPlot {
 	 */
 	@Override
 	public int getNumberOfAxes() {
-		// TODO Auto-generated method stub
-		return 0;
+		// TODO Should we query the plot somehow?
+		return (canvas == null ? 0 : 3);
 	}
 
 	/*
@@ -198,6 +205,10 @@ public class VisItPlot implements IPlot {
 		if (category == null || plotType == null || parent == null) {
 			throw new NullPointerException("VisItPlot error: "
 					+ "Null arguments are not allowed when drawing plot.");
+		} else if (parent.isDisposed()) {
+			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED,
+					"VisItPlot error: "
+							+ "Cannot draw plot inside disposed Composite.");
 		}
 
 		// Create the VisIt Canvas if necessary.
