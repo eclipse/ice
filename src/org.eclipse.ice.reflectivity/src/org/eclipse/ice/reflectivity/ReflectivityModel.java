@@ -44,9 +44,7 @@ public class ReflectivityModel extends Model {
 	 * The constructor.
 	 */
 	public ReflectivityModel() {
-		// begin-user-code
 		this(null);
-		// end-user-code
 	}
 
 	/**
@@ -98,6 +96,10 @@ public class ReflectivityModel extends Model {
 		// Let the parent setup the Form
 		super.setupForm();
 
+		// Add a data component for the number of rough layers and the input file
+		
+		// FIXME!
+		
 		// Configure a list of property names for the materials
 		ArrayList<String> names = new ArrayList<String>();
 		names.add("Material ID");
@@ -217,5 +219,5 @@ public class ReflectivityModel extends Model {
 
 		return;
 	}
-
+	
 }
