@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
+import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swt.DefaultEventTableViewer;
 
 /**
@@ -39,6 +40,21 @@ public class ElementSourceDialog<T> extends Dialog {
 	private IElementSource<T> source;
 
 	/**
+	 * The SWT table that shows the list
+	 */
+	private Table listTable;
+
+	/**
+	 * The selection made by the user or null if the dialog was closed.
+	 */
+	private T selection;
+
+	/**
+	 * The list of elements rendered in the table
+	 */
+	private EventList<T> elements;
+
+	/**
 	 * The constructor
 	 * 
 	 * @param parentShell
@@ -46,7 +62,8 @@ public class ElementSourceDialog<T> extends Dialog {
 	 * @param source
 	 *            The IElementSource that should be drawn
 	 */
-	public ElementSourceDialog(Shell parentShell, IElementSource<T> elementSource) {
+	public ElementSourceDialog(Shell parentShell,
+			IElementSource<T> elementSource) {
 		super(parentShell);
 		source = elementSource;
 	}
@@ -60,27 +77,42 @@ public class ElementSourceDialog<T> extends Dialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		
+
 		Composite comp = (Composite) super.createDialogArea(parent);
-		
+
 		// Create the table to hold the ListComponent.
-		Table listTable = new Table(parent, SWT.FLAT);
+		listTable = new Table(parent, SWT.FLAT);
+		elements = source.getElements();
 		DefaultEventTableViewer listTableViewer = new DefaultEventTableViewer(
-				source.getElements(), listTable, source.getTableFormat());
-		listTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true, 1, 1));
-		
+				elements, listTable, source.getTableFormat());
+		listTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+				1));
+
 		return comp;
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+	 */
+	@Override
+	protected void okPressed() {
+		// Set the selection if the OK button was pressed
+		int index = listTable.getSelectionIndex();
+		selection = elements.get(index);
+		super.okPressed();
+	}
+
 	/**
 	 * This operation returns the selection made in the dialog.
-	 * @return The selection
+	 * 
+	 * @return The selection. If multiple items were selected, only the first is
+	 *         returned.
 	 */
 	public T getSelection() {
-		T selection = null;
 		return selection;
 	}
-	
+
 }

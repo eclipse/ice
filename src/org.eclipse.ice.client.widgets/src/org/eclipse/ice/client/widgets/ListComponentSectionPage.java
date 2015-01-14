@@ -13,6 +13,7 @@ package org.eclipse.ice.client.widgets;
 
 import org.eclipse.ice.datastructures.ICEObject.IElementSource;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -55,7 +56,17 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 * The shell used for the dialog
 	 */
 	private Shell shell;
-	
+
+	/**
+	 * The table that renders the list
+	 */
+	private Table listTable;
+
+	/**
+	 * The tableviewer that renders the list and table
+	 */
+	private DefaultEventTableViewer listTableViewer;
+
 	/**
 	 * The Constructor
 	 * 
@@ -111,9 +122,8 @@ public class ListComponentSectionPage extends ICEFormPage {
 					true, 1, 1));
 
 			// Create the table to hold the ListComponent.
-			Table listTable = formToolkit.createTable(sectionClient, SWT.FLAT);
-			DefaultEventTableViewer listTableViewer = new DefaultEventTableViewer(
-					list, listTable, list);
+			listTable = formToolkit.createTable(sectionClient, SWT.FLAT);
+			listTableViewer = new DefaultEventTableViewer(list, listTable, list);
 			listTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 					true, 1, 1));
 
@@ -142,18 +152,32 @@ public class ListComponentSectionPage extends ICEFormPage {
 						// good test case for it at the moment, so we will have
 						// to cross that bridge when we get to it.
 						int index = list.size() - 1;
-						list.add(list.get(index));
-						System.out.println("A");
+						// Lock the list before adding the selction
+						list.getReadWriteLock().writeLock().lock();
+						try {
+							list.add(list.get(index));
+						} finally {
+							// Unlock it
+							list.getReadWriteLock().writeLock().unlock();
+						}
 					} else {
 						// Otherwise, if the IElementSource is available, throw
 						// up the source selection dialog
-						ElementSourceDialog dialog = new ElementSourceDialog(shell, source);
-						dialog.open();
-						
-						System.out.println("B");
-						// Get and copy the selection
-						
-						// Add the selection to the list
+						ElementSourceDialog dialog = new ElementSourceDialog(
+								shell, source);
+						if (dialog.open() == Window.OK) {
+							// Lock the list to avoid concurrent modifications
+							list.getReadWriteLock().writeLock().lock();
+							try {
+								// Get the selection and add it if they actually
+								// selected something.
+								list.add(dialog.getSelection());
+								System.out.println("OK " + list.size());
+							} finally {
+								// Unlock the list
+								list.getReadWriteLock().writeLock().unlock();
+							}
+						}
 					}
 				}
 
