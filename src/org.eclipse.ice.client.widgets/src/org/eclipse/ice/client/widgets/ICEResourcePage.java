@@ -33,6 +33,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISelectionListener;
@@ -280,6 +281,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 					ArrayList<String> keys = new ArrayList<String>(plotTypes.keySet());
 					String category = keys.get(0);
 					String type = plotTypes.get(category)[0];
+					// Clear the plotComposite's children
+					for (Control control : plotComposite.getChildren()) {
+						control.dispose();
+					}
 					// Draw the plot
 					plot.draw(category, type, plotComposite);	
 					plotComposite.layout();
