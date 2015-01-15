@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -49,16 +48,11 @@ import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-
-import java.io.OutputStream;
-
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.Entry;
 
-import java.util.Map;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,6 +61,8 @@ import java.io.InputStreamReader;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.resource.ResourceHandler;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.io.serializable.IOService;
@@ -78,8 +74,6 @@ import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.core.resources.IFolder;
 
-import java.net.URI;
-import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -303,7 +297,7 @@ import java.nio.file.StandardCopyOption;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Anna Wojtowicz
  * @generated 
  *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
@@ -345,6 +339,7 @@ public class Item implements IComponentVisitor, Identifiable,
 			@XmlElementRef(name = "Form", type = Form.class),
 			@XmlElementRef(name = "JobLauncherForm", type = JobLauncherForm.class) })
 	protected Form form;
+
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -569,6 +564,12 @@ public class Item implements IComponentVisitor, Identifiable,
 	@XmlTransient
 	protected File outputFile;
 
+	/**
+	 * The ResourceHandler for this item that discovers and creates 
+	 * {@link ICEResource} items.
+	 */
+	private static ResourceHandler resourceHandler = new ResourceHandler();
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -2043,6 +2044,81 @@ public class Item implements IComponentVisitor, Identifiable,
 		return;
 	}
 
+	/**
+	 * <p>This method is intended to discover and create {@link ICEResource} 
+	 * objects (and the {@link VizResource} subclass) that are associated to
+	 * the Item in some way. For example, a CSV post-processing file that can
+	 * be plotted.</p>
+	 * 
+	 * <p>This method takes in a file path, and then delegates its work to the 
+	 * Item's {@link ResourceHandler}.</p>
+	 * 
+	 * @param filePath		The file path of the Item's resource.
+	 * @return				Returns an {@link ICEResource} or 
+	 * 						{@link VizResource} depending on the file extension
+	 * 						of the file path. If the file path was invalid, 
+	 * 						returns null.
+	 * @throws IOException
+	 */
+	public ICEResource getResource(String filePath) throws IOException {
+	
+		// Local declarations
+		ICEResource resource = null;
+		
+		// Call the ResourceHandler method to get the resource
+		resource = resourceHandler.getResource(filePath);
+		
+		return resource;
+		
+	}
+	
+	/**
+	 * <p>This method is similar to {@link #getResource(String)}, except that
+	 * it takes in an {@link Entry} instead. This is a special case where
+	 * a resource might be stored on the Item's Form (for example, a FileEntry
+	 * for a mesh file).</p>
+	 * 
+	 * <p>This method simply calls {@link #getResource(String)}. If the Entry's
+	 * associated file (obtained by {@link Entry#getValue()}) is found in the
+	 * default ICE workspace, then it will pass the fully-qualified path name
+	 * into {@link #getResource(String)}. Otherwise, it will pass just the file
+	 * name (without a path), which will result in a null resource.</p>
+	 * 
+	 * @param file		The file path of the Item's resource.
+	 * @return			Returns an {@link ICEResource} or 
+	 * 					{@link VizResource} depending on the file extension
+	 * 					of the file path. If the file path was invalid, 
+	 * 					returns null.		
+	 * @throws IOException
+	 */
+	public ICEResource getResource(Entry file) throws IOException {
+		
+		// Local declarations
+		ICEResource resource = null;
+		String filePath = file.getValue();
+		String defaultFilePath = "";
+		
+		// Check if the file is in the default workspace. If it is, get the 
+		// fully qualified path
+		if (project != null) {
+			defaultFilePath = project.getLocation().toOSString() 
+					+ System.getProperty("file.separator") + file.getValue();
+		}
+		File defaultFile = new File(defaultFilePath);
+		if (defaultFile != null && defaultFile.exists()) {
+			filePath = defaultFilePath;
+		}
+		
+		// Call the other getResource method
+		resource = getResource(filePath);
+		
+		// Register the resource
+		registry.register(resource, "resource");
+
+		return resource;
+	}
+	
+	
 	/**
 	 * Return a list of files with the provided fileExtension String. The files
 	 * are returned as a list of 'file names'. For example, the file
