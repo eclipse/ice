@@ -553,7 +553,7 @@ public class AddVisitPlotAction extends Action {
 				}
 
 				widget.getViewerMethods().openDatabase(dbPath);
-				FileInfo fileInfo = widget.getFileInfo();
+				FileInfo fileInfo = widget.getViewerMethods().getDatabaseInfo();
 				// --------------------------------------------- //
 
 				// Create the groups for meshes, scalars, vectors, and
