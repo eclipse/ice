@@ -33,13 +33,9 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class tests the operations on BatMLModel. This class is also responsible
  * for building the model files designed to be used in the BatML Model for
  * production mode.
- * </p>
- * <!-- end-UML-doc -->
  */
 public class BatMLModelTester {
 
@@ -49,14 +45,7 @@ public class BatMLModelTester {
 	private static IProject projectSpace;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets up the workspace.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeTests() {
@@ -109,11 +98,7 @@ public class BatMLModelTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks BatMLModel.setupForm operation.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkSetupForm() {
@@ -139,11 +124,7 @@ public class BatMLModelTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks BatMLModel.process operation.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkProcess() {
