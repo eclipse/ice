@@ -33,6 +33,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -41,7 +42,8 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
@@ -51,7 +53,7 @@ import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -61,21 +63,13 @@ import org.junit.Test;
  * </p>
  * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class ItemTester implements ItemListener {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
+	 * An Item used for testing.
 	 */
 	private static Item item;
-
-	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private TestAction fakeAction;
 
 	/**
 	 * This field is used to check the Item's ability to update its listeners.
@@ -99,33 +93,25 @@ public class ItemTester implements ItemListener {
 	private static String psfItemString;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation sets up test Items for the Item tester.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * Sets up the psfItemString.
 	 */
-	@Before
-	public void Before() {
-		// begin-user-code
-		// Local Declarations
+	@BeforeClass
+	public static void beforeClass() {
+		
 		ArrayList<String> PSFForm = new ArrayList<String>();
+		
+		/**
+		 * Setup the string containing the Form in PSF format. This was
+		 * taken from the Painfully Simple Form article at
 
-		// Create the Item. We actually need to test a real Item, so implement
-		// the abstract operations below for a simple test.
-		item = new TestItem(null);
+			https://wiki.eclipse.org/Painfully_Simple_Form
 
-		// Setup the string containing the Form in PSF format. This was
-		// taken from the Painfully Simple Form article at
-		// https://sourceforge.net/apps/mediawiki/niceproject/index.php?title=ICE_Painfully_Simple_Form
-		// and is a good example because it is complete, contains lots of
-		// whitespace and comments and, of course, interesting! I have added
-		// whitespaces and comments in some places to make the test more
-		// rigorous and changed some of the comment statements from "//" to "#"
-		// to cover all the possibilities.
+		 * and is a good example because it is complete, contains lots of
+		 * whitespace and comments and, of course, interesting! I have added
+		 * whitespaces and comments in some places to make the test more
+		 * rigorous and changed some of the comment statements from "//" to "#"
+		 * to cover all the possibilities.
+		 */
 		PSFForm.add("\t  \n");
 		PSFForm.add("#Form name and type\n");
 		PSFForm.add("formName=PSF Wiki Article Form\n");
@@ -186,7 +172,26 @@ public class ItemTester implements ItemListener {
 		for (String i : PSFForm) {
 			psfItemString += i;
 		}
-		System.out.println(psfItemString);
+		
+		return;
+	}
+	
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * This operation sets up test Items for the Item tester.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 */
+	@Before
+	public void Before() {
+
+		// Create the Item. We actually need to test a real Item, so implement
+		// the abstract operations below for a simple test.
+		item = new TestItem(null);
 
 		return;
 		// end-user-code
@@ -878,6 +883,10 @@ public class ItemTester implements ItemListener {
 				+ retOutputName);
 		assertTrue(outputFile.getAbsolutePath().contains(outputFilename));
 
+		// Shut down the project resource
+		project.close(null);
+		project.delete(true, null);
+		
 		return;
 
 		// end-user-code
@@ -965,6 +974,14 @@ public class ItemTester implements ItemListener {
 		item = new TestItem();
 		item.setProject(null);
 		assertEquals(item.hasProject(), false);
+		
+		// Shut down the project resource
+		try {
+			project.close(null);
+			project.delete(true, null);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 
 		return;
 		// end-user-code
@@ -1017,8 +1034,117 @@ public class ItemTester implements ItemListener {
 	}
 
 	/**
+	 * This method tests the {@link Item#getResource(String)} and 
+	 * {@link Item#getResource(Entry)} methods.
+	 */
+	@Test
+	public void checkGettingResources() {
+		
+		// Local Declarations
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		URI defaultProjectLocation = null;
+		IProject project = null;
+		String projectName = "itemTesterWorkspace";
+		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "itemData";
+
+		// Setup the project
+		try {
+			// Get the project handle
+			project = workspaceRoot.getProject(projectName);
+			// If the project does not exist, create it
+			if (!project.exists()) {
+				// Set the location as ${workspace_loc}/itemTesterWorkspace
+				defaultProjectLocation = (new File(
+						userDir + separator
+								+ projectName)).toURI();
+				// Create the project description
+				IProjectDescription desc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription(projectName);
+				// Set the location of the project
+				desc.setLocationURI(defaultProjectLocation);
+				// Create the project
+				project.create(desc, null);
+			}
+			// Open the project if it is not already open
+			if (project.exists() && !project.isOpen()) {
+				project.open(null);
+			}
+
+			// Refresh the workspace
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			// Catch exception for creating the project
+			e.printStackTrace();
+			fail();
+		}
+		
+		// Local Declarations
+		Item item = new Item(project);
+		ICEResource iceResource = null;
+		VizResource vizResource = null;
+		String txtFilePath = project.getLocation().toOSString() 
+				+ separator + "txtResource.txt";
+		String csvFilePath = project.getLocation().toOSString() 
+				+ separator + "csvResource.csv";
+		
+		// Try getting an ICEResource based on a String file path
+		try {
+			iceResource = item.getResource(txtFilePath);
+		} catch (IOException e) {
+			fail();
+			e.printStackTrace();
+		}
+		
+		// Verify all is well 
+		assertNotNull(iceResource);
+		assertTrue(iceResource instanceof ICEResource);
+		
+		// Try getting a VizResource based on a String file path
+		try {
+			vizResource = (VizResource) item.getResource(csvFilePath);
+		} catch (IOException e) {
+			fail();
+			e.printStackTrace();
+		}
+		
+		// Verify all is well 
+		assertNotNull(vizResource);
+		assertTrue(vizResource instanceof VizResource);
+		
+		// Now construct a file Entry based on a .e file
+		Entry entry = new Entry();
+		entry.setValue("mesh.e");
+		vizResource = null;
+		
+		// Try getting a VizResource based on the Entry
+		try {
+			vizResource = (VizResource) item.getResource(entry);
+		} catch (IOException e) {
+			fail();
+			e.printStackTrace();
+		}
+		
+		// Check the VizResource
+		assertNotNull(vizResource);
+		assertTrue(vizResource instanceof VizResource);
+		
+		// Shut down the project resource
+		try {
+			project.close(null);
+			project.delete(true,null);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	/**
 	 * This method tests the file copy/move methods on the Item.
 	 */
+	@Test
 	public void checkFileCapabilities() {
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -1122,8 +1248,10 @@ public class ItemTester implements ItemListener {
 		testItem.deleteTestDirectory(tempDir.getLocation().toOSString());
 		assertFalse(project.getFolder("tempDir").exists());
 
+		// Shut down the project resource
 		try {
 			project.close(null);
+			project.delete(true, null);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1199,6 +1327,7 @@ public class ItemTester implements ItemListener {
 		assertTrue(fakeReader == testItem.getTestReader());
 		assertTrue(fakeWriter == testItem.getTestWriter());
 
+		return;		
 	}
 
 	/**
@@ -1214,5 +1343,5 @@ public class ItemTester implements ItemListener {
 		updated = true;
 
 		// end-user-code
-	}
 }
+	}
