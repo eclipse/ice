@@ -12,7 +12,15 @@
 package org.eclipse.ice.viz.service.visit;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
+import org.eclipse.ice.viz.service.visit.preferences.ConnectionComposite;
+import org.eclipse.ice.viz.service.visit.preferences.ConnectionManager;
+import org.eclipse.ice.viz.service.visit.preferences.ConnectionPreferenceAdapter;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 
 /**
@@ -22,6 +30,12 @@ import org.eclipse.ui.IWorkbench;
  * 
  */
 public class VisItPreferencePage extends AbstractVizPreferencePage {
+
+	/**
+	 * The {@code ConnectionManager} used by this preference page. It is
+	 * represented by a {@link ConnectionComposite} on the page.
+	 */
+	private ConnectionManager connectionManager;
 
 	/**
 	 * The default constructor.
@@ -39,6 +53,11 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 	@Override
 	public void init(IWorkbench workbench) {
 		setDescription("VisIt 2.8.2 Connection Preferences");
+
+		// Create a ConnectionManager and load it from the preference store.
+		connectionManager = new ConnectionManager();
+		ConnectionPreferenceAdapter adapter = new ConnectionPreferenceAdapter();
+		adapter.toConnectionManager(getPreferenceStore(), connectionManager);
 	}
 
 	/*
@@ -58,5 +77,28 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		}
 
 		return;
+	}
+
+	@Override
+	protected Control createContents(Composite parent) {
+		// Create the default layout initially. This also gives us the return
+		// value.
+		Control control = super.createContents(parent);
+
+		Composite container = getFieldEditorParent();
+		GridLayout gridLayout = (GridLayout) container.getLayout();
+
+		// Create a ConnectionComposite to show all of the cached connection
+		// preferences.
+		ConnectionComposite connections = new ConnectionComposite(container,
+				SWT.NONE);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true,
+				gridLayout.numColumns, 1);
+		connections.setLayoutData(gridData);
+
+		// Set the custom Composite's ConnectionManager to fill the table.
+		connections.setConnectionManager(connectionManager);
+
+		return control;
 	}
 }

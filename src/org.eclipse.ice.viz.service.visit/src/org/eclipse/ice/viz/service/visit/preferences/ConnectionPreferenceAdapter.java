@@ -23,7 +23,7 @@ public class ConnectionPreferenceAdapter {
 	private static final String SEPARATOR = ";";
 
 	// TODO Test this class.
-	
+
 	/**
 	 * Pulls all connection preferences from the specified
 	 * {@link IPreferenceStore} and loads them into the specified
@@ -68,10 +68,24 @@ public class ConnectionPreferenceAdapter {
 			Connection connection = new Connection();
 			connection.setId(id[i]);
 			connection.setHost(host[i]);
-			connection.setHostPort(Integer.parseInt(hostPort[i]));
+			try {
+				connection.setHostPort(Integer.parseInt(hostPort[i]));
+			} catch (NumberFormatException e) {
+				System.err
+						.println("ConnectionPreferenceAdapter warning: "
+								+ "Bad host port found in preferences for connection \""
+								+ id + "\"");
+			}
 			connection.setPath(path[i]);
 			connection.setProxy(proxy[i]);
-			connection.setProxyPort(Integer.parseInt(proxyPort[i]));
+			try {
+				connection.setProxyPort(Integer.parseInt(proxyPort[i]));
+			} catch (NumberFormatException e) {
+				System.err
+						.println("ConnectionPreferenceAdapter warning: "
+								+ "Bad proxy port found in preferences for connection \""
+								+ id + "\"");
+			}
 			connection.setUser(user[i]);
 			// Add the connection to the manager.
 			manager.addConnection(connection);
