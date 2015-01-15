@@ -25,8 +25,6 @@ import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 
 import visit.java.client.FileInfo;
 import visit.java.client.ViewerMethods;
@@ -102,13 +100,9 @@ public class VisItPlot implements IPlot {
 	public Map<String, String[]> getPlotTypes() throws Exception {
 
 		// Determine the VisIt FileInfo for the data source.
-		FileInfo info = findFileInfo();
-		// FIXME When the FileInfo can be retrieved from the ViewerMethods
-		// class, remove the above line (and remove the method!) and uncomment
-		// the below lines. 
-//		ViewerMethods methods = connection.getViewerMethods();
-//		methods.openDatabase(sourcePath);
-//		FileInfo info = methods.getFileInfo();
+		ViewerMethods methods = connection.getViewerMethods();
+		methods.openDatabase(sourcePath);
+		FileInfo info = methods.getDatabaseInfo();
 
 		// Get all of the plot types and plots in the file.
 		List<String> plots;
@@ -227,45 +221,6 @@ public class VisItPlot implements IPlot {
 		widget.drawPlots();
 
 		return;
-	}
-
-	/**
-	 * Finds the current {@link FileInfo} for the data {@link #source}. This
-	 * includes information like available plots.
-	 * 
-	 * @return A {@code FileInfo} for the data source.
-	 */
-	private FileInfo findFileInfo() {
-		// FIXME Currently, we *must* have a VisItSwtWidget in order to pull
-		// FileInfo from the VisIt connection. This is irksome because we have
-		// to have already added the widget (a Canvas) to a Composite. Normally,
-		// we would use the IPlot#draw method to draw the Canvas, but this
-		// method takes a plot type, which must be obtained from the FileInfo.
-		// Chicken then egg, or egg then chicken?
-
-		// To get around this problem, we just create a temporary Canvas in an
-		// invisible shell, get the FileInfo, and close the Canvas.
-		FileInfo info = null;
-
-		// To get the FileInfo from VisIt, you have to open the file path in the
-		// VisIt database first, then request a FileInfo object from the
-		// connection.
-
-		if (canvas != null) {
-			canvas.getViewerMethods().openDatabase(sourcePath);
-			info = canvas.getFileInfo();
-		} else {
-			// If there is no Canvas available yet, create a temporary one (this
-			// is the part that should be fixed as noted above!).
-			Shell tmpShell = new Shell(Display.getCurrent());
-			VisItSwtWidget tmpCanvas = (canvas != null ? canvas : createCanvas(
-					tmpShell, SWT.NONE));
-			tmpCanvas.getViewerMethods().openDatabase(sourcePath);
-			info = tmpCanvas.getFileInfo();
-			tmpShell.dispose();
-		}
-
-		return info;
 	}
 
 	/**
