@@ -12,6 +12,7 @@
 package org.eclipse.ice.viz.service.visit;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
+import org.eclipse.ice.viz.service.visit.preferences.Connection;
 import org.eclipse.ice.viz.service.visit.preferences.ConnectionComposite;
 import org.eclipse.ice.viz.service.visit.preferences.ConnectionManager;
 import org.eclipse.ice.viz.service.visit.preferences.ConnectionPreferenceAdapter;
@@ -58,6 +59,10 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		connectionManager = new ConnectionManager();
 		ConnectionPreferenceAdapter adapter = new ConnectionPreferenceAdapter();
 		adapter.toConnectionManager(getPreferenceStore(), connectionManager);
+		
+		// FIXME Temporarily add a basic connection.
+		connectionManager.clear();
+		connectionManager.addConnection(new Connection());
 	}
 
 	/*

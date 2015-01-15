@@ -1,9 +1,19 @@
 package org.eclipse.ice.viz.service.visit.preferences;
 
+import org.eclipse.ice.client.widgets.properties.CellColumnLabelProvider;
+import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
+import org.eclipse.ice.client.widgets.properties.TextCellEditingSupport;
+import org.eclipse.ice.viz.service.visit.ConnectionPreference;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.window.ToolTip;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 
 /**
  * This {@code Composite} renders a table of {@link Connection}s contained by a
@@ -66,13 +76,13 @@ public class ConnectionComposite extends Composite {
 			this.manager = manager;
 
 			// Update the TableViewer on the UI thread.
-			Display.getCurrent().asyncExec(new Runnable() {
-				@Override
-				public void run() {
+//			Display.getCurrent().asyncExec(new Runnable() {
+//				@Override
+//				public void run() {
 					tableViewer.setInput(manager);
 					tableViewer.refresh();
-				}
-			});
+//				}
+//			});
 		}
 
 		return;
@@ -84,11 +94,27 @@ public class ConnectionComposite extends Composite {
 	 * @return A new {@code TableViewer}.
 	 */
 	private TableViewer createTableViewer() {
-		TableViewer viewer = new TableViewer(this);
+		
+		// Create the TableViewer and the underlying Table Control.
+		TableViewer viewer = new TableViewer(this, SWT.BORDER
+				| SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
+		// Set some properties for the table.
+		Table table = viewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+
+		// Set up the content provider for the viewer. Now the viewer's input
+		// can be set.
 		viewer.setContentProvider(new ConnectionContentProvider());
+
+		// Enable tool tips for the Table's cells.
+		ColumnViewerToolTipSupport.enableFor(viewer, ToolTip.NO_RECREATE);
+
 		return viewer;
 	}
 
+	// TODO We may just be able to use a TableComponent...
+	
 	/**
 	 * Adds columns to the specified {@code TableViewer}.
 	 * 
@@ -96,6 +122,21 @@ public class ConnectionComposite extends Composite {
 	 *            The {@code TableViewer} that needs columns.
 	 */
 	private void addTableViewerColumns(TableViewer tableViewer) {
-		// TODO
+		
+		TableColumn column;
+		ICellContentProvider contentProvider;
+		
+		TableViewerColumn idColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		column = idColumn.getColumn();
+		column.setText("Connection Name");
+		column.setToolTipText(ConnectionPreference.ConnectionID.getDescription());
+		column.setResizable(true);
+		contentProvider = new ConnectionCellContentProvider();
+		idColumn.setLabelProvider(new CellColumnLabelProvider(contentProvider));
+		idColumn.setEditingSupport(new TextCellEditingSupport(tableViewer,
+				contentProvider));
+
+		column.pack();
+		
 	}
 }

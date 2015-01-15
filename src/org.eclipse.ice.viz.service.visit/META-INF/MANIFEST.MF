@@ -5,17 +5,14 @@ Bundle-SymbolicName: org.eclipse.ice.viz.service.visit;singleton:=true
 Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gov.lbnl.visit.swt,
- org.eclipse.core.commands,
+ org.eclipse.ice.client.widgets.properties,
  org.eclipse.ice.client.widgets.viz.service,
  org.eclipse.ice.viz.service,
- org.eclipse.jface.dialogs,
  org.eclipse.jface.preference,
- org.eclipse.jface.resource,
  org.eclipse.swt,
  org.eclipse.swt.graphics,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
- org.eclipse.ui.plugin,
  visit.java.client
 Export-Package: org.eclipse.ice.viz.service.visit
 Service-Component: OSGI-INF/visitVisService.xml
