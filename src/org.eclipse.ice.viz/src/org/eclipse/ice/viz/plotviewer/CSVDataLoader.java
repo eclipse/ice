@@ -110,37 +110,15 @@ public class CSVDataLoader {
 	}
 
 	/**
-	 * This method calls the regular {@link #load(File, boolean)
-	 * CSVDataProvider.load(...)} method without any special delimiters enabled.
-	 * 
-	 * @param csvInputFile
-	 *            The CSV file to load
-	 * @return The contents of the CSV file as a CSVDataProvider object
-	 */
-	public CSVDataProvider load(File csvInputFile) {
-
-		// Call the load method with special delimiters disabled
-		return load(csvInputFile, false);
-
-	}
-
-	/**
 	 * This method loads a CSV input file and returns the contents as a
-	 * CSVDataProvider object. By default, commas (,) are the only valid
-	 * delimiters. However, if the specialDelimitersEnabled flag is set to true,
-	 * colons (:), semicolons (;) and forward-slashes (/) will also be
-	 * considered delimiters in feature names only.
+	 * CSVDataProvider object.
 	 * 
 	 * @param csvInputFile
 	 *            The CSV input file to load
-	 * @param specialDelimitersEnabled
-	 *            Indicates if colons, semicolons and forward-slashes in feature
-	 *            names should also be considered delimiters.
 	 * @return The contents of the CSV file as a CSVDataProvider object
 	 * @throws Exception
 	 */
-	public CSVDataProvider load(File csvInputFile,
-			boolean specialDelimitersEnabled) {
+	public CSVDataProvider load(File csvInputFile) {
 		// Local Declarations
 		CSVDataProvider dataSet = new CSVDataProvider();
 		ArrayList<String> features = new ArrayList<String>();
@@ -163,25 +141,21 @@ public class CSVDataLoader {
 			inputStream = new BufferedReader(new FileReader(csvInputFile));
 
 			// Begin reading the file. Find the line which contains the list
-			// of features, denoted either by the "#somefeature" format, or 
-			// just use line 1 if the hash-format is not used
+			// of features, denoted either by the "#somefeature"-style label 
+			// format, or just use line 1 if the hash-format is not used
 			while ((line = inputStream.readLine()) != null
 					&& (line.contains("#") || lineNumber == 1)) {
 				
-				// Replace special characters if parsing them is not enabled
-				if (specialDelimitersEnabled) {
-					
-					 // Check for the case where the line contains ":",";","/"
-					 // For example, #features: or #features; or #features/
-					if (line.toLowerCase().contains(":")
-							|| line.toLowerCase().contains(";")
-							|| line.toLowerCase().contains("/")) {
-						
-						// Replace all special delimiters with commas
-						line = line.replaceAll(":", ",");
-						line = line.replaceAll(";", ",");
-						line = line.replaceAll("/", ",");
-					}
+				// Replace characters if we can find a match to the 
+				// "#label:stuff", "#label;stuff" or "#label/stuff" formats
+				// (not whitespace sensitive)
+				if (line.matches("#\\s*\\w+\\s*([:;/]).+")) {
+							
+					// Replace all special delimiters (":", ";", "/") with
+					// commas
+					line = line.replaceAll(":", ",");
+					line = line.replaceAll(";", ",");
+					line = line.replaceAll("/", ",");
 				}
 				
 				// Split the line at each comma
@@ -885,45 +859,19 @@ public class CSVDataLoader {
 	}
 
 	/**
-	 * This method calls the regular {@link #load(String, boolean)
-	 * CSVDataLoader.load(...)} method with special delimiters disabled.
-	 * 
-	 * @param csvFileName
-	 * @return
-	 */
-	public CSVDataProvider load(String csvFileName) {
-
-		// Call the load method with special delimiters disabled
-		return load(csvFileName, false);
-	}
-
-	/**
 	 * Loads the FileName via the CSVDataProvider
 	 * 
 	 * @param csvFileName
 	 * @return
 	 */
-	public CSVDataProvider load(String csvFileName,
-			boolean specialDelimitersEnabled) {
+	public CSVDataProvider load(String csvFileName) {
 		/**
 		 * Invocation of setCSVInputString(csvFileName) and setCSVInputFile(new
 		 * File(csvFileName)). Returns the load method.
 		 */
 		this.setCSVInputString(csvFileName);
 		this.setCSVInputFile(new File(csvFileName));
-		return load(specialDelimitersEnabled);
-	}
-
-	/**
-	 * This method calls the regular {@link #load(boolean)
-	 * CSVDataLoader.load(...)} method with special delimiters disabled.
-	 * 
-	 * @return
-	 */
-	public CSVDataProvider load() {
-
-		// Call the load method with special delimiters disabled
-		return this.load(false);
+		return load();
 	}
 
 	/**
@@ -931,13 +879,13 @@ public class CSVDataLoader {
 	 * 
 	 * @return
 	 */
-	public CSVDataProvider load(boolean specialDelimitersEnabled) {
+	public CSVDataProvider load() {
 		/**
 		 * Checks that the InputFile is not null before it returns load
 		 */
 		if (this.csvInputFile != null) {
 			try {
-				return load(csvInputFile, specialDelimitersEnabled);
+				return load(csvInputFile);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
