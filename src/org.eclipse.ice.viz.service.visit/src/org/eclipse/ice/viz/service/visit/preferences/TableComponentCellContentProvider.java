@@ -7,7 +7,7 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.graphics.Image;
 
 // TODO Documentation
-public class ListCellContentProvider implements
+public class TableComponentCellContentProvider implements
 		ICellContentProvider {
 
 	/**
@@ -30,7 +30,7 @@ public class ListCellContentProvider implements
 		return indexElement;
 	}
 
-	public ListCellContentProvider(ICellContentProvider contentProvider, int index) {
+	public TableComponentCellContentProvider(ICellContentProvider contentProvider, int index) {
 		realProvider = contentProvider;
 		this.index = index;
 	}

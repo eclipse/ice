@@ -9,6 +9,7 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -201,7 +202,9 @@ public class TableComponentContentProvider implements
 		columns.clear();
 
 		EntryCellContentProvider basicContentProvider = new EntryCellContentProvider();
-
+		EntryCellEditingSupport basicEditingSupport = new EntryCellEditingSupport(
+				viewer, basicContentProvider);
+		
 		// Add a new column for each Entry.
 		for (int i = 0; i < rowTemplate.size(); i++) {
 			Entry entry = rowTemplate.get(i);
@@ -216,10 +219,13 @@ public class TableComponentContentProvider implements
 			columnWidget.setToolTipText(entry.getDescription());
 			columnWidget.setResizable(true);
 
-			ICellContentProvider contentProvider = new ListCellContentProvider(
+			// Add the ColumnLabelProvider and the EditingSupport.
+			ICellContentProvider contentProvider = new TableComponentCellContentProvider(
 					basicContentProvider, i);
+			EditingSupport editingSupport = new TableComponentCellEditingSupport(
+					viewer, basicEditingSupport, i);
 			column.setLabelProvider(new CellColumnLabelProvider(contentProvider));
-			// TODO EditingSupport
+			column.setEditingSupport(editingSupport);
 		}
 
 		// Refresh the viewer and re-adjust the widths of the columns.
