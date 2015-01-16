@@ -64,9 +64,9 @@
 <unit id="org.eclipse.rse.ftp.feature.group" version="3.2.0.201305152119"/>
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.9.2.v20140203-1126"/>
 <unit id="org.eclipse.tm.terminal.serial.feature.group" version="2.1.300.201308290741"/>
+<unit id="org.eclipse.epp.package.automotive.feature.feature.group" version="2.0.2.20140224-0000"/>
 <unit id="org.eclipse.epp.package.rcp.feature.feature.group" version="2.0.2.20140224-0000"/>
 <unit id="org.eclipse.epp.package.common.feature.feature.group" version="2.0.2.20140224-0000"/>
-<unit id="org.eclipse.epp.package.automotive.feature.feature.group" version="2.0.2.20140224-0000"/>
 <repository location="http://download.eclipse.org/releases/kepler"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
