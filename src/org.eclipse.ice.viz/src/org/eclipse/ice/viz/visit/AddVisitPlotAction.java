@@ -17,9 +17,9 @@ import gov.lbnl.visit.swt.VisItSwtWidget;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.PlotEntryContentProvider;
 import org.eclipse.ice.viz.VizFileViewer;
-import org.eclipse.ice.viz.VizResource;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -553,7 +553,7 @@ public class AddVisitPlotAction extends Action {
 				}
 
 				widget.getViewerMethods().openDatabase(dbPath);
-				FileInfo fileInfo = widget.getFileInfo();
+				FileInfo fileInfo = widget.getViewerMethods().getDatabaseInfo();
 				// --------------------------------------------- //
 
 				// Create the groups for meshes, scalars, vectors, and

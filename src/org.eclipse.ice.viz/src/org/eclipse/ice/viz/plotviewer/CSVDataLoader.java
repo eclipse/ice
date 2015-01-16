@@ -110,21 +110,20 @@ public class CSVDataLoader {
 	}
 
 	/**
-	 * This method calls the regular 
-	 * {@link #load(File, boolean) CSVDataProvider.load(...)} method without 
-	 * any special delimiters enabled.
+	 * This method calls the regular {@link #load(File, boolean)
+	 * CSVDataProvider.load(...)} method without any special delimiters enabled.
 	 * 
 	 * @param csvInputFile
-	 * 				The CSV file to load
-	 * @return		The contents of the CSV file as a CSVDataProvider object
+	 *            The CSV file to load
+	 * @return The contents of the CSV file as a CSVDataProvider object
 	 */
 	public CSVDataProvider load(File csvInputFile) {
-		
+
 		// Call the load method with special delimiters disabled
 		return load(csvInputFile, false);
-		
+
 	}
-	
+
 	/**
 	 * This method loads a CSV input file and returns the contents as a
 	 * CSVDataProvider object. By default, commas (,) are the only valid
@@ -133,80 +132,47 @@ public class CSVDataLoader {
 	 * considered delimiters in feature names only.
 	 * 
 	 * @param csvInputFile
-	 * 				The CSV input file to load
+	 *            The CSV input file to load
 	 * @param specialDelimitersEnabled
-	 * 				Indicates if colons, semicolons and forward-slashes in
-	 * 				feature names should also be considered delimiters.
-	 * @return		The contents of the CSV file as a CSVDataProvider object
+	 *            Indicates if colons, semicolons and forward-slashes in feature
+	 *            names should also be considered delimiters.
+	 * @return The contents of the CSV file as a CSVDataProvider object
 	 * @throws Exception
 	 */
-	public CSVDataProvider load(File csvInputFile, 
-									boolean specialDelimitersEnabled) {
-		/**
-		 * Instantiate the dataSet
-		 */
+	public CSVDataProvider load(File csvInputFile,
+			boolean specialDelimitersEnabled) {
+		// Local Declarations
 		CSVDataProvider dataSet = new CSVDataProvider();
-		/**
-		 * ArrayList of String to hold features
-		 */
 		ArrayList<String> features = new ArrayList<String>();
-		/**
-		 * ArrayList of String to hold units
-		 */
 		ArrayList<String> units = new ArrayList<String>();
-		/**
-		 * HashMap for the Errors and their indices
-		 */
 		HashMap<Integer, Integer> featureErrorIndices = new HashMap<Integer, Integer>();
-
-		/**
-		 * File Reader
-		 */
 		BufferedReader inputStream = null;
-
-		/**
-		 * Reading in the data file line by line and passing to the provider
-		 */
+		String line;
+		String[] commentLine;
+		String[] featureLine;
+		int commentLineLength;
+		int featureLineLength = 0;
+		boolean hasHashFeature = false;
+		int elementOffset;
+		
+		//Reading in the data file line by line and passing to the provider
 		try {
 			/**
 			 * Initialize an input BufferedReader stream
 			 */
 			inputStream = new BufferedReader(new FileReader(csvInputFile));
-			/**
-			 * String variable for each line of the file
-			 */
-			String line;
-			/**
-			 * Array for splitting the line by comma commentLine - for splitting
-			 * comments (like units, time-Units, and times) featureLine for
-			 * splitting features commentLineDelim used to deal with other
-			 * delimiters that may be in the line
-			 */
-			String[] commentLine;
-			String[] featureLine;
-			int commentLineLength;
-			int featureLineLength = 0;
-			
-			int lineNumber = 1;
-			boolean hasHashFeature = false;
-			int elementOffset;
+
 			/**
 			 * While loop that parses the comments for the features,
 			 * units,times, and time-units
 			 */
-			while ((line = inputStream.readLine()) != null && 
-					(line.contains("#") || lineNumber == 1)) {
-
-				// If we already got the features and the next line contains
-				// data, then just break out of the loop now
-				if (!features.isEmpty() && !line.contains("#")) {
-					break;
-				}
-				
+			while ((line = inputStream.readLine()) != null
+					&& line.contains("#")) {
+				// Replace special characters if parsing them is not enabled
 				if (specialDelimitersEnabled) {
 					/**
-					 * Check for the case where the line contains ":",";","/" For
-					 * example, #features: or #features; or #features/
+					 * Check for the case where the line contains ":",";","/"
+					 * For example, #features: or #features; or #features/
 					 */
 					if (line.toLowerCase().contains(":")
 							|| line.toLowerCase().contains(";")
@@ -229,14 +195,15 @@ public class CSVDataLoader {
 					commentLine[i] = commentLine[i].trim();
 				}
 
-				// Check if the line contains the "#feature" tag (this is used later)
+				// Check if the line contains the "#feature" tag (this is used
+				// later)
 				hasHashFeature = line.toLowerCase().contains("#features,");
-				
+
 				/**
 				 * Checks for the features, units, times, and time-units
 				 * keywords
 				 */
-				if (!line.contains("#") || hasHashFeature) {
+				if (hasHashFeature) {
 					/**
 					 * Initialize the pattern for the error and uncertainty of
 					 * the features
@@ -260,32 +227,16 @@ public class CSVDataLoader {
 							 * the hashmap.
 							 */
 							featureErrorIndices.put(
-									features.indexOf(
-											match.group(1)), i - elementOffset);
+									features.indexOf(match.group(1)), i
+											- elementOffset);
 						}
 						/**
 						 * Add array commentLine to features
 						 */
 						featureLineLength = commentLine.length;
-						features.add(commentLine[i]);						
+						features.add(commentLine[i]);
 					}
-					
-					/**
-					 * If the file had no given features, create a set of features
-					 * x0,x1,x2,...,xn for the fakeDataSet
-					 */
-					if (features.isEmpty()) {
-						
-						// Split the line at each comma
-						featureLine = line.trim().split(",");
-						
-						// Create as many dummy feature names as there were splits
-						featureLineLength = featureLine.length;
-						for (int i = 0; i < featureLine.length; i++) {
-							features.add("x" + i);
-						}
-					}
-					
+
 				} else if (line.toLowerCase().contains("#units,")) {
 					/**
 					 * Loops through the split line and appends the ArrayList of
@@ -298,8 +249,8 @@ public class CSVDataLoader {
 							units.add(commentLine[i]);
 						}
 					} else {
-						System.out
-								.println("Number of units and features do not match.");
+						System.out.println("Number of units and "
+								+ "features do not match.");
 					}
 
 				} else if (line.toLowerCase().contains("#time-units,")) {
@@ -320,9 +271,7 @@ public class CSVDataLoader {
 					// set the data height in the provider
 					dataSet.setDataHeight(dataHeight);
 				}
-				
-				// Increment the line counter
-				lineNumber++;
+
 			}
 			
 			/**
@@ -330,17 +279,15 @@ public class CSVDataLoader {
 			 * x0,x1,x2,...,xn for the fakeDataSet
 			 */
 			if (features.isEmpty()) {
-				
+
 				// Split the line at each comma
 				featureLine = line.trim().split(",");
-				
+
 				// Create as many dummy feature names as there were splits
-				featureLineLength = featureLine.length;
 				for (int i = 0; i < featureLine.length; i++) {
 					features.add("x" + i);
 				}
 			}
-
 			/**
 			 * Declare an IData object to store the data
 			 */
@@ -365,7 +312,6 @@ public class CSVDataLoader {
 						 */
 						data = new CSVData(features.get(i),
 								Double.parseDouble(dataLines[i]));
-
 						/**
 						 * Set the uncertainty using the HashMap by finding the
 						 * column of error associated with this data
@@ -425,8 +371,8 @@ public class CSVDataLoader {
 			/**
 			 * While loop to read the rest of the data lines
 			 */
-			while ((line = inputStream.readLine()) != null
-					&& !line.isEmpty() && !line.startsWith("#")) {
+			while ((line = inputStream.readLine()) != null && !line.isEmpty()
+					&& !line.startsWith("#")) {
 				/**
 				 * dataLines- for the split input line
 				 */
@@ -942,19 +888,18 @@ public class CSVDataLoader {
 	}
 
 	/**
-	 * This method calls the regular 
-	 * {@link #load(String, boolean) CSVDataLoader.load(...)} method with special 
-	 * delimiters disabled.
+	 * This method calls the regular {@link #load(String, boolean)
+	 * CSVDataLoader.load(...)} method with special delimiters disabled.
 	 * 
 	 * @param csvFileName
 	 * @return
 	 */
 	public CSVDataProvider load(String csvFileName) {
-		
+
 		// Call the load method with special delimiters disabled
 		return load(csvFileName, false);
 	}
-	
+
 	/**
 	 * Loads the FileName via the CSVDataProvider
 	 * 
@@ -962,7 +907,7 @@ public class CSVDataLoader {
 	 * @return
 	 */
 	public CSVDataProvider load(String csvFileName,
-										boolean specialDelimitersEnabled) {
+			boolean specialDelimitersEnabled) {
 		/**
 		 * Invocation of setCSVInputString(csvFileName) and setCSVInputFile(new
 		 * File(csvFileName)). Returns the load method.
@@ -973,17 +918,17 @@ public class CSVDataLoader {
 	}
 
 	/**
-	 * This method calls the regular 
-	 * {@link #load(boolean) CSVDataLoader.load(...)} method with special 
-	 * delimiters disabled.
+	 * This method calls the regular {@link #load(boolean)
+	 * CSVDataLoader.load(...)} method with special delimiters disabled.
+	 * 
 	 * @return
 	 */
 	public CSVDataProvider load() {
-		
+
 		// Call the load method with special delimiters disabled
 		return this.load(false);
 	}
-	
+
 	/**
 	 * Loads csvInputFile via the CSVDataProvider
 	 * 

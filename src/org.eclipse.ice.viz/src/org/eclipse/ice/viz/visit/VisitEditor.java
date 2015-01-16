@@ -159,7 +159,8 @@ public class VisitEditor extends EditorPart {
 		if (getEditorInput() != null
 				&& getEditorInput() instanceof VisitEditorInput) {
 			// Create the VisIt widget
-			vizWidget = new VisItSwtWidget(vizComposite, SWT.BORDER);
+			vizWidget = new VisItSwtWidget(vizComposite, SWT.BORDER
+					| SWT.DOUBLE_BUFFERED);
 			// Create the mouse manager
 			mouseManager = new VisitMouseManager(vizWidget);
 			// Use the mouse wheel to zoom

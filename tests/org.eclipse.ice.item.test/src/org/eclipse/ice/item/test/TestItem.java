@@ -23,6 +23,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
+import org.eclipse.ice.item.IActionFactory;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.messaging.Message;
 

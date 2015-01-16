@@ -668,15 +668,15 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	/**
 	 * This realization of IWriter.write() gets a valid TreeComposite from the
-	 * provided Form and writes it to the given URI as a valid MOOSE *.i input
-	 * file. It throws an uncaught IllegalArgumentException if the Form is not
-	 * valid.
+	 * provided Form and writes it to the given file reference as a valid MOOSE 
+	 * *.i input file. It throws an uncaught IllegalArgumentException if the 
+	 * Form is not valid.
 	 * 
 	 * @param formToWrite
 	 *            The Form containing a valid TreeComposite to be written to the
 	 *            MOOSE input format.
-	 * @param uri
-	 *            The URI of the file to be written.
+	 * @param file
+	 *            Reference to the file we are writing to.
 	 */
 	@Override
 	public void write(Form formToWrite, IFile file) {
@@ -741,12 +741,12 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/**
-	 * This realization of IReader.read() takes the given URI, gets its file
-	 * extension, and calls the appropriate routines to either load a MOOSE
-	 * input file or a MOOSE YAML specification.
+	 * This realization of IReader.read() takes the given file reference, gets
+	 * its file extension, and calls the appropriate routines to either load a
+	 * MOOSE input file or a MOOSE YAML specification.
 	 * 
-	 * @param uri
-	 *            The URI of the file to be read.
+	 * @param file
+	 *            Reference to the file to be read.
 	 */
 	@Override
 	public Form read(IFile file) {
@@ -754,22 +754,22 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		// Local declarations
 		String fileExt = "";
 		Form returnForm = new Form();
-		URI uri = file.getLocationURI();
 
-		// Make sure we have a valid URI
-		if (uri != null) {
+		// Make sure we have a valid file reference
+		if (file != null && file.exists()) {
 			// Local Declarations
+			File mooseFile = new File(file.getLocationURI());
 			ArrayList<TreeComposite> blocks = null;
 			TreeComposite rootNode = new TreeComposite();
 
-			String[] splitPath = uri.getPath().split("\\.(?=[^\\.]+$)");
+			String[] splitPath = mooseFile.getAbsolutePath().split("\\.(?=[^\\.]+$)");
 			if (splitPath.length > 1) {
 				fileExt = splitPath[1];
 			} else {
 				System.out
 						.println("MOOSEFileHandler Message:"
 								+ "File did not have file extension: "
-								+ uri.toString());
+								+ mooseFile.getAbsolutePath());
 				return null;
 			}
 
@@ -777,9 +777,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				// Parse the extension to see if we are loading
 				// YAML or input files.
 				if (fileExt.toLowerCase().equals("yaml")) {
-					blocks = loadYAML(uri.getPath());
+					blocks = loadYAML(mooseFile.getAbsolutePath());
 				} else if (fileExt.toLowerCase().equals("i")) {
-					blocks = loadFromGetPot(uri.getPath());
+					blocks = loadFromGetPot(mooseFile.getAbsolutePath());
 				}
 
 				// If we got a valid file, then construct
@@ -828,11 +828,11 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	/**
 	 * This realization of IReader.findAll() reads a Form in from the given file
-	 * URI and walks the corresponding TreeComposite for occurences of the given
-	 * regular expression.
+	 * reference and walks the corresponding TreeComposite for occurences of the 
+	 * given regular expression.
 	 * 
-	 * @param uri
-	 *            The URI of the file that we are reading.
+	 * @param file
+	 *            The reference to the file we are searching in.
 	 * @param regex
 	 *            The regular expression we should search for.
 	 * 

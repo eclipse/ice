@@ -606,6 +606,9 @@ public class JobLauncher extends Item {
 		Entry fileEntry = null, mpiEntry = null;
 		int numProcs = 1, numTBBThreads = 1;
 
+		// Get the project space directory 
+		String projectSpace = project.getLocation().toOSString();
+
 		// Assign the data components
 		fileData = (DataComponent) form.getComponent(JobLauncherForm.filesId);
 		parallelData = (DataComponent) form
@@ -704,6 +707,7 @@ public class JobLauncher extends Item {
 		actionDataMap.put("hostname", hostname);
 		actionDataMap.put("os", os);
 		actionDataMap.put("accountCode", accountCode);
+		actionDataMap.put("projectSpaceDir", projectSpace);
 		// Add the number of processors to the action data dictionary. It will
 		// always be at least 1.
 		actionDataMap.put("numProcs", String.valueOf(numProcs));

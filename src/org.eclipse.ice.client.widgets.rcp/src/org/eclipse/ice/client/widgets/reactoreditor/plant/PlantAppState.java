@@ -383,6 +383,8 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 			// Set the default position and orientation.
 			flyCam.setPosition(defaultPosition);
 			flyCam.setOrientation(defaultDirection, defaultUp);
+			// The camera should be enabled initially.
+			flyCam.setEnabled(true);
 		}
 
 		return cam;

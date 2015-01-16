@@ -182,6 +182,9 @@ public abstract class ViewAppState extends CompositeAppState implements
 
 			// Register with the EmbeddedView.
 			embeddedView.registerViewClient(this);
+
+			// Make sure the controls are enabled.
+			enableControls();
 		}
 
 		return composite;
@@ -578,19 +581,10 @@ public abstract class ViewAppState extends CompositeAppState implements
 		Object cam = null;
 
 		if (view != null && view == embeddedView) {
-			// TODO Redocument and remove the comments.
-			// // Set up the fly cam. It should be disabled initially.
-			// CustomFlyByCamera flyCam = new
-			// CustomFlyByCamera(view.getCamera());
-			// flyCam.setDragToRotate(true);
-			// flyCam.setMoveSpeed(15.0f);
-			// flyCam.setEnabled(false);
-			//
-			// cam = flyCam;
-
 			FlightCamera flyCam = new FlightCamera(view.getCamera());
 			flyCam.setInputManager(app.getInputManager());
-			flyCam.setEnabled(false);
+			// The camera should be enabled initially.
+			flyCam.setEnabled(true);
 			cam = flyCam;
 		}
 
@@ -598,30 +592,13 @@ public abstract class ViewAppState extends CompositeAppState implements
 	}
 
 	/**
-	 * Enables or disables the default {@link FlightCamera} associated with
-	 * the <code>EmbeddedView</code>.
+	 * Enables or disables the default {@link FlightCamera} associated with the
+	 * <code>EmbeddedView</code>.
 	 */
 	@Override
 	public void updateViewCamera(EmbeddedView view, boolean enabled) {
 
 		if (view != null && view == embeddedView) {
-			// TODO Redocument and remove the comments.
-			// // We need to cast it to a FlyByCamera, which is the default.
-			// CustomFlyByCamera flyCam = (CustomFlyByCamera)
-			// view.getViewCamera();
-			//
-			// // Only proceed if the camera's state is changing.
-			// if (enabled != flyCam.getEnabled()) {
-			// flyCam.setEnabled(enabled);
-			// // We must register or unregister the camera's controls.
-			// if (enabled) {
-			// flyCam.registerWithInput(app.getInputManager());
-			// } else {
-			// flyCam.unregisterInput();
-			// }
-			// // Force the cursor to be visible when the fly cam is enabled.
-			// app.getInputManager().setCursorVisible(true);
-			// }
 			FlightCamera flyCam = (FlightCamera) view.getViewCamera();
 			flyCam.setEnabled(enabled);
 		}

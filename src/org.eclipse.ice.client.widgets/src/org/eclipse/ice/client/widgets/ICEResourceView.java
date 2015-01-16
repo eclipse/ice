@@ -13,6 +13,7 @@
 package org.eclipse.ice.client.widgets;
 
 import org.eclipse.ice.client.common.PropertySource;
+import org.eclipse.ice.client.widgets.viz.service.IVizService;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -37,6 +38,7 @@ import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -50,6 +52,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IPartListener2;
@@ -59,13 +62,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
+import ca.odell.glazedlists.swt.DefaultEventTableViewer;
+
 /**
- * <p>
  * This class is a ViewPart that creates a tree of text files and a tree of
- * image files collected as ICEResourceComponents.
- * </p>
+ * image files collected as ICEResourceComponents.>
  * 
- * @authors Taylor Patterson, Jay Jay Billings
+ * @authors Jay Jay Billings, Taylor Patterson
  */
 public class ICEResourceView extends PlayableViewPart implements
 		IUpdateableListener, IPartListener2, IComponentVisitor {
@@ -73,79 +76,62 @@ public class ICEResourceView extends PlayableViewPart implements
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEResourceView";
 
 	/**
-	 * <p>
 	 * The ResourceComponent managed by this view.
-	 * </p>
 	 */
 	private ResourceComponent resourceComponent;
 
 	/**
-	 * <p>
 	 * The TreeViewer for the ResourceComponent.
-	 * </p>
 	 */
 	private TreeViewer resourceTreeViewer;
 
 	/**
-	 * <p>
 	 * The TabFolder for managing the tabs containing the TreeViewer.
-	 * </p>
 	 */
 	private TabFolder tabFolder;
 
 	/**
-	 * <p>
 	 * Data structure for text-based resources.
-	 * </p>
 	 */
 	private ArrayList<NRVPropertySource> textList = new ArrayList<NRVPropertySource>();
 
 	/**
-	 * <p>
 	 * Data structure for image-based resources.
-	 * </p>
 	 */
 	private ArrayList<NRVPropertySource> imageList = new ArrayList<NRVPropertySource>();
 
 	/**
-	 * <p>
 	 * The ID of the most recently active item.
-	 * </p>
 	 */
 	private int lastFormItemID;
 
 	/**
-	 * <p>
 	 * Mapping of children in the resource tree to their parent resource.
-	 * </p>
 	 */
 	public Hashtable<String, ICEResource> resourceChildMap = new Hashtable<String, ICEResource>();
 
 	/**
-	 * <p>
 	 * The previous button in the tool bar.
-	 * </p>
 	 */
 	private PreviousAction prevAction;
 
 	/**
-	 * <p>
 	 * The play button in the tool bar.
-	 * </p>
 	 */
 	private PlayAction playAction;
 
 	/**
-	 * <p>
-	 * The next button in the tool bar.
-	 * </p>
+	 * The next button in the tool bar.</p>
 	 */
 	private NextAction nextAction;
 
 	/**
-	 * <p>
+	 * The list of VizResources that should be displayed as plots
+	 */
+	private ListComponent<VizResource> plotList = new ListComponent<VizResource>();
+	
+	/**
 	 * The Constructor
-	 * </p>
 	 */
 	public ICEResourceView() {
 		// begin-user-code
@@ -156,19 +142,15 @@ public class ICEResourceView extends PlayableViewPart implements
 		return;
 		// end-user-code
 	}
-
+	
 	/**
-	 * <p>
 	 * This operation sets the ResourceComponent that should be used by the
 	 * ICEResourceView. It also registers the ICEResourceView with the
 	 * ResourceComponent so that it can be notified of state changes through the
 	 * IUpdateableListener interface.
-	 * </p>
 	 * 
 	 * @param component
-	 *            <p>
 	 *            The ResourceComponent
-	 *            </p>
 	 */
 	public void setResourceComponent(ResourceComponent component) {
 		// begin-user-code
@@ -191,15 +173,12 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * This operation retrieves the ResourceComponent that has been rendered by
 	 * the ICEResourceView or null if the component does not exist.
-	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
 	 *         The ResourceComponent or null if the component was not previously
 	 *         set.
-	 *         </p>
 	 */
 	public ResourceComponent getResourceComponent() {
 		// begin-user-code
@@ -208,15 +187,11 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * This operation overrides the ViewPart.createPartControl method to create
 	 * and draw the TreeViewer before registering it as a selection provider.
-	 * </p>
 	 * 
 	 * @param parent
-	 *            <p>
 	 *            The Composite used to create the TreeViewer.
-	 *            </p>
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
@@ -229,6 +204,8 @@ public class ICEResourceView extends PlayableViewPart implements
 		textTab.setText("Files");
 		TabItem imageTab = new TabItem(tabFolder, SWT.NONE, 1);
 		imageTab.setText("Images");
+		TabItem plotTab = new TabItem(tabFolder, SWT.NONE, 2);
+		plotTab.setText("Plots");
 
 		// Create the tool bar and buttons for the view
 		createActions();
@@ -261,7 +238,14 @@ public class ICEResourceView extends PlayableViewPart implements
 				setTreeContent(tabFolder.indexOf((TabItem) event.item));
 			}
 		});
-
+		
+		// Create the Table and table viewer for the Plot tab
+		Table listTable = new Table(tabFolder, SWT.FLAT);
+		DefaultEventTableViewer listTableViewer = new DefaultEventTableViewer(
+				plotList, listTable, plotList);
+		// Register the table control with the plot tab
+	    plotTab.setControl(listTable);
+		
 		return;
 	}
 
