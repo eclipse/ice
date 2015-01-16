@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.client.widgets.properties.CellColumnLabelProvider;
+import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -99,7 +100,8 @@ public class TableComponentContentProvider implements
 
 	/**
 	 * For the root element (the {@link #tableComponent}), this method returns
-	 * the rows in the table.
+	 * the rows in the table. For each row, the {@link Entry} instances in the
+	 * row are returned.
 	 * <p>
 	 * All other input elements are ignored.
 	 * </p>
@@ -198,9 +200,26 @@ public class TableComponentContentProvider implements
 		}
 		columns.clear();
 
+		EntryCellContentProvider basicContentProvider = new EntryCellContentProvider();
+
 		// Add a new column for each Entry.
-		for (Entry entry : rowTemplate) {
-			columns.add(createTableColumn(viewer, entry));
+		for (int i = 0; i < rowTemplate.size(); i++) {
+			Entry entry = rowTemplate.get(i);
+
+			// Create the column for the TableViewer.
+			TableViewerColumn column = new TableViewerColumn(viewer, SWT.LEFT);
+			columns.add(column);
+
+			// Customize the underlying Column widget.
+			TableColumn columnWidget = column.getColumn();
+			columnWidget.setText(entry.getName());
+			columnWidget.setToolTipText(entry.getDescription());
+			columnWidget.setResizable(true);
+
+			ICellContentProvider contentProvider = new ListCellContentProvider(
+					basicContentProvider, i);
+			column.setLabelProvider(new CellColumnLabelProvider(contentProvider));
+			// TODO EditingSupport
 		}
 
 		// Refresh the viewer and re-adjust the widths of the columns.
@@ -212,22 +231,4 @@ public class TableComponentContentProvider implements
 		return;
 	}
 
-	private TableViewerColumn createTableColumn(TableViewer viewer, Entry entry) {
-
-		// Create the column for the TableViewer.
-		TableViewerColumn column = new TableViewerColumn(viewer, SWT.LEFT);
-
-		// Customize the underlying Column widget.
-		TableColumn columnWidget = column.getColumn();
-		columnWidget.setText(entry.getName());
-		columnWidget.setToolTipText(entry.getDescription());
-		columnWidget.setResizable(true);
-
-		EntryCellContentProvider contentProvider = new EntryCellContentProvider();
-		column.setLabelProvider(new CellColumnLabelProvider(contentProvider));
-		// TODO How should we handle EditingSupport?
-		// column.setEditingSupport(new EntryCellEditingSupport)
-
-		return column;
-	}
 }

@@ -62,7 +62,7 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		
 		// FIXME Temporarily add a basic connection.
 		connectionManager.clear();
-		connectionManager.addConnection(new Connection());
+		connectionManager.addRow();
 	}
 
 	/*

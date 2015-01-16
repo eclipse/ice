@@ -47,24 +47,33 @@ public class ConnectionManager extends TableComponent implements IdManager {
 		// ---- id ---- //
 		contentProvider = new BasicEntryContentProvider();
 		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider.setDefaultValue("New Connection...");
 		Entry idEntry = new IdEntry(contentProvider, this);
 		idEntry.setName("Name");
 		template.add(idEntry);
 		// ---- host ---- //
 		contentProvider = new BasicEntryContentProvider();
 		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider.setDefaultValue("localhost");
 		Entry hostEntry = new Entry(contentProvider);
 		hostEntry.setName("Host");
 		template.add(hostEntry);
 		// ---- host port ---- //
 		contentProvider = new BasicEntryContentProvider();
 		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider.setDefaultValue("9600");
 		Entry hostPortEntry = new Entry(contentProvider);
 		hostPortEntry.setName("Host Port");
 		template.add(hostPortEntry);
 		// ---- host OS ---- //
 		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider.setAllowedValueType(AllowedValueType.Discrete);
+		ArrayList<String> systems = new ArrayList<String>(3);
+		systems.add("Windows");
+		systems.add("Linux");
+		systems.add("OS X");
+		contentProvider.setAllowedValues(systems);
+		contentProvider.setDefaultValue("Windows");
 		Entry hostOSEntry = new Entry(contentProvider);
 		hostOSEntry.setName("Host OS");
 		template.add(hostOSEntry);
@@ -77,18 +86,21 @@ public class ConnectionManager extends TableComponent implements IdManager {
 		// ---- proxy ---- //
 		contentProvider = new BasicEntryContentProvider();
 		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider.setDefaultValue("");
 		Entry proxyEntry = new Entry(contentProvider);
 		proxyEntry.setName("Proxy");
 		template.add(proxyEntry);
 		// ---- proxy port ---- //
 		contentProvider = new BasicEntryContentProvider();
 		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider.setDefaultValue("9600");
 		Entry proxyPortEntry = new Entry(contentProvider);
 		proxyPortEntry.setName("Proxy Port");
 		template.add(proxyPortEntry);
 		// ---- VisIt user ---- //
 		contentProvider = new BasicEntryContentProvider();
 		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider.setDefaultValue("");
 		Entry userEntry = new Entry(contentProvider);
 		userEntry.setName("User");
 		template.add(userEntry);
