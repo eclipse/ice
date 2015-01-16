@@ -5,6 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.datastructures.form.TableComponent;
+
 /**
  * A {@code ConnectionManager} manages a list of {@link Connection} preferences
  * for connecting to VisIt instances. It is backed by a {@link LinkedHashMap} to
@@ -19,8 +25,77 @@ import java.util.Map;
  * @author Jordan Deyton
  *
  */
-public class ConnectionManager {
+public class ConnectionManager extends TableComponent implements IdManager {
 
+	
+	public boolean idAvailable(String id) {
+		return id != null && !(id = id.trim()).isEmpty()
+				&& !connections.containsKey(id);
+	}
+	
+	public boolean idAvailable(int id) {
+		return (idAvailable(Integer.toString(id)));
+	}
+	
+	public List<Entry> getTemplate() {
+		List<Entry> template = new ArrayList<Entry>();
+		
+		IEntryContentProvider contentProvider;
+		
+		// TODO descriptions
+		
+		// ---- id ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry idEntry = new IdEntry(contentProvider, this);
+		idEntry.setName("Name");
+		template.add(idEntry);
+		// ---- host ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry hostEntry = new Entry(contentProvider);
+		hostEntry.setName("Host");
+		template.add(hostEntry);
+		// ---- host port ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry hostPortEntry = new Entry(contentProvider);
+		hostPortEntry.setName("Host Port");
+		template.add(hostPortEntry);
+		// ---- host OS ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry hostOSEntry = new Entry(contentProvider);
+		hostOSEntry.setName("Host OS");
+		template.add(hostOSEntry);
+		// ---- path ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry pathEntry = new Entry(contentProvider);
+		pathEntry.setName("Path");
+		template.add(pathEntry);
+		// ---- proxy ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry proxyEntry = new Entry(contentProvider);
+		proxyEntry.setName("Proxy");
+		template.add(proxyEntry);
+		// ---- proxy port ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry proxyPortEntry = new Entry(contentProvider);
+		proxyPortEntry.setName("Proxy Port");
+		template.add(proxyPortEntry);
+		// ---- VisIt user ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry userEntry = new Entry(contentProvider);
+		userEntry.setName("User");
+		template.add(userEntry);
+		
+		return template;
+	}
+	
 	// TODO Test this class. We may want to add equals/hashcode methods.
 	
 	/**
@@ -28,6 +103,10 @@ public class ConnectionManager {
 	 */
 	private final Map<String, Connection> connections = new LinkedHashMap<String, Connection>();
 
+	public ConnectionManager() {
+		this.setRowTemplate((ArrayList<Entry>) getTemplate());
+	}
+	
 	/**
 	 * Gets an insertion-ordered list of all {@link Connection} IDs.
 	 * 

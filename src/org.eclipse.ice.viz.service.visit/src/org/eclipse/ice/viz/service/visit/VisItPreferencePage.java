@@ -13,9 +13,9 @@ package org.eclipse.ice.viz.service.visit;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.visit.preferences.Connection;
-import org.eclipse.ice.viz.service.visit.preferences.ConnectionComposite;
 import org.eclipse.ice.viz.service.visit.preferences.ConnectionManager;
 import org.eclipse.ice.viz.service.visit.preferences.ConnectionPreferenceAdapter;
+import org.eclipse.ice.viz.service.visit.preferences.TableComponentComposite;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -92,17 +92,17 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 
 		Composite container = getFieldEditorParent();
 		GridLayout gridLayout = (GridLayout) container.getLayout();
-
+		
 		// Create a ConnectionComposite to show all of the cached connection
 		// preferences.
-		ConnectionComposite connections = new ConnectionComposite(container,
-				SWT.NONE);
+		TableComponentComposite connections = new TableComponentComposite(
+				container, SWT.NONE);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true,
 				gridLayout.numColumns, 1);
 		connections.setLayoutData(gridData);
 
-		// Set the custom Composite's ConnectionManager to fill the table.
-		connections.setConnectionManager(connectionManager);
+		// Set the custom Composite's TableComponent to fill the table.
+		connections.setTableComponent(connectionManager);
 
 		return control;
 	}
