@@ -12,7 +12,6 @@
 package org.eclipse.ice.viz.service.visit;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
-import org.eclipse.ice.viz.service.visit.preferences.Connection;
 import org.eclipse.ice.viz.service.visit.preferences.ConnectionManager;
 import org.eclipse.ice.viz.service.visit.preferences.ConnectionPreferenceAdapter;
 import org.eclipse.ice.viz.service.visit.preferences.TableComponentComposite;

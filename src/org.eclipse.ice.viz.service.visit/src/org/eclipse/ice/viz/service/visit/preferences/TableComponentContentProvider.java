@@ -114,8 +114,6 @@ public class TableComponentContentProvider implements
 
 		// Handle the TableComponent.
 		if (inputElement == tableComponent) {
-			// To get the rows, we have to get the IDs and then query the
-			// TableComponent for each row ID.
 			List<Integer> ids = tableComponent.getRowIds();
 			int size = ids.size();
 			elements = new Object[size];

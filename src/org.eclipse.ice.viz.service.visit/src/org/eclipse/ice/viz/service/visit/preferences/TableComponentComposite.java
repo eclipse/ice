@@ -7,6 +7,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
@@ -185,6 +186,20 @@ public class TableComponentComposite extends Composite {
 		};
 		viewer.addSelectionChangedListener(listener);
 
+		// Use a custom comparer to just check references rather than calling
+		// equals(Object), which causes strange behavior when multiple rows have
+		// the same values.
+		viewer.setComparer(new IElementComparer() {
+			@Override
+			public int hashCode(Object element) {
+				return element.hashCode();
+			}
+			@Override
+			public boolean equals(Object a, Object b) {
+				return a == b;
+			}
+		});
+		
 		return viewer;
 	}
 
@@ -199,6 +214,11 @@ public class TableComponentComposite extends Composite {
 			@Override
 			public void run() {
 				tableComponent.addRow();
+				
+				System.out.println("The table's row list is:");
+				for (int i = 0; i < tableComponent.getRowIds().size(); i++) {
+					System.out.println(tableComponent.getRow(i).toString());
+				}
 			}
 		};
 		addRowAction.setToolTipText("Adds a new, default row.");
