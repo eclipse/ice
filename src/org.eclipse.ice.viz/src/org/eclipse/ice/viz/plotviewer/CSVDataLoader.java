@@ -28,7 +28,7 @@ import org.eclipse.ice.analysistool.IData;
 /**
  * CSVDataLoader instantiates a CSVDataProvider and returns it
  * 
- * @author Claire Saunders
+ * @author Claire Saunders, Anna Wojtowicz
  * 
  */
 public class CSVDataLoader {
@@ -110,37 +110,15 @@ public class CSVDataLoader {
 	}
 
 	/**
-	 * This method calls the regular {@link #load(File, boolean)
-	 * CSVDataProvider.load(...)} method without any special delimiters enabled.
-	 * 
-	 * @param csvInputFile
-	 *            The CSV file to load
-	 * @return The contents of the CSV file as a CSVDataProvider object
-	 */
-	public CSVDataProvider load(File csvInputFile) {
-
-		// Call the load method with special delimiters disabled
-		return load(csvInputFile, false);
-
-	}
-
-	/**
 	 * This method loads a CSV input file and returns the contents as a
-	 * CSVDataProvider object. By default, commas (,) are the only valid
-	 * delimiters. However, if the specialDelimitersEnabled flag is set to true,
-	 * colons (:), semicolons (;) and forward-slashes (/) will also be
-	 * considered delimiters in feature names only.
+	 * CSVDataProvider object.
 	 * 
 	 * @param csvInputFile
 	 *            The CSV input file to load
-	 * @param specialDelimitersEnabled
-	 *            Indicates if colons, semicolons and forward-slashes in feature
-	 *            names should also be considered delimiters.
 	 * @return The contents of the CSV file as a CSVDataProvider object
 	 * @throws Exception
 	 */
-	public CSVDataProvider load(File csvInputFile,
-			boolean specialDelimitersEnabled) {
+	public CSVDataProvider load(File csvInputFile) {
 		// Local Declarations
 		CSVDataProvider dataSet = new CSVDataProvider();
 		ArrayList<String> features = new ArrayList<String>();
@@ -152,96 +130,86 @@ public class CSVDataLoader {
 		String[] featureLine;
 		int commentLineLength;
 		int featureLineLength = 0;
+		int lineNumber = 1;
 		boolean hasHashFeature = false;
 		int elementOffset;
 		
-		//Reading in the data file line by line and passing to the provider
+		// Reading in the data file line by line and passing to the provider
 		try {
-			/**
-			 * Initialize an input BufferedReader stream
-			 */
+			
+			// Create a BufferedReader for reading the file
 			inputStream = new BufferedReader(new FileReader(csvInputFile));
 
-			/**
-			 * While loop that parses the comments for the features,
-			 * units,times, and time-units
-			 */
+			// Begin reading the file. Find the line which contains the list
+			// of features, denoted either by the "#somefeature"-style label 
+			// format, or just use line 1 if the hash-format is not used
 			while ((line = inputStream.readLine()) != null
-					&& line.contains("#")) {
-				// Replace special characters if parsing them is not enabled
-				if (specialDelimitersEnabled) {
-					/**
-					 * Check for the case where the line contains ":",";","/"
-					 * For example, #features: or #features; or #features/
-					 */
-					if (line.toLowerCase().contains(":")
-							|| line.toLowerCase().contains(";")
-							|| line.toLowerCase().contains("/")) {
-						/**
-						 * If the line does contain ":", ";","/" replace with a
-						 * comma and split the line
-						 */
-						line = line.replaceAll(":", ",");
-						line = line.replaceAll(";", ",");
-						line = line.replaceAll("/", ",");
-					}
+					&& (line.contains("#") || lineNumber == 1)) {
+				
+				// Replace characters if we can find a match to the 
+				// "#label:stuff", "#label;stuff" or "#label/stuff" formats
+				// (not whitespace sensitive)
+				if (line.matches("#\\s*\\w+\\s*([:;/]).+")) {
+							
+					// Replace all special delimiters (":", ";", "/") with
+					// commas
+					line = line.replaceAll(":", ",");
+					line = line.replaceAll(";", ",");
+					line = line.replaceAll("/", ",");
 				}
-				/**
-				 * Split the line
-				 */
+				
+				// Split the line at each comma
 				commentLine = line.trim().split(",");
 				commentLineLength = commentLine.length;
 				for (int i = 0; i < commentLineLength; i++) {
 					commentLine[i] = commentLine[i].trim();
 				}
 
-				// Check if the line contains the "#feature" tag (this is used
-				// later)
-				hasHashFeature = line.toLowerCase().contains("#features,");
+				// Check if the line contains the "#feature" tag
+				hasHashFeature = line.toLowerCase().contains("#features");
 
-				/**
-				 * Checks for the features, units, times, and time-units
-				 * keywords
-				 */
-				if (hasHashFeature) {
-					/**
-					 * Initialize the pattern for the error and uncertainty of
-					 * the features
-					 */
+				// If this line contains all the feature names (either with the
+				// "#feature" format (or simply by being line 1 if it contains
+				// no hashes), add them to the features ArrayList
+				if (hasHashFeature || 
+						(!line.contains("#") && lineNumber == 1)) {
+					
+					// First, get the number of features. This is used later
+					// to check each line contains the same number of entries
+					// as there are number of features
+					featureLineLength = commentLine.length;
+					
+					// We'll also check if there are error/uncertainty provided
+					// for each feature. Set up regex matcher.					
 					String pattern = "(.*)_(error|uncertainty)";
 					Pattern errorPattern = Pattern.compile(pattern);
-					/**
-					 * Loops through the split line and appends to ArrayList of
-					 * features. If error/uncertainties exist in the file, they
-					 * are added to the hashmap
-					 */
+					Matcher match = null;
+					
+					// Now loop through the split line, add features to the
+					// list of features, and look for any error/uncertainty 
+					// matches
 					elementOffset = (hasHashFeature ? 1 : 0);
 					for (int i = elementOffset; i < commentLineLength; i++) {
-						/**
-						 * Match the pattern for the error|uncertainty
-						 */
-						Matcher match = errorPattern.matcher(commentLine[i]);
+						
+						// Add the current element of commentLine to the
+						// ArrayList of features
+						features.add(commentLine[i]);
+						
+						// Try to find any error/uncertainty match
+						match = errorPattern.matcher(commentLine[i]);
 						if (match.find()) {
-							/**
-							 * Add the feature and it's corresponding error to
-							 * the hashmap.
-							 */
+
+							 // Add the feature and it's corresponding error to
+							 // the feature error hashmap.
 							featureErrorIndices.put(
 									features.indexOf(match.group(1)), i
 											- elementOffset);
 						}
-						/**
-						 * Add array commentLine to features
-						 */
-						featureLineLength = commentLine.length;
-						features.add(commentLine[i]);
 					}
-
-				} else if (line.toLowerCase().contains("#units,")) {
-					/**
-					 * Loops through the split line and appends the ArrayList of
-					 * units
-					 */
+				} else if (line.toLowerCase().contains("#units")) {
+					
+					// Loops through the split line and appends to the 
+					// ArrayList of units
 					boolVarComp = ValueComp(featureLineLength,
 							commentLineLength);
 					if (boolVarComp) {
@@ -252,14 +220,15 @@ public class CSVDataLoader {
 						System.out.println("Number of units and "
 								+ "features do not match.");
 					}
-
-				} else if (line.toLowerCase().contains("#time-units,")) {
-					/**
-					 * Sets the timeUnits
-					 */
+					
+				} else if (line.toLowerCase().contains("#time-units")) {
+					
+					// Set the time units
 					timeUnits = commentLine[1];
 					dataSet.setTimeUnits(timeUnits);
-				} else if (line.toLowerCase().contains("#matrix,")) {
+					
+				} else if (line.toLowerCase().contains("#matrix")) {
+					
 					// Splits the line by comma
 					String[] matrixData = line.split(",");
 					// get the data width
@@ -270,8 +239,11 @@ public class CSVDataLoader {
 					dataSet.setDataWidth(dataWidth);
 					// set the data height in the provider
 					dataSet.setDataHeight(dataHeight);
-				}
-
+					
+				} 				
+				
+				// Increment the line counter
+				lineNumber++;
 			}
 			
 			/**
@@ -288,9 +260,8 @@ public class CSVDataLoader {
 					features.add("x" + i);
 				}
 			}
-			/**
-			 * Declare an IData object to store the data
-			 */
+			
+			// Create an IData object to store information
 			IData data;
 			String[] dataLines;
 			dataLines = line.trim().split(",");
@@ -888,45 +859,19 @@ public class CSVDataLoader {
 	}
 
 	/**
-	 * This method calls the regular {@link #load(String, boolean)
-	 * CSVDataLoader.load(...)} method with special delimiters disabled.
-	 * 
-	 * @param csvFileName
-	 * @return
-	 */
-	public CSVDataProvider load(String csvFileName) {
-
-		// Call the load method with special delimiters disabled
-		return load(csvFileName, false);
-	}
-
-	/**
 	 * Loads the FileName via the CSVDataProvider
 	 * 
 	 * @param csvFileName
 	 * @return
 	 */
-	public CSVDataProvider load(String csvFileName,
-			boolean specialDelimitersEnabled) {
+	public CSVDataProvider load(String csvFileName) {
 		/**
 		 * Invocation of setCSVInputString(csvFileName) and setCSVInputFile(new
 		 * File(csvFileName)). Returns the load method.
 		 */
 		this.setCSVInputString(csvFileName);
 		this.setCSVInputFile(new File(csvFileName));
-		return load(specialDelimitersEnabled);
-	}
-
-	/**
-	 * This method calls the regular {@link #load(boolean)
-	 * CSVDataLoader.load(...)} method with special delimiters disabled.
-	 * 
-	 * @return
-	 */
-	public CSVDataProvider load() {
-
-		// Call the load method with special delimiters disabled
-		return this.load(false);
+		return load();
 	}
 
 	/**
@@ -934,15 +879,14 @@ public class CSVDataLoader {
 	 * 
 	 * @return
 	 */
-	public CSVDataProvider load(boolean specialDelimitersEnabled) {
+	public CSVDataProvider load() {
 		/**
 		 * Checks that the InputFile is not null before it returns load
 		 */
 		if (this.csvInputFile != null) {
 			try {
-				return load(csvInputFile, specialDelimitersEnabled);
+				return load(csvInputFile);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else {
