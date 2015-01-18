@@ -112,6 +112,18 @@ public interface IVizService {
 	public boolean connect();
 
 	/**
+	 * This operation directs the IVizService to "disconnect" any currently
+	 * running pieces of its service that may be running. This effectively gives
+	 * them a notice that they need to shut down so that they can exit
+	 * gracefully.
+	 * 
+	 * @return True if the connection was successfully shut down, false
+	 *         otherwise. Also true if the implementation did not need to
+	 *         disconnect.
+	 */
+	public boolean disconnect();
+	
+	/**
 	 * This operation directs the IVizService to create a new plot using the
 	 * specified file and to return a handle to that plot to the caller so that
 	 * it may modify the plot.

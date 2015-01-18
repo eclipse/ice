@@ -24,7 +24,11 @@ import java.util.TreeMap;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 
 import visit.java.client.FileInfo;
 import visit.java.client.ViewerMethods;
@@ -55,7 +59,7 @@ public class VisItPlot implements IPlot {
 	 * The VisIt connection (either local or remote) that powers any VisIt
 	 * widgets.
 	 */
-	private final VisItSwtConnection connection;
+	private final VisItVizService service;
 
 	/**
 	 * The current VisIt widget used to draw VisIt plots.
@@ -71,9 +75,9 @@ public class VisItPlot implements IPlot {
 	 *            The VisIt connection (either local or remote) that powers any
 	 *            VisIt widgets.
 	 */
-	public VisItPlot(URI source, VisItSwtConnection connection) {
+	public VisItPlot(URI source, VisItVizService service) {
 		this.source = source;
-		this.connection = connection;
+		this.service = service;
 
 		// On Windows, the File class inserts standard forward slashes as
 		// separators. VisIt, on the other hand, requires the native separator.
@@ -99,22 +103,22 @@ public class VisItPlot implements IPlot {
 	@Override
 	public Map<String, String[]> getPlotTypes() throws Exception {
 
-		// Determine the VisIt FileInfo for the data source.
-		ViewerMethods methods = connection.getViewerMethods();
-		methods.openDatabase(sourcePath);
-		FileInfo info = methods.getDatabaseInfo();
-
-		// Get all of the plot types and plots in the file.
+//		// Determine the VisIt FileInfo for the data source.
+//		ViewerMethods methods = connection.getViewerMethods();
+//		methods.openDatabase(sourcePath);
+//		FileInfo info = methods.getDatabaseInfo();
+//
+//		// Get all of the plot types and plots in the file.
 		List<String> plots;
 		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
-		plots = info.getMeshes();
-		plotTypes.put("Mesh", plots.toArray(new String[plots.size()]));
-		plots = info.getMaterials();
-		plotTypes.put("Material", plots.toArray(new String[plots.size()]));
-		plots = info.getScalars();
-		plotTypes.put("Scalar", plots.toArray(new String[plots.size()]));
-		plots = info.getVectors();
-		plotTypes.put("Vector", plots.toArray(new String[plots.size()]));
+//		plots = info.getMeshes();
+//		plotTypes.put("Mesh", plots.toArray(new String[plots.size()]));
+//		plots = info.getMaterials();
+//		plotTypes.put("Material", plots.toArray(new String[plots.size()]));
+//		plots = info.getScalars();
+//		plotTypes.put("Scalar", plots.toArray(new String[plots.size()]));
+//		plots = info.getVectors();
+//		plotTypes.put("Vector", plots.toArray(new String[plots.size()]));
 
 		return plotTypes;
 	}
@@ -205,6 +209,17 @@ public class VisItPlot implements IPlot {
 							+ "Cannot draw plot inside disposed Composite.");
 		}
 
+		Display display = Display.getCurrent();
+		
+		// Draw a temporary Composite/Label that informs the user of progress
+		// drawing the VisIt plot.
+		Composite infoComposite = new Composite(parent, SWT.BORDER);
+		infoComposite.setLayout(new GridLayout(1, false));
+		Label infoLabel = new Label(infoComposite, SWT.NONE);
+		infoLabel.setImage(display.getSystemImage(SWT.ICON_INFORMATION));
+		infoLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		infoLabel.setText("Getting VisIt connection...");
+		
 		// Create the VisIt Canvas if necessary.
 		if (canvas == null) {
 			canvas = createCanvas(parent, SWT.BORDER | SWT.DOUBLE_BUFFERED);
@@ -237,22 +252,22 @@ public class VisItPlot implements IPlot {
 		// Create the canvas.
 		VisItSwtWidget canvas = new VisItSwtWidget(parent, style);
 
-		// Set the VisIt connection info. It requres a valid VisItSwtConnection
-		// and 3 integers (a window ID, width, and height).
-		int windowId = Integer.parseInt(preferences
-				.get(ConnectionPreference.WindowID.toString()));
-		int windowWidth = Integer.parseInt(preferences
-				.get(ConnectionPreference.WindowWidth.toString()));
-		int windowHeight = Integer.parseInt(preferences
-				.get(ConnectionPreference.WindowHeight.toString()));
-		try {
-			canvas.setVisItSwtConnection(connection, windowId, windowWidth,
-					windowHeight);
-		} catch (ConnectException e) {
-			System.out.println("VisItPlot error: "
-					+ "Could not set connection for VisIt Canvas.");
-			e.printStackTrace();
-		}
+//		// Set the VisIt connection info. It requres a valid VisItSwtConnection
+//		// and 3 integers (a window ID, width, and height).
+//		int windowId = Integer.parseInt(preferences
+//				.get(ConnectionPreference.WindowID.toString()));
+//		int windowWidth = Integer.parseInt(preferences
+//				.get(ConnectionPreference.WindowWidth.toString()));
+//		int windowHeight = Integer.parseInt(preferences
+//				.get(ConnectionPreference.WindowHeight.toString()));
+//		try {
+//			canvas.setVisItSwtConnection(connection, windowId, windowWidth,
+//					windowHeight);
+//		} catch (ConnectException e) {
+//			System.out.println("VisItPlot error: "
+//					+ "Could not set connection for VisIt Canvas.");
+//			e.printStackTrace();
+//		}
 
 		return canvas;
 	}

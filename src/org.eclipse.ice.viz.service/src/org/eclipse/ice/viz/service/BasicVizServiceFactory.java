@@ -65,7 +65,17 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		if (service != null) {
 			// Put the service in service map so it can be retrieved later
 			serviceMap.put(service.getName(), service);
+			// Try to initialize the service.
+			if (service.connect()) {
+				System.out.println("VizServiceFactory message: "
+						+ service.getName() + " registered and connected.");
+			} else {
+				System.out.println("VizServiceFactory message: "
+						+ service.getName()
+						+ " registered and is currently connecting...");
+			}
 		}
+		return;
 	}
 
 	/*
@@ -79,7 +89,17 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	public void unregister(IVizService service) {
 		if (service != null) {
 			serviceMap.remove(service.getName());
+			// Try to disconnect the service.
+			if (service.disconnect()) {
+				System.out.println("VizServiceFactory message: "
+						+ service.getName() + "unregistered and disconnected.");
+			} else {
+				System.out.println("VizServiceFactory message: "
+						+ service.getName()
+						+ "unregistered and is currently disconnecting.");
+			}
 		}
+		return;
 	}
 
 	/*
@@ -128,7 +148,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	}
 
 	public void setWorkbench(IWorkbench workbench) {
-		
+
 	}
-	
+
 }

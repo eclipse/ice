@@ -90,6 +90,16 @@ public class CSVVizService implements IVizService {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#disconnect()
+	 */
+	@Override
+	public boolean disconnect() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
 	 * .net.URI)
