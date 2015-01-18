@@ -130,7 +130,7 @@ public class VisItVizService implements IVizService {
 	public boolean connect() {
 		// TODO We need to create any connections that are supposed to be open
 		// by default.
-		return findDefaultConnection(false) != null;
+		return openDefaultConnection(false);
 	}
 
 	/*
@@ -177,67 +177,77 @@ public class VisItVizService implements IVizService {
 	}
 
 	/**
-	 * Attempts to find the default VisIt connection.
+	 * Gets the default VisIt plot properties.
 	 * 
-	 * @param block
-	 *            Whether or not to block the caller thread until the connection
-	 *            is found (and perhaps established).
-	 * @return The connection if it is already connected, or if block is true
-	 *         and the connection is successfully started. Null otherwise.
+	 * @return The default VisIt plot properties, stored as a map of strings
+	 *         keyed on strings.
 	 */
-	private VisItSwtConnection findDefaultConnection(boolean block) {
-		VisItSwtConnection defaultConnection;
-
-		// TODO This request may need to be updated later after the FieldEditors
-		// are removed.
-		IPreferenceStore store = getPreferenceStore();
-		String id = store.getString(ConnectionPreference.ConnectionID.getID());
-		// Get or establish the connection.
-		defaultConnection = findConnection(id, block);
-
-		return defaultConnection;
+	private Map<String, String> getDefaultPlotProperties() {
+		// TODO
+		return new HashMap<String, String>();
+	}
+	
+	/**
+	 * Gets the VisIt connection ID associated with the default connection.
+	 * 
+	 * @return The default connection ID.
+	 */
+	private String getDefaultConnectionId() {
+		// FIXME This will need to change when we update the way preferences are
+		// stored.
+		return getPreferenceStore().getString(
+				ConnectionPreference.ConnectionID.getID());
 	}
 
 	/**
-	 * Attempts to close the default connection.
+	 * Determines whether or not a VisIt connection with the specified ID exists
+	 * and is connected.
 	 * 
-	 * @param block
-	 *            Whether or not to block the caller thread. If false, then
-	 *            VisIt is closed in a separate, non-daemon thread.
-	 * @return True if the connection was not open, or if block is true and the
-	 *         connection is closed. False otherwise.
+	 * @param id
+	 *            The VisIt ID for the connection.
+	 * @return True if the associated connection is established, false
+	 *         otherwise.
 	 */
-	private boolean closeDefaultConnection(boolean block) {
-
-		// TODO This request may need to be updated later after the FieldEditors
-		// are removed.
-		IPreferenceStore store = getPreferenceStore();
-		String id = store.getString(ConnectionPreference.ConnectionID.getID());
-
-		return closeConnection(id, block);
+	private boolean hasConnection(String id) {
+		// FIXME This will need to be updated if we change who manages the
+		// connections.
+		return VisItSwtConnectionManager.hasConnection(id);
 	}
 
 	/**
-	 * Finds the VisIt connection with the associated VisIt connection ID.
+	 * Determines whether or not the default VisIt connection exists and is
+	 * connected. This is a convenience method.
+	 * 
+	 * @return True if the default connection is established, false otherwise.
+	 */
+	private boolean hasDefaultConnection() {
+		return hasConnection(getDefaultConnectionId());
+	}
+
+	/**
+	 * Opens the connection with the specified VisIt ID.
 	 * 
 	 * @param id
 	 *            The VisIt ID of the connection.
 	 * @param block
-	 *            Whether or not to block the caller thread until the connection
-	 *            is found (and perhaps established).
-	 * @return The connection if it is already connected, or if block is true
-	 *         and the connection is successfully started. Null otherwise.
+	 *            Whether or not to block the caller while the connection is
+	 *            opened.
+	 * @return True if the connection is open by the time this method returns,
+	 *         false otherwise.
 	 */
-	private VisItSwtConnection findConnection(final String id, boolean block) {
+	private boolean openConnection(String id, boolean block) {
+		boolean open = true;
 
-		VisItSwtConnection connection = null;
-
-		if (VisItSwtConnectionManager.hasConnection(id)) {
-			connection = VisItSwtConnectionManager.getConnection(id);
-		} else {
+		if (!hasConnection(id)) {
+			// THe connection is closed and needs to be opened.
+			open = false;
+			
+			// Create a new thread to open the connection.
+			final String connId = id;
 			Thread thread = new Thread() {
 				@Override
 				public void run() {
+					
 					// Get the PreferenceStore. All VisIt connection preferences
 					// are stored here.
 					IPreferenceStore store = getPreferenceStore();
@@ -275,64 +285,113 @@ public class VisItVizService implements IVizService {
 					});
 
 					// Create the connection.
-					VisItSwtConnectionManager.createConnection(id, shell.get(),
-							visitPreferences);
+					VisItSwtConnectionManager.createConnection(connId,
+							shell.get(), visitPreferences);
 
+					System.out.println("VisItVizService message: "
+							+ "Connection \"" + connId + "\" has been opened.");
+					
 					return;
 				}
 			};
-
+			
 			// Normally, we do not need to block. Launch the thread and let the
-			// connection be established.
+			// connection open.
 			if (!block) {
-				thread.setDaemon(true);
+				// It doesn't matter yet whether or not the thread is a daemon
+				// thread... if ICE stops before the connection has been
+				// established, closing the connection gracefully is difficult.
 				thread.start();
 			}
 			// Otherwise, we need to block the caller until the connection is
-			// established.
+			// opened.
 			else {
 				thread.start();
 				try {
 					thread.join();
+					// The connection is now open.
+					open = true;
 				} catch (InterruptedException e) {
 					// In the event the thread has an exception, show an error
 					// and carry on.
-					System.err
-							.println("VisItVizService error: "
-									+ "Thread exception while establishing connection to VisIt.");
+					System.err.println("VisItVizService error: "
+							+ "Thread exception while opening connection \""
+							+ id + "\".");
 					e.printStackTrace();
 				}
 			}
 		}
+		
+		return open;
+	}
 
+	/**
+	 * Opens the default VisIt connection. This is a convenience method.
+	 * 
+	 * @param block
+	 *            Whether or not to block the caller while the connection is
+	 *            opened.
+	 * @return True if the default connection is open by the time this method
+	 *         returns, false otherwise.
+	 */
+	private boolean openDefaultConnection(boolean block) {
+		return openConnection(getDefaultConnectionId(), block);
+	}
+
+	/**
+	 * Gets the connection with the specified VisIt ID.
+	 * 
+	 * @param id
+	 *            The VisIt ID of the connection.
+	 * @return The connection if it exists and is open. Null otherwise.
+	 */
+	private VisItSwtConnection getConnection(String id) {
+		VisItSwtConnection connection = null;
+
+		// In this case, we only need to fetch the connection. Do not attempt to
+		// open it!
+		if (hasConnection(id)) {
+			connection = VisItSwtConnectionManager.getConnection(id);
+		}
+		
 		return connection;
 	}
 
 	/**
-	 * Closes the connection with the specified ID.
+	 * Gets the default VisIt connection. This is a convenience method.
+	 * 
+	 * @return The default connection if it exists and is open. Null otherwise.
+	 */
+	private VisItSwtConnection getDefaultConnection() {
+		return getConnection(getDefaultConnectionId());
+	}
+
+	/**
+	 * Closes the connection with the specified VisIt ID.
 	 * 
 	 * @param id
-	 *            The VisIt ID of the connection to close.
+	 *            The VisIt ID of the connection.
 	 * @param block
-	 *            Whether or not to block the caller thread. If false, then
-	 *            VisIt is closed in a separate, non-daemon thread.
-	 * @return True if the connection was not open, or if block is true and the
-	 *         connection is closed. False otherwise.
+	 *            Whether or not to block the caller while the connection is
+	 *            closed.
+	 * @return True if the connection is closed by the time this method returns,
+	 *         false otherwise.
 	 */
-	private boolean closeConnection(final String id, boolean block) {
-		boolean open = VisItSwtConnectionManager.hasConnection(id);
+	private boolean closeConnection(String id, boolean block) {
+		boolean closed = true;
+		
+		if (hasConnection(id)) {
+			// The connection is open and needs to be closed.
+			closed = false;
 
-		System.out.println("VisItVizService message: "
-				+ "Closing connection \"" + id + "\"...");
-
-		if (open) {
 			// Create a new thread to close the connection.
+			final String connId = id;
 			Thread thread = new Thread() {
 				@Override
 				public void run() {
-					VisItSwtConnectionManager.getConnection(id).close();
+					VisItSwtConnectionManager.getConnection(connId).close();
 					System.out.println("VisItVizService message: "
-							+ "Connection \"" + id + "\" has been closed.");
+							+ "Connection \"" + connId + "\" has been closed.");
 				}
 			};
 
@@ -350,7 +409,8 @@ public class VisItVizService implements IVizService {
 				thread.start();
 				try {
 					thread.join();
-					open = false;
+					// The connection is now closed.
+					closed = true;
 				} catch (InterruptedException e) {
 					// In the event the thread has an exception, show an error
 					// and carry on.
@@ -361,18 +421,21 @@ public class VisItVizService implements IVizService {
 				}
 			}
 		}
-
-		return !open;
+		
+		return closed;
 	}
 
 	/**
-	 * Gets the default VisIt plot properties.
+	 * Closes the default VisIt connection. This is a convenience method.
 	 * 
-	 * @return The default VisIt plot properties, stored as a map of strings
-	 *         keyed on strings.
+	 * @param block
+	 *            Whether or not to block the caller while the connection is
+	 *            closed.
+	 * @return True if the default connection is closed by the time this method
+	 *         returns, false otherwise.
 	 */
-	private Map<String, String> getDefaultPlotProperties() {
-		// TODO
-		return new HashMap<String, String>();
+	private boolean closeDefaultConnection(boolean block) {
+		return closeConnection(getDefaultConnectionId(), block);
 	}
+
 }
