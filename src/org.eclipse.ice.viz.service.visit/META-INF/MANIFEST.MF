@@ -16,6 +16,8 @@ Import-Package: gov.lbnl.visit.swt,
  org.eclipse.swt.graphics,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
+ org.eclipse.ui.forms.events,
+ org.eclipse.ui.forms.widgets,
  visit.java.client
 Export-Package: org.eclipse.ice.viz.service.visit
 Service-Component: OSGI-INF/visitVisService.xml

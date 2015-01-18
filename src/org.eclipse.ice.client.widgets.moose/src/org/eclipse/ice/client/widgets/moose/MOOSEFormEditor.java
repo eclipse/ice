@@ -13,6 +13,7 @@
 package org.eclipse.ice.client.widgets.moose;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
@@ -809,8 +810,22 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			// We can attempt to draw a plot. Set the parent's layout to a
 			// FillLayout.
 			meshPlotParent.setLayout(new FillLayout());
-			// Try to update the plot view.
-			vizServiceUpdated();
+
+			// TODO Get the file from elsewhere...
+			File file = new File(
+					"C:\\Users\\Jordan\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
+			URI uri = file.toURI();
+			
+			try {
+				IPlot plot = vizService.createPlot(uri);
+				// TODO We're going to have to do some other things here...
+				plot.draw(null, null, meshPlotParent);
+			} catch (Exception e) {
+				System.err.println("MOOSEFormEditor error: "
+						+ "Error creating VisIt plot.");
+				e.printStackTrace();
+			}
+			
 		} else {
 			// Create an error message to show in the mesh view.
 			String errorMessage = "There was a problem connecting to "

@@ -408,7 +408,7 @@ public class VisItVizService implements IVizService {
 	 * 
 	 * @return The default connection if it exists and is open. Null otherwise.
 	 */
-	private VisItSwtConnection getDefaultConnection() {
+	protected VisItSwtConnection getDefaultConnection() {
 		return getConnection(getDefaultConnectionId());
 	}
 
