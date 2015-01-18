@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -45,6 +46,22 @@ public class VisItVizService implements IVizService {
 	 * {@link #getPreferenceStore()}.
 	 */
 	private IPreferenceStore preferenceStore = null;
+
+	private boolean isConnecting = false;
+
+	private final ConcurrentLinkedQueue<Runnable> clients = new ConcurrentLinkedQueue<Runnable>();
+
+	public void addClient(Runnable runnable) {
+		if (isConnecting && runnable != null && !clients.contains(runnable)) {
+			clients.add(runnable);
+		}
+	}
+
+	public void removeClient(Runnable runnable) {
+		if (runnable != null) {
+			clients.remove(runnable);
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -130,7 +147,8 @@ public class VisItVizService implements IVizService {
 	public boolean connect() {
 		// TODO We need to create any connections that are supposed to be open
 		// by default.
-		return openDefaultConnection(false);
+		// If we are trying to connect, don't try connecting again.
+		return !isConnecting && openDefaultConnection(false);
 	}
 
 	/*
@@ -186,7 +204,7 @@ public class VisItVizService implements IVizService {
 		// TODO
 		return new HashMap<String, String>();
 	}
-	
+
 	/**
 	 * Gets the VisIt connection ID associated with the default connection.
 	 * 
@@ -196,7 +214,7 @@ public class VisItVizService implements IVizService {
 		// FIXME This will need to change when we update the way preferences are
 		// stored.
 		return getPreferenceStore().getString(
-				ConnectionPreference.ConnectionID.getID());
+				ConnectionPreference.ConnectionID.toString());
 	}
 
 	/**
@@ -211,7 +229,10 @@ public class VisItVizService implements IVizService {
 	private boolean hasConnection(String id) {
 		// FIXME This will need to be updated if we change who manages the
 		// connections.
-		return VisItSwtConnectionManager.hasConnection(id);
+		System.err.println("Looking for connection with id \"" + id + "\"");
+		boolean found = VisItSwtConnectionManager.hasConnection(id);
+		System.err.println("Found? " + found);
+		return found;
 	}
 
 	/**
@@ -239,15 +260,19 @@ public class VisItVizService implements IVizService {
 		boolean open = true;
 
 		if (!hasConnection(id)) {
+			System.out.println("VisItVizService message: "
+					+ "Opening connection \"" + id + "\".");
 			// THe connection is closed and needs to be opened.
 			open = false;
-			
+
 			// Create a new thread to open the connection.
 			final String connId = id;
 			Thread thread = new Thread() {
 				@Override
 				public void run() {
-					
+
+					isConnecting = true;
+
 					// Get the PreferenceStore. All VisIt connection preferences
 					// are stored here.
 					IPreferenceStore store = getPreferenceStore();
@@ -285,16 +310,34 @@ public class VisItVizService implements IVizService {
 					});
 
 					// Create the connection.
-					VisItSwtConnectionManager.createConnection(connId,
-							shell.get(), visitPreferences);
+					try {
+						VisItSwtConnectionManager.createConnection(connId,
+								shell.get(), visitPreferences);
+					} catch (Exception e) {
+						System.err.println("VisItVizService error: "
+								+ "Failed to create connection \"" + connId
+								+ "\".");
+					}
 
 					System.out.println("VisItVizService message: "
 							+ "Connection \"" + connId + "\" has been opened.");
-					
+
+					// We are no longer trying to connect.
+					isConnecting = false;
+
+					// Make sure everything that is waiting for a connection to
+					// be established is updated.
+					Runnable runnable;
+					while ((runnable = clients.poll()) != null) {
+						Thread thread = new Thread(runnable);
+						thread.setDaemon(true);
+						thread.start();
+					}
+
 					return;
 				}
 			};
-			
+
 			// Normally, we do not need to block. Launch the thread and let the
 			// connection open.
 			if (!block) {
@@ -320,8 +363,11 @@ public class VisItVizService implements IVizService {
 					e.printStackTrace();
 				}
 			}
+		} else {
+			System.out.println("VisItVizService message: " + "Connection \""
+					+ id + "\" is already established.");
 		}
-		
+
 		return open;
 	}
 
@@ -353,7 +399,7 @@ public class VisItVizService implements IVizService {
 		if (hasConnection(id)) {
 			connection = VisItSwtConnectionManager.getConnection(id);
 		}
-		
+
 		return connection;
 	}
 
@@ -379,7 +425,7 @@ public class VisItVizService implements IVizService {
 	 */
 	private boolean closeConnection(String id, boolean block) {
 		boolean closed = true;
-		
+
 		if (hasConnection(id)) {
 			// The connection is open and needs to be closed.
 			closed = false;
@@ -421,7 +467,7 @@ public class VisItVizService implements IVizService {
 				}
 			}
 		}
-		
+
 		return closed;
 	}
 
