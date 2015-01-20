@@ -23,8 +23,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.ice.viz.service.visit.VisItVizService.ConnectionState;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -63,6 +65,15 @@ public class VisItPlot implements IPlot {
 	private final String sourcePath;
 
 	/**
+	 * The category of the currently drawn plot.
+	 */
+	private String plotCategory = null;
+	/**
+	 * The type of the currently drawn plot.
+	 */
+	private String plotType = null;
+
+	/**
 	 * The visualization service responsible for maintaining
 	 * {@link VisItSwtConnection}s.
 	 */
@@ -72,7 +83,7 @@ public class VisItPlot implements IPlot {
 	 * The VisIt connection (either local or remote) that powers any VisIt
 	 * widgets required for this plot.
 	 */
-	private VisItSwtConnection connection;
+	private VisItSwtConnection connection = null;
 
 	/**
 	 * The current VisIt widget used to draw VisIt plots.
@@ -109,13 +120,6 @@ public class VisItPlot implements IPlot {
 		}
 		sourcePath = path;
 
-		// FIXME For now, assume that the service is connected...
-		connection = service.getDefaultConnection();
-		if (connection == null) {
-			System.err.println("THIS SHOULD NOT BE NULL!!!");
-		}
-		connection.getViewerMethods().openDatabase(sourcePath);
-
 		return;
 	}
 
@@ -127,22 +131,27 @@ public class VisItPlot implements IPlot {
 	@Override
 	public Map<String, String[]> getPlotTypes() throws Exception {
 
-		// // Determine the VisIt FileInfo for the data source.
-		// ViewerMethods methods = connection.getViewerMethods();
-		// methods.openDatabase(sourcePath);
-		// FileInfo info = methods.getDatabaseInfo();
-		//
-		// // Get all of the plot types and plots in the file.
-		List<String> plots;
 		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
-		// plots = info.getMeshes();
-		// plotTypes.put("Mesh", plots.toArray(new String[plots.size()]));
-		// plots = info.getMaterials();
-		// plotTypes.put("Material", plots.toArray(new String[plots.size()]));
-		// plots = info.getScalars();
-		// plotTypes.put("Scalar", plots.toArray(new String[plots.size()]));
-		// plots = info.getVectors();
-		// plotTypes.put("Vector", plots.toArray(new String[plots.size()]));
+
+		VisItSwtConnection connection = getConnection();
+		if (connection != null) {
+
+			// Determine the VisIt FileInfo for the data source.
+			ViewerMethods methods = connection.getViewerMethods();
+			methods.openDatabase(sourcePath);
+			FileInfo info = methods.getDatabaseInfo();
+
+			// Get all of the plot types and plots in the file.
+			List<String> plots;
+			plots = info.getMeshes();
+			plotTypes.put("Mesh", plots.toArray(new String[plots.size()]));
+			plots = info.getMaterials();
+			plotTypes.put("Material", plots.toArray(new String[plots.size()]));
+			plots = info.getScalars();
+			plotTypes.put("Scalar", plots.toArray(new String[plots.size()]));
+			plots = info.getVectors();
+			plotTypes.put("Vector", plots.toArray(new String[plots.size()]));
+		}
 
 		return plotTypes;
 	}
@@ -155,7 +164,7 @@ public class VisItPlot implements IPlot {
 	@Override
 	public int getNumberOfAxes() {
 		// TODO Should we query the plot somehow?
-		return (canvas == null ? 0 : 3);
+		return (canvas == null || canvas.isDisposed() ? 0 : 3);
 	}
 
 	/*
@@ -179,6 +188,7 @@ public class VisItPlot implements IPlot {
 	public void setProperties(Map<String, String> props) throws Exception {
 		if (props != null) {
 			preferences.putAll(props);
+			// TODO Update the drawn plots.
 		}
 	}
 
@@ -199,7 +209,8 @@ public class VisItPlot implements IPlot {
 	 */
 	@Override
 	public String getSourceHost() {
-		return preferences.get(ConnectionPreference.Host.getID());
+		// For now, we only support local launches...
+		return "localhost";
 	}
 
 	/*
@@ -224,8 +235,7 @@ public class VisItPlot implements IPlot {
 			throws Exception {
 
 		// Check the parameters.
-		// FIXME Add these null checks back...
-		if (/* category == null || plotType == null || */parent == null) {
+		if (category == null || plotType == null || parent == null) {
 			throw new NullPointerException("VisItPlot error: "
 					+ "Null arguments are not allowed when drawing plot.");
 		} else if (parent.isDisposed()) {
@@ -234,37 +244,17 @@ public class VisItPlot implements IPlot {
 							+ "Cannot draw plot inside disposed Composite.");
 		}
 
+		// FIXME What should we do when the plot is drawn in two places?
+
+		// Update the plot category and type.
+		this.plotCategory = category;
+		this.plotType = plotType;
+
 		// Update the reference to the parent Composite.
 		this.parent = parent;
-		
-		update();
 
-		// Display display = parent.getDisplay();
-		//
-		// // Draw a temporary Composite/Label that informs the user of progress
-		// // drawing the VisIt plot.
-		// Composite infoComposite = new Composite(parent, SWT.BORDER);
-		// infoComposite.setLayout(new GridLayout(1, false));
-		// Label infoLabel = new Label(infoComposite, SWT.NONE);
-		// infoLabel.setImage(display.getSystemImage(SWT.ICON_INFORMATION));
-		// infoLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
-		// false, false));
-		// infoLabel.setText("Getting VisIt connection...");
-		//
-		// // Create the VisIt Canvas if necessary.
-		// if (canvas == null) {
-		// canvas = createCanvas(parent, SWT.BORDER | SWT.DOUBLE_BUFFERED);
-		// // Create a mouse manager to handle mouse events inside the canvas.
-		// new VisItMouseManager(canvas);
-		// }
-		// // Make sure the Canvas is activated.
-		// canvas.activate();
-		//
-		// // Draw the specified plot on the Canvas.
-		// ViewerMethods widget = canvas.getViewerMethods();
-		// widget.deleteActivePlots();
-		// widget.addPlot(category, plotType);
-		// widget.drawPlots();
+		// Update the drawn plot.
+		update(service.getConnectionState(), getConnection());
 
 		return;
 	}
@@ -276,12 +266,26 @@ public class VisItPlot implements IPlot {
 	 * <b>Note:</b> This method assumes that it is called on the UI thread!
 	 * </p>
 	 */
-	private void update() {
+	private void update(ConnectionState state, VisItSwtConnection connection) {
 
 		final Display display = parent.getDisplay();
 		final Shell shell = parent.getShell();
 
-		if (connection != null) {
+		// This should never happen, but if it does, we should report an error
+		// and not break!
+		if (connection == null && state == ConnectionState.Connected) {
+			System.err
+					.println("VisItPlot error: "
+							+ "The connection is not available, although it was reported as connected.");
+			state = ConnectionState.Failed;
+		}
+
+		System.out.println("VisItPlot message: "
+				+ "Updating plot. The current connection state is \"" + state
+				+ "\".");
+
+		// If connected, try to render the plot in the VisItSwtWidget/canvas.
+		if (state == ConnectionState.Connected) {
 			// If the canvas was not previously available, dispose all
 			// contributed controls and create the canvas.
 			if (canvas == null) {
@@ -292,7 +296,7 @@ public class VisItPlot implements IPlot {
 				contributedControls.clear();
 
 				// Create the canvas.
-				canvas = createCanvas(parent, SWT.BORDER | SWT.DOUBLE_BUFFERED);
+				canvas = createCanvas(parent, SWT.DOUBLE_BUFFERED, connection);
 				// Create a mouse manager to handle mouse events inside the
 				// canvas.
 				new VisItMouseManager(canvas);
@@ -300,8 +304,13 @@ public class VisItPlot implements IPlot {
 				// Add the canvas as a contributed control. It might need to be
 				// disposed later.
 				contributedControls.add(canvas);
+//				Composite c = new Composite(parent, SWT.NONE);
+//				c.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
+				parent.layout();
 			}
 
+			System.out.println("VisItPlot message: " + "Drawing the plots...");
+			
 			// Make sure the Canvas is activated.
 			canvas.activate();
 
@@ -311,7 +320,10 @@ public class VisItPlot implements IPlot {
 			// FIXME This will need to be changed to whatever the client wants.
 			widget.addPlot("Mesh", "Mesh");
 			widget.drawPlots();
-		} else {
+		}
+		// Otherwise, there is a problem of some sort. Give the user a link to
+		// the VisIt preferences along with an informative message.
+		else {
 
 			// Dispose all previous controls.
 			for (Control control : contributedControls) {
@@ -319,14 +331,27 @@ public class VisItPlot implements IPlot {
 			}
 			contributedControls.clear();
 
+			// Set the message and icon based on the state of the connection.
+			String message;
+			Image image;
+			if (state == ConnectionState.Connecting) {
+				message = "The VisIt connection is being established...";
+				image = display.getSystemImage(SWT.ICON_WORKING);
+			} else if (state == ConnectionState.Disconnected) {
+				message = "The VisIt connection is currently unavailable.";
+				image = display.getSystemImage(SWT.ICON_WARNING);
+			} else {
+				message = "The VisIt connection failed!";
+				image = display.getSystemImage(SWT.ICON_ERROR);
+			}
+
 			// The service is not connected. Notify the user and give them a
 			// link to the preferences.
 			Composite infoComposite = new Composite(parent, SWT.NONE);
 			infoComposite.setLayout(new GridLayout(2, false));
 			// Create an info label with an image.
 			Label iconLabel = new Label(infoComposite, SWT.NONE);
-			iconLabel.setImage(Display.getCurrent().getSystemImage(
-					SWT.ICON_INFORMATION));
+			iconLabel.setImage(image);
 			iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
 					false, false));
 			// Create a Composite to contain the info message and the hyperlink
@@ -336,7 +361,6 @@ public class VisItPlot implements IPlot {
 					SWT.BEGINNING, false, false));
 			msgComposite.setLayout(new GridLayout(1, false));
 			// Create an info label with text and a hyperlink.
-			String message = "There is currently no connection to VisIt";
 			Label msgLabel = new Label(msgComposite, SWT.NONE);
 			msgLabel.setText(message);
 			msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
@@ -374,30 +398,8 @@ public class VisItPlot implements IPlot {
 			// Add the infoComposite to the contributed controls.
 			contributedControls.add(infoComposite);
 
-			// TODO We will need to devise some way to handle this...
-			// // In case the service is just trying to connect, add a hook so
-			// the
-			// // plot will update when the connection is established.
-			// // Get the Display from the info Composite.
-			// final Display display = infoComposite.getDisplay();
-			// vizService.addClient(new Runnable() {
-			// @Override
-			// public void run() {
-			// // The service has updated (connected). Refresh!
-			// // Note: This has to be done on the UI thread! We use async
-			// // exec because this thread won't need to do anything
-			// // afterward.
-			// display.asyncExec(new Runnable() {
-			// @Override
-			// public void run() {
-			// vizServiceUpdated();
-			// }
-			// });
-			// return;
-			// }
-			// });
+			parent.layout();
 		}
-
 		return;
 	}
 
@@ -408,15 +410,19 @@ public class VisItPlot implements IPlot {
 	 *            The parent {@code Composite} that will contain the canvas.
 	 * @param style
 	 *            The SWT style to use for the VisIt {@code Canvas}.
+	 * @param connection
+	 *            The connection used to populate the {@code Canvas} graphics.
 	 * @return The new VisIt {@code Canvas}
 	 */
-	private VisItSwtWidget createCanvas(Composite parent, int style) {
+	private VisItSwtWidget createCanvas(Composite parent, int style,
+			VisItSwtConnection connection) {
 
 		// Create the canvas.
 		VisItSwtWidget canvas = new VisItSwtWidget(parent, style);
 
-		Map<String, String> connectionPreferences = service.getConnectionProperties();
-		
+		Map<String, String> connectionPreferences = service
+				.getConnectionProperties();
+
 		// Set the VisIt connection info. It requres a valid VisItSwtConnection
 		// and 3 integers (a window ID, width, and height).
 		int windowId = Integer.parseInt(connectionPreferences
@@ -437,4 +443,22 @@ public class VisItPlot implements IPlot {
 		return canvas;
 	}
 
+	protected void updateConnection(String connectionId, ConnectionState state) {
+		final String connId = connectionId;
+		final ConnectionState connState = state;
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				update(connState, service.getConnection(connId));
+			}
+		});
+		return;
+	}
+
+	private VisItSwtConnection getConnection() {
+		if (connection == null) {
+			connection = service.getDefaultConnection();
+		}
+		return connection;
+	}
 }

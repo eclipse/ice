@@ -58,10 +58,10 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		connectionManager = new ConnectionManager();
 		ConnectionPreferenceAdapter adapter = new ConnectionPreferenceAdapter();
 		adapter.toConnectionManager(getPreferenceStore(), connectionManager);
-		
-		// FIXME Temporarily add a basic connection.
-		connectionManager.clear();
-		connectionManager.addRow();
+
+		// TODO Add the default connection.
+
+		return;
 	}
 
 	/*
@@ -74,11 +74,26 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 	@Override
 	protected void createFieldEditors() {
 
-		// TODO These preferences will each need to be custom tailored.
-		for (ConnectionPreference p : ConnectionPreference.values()) {
-			addField(new StringFieldEditor(p.toString(), p.getName(),
-					getFieldEditorParent()));
-		}
+		// // TODO These preferences will each need to be custom tailored.
+		// for (ConnectionPreference p : ConnectionPreference.values()) {
+		// addField(new StringFieldEditor(p.toString(), p.getName(),
+		// getFieldEditorParent()));
+		// }
+		ConnectionPreference p;
+
+		// p = ConnectionPreference.Host;
+		// addField(new StringFieldEditor(p.toString(), p.getName(),
+		// getFieldEditorParent()));
+		//
+		// p = ConnectionPreference.HostPort;
+		// addField(new StringFieldEditor(p.toString(), p.getName(),
+		// getFieldEditorParent()));
+
+		// For now, we only expose the VisIt path since we do not have remote
+		// connections working properly.
+		p = ConnectionPreference.VisItPath;
+		addField(new StringFieldEditor(p.toString(), p.getName(),
+				getFieldEditorParent()));
 
 		return;
 	}
@@ -91,7 +106,7 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 
 		Composite container = getFieldEditorParent();
 		GridLayout gridLayout = (GridLayout) container.getLayout();
-		
+
 		// Create a ConnectionComposite to show all of the cached connection
 		// preferences.
 		TableComponentComposite connections = new TableComponentComposite(
@@ -104,5 +119,20 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		connections.setTableComponent(connectionManager);
 
 		return control;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
+	 */
+	@Override
+	public boolean performOk() {
+		// Perform the standard ok process.
+		boolean ok = super.performOk();
+
+		// TODO Update the viz service!
+		
+		return ok;
 	}
 }

@@ -16,7 +16,6 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -30,7 +29,6 @@ import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.moose.components.PlantBlockManager;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -42,9 +40,6 @@ import org.eclipse.ice.viz.service.visit.VisItVizService;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.preference.IPreferenceNode;
-import org.eclipse.jface.preference.IPreferencePage;
-import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -61,22 +56,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -789,12 +778,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		section.setText("Mesh");
 		section.setDescription("The current mesh configured for MOOSE input.");
 
-		// The client for the section.
-		Control sectionClient = null;
-
 		// Create the parent Composite for the mesh plot.
 		meshPlotParent = toolkit.createComposite(section, SWT.BORDER);
-		sectionClient = meshPlotParent;
 		
 		// TODO Get the preferred visualization service.
 		// Try to get the VisItVizService.
@@ -813,13 +798,13 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 			// TODO Get the file from elsewhere...
 			File file = new File(
-					"C:\\Users\\Jordan\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
+					"C:\\Users\\USER\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
 			URI uri = file.toURI();
 			
 			try {
 				IPlot plot = vizService.createPlot(uri);
 				// TODO We're going to have to do some other things here...
-				plot.draw(null, null, meshPlotParent);
+				plot.draw("", "", meshPlotParent);
 			} catch (Exception e) {
 				System.err.println("MOOSEFormEditor error: "
 						+ "Error creating VisIt plot.");
@@ -844,97 +829,10 @@ public class MOOSEFormEditor extends ICEFormEditor {
 					false, false));
 		}
 
+
 		// Set the client for the section according to SOP.
-		section.setClient(sectionClient);
-
-		return;
-	}
-
-	/**
-	 * This method is assumed to be called while on the UI thread. It refreshes
-	 * the contents of the {@link #meshPlotParent}.
-	 */
-	private void vizServiceUpdated() {
-
-		// Dispose all children of the mesh plot's parent Composite.
-		for (Control child : meshPlotParent.getChildren()) {
-			child.dispose();
-		}
-
-//		if (!vizService.connect()) {
-//			// TODO Draw the plot
-//		} else {
+		section.setClient(meshPlotParent);
 		
-		// TODO Move this to the VisItPlot
-		
-			// The service is not connected. Notify the user and give them a
-			// link to the preferences.
-			Composite infoComposite = toolkit.createComposite(meshPlotParent);
-			infoComposite.setLayout(new GridLayout(2, false));
-			// Create an info label with an image.
-			Label iconLabel = toolkit.createLabel(infoComposite, "");
-			iconLabel.setImage(Display.getCurrent().getSystemImage(
-					SWT.ICON_INFORMATION));
-			iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
-					false, false));
-			// Create a Composite to contain the info message and the hyperlink
-			// with the info message above the hyperlink.
-			Composite msgComposite = toolkit.createComposite(infoComposite);
-			msgComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-			msgComposite.setLayout(new GridLayout(1, false));
-			// Create an info label with text and a hyperlink.
-			String message = "There is currently no connection to VisIt";
-			Label msgLabel = toolkit.createLabel(msgComposite, message);
-			msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-					false, false));
-			// Create a link to the preference page.
-			message = "Click here to update VisIt connection preferences.";
-			Hyperlink link = toolkit.createHyperlink(msgComposite, message, SWT.NONE);
-			link.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-					false, false));
-			final Shell shell = infoComposite.getShell();
-			link.addHyperlinkListener(new IHyperlinkListener() {
-				@Override
-				public void linkEntered(HyperlinkEvent e) {
-					// Nothing to do yet.
-				}
-
-				@Override
-				public void linkExited(HyperlinkEvent e) {
-					// Nothing to do yet.
-				}
-
-				@Override
-				public void linkActivated(HyperlinkEvent e) {
-					// Open up the VisIt preferences.
-					PreferencesUtil.createPreferenceDialogOn(shell,
-							"org.eclipse.ice.viz.service.visit.preferences",
-							null, null).open();
-				}
-			});
-			
-			// In case the service is just trying to connect, add a hook so the
-			// plot will update when the connection is established.
-			// Get the Display from the info Composite.
-			final Display display = infoComposite.getDisplay();
-			vizService.addClient(new Runnable() {
-				@Override
-				public void run() {
-					// The service has updated (connected). Refresh!
-					// Note: This has to be done on the UI thread! We use async
-					// exec because this thread won't need to do anything
-					// afterward.
-					display.asyncExec(new Runnable() {
-						@Override
-						public void run() {
-							vizServiceUpdated();
-						}
-					});
-					return;
-				}
-			});
-//		}
-
 		return;
 	}
 	

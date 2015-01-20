@@ -15,11 +15,12 @@ import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -40,6 +41,33 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class VisItVizService implements IVizService {
 
+	// TODO Address multiple connections associated with various plots. For now,
+	// we just have a single, default connection.
+
+	protected enum ConnectionState {
+		/**
+		 * The connection is being established.
+		 */
+		Connecting,
+		/**
+		 * The connection is opened.
+		 */
+		Connected,
+		/**
+		 * The connection failed to open.
+		 */
+		Failed,
+		/**
+		 * The connection is closed.
+		 */
+		Disconnected;
+	}
+
+	/**
+	 * The current state of the default connection.
+	 */
+	private ConnectionState state = ConnectionState.Disconnected;
+
 	/**
 	 * A reference to the associated preference page's {@link IPreferenceStore}.
 	 * If this has been determined previously, then it should be returned in
@@ -47,21 +75,10 @@ public class VisItVizService implements IVizService {
 	 */
 	private IPreferenceStore preferenceStore = null;
 
-	private boolean isConnecting = false;
-
-	private final ConcurrentLinkedQueue<Runnable> clients = new ConcurrentLinkedQueue<Runnable>();
-
-	public void addClient(Runnable runnable) {
-		if (isConnecting && runnable != null && !clients.contains(runnable)) {
-			clients.add(runnable);
-		}
-	}
-
-	public void removeClient(Runnable runnable) {
-		if (runnable != null) {
-			clients.remove(runnable);
-		}
-	}
+	/**
+	 * A list of all currently-drawn plots.
+	 */
+	private final List<VisItPlot> plots = new ArrayList<VisItPlot>();
 
 	/*
 	 * (non-Javadoc)
@@ -148,7 +165,8 @@ public class VisItVizService implements IVizService {
 		// TODO We need to create any connections that are supposed to be open
 		// by default.
 		// If we are trying to connect, don't try connecting again.
-		return !isConnecting && openDefaultConnection(false);
+		return state != ConnectionState.Connecting
+				&& openDefaultConnection(false);
 	}
 
 	/*
@@ -175,8 +193,20 @@ public class VisItVizService implements IVizService {
 		if (file != null) {
 			plot = new VisItPlot(file, this);
 			plot.setProperties(getDefaultPlotProperties());
+
+			// Keep track of the existing plots.
+			plots.add(plot);
 		}
 		return plot;
+	}
+
+	/**
+	 * Gets the current state of the default connection.
+	 * 
+	 * @return The current state of the VizService's default connection.
+	 */
+	protected ConnectionState getConnectionState() {
+		return state;
 	}
 
 	/**
@@ -271,7 +301,13 @@ public class VisItVizService implements IVizService {
 				@Override
 				public void run() {
 
-					isConnecting = true;
+					state = ConnectionState.Connecting;
+
+					// Notify all plots that the connection is opening.
+					for (VisItPlot plot : plots) {
+						plot.updateConnection(connId,
+								ConnectionState.Connecting);
+					}
 
 					// Get the PreferenceStore. All VisIt connection preferences
 					// are stored here.
@@ -309,29 +345,34 @@ public class VisItVizService implements IVizService {
 						}
 					});
 
-					// Create the connection.
+					// Try to open the connection.
 					try {
 						VisItSwtConnectionManager.createConnection(connId,
 								shell.get(), visitPreferences);
+						state = ConnectionState.Connected;
+
+						// Connection successful!
+						System.out.println("VisItVizService message: "
+								+ "Connection \"" + connId
+								+ "\" has been opened.");
+
+						// Notify all plots that the connection opened.
+						for (VisItPlot plot : plots) {
+							plot.updateConnection(connId,
+									ConnectionState.Connected);
+						}
 					} catch (Exception e) {
+						// Connection failed!
 						System.err.println("VisItVizService error: "
 								+ "Failed to create connection \"" + connId
 								+ "\".");
-					}
+						state = ConnectionState.Failed;
 
-					System.out.println("VisItVizService message: "
-							+ "Connection \"" + connId + "\" has been opened.");
-
-					// We are no longer trying to connect.
-					isConnecting = false;
-
-					// Make sure everything that is waiting for a connection to
-					// be established is updated.
-					Runnable runnable;
-					while ((runnable = clients.poll()) != null) {
-						Thread thread = new Thread(runnable);
-						thread.setDaemon(true);
-						thread.start();
+						// Notify all plots that the connection opened.
+						for (VisItPlot plot : plots) {
+							plot.updateConnection(connId,
+									ConnectionState.Failed);
+						}
 					}
 
 					return;
@@ -391,7 +432,7 @@ public class VisItVizService implements IVizService {
 	 *            The VisIt ID of the connection.
 	 * @return The connection if it exists and is open. Null otherwise.
 	 */
-	private VisItSwtConnection getConnection(String id) {
+	protected VisItSwtConnection getConnection(String id) {
 		VisItSwtConnection connection = null;
 
 		// In this case, we only need to fetch the connection. Do not attempt to
@@ -438,6 +479,14 @@ public class VisItVizService implements IVizService {
 					VisItSwtConnectionManager.getConnection(connId).close();
 					System.out.println("VisItVizService message: "
 							+ "Connection \"" + connId + "\" has been closed.");
+
+					state = ConnectionState.Disconnected;
+
+					// Notify all plots that the connection closed.
+					for (VisItPlot plot : plots) {
+						plot.updateConnection(connId,
+								ConnectionState.Disconnected);
+					}
 				}
 			};
 

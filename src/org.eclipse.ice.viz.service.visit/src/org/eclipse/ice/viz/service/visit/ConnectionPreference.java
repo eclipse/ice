@@ -22,7 +22,7 @@ public enum ConnectionPreference {
 	/**
 	 * The ID associated with the current VisIt connection.
 	 */
-	ConnectionID("connId", "connection1", "Connection ID",
+	ConnectionID("connId", "default", "Connection ID",
 			"The ID associated with the current VisIt connection."),
 	/**
 	 * The host machine that will run VisIt.
@@ -62,12 +62,12 @@ public enum ConnectionPreference {
 	/**
 	 * The user name for the running VisIt instance.
 	 */
-	SessionUser("username", "user1", "Username",
+	SessionUser("username", "user", "Username",
 			"The user name for the running VisIt instance."),
 	/**
 	 * The password used to connect to the running VisIt instance.
 	 */
-	SessionPassword("password", "", "Password",
+	SessionPassword("password", "notused", "Password",
 			"The password used to connect to the running VisIt instance."),
 	/**
 	 * The type or data or method used to send VisIt render information over the
