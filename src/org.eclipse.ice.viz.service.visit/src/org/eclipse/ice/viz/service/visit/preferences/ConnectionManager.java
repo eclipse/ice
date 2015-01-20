@@ -26,7 +26,15 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  *
  */
 public class ConnectionManager extends TableComponent implements IdManager {
+	
+	/**
+	 * The backing map of {@link Connection}s.
+	 */
+	private final Map<String, Connection> connections = new LinkedHashMap<String, Connection>();
 
+	public ConnectionManager() {
+		this.setRowTemplate((ArrayList<Entry>) getTemplate());
+	}
 	
 	public boolean idAvailable(String id) {
 		return id != null && !(id = id.trim()).isEmpty()
@@ -107,18 +115,7 @@ public class ConnectionManager extends TableComponent implements IdManager {
 		
 		return template;
 	}
-	
-	// TODO Test this class. We may want to add equals/hashcode methods.
-	
-	/**
-	 * The backing map of {@link Connection}s.
-	 */
-	private final Map<String, Connection> connections = new LinkedHashMap<String, Connection>();
-
-	public ConnectionManager() {
-		this.setRowTemplate((ArrayList<Entry>) getTemplate());
-	}
-	
+		
 	/**
 	 * Gets an insertion-ordered list of all {@link Connection} IDs.
 	 * 
