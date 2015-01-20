@@ -95,6 +95,17 @@ public class FakeVizService implements IVizService {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#disconnect()
+	 */
+	@Override
+	public boolean disconnect() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
 	 * .net.URI)
@@ -107,7 +118,9 @@ public class FakeVizService implements IVizService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#hasConnectionProperties()
+	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
+	 * hasConnectionProperties()
 	 */
 	@Override
 	public boolean hasConnectionProperties() {

@@ -13,6 +13,7 @@
 package org.eclipse.ice.client.widgets.moose;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
@@ -37,9 +38,13 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.visit.VisItVizService;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.preference.IPreferenceNode;
+import org.eclipse.jface.preference.IPreferencePage;
+import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -57,15 +62,21 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -112,6 +123,10 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 */
 	private boolean wireframe;
 
+	private VisItVizService vizService;
+	private Composite meshPlotParent; 
+	private FormToolkit toolkit;
+	
 	/**
 	 * Overrides the default <code>ICEFormEditor</code> header and adds the
 	 * widgets for specifiying the output for the MOOSE model (i.e., the input
@@ -122,8 +137,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 		// Get the Form that provides the common header and decorate it.
 		org.eclipse.ui.forms.widgets.Form form = headerForm.getForm().getForm();
-		FormToolkit formToolkit = headerForm.getToolkit();
-		formToolkit.decorateFormHeading(form);
+		toolkit = headerForm.getToolkit();
+		toolkit.decorateFormHeading(form);
 
 		// Create a composite for the overall head layout.
 		Composite headClient = new Composite(form.getHead(), SWT.NONE);
@@ -174,7 +189,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			outputFileText.setToolTipText(entry.getDescription());
 			outputFileText.setText(entry.getValue());
 			// Adapt the text's visual appearance to Form defaults.
-			formToolkit.adapt(outputFileText, true, false);
+			toolkit.adapt(outputFileText, true, false);
 			// Add the Focus Listeners
 			outputFileText.addFocusListener(new FocusAdapter() {
 				@Override
@@ -651,6 +666,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		removePageWithID(PLANT_PAGE_ID);
 	}
 
+	// TODO Remove this method.
+	protected void addPages() {
+		addMeshPage();
+	}
+	
 	/**
 	 * Provides a Mesh View page with a view of the MOOSE data tree's mesh
 	 * rendered by the current applicable visualization service.
@@ -676,14 +696,15 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						Composite body = managedForm.getForm().getBody();
 						body.setLayout(new GridLayout(2, false));
 
-						// Create a Section for the "Mesh" block's active data
-						// node (DataComponent).
-						section = createDefaultSection(managedForm);
-						// The data node should not get excess horizontal space.
-						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-								false, true));
-						populateMeshDataComponentSection(section, toolkit,
-								managedForm);
+						// TODO Add the data section back in.
+//						// Create a Section for the "Mesh" block's active data
+//						// node (DataComponent).
+//						section = createDefaultSection(managedForm);
+//						// The data node should not get excess horizontal space.
+//						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+//								false, true));
+//						populateMeshDataComponentSection(section, toolkit,
+//								managedForm);
 
 						// Create a Section for the mesh view.
 						section = createDefaultSection(managedForm);
@@ -771,51 +792,56 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// The client for the section.
 		Control sectionClient = null;
 
-		// Try to connect to VisIt.
+		// Create the parent Composite for the mesh plot.
+		meshPlotParent = toolkit.createComposite(section, SWT.BORDER);
+		sectionClient = meshPlotParent;
+		
+		// TODO Get the preferred visualization service.
+		// Try to get the VisItVizService.
 		IVizServiceFactory vizFactory = getVizServiceFactory();
-		IVizService vizService = null;
-		if (vizFactory != null
-				&& (vizService = vizFactory.get("VisIt")) != null) {
-			// Connect the viz service as necessary. This should initiate the
-			// connection process so that plots can be drawn later.
-			vizService.connect();
-
-			// File("C:\\Users\\USER\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
-			File file = new File(
-					"C:\\Users\\USER\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
-			// File file = new File("/home/USER/nice-data/coarse10_rz.e");
-			try {
-				// Get a plot for the source file.
-				IPlot plot = vizService.createPlot(file.toURI());
-
-				// Print out all plot types.
-				// TODO We need to make these available somewhere.
-				Map<String, String[]> plots = plot.getPlotTypes();
-				for (java.util.Map.Entry<String, String[]> plotType : plots
-						.entrySet()) {
-					System.out.println("Plot Type: " + plotType.getKey());
-					for (String plotName : plotType.getValue()) {
-						System.out.println(plotName);
-					}
-				}
-
-				// Draw the mesh. We have to create an intermediate Composite
-				// because we must set the section's client.
-				Composite plotComposite = toolkit.createComposite(section);
-				plotComposite.setLayout(new FillLayout());
-				sectionClient = plotComposite;
-				plot.draw("Mesh", plots.get("Mesh")[0], plotComposite);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		if (vizFactory != null) {
+			vizService = (VisItVizService) vizFactory.get("VisIt");
 		}
 
-		// If the mesh could not be rendered, create a placeholder to notify the
-		// user of the problem.
-		if (sectionClient == null) {
-			Composite errorComposite = toolkit.createComposite(section);
-			sectionClient = errorComposite;
-			toolkit.createLabel(errorComposite, "Could not connect to VisIt.");
+		// Either update the mesh plot or generate an error. Note that if the
+		// visualization service is not running, there is no way we will ever be
+		// able to generate a plot.
+		if (vizService != null) {
+			// We can attempt to draw a plot. Set the parent's layout to a
+			// FillLayout.
+			meshPlotParent.setLayout(new FillLayout());
+
+			// TODO Get the file from elsewhere...
+			File file = new File(
+					"C:\\Users\\Jordan\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
+			URI uri = file.toURI();
+			
+			try {
+				IPlot plot = vizService.createPlot(uri);
+				// TODO We're going to have to do some other things here...
+				plot.draw(null, null, meshPlotParent);
+			} catch (Exception e) {
+				System.err.println("MOOSEFormEditor error: "
+						+ "Error creating VisIt plot.");
+				e.printStackTrace();
+			}
+			
+		} else {
+			// Create an error message to show in the mesh view.
+			String errorMessage = "There was a problem connecting to "
+					+ "ICE's VisIt visualization service.";
+			// To get the image/text side-by-side, use a 2-column GridLayout.
+			meshPlotParent.setLayout(new GridLayout(2, false));
+			// Create the label with the error icon.
+			Label iconLabel = toolkit.createLabel(meshPlotParent, "");
+			iconLabel.setImage(Display.getCurrent().getSystemImage(
+					SWT.ICON_ERROR));
+			iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
+					false, false));
+			// Create the label with the text.
+			Label msgLabel = toolkit.createLabel(meshPlotParent, errorMessage);
+			msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+					false, false));
 		}
 
 		// Set the client for the section according to SOP.
@@ -824,6 +850,94 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		return;
 	}
 
+	/**
+	 * This method is assumed to be called while on the UI thread. It refreshes
+	 * the contents of the {@link #meshPlotParent}.
+	 */
+	private void vizServiceUpdated() {
+
+		// Dispose all children of the mesh plot's parent Composite.
+		for (Control child : meshPlotParent.getChildren()) {
+			child.dispose();
+		}
+
+//		if (!vizService.connect()) {
+//			// TODO Draw the plot
+//		} else {
+		
+		// TODO Move this to the VisItPlot
+		
+			// The service is not connected. Notify the user and give them a
+			// link to the preferences.
+			Composite infoComposite = toolkit.createComposite(meshPlotParent);
+			infoComposite.setLayout(new GridLayout(2, false));
+			// Create an info label with an image.
+			Label iconLabel = toolkit.createLabel(infoComposite, "");
+			iconLabel.setImage(Display.getCurrent().getSystemImage(
+					SWT.ICON_INFORMATION));
+			iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
+					false, false));
+			// Create a Composite to contain the info message and the hyperlink
+			// with the info message above the hyperlink.
+			Composite msgComposite = toolkit.createComposite(infoComposite);
+			msgComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+			msgComposite.setLayout(new GridLayout(1, false));
+			// Create an info label with text and a hyperlink.
+			String message = "There is currently no connection to VisIt";
+			Label msgLabel = toolkit.createLabel(msgComposite, message);
+			msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+					false, false));
+			// Create a link to the preference page.
+			message = "Click here to update VisIt connection preferences.";
+			Hyperlink link = toolkit.createHyperlink(msgComposite, message, SWT.NONE);
+			link.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+					false, false));
+			final Shell shell = infoComposite.getShell();
+			link.addHyperlinkListener(new IHyperlinkListener() {
+				@Override
+				public void linkEntered(HyperlinkEvent e) {
+					// Nothing to do yet.
+				}
+
+				@Override
+				public void linkExited(HyperlinkEvent e) {
+					// Nothing to do yet.
+				}
+
+				@Override
+				public void linkActivated(HyperlinkEvent e) {
+					// Open up the VisIt preferences.
+					PreferencesUtil.createPreferenceDialogOn(shell,
+							"org.eclipse.ice.viz.service.visit.preferences",
+							null, null).open();
+				}
+			});
+			
+			// In case the service is just trying to connect, add a hook so the
+			// plot will update when the connection is established.
+			// Get the Display from the info Composite.
+			final Display display = infoComposite.getDisplay();
+			vizService.addClient(new Runnable() {
+				@Override
+				public void run() {
+					// The service has updated (connected). Refresh!
+					// Note: This has to be done on the UI thread! We use async
+					// exec because this thread won't need to do anything
+					// afterward.
+					display.asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							vizServiceUpdated();
+						}
+					});
+					return;
+				}
+			});
+//		}
+
+		return;
+	}
+	
 	/**
 	 * Removes the Mesh View page if possible.
 	 */
