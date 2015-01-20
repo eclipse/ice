@@ -16,6 +16,7 @@ import gov.lbnl.visit.swt.VisItSwtWidget;
 
 import java.net.ConnectException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,8 @@ import java.util.TreeMap;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.viz.service.visit.VisItVizService.ConnectionState;
+import org.eclipse.ice.viz.service.visit.actions.ImportLocalFileAction;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
@@ -57,11 +60,11 @@ public class VisItPlot implements IPlot {
 	/**
 	 * The data source, either a local or remote file.
 	 */
-	private final URI source;
+	private URI source;
 	/**
 	 * The source path required by the VisIt widgets.
 	 */
-	private final String sourcePath;
+	private String sourcePath;
 
 	/**
 	 * The category of the currently drawn plot.
@@ -116,18 +119,19 @@ public class VisItPlot implements IPlot {
 		this.source = source;
 		this.service = service;
 
-		// On Windows, the File class inserts standard forward slashes as
-		// separators. VisIt, on the other hand, requires the native separator.
-		// If the URI uses the standard separator on Windows, update the source
-		// path to use the native Windows separator.
-		String path = source.getPath();
-		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-			if (path.startsWith("/")) {
-				path = path.substring(1);
-				path = path.replace("/", System.getProperty("file.separator"));
-			}
-		}
-		sourcePath = path;
+//		// On Windows, the File class inserts standard forward slashes as
+//		// separators. VisIt, on the other hand, requires the native separator.
+//		// If the URI uses the standard separator on Windows, update the source
+//		// path to use the native Windows separator.
+//		String path = source.getPath();
+//		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+//			if (path.startsWith("/")) {
+//				path = path.substring(1);
+//				path = path.replace("/", System.getProperty("file.separator"));
+//			}
+//		}
+//		sourcePath = path;
+		setDataSource(source);
 
 		return;
 	}
@@ -256,8 +260,9 @@ public class VisItPlot implements IPlot {
 		// FIXME What should we do when the plot is drawn in two places?
 
 		// Update the plot category and type.
-		this.plotCategory = category;
-		this.plotType = plotType;
+		// TODO Use the specified plot category and type.
+		this.plotCategory = "Mesh";
+		this.plotType = "Mesh";
 
 		// Update the reference to the parent Composite.
 		this.parent = parent;
@@ -314,11 +319,14 @@ public class VisItPlot implements IPlot {
 			// Make sure the Canvas is activated.
 			canvas.activate();
 
+			System.out.println("VisItPlot message: " + "Drawing plot "
+					+ plotCategory + " - " + plotType + " for source file \""
+					+ sourcePath + "\".");
+			
 			// Draw the specified plot on the Canvas.
 			ViewerMethods widget = canvas.getViewerMethods();
 			widget.deleteActivePlots();
-			// FIXME This will need to be changed to whatever the client wants.
-			widget.addPlot("Mesh", "Mesh");
+			widget.addPlot(plotCategory, plotType);
 			widget.drawPlots();
 		}
 		// Otherwise, there is a problem of some sort. Give the user a link to
@@ -518,5 +526,46 @@ public class VisItPlot implements IPlot {
 			}
 		}
 		return connection;
+	}
+
+	public List<IAction> getActions() {
+		List<IAction> actions = new ArrayList<IAction>();
+		
+		actions.add(new ImportLocalFileAction(this));
+		
+		return actions;
+	}
+
+	public void setDataSource(URI uri) {
+		if (uri != null) {
+			// Update the source.
+			source = uri;
+			// On Windows, the File class inserts standard forward slashes as
+			// separators. VisIt, on the other hand, requires the native separator.
+			// If the URI uses the standard separator on Windows, update the source
+			// path to use the native Windows separator.
+			String path = source.getPath();
+			if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+				if (path.startsWith("/")) {
+					path = path.substring(1);
+					path = path.replace("/", System.getProperty("file.separator"));
+				}
+			}
+			// Update the source's VisIt-friendly path.
+			sourcePath = path;
+			
+			final ConnectionState state = service.getConnectionState();
+			final VisItSwtConnection connection = getConnection();
+			if (connection != null) {
+				connection.getViewerMethods().openDatabase(sourcePath);
+				Display.getDefault().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						update(state, connection);
+					}
+				});
+			}
+		}
+		return;
 	}
 }

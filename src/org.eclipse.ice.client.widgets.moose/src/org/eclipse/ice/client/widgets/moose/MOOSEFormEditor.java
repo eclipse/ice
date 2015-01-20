@@ -36,8 +36,10 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.visit.VisItPlot;
 import org.eclipse.ice.viz.service.visit.VisItVizService;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -113,9 +115,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	private boolean wireframe;
 
 	private VisItVizService vizService;
-	private Composite meshPlotParent; 
+	private Composite meshPlotParent;
 	private FormToolkit toolkit;
-	
+
 	/**
 	 * Overrides the default <code>ICEFormEditor</code> header and adds the
 	 * widgets for specifiying the output for the MOOSE model (i.e., the input
@@ -659,7 +661,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	protected void addPages() {
 		addMeshPage();
 	}
-	
+
 	/**
 	 * Provides a Mesh View page with a view of the MOOSE data tree's mesh
 	 * rendered by the current applicable visualization service.
@@ -686,14 +688,17 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						body.setLayout(new GridLayout(2, false));
 
 						// TODO Add the data section back in.
-//						// Create a Section for the "Mesh" block's active data
-//						// node (DataComponent).
-//						section = createDefaultSection(managedForm);
-//						// The data node should not get excess horizontal space.
-//						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-//								false, true));
-//						populateMeshDataComponentSection(section, toolkit,
-//								managedForm);
+						// // Create a Section for the "Mesh" block's active
+						// data
+						// // node (DataComponent).
+						// section = createDefaultSection(managedForm);
+						// // The data node should not get excess horizontal
+						// space.
+						// section.setLayoutData(new GridData(SWT.FILL,
+						// SWT.FILL,
+						// false, true));
+						// populateMeshDataComponentSection(section, toolkit,
+						// managedForm);
 
 						// Create a Section for the mesh view.
 						section = createDefaultSection(managedForm);
@@ -778,9 +783,22 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		section.setText("Mesh");
 		section.setDescription("The current mesh configured for MOOSE input.");
 
+		// Create a container to hold a plot ToolBar and the mesh plot.
+		Composite container = toolkit.createComposite(section, SWT.NONE);
+		section.setClient(container);
+		container.setLayout(new GridLayout(1, false));
+
+		// Create a ToolBar using JFace utilities.
+		ToolBarManager toolBarManager = new ToolBarManager();
+		ToolBar toolBar = toolBarManager.createControl(container);
+		toolkit.adapt(toolBar);
+		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
 		// Create the parent Composite for the mesh plot.
-		meshPlotParent = toolkit.createComposite(section, SWT.BORDER);
-		
+		meshPlotParent = toolkit.createComposite(container, SWT.BORDER);
+		meshPlotParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
+
 		// TODO Get the preferred visualization service.
 		// Try to get the VisItVizService.
 		IVizServiceFactory vizFactory = getVizServiceFactory();
@@ -801,9 +819,15 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			File file = new File("C:\\Users\\" + userId
 					+ "\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
 			URI uri = file.toURI();
-			
+
 			try {
-				IPlot plot = vizService.createPlot(uri);
+				// Create the plot.
+				VisItPlot plot = (VisItPlot) vizService.createPlot(uri);
+				// Add the plot's Actions to the ToolBar.
+				for (IAction action : plot.getActions()) {
+					toolBarManager.add(action);
+				}
+				toolBarManager.update(true);
 				// TODO We're going to have to do some other things here...
 				plot.draw("", "", meshPlotParent);
 			} catch (Exception e) {
@@ -811,7 +835,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						+ "Error creating VisIt plot.");
 				e.printStackTrace();
 			}
-			
+
 		} else {
 			// Create an error message to show in the mesh view.
 			String errorMessage = "There was a problem connecting to "
@@ -830,13 +854,12 @@ public class MOOSEFormEditor extends ICEFormEditor {
 					false, false));
 		}
 
-
 		// Set the client for the section according to SOP.
-		section.setClient(meshPlotParent);
-		
+		section.setClient(container);
+
 		return;
 	}
-	
+
 	/**
 	 * Removes the Mesh View page if possible.
 	 */
