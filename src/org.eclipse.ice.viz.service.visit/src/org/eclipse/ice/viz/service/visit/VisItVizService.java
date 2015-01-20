@@ -44,6 +44,14 @@ public class VisItVizService implements IVizService {
 	// TODO Address multiple connections associated with various plots. For now,
 	// we just have a single, default connection.
 
+	/**
+	 * This enum defines the possible states of a connection to a VisIt
+	 * instance. This is intended for use with the plots so they can keep users
+	 * updated based on the state of the associated VisIt connection.
+	 * 
+	 * @author Jordan Deyton
+	 *
+	 */
 	protected enum ConnectionState {
 		/**
 		 * The connection is being established.
@@ -257,11 +265,10 @@ public class VisItVizService implements IVizService {
 	 *         otherwise.
 	 */
 	private boolean hasConnection(String id) {
-		// FIXME This will need to be updated if we change who manages the
-		// connections.
-		System.err.println("Looking for connection with id \"" + id + "\"");
 		boolean found = VisItSwtConnectionManager.hasConnection(id);
-		System.err.println("Found? " + found);
+		System.out.println("VisItVizService message: "
+				+ "Connection with id \"" + id + "\" " + (found ? "" : "not ")
+				+ "found.");
 		return found;
 	}
 

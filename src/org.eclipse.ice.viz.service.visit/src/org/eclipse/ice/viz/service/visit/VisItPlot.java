@@ -16,7 +16,6 @@ import gov.lbnl.visit.swt.VisItSwtWidget;
 
 import java.net.ConnectException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,13 +85,23 @@ public class VisItPlot implements IPlot {
 	private VisItSwtConnection connection = null;
 
 	/**
-	 * The current VisIt widget used to draw VisIt plots.
+	 * The current parent {@code Composite} in which either the {@link #canvas}
+	 * or {@link #infoComopsite} is rendered.
+	 */
+	private Composite parent;
+
+	/**
+	 * The current VisIt widget used to draw VisIt plots. This should only be
+	 * visible if the connection is open.
 	 */
 	private VisItSwtWidget canvas = null;
 
-	private Composite parent;
-
-	private final List<Control> contributedControls = new ArrayList<Control>();
+	/**
+	 * This presents the user with helpful information about the status of the
+	 * associated VisIt connection. It should only be visible if the connection
+	 * is *not* open.
+	 */
+	private Composite infoComposite = null;
 
 	/**
 	 * The default constructor.
@@ -280,37 +289,28 @@ public class VisItPlot implements IPlot {
 			state = ConnectionState.Failed;
 		}
 
-		System.out.println("VisItPlot message: "
-				+ "Updating plot. The current connection state is \"" + state
-				+ "\".");
-
 		// If connected, try to render the plot in the VisItSwtWidget/canvas.
 		if (state == ConnectionState.Connected) {
-			// If the canvas was not previously available, dispose all
-			// contributed controls and create the canvas.
-			if (canvas == null) {
-				// Dispose all previous controls.
-				for (Control control : contributedControls) {
-					control.dispose();
-				}
-				contributedControls.clear();
 
+			// If necessary, dispose the infoComposite.
+			if (infoComposite != null && !infoComposite.isDisposed()) {
+				infoComposite.dispose();
+				infoComposite = null;
+			}
+
+			// If necessary, create the canvas.
+			if (canvas == null) {
 				// Create the canvas.
 				canvas = createCanvas(parent, SWT.DOUBLE_BUFFERED, connection);
 				// Create a mouse manager to handle mouse events inside the
 				// canvas.
 				new VisItMouseManager(canvas);
 
-				// Add the canvas as a contributed control. It might need to be
-				// disposed later.
-				contributedControls.add(canvas);
-//				Composite c = new Composite(parent, SWT.NONE);
-//				c.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
+				// Refresh the parent since its size likely changed due to the
+				// new canvas.
 				parent.layout();
 			}
 
-			System.out.println("VisItPlot message: " + "Drawing the plots...");
-			
 			// Make sure the Canvas is activated.
 			canvas.activate();
 
@@ -325,15 +325,10 @@ public class VisItPlot implements IPlot {
 		// the VisIt preferences along with an informative message.
 		else {
 
-			// Dispose all previous controls.
-			for (Control control : contributedControls) {
-				control.dispose();
-			}
-			contributedControls.clear();
-
 			// Set the message and icon based on the state of the connection.
-			String message;
-			Image image;
+			final String message;
+			final String linkMessage = "Click here to update VisIt connection preferences.";
+			final Image image;
 			if (state == ConnectionState.Connecting) {
 				message = "The VisIt connection is being established...";
 				image = display.getSystemImage(SWT.ICON_WORKING);
@@ -345,61 +340,94 @@ public class VisItPlot implements IPlot {
 				image = display.getSystemImage(SWT.ICON_ERROR);
 			}
 
-			// The service is not connected. Notify the user and give them a
-			// link to the preferences.
-			Composite infoComposite = new Composite(parent, SWT.NONE);
-			infoComposite.setLayout(new GridLayout(2, false));
-			// Create an info label with an image.
-			Label iconLabel = new Label(infoComposite, SWT.NONE);
+			// The widgets used in the infoComposite...
+			Label iconLabel; // A helpful icon based on severity of the problem.
+			Composite msgComposite; // Contains a message and link.
+			Label msgLabel; // A helpful message about the problem.
+			Hyperlink prefLink; // A link to VisIt's connection preferences.
+
+			// If necessary, dispose the canvas and create the infoComposite.
+			if (canvas != null && !canvas.isDisposed()) {
+				canvas.dispose();
+				canvas = null;
+			}
+
+			// If necessary, create the infoComposite.
+			if (infoComposite == null) {
+				infoComposite = new Composite(parent, SWT.NONE);
+				infoComposite.setLayout(new GridLayout(2, false));
+
+				// Create an info label with an image.
+				iconLabel = new Label(infoComposite, SWT.NONE);
+				iconLabel.setLayoutData(new GridData(SWT.BEGINNING,
+						SWT.BEGINNING, false, false));
+
+				// Create a Composite to contain the info message and the
+				// hyperlink
+				// with the info message above the hyperlink.
+				msgComposite = new Composite(infoComposite, SWT.NONE);
+				msgComposite.setLayoutData(new GridData(SWT.BEGINNING,
+						SWT.BEGINNING, false, false));
+				msgComposite.setLayout(new GridLayout(1, false));
+
+				// Create an info label with informative text.
+				msgLabel = new Label(msgComposite, SWT.NONE);
+				msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+						false, false));
+
+				// Create a link to the preference page.
+				prefLink = new Hyperlink(msgComposite, SWT.NONE);
+				prefLink.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+						false, false));
+				prefLink.setUnderlined(true);
+				prefLink.setForeground(display
+						.getSystemColor(SWT.COLOR_LINK_FOREGROUND));
+				// Add the listener to redirect the user to the preferences.
+				prefLink.addHyperlinkListener(new IHyperlinkListener() {
+					@Override
+					public void linkEntered(HyperlinkEvent e) {
+						// Nothing to do yet.
+					}
+
+					@Override
+					public void linkExited(HyperlinkEvent e) {
+						// Nothing to do yet.
+					}
+
+					@Override
+					public void linkActivated(HyperlinkEvent e) {
+						// Open up the VisIt preferences.
+						PreferencesUtil
+								.createPreferenceDialogOn(
+										shell,
+										"org.eclipse.ice.viz.service.visit.preferences",
+										null, null).open();
+					}
+				});
+			}
+			// Since the infoComposite exists, we don't need to recreate
+			// anything. Just get references to them so we can update them.
+			else {
+				Control[] children = infoComposite.getChildren();
+				iconLabel = (Label) children[0];
+				// Since the message and link are children of msgComposite, we
+				// need to get them from the msgComposite's array of children.
+				msgComposite = (Composite) children[1];
+				children = msgComposite.getChildren();
+				msgLabel = (Label) children[0];
+				prefLink = (Hyperlink) children[1];
+			}
+
+			// Update the contents of the infoComposite's widgets.
 			iconLabel.setImage(image);
-			iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
-					false, false));
-			// Create a Composite to contain the info message and the hyperlink
-			// with the info message above the hyperlink.
-			Composite msgComposite = new Composite(infoComposite, SWT.NONE);
-			msgComposite.setLayoutData(new GridData(SWT.BEGINNING,
-					SWT.BEGINNING, false, false));
-			msgComposite.setLayout(new GridLayout(1, false));
-			// Create an info label with text and a hyperlink.
-			Label msgLabel = new Label(msgComposite, SWT.NONE);
 			msgLabel.setText(message);
-			msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-					false, false));
-			// Create a link to the preference page.
-			message = "Click here to update VisIt connection preferences.";
-			Hyperlink link = new Hyperlink(msgComposite, SWT.NONE);
-			link.setText(message);
-			link.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-					false));
-			link.setUnderlined(true);
-			link.setForeground(display
-					.getSystemColor(SWT.COLOR_LINK_FOREGROUND));
-			// Add the listener to redirect the user to the preferences.
-			link.addHyperlinkListener(new IHyperlinkListener() {
-				@Override
-				public void linkEntered(HyperlinkEvent e) {
-					// Nothing to do yet.
-				}
+			prefLink.setText(linkMessage);
 
-				@Override
-				public void linkExited(HyperlinkEvent e) {
-					// Nothing to do yet.
-				}
-
-				@Override
-				public void linkActivated(HyperlinkEvent e) {
-					// Open up the VisIt preferences.
-					PreferencesUtil.createPreferenceDialogOn(shell,
-							"org.eclipse.ice.viz.service.visit.preferences",
-							null, null).open();
-				}
-			});
-
-			// Add the infoComposite to the contributed controls.
-			contributedControls.add(infoComposite);
-
+			// Refresh the parent in case the widget text has an influence on
+			// the layout specifics.
 			parent.layout();
 		}
+
 		return;
 	}
 
@@ -431,11 +459,12 @@ public class VisItPlot implements IPlot {
 				.get(ConnectionPreference.WindowWidth.toString()));
 		int windowHeight = Integer.parseInt(connectionPreferences
 				.get(ConnectionPreference.WindowHeight.toString()));
+
 		try {
 			canvas.setVisItSwtConnection(connection, windowId, windowWidth,
 					windowHeight);
 		} catch (ConnectException e) {
-			System.out.println("VisItPlot error: "
+			System.err.println("VisItPlot error: "
 					+ "Could not set connection for VisIt Canvas.");
 			e.printStackTrace();
 		}
@@ -443,21 +472,50 @@ public class VisItPlot implements IPlot {
 		return canvas;
 	}
 
+	/**
+	 * This method informs the plot that its associated connection has been
+	 * updated. The plot can then update its contents if it has contributed to
+	 * the UI.
+	 * 
+	 * @param connectionId
+	 *            The ID of the connection.
+	 * @param state
+	 *            The current state of the connection.
+	 */
 	protected void updateConnection(String connectionId, ConnectionState state) {
+		// Check the parameters.
+		if (state == null) {
+			throw new NullPointerException("VisItPlot error: "
+					+ "Null connection state received!.");
+		}
+
 		final String connId = connectionId;
+		// TODO We should check the connection ID against the one used by this
+		// plot.
 		final ConnectionState connState = state;
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				update(connState, service.getConnection(connId));
+				update(connState, getConnection());
 			}
 		});
 		return;
 	}
 
+	/**
+	 * Updates {@link #connection} as necessary and opens the database to point
+	 * to the specified file.
+	 * 
+	 * @return The connection. This will be {@code null} if the connection is
+	 *         not open.
+	 */
 	private VisItSwtConnection getConnection() {
 		if (connection == null) {
 			connection = service.getDefaultConnection();
+			// We need to open the database for the data source file.
+			if (connection != null) {
+				connection.getViewerMethods().openDatabase(sourcePath);
+			}
 		}
 		return connection;
 	}
