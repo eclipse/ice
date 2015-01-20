@@ -44,7 +44,9 @@ import org.eclipse.core.runtime.Path;
 @XmlRootElement(name = "CaebatLauncher")
 public class CaebatLauncher extends JobLauncher {
 
-	// The executable command
+	/**
+	 * The execution command 
+	 */
 	private String fullExecCMD;
 
 	/**
@@ -159,8 +161,8 @@ public class CaebatLauncher extends JobLauncher {
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
-	 * @param the
-	 *            action name
+	 * @param the action name
+	 * 
 	 * @return The status of the action
 	 */
 	public FormStatus process(String actionName) {
@@ -191,21 +193,25 @@ public class CaebatLauncher extends JobLauncher {
 		IPath fileIPath = new Path(project.getLocation().toOSString() + separator + inputFileEntry.getValue()); 
 		IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
 
+		// Get the Run ID that may be used to locate the simulation files
 		String runID = "";
 		ArrayList<Entry> runIDMatches = reader.findAll(inputFile, "RUN_ID=.*");
 		if (!runIDMatches.isEmpty()) {
 			runID = runIDMatches.get(0).getName().split("=")[1];
 		}
 		
+		// Get the Case Name which may also be used to locat the simulation files
 		String caseName = "";
 		ArrayList<Entry> caseNameMatches = reader.findAll(inputFile, "SIM_NAME=.*");		
 		if (!caseNameMatches.isEmpty()) {
 			caseName = caseNameMatches.get(0).getName().split("=")[1];
 		}
+		// Determine if we need to use the Run ID or the Case Name to find the files
 		if (caseName.contains("${RUN_ID}")) {
 			caseName = runID;
 		}
 		
+		// Get the base path for the simulation files 
 		String dataDir = "";
 		ArrayList<Entry> simRootMatches = reader.findAll(inputFile, "SIM_ROOT=.*");
 		if (!simRootMatches.isEmpty()) {
@@ -217,13 +223,11 @@ public class CaebatLauncher extends JobLauncher {
 			dataDir = dataDir.substring(0, dataDir.length() - 12);		
 		}
 		
+		// Pull some information from the form
 		TableComponent hostTable = (TableComponent) form.getComponent(4);
 		CAEBAT_ROOT = hostTable.getRow(0).get(2).getValue();
 		
-		System.out.println(dataDir);
-		System.out.println(caseName);
-		System.out.println(runID);
-		
+		// Set up the execution command
 		String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT + "/vibe/components && ";
 		String copyCase = "cp -r " + dataDir + "/" + caseName + "/* . && ";
 		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
@@ -243,20 +247,15 @@ public class CaebatLauncher extends JobLauncher {
 	}
 
 	/**
-	 * 
+	 * Recursively copies a directory to a destination.  This method is used
+	 * to pull the simulation input files into the ICE Launch directory.
 	 * 
 	 * @param src
+	 *          The directory to copy over
 	 * @param dest
+	 *          Where to put the directory
 	 */
 	public void copyInputDirectory(String src, String dest) {
 		copyDirectory(src, dest);
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private String getLaunchDirectory() {
-		return getWorkingDirectory();
 	}
 }
