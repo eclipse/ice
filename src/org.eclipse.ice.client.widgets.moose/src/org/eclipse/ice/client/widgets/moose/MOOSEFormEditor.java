@@ -797,8 +797,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			meshPlotParent.setLayout(new FillLayout());
 
 			// TODO Get the file from elsewhere...
-			File file = new File(
-					"C:\\Users\\USER\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
+			String userId = System.getProperty("user.name");
+			File file = new File("C:\\Users\\" + userId
+					+ "\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
 			URI uri = file.toURI();
 			
 			try {
