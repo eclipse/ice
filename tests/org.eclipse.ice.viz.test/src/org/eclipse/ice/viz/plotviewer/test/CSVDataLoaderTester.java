@@ -31,9 +31,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This class test the functionality of the CSVDataLoader.
+ * This class test the functionality of the CSVDataLoader. Four files covering
+ * three different cases are tested.
  * 
- * @author Claire Saunders
+ * Case 1: 	Data set with 2 time steps (LiCl_260K.csv [t=260], LiCl_290K.csv 
+ * 			[t=290]). These files contains special #features and #units labels. 
+ * 			The features have uncertainties.
+ * Case 2: 	A very basic single CSV file (IFA-431_rod1_out.csv) with no special
+ * 			#labels of any sort. The features have uncertainties.
+ * Case 3:	A contour file (sqe0.5.csv).
+ * 
+ * @author Claire Saunders, Anna Wojtowicz
  * 
  */
 public class CSVDataLoaderTester {
@@ -47,6 +55,7 @@ public class CSVDataLoaderTester {
 	private CSVDataProvider filenameProvider;
 	private CSVDataProvider loadedDataSet;
 	private CSVDataProvider contourProvider;
+	private CSVDataProvider rod1Provider;
 
 	/**
 	 * The list of providers loaded
@@ -84,6 +93,12 @@ public class CSVDataLoaderTester {
 	 * The Contour file name sqe0.5.csv
 	 */
 	private String contourFileName;
+	
+	/**
+	 * The basic CSV file containing no special delimiters or "hash" labels
+	 * (ie. #feature1, #feature2, etc.)
+	 */
+	private String rod1FileName;
 
 	/**
 	 * The Double Array for the times for the data set
@@ -120,11 +135,23 @@ public class CSVDataLoaderTester {
 	private ArrayList<Double> file290_Y2Uncertainty;
 
 	/**
+	 * ArrayLists for the hardcoded value for the Rod1 file
+	 */
+	private ArrayList<Double> rod1_XValues;
+	private ArrayList<Double> rod1_Y0Values;
+	private ArrayList<Double> rod1_Y0Uncertainty;
+	private ArrayList<Double> rod1_Y1Values;
+	private ArrayList<Double> rod1_Y1Uncertainty;
+	private ArrayList<Double> rod1_Y2Values;
+	private ArrayList<Double> rod1_Y2Uncertainty;
+	
+	
+	/**
 	 * This operation performs the initial setup of the data structures used by
 	 * this class.
 	 */
-	@Before
-	public void beginLoader() {
+	@Before 
+	public void before() {
 
 		// Set up test workspace
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -164,6 +191,7 @@ public class CSVDataLoaderTester {
 		file260Name = userDir + separator + "LiCl_260K.csv";
 		file290Name = userDir + separator + "LiCl_290K.csv";
 		contourFileName = userDir + separator + "sqe0.5.csv";
+		rod1FileName = userDir + separator + "IFA-431_rod1_out.csv";
 
 		// Create a array of string file names
 		fileNameSet = new String[2];
@@ -235,6 +263,26 @@ public class CSVDataLoaderTester {
 		file290_Y2Uncertainty = new ArrayList<Double>(Arrays.asList(
 				2.22809e-05, 1.99118e-05, 2.3159e-05, 1.81769e-05, 1.60847e-05,
 				1.9592e-05, 1.66315e-05, 1.83402e-05, 2.19285e-05, 1.72319e-05));
+	
+		rod1_XValues = new ArrayList<Double>(Arrays.asList(
+				-100.0,0.0,900.0,1800.0,2700.0,3600.0,4500.0,5400.0,6300.0,
+				7200.0));
+		rod1_Y0Values = new ArrayList<Double>(Arrays.asList(
+				0.0,100.0,900.0,900.0,900.0,900.0,900.0,900.0,900.0,900.0));
+		rod1_Y0Uncertainty = new ArrayList<Double>(Arrays.asList(
+				293.0,507.9095721,522.2012984,523.650954,525.6631533,
+				525.9132687,526.2099559,526.747924,531.0598762,533.7404418));
+		rod1_Y1Values = new ArrayList<Double>(Arrays.asList(
+				3.50E-06,3.50E-06,3.50E-06,3.50E-06,3.50E-06,3.50E-06,3.50E-06,
+				3.50E-06,3.50E-06,3.50E-06));
+		rod1_Y1Uncertainty = new ArrayList<Double>(Arrays.asList(
+				293.0,512.3702696,514.6919852,514.9232889,515.2463987,
+				515.2867456,515.3346468,515.4216358,516.1252594,516.5684875));
+		rod1_Y2Values = new ArrayList<Double>(Arrays.asList(
+				0.0,0.0,3.85E-09,1.21E-08,2.19E-08,3.27E-08,4.37E-08,5.51E-08,
+				6.86E-08,8.53E-08));
+		rod1_Y2Uncertainty = new ArrayList<Double>(Arrays.asList(
+				0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0));
 
 		// The list of loaded providers to test the different loading
 		// functionalities
@@ -249,13 +297,13 @@ public class CSVDataLoaderTester {
 
 		// Load the default data set by putting the file name in the load
 		// command
-		defaultProvider = newDataLoaderDefault.load(file260Name, true);
+		defaultProvider = newDataLoaderDefault.load(file260Name);
 		// Load using the input file already specified in the comprehensive
 		// constructor
-		fileProvider = newDataLoaderFile.load(true);
+		fileProvider = newDataLoaderFile.load();
 		// Load using the LiCl_260.csv file name already specified in the
 		// comprehensive constructor
-		filenameProvider = newDataLoaderFilename.load(true);
+		filenameProvider = newDataLoaderFilename.load();
 
 		// Add the providers to the provider list
 		dataProviderList.add(defaultProvider);
@@ -268,13 +316,18 @@ public class CSVDataLoaderTester {
 
 		// Load the contour plot which has the matrix specifications within
 		CSVDataLoader newDataContourLoader = new CSVDataLoader();
-		contourProvider = newDataContourLoader.load(contourFileName, true);
+		contourProvider = newDataContourLoader.load(contourFileName);
 		// Hardcode the width and height
 		contourWidth = 100;
 		contourHeight = 200;
 		// Hardcode the min and max
 		contourMin = -100.0;
 		contourMax = 100.0;
+		
+		// Load the basic CSV file that contains no special labels/delimiters
+		CSVDataLoader newDataCSVLoader = new CSVDataLoader();
+		rod1Provider = newDataCSVLoader.load(rod1FileName);
+
 	}
 
 	/**
@@ -282,9 +335,13 @@ public class CSVDataLoaderTester {
 	 */
 	@Test
 	public void checkAllFeatures() {
-		// Loop through the 3 loaded data sets and check the features
+		
+		//Local declarations
+		ArrayList<String> dataFeatures = null;
+		
+		// Loop through the loaded data set and check the features
 		for (CSVDataProvider oneDataSet : dataProviderList) {
-			ArrayList<String> dataFeatures = oneDataSet.getFeatureList();
+			dataFeatures = oneDataSet.getFeatureList();
 			// Check that the size of the two feature lists are equal
 			assertEquals(dataFeatures.size(), features.size());
 			// Check that each feature is within the set of features loaded
@@ -292,6 +349,16 @@ public class CSVDataLoaderTester {
 				assertTrue(features.contains(feature));
 			}
 		}
+		
+		// Check the rod1 case by itself
+		dataFeatures = rod1Provider.getFeatureList();
+		// Check that the size of the two feature lists are equal
+		assertEquals(dataFeatures.size(), features.size());
+		// Check that each feature is within the set of features loaded
+		for (String feature : dataFeatures) {
+			assertTrue(features.contains(feature));
+		}
+		
 		// Check the dataSet's features
 		ArrayList<String> dataSetFeatures = loadedDataSet.getFeatureList();
 		// Check the size of the feature lists are equal
@@ -322,11 +389,14 @@ public class CSVDataLoaderTester {
 	 */
 	@Test
 	public void checkFeatureX() {
+		// Local declarations
+		ArrayList<IData> dataFromProvider = null;
+		
 		// Loop through each data provider and check that the x values are
 		// correct
 		for (CSVDataProvider oneDataProvider : dataProviderList) {
 			// Get the data from the provider
-			ArrayList<IData> dataFromProvider = oneDataProvider
+			dataFromProvider = oneDataProvider
 					.getDataAtCurrentTime(features.get(0));
 			// Check the units
 			assertEquals(dataFromProvider.get(0).getUnits(), units.get(0));
@@ -344,7 +414,7 @@ public class CSVDataLoaderTester {
 		// Set the time to 260 first
 		loadedDataSet.setTime(dataSetTimes.get(0));
 		// Get the data from the provider
-		ArrayList<IData> dataFromProvider = loadedDataSet
+		dataFromProvider = loadedDataSet
 				.getDataAtCurrentTime(features.get(0));
 		// Check the units
 		assertEquals(dataFromProvider.get(0).getUnits(), units.get(0));
@@ -369,6 +439,18 @@ public class CSVDataLoaderTester {
 			assertTrue(dataFromProvider.get(i).getValue() == file290_XValues
 					.get(i));
 		}
+		
+		// Get the rod1 data
+		dataFromProvider = rod1Provider.getDataAtCurrentTime(features.get(0));
+		// Check the units
+		assertNull(dataFromProvider.get(0).getUnits());
+		// Check that the sizes are equal
+		assertEquals(dataFromProvider.size(), rod1_XValues.size());
+		for (int i = 0; i < dataFromProvider.size(); i++) {
+			// Check that the values are equal
+			assertTrue(dataFromProvider.get(i).getValue() == rod1_XValues
+					.get(i));
+		}
 	}
 
 	/**
@@ -376,11 +458,14 @@ public class CSVDataLoaderTester {
 	 */
 	@Test
 	public void checkFeatureAndUncertaintyForY0() {
+		// Local declarations
+		ArrayList<IData> dataFromProvider = null;
+		
 		// Loop through each data provider and check that the x values are
 		// correct
 		for (CSVDataProvider oneDataProvider : dataProviderList) {
 			// Get the data from the provider
-			ArrayList<IData> dataFromProvider = oneDataProvider
+			dataFromProvider = oneDataProvider
 					.getDataAtCurrentTime(features.get(1));
 			// Check the units
 			assertEquals(dataFromProvider.get(0).getUnits(), units.get(1));
@@ -389,11 +474,11 @@ public class CSVDataLoaderTester {
 			// Loop through the values
 			for (int i = 0; i < dataFromProvider.size(); i++) {
 				// Check that the values are equal
-				assertTrue(dataFromProvider.get(i).getValue() == file260_Y0Values
-						.get(i));
+				assertTrue(dataFromProvider.get(i).getValue() == 
+						file260_Y0Values.get(i));
 				// Check that the uncertainties are equal
-				assertTrue(dataFromProvider.get(i).getUncertainty() == file260_Y0Uncertainty
-						.get(i));
+				assertTrue(dataFromProvider.get(i).getUncertainty() == 
+						file260_Y0Uncertainty.get(i));
 			}
 		}
 
@@ -401,7 +486,7 @@ public class CSVDataLoaderTester {
 		// Set the time to 260 first
 		loadedDataSet.setTime(dataSetTimes.get(0));
 		// Get the data from the provider
-		ArrayList<IData> dataFromProvider = loadedDataSet
+		dataFromProvider = loadedDataSet
 				.getDataAtCurrentTime(features.get(1));
 		// Check the units
 		assertEquals(dataFromProvider.get(0).getUnits(), units.get(1));
@@ -412,11 +497,11 @@ public class CSVDataLoaderTester {
 			assertTrue(dataFromProvider.get(i).getValue() == file260_Y0Values
 					.get(i));
 			// Check that the uncertainties are equal
-			assertTrue(dataFromProvider.get(i).getUncertainty() == file260_Y0Uncertainty
-					.get(i));
+			assertTrue(dataFromProvider.get(i).getUncertainty() == 
+					file260_Y0Uncertainty.get(i));
 			// Check that the uncertainties are equal
-			assertTrue(dataFromProvider.get(i).getUncertainty() == file260_Y0Uncertainty
-					.get(i));
+			assertTrue(dataFromProvider.get(i).getUncertainty() == 
+					file260_Y0Uncertainty.get(i));
 		}
 
 		// Set the time to 290 next
@@ -432,9 +517,25 @@ public class CSVDataLoaderTester {
 			assertTrue(dataFromProvider.get(i).getValue() == file290_Y0Values
 					.get(i));
 			// Check that the uncertainties are equal
-			assertTrue(dataFromProvider.get(i).getUncertainty() == file290_Y0Uncertainty
-					.get(i));
+			assertTrue(dataFromProvider.get(i).getUncertainty() == 
+					file290_Y0Uncertainty.get(i));
 		}
+		
+		// Get the data from the rod 1 provider
+		dataFromProvider = rod1Provider.getDataAtCurrentTime(features.get(1));
+		// Check the units are null
+		assertNull(dataFromProvider.get(0).getUnits());
+		// Check that the sizes are equal
+		assertEquals(dataFromProvider.size(), rod1_Y0Values.size());
+		for (int i = 0; i < dataFromProvider.size(); i++) {
+			// Check that the values are equal
+			assertTrue(dataFromProvider.get(i).getValue() == rod1_Y0Values
+					.get(i));
+			// Check that the uncertainties are equal
+			assertTrue(dataFromProvider.get(i).getUncertainty() == 
+					rod1_Y0Uncertainty.get(i));
+		}
+		
 	}
 
 	/**
@@ -442,11 +543,14 @@ public class CSVDataLoaderTester {
 	 */
 	@Test
 	public void checkFeatureAndUncertaintyForY1() {
+		// Local declarations
+		ArrayList<IData> dataFromProvider = null;		
+		
 		// Loop through each data provider and check that the x values are
 		// correct
 		for (CSVDataProvider oneDataProvider : dataProviderList) {
 			// Get the data from the provider
-			ArrayList<IData> dataFromProvider = oneDataProvider
+			dataFromProvider = oneDataProvider
 					.getDataAtCurrentTime(features.get(2));
 			// Check the units
 			assertEquals(dataFromProvider.get(0).getUnits(), units.get(2));
@@ -455,11 +559,11 @@ public class CSVDataLoaderTester {
 			// Loop through the values
 			for (int i = 0; i < dataFromProvider.size(); i++) {
 				// Check that the values are equal
-				assertTrue(dataFromProvider.get(i).getValue() == file260_Y1Values
-						.get(i));
+				assertTrue(dataFromProvider.get(i).getValue() == 
+						file260_Y1Values.get(i));
 				// Check that the uncertainties are equal
-				assertTrue(dataFromProvider.get(i).getUncertainty() == file260_Y1Uncertainty
-						.get(i));
+				assertTrue(dataFromProvider.get(i).getUncertainty() == 
+						file260_Y1Uncertainty.get(i));
 			}
 		}
 
@@ -467,7 +571,7 @@ public class CSVDataLoaderTester {
 		// Set the time to 260 first
 		loadedDataSet.setTime(dataSetTimes.get(0));
 		// Get the data from the provider
-		ArrayList<IData> dataFromProvider = loadedDataSet
+		dataFromProvider = loadedDataSet
 				.getDataAtCurrentTime(features.get(2));
 		// Check the units
 		assertEquals(dataFromProvider.get(0).getUnits(), units.get(2));
@@ -478,8 +582,8 @@ public class CSVDataLoaderTester {
 			assertTrue(dataFromProvider.get(i).getValue() == file260_Y1Values
 					.get(i));
 			// Check that the uncertainties are equal
-			assertTrue(dataFromProvider.get(i).getUncertainty() == file260_Y1Uncertainty
-					.get(i));
+			assertTrue(dataFromProvider.get(i).getUncertainty() == 
+					file260_Y1Uncertainty.get(i));
 		}
 
 		// Set the time to 290 next
@@ -495,8 +599,23 @@ public class CSVDataLoaderTester {
 			assertTrue(dataFromProvider.get(i).getValue() == file290_Y1Values
 					.get(i));
 			// Check that the uncertainties are equal
-			assertTrue(dataFromProvider.get(i).getUncertainty() == file290_Y1Uncertainty
+			assertTrue(dataFromProvider.get(i).getUncertainty() == 
+					file290_Y1Uncertainty.get(i));
+		}
+		
+		// Get the data from the rod1 provider
+		dataFromProvider = rod1Provider.getDataAtCurrentTime(features.get(2));
+		// Check the units
+		assertNull(dataFromProvider.get(0).getUnits());
+		// Check that the sizes are equal
+		assertEquals(dataFromProvider.size(), rod1_Y1Values.size());
+		for (int i = 0; i < dataFromProvider.size(); i++) {
+			// Check that the values are equal
+			assertTrue(dataFromProvider.get(i).getValue() == rod1_Y1Values
 					.get(i));
+			// Check that the uncertainties are equal
+			assertTrue(dataFromProvider.get(i).getUncertainty() == 
+					rod1_Y1Uncertainty.get(i));
 		}
 	}
 
@@ -505,11 +624,14 @@ public class CSVDataLoaderTester {
 	 */
 	@Test
 	public void checkFeatureAndUncertaintyForY2() {
+		// Local declarations
+		ArrayList<IData> dataFromProvider = null;
+		
 		// Loop through each data provider and check that the x values are
 		// correct
 		for (CSVDataProvider oneDataProvider : dataProviderList) {
 			// Get the data from the provider
-			ArrayList<IData> dataFromProvider = oneDataProvider
+			dataFromProvider = oneDataProvider
 					.getDataAtCurrentTime(features.get(3));
 			// Check the units
 			assertEquals(dataFromProvider.get(0).getUnits(), units.get(3));
@@ -518,11 +640,11 @@ public class CSVDataLoaderTester {
 			// Loop through the values
 			for (int i = 0; i < dataFromProvider.size(); i++) {
 				// Check that the values are equal
-				assertTrue(dataFromProvider.get(i).getValue() == file260_Y2Values
-						.get(i));
+				assertTrue(dataFromProvider.get(i).getValue() == 
+						file260_Y2Values.get(i));
 				// Check that the uncertainties are equal
-				assertTrue(dataFromProvider.get(i).getUncertainty() == file260_Y2Uncertainty
-						.get(i));
+				assertTrue(dataFromProvider.get(i).getUncertainty() == 
+						file260_Y2Uncertainty.get(i));
 			}
 		}
 
@@ -530,7 +652,7 @@ public class CSVDataLoaderTester {
 		// Set the time to 260 first
 		loadedDataSet.setTime(dataSetTimes.get(0));
 		// Get the data from the provider
-		ArrayList<IData> dataFromProvider = loadedDataSet
+		dataFromProvider = loadedDataSet
 				.getDataAtCurrentTime(features.get(3));
 		// Check the units
 		assertEquals(dataFromProvider.get(0).getUnits(), units.get(3));
@@ -541,8 +663,8 @@ public class CSVDataLoaderTester {
 			assertTrue(dataFromProvider.get(i).getValue() == file260_Y2Values
 					.get(i));
 			// Check that the uncertainties are equal
-			assertTrue(dataFromProvider.get(i).getUncertainty() == file260_Y2Uncertainty
-					.get(i));
+			assertTrue(dataFromProvider.get(i).getUncertainty() == 
+					file260_Y2Uncertainty.get(i));
 		}
 
 		// Set the time to 290 next
@@ -559,6 +681,21 @@ public class CSVDataLoaderTester {
 					.get(i));
 			// Check that the uncertainties are equal
 			assertTrue(dataFromProvider.get(i).getUncertainty() == file290_Y2Uncertainty
+					.get(i));
+		}
+		
+		// Get the data from the rod1 provider
+		dataFromProvider = rod1Provider.getDataAtCurrentTime(features.get(3));
+		// Check the units
+		assertNull(dataFromProvider.get(0).getUnits());
+		// Check that the sizes are equal
+		assertEquals(dataFromProvider.size(), rod1_Y2Values.size());
+		for (int i = 0; i < dataFromProvider.size(); i++) {
+			// Check that the values are equal
+			assertTrue(dataFromProvider.get(i).getValue() == rod1_Y2Values
+					.get(i));
+			// Check that the uncertainties are equal
+			assertTrue(dataFromProvider.get(i).getUncertainty() == rod1_Y2Uncertainty
 					.get(i));
 		}
 	}

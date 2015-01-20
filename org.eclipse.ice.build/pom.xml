@@ -60,10 +60,6 @@
 						<include>**/*Tester.class</include>
 					</includes>
 					<argLine>${ui.test.vmargs}</argLine>
-					<useUIHarness>true</useUIHarness>
-                    <useUIThread>false</useUIThread>
-                    <product>org.eclipse.sdk.ide</product>
-                    <application>org.eclipse.ui.ide.workbench</application>
 				</configuration>
 			</plugin>
 
@@ -361,9 +357,8 @@
 		<module>../tests/org.eclipse.ice.sassena.test</module>
 		<module>../src/org.eclipse.ice.reflectivity</module>
 		<module>../tests/org.eclipse.ice.reflectivity.test</module>
-		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING TWO BUNDLES MUST 
+		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST 
 			BUILD LAST! -->
 		<module>../features/org.eclipse.ice.feature</module>
-		<module>../repository/org.eclipse.ice.repository</module>
 	</modules>
 </project>
