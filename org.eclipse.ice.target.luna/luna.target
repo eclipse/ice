@@ -66,6 +66,9 @@
 <unit id="org.eclipse.wst.xsl.feature.feature.group" version="1.3.401.v201409111855"/>
 <unit id="org.eclipse.wst.web_ui.feature.feature.group" version="3.6.1.v201409112028"/>
 <unit id="org.eclipse.ptp.remotetools.feature.group" version="8.1.0.201409161348"/>
+<unit id="org.eclipse.epp.package.rcp.feature.feature.group" version="4.4.1.20150109-0740"/>
+<unit id="org.eclipse.epp.package.automotive.feature.feature.group" version="4.4.1.20150109-0740"/>
+<unit id="org.eclipse.epp.package.common.feature.feature.group" version="4.4.1.20150109-0740"/>
 <repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
