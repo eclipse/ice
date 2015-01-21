@@ -282,8 +282,8 @@ public class VisItPlot implements IPlot {
 	 */
 	private void update(ConnectionState state, VisItSwtConnection connection) {
 
-		final Display display = parent.getDisplay();
-		final Shell shell = parent.getShell();
+		final Display display = Display.getDefault();
+		final Shell shell = display.getActiveShell();
 
 		// This should never happen, but if it does, we should report an error
 		// and not break!

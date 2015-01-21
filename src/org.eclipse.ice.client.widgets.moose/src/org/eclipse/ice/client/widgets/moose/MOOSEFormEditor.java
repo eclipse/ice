@@ -657,10 +657,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		removePageWithID(PLANT_PAGE_ID);
 	}
 
-	// TODO Remove this method.
-	protected void addPages() {
-		addMeshPage();
-	}
+	// TODO Remove this. This is for testing purposes only, i.e. to speed up
+	// development.
+//	protected void addPages() {
+//		addMeshPage();
+//	}
 
 	/**
 	 * Provides a Mesh View page with a view of the MOOSE data tree's mesh
@@ -687,18 +688,15 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						Composite body = managedForm.getForm().getBody();
 						body.setLayout(new GridLayout(2, false));
 
-						// TODO Add the data section back in.
-						// // Create a Section for the "Mesh" block's active
-						// data
-						// // node (DataComponent).
-						// section = createDefaultSection(managedForm);
-						// // The data node should not get excess horizontal
-						// space.
-						// section.setLayoutData(new GridData(SWT.FILL,
-						// SWT.FILL,
-						// false, true));
-						// populateMeshDataComponentSection(section, toolkit,
-						// managedForm);
+						// TODO Comment out the data section for testing...
+						// Create a Section for the "Mesh" block's active data
+						// node (DataComponent).
+						section = createDefaultSection(managedForm);
+						// The data node should not get excess horizontal space.
+						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+								false, true));
+						populateMeshDataComponentSection(section, toolkit,
+								managedForm);
 
 						// Create a Section for the mesh view.
 						section = createDefaultSection(managedForm);
@@ -799,7 +797,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		meshPlotParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
 
-		// TODO Get the preferred visualization service.
+		// TODO Use the preferred visualization service.
 		// Try to get the VisItVizService.
 		IVizServiceFactory vizFactory = getVizServiceFactory();
 		if (vizFactory != null) {
@@ -816,8 +814,10 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 			// TODO Get the file from elsewhere...
 			String userId = System.getProperty("user.name");
-			File file = new File("C:\\Users\\" + userId
-					+ "\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
+			File file = new File(
+					"C:\\Users\\"
+							+ userId
+							+ "\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
 			URI uri = file.toURI();
 
 			try {

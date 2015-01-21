@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -87,6 +89,33 @@ public class VisItVizService implements IVizService {
 	 * A list of all currently-drawn plots.
 	 */
 	private final List<VisItPlot> plots = new ArrayList<VisItPlot>();
+
+	/**
+	 * The default constructor.
+	 */
+	public VisItVizService() {
+		// Create a runnable that closes the old default connection and opens it
+		// with the current preferences.
+		final Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				closeDefaultConnection(true);
+				openDefaultConnection(true);
+			}
+		};
+		// Add a listener to the preference store. When the connection
+		// preferences change, start the runnable in a new thread.
+		getPreferenceStore().addPropertyChangeListener(
+				new IPropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent event) {
+						Thread thread = new Thread(runnable);
+						thread.start();
+					}
+				});
+
+		return;
+	}
 
 	/*
 	 * (non-Javadoc)
