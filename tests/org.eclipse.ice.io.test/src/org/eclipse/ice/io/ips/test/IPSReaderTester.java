@@ -17,18 +17,24 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.io.ips.IPSReader;
-
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.io.ips.IPSReader;
 import org.junit.Test;
 
 /**
@@ -49,39 +55,43 @@ public class IPSReaderTester {
 		String separator = System.getProperty("file.separator");
 		String filePath = System.getProperty("user.home") + separator + "ICETests" 
 				+ separator + "caebatTesterWorkspace" + separator 
-				+ "Caebat_Model" + separator + "example_ini.conf";		
-		File testFile = new File(filePath);
+				+ "Caebat_Model" + separator + "example_ini.conf";
+		IPath fileIPath = new Path(filePath);
+		IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
 		
-		//Create an IPSReader to test
+		BufferedReader testReader = null;
+		try {
+			testReader = new BufferedReader(new FileReader(new File(filePath)));
+		} catch (FileNotFoundException e1) {
+			fail("Failed to find file at " + filePath);
+			e1.printStackTrace();
+		}
+		
+		// Create an IPSReader to test
 		IPSReader reader = new IPSReader();
 		assertNotNull(reader);
+		assertEquals(reader.getReaderType(), "IPSReader");
 		
 		// Try to read in invalid INI file
-		File fakeFile = null;
-		ArrayList<Component> components = null;
-		try {
-			components = reader.loadINIFile(fakeFile);
-		} catch (FileNotFoundException e) {
-			fail("Failed to find fake IPS input file");
-			e.printStackTrace();
-		} catch (IOException e) {
-			fail("Failed to read from fake IPS input file");
-			e.printStackTrace();
-		}
-		assertTrue(components == null);
+		IFile fakeFile = null;
+		Form form = null;
+		form = reader.read(fakeFile);
+		assertTrue(form == null);
 		
 		// Load the INI file and parse the contents into Components
 		try {
-			components = reader.loadINIFile(testFile);
+			form = reader.read(inputFile);
+			testReader.close();
 		} catch (FileNotFoundException e) {
-			fail("Failed to find IPS input file: " + testFile.toString());
+			fail("Failed to find IPS input file: " + filePath);
 			e.printStackTrace();
 		} catch (IOException e) {
-			fail("Failed to read from IPS input file: " + testFile.toString());
+			fail("Failed to read from IPS input file: " + filePath);
 			e.printStackTrace();
 		}
 		
 		// Make sure we found some components
+		ArrayList<Component> components = form.getComponents();
 		assertEquals(4,components.size());	
 		DataComponent timeLoopData = (DataComponent) components.get(0);
 		TableComponent globalConfig = (TableComponent) components.get(1);
@@ -122,6 +132,16 @@ public class IPSReaderTester {
 			assertNotNull(timeLoopData.retrieveAllEntries().get(i));
 		}		
 		
+		/* --- Test the findAll method --- */
+		String regex = "SIM_ROOT = .*";
+		String fakex = "Sassafras my mass";
+		ArrayList<Entry> matches = reader.findAll(inputFile, regex);
+		ArrayList<Entry> fakes = reader.findAll(inputFile, fakex);
+		assertEquals(fakes.size(),0);
+		assertEquals(matches.size(),1);
+		assertEquals(matches.get(0).getValue(), "SIM_ROOT = $CAEBAT_ROOT/vibe/trunk/examples/${SIM_NAME}");
+		
+		// Okay good job
 		return;
 	}
 }

@@ -30,6 +30,7 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -159,7 +160,8 @@ public class VisitEditor extends EditorPart {
 		if (getEditorInput() != null
 				&& getEditorInput() instanceof VisitEditorInput) {
 			// Create the VisIt widget
-			vizWidget = new VisItSwtWidget(vizComposite, SWT.BORDER);
+			vizWidget = new VisItSwtWidget(vizComposite, SWT.BORDER
+					| SWT.DOUBLE_BUFFERED);
 			// Create the mouse manager
 			mouseManager = new VisitMouseManager(vizWidget);
 			// Use the mouse wheel to zoom
@@ -222,7 +224,7 @@ public class VisitEditor extends EditorPart {
 				conn = VisItSwtConnectionManager.getConnection(key);
 			} else {
 				conn = VisItSwtConnectionManager.createConnection(key,
-						Display.getDefault(), inputMap);
+						new Shell(Display.getDefault()), inputMap);
 			}
 
 			boolean result = (conn != null);

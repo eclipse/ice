@@ -13,14 +13,14 @@
 package org.eclipse.ice.caebat.launcher.test;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import org.eclipse.ice.caebat.launcher.CaebatLauncher;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -66,27 +66,57 @@ public class CaebatLauncherTester {
 		// begin-user-code
 
 		// Local declarations
-		CaebatLauncher CaebatLauncher;
+		CaebatLauncher caebatLauncher;
+		String separator = System.getProperty("file.separator");
 
 		// Try with project as null
-		CaebatLauncher = new CaebatLauncher(null);
+		caebatLauncher = new CaebatLauncher(null);
 
 		// check to see if the form exists, and the item is setup correctly.
-		assertEquals("Caebat Launcher", CaebatLauncher.getName());
+		assertEquals("Caebat Launcher", caebatLauncher.getName());
 		assertEquals(
 				"Caebat is a coupled battery and physics simulation from ORNL.",
-				CaebatLauncher.getDescription());
+				caebatLauncher.getDescription());
 
 		// Try with project not as null
 		this.setupIProject();
-		CaebatLauncher = new CaebatLauncher(project);
+		caebatLauncher = new CaebatLauncher(project);
 
 		// check to see if the form exists, and the item is setup correctly.
-		assertEquals("Caebat Launcher", CaebatLauncher.getName());
+		assertEquals("Caebat Launcher", caebatLauncher.getName());
 		assertEquals(
 				"Caebat is a coupled battery and physics simulation from ORNL.",
-				CaebatLauncher.getDescription());
+				caebatLauncher.getDescription());
 
+		// Test the directory copy
+		IFolder limbo = project.getFolder("Directory");
+		IFolder newLimbo = project.getFolder("newDirectory");
+		if (!newLimbo.exists()) {
+			try {
+				newLimbo.create(true, true, null);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+
+		String srcPath = project.getLocation().toOSString() + separator + project.getFolder("Directory").getName();
+		String destPath = project.getLocation().toOSString() + separator + project.getFolder("newDirectory").getName();
+		caebatLauncher.copyInputDirectory(srcPath, destPath);
+	
+		// Make sure all of the files were copied, then delete them all
+		ArrayList<File> copiedFiles = new ArrayList<File>();
+		copiedFiles.add(new File(destPath + separator + "DeepDirectory" + separator + "DeeperThanDeep" + separator + "file"));
+		copiedFiles.add(new File(destPath + separator + "DeepDirectory" + separator + "DeeperThanDeep"));
+		copiedFiles.add(new File(destPath + separator + "DeepDirectory" + separator + "deepFile"));
+		copiedFiles.add(new File(destPath + separator + "DeepDirectory"));		
+		copiedFiles.add(new File(destPath + separator + "shallowFile"));
+		copiedFiles.add(new File(destPath));
+
+		for (File f : copiedFiles) {
+			assertTrue(f.exists());
+			f.delete();
+		}
+		
 		// end-user-code
 	}
 

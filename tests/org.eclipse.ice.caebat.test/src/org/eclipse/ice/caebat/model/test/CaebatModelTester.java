@@ -162,7 +162,7 @@ public class CaebatModelTester {
 		// Check contents, null model should be empty
 		form = caebatModel.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(0, form.getComponents().size());
+		assertEquals(4, form.getComponents().size());
 
 		return;
 		// end-user-code
@@ -191,7 +191,7 @@ public class CaebatModelTester {
 		// Check default contents
 		form = caebat.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(5, form.getComponents().size());
+		assertEquals(4, form.getComponents().size());
 
 		// Check the name and description of the item and allowedActions
 		assertEquals("Caebat Model", caebat.getName());
@@ -207,13 +207,13 @@ public class CaebatModelTester {
 		// Check default contents
 		form = caebat.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(5, form.getComponents().size());
+		assertEquals(4, form.getComponents().size());
 
 		assertEquals(FormStatus.Processed,
 				caebat.process("Export to Caebat INI format"));
 		form = caebat.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(5, form.getComponents().size());
+		assertEquals(4, form.getComponents().size());
 		assertTrue(projectSpace.getFile(
 				"Caebat_Model_" + caebat.getId() + ".conf").exists());
 
