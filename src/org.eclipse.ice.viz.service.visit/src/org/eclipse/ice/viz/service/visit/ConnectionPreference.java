@@ -45,10 +45,12 @@ public enum ConnectionPreference {
 	LaunchInstance("isLaunch", "true", "Launch Instance",
 			"Whether to launch a new VisIt instance or connect to an existing one."),
 	/**
-	 * Whether to use a proxy to connect to the VisIt host or not.
+	 * Whether to use tunneling when connecting to the host. Remote connections
+	 * should have this set to true, while local connections should have it set
+	 * to false.
 	 */
-	UseProxy("useTunneling", "false", "Use Proxy",
-			"Whether to use a proxy to connect to the VisIt host or not."),
+	UseTunneling("useTunneling", "false", "Use Tunneling",
+			"Whether to use tunneling when connecting to the host."),
 	/**
 	 * The machine through which the client will connect to the host.
 	 */
