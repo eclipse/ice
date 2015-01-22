@@ -659,9 +659,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 	// TODO Remove this. This is for testing purposes only, i.e. to speed up
 	// development.
-//	protected void addPages() {
-//		addMeshPage();
-//	}
+	protected void addPages() {
+		addMeshPage();
+	}
 
 	/**
 	 * Provides a Mesh View page with a view of the MOOSE data tree's mesh
@@ -688,15 +688,15 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						Composite body = managedForm.getForm().getBody();
 						body.setLayout(new GridLayout(2, false));
 
-						// TODO Comment out the data section for testing...
-						// Create a Section for the "Mesh" block's active data
-						// node (DataComponent).
-						section = createDefaultSection(managedForm);
-						// The data node should not get excess horizontal space.
-						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-								false, true));
-						populateMeshDataComponentSection(section, toolkit,
-								managedForm);
+//						// TODO Comment out the data section for testing...
+//						// Create a Section for the "Mesh" block's active data
+//						// node (DataComponent).
+//						section = createDefaultSection(managedForm);
+//						// The data node should not get excess horizontal space.
+//						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+//								false, true));
+//						populateMeshDataComponentSection(section, toolkit,
+//								managedForm);
 
 						// Create a Section for the mesh view.
 						section = createDefaultSection(managedForm);
