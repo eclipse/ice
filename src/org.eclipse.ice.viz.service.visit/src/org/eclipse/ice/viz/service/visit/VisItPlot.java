@@ -119,18 +119,21 @@ public class VisItPlot implements IPlot {
 		this.source = source;
 		this.service = service;
 
-//		// On Windows, the File class inserts standard forward slashes as
-//		// separators. VisIt, on the other hand, requires the native separator.
-//		// If the URI uses the standard separator on Windows, update the source
-//		// path to use the native Windows separator.
-//		String path = source.getPath();
-//		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-//			if (path.startsWith("/")) {
-//				path = path.substring(1);
-//				path = path.replace("/", System.getProperty("file.separator"));
-//			}
-//		}
-//		sourcePath = path;
+		// // On Windows, the File class inserts standard forward slashes as
+		// // separators. VisIt, on the other hand, requires the native
+		// separator.
+		// // If the URI uses the standard separator on Windows, update the
+		// source
+		// // path to use the native Windows separator.
+		// String path = source.getPath();
+		// if (System.getProperty("os.name").toLowerCase().contains("windows"))
+		// {
+		// if (path.startsWith("/")) {
+		// path = path.substring(1);
+		// path = path.replace("/", System.getProperty("file.separator"));
+		// }
+		// }
+		// sourcePath = path;
 		setDataSource(source);
 
 		return;
@@ -149,21 +152,22 @@ public class VisItPlot implements IPlot {
 		VisItSwtConnection connection = getConnection();
 		if (connection != null) {
 
-			// Determine the VisIt FileInfo for the data source.
-			ViewerMethods methods = connection.getViewerMethods();
-			methods.openDatabase(sourcePath);
-			FileInfo info = methods.getDatabaseInfo();
-
-			// Get all of the plot types and plots in the file.
-			List<String> plots;
-			plots = info.getMeshes();
-			plotTypes.put("Mesh", plots.toArray(new String[plots.size()]));
-			plots = info.getMaterials();
-			plotTypes.put("Material", plots.toArray(new String[plots.size()]));
-			plots = info.getScalars();
-			plotTypes.put("Scalar", plots.toArray(new String[plots.size()]));
-			plots = info.getVectors();
-			plotTypes.put("Vector", plots.toArray(new String[plots.size()]));
+			// // Determine the VisIt FileInfo for the data source.
+			// ViewerMethods methods = connection.getViewerMethods();
+			// methods.openDatabase(sourcePath);
+			// FileInfo info = methods.getDatabaseInfo();
+			//
+			// // Get all of the plot types and plots in the file.
+			// List<String> plots;
+			// plots = info.getMeshes();
+			// plotTypes.put("Mesh", plots.toArray(new String[plots.size()]));
+			// plots = info.getMaterials();
+			// plotTypes.put("Material", plots.toArray(new
+			// String[plots.size()]));
+			// plots = info.getScalars();
+			// plotTypes.put("Scalar", plots.toArray(new String[plots.size()]));
+			// plots = info.getVectors();
+			// plotTypes.put("Vector", plots.toArray(new String[plots.size()]));
 		}
 
 		return plotTypes;
@@ -322,12 +326,12 @@ public class VisItPlot implements IPlot {
 			System.out.println("VisItPlot message: " + "Drawing plot "
 					+ plotCategory + " - " + plotType + " for source file \""
 					+ sourcePath + "\".");
-			
-			// Draw the specified plot on the Canvas.
-			ViewerMethods widget = canvas.getViewerMethods();
-			widget.deleteActivePlots();
-			widget.addPlot(plotCategory, plotType);
-			widget.drawPlots();
+
+			// // Draw the specified plot on the Canvas.
+			// ViewerMethods widget = canvas.getViewerMethods();
+			// widget.deleteActivePlots();
+			// widget.addPlot(plotCategory, plotType);
+			// widget.drawPlots();
 		}
 		// Otherwise, there is a problem of some sort. Give the user a link to
 		// the VisIt preferences along with an informative message.
@@ -434,6 +438,9 @@ public class VisItPlot implements IPlot {
 			// Refresh the parent in case the widget text has an influence on
 			// the layout specifics.
 			parent.layout();
+			// We also have to update the msgComposite so the labels take up the
+			// space they need and are not cut off.
+			msgComposite.layout();
 		}
 
 		return;
@@ -522,7 +529,8 @@ public class VisItPlot implements IPlot {
 			connection = service.getDefaultConnection();
 			// We need to open the database for the data source file.
 			if (connection != null) {
-				connection.getViewerMethods().openDatabase(sourcePath);
+				// TODO Add this back in or come up with a better solution.
+				// connection.getViewerMethods().openDatabase(sourcePath);
 			}
 		}
 		return connection;
@@ -530,9 +538,9 @@ public class VisItPlot implements IPlot {
 
 	public List<IAction> getActions() {
 		List<IAction> actions = new ArrayList<IAction>();
-		
+
 		actions.add(new ImportLocalFileAction(this));
-		
+
 		return actions;
 	}
 
@@ -541,23 +549,24 @@ public class VisItPlot implements IPlot {
 			// Update the source.
 			source = uri;
 			// On Windows, the File class inserts standard forward slashes as
-			// separators. VisIt, on the other hand, requires the native separator.
-			// If the URI uses the standard separator on Windows, update the source
-			// path to use the native Windows separator.
+			// separators. VisIt, on the other hand, requires the native
+			// separator. If the URI uses the standard separator on Windows,
+			// update the source path to use the native Windows separator.
 			String path = source.getPath();
 			if (System.getProperty("os.name").toLowerCase().contains("windows")) {
 				if (path.startsWith("/")) {
 					path = path.substring(1);
-					path = path.replace("/", System.getProperty("file.separator"));
+					path = path.replace("/",
+							System.getProperty("file.separator"));
 				}
 			}
 			// Update the source's VisIt-friendly path.
 			sourcePath = path;
-			
+
 			final ConnectionState state = service.getConnectionState();
 			final VisItSwtConnection connection = getConnection();
 			if (connection != null) {
-				connection.getViewerMethods().openDatabase(sourcePath);
+				// connection.getViewerMethods().openDatabase(sourcePath);
 				Display.getDefault().asyncExec(new Runnable() {
 					@Override
 					public void run() {

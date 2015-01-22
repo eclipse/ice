@@ -76,46 +76,52 @@ public class VisItVizService implements IVizService {
 	/**
 	 * The current state of the default connection.
 	 */
-	private ConnectionState state = ConnectionState.Disconnected;
+	private ConnectionState state;
 
 	/**
 	 * A reference to the associated preference page's {@link IPreferenceStore}.
 	 * If this has been determined previously, then it should be returned in
 	 * {@link #getPreferenceStore()}.
 	 */
-	private IPreferenceStore preferenceStore = null;
-
+	private IPreferenceStore preferenceStore;
+	
 	/**
 	 * A list of all currently-drawn plots.
 	 */
-	private final List<VisItPlot> plots = new ArrayList<VisItPlot>();
-
+	private final List<VisItPlot> plots;
+	
 	/**
 	 * The default constructor.
 	 */
-	public VisItVizService() {
-		// Create a runnable that closes the old default connection and opens it
-		// with the current preferences.
-		final Runnable runnable = new Runnable() {
-			@Override
+ 	public VisItVizService() {
+ 		
+ 		// Initialize the final class collections.
+ 		plots = new ArrayList<VisItPlot>();
+ 		
+ 		// Initially, the service is disconnected.
+ 		state = ConnectionState.Disconnected;
+ 		
+ 		// FIXME Remove this.
+ 		instance = this;
+	}
+ 	
+ 	// TODO Remove these three attributes/operations.
+ 	private static VisItVizService instance;
+ 	public static VisItVizService getInstance() {
+ 		return instance;
+ 	}
+ 	public void preferencesChanged() {
+ 		Thread thread = new Thread() {
+ 			@Override
 			public void run() {
 				closeDefaultConnection(true);
 				openDefaultConnection(true);
 			}
-		};
-		// Add a listener to the preference store. When the connection
-		// preferences change, start the runnable in a new thread.
-		getPreferenceStore().addPropertyChangeListener(
-				new IPropertyChangeListener() {
-					@Override
-					public void propertyChange(PropertyChangeEvent event) {
-						Thread thread = new Thread(runnable);
-						thread.start();
-					}
-				});
-
-		return;
-	}
+ 		};
+		thread.start();
+		// FIXME We should probably use a property change listener registered
+		// with the preference store, but that fires once per changed property.
+ 	}
 
 	/*
 	 * (non-Javadoc)
@@ -271,15 +277,14 @@ public class VisItVizService implements IVizService {
 		// TODO
 		return new HashMap<String, String>();
 	}
-
+	
+	// ---- Connection Management Methods ---- //
 	/**
 	 * Gets the VisIt connection ID associated with the default connection.
 	 * 
 	 * @return The default connection ID.
 	 */
 	private String getDefaultConnectionId() {
-		// FIXME This will need to change when we update the way preferences are
-		// stored.
 		return getPreferenceStore().getString(
 				ConnectionPreference.ConnectionID.toString());
 	}
@@ -354,6 +359,24 @@ public class VisItVizService implements IVizService {
 					for (ConnectionPreference p : ConnectionPreference.values()) {
 						visitPreferences.put(p.getID(),
 								store.getString(p.toString()));
+						// TODO Remove this output.
+						System.out.println(p.getID() + ": "
+								+ visitPreferences.get(p.getID()));
+					}
+
+					// FIXME This should be cleaned up or handled elsewhere.
+					// Local connections should have the "useTunneling" flag set
+					// to "false". Remote connections should have it set to
+					// "true".
+					if ("localhost".equals(visitPreferences
+							.get(ConnectionPreference.Host.getID()))) {
+						visitPreferences.put(
+								ConnectionPreference.UseTunneling.getID(),
+								"false");
+					} else {
+						visitPreferences.put(
+								ConnectionPreference.UseTunneling.getID(),
+								"true");
 					}
 
 					// TODO The VisItSwtConnection shouldn't need a Shell until
@@ -383,8 +406,13 @@ public class VisItVizService implements IVizService {
 
 					// Try to open the connection.
 					try {
-						VisItSwtConnectionManager.createConnection(connId,
-								shell.get(), visitPreferences);
+						VisItSwtConnection connection = VisItSwtConnectionManager
+								.createConnection(connId, shell.get(),
+										visitPreferences);
+						// FIXME We should just interpret the return value.
+						if (connection == null) {
+							throw new Exception();
+						}
 						state = ConnectionState.Connected;
 
 						// Connection successful!
@@ -430,7 +458,7 @@ public class VisItVizService implements IVizService {
 				try {
 					thread.join();
 					// The connection is now open.
-					open = true;
+					open = (state == ConnectionState.Connected);
 				} catch (InterruptedException e) {
 					// In the event the thread has an exception, show an error
 					// and carry on.
@@ -468,7 +496,7 @@ public class VisItVizService implements IVizService {
 	 *            The VisIt ID of the connection.
 	 * @return The connection if it exists and is open. Null otherwise.
 	 */
-	protected VisItSwtConnection getConnection(String id) {
+	private VisItSwtConnection getConnection(String id) {
 		VisItSwtConnection connection = null;
 
 		// In this case, we only need to fetch the connection. Do not attempt to
@@ -541,7 +569,7 @@ public class VisItVizService implements IVizService {
 				try {
 					thread.join();
 					// The connection is now closed.
-					closed = true;
+					closed = (state == ConnectionState.Disconnected);
 				} catch (InterruptedException e) {
 					// In the event the thread has an exception, show an error
 					// and carry on.
@@ -569,4 +597,5 @@ public class VisItVizService implements IVizService {
 		return closeConnection(getDefaultConnectionId(), block);
 	}
 
+	// --------------------------------------- //
 }

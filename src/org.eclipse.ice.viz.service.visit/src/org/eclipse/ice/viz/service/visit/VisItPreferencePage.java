@@ -124,4 +124,13 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		return control;
 	}
 
+	// TODO Remove this after we have multiple connections and a way to notify
+	// the VizService that a particular connection has changed.
+	@Override
+	public boolean performOk() {
+		boolean ok = super.performOk();
+		VisItVizService.getInstance().preferencesChanged();
+		return ok;
+	}
+	
 }
