@@ -203,7 +203,9 @@ public class IPSWriterTester {
 		assertTrue(foundReplacement);
 		
 		// Copy back the original file and delete the backup
-		if (exampleFile.exists()) exampleFile.delete();
+		if (exampleFile.exists()) {
+			exampleFile.delete();
+		}
 		Files.copy(tempFile.toPath(),exampleFile.toPath());
 		tempFile.delete();
 		

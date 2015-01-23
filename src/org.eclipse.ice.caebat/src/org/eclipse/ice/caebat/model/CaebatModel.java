@@ -173,9 +173,6 @@ public class CaebatModel extends Item {
 		// begin-user-code
 		FormStatus retStatus;
 
-		System.out.println("Writing out with id " + form.getId() );
-		System.out.println(actionName);
-		
 		// If it is the custom operation, call this here.
 		if (this.customTaggedExportString.equals(actionName)) {
 

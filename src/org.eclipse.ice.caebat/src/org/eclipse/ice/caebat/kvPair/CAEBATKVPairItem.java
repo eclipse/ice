@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,14 +31,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.ips.IPSReader;
+import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
@@ -57,6 +63,8 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 	 */
 	private ArrayList<String> actionItems;
 	
+	private String customTaggedExportString = "Export to key-value pair output";
+
 	/**
 	 * The required constructor.
 	 * 
@@ -102,10 +110,69 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 		setItemBuilderName(CAEBATKVPairBuilder.name);
 		setDescription("An item to generate CAEBAT "
 				+ "key-value pair files.");
-		allowedActions.add(0, "Export to Key-Value Pair File");
+		allowedActions.remove("Export to ICE Native Format");
 		actionItems = getAvailableActions();
 	}
+	
+	
+	/**
+	 * Process the item.  If told to export to KV pair file then a new file with the 
+	 * key value pairs will be written out.  Otherwise fall back to the default definition
+	 * 
+	 * @param actionName
+	 * @return
+	 */
+	public FormStatus process(String actionName) {
+		// begin-user-code
+		FormStatus retStatus;
+		
+		// If it is the custom operation, call this here.
+		if (this.customTaggedExportString.equals(actionName)) {
 
+			// Get the file from the project space to create the output
+			String filename = getName().replaceAll("\\s+", "_") + "_" + getId()
+					+ ".conf";
+			String filePath = project.getLocation().toOSString()
+					+ System.getProperty("file.separator") + filename;
+
+			// Get the file path and build the URI that will be used to write
+			IFile outputFile = ResourcesPlugin.getWorkspace().getRoot()
+					.getFile(new Path(filePath));
+
+			// Get the data from the form
+			ArrayList<Component> components = form.getComponents();
+
+			// Make sure the form has something on it
+			if (components.size() > 0) {
+				try {
+					// Write the output file
+					this.write(form, outputFile);
+					// Refresh the project space
+					project.refreshLocal(IResource.DEPTH_ONE, null);
+				} catch (CoreException e) {
+					// Complain
+					System.err.println("CaebatKVPair Generator Message: "
+							+ "Failed to refresh the project space.");
+					e.printStackTrace();
+				}
+				// return a success
+				retStatus = FormStatus.Processed;
+			} else {
+				// return an error
+				System.err.println("Not enough components to write new file!");
+				retStatus = FormStatus.InfoError;
+			}
+		}
+		// Otherwise let item deal with the process
+		else {
+			retStatus = super.process(actionName);
+		}
+
+		return retStatus;
+		// end-user-code
+
+	}
+	
 	/**
 	 * <p>
 	 * This operation loads the given example into the Form.
@@ -187,6 +254,11 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 		// Load the components from the file and setup the form
 		System.out.println("CaebatKVPair Generator Message: Loading" + inputFile.getFullPath().toOSString());
 
+		System.out.println(getName());
+		System.out.println(getDescription());
+		System.out.println(getId());
+		System.out.println(actionItems);
+		
 		form = read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());
@@ -200,6 +272,13 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 		}
 	}
 	
+	/**
+	 * Reads in the KV Pair file to a form. 
+	 * 
+	 * @param ifile: the IFile representation of the KV Pair File
+	 * 
+	 * @return a form containing the data from the ifile
+	 */
 	@Override
 	public Form read(IFile ifile) {
 		// Make sure there's something to look in
@@ -269,11 +348,70 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 		return form;
 	}
 
+	/**
+	 * Writes the KV pair file from the given form
+	 * 
+	 * @param formToWrite
+	 * @param ifile
+	 */
 	@Override
-	public void write(Form formToWrite, IFile file) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void write(Form formToWrite, IFile ifile) {
+		// Make sure the input isn't null
+				if (form == null || ifile == null) {
+					return;
+				}
+
+				// Get the components from the form and make sure we have a
+				// valid place that we can write the file out to
+				ArrayList<Component> components = form.getComponents();
+				File outputFile = new File(ifile.getFullPath().toOSString());
+				if (!outputFile.exists()) {
+					try {
+						outputFile.createNewFile();
+					} catch (IOException e) {
+						System.err.println("IPSWriter Message: Error! Could not"
+								+ " create output file at "
+								+ ifile.getFullPath().toOSString());
+					}
+				}
+
+				// Make sure that the form had data that looks correct, and the output
+				// file exists
+				if (components != null && components.size() > 0 && outputFile.isFile()) {
+					try {
+						// Get an output stream to the file
+						OutputStream stream = new FileOutputStream(outputFile);
+						int numComponents = components.size();
+						System.out.println(components);
+						String configString = "";
+						ArrayList<Entry> row;
+						byte[] byteArray;
+
+						// Build the output by going through each row
+						TableComponent kvPairs = (TableComponent) components.get(numComponents - 1);
+						for (int i = 0; i < kvPairs.numberOfRows(); i++) {
+							row = kvPairs.getRow(i);
+							configString += row.get(0).getValue().trim() + "="
+									+ row.get(1).getValue().trim() + "\n";
+						}
+						configString += "\n";
+
+						// Write it out
+						byteArray = configString.getBytes();
+						stream.write(byteArray);
+
+						
+						stream.close();
+					} catch (FileNotFoundException e) {
+						System.out.println("IPSWriter Message: Could not find "
+								+ outputFile.getAbsolutePath() + " for writing.");
+					} catch (IOException e) {
+						System.out.println("IPSWriter Message: Could not write to "
+								+ outputFile.getAbsolutePath() + ".");
+					}
+				}
+
+			}
 
 	
 	
