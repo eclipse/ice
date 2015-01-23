@@ -38,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -203,8 +204,10 @@ public class IPSWriterTester {
 		assertTrue(foundReplacement);
 		
 		// Copy back the original file and delete the backup
-		if (exampleFile.exists()) exampleFile.delete();
-		Files.copy(tempFile.toPath(),exampleFile.toPath());
+		if (exampleFile.getAbsoluteFile().exists()) {
+			exampleFile.delete();
+		}
+		Files.copy(tempFile.toPath(), exampleFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		tempFile.delete();
 		
 		return;
