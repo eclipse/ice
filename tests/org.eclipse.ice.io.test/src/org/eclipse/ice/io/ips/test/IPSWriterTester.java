@@ -184,7 +184,6 @@ public class IPSWriterTester {
 		
 		// Call the replace method
 		String replace = "AHAHAHAHAHA";
-		System.out.println("Searching in " + inIFile.getFullPath().toOSString());
 		writer.replace(inIFile, "SIM_ROOT = .*", replace);
 
 		// Check if the file contains the replacement
@@ -197,6 +196,7 @@ public class IPSWriterTester {
 					foundReplacement = true;
 				}
 			}
+			scanner.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

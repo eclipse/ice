@@ -114,6 +114,7 @@ public class IPSWriter implements IWriter {
 				
 				// Write out the time loop data then close the stream 
 				writeTimeLoopData((DataComponent) components.get(0), stream);
+				stream.flush();
 				stream.close();
 			} catch (FileNotFoundException e) {
 				System.out.println("IPSWriter Message: Could not find "
@@ -161,6 +162,7 @@ public class IPSWriter implements IWriter {
 			while ((fileByte = reader.read()) != -1) {
 				buffer.append((char) fileByte);
 			}
+			reader.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("IPSWriter Message:  Could not find " 
 					+ ifile.getFullPath().toOSString() +  " for reading.");
@@ -198,6 +200,8 @@ public class IPSWriter implements IWriter {
 				line = line + "\n";
 				replaceWriter.write(line.getBytes());
 			}
+			replaceWriter.flush();
+			replaceWriter.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("IPSWriter Message:  Could not find " 
 					+ tempFile.getAbsolutePath() +  " for writing.");
