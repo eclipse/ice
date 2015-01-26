@@ -23,15 +23,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.io.csv.CSVReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
 
 /**
  * Test class for {@link org.eclipse.ice.io.csv.CSVReader}.
@@ -41,7 +37,14 @@ import java.net.URI;
  */
 public class CSVReaderTester {
 
+	/**
+	 * The CSV file that will be tested
+	 */
 	private static IFile testFile;
+	/**
+	 * The reader that will be tested.
+	 */
+	private static CSVReader reader;
 
 	/**
 	 * @throws java.lang.Exception
@@ -54,12 +57,9 @@ public class CSVReaderTester {
 		// Create the path for the reflectivity file in the ICE tests directory
 		String userHome = System.getProperty("user.home");
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		URI defaultProjectLocation = null;
 		IProject project = null;
 		String projectName = "CSVLoaderTesterWorkspace";
 		String filename = "getSpecRefSqrdMod_q841.csv";
-		String fullFilename = userHome + separator + "ICETests" + separator
-				+ projectName + separator + filename;
 		IPath projectPath = new Path(userHome + separator + "ICETests"
 				+ separator + projectName + separator + ".project");
 
@@ -86,6 +86,9 @@ public class CSVReaderTester {
 			fail();
 		}
 
+		// Create the reader
+		reader = new CSVReader();
+		
 		return;
 	}
 
@@ -99,13 +102,18 @@ public class CSVReaderTester {
 	 */
 	@Test
 	public void testRead() throws CoreException, IOException {
-		System.out.println(testFile.getLocation().toOSString());
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				testFile.getContents()));
-		System.out.println(reader.readLine());
-		System.out.println(reader.readLine());
-		fail("Not yet implemented");
-		reader.close();
+
+		// Load the file
+		
+		// Check the Form
+		
+		// Check the first element of the list
+		
+		// Check the last element of the list
+		
+		
+		
+		
 	}
 
 	/**
