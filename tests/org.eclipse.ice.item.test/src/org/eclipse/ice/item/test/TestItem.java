@@ -379,6 +379,18 @@ public class TestItem extends Item {
 	}
 
 	/**
+	 * This method is used by the ItemTester to test that the Item.moveiles
+	 * method functions correctly.
+	 * 
+	 * @param fromDir
+	 * @param toDir
+	 * @param newName
+	 */
+	public void copyTestDirectory(String src, String dest) {
+		copyDirectory(src, dest);
+	}	
+	
+	/**
 	 * Return the IO type, this is used for the ItemTester.checkIOService.
 	 */
 	@Override
