@@ -131,7 +131,7 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 
 			// Get the file from the project space to create the output
 			String filename = getName().replaceAll("\\s+", "_") + "_" + getId()
-					+ ".conf";
+					+ ".dat";
 			String filePath = project.getLocation().toOSString()
 					+ System.getProperty("file.separator") + filename;
 
@@ -253,11 +253,6 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 		
 		// Load the components from the file and setup the form
 		System.out.println("CaebatKVPair Generator Message: Loading" + inputFile.getFullPath().toOSString());
-
-		System.out.println(getName());
-		System.out.println(getDescription());
-		System.out.println(getId());
-		System.out.println(actionItems);
 		
 		form = read(inputFile);
 		form.setName(getName());

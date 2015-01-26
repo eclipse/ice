@@ -29,6 +29,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
@@ -182,7 +183,7 @@ public class IPSWriter implements IWriter {
 		// the search and replace operations
 		File tempFile = new File(ifile.getFullPath().toOSString().split("[.]")[0] + "_bak.conf");
 		try {
-			Files.copy(file.toPath(), tempFile.toPath());
+			Files.copy(file.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e1) {
 			System.out.println("IPSWriter Message:  Error creating copy of original "
 					+ "file for backup.");
@@ -195,6 +196,8 @@ public class IPSWriter implements IWriter {
 			FileOutputStream replaceWriter = new FileOutputStream(file);
 			for (String line : fileLines) {
 				if (line.matches(regex)) {
+					line = line.replaceAll(regex, value);
+				} else if (line.contains(regex)) {
 					line = line.replaceAll(regex, value);
 				}
 				line = line + "\n";
