@@ -15,8 +15,7 @@ public class ParaViewVizService implements IVizService {
 	 */
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "ParaView";
 	}
 
 	/*
@@ -26,8 +25,8 @@ public class ParaViewVizService implements IVizService {
 	 */
 	@Override
 	public String getVersion() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Update this value.
+		return "";
 	}
 
 	/*
