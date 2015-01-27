@@ -491,18 +491,13 @@ public class VisItVizService implements IVizService {
 					}
 				}
 			};
+			// We do not want a daemon thread when closing... we want the
+			// connection to close gracefully!
+			thread.setDaemon(false);
+			thread.start();
 
-			// Normally, we do not need to block. Launch the thread and let the
-			// connection close.
-			if (!block) {
-				// We do not want a daemon thread when closing... we want the
-				// connection to close gracefully!
-				thread.setDaemon(false);
-				thread.start();
-			}
-			// Otherwise, we need to block the caller until the connection is
-			// closed.
-			else {
+			// If required, block the caller until the connection is closed.
+			if (block) {
 				thread.start();
 				try {
 					thread.join();
