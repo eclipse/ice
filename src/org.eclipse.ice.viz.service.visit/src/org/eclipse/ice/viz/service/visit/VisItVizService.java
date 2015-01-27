@@ -440,19 +440,12 @@ public class VisItVizService implements IVizService {
 					return;
 				}
 			};
+			// Start the worker thread that establishes the connection.
+			thread.start();
 
-			// Normally, we do not need to block. Launch the thread and let the
-			// connection open.
-			if (!block) {
-				// It doesn't matter yet whether or not the thread is a daemon
-				// thread... if ICE stops before the connection has been
-				// established, closing the connection gracefully is difficult.
-				thread.start();
-			}
-			// Otherwise, we need to block the caller until the connection is
-			// opened.
-			else {
-				thread.start();
+			// If required, we must wait until the thread finishes. When that
+			// happens, the connection should be open.
+			if (block) {
 				try {
 					thread.join();
 					// The connection is now open.
