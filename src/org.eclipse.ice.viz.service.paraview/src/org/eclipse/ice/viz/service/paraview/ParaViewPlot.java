@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2014- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jordan Deyton
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview;
 
 import java.net.URI;
@@ -6,6 +17,19 @@ import java.util.Map;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.swt.widgets.Composite;
 
+/**
+ * This class is responsible for embedding ParaView-supported graphics inside
+ * client {@link Composite}s.
+ * <p>
+ * Instances of this class should not be created manually. Instead, a plot
+ * should be created via {@link ParaViewVizService#createPlot(URI)}.
+ * </p>
+ *
+ * @see ParaViewVizService
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class ParaViewPlot implements IPlot {
 
 	/*
@@ -40,7 +64,6 @@ public class ParaViewPlot implements IPlot {
 	 */
 	@Override
 	public int getNumberOfAxes() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
