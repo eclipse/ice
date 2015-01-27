@@ -82,44 +82,46 @@ public class VisItVizService implements IVizService {
 	 * {@link #getPreferenceStore()}.
 	 */
 	private IPreferenceStore preferenceStore;
-	
+
 	/**
 	 * A list of all currently-drawn plots.
 	 */
 	private final List<VisItPlot> plots;
-	
+
 	/**
 	 * The default constructor.
 	 */
- 	public VisItVizService() {
- 		
- 		// Initialize the final class collections.
- 		plots = new ArrayList<VisItPlot>();
- 		
- 		// Initially, the service is disconnected.
- 		state = ConnectionState.Disconnected;
- 		
- 		// FIXME Remove this.
- 		instance = this;
+	public VisItVizService() {
+
+		// Initialize the final class collections.
+		plots = new ArrayList<VisItPlot>();
+
+		// Initially, the service is disconnected.
+		state = ConnectionState.Disconnected;
+
+		// FIXME Remove this.
+		instance = this;
 	}
- 	
- 	// TODO Remove these three attributes/operations.
- 	private static VisItVizService instance;
- 	public static VisItVizService getInstance() {
- 		return instance;
- 	}
- 	public void preferencesChanged() {
- 		Thread thread = new Thread() {
- 			@Override
+
+	// TODO Remove these three attributes/operations.
+	private static VisItVizService instance;
+
+	public static VisItVizService getInstance() {
+		return instance;
+	}
+
+	public void preferencesChanged() {
+		Thread thread = new Thread() {
+			@Override
 			public void run() {
 				closeDefaultConnection(true);
 				openDefaultConnection(true);
 			}
- 		};
+		};
 		thread.start();
 		// FIXME We should probably use a property change listener registered
 		// with the preference store, but that fires once per changed property.
- 	}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -275,7 +277,7 @@ public class VisItVizService implements IVizService {
 		// TODO
 		return new HashMap<String, String>();
 	}
-	
+
 	// ---- Connection Management Methods ---- //
 	/**
 	 * Gets the VisIt connection ID associated with the default connection.
@@ -304,15 +306,15 @@ public class VisItVizService implements IVizService {
 		return found;
 	}
 
-//	/**
-//	 * Determines whether or not the default VisIt connection exists and is
-//	 * connected. This is a convenience method.
-//	 * 
-//	 * @return True if the default connection is established, false otherwise.
-//	 */
-//	private boolean hasDefaultConnection() {
-//		return hasConnection(getDefaultConnectionId());
-//	}
+	// /**
+	// * Determines whether or not the default VisIt connection exists and is
+	// * connected. This is a convenience method.
+	// *
+	// * @return True if the default connection is established, false otherwise.
+	// */
+	// private boolean hasDefaultConnection() {
+	// return hasConnection(getDefaultConnectionId());
+	// }
 
 	/**
 	 * Opens the connection with the specified VisIt ID.
@@ -348,69 +350,14 @@ public class VisItVizService implements IVizService {
 								ConnectionState.Connecting);
 					}
 
-					// Get the PreferenceStore. All VisIt connection preferences
-					// are stored here.
-					IPreferenceStore store = getPreferenceStore();
-
-					// Construct the input map required to start VisIt.
-					Map<String, String> visitPreferences = new HashMap<String, String>();
-					for (ConnectionPreference p : ConnectionPreference.values()) {
-						visitPreferences.put(p.getID(),
-								store.getString(p.toString()));
-						// TODO Remove this output.
-						System.out.println(p.getID() + ": "
-								+ visitPreferences.get(p.getID()));
-					}
-
-					// FIXME This should be cleaned up or handled elsewhere.
-					// Local connections should have the "useTunneling" flag set
-					// to "false". Remote connections should have it set to
-					// "true".
-					if ("localhost".equals(visitPreferences
-							.get(ConnectionPreference.Host.getID()))) {
-						visitPreferences.put(
-								ConnectionPreference.UseTunneling.getID(),
-								"false");
-					} else {
-						visitPreferences.put(
-								ConnectionPreference.UseTunneling.getID(),
-								"true");
-					}
-
-					// TODO The VisItSwtConnection shouldn't need a Shell until
-					// a VisItSwtWidget is created. When the VisIt SWT code is
-					// fixed to only use UI resources when a UI component is
-					// created, we will need to remove the below logic.
-					// The VisItSwtConnection requires a Shell. To get a shell,
-					// we must have a Display! Since this code is frequently
-					// called near the initial startup, we need to get the
-					// default Display and keep trying until we get one. Only
-					// then can we get a new Shell.
-					final AtomicReference<Display> display = new AtomicReference<Display>();
-					final AtomicReference<Shell> shell = new AtomicReference<Shell>();
-					while (display.compareAndSet(null, Display.getDefault())) {
-						try {
-							Thread.sleep(50);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					display.get().syncExec(new Runnable() {
-						@Override
-						public void run() {
-							shell.set(new Shell(display.get()));
-						}
-					});
-
 					// Try to open the connection.
-					try {
-						VisItSwtConnection connection = VisItSwtConnectionManager
-								.createConnection(connId, shell.get(),
-										visitPreferences);
-						// FIXME We should just interpret the return value.
-						if (connection == null) {
-							throw new Exception();
-						}
+					VisItSwtConnection connection = VisItSwtConnectionManager
+							.createConnection(connId, createDefaultShell(),
+									createConnectionPreferenceMap());
+
+					// Notify the plots depending on whether the connection was
+					// successful or a failure.
+					if (connection != null) {
 						state = ConnectionState.Connected;
 
 						// Connection successful!
@@ -423,7 +370,7 @@ public class VisItVizService implements IVizService {
 							plot.updateConnection(connId,
 									ConnectionState.Connected);
 						}
-					} catch (Exception e) {
+					} else {
 						// Connection failed!
 						System.err.println("VisItVizService error: "
 								+ "Failed to create connection \"" + connId
@@ -588,5 +535,81 @@ public class VisItVizService implements IVizService {
 		return closeConnection(getDefaultConnectionId(), block);
 	}
 
+	/**
+	 * Creates a new, default {@code Shell} using the UI thread.
+	 * 
+	 * @return A new, unopened {@code Shell}, or {@code null} if the main
+	 *         {@code Display} could not be found.
+	 */
+	private Shell createDefaultShell() {
+		// FIXME The VisItSwtConnection shouldn't need to worry about a Shell,
+		// except when creating dialogs. Eventually, the connection dialogs
+		// should be handled in ICE. In special cases where VisIt needs to
+		// create its own custom dialog, it should get a Shell from the UI
+		// Display like the code below.
+
+		// Set the default return value.
+		Shell shell = null;
+
+		// We need a Display to create a Shell (since the Shell constructor
+		// requires one and the Display controls the UI thread).
+		Display display = Display.getCurrent();
+		if (display == null) {
+			display = Display.getDefault();
+		}
+
+		if (display != null) {
+			// Create a new Shell on the UI thread.
+			final Display displayRef = display;
+			final AtomicReference<Shell> shellRef = new AtomicReference<Shell>();
+			display.syncExec(new Runnable() {
+				@Override
+				public void run() {
+					shellRef.set(new Shell(displayRef));
+				}
+			});
+			// This sets the return value.
+			shell = shellRef.get();
+		}
+
+		return shell;
+	}
+
+	/**
+	 * Creates the map of connection preferences required to create a
+	 * {@link VisItSwtConnection} based on the connection preferences in the
+	 * associated preference store.
+	 * 
+	 * @return The VisIt-friendly connection preferences.
+	 */
+	private Map<String, String> createConnectionPreferenceMap() {
+		// Get the PreferenceStore. All VisIt connection preferences
+		// are stored here.
+		IPreferenceStore store = getPreferenceStore();
+
+		// Construct the input map required to start VisIt.
+		Map<String, String> visitPreferences = new HashMap<String, String>();
+		for (ConnectionPreference p : ConnectionPreference.values()) {
+			visitPreferences.put(p.getID(), store.getString(p.toString()));
+			// TODO Remove this output.
+			System.out.println(p.getID() + ": "
+					+ visitPreferences.get(p.getID()));
+		}
+
+		// FIXME This should be cleaned up or handled elsewhere.
+		// Local connections should have the "useTunneling" flag set
+		// to "false". Remote connections should have it set to
+		// "true".
+		if ("localhost".equals(visitPreferences.get(ConnectionPreference.Host
+				.getID()))) {
+			visitPreferences.put(ConnectionPreference.UseTunneling.getID(),
+					"false");
+		} else {
+			visitPreferences.put(ConnectionPreference.UseTunneling.getID(),
+					"true");
+		}
+
+		return visitPreferences;
+	}
 	// --------------------------------------- //
 }
