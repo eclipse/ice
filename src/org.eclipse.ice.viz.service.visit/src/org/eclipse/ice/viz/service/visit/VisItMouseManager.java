@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ import org.eclipse.swt.graphics.Point;
  * image to rotate according to the location of the mouse whenever
  * AtomicReference<Point>#get() is called in the thread.
  * 
- * @author Taylor Patterson
+ * @author Taylor Patterson, Jordan Deyton
  * 
  */
 public class VisItMouseManager {
