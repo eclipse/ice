@@ -27,8 +27,6 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -306,15 +304,15 @@ public class VisItVizService implements IVizService {
 		return found;
 	}
 
-	/**
-	 * Determines whether or not the default VisIt connection exists and is
-	 * connected. This is a convenience method.
-	 * 
-	 * @return True if the default connection is established, false otherwise.
-	 */
-	private boolean hasDefaultConnection() {
-		return hasConnection(getDefaultConnectionId());
-	}
+//	/**
+//	 * Determines whether or not the default VisIt connection exists and is
+//	 * connected. This is a convenience method.
+//	 * 
+//	 * @return True if the default connection is established, false otherwise.
+//	 */
+//	private boolean hasDefaultConnection() {
+//		return hasConnection(getDefaultConnectionId());
+//	}
 
 	/**
 	 * Opens the connection with the specified VisIt ID.

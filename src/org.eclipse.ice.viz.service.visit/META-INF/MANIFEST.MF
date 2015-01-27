@@ -20,6 +20,6 @@ Import-Package: gov.lbnl.visit.swt,
  org.eclipse.ui.forms.widgets,
  visit.java.client
 Export-Package: org.eclipse.ice.viz.service.visit
-Service-Component: OSGI-INF/visitVisService.xml
+Service-Component: OSGI-INF/vizService.xml
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui

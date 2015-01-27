@@ -1,9 +1,5 @@
 package org.eclipse.ice.viz.service.visit.preferences;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.ice.datastructures.form.Entry;
 
 /**
  * An instance of this class contains preferences required to connect to a VisIt

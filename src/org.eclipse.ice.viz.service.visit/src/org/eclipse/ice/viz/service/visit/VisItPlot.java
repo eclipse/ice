@@ -41,9 +41,6 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
-import visit.java.client.FileInfo;
-import visit.java.client.ViewerMethods;
-
 /**
  * This class provides the VisIt implementation for an IPlot.
  * 
@@ -504,7 +501,7 @@ public class VisItPlot implements IPlot {
 					+ "Null connection state received!.");
 		}
 
-		final String connId = connectionId;
+		//final String connId = connectionId;
 		// TODO We should check the connection ID against the one used by this
 		// plot.
 		final ConnectionState connState = state;
