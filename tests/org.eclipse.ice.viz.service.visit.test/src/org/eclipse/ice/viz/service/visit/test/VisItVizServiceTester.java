@@ -13,45 +13,92 @@ package org.eclipse.ice.viz.service.visit.test;
 
 import static org.junit.Assert.*;
 
+import org.eclipse.ice.viz.service.visit.VisItVizService;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This class is responsible for testing the VisItVizService.
+ * This class is responsible for testing the {@link VisItVizService}.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Jordan Deyton
  * 
  */
-@Ignore
 public class VisItVizServiceTester {
 
+	// TODO Implement these tests.
+
 	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.visit.VisItVizService#getName()}.
+	 * This test checks the name of the visualization service.
+	 * 
+	 * @see VisItVizService#getName()
 	 */
 	@Test
-	public void testGetName() {
-		fail("Not yet implemented");
+	public void checkName() {
+		final String expectedName = "VisIt";
+
+		// The name should always be the same. Just try getting it a few times.
+		VisItVizService service = new VisItVizService();
+		assertEquals(expectedName, service.getName());
+		assertEquals(expectedName, service.getName());
+		assertEquals(expectedName, new VisItVizService().getName());
+
+		return;
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.visit.VisItVizService#getConnectionProperties()}
-	 * .
+	 * This test checks the version information for the service.
+	 * 
+	 * @see VisItVizService#getVersion()
 	 */
 	@Test
-	public void testGetConnectionProperties() {
-		fail("Not yet implemented");
+	public void checkVersion() {
+		// TODO Update this test. For now, the version should always be the
+		// same. However, it may be that we can connect to multiple versions at
+		// run-time!
+		final String expectedVersion = "2.8.2";
+
+		// The name should always be the same. Just try getting it a few times.
+		VisItVizService service = new VisItVizService();
+		assertEquals(expectedVersion, service.getVersion());
+		assertEquals(expectedVersion, service.getVersion());
+		assertEquals(expectedVersion, new VisItVizService().getVersion());
+
+		return;
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.visit.VisItVizService#createPlot(java.net.URI)}
-	 * .
+	 * This test checks the service's connection properties, including their
+	 * default values.
+	 * 
+	 * @see VisItVizService#hasConnectionProperties()
+	 * @see VisItVizService#getConnectionProperties()
+	 * @see VisItVizService#setConnectionProperties(java.util.Map)
 	 */
+	@Ignore
 	@Test
-	public void testCreatePlot() {
-		fail("Not yet implemented");
+	public void checkConnectionProperties() {
+		fail("Not implemented.");
 	}
 
+	/**
+	 * This test checks that the service connects properly.
+	 * 
+	 * @see VisItVizService#connect()
+	 */
+	@Ignore
+	@Test
+	public void checkConnect() {
+		fail("Not implemented.");
+	}
+
+	/**
+	 * This test checks the plots created by the service.
+	 * 
+	 * @see VisItVizService#createPlot(java.net.URI)
+	 */
+	@Ignore
+	@Test
+	public void checkPlot() {
+		fail("Not implemented.");
+	}
 }
