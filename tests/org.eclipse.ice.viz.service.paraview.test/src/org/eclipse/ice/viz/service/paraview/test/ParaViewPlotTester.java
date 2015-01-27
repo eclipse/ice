@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014- UT-Battelle, LLC.
+ * Copyright (c) 2015- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import org.junit.Test;
  * @author Jordan Deyton
  *
  */
-@Ignore
 public class ParaViewPlotTester {
 
 	// TODO Implement these tests.
@@ -33,6 +32,7 @@ public class ParaViewPlotTester {
 	 * 
 	 * @see ParaViewPlot#getPlotTypes()
 	 */
+	@Ignore
 	@Test
 	public void checkPlotTypes() {
 		fail("Not implemented.");
@@ -43,6 +43,7 @@ public class ParaViewPlotTester {
 	 * 
 	 * @see ParaViewPlot#draw(String, String, org.eclipse.swt.widgets.Composite)
 	 */
+	@Ignore
 	@Test
 	public void checkDraw() {
 		fail("Not implemented.");
@@ -53,6 +54,7 @@ public class ParaViewPlotTester {
 	 * 
 	 * @see ParaViewPlot#getNumberOfAxes()
 	 */
+	@Ignore
 	@Test
 	public void checkNumberOfAxes() {
 		fail("Not implemented.");
@@ -64,6 +66,7 @@ public class ParaViewPlotTester {
 	 * @see ParaViewPlot#getProperties()
 	 * @see ParaViewPlot#setProperties(java.util.Map)
 	 */
+	@Ignore
 	@Test
 	public void checkProperties() {
 		fail("Not implemented.");
@@ -76,6 +79,7 @@ public class ParaViewPlotTester {
 	 * @see ParaViewPlot#getSourceHost()
 	 * @see ParaViewPlot#isSourceRemote()
 	 */
+	@Ignore
 	@Test
 	public void checkSource() {
 		fail("Not implemented.");
