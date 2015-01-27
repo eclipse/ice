@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
+import org.eclipse.equinox.security.storage.ISecurePreferences;
+import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
+import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.visit.preferences.ConnectionManager;
 import org.eclipse.ice.viz.service.visit.preferences.ConnectionPreferenceAdapter;
@@ -21,6 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 
 /**
@@ -92,6 +96,72 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		addField(new StringFieldEditor(p.toString(), p.getName(),
 				getFieldEditorParent()));
 
+		StringFieldEditor passwordField = new StringFieldEditor("password",
+				"Password", getFieldEditorParent()) {
+			@Override
+			protected void doFillIntoGrid(Composite parent, int numColumns) {
+				super.doFillIntoGrid(parent, numColumns);
+
+				getTextControl().setEchoChar('*');
+			}
+
+			@Override
+			protected void doStore() {
+				ISecurePreferences preferences = SecurePreferencesFactory
+						.getDefault();
+				ISecurePreferences node = preferences
+						.node("visit.connection.credentials");
+				try {
+					String user = "bambam";
+					String password = getTextControl().getText();
+
+					System.out.println(user + " - " + password);
+
+					node.put("user", user, true);
+					node.put("password", password, true);
+				} catch (StorageException e) {
+					e.printStackTrace();
+				}
+				// Default behavior...
+				// getPreferenceStore().setValue(getPreferenceName(),
+				// textField.getText());
+			}
+
+			@Override
+			protected void doLoad() {
+				Text textField = getTextControl();
+				if (textField != null) {
+					ISecurePreferences preferences = SecurePreferencesFactory
+							.getDefault();
+					if (preferences.nodeExists("visit.connection.credentials")) {
+						ISecurePreferences node = preferences
+								.node("visit.connection.credentials");
+						try {
+							String user = node.get("user", "");
+							String password = node.get("password", "");
+
+							System.out.println(user + " - " + password);
+
+							textField.setText(password);
+							oldValue = password;
+						} catch (StorageException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				// Default behavior...
+				// Text textField = getTextControl();
+				// if (textField != null) {
+				// String value =
+				// getPreferenceStore().getString(getPreferenceName());
+				// textField.setText(value);
+				// oldValue = value;
+				// }
+			}
+		};
+
+		addField(passwordField);
+
 		return;
 	}
 
@@ -132,5 +202,5 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		VisItVizService.getInstance().preferencesChanged();
 		return ok;
 	}
-	
+
 }
