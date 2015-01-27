@@ -13,3 +13,4 @@ Import-Package: org.eclipse.core.runtime.preferences;version="3.3.0",
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Export-Package: org.eclipse.ice.viz.service.paraview
+Service-Component: OSGI-INF/vizService.xml
