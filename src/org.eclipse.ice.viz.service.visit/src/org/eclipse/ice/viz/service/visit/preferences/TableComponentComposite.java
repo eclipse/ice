@@ -28,8 +28,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.PlatformUI;
 
 public class TableComponentComposite extends Composite {
 
@@ -115,7 +115,7 @@ public class TableComponentComposite extends Composite {
 		tableComponent = table;
 
 		// Update the viewer's input.
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				// Make sure the remove action is disabled since the

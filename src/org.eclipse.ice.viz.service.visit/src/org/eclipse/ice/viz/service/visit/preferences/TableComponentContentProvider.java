@@ -26,8 +26,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * This class provides a basic JFace {@link IStructuredContentProvider} for ICE
@@ -155,7 +155,7 @@ public class TableComponentContentProvider implements
 			final boolean columnsChanged = updateRowTemplate();
 
 			// We must use the UI Thread
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
 					// If the columns did not change, we only need to refresh

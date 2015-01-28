@@ -1,0 +1,52 @@
+/*******************************************************************************
+ * Copyright (c) 2015- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jordan Deyton
+ *******************************************************************************/
+package org.eclipse.ice.viz.service.visit.connections;
+
+import java.util.List;
+
+/**
+ * An {@code IKeyManager} manages a set of available keys. This set may be
+ * either a bounded or unbounded set of string keys.
+ * 
+ * @author Jordan Deyton
+ *
+ */
+public interface IKeyManager {
+
+	/**
+	 * Determines whether the specified key is available.
+	 * 
+	 * @param key
+	 *            The key to test.
+	 * @return True if the key is available, false otherwise.
+	 */
+	public boolean keyAvailable(String key);
+
+	/**
+	 * Gets the list of available keys.
+	 * 
+	 * @return A list containing the available keys. If there are none left or
+	 *         there is no limited set of keys, this list will be empty.
+	 */
+	public List<String> getAvailableKeys();
+
+	/**
+	 * Returns the next available key, usually based on some default prefix,
+	 * e.g., "key1", "key2".
+	 * 
+	 * @return The next available key.
+	 * @throws IllegalStateException
+	 *             An exception is thrown if there is a pre-defined list of keys
+	 *             and there are no more keys available.
+	 */
+	public String getNextKey() throws IllegalStateException;
+}
