@@ -11,9 +11,16 @@
  *******************************************************************************/
 package org.eclipse.ice.io.csv;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.serializable.IReader;
@@ -32,6 +39,11 @@ import org.eclipse.ice.io.serializable.IReader;
  */
 public class CSVReader implements IReader {
 
+	/**
+	 * The lines of text read from the last file.
+	 */
+	ListComponent<String []> lines;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -41,8 +53,51 @@ public class CSVReader implements IReader {
 	 */
 	@Override
 	public Form read(IFile file) {
-		// TODO Auto-generated method stub
-		return null;
+
+		// Configure the form
+		Form form = new Form();
+		form.setName(file.getName());
+		form.setDescription(file.getName());
+
+		// Configure the list
+		lines = new ListComponent<String[]>();
+		lines.setName(file.getName());
+		lines.setDescription(file.getName());
+
+		try {
+			// Grab the contents of the file
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					file.getContents()));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				// Skip lines that pure comments
+				if (!line.startsWith("#")) {
+					// Clip the line if it has a comment symbol in it to be
+					// everything before the symbol
+					if (line.contains("#")) {
+						int index = line.indexOf("#");
+						line = line.substring(0, index);
+					}
+					// Clean up any crap on the line
+					String[] lineArray = line.trim().split(",");
+					// And clean up any crap on each split piece
+					for (String element : lineArray) {
+						element = element.trim();
+					}
+					// Put the lines in the list
+					lines.add(lineArray);
+				}
+			}
+			form.addComponent(lines);
+		} catch (CoreException e) {
+			// Complain
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return form;
 	}
 
 	/*
@@ -54,7 +109,13 @@ public class CSVReader implements IReader {
 	 */
 	@Override
 	public ArrayList<Entry> findAll(IFile file, String regex) {
-		// TODO Auto-generated method stub
+		try {
+			throw new OperationNotSupportedException("CSVReader Error: "
+					+ "IReader.findAll() is not supported... yet.");
+		} catch (OperationNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 

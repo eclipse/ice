@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.csv.CSVReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -88,7 +90,7 @@ public class CSVReaderTester {
 
 		// Create the reader
 		reader = new CSVReader();
-		
+
 		return;
 	}
 
@@ -104,16 +106,32 @@ public class CSVReaderTester {
 	public void testRead() throws CoreException, IOException {
 
 		// Load the file
-		
+		Form form = reader.read(testFile);
+
 		// Check the Form
-		
-		// Check the first element of the list
-		
+		assertTrue(form.getComponents().get(0) instanceof ListComponent);
+		ListComponent<String[]> lines = (ListComponent<String[]>) form
+				.getComponents().get(0);
+		assertTrue(lines.get(0) instanceof String[]);
+		assertEquals(lines.size(), 174);
+
+		// Check the first element of the list. The first line of the file is a
+		// comment, so it should be skipped and this should be data.
+		String [] line = lines.get(0);
+		assertEquals(3,line.length);
+		assertEquals("8.1417E-03",line[0]);
+		assertEquals("4.25",line[1]);
+		assertEquals("9.9998E-01",line[2]);
+
 		// Check the last element of the list
+		line = lines.get(173);
+		assertEquals(4,line.length);
+		assertEquals("2.070E-06",line[0]);
+		assertEquals("4.750E-11",line[1]);
+		assertEquals("1.998E-12",line[2]);
+		assertEquals("1.000E+02",line[3]);
 		
-		
-		
-		
+		return;
 	}
 
 	/**
@@ -121,7 +139,7 @@ public class CSVReaderTester {
 	 * {@link org.eclipse.ice.io.csv.CSVReader#findAll(org.eclipse.core.resources.IFile, java.lang.String)}
 	 * .
 	 */
-	@Test
+//	@Test
 	public void testFindAll() {
 		fail("Not yet implemented");
 	}
@@ -131,7 +149,7 @@ public class CSVReaderTester {
 	 */
 	@Test
 	public void testGetReaderType() {
-		fail("Not yet implemented");
+		assertEquals("csv", reader.getReaderType());
 	}
 
 }
