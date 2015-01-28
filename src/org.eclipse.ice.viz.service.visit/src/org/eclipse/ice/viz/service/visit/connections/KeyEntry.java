@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.connections;
 
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 
 /**
@@ -33,6 +34,12 @@ public class KeyEntry extends Entry {
 	private final IKeyManager keyManager;
 
 	/**
+	 * An error message for invalid keys in the case where there is no set list
+	 * of allowed keys.
+	 */
+	protected static final String undefinedErrMsg = "'${incorrectValue}' is an unacceptable value. It must be a unique string.";
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param contentProvider
@@ -48,6 +55,9 @@ public class KeyEntry extends Entry {
 		// should throw an exception as the KeyManager is required.
 		if (manager != null) {
 			keyManager = manager;
+
+			// Set the initial value of the Entry.
+			setValue(keyManager.getNextKey());
 		} else {
 			throw new NullPointerException("KeyEntry error: "
 					+ "Null KeyManager passed to constructor.");
@@ -75,6 +85,12 @@ public class KeyEntry extends Entry {
 		// Copy the KeyEntry-specific features.
 		if (otherEntry != null) {
 			keyManager = otherEntry.keyManager;
+
+			// Set the initial value of the Entry.
+			setValue(keyManager.getNextKey());
+
+			// Share the custom content provider!
+			iEntryContentProvider = otherEntry.iEntryContentProvider;
 		} else {
 			// We should throw an exception.
 			throw new NullPointerException("KeyEntry error: "
@@ -91,16 +107,44 @@ public class KeyEntry extends Entry {
 	 * message.
 	 */
 	@Override
-	public boolean setValue(String value) {
-		boolean changed = false;
-		boolean available = keyManager.keyAvailable(value);
-		if (available) {
-			changed = super.setValue(value);
-		} else {
-			this.errorMessage = "The value \"" + value
-					+ "\" is invalid or not unique.";
+	public boolean setValue(String newValue) {
+		boolean returnCode = false;
+
+		AllowedValueType valueType = iEntryContentProvider
+				.getAllowedValueType();
+
+		// Update the key value if we can.
+		if (keyManager.keyAvailable(newValue)) {
+			value = newValue;
+			returnCode = true;
+
+			changeState = true;
+			errorMessage = null;
+			notifyListeners();
 		}
-		return changed;
+		// Otherwise, handle the error message for a set of allowed keys.
+		else if (valueType == AllowedValueType.Discrete) {
+			String allowedValues = null;
+			for (String allowedValue : iEntryContentProvider.getAllowedValues()) {
+				if (allowedValues != null) {
+					allowedValues += ", " + allowedValue;
+				} else {
+					allowedValues = allowedValue;
+				}
+			}
+
+			String error = discreteErrMsg;
+			error = error.replace("${incorrectValue}", newValue);
+			error = error.replace(" ${allowedValues}", allowedValues);
+			errorMessage = error;
+		}
+		// Handle the case where there is no set list of keys.
+		else {
+			String error = undefinedErrMsg;
+			error = error.replace("${incorrectValue}", newValue);
+		}
+
+		return returnCode;
 	}
 
 	/**

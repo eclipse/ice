@@ -18,7 +18,10 @@ import java.util.Map;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.TableComponent;
 
 /**
@@ -114,9 +117,10 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 	private ArrayList<Entry> getConnectionTemplate() {
 		ArrayList<Entry> template = new ArrayList<Entry>();
 
-		// TODO These Entries need better content providers and descriptions.
+		// TODO These Entries need descriptions.
+		// TODO Add the password Entries.
 
-//		IEntryContentProvider contentProvider;
+		IEntryContentProvider contentProvider;
 
 		// ---- name ---- //
 		KeyEntryContentProvider keyContentProvider = new KeyEntryContentProvider(
@@ -124,74 +128,72 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 		Entry keyEntry = new KeyEntry(keyContentProvider, this);
 		keyEntry.setName("Name");
 		template.add(keyEntry);
-		// // ---- host ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		// contentProvider.setDefaultValue("localhost");
-		// Entry hostEntry = new Entry(contentProvider);
-		// hostEntry.setName("Host");
-		// template.add(hostEntry);
-		// // ---- host port ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		// contentProvider.setDefaultValue("9600");
-		// Entry hostPortEntry = new Entry(contentProvider);
-		// hostPortEntry.setName("Host Port");
-		// template.add(hostPortEntry);
-		// // ---- host os ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Discrete);
-		// ArrayList<String> systems = new ArrayList<String>(3);
-		// systems.add("Windows");
-		// systems.add("Linux");
-		// systems.add("OS X");
-		// contentProvider.setAllowedValues(systems);
-		// contentProvider.setDefaultValue("Windows");
-		// Entry hostOSEntry = new Entry(contentProvider);
-		// hostOSEntry.setName("Host OS");
-		// template.add(hostOSEntry);
-		// // ---- path ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		// Entry pathEntry = new Entry(contentProvider);
-		// pathEntry.setName("Path");
-		// template.add(pathEntry);
-		// // ---- username ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		// contentProvider.setDefaultValue("");
-		// Entry userEntry = new Entry(contentProvider);
-		// userEntry.setName("User");
-		// template.add(userEntry);
-		// // ---- password ---- //
+		// ---- host ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setDefaultValue("localhost");
+		Entry hostEntry = new Entry(contentProvider);
+		hostEntry.setName("Host");
+		template.add(hostEntry);
+		// ---- host port ---- //
+		PortEntryContentProvider portContentProvider = new PortEntryContentProvider();
+		portContentProvider.setDefaultValue("9600");
+		Entry hostPortEntry = new PortEntry(portContentProvider);
+		hostPortEntry.setName("Host Port");
+		template.add(hostPortEntry);
+		// ---- host os ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Discrete);
+		ArrayList<String> systems = new ArrayList<String>(3);
+		systems.add("Windows");
+		systems.add("Linux");
+		systems.add("OS X");
+		contentProvider.setAllowedValues(systems);
+		contentProvider.setDefaultValue("Windows");
+		Entry hostOSEntry = new Entry(contentProvider);
+		hostOSEntry.setName("Host OS");
+		template.add(hostOSEntry);
+		// ---- path ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry pathEntry = new Entry(contentProvider);
+		pathEntry.setName("Path");
+		template.add(pathEntry);
+		// ---- username ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider.setDefaultValue("");
+		Entry userEntry = new Entry(contentProvider);
+		userEntry.setName("User");
+		template.add(userEntry);
+		// ---- password ---- //
 		// contentProvider = new BasicEntryContentProvider();
 		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
 		// contentProvider.setDefaultValue("");
 		// Entry passwordEntry = new Entry(contentProvider);
 		// passwordEntry.setName("Password");
 		// template.add(passwordEntry);
-		// // ---- proxy ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		// contentProvider.setDefaultValue("");
-		// Entry proxyEntry = new Entry(contentProvider);
-		// proxyEntry.setName("Proxy");
-		// template.add(proxyEntry);
-		// // ---- proxy port ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		// contentProvider.setDefaultValue("9600");
-		// Entry proxyPortEntry = new Entry(contentProvider);
-		// proxyPortEntry.setName("Proxy Port");
-		// template.add(proxyPortEntry);
-		// // ---- visit user ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		// contentProvider.setDefaultValue("");
-		// Entry visitUserEntry = new Entry(contentProvider);
-		// visitUserEntry.setName("VisIt User");
-		// template.add(visitUserEntry);
-		// // ---- visit password ---- //
+		// ---- proxy ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setDefaultValue("");
+		Entry proxyEntry = new Entry(contentProvider);
+		proxyEntry.setName("Proxy");
+		template.add(proxyEntry);
+		// ---- proxy port ---- //
+		portContentProvider = new PortEntryContentProvider();
+		portContentProvider.setRange(PortEntryContentProvider.MIN_PORT,
+				PortEntryContentProvider.MAX_PORT);
+		portContentProvider.setDefaultValue(22);
+		Entry proxyPortEntry = new PortEntry(portContentProvider);
+		proxyPortEntry.setName("Proxy Port");
+		template.add(proxyPortEntry);
+		// ---- visit user ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider.setDefaultValue("");
+		Entry visitUserEntry = new Entry(contentProvider);
+		visitUserEntry.setName("VisIt User");
+		template.add(visitUserEntry);
+		// ---- visit password ---- //
 		// contentProvider = new BasicEntryContentProvider();
 		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
 		// contentProvider.setDefaultValue("");
