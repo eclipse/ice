@@ -148,6 +148,12 @@ public class CaebatLauncher extends JobLauncher {
 		// Add the input files types for the BatML files
 		addInputType("Key-value pair file", "keyValueFile",
 				"Key-value pair with case parameters", ".dat");
+	    DataComponent fileComponent = (DataComponent) form.getComponent(1);
+	    Entry defaultEntry = new Entry();
+	    defaultEntry.setName("Key-value pair file");
+	    defaultEntry.setValue("Use default");
+		fileComponent.addEntry(defaultEntry);
+		
 		return;
 		// end-user-code
 	}

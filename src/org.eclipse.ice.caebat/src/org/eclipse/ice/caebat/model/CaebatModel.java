@@ -111,9 +111,11 @@ public class CaebatModel extends Item {
 
 		// If loading from the new item button we should just
 		// load up the default case 6 file by passing in null
-		loadInput(null);
+		if (project != null) {
+			loadInput(null);
+		}
 	}
-
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -241,20 +243,10 @@ public class CaebatModel extends Item {
 		File temp = null;
 		if (name == null) {
 			try {
-				// Path to the default file
-				String defaultFilePath = null;
 				// Create a filepath for the default file
-				if (project != null) {
-					defaultFilePath = project.getLocation().toOSString()
+				String defaultFilePath = project.getLocation().toOSString()
 							+ System.getProperty("file.separator")
-							+ "case_6.conf";
-				} else {
-					defaultFilePath = ResourcesPlugin.getWorkspace().getRoot()
-							.getLocation().toOSString()
-							+ System.getProperty("file.separator")
-							+ "case_6.conf";
-				}
-				
+							+ "case_6.conf";			
 				// Create a temporary location to load the default file
 				temp = new File(defaultFilePath);
 				if (!temp.exists()) {
@@ -273,8 +265,8 @@ public class CaebatModel extends Item {
 					outStream.write(fileByte);
 				}
 				outStream.close();
-				inputFile = ResourcesPlugin.getWorkspace().getRoot()
-						.getFile(new Path(defaultFilePath));
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+				inputFile = project.getFile("case_6.conf");
 
 			} catch (URISyntaxException e) {
 				System.err
@@ -286,26 +278,20 @@ public class CaebatModel extends Item {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		} else {
 			// Load a custom file
-			String filePath = null;
-			// Get the path to where the file will be
-			if (project != null) {
-				filePath = project.getLocation().toOSString()
+			String filePath = project.getLocation().toOSString()
 						+ System.getProperty("file.separator") + name;
-			} else {
-				filePath = ResourcesPlugin.getWorkspace().getRoot()
-						.getLocation().toOSString()
-						+ System.getProperty("file.separator") + name;
-			}
 			// Get the file
-			inputFile = ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(new Path(filePath));
+			inputFile = project.getFile(name);
 		}
 		
 		// Load the components from the file and setup the form
-		System.out.println("CaebatModel Message: Loading" + inputFile.getFullPath().toOSString());
+		System.out.println("CaebatModel Message: Loading" + inputFile.getName());
 
 		IPSReader reader = new IPSReader();
 		form = reader.read(inputFile);
