@@ -11,8 +11,15 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.preferences;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -30,6 +37,20 @@ public class EntryCellEditingSupport extends EditingSupport {
 	 * A <code>CellEditor</code> built around a <code>Text</code> widget.
 	 */
 	protected final TextCellEditor textCell;
+
+	/**
+	 * A <code>CellEditor</code> built around a <code>Combo</code> widget. This
+	 * is used to restrict displayed values to a set of allowed values.
+	 */
+	private final ComboBoxCellEditor comboCell;
+	/**
+	 * A Map used to quickly look up an index of an element's value in its list
+	 * of allowed values. This is used when the {@link #contentProvider}
+	 * requires a <code>Combo</code>.
+	 */
+	private final Map<String, Integer> valueMap;
+
+	// TODO Handle file entries...
 
 	/**
 	 * The default constructor.
@@ -56,6 +77,13 @@ public class EntryCellEditingSupport extends EditingSupport {
 		// Create the TextCellEditor.
 		textCell = new TextCellEditor(parent, SWT.LEFT);
 
+		// Create the ComboBoxCellEditor.
+		comboCell = new ComboBoxCellEditor(parent, new String[] {},
+				SWT.DROP_DOWN | SWT.READ_ONLY);
+		comboCell.getControl().setBackground(parent.getBackground());
+		// Create a HashMap to contain values for discrete Entry values.
+		valueMap = new HashMap<String, Integer>();
+
 		return;
 	}
 
@@ -68,9 +96,33 @@ public class EntryCellEditingSupport extends EditingSupport {
 		// If all else fails, we should return null.
 		CellEditor editor = null;
 
-		// By default, return a Text-based CellEditor.
+		// Determine the CellEditor to use.
 		if (contentProvider.isValid(element)) {
-			editor = textCell;
+			Entry entry = (Entry) element;
+			AllowedValueType entryType = entry.getValueType();
+
+			// Discrete Entries use the ComboBoxCellEditor.
+			if (entryType == AllowedValueType.Discrete) {
+				editor = comboCell;
+
+				// Update the Combo's items.
+				List<String> allowedValues = entry.getAllowedValues();
+				String[] items = new String[allowedValues.size()];
+				comboCell.setItems(allowedValues.toArray(items));
+
+				// Update the Map so that we can convert from the text value to
+				// its
+				// index in the allowed values (the Combo widget uses
+				// integers!).
+				valueMap.clear();
+				for (int i = 0; i < items.length; i++) {
+					valueMap.put(items[i], i);
+				}
+			}
+			// Continuous and Undefined Entries use the TextCellEditor.
+			else {
+				editor = textCell;
+			}
 		}
 
 		return editor;
@@ -93,7 +145,21 @@ public class EntryCellEditingSupport extends EditingSupport {
 	 */
 	@Override
 	protected Object getValue(Object element) {
-		return contentProvider.getValue(element);
+		// Get the default return value.
+		Object value = contentProvider.getValue(element);
+
+		if (value != null) {
+			Entry entry = (Entry) element;
+			AllowedValueType entryType = entry.getValueType();
+
+			// Discrete Entries use the ComboBoxCellEditor, so we must convert
+			// the String value into an index in the Combo's items.
+			if (entryType == AllowedValueType.Discrete) {
+				value = valueMap.get(value.toString());
+			}
+		}
+
+		return value;
 	}
 
 	/*
@@ -104,10 +170,24 @@ public class EntryCellEditingSupport extends EditingSupport {
 	 */
 	@Override
 	protected void setValue(Object element, Object value) {
-		if (contentProvider.setValue(element, value)) {
-			// Force the viewer to refresh for this specific element. This means
-			// the change will be reflected in the viewer.
-			getViewer().update(element, null);
+		if (contentProvider.isValid(element)) {
+			Entry entry = (Entry) element;
+			AllowedValueType entryType = entry.getValueType();
+
+			// Discrete Entries use the ComboBoxCellEditor, so we must convert
+			// the Combo item index value into its String value.
+			if (entryType == AllowedValueType.Discrete) {
+				value = comboCell.getItems()[(Integer) value];
+			}
+
+			// Now we can set the value via the content provider.
+			if (contentProvider.setValue(element, value)) {
+				// Force the viewer to refresh for this specific element. This
+				// means the change will be reflected in the viewer.
+				getViewer().update(element, null);
+			}
 		}
+
+		return;
 	}
 }
