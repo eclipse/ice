@@ -15,8 +15,7 @@ import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
-import org.eclipse.ice.viz.service.visit.preferences.ConnectionManager;
-import org.eclipse.ice.viz.service.visit.preferences.ConnectionPreferenceAdapter;
+import org.eclipse.ice.viz.service.visit.connections.ConnectionManager;
 import org.eclipse.ice.viz.service.visit.preferences.TableComponentComposite;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
@@ -59,8 +58,8 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		setDescription("VisIt 2.8.2 Connection Preferences");
 
 		// Create a ConnectionManager and load it from the preference store.
-		ConnectionPreferenceAdapter adapter = new ConnectionPreferenceAdapter();
-		adapter.toConnectionManager(getPreferenceStore(), connectionManager);
+//		ConnectionPreferenceAdapter adapter = new ConnectionPreferenceAdapter();
+//		adapter.toConnectionManager(getPreferenceStore(), connectionManager);
 
 		return;
 	}
