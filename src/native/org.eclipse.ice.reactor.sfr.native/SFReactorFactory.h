@@ -11,8 +11,8 @@
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 
-#ifndef ORG_ECLIPSE_ICE_REACTOR_SFR_NATIVE_SFREACTORFACTORY_H_
-#define ORG_ECLIPSE_ICE_REACTOR_SFR_NATIVE_SFREACTORFACTORY_H_
+#ifndef SFREACTORFACTORY_H_
+#define SFREACTORFACTORY_H_
 
 #include <map>
 #include <memory>
@@ -44,4 +44,4 @@ public :
 
 } // end namespace
 
-#endif /* ORG_ECLIPSE_ICE_REACTOR_SFR_NATIVE_SFREACTORFACTORY_H_ */
+#endif /* SFREACTORFACTORY_H_ */

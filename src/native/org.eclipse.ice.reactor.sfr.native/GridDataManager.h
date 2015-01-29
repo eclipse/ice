@@ -10,8 +10,8 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-#ifndef ORG_ECLIPSE_ICE_REACTOR_SFR_NATIVE_GRIDDATAMANAGER_H_
-#define ORG_ECLIPSE_ICE_REACTOR_SFR_NATIVE_GRIDDATAMANAGER_H_
+#ifndef GRIDDATAMANAGER_H_
+#define GRIDDATAMANAGER_H_
 
 #include "GridManager.h"
 #include "SFRComponent.h"
