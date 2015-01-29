@@ -97,15 +97,15 @@ public class ItemTester implements ItemListener {
 	 */
 	@BeforeClass
 	public static void beforeClass() {
-
+		
 		ArrayList<String> PSFForm = new ArrayList<String>();
-
+		
 		/**
-		 * Setup the string containing the Form in PSF format. This was taken
-		 * from the Painfully Simple Form article at
-		 * 
-		 * https://wiki.eclipse.org/Painfully_Simple_Form
-		 * 
+		 * Setup the string containing the Form in PSF format. This was
+		 * taken from the Painfully Simple Form article at
+
+			https://wiki.eclipse.org/Painfully_Simple_Form
+
 		 * and is a good example because it is complete, contains lots of
 		 * whitespace and comments and, of course, interesting! I have added
 		 * whitespaces and comments in some places to make the test more
@@ -172,10 +172,10 @@ public class ItemTester implements ItemListener {
 		for (String i : PSFForm) {
 			psfItemString += i;
 		}
-
+		
 		return;
 	}
-
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -888,7 +888,7 @@ public class ItemTester implements ItemListener {
 		// Shut down the project resource
 		project.close(null);
 		project.delete(true, null);
-
+		
 		return;
 
 		// end-user-code
@@ -976,7 +976,7 @@ public class ItemTester implements ItemListener {
 		item = new TestItem();
 		item.setProject(null);
 		assertEquals(item.hasProject(), false);
-
+		
 		// Shut down the project resource
 		try {
 			project.close(null);
@@ -1036,12 +1036,12 @@ public class ItemTester implements ItemListener {
 	}
 
 	/**
-	 * This method tests the {@link Item#getResource(String)} and
+	 * This method tests the {@link Item#getResource(String)} and 
 	 * {@link Item#getResource(Entry)} methods.
 	 */
 	@Test
 	public void checkGettingResources() {
-
+		
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
@@ -1058,8 +1058,9 @@ public class ItemTester implements ItemListener {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/itemTesterWorkspace
-				defaultProjectLocation = (new File(userDir + separator
-						+ projectName)).toURI();
+				defaultProjectLocation = (new File(
+						userDir + separator
+								+ projectName)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(projectName);
@@ -1080,16 +1081,16 @@ public class ItemTester implements ItemListener {
 			e.printStackTrace();
 			fail();
 		}
-
+		
 		// Local Declarations
 		Item item = new Item(project);
 		ICEResource iceResource = null;
 		VizResource vizResource = null;
-		String txtFilePath = project.getLocation().toOSString() + separator
-				+ "txtResource.txt";
-		String csvFilePath = project.getLocation().toOSString() + separator
-				+ "csvResource.csv";
-
+		String txtFilePath = project.getLocation().toOSString() 
+				+ separator + "txtResource.txt";
+		String csvFilePath = project.getLocation().toOSString() 
+				+ separator + "csvResource.csv";
+		
 		// Try getting an ICEResource based on a String file path
 		try {
 			iceResource = item.getResource(txtFilePath);
@@ -1097,11 +1098,11 @@ public class ItemTester implements ItemListener {
 			fail();
 			e.printStackTrace();
 		}
-
-		// Verify all is well
+		
+		// Verify all is well 
 		assertNotNull(iceResource);
 		assertTrue(iceResource instanceof ICEResource);
-
+		
 		// Try getting a VizResource based on a String file path
 		try {
 			vizResource = (VizResource) item.getResource(csvFilePath);
@@ -1109,16 +1110,16 @@ public class ItemTester implements ItemListener {
 			fail();
 			e.printStackTrace();
 		}
-
-		// Verify all is well
+		
+		// Verify all is well 
 		assertNotNull(vizResource);
 		assertTrue(vizResource instanceof VizResource);
-
+		
 		// Now construct a file Entry based on a .e file
 		Entry entry = new Entry();
 		entry.setValue("mesh.e");
 		vizResource = null;
-
+		
 		// Try getting a VizResource based on the Entry
 		try {
 			vizResource = (VizResource) item.getResource(entry);
@@ -1126,21 +1127,22 @@ public class ItemTester implements ItemListener {
 			fail();
 			e.printStackTrace();
 		}
-
+		
 		// Check the VizResource
 		assertNotNull(vizResource);
 		assertTrue(vizResource instanceof VizResource);
-
+		
 		// Shut down the project resource
 		try {
 			project.close(null);
-			project.delete(true, null);
+			project.delete(true,null);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 
 	}
-
+	
+	
 	/**
 	 * This method tests the file copy/move methods on the Item.
 	 */
@@ -1248,40 +1250,6 @@ public class ItemTester implements ItemListener {
 		testItem.deleteTestDirectory(tempDir.getLocation().toOSString());
 		assertFalse(project.getFolder("tempDir").exists());
 
-		// Test the directory copy
-		IFolder limbo = project.getFolder("Directory");
-		IFolder newLimbo = project.getFolder("newDirectory");
-		if (!newLimbo.exists()) {
-			try {
-				newLimbo.create(true, true, null);
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-		}
-
-		String srcPath = project.getLocation().toOSString() + separator
-				+ project.getFolder("Directory").getName();
-		String destPath = project.getLocation().toOSString() + separator
-				+ project.getFolder("newDirectory").getName();
-		testItem.	copyTestDirectory(srcPath, destPath);
-
-		// Make sure all of the files were copied, then delete them all
-		ArrayList<File> copiedFiles = new ArrayList<File>();
-		copiedFiles.add(new File(destPath + separator + "DeepDirectory"
-				+ separator + "DeeperThanDeep" + separator + "file"));
-		copiedFiles.add(new File(destPath + separator + "DeepDirectory"
-				+ separator + "DeeperThanDeep"));
-		copiedFiles.add(new File(destPath + separator + "DeepDirectory"
-				+ separator + "deepFile"));
-		copiedFiles.add(new File(destPath + separator + "DeepDirectory"));
-		copiedFiles.add(new File(destPath + separator + "shallowFile"));
-		copiedFiles.add(new File(destPath));
-
-		for (File f : copiedFiles) {
-			assertTrue(f.exists());
-			f.delete();
-		}
-
 		// Shut down the project resource
 		try {
 			project.close(null);
@@ -1361,7 +1329,7 @@ public class ItemTester implements ItemListener {
 		assertTrue(fakeReader == testItem.getTestReader());
 		assertTrue(fakeWriter == testItem.getTestWriter());
 
-		return;
+		return;		
 	}
 
 	/**
@@ -1377,5 +1345,5 @@ public class ItemTester implements ItemListener {
 		updated = true;
 
 		// end-user-code
-	}
 }
+	}
