@@ -55,7 +55,7 @@ public class IOService {
 	public void addReader(IReader reader) {
 		
 		if (reader != null) {
-			System.out.println("[IOService Message ] Adding " + reader.getReaderType() + " reader to the IOService Mapping.");
+			System.out.println("[IOService Message] Adding " + reader.getReaderType() + " reader to the IOService Mapping.");
 			readerMap.put(reader.getReaderType(), reader);
 		}
 		
@@ -71,7 +71,7 @@ public class IOService {
 	public void addWriter(IWriter writer) {
 		
 		if (writer != null) {
-			System.out.println("[IOService Message ] Adding " + writer.getWriterType() + " writer to the IOService Mapping.");
+			System.out.println("[IOService Message] Adding " + writer.getWriterType() + " writer to the IOService Mapping.");
 			writerMap.put(writer.getWriterType(), writer);
 		}
 	}
