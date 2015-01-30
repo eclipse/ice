@@ -225,11 +225,6 @@ public class TableComponentComposite extends Composite {
 			@Override
 			public void run() {
 				tableComponent.addRow();
-				
-				System.out.println("The table's row list is:");
-				for (int i = 0; i < tableComponent.getRowIds().size(); i++) {
-					System.out.println(tableComponent.getRow(i).toString());
-				}
 			}
 		};
 		addRowAction.setToolTipText("Adds a new, default row.");

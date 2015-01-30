@@ -158,15 +158,15 @@ public class TableComponentContentProvider implements
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					// If the columns did not change, we only need to refresh
-					// the viewer.
-					if (!columnsChanged) {
-						viewer.refresh();
-					}
 					// If the columns changed, we need to refresh the columns.
-					else {
+					if (columnsChanged) {
 						refreshTableColumns();
 					}
+
+					// Refresh the viewer contents.
+					viewer.refresh();
+
+					return;
 				}
 			});
 		}
@@ -213,7 +213,7 @@ public class TableComponentContentProvider implements
 		EntryCellContentProvider basicContentProvider = new EntryCellContentProvider();
 		EntryCellEditingSupport basicEditingSupport = new EntryCellEditingSupport(
 				viewer, basicContentProvider);
-		
+
 		// Add a new column for each Entry.
 		for (int i = 0; i < rowTemplate.size(); i++) {
 			Entry entry = rowTemplate.get(i);
@@ -227,6 +227,9 @@ public class TableComponentContentProvider implements
 			columnWidget.setText(entry.getName());
 			columnWidget.setToolTipText(entry.getDescription());
 			columnWidget.setResizable(true);
+			// Since we are replacing all the columns, pack it here based on the
+			// column header text.
+			columnWidget.pack();
 
 			// Add the ColumnLabelProvider and the EditingSupport.
 			ICellContentProvider contentProvider = new TableComponentCellContentProvider(
@@ -235,12 +238,6 @@ public class TableComponentContentProvider implements
 					viewer, basicEditingSupport, i);
 			column.setLabelProvider(new CellColumnLabelProvider(contentProvider));
 			column.setEditingSupport(editingSupport);
-		}
-
-		// Refresh the viewer and re-adjust the widths of the columns.
-		viewer.refresh();
-		for (TableViewerColumn column : columns) {
-			column.getColumn().pack();
 		}
 
 		return;
