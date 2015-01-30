@@ -14,14 +14,14 @@
 SET(LIBNAME ICESFReactor)
 
 #Set the package name
-SET(PACKAGE_NAME "org.eclipse.ice.reactor.sfr")
+SET(PACKAGE_NAME "org.eclipse.ice.reactor.sfr.native")
 
 #Set the description
 SET(PACKAGE_DESCRIPTION "Native implementations of the ICE SFReactor Tools")
 
 #Setup HDF5 libraries
 include_directories(${PROJECT_SOURCE_DIR}/src/native/org.eclipse.ice.datastructures.native/)
-include_directories(${PROJECT_SOURCE_DIR}/src/native/org.eclipse.ice.reactor.sfr/)
+include_directories(${PROJECT_SOURCE_DIR}/src/native/org.eclipse.ice.reactor.sfr.native/)
 include_directories(${HDF5_INCLUDE_DIRS})
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -62,7 +62,7 @@ SET(CPACK_PACKAGE_VERSION_MINOR "0")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_VENDOR "Oak Ridge National Laboratory")
 set(CPACK_PACKAGE_CONTACT "billingsjj@ornl.gov")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/license")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 
 #Set package generators
 set(CPACK_GENERATOR "DEB;RPM;TGZ;ZIP")
