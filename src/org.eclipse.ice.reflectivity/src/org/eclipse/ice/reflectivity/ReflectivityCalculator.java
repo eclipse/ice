@@ -78,7 +78,7 @@ public class ReflectivityCalculator {
 				betaNm1 = 4.0 * Math.PI * (muLAbs + mulInc / wavelength);
 				qNm1 = new Complex(waveVectorQ * waveVectorQ - qCSq, -2.0
 						* betaNm1);
-				qNm1 = qNm1.multiply(qNm1);
+				qNm1 = qNm1.sqrt();
 				// Calculate phase factor, e^(-0.5*d*qNm1)
 				aNm1Sq = (new Complex(qNm1.getImaginary(), qNm1.getReal())
 						.multiply(-0.5 * thickness)).exp();
