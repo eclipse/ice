@@ -269,23 +269,23 @@ public class CaebatModel extends Item {
 				inputFile = project.getFile("case_6.conf");
 
 			} catch (URISyntaxException e) {
-				System.err
-						.println("CaebatModel Message: Error!  Could not load the default"
+				e.printStackTrace();
+				System.err.println("CaebatModel Message: Error!  Could not load the default"
 								+ " Caebat case data!");
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.err.println("CaebatModel Message: Error!  Could not load the default"
+						+ " Caebat case data!");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.err.println("CaebatModel Message: Error!  Could not load the default"
+						+ " Caebat case data!");
 			} catch (CoreException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.err.println("CaebatModel Message: Error!  Could not load the default"
+						+ " Caebat case data!");
 			}
 		} else {
-			// Load a custom file
-			String filePath = project.getLocation().toOSString()
-						+ System.getProperty("file.separator") + name;
 			// Get the file
 			inputFile = project.getFile(name);
 		}

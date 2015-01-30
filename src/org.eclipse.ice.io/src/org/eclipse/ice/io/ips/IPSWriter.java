@@ -124,8 +124,8 @@ public class IPSWriter implements IWriter {
 				System.out.println("IPSWriter Message: Could not write to "
 						+ ifile.getName() + ".");
 			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("IPSWriter Message: Could not write to "
+						+ ifile.getName() + ".");
 			}
 		}
 

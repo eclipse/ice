@@ -13,19 +13,19 @@
 package org.eclipse.ice.caebat.kvPair;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -34,16 +34,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.io.ips.IPSReader;
-import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
@@ -55,14 +52,14 @@ import org.eclipse.ice.item.Item;
  * @author Jay Jay Billings, Andrew Bennett
  * 
  */
-@XmlRootElement(name = "CAEBATKVPairItem")
-public class CAEBATKVPairItem extends Item implements IReader, IWriter{
+@XmlRootElement(name = "CaebatKVPairItem")
+public class CaebatKVPair extends Item implements IReader, IWriter {
 
 	/**
 	 * Keep track of everything that we can do with the KV Pair Item
 	 */
 	private ArrayList<String> actionItems;
-	
+
 	private String customTaggedExportString = "Export to key-value pair output";
 
 	/**
@@ -71,7 +68,7 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 	 * @param projectSpace
 	 *            The Eclipse Project space needed for file manipulation.
 	 */
-	public CAEBATKVPairItem(IProject projectSpace) {
+	public CaebatKVPair(IProject projectSpace) {
 		// Punt to the base class.
 		super(projectSpace);
 	}
@@ -79,7 +76,7 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 	/**
 	 * The nullary constructor.
 	 */
-	public CAEBATKVPairItem() {
+	public CaebatKVPair() {
 		this(null);
 	}
 
@@ -105,19 +102,18 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 	@Override
 	public void setupItemInfo() {
 		// Setup everything
-		setName(CAEBATKVPairBuilder.name);
-		itemType = CAEBATKVPairBuilder.type;
-		setItemBuilderName(CAEBATKVPairBuilder.name);
-		setDescription("An item to generate CAEBAT "
-				+ "key-value pair files.");
+		setName(CaebatKVPairBuilder.name);
+		itemType = CaebatKVPairBuilder.type;
+		setItemBuilderName(CaebatKVPairBuilder.name);
+		setDescription("An item to generate CAEBAT " + "key-value pair files.");
 		allowedActions.remove("Export to ICE Native Format");
 		actionItems = getAvailableActions();
 	}
-	
-	
+
 	/**
-	 * Process the item.  If told to export to KV pair file then a new file with the 
-	 * key value pairs will be written out.  Otherwise fall back to the default definition
+	 * Process the item. If told to export to KV pair file then a new file with
+	 * the key value pairs will be written out. Otherwise fall back to the
+	 * default definition
 	 * 
 	 * @param actionName
 	 * @return
@@ -125,7 +121,7 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 	public FormStatus process(String actionName) {
 		// begin-user-code
 		FormStatus retStatus;
-		
+
 		// If it is the custom operation, call this here.
 		if (this.customTaggedExportString.equals(actionName)) {
 
@@ -172,7 +168,7 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 		// end-user-code
 
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation loads the given example into the Form.
@@ -196,81 +192,75 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 							+ System.getProperty("file.separator")
 							+ "case_6.dat";
 				} else {
-					defaultFilePath = ResourcesPlugin.getWorkspace().getRoot()
-							.getLocation().toOSString()
-							+ System.getProperty("file.separator")
-							+ "case_6.dat";
+					return;
 				}
-				
+
 				// Create a temporary location to load the default file
 				temp = new File(defaultFilePath);
 				if (!temp.exists()) {
 					temp.createNewFile();
 				}
-				
+
 				// Pull the default file from inside the plugin
 				URI uri = new URI(
 						"platform:/plugin/org.eclipse.ice.caebat/data/case_6.dat");
 				InputStream reader = uri.toURL().openStream();
 				FileOutputStream outStream = new FileOutputStream(temp);
 
-				// Write out the default file from the plugin to the temp location
+				// Write out the default file from the plugin to the temp
+				// location
 				int fileByte;
 				while ((fileByte = reader.read()) != -1) {
 					outStream.write(fileByte);
 				}
 				outStream.close();
-				inputFile = ResourcesPlugin.getWorkspace().getRoot()
-						.getFile(new Path(defaultFilePath));
+				if (project != null) {
+					inputFile = project.getFile("case_6.dat");
+				} else {
+					inputFile = ResourcesPlugin.getWorkspace().getRoot()
+							.getFile(new Path(defaultFilePath));
+				}
 
 			} catch (URISyntaxException e) {
 				System.err
-						.println("CaebatKVPair Generator Message: Error!  Could not load the default"
+						.println("CaebatKVPair Message: Error!  Could not load the default"
 								+ " Caebat case data!");
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err
+						.println("CaebatKVPair Message: Error!  Could not load the default"
+								+ " Caebat case data!");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err
+						.println("CaebatKVPair Message: Error!  Could not load the default"
+								+ " Caebat case data!");
 			}
 		} else {
-			// Load a custom file
-			String filePath = null;
-			// Get the path to where the file will be
-			if (project != null) {
-				filePath = project.getLocation().toOSString()
-						+ System.getProperty("file.separator") + name;
-			} else {
-				filePath = ResourcesPlugin.getWorkspace().getRoot()
-						.getLocation().toOSString()
-						+ System.getProperty("file.separator") + name;
-			}
 			// Get the file
-			inputFile = ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(new Path(filePath));
+			inputFile = project.getFile(name);
 		}
-		
+
 		// Load the components from the file and setup the form
-		System.out.println("CaebatKVPair Generator Message: Loading" + inputFile.getFullPath().toOSString());
-		
+		System.out.println("CaebatKVPair Message: Loading"
+				+ inputFile.getFullPath().toOSString());
+
 		form = read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());
 		form.setId(getId());
 		form.setItemID(getId());
 		form.setActionList(actionItems);
-		
+
 		// Delete default file if it was copied into the workspace
 		if (temp != null) {
 			temp.delete();
 		}
 	}
-	
+
 	/**
-	 * Reads in the KV Pair file to a form. 
+	 * Reads in the KV Pair file to a form.
 	 * 
-	 * @param ifile: the IFile representation of the KV Pair File
+	 * @param ifile
+	 *            : the IFile representation of the KV Pair File
 	 * 
 	 * @return a form containing the data from the ifile
 	 */
@@ -284,10 +274,10 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 
 		// Read in the ini file to an ArrayList<String>
 		ArrayList<String> lines = new ArrayList<String>();
+		BufferedReader reader = null;
 		try {
-			// Read in the ini file and create the iterator
-			File file = new File(ifile.getFullPath().toOSString());
-			BufferedReader reader = new BufferedReader(new FileReader(file));
+			reader = new BufferedReader(new InputStreamReader(
+					ifile.getContents()));
 
 			// Read the FileInputStream and append to a StringBuffer
 			StringBuffer buffer = new StringBuffer();
@@ -307,12 +297,15 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 			lines.add("EOF");
 		} catch (FileNotFoundException e) {
 			System.out
-					.println("CAEBATKVPair Generator Message: Error!  Could not find file for loading.");
+					.println("CaebatKVPair Message: Error!  Could not find file for loading.");
 			return null;
 		} catch (IOException e) {
 			System.out
-					.println("CAEBATKVPair Generator Message: Error!  Trouble reading file.");
+					.println("CaebatKVPair Message: Error!  Trouble reading file.");
 			return null;
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		//
@@ -321,13 +314,12 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 		ArrayList<Entry> kvEntries = new ArrayList<Entry>();
 		Entry key = new Entry();
 		Entry value = new Entry();
-		Entry kvEntry;
 		key.setName("Key");
 		value.setName("Value");
 		kvEntries.add(key);
 		kvEntries.add(value);
 		kvTable.setRowTemplate(kvEntries);
-		
+
 		for (String line : lines) {
 			if (line.contains("=")) {
 				String[] keyValue = line.split("=");
@@ -352,91 +344,98 @@ public class CAEBATKVPairItem extends Item implements IReader, IWriter{
 	@Override
 	public void write(Form formToWrite, IFile ifile) {
 		// Make sure the input isn't null
-				if (form == null || ifile == null) {
-					return;
-				}
+		if (form == null || ifile == null) {
+			return;
+		}
 
-				// Get the components from the form and make sure we have a
-				// valid place that we can write the file out to
-				ArrayList<Component> components = form.getComponents();
-				File outputFile = new File(ifile.getFullPath().toOSString());
-				if (!outputFile.exists()) {
-					try {
-						outputFile.createNewFile();
-					} catch (IOException e) {
-						System.err.println("IPSWriter Message: Error! Could not"
-								+ " create output file at "
-								+ ifile.getFullPath().toOSString());
-					}
-				}
-
-				// Make sure that the form had data that looks correct, and the output
-				// file exists
-				if (components != null && components.size() > 0 && outputFile.isFile()) {
-					try {
-						// Get an output stream to the file
-						OutputStream stream = new FileOutputStream(outputFile);
-						int numComponents = components.size();
-						System.out.println(components);
-						String configString = "";
-						ArrayList<Entry> row;
-						byte[] byteArray;
-
-						// Build the output by going through each row
-						TableComponent kvPairs = (TableComponent) components.get(numComponents - 1);
-						for (int i = 0; i < kvPairs.numberOfRows(); i++) {
-							row = kvPairs.getRow(i);
-							configString += row.get(0).getValue().trim() + "="
-									+ row.get(1).getValue().trim() + "\n";
-						}
-						configString += "\n";
-
-						// Write it out
-						byteArray = configString.getBytes();
-						stream.write(byteArray);
-
-						
-						stream.close();
-					} catch (FileNotFoundException e) {
-						System.out.println("IPSWriter Message: Could not find "
-								+ outputFile.getAbsolutePath() + " for writing.");
-					} catch (IOException e) {
-						System.out.println("IPSWriter Message: Could not write to "
-								+ outputFile.getAbsolutePath() + ".");
-					}
-				}
-
+		// Get the components from the form and make sure we have a
+		// valid place that we can write the file out to
+		ArrayList<Component> components = form.getComponents();
+		File outputFile = new File(ifile.getFullPath().toOSString());
+		if (!outputFile.exists()) {
+			try {
+				outputFile.createNewFile();
+			} catch (IOException e) {
+				System.err.println("CaebatKVPair Message: Error! Could not"
+						+ " create output file at "
+						+ ifile.getFullPath().toOSString());
 			}
+		}
 
-	
-	
-	
+		// Make sure that the form had data that looks correct, and the output
+		// file exists
+		if (components != null && components.size() > 0 && outputFile.isFile()) {
+			try {
+				// Get an output stream to the file
+				PipedInputStream in = new PipedInputStream(8196);
+				PipedOutputStream out = new PipedOutputStream(in);
+
+				if (!ifile.exists()) {
+					byte[] blank = "".getBytes();
+					InputStream s = new ByteArrayInputStream(blank);
+					ifile.create(s, true, new NullProgressMonitor());
+				}
+
+				int numComponents = components.size();
+				String configString = "";
+				ArrayList<Entry> row;
+				byte[] byteArray;
+
+				// Build the output by going through each row
+				TableComponent kvPairs = (TableComponent) components
+						.get(numComponents - 1);
+				for (int i = 0; i < kvPairs.numberOfRows(); i++) {
+					row = kvPairs.getRow(i);
+					configString += row.get(0).getValue().trim() + "="
+							+ row.get(1).getValue().trim() + "\n";
+				}
+				configString += "\n";
+
+				// Write it out
+				byteArray = configString.getBytes();
+				out.write(byteArray);
+				out.close();
+				ifile.setContents(in, true, false, new NullProgressMonitor());
+
+			} catch (FileNotFoundException e) {
+				System.out.println("CaebatKVPair Message: Could not find "
+						+ outputFile.getAbsolutePath() + " for writing.");
+			} catch (IOException e) {
+				System.out.println("CaebatKVPair Message: Could not write to "
+						+ outputFile.getAbsolutePath() + ".");
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
 	@Override
 	public ArrayList<Entry> findAll(IFile file, String regex) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
 	@Override
 	public void replace(IFile file, String regex, String value) {
 		// TODO Auto-generated method stub
 	}
 
 	/**
-	 * Return that this is a CAEBATKVPairItem
+	 * Return that this is a CaebatKVPairItem
 	 */
 	@Override
 	public String getWriterType() {
-		return "CAEBATKVPairItem";
+		return "CaebatKVPairItem";
 	}
 
 	/**
-	 * Return that this is a CAEBATKVPairItem
+	 * Return that this is a CaebatKVPairItem
 	 */
 	@Override
 	public String getReaderType() {
-		return "CAEBATKVPairItem";
+		return "CaebatKVPairItem";
 	}
 
 }

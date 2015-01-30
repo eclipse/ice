@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.caebat.model.test;
+package org.eclipse.ice.caebat.kvPair.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.caebat.model.CaebatModel;
+import org.eclipse.ice.caebat.kvPair.CaebatKVPair;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.junit.AfterClass;
@@ -34,31 +34,29 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
- * This class tests the operations on CaebatModel. This class is also
- * responsible for building the model files designed to be used in the Caebat
- * Model for production mode. It creates two separate SETS OF FILES. The first
- * set of files are responsible for the production of the form on the model,
- * which contains safety defaults. The second set are a collection of cases
- * which will be used to pre-generate the input data on the forms.
- * </p>
+ * A class that tests the CaebatKVPair.
  * 
  * @author Andrew Bennett
- * <!-- end-UML-doc -->
+ * 
  */
-public class CaebatModelTester {
-
+public class CaebatKVPairTester {
 	/**
-	 * The project space used to create the workspace for the tests.
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * A reference to the IProject workspace. This parameter is setup in the
+	 * setupIProject operation.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static IProject projectSpace;
 
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation sets up the workspace. It copies the necessary CAEBAT data
-	 * files into ${workspace}/CAEBAT.
+	 * This operation sets up the workspace. 
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 */
@@ -97,7 +95,7 @@ public class CaebatModelTester {
 		} catch (CoreException e) {
 			// Catch exception for creating the project
 			e.printStackTrace();
-			fail("Caebat Model Tester: Error!  Could not set up project space");
+			fail();
 		}
 
 		// Set the global project reference.
@@ -106,96 +104,91 @@ public class CaebatModelTester {
 		return;
 		// end-user-code
 	}
+	
+	
+	
+	/**
+	 * Test the constructor and make sure that all of the information is 
+	 * entered in correctly.
+	 */
+	@Test
+	public void checkConstruction() {
+		CaebatKVPair caebatKVPair;
+		// Try with project as null
+		caebatKVPair = new CaebatKVPair(null);
+
+		// check to see if the form exists, and the item is setup correctly.
+		assertEquals("Caebat Key-Value Pair", caebatKVPair.getName());
+		assertEquals(
+				"An item to generate CAEBAT key-value pair files.",
+				caebatKVPair.getDescription());
+
+		// Try with project not as null
+		IProject project = projectSpace;
+		caebatKVPair = new CaebatKVPair(project);
+
+		// check to see if the form exists, and the item is setup correctly.
+		assertEquals("Caebat Key-Value Pair", caebatKVPair.getName());
+		assertEquals(
+				"An item to generate CAEBAT key-value pair files.",
+				caebatKVPair.getDescription());		
+	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation checks CaebatModel.setupForm operation. This should also
-	 * test the loadDataComponents in comparison.
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * Make sure that the form gets set up okay.
 	 */
 	@Test
 	public void checkSetupForm() {
+		CaebatKVPair caebatKVPair;
+		IProject project = projectSpace;
 
-		// begin-user-code
+		// Create a CaebatLauncher
+		caebatKVPair = new CaebatKVPair(project);
 
-		// Local declarations
-		CaebatModel caebatModel;
-		Form form = new Form();
-
-		/*
-		 * This operation will test the CaebatModel plugin for proper loads with
-		 * the setupForm operation. This should work as long as the files exists
-		 * inside the plugin directory. Although not unit tested, it does check
-		 * for specific file types, if the files exist, and if the Components
-		 * exist.
-		 */
-
-		// The project space can be null for this operation and it will still
-		// work.
-		caebatModel = new CaebatModel(null);
-
-		// Check contents, null model should be empty
-		form = caebatModel.getForm();
-		assertNotNull(form.getComponents());
-		assertEquals(0, form.getComponents().size());
-
-		return;
-		// end-user-code
-
+		// Check values stored on the form
+		// Check to see if executable exists
+		assertEquals("Caebat Key-Value Pair", caebatKVPair.getForm().getName());
+		assertEquals("An item to generate CAEBAT key-value pair files.",
+				caebatKVPair.getForm().getDescription());
 	}
-
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation checks CaebatModel.process operation.
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * Try processing the form with both valid and invalid 
 	 */
 	@Test
 	public void checkProcessing() {
-
-		// begin-user-code
-
-		// Local Declarations
-		CaebatModel caebat;
+		CaebatKVPair caebatKVPair;
 		Form form = new Form();
 
 		// The projectspace has to be set for this to work.
-		caebat = new CaebatModel(projectSpace);
+		caebatKVPair = new CaebatKVPair(projectSpace);
 
 		// Check default contents
-		form = caebat.getForm();
+		form = caebatKVPair.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(4, form.getComponents().size());
-
-		// Check the name and description of the item and allowedActions
-		assertEquals("Caebat Model", caebat.getName());
-		assertEquals("This model creates input for CAEBAT.",
-				caebat.getDescription());
+		assertEquals(1, form.getComponents().size());
 
 		// Since there are entries and DataComponents, lets run the test!
 		// Now try to pass it the wrong information into the process
-		// operation on CaebatModel
+		// operation on CaebatKVPair
 		assertEquals(FormStatus.InfoError,
-				caebat.process("I AM A VAGUE, INAPPROPRIATE PROCESS!"));
-
-		// Check default contents
-		form = caebat.getForm();
-		assertNotNull(form.getComponents());
-		assertEquals(4, form.getComponents().size());
+				caebatKVPair.process("I AM A VAGUE, INAPPROPRIATE PROCESS!"));
 
 		assertEquals(FormStatus.Processed,
-				caebat.process("Export to Caebat INI format"));
-		form = caebat.getForm();
+				caebatKVPair.process("Export to key-value pair output"));
+		form = caebatKVPair.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(4, form.getComponents().size());
+		assertEquals(1, form.getComponents().size());
 		assertTrue(projectSpace.getFile(
-				"Caebat_Model_" + caebat.getId() + ".conf").exists());
-		// end-user-code
+				"Caebat_Key-Value_Pair_" + caebatKVPair.getId() + ".dat").exists());
+		try {
+			projectSpace.getFile("Caebat_Key-Value_Pair_" + caebatKVPair.getId() + ".dat").delete(true, true, null);
+		} catch (CoreException e) {
+			e.printStackTrace();
+			fail("Could not delete test output file.");
+		}
 	}
-	
+
 	/**
 	 * Clean up after ourselves
 	 */
@@ -205,10 +198,8 @@ public class CaebatModelTester {
 			projectSpace.close(null);
 			projectSpace.delete(true, null);
 		} catch (CoreException e) {
-
 			e.printStackTrace();
-			fail("Caebat Model Tester: Error!  Could not clean up project space");
+			fail("Could not clean up project space after CaebatKVPairTest");
 		}
 	}
-
 }
