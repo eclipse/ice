@@ -26,21 +26,21 @@ public class Tile {
 	/**
 	 * The scattering length of the reflecting tile/layer.
 	 */
-	double scatteringLength = 0.0;
+	public double scatteringLength = 0.0;
 	
 	/**
 	 * The true absorption length of the reflecting tile/layer.
 	 */
-	double trueAbsLength = 0.0;
+	public double trueAbsLength = 0.0;
 	
 	/**
 	 * The incoherent absorption length of the reflecting tile/layer.
 	 */
-	double incAbsLength = 0.0;
+	public double incAbsLength = 0.0;
 	
 	/**
 	 * The thickness of this tile/layer.
 	 */
-	double thickness = 0.0;
+	public double thickness = 0.0;
 
 }

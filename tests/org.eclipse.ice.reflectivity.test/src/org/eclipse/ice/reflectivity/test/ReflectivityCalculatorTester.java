@@ -23,7 +23,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.csv.CSVReader;
+import org.eclipse.ice.reflectivity.ReflectivityCalculator;
+import org.eclipse.ice.reflectivity.Tile;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -105,7 +109,57 @@ public class ReflectivityCalculatorTester {
 	 */
 	@Test
 	public void testGetSpecRefSqrdMod() {
+
+		// Load the file
+		Form form = reader.read(project.getFile("getSpecRefSqrdMod_q841.csv"));
+		ListComponent<String[]> lines = (ListComponent<String[]>) form
+				.getComponent(1);
+
+		// Get the two single parameters and the final result out of the data
+		String[] line = lines.get(0);
+		double waveVectorQ, wavelength, expectedSpecRefSqrd;
+		waveVectorQ = Double.valueOf(line[0]);
+		wavelength = Double.valueOf(line[1]);
+		expectedSpecRefSqrd = Double.valueOf(line[2]);
+
+		// Load the tiles from the rest of the data
+		Tile[] tiles = loadTiles(lines);
+
+		// Get the squared modulus of the specular reflectivity
+		ReflectivityCalculator calculator = new ReflectivityCalculator();
+		double specRefSqrd = calculator.getModSqrdSpecRef(waveVectorQ,
+				wavelength, tiles);
+		assertEquals(expectedSpecRefSqrd, specRefSqrd,1.0e-4);
+
 		fail("Not yet implemented");
+		return;
+	}
+
+	/**
+	 * This operation loads the set of Tiles from the reference file, ignoring
+	 * the first line that stores the reference values.
+	 * 
+	 * @param lines The ListComponent with the lines from the file
+	 * @return the list of Tiles from the file
+	 */
+	private Tile[] loadTiles(ListComponent<String[]> lines) {
+		
+		// Load all of the tiles
+		Tile [] tiles = new Tile[lines.size()-1];
+		for (int i = 1; i < lines.size(); i++) {
+			// Load the line
+			String [] line = lines.get(i);
+			// Create the tile and load the data from the line
+			Tile tile = new Tile();
+			tile.scatteringLength = Double.valueOf(line[0]);
+			tile.trueAbsLength = Double.valueOf(line[1]);
+			tile.incAbsLength = Double.valueOf(line[2]);
+			tile.thickness = Double.valueOf(line[3]);
+			// Load the tile into the array
+			tiles[i-1] = tile;
+		}
+		
+		return tiles;
 	}
 
 }
