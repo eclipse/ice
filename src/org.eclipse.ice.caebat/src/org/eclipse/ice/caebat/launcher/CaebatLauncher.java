@@ -195,8 +195,8 @@ public class CaebatLauncher extends JobLauncher {
 		Entry kvPairFileEntry = fileComponent.retrieveEntry("Key-value pair file");
 		IPath fileIPath = new Path(project.getLocation().toOSString() + separator + inputFileEntry.getValue()); 
 		IPath kvFileIPath = new Path(project.getLocation().toOSString() + separator + kvPairFileEntry.getValue());
-		IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
-		IFile kvPairFile = ResourcesPlugin.getWorkspace().getRoot().getFile(kvFileIPath);
+		IFile inputFile = project.getFile(inputFileEntry.getValue());
+		IFile kvPairFile = project.getFile(kvPairFileEntry.getValue());
 		
 		// Get the Run ID that may be used to locate the simulation files
 		String runID = "";

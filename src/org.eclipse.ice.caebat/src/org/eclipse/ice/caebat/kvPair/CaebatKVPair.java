@@ -52,7 +52,7 @@ import org.eclipse.ice.item.Item;
  * @author Jay Jay Billings, Andrew Bennett
  * 
  */
-@XmlRootElement(name = "CaebatKVPairItem")
+@XmlRootElement(name = "CaebatKVPair")
 public class CaebatKVPair extends Item implements IReader, IWriter {
 
 	/**
@@ -63,6 +63,14 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 	private String customTaggedExportString = "Export to key-value pair output";
 
 	/**
+	 * The nullary constructor.
+	 */
+	public CaebatKVPair() {
+		this(null);
+		return;
+	}
+	
+	/**
 	 * The required constructor.
 	 * 
 	 * @param projectSpace
@@ -70,14 +78,9 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 	 */
 	public CaebatKVPair(IProject projectSpace) {
 		// Punt to the base class.
+		
 		super(projectSpace);
-	}
-
-	/**
-	 * The nullary constructor.
-	 */
-	public CaebatKVPair() {
-		this(null);
+		return;
 	}
 
 	/**
@@ -92,15 +95,16 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 
 		// If loading from the new item button we should just
 		// load up the default case 6 file by passing in null
-		loadInput(null);
+		if (project != null) {
+			loadInput(null);
+		}
 	}
 
 	/**
 	 * This operation is used to setup the name and description of the
 	 * generator.
 	 */
-	@Override
-	public void setupItemInfo() {
+	protected void setupItemInfo() {
 		// Setup everything
 		setName(CaebatKVPairBuilder.name);
 		itemType = CaebatKVPairBuilder.type;
@@ -108,6 +112,23 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 		setDescription("An item to generate CAEBAT " + "key-value pair files.");
 		allowedActions.remove("Export to ICE Native Format");
 		actionItems = getAvailableActions();
+	}
+
+	protected FormStatus reviewEntries(Form preparedForm) {
+
+		// begin-user-code
+		FormStatus retStatus = FormStatus.ReadyToProcess;
+
+		// Grab the data component from the Form and only proceed if it exists
+		ArrayList<Component> components = preparedForm.getComponents();
+
+		// Make sure the form has the right amount of data
+		if (components.size() == 0) {
+			System.out
+					.println("Caebat KV Pair Generator Message: Could not find any data to write out");
+			retStatus = FormStatus.InfoError;
+		}
+		return retStatus;
 	}
 
 	/**
@@ -128,12 +149,19 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 			// Get the file from the project space to create the output
 			String filename = getName().replaceAll("\\s+", "_") + "_" + getId()
 					+ ".dat";
-			String filePath = project.getLocation().toOSString()
-					+ System.getProperty("file.separator") + filename;
-
-			// Get the file path and build the URI that will be used to write
-			IFile outputFile = ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(new Path(filePath));
+			String filePath = null;
+			IFile outputFile = null;
+			if (project != null) {
+				filePath = project.getLocation().toOSString()
+						+ System.getProperty("file.separator") + filename;
+				outputFile = project.getFile(filename);
+			} else {
+				filePath = ResourcesPlugin.getWorkspace().getRoot()
+						.getLocation().toOSString()
+						+ System.getProperty("file.separator") + filename;
+				outputFile = ResourcesPlugin.getWorkspace().getRoot()
+						.getFile(new Path(filePath));
+			}
 
 			// Get the data from the form
 			ArrayList<Component> components = form.getComponents();
@@ -182,17 +210,24 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 		// If nothing is specified, load case 6 from inside the plugin
 		IFile inputFile = null;
 		File temp = null;
+		System.out.println("Going to go for branch name = " + name);
 		if (name == null) {
 			try {
 				// Path to the default file
 				String defaultFilePath = null;
 				// Create a filepath for the default file
 				if (project != null) {
+					System.out.println("Took branch at line 223");
 					defaultFilePath = project.getLocation().toOSString()
 							+ System.getProperty("file.separator")
 							+ "case_6.dat";
+					System.out.println(defaultFilePath);
 				} else {
-					return;
+					System.out.println("Took branch at line 226");
+					defaultFilePath = ResourcesPlugin.getWorkspace().getRoot()
+							.getLocation().toOSString()
+							+ System.getProperty("file.separator") + "case_6.dat";
+					System.out.println(defaultFilePath);
 				}
 
 				// Create a temporary location to load the default file
@@ -215,8 +250,12 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 				}
 				outStream.close();
 				if (project != null) {
+					System.out.println("Grabbing file from project at line 250 " + project.getLocation().toOSString());
 					inputFile = project.getFile("case_6.dat");
+					project.refreshLocal(IResource.DEPTH_INFINITE, null);
 				} else {
+					System.out.println("Grabbing file from project at line 253 " + ResourcesPlugin.getWorkspace().getRoot()
+							.getFile(new Path(defaultFilePath)).getLocation().toOSString());
 					inputFile = ResourcesPlugin.getWorkspace().getRoot()
 							.getFile(new Path(defaultFilePath));
 				}
@@ -233,6 +272,9 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 				System.err
 						.println("CaebatKVPair Message: Error!  Could not load the default"
 								+ " Caebat case data!");
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		} else {
 			// Get the file
@@ -305,7 +347,8 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 			return null;
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("CaebatKVPair Message: Error!  Trouble reading file from project location.");
+			return null;
 		}
 
 		//
@@ -351,16 +394,6 @@ public class CaebatKVPair extends Item implements IReader, IWriter {
 		// Get the components from the form and make sure we have a
 		// valid place that we can write the file out to
 		ArrayList<Component> components = form.getComponents();
-		File outputFile = new File(ifile.getFullPath().toOSString());
-		if (!outputFile.exists()) {
-			try {
-				outputFile.createNewFile();
-			} catch (IOException e) {
-				System.err.println("CaebatKVPair Message: Error! Could not"
-						+ " create output file at "
-						+ ifile.getFullPath().toOSString());
-			}
-		}
 
 		// Make sure that the form had data that looks correct, and the output
 		// file exists

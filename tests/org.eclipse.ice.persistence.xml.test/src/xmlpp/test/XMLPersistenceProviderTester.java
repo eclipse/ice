@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.caebat.kvPair.CaebatKVPairBuilder;
+import org.eclipse.ice.caebat.launcher.CaebatLauncherBuilder;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.nuclear.MOOSEModelBuilder;
@@ -140,7 +141,7 @@ public class XMLPersistenceProviderTester {
 		// it so that it can determine class information for unmarshalling
 		// Items.
 		xmlpp.addBuilder(new MOOSEModelBuilder());
-		xmlpp.addBuilder(new CaebatKVPairBuilder());
+		xmlpp.addBuilder(new CaebatLauncherBuilder());
 		try {
 			// Start the service
 			xmlpp.start();
@@ -286,7 +287,7 @@ public class XMLPersistenceProviderTester {
 
 		// Create a MOOSE item
 		MOOSEModelBuilder builder = new MOOSEModelBuilder();
-		CaebatKVPairBuilder caebatBuilder = new CaebatKVPairBuilder();
+		CaebatLauncherBuilder caebatBuilder = new CaebatLauncherBuilder();
 		Item item = builder.build(project);
 		String name;
 		int passedCount = 0;
@@ -352,7 +353,7 @@ public class XMLPersistenceProviderTester {
 		passedCount = 0;
 		for (Item listItem : items) {
 			// Look for the correct name and item ids
-			if (listItem.getName().equals(CaebatKVPairBuilder.name)
+			if (listItem.getName().equals("Caebat Launcher")
 					&& listItem.getId() == 5) {
 				passedCount++;
 			}

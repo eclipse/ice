@@ -122,10 +122,10 @@ public class IPSWriter implements IWriter {
 						+ ifile.getName() + " for writing.");
 			} catch (IOException e) {
 				System.out.println("IPSWriter Message: Could not write to "
-						+ ifile.getName() + ".");
+						+ ifile.getName() + " du to an IO error");
 			} catch (CoreException e) {
 				System.out.println("IPSWriter Message: Could not write to "
-						+ ifile.getName() + ".");
+						+ ifile.getName() + " due to an ICE Core error.");
 			}
 		}
 

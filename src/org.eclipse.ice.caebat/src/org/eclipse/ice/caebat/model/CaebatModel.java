@@ -185,8 +185,7 @@ public class CaebatModel extends Item {
 					+ System.getProperty("file.separator") + filename;
 
 			// Get the file path and build the URI that will be used to write
-			IFile outputFile = ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(new Path(filePath));
+			IFile outputFile = project.getFile(filename);
 
 			// Get the data from the form
 			ArrayList<Component> components = form.getComponents();
@@ -291,7 +290,7 @@ public class CaebatModel extends Item {
 		}
 		
 		// Load the components from the file and setup the form
-		System.out.println("CaebatModel Message: Loading" + inputFile.getName());
+		System.out.println("CaebatModel Message: Loading " + inputFile.getName());
 
 		IPSReader reader = new IPSReader();
 		form = reader.read(inputFile);

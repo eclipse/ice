@@ -143,6 +143,7 @@ public class CaebatKVPairTester {
 		IProject project = projectSpace;
 
 		// Create a CaebatLauncher
+		System.out.println(project.getFullPath().toOSString());
 		caebatKVPair = new CaebatKVPair(project);
 
 		// Check values stored on the form
