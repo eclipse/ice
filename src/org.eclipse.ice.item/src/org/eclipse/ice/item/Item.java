@@ -2344,8 +2344,14 @@ public class Item implements IComponentVisitor, Identifiable,
 			} else {
 				// If it is a directory, recurse on it
 				copyFile(sourceDir, destinationDir, fileName);
-				String pathSteps[] = fileName.split(separator);
-				copyDirectory(sourceDir + separator + fileName, destinationDir + separator + pathSteps[pathSteps.length-1]);
+				
+				// This check is necessary for Windows filepaths
+				String pathSteps[] = null;
+				if (fileName.contains(separator)) {
+					pathSteps = fileName.split(separator);
+				}
+				String destFileName = (pathSteps == null ? fileName : pathSteps[pathSteps.length-1]);
+				copyDirectory(sourceDir + separator + fileName, destinationDir + separator + destFileName);
 			}
 		}
 	}

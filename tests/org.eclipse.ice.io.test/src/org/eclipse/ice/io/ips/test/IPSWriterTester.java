@@ -38,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -184,7 +185,6 @@ public class IPSWriterTester {
 		
 		// Call the replace method
 		String replace = "AHAHAHAHAHA";
-		System.out.println("Searching in " + inIFile.getFullPath().toOSString());
 		writer.replace(inIFile, "SIM_ROOT = .*", replace);
 
 		// Check if the file contains the replacement
@@ -197,14 +197,17 @@ public class IPSWriterTester {
 					foundReplacement = true;
 				}
 			}
+			scanner.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		assertTrue(foundReplacement);
 		
-		// Copy back the original file and delete the backup
-		if (exampleFile.exists()) exampleFile.delete();
-		Files.copy(tempFile.toPath(),exampleFile.toPath());
+		// Copy back the original file and delete the backup=
+		if (exampleFile.getAbsoluteFile().exists()) {
+			exampleFile.delete();
+		}
+		Files.copy(tempFile.toPath(), exampleFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		tempFile.delete();
 		
 		return;

@@ -106,27 +106,12 @@ public class CaebatModel extends Item {
 	 * <!-- end-UML-doc -->
 	 */
 	public void setupForm() {
-		// begin-user-code
-
-		// This method will create a new Form and add all the dataComponents to
-		// the form. These dataComponents will be accessed later in
-		// loadDataComponents.
+		// Create a fresh form to start with
 		form = new Form();
-
-		// Setup Item information
-		//setName("Caebat Model");
-		//setDescription("This model creates input for CAEBAT.");
 
 		// If loading from the new item button we should just
 		// load up the default case 6 file by passing in null
 		loadInput(null);
-
-		// ----- Finish setting up the Form so that it can be immediately
-		// launched
-
-		return;
-		// end-user-code
-
 	}
 
 	/**
@@ -137,12 +122,6 @@ public class CaebatModel extends Item {
 	 * <!-- end-UML-doc -->
 	 */
 	protected void setupItemInfo() {
-		// begin-user-code
-
-		// This method will create a new Form and add all the dataComponents to
-		// the form. These dataComponents will be accessed later in
-		// loadDataComponents.
-	
 		// Setup Item information
 		setName("Caebat Model");
 		setDescription("This model creates input for CAEBAT.");
@@ -151,7 +130,6 @@ public class CaebatModel extends Item {
 		customTaggedExportString = "Export to Caebat INI format";
 		allowedActions.add(0, customTaggedExportString);
 		actionItems = getAvailableActions();
-		// end-user-code
 	}
 
 	/**
@@ -195,9 +173,6 @@ public class CaebatModel extends Item {
 		// begin-user-code
 		FormStatus retStatus;
 
-		System.out.println("Writing out with id " + form.getId() );
-		System.out.println(actionName);
-		
 		// If it is the custom operation, call this here.
 		if (this.customTaggedExportString.equals(actionName)) {
 

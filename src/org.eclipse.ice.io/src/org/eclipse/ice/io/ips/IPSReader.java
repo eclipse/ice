@@ -217,6 +217,7 @@ public class IPSReader implements IReader {
 		while ((fileByte = reader.read()) != -1) {
 			buffer.append((char) fileByte);
 		}
+		reader.close();
 
 		// Break up the StringBuffer at each newline character
 		String[] bufferSplit = (buffer.toString()).split("\n");

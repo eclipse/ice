@@ -59,14 +59,6 @@ public class IPSReaderTester {
 		IPath fileIPath = new Path(filePath);
 		IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
 		
-		BufferedReader testReader = null;
-		try {
-			testReader = new BufferedReader(new FileReader(new File(filePath)));
-		} catch (FileNotFoundException e1) {
-			fail("Failed to find file at " + filePath);
-			e1.printStackTrace();
-		}
-		
 		// Create an IPSReader to test
 		IPSReader reader = new IPSReader();
 		assertNotNull(reader);
@@ -79,16 +71,7 @@ public class IPSReaderTester {
 		assertTrue(form == null);
 		
 		// Load the INI file and parse the contents into Components
-		try {
-			form = reader.read(inputFile);
-			testReader.close();
-		} catch (FileNotFoundException e) {
-			fail("Failed to find IPS input file: " + filePath);
-			e.printStackTrace();
-		} catch (IOException e) {
-			fail("Failed to read from IPS input file: " + filePath);
-			e.printStackTrace();
-		}
+		form = reader.read(inputFile);
 		
 		// Make sure we found some components
 		ArrayList<Component> components = form.getComponents();
