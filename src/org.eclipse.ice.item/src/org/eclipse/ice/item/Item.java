@@ -22,6 +22,7 @@ import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 
@@ -2319,7 +2320,42 @@ public class Item implements IComponentVisitor, Identifiable,
 			copyFile(sourceDir, destinationDir, fileName);
 		}
 	}
-
+	
+	/**
+	 * This method serves as a utility for copying a full directory structure
+	 * to a new location
+	 * 
+	 * @param sourceDir
+	 *            The directory to copy 
+	 * @param destinationDir
+	 *            The location to put the copy of the directory
+	 */
+	protected void copyDirectory(String sourceDir, String destinationDir) {
+		String separator = System.getProperty("file.separator");
+		File sourceFile = new File(sourceDir);
+		File f = null;
+		String list[] = sourceFile.list();
+		// Go through each entry in the directory
+		for (String fileName : list) {
+			f = new File(sourceDir + separator + fileName);
+			if (!f.isDirectory()) {
+				// If it's not a directory, just copy the file
+				copyFile(sourceDir, destinationDir, fileName);
+			} else {
+				// If it is a directory, recurse on it
+				copyFile(sourceDir, destinationDir, fileName);
+				
+				// This check is necessary for Windows filepaths
+				String pathSteps[] = null;
+				if (fileName.contains(separator)) {
+					pathSteps = fileName.split(separator);
+				}
+				String destFileName = (pathSteps == null ? fileName : pathSteps[pathSteps.length-1]);
+				copyDirectory(sourceDir + separator + fileName, destinationDir + separator + destFileName);
+			}
+		}
+	}
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>

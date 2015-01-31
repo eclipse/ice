@@ -27,6 +27,9 @@ MaterialBlock::MaterialBlock() :
 	// Initialize the z-displacement as zero
 	vertPosition = 0.0;
 
+	// Initialize the map of rings.
+	this->rings;
+
 	return;
 	// end-user-code
 
@@ -187,19 +190,18 @@ bool MaterialBlock::operator==(const MaterialBlock & otherMatBlock) {
 	bool equal = false;
 	equal = SFRComponent::operator==(otherMatBlock);
 	equal &= vertPosition == otherMatBlock.vertPosition;
+	equal &= rings.size() == otherMatBlock.rings.size();
 
 	// Check the individual rings
-	bool otherHasRing = false;
-	for (auto mapIter = rings.begin(); mapIter != rings.end(); mapIter++) {
-		otherHasRing = otherMatBlock.rings.count(mapIter->first);
-		equal &= otherHasRing;
-		// Break out if the ring isn't in the block, otherwise check it
-		if (otherHasRing) {
-			equal &= (*(mapIter->second)
-					== *(otherMatBlock.rings.at(mapIter->first)));
-			auto other = equal;
-		} else
-			break;
+	for (auto ringIter = rings.begin(); equal && ringIter != rings.end();
+			ringIter++) {
+		// See if the other block has a ring with the same name.
+		equal = otherMatBlock.rings.count(ringIter->first);
+		// If so, compare the two rings.
+		if (equal) {
+			equal &= (*(ringIter->second)
+					== *(otherMatBlock.rings.at(ringIter->first)));
+		}
 	}
 
 	// Return final result
