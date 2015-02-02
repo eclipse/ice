@@ -21,17 +21,19 @@ import org.eclipse.swt.widgets.Composite;
  * the platform. Its primary purpose is to provide a specific interface for
  * manipulating plots and analysis data that is separated in purpose and scope
  * from the IVizService (perhaps completely separate, in fact).
- * 
+ * <p>
  * When implemented in tandem with an IVizService, the class that realizes this
  * interface should encapsulate all details related to the internal workings of
  * the IVizService and refrain from exposing them to the client. For example,
  * service ids, credentials, window ids and other information should be stored
  * as private variables and not exposed in the properties map unless absolutely
  * necessary.
- * 
+ * </p>
+ * <p>
  * A proper implementation of IPlot is one that can be used in standalone tools,
  * workbench-based tools, and embedded in composites in larger, existing tools.
  * Implementations should not be restricted to one usage scenario.
+ * </p>
  * 
  * @author Jay Jay Billings
  *
@@ -50,6 +52,7 @@ public interface IPlot {
 	 * line | "x vs y1", "x vs y2", "x vs y3"<br>
 	 * scatter | "x vs y1", "x vs y2", "x vs y3"<br>
 	 * contour | "x vs y1", "x vs y2", "x vs y3"
+	 * </p>
 	 * 
 	 * @return The map of valid plot types this plot can be
 	 * @throws Exception
@@ -63,11 +66,12 @@ public interface IPlot {
 	 * specified plot type. The exact details of how the plot is drawn and what
 	 * is drawn inside the parent composite are left completely up to the
 	 * implementation.
-	 * 
+	 * <p>
 	 * This operation may be called multiple types to change its type. It is
 	 * expected that the implementation will know how to clear the parent, if
 	 * necessary, or to otherwise manage its own drawing service. There is no
 	 * guarantee that the caller will clear the parent.
+	 * </p>
 	 * 
 	 * @param category
 	 *            The category of the plot to create. That is, the key in the
