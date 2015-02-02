@@ -14,7 +14,6 @@ package org.eclipse.ice.viz.service;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.FrameworkUtil;
 
 /**
@@ -48,8 +47,8 @@ public abstract class AbstractVizPreferenceInitializer extends
 		if (preferenceStore == null) {
 			// Get the PreferenceStore for the bundle.
 			String id = FrameworkUtil.getBundle(getClass()).getSymbolicName();
-			preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE,
-					id);
+			preferenceStore = new CustomScopedPreferenceStore(
+					InstanceScope.INSTANCE, id);
 		}
 		return preferenceStore;
 	}

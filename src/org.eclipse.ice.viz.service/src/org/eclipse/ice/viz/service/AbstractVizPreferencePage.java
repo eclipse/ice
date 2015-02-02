@@ -16,7 +16,6 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.FrameworkUtil;
 
 /**
@@ -101,7 +100,7 @@ public abstract class AbstractVizPreferencePage extends
 		// AbstractVizPreferenceInitializer's getPreferenceStore() method may
 		// also need to be updated.
 		String id = FrameworkUtil.getBundle(getClass()).getSymbolicName();
-		return new ScopedPreferenceStore(InstanceScope.INSTANCE, id);
+		return new CustomScopedPreferenceStore(InstanceScope.INSTANCE, id);
 	}
 
 }
