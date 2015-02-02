@@ -1,13 +1,3 @@
-package org.eclipse.ice.viz.service.connections.visit;
-
-import java.util.ArrayList;
-
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-import org.eclipse.ice.viz.service.connections.ConnectionManager;
-import org.eclipse.ice.viz.service.connections.PortEntry;
 /*******************************************************************************
  * Copyright (c) 2015- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
@@ -19,6 +9,16 @@ import org.eclipse.ice.viz.service.connections.PortEntry;
  *   Initial API and implementation and/or initial documentation - 
  *   Jordan Deyton
  *******************************************************************************/
+package org.eclipse.ice.viz.service.connections.visit;
+
+import java.util.ArrayList;
+
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.connections.ConnectionManager;
+import org.eclipse.ice.viz.service.connections.PortEntry;
 import org.eclipse.ice.viz.service.connections.PortEntryContentProvider;
 
 /**

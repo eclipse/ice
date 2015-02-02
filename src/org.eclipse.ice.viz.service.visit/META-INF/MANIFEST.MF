@@ -5,9 +5,6 @@ Bundle-SymbolicName: org.eclipse.ice.viz.service.visit;singleton:=true
 Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gov.lbnl.visit.swt,
- org.eclipse.equinox.security.storage,
- org.eclipse.ice.client.widgets,
- org.eclipse.ice.client.widgets.properties,
  org.eclipse.ice.client.widgets.viz.service,
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.form,
@@ -20,8 +17,7 @@ Import-Package: gov.lbnl.visit.swt,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
  org.eclipse.ui.forms.events,
- org.eclipse.ui.forms.widgets,
- visit.java.client
+ org.eclipse.ui.forms.widgets
 Export-Package: org.eclipse.ice.viz.service.visit
 Service-Component: OSGI-INF/vizService.xml
 Require-Bundle: org.eclipse.core.runtime,
