@@ -25,6 +25,7 @@ Import-Package: org.eclipse.core.commands.common,
  org.eclipse.ui,
  org.eclipse.ui.preferences
 Export-Package: org.eclipse.ice.viz.service,
+ org.eclipse.ice.viz.service.connections,
  org.eclipse.ice.viz.service.csv,
  org.eclipse.ice.viz.service.preferences
 Service-Component: OSGI-INF/vizFactory.xml

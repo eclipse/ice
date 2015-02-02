@@ -13,9 +13,10 @@ package org.eclipse.ice.viz.service.visit;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.CustomScopedPreferenceStore;
+import org.eclipse.ice.viz.service.connections.ConnectionManager;
+import org.eclipse.ice.viz.service.connections.visit.VisItConnectionManager;
 import org.eclipse.ice.viz.service.preferences.TableComponentComposite;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
-import org.eclipse.ice.viz.service.visit.connections.ConnectionManager;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -36,7 +37,7 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 	 * The {@code ConnectionManager} used by this preference page. It is
 	 * represented by a {@link ConnectionComposite} on the page.
 	 */
-	private final ConnectionManager connectionManager = new ConnectionManager();
+	private final ConnectionManager connectionManager = new VisItConnectionManager();
 
 	/**
 	 * The default constructor.

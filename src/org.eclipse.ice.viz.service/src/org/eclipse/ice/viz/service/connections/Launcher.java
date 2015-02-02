@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jordan Deyton
  *******************************************************************************/
-package org.eclipse.ice.viz.service.visit.connections;
+package org.eclipse.ice.viz.service.connections;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

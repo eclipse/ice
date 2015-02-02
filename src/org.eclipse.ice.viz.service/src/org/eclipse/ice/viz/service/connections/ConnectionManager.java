@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jordan Deyton
  *******************************************************************************/
-package org.eclipse.ice.viz.service.visit.connections;
+package org.eclipse.ice.viz.service.connections;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,7 +114,7 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 	 * @return An {@code ArrayList<Entry>} containing the template {@code Entry}
 	 *         s for each exposed connection property.
 	 */
-	private ArrayList<Entry> getConnectionTemplate() {
+	protected ArrayList<Entry> getConnectionTemplate() {
 		ArrayList<Entry> template = new ArrayList<Entry>();
 
 		// TODO These Entries need descriptions.
@@ -172,34 +172,6 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 		// Entry passwordEntry = new Entry(contentProvider);
 		// passwordEntry.setName("Password");
 		// template.add(passwordEntry);
-		// ---- proxy ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setDefaultValue("");
-		Entry proxyEntry = new Entry(contentProvider);
-		proxyEntry.setName("Proxy");
-		template.add(proxyEntry);
-		// ---- proxy port ---- //
-		portContentProvider = new PortEntryContentProvider();
-		portContentProvider.setRange(PortEntryContentProvider.MIN_PORT,
-				PortEntryContentProvider.MAX_PORT);
-		portContentProvider.setDefaultValue(22);
-		Entry proxyPortEntry = new PortEntry(portContentProvider);
-		proxyPortEntry.setName("Proxy Port");
-		template.add(proxyPortEntry);
-		// ---- visit user ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		contentProvider.setDefaultValue("");
-		Entry visitUserEntry = new Entry(contentProvider);
-		visitUserEntry.setName("VisIt User");
-		template.add(visitUserEntry);
-		// ---- visit password ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		// contentProvider.setDefaultValue("");
-		// Entry visitPasswordEntry = new Entry(contentProvider);
-		// visitPasswordEntry.setName("VisIt Password");
-		// template.add(visitPasswordEntry);
 
 		return template;
 	}
