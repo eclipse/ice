@@ -1,8 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2015- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jordan Deyton
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -13,8 +25,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
-// TODO Class documentation.
+/**
+ * This class provides a field editor with an underlying {@link Combo}.
+ * <p>
+ * The major difference between this class and the default JFace
+ * {@link ComboFieldEditor} is that this editor provides hooks to update the
+ * current value and the allowed values for the editor. This is important if the
+ * preference page needs to update a list of allowed preference values when some
+ * other preference changes.
+ * </p>
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class DynamicComboFieldEditor extends FieldEditor {
+
+	// TODO We have some output in a few places in this class. Remove it when
+	// we're confident everything works properly.
 
 	/**
 	 * The exposed combo box widget.
@@ -66,30 +93,39 @@ public class DynamicComboFieldEditor extends FieldEditor {
 	/**
 	 * Sets the allowed values displayed in the underlying {@link #combo}.
 	 * 
-	 * @param values
+	 * @param newValues
 	 *            The new list of values. If {@code null}, nothing is done.
 	 */
-	public void setAllowedValues(List<String> values) {
-		// TODO Clean this method.
-		if (values != null) {
-			String oldName = this.values.get(value);
+	public void setAllowedValues(List<String> newValues) {
+		if (newValues != null) {
+			// Get the old preference name and set the value to the first index.
+			String oldName = values.get(value);
 			value = 0;
-			this.values.clear();
-			for (String value : values) {
-				if (value != null) {
-					this.values.add(value);
+
+			// Populate the allowed values with the new allowed values.
+			values.clear();
+			for (String newValue : newValues) {
+				// Don't accept null values.
+				if (newValue != null) {
+					values.add(newValue);
+					// If the new allowed value matches the old name, then
+					// update the currently-selected index to point to the old
+					// name's new index.
+					if (oldName.equals(newValue)) {
+						value = values.size() - 1;
+					}
 				}
-				if (oldName.equals(value)) {
-					this.value = this.values.size() - 1;
-				}
-			}
-			if (this.values.isEmpty()) {
-				this.values.add(noValues);
 			}
 
+			// If necessary, add the default placeholder text.
+			if (values.isEmpty()) {
+				values.add(noValues);
+			}
+
+			// If possible, refresh the contents of the Combo.
 			if (combo != null) {
 				final String[] items = new String[this.values.size()];
-				this.values.toArray(items);
+				values.toArray(items);
 				Display.getDefault().syncExec(new Runnable() {
 					@Override
 					public void run() {
@@ -269,7 +305,6 @@ public class DynamicComboFieldEditor extends FieldEditor {
 				public void widgetSelected(SelectionEvent evt) {
 					// Update the current value.
 					value = combo.getSelectionIndex();
-					// TODO Remove this output
 					System.out.println("Selected " + value);
 					// Notify the underlying preference system of the change.
 					setPresentsDefaultValue(false);

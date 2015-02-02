@@ -56,6 +56,8 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 public class ConnectionManager extends TableComponent implements IKeyManager,
 		IUpdateableListener {
 
+	// TODO Remove the debug output from this class.
+
 	/**
 	 * A map from the user-friendly name/key of a connection to its row index as
 	 * maintained by the underlying {@code TableComponent}.
@@ -311,10 +313,24 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 		return;
 	}
 
+	/**
+	 * Gets the list of connection names or keys.
+	 * 
+	 * @return The connection names.
+	 */
 	public List<String> getConnectionNames() {
 		return new ArrayList<String>(oldKeys);
 	}
 
+	/**
+	 * Gets the row from the underlying {@code TableComponent} corresponding to
+	 * the name of the connection.
+	 * 
+	 * @param name
+	 *            The name of the connection.
+	 * @return A row from the {@code TableComponent}, or null if the name is
+	 *         invalid.
+	 */
 	public List<Entry> getConnection(String name) {
 		Integer id = keyToIndexMap.get(name);
 		return id != null ? getRow(id) : null;

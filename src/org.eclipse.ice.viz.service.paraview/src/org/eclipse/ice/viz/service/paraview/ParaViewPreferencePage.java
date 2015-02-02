@@ -13,8 +13,6 @@ package org.eclipse.ice.viz.service.paraview;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
@@ -22,7 +20,6 @@ import org.eclipse.ice.viz.service.connections.IKeyChangeListener;
 import org.eclipse.ice.viz.service.preferences.DynamicComboFieldEditor;
 import org.eclipse.ice.viz.service.preferences.TableComponentComposite;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
-import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -43,12 +40,6 @@ public class ParaViewPreferencePage extends AbstractVizPreferencePage {
 	 * represented by a table on the page.
 	 */
 	private final ConnectionManager connectionManager = new ConnectionManager();
-
-	/**
-	 * The {@code FieldEditor} for the default connection. Its values need to be
-	 * updated when the rows in the {@link #connectionManager} change.
-	 */
-	private DynamicComboFieldEditor defaultConnection = null;
 
 	/**
 	 * The default constructor.
@@ -88,11 +79,17 @@ public class ParaViewPreferencePage extends AbstractVizPreferencePage {
 	protected void createFieldEditors() {
 		Composite parent = getFieldEditorParent();
 
+		// Create a new DynamicComboFieldEditor for the default connection. The
+		// default connection should only be selected from the list of
+		// connections from the connection table.
+		final DynamicComboFieldEditor defaultConnection;
 		defaultConnection = new DynamicComboFieldEditor("defaultConnection",
 				"Default Connection", parent,
 				connectionManager.getConnectionNames());
 		addField(defaultConnection);
 
+		// Add a key change listener so that we can refresh the values in the
+		// default connection field editor when necessary.
 		connectionManager.addKeyChangeListener(new IKeyChangeListener() {
 			@Override
 			public void keyChanged(String oldKey, String newKey) {
