@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jordan Deyton
  *******************************************************************************/
-package org.eclipse.ice.viz.service.visit.preferences;
+package org.eclipse.ice.viz.service.preferences;
 
 import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;

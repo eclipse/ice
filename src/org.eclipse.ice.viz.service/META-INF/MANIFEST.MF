@@ -6,16 +6,26 @@ Bundle-Version: 2.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.core.commands.common,
+ org.eclipse.ice.client.widgets.properties,
  org.eclipse.ice.client.widgets.viz.service,
+ org.eclipse.ice.datastructures.ICEObject,
+ org.eclipse.ice.datastructures.form,
  org.eclipse.ice.viz.plotviewer,
  org.eclipse.jface,
+ org.eclipse.jface.action,
  org.eclipse.jface.dialogs,
  org.eclipse.jface.preference,
  org.eclipse.jface.resource,
+ org.eclipse.jface.viewers,
+ org.eclipse.jface.window,
+ org.eclipse.swt,
+ org.eclipse.swt.graphics,
+ org.eclipse.swt.layout,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
  org.eclipse.ui.preferences
 Export-Package: org.eclipse.ice.viz.service,
- org.eclipse.ice.viz.service.csv
+ org.eclipse.ice.viz.service.csv,
+ org.eclipse.ice.viz.service.preferences
 Service-Component: OSGI-INF/vizFactory.xml
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.100"

@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.visit.connections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.eclipse.ice.viz.service.visit.preferences.TableComponentComposite;
+import org.eclipse.ice.viz.service.preferences.TableComponentComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

@@ -13,9 +13,9 @@ package org.eclipse.ice.viz.service.visit;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.CustomScopedPreferenceStore;
+import org.eclipse.ice.viz.service.preferences.TableComponentComposite;
+import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
 import org.eclipse.ice.viz.service.visit.connections.ConnectionManager;
-import org.eclipse.ice.viz.service.visit.preferences.TableComponentComposite;
-import org.eclipse.ice.viz.service.visit.preferences.TableComponentPreferenceAdapter;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
