@@ -92,6 +92,11 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 	 */
 
 	/**
+	 * A list of key change listeners.
+	 */
+	private final List<IKeyChangeListener> keyListeners = new ArrayList<IKeyChangeListener>();
+
+	/**
 	 * The default constructor.
 	 */
 	public ConnectionManager() {
@@ -204,8 +209,6 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 						+ "\", but the key is already in use!");
 			}
 
-			System.out.println("Key \"" + key + "\" was added");
-
 			// Update the key maps.
 			keyToIndexMap.put(key, index);
 			indexToKeyMap.put(index, key);
@@ -215,6 +218,9 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 
 			// Register with the key Entry for changes to the key.
 			keyEntry.register(this);
+
+			// Notify key change listeners that a new key was added.
+			notifyKeyChangeListeners(null, key);
 		}
 
 		return index;
@@ -236,14 +242,15 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 			// Get the key from the old key list.
 			String key = oldKeys.get(index);
 
-			System.out.println("Key \"" + key + "\" was deleted");
-
 			// Update the key maps.
 			keyToIndexMap.remove(key);
 			indexToKeyMap.remove(index);
 			// Update the key lists.
 			keyEntries.remove(index);
 			oldKeys.remove(index);
+
+			// Notify key change listeners that a key was removed.
+			notifyKeyChangeListeners(key, null);
 		}
 		return deleted;
 	}
@@ -296,9 +303,21 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 				indexToKeyMap.put(index, newKey);
 				// Update the old key list.
 				oldKeys.set(index, newKey);
+
+				// Notify key change listeners that a key was changed.
+				notifyKeyChangeListeners(oldKey, newKey);
 			}
 		}
 		return;
+	}
+
+	public List<String> getConnectionNames() {
+		return new ArrayList<String>(oldKeys);
+	}
+
+	public List<Entry> getConnection(String name) {
+		Integer id = keyToIndexMap.get(name);
+		return id != null ? getRow(id) : null;
 	}
 
 	// ---- Implements IKeyManager ---- //
@@ -321,7 +340,6 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 	 * org.eclipse.ice.viz.service.visit.connections.KeyManager#getAvailableKeys
 	 * ()
 	 */
-
 	@Override
 	public List<String> getAvailableKeys() {
 		// Since we do not restrict the key names, return an empty list.
@@ -334,7 +352,6 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 	 * @see
 	 * org.eclipse.ice.viz.service.visit.connections.KeyManager#getNextKey()
 	 */
-
 	@Override
 	public String getNextKey() throws IllegalStateException {
 		String prefix = "Connection";
@@ -345,5 +362,56 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 		}
 		return key;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.IKeyManager#addKeyChangeListener
+	 * (org.eclipse.ice.viz.service.connections.IKeyChangeListener)
+	 */
+	@Override
+	public void addKeyChangeListener(IKeyChangeListener listener) {
+		if (listener != null && !keyListeners.contains(listener)) {
+			keyListeners.add(listener);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.IKeyManager#removeKeyChangeListener
+	 * (org.eclipse.ice.viz.service.connections.IKeyChangeListener)
+	 */
+	@Override
+	public void removeKeyChangeListener(IKeyChangeListener listener) {
+		keyListeners.remove(listener);
+	}
+
 	// -------------------------------- //
+
+	/**
+	 * Notifies the {@link #keyListeners} of key change events on a separate
+	 * daemon thread.
+	 * 
+	 * @param oldKey
+	 *            The previous key. Null if the key is added.
+	 * @param newKey
+	 *            The new key. Null if the key is deleted.
+	 */
+	private void notifyKeyChangeListeners(final String oldKey,
+			final String newKey) {
+		Thread thread = new Thread() {
+			@Override
+			public void run() {
+				for (IKeyChangeListener listener : keyListeners) {
+					listener.keyChanged(oldKey, newKey);
+				}
+			}
+		};
+		thread.setDaemon(true);
+		thread.start();
+		return;
+	}
 }

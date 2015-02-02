@@ -49,4 +49,22 @@ public interface IKeyManager {
 	 *             and there are no more keys available.
 	 */
 	public String getNextKey() throws IllegalStateException;
+
+	/**
+	 * Adds a new {@link IKeyChangeListener} to listen for key change events in
+	 * the manager.
+	 * 
+	 * @param listener
+	 *            The new listener. The same listener should not be added twice.
+	 */
+	public void addKeyChangeListener(IKeyChangeListener listener);
+
+	/**
+	 * Removes an existing {@link IKeyChangeListener} from the key manager.
+	 * 
+	 * @param listener
+	 *            The old listener. This removes the first matching occurrence
+	 *            of the listener from the manager.
+	 */
+	public void removeKeyChangeListener(IKeyChangeListener listener);
 }
