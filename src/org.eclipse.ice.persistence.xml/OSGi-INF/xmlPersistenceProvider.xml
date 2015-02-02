@@ -7,4 +7,5 @@
       <provide interface="org.eclipse.ice.io.serializable.IReader"/>
    </service>
    <reference bind="addBuilder" cardinality="1..n" interface="org.eclipse.ice.item.ItemBuilder" name="ItemBuilder" policy="dynamic"/>
+   <reference bind="registerClassProvider" cardinality="1..n" interface="org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider" name="IJAXBClassProvider" policy="dynamic"/>
 </scr:component>
