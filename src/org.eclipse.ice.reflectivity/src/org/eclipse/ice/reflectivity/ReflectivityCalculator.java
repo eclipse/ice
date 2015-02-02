@@ -26,6 +26,11 @@ import org.apache.commons.math.complex.Complex;
 public class ReflectivityCalculator {
 
 	/**
+	 * The maximum number of points used by the convolution routine.
+	 */
+	public static final int maxPoints = 2000;
+
+	/**
 	 * This operation returns the value of the squared modulus of the specular
 	 * reflectivity for a single wave vector Q.
 	 * 
@@ -99,4 +104,108 @@ public class ReflectivityCalculator {
 
 		return modSqrdSpecRef;
 	}
+
+	/**
+	 * This operation convolutes the data in refFit with a Gaussian resolution
+	 * function in q, calculated from theta, delThe, and delLamOLam.
+	 * 
+	 * @param q
+	 *            the wave vector (Q) plus additional space for the convolution.
+	 *            This array should have length = numPoints + numLowPoints.
+	 * @param delQ0
+	 *            the zeroth order term of a Taylor expansion of the
+	 *            reflectometer resolution function dQ = dQ_0 + (dQ/Q)_1 x Q +
+	 *            ...
+	 * @param delQ1oQ
+	 *            the zeroth order term of the Q resolution Taylor expansion
+	 * @param wavelength
+	 *            the wavelength of the incident neutrons
+	 * @param numPoints
+	 *            the number of points in the wave vector
+	 * @param numLowPoints
+	 *            the number of points in the low-Q extension to q used for
+	 *            convolution of the data with the resolution function. Returned
+	 *            by ExtResFixedLambda.
+	 * @param numHighPoints
+	 *            the number of points in the high-Q extension to q used for
+	 *            convolution of the data with the resolution function. Returned
+	 *            by ExtResFixedLambda.
+	 * @param refFit
+	 *            OUTPUT - the specular reflectivity values for each Q in q
+	 *            convoluted with instrumental resolution.
+	 */
+	public void convolute(double[] waveVector, double delQ0, double delQ1oQ,
+			double wavelength, int numPoints, int numLowPoints,
+			int numHighPoints, double[] refFit) {
+
+		double log2 = Math.log(2.0);
+		double qEff = 0.0, qRes = 0.0, rExp = 0.0, rNorm = 0.0;
+		double[] refTemp = new double[maxPoints];
+		int nStep = 0;
+		boolean lFinish = false, hFinish = false;
+
+		// Perform convolution over nPnts between nLow and nHigh extensions
+		for (int i = numLowPoints; i < numLowPoints + numPoints; i++) {
+			// Calculate resolution width and initialize resolution loop
+			if (waveVector[i] < 1.0e-10) {
+				qEff = 1.0e-10;
+			} else {
+				qEff = waveVector[i];
+			}
+			double qDel = delQ0 + qEff * delQ1oQ;
+			double twSgSq = 2.0 * qDel * qDel / (8.0 * log2);
+			if (twSgSq < 1.0e-10) {
+				twSgSq = 1.0e-10;
+			}
+			rNorm = 1.0;
+			refTemp[i - numLowPoints] = refFit[i];
+			nStep = 1;
+			// Check if exponent term becomes < 0.001 and loop until it does so
+			lFinish = false;
+			hFinish = false;
+			while (!lFinish && !hFinish) {
+				// Evaluate the low-q side
+				if (lFinish) {
+					qRes = 1.0e20;
+				} else {
+					qRes = waveVector[i - nStep] - waveVector[i];
+				}
+				if (qRes * qRes / twSgSq < 6.908) {
+					// Continue evaluating convolution
+					rExp = Math.exp(-qRes * qRes / twSgSq);
+					rNorm = rNorm + rExp;
+					refTemp[i - numLowPoints] = refTemp[i - numLowPoints]
+							+ rExp * refFit[i - nStep];
+				} else {
+					lFinish = true;
+				}
+				// Evaluate high-q side
+				if (hFinish) {
+					qRes = 1.0e20;
+				} else {
+					qRes = waveVector[i + nStep] - waveVector[i];
+				}
+				if (qRes * qRes / twSgSq < 6.908) {
+					// Continue evaluating convolution
+					rExp = Math.exp(-qRes * qRes / twSgSq);
+					rNorm = rNorm + rExp;
+					refTemp[i - numLowPoints] = refTemp[i - numLowPoints]
+							+ rExp * refFit[i + nStep];
+				} else {
+					hFinish = true;
+				}
+				nStep++;
+			}
+			// Normalize convoluted value to integrated intensity of resolution
+			// function
+			refTemp[i - numLowPoints] = refTemp[i - numLowPoints] / rNorm;
+		}
+		// Transfer convoluted values from refTemp to refFit
+		for (int i = 0; i < 10; i++) {
+			refFit[i] = refTemp[i];
+		}
+
+		return;
+	}
+
 }
