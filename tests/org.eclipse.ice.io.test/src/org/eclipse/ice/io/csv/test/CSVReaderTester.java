@@ -113,23 +113,23 @@ public class CSVReaderTester {
 		ListComponent<String[]> lines = (ListComponent<String[]>) form
 				.getComponents().get(0);
 		assertTrue(lines.get(0) instanceof String[]);
-		assertEquals(lines.size(), 174);
+		assertEquals(lines.size(), 175);
 
 		// Check the first element of the list. The first line of the file is a
 		// comment, so it should be skipped and this should be data.
 		String [] line = lines.get(0);
 		assertEquals(3,line.length);
-		assertEquals("8.1417E-03",line[0]);
+		assertEquals("0.00740898494001999",line[0]);
 		assertEquals("4.25",line[1]);
-		assertEquals("9.9998E-01",line[2]);
+		assertEquals("0.999852520984978",line[2]);
 
 		// Check the last element of the list
-		line = lines.get(173);
+		line = lines.get(lines.size()-1);
 		assertEquals(4,line.length);
-		assertEquals("2.070E-06",line[0]);
-		assertEquals("4.750E-11",line[1]);
-		assertEquals("1.998E-12",line[2]);
-		assertEquals("1.000E+02",line[3]);
+		assertEquals("2.0700000000E-06",line[0]);
+		assertEquals("4.7498147887E-11",line[1]);
+		assertEquals("1.9976998807E-12",line[2]);
+		assertEquals("1.0000000000E+02",line[3]);
 		
 		return;
 	}

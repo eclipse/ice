@@ -63,7 +63,7 @@ public class ReflectivityCalculator {
 			double betaNm1 = 4.0 * Math.PI * (muLAbs + mulInc / wavelength);
 			Complex qNm1 = new Complex(waveVectorQ * waveVectorQ - qCSq, -2.0
 					* betaNm1);
-			qNm1 = qNm1.multiply(qNm1);
+			qNm1 = qNm1.sqrt();
 			// Loop through to calculate recursion formula described in Parratt.
 			// Start at the bottom and work up.
 			for (int i = nLayers - 1; i > 0; i--) {

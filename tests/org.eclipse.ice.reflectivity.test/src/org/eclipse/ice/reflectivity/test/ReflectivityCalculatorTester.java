@@ -116,6 +116,7 @@ public class ReflectivityCalculatorTester {
 				.getComponent(1);
 
 		// Get the two single parameters and the final result out of the data
+		// for the first test case
 		String[] line = lines.get(0);
 		double waveVectorQ, wavelength, expectedSpecRefSqrd;
 		waveVectorQ = Double.valueOf(line[0]);
@@ -124,31 +125,53 @@ public class ReflectivityCalculatorTester {
 
 		// Load the tiles from the rest of the data
 		Tile[] tiles = loadTiles(lines);
+		assertEquals(173,tiles.length);
 
-		// Get the squared modulus of the specular reflectivity
+		// Get the squared modulus of the specular reflectivity with the values
+		// from the file for the first case.
 		ReflectivityCalculator calculator = new ReflectivityCalculator();
 		double specRefSqrd = calculator.getModSqrdSpecRef(waveVectorQ,
 				wavelength, tiles);
-		System.out.println("RERR = " + (specRefSqrd-expectedSpecRefSqrd)/expectedSpecRefSqrd);
-		assertEquals(expectedSpecRefSqrd, specRefSqrd,3.3*1.0e-4);
+		System.out.println(specRefSqrd + " " + expectedSpecRefSqrd);
+		System.out.println("RERR = " + (specRefSqrd - expectedSpecRefSqrd)
+				/ expectedSpecRefSqrd);
+		assertEquals(expectedSpecRefSqrd, specRefSqrd, 4.0e-4);
+
+		// Get the two single parameters and the final result out of the data
+		// for the second test case
+		line = lines.get(1);
+		waveVectorQ = Double.valueOf(line[0]);
+		wavelength = Double.valueOf(line[1]);
+		expectedSpecRefSqrd = Double.valueOf(line[2]);
+		System.out.println(waveVectorQ + " " + wavelength + " " + expectedSpecRefSqrd);
 		
+		// Get the squared modulus of the specular reflectivity with the values
+		// from the file for the second case.
+		specRefSqrd = calculator.getModSqrdSpecRef(waveVectorQ,
+				wavelength, tiles);
+		System.out.println(specRefSqrd + " " + expectedSpecRefSqrd);
+		System.out.println("RERR = " + (specRefSqrd - expectedSpecRefSqrd)
+				/ expectedSpecRefSqrd);
+		assertEquals(expectedSpecRefSqrd, specRefSqrd, 9.0e-4*Math.abs(expectedSpecRefSqrd));
+
 		return;
 	}
 
 	/**
 	 * This operation loads the set of Tiles from the reference file, ignoring
-	 * the first line that stores the reference values.
+	 * the first and second lines that store the reference values.
 	 * 
-	 * @param lines The ListComponent with the lines from the file
+	 * @param lines
+	 *            The ListComponent with the lines from the file
 	 * @return the list of Tiles from the file
 	 */
 	private Tile[] loadTiles(ListComponent<String[]> lines) {
-		
+
 		// Load all of the tiles
-		Tile [] tiles = new Tile[lines.size()-1];
-		for (int i = 1; i < lines.size(); i++) {
+		Tile[] tiles = new Tile[lines.size() - 2];
+		for (int i = 2; i < lines.size(); i++) {
 			// Load the line
-			String [] line = lines.get(i);
+			String[] line = lines.get(i);
 			// Create the tile and load the data from the line
 			Tile tile = new Tile();
 			tile.scatteringLength = Double.valueOf(line[0]);
@@ -156,9 +179,9 @@ public class ReflectivityCalculatorTester {
 			tile.incAbsLength = Double.valueOf(line[2]);
 			tile.thickness = Double.valueOf(line[3]);
 			// Load the tile into the array
-			tiles[i-1] = tile;
+			tiles[i - 2] = tile;
 		}
-		
+
 		return tiles;
 	}
 
