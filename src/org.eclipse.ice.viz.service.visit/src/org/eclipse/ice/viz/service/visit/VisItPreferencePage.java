@@ -11,19 +11,17 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import org.eclipse.equinox.security.storage.ISecurePreferences;
-import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
-import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
+import org.eclipse.ice.viz.service.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.visit.connections.ConnectionManager;
 import org.eclipse.ice.viz.service.visit.preferences.TableComponentComposite;
+import org.eclipse.ice.viz.service.visit.preferences.TableComponentPreferenceAdapter;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 
 /**
@@ -57,9 +55,12 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 	public void init(IWorkbench workbench) {
 		setDescription("VisIt 2.8.2 Connection Preferences");
 
-		// Create a ConnectionManager and load it from the preference store.
-//		ConnectionPreferenceAdapter adapter = new ConnectionPreferenceAdapter();
-//		adapter.toConnectionManager(getPreferenceStore(), connectionManager);
+		// Read the table of connections stored in the preferences into the
+		// ConnectionManager.
+		TableComponentPreferenceAdapter adapter = new TableComponentPreferenceAdapter();
+		adapter.toTableComponent(
+				(CustomScopedPreferenceStore) getPreferenceStore(),
+				connectionManager);
 
 		return;
 	}
@@ -74,11 +75,6 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 	@Override
 	protected void createFieldEditors() {
 
-		// // Add all default connection preferences.
-		// for (ConnectionPreference p : ConnectionPreference.values()) {
-		// addField(new StringFieldEditor(p.toString(), p.getName(),
-		// getFieldEditorParent()));
-		// }
 		ConnectionPreference p;
 
 		// Add the host name and port for testing remote connections.
@@ -95,71 +91,73 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		addField(new StringFieldEditor(p.toString(), p.getName(),
 				getFieldEditorParent()));
 
-		StringFieldEditor passwordField = new StringFieldEditor("password",
-				"Password", getFieldEditorParent()) {
-			@Override
-			protected void doFillIntoGrid(Composite parent, int numColumns) {
-				super.doFillIntoGrid(parent, numColumns);
-
-				getTextControl().setEchoChar('*');
-			}
-
-			@Override
-			protected void doStore() {
-				ISecurePreferences preferences = SecurePreferencesFactory
-						.getDefault();
-				ISecurePreferences node = preferences
-						.node("visit.connection.credentials");
-				try {
-					String user = "bambam";
-					String password = getTextControl().getText();
-
-					System.out.println(user + " - " + password);
-
-					node.put("user", user, true);
-					node.put("password", password, true);
-				} catch (StorageException e) {
-					e.printStackTrace();
-				}
-				// Default behavior...
-				// getPreferenceStore().setValue(getPreferenceName(),
-				// textField.getText());
-			}
-
-			@Override
-			protected void doLoad() {
-				Text textField = getTextControl();
-				if (textField != null) {
-					ISecurePreferences preferences = SecurePreferencesFactory
-							.getDefault();
-					if (preferences.nodeExists("visit.connection.credentials")) {
-						ISecurePreferences node = preferences
-								.node("visit.connection.credentials");
-						try {
-							String user = node.get("user", "");
-							String password = node.get("password", "");
-
-							System.out.println(user + " - " + password);
-
-							textField.setText(password);
-							oldValue = password;
-						} catch (StorageException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				// Default behavior...
-				// Text textField = getTextControl();
-				// if (textField != null) {
-				// String value =
-				// getPreferenceStore().getString(getPreferenceName());
-				// textField.setText(value);
-				// oldValue = value;
-				// }
-			}
-		};
-
-		addField(passwordField);
+		// TODO Using the following code as an example, add a password column to
+		// the ConnectionManager.
+		// StringFieldEditor passwordField = new StringFieldEditor("password",
+		// "Password", getFieldEditorParent()) {
+		// @Override
+		// protected void doFillIntoGrid(Composite parent, int numColumns) {
+		// super.doFillIntoGrid(parent, numColumns);
+		//
+		// getTextControl().setEchoChar('*');
+		// }
+		//
+		// @Override
+		// protected void doStore() {
+		// ISecurePreferences preferences = SecurePreferencesFactory
+		// .getDefault();
+		// ISecurePreferences node = preferences
+		// .node("visit.connection.credentials");
+		// try {
+		// String user = "bambam";
+		// String password = getTextControl().getText();
+		//
+		// System.out.println(user + " - " + password);
+		//
+		// node.put("user", user, true);
+		// node.put("password", password, true);
+		// } catch (StorageException e) {
+		// e.printStackTrace();
+		// }
+		// // Default behavior...
+		// // getPreferenceStore().setValue(getPreferenceName(),
+		// // textField.getText());
+		// }
+		//
+		// @Override
+		// protected void doLoad() {
+		// Text textField = getTextControl();
+		// if (textField != null) {
+		// ISecurePreferences preferences = SecurePreferencesFactory
+		// .getDefault();
+		// if (preferences.nodeExists("visit.connection.credentials")) {
+		// ISecurePreferences node = preferences
+		// .node("visit.connection.credentials");
+		// try {
+		// String user = node.get("user", "");
+		// String password = node.get("password", "");
+		//
+		// System.out.println(user + " - " + password);
+		//
+		// textField.setText(password);
+		// oldValue = password;
+		// } catch (StorageException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// }
+		// // Default behavior...
+		// // Text textField = getTextControl();
+		// // if (textField != null) {
+		// // String value =
+		// // getPreferenceStore().getString(getPreferenceName());
+		// // textField.setText(value);
+		// // oldValue = value;
+		// // }
+		// }
+		// };
+		//
+		// addField(passwordField);
 
 		return;
 	}
@@ -193,12 +191,25 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		return control;
 	}
 
-	// TODO Remove this after we have multiple connections and a way to notify
-	// the VizService that a particular connection has changed.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
+	 */
 	@Override
 	public boolean performOk() {
 		boolean ok = super.performOk();
+
+		// Write the table of connections stored in the ConnectionManager into
+		// the preference store.
+		TableComponentPreferenceAdapter adapter = new TableComponentPreferenceAdapter();
+		adapter.toPreferences(connectionManager,
+				(CustomScopedPreferenceStore) getPreferenceStore());
+
+		// TODO Remove this after we have multiple connections and a way to
+		// notify the VizService that a particular connection has changed.
 		VisItVizService.getInstance().preferencesChanged();
+
 		return ok;
 	}
 
