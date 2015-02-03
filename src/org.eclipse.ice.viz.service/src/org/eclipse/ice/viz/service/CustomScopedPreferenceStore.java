@@ -278,4 +278,15 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 		dirty = false;
 	}
 
+	public void setSecureValue(String name, String value) {
+		
+	}
+	
+	public String getSecureString(String name) {
+		return null;
+	}
+	
+	public void removeSecureString(String name) {
+		
+	}
 }
