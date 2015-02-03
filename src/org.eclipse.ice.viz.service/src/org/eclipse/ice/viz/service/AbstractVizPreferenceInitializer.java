@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.FrameworkUtil;
 

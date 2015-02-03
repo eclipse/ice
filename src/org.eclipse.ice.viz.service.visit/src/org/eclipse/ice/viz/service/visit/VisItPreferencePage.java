@@ -12,9 +12,9 @@
 package org.eclipse.ice.viz.service.visit;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
-import org.eclipse.ice.viz.service.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionManager;
+import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.TableComponentComposite;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
 import org.eclipse.jface.preference.StringFieldEditor;

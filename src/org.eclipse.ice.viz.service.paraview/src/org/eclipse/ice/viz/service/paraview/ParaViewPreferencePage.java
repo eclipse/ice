@@ -14,9 +14,9 @@ package org.eclipse.ice.viz.service.paraview;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
-import org.eclipse.ice.viz.service.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
 import org.eclipse.ice.viz.service.connections.IKeyChangeListener;
+import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.DynamicComboFieldEditor;
 import org.eclipse.ice.viz.service.preferences.TableComponentComposite;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;

@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.viz.service.CustomScopedPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**

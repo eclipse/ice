@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jordan Deyton
  *******************************************************************************/
-package org.eclipse.ice.viz.service;
+package org.eclipse.ice.viz.service.preferences;
 
 import java.io.IOException;
 

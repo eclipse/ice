@@ -12,6 +12,7 @@
 package org.eclipse.ice.viz.service;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
