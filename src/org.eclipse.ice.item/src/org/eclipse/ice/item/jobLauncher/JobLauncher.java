@@ -473,11 +473,14 @@ public class JobLauncher extends Item {
 					+ actionDataMap.get("stdOutFileName")
 					+ "\n\tStandard Error File = "
 					+ actionDataMap.get("stdErrFileName"));
-			// Add the output files to the resource component
-			addOutputFile(1, stdOutProjectFile, "Standard Output", outputData);
-			addOutputFile(2, stdErrProjectFile, "Standard Error Output",
-					outputData);
+			
 			try {
+				// Add the output files to the resource component
+				addOutputFile(1, stdOutProjectFile, "Standard Output", 
+						outputData);
+				addOutputFile(2, stdErrProjectFile, "Standard Error Output",
+						outputData);
+
 				// Grab the current list of project members that are managed for
 				// this item.
 				IResource[] members = project.members();
@@ -487,8 +490,7 @@ public class JobLauncher extends Item {
 					projectMemberModMap.put(members[i],
 							members[i].getModificationStamp());
 				}
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
+			} catch (CoreException | IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -530,16 +532,18 @@ public class JobLauncher extends Item {
 				if (!projectMemberModMap.keySet().contains(currentResource)) {
 					System.out.println("JobLauncher Message: " + "Adding file "
 							+ currentResource.getName() + " to list.");
-					// Create a new resource for the member
-					ICEResource resource = new ICEResource();
-					resource.setName(currentResource.getName());
-					resource.setId(lastId + i + 1);
-					resource.setDescription(currentResource.getName()
-							+ " from " + getName() + " " + getId());
-					resource.setContents(new File(currentResource
-							.getLocationURI()));
-					// Add the resource
-					resources.addResource(resource);
+					// Get the file as an ICEResource object
+					ICEResource resource = getResource(
+							currentResource.getLocation().toOSString());
+					if (resource != null) {
+						// Set the name, ID, description
+						resource.setName(currentResource.getName());
+						resource.setId(lastId + i + 1);
+						resource.setDescription(currentResource.getName()
+								+ " from " + getName() + " " + getId());
+						// Add the resource to the ResourceComponent
+						resources.addResource(resource);
+					}
 				} else {
 					// If we already have the file, get it.
 					lastTimeStamp = projectMemberModMap.get(currentResource);
@@ -552,27 +556,26 @@ public class JobLauncher extends Item {
 						System.out.println("JobLauncher Message: "
 								+ "Adding file " + currentResource.getName()
 								+ " to list.");
-						// Create a new resource for the member
-						ICEResource resource = new ICEResource();
-						resource.setName(currentResource.getName());
-						resource.setId(lastId + i + 1);
-						resource.setDescription(currentResource.getName()
-								+ " from " + getName() + " " + getId());
-						resource.setContents(new File(currentResource
-								.getLocationURI()));
-						// Add the resource
-						resources.addResource(resource);
+						// Get the file as an ICEResource
+						ICEResource resource = getResource(
+								currentResource.getLocation().toOSString());
+						if (resource != null) {
+							// Set the name, ID, description
+							resource.setName(currentResource.getName());
+							resource.setId(lastId + i + 1);
+							resource.setDescription(currentResource.getName()
+									+ " from " + getName() + " " + getId());
+							// Add the resource to the ResourceComponent
+							resources.addResource(resource);
+						}
 					}
 				}
 			}
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullPointerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -739,28 +742,18 @@ public class JobLauncher extends Item {
 	 *            to the name of the Form.
 	 * @param outputComp
 	 *            The ResourceComponent that contains the data.
+	 * @throws IOException 
 	 */
 	private void addOutputFile(int resourceId, IFile file, String resourceName,
-			ResourceComponent outputComp) {
-
-		// Get the specified resource from the resource component
-		ICEResource outputResource = null;
-		for (ICEResource i : outputComp.getResources()) {
-			if (i.getId() == resourceId) {
-				outputResource = i;
-				break;
-			}
-		}
-		// Add the ICEResource for the file if it does not already exist
-		if (outputResource == null) {
-			// Create the resource
-			try {
-				outputResource = new ICEResource(new File(file.getLocation()
-						.toString()));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ResourceComponent outputComp) throws IOException {
+	
+		// Get the file as an ICEResource (returns null if invalid filepath)
+		ICEResource outputResource = 
+				this.getResource(file.getLocation().toOSString());
+		
+		// If the filepath corresponded to a valid resource, we add it to the
+		// ResourceComponent
+		if (outputResource != null) {
 			System.out.println("Resource location = "
 					+ file.getFullPath().toString());
 			// Set the properties
@@ -770,7 +763,7 @@ public class JobLauncher extends Item {
 			// Add the ICEResource to the Output component
 			outputComp.addResource(outputResource);
 		}
-
+		
 		return;
 	}
 
