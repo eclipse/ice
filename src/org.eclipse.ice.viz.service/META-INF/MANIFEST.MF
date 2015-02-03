@@ -7,6 +7,7 @@ Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime.preferences,
+ org.eclipse.equinox.security.storage;version="1.0.0",
  org.eclipse.ice.client.widgets.properties,
  org.eclipse.ice.client.widgets.viz.service,
  org.eclipse.ice.datastructures.ICEObject,

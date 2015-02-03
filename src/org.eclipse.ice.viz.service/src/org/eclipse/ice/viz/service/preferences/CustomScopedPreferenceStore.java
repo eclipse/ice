@@ -17,6 +17,9 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.equinox.security.storage.ISecurePreferences;
+import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
+import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -107,12 +110,24 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	}
 
 	/**
-	 * Gets the associated preference node from the {@link #defaultContext}.
+	 * Gets the associated default preference node from the
+	 * {@link #defaultContext}.
 	 * 
 	 * @return The preference node for default values.
 	 */
 	private IEclipsePreferences getDefaultPreferenceNode() {
 		return defaultContext.getNode(qualifier);
+	}
+
+	/**
+	 * Gets the associated secure preference node from the
+	 * {@link SecurePreferencesFactory}.
+	 * 
+	 * @return The preference node for secure values.
+	 */
+	private ISecurePreferences getSecurePreferenceNode() {
+		ISecurePreferences preferences = SecurePreferencesFactory.getDefault();
+		return preferences.node(qualifier);
 	}
 
 	/**
@@ -271,22 +286,95 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	 */
 	@Override
 	public void save() throws IOException {
-		// If the super save method throws an exception then neither this class'
-		// dirty variable nor the super class' private dirty variable will be
-		// set to false.
-		super.save();
-		dirty = false;
+		// Flush the secure preference node.
+		boolean secureFlushed = false;
+		try {
+			getSecurePreferenceNode().flush();
+			secureFlushed = true;
+		} catch (IOException e) {
+			throw new IOException(e.getMessage());
+		}
+
+		// If the secure store was flushed successfully, we can proceed with the
+		// super method's flush. We can't do this within the try because it will
+		// catch the super method's thrown IOException.
+		if (secureFlushed) {
+			// If the super save method throws an exception then neither this
+			// class' dirty variable nor the super class' private dirty variable
+			// will be set to false.
+			super.save();
+			dirty = false;
+		}
+
+		return;
 	}
 
+	/**
+	 * Sets the current value of the string-valued, <i>securely stored</i>
+	 * preference with the given name.
+	 * <p>
+	 * A property change event is reported if the current value of the
+	 * preference actually changes from its previous value. In the event object,
+	 * the property name is the name of the preference, and the old and new
+	 * values are wrapped as objects.
+	 * </p>
+	 * 
+	 * @param name
+	 *            The name of the preference.
+	 * @param value
+	 *            The value of the preference that must be stored securely.
+	 */
 	public void setSecureValue(String name, String value) {
-		
+
+		if (name != null && value != null) {
+			ISecurePreferences node = getSecurePreferenceNode();
+			try {
+				node.put(name, value, true);
+				dirty = true;
+			} catch (StorageException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return;
 	}
-	
+
+	/**
+	 * Returns the current value of the string-valued, <i>securely stored</i>
+	 * preference with the given name.
+	 * <p>
+	 * Returns the default-default value (the empty string <code>""</code>) if
+	 * there is no preference with the given name, or if the current value
+	 * cannot be treated as a string.
+	 * </p>
+	 *
+	 * @param name
+	 *            The name of the preference.
+	 * @return The string-valued preference, which is stored securely.
+	 */
 	public String getSecureString(String name) {
-		return null;
+		String value = STRING_DEFAULT_DEFAULT;
+		if (name != null) {
+			ISecurePreferences node = getSecurePreferenceNode();
+			try {
+				value = node.get(name, STRING_DEFAULT_DEFAULT);
+			} catch (StorageException e) {
+				e.printStackTrace();
+			}
+		}
+		return value;
 	}
-	
+
+	/**
+	 * Removes the specified, <i>securely stored</i> value from the store.
+	 * 
+	 * @param name
+	 *            The name of the value to remove.
+	 */
 	public void removeSecureString(String name) {
-		
+		if (name != null) {
+			getSecurePreferenceNode().remove(name);
+			dirty = true;
+		}
 	}
 }
