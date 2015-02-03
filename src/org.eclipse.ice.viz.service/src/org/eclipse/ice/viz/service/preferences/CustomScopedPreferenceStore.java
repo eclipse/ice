@@ -30,6 +30,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * <ul>
  * <li>Can add and remove child {@link IEclipsePreferences} nodes to the store.</li>
  * <li>Can remove keyed values from the store.</li>
+ * <li>Can add and remove values for secure storage.</li>
  * </ul>
  * 
  * Changes to the store using any of the aforementioned features are not
@@ -40,8 +41,6 @@ import org.osgi.service.prefs.BackingStoreException;
  *
  */
 public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
-
-	// TODO Add secure storage...
 
 	/**
 	 * The scoped context to which preferences are stored, usually
