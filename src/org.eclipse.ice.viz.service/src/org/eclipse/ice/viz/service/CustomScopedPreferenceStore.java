@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
+import java.io.IOException;
+
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -19,24 +22,62 @@ import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * This class provides a customized {@link ScopedPreferenceStore} that gives
- * client code the ability to access {@link IEclipsePreferences} nodes stored
- * underneath the store's primary preference node.
+ * client code following options:
+ * 
+ * <ul>
+ * <li>Can add and remove child {@link IEclipsePreferences} nodes to the store.</li>
+ * <li>Can remove keyed values from the store.</li>
+ * </ul>
+ * 
+ * Changes to the store using any of the aforementioned features are not
+ * persisted until {@link #save()} is called by the JFace preference page
+ * platform.
  * 
  * @author Jordan Deyton
  *
  */
 public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
+	// TODO Add secure storage...
+
 	/**
 	 * The scoped context to which preferences are stored, usually
 	 * {@link InstanceScope#INSTANCE}.
+	 * <p>
+	 * This variable mirrors a private variable of the name {@code storeContext}
+	 * in {@link ScopedPreferenceStore}.
+	 * </p>
 	 */
 	private final IScopeContext context;
 	/**
 	 * The associated preference node's qualifier or ID, usually the bundle's
 	 * ID.
+	 * <p>
+	 * This variable mirrors a private variable of the name
+	 * {@code nodeQualifier} in {@link ScopedPreferenceStore}.
+	 * </p>
 	 */
 	private final String qualifier;
+
+	/**
+	 * The default context is the context where getDefault and setDefault
+	 * methods will search. This context is also used in the search.
+	 * <p>
+	 * This variable mirrors a private variable of the same name in
+	 * {@link ScopedPreferenceStore}.
+	 * </p>
+	 */
+	private final IScopeContext defaultContext;
+
+	/**
+	 * Boolean value indicating whether or not this store has changes to be
+	 * saved.
+	 * <p>
+	 * This variable mirrors a private variable of the same name in
+	 * {@link ScopedPreferenceStore}.
+	 * </p>
+	 */
+	private boolean dirty;
 
 	/**
 	 * The default constructor.
@@ -52,6 +93,8 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 		this.context = context;
 		this.qualifier = qualifier;
+
+		defaultContext = DefaultScope.INSTANCE;
 	}
 
 	/**
@@ -61,6 +104,15 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	 */
 	private IEclipsePreferences getPreferenceNode() {
 		return context.getNode(qualifier);
+	}
+
+	/**
+	 * Gets the associated preference node from the {@link #defaultContext}.
+	 * 
+	 * @return The preference node for default values.
+	 */
+	private IEclipsePreferences getDefaultPreferenceNode() {
+		return defaultContext.getNode(qualifier);
 	}
 
 	/**
@@ -76,22 +128,54 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	 */
 	public boolean hasNode(String path) {
 		boolean exists = false;
-		// Don't process a null path.
+
+		// Convert the path to a valid path string, if possible.
+		path = validatePath(path);
+
+		// If the path was valid, see if its node exists.
 		if (path != null) {
-			// We only want to give the client code access to child nodes. If
-			// the path is empty, then the resulting node would be the store's
-			// primary node. If the path starts with a "/", it's an absolute
-			// path.
-			path = path.trim();
-			if (!path.isEmpty() && !path.startsWith("/")) {
-				try {
-					exists = getPreferenceNode().nodeExists(path);
-				} catch (BackingStoreException e) {
-					e.printStackTrace();
-				}
-			}
+			exists = nodeExists(path);
+		}
+
+		return exists;
+	}
+
+	/**
+	 * Determines whether or not a child node exists in the preference store.
+	 * 
+	 * @param validPath
+	 *            A path validated by {@link #validatePath(String)}.
+	 * @return True if the node existed, false otherwise.
+	 */
+	private boolean nodeExists(String validPath) {
+		boolean exists = false;
+		try {
+			exists = getPreferenceNode().nodeExists(validPath);
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
 		}
 		return exists;
+	}
+
+	/**
+	 * Validates the path, returning the valid version of the path, or null if
+	 * the path is invalid.
+	 * 
+	 * @param path
+	 *            The path to validate.
+	 * @return The trimmed, validated path, or null if the path is invalid.
+	 */
+	private String validatePath(String path) {
+		if (path != null) {
+			path = path.trim();
+			// The path must be relative, i.e. it must not be:
+			// 1 - The current node (the path is empty)
+			// 2 - An absolute path (the path starts with a slash)
+			if (path.isEmpty() || path.startsWith("/")) {
+				path = null;
+			}
+		}
+		return path;
 	}
 
 	/**
@@ -106,16 +190,19 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	 */
 	public IEclipsePreferences getNode(String path) {
 		IEclipsePreferences child = null;
+
+		// Convert the path to a valid path string, if possible.
+		path = validatePath(path);
+
+		// If the path was valid, get the node corresponding to the path.
 		if (path != null) {
-			path = path.trim();
-			// We only want to give the client code access to child nodes. If
-			// the path is empty, then the resulting node would be the store's
-			// primary node. If the path starts with a "/", it's an absolute
-			// path.
-			path = path.trim();
-			if (!path.isEmpty() && !path.startsWith("/")) {
-				child = (IEclipsePreferences) getPreferenceNode().node(path);
+
+			// If the node is new, then we need to mark the store as dirty.
+			if (nodeExists(path)) {
+				dirty = true;
 			}
+			// Get or create the node.
+			child = (IEclipsePreferences) getPreferenceNode().node(path);
 		}
 		return child;
 	}
@@ -137,21 +224,58 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	 */
 	public boolean removeNode(String path) {
 		boolean removed = false;
-		// Make sure the relative path exists before proceeding.
-		if (hasNode(path)) {
-			// Remove the child node from the store's primary parent node. We
-			// also need to flush the parent node immediately.
-			IEclipsePreferences node = getPreferenceNode();
-			IEclipsePreferences child = getNode(path);
+
+		// Try to get the specified node.
+		IEclipsePreferences child = getNode(path);
+		if (child != null) {
+			// Try to remove the node. Do not flush the parent yet. That will
+			// need to be done when saving.
 			try {
 				child.removeNode();
-				node.flush();
 				removed = true;
+				dirty = true;
 			} catch (BackingStoreException e) {
 				e.printStackTrace();
 			}
 		}
+
 		return removed;
+	}
+
+	/**
+	 * Removes the specified value (including its defaults) from the store.
+	 * 
+	 * @param name
+	 *            The name of the value to remove.
+	 */
+	public void removeValue(String name) {
+		getPreferenceNode().remove(name);
+		getDefaultPreferenceNode().remove(name);
+		dirty = true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.preferences.ScopedPreferenceStore#needsSaving()
+	 */
+	@Override
+	public boolean needsSaving() {
+		return dirty || super.needsSaving();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.preferences.ScopedPreferenceStore#save()
+	 */
+	@Override
+	public void save() throws IOException {
+		// If the super save method throws an exception then neither this class'
+		// dirty variable nor the super class' private dirty variable will be
+		// set to false.
+		super.save();
+		dirty = false;
 	}
 
 }
