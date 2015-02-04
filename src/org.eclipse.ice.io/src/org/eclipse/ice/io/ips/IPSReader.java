@@ -17,11 +17,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -84,12 +86,10 @@ public class IPSReader implements IReader {
 		try {
 			lines = readFileLines(ifile);
 		} catch (FileNotFoundException e) {
-			System.out
-					.println("IPSReader Message: Error!  Could not find file for loading.");
+			System.out.println("IPSReader Message: Error!  Could not find file for loading.");
 			return null;
 		} catch (IOException e) {
-			System.out
-					.println("IPSReader Message: Error!  Trouble reading file.");
+			System.out.println("IPSReader Message: Error!  Trouble reading file.");
 			return null;
 		}
 
@@ -208,8 +208,13 @@ public class IPSReader implements IReader {
 			throws FileNotFoundException, IOException {
 
 		// Read in the ini file and create the iterator
-		File file = new File(ifile.getFullPath().toOSString());
-		BufferedReader reader = new BufferedReader(new FileReader(file));
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader( ifile.getContents()));
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Read the FileInputStream and append to a StringBuffer
 		StringBuffer buffer = new StringBuffer();

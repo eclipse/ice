@@ -88,10 +88,6 @@ public class CaebatModelBuilderTester {
 
 		// A form is created
 		assertNotNull(caebatModel.getForm());
-
-		// Make sure there is something on the form
-		assertEquals(caebatModel.getForm().getComponents().size(),4);
-
 		// end-user-code
 
 	}

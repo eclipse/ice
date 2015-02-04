@@ -35,18 +35,11 @@ Ring::Ring() :
 
 }
 Ring::Ring(std::string name) :
-		SFRComponent() {
+		Ring() {
 	// begin-user-code
 
-	// Set the ring name, description and ID
+	// Set the ring name to the custom name. The defaults have already been set.
 	setName(name);
-	setDescription("Ring 1 Description");
-	setId(1);
-
-	// Set the height (z-displacement), inner radius, outer radius and material
-	height = 0.0;
-	innerRadius = 0.0;
-	outerRadius = 1.0;
 
 	// end-user-code
 
@@ -54,13 +47,11 @@ Ring::Ring(std::string name) :
 
 Ring::Ring(std::string name, std::shared_ptr<Material> material, double height,
 		double innerRadius, double outerRadius) :
-		SFRComponent() {
+		Ring() {
 	// begin-user-code
 
-	// Set the ring name, description and ID
+	// Set the ring name. The other defaults have already been set.
 	setName(name);
-	setDescription("Ring 1 Description");
-	setId(1);
 
 	// Set the name, material, height and radii
 	setMaterial(material);
@@ -196,11 +187,14 @@ bool Ring::operator==(const Ring & otherRing) {
 	if (height == otherRing.height && innerRadius == otherRing.innerRadius
 			&& outerRadius == otherRing.outerRadius)
 		shallowEqual = true;
+
 	// Check the material pointers
-	if (material && otherRing.material)
+	if (material && otherRing.material) {
 		shallowEqual &= (*material == *otherRing.material);
-	else if ((material && !otherRing.material) || (!material && otherRing.material))
+	} else if ((material && !otherRing.material)
+			|| (!material && otherRing.material)) {
 		shallowEqual = false;
+	}
 
 	// Check if all inherited variables are equal (deep scope)
 	if (SFRComponent::operator==(otherRing) && shallowEqual)
