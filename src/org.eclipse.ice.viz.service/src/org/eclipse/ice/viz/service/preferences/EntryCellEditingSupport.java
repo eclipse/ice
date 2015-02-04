@@ -15,14 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Composite;
 
 public class EntryCellEditingSupport extends EditingSupport {
@@ -98,15 +97,15 @@ public class EntryCellEditingSupport extends EditingSupport {
 
 		// Determine the CellEditor to use.
 		if (contentProvider.isValid(element)) {
-			Entry entry = (Entry) element;
-			AllowedValueType entryType = entry.getValueType();
 
-			// Discrete Entries use the ComboBoxCellEditor.
-			if (entryType == AllowedValueType.Discrete) {
+			// If the element requires a Combo, populate the combo cell and
+			// return it.
+			if (contentProvider.requiresCombo(element)) {
 				editor = comboCell;
 
 				// Update the Combo's items.
-				List<String> allowedValues = entry.getAllowedValues();
+				List<String> allowedValues = contentProvider
+						.getAllowedValues(element);
 				String[] items = new String[allowedValues.size()];
 				comboCell.setItems(allowedValues.toArray(items));
 
@@ -119,9 +118,19 @@ public class EntryCellEditingSupport extends EditingSupport {
 					valueMap.put(items[i], i);
 				}
 			}
-			// Continuous and Undefined Entries use the TextCellEditor.
+			// Otherwise, default to the text cell.
 			else {
 				editor = textCell;
+
+				// Set the echo character. If secret, use an asterisk.
+				// Otherwise, clear the echo character (with a "null"
+				// character).
+				char echo = ISecretCellContentProvider.PUBLIC_CHAR;
+				if (contentProvider.isSecret(element)) {
+					echo = contentProvider.getSecretChar();
+				}
+				Text text = (Text) textCell.getControl();
+				text.setEchoChar(echo);
 			}
 		}
 
@@ -148,15 +157,10 @@ public class EntryCellEditingSupport extends EditingSupport {
 		// Get the default return value.
 		Object value = contentProvider.getValue(element);
 
-		if (value != null) {
-			Entry entry = (Entry) element;
-			AllowedValueType entryType = entry.getValueType();
-
-			// Discrete Entries use the ComboBoxCellEditor, so we must convert
-			// the String value into an index in the Combo's items.
-			if (entryType == AllowedValueType.Discrete) {
-				value = valueMap.get(value.toString());
-			}
+		// If a Combo is required, we must convert the String value into an
+		// index in the Combo's items (use the value map).
+		if (contentProvider.requiresCombo(element)) {
+			value = valueMap.get(value.toString());
 		}
 
 		return value;
@@ -170,13 +174,12 @@ public class EntryCellEditingSupport extends EditingSupport {
 	 */
 	@Override
 	protected void setValue(Object element, Object value) {
+		// Proceed only if the element is valid.
 		if (contentProvider.isValid(element)) {
-			Entry entry = (Entry) element;
-			AllowedValueType entryType = entry.getValueType();
 
-			// Discrete Entries use the ComboBoxCellEditor, so we must convert
-			// the Combo item index value into its String value.
-			if (entryType == AllowedValueType.Discrete) {
+			// If a Combo is required, we must convert the index value (from the
+			// Combo's items) into its associated String value.
+			if (contentProvider.requiresCombo(element)) {
 				value = comboCell.getItems()[(Integer) value];
 			}
 

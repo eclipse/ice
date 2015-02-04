@@ -11,7 +11,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.preferences;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
+import org.eclipse.ice.client.widgets.properties.IComboCellContentProvider;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.graphics.Image;
 
@@ -23,7 +28,8 @@ import org.eclipse.swt.graphics.Image;
  * @author Jordan Deyton
  *
  */
-public class EntryCellContentProvider implements ICellContentProvider {
+public class EntryCellContentProvider implements ICellContentProvider,
+		IComboCellContentProvider, ISecretCellContentProvider {
 
 	/**
 	 * The text to display when a cell's element (expected to be an
@@ -117,5 +123,52 @@ public class EntryCellContentProvider implements ICellContentProvider {
 
 		return changed;
 	}
+
+	// ---- Implements IComboCellContentProvider ---- //
+
+	/**
+	 * An {@link Entry} requires a combo widget if its {@link AllowedValueType}
+	 * is discrete.
+	 */
+	@Override
+	public boolean requiresCombo(Object element) {
+		return isValid(element)
+				&& ((Entry) element).getValueType() == AllowedValueType.Discrete;
+	}
+
+	/**
+	 * Gets the {@link Entry}'s allowed values, or an empty list if it has none.
+	 */
+	@Override
+	public List<String> getAllowedValues(Object element) {
+		List<String> allowedValues;
+		if (isValid(element)) {
+			Entry entry = (Entry) element;
+			allowedValues = new ArrayList<String>(entry.getAllowedValues());
+		} else {
+			allowedValues = new ArrayList<String>(1);
+		}
+		return allowedValues;
+	}
+
+	// ---------------------------------------------- //
+
+	// ---- Implements ISecretCellProvider ---- //
+	/**
+	 * An {@link Entry} should be obscured if its "secret" flag is true.
+	 */
+	@Override
+	public boolean isSecret(Object element) {
+		return isValid(element) && ((Entry) element).isSecret();
+	}
+
+	/**
+	 * Gets the default secret character used to obscure text.
+	 */
+	@Override
+	public char getSecretChar() {
+		return ISecretCellContentProvider.SECRET_CHAR;
+	}
+	// ---------------------------------------- //
 
 }

@@ -173,12 +173,12 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 		userEntry.setName("User");
 		template.add(userEntry);
 		// ---- password ---- //
-		// contentProvider = new BasicEntryContentProvider();
-		// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		// contentProvider.setDefaultValue("");
-		// Entry passwordEntry = new Entry(contentProvider);
-		// passwordEntry.setName("Password");
-		// template.add(passwordEntry);
+		 contentProvider = new BasicEntryContentProvider();
+		 contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		 contentProvider.setDefaultValue("");
+		 Entry passwordEntry = new SecretEntry(contentProvider);
+		 passwordEntry.setName("Password");
+		 template.add(passwordEntry);
 
 		return template;
 	}
