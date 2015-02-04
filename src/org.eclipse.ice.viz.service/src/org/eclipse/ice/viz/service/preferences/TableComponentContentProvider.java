@@ -100,8 +100,11 @@ public class TableComponentContentProvider implements
 									+ "Cannot render TableComponents with no row template.");
 				}
 				// Before registering, trigger an update to the viewer.
+				// Normally, you would not update the viewer. However, we would
+				// like the content provider to manage the structure of the
+				// table (which is handled in the refresh method).
 				if (!this.viewer.isBusy()) {
-					update(tableComponent);
+					refreshViewer();
 				}
 				tableComponent.register(this);
 			}
@@ -150,23 +153,11 @@ public class TableComponentContentProvider implements
 
 		if (component != null && component == tableComponent) {
 
-			// The viewer update will depend on whether the row template
-			// changed.
-			final boolean columnsChanged = updateRowTemplate();
-
 			// We must use the UI Thread
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					// If the columns changed, we need to refresh the columns.
-					if (columnsChanged) {
-						refreshTableColumns();
-					}
-
-					// Refresh the viewer contents.
-					viewer.refresh();
-
-					return;
+					refreshViewer();
 				}
 			});
 		}
@@ -175,72 +166,69 @@ public class TableComponentContentProvider implements
 	}
 
 	/**
-	 * Updates {@link #rowTemplate} with on the current {@link #tableComponent}.
-	 * 
-	 * @return True if the row template changed (in which case the
-	 *         {@link #viewer} will need to be re-structured), false otherwise.
-	 */
-	private boolean updateRowTemplate() {
-		boolean changed = false;
-
-		// Get the new row template and check that it is set. TableComponents
-		// sent to this content provider should have a template set!
-		List<Entry> newRowTemplate = tableComponent.getRowTemplate();
-
-		if (!newRowTemplate.equals(rowTemplate)) {
-			changed = true;
-			rowTemplate = newRowTemplate;
-		}
-
-		return changed;
-	}
-
-	/**
-	 * Refreshes the {@link #viewer}'s columns based on the current row
-	 * template.
+	 * Refreshes the contents of the viewer.
 	 * <p>
 	 * <b>Note:</b> This method should be called on the UI thread!
 	 * </p>
 	 */
-	private void refreshTableColumns() {
+	private void refreshViewer() {
+		// How the viewer updates will depend on whether the row template
+		// changed.
 
-		// Remove all previous columns from the viewer.
-		for (TableViewerColumn column : columns) {
-			column.getColumn().dispose();
+		// Get the TableComponent's new row template and see if it changed.
+		boolean columnsChanged = false;
+		List<Entry> newRowTemplate = tableComponent.getRowTemplate();
+		if (!newRowTemplate.equals(rowTemplate)) {
+			columnsChanged = true;
+			rowTemplate = newRowTemplate;
 		}
-		columns.clear();
 
-		EntryCellContentProvider basicContentProvider = new EntryCellContentProvider();
-		EntryCellEditingSupport basicEditingSupport = new EntryCellEditingSupport(
-				viewer, basicContentProvider);
+		// If the columns changed, we need to rebuild the columns from scratch.
+		if (columnsChanged) {
+			// Remove all previous columns from the viewer.
+			for (TableViewerColumn column : columns) {
+				column.getColumn().dispose();
+			}
+			columns.clear();
 
-		// Add a new column for each Entry.
-		for (int i = 0; i < rowTemplate.size(); i++) {
-			Entry entry = rowTemplate.get(i);
+			EntryCellContentProvider basicContentProvider = new EntryCellContentProvider();
+			EntryCellEditingSupport basicEditingSupport = new EntryCellEditingSupport(
+					viewer, basicContentProvider);
 
-			// Create the column for the TableViewer.
-			TableViewerColumn column = new TableViewerColumn(viewer, SWT.LEFT);
-			columns.add(column);
+			// Add a new column for each Entry.
+			for (int i = 0; i < rowTemplate.size(); i++) {
+				Entry entry = rowTemplate.get(i);
 
-			// Customize the underlying Column widget.
-			TableColumn columnWidget = column.getColumn();
-			columnWidget.setText(entry.getName());
-			columnWidget.setToolTipText(entry.getDescription());
-			columnWidget.setResizable(true);
-			// Since we are replacing all the columns, pack it here based on the
-			// column header text.
-			columnWidget.pack();
+				// Create the column for the TableViewer.
+				TableViewerColumn column = new TableViewerColumn(viewer,
+						SWT.LEFT);
+				columns.add(column);
 
-			// Add the ColumnLabelProvider and the EditingSupport.
-			ICellContentProvider contentProvider = new TableComponentCellContentProvider(
-					basicContentProvider, i);
-			EditingSupport editingSupport = new TableComponentCellEditingSupport(
-					viewer, basicEditingSupport, i);
-			column.setLabelProvider(new CellColumnLabelProvider(contentProvider));
-			column.setEditingSupport(editingSupport);
+				// Customize the underlying Column widget.
+				TableColumn columnWidget = column.getColumn();
+				columnWidget.setText(entry.getName());
+				columnWidget.setToolTipText(entry.getDescription());
+				columnWidget.setResizable(true);
+				// Since we are replacing all the columns, pack it here based on
+				// the column header text. Note: auto packing based on the
+				// table's data might not be reasonable if a cell has a long
+				// text string.
+				columnWidget.pack();
+
+				// Add the ColumnLabelProvider and the EditingSupport.
+				ICellContentProvider contentProvider = new TableComponentCellContentProvider(
+						basicContentProvider, i);
+				EditingSupport editingSupport = new TableComponentCellEditingSupport(
+						viewer, basicEditingSupport, i);
+				column.setLabelProvider(new CellColumnLabelProvider(
+						contentProvider));
+				column.setEditingSupport(editingSupport);
+			}
 		}
+
+		// Refresh the viewer contents.
+		viewer.refresh();
 
 		return;
 	}
-
 }

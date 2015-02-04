@@ -64,7 +64,17 @@ public class EntryCellContentProvider implements ICellContentProvider,
 
 		if (isValid(element)) {
 			value = getValue(element);
-			text = (value != null ? value.toString() : "");
+			// The default value is the empty string if the underlying Entry
+			// value is null.
+			text = "";
+			// Get the Entry's value in string form.
+			if (value != null) {
+				text = value.toString();
+				// If necessary, obscure the text.
+				if (isSecret(element)) {
+					text = text.replaceAll("(?s).", "*");
+				}
+			}
 		}
 
 		return text;
