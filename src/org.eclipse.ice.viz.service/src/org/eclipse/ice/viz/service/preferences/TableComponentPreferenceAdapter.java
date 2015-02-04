@@ -14,10 +14,8 @@ package org.eclipse.ice.viz.service.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * A {@code TableComponentPreferenceAdapter} can marshal a
@@ -91,15 +89,14 @@ public class TableComponentPreferenceAdapter {
 							+ "Cannot store preferences based from null arguments.");
 		}
 
-		// The path to the preference node containing the table.
-		String relativePath = getRelativePath(table);
-		// Replace the old preference node with a new one.
-		store.removeNode(relativePath);
-		IEclipsePreferences node = store.getNode(relativePath);
+		// Clear out the old preferences.
+		clearPreferences(table, store);
+
+		String prefix = getPrefix(table);
 
 		// Write the number of rows.
 		int rows = table.numberOfRows();
-		node.putInt("rows", rows);
+		store.setValue(prefix + "rows", rows);
 
 		// Write the column names. This implicitly yields the number of columns.
 		int columns = table.numberOfColumns();
@@ -110,27 +107,29 @@ public class TableComponentPreferenceAdapter {
 			for (int j = 1; j < columns; j++) {
 				columnNames += SEPARATOR + template.get(j).getName();
 			}
-			node.put("columns", columnNames);
+			store.setValue(prefix + "columns", columnNames);
 		}
 		// Otherwise, we just need to use the empty string.
 		else {
-			node.put("columns", "");
+			store.setValue(prefix + "columns", "");
 		}
 
 		// Write the value of each Entry (per row, column).
 		for (int i = 0; i < rows; i++) {
 			List<Entry> row = table.getRow(i);
 			for (int j = 0; j < columns; j++) {
-				String key = Integer.toString(i) + "." + Integer.toString(j);
-				node.put(key, row.get(j).getValue());
-			}
-		}
+				Entry entry = row.get(j);
+				String key = prefix + Integer.toString(i) + "."
+						+ Integer.toString(j);
 
-		// Make sure the child node is updated.
-		try {
-			node.flush();
-		} catch (BackingStoreException e) {
-			e.printStackTrace();
+				// If the Entry shouldn't be secret, just put it in the store.
+				// Otherwise, it should be stored securely.
+				if (!entry.isSecret()) {
+					store.setValue(key, entry.getValue());
+				} else {
+					store.setSecureValue(key, entry.getValue());
+				}
+			}
 		}
 
 		return;
@@ -159,22 +158,15 @@ public class TableComponentPreferenceAdapter {
 							+ "Cannot load preferences based from null arguments.");
 		}
 
-		// Make sure the table's preferences exist. If not, return.
-		String relativePath = getRelativePath(table);
-		if (!store.hasNode(relativePath)) {
-			return;
-		}
-
-		// Get the table preference node.
-		IEclipsePreferences node = store.getNode(relativePath);
+		String prefix = getPrefix(table);
 
 		// Get the number of rows.
-		int rows = node.getInt("rows", 0);
+		int rows = store.getInt(prefix + "rows");
 
 		boolean badTemplate = false;
 
 		// Get the column names.
-		String columnNames = node.get("columns", "");
+		String columnNames = store.getString(prefix + "columns");
 		String[] split = columnNames.split(SEPARATOR);
 		int columns = columnNames.isEmpty() ? 0 : split.length;
 		// Log a problem with the table's template if the column count does not
@@ -222,17 +214,15 @@ public class TableComponentPreferenceAdapter {
 			for (int j = 0; j < columns; j++) {
 				Entry entry = row.get(j);
 				// The key is stored as row.column using their indices.
-				String key = Integer.toString(i) + "." + Integer.toString(j);
-				String value = node.get(key, entry.getDefaultValue());
-				// Log a potential problem with the TableComponent's template.
-				if (!entry.setValue(value)) {
-					System.out
-							.println("TableComponentPreferenceAdapter warning: "
-									+ "Value \""
-									+ value
-									+ "\" was not accepted for row "
-									+ i
-									+ ", column \"" + entry.getName() + "\".");
+				String key = prefix + Integer.toString(i) + "."
+						+ Integer.toString(j);
+
+				// Try to get the Entry's value from the primary store. If the
+				// value is not there, it should be in secure storage.
+				if (store.contains(key)) {
+					entry.setValue(store.getString(key));
+				} else {
+					entry.setValue(store.getSecureString(key));
 				}
 			}
 		}
@@ -248,8 +238,50 @@ public class TableComponentPreferenceAdapter {
 	 * @return The table's relative path. This is "table.name" where "name" is
 	 *         the name of the {@code TableComponent}.
 	 */
-	private String getRelativePath(TableComponent table) {
-		return "table." + table.getName();
+	private String getPrefix(TableComponent table) {
+		return "table." + table.getName() + ".";
 	}
 
+	/**
+	 * Removes all preferences associated with the specified table.
+	 * 
+	 * @param table
+	 *            The table whose preferences should be removed. Only its
+	 *            structure is required.
+	 * @param store
+	 *            The store from which to remove the preferences.
+	 */
+	private void clearPreferences(TableComponent table,
+			CustomScopedPreferenceStore store) {
+
+		final String prefix = getPrefix(table);
+
+		// Get the number of rows, then remove it from the preferences.
+		int rows = store.getInt(prefix + "rows");
+		store.removeValue(prefix + "rows");
+
+		// Get the column names (and number of columns), then remove it from the
+		// preferences.
+		String columnNames = store.getString(prefix + "columns");
+		String[] split = columnNames.split(SEPARATOR);
+		int columns = columnNames.isEmpty() ? 0 : split.length;
+		store.removeValue(prefix + "columns");
+
+		// Remove each row from the preferences.
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				String key = prefix + Integer.toString(i) + "."
+						+ Integer.toString(j);
+				// We need to remove its value and its defaults or remove its
+				// secure value.
+				if (store.contains(key)) {
+					store.removeValue(key);
+				} else {
+					store.removeSecureString(key);
+				}
+			}
+		}
+
+		return;
+	}
 }
