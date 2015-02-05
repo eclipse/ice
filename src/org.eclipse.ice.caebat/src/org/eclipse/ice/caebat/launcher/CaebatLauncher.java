@@ -18,6 +18,9 @@ import java.util.Scanner;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -42,10 +45,10 @@ import org.eclipse.core.runtime.Path;
  * @author s4h
  */
 @XmlRootElement(name = "CaebatLauncher")
-public class CaebatLauncher extends JobLauncher {
+public class CaebatLauncher extends JobLauncher implements IUpdateableListener {
 
 	/**
-	 * The execution command 
+	 * The execution command
 	 */
 	private String fullExecCMD;
 
@@ -145,11 +148,32 @@ public class CaebatLauncher extends JobLauncher {
 		setExecutable(getName(), getDescription(), this.fullExecCMD);
 		// Add localhost
 		addHost("localhost", "linux x86_64", CAEBAT_ROOT);
+		
 		// Add the input files types for the BatML files
-		addInputType("Key-value pair file", "keyValueFile",
-				"Key-value pair with case parameters", ".dat");
+		// Setup entries
+		Entry entry = new Entry() {
+			protected void setup() {
+				this.setName("Use custom key-value pair file?");
+				this.tag = "MODE";
+				this.setDescription("Time loop's mode.  Can be Regular (true) or Explicit (false)");
+				this.defaultValue = "false";
+				this.value = this.defaultValue;
+				this.allowedValues = new ArrayList<String>();
+				this.allowedValues.add("true");
+				this.allowedValues.add("false");
+				this.allowedValueType = AllowedValueType.Discrete;
+			}
+		};
 
-	    return;
+		// Add the selector to the form && make it listen for changes
+		DataComponent fileComponent = (DataComponent) form.getComponent(1);
+		fileComponent.addEntry(entry);
+		fileComponent.retrieveEntry("Use custom key-value pair file?").register(this);
+		form.removeComponent(1);
+		form.addComponent(fileComponent);
+		update(fileComponent.retrieveEntry("Use custom key-value pair file?"));
+		
+		return;
 		// end-user-code
 	}
 
@@ -162,7 +186,8 @@ public class CaebatLauncher extends JobLauncher {
 	 * </p>
 	 * <!-- end-UML-doc -->
 	 * 
-	 * @param the action name
+	 * @param the
+	 *            action name
 	 * 
 	 * @return The status of the action
 	 */
@@ -180,8 +205,9 @@ public class CaebatLauncher extends JobLauncher {
 		 * IPath fileIPath = new Path(project.getLocation().toOSString() +
 		 * separator + inputFileEntry.getValue()); IFile inputFile =
 		 * ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
-		 * ArrayList<Entry> simRootMatches = reader.findAll(inputFile, "SIM_ROOT=.*"); 
-		 * dataDir = simRootMatches.get(0).getName().split("=")[1];
+		 * ArrayList<Entry> simRootMatches = reader.findAll(inputFile,
+		 * "SIM_ROOT=.*"); dataDir =
+		 * simRootMatches.get(0).getName().split("=")[1];
 		 * 
 		 * writer.replace(inputFile, "SIM_ROOT=.*", "SIM_ROOT=" +
 		 * getLaunchDirectory());
@@ -190,62 +216,73 @@ public class CaebatLauncher extends JobLauncher {
 		String separator = System.getProperty("file.separator");
 		IPSReader reader = new IPSReader();
 		IPSWriter writer = new IPSWriter();
-	    DataComponent fileComponent = (DataComponent) form.getComponent(1);
+		DataComponent fileComponent = (DataComponent) form.getComponent(1);
 		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
-		Entry kvPairFileEntry = fileComponent.retrieveEntry("Key-value pair file");
-		IPath fileIPath = new Path(project.getLocation().toOSString() + separator + inputFileEntry.getValue()); 
-		IPath kvFileIPath = new Path(project.getLocation().toOSString() + separator + kvPairFileEntry.getValue());
+		Entry kvPairFileEntry = fileComponent
+				.retrieveEntry("Key-value pair file");
+		IPath fileIPath = new Path(project.getLocation().toOSString()
+				+ separator + inputFileEntry.getValue());
+		IPath kvFileIPath = new Path(project.getLocation().toOSString()
+				+ separator + kvPairFileEntry.getValue());
 		IFile inputFile = project.getFile(inputFileEntry.getValue());
 		IFile kvPairFile = project.getFile(kvPairFileEntry.getValue());
-		
+
 		// Get the Run ID that may be used to locate the simulation files
 		String runID = "";
 		ArrayList<Entry> runIDMatches = reader.findAll(inputFile, "RUN_ID=.*");
 		if (runIDMatches != null && !runIDMatches.isEmpty()) {
 			runID = runIDMatches.get(0).getName().split("=")[1];
 		}
-		
-		// Get the Case Name which may also be used to locate the simulation files
+
+		// Get the Case Name which may also be used to locate the simulation
+		// files
 		String caseName = "";
-		ArrayList<Entry> caseNameMatches = reader.findAll(inputFile, "SIM_NAME=.*");		
+		ArrayList<Entry> caseNameMatches = reader.findAll(inputFile,
+				"SIM_NAME=.*");
 		if (caseNameMatches != null && !caseNameMatches.isEmpty()) {
 			caseName = caseNameMatches.get(0).getName().split("=")[1];
 		}
-		// Determine if we need to use the Run ID or the Case Name to find the files
+		// Determine if we need to use the Run ID or the Case Name to find the
+		// files
 		if (caseName.contains("${RUN_ID}")) {
 			caseName = runID;
 		}
-		
-		// Get the base path for the simulation files 
+
+		// Get the base path for the simulation files
 		String dataDir = "";
-		ArrayList<Entry> simRootMatches = reader.findAll(inputFile, "SIM_ROOT=.*");
+		ArrayList<Entry> simRootMatches = reader.findAll(inputFile,
+				"SIM_ROOT=.*");
 		if (simRootMatches != null && !simRootMatches.isEmpty()) {
 			dataDir = simRootMatches.get(0).getName().split("=")[1];
 		}
 		if (dataDir.endsWith("/$SIM_NAME")) {
 			dataDir = dataDir.substring(0, dataDir.length() - 10);
 		} else if (dataDir.endsWith("${SIM_NAME}")) {
-			dataDir = dataDir.substring(0, dataDir.length() - 12);		
+			dataDir = dataDir.substring(0, dataDir.length() - 12);
 		}
-		
+
 		// Get the input file directory for the simulation
 		String inputDir = "";
-		ArrayList<Entry> inputDirMatches = reader.findAll(inputFile, ".*INPUT_DIR.*");
+		ArrayList<Entry> inputDirMatches = reader.findAll(inputFile,
+				".*INPUT_DIR.*");
 		if (inputDirMatches != null && !inputDirMatches.isEmpty()) {
 			inputDir = inputDirMatches.get(0).getName().split("=")[1];
 		}
-		
+
 		// If we are supplying a new KV Pair file replace it in the input file
-		if (kvPairFileEntry.getValue() != "Use Default KV Entries" || kvPairFileEntry.getValue() != "") {
-			writer.replace(inputFile, "input_keyvalue", kvPairFileEntry.getValue()	);
+		if (kvPairFileEntry.getValue() != "Use Default KV Entries"
+				|| kvPairFileEntry.getValue() != "") {
+			writer.replace(inputFile, "input_keyvalue",
+					kvPairFileEntry.getValue());
 		}
-		
+
 		// Pull some information from the form
 		TableComponent hostTable = (TableComponent) form.getComponent(4);
 		CAEBAT_ROOT = hostTable.getRow(0).get(2).getValue();
-		
+
 		// Set up the execution command
-		String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT + "/vibe/components && ";
+		String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT
+				+ "/vibe/components && ";
 		String copyCase = "cp -r " + dataDir + "/" + caseName + "/* . && ";
 		String setKVPerms = "chmod 775 " + kvPairFileEntry.getValue() + " && ";
 		String mvKVPairFile = "cp " + kvPairFileEntry.getValue() + " input && ";
@@ -254,7 +291,8 @@ public class CaebatLauncher extends JobLauncher {
 		String CAEBATExec = "${installDir}ipsframework-code/install/bin/ips.py"
 				+ " -a --log=temp.log --platform=" + IPS_ROOT
 				+ "/workstation.conf --simulation=${inputFile}; ";
-		fullExecCMD = exportRoot + copyCase + setKVPerms + mvKVPairFile + fixSIMROOT + CAEBATExec;
+		fullExecCMD = exportRoot + copyCase + setKVPerms + mvKVPairFile
+				+ fixSIMROOT + CAEBATExec;
 
 		// Setup the executable information
 		setExecutable(getName(), getDescription(), this.fullExecCMD);
@@ -266,13 +304,31 @@ public class CaebatLauncher extends JobLauncher {
 	}
 
 	/**
-	 * Recursively copies a directory to a destination.  This method is used
-	 * to pull the simulation input files into the ICE Launch directory.
+	 * Override of update so that the CaebatLauncher can check if the user wants to select a 
+	 * custom KV Pair file.
+	 */
+	public void update(IUpdateable component) {
+		refreshProjectSpace();
+		super.update(component);
+		
+		// Determine whether the file selector needs to be added to or removed from the form
+		if (component.getName() == "Use custom key-value pair file?" && ((Entry) component).getValue() == "true") {
+			 addInputType("Key-value pair file", "keyValueFile",
+					 "Key-value pair with case parameters", ".dat");
+		} else if (component.getName() == "Use custom key-value pair file?" && ((Entry) component).getValue() == "false") {
+			removeInputType("Key-value pair file");
+		}
+
+	}
+
+	/**
+	 * Recursively copies a directory to a destination. This method is used to
+	 * pull the simulation input files into the ICE Launch directory.
 	 * 
 	 * @param src
-	 *          The directory to copy over
+	 *            The directory to copy over
 	 * @param dest
-	 *          Where to put the directory
+	 *            Where to put the directory
 	 */
 	public void copyInputDirectory(String src, String dest) {
 		copyDirectory(src, dest);
