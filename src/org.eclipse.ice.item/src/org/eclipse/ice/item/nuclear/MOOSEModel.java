@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
+import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +30,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -237,6 +240,7 @@ public class MOOSEModel extends Item {
 		
 		// Create the ResourceComponent and add it
 		ResourceComponent resourceComponent = new ResourceComponent();
+		resourceComponent.setName("Resources");
 		resourceComponent.setId(3);
 		resourceComponent.setDescription("A list of resources associated to "
 				+ "this model builder.");
@@ -478,15 +482,16 @@ public class MOOSEModel extends Item {
 					// Merge the input tree into the YAML spec
 					mergeTrees(inputTree, yamlTree);
 					
-					// Try to find a mesh file and append it as an ICEResource
-					// on the ResourceComponent
-					try {
-						addMeshResource();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
 				}
+				
+				// Try to find a mesh file and append it as an ICEResource
+				// on the ResourceComponent
+				try {
+					addMeshResource();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
 				// Update the status
 				retStatus = FormStatus.ReadyToProcess;
 			}
@@ -525,13 +530,6 @@ public class MOOSEModel extends Item {
 			// Set the new MOOSE TreeComposite as the Form's
 			form.removeComponent(2);
 			form.addComponent(readForm.getComponent(mooseTreeCompositeId));
-		}
-		
-		// Try to find a mesh file and append it to the ResourceComponent
-		try {
-			addMeshResource();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
 		return;
@@ -581,14 +579,17 @@ public class MOOSEModel extends Item {
 		}
 
 		// First, we'll begin by creating a HashMap of the YAML tree
-		HashMap<String, TreeComposite> yamlMap = (HashMap<String, TreeComposite>) buildYamlMap(yamlTree);
+		HashMap<String, TreeComposite> yamlMap = 
+				(HashMap<String, TreeComposite>) buildYamlMap(yamlTree);
 
 		// Then, create a HashMap of all the input trees
-		HashMap<String, TreeComposite> inputMap = (HashMap<String, TreeComposite>) buildInputMap(inputTree);
+		HashMap<String, TreeComposite> inputMap = 
+				(HashMap<String, TreeComposite>) buildInputMap(inputTree);
 
 		// Lastly, now create a HashMap of the exemplar children defined in the
 		// YAML spec tree
-		HashMap<String, TreeComposite> exemplarMap = (HashMap<String, TreeComposite>) buildExemplarMap(yamlTree);
+		HashMap<String, TreeComposite> exemplarMap = 
+				(HashMap<String, TreeComposite>) buildExemplarMap(yamlTree);
 
 		// Now we loop over the input map, and look for matches in the exemplar
 		// map, and copy any pertinent data over. This namely copies over
@@ -962,14 +963,12 @@ public class MOOSEModel extends Item {
 				// Get the data node which contains the parameters
 				inputNode = (DataComponent) inputCur.getDataNodes().get(0);
 
-				// Begin searching the parameters associated to the inputCur
-				// and try to find one named "type"
-				for (Entry param : inputNode.retrieveAllEntries()) {
+				// Get the "type" parameter from the Node (if it exists)
+				Entry typeEntry = inputNode.retrieveEntry("type");
 
-					// If there's a "type" parameter, make note of its value
-					if ("type".equals(param.getName())) {
-						typeName = param.getValue();
-					}
+				// If there's a "type" parameter, make note of its value
+				if (typeEntry != null) {
+					typeName = typeEntry.getValue();
 				}
 
 				// Check if this is a block that has been renamed, but has a
@@ -1189,15 +1188,17 @@ public class MOOSEModel extends Item {
 			// Try to find the key in the new YAML map (if not found, will just
 			// be chucked out the window)
 			if (yamlMap.containsKey(key)) {
+				
 				// Get the matching YAML version
 				yamlCur = yamlMap.get(key);
 				// Set the exemplar children of the input tree
 				inputCur.setChildExemplars(yamlCur.getChildExemplars());
+				
 				// Now copy the input tree into the YAML tree (set the "copy in
 				// place" flag to true so parent and sibling references are
 				// retained)
 				yamlCur.copy(inputCur, true);
-
+			
 				// Now, check if this is an AdaptiveTreeComposite
 				// and if it is, set the type
 				treeType = TreeType.fromString(yamlCur.getClass().toString());
@@ -1248,6 +1249,52 @@ public class MOOSEModel extends Item {
 						}
 					}
 				}
+				
+				// Now check if this is the Mesh block, if it is, try to convert
+				// the "file" Entry to a FileEntry
+				if (tree.getName().equals("Mesh")) {
+				
+					// Get the mesh file entry on the Mesh block
+					DataComponent dataComp = 
+							(DataComponent) yamlCur.getDataNodes().get(0);
+					Entry meshEntry = dataComp.retrieveEntry("file");
+					
+					if (meshEntry != null && 
+							!meshEntry.getValueType().equals(AllowedValueType.File)) {
+						
+						final ArrayList<String> meshAllowedValues = 
+								new ArrayList<String>(
+										Arrays.asList(meshEntry.getValue()));
+						
+						// Create an Entry with the filenames
+						Entry fileEntry = new Entry() {
+							// Setup the filenames
+							public void setup() {
+								this.allowedValues = meshAllowedValues;
+								this.allowedValueType = AllowedValueType.File;
+
+								return;
+							}
+
+						};
+						
+						// Copy the meshEntry information in
+						fileEntry.setName(meshEntry.getName());
+						fileEntry.setId(meshEntry.getId());
+						fileEntry.setDescription(meshEntry.getDescription());
+						fileEntry.setValue(meshAllowedValues.get(0));
+						fileEntry.setReady(meshEntry.isReady());
+						fileEntry.setRequired(meshEntry.isRequired());
+						fileEntry.setTag(meshEntry.getTag());
+						
+						// Now copy it all back into the original Entry on the
+						// Mesh block
+						meshEntry.copy(fileEntry);
+						
+						// Register the meshEntry with... idk
+//						meshEntry.register(this);
+					}
+				}
 
 			}
 		}
@@ -1258,8 +1305,12 @@ public class MOOSEModel extends Item {
 	/**
 	 * This method attempts to add a mesh ICEResource to the Form's
 	 * ResourceComponent. If it cannot get a handle on a valid ICEResource, this 
-	 * method does nothing. This method assumes the MOOSE Model Builder only
-	 * deals with one ICEResource at a time (the mesh).
+	 * method does nothing. 
+	 * 
+	 * This method assumes the MOOSE Model Builder only deals with one 
+	 * ICEResource at a time (the mesh), and thus, the Form's ResourceComponent 
+	 * will contain no more than one ICEResource at a time.
+	 * 
 	 * @throws IOException 
 	 */
 	private void addMeshResource() throws IOException {
@@ -1269,7 +1320,7 @@ public class MOOSEModel extends Item {
 				(ResourceComponent) form.getComponent(resourceComponentId);
 		// Try to find the mesh file Entry on the Mesh TreeComposite and 
 		// convert it to an ICEResource
-		ICEResource mesh = getMeshResource();
+		ICEResource mesh = createMeshResource();
 		
 		// If a valid mesh file was found and it isn't already on the 
 		// ResourceComponent, add it
@@ -1282,6 +1333,9 @@ public class MOOSEModel extends Item {
 			}
 			// Add the new mesh resource
 			resourceComponent.add(mesh);
+			System.out.println(
+					"MOOSEModel Message: Adding new mesh file " + mesh.getName()
+					+ " to Resources list");
 		}
 		
 		return;
@@ -1289,15 +1343,15 @@ public class MOOSEModel extends Item {
 	
 	/**
 	 * This method scans the Form's TreeComposite with ID=2 for the Mesh block.
-	 * If the mesh block exists, it will attempt to find the name of a mesh
-	 * file. If a mesh filename is found, it will create and return an
+	 * If the Mesh block exists, it will attempt to find the name of a mesh
+	 * file on it. If a mesh filename is found, it will create and return an
 	 * ICEResource representing the mesh file.
 	 * 
-	 * @return	An ICEResource representing the MOOSE tree's mesh file, or null
+	 * @return An ICEResource representing the MOOSE tree's mesh file, or null
 	 * 			if no mesh file was found.
 	 * @throws IOException 
 	 */
-	private ICEResource getMeshResource() throws IOException {
+	private ICEResource createMeshResource() throws IOException {
 		
 		// Create an ICEResource
 		ICEResource mesh = null;
@@ -1320,21 +1374,17 @@ public class MOOSEModel extends Item {
 					// Try to find the Entry with the mesh filename
 					DataComponent meshBlock = 
 							(DataComponent) treeCur.getDataNodes().get(0);
-					for (Entry entry : meshBlock.retrieveAllEntries()) {
+					Entry meshEntry = meshBlock.retrieveEntry("file");
 						
-						if (entry.getName().equalsIgnoreCase("file")) {
-						
-							// Create an ICEResource from the entry and stop
-							mesh = getResource(entry);
-							break;
-						}
+					if (meshEntry != null && !meshEntry.getValue().isEmpty()) {
+						// Create an ICEResource from the entry and stop
+						mesh = getResource(meshEntry);
+						break;
 					}
-					
-					break;
 				}
 			}
 		}
-		
+				
 		return mesh;
 	}
 	
@@ -1393,26 +1443,18 @@ public class MOOSEModel extends Item {
 	private void setAdaptiveType(AdaptiveTreeComposite tree) {
 
 		// Local declarations
-		DataComponent dataNode;
-		ArrayList<Entry> parameters;
 		String typeName = "";
 
-		// Get the parameters of the tree
-		dataNode = (DataComponent) tree.getDataNodes().get(0);
-		parameters = dataNode.retrieveAllEntries();
+		// Get the DataComponent on the tree
+		DataComponent dataNode = (DataComponent) tree.getDataNodes().get(0);
 
-		// Look for the "type" parameter
-		for (Entry currEntry : parameters) {
-			if ("type".equals(currEntry.getName())) {
-				typeName = currEntry.getValue();
-				break;
-			}
-		}
-
-		// If the type is valid, set it
-		if (!typeName.equals(null) && !("").equals(typeName)
-				&& !tree.setType(typeName)) {
-		}
+		// Get the "type" parameter
+		Entry typeEntry = dataNode.retrieveEntry("type");
+		
+		// If it's valid, set it
+		if (typeEntry != null && typeEntry.getValue() != null 
+				&& !typeEntry.getValue().isEmpty()
+				&& !tree.setType(typeName)) { }
 
 		return;
 	}

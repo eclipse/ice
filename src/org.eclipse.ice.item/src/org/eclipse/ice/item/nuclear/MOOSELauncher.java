@@ -27,7 +27,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -38,7 +37,7 @@ import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
  * A SuiteLauncher Item for all MOOSE products (MARMOT, BISON, RELAP-7, RAVEN).
  * The MOOSE framework is developed by Idaho National Lab.
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  * 
  */
 
@@ -467,17 +466,12 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		return;
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	protected String getFileDependenciesSearchString() {
-		return "file"; // FIXME THIS SHOULD BE REPLACED WITH REG EXP
+		return "file";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.ice.item.Item#getIOType()
 	 */
 	@Override

@@ -1713,12 +1713,6 @@ public class JobLauncher extends Item {
 	 *            from the project space for this input. If this parameter is
 	 *            null, then it will ignored.
 	 *            </p>
-	 * @param isFileEntry
-	 *            <p>
-	 *            Flags whether or not the Entry created should be handled as a
-	 *            file Entry. Flagging it as a file Entry will cause it to
-	 *            render on the Form with a browse button.
-	 *            </p>
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
@@ -1749,49 +1743,6 @@ public class JobLauncher extends Item {
 		return;
 		// end-user-code
 	}
-
-	/**
-	 * This method is the same as {@link #addInputType}, except that is does not
-	 * take a boolean flag in the parameters. This method calls the other
-	 * {@link #addInputType} with the boolean isFileEntry flag as false.
-	 * 
-	 * @param name
-	 *            <p>
-	 *            The name of the input file type. ("Input" or
-	 *            "Host configuration" or "Materials information" for example)
-	 *            </p>
-	 * @param varName
-	 *            <p>
-	 *            The name that will be used to refer to this input file when it
-	 *            is referred to by a variable in, for example, the executable
-	 *            string that is used by the JobLauncher. This name must end
-	 *            with the word "file" and, by convention, it should not contain
-	 *            white space or special symbols. If it does not end with the
-	 *            word "file," the JobLauncher will attempt to add it.
-	 *            </p>
-	 *            <p>
-	 *            This parameter may not be null.
-	 *            </p>
-	 * @param description
-	 *            <p>
-	 *            A short description of the input file.
-	 *            </p>
-	 * @param fileExtension
-	 *            <p>
-	 *            The file type extension that should be used to filter files
-	 *            from the project space for this input. If this parameter is
-	 *            null, then it will ignored.
-	 *            </p>
-	 */
-	// public void addInputType(String name, String varName, String description,
-	// String fileExtension) {
-	//
-	// // Call the other method with the boolean flag as false
-	// addInputType(name, varName, description, fileExtension, false);
-	//
-	// return;
-	//
-	// }
 
 	/**
 	 * This method removes an input file type from the Job Launcher. If the file

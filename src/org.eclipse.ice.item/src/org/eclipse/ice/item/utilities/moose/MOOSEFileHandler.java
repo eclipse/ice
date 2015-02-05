@@ -47,36 +47,26 @@ import javax.naming.OperationNotSupportedException;
 import org.yaml.snakeyaml.Yaml;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class reads and writes MOOSE Blocks and Parameters to and from the
  * different MOOSE file types, including parsing from YAML and writing to
  * GetPot.
- * </p>
- * <p>
+ * 
  * There are two primary types of files associated with MOOSE: the YAML file
  * used to specify the possible configuration of an input file and the input
  * file itself, which is a GetPot/Perl configuration file.
- * </p>
- * <p>
+ * 
  * This class realizes the IComponentVisitor interface to find DataComponents in
  * the TreeComposites that can be converted into a parameter set for a MOOSE
  * input block. If there are other Components in a TreeComposite. They are
  * completely ignored.
- * </p>
- * <p>
+ * 
  * Blocks and YAMLBlocks are used because each block needs to be converted to or
  * from a TreeComposite. This is complicated in the case of loading the YAML
  * input specification because it is a *specification* (or schema) and not the
  * input itself. The nodes of this tree are what could be configured, not what
  * is, so they must be setup as child exemplars on a TreeComposite.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
- * 
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MOOSEFileHandler implements IReader, IWriter {
 
@@ -85,7 +75,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 */
 	private static boolean debugFlag = false;
 
-	// Set the debug flag
+	/**
+	 * Set the debug flag
+	 */
 	static {
 		if (System.getProperty("DebugICE") != null) {
 			debugFlag = true;
@@ -93,31 +85,20 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation writes a set of MOOSE blocks to the specified file path.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param filePath
-	 *            <p>
 	 *            The file path to which the MOOSE blocks should be dumped. If
 	 *            the path is null or empty, the operation returns without doing
 	 *            any work.
-	 *            </p>
 	 * @param blockSet
-	 *            <p>
 	 *            The collection of TreeComposites that represent MOOSE blocks
 	 *            to be dumped to the file. The TreeComposites should only
 	 *            contain a single DataComponent, id = 1, and other
 	 *            TreeComposites. Any other components in the TreeComposite will
 	 *            be ignored.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void dumpInputFile(String filePath, ArrayList<TreeComposite> blockSet) {
-		// begin-user-code
 
 		// Local Declarations
 		File inputFile = null;
@@ -177,7 +158,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -317,33 +297,22 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operations loads a MOOSE YAML file at the specified path and returns
-	 * a fully-configured set of ICE TreeComposites.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param filePath
-	 *            <p>
 	 *            The file path from which the MOOSE blocks written in YAML
 	 *            should be read. If the path is null or empty, the operation
 	 *            returns without doing any work.
-	 *            </p>
-	 * @return <p>
-	 *         The MOOSE input file specification as read from the YAML input
+	 * @return The MOOSE input file specification as read from the YAML input
 	 *         and stored in TreeComposites. Each TreeComposite contains both
 	 *         parameters and exemplar children. Any parameters in a
 	 *         TreeComposite are contained in a DataComponent. The id of the
 	 *         data component is 1.
-	 *         </p>
+
 	 * @throws IOException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<TreeComposite> loadYAML(String filePath)
 			throws IOException {
-		// begin-user-code
 
 		// Local Declarations
 		InputStream input = null;
@@ -597,7 +566,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			newTrees.add(treeMap.get(nodeName));
 		}
 		return newTrees;
-		// end-user-code
 	}
 
 	/**
@@ -701,9 +669,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			dumpInputFile(uri.getPath(), children);
 		} else {
 			throw new IllegalArgumentException(
-					"Error: MOOSEFileHandler.write() expects a Form "
-							+ "with a MOOSE TreeComposite with Id = MOOSEModel.mooseTreeCompositeId. "
-							+ "Write failed.");
+					"Error: MOOSEFileHandler.write() expects a Form with a "
+					+ "MOOSE TreeComposite at ID = " 
+					+ MOOSEModel.mooseTreeCompositeId + ". Write failed.");
 		}
 
 		return;
@@ -723,7 +691,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			throw new OperationNotSupportedException("MOOSEFileHandler Error: "
 					+ "IWriter.replace() is not supported.");
 		} catch (OperationNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -757,7 +724,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		// Make sure we have a valid file reference
 		if (file != null && file.exists()) {
-			// Local Declarations
+
 			File mooseFile = new File(file.getLocationURI());
 			ArrayList<TreeComposite> blocks = null;
 			TreeComposite rootNode = new TreeComposite();
@@ -787,8 +754,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				if (blocks != null) {
 					for (TreeComposite block : blocks) {
 						// Clone the block
-						TreeComposite blockClone = (TreeComposite) block
-								.clone();
+						TreeComposite blockClone = 
+								(TreeComposite) block.clone();
 
 						// Don't want to do this if the file is a YAML file.
 						if (!fileExt.toLowerCase().equals("yaml")) {
@@ -828,14 +795,13 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	/**
 	 * This realization of IReader.findAll() reads a Form in from the given file
-	 * reference and walks the corresponding TreeComposite for occurences of the 
+	 * reference and walks the corresponding TreeComposite for occurrences of the 
 	 * given regular expression.
 	 * 
 	 * @param file
 	 *            The reference to the file we are searching in.
 	 * @param regex
 	 *            The regular expression we should search for.
-	 * 
 	 */
 	@Override
 	public ArrayList<Entry> findAll(IFile file, String regex) {
@@ -853,28 +819,27 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		}
 
 		// Walk the tree and get all Entries that may represent a file
-		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-				tree);
+		BreadthFirstTreeCompositeIterator iter = 
+				new BreadthFirstTreeCompositeIterator(tree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
+			
 			// Make sure we have a valid DataComponent
 			if (child.getActiveDataNode() != null) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
 				for (Entry e : data.retrieveAllEntries()) {
+					
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
 					if (!"false".equals(e.getTag()) && e.getValue() != null
 							&& !e.getValue().isEmpty()
-							&& e.getName().toLowerCase().contains(regex) // FIXME
-																			// USE
-																			// REG
-																			// EXPS
+							&& e.getName().toLowerCase().contains(regex) 
 							&& !e.getName().toLowerCase().contains("profile")) {
+						
 						// If this Entry does not have a very descriptive name
 						// we should reset its name to the block it belongs to
 						if ("file".equals(e.getName().toLowerCase())
-								|| "data_file"
-										.equals(e.getName().toLowerCase())) {
+								|| "data_file".equals(e.getName().toLowerCase())) {
 							e.setName(child.getName());
 						}
 						retEntries.add((Entry) e.clone());
