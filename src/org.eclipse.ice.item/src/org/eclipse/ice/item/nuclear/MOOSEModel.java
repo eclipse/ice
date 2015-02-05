@@ -443,11 +443,14 @@ public class MOOSEModel extends Item {
 		if (mooseFileComponent != null) {
 			Entry mooseSpecFileEntry = mooseFileComponent
 					.retrieveEntry("MOOSE-Based Application");
+			
 			// Load the MOOSE-based application if it is different than the one
 			// currently loaded.
 			if (mooseSpecFileEntry != null) {
-				if (loadedApp == null || // True with new MOOSE Model Builder
+				
+				if (loadedApp == null || 
 						!loadedApp.equals(mooseSpecFileEntry.getValue())) {
+					
 					// Get the app name
 					loadedApp = mooseSpecFileEntry.getValue();
 
@@ -475,22 +478,14 @@ public class MOOSEModel extends Item {
 					// Merge the input tree into the YAML spec
 					mergeTrees(inputTree, yamlTree);
 					
-					// TODO should we do this here too?
-					// Try to find a mesh file and append it to the ResourceComponent
+					// Try to find a mesh file and append it as an ICEResource
+					// on the ResourceComponent
 					try {
-						ResourceComponent resourceComponent = (ResourceComponent) 
-								form.getComponent(resourceComponentId);
-						ICEResource mesh = getMeshResource();
-						
-						// If a valid mesh file was found and it isn't already
-						// on the ResourceComponent, add it
-						if (mesh != null && !resourceComponent.contains(mesh)) {
-							resourceComponent.add(mesh);
-						}
-					} catch (IOException e1) {
-						e1.printStackTrace();
+						addMeshResource();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-
+					
 				}
 				// Update the status
 				retStatus = FormStatus.ReadyToProcess;
@@ -534,17 +529,9 @@ public class MOOSEModel extends Item {
 		
 		// Try to find a mesh file and append it to the ResourceComponent
 		try {
-			ResourceComponent resourceComponent = 
-					(ResourceComponent) form.getComponent(resourceComponentId);
-			ICEResource mesh = getMeshResource();
-			
-			// If a mesh file was found and it's not already on the 
-			// ResourceComponent, add it
-			if (mesh != null && !resourceComponent.contains(mesh)) {
-				resourceComponent.add(mesh);
-			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			addMeshResource();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 		return;
@@ -1268,6 +1255,38 @@ public class MOOSEModel extends Item {
 		return;
 	}
 
+	/**
+	 * This method attempts to add a mesh ICEResource to the Form's
+	 * ResourceComponent. If it cannot get a handle on a valid ICEResource, this 
+	 * method does nothing. This method assumes the MOOSE Model Builder only
+	 * deals with one ICEResource at a time (the mesh).
+	 * @throws IOException 
+	 */
+	private void addMeshResource() throws IOException {
+		
+		// Get the ResourceComponent on the Form
+		ResourceComponent resourceComponent = 
+				(ResourceComponent) form.getComponent(resourceComponentId);
+		// Try to find the mesh file Entry on the Mesh TreeComposite and 
+		// convert it to an ICEResource
+		ICEResource mesh = getMeshResource();
+		
+		// If a valid mesh file was found and it isn't already on the 
+		// ResourceComponent, add it
+		if (mesh != null && !resourceComponent.contains(mesh)) {
+			
+			// We only deal with one mesh at a time, so make sure we don't 
+			// have any leftover meshes hanging around
+			if (!resourceComponent.isEmpty()) {
+				resourceComponent.clear();
+			}
+			// Add the new mesh resource
+			resourceComponent.add(mesh);
+		}
+		
+		return;
+	}
+	
 	/**
 	 * This method scans the Form's TreeComposite with ID=2 for the Mesh block.
 	 * If the mesh block exists, it will attempt to find the name of a mesh
