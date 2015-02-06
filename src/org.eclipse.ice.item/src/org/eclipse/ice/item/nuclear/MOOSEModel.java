@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -112,6 +113,12 @@ public class MOOSEModel extends Item {
 	 */
 	@XmlTransient
 	protected String loadedApp;
+	
+	/**
+	 * The name of the file currently stored on the Form's ResourceComponent.
+	 */
+	@XmlTransient
+	protected String meshFileName;
 
 	/**
 	 * An ArrayList of TreeComposites, constructed from the top-level children
@@ -485,7 +492,7 @@ public class MOOSEModel extends Item {
 				// Try to find a mesh file and append it as an ICEResource
 				// on the ResourceComponent
 				try {
-					addMeshResource();
+					updateMeshResource();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1257,43 +1264,11 @@ public class MOOSEModel extends Item {
 							(DataComponent) yamlCur.getDataNodes().get(0);
 					Entry meshEntry = dataComp.retrieveEntry("file");
 					
-					if (meshEntry != null && 
-							!meshEntry.getValueType().equals(AllowedValueType.File)) {
-						
-						final ArrayList<String> meshAllowedValues = 
-								new ArrayList<String>(
-										Arrays.asList(meshEntry.getValue()));
-						
-						// Create an Entry with the mesh filename
-						Entry fileEntry = new Entry() {
-							// Setup the filenames
-							public void setup() {
-								this.allowedValues = meshAllowedValues;
-								this.allowedValueType = AllowedValueType.File;
-
-								return;
-							}
-
-						};
-						
-						// Copy the meshEntry information in
-						fileEntry.setName(meshEntry.getName());
-						fileEntry.setId(meshEntry.getId());
-						fileEntry.setDescription(meshEntry.getDescription());
-						fileEntry.setValue(meshAllowedValues.get(0));
-						fileEntry.setReady(meshEntry.isReady());
-						fileEntry.setRequired(meshEntry.isRequired());
-						fileEntry.setTag(meshEntry.getTag());
-						
-						// Now copy it all back into the original Entry on the
-						// Mesh block
-						meshEntry.copy(fileEntry);
-						
-						// Register the meshEntry with... idk
-//						meshEntry.register(this);
+					// Convert to a File type Entry
+					if (meshEntry != null) {
+						convertMeshEntry(meshEntry);
 					}
 				}
-
 			}
 		}
 
@@ -1311,7 +1286,7 @@ public class MOOSEModel extends Item {
 	 * 
 	 * @throws IOException 
 	 */
-	private void addMeshResource() throws IOException {
+	private void updateMeshResource() throws IOException {
 		
 		// Get the ResourceComponent on the Form
 		ResourceComponent resourceComponent = 
@@ -1331,6 +1306,8 @@ public class MOOSEModel extends Item {
 			}
 			// Add the new mesh resource
 			resourceComponent.add(mesh);
+			// Update the name on the Form
+			meshFileName = mesh.getName();
 			System.out.println(
 					"MOOSEModel Message: Adding new mesh file " + mesh.getName()
 					+ " to Resources list");
@@ -1373,17 +1350,71 @@ public class MOOSEModel extends Item {
 					DataComponent meshBlock = 
 							(DataComponent) treeCur.getDataNodes().get(0);
 					Entry meshEntry = meshBlock.retrieveEntry("file");
+					
+					// Convert the Mesh entry to a File Entry
+					if (meshEntry != null) {
+						convertMeshEntry(meshEntry);
+					}
 						
 					if (meshEntry != null && !meshEntry.getValue().isEmpty()) {
 						// Create an ICEResource from the entry and stop
 						mesh = getResource(meshEntry);
-						break;
 					}
+					
+					break;
 				}
 			}
 		}
 				
 		return mesh;
+	}
+	
+	/**
+	 * This method convert the mesh "file" Entry into a File Entry and registers
+	 * the Form as a listener.
+	 * 
+	 * @param meshEntry	The "file" Entry on the Mesh TreeComposite
+	 */
+	private void convertMeshEntry(Entry meshEntry) {
+		
+		// If the "file" Entry isn't a File Entry, convert it, otherwise do 
+		// nothing
+		if (meshEntry != null && 
+				!meshEntry.getValueType().equals(AllowedValueType.File)) {
+			
+			final ArrayList<String> meshAllowedValues = 
+					new ArrayList<String>(
+							Arrays.asList(meshEntry.getValue()));
+			
+			// Create an Entry with the mesh filename
+			Entry fileEntry = new Entry() {
+				// Setup the filenames
+				public void setup() {
+					this.allowedValues = meshAllowedValues;
+					this.allowedValueType = AllowedValueType.File;
+
+					return;
+				}
+
+			};
+			
+			// Copy the meshEntry information in
+			fileEntry.setName(meshEntry.getName());
+			fileEntry.setId(meshEntry.getId());
+			fileEntry.setDescription(meshEntry.getDescription());
+			fileEntry.setValue(meshAllowedValues.get(0));
+			fileEntry.setReady(meshEntry.isReady());
+			fileEntry.setRequired(meshEntry.isRequired());
+			fileEntry.setTag(meshEntry.getTag());
+			
+			// Now copy it all back into the original Entry on the Mesh block
+			meshEntry.copy(fileEntry);
+			
+			// Register the Model to listen to changes in the mesh Entry
+			meshEntry.register(this);
+		}
+		
+		return;
 	}
 	
 	/**
@@ -1454,6 +1485,29 @@ public class MOOSEModel extends Item {
 				&& !typeEntry.getValue().isEmpty()
 				&& !tree.setType(typeName)) { }
 
+		return;
+	}
+	
+	/**
+	 * This method is intended primarily to update the ResourceComponet with a
+	 * new VizResource if the Mesh block's "file" Entry has changed.
+	 * 
+	 * @param component	The component that triggered an update
+	 */
+	@Override
+	public void update(IUpdateable component) {
+		
+		// If the mesh file name is different, update the ResourceComponent
+		if (component instanceof Entry && 
+				(meshFileName == null || meshFileName.isEmpty() 
+				|| !((Entry) component).getValue().equals(meshFileName))) {
+			try {
+				updateMeshResource();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		return;
 	}
 

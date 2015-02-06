@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -33,6 +34,7 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.action.LoginInfoForm;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
@@ -726,7 +728,8 @@ public class JobLauncherTester {
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(JobLauncher.class);
-
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		
 		// Set up item
 		JobLauncher persistedItem = new JobLauncher();
 		persistedItem.setDescription("JobLauncher item description");
