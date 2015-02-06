@@ -22,6 +22,7 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.Item;
@@ -372,7 +373,8 @@ public class PROTEUSModelTester {
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(PROTEUSModel.class);
-
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		
 		// Create 6 DataComponents and append them to the form
 		for (int i = 1; i <= 6; i++) {
 

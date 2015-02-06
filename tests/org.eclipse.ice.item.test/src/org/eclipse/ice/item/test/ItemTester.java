@@ -42,6 +42,7 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.io.serializable.IOService;
@@ -739,7 +740,8 @@ public class ItemTester implements ItemListener {
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(Item.class);
-
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		
 		// Setup the project
 		try {
 			// Get the project handle
@@ -774,6 +776,7 @@ public class ItemTester implements ItemListener {
 		IOService ioService = new IOService();
 		XMLPersistenceProvider xmlpp = new XMLPersistenceProvider(project);
 		xmlpp.addBuilder(new TestItemBuilder());
+		xmlpp.registerClassProvider(new ICEJAXBClassProvider());
 		xmlpp.start();
 		ioService.addWriter(xmlpp);
 		item.setIOService(ioService);

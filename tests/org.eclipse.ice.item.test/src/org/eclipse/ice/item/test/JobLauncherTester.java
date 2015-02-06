@@ -37,6 +37,7 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.action.LoginInfoForm;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
@@ -736,7 +737,8 @@ public class JobLauncherTester {
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(JobLauncher.class);
-
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		
 		// Set up item
 		JobLauncher persistedItem = new JobLauncher();
 		persistedItem.setDescription("JobLauncher item description");
