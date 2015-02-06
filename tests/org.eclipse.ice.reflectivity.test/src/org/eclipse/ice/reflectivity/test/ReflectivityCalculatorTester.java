@@ -106,6 +106,53 @@ public class ReflectivityCalculatorTester {
 
 	/**
 	 * This class tests
+	 * {@link ReflectivityCalculator#getExtensionLengths(double[], double, double, double, int, int, int)}
+	 * .
+	 */
+	@Test
+	public void testGetExtensionLengths() {
+		// Load the convolution file
+		Form form = reader.read(project.getFile("getExtensionLengths.csv"));
+		ListComponent<String[]> lines = (ListComponent<String[]>) form
+				.getComponent(1);
+		assertEquals(403, lines.size());
+
+		// Get the parameters and reference output values
+		String line[] = lines.get(0);
+		double delQ0 = Double.valueOf(line[0]);
+		double delQ1oQ = Double.valueOf(line[1]);
+		double wavelength = Double.valueOf(line[2]);
+		int numPoints = Integer.valueOf(line[3]);
+		int refNumLowPoints = Integer.valueOf(line[4]);
+		int refNumHighPoints = Integer.valueOf(line[5]);
+
+		// Load the q array. They are padded by numLowPoints for the
+		// convolution.
+		double[] waveVector = new double[lines.size() - 1];
+		for (int i = 0; i < lines.size() - 1; i++) {
+			line = lines.get(i + 1);
+			waveVector[i] = Double.valueOf(line[0]);
+		}
+		assertEquals(numPoints, waveVector.length);
+		assertEquals(4.401373320E-01, waveVector[numPoints - 1], 0.0);
+
+		// Call the function
+		int numLowPoints = 0, numHighPoints = 0;
+		ReflectivityCalculator calculator = new ReflectivityCalculator();
+		numLowPoints = calculator.getLowExtensionLength(waveVector, delQ0, delQ1oQ,
+				numPoints);
+		numHighPoints = calculator.getHighExtensionLength(waveVector, delQ0, delQ1oQ,
+				numPoints);
+
+		// Check the high and low extension lengths
+		assertEquals(refNumLowPoints, numLowPoints);
+		assertEquals(refNumHighPoints, numHighPoints);
+
+		return;
+	}
+
+	/**
+	 * This class tests
 	 * {@link ReflectivityCalculator#convolute(double[], double, double, double, int, int, double[])}
 	 * .
 	 */
@@ -128,8 +175,8 @@ public class ReflectivityCalculatorTester {
 
 		// Load the q and refFit arrays. They are padded by numLowPoints for the
 		// convolution.
-		double[] waveVector = new double[lines.size()-1];
-		double[] refRefFit = new double[lines.size()-1]; // Reference!
+		double[] waveVector = new double[lines.size() - 1];
+		double[] refRefFit = new double[lines.size() - 1]; // Reference!
 		for (int i = 0; i < lines.size() - 1; i++) {
 			line = lines.get(i + 1);
 			waveVector[i] = Double.valueOf(line[0]);
@@ -140,13 +187,13 @@ public class ReflectivityCalculatorTester {
 
 		// Load the tiles
 		form = reader.read(project.getFile("getSpecRefSqrdMod_q841.csv"));
-		ListComponent<String []> tileLines = (ListComponent<String[]>) form
+		ListComponent<String[]> tileLines = (ListComponent<String[]>) form
 				.getComponent(1);
 		Tile[] tiles = loadTiles(tileLines);
 		assertEquals(173, tiles.length);
-		
+
 		// Compute the initial value of refFit
-		double[] refFit = new double[lines.size()-1];
+		double[] refFit = new double[lines.size() - 1];
 		double qEff = 0.0;
 		ReflectivityCalculator calculator = new ReflectivityCalculator();
 		for (int i = 0; i < numHighPoints + numLowPoints + numPoints; i++) {
@@ -155,15 +202,15 @@ public class ReflectivityCalculatorTester {
 			} else {
 				qEff = waveVector[i];
 			}
-			refFit[i] = calculator.getModSqrdSpecRef(qEff,wavelength,tiles);
-			System.out.println(i + " " + refFit[i]);
+			refFit[i] = calculator.getModSqrdSpecRef(qEff, wavelength, tiles);
 		}
-		
+
 		// Do the convolution and check the result
 		calculator.convolute(waveVector, delQ0, delQ1oQ, wavelength, numPoints,
 				numLowPoints, numHighPoints, refFit);
 		for (int i = 0; i < refFit.length; i++) {
-			assertEquals(refRefFit[i], refFit[i], Math.abs(refRefFit[i])/1.0e-4);
+			assertEquals(refRefFit[i], refFit[i],
+					Math.abs(refRefFit[i]) / 1.0e-4);
 		}
 
 		return;
@@ -201,7 +248,8 @@ public class ReflectivityCalculatorTester {
 		System.out.println(specRefSqrd + " " + expectedSpecRefSqrd);
 		System.out.println("RERR = " + (specRefSqrd - expectedSpecRefSqrd)
 				/ expectedSpecRefSqrd);
-		assertEquals(expectedSpecRefSqrd, specRefSqrd, Math.abs(expectedSpecRefSqrd)/1.0e-4);
+		assertEquals(expectedSpecRefSqrd, specRefSqrd,
+				Math.abs(expectedSpecRefSqrd) / 1.0e-4);
 
 		// Get the two single parameters and the final result out of the data
 		// for the second test case
@@ -220,7 +268,7 @@ public class ReflectivityCalculatorTester {
 		System.out.println("RERR = " + (specRefSqrd - expectedSpecRefSqrd)
 				/ expectedSpecRefSqrd);
 		assertEquals(expectedSpecRefSqrd, specRefSqrd,
-				Math.abs(expectedSpecRefSqrd/1.0e-4));
+				Math.abs(expectedSpecRefSqrd / 1.0e-4));
 
 		return;
 	}

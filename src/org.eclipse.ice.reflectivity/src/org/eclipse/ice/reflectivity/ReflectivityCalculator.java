@@ -138,7 +138,7 @@ public class ReflectivityCalculator {
 			double wavelength, int numPoints, int numLowPoints,
 			int numHighPoints, double[] refFit) {
 
-		double log2 = Math.log(2.0);
+		double ln2 = Math.log(2.0);
 		double qEff = 0.0, qRes = 0.0, rExp = 0.0, rNorm = 0.0;
 		double[] refTemp = new double[maxPoints];
 		int nStep = 0;
@@ -153,7 +153,7 @@ public class ReflectivityCalculator {
 				qEff = waveVector[i];
 			}
 			double qDel = delQ0 + qEff * delQ1oQ;
-			double twSgSq = 2.0 * qDel * qDel / (8.0 * log2);
+			double twSgSq = 2.0 * qDel * qDel / (8.0 * ln2);
 			if (twSgSq < 1.0e-10) {
 				twSgSq = 1.0e-10;
 			}
@@ -208,4 +208,81 @@ public class ReflectivityCalculator {
 		return;
 	}
 
+	/**
+	 * This operation calculates the length of the low-Q extension of the data
+	 * to be convoluted with the delt-Q full-width half-maximum Gaussian
+	 * resolution function.
+	 * 
+	 * @param q
+	 *            the wave vector (Q) plus additional space for the convolution.
+	 *            This array should have length = numPoints + numLowPoints.
+	 * @param delQ0
+	 *            the zeroth order term of a Taylor expansion of the
+	 *            reflectometer resolution function dQ = dQ_0 + (dQ/Q)_1 x Q +
+	 *            ...
+	 * @param delQ1oQ
+	 *            the zeroth order term of the Q resolution Taylor expansion
+	 * @param numPoints
+	 *            the number of points in the wave vector
+	 * @return numLowPoints the number of points in the low-Q extension to q
+	 *         used for convolution of the data with the resolution function.
+	 *         Returned by ExtResFixedLambda.
+	 */
+	public int getLowExtensionLength(double[] waveVector, double delQ0,
+			double delQ1oQ, int numPoints) {
+
+		double ln2 = Math.log(2.0);
+
+		// Determine the loq-Q extension
+		double qDel = delQ0 + waveVector[0] * delQ1oQ;
+		double qStep = waveVector[1] - waveVector[0];
+		double twSgSq = Math.max(2.0 * qDel * qDel / (8.0 * ln2), 1.0e-10);
+		int numLowPoints = 0;
+		double qR = 0.0;
+		while (qR * qR / twSgSq <= 6.908) {
+			numLowPoints++;
+			qR = qR + qStep;
+		}
+
+		return numLowPoints;
+	}
+
+	/**
+	 * This operation calculates the length of the high-Q extension of the data
+	 * to be convoluted with the delt-Q full-width half-maximum Gaussian
+	 * resolution function.
+	 * 
+	 * @param q
+	 *            the wave vector (Q) plus additional space for the convolution.
+	 *            This array should have length = numPoints + numLowPoints.
+	 * @param delQ0
+	 *            the zeroth order term of a Taylor expansion of the
+	 *            reflectometer resolution function dQ = dQ_0 + (dQ/Q)_1 x Q +
+	 *            ...
+	 * @param delQ1oQ
+	 *            the zeroth order term of the Q resolution Taylor expansion
+	 * @param numPoints
+	 *            the number of points in the wave vector
+	 * @return numHighPoints the number of points in the high-Q extension to q
+	 *         used for convolution of the data with the resolution function.
+	 *         Returned by ExtResFixedLambda.
+	 */
+	public int getHighExtensionLength(double[] waveVector, double delQ0,
+			double delQ1oQ, int numPoints) {
+
+		double ln2 = Math.log(2.0);
+
+		// Determine the high-Q extension
+		double qDel = delQ0 + waveVector[numPoints - 1] * delQ1oQ;
+		double qStep = waveVector[numPoints - 1] - waveVector[numPoints - 2];
+		double twSgSq = 2.0 * qDel * qDel / (8.0 * ln2);
+		int numHighPoints = 0;
+		double qR = 0.0;
+		while (qR * qR / twSgSq <= 6.908) {
+			numHighPoints++;
+			qR = qR + qStep;
+		}
+
+		return numHighPoints;
+	}
 }
