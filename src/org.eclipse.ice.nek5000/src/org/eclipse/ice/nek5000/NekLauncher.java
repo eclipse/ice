@@ -171,9 +171,7 @@ public class NekLauncher extends SuiteLauncher {
 		String inputCopyStage = "cp ${inputFile} "
 				+ executableMap.get(executable) + ".rea;";
 
-		// Define the makenek, genamp, nek and visnek launch stages
-		// Not ready yet because genmap
-		// is interactive!
+		// Define the nek and visnek launch stages
 		String launchStage = "${installDir}trunk/tools/scripts/nek "
 				+ executableMap.get(executable) + ";";
 		String vizStage = "${installDir}trunk/tools/scripts/visnek "
