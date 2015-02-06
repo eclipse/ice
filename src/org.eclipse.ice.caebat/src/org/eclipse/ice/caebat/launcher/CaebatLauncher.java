@@ -45,7 +45,7 @@ import org.eclipse.core.runtime.Path;
  * @author s4h
  */
 @XmlRootElement(name = "CaebatLauncher")
-public class CaebatLauncher extends JobLauncher implements IUpdateableListener {
+public class CaebatLauncher extends JobLauncher {
 
 	/**
 	 * The execution command
@@ -218,14 +218,8 @@ public class CaebatLauncher extends JobLauncher implements IUpdateableListener {
 		IPSWriter writer = new IPSWriter();
 		DataComponent fileComponent = (DataComponent) form.getComponent(1);
 		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
-		Entry kvPairFileEntry = fileComponent
-				.retrieveEntry("Key-value pair file");
-		IPath fileIPath = new Path(project.getLocation().toOSString()
-				+ separator + inputFileEntry.getValue());
-		IPath kvFileIPath = new Path(project.getLocation().toOSString()
-				+ separator + kvPairFileEntry.getValue());
+		Entry kvPairFileEntry = fileComponent.retrieveEntry("Use custom key-value pair file?");
 		IFile inputFile = project.getFile(inputFileEntry.getValue());
-		IFile kvPairFile = project.getFile(kvPairFileEntry.getValue());
 
 		// Get the Run ID that may be used to locate the simulation files
 		String runID = "";
@@ -270,11 +264,16 @@ public class CaebatLauncher extends JobLauncher implements IUpdateableListener {
 		}
 
 		// If we are supplying a new KV Pair file replace it in the input file
-		if (kvPairFileEntry.getValue() != "Use Default KV Entries"
-				|| kvPairFileEntry.getValue() != "") {
-			writer.replace(inputFile, "input_keyvalue",
-					kvPairFileEntry.getValue());
+		String setKVPerms = "";
+		String mvKVPairFile = "";
+		if (kvPairFileEntry.getValue() != "false") {
+			String kvFileName = fileComponent.retrieveEntry("Key-value pair file").getValue();
+			writer.replace(inputFile, "input_keyvalue", kvFileName);
+			setKVPerms = "chmod 775 " + kvFileName + " && ";
+			mvKVPairFile = "cp " + kvFileName + " input && ";
 		}
+		
+
 
 		// Pull some information from the form
 		TableComponent hostTable = (TableComponent) form.getComponent(4);
@@ -284,8 +283,6 @@ public class CaebatLauncher extends JobLauncher implements IUpdateableListener {
 		String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT
 				+ "/vibe/components && ";
 		String copyCase = "cp -r " + dataDir + "/" + caseName + "/* . && ";
-		String setKVPerms = "chmod 775 " + kvPairFileEntry.getValue() + " && ";
-		String mvKVPairFile = "cp " + kvPairFileEntry.getValue() + " input && ";
 		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
 				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile} && ";
 		String CAEBATExec = "${installDir}ipsframework-code/install/bin/ips.py"
@@ -312,10 +309,12 @@ public class CaebatLauncher extends JobLauncher implements IUpdateableListener {
 		super.update(component);
 		
 		// Determine whether the file selector needs to be added to or removed from the form
-		if (component.getName() == "Use custom key-value pair file?" && ((Entry) component).getValue() == "true") {
+		if (component.getName() == "Use custom key-value pair file?" 
+				&& ((Entry) component).getValue() == "true") {
 			 addInputType("Key-value pair file", "keyValueFile",
 					 "Key-value pair with case parameters", ".dat");
-		} else if (component.getName() == "Use custom key-value pair file?" && ((Entry) component).getValue() == "false") {
+		} else if (component.getName() == "Use custom key-value pair file?" 
+				&& ((Entry) component).getValue() == "false") {
 			removeInputType("Key-value pair file");
 		}
 
