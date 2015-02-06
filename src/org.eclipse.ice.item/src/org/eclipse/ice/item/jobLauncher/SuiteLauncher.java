@@ -30,7 +30,7 @@ import org.eclipse.core.resources.IProject;
  * different problem. This includes codes like SHARP, MOOSE and Nek5000.
  * 
  * The SuiteLauncher relies on several very simple overrides of operations on
- * the JobLauncher base class and provides very little little new capability. It
+ * the JobLauncher base class and provides very little new capability. It
  * provides all of the normal capabilities of a JobLauncher.
  * 
  * Like JobLauncher, the setupForm operation has to be called early by
