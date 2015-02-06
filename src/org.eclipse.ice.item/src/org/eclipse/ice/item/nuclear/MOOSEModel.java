@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
-import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +29,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -1266,7 +1264,7 @@ public class MOOSEModel extends Item {
 								new ArrayList<String>(
 										Arrays.asList(meshEntry.getValue()));
 						
-						// Create an Entry with the filenames
+						// Create an Entry with the mesh filename
 						Entry fileEntry = new Entry() {
 							// Setup the filenames
 							public void setup() {
