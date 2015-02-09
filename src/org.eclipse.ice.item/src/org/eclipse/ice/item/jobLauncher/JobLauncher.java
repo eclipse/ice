@@ -38,6 +38,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -264,12 +265,12 @@ public class JobLauncher extends Item {
 	private Dictionary<String, String> actionDataMap;
 
 	/**
-	 * The set of resources stored in the project and their last modification
-	 * time. It may be different than what is returned by
+	 * The set of resources stored in the JobLauncher's working directory, and 
+	 * their last modification time. It may be different than what is returned by
 	 * IResource.getModificationTime(), which is exactly why we are tracking it.
 	 */
 	@XmlTransient()
-	private HashMap<IResource, Long> projectMemberModMap;
+	private HashMap<IResource, Long> workingDirMemberModMap;
 
 	/**
 	 * This is a utility class used to describe a type of file by the
@@ -388,7 +389,7 @@ public class JobLauncher extends Item {
 		super(projectSpace);
 
 		// Setup the resource list
-		projectMemberModMap = new HashMap<IResource, Long>();
+		workingDirMemberModMap = new HashMap<IResource, Long>();
 
 		// end-user-code
 	}
@@ -487,7 +488,7 @@ public class JobLauncher extends Item {
 				for (int i = 0; i < members.length; i++) {
 					// Add the resource and its modification time stamp to the
 					// list.
-					projectMemberModMap.put(members[i],
+					workingDirMemberModMap.put(members[i],
 							members[i].getModificationStamp());
 				}
 			} catch (CoreException | IOException e) {
@@ -509,16 +510,33 @@ public class JobLauncher extends Item {
 		// Local Declarations
 		int lastId;
 		long lastTimeStamp;
-		ResourceComponent resources = (ResourceComponent) form.getComponent(2);
+		ResourceComponent resources = 
+				(ResourceComponent) form.getComponent(2);
 		ArrayList<ICEResource> resourceList = resources.getResources();
 		ArrayList<String> resourceNames = new ArrayList<String>();
-		String fileName;
+		String fileName, workingDirName;
+		IFolder workingDir = null;
+		String separator = System.getProperty("file.separator");
 
 		try {
 			// Refresh the project space
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			
 			// Get the list of members
-			IResource[] latestMembers = project.members();
+			String workingDirPath = getWorkingDirectory();
+			if (workingDirPath != null && !workingDirPath.isEmpty()) {
+				
+				// Get the working directory name
+				int lastDir = workingDirPath.lastIndexOf(separator);
+				workingDirName = workingDirPath.substring(lastDir + 1);	
+				
+				workingDir = 
+						project.getFolder("jobs" + separator + workingDirName);
+				
+			}
+			
+			
+			IResource[] latestMembers = workingDir.members();
 			// Get the names of the current resources
 			for (ICEResource namedResource : resourceList) {
 				resourceNames.add(namedResource.getPath().toASCIIString());
@@ -529,7 +547,7 @@ public class JobLauncher extends Item {
 			// Find the members that are new
 			for (int i = 0; i < latestMembers.length; i++) {
 				IResource currentResource = latestMembers[i];
-				if (!projectMemberModMap.keySet().contains(currentResource)) {
+				if (!workingDirMemberModMap.keySet().contains(currentResource)) {
 					System.out.println("JobLauncher Message: " + "Adding file "
 							+ currentResource.getName() + " to list.");
 					// Get the file as an ICEResource object
@@ -546,7 +564,7 @@ public class JobLauncher extends Item {
 					}
 				} else {
 					// If we already have the file, get it.
-					lastTimeStamp = projectMemberModMap.get(currentResource);
+					lastTimeStamp = workingDirMemberModMap.get(currentResource);
 					// Get its file full file name
 					fileName = currentResource.getLocationURI().toASCIIString();
 					// Check the time stamp to see if it was modified AND make

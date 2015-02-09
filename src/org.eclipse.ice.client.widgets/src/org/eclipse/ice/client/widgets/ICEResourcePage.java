@@ -31,10 +31,7 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
@@ -273,14 +270,23 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 				// Switch to the plot composite
 				layout.topControl = plotComposite;
 				try {
-					// Get the plot from the hash table since the user clicked on it
-					IPlot plot = plotMap.get(selectedResource.getPath().toString());
+					// Add the plot to the plot map if it hasn't already been
+					IPlot plot = vizFactory.get().createPlot(selectedResource.getPath());
+					if (!plotMap.containsKey(plot.getDataSource().toString())) {
+						// Cram the plot in the hashtable until the user clicks on it
+						plotMap.put(plot.getDataSource().toString(), plot);
+					}
 					// Get the plot types and pick a plot type
 					Map<String,String[]> plotTypes = plot.getPlotTypes();
 					ArrayList<String> keys = new ArrayList<String>(plotTypes.keySet());
+					// TODO these are just defaults, but we will later want to
+					// select which values to choose
 					String category = keys.get(0);
 					String type = plotTypes.get(category)[0];
+					
 					// Draw the plot
+					// FIXME need to check if a plot is already drawn, otherwise
+					// it draws as many times as it's clicked on
 					plot.draw(category, type, plotComposite);	
 					plotComposite.layout();
 				} catch (Exception e) {
