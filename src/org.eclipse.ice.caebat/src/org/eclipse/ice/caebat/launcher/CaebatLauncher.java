@@ -148,7 +148,8 @@ public class CaebatLauncher extends JobLauncher {
 		// Add the input files types for the BatML files
 		addInputType("Key-value pair file", "keyValueFile",
 				"Key-value pair with case parameters", ".dat");
-		return;
+
+	    return;
 		// end-user-code
 	}
 
@@ -188,22 +189,26 @@ public class CaebatLauncher extends JobLauncher {
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
 		IPSReader reader = new IPSReader();
+		IPSWriter writer = new IPSWriter();
 	    DataComponent fileComponent = (DataComponent) form.getComponent(1);
 		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
+		Entry kvPairFileEntry = fileComponent.retrieveEntry("Key-value pair file");
 		IPath fileIPath = new Path(project.getLocation().toOSString() + separator + inputFileEntry.getValue()); 
-		IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
-
+		IPath kvFileIPath = new Path(project.getLocation().toOSString() + separator + kvPairFileEntry.getValue());
+		IFile inputFile = project.getFile(inputFileEntry.getValue());
+		IFile kvPairFile = project.getFile(kvPairFileEntry.getValue());
+		
 		// Get the Run ID that may be used to locate the simulation files
 		String runID = "";
 		ArrayList<Entry> runIDMatches = reader.findAll(inputFile, "RUN_ID=.*");
-		if (!runIDMatches.isEmpty()) {
+		if (runIDMatches != null && !runIDMatches.isEmpty()) {
 			runID = runIDMatches.get(0).getName().split("=")[1];
 		}
 		
-		// Get the Case Name which may also be used to locat the simulation files
+		// Get the Case Name which may also be used to locate the simulation files
 		String caseName = "";
 		ArrayList<Entry> caseNameMatches = reader.findAll(inputFile, "SIM_NAME=.*");		
-		if (!caseNameMatches.isEmpty()) {
+		if (caseNameMatches != null && !caseNameMatches.isEmpty()) {
 			caseName = caseNameMatches.get(0).getName().split("=")[1];
 		}
 		// Determine if we need to use the Run ID or the Case Name to find the files
@@ -214,13 +219,25 @@ public class CaebatLauncher extends JobLauncher {
 		// Get the base path for the simulation files 
 		String dataDir = "";
 		ArrayList<Entry> simRootMatches = reader.findAll(inputFile, "SIM_ROOT=.*");
-		if (!simRootMatches.isEmpty()) {
+		if (simRootMatches != null && !simRootMatches.isEmpty()) {
 			dataDir = simRootMatches.get(0).getName().split("=")[1];
 		}
 		if (dataDir.endsWith("/$SIM_NAME")) {
 			dataDir = dataDir.substring(0, dataDir.length() - 10);
 		} else if (dataDir.endsWith("${SIM_NAME}")) {
 			dataDir = dataDir.substring(0, dataDir.length() - 12);		
+		}
+		
+		// Get the input file directory for the simulation
+		String inputDir = "";
+		ArrayList<Entry> inputDirMatches = reader.findAll(inputFile, ".*INPUT_DIR.*");
+		if (inputDirMatches != null && !inputDirMatches.isEmpty()) {
+			inputDir = inputDirMatches.get(0).getName().split("=")[1];
+		}
+		
+		// If we are supplying a new KV Pair file replace it in the input file
+		if (kvPairFileEntry.getValue() != "Use Default KV Entries" || kvPairFileEntry.getValue() != "") {
+			writer.replace(inputFile, "input_keyvalue", kvPairFileEntry.getValue()	);
 		}
 		
 		// Pull some information from the form
@@ -230,12 +247,14 @@ public class CaebatLauncher extends JobLauncher {
 		// Set up the execution command
 		String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT + "/vibe/components && ";
 		String copyCase = "cp -r " + dataDir + "/" + caseName + "/* . && ";
+		String setKVPerms = "chmod 775 " + kvPairFileEntry.getValue() + " && ";
+		String mvKVPairFile = "cp " + kvPairFileEntry.getValue() + " input && ";
 		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
 				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile} && ";
 		String CAEBATExec = "${installDir}ipsframework-code/install/bin/ips.py"
 				+ " -a --log=temp.log --platform=" + IPS_ROOT
 				+ "/workstation.conf --simulation=${inputFile}; ";
-		fullExecCMD = exportRoot + copyCase + fixSIMROOT + CAEBATExec;
+		fullExecCMD = exportRoot + copyCase + setKVPerms + mvKVPairFile + fixSIMROOT + CAEBATExec;
 
 		// Setup the executable information
 		setExecutable(getName(), getDescription(), this.fullExecCMD);

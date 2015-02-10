@@ -34,12 +34,13 @@ configure_file(updater.properties ${TESTS_BUILD_PATH}/updater.properties COPYONL
 configure_file(updatertests.properties ${TESTS_BUILD_PATH}/updatertests.properties COPYONLY)
 configure_file(tests/SampleText.txt ${TESTS_BUILD_PATH}/SampleText.txt COPYONLY)
 
-#Create the documentation directory and set up the doc target.
-set(DOC_DIR "${BUILD_PATH}/documentation")
-if(NOT EXISTS ${DOC_DIR})
-    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory "${DOC_DIR}")
-endif(NOT EXISTS ${DOC_DIR})
-set(DOXYFILE_OUTPUT_DIR "${DOC_DIR}")
-set(DOXYFILE_LATEX "ON")
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
-include(UseDoxygen OPTIONAL)
+# The Doxygen script is not available in the git repo. --jdeyton 20150130
+##Create the documentation directory and set up the doc target.
+#set(DOC_DIR "${BUILD_PATH}/documentation")
+#if(NOT EXISTS ${DOC_DIR})
+#    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory "${DOC_DIR}")
+#endif(NOT EXISTS ${DOC_DIR})
+#set(DOXYFILE_OUTPUT_DIR "${DOC_DIR}")
+#set(DOXYFILE_LATEX "ON")
+#set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
+#include(UseDoxygen OPTIONAL)

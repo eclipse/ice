@@ -163,8 +163,8 @@ public class VisitPlotViewer extends ViewPart implements
 		varTypePlotTypeMap.put("Materials", new String[] { "Boundary",
 				"FilledBoundary" });
 		varTypePlotTypeMap.put("Meshes", new String[] { "Mesh" });
-		varTypePlotTypeMap.put("Scalars", new String[] { "Contour",
-				"Pseudocolor", "Volume" });
+		varTypePlotTypeMap.put("Scalars", new String[] { "Pseudocolor",
+				"Contour", "Volume" });
 		varTypePlotTypeMap.put("Vectors", new String[] { "Vector" });
 
 		return;

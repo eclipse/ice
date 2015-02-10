@@ -15,6 +15,7 @@ package org.eclipse.ice.caebat.launcher.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+
 import org.eclipse.ice.caebat.launcher.CaebatLauncher;
 import org.eclipse.ice.caebat.launcher.CaebatLauncherBuilder;
 
@@ -23,10 +24,16 @@ import java.net.URI;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.item.ItemType;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -47,8 +54,64 @@ public class CaebatLauncherBuilderTester {
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	private IProject project;
+	private static IProject projectSpace;
 
+	/**
+	 * <!-- begin-UML-doc -->
+	 * <p>
+	 * This operation sets up the workspace. It copies the necessary CAEBAT data
+	 * files into ${workspace}/CAEBAT.
+	 * </p>
+	 * <!-- end-UML-doc -->
+	 * 
+	 * @generated 
+	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 */
+	@BeforeClass
+	public static void beforeTests() {
+		// begin-user-code
+
+		// Local Declarations
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IProject project = null;
+		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "caebatTesterWorkspace";
+		// Enable Debugging
+		System.setProperty("DebugICE", "");
+
+		// Setup the project
+		try {
+			// Get the project handle
+			IPath projectPath = new Path(userDir + separator + ".project");
+			// Create the project description
+			IProjectDescription desc = ResourcesPlugin.getWorkspace()
+			                    .loadProjectDescription(projectPath);
+			// Get the project handle and create it
+			project = workspaceRoot.getProject(desc.getName());
+			// Create the project if it doesn't exist
+			if (!project.exists()) {
+				project.create(desc, new NullProgressMonitor());
+			}
+			// Open the project if it is not already open
+			if (project.exists() && !project.isOpen()) {
+			   project.open(new NullProgressMonitor());
+			}
+			// Refresh the workspace
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			// Catch exception for creating the project
+			e.printStackTrace();
+			fail();
+		}
+
+		// Set the global project reference.
+		projectSpace = project;
+
+		return;
+		// end-user-code
+	}
+	
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
@@ -92,6 +155,7 @@ public class CaebatLauncherBuilderTester {
 		// begin-user-code
 
 		// Local declarations
+		IProject project = projectSpace;
 		CaebatLauncherBuilder caebatMPLauncherBuilder;
 		CaebatLauncher caebatMPLauncher;
 		// Create the builder
@@ -183,14 +247,12 @@ public class CaebatLauncherBuilderTester {
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void setupIProject() {
-		// begin-user-code
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
 		String separator = System.getProperty("file.separator");
 
 		try {
 			// Get the project handle
-			project = workspaceRoot.getProject("caebatTesterWorkspace");
+			IProject project = projectSpace;
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
@@ -218,4 +280,19 @@ public class CaebatLauncherBuilderTester {
 
 		// end-user-code
 	}
+	
+	/**
+	 * Clean up after ourselves
+	 */
+	@AfterClass
+	public static void cleanup() {
+		try {
+			projectSpace.close(null);
+			projectSpace.delete(true, null);
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }

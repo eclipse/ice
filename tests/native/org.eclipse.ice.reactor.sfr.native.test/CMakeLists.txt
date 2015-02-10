@@ -11,7 +11,7 @@
  #   Claire Saunders, Matthew Wang, Anna Wojtowicz
 
 #Set the package name
-SET(PACKAGE_NAME "org.eclipse.ice.reactor.sfr.test")
+SET(PACKAGE_NAME "org.eclipse.ice.reactor.sfr.native.test")
 
 #Set the description
 SET(PACKAGE_DESCRIPTION "Native tests of the ICE SFReactor Packages")
@@ -24,14 +24,14 @@ include_directories(${HDF5_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/src/native/org.eclipse.ice.datastructures.native/)
 #include_directories(${PROJECT_SOURCE_DIR}/src/native/org.eclipse.ice.io.native/hdf/)
 #include_directories(${PROJECT_SOURCE_DIR}/src/native/org.eclipse.ice.reactor.native/)
-include_directories(${PROJECT_SOURCE_DIR}/src/native/org.eclipse.ice.reactor.sfr/)
+include_directories(${PROJECT_SOURCE_DIR}/src/native/org.eclipse.ice.reactor.sfr.native/)
 include_directories(${Boost_INCLUDE_DIRS})
 
 #link the directories
 #link_directories(${Boost_LIBRARY_DIRS})
 link_directories(${HDF5_LIBRARY_DIRS})
 #link_directories(${native_BINARY_DIR}/src/native/org.eclipse.ice.reactor.native/)
-link_directories(${native_BINARY_DIR}/src/native/org.eclipse.ice.reactor.sfr/)
+link_directories(${native_BINARY_DIR}/src/native/org.eclipse.ice.reactor.sfr.native/)
 link_directories(${native_BINARY_DIR}/src/native/org.eclipse.ice.datastructures.native/)
 #link_directories(${native_BINARY_DIR}/src/native/org.eclipse.ice.io.native/hdf/)
 
@@ -70,7 +70,7 @@ SET(CPACK_PACKAGE_VERSION_MINOR "0")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_VENDOR "Oak Ridge National Laboratory")
 set(CPACK_PACKAGE_CONTACT "billingsjj@ornl.gov")
-#set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/license")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 
 #Set package generators
 set(CPACK_GENERATOR "DEB;RPM;TGZ;ZIP")

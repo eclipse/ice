@@ -38,6 +38,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -264,12 +265,12 @@ public class JobLauncher extends Item {
 	private Dictionary<String, String> actionDataMap;
 
 	/**
-	 * The set of resources stored in the project and their last modification
-	 * time. It may be different than what is returned by
+	 * The set of resources stored in the JobLauncher's working directory, and 
+	 * their last modification time. It may be different than what is returned by
 	 * IResource.getModificationTime(), which is exactly why we are tracking it.
 	 */
 	@XmlTransient()
-	private HashMap<IResource, Long> projectMemberModMap;
+	private HashMap<IResource, Long> workingDirMemberModMap;
 
 	/**
 	 * This is a utility class used to describe a type of file by the
@@ -388,7 +389,7 @@ public class JobLauncher extends Item {
 		super(projectSpace);
 
 		// Setup the resource list
-		projectMemberModMap = new HashMap<IResource, Long>();
+		workingDirMemberModMap = new HashMap<IResource, Long>();
 
 		// end-user-code
 	}
@@ -473,22 +474,24 @@ public class JobLauncher extends Item {
 					+ actionDataMap.get("stdOutFileName")
 					+ "\n\tStandard Error File = "
 					+ actionDataMap.get("stdErrFileName"));
-			// Add the output files to the resource component
-			addOutputFile(1, stdOutProjectFile, "Standard Output", outputData);
-			addOutputFile(2, stdErrProjectFile, "Standard Error Output",
-					outputData);
+			
 			try {
+				// Add the output files to the resource component
+				addOutputFile(1, stdOutProjectFile, "Standard Output", 
+						outputData);
+				addOutputFile(2, stdErrProjectFile, "Standard Error Output",
+						outputData);
+
 				// Grab the current list of project members that are managed for
 				// this item.
 				IResource[] members = project.members();
 				for (int i = 0; i < members.length; i++) {
 					// Add the resource and its modification time stamp to the
 					// list.
-					projectMemberModMap.put(members[i],
+					workingDirMemberModMap.put(members[i],
 							members[i].getModificationStamp());
 				}
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
+			} catch (CoreException | IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -507,16 +510,33 @@ public class JobLauncher extends Item {
 		// Local Declarations
 		int lastId;
 		long lastTimeStamp;
-		ResourceComponent resources = (ResourceComponent) form.getComponent(2);
+		ResourceComponent resources = 
+				(ResourceComponent) form.getComponent(2);
 		ArrayList<ICEResource> resourceList = resources.getResources();
 		ArrayList<String> resourceNames = new ArrayList<String>();
-		String fileName;
+		String fileName, workingDirName;
+		IFolder workingDir = null;
+		String separator = System.getProperty("file.separator");
 
 		try {
 			// Refresh the project space
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			
 			// Get the list of members
-			IResource[] latestMembers = project.members();
+			String workingDirPath = getWorkingDirectory();
+			if (workingDirPath != null && !workingDirPath.isEmpty()) {
+				
+				// Get the working directory name
+				int lastDir = workingDirPath.lastIndexOf(separator);
+				workingDirName = workingDirPath.substring(lastDir + 1);	
+				
+				workingDir = 
+						project.getFolder("jobs" + separator + workingDirName);
+				
+			}
+			
+			
+			IResource[] latestMembers = workingDir.members();
 			// Get the names of the current resources
 			for (ICEResource namedResource : resourceList) {
 				resourceNames.add(namedResource.getPath().toASCIIString());
@@ -527,22 +547,24 @@ public class JobLauncher extends Item {
 			// Find the members that are new
 			for (int i = 0; i < latestMembers.length; i++) {
 				IResource currentResource = latestMembers[i];
-				if (!projectMemberModMap.keySet().contains(currentResource)) {
+				if (!workingDirMemberModMap.keySet().contains(currentResource)) {
 					System.out.println("JobLauncher Message: " + "Adding file "
 							+ currentResource.getName() + " to list.");
-					// Create a new resource for the member
-					ICEResource resource = new ICEResource();
-					resource.setName(currentResource.getName());
-					resource.setId(lastId + i + 1);
-					resource.setDescription(currentResource.getName()
-							+ " from " + getName() + " " + getId());
-					resource.setContents(new File(currentResource
-							.getLocationURI()));
-					// Add the resource
-					resources.addResource(resource);
+					// Get the file as an ICEResource object
+					ICEResource resource = getResource(
+							currentResource.getLocation().toOSString());
+					if (resource != null) {
+						// Set the name, ID, description
+						resource.setName(currentResource.getName());
+						resource.setId(lastId + i + 1);
+						resource.setDescription(currentResource.getName()
+								+ " from " + getName() + " " + getId());
+						// Add the resource to the ResourceComponent
+						resources.addResource(resource);
+					}
 				} else {
 					// If we already have the file, get it.
-					lastTimeStamp = projectMemberModMap.get(currentResource);
+					lastTimeStamp = workingDirMemberModMap.get(currentResource);
 					// Get its file full file name
 					fileName = currentResource.getLocationURI().toASCIIString();
 					// Check the time stamp to see if it was modified AND make
@@ -552,27 +574,26 @@ public class JobLauncher extends Item {
 						System.out.println("JobLauncher Message: "
 								+ "Adding file " + currentResource.getName()
 								+ " to list.");
-						// Create a new resource for the member
-						ICEResource resource = new ICEResource();
-						resource.setName(currentResource.getName());
-						resource.setId(lastId + i + 1);
-						resource.setDescription(currentResource.getName()
-								+ " from " + getName() + " " + getId());
-						resource.setContents(new File(currentResource
-								.getLocationURI()));
-						// Add the resource
-						resources.addResource(resource);
+						// Get the file as an ICEResource
+						ICEResource resource = getResource(
+								currentResource.getLocation().toOSString());
+						if (resource != null) {
+							// Set the name, ID, description
+							resource.setName(currentResource.getName());
+							resource.setId(lastId + i + 1);
+							resource.setDescription(currentResource.getName()
+									+ " from " + getName() + " " + getId());
+							// Add the resource to the ResourceComponent
+							resources.addResource(resource);
+						}
 					}
 				}
 			}
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullPointerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -739,28 +760,18 @@ public class JobLauncher extends Item {
 	 *            to the name of the Form.
 	 * @param outputComp
 	 *            The ResourceComponent that contains the data.
+	 * @throws IOException 
 	 */
 	private void addOutputFile(int resourceId, IFile file, String resourceName,
-			ResourceComponent outputComp) {
-
-		// Get the specified resource from the resource component
-		ICEResource outputResource = null;
-		for (ICEResource i : outputComp.getResources()) {
-			if (i.getId() == resourceId) {
-				outputResource = i;
-				break;
-			}
-		}
-		// Add the ICEResource for the file if it does not already exist
-		if (outputResource == null) {
-			// Create the resource
-			try {
-				outputResource = new ICEResource(new File(file.getLocation()
-						.toString()));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ResourceComponent outputComp) throws IOException {
+	
+		// Get the file as an ICEResource (returns null if invalid filepath)
+		ICEResource outputResource = 
+				this.getResource(file.getLocation().toOSString());
+		
+		// If the filepath corresponded to a valid resource, we add it to the
+		// ResourceComponent
+		if (outputResource != null) {
 			System.out.println("Resource location = "
 					+ file.getFullPath().toString());
 			// Set the properties
@@ -770,7 +781,7 @@ public class JobLauncher extends Item {
 			// Add the ICEResource to the Output component
 			outputComp.addResource(outputResource);
 		}
-
+		
 		return;
 	}
 
@@ -1720,12 +1731,6 @@ public class JobLauncher extends Item {
 	 *            from the project space for this input. If this parameter is
 	 *            null, then it will ignored.
 	 *            </p>
-	 * @param isFileEntry
-	 *            <p>
-	 *            Flags whether or not the Entry created should be handled as a
-	 *            file Entry. Flagging it as a file Entry will cause it to
-	 *            render on the Form with a browse button.
-	 *            </p>
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
@@ -1756,49 +1761,6 @@ public class JobLauncher extends Item {
 		return;
 		// end-user-code
 	}
-
-	/**
-	 * This method is the same as {@link #addInputType}, except that is does not
-	 * take a boolean flag in the parameters. This method calls the other
-	 * {@link #addInputType} with the boolean isFileEntry flag as false.
-	 * 
-	 * @param name
-	 *            <p>
-	 *            The name of the input file type. ("Input" or
-	 *            "Host configuration" or "Materials information" for example)
-	 *            </p>
-	 * @param varName
-	 *            <p>
-	 *            The name that will be used to refer to this input file when it
-	 *            is referred to by a variable in, for example, the executable
-	 *            string that is used by the JobLauncher. This name must end
-	 *            with the word "file" and, by convention, it should not contain
-	 *            white space or special symbols. If it does not end with the
-	 *            word "file," the JobLauncher will attempt to add it.
-	 *            </p>
-	 *            <p>
-	 *            This parameter may not be null.
-	 *            </p>
-	 * @param description
-	 *            <p>
-	 *            A short description of the input file.
-	 *            </p>
-	 * @param fileExtension
-	 *            <p>
-	 *            The file type extension that should be used to filter files
-	 *            from the project space for this input. If this parameter is
-	 *            null, then it will ignored.
-	 *            </p>
-	 */
-	// public void addInputType(String name, String varName, String description,
-	// String fileExtension) {
-	//
-	// // Call the other method with the boolean flag as false
-	// addInputType(name, varName, description, fileExtension, false);
-	//
-	// return;
-	//
-	// }
 
 	/**
 	 * This method removes an input file type from the Job Launcher. If the file

@@ -12,40 +12,26 @@
  *******************************************************************************/
 package org.eclipse.ice.caebat.model.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.util.ArrayList;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.caebat.model.CaebatModel;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * <!-- begin-UML-doc -->
@@ -57,6 +43,8 @@ import org.eclipse.ice.datastructures.form.TimeDataComponent;
  * which contains safety defaults. The second set are a collection of cases
  * which will be used to pre-generate the input data on the forms.
  * </p>
+ * 
+ * @author Andrew Bennett
  * <!-- end-UML-doc -->
  */
 public class CaebatModelTester {
@@ -73,9 +61,6 @@ public class CaebatModelTester {
 	 * files into ${workspace}/CAEBAT.
 	 * </p>
 	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeTests() {
@@ -83,44 +68,36 @@ public class CaebatModelTester {
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		URI defaultProjectLocation = null;
 		IProject project = null;
-		String projectName = "caebatTesterWorkspace";
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
 				+ "ICETests" + separator + "caebatTesterWorkspace";
-		String filePath = userDir + separator + "example_ini.conf";
-
 		// Enable Debugging
 		System.setProperty("DebugICE", "");
 
 		// Setup the project
 		try {
 			// Get the project handle
-			project = workspaceRoot.getProject(projectName);
-			// If the project does not exist, create it
+			IPath projectPath = new Path(userDir + separator + ".project");
+			// Create the project description
+			IProjectDescription desc = ResourcesPlugin.getWorkspace()
+			                    .loadProjectDescription(projectPath);
+			// Get the project handle and create it
+			project = workspaceRoot.getProject(desc.getName());
+			// Create the project if it doesn't exist
 			if (!project.exists()) {
-				// Set the location as
-				// ${workspace_loc}/CAEBATModelTesterWorkspace
-				defaultProjectLocation = (new File(userDir)).toURI();
-				// Create the project description
-				IProjectDescription desc = ResourcesPlugin.getWorkspace()
-						.newProjectDescription(projectName);
-				// Set the location of the project
-				desc.setLocationURI(defaultProjectLocation);
-				// Create the project
-				project.create(desc, null);
+				project.create(desc, new NullProgressMonitor());
 			}
 			// Open the project if it is not already open
 			if (project.exists() && !project.isOpen()) {
-				project.open(null);
+			   project.open(new NullProgressMonitor());
 			}
 			// Refresh the workspace
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
 			// Catch exception for creating the project
 			e.printStackTrace();
-			fail();
+			fail("Caebat Model Tester: Error!  Could not set up project space");
 		}
 
 		// Set the global project reference.
@@ -162,7 +139,7 @@ public class CaebatModelTester {
 		// Check contents, null model should be empty
 		form = caebatModel.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(4, form.getComponents().size());
+		assertEquals(0, form.getComponents().size());
 
 		return;
 		// end-user-code
@@ -216,9 +193,22 @@ public class CaebatModelTester {
 		assertEquals(4, form.getComponents().size());
 		assertTrue(projectSpace.getFile(
 				"Caebat_Model_" + caebat.getId() + ".conf").exists());
-
 		// end-user-code
+	}
+	
+	/**
+	 * Clean up after ourselves
+	 */
+	@AfterClass
+	public static void cleanup() {
+		try {
+			projectSpace.close(null);
+			projectSpace.delete(true, null);
+		} catch (CoreException e) {
 
+			e.printStackTrace();
+			fail("Caebat Model Tester: Error!  Could not clean up project space");
+		}
 	}
 
 }

@@ -22,10 +22,10 @@ import org.eclipse.ice.item.ItemType;
  * @author Jay Jay Billings
  *
  */
-public class CAEBATKVPairBuilder implements ItemBuilder {
+public class CaebatKVPairBuilder implements ItemBuilder {
 
 	// The Item name
-	public static final String name = "CAEBAT Key-Value Pair Generator";
+	public static final String name = "Caebat Key-Value Pair";
 	
 	// The type
 	public static final ItemType type = ItemType.Model;
@@ -51,7 +51,7 @@ public class CAEBATKVPairBuilder implements ItemBuilder {
 	 */
 	@Override
 	public Item build(IProject projectSpace) {
-		return new CAEBATKVPairItem(projectSpace);
+		return new CaebatKVPair(projectSpace);
 	}
 
 }
