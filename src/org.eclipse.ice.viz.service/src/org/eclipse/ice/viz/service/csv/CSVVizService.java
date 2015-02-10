@@ -99,6 +99,11 @@ public class CSVVizService implements IVizService {
 		// Create and load the plot
 		CSVPlot plot = new CSVPlot(file);
 		plot.load();
+		
+		// Wait for a second, the load() thread needs a second to complete
+		// before we can use the new plot.
+//		Thread.sleep(1000);
+		
 		return plot;
 	}
 

@@ -312,8 +312,15 @@ public class CSVDataLoader {
 					/**
 					 * Instantiate a new CSVData object
 					 */
-					data = new CSVData(features.get(i),
-							Double.parseDouble(dataLines[i]));
+					if (features.size() == dataLines.length) {
+						data = new CSVData(features.get(i),
+								Double.parseDouble(dataLines[i]));
+					} else {
+						System.out.println("CSVDataLoader Error: "
+								+ "Not a valid (N x M) CSV file, " 
+								+ csvInputFile);
+						return null;
+					}
 					/**
 					 * Set the units if the units exist
 					 */

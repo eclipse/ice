@@ -378,13 +378,13 @@ public class ICEResourceView extends PlayableViewPart implements
 	public void update(final IUpdateable component) {
 		// begin-user-code
 
-		System.out
-				.println("ICEResourcePage Message: " + "New resources added!");
+//		System.out
+//				.println("ICEResourcePage Message: New resources added!");
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() { // Just do a blanket update - no need to check
-								// the component
+			public void run() { 
+				// Just do a blanket update - no need to check the component
 				if (resourceTreeViewer != null) {
 					System.out.println("ICEResourceView Message: "
 							+ "Updating resource table.");

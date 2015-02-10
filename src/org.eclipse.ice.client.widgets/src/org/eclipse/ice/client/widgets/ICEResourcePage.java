@@ -19,6 +19,8 @@ import java.util.Map;
 import org.eclipse.ice.client.common.PropertySource;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
@@ -47,7 +49,8 @@ import org.eclipse.swt.custom.StackLayout;
  * 
  * @authors Jay Jay Billings, Taylor Patterson
  */
-public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
+public class ICEResourcePage extends ICEFormPage implements 
+		ISelectionListener, IUpdateableListener{
 	/**
 	 * The ResourceComponent drawn by this page.
 	 */
@@ -116,7 +119,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 		
 		// Setup the plot map
 		plotMap = new Hashtable<String, IPlot>();
-
+		
 		return;
 	}
 
@@ -271,18 +274,21 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 				layout.topControl = plotComposite;
 				try {
 					// Add the plot to the plot map if it hasn't already been
-					IPlot plot = vizFactory.get().createPlot(selectedResource.getPath());
-					if (!plotMap.containsKey(plot.getDataSource().toString())) {
-						// Cram the plot in the hashtable until the user clicks on it
-						plotMap.put(plot.getDataSource().toString(), plot);
+					IPlot plot = plotMap.get(selectedResource.getPath().toString());
+					if (plot == null) {
+						plot = vizFactory.get().createPlot(selectedResource.getPath());
 					}
+					
 					// Get the plot types and pick a plot type
 					Map<String,String[]> plotTypes = plot.getPlotTypes();
 					ArrayList<String> keys = new ArrayList<String>(plotTypes.keySet());
+
 					// TODO these are just defaults, but we will later want to
 					// select which values to choose
-					String category = keys.get(0);
-					String type = plotTypes.get(category)[0];
+					String category;
+					category = keys.get(0);
+					String[] types = plotTypes.get(category);
+					String type = types[0];
 					
 					// Draw the plot
 					// FIXME need to check if a plot is already drawn, otherwise
@@ -344,6 +350,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 				}
 			}
 		}
+		
+		// Register the page to listen to updates from the ResourceComponent
+		resourceComponent.register(this);
 
 		return;
 		// end-user-code
@@ -377,5 +386,43 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener {
 		}
 		return;
 		// end-user-code
+	}
+	
+	/**
+	 * This update method is called whenever the ResourceComponent is updated.
+	 * It compares the contents of the ResourceComponent to the plotMap, and
+	 * adds any VizResources to the plotMap that haven't been added yet.
+	 */
+	@Override
+	public void update(IUpdateable component) {
+		
+		if (component instanceof ResourceComponent) {
+			
+			// Make sure the ResourceComponent exists
+			if (resourceComponent != null) {
+
+				for (ICEResource resource : resourceComponent.getResources()) {
+					
+					// Check if each resource is a VizResource, and that it
+					// isn't in the plotMap already
+					if (resource instanceof VizResource
+							&& !plotMap.containsKey(resource.getPath().toString())) {
+						
+						try {
+							// Get the plot based on the resource and add it to
+							// the plot map
+							IPlot plot = vizFactory.get().createPlot(resource.getPath());
+							plotMap.put(plot.getDataSource().toString(), plot);
+
+						} catch (Exception e) {
+							// Complain
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+		
+		return;
 	}
 }
