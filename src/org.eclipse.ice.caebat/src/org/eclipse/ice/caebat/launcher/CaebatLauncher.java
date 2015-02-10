@@ -131,8 +131,8 @@ public class CaebatLauncher extends JobLauncher {
 		// String copyCase =
 		// "source `pwd`/${inputFile} >> /dev/null && cp -r $SIM_ROOT/* .;";
 		String copyCase = "cp -r ${installDir}vibe/examples/case6/* .;";
-		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
-				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile};";
+		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT=.*?"
+				+ "SIM_ROOT='`pwd`'?g' ${inputFile};";
 		// Setup the Caebat's launch script
 		String CAEBATExec = "${installDir}ipsframework-code/install/bin/ips.py"
 				+ " -a --log=temp.log --platform=" + IPS_ROOT
@@ -253,6 +253,8 @@ public class CaebatLauncher extends JobLauncher {
 			dataDir = dataDir.substring(0, dataDir.length() - 10);
 		} else if (dataDir.endsWith("${SIM_NAME}")) {
 			dataDir = dataDir.substring(0, dataDir.length() - 12);
+		} else if (dataDir.endsWith(caseName)) {
+			dataDir = dataDir.substring(0, dataDir.length() - (caseName.length()+1));
 		}
 
 		// Get the input file directory for the simulation
@@ -264,13 +266,16 @@ public class CaebatLauncher extends JobLauncher {
 		}
 
 		// If we are supplying a new KV Pair file replace it in the input file
+		update(fileComponent.retrieveEntry("Use custom key-value pair file?"));		
 		String setKVPerms = "";
+		String backupKVFile = "";
 		String mvKVPairFile = "";
 		if (kvPairFileEntry.getValue() != "false") {
 			String kvFileName = fileComponent.retrieveEntry("Key-value pair file").getValue();
 			writer.replace(inputFile, "input_keyvalue", kvFileName);
 			setKVPerms = "chmod 775 " + kvFileName + " && ";
-			mvKVPairFile = "cp " + kvFileName + " input && ";
+			backupKVFile = "mv input/input_keyvalue input/input_keyvalue.bak && ";
+			mvKVPairFile = "mv " + kvFileName + " input/input_keyvalue && ";
 		}
 		
 
@@ -283,12 +288,14 @@ public class CaebatLauncher extends JobLauncher {
 		String exportRoot = "export CAEBAT_ROOT=" + CAEBAT_ROOT
 				+ "/vibe/components && ";
 		String copyCase = "cp -r " + dataDir + "/" + caseName + "/* . && ";
-		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ =\\ .*?"
+		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ *=\\ *.*?"
 				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile} && ";
+		
+		// The main execution of the simulation.
 		String CAEBATExec = "${installDir}ipsframework-code/install/bin/ips.py"
-				+ " -a --log=temp.log --platform=" + IPS_ROOT
-				+ "/workstation.conf --simulation=${inputFile}; ";
-		fullExecCMD = exportRoot + copyCase + setKVPerms + mvKVPairFile
+				+ " -a --log=temp.log --platform=" + CAEBAT_ROOT + "/vibe/examples/config/batsim.conf"
+				+ " --simulation=${inputFile}; ";
+		fullExecCMD = exportRoot + copyCase + setKVPerms + backupKVFile + mvKVPairFile
 				+ fixSIMROOT + CAEBATExec;
 
 		// Setup the executable information
