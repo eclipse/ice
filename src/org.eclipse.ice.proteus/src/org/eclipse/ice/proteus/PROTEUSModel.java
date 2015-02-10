@@ -18,6 +18,7 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.emf.ICEXMLProcessor;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
@@ -250,6 +251,7 @@ public class PROTEUSModel extends Item {
 			// Try to get the Form from it
 			ArrayList<Class> classList = new ArrayList<Class>();
 			classList.add(Form.class);
+			classList.addAll(new ICEJAXBClassProvider().getClasses());
 			ICEJAXBHandler handler = new ICEJAXBHandler();
 			try {
 				form = (Form) handler.read(classList, specFile.getContents());

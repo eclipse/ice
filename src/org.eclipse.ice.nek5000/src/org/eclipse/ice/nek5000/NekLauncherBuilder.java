@@ -18,7 +18,8 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * This classs constructs a Nek5000 Job Launcher.
+ * This class constructs a Nek5000 Job Launcher.
+ * 
  * @author Jay Jay Billings
  *
  */

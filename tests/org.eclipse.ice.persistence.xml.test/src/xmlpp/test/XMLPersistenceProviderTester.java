@@ -37,9 +37,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.caebat.kvPair.CaebatKVPairBuilder;
 import org.eclipse.ice.caebat.launcher.CaebatLauncherBuilder;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.nuclear.MOOSEModelBuilder;
 import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
@@ -142,6 +142,11 @@ public class XMLPersistenceProviderTester {
 		// Items.
 		xmlpp.addBuilder(new MOOSEModelBuilder());
 		xmlpp.addBuilder(new CaebatLauncherBuilder());
+
+		// Add a Class Provider so that we can persist the forms. 
+		xmlpp.registerClassProvider(new ICEJAXBClassProvider());
+		
+		
 		try {
 			// Start the service
 			xmlpp.start();
