@@ -11,24 +11,18 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
- * This is the base class for setting default preferences for visualization
- * service preference pages added to the Eclipse IDE's Window -> Preferences
- * dialog.
- * <p>
- * For an example of how to intitialize defaults for a preference page using
- * this class, see {@link VizPreferenceInitializer} and its class documentation.
- * </p>
+ * This is an abstract base class for creating new {@link IVizService}s and
+ * includes helpful methods that are frequently used.
  * 
  * @author Jordan Deyton
  *
  */
-public abstract class AbstractVizPreferenceInitializer extends
-		AbstractPreferenceInitializer {
+public abstract class AbstractVizService implements IVizService {
 
 	/**
 	 * A reference to the associated preference page's {@link IPreferenceStore}.

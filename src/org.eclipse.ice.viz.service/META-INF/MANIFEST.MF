@@ -6,6 +6,7 @@ Bundle-Version: 2.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.core.commands.common,
+ org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.core.runtime.preferences,
  org.eclipse.equinox.security.storage;version="1.0.0",
  org.eclipse.ice.client.widgets.properties,
@@ -17,6 +18,7 @@ Import-Package: org.eclipse.core.commands.common,
  org.eclipse.jface.dialogs,
  org.eclipse.jface.preference,
  org.eclipse.jface.resource,
+ org.eclipse.jface.util,
  org.eclipse.jface.viewers,
  org.eclipse.jface.window,
  org.eclipse.swt,

@@ -12,6 +12,7 @@
 package org.eclipse.ice.viz.service;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 
 /**
@@ -75,9 +76,16 @@ public class VizPreferencePage extends AbstractVizPreferencePage {
 	 */
 	@Override
 	protected void createFieldEditors() {
-		// TODO Add preferences...
-		addField(new BooleanFieldEditor("BOOLEAN_VALUE",
-				"&This statement is false", getFieldEditorParent()));
+		Composite parent = getFieldEditorParent();
+
+		// Add a field to automatically connect to the default viz service
+		// connections when they start.
+		addField(new BooleanFieldEditor(
+				"autoConnectToDefaults",
+				"Automatically establish default connections for vizualization services",
+				parent));
+
+		return;
 	}
 
 }

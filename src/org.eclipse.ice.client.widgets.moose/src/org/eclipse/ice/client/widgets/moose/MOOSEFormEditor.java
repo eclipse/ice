@@ -28,7 +28,6 @@ import org.eclipse.ice.client.widgets.ICESectionPage;
 import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.moose.components.PlantBlockManager;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -817,7 +816,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			File file = new File(
 					"C:\\Users\\"
 							+ userId
-							+ "\\ICEFiles\\MOOSE Input\\bison\\2D-RZ_rodlet_10pellets\\coarse10_rz.e");
+							+ "\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
 			URI uri = file.toURI();
 
 			try {

@@ -23,7 +23,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.viz.service.visit.VisItVizService.ConnectionState;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.viz.service.connections.ConnectionState;
+import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
 import org.eclipse.ice.viz.service.visit.actions.ImportLocalFileAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
@@ -41,19 +44,32 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
+import visit.java.client.FileInfo;
+import visit.java.client.ViewerMethods;
+
 /**
  * This class provides the VisIt implementation for an IPlot.
  * 
  * @author Jay Jay Billings, Jordan Deyton
  * 
  */
-public class VisItPlot implements IPlot {
+public class VisItPlot implements IPlot, IUpdateableListener {
 
+	// ---- Service and Connection ---- //
 	/**
-	 * The map of preferences. Currently, this stores connection preferences.
+	 * The visualization service responsible for maintaining
+	 * {@link VisItSwtConnection}s.
 	 */
-	private final Map<String, String> preferences = new HashMap<String, String>();
+	private final VisItVizService service;
+	/**
+	 * The adapter currently assigned to this plot. It provides the required
+	 * access to the VisIt connection API.
+	 */
+	private VisItConnectionAdapter adapter;
+	// -------------------------------- //
 
+	// ---- Source and Plot Properties ---- //
+	// TODO We should eventually provide access to some plot properties.
 	/**
 	 * The data source, either a local or remote file.
 	 */
@@ -71,31 +87,19 @@ public class VisItPlot implements IPlot {
 	 * The type of the currently drawn plot.
 	 */
 	private String plotType = null;
+	// ------------------------------------ //
 
-	/**
-	 * The visualization service responsible for maintaining
-	 * {@link VisItSwtConnection}s.
-	 */
-	private final VisItVizService service;
-
-	/**
-	 * The VisIt connection (either local or remote) that powers any VisIt
-	 * widgets required for this plot.
-	 */
-	private VisItSwtConnection connection = null;
-
+	// ---- UI Widgets ---- //
 	/**
 	 * The current parent {@code Composite} in which either the {@link #canvas}
 	 * or {@link #infoComopsite} is rendered.
 	 */
 	private Composite parent;
-
 	/**
 	 * The current VisIt widget used to draw VisIt plots. This should only be
 	 * visible if the connection is open.
 	 */
 	private VisItSwtWidget canvas = null;
-
 	/**
 	 * This presents the user with helpful information about the status of the
 	 * associated VisIt connection. It should only be visible if the connection
@@ -103,35 +107,28 @@ public class VisItPlot implements IPlot {
 	 */
 	private Composite infoComposite = null;
 
+	// -------------------- //
+
 	/**
 	 * The default constructor.
 	 * 
-	 * @param source
-	 *            The data source, either a local or remote file.
 	 * @param service
 	 *            The visualization service responsible for maintaining
-	 *            {@link VisItSwtConnection}s..
+	 *            {@link VisItSwtConnection}s.
+	 * @param file
+	 *            The data source, either a local or remote file.
 	 */
-	public VisItPlot(URI source, VisItVizService service) {
-		this.source = source;
+	public VisItPlot(VisItVizService service, URI file) {
 		this.service = service;
+		// TODO Make the adapter configurable, e.g., let the user pick from
+		// available stored connections.
+		adapter = service.getAdapter();
+		// Register the plot as a listener so it can receive connection
+		// update events.
+		adapter.register(this);
 
-		// // On Windows, the File class inserts standard forward slashes as
-		// // separators. VisIt, on the other hand, requires the native
-		// separator.
-		// // If the URI uses the standard separator on Windows, update the
-		// source
-		// // path to use the native Windows separator.
-		// String path = source.getPath();
-		// if (System.getProperty("os.name").toLowerCase().contains("windows"))
-		// {
-		// if (path.startsWith("/")) {
-		// path = path.substring(1);
-		// path = path.replace("/", System.getProperty("file.separator"));
-		// }
-		// }
-		// sourcePath = path;
-		setDataSource(source);
+		// Set the data source.
+		setDataSource(file);
 
 		return;
 	}
@@ -146,25 +143,23 @@ public class VisItPlot implements IPlot {
 
 		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
 
-		VisItSwtConnection connection = getConnection();
-		if (connection != null) {
+		if (adapter.getState() == ConnectionState.Connected
+				&& sourcePath != null) {
+			// Determine the VisIt FileInfo for the data source.
+			ViewerMethods methods = adapter.getConnection().getViewerMethods();
+			methods.openDatabase(sourcePath);
+			FileInfo info = methods.getDatabaseInfo();
 
-			// // Determine the VisIt FileInfo for the data source.
-			// ViewerMethods methods = connection.getViewerMethods();
-			// methods.openDatabase(sourcePath);
-			// FileInfo info = methods.getDatabaseInfo();
-			//
-			// // Get all of the plot types and plots in the file.
-			// List<String> plots;
-			// plots = info.getMeshes();
-			// plotTypes.put("Mesh", plots.toArray(new String[plots.size()]));
-			// plots = info.getMaterials();
-			// plotTypes.put("Material", plots.toArray(new
-			// String[plots.size()]));
-			// plots = info.getScalars();
-			// plotTypes.put("Scalar", plots.toArray(new String[plots.size()]));
-			// plots = info.getVectors();
-			// plotTypes.put("Vector", plots.toArray(new String[plots.size()]));
+			// Get all of the plot types and plots in the file.
+			List<String> plots;
+			plots = info.getMeshes();
+			plotTypes.put("Mesh", plots.toArray(new String[plots.size()]));
+			plots = info.getMaterials();
+			plotTypes.put("Material", plots.toArray(new String[plots.size()]));
+			plots = info.getScalars();
+			plotTypes.put("Scalar", plots.toArray(new String[plots.size()]));
+			plots = info.getVectors();
+			plotTypes.put("Vector", plots.toArray(new String[plots.size()]));
 		}
 
 		return plotTypes;
@@ -177,7 +172,6 @@ public class VisItPlot implements IPlot {
 	 */
 	@Override
 	public int getNumberOfAxes() {
-		// TODO Should we query the plot somehow?
 		return (canvas == null || canvas.isDisposed() ? 0 : 3);
 	}
 
@@ -188,7 +182,7 @@ public class VisItPlot implements IPlot {
 	 */
 	@Override
 	public Map<String, String> getProperties() {
-		return preferences;
+		return new HashMap<String, String>();
 	}
 
 	/*
@@ -200,10 +194,7 @@ public class VisItPlot implements IPlot {
 	 */
 	@Override
 	public void setProperties(Map<String, String> props) throws Exception {
-		if (props != null) {
-			preferences.putAll(props);
-			// TODO Update the drawn plots.
-		}
+		// Nothing to do yet.
 	}
 
 	/*
@@ -223,8 +214,7 @@ public class VisItPlot implements IPlot {
 	 */
 	@Override
 	public String getSourceHost() {
-		// For now, we only support local launches...
-		return "localhost";
+		return adapter.getConnectionProperty("url");
 	}
 
 	/*
@@ -256,9 +246,10 @@ public class VisItPlot implements IPlot {
 			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED,
 					"VisItPlot error: "
 							+ "Cannot draw plot inside disposed Composite.");
+		} else if (this.parent != null && this.parent != parent) {
+			throw new IllegalArgumentException("VisItPlot error: "
+					+ "Cannot draw same plot in multiple Composites.");
 		}
-
-		// FIXME What should we do when the plot is drawn in two places?
 
 		// Update the plot category and type.
 		// TODO Use the specified plot category and type.
@@ -269,8 +260,71 @@ public class VisItPlot implements IPlot {
 		this.parent = parent;
 
 		// Update the drawn plot.
-		update(service.getConnectionState(), getConnection());
+		update(adapter.getState(), adapter.getConnection());
 
+		return;
+	}
+
+	/**
+	 * Sets the data source (which is currently rendered if the plot is drawn).
+	 * If the data source is valid and new, then the plot will be updated
+	 * accordingly.
+	 * 
+	 * @param uri
+	 *            The new data source URI.
+	 */
+	public void setDataSource(URI uri) {
+		if (uri != null) {
+			// Update the source.
+			source = uri;
+			// On Windows, the File class inserts standard forward slashes as
+			// separators. VisIt, on the other hand, requires the native
+			// separator. If the URI uses the standard separator on Windows,
+			// update the source path to use the native Windows separator.
+			String path = source.getPath();
+			if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+				if (path.startsWith("/")) {
+					path = path.substring(1);
+					path = path.replace("/",
+							System.getProperty("file.separator"));
+				}
+			}
+			// Update the source's VisIt-friendly path.
+			if (!path.equals(sourcePath)) {
+				sourcePath = path;
+
+				// Trigger an update to the UI since the source changed.
+				update(adapter);
+			}
+		}
+		return;
+	}
+
+	/**
+	 * This method informs the plot that its associated connection has been
+	 * updated. The plot can then update its contents if it has contributed to
+	 * the UI.
+	 * 
+	 * @param component
+	 *            The component that was updated. This is expected to be the
+	 *            associated {@link VisItConnectionAdapter}.
+	 */
+	@Override
+	public void update(IUpdateable component) {
+		if (component == adapter) {
+
+			final ConnectionState state = adapter.getState();
+			final VisItSwtConnection connection = adapter.getConnection();
+			// Trigger an update to the UI.
+			if (parent != null && !parent.isDisposed()) {
+				parent.getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						update(state, connection);
+					}
+				});
+			}
+		}
 		return;
 	}
 
@@ -283,8 +337,8 @@ public class VisItPlot implements IPlot {
 	 */
 	private void update(ConnectionState state, VisItSwtConnection connection) {
 
-		final Display display = Display.getDefault();
-		final Shell shell = display.getActiveShell();
+		final Display display = parent.getDisplay();
+		final Shell shell = parent.getShell();
 
 		// This should never happen, but if it does, we should report an error
 		// and not break!
@@ -324,11 +378,12 @@ public class VisItPlot implements IPlot {
 					+ plotCategory + " - " + plotType + " for source file \""
 					+ sourcePath + "\".");
 
-			// // Draw the specified plot on the Canvas.
-			// ViewerMethods widget = canvas.getViewerMethods();
-			// widget.deleteActivePlots();
-			// widget.addPlot(plotCategory, plotType);
-			// widget.drawPlots();
+			// Draw the specified plot on the Canvas.
+			ViewerMethods widget = canvas.getViewerMethods();
+			widget.openDatabase(sourcePath);
+			widget.deleteActivePlots();
+			widget.addPlot(plotCategory, plotType);
+			widget.drawPlots();
 		}
 		// Otherwise, there is a problem of some sort. Give the user a link to
 		// the VisIt preferences along with an informative message.
@@ -460,17 +515,14 @@ public class VisItPlot implements IPlot {
 		// Create the canvas.
 		VisItSwtWidget canvas = new VisItSwtWidget(parent, style);
 
-		Map<String, String> connectionPreferences = service
-				.getConnectionProperties();
-
 		// Set the VisIt connection info. It requres a valid VisItSwtConnection
 		// and 3 integers (a window ID, width, and height).
-		int windowId = Integer.parseInt(connectionPreferences
-				.get(ConnectionPreference.WindowID.toString()));
-		int windowWidth = Integer.parseInt(connectionPreferences
-				.get(ConnectionPreference.WindowWidth.toString()));
-		int windowHeight = Integer.parseInt(connectionPreferences
-				.get(ConnectionPreference.WindowHeight.toString()));
+		int windowId = Integer.parseInt(adapter
+				.getConnectionProperty("windowId"));
+		int windowWidth = Integer.parseInt(adapter
+				.getConnectionProperty("windowWidth"));
+		int windowHeight = Integer.parseInt(adapter
+				.getConnectionProperty("windowHeight"));
 
 		try {
 			canvas.setVisItSwtConnection(connection, windowId, windowWidth,
@@ -485,93 +537,39 @@ public class VisItPlot implements IPlot {
 	}
 
 	/**
-	 * This method informs the plot that its associated connection has been
-	 * updated. The plot can then update its contents if it has contributed to
-	 * the UI.
-	 * 
-	 * @param connectionId
-	 *            The ID of the connection.
-	 * @param state
-	 *            The current state of the connection.
+	 * Disposes of the plot and any resources it consumes. This includes
+	 * unregistering it from its associated connection adapter.
 	 */
-	protected void updateConnection(String connectionId, ConnectionState state) {
-		// Check the parameters.
-		if (state == null) {
-			throw new NullPointerException("VisItPlot error: "
-					+ "Null connection state received!.");
+	protected void dispose() {
+		// Unregister from the connection adapter.
+		adapter.unregister(this);
+		adapter = null;
+
+		// If possible, inform the UI to dispose the plot's UI contributions.
+		if (parent != null && !parent.isDisposed()) {
+			parent.getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					if (canvas != null && !canvas.isDisposed()) {
+						canvas.dispose();
+					}
+					if (infoComposite != null && !infoComposite.isDisposed()) {
+						infoComposite.dispose();
+					}
+					return;
+				}
+			});
 		}
 
-		//final String connId = connectionId;
-		// TODO We should check the connection ID against the one used by this
-		// plot.
-		final ConnectionState connState = state;
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				update(connState, getConnection());
-			}
-		});
 		return;
 	}
 
-	/**
-	 * Updates {@link #connection} as necessary and opens the database to point
-	 * to the specified file.
-	 * 
-	 * @return The connection. This will be {@code null} if the connection is
-	 *         not open.
-	 */
-	private VisItSwtConnection getConnection() {
-		if (connection == null) {
-			connection = service.getDefaultConnection();
-			// We need to open the database for the data source file.
-			if (connection != null) {
-				// TODO Add this back in or come up with a better solution.
-				// connection.getViewerMethods().openDatabase(sourcePath);
-			}
-		}
-		return connection;
-	}
-
+	// TODO This should be standardized somehow...
 	public List<IAction> getActions() {
 		List<IAction> actions = new ArrayList<IAction>();
 
 		actions.add(new ImportLocalFileAction(this));
 
 		return actions;
-	}
-
-	public void setDataSource(URI uri) {
-		if (uri != null) {
-			// Update the source.
-			source = uri;
-			// On Windows, the File class inserts standard forward slashes as
-			// separators. VisIt, on the other hand, requires the native
-			// separator. If the URI uses the standard separator on Windows,
-			// update the source path to use the native Windows separator.
-			String path = source.getPath();
-			if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-				if (path.startsWith("/")) {
-					path = path.substring(1);
-					path = path.replace("/",
-							System.getProperty("file.separator"));
-				}
-			}
-			// Update the source's VisIt-friendly path.
-			sourcePath = path;
-
-			final ConnectionState state = service.getConnectionState();
-			final VisItSwtConnection connection = getConnection();
-			if (connection != null) {
-				// connection.getViewerMethods().openDatabase(sourcePath);
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						update(state, connection);
-					}
-				});
-			}
-		}
-		return;
 	}
 }

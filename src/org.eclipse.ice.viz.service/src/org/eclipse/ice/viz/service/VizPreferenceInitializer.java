@@ -56,8 +56,10 @@ public class VizPreferenceInitializer extends AbstractVizPreferenceInitializer {
 		IPreferenceStore store = getPreferenceStore();
 
 		// Set all defaults for the visualization perspective.
-		// TODO
-		store.setDefault("BOOLEAN_VALUE", true);
+
+		// By default, the default connections should automatically be
+		// established on startup.
+		store.setDefault("autoConnectToDefaults", true);
 
 		return;
 	}

@@ -21,6 +21,7 @@ import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -80,6 +81,18 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	 * </p>
 	 */
 	private boolean dirty;
+
+	/**
+	 * A convenient constructor for getting a default
+	 * {@code CustomScopedPreferenceStore} for a class' bundle.
+	 * 
+	 * @param clazz
+	 *            The target class.
+	 */
+	public CustomScopedPreferenceStore(Class<?> clazz) {
+		this(InstanceScope.INSTANCE, FrameworkUtil.getBundle(clazz)
+				.getSymbolicName());
+	}
 
 	/**
 	 * The default constructor.

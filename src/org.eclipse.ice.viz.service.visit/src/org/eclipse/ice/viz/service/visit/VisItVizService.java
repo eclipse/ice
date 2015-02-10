@@ -11,26 +11,18 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-import gov.lbnl.visit.swt.VisItSwtConnectionManager;
-
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.osgi.framework.FrameworkUtil;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.AbstractVizService;
+import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.visit.VisItConnectionManager;
+import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
 
 /**
  * This is an implementation of the IVizService interface for the VisIt
@@ -39,52 +31,33 @@ import org.osgi.framework.FrameworkUtil;
  * @author Jay Jay Billings
  * 
  */
-public class VisItVizService implements IVizService {
+public class VisItVizService extends AbstractVizService {
 
 	// TODO Address multiple connections associated with various plots. For now,
 	// we just have a single, default connection.
 
 	/**
-	 * This enum defines the possible states of a connection to a VisIt
-	 * instance. This is intended for use with the plots so they can keep users
-	 * updated based on the state of the associated VisIt connection.
-	 * 
-	 * @author Jordan Deyton
-	 *
+	 * The current instance of the viz service. This instance was created when
+	 * the OSGi viz service was instantiated.
 	 */
-	protected enum ConnectionState {
-		/**
-		 * The connection is being established.
-		 */
-		Connecting,
-		/**
-		 * The connection is opened.
-		 */
-		Connected,
-		/**
-		 * The connection failed to open.
-		 */
-		Failed,
-		/**
-		 * The connection is closed.
-		 */
-		Disconnected;
-	}
+	private static VisItVizService instance;
 
 	/**
-	 * The current state of the default connection.
+	 * This manages the {@code VisItVizService} connection preferences and
+	 * should be updated from the preference store when the preferences change.
 	 */
-	private ConnectionState state;
+	private final VisItConnectionManager connectionManager;
 
 	/**
-	 * A reference to the associated preference page's {@link IPreferenceStore}.
-	 * If this has been determined previously, then it should be returned in
-	 * {@link #getPreferenceStore()}.
+	 * This manages the default connection to VisIt and its settings. It handles
+	 * the implementation for connecting and disconnecting from the underlyign
+	 * VisIt connection.
 	 */
-	private IPreferenceStore preferenceStore;
+	private final VisItConnectionAdapter adapter;
 
 	/**
-	 * A list of all currently-drawn plots.
+	 * A list of existing plots. This is used to dispose of individual plots
+	 * when they are no longer required by client code.
 	 */
 	private final List<VisItPlot> plots;
 
@@ -92,37 +65,97 @@ public class VisItVizService implements IVizService {
 	 * The default constructor.
 	 */
 	public VisItVizService() {
+		// Update the instance to point to this viz service (there should be
+		// only one).
+		instance = this;
 
-		// Initialize the final class collections.
+		// Initialize the ConnectionManager based on the stored preferences.
+		connectionManager = new VisItConnectionManager();
+		TableComponentPreferenceAdapter tableAdapter;
+		tableAdapter = new TableComponentPreferenceAdapter();
+		tableAdapter.toTableComponent(
+				(CustomScopedPreferenceStore) getPreferenceStore(),
+				connectionManager);
+
+		// Create a default adapter and set its connection properties.
+		adapter = new VisItConnectionAdapter();
+		adapter.setConnectionProperties(connectionManager
+				.getConnection(getDefaultConnectionKey()));
+
+		// Initialize the list of created plots.
 		plots = new ArrayList<VisItPlot>();
 
-		// Initially, the service is disconnected.
-		state = ConnectionState.Disconnected;
-
-		// FIXME Remove this.
-		instance = this;
+		return;
 	}
 
-	// TODO Remove these three attributes/operations.
-	private static VisItVizService instance;
-
-	public static VisItVizService getInstance() {
+	/**
+	 * Gets the current instance of the viz service. This instance was created
+	 * by OSGi.
+	 * <p>
+	 * <b>Note:</b> This method is only intended to be used by the preference
+	 * page to notify the service when the preferences have changed.
+	 * </p>
+	 * 
+	 * @return The current instance of the viz service.
+	 */
+	protected static VisItVizService getInstance() {
 		return instance;
 	}
 
-	public void preferencesChanged() {
-		Thread thread = new Thread() {
-			@Override
-			public void run() {
-				closeDefaultConnection(true);
-				openDefaultConnection(true);
-			}
-		};
-		thread.start();
-		// FIXME We should probably use a property change listener registered
-		// with the preference store, but that fires once per changed property.
+	/**
+	 * This method notifies the service that the preferences have changed. Any
+	 * connections that have changed should be reset.
+	 */
+	protected void preferencesChanged() {
+		// Update the ConnectionManager based on the stored preferences.
+		TableComponentPreferenceAdapter tableAdapter;
+		tableAdapter = new TableComponentPreferenceAdapter();
+		tableAdapter.toTableComponent(
+				(CustomScopedPreferenceStore) getPreferenceStore(),
+				connectionManager);
+
+		// Get the default connection's key and its preferences.
+		String defaultKey = getDefaultConnectionKey();
+		List<Entry> row = connectionManager.getConnection(defaultKey);
+
+		// If the preferences have changed, we need to reconnect.
+		if (adapter.setConnectionProperties(row)) {
+			Thread thread = new Thread() {
+				@Override
+				public void run() {
+					// Disconnect, then immediately reconnect.
+					adapter.disconnect(true);
+					adapter.connect(false);
+				}
+			};
+			thread.start();
+		}
+
+		return;
 	}
 
+	/**
+	 * Gets the key ("connection ID") associated with the default connection.
+	 * This can be set on the preference page.
+	 * 
+	 * @return The key for the default connection, or null if one is not set.
+	 */
+	private String getDefaultConnectionKey() {
+		int id = getPreferenceStore().getInt("defaultConnection");
+		List<String> connectionNames = connectionManager.getConnectionNames();
+		return (id < connectionNames.size() ? connectionNames.get(id) : null);
+	}
+
+	/**
+	 * Gets the default {@link #adapter}.
+	 * 
+	 * @return The default adapter for the VisIt connection.
+	 */
+	protected VisItConnectionAdapter getAdapter() {
+		return adapter;
+	}
+
+	// ---- Implements IVizService ---- //
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -140,7 +173,8 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public String getVersion() {
-		return "2.8.2";
+		// TODO
+		return "";
 	}
 
 	/*
@@ -151,7 +185,7 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public boolean hasConnectionProperties() {
-		return true;
+		return false;
 	}
 
 	/*
@@ -162,15 +196,7 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public Map<String, String> getConnectionProperties() {
-		Map<String, String> preferences = new TreeMap<String, String>();
-		IPreferenceStore store = getPreferenceStore();
-
-		for (ConnectionPreference p : ConnectionPreference.values()) {
-			String preferenceId = p.toString();
-			preferences.put(preferenceId, store.getString(preferenceId));
-		}
-
-		return preferences;
+		return null;
 	}
 
 	/*
@@ -181,20 +207,6 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public void setConnectionProperties(Map<String, String> props) {
-		if (props != null) {
-			IPreferenceStore store = getPreferenceStore();
-
-			for (Entry<String, String> prop : props.entrySet()) {
-				String preferenceId = prop.getKey();
-				try {
-					ConnectionPreference.valueOf(preferenceId);
-					store.setValue(preferenceId, prop.getValue());
-				} catch (IllegalArgumentException e) {
-					// Could not process the current property.
-				}
-			}
-		}
-
 		return;
 	}
 
@@ -205,11 +217,7 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public boolean connect() {
-		// TODO We need to create any connections that are supposed to be open
-		// by default.
-		// If we are trying to connect, don't try connecting again.
-		return state != ConnectionState.Connecting
-				&& openDefaultConnection(false);
+		return adapter.connect(false);
 	}
 
 	/*
@@ -219,8 +227,7 @@ public class VisItVizService implements IVizService {
 	 */
 	@Override
 	public boolean disconnect() {
-		// TODO We need to disconnect any open connections.
-		return closeDefaultConnection(false);
+		return adapter.disconnect(false);
 	}
 
 	/*
@@ -234,377 +241,36 @@ public class VisItVizService implements IVizService {
 	public IPlot createPlot(URI file) throws Exception {
 		VisItPlot plot = null;
 		if (file != null) {
-			plot = new VisItPlot(file, this);
-			plot.setProperties(getDefaultPlotProperties());
-
-			// Keep track of the existing plots.
+			plot = new VisItPlot(this, file);
 			plots.add(plot);
 		}
 		return plot;
 	}
 
-	/**
-	 * Gets the current state of the default connection.
-	 * 
-	 * @return The current state of the VizService's default connection.
-	 */
-	protected ConnectionState getConnectionState() {
-		return state;
-	}
+	// -------------------------------- //
 
 	/**
-	 * Gets the {@link IPreferenceStore} for the associated preference page.
+	 * Deletes the specified plot, if it was created by this service. After this
+	 * call, the plot's UI contributions will be destroyed.
 	 * 
-	 * @return The {@code IPreferenceStore} whose defaults should be set.
+	 * @param plot
+	 *            The plot to delete. This should be a plot that was created by
+	 *            {@link #createPlot(URI)}.
 	 */
-	private IPreferenceStore getPreferenceStore() {
-		if (preferenceStore == null) {
-			// Get the PreferenceStore for the bundle.
-			String id = FrameworkUtil.getBundle(getClass()).getSymbolicName();
-			preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE,
-					id);
-		}
-		return preferenceStore;
-	}
-
-	/**
-	 * Gets the default VisIt plot properties.
-	 * 
-	 * @return The default VisIt plot properties, stored as a map of strings
-	 *         keyed on strings.
-	 */
-	private Map<String, String> getDefaultPlotProperties() {
-		// TODO
-		return new HashMap<String, String>();
-	}
-
-	// ---- Connection Management Methods ---- //
-	/**
-	 * Gets the VisIt connection ID associated with the default connection.
-	 * 
-	 * @return The default connection ID.
-	 */
-	private String getDefaultConnectionId() {
-		return getPreferenceStore().getString(
-				ConnectionPreference.ConnectionID.toString());
-	}
-
-	/**
-	 * Determines whether or not a VisIt connection with the specified ID exists
-	 * and is connected.
-	 * 
-	 * @param id
-	 *            The VisIt ID for the connection.
-	 * @return True if the associated connection is established, false
-	 *         otherwise.
-	 */
-	private boolean hasConnection(String id) {
-		boolean found = VisItSwtConnectionManager.hasConnection(id);
-		System.out.println("VisItVizService message: "
-				+ "Connection with id \"" + id + "\" " + (found ? "" : "not ")
-				+ "found.");
-		return found;
-	}
-
-	// /**
-	// * Determines whether or not the default VisIt connection exists and is
-	// * connected. This is a convenience method.
-	// *
-	// * @return True if the default connection is established, false otherwise.
-	// */
-	// private boolean hasDefaultConnection() {
-	// return hasConnection(getDefaultConnectionId());
-	// }
-
-	/**
-	 * Opens the connection with the specified VisIt ID.
-	 * 
-	 * @param id
-	 *            The VisIt ID of the connection.
-	 * @param block
-	 *            Whether or not to block the caller while the connection is
-	 *            opened.
-	 * @return True if the connection is open by the time this method returns,
-	 *         false otherwise.
-	 */
-	private boolean openConnection(String id, boolean block) {
-		boolean open = true;
-
-		if (!hasConnection(id)) {
-			System.out.println("VisItVizService message: "
-					+ "Opening connection \"" + id + "\".");
-			// THe connection is closed and needs to be opened.
-			open = false;
-
-			// Create a new thread to open the connection.
-			final String connId = id;
-			Thread thread = new Thread() {
-				@Override
-				public void run() {
-
-					state = ConnectionState.Connecting;
-
-					// Notify all plots that the connection is opening.
-					for (VisItPlot plot : plots) {
-						plot.updateConnection(connId,
-								ConnectionState.Connecting);
-					}
-
-					// Try to open the connection.
-					VisItSwtConnection connection = VisItSwtConnectionManager
-							.createConnection(connId, createDefaultShell(),
-									createConnectionPreferenceMap());
-
-					// Notify the plots depending on whether the connection was
-					// successful or a failure.
-					if (connection != null) {
-						state = ConnectionState.Connected;
-
-						// Connection successful!
-						System.out.println("VisItVizService message: "
-								+ "Connection \"" + connId
-								+ "\" has been opened.");
-
-						// Notify all plots that the connection opened.
-						for (VisItPlot plot : plots) {
-							plot.updateConnection(connId,
-									ConnectionState.Connected);
-						}
-					} else {
-						// Connection failed!
-						System.err.println("VisItVizService error: "
-								+ "Failed to create connection \"" + connId
-								+ "\".");
-						state = ConnectionState.Failed;
-
-						// Notify all plots that the connection opened.
-						for (VisItPlot plot : plots) {
-							plot.updateConnection(connId,
-									ConnectionState.Failed);
-						}
-					}
-
-					return;
-				}
-			};
-			// Start the worker thread that establishes the connection.
-			thread.start();
-
-			// If required, we must wait until the thread finishes. When that
-			// happens, the connection should be open.
-			if (block) {
-				try {
-					thread.join();
-					// The connection is now open.
-					open = (state == ConnectionState.Connected);
-				} catch (InterruptedException e) {
-					// In the event the thread has an exception, show an error
-					// and carry on.
-					System.err.println("VisItVizService error: "
-							+ "Thread exception while opening connection \""
-							+ id + "\".");
-					e.printStackTrace();
-				}
-			}
-		} else {
-			System.out.println("VisItVizService message: " + "Connection \""
-					+ id + "\" is already established.");
-		}
-
-		return open;
-	}
-
-	/**
-	 * Opens the default VisIt connection. This is a convenience method.
-	 * 
-	 * @param block
-	 *            Whether or not to block the caller while the connection is
-	 *            opened.
-	 * @return True if the default connection is open by the time this method
-	 *         returns, false otherwise.
-	 */
-	private boolean openDefaultConnection(boolean block) {
-		return openConnection(getDefaultConnectionId(), block);
-	}
-
-	/**
-	 * Gets the connection with the specified VisIt ID.
-	 * 
-	 * @param id
-	 *            The VisIt ID of the connection.
-	 * @return The connection if it exists and is open. Null otherwise.
-	 */
-	private VisItSwtConnection getConnection(String id) {
-		VisItSwtConnection connection = null;
-
-		// In this case, we only need to fetch the connection. Do not attempt to
-		// open it!
-		if (hasConnection(id)) {
-			connection = VisItSwtConnectionManager.getConnection(id);
-		}
-
-		return connection;
-	}
-
-	/**
-	 * Gets the default VisIt connection. This is a convenience method.
-	 * 
-	 * @return The default connection if it exists and is open. Null otherwise.
-	 */
-	protected VisItSwtConnection getDefaultConnection() {
-		return getConnection(getDefaultConnectionId());
-	}
-
-	/**
-	 * Closes the connection with the specified VisIt ID.
-	 * 
-	 * @param id
-	 *            The VisIt ID of the connection.
-	 * @param block
-	 *            Whether or not to block the caller while the connection is
-	 *            closed.
-	 * @return True if the connection is closed by the time this method returns,
-	 *         false otherwise.
-	 */
-	private boolean closeConnection(String id, boolean block) {
-		boolean closed = true;
-
-		if (hasConnection(id)) {
-			// The connection is open and needs to be closed.
-			closed = false;
-
-			// Create a new thread to close the connection.
-			final String connId = id;
-			Thread thread = new Thread() {
-				@Override
-				public void run() {
-					VisItSwtConnectionManager.getConnection(connId).close();
-					System.out.println("VisItVizService message: "
-							+ "Connection \"" + connId + "\" has been closed.");
-
-					state = ConnectionState.Disconnected;
-
-					// Notify all plots that the connection closed.
-					for (VisItPlot plot : plots) {
-						plot.updateConnection(connId,
-								ConnectionState.Disconnected);
-					}
-				}
-			};
-			// We do not want a daemon thread when closing... we want the
-			// connection to close gracefully!
-			thread.setDaemon(false);
-			thread.start();
-
-			// If required, block the caller until the connection is closed.
-			if (block) {
-				thread.start();
-				try {
-					thread.join();
-					// The connection is now closed.
-					closed = (state == ConnectionState.Disconnected);
-				} catch (InterruptedException e) {
-					// In the event the thread has an exception, show an error
-					// and carry on.
-					System.err.println("VisItVizService error: "
-							+ "Thread exception while closing connection \""
-							+ id + "\".");
-					e.printStackTrace();
-				}
+	public void deletePlot(IPlot plot) {
+		// Find the plot in the list of created plots.
+		int size = plots.size();
+		VisItPlot visItPlot;
+		for (int i = 0; i < size; i++) {
+			visItPlot = plots.get(i);
+			// If found, dispose the plot, remove it from the list, and break.
+			if (plot == visItPlot) {
+				visItPlot.dispose();
+				plots.remove(i);
+				i = size;
 			}
 		}
-
-		return closed;
+		return;
 	}
 
-	/**
-	 * Closes the default VisIt connection. This is a convenience method.
-	 * 
-	 * @param block
-	 *            Whether or not to block the caller while the connection is
-	 *            closed.
-	 * @return True if the default connection is closed by the time this method
-	 *         returns, false otherwise.
-	 */
-	private boolean closeDefaultConnection(boolean block) {
-		return closeConnection(getDefaultConnectionId(), block);
-	}
-
-	/**
-	 * Creates a new, default {@code Shell} using the UI thread.
-	 * 
-	 * @return A new, unopened {@code Shell}, or {@code null} if the main
-	 *         {@code Display} could not be found.
-	 */
-	private Shell createDefaultShell() {
-		// FIXME The VisItSwtConnection shouldn't need to worry about a Shell,
-		// except when creating dialogs. Eventually, the connection dialogs
-		// should be handled in ICE. In special cases where VisIt needs to
-		// create its own custom dialog, it should get a Shell from the UI
-		// Display like the code below.
-
-		// Set the default return value.
-		Shell shell = null;
-
-		// We need a Display to create a Shell (since the Shell constructor
-		// requires one and the Display controls the UI thread).
-		Display display = Display.getCurrent();
-		if (display == null) {
-			display = Display.getDefault();
-		}
-
-		if (display != null) {
-			// Create a new Shell on the UI thread.
-			final Display displayRef = display;
-			final AtomicReference<Shell> shellRef = new AtomicReference<Shell>();
-			display.syncExec(new Runnable() {
-				@Override
-				public void run() {
-					shellRef.set(new Shell(displayRef));
-				}
-			});
-			// This sets the return value.
-			shell = shellRef.get();
-		}
-
-		return shell;
-	}
-
-	/**
-	 * Creates the map of connection preferences required to create a
-	 * {@link VisItSwtConnection} based on the connection preferences in the
-	 * associated preference store.
-	 * 
-	 * @return The VisIt-friendly connection preferences.
-	 */
-	private Map<String, String> createConnectionPreferenceMap() {
-		// Get the PreferenceStore. All VisIt connection preferences
-		// are stored here.
-		IPreferenceStore store = getPreferenceStore();
-
-		// Construct the input map required to start VisIt.
-		Map<String, String> visitPreferences = new HashMap<String, String>();
-		for (ConnectionPreference p : ConnectionPreference.values()) {
-			visitPreferences.put(p.getID(), store.getString(p.toString()));
-			// TODO Remove this output.
-			System.out.println(p.getID() + ": "
-					+ visitPreferences.get(p.getID()));
-		}
-
-		// FIXME This should be cleaned up or handled elsewhere.
-		// Local connections should have the "useTunneling" flag set
-		// to "false". Remote connections should have it set to
-		// "true".
-		if ("localhost".equals(visitPreferences.get(ConnectionPreference.Host
-				.getID()))) {
-			visitPreferences.put(ConnectionPreference.UseTunneling.getID(),
-					"false");
-		} else {
-			visitPreferences.put(ConnectionPreference.UseTunneling.getID(),
-					"true");
-		}
-
-		return visitPreferences;
-	}
-	// --------------------------------------- //
 }

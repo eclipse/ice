@@ -25,6 +25,9 @@ import java.util.Map;
  */
 public enum ConnectionPreference {
 
+	// TODO Remove this enum or figure out a good structure to use for it, as it
+	// is not currently used.
+	
 	// FIXME Currently, this enum maps 1-1 to the VisItSwtConnection's input
 	// map/properties. We will want to conceal some of these from the user, and
 	// we will also need different preferences in the PreferenceStore that

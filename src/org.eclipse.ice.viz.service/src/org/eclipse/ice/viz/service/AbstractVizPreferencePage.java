@@ -11,13 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * This is the base class for visualization service preference pages added to
@@ -100,8 +98,7 @@ public abstract class AbstractVizPreferencePage extends
 		// for managing multiple PreferenceStores in the same bundle,
 		// AbstractVizPreferenceInitializer's getPreferenceStore() method may
 		// also need to be updated.
-		String id = FrameworkUtil.getBundle(getClass()).getSymbolicName();
-		return new CustomScopedPreferenceStore(InstanceScope.INSTANCE, id);
+		return new CustomScopedPreferenceStore(getClass());
 	}
 
 }

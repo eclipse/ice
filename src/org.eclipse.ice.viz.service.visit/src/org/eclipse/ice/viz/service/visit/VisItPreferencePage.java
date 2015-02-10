@@ -11,13 +11,16 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
+import java.util.List;
+
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
+import org.eclipse.ice.viz.service.connections.IKeyChangeListener;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionManager;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+import org.eclipse.ice.viz.service.preferences.DynamicComboFieldEditor;
 import org.eclipse.ice.viz.service.preferences.TableComponentComposite;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
-import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -75,90 +78,35 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 	 */
 	@Override
 	protected void createFieldEditors() {
+		Composite parent = getFieldEditorParent();
 
-		ConnectionPreference p;
+		// Create a new DynamicComboFieldEditor for the default connection. The
+		// default connection should only be selected from the list of
+		// connections from the connection table.
+		final DynamicComboFieldEditor defaultConnection;
+		defaultConnection = new DynamicComboFieldEditor("defaultConnection",
+				"Default Connection", parent,
+				connectionManager.getConnectionNames());
+		addField(defaultConnection);
 
-		// Add the host name and port for testing remote connections.
-		p = ConnectionPreference.Host;
-		addField(new StringFieldEditor(p.toString(), p.getName(),
-				getFieldEditorParent()));
-		p = ConnectionPreference.HostPort;
-		addField(new StringFieldEditor(p.toString(), p.getName(),
-				getFieldEditorParent()));
-
-		// For now, we only expose the VisIt path since we do not have remote
-		// connections working properly.
-		p = ConnectionPreference.VisItPath;
-		addField(new StringFieldEditor(p.toString(), p.getName(),
-				getFieldEditorParent()));
-
-		// TODO Using the following code as an example, add a password column to
-		// the ConnectionManager.
-		// StringFieldEditor passwordField = new StringFieldEditor("password",
-		// "Password", getFieldEditorParent()) {
-		// @Override
-		// protected void doFillIntoGrid(Composite parent, int numColumns) {
-		// super.doFillIntoGrid(parent, numColumns);
-		//
-		// getTextControl().setEchoChar('*');
-		// }
-		//
-		// @Override
-		// protected void doStore() {
-		// ISecurePreferences preferences = SecurePreferencesFactory
-		// .getDefault();
-		// ISecurePreferences node = preferences
-		// .node("visit.connection.credentials");
-		// try {
-		// String user = "bambam";
-		// String password = getTextControl().getText();
-		//
-		// System.out.println(user + " - " + password);
-		//
-		// node.put("user", user, true);
-		// node.put("password", password, true);
-		// } catch (StorageException e) {
-		// e.printStackTrace();
-		// }
-		// // Default behavior...
-		// // getPreferenceStore().setValue(getPreferenceName(),
-		// // textField.getText());
-		// }
-		//
-		// @Override
-		// protected void doLoad() {
-		// Text textField = getTextControl();
-		// if (textField != null) {
-		// ISecurePreferences preferences = SecurePreferencesFactory
-		// .getDefault();
-		// if (preferences.nodeExists("visit.connection.credentials")) {
-		// ISecurePreferences node = preferences
-		// .node("visit.connection.credentials");
-		// try {
-		// String user = node.get("user", "");
-		// String password = node.get("password", "");
-		//
-		// System.out.println(user + " - " + password);
-		//
-		// textField.setText(password);
-		// oldValue = password;
-		// } catch (StorageException e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// }
-		// // Default behavior...
-		// // Text textField = getTextControl();
-		// // if (textField != null) {
-		// // String value =
-		// // getPreferenceStore().getString(getPreferenceName());
-		// // textField.setText(value);
-		// // oldValue = value;
-		// // }
-		// }
-		// };
-		//
-		// addField(passwordField);
+		// Add a key change listener so that we can refresh the values in the
+		// default connection field editor when necessary.
+		connectionManager.addKeyChangeListener(new IKeyChangeListener() {
+			@Override
+			public void keyChanged(String oldKey, String newKey) {
+				// Get the current value for the default connection.
+				String value = defaultConnection.getValue();
+				// Update the default connection Combo's allowed values.
+				List<String> names = connectionManager.getConnectionNames();
+				defaultConnection.setAllowedValues(names);
+				// If the selected connection's name was changed, make sure it
+				// is still the default connection.
+				if (oldKey != null && newKey != null && oldKey.equals(value)) {
+					defaultConnection.setValue(newKey);
+				}
+				return;
+			}
+		});
 
 		return;
 	}
@@ -177,6 +125,13 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		// layout to make sure the connection table spans all horizontal space.
 		Composite container = getFieldEditorParent();
 		GridLayout gridLayout = (GridLayout) container.getLayout();
+
+		// If there are no field editors, the number of columns is 0, which
+		// prevents the table from appearing. We need to update the number of
+		// columns in this case.
+		if (gridLayout.numColumns == 0) {
+			gridLayout.numColumns = 1;
+		}
 
 		// Create a ConnectionComposite to show all of the cached connection
 		// preferences.
@@ -207,10 +162,9 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		adapter.toPreferences(connectionManager,
 				(CustomScopedPreferenceStore) getPreferenceStore());
 
-		// TODO Remove this after we have multiple connections and a way to
-		// notify the VizService that a particular connection has changed.
+		// Notify the viz service that the preferences have been updated.
 		VisItVizService.getInstance().preferencesChanged();
-
+		
 		return ok;
 	}
 
