@@ -43,6 +43,7 @@ import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 
@@ -526,7 +527,8 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(JobLauncherForm.class);
-
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		
 		// Setup a JobLauncherForm
 		jobForm.setName("I AM NEW!");
 		jobForm.setDescription("Oh Somewhat NEW?!");

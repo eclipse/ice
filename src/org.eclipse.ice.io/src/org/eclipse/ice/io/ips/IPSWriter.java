@@ -13,12 +13,17 @@
 package org.eclipse.ice.io.ips;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,8 +34,11 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -77,51 +85,47 @@ public class IPSWriter implements IWriter {
 		// Get the components from the form and make sure we have a
 		// valid place that we can write the file out to
 		ArrayList<Component> components = form.getComponents();
-		File outputFile = new File(ifile.getFullPath().toOSString());
-		if (!outputFile.exists()) {
-			try {
-				outputFile.createNewFile();
-			} catch (IOException e) {
-				System.err.println("IPSWriter Message: Error! Could not"
-						+ " create output file at "
-						+ ifile.getFullPath().toOSString());
-			}
-		}
 
 		// Make sure that the form had data that looks correct, and the output
 		// file exists
-		if (components != null && components.size() > 3 && outputFile.isFile()) {
+		if (components != null && components.size() > 3) {
 			try {
-				// Get an output stream to the file
-				OutputStream stream = new FileOutputStream(outputFile);
-				int numComponents = components.size();
-
+				PipedInputStream in = new PipedInputStream(8196);
+				PipedOutputStream out = new PipedOutputStream(in);
+				if (!ifile.exists()) {
+					byte[] blank = "".getBytes();
+					InputStream s = new ByteArrayInputStream(blank);
+					ifile.create(s, true, new NullProgressMonitor());
+				}
 				// Write out the header, global configuration, and ports table
-				writeICEHeader(stream);
-				writeGlobalConfig((TableComponent) components.get(1), stream);
-				writePortsTable((TableComponent) components.get(2), stream);
-				
+				writeICEHeader(out);
+				writeGlobalConfig((TableComponent) components.get(1), out);
+				writePortsTable((TableComponent) components.get(2), out);
+
 				// Get the master details
 				MasterDetailsComponent masterDetails = (MasterDetailsComponent) components
 						.get(3);
-				
+
 				// Write out each of the ports from the master individually
 				for (int i = 0; i < masterDetails.numberOfMasters(); i++) {
 					writeComponent(
 							(DataComponent) masterDetails.getDetailsAtIndex(i),
-							stream);
+							out);
 				}
-				
-				// Write out the time loop data then close the stream 
-				writeTimeLoopData((DataComponent) components.get(0), stream);
-				stream.flush();
-				stream.close();
+
+				// Write out the time loop data then close the stream
+				writeTimeLoopData((DataComponent) components.get(0), out);
+				out.close();
+				ifile.setContents(in, true, false, new NullProgressMonitor());
 			} catch (FileNotFoundException e) {
 				System.out.println("IPSWriter Message: Could not find "
-						+ outputFile.getAbsolutePath() + " for writing.");
+						+ ifile.getName() + " for writing.");
 			} catch (IOException e) {
 				System.out.println("IPSWriter Message: Could not write to "
-						+ outputFile.getAbsolutePath() + ".");
+						+ ifile.getName() + " du to an IO error");
+			} catch (CoreException e) {
+				System.out.println("IPSWriter Message: Could not write to "
+						+ ifile.getName() + " due to an ICE Core error.");
 			}
 		}
 
@@ -148,15 +152,15 @@ public class IPSWriter implements IWriter {
 		if (ifile == null || regex == null || value == null) {
 			return;
 		}
-		
+
 		// First, get an ArrayList with each line of the file so
 		// we can search through them
 		// Read in the ini file and create the iterator
-		File file = new File(ifile.getFullPath().toOSString());
 		StringBuffer buffer = null;
 		try {
 			// Read the FileInputStream and append to a StringBuffer
-			BufferedReader reader = new BufferedReader(new FileReader(file));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					ifile.getContents()));
 			buffer = new StringBuffer();
 			int fileByte;
 			while ((fileByte = reader.read()) != -1) {
@@ -164,13 +168,16 @@ public class IPSWriter implements IWriter {
 			}
 			reader.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("IPSWriter Message:  Could not find " 
-					+ ifile.getFullPath().toOSString() +  " for reading.");
+			System.out.println("IPSWriter Message:  Could not find "
+					+ ifile.getName() + " for reading.");
 			return;
 		} catch (IOException e) {
-			System.out.println("IPSWriter Message:  Could not read in " 
-					+ ifile.getFullPath().toOSString() +  " for replacement writing.");
+			System.out.println("IPSWriter Message:  Could not read in "
+					+ ifile.getName() + " for replacement writing.");
 			return;
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		// Break up the StringBuffer at each newline character
@@ -178,42 +185,42 @@ public class IPSWriter implements IWriter {
 		ArrayList<String> fileLines = new ArrayList<String>(
 				Arrays.asList(bufferSplit));
 
-		// Make a backup of the original file in case something goes wrong during
-		// the search and replace operations
-		File tempFile = new File(ifile.getFullPath().toOSString().split("[.]")[0] + "_bak.conf");
-		try {
-			Files.copy(file.toPath(), tempFile.toPath());
-		} catch (IOException e1) {
-			System.out.println("IPSWriter Message:  Error creating copy of original "
-					+ "file for backup.");
-			return;
-		}
-		
-		// Write out the file again, replacing any occurrences 
+		/*
+		 * NOTE: Need to do this differently if we are using Eclipse IFiles
+		 * exclusively -- Andrew // Make a backup of the original file in case
+		 * something goes wrong during // the search and replace operations File
+		 * tempFile = new File(ifile.getFullPath().toOSString().split("[.]")[0]
+		 * + "_bak.conf"); tempFile.deleteOnExit(); try {
+		 * Files.copy(file.toPath(), tempFile.toPath(),
+		 * StandardCopyOption.REPLACE_EXISTING); } catch (IOException e1) {
+		 * System
+		 * .out.println("IPSWriter Message:  Error creating copy of original " +
+		 * "file for backup."); return; }
+		 */
+
+		// Write out the file again, replacing any occurrences
 		// of the regex with the given replacement value
-		try {
-			FileOutputStream replaceWriter = new FileOutputStream(file);
-			for (String line : fileLines) {
-				if (line.matches(regex)) {
-					line = line.replaceAll(regex, value);
-				}
-				line = line + "\n";
-				replaceWriter.write(line.getBytes());
+
+		StringBuilder builder = new StringBuilder();
+		for (String line : fileLines) {
+			if (line.matches(regex)) {
+				line = line.replaceAll(regex, value);
+			} else if (line.contains(regex)) {
+				line = line.replaceAll(regex, value);
 			}
-			replaceWriter.flush();
-			replaceWriter.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("IPSWriter Message:  Could not find " 
-					+ tempFile.getAbsolutePath() +  " for writing.");
-			return;
-		} catch (IOException e) {
-			System.out.println("IPSWriter Message:  Could not write out " 
-					+ tempFile.getAbsolutePath() +  " with replacements.");
-			return;
+			line = line + "\n";
+			builder.append(line);
 		}
-		
-		// Writing should be fine, get rid of the backup when we're all done
-		tempFile.deleteOnExit();
+
+		InputStream replaceStream = new ByteArrayInputStream(builder.toString()
+				.getBytes());
+		try {
+			ifile.setContents(replaceStream, true, true,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -339,7 +346,6 @@ public class IPSWriter implements IWriter {
 		// Write it out
 		byteArray = configString.getBytes();
 		stream.write(byteArray);
-
 	}
 
 	/**

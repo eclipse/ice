@@ -1246,8 +1246,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			// Monitor the job
 			monitorJob();
 
-			// ----- Download the output if possible and if it wasn't cancelled
-			// -----
+			// - Download the output if possible and if it wasn't cancelled - //
 			// Check to see if the job should be cancelled.
 			if (!cancelled.get()) {
 				// Get download directory
