@@ -239,11 +239,8 @@ public class VisItVizService extends AbstractVizService {
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		VisItPlot plot = null;
-		if (file != null) {
-			plot = new VisItPlot(this, file);
-			plots.add(plot);
-		}
+		VisItPlot plot = new VisItPlot(this, file);
+		plots.add(plot);
 		return plot;
 	}
 

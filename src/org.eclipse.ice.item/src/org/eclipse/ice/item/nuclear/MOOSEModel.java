@@ -1298,14 +1298,15 @@ public class MOOSEModel extends Item {
 		// If a valid mesh file was found and it isn't already on the 
 		// ResourceComponent, add it
 		if (mesh != null && !resourceComponent.contains(mesh)) {
-			
-			// We only deal with one mesh at a time, so make sure we don't 
-			// have any leftover meshes hanging around
-			if (!resourceComponent.isEmpty()) {
-				resourceComponent.clear();
+
+			// We only deal with one mesh at a time. To make list change events
+			// easier to interpret, either INSERT or UPDATE the mesh resource.
+			if (resourceComponent.isEmpty()) {
+				resourceComponent.add(mesh);
+			} else {
+				resourceComponent.set(0, mesh);
 			}
-			// Add the new mesh resource
-			resourceComponent.add(mesh);
+			
 			// Update the name on the Form
 			meshFileName = mesh.getName();
 			System.out.println(

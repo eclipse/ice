@@ -282,7 +282,15 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 			// separator. If the URI uses the standard separator on Windows,
 			// update the source path to use the native Windows separator.
 			String path = source.getPath();
-			if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+
+			// If the host is local and a Windows-based machine, we need to
+			// update the path to use Windows separators for VisIt.
+			String host = source.getHost();
+			// TODO VisIt should just be able to handle a raw URI... The code
+			// below can't handle remote Windows machines.
+			if ((host == null || "localhost".equals(host))
+					&& System.getProperty("os.name").toLowerCase()
+							.contains("windows")) {
 				if (path.startsWith("/")) {
 					path = path.substring(1);
 					path = path.replace("/",
@@ -296,6 +304,9 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 				// Trigger an update to the UI since the source changed.
 				update(adapter);
 			}
+		} else {
+			source = null;
+			sourcePath = null;
 		}
 		return;
 	}
@@ -380,10 +391,17 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 
 			// Draw the specified plot on the Canvas.
 			ViewerMethods widget = canvas.getViewerMethods();
-			widget.openDatabase(sourcePath);
+
+			// Remove all existing plots.
 			widget.deleteActivePlots();
-			widget.addPlot(plotCategory, plotType);
-			widget.drawPlots();
+
+			// If possible, draw the plot.
+			if (source != null) {
+				widget.openDatabase(sourcePath);
+				// TODO How do we handle paths that are invalid?
+				widget.addPlot(plotCategory, plotType);
+				widget.drawPlots();
+			}
 		}
 		// Otherwise, there is a problem of some sort. Give the user a link to
 		// the VisIt preferences along with an informative message.

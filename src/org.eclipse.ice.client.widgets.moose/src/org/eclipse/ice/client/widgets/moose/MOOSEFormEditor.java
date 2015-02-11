@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,7 +31,9 @@ import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.viz.service.visit.VisItPlot;
@@ -61,6 +62,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
@@ -70,6 +72,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
 
 import com.jme3.math.Vector3f;
 
@@ -116,6 +121,58 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	private VisItVizService vizService;
 	private Composite meshPlotParent;
 	private FormToolkit toolkit;
+	private VisItPlot plot;
+
+	private URI meshURI;
+
+	@Override
+	protected void setInput(IEditorInput input) {
+		super.setInput(input);
+
+		if (input instanceof ICEFormInput) {
+			// Get the ResourceComponent from the MOOSE Model.
+			Form form = ((ICEFormInput) input).getForm();
+			int id = MOOSEModel.resourceComponentId;
+			final ResourceComponent resources = (ResourceComponent) form
+					.getComponent(id);
+
+			// If possible, register a listener to update the mesh resource
+			// file when it changes in the ResourceComponent.
+			if (resources != null) {
+				if (!resources.isEmpty()) {
+					meshURI = resources.get(0).getPath();
+				}
+
+				ListEventListener<ICEResource> listener = new ListEventListener<ICEResource>() {
+					@Override
+					public void listChanged(ListEvent<ICEResource> listChanges) {
+						while (listChanges.next()) {
+							int type = listChanges.getType();
+							int index = listChanges.getIndex();
+
+							// Pull the mesh's resource from the list if one was
+							// inserted or updated. Otherwise, it was deleted.
+							if (type == ListEvent.INSERT
+									| type == ListEvent.UPDATE) {
+								meshURI = resources.get(index).getPath();
+							} else {
+								meshURI = null;
+							}
+
+							// If the plot is available, set its URI.
+							if (plot != null) {
+								plot.setDataSource(meshURI);
+							}
+
+							return;
+						}
+					}
+				};
+				resources.addListEventListener(listener);
+			}
+		}
+		return;
+	}
 
 	/**
 	 * Overrides the default <code>ICEFormEditor</code> header and adds the
@@ -656,12 +713,6 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		removePageWithID(PLANT_PAGE_ID);
 	}
 
-	// TODO Remove this. This is for testing purposes only, i.e. to speed up
-	// development.
-	protected void addPages() {
-		addMeshPage();
-	}
-
 	/**
 	 * Provides a Mesh View page with a view of the MOOSE data tree's mesh
 	 * rendered by the current applicable visualization service.
@@ -687,15 +738,15 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						Composite body = managedForm.getForm().getBody();
 						body.setLayout(new GridLayout(2, false));
 
-//						// TODO Comment out the data section for testing...
-//						// Create a Section for the "Mesh" block's active data
-//						// node (DataComponent).
-//						section = createDefaultSection(managedForm);
-//						// The data node should not get excess horizontal space.
-//						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-//								false, true));
-//						populateMeshDataComponentSection(section, toolkit,
-//								managedForm);
+						// TODO Comment out the data section for testing...
+						// Create a Section for the "Mesh" block's active data
+						// node (DataComponent).
+						section = createDefaultSection(managedForm);
+						// The data node should not get excess horizontal space.
+						section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+								false, true));
+						populateMeshDataComponentSection(section, toolkit,
+								managedForm);
 
 						// Create a Section for the mesh view.
 						section = createDefaultSection(managedForm);
@@ -811,17 +862,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			// FillLayout.
 			meshPlotParent.setLayout(new FillLayout());
 
-			// TODO Get the file from elsewhere...
-			String userId = System.getProperty("user.name");
-			File file = new File(
-					"C:\\Users\\"
-							+ userId
-							+ "\\ICEFiles\\MOOSE Input\\bison\\3dContactGap4.e");
-			URI uri = file.toURI();
-
 			try {
 				// Create the plot.
-				VisItPlot plot = (VisItPlot) vizService.createPlot(uri);
+				VisItPlot plot = (VisItPlot) vizService.createPlot(meshURI);
 				// Add the plot's Actions to the ToolBar.
 				for (IAction action : plot.getActions()) {
 					toolBarManager.add(action);
