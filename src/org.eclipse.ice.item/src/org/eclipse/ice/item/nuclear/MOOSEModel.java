@@ -245,10 +245,10 @@ public class MOOSEModel extends Item {
 		
 		// Create the ResourceComponent and add it
 		ResourceComponent resourceComponent = new ResourceComponent();
-		resourceComponent.setName("Output Files and Results");
+		resourceComponent.setName("Mesh");
 		resourceComponent.setId(3);
-		resourceComponent.setDescription("A list of file resources associated "
-				+ "to this model builder.");
+		resourceComponent.setDescription("File resources associated "
+				+ "to this MOOSE Model.");
 		form.addComponent(resourceComponent);
 
 		// Add the default dummy text to the list of available apps

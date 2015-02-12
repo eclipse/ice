@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@
 package org.eclipse.ice.client.widgets;
 
 import org.eclipse.ice.client.common.PropertySource;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -66,7 +64,7 @@ import ca.odell.glazedlists.swt.DefaultEventTableViewer;
 
 /**
  * This class is a ViewPart that creates a tree of text files and a tree of
- * image files collected as ICEResourceComponents.>
+ * image files collected as ICEResourceComponents.
  * 
  * @authors Jay Jay Billings, Taylor Patterson
  */
@@ -134,13 +132,11 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * The Constructor
 	 */
 	public ICEResourceView() {
-		// begin-user-code
 
 		// Call the super constructor
 		super();
 
 		return;
-		// end-user-code
 	}
 	
 	/**
@@ -153,7 +149,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	 *            The ResourceComponent
 	 */
 	public void setResourceComponent(ResourceComponent component) {
-		// begin-user-code
 
 		// Make sure the ResourceComponent exists
 		if (component != null) {
@@ -169,7 +164,6 @@ public class ICEResourceView extends PlayableViewPart implements
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -181,9 +175,7 @@ public class ICEResourceView extends PlayableViewPart implements
 	 *         set.
 	 */
 	public ResourceComponent getResourceComponent() {
-		// begin-user-code
 		return resourceComponent;
-		// end-user-code
 	}
 
 	/**
@@ -250,14 +242,10 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * This operation creates content and label providers for a TreeViewer.
-	 * </p>
 	 * 
 	 * @param inputTreeViewer
-	 *            <p>
 	 *            The TreeViewer to have the providers added to.
-	 *            </p>
 	 */
 	private void initializeTreeViewer(TreeViewer inputTreeViewer) {
 
@@ -359,27 +347,21 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * 
 	 * @see WorkbenchPart#setFocus()
 	 */
 	@Override
 	public void setFocus() {
+		// Do nothing
 		return;
 	}
 
 	/**
-	 * <p>
 	 * Update resourceTreeViewer when a new resource becomes available.
-	 * </p>
 	 * 
 	 * @see IUpdateableListener#update(IUpdateable)
 	 */
+	@Override
 	public void update(final IUpdateable component) {
-		// begin-user-code
-
-//		System.out
-//				.println("ICEResourcePage Message: New resources added!");
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
@@ -397,14 +379,11 @@ public class ICEResourceView extends PlayableViewPart implements
 		});
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <p>
 	 * This operation populates the ArrayLists for text- and image-based
 	 * resources.
-	 * </p>
 	 */
 	private void sortTreeContent() {
 
@@ -425,13 +404,12 @@ public class ICEResourceView extends PlayableViewPart implements
 				}
 			}
 		}
+		
 		return;
 	}
 
 	/**
-	 * <p>
 	 * This operation sets the input of the resourceTreeViewer.
-	 * </p>
 	 */
 	private void setTreeContent() {
 
@@ -455,15 +433,10 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * This operation sets the input of the resourceTreeViewer when a tab
 	 * selection change occurs.
-	 * </p>
 	 * 
-	 * @param tabIndex
-	 *            <p>
-	 *            The currently selected tab.
-	 *            </p>
+	 * @param tabIndex	The currently selected tab.
 	 */
 	private void setTreeContent(int tabIndex) {
 
@@ -484,11 +457,9 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * This function is called whenever a Workbench part gains focus. Here, we
 	 * are only interested if the part is an ICEFormEditor. Get the Form from
 	 * the editor and accept its components. Call setDefaultResourceSelection().
-	 * </p>
 	 * 
 	 * @see IPartListener2#partActivated(IWorkbenchPartReference)
 	 */
@@ -523,12 +494,10 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * This function is called whenever a Workbench part is closed. Here, we are
 	 * only interested if the part is an ICEFormEditor. Get the Form from the
 	 * editor. If this is the most recently active form, clear its resources
 	 * from the resourceTreeViewer.
-	 * </p>
 	 * 
 	 * @see IPartListener2#partClosed(IWorkbenchPartReference)
 	 */
@@ -557,12 +526,10 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * This function is called whenever a Workbench part is covered by another
 	 * part. Here, we are only interested if the part is an ICEFormEditor. For
 	 * our purposes, this function call always precedes a call to partClosed, so
 	 * here we are just recording the ID as the most recently active part.
-	 * </p>
 	 * 
 	 * @see IPartListener2#partHidden(IWorkbenchPartReference)
 	 */
@@ -586,8 +553,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * 
 	 * @see IPartListener2#partBroughtToTop(IWorkbenchPartReference)
 	 */
 	@Override
@@ -597,8 +562,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * 
 	 * @see IPartListener2#partDeactivated(IWorkbenchPartReference)
 	 */
 	@Override
@@ -608,8 +571,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * 
 	 * @see IPartListener2#partOpened(IWorkbenchPartReference)
 	 */
 	@Override
@@ -619,8 +580,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * 
 	 * @see IPartListener2#partVisible(IWorkbenchPartReference)
 	 */
 	@Override
@@ -630,8 +589,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * 
 	 * @see IPartListener2#partInputChanged(IWorkbenchPartReference)
 	 */
 	@Override
@@ -662,111 +619,10 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(DataComponent)
-	 */
-	@Override
-	public void visit(DataComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(TableComponent)
-	 */
-	@Override
-	public void visit(TableComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(MatrixComponent)
-	 */
-	@Override
-	public void visit(MatrixComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(IShape)
-	 */
-	@Override
-	public void visit(IShape component) {
-		// Do nothing.
-		return;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(GeometryComponent)
-	 */
-	@Override
-	public void visit(GeometryComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(MasterDetailsComponent)
-	 */
-	@Override
-	public void visit(MasterDetailsComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(TreeComposite)
-	 */
-	@Override
-	public void visit(TreeComposite component) {
-		// Do nothing.
-		return;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(IReactorComponent)
-	 */
-	@Override
-	public void visit(IReactorComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(TimeDataComponent)
-	 */
-	@Override
-	public void visit(TimeDataComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	/**
-	 * <p>
 	 * This operation sets the default selection in the TreeViewer and returns
 	 * the resource.
-	 * </p>
 	 * 
-	 * @return The ICEResource selected by this function.
+	 * @return 	The ICEResource selected by this function.
 	 */
 	public ICEResource setDefaultResourceSelection() {
 
@@ -789,10 +645,8 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * Create and add the play, previous, and next buttons to the tool bar for
 	 * this view.
-	 * </p>
 	 */
 	private void createActions() {
 
@@ -816,11 +670,9 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * Set the resourceTreeViewer selection to the next item (file or image) in
 	 * the currently displayed resource list. If current selection is the last
 	 * item in the list, cycle to the front of the list.
-	 * </p>
 	 * 
 	 * @see PlayableViewPart#setToNextResource()
 	 */
@@ -830,8 +682,7 @@ public class ICEResourceView extends PlayableViewPart implements
 			public void run() {
 				// Get the currently selected resource in the view. (Or the
 				// first selected resource if multiple resources are
-				// selected
-				// even though this has no effect.)
+				// selected even though this has no effect.)
 				TreeItem[] currSelection = resourceTreeViewer.getTree()
 						.getSelection();
 				int currIndex = resourceTreeViewer.getTree().indexOf(
@@ -839,9 +690,9 @@ public class ICEResourceView extends PlayableViewPart implements
 
 				// Set the selection to the next resource in the currently
 				// displayed list or the first resource if the last resource
-				// is
-				// currently selected.
-				if (tabFolder.getSelectionIndex() == 1 && !imageList.isEmpty()) {
+				// is currently selected.
+				if (tabFolder.getSelectionIndex() == 1 
+						&& !imageList.isEmpty()) {
 					int nextIndex = (currIndex + 1) % imageList.size();
 					resourceTreeViewer.setSelection(new StructuredSelection(
 							imageList.get(nextIndex)), true);
@@ -857,11 +708,9 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * Set the resourceTreeViewer selection to the previous item (file or image)
 	 * in the currently displayed resource list. If current selection is the
 	 * first item in the list, cycle to the back of the list.
-	 * </p>
 	 * 
 	 * @see PlayableViewPart#setToPreviousResource()
 	 */
@@ -871,18 +720,15 @@ public class ICEResourceView extends PlayableViewPart implements
 			public void run() {
 				// Get the currently selected resource in the view. (Or the
 				// first selected resource if multiple resources are
-				// selected
-				// even though this has no effect.)
+				// selected even though this has no effect.)
 				TreeItem[] currSelection = resourceTreeViewer.getTree()
 						.getSelection();
 				int currIndex = resourceTreeViewer.getTree().indexOf(
 						currSelection[0]);
 
 				// Set the selection to the previous resource in the
-				// currently
-				// displayed list or the last resource if the first resource
-				// is
-				// currently selected.
+				// currently displayed list, or the last resource if the first 
+				// resource is currently selected.
 				if (tabFolder.getSelectionIndex() == 1 && !imageList.isEmpty()) {
 					int prevIndex = (currIndex - 1) % imageList.size();
 					if (prevIndex < 0) {
@@ -913,10 +759,8 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * <p>
 	 * A private subclass of PropertySource to implement the superclass features
 	 * used by ICEResourceView.
-	 * </p>
 	 */
 	private static class NRVPropertySource extends PropertySource {
 
@@ -933,15 +777,10 @@ public class ICEResourceView extends PlayableViewPart implements
 		}
 
 		/**
-		 * <p>
 		 * The constructor
-		 * </p>
 		 * 
-		 * @param obj
-		 *            <p>
-		 *            The object to be wrapped by PropertySource. For this
-		 *            subclass, this will be an ICEResource.
-		 *            </p>
+		 * @param obj 	The object to be wrapped by PropertySource. For this
+		 *            	subclass, this will be an ICEResource.
 		 */
 		public NRVPropertySource(Object obj) {
 
@@ -952,13 +791,9 @@ public class ICEResourceView extends PlayableViewPart implements
 		}
 
 		/**
-		 * <p>
 		 * This function returns the array of descriptors for properties.
-		 * </p>
 		 * 
-		 * @return <p>
-		 *         The array of descriptors for properties.
-		 *         </p>
+		 * @return 	The array of descriptors for properties.
 		 * 
 		 * @see IPropertySource#getPropertyDescriptors()
 		 */
@@ -968,18 +803,10 @@ public class ICEResourceView extends PlayableViewPart implements
 		}
 
 		/**
-		 * <p>
 		 * This function returns the value for a give property.
-		 * </p>
 		 * 
-		 * @param id
-		 *            <p>
-		 *            The object used to identify this property.
-		 *            </p>
-		 * 
-		 * @return <p>
-		 *         The value for the input property
-		 *         </p>
+		 * @param id	The object used to identify this property.
+		 * @return 		The value for the input property
 		 * 
 		 * @see IPropertySource#getPropertyValue(Object)
 		 */
@@ -1004,30 +831,82 @@ public class ICEResourceView extends PlayableViewPart implements
 			}
 		}
 	}
-
+	
 	@Override
-	public void visit(MeshComponent component) {
-		// TODO Auto-generated method stub
-
+	public void visit(DataComponent component) {
+		// Do nothing.
+		return;
 	}
 
+	@Override
+	public void visit(TableComponent component) {
+		// Do nothing.
+		return;
+	}
+
+	@Override
+	public void visit(MatrixComponent component) {
+		// Do nothing.
+		return;
+	}
+
+	@Override
+	public void visit(IShape component) {
+		// Do nothing.
+		return;
+	}
+
+	@Override
+	public void visit(GeometryComponent component) {
+		// Do nothing.
+		return;
+	}
+
+	@Override
+	public void visit(MasterDetailsComponent component) {
+		// Do nothing.
+		return;
+	}
+
+	@Override
+	public void visit(TreeComposite component) {
+		// Do nothing.
+		return;
+	}
+
+	@Override
+	public void visit(IReactorComponent component) {
+		// Do nothing.
+		return;
+	}
+
+	@Override
+	public void visit(TimeDataComponent component) {
+		// Do nothing.
+		return;
+	}
+	
+	@Override
+	public void visit(MeshComponent component) {
+		// Do nothing.
+		return;
+	}
 
 	@Override
 	public void visit(AdaptiveTreeComposite component) {
-		// TODO Auto-generated method stub
-
+		// Do nothing.
+		return;
 	}
 
 	@Override
 	public void visit(EMFComponent component) {
-		// TODO Auto-generated method stub
-		
+		// Do nothing.
+		return;
 	}
 
 	@Override
 	public void visit(ListComponent component) {
-		// TODO Auto-generated method stub
-		
+		// Do nothing.
+		return;
 	}
-
 }

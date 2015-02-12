@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2012, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,15 +42,17 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 
 /**
  * This class is a FormPage that creates a page with table and metadata viewing
  * area for an ICE ResourceComponent.
  * 
- * @authors Jay Jay Billings, Taylor Patterson
+ * @authors Jay Jay Billings, Taylor Patterson, Anna Wojtowicz
  */
 public class ICEResourcePage extends ICEFormPage implements 
-		ISelectionListener, IUpdateableListener{
+		ISelectionListener, IUpdateableListener {
 	/**
 	 * The ResourceComponent drawn by this page.
 	 */
@@ -99,12 +101,9 @@ public class ICEResourcePage extends ICEFormPage implements
 	/**
 	 * The Constructor
 	 * 
-	 * @param editor
-	 *            The FormEditor for which the Page should be constructed.
-	 * @param id
-	 *            The id of the page.
-	 * @param title
-	 *            The title of the page.
+	 * @param editor 	The FormEditor for which the Page should be constructed.
+	 * @param id		The id of the page.
+	 * @param title		The title of the page.
 	 */
 	public ICEResourcePage(FormEditor editor, String id, String title) {
 
@@ -124,23 +123,14 @@ public class ICEResourcePage extends ICEFormPage implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation overrides the default/abstract implementation of
 	 * FormPage.createFormContents to create the contents of the
 	 * ICEResourcePage.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param managedForm
-	 *            <p>
 	 *            The Form widget on which the ICEResourcePage exists.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
-		// begin-user-code
 
 		// Local Declarations
 		final ScrolledForm form = managedForm.getForm();
@@ -167,6 +157,20 @@ public class ICEResourcePage extends ICEFormPage implements
 		layout = new StackLayout();
 		parent.setLayout(layout);
 
+		// Add a dispose event listener on the parent
+		parent.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent event) {
+				// If the parent widget disposes at any point, remove it from
+				// the workbench's SelectionService listeners (or else it'll
+				// keep getting updates and trying to draw disposed Composites)
+	        	getSite().getWorkbenchWindow().getSelectionService().
+	        	removeSelectionListener(ICEResourcePage.this);
+	        	
+			}
+		});
+	
+		// Create the plot composite and layout
 		plotComposite = new Composite(parent, SWT.NONE);
 		managedForm.getToolkit().adapt(plotComposite);
 		managedForm.getToolkit().paintBordersFor(plotComposite);
@@ -186,7 +190,6 @@ public class ICEResourcePage extends ICEFormPage implements
 				.addPartListener(resourceView);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -200,7 +203,6 @@ public class ICEResourcePage extends ICEFormPage implements
 	 *            The IManagedForm on which the table should be drawn.
 	 */
 	protected void drawBrowser(FormToolkit formToolkit, IManagedForm form) {
-		// begin-user-code
 
 		// Setup the initial browser configuration.
 		try {
@@ -227,7 +229,6 @@ public class ICEResourcePage extends ICEFormPage implements
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -235,14 +236,12 @@ public class ICEResourcePage extends ICEFormPage implements
 	 * ISelectionListener.selectionChanged to display the resource selected in
 	 * the ICEResourceView.
 	 * 
-	 * @param part
-	 *            The IWorkbenchPart that called this function.
-	 * @param selection
-	 *            The ISelection chosen in the part parameter.
+	 * @param part 			The IWorkbenchPart that called this function.
+	 * @param selection		The ISelection chosen in the part parameter.
 	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-
+		
 		// Get the selection in the ICEResourceView and update the browser.
 		if (part.getSite().getId().equals(ICEResourceView.ID)) {
 			Object selectedElement = ((ITreeSelection) selection)
@@ -270,8 +269,10 @@ public class ICEResourcePage extends ICEFormPage implements
 					parent.layout();
 				}
 			} else if (selectedResource != null) {
+
 				// Switch to the plot composite
 				layout.topControl = plotComposite;
+
 				try {
 					// Add the plot to the plot map if it hasn't already been
 					IPlot plot = plotMap.get(selectedResource.getPath().toString());
@@ -279,16 +280,25 @@ public class ICEResourcePage extends ICEFormPage implements
 						plot = vizFactory.get().createPlot(selectedResource.getPath());
 					}
 					
+					// FIXME Need to catch CSV files that don't have valid data providers somehow
+					// If the plot is still null, createPlot() failed (likely 
+					// invalid plotting data), so don't go any further
+//					if (plot instanceof CSVPlot &&
+//							!((CSVPlot) plot).hasValidProvider()) {
+//						System.out.println("ICEResourcePage Error: "
+//								+ "File contains data that cannot be plotted, "
+//								+ selectedResource.getPath().toString());
+//						return;
+//					}
+					
 					// Get the plot types and pick a plot type
 					Map<String,String[]> plotTypes = plot.getPlotTypes();
 					ArrayList<String> keys = new ArrayList<String>(plotTypes.keySet());
 
 					// TODO these are just defaults, but we will later want to
 					// select which values to choose
-					String category;
-					category = keys.get(0);
-					String[] types = plotTypes.get(category);
-					String type = types[0];
+					String category = keys.get(0);
+					String type = plotTypes.get(category)[0];
 					
 					// Draw the plot
 					// FIXME need to check if a plot is already drawn, otherwise
@@ -325,12 +335,9 @@ public class ICEResourcePage extends ICEFormPage implements
 	 * IUpdateableListener interface.
 	 * 
 	 * @param component
-	 *            <p>
 	 *            The ResourceComponent
-	 *            </p>
 	 */
 	public void setResourceComponent(ResourceComponent component) {
-		// begin-user-code
 
 		// Make sure the ResourceComponent exists
 		if (component != null) {
@@ -355,7 +362,6 @@ public class ICEResourcePage extends ICEFormPage implements
 		resourceComponent.register(this);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -366,9 +372,7 @@ public class ICEResourcePage extends ICEFormPage implements
 	 *         set.
 	 */
 	public ResourceComponent getResourceComponent() {
-		// begin-user-code
 		return resourceComponent;
-		// end-user-code
 	}
 
 	/**
@@ -379,13 +383,11 @@ public class ICEResourcePage extends ICEFormPage implements
 	 *            The ISimpleResourceProvider
 	 */
 	public void setResourceProvider(ISimpleResourceProvider provider) {
-		// begin-user-code
 
 		// Set the provider if it is not null
 		if (provider != null) {
 		}
 		return;
-		// end-user-code
 	}
 	
 	/**
@@ -412,7 +414,9 @@ public class ICEResourcePage extends ICEFormPage implements
 							// Get the plot based on the resource and add it to
 							// the plot map
 							IPlot plot = vizFactory.get().createPlot(resource.getPath());
-							plotMap.put(plot.getDataSource().toString(), plot);
+							if (plot != null) {
+								plotMap.put(plot.getDataSource().toString(), plot);
+							}
 
 						} catch (Exception e) {
 							// Complain
