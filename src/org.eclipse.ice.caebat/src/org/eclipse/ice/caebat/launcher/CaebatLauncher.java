@@ -272,7 +272,7 @@ public class CaebatLauncher extends JobLauncher {
 		String mvKVPairFile = "";
 		if (kvPairFileEntry.getValue() != "false") {
 			String kvFileName = fileComponent.retrieveEntry("Key-value pair file").getValue();
-			writer.replace(inputFile, "input_keyvalue", kvFileName);
+			//writer.replace(inputFile, "input_keyvalue", kvFileName);
 			setKVPerms = "chmod 775 " + kvFileName + " && ";
 			backupKVFile = "mv input/input_keyvalue input/input_keyvalue.bak && ";
 			mvKVPairFile = "mv " + kvFileName + " input/input_keyvalue && ";
