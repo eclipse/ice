@@ -317,7 +317,7 @@ public class CSVDataLoader {
 								Double.parseDouble(dataLines[i]));
 					} else {
 						System.out.println("CSVDataLoader Error: "
-								+ "Not a valid (N x M) CSV file, " 
+								+ "File does not have a valid (m x n) format, " 
 								+ csvInputFile);
 						return null;
 					}

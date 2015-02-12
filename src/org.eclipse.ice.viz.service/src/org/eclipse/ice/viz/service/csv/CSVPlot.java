@@ -92,6 +92,11 @@ public class CSVPlot implements IPlot {
 						// Load the file
 						CSVDataLoader dataLoader = new CSVDataLoader();
 						provider = dataLoader.load(file);
+						// If the file is an invalid CSV format for any reason,
+						// exit now
+						if (provider == null) {
+							return;
+						}
 						// Set the source so the title and everything gets
 						// loaded right later
 						provider.setSource(source.toString());
@@ -214,6 +219,15 @@ public class CSVPlot implements IPlot {
 		return retVal;
 	}
 
+	/**
+	 * This operation signals if the CSVPlot has a valid data provider.
+	 * 
+	 * @return	True if the provider is non-null, otherwise false.
+	 */
+	public boolean hasValidProvider() {
+		return (provider != null ? true : false);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -234,8 +248,11 @@ public class CSVPlot implements IPlot {
 			String axis2 = axes[2];
 			// Create the plot provider
 			PlotProvider plotProvider = new PlotProvider();
-			// The new plot's title
-			String newPlotTitle = provider.getSourceInfo();
+			// The new plot's title (the filename)
+			int lastSeparator = provider.getSourceInfo().lastIndexOf("/");
+			String newPlotTitle = (lastSeparator > -1 ? 
+					provider.getSourceInfo().substring(lastSeparator+1) : 
+						provider.getSourceInfo());
 			// Set the title for the new plot provider
 			plotProvider.setPlotTitle(newPlotTitle);
 			// The plot's set time
@@ -265,7 +282,7 @@ public class CSVPlot implements IPlot {
 			throw new Exception("Invalid plot type: category = " + category
 					+ ", type = " + plotType + "\n");
 		}
-
+		
+		return;
 	}
-
 }
