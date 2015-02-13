@@ -51,7 +51,7 @@ public class CaebatLauncher extends JobLauncher {
 	 * The execution command
 	 */
 	private String fullExecCMD;
-
+	
 	/**
 	 * The default CAEBAT home directory.
 	 */
@@ -313,18 +313,18 @@ public class CaebatLauncher extends JobLauncher {
 	 */
 	public void update(IUpdateable component) {
 		refreshProjectSpace();
-		super.update(component);
-		
-		// Determine whether the file selector needs to be added to or removed from the form
-		if (component.getName() == "Use custom key-value pair file?" 
-				&& ((Entry) component).getValue() == "true") {
-			 addInputType("Key-value pair file", "keyValueFile",
-					 "Key-value pair with case parameters", ".dat");
-		} else if (component.getName() == "Use custom key-value pair file?" 
-				&& ((Entry) component).getValue() == "false") {
-			removeInputType("Key-value pair file");
-		}
-
+		if (component instanceof Entry) {
+			// Determine whether the file selector needs to be added to or removed from the form
+			if (component.getName() == "Use custom key-value pair file?" 
+					&& ((Entry) component).getValue() == "true") {
+				 addInputType("Key-value pair file", "keyValueFile",
+						 "Key-value pair with case parameters", ".dat");
+			} else if (component.getName() == "Use custom key-value pair file?" 
+					&& ((Entry) component).getValue() == "false") {
+				DataComponent fileComponent = (DataComponent) form.getComponent(1);
+				fileComponent.deleteEntry("Key-value pair file");
+			}
+		}	
 	}
 
 	/**
