@@ -365,16 +365,19 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * The unique identification number of the Item.
 	 */
 	protected int uniqueId;
+	
 	/**
 	 * The name of the Item.
 	 */
 	protected String itemName;
+	
 	/**
 	 * The description of the Item. This description should be different than
 	 * the name of the Item and should contain information that would be useful
 	 * to a human user.
 	 */
 	protected String itemDescription;
+	
 	/**
 	 * The ICEJAXBHandler used to marshal Items to and from XML.
 	 */
