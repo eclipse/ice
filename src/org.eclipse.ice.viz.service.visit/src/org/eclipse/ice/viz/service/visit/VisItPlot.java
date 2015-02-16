@@ -120,16 +120,35 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 	 */
 	public VisItPlot(VisItVizService service, URI file) {
 		this.service = service;
-		// TODO Make the adapter configurable, e.g., let the user pick from
-		// available stored connections.
-		adapter = service.getAdapter();
-		// Register the plot as a listener so it can receive connection
-		// update events.
-		adapter.register(this);
 
 		// Set the data source.
 		setDataSource(file);
 
+		return;
+	}
+
+	/**
+	 * Sets the current connection associated with the plot.
+	 * 
+	 * @param adapter
+	 *            The new connection adapter. If {@code null}, the connection
+	 *            will be unset and the plot will be cleared.
+	 */
+	protected void setConnection(VisItConnectionAdapter adapter) {
+		if (adapter != this.adapter) {
+			if (this.adapter != null) {
+				this.adapter.unregister(this);
+			}
+			this.adapter = adapter;
+
+			// Trigger an update to the UI.
+			updateUI();
+
+			// Register for updates from the adapter if possible.
+			if (adapter != null) {
+				adapter.register(this);
+			}
+		}
 		return;
 	}
 
@@ -143,7 +162,7 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 
 		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
 
-		if (adapter.getState() == ConnectionState.Connected
+		if (adapter != null && adapter.getState() == ConnectionState.Connected
 				&& sourcePath != null) {
 			// Determine the VisIt FileInfo for the data source.
 			ViewerMethods methods = adapter.getConnection().getViewerMethods();
@@ -214,7 +233,7 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 	 */
 	@Override
 	public String getSourceHost() {
-		return adapter.getConnectionProperty("url");
+		return (adapter != null ? adapter.getConnectionProperty("url") : null);
 	}
 
 	/*
@@ -259,8 +278,8 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 		// Update the reference to the parent Composite.
 		this.parent = parent;
 
-		// Update the drawn plot.
-		update(adapter.getState(), adapter.getConnection());
+		// Trigger an update to the UI.
+		updateUI();
 
 		return;
 	}
@@ -301,8 +320,8 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 			if (!path.equals(sourcePath)) {
 				sourcePath = path;
 
-				// Trigger an update to the UI since the source changed.
-				update(adapter);
+				// Trigger an update to the UI.
+				updateUI();
 			}
 		} else {
 			source = null;
@@ -322,31 +341,63 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 	 */
 	@Override
 	public void update(IUpdateable component) {
-		if (component == adapter) {
-
-			final ConnectionState state = adapter.getState();
-			final VisItSwtConnection connection = adapter.getConnection();
+		// If the argument is null, then do nothing. Even if the current adapter
+		// is null, the UI should already be up to date!
+		if (component != null && component == adapter) {
 			// Trigger an update to the UI.
-			if (parent != null && !parent.isDisposed()) {
+			updateUI();
+		}
+	}
+
+	/**
+	 * This method updates the UI component of the plot based on the current
+	 * state of the VizService. This method should be used any time a UI update
+	 * needs to be triggered, e.g., when the data source changes or when the
+	 * underlying connection is updated.
+	 */
+	private void updateUI() {
+
+		// Determine the current connection and its state.
+		final ConnectionState state;
+		final VisItSwtConnection connection;
+		if (adapter != null) {
+			state = adapter.getState();
+			connection = adapter.getConnection();
+		} else {
+			state = ConnectionState.Disconnected;
+			connection = null;
+		}
+
+		// Trigger an update to the UI.
+		if (parent != null && !parent.isDisposed()) {
+			// If we are not on the UI thread, update the UI asynchronously on
+			// the UI thread.
+			if (Display.getCurrent() == null) {
 				parent.getDisplay().asyncExec(new Runnable() {
 					@Override
 					public void run() {
-						update(state, connection);
+						updateUI(state, connection);
 					}
 				});
 			}
+			// If we are on the UI thread, update the UI synchronously.
+			else {
+				updateUI(state, connection);
+			}
 		}
+
 		return;
 	}
 
 	/**
 	 * This method updates the plot based on the current state of the
-	 * VizService.
+	 * VizService. This method should <i>not</i> be used. Instead, use
+	 * {@link #updateUI()}.
 	 * <p>
 	 * <b>Note:</b> This method assumes that it is called on the UI thread!
 	 * </p>
 	 */
-	private void update(ConnectionState state, VisItSwtConnection connection) {
+	private void updateUI(ConnectionState state, VisItSwtConnection connection) {
 
 		final Display display = parent.getDisplay();
 		final Shell shell = parent.getShell();
@@ -415,7 +466,11 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 				message = "The VisIt connection is being established...";
 				image = display.getSystemImage(SWT.ICON_WORKING);
 			} else if (state == ConnectionState.Disconnected) {
-				message = "The VisIt connection is currently unavailable.";
+				if (connection == null) {
+					message = "The VisIt connection is not configured.";
+				} else {
+					message = "The VisIt connection is currently disconnected.";
+				}
 				image = display.getSystemImage(SWT.ICON_WARNING);
 			} else {
 				message = "The VisIt connection failed!";
@@ -560,8 +615,10 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 	 */
 	protected void dispose() {
 		// Unregister from the connection adapter.
-		adapter.unregister(this);
-		adapter = null;
+		if (adapter != null) {
+			adapter.unregister(this);
+			adapter = null;
+		}
 
 		// If possible, inform the UI to dispose the plot's UI contributions.
 		if (parent != null && !parent.isDisposed()) {

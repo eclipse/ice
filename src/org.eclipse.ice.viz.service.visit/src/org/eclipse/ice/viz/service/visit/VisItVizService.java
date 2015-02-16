@@ -15,10 +15,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.AbstractVizService;
+import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionManager;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
@@ -53,7 +55,7 @@ public class VisItVizService extends AbstractVizService {
 	 * the implementation for connecting and disconnecting from the underlyign
 	 * VisIt connection.
 	 */
-	private final VisItConnectionAdapter adapter;
+	private VisItConnectionAdapter adapter;
 
 	/**
 	 * A list of existing plots. This is used to dispose of individual plots
@@ -69,6 +71,9 @@ public class VisItVizService extends AbstractVizService {
 		// only one).
 		instance = this;
 
+		// Initialize the list of created plots.
+		plots = new ArrayList<VisItPlot>();
+
 		// Initialize the ConnectionManager based on the stored preferences.
 		connectionManager = new VisItConnectionManager();
 		TableComponentPreferenceAdapter tableAdapter;
@@ -77,13 +82,66 @@ public class VisItVizService extends AbstractVizService {
 				(CustomScopedPreferenceStore) getPreferenceStore(),
 				connectionManager);
 
-		// Create a default adapter and set its connection properties.
-		adapter = new VisItConnectionAdapter();
-		adapter.setConnectionProperties(connectionManager
-				.getConnection(getDefaultConnectionKey()));
+		// Create an adapter based on the current properties. Do not connect
+		// yet.
+		updateAdapter(false);
 
-		// Initialize the list of created plots.
-		plots = new ArrayList<VisItPlot>();
+		return;
+	}
+
+	/**
+	 * Updates the default adapter based on the current preferences. If there is
+	 * no default connection configured in the preference page, then after this
+	 * call, the {@link #adapter} will be {@code null}.
+	 * 
+	 * @param connect
+	 *            Whether or not to attempt connecting to the default adapter if
+	 *            a change occurred.
+	 */
+	private void updateAdapter(boolean connect) {
+
+		// If the default connection exists, load it into an adapter.
+		String key = getDefaultConnectionKey();
+		if (key != null) {
+			// If the adapter does not exist, create it.
+			if (adapter == null) {
+				adapter = new VisItConnectionAdapter();
+
+				// Notify the plots that the connection has been configured.
+				for (VisItPlot plot : plots) {
+					plot.setConnection(adapter);
+				}
+			}
+			// Set the adapter's properties. If a change occurred and the method
+			// parameter says we need to attempt a connection, re-establish the
+			// adapter's connection.
+			List<Entry> row = connectionManager.getConnection(key);
+			if (adapter.setConnectionProperties(row) && connect) {
+				Thread thread = new Thread() {
+					@Override
+					public void run() {
+						// Disconnect, then immediately reconnect.
+						adapter.disconnect(true);
+						adapter.connect(false);
+					}
+				};
+				thread.start();
+			}
+		}
+		// Otherwise, if the adapter already exists, destroy it..
+		else if (adapter != null) {
+			ConnectionState state = adapter.getState();
+			// Disconnect if necessary.
+			if (state == ConnectionState.Connected) {
+				adapter.disconnect(false);
+			}
+			adapter = null;
+
+			// Notify the plots that the connection has been closed.
+			for (VisItPlot plot : plots) {
+				plot.setConnection(adapter);
+			}
+		}
 
 		return;
 	}
@@ -106,30 +164,29 @@ public class VisItVizService extends AbstractVizService {
 	 * This method notifies the service that the preferences have changed. Any
 	 * connections that have changed should be reset.
 	 */
-	protected void preferencesChanged() {
-		// Update the ConnectionManager based on the stored preferences.
+	protected void preferencesChanged(Map<String, String> changedKeys,
+			Set<String> addedKeys, Set<String> removedKeys) {
+
+		// Clear the old connection preferences.
+		for (int i = 0; i < connectionManager.numberOfRows(); i++) {
+			connectionManager.deleteRow(0);
+		}
+
+		// Update the connection preferences based on the stored preferences.
 		TableComponentPreferenceAdapter tableAdapter;
 		tableAdapter = new TableComponentPreferenceAdapter();
 		tableAdapter.toTableComponent(
 				(CustomScopedPreferenceStore) getPreferenceStore(),
 				connectionManager);
 
-		// Get the default connection's key and its preferences.
-		String defaultKey = getDefaultConnectionKey();
-		List<Entry> row = connectionManager.getConnection(defaultKey);
+		// TODO When we have multiple connections, we will need to do the
+		// following, then send the new connection adapters to the plots.
+		// Remove all old connections.
+		// Update all existing connections.
+		// Add all new connections.
 
-		// If the preferences have changed, we need to reconnect.
-		if (adapter.setConnectionProperties(row)) {
-			Thread thread = new Thread() {
-				@Override
-				public void run() {
-					// Disconnect, then immediately reconnect.
-					adapter.disconnect(true);
-					adapter.connect(false);
-				}
-			};
-			thread.start();
-		}
+		// Update the default adapter and connect if possible.
+		updateAdapter(true);
 
 		return;
 	}
@@ -217,7 +274,7 @@ public class VisItVizService extends AbstractVizService {
 	 */
 	@Override
 	public boolean connect() {
-		return adapter.connect(false);
+		return (adapter != null ? adapter.connect(false) : false);
 	}
 
 	/*
@@ -227,7 +284,7 @@ public class VisItVizService extends AbstractVizService {
 	 */
 	@Override
 	public boolean disconnect() {
-		return adapter.disconnect(false);
+		return (adapter != null ? adapter.disconnect(false) : false);
 	}
 
 	/*
@@ -241,6 +298,7 @@ public class VisItVizService extends AbstractVizService {
 	public IPlot createPlot(URI file) throws Exception {
 		VisItPlot plot = new VisItPlot(this, file);
 		plots.add(plot);
+		plot.setConnection(adapter);
 		return plot;
 	}
 

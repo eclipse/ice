@@ -11,7 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
@@ -34,13 +38,37 @@ import org.eclipse.ui.IWorkbench;
  * @author Jay Jay Billings, Jordan Deyton
  * 
  */
-public class VisItPreferencePage extends AbstractVizPreferencePage {
+public class VisItPreferencePage extends AbstractVizPreferencePage implements
+		IKeyChangeListener {
 
 	/**
 	 * The {@code ConnectionManager} used by this preference page. It is
 	 * represented by a {@link ConnectionComposite} on the page.
 	 */
 	private final ConnectionManager connectionManager = new VisItConnectionManager();
+
+	/**
+	 * This set contains removed keys for pre-existing connections (those that
+	 * are in the preference store when the page loads).
+	 * <p>
+	 * <b>Note:</b> Removed keys should be processed before changed keys, as it
+	 * is acceptable for a key to be removed and later change an existing key to
+	 * that removed key.
+	 * </p>
+	 */
+	private final Set<String> removedKeys = new HashSet<String>();
+	/**
+	 * This map contains changed keys for pre-existing connections (those that
+	 * are in the preference store when the page loads) whose keys have been
+	 * changed. A map entry's key is the new key, while its value is the
+	 * original key at page load.
+	 */
+	private final Map<String, String> newToOld = new HashMap<String, String>();
+	/**
+	 * This set strictly contains new keys that do not currently exist in the
+	 * preference store.
+	 */
+	private final Set<String> addedKeys = new HashSet<String>();
 
 	/**
 	 * The default constructor.
@@ -65,6 +93,11 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 		adapter.toTableComponent(
 				(CustomScopedPreferenceStore) getPreferenceStore(),
 				connectionManager);
+
+		// Sync the key changes from the ConnectionManager and register for key
+		// change events.
+		resetKeyChangeInfo();
+		connectionManager.addKeyChangeListener(this);
 
 		return;
 	}
@@ -163,9 +196,78 @@ public class VisItPreferencePage extends AbstractVizPreferencePage {
 				(CustomScopedPreferenceStore) getPreferenceStore());
 
 		// Notify the viz service that the preferences have been updated.
-		VisItVizService.getInstance().preferencesChanged();
-		
+		VisItVizService.getInstance().preferencesChanged(newToOld, addedKeys,
+				removedKeys);
+		// Clear the key change info now that the viz service has been notified
+		// of all changes.
+		resetKeyChangeInfo();
+
 		return ok;
+	}
+
+	/**
+	 * Resets the information about changed connection keys.
+	 */
+	private void resetKeyChangeInfo() {
+
+		// Clear all of the key change information and put all current keys into
+		// the new-to-old-key map.
+		newToOld.clear();
+		addedKeys.clear();
+		removedKeys.clear();
+
+		for (String key : connectionManager.getConnectionNames()) {
+			newToOld.put(key, key);
+		}
+
+		return;
+	}
+
+	// TODO Test this method.
+	/**
+	 * This method keeps track of added, removed, and changed keys. It keeps
+	 * track of the respective collections to make updating the viz service's
+	 * known connections easier.
+	 */
+	@Override
+	public void keyChanged(String oldKey, String newKey) {
+
+		// If a key was changed...
+		if (oldKey != null && newKey != null) {
+			// A pre-existing key was changed...
+			if (newToOld.containsKey(oldKey)) {
+				newToOld.put(newKey, newToOld.remove(oldKey));
+			}
+			// A new key was changed...
+			else if (addedKeys.contains(oldKey)) {
+				addedKeys.remove(oldKey);
+				addedKeys.add(newKey);
+			}
+		}
+		// If a key was removed...
+		else if (oldKey != null) {
+			// A pre-existing key was removed...
+			if (newToOld.containsKey(oldKey)) {
+				removedKeys.add(newToOld.remove(oldKey));
+			}
+			// A new key was removed...
+			else if (addedKeys.contains(oldKey)) {
+				addedKeys.remove(oldKey);
+			}
+		}
+		// If a key was added...
+		else if (newKey != null) {
+			// A pre-existing key was added...
+			if (removedKeys.contains(newKey)) {
+				removedKeys.remove(newKey);
+				newToOld.put(newKey, newKey);
+			}
+			// A new key was added...
+			else if (!addedKeys.contains(newKey)) {
+				addedKeys.add(newKey);
+			}
+		}
+		return;
 	}
 
 }
