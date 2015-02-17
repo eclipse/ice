@@ -31,11 +31,11 @@ import org.eclipse.ice.viz.service.visit.actions.ImportLocalFileAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -91,10 +91,10 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 
 	// ---- UI Widgets ---- //
 	/**
-	 * The current parent {@code Composite} in which either the {@link #canvas}
-	 * or {@link #infoComopsite} is rendered.
+	 * This composite contains the {@link #canvas} and {@link #infoComposite} in
+	 * a stack.
 	 */
-	private Composite parent;
+	private Composite plotComposite = null;
 	/**
 	 * The current VisIt widget used to draw VisIt plots. This should only be
 	 * visible if the connection is open.
@@ -106,6 +106,19 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 	 * is *not* open.
 	 */
 	private Composite infoComposite = null;
+	/**
+	 * Displays an icon to demonstrate the severity of the message.
+	 */
+	private Label iconLabel;
+	/**
+	 * Displays a message explaining the current state of the connection or why
+	 * it cannot render anything.
+	 */
+	private Label msgLabel;
+	/**
+	 * A link to the visualization connection preferences.
+	 */
+	private Hyperlink link;
 
 	// -------------------- //
 
@@ -257,6 +270,10 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 	public void draw(String category, String plotType, Composite parent)
 			throws Exception {
 
+		// Get the current parent control.
+		Composite currentParent = (plotComposite != null ? plotComposite
+				.getParent() : null);
+
 		// Check the parameters.
 		if (category == null || plotType == null || parent == null) {
 			throw new NullPointerException("VisItPlot error: "
@@ -265,7 +282,7 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED,
 					"VisItPlot error: "
 							+ "Cannot draw plot inside disposed Composite.");
-		} else if (this.parent != null && this.parent != parent) {
+		} else if (currentParent != null && parent != currentParent) {
 			throw new IllegalArgumentException("VisItPlot error: "
 					+ "Cannot draw same plot in multiple Composites.");
 		}
@@ -275,8 +292,11 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 		this.plotCategory = "Mesh";
 		this.plotType = "Mesh";
 
-		// Update the reference to the parent Composite.
-		this.parent = parent;
+		// Create the plot Composite.
+		plotComposite = new Composite(parent, SWT.NONE);
+		plotComposite.setFont(parent.getFont());
+		plotComposite.setBackground(parent.getBackground());
+		plotComposite.setLayout(new StackLayout());
 
 		// Trigger an update to the UI.
 		updateUI();
@@ -323,9 +343,12 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 				// Trigger an update to the UI.
 				updateUI();
 			}
-		} else {
+		} else if (source != null) {
 			source = null;
 			sourcePath = null;
+
+			// Trigger an update to the UI.
+			updateUI();
 		}
 		return;
 	}
@@ -369,11 +392,11 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 		}
 
 		// Trigger an update to the UI.
-		if (parent != null && !parent.isDisposed()) {
+		if (plotComposite != null && !plotComposite.isDisposed()) {
 			// If we are not on the UI thread, update the UI asynchronously on
 			// the UI thread.
 			if (Display.getCurrent() == null) {
-				parent.getDisplay().asyncExec(new Runnable() {
+				plotComposite.getDisplay().asyncExec(new Runnable() {
 					@Override
 					public void run() {
 						updateUI(state, connection);
@@ -399,8 +422,10 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 	 */
 	private void updateUI(ConnectionState state, VisItSwtConnection connection) {
 
-		final Display display = parent.getDisplay();
-		final Shell shell = parent.getShell();
+		final Display display = plotComposite.getDisplay();
+
+		// Get the StackLayout from the plot Composite.
+		final StackLayout stackLayout = (StackLayout) plotComposite.getLayout();
 
 		// This should never happen, but if it does, we should report an error
 		// and not break!
@@ -414,23 +439,14 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 		// If connected, try to render the plot in the VisItSwtWidget/canvas.
 		if (state == ConnectionState.Connected) {
 
-			// If necessary, dispose the infoComposite.
-			if (infoComposite != null && !infoComposite.isDisposed()) {
-				infoComposite.dispose();
-				infoComposite = null;
-			}
-
 			// If necessary, create the canvas.
 			if (canvas == null) {
 				// Create the canvas.
-				canvas = createCanvas(parent, SWT.DOUBLE_BUFFERED, connection);
+				canvas = createCanvas(plotComposite, SWT.DOUBLE_BUFFERED,
+						connection);
 				// Create a mouse manager to handle mouse events inside the
 				// canvas.
 				new VisItMouseManager(canvas);
-
-				// Refresh the parent since its size likely changed due to the
-				// new canvas.
-				parent.layout();
 			}
 
 			// Make sure the Canvas is activated.
@@ -446,12 +462,39 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 			// Remove all existing plots.
 			widget.deleteActivePlots();
 
-			// If possible, draw the plot.
-			if (source != null) {
+			// If the source is not set, then we need to display a helpful
+			// message.
+			if (source == null) {
+				// Set the message and icon.
+				String message = "No file specified or the file could not be found.";
+				Image image = display.getSystemImage(SWT.ICON_WARNING);
+
+				// If necessary, create the infoComposite.
+				if (infoComposite == null) {
+					infoComposite = createInfoComposite(plotComposite, SWT.NONE);
+				}
+				// Update the contents of the infoComposite's widgets.
+				iconLabel.setImage(image);
+				msgLabel.setText(message);
+				// Hide the link since the problem is not a connection issue.
+				link.setVisible(false);
+				// Make the infoComposite appear in front.
+				stackLayout.topControl = infoComposite;
+				plotComposite.layout(true, true);
+				// The above layout requires the two boolean flags to make sure
+				// the text widgets are also laid out.
+			} else {
 				widget.openDatabase(sourcePath);
 				// TODO How do we handle paths that are invalid?
 				widget.addPlot(plotCategory, plotType);
 				widget.drawPlots();
+
+				// Make the Canvas appear in front. This only needs to be done
+				// if it's not already at the top.
+				if (stackLayout.topControl != canvas) {
+					stackLayout.topControl = canvas;
+					plotComposite.layout();
+				}
 			}
 		}
 		// Otherwise, there is a problem of some sort. Give the user a link to
@@ -460,7 +503,6 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 
 			// Set the message and icon based on the state of the connection.
 			final String message;
-			final String linkMessage = "Click here to update VisIt connection preferences.";
 			final Image image;
 			if (state == ConnectionState.Connecting) {
 				message = "The VisIt connection is being established...";
@@ -477,12 +519,6 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 				image = display.getSystemImage(SWT.ICON_ERROR);
 			}
 
-			// The widgets used in the infoComposite...
-			Label iconLabel; // A helpful icon based on severity of the problem.
-			Composite msgComposite; // Contains a message and link.
-			Label msgLabel; // A helpful message about the problem.
-			Hyperlink prefLink; // A link to VisIt's connection preferences.
-
 			// If necessary, dispose the canvas and create the infoComposite.
 			if (canvas != null && !canvas.isDisposed()) {
 				canvas.dispose();
@@ -491,84 +527,79 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 
 			// If necessary, create the infoComposite.
 			if (infoComposite == null) {
-				infoComposite = new Composite(parent, SWT.NONE);
-				infoComposite.setLayout(new GridLayout(2, false));
-
-				// Create an info label with an image.
-				iconLabel = new Label(infoComposite, SWT.NONE);
-				iconLabel.setLayoutData(new GridData(SWT.BEGINNING,
-						SWT.BEGINNING, false, false));
-
-				// Create a Composite to contain the info message and the
-				// hyperlink
-				// with the info message above the hyperlink.
-				msgComposite = new Composite(infoComposite, SWT.NONE);
-				msgComposite.setLayoutData(new GridData(SWT.BEGINNING,
-						SWT.BEGINNING, false, false));
-				msgComposite.setLayout(new GridLayout(1, false));
-
-				// Create an info label with informative text.
-				msgLabel = new Label(msgComposite, SWT.NONE);
-				msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-						false, false));
-
-				// Create a link to the preference page.
-				prefLink = new Hyperlink(msgComposite, SWT.NONE);
-				prefLink.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-						false, false));
-				prefLink.setUnderlined(true);
-				prefLink.setForeground(display
-						.getSystemColor(SWT.COLOR_LINK_FOREGROUND));
-				// Add the listener to redirect the user to the preferences.
-				prefLink.addHyperlinkListener(new IHyperlinkListener() {
-					@Override
-					public void linkEntered(HyperlinkEvent e) {
-						// Nothing to do yet.
-					}
-
-					@Override
-					public void linkExited(HyperlinkEvent e) {
-						// Nothing to do yet.
-					}
-
-					@Override
-					public void linkActivated(HyperlinkEvent e) {
-						// Open up the VisIt preferences.
-						PreferencesUtil
-								.createPreferenceDialogOn(
-										shell,
-										"org.eclipse.ice.viz.service.visit.preferences",
-										null, null).open();
-					}
-				});
+				infoComposite = createInfoComposite(plotComposite, SWT.NONE);
 			}
-			// Since the infoComposite exists, we don't need to recreate
-			// anything. Just get references to them so we can update them.
-			else {
-				Control[] children = infoComposite.getChildren();
-				iconLabel = (Label) children[0];
-				// Since the message and link are children of msgComposite, we
-				// need to get them from the msgComposite's array of children.
-				msgComposite = (Composite) children[1];
-				children = msgComposite.getChildren();
-				msgLabel = (Label) children[0];
-				prefLink = (Hyperlink) children[1];
-			}
-
 			// Update the contents of the infoComposite's widgets.
 			iconLabel.setImage(image);
 			msgLabel.setText(message);
-			prefLink.setText(linkMessage);
-
-			// Refresh the parent in case the widget text has an influence on
-			// the layout specifics.
-			parent.layout();
-			// We also have to update the msgComposite so the labels take up the
-			// space they need and are not cut off.
-			msgComposite.layout();
+			// Show the link since the problem is a connection issue.
+			link.setVisible(true);
+			// Make the infoComposite appear in front.
+			stackLayout.topControl = infoComposite;
+			plotComposite.layout(true, true);
+			// The above layout requires the two boolean flags to make sure the
+			// text widgets are also laid out.
 		}
 
 		return;
+	}
+
+	private Composite createInfoComposite(Composite parent, int style) {
+
+		final Display display = parent.getDisplay();
+		final Shell shell = parent.getShell();
+
+		Composite infoComposite = new Composite(parent, style);
+		infoComposite.setLayout(new GridLayout(2, false));
+
+		String linkText = "Click here to update VisIt connection preferences.";
+
+		// Create an info label with an image.
+		iconLabel = new Label(infoComposite, SWT.NONE);
+		iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
+				false, false));
+
+		// Create a Composite to contain the info message and the
+		// hyperlink
+		// with the info message above the hyperlink.
+		Composite msgComposite = new Composite(infoComposite, SWT.NONE);
+		msgComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
+				false, false));
+		msgComposite.setLayout(new GridLayout(1, false));
+
+		// Create an info label with informative text.
+		msgLabel = new Label(msgComposite, SWT.NONE);
+		msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+				false));
+
+		// Create a link to the preference page.
+		link = new Hyperlink(msgComposite, SWT.NONE);
+		link.setText(linkText);
+		link.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		link.setUnderlined(true);
+		link.setForeground(display.getSystemColor(SWT.COLOR_LINK_FOREGROUND));
+		// Add the listener to redirect the user to the preferences.
+		link.addHyperlinkListener(new IHyperlinkListener() {
+			@Override
+			public void linkEntered(HyperlinkEvent e) {
+				// Nothing to do yet.
+			}
+
+			@Override
+			public void linkExited(HyperlinkEvent e) {
+				// Nothing to do yet.
+			}
+
+			@Override
+			public void linkActivated(HyperlinkEvent e) {
+				// Open up the VisIt preferences.
+				PreferencesUtil.createPreferenceDialogOn(shell,
+						"org.eclipse.ice.viz.service.visit.preferences", null,
+						null).open();
+			}
+		});
+
+		return infoComposite;
 	}
 
 	/**
@@ -621,16 +652,23 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 		}
 
 		// If possible, inform the UI to dispose the plot's UI contributions.
-		if (parent != null && !parent.isDisposed()) {
-			parent.getDisplay().asyncExec(new Runnable() {
+		if (plotComposite != null && !plotComposite.isDisposed()) {
+			plotComposite.getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
 					if (canvas != null && !canvas.isDisposed()) {
 						canvas.dispose();
+						canvas = null;
 					}
 					if (infoComposite != null && !infoComposite.isDisposed()) {
 						infoComposite.dispose();
+						infoComposite = null;
+						msgLabel = null;
+						iconLabel = null;
+						link = null;
 					}
+					plotComposite.dispose();
+					plotComposite = null;
 					return;
 				}
 			});
