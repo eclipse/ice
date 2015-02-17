@@ -218,15 +218,6 @@ public class CSVPlot implements IPlot {
 
 		return retVal;
 	}
-
-	/**
-	 * This operation signals if the CSVPlot has a valid data provider.
-	 * 
-	 * @return	True if the provider is non-null, otherwise false.
-	 */
-	public boolean hasValidProvider() {
-		return (provider != null ? true : false);
-	}
 	
 	/*
 	 * (non-Javadoc)
@@ -284,5 +275,17 @@ public class CSVPlot implements IPlot {
 		}
 		
 		return;
+	}
+
+	/**
+	 * This method verifies if the CSVPlot contains valid, plottable data. It
+	 * does this by verifying that the data provider is not null.
+	 * 
+	 * @return	True if the CSVPlot contains valid plotting data, otherwise
+	 * 			false.
+	 */
+	@Override
+	public boolean isValidPlot() {
+		return (provider != null ? true : false);
 	}
 }

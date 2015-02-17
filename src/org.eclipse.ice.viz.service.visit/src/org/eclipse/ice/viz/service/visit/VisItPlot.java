@@ -111,4 +111,10 @@ public class VisItPlot implements IPlot {
 
 	}
 
+	@Override
+	public boolean isValidPlot() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

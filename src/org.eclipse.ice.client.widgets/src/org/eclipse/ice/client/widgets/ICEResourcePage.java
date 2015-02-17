@@ -274,22 +274,25 @@ public class ICEResourcePage extends ICEFormPage implements
 				layout.topControl = plotComposite;
 
 				try {
-					// Add the plot to the plot map if it hasn't already been
-					IPlot plot = plotMap.get(selectedResource.getPath().toString());
-					if (plot == null) {
+					IPlot plot = null;
+					// Get the plot if it's found in the plotMap
+					if (plotMap.get(selectedResource.getPath().toString()) != null) {
+						plot = plotMap.get(selectedResource.getPath().toString());
+					}
+					// Otherwise, if it's not in the map, create it and add it
+					else {
 						plot = vizFactory.get().createPlot(selectedResource.getPath());
+						plotMap.put(plot.getDataSource().toString(), plot);
 					}
 					
-					// FIXME Need to catch CSV files that don't have valid data providers somehow
-					// If the plot is still null, createPlot() failed (likely 
-					// invalid plotting data), so don't go any further
-//					if (plot instanceof CSVPlot &&
-//							!((CSVPlot) plot).hasValidProvider()) {
-//						System.out.println("ICEResourcePage Error: "
-//								+ "File contains data that cannot be plotted, "
-//								+ selectedResource.getPath().toString());
-//						return;
-//					}
+					// Check if the plot is valid (it is still possible to have
+					// a valid IPlot object without valid plotting data in it)
+					if (!plot.isValidPlot()) {
+						System.out.println("ICEResourcePage Error: "
+								+ "File contains data that cannot be plotted, "
+								+ selectedResource.getPath().toString());
+						return;
+					}
 					
 					// Get the plot types and pick a plot type
 					Map<String,String[]> plotTypes = plot.getPlotTypes();
