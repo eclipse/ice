@@ -102,6 +102,12 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	private static final String MESH_PAGE_ID = "Mesh";
 
 	/**
+	 * The toolkit used to decorate {@code Control}s in this editor.
+	 */
+	private FormToolkit toolkit;
+
+	// ---- Plant Page variables ---- //
+	/**
 	 * The PlantAppState rendered on the Plant View page.
 	 */
 	private PlantAppState plantView;
@@ -117,14 +123,45 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * Whether or not to render the plant view with wireframes.
 	 */
 	private boolean wireframe;
+	// ------------------------------ //
 
+	// ---- Mesh Page variables ---- //
+	// TODO Change this from VisIt to whatever service/plot is available from
+	// the preferences.
+	/**
+	 * The visualization service used to render the mesh.
+	 */
 	private VisItVizService vizService;
-	private Composite meshPlotParent;
-	private FormToolkit toolkit;
+	/**
+	 * The plot provided from the {@link #vizService}. This should be able to
+	 * render the mesh specified by the {@link #meshURI}.
+	 */
 	private VisItPlot plot;
 
+	/**
+	 * The URI of the mesh file. If {@code null}, then the file is assumed to be
+	 * unavailable to the platform.
+	 */
 	private URI meshURI;
 
+	/**
+	 * The {@code Composite} that contains the rendered mesh. This should be
+	 * passed to the {@link #plot} when drawing.
+	 */
+	private Composite meshPlotParent;
+
+	// ----------------------------- //
+
+	/**
+	 * In addition to the default behavior, this method registers with the MOOSE
+	 * form's mesh {@link ResourceComponent} to listen for add/insert/remove
+	 * events. The intent is to pull the current {@link #meshURI} from the model
+	 * and render it in the {@link #plot} on the mesh page.
+	 * 
+	 * @param input
+	 *            The editor's input. This should be of the type
+	 *            {@link ICEFormInput}.
+	 */
 	@Override
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
@@ -710,6 +747,10 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * Removes the Plant View page if possible.
 	 */
 	public void removePlantPage() {
+		// Dispose any resources required for the plant view.
+		plantView = null;
+
+		// Finally, remove the page itself.
 		removePageWithID(PLANT_PAGE_ID);
 	}
 
@@ -864,13 +905,14 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 			try {
 				// Create the plot.
-				VisItPlot plot = (VisItPlot) vizService.createPlot(meshURI);
+				plot = (VisItPlot) vizService.createPlot(meshURI);
 				// Add the plot's Actions to the ToolBar.
 				for (IAction action : plot.getActions()) {
 					toolBarManager.add(action);
 				}
 				toolBarManager.update(true);
-				// TODO We're going to have to do some other things here...
+				// TODO We're going to have to do some other things here to
+				// determine the plot type and category.
 				plot.draw("", "", meshPlotParent);
 			} catch (Exception e) {
 				System.err.println("MOOSEFormEditor error: "
@@ -906,6 +948,16 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * Removes the Mesh View page if possible.
 	 */
 	public void removeMeshPage() {
+		// Dispose of any resources required for the mesh view.
+		if (meshPlotParent != null && !meshPlotParent.isDisposed()) {
+			meshPlotParent.dispose();
+			meshPlotParent = null;
+		}
+		// TODO Eventually, we should "release" the plot from the viz service.
+		plot = null;
+		vizService = null;
+
+		// Finally, remove the page itself.
 		removePageWithID(MESH_PAGE_ID);
 	}
 
