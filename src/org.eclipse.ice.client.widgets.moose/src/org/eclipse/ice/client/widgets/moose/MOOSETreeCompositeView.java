@@ -21,7 +21,6 @@ import org.eclipse.ice.client.common.RenameNodeTreeAction;
 import org.eclipse.ice.client.common.TreeCompositeContentProvider;
 import org.eclipse.ice.client.common.TreeCompositeLabelProvider;
 import org.eclipse.ice.client.common.TreeCompositeViewer;
-import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -52,6 +51,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 
 public class MOOSETreeCompositeView extends TreeCompositeViewer implements
@@ -66,7 +66,7 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 	/**
 	 * The <code>ICEFormEditor</code> using this view.
 	 */
-	private ICEFormEditor editor;
+	private MOOSEFormEditor editor;
 
 	/**
 	 * The <code>Form</code> contained by the {@link #formInput}.
@@ -74,15 +74,22 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 	private Form form;
 
 	/**
-	 * A reference to the currently active {@link MOOSEFormEditor}.
-	 */
-	private IWorkbenchPartReference activeEditorRef;
-
-	/**
 	 * This wraps the SWT <code>Combo</code> for selecting the MOOSE tool
 	 * responsible for the tree content.
 	 */
 	private ComboViewer appCombo;
+
+	/**
+	 * The currently-selected MOOSE app for the editor. This is used to keep
+	 * updates from being propagated when the {@link #appCombo}'s selection does
+	 * not actually change.
+	 */
+	private String app;
+
+	/**
+	 * A string put in the {@link #appCombo} representing a null selection.
+	 */
+	private static final String APP_UNSELECTED = "MOOSE app...";
 
 	/**
 	 * This maps the values available in the {@link #appCombo} to their actual
@@ -108,19 +115,21 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 	}
 
 	/**
-	 * This method is used to compute the preferred width of the app selection widget.
+	 * This method is used to compute the preferred width of the app selection
+	 * widget.
+	 * 
 	 * @return The preferred width of the {@link #appCombo}.
 	 */
 	private int getPreferredComboWidth() {
 		Combo combo = appCombo.getCombo();
-		
+
 		// TODO If we listen to the ComboViewer properly, we can
 		// optimize this so that the longest string (and extent width) is only
 		// determined when the viewer has changed.
 
 		// Determine the longest string in the Combo list.
 		String longestString = "MOOSE app...";
-		
+
 		// This code introduces a separate issue where, when the contents of the
 		// Combo are changed, the width of the Combo cannot be updated properly.
 		// The problem is that the CTabFolder's client area width is not
@@ -129,16 +138,16 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 		// The max available width reported in the refreshToolBar() method to be
 		// less than it really is, so the Combo is too small. However, the next
 		// resize event fixes this, so the Combo "jumps" in size.
-		
+
 		// FIXME
-//		int maxStringLength = 0;
-//		for (String string : combo.getItems()) {
-//			int length = string.length();
-//			if (length > maxStringLength) {
-//				maxStringLength = length;
-//				longestString = string;
-//			}
-//		}
+		// int maxStringLength = 0;
+		// for (String string : combo.getItems()) {
+		// int length = string.length();
+		// if (length > maxStringLength) {
+		// maxStringLength = length;
+		// longestString = string;
+		// }
+		// }
 
 		// Compute the width of the default MOOSE App Combo string based on
 		// the Control's font. Note: Add some extra pixels for extraneous
@@ -391,21 +400,33 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 	@Override
 	public void partActivated(IWorkbenchPartReference partRef) {
 
-		if (partRef.getId().equals(MOOSEFormEditor.ID)) {
-			// Set this editor as the active one.
-			activeEditorRef = partRef;
-			
-			// Update the content of the MOOSE app selection widget.
-			updateAppSelectionWidget();
+		String partId = partRef.getId();
+		IWorkbenchPart part = partRef.getPart(false);
 
-			// Update the TreeViewer with the current TreeComposite.
-			setInput((TreeComposite) form
-					.getComponent(MOOSEModel.mooseTreeCompositeId));
+		if (MOOSEFormEditor.ID.equals(partId) && part != editor) {
+
+			// Set the new active editor.
+			editor = (MOOSEFormEditor) part;
+			ICEFormInput formInput = (ICEFormInput) editor.getEditorInput();
+			form = formInput.getForm();
+
+			// Update the MOOSE app selection widget based on the editor's
+			// current configuration.
+			updateAppSelectionWidget();
+			// Set the MOOSE tree based on the editor's current configuration.
+			int treeId = MOOSEModel.mooseTreeCompositeId;
+			setInput((TreeComposite) form.getComponent(treeId));
 		}
 
 		return;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partBroughtToTop(org.eclipse.ui.
+	 * IWorkbenchPartReference)
+	 */
 	@Override
 	public void partBroughtToTop(IWorkbenchPartReference partRef) {
 		// Nothing to do.
@@ -413,13 +434,15 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 
 	/**
 	 * This is called when an editor has been closed. This method clears the
-	 * {@link #activeEditorRef} and empties the contents of this view if the
-	 * currently active editor was closed.
+	 * {@link #editor} and empties the contents of this view if the currently
+	 * active editor was closed.
 	 */
 	@Override
 	public void partClosed(IWorkbenchPartReference partRef) {
 
-		if (partRef == activeEditorRef) {
+		IWorkbenchPart part = partRef.getPart(false);
+
+		if (part == editor) {
 
 			// Clear the selection widget.
 			if (!appCombo.getControl().isDisposed()) {
@@ -427,41 +450,66 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 				appCombo.setInput(allowedValues.keySet());
 
 				// Clear the input to the TreeViewer.
-				super.setInput(new TreeComposite());
+				setInput(new TreeComposite());
 			}
 
-			// Unset the reference to the currently active reference since it
-			// was just closed.
-			activeEditorRef = null;
+			// Unset the reference to the currently active editor.
+			editor = null;
 		}
 
 		return;
 	}
 
-	/**
-	 * This is called when an editor has been "deactivated". This method clears
-	 * the {@link #activeEditorRef} if the currently active editor was disabled.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partDeactivated(org.eclipse.ui.
+	 * IWorkbenchPartReference)
 	 */
 	@Override
 	public void partDeactivated(IWorkbenchPartReference partRef) {
 		// Nothing to do.
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partOpened(org.eclipse.ui.
+	 * IWorkbenchPartReference)
+	 */
 	@Override
 	public void partOpened(IWorkbenchPartReference partRef) {
 		// Nothing to do.
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partHidden(org.eclipse.ui.
+	 * IWorkbenchPartReference)
+	 */
 	@Override
 	public void partHidden(IWorkbenchPartReference partRef) {
 		// Nothing to do.
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partVisible(org.eclipse.ui.
+	 * IWorkbenchPartReference)
+	 */
 	@Override
 	public void partVisible(IWorkbenchPartReference partRef) {
 		// Nothing to do.
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partInputChanged(org.eclipse.ui.
+	 * IWorkbenchPartReference)
+	 */
 	@Override
 	public void partInputChanged(IWorkbenchPartReference partRef) {
 		// Nothing to do.
@@ -480,7 +528,7 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 
 		String selection = null;
 
-		// Get the string from the SelectionChangedEvent.
+		// Get the selected string from the SelectionChangedEvent.
 		if (event != null) {
 			ISelection iSelection = event.getSelection();
 			if (iSelection != null
@@ -493,32 +541,19 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 			}
 		}
 
-		if (selection != null) {
-			// Set the Entry selection to match the selection made in
-			// the Combo.
+		if (selection != null && !selection.equals(app)) {
+			// Update the current selection.
+			this.app = selection;
+
+			// Set the Entry selection to match the selection made in the Combo.
 			String appStr = allowedValues.get(selection);
 			appsEntry.setValue(appStr);
 
-			MOOSEFormEditor mooseEditor = (MOOSEFormEditor) editor;
-			
-			// If the selection is for RELAP-7, create a Plant View page
-			// if one doesn't already exist. If the selection is NOT for
-			// RELAP-7, delete any existing Plant View page.
-			if ("relap".equals(appStr)) {
-				mooseEditor.addPlantPage();
-			} else {
-				mooseEditor.removePlantPage();
-			}
+			// Update the editor's pages to add a plant and/or mesh page.
+			updateEditorPages();
 
-			// TODO There may be more apps that use the mesh page!
-			if ("bison".equals(appStr)) {
-				mooseEditor.addMeshPage();
-			} else {
-				mooseEditor.removeMeshPage();
-			}
-
-			// Refresh the TreeViewer's selection for the add and
-			// delete actions.
+			// Refresh the TreeViewer's selection for the add and delete
+			// actions.
 			addAction.selectionChanged(getSite().getPart(), new ISelection() {
 				@Override
 				public boolean isEmpty() {
@@ -526,8 +561,8 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 				}
 			});
 
-			// Notify the editor's listeners that it's underlying Form
-			// has changed and update the tree.
+			// Notify the editor's listeners that it's underlying Form has
+			// changed and update the tree.
 			editor.notifyUpdateListeners();
 		}
 
@@ -543,20 +578,13 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 
 		// We cannot proceed if the selection widget is either uninitialized or
 		// disposed.
-		if (appCombo != null && !appCombo.getControl().isDisposed()
-				&& activeEditorRef != null) {
-
-			// The text used by the Entry to say that no app is selected yet.
-			String unselectedText = "MOOSE app...";
+		if (appCombo != null && !appCombo.getControl().isDisposed()) {
 
 			// ---- Get the list of MOOSE apps from the Model Builder. ---- //
 			// Clear the previous list of allowed values.
 			allowedValues.clear();
 
 			// Get the active MOOSE Model Builder.
-			editor = (ICEFormEditor) activeEditorRef.getPart(false);
-			ICEFormInput formInput = (ICEFormInput) editor.getEditorInput();
-			form = formInput.getForm();
 
 			// Get its Entry that contains the available apps.
 			DataComponent dataComp = (DataComponent) form
@@ -564,13 +592,13 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 			appsEntry = dataComp.retrieveEntry("MOOSE-Based Application");
 
 			// Customize the text used when no app is selected.
-			allowedValues.put("MOOSE app...", unselectedText);
+			allowedValues.put(APP_UNSELECTED, APP_UNSELECTED);
 
 			// Add all of the available MOOSE apps. Prepend the current editor
 			// name and ID to the combo text.
 			String prefix = form.getName() + " " + form.getId() + " - ";
 			for (String appName : appsEntry.getAllowedValues()) {
-				if (!unselectedText.equals(appName)) {
+				if (!APP_UNSELECTED.equals(appName)) {
 					String comboContentStr = prefix
 							+ ("relap".equals(appName) ? appName.toUpperCase()
 									+ "-7" : appName.toUpperCase());
@@ -585,41 +613,49 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 			// ---- Set the current value in the app selection widget. ---- //
 			// Determine the string in the allowed values that should be
 			// displayed.
-			String currentApp = appsEntry.getValue();
-			if (currentApp.equals(unselectedText)) {
-				currentApp = "MOOSE app...";
+			app = appsEntry.getValue();
+			if (app.equals(APP_UNSELECTED)) {
+				app = APP_UNSELECTED;
 			} else {
-				currentApp = prefix
-						+ ("relap".equals(currentApp) ? currentApp
-								.toUpperCase() + "-7" : currentApp
+				app = prefix
+						+ ("relap".equals(app) ? app.toUpperCase() + "-7" : app
 								.toUpperCase());
 			}
 
 			// Set the selection for the app selection widget.
-			appCombo.setSelection(new StructuredSelection(currentApp));
+			appCombo.setSelection(new StructuredSelection(app));
 			// ------------------------------------------------------------ //
 
-			MOOSEFormEditor mooseEditor = (MOOSEFormEditor) editor;
-			
-			// If the selection is for RELAP-7, create a Plant View page
-			// if one doesn't already exist. If the selection is NOT for
-			// RELAP-7, delete any existing Plant View page.
-			String appStr = appsEntry.getValue();
-			if ("relap".equals(appStr)) {
-				mooseEditor.addPlantPage();
-			} else {
-				mooseEditor.removePlantPage();
-			}
-			// TODO There may be more apps that use the mesh page!
-			if ("bison".equals(appStr)) {
-				mooseEditor.addMeshPage();
-			} else {
-				mooseEditor.removeMeshPage();
-			}
+			// Update the editor's pages to add a plant and/or mesh page.
+			updateEditorPages();
 
 			// Refresh the ToolBar with the updated app selection widget.
 			appCombo.refresh();
 			refreshToolBar();
+		}
+
+		return;
+	}
+
+	/**
+	 * Updates the editor's list of pages depending on the current app selected.
+	 */
+	private void updateEditorPages() {
+
+		// If the selection is for RELAP-7, create a Plant View page
+		// if one doesn't already exist. If the selection is NOT for
+		// RELAP-7, delete any existing Plant View page.
+		String appStr = appsEntry.getValue();
+		if ("relap".equals(appStr)) {
+			editor.addPlantPage();
+		} else {
+			editor.removePlantPage();
+		}
+		// TODO There may be more apps that use the mesh page!
+		if ("bison".equals(appStr) || "marmot".equals(appStr)) {
+			editor.addMeshPage();
+		} else {
+			editor.removeMeshPage();
 		}
 
 		return;
