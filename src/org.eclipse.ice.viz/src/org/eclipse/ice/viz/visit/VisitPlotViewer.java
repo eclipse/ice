@@ -38,14 +38,15 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -205,18 +206,11 @@ public class VisitPlotViewer extends ViewPart implements
 		plotTypeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false));
 		// Add the selection listener
-		plotTypeCombo.addSelectionListener(new SelectionListener() {
-
+		plotTypeCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selectedPlotType = plotTypeCombo.getText();
-				drawSelection();
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				selectedPlotType = plotTypeCombo.getText();
-				drawSelection();
+				drawSelection(new StructuredSelection(plottedEntry));
 			}
 		});
 
@@ -229,7 +223,7 @@ public class VisitPlotViewer extends ViewPart implements
 
 		// Initialize the TreeViewer.
 		plotTreeViewer = new TreeViewer(partComposite, SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER);
+				| SWT.V_SCROLL | SWT.BORDER | SWT.MULTI);
 		// The TreeViewer should grab all horizontal AND vertical space.
 		plotTreeViewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -657,20 +651,15 @@ public class VisitPlotViewer extends ViewPart implements
 	/**
 	 * Draws all plots selected in {@link #plotTreeViewer}.
 	 */
-	public void drawSelection() {
-		// Get the selection from the plotTreeViewer. It should at least be
-		// an IStructuredSelection (a parent interface of TreeSelections).
-		ISelection selection = plotTreeViewer.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+	public void drawSelection(IStructuredSelection selection) {
+		if (selection != null && !selection.isEmpty()) {
 
 			// Create a List of entries to be plotted.
 			List<Entry> entries = new ArrayList<Entry>();
 
 			// Loop over the selected elements and add any Entry to the List
 			// of entries to be plotted.
-			for (Iterator<?> iter = structuredSelection.iterator(); iter
-					.hasNext();) {
+			for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
 				Object object = iter.next();
 				if (object instanceof Entry) {
 					entries.add((Entry) object);
@@ -683,7 +672,6 @@ public class VisitPlotViewer extends ViewPart implements
 				drawPlot(entry);
 			}
 		}
-
 		return;
 	}
 
@@ -758,7 +746,10 @@ public class VisitPlotViewer extends ViewPart implements
 	 *            The DoubleClickEvent that fired this method.
 	 */
 	public void doubleClick(DoubleClickEvent event) {
-		drawSelection();
+		ISelection selection = event.getSelection();
+		if (selection instanceof IStructuredSelection) {
+			drawSelection((IStructuredSelection) selection);
+		}
 	}
 
 	// ----------------------------------------- //
