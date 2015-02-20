@@ -12,29 +12,18 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.client.common.PropertySource;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import org.eclipse.ice.client.common.PropertySource;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.jface.action.IToolBarManager;
@@ -57,7 +46,9 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import ca.odell.glazedlists.swt.DefaultEventTableViewer;
@@ -69,7 +60,7 @@ import ca.odell.glazedlists.swt.DefaultEventTableViewer;
  * @authors Jay Jay Billings, Taylor Patterson, Jordan Deyton
  */
 public class ICEResourceView extends PlayableViewPart implements
-		IUpdateableListener, IPartListener2, IComponentVisitor {
+		IUpdateableListener, IPartListener2 {
 
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEResourceView";
 
@@ -127,7 +118,7 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * The list of VizResources that should be displayed as plots
 	 */
 	private ListComponent<VizResource> plotList = new ListComponent<VizResource>();
-	
+
 	/**
 	 * The Constructor
 	 */
@@ -138,7 +129,7 @@ public class ICEResourceView extends PlayableViewPart implements
 
 		return;
 	}
-	
+
 	/**
 	 * This operation sets the ResourceComponent that should be used by the
 	 * ICEResourceView. It also registers the ICEResourceView with the
@@ -170,8 +161,7 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * This operation retrieves the ResourceComponent that has been rendered by
 	 * the ICEResourceView or null if the component does not exist.
 	 * 
-	 * @return
-	 *         The ResourceComponent or null if the component was not previously
+	 * @return The ResourceComponent or null if the component was not previously
 	 *         set.
 	 */
 	public ResourceComponent getResourceComponent() {
@@ -230,13 +220,13 @@ public class ICEResourceView extends PlayableViewPart implements
 				setTreeContent(tabFolder.indexOf((TabItem) event.item));
 			}
 		});
-		
+
 		// Create the Table and table viewer for the Plot tab
 		Table listTable = new Table(tabFolder, SWT.FLAT);
 		DefaultEventTableViewer listTableViewer = new DefaultEventTableViewer(
 				plotList, listTable, plotList);
 		// Register the table control with the plot tab
-	    plotTab.setControl(listTable);
+		plotTab.setControl(listTable);
 
 		// Add this view as a part listener.
 		getSite().getWorkbenchWindow().getPartService().addPartListener(this);
@@ -368,7 +358,7 @@ public class ICEResourceView extends PlayableViewPart implements
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() { 
+			public void run() {
 				// Just do a blanket update - no need to check the component
 				if (resourceTreeViewer != null) {
 					System.out.println("ICEResourceView Message: "
@@ -407,7 +397,7 @@ public class ICEResourceView extends PlayableViewPart implements
 				}
 			}
 		}
-		
+
 		return;
 	}
 
@@ -439,7 +429,8 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * This operation sets the input of the resourceTreeViewer when a tab
 	 * selection change occurs.
 	 * 
-	 * @param tabIndex	The currently selected tab.
+	 * @param tabIndex
+	 *            The currently selected tab.
 	 */
 	private void setTreeContent(int tabIndex) {
 
@@ -480,9 +471,27 @@ public class ICEResourceView extends PlayableViewPart implements
 					.getForm();
 			// Record the ID of this form
 			lastFormItemID = activeForm.getItemID();
+
+			// Set the resourceComponent to the input component and update the
+			// resourceTreeViewer.
+			IComponentVisitor visitor = new SelectiveComponentVisitor() {
+				@Override
+				public void visit(ResourceComponent component) {
+					System.out.println("ICEResourceView Message: Called visit("
+							+ "ResourceComponent) with component ID = "
+							+ component.getId());
+
+					// Set the resource component
+					setResourceComponent(component);
+
+					// Update the TreeViewer
+					update(component);
+				}
+			};
+
 			// Loop over components to find ResourceComponents
 			for (Component i : activeForm.getComponents()) {
-				i.accept(this);
+				i.accept(visitor);
 			}
 			// Set the tree selection to the first available resource for this
 			// editor
@@ -601,31 +610,10 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * Set the resourceComponent to the input component and update the
-	 * resourceTreeViewer.
-	 * 
-	 * @see IComponentVisitor#visit(ResourceComponent)
-	 */
-	@Override
-	public void visit(ResourceComponent component) {
-
-		System.out
-				.println("ICEResourceView Message: Called visit("
-						+ "ResourceComponent) with component ID = "
-						+ component.getId());
-
-		// Set the resource component
-		setResourceComponent(component);
-
-		// Update the TreeViewer
-		update(component);
-	}
-
-	/**
 	 * This operation sets the default selection in the TreeViewer and returns
 	 * the resource.
 	 * 
-	 * @return 	The ICEResource selected by this function.
+	 * @return The ICEResource selected by this function.
 	 */
 	public ICEResource setDefaultResourceSelection() {
 
@@ -694,8 +682,7 @@ public class ICEResourceView extends PlayableViewPart implements
 				// Set the selection to the next resource in the currently
 				// displayed list or the first resource if the last resource
 				// is currently selected.
-				if (tabFolder.getSelectionIndex() == 1 
-						&& !imageList.isEmpty()) {
+				if (tabFolder.getSelectionIndex() == 1 && !imageList.isEmpty()) {
 					int nextIndex = (currIndex + 1) % imageList.size();
 					resourceTreeViewer.setSelection(new StructuredSelection(
 							imageList.get(nextIndex)), true);
@@ -730,7 +717,7 @@ public class ICEResourceView extends PlayableViewPart implements
 						currSelection[0]);
 
 				// Set the selection to the previous resource in the
-				// currently displayed list, or the last resource if the first 
+				// currently displayed list, or the last resource if the first
 				// resource is currently selected.
 				if (tabFolder.getSelectionIndex() == 1 && !imageList.isEmpty()) {
 					int prevIndex = (currIndex - 1) % imageList.size();
@@ -782,8 +769,9 @@ public class ICEResourceView extends PlayableViewPart implements
 		/**
 		 * The constructor
 		 * 
-		 * @param obj 	The object to be wrapped by PropertySource. For this
-		 *            	subclass, this will be an ICEResource.
+		 * @param obj
+		 *            The object to be wrapped by PropertySource. For this
+		 *            subclass, this will be an ICEResource.
 		 */
 		public NRVPropertySource(Object obj) {
 
@@ -796,7 +784,7 @@ public class ICEResourceView extends PlayableViewPart implements
 		/**
 		 * This function returns the array of descriptors for properties.
 		 * 
-		 * @return 	The array of descriptors for properties.
+		 * @return The array of descriptors for properties.
 		 * 
 		 * @see IPropertySource#getPropertyDescriptors()
 		 */
@@ -808,8 +796,9 @@ public class ICEResourceView extends PlayableViewPart implements
 		/**
 		 * This function returns the value for a give property.
 		 * 
-		 * @param id	The object used to identify this property.
-		 * @return 		The value for the input property
+		 * @param id
+		 *            The object used to identify this property.
+		 * @return The value for the input property
 		 * 
 		 * @see IPropertySource#getPropertyValue(Object)
 		 */
@@ -834,82 +823,5 @@ public class ICEResourceView extends PlayableViewPart implements
 			}
 		}
 	}
-	
-	@Override
-	public void visit(DataComponent component) {
-		// Do nothing.
-		return;
-	}
 
-	@Override
-	public void visit(TableComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(MatrixComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(IShape component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(GeometryComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(MasterDetailsComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(TreeComposite component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(IReactorComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(TimeDataComponent component) {
-		// Do nothing.
-		return;
-	}
-	
-	@Override
-	public void visit(MeshComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(AdaptiveTreeComposite component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(EMFComponent component) {
-		// Do nothing.
-		return;
-	}
-
-	@Override
-	public void visit(ListComponent component) {
-		// Do nothing.
-		return;
-	}
 }
