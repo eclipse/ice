@@ -14,6 +14,8 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.ice.client.common.PropertySource;
 import org.eclipse.ice.datastructures.ICEObject.Component;
@@ -65,7 +67,8 @@ public class ICEResourceView extends PlayableViewPart implements
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEResourceView";
 
 	/**
-	 * The ResourceComponent managed by this view.
+	 * The ResourceComponent managed by this view. This changes based on the
+	 * currently active ICEFormEditor.
 	 */
 	private ResourceComponent resourceComponent;
 
@@ -82,22 +85,24 @@ public class ICEResourceView extends PlayableViewPart implements
 	/**
 	 * Data structure for text-based resources.
 	 */
-	private ArrayList<NRVPropertySource> textList = new ArrayList<NRVPropertySource>();
+	private final List<ResourcePropertySource> textList;
 
 	/**
 	 * Data structure for image-based resources.
 	 */
-	private ArrayList<NRVPropertySource> imageList = new ArrayList<NRVPropertySource>();
+	private final List<ResourcePropertySource> imageList;
 
 	/**
-	 * The ID of the most recently active item.
+	 * The currently active ICEFormEditor. This should only be set by the
+	 * IPartListener2 methods.
 	 */
-	private int lastFormItemID;
+	private ICEFormEditor editor;
 
 	/**
 	 * Mapping of children in the resource tree to their parent resource.
 	 */
-	public Hashtable<String, ICEResource> resourceChildMap = new Hashtable<String, ICEResource>();
+	// TODO Make this private and expose a method to get values from it.
+	protected final Map<String, ICEResource> resourceChildMap;
 
 	/**
 	 * The previous button in the tool bar.
@@ -117,15 +122,22 @@ public class ICEResourceView extends PlayableViewPart implements
 	/**
 	 * The list of VizResources that should be displayed as plots
 	 */
-	private ListComponent<VizResource> plotList = new ListComponent<VizResource>();
+	private final ListComponent<VizResource> plotList;
 
 	/**
-	 * The Constructor
+	 * The default constructor.
 	 */
 	public ICEResourceView() {
 
-		// Call the super constructor
-		super();
+		// Initialize the lists of property sources.
+		textList = new ArrayList<ResourcePropertySource>();
+		imageList = new ArrayList<ResourcePropertySource>();
+
+		// Initialize the map of TreeView element names to their ICEResources.
+		resourceChildMap = new Hashtable<String, ICEResource>();
+
+		// Initialize the list of VizResources.
+		plotList = new ListComponent<VizResource>();
 
 		return;
 	}
@@ -139,7 +151,7 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * @param component
 	 *            The ResourceComponent
 	 */
-	public void setResourceComponent(ResourceComponent component) {
+	private void setResourceComponent(ResourceComponent component) {
 
 		// Make sure the ResourceComponent exists
 		if (component != null) {
@@ -228,9 +240,13 @@ public class ICEResourceView extends PlayableViewPart implements
 		// Register the table control with the plot tab
 		plotTab.setControl(listTable);
 
+		// TODO The view will not be updated until it has been created. However,
+		// we should still update the metadata before that point. We should
+		// update the listener logic to update all metadata but not try to
+		// update the UI until the view content has been created.
 		// Add this view as a part listener.
 		getSite().getWorkbenchWindow().getPartService().addPartListener(this);
-
+		
 		return;
 	}
 
@@ -389,9 +405,9 @@ public class ICEResourceView extends PlayableViewPart implements
 			// Re-populate the resource lists
 			for (ICEResource i : resourceComponent.getResources()) {
 				if (!i.isPictureType()) {
-					textList.add(new NRVPropertySource(i));
+					textList.add(new ResourcePropertySource(i));
 				} else if (i.isPictureType()) {
-					imageList.add(new NRVPropertySource(i));
+					imageList.add(new ResourcePropertySource(i));
 				} else {
 					System.out.println("ERROR: Unknown resource type.");
 				}
@@ -450,12 +466,17 @@ public class ICEResourceView extends PlayableViewPart implements
 		return;
 	}
 
+	// ---- Implements IPartListener2 ---- //
+	// This class implements IPartListener2 in order to synchronize with the
+	// currently active ICEFormEditor. When an ICEFormEditor is activated, this
+	// view looks for the editor's ResourceComponents and lists all of their
+	// ICEResources in the TreeViewer. When the currently activated
+	// ICEFormEditor is closed, then the view should clear.
+
 	/**
 	 * This function is called whenever a Workbench part gains focus. Here, we
 	 * are only interested if the part is an ICEFormEditor. Get the Form from
 	 * the editor and accept its components. Call setDefaultResourceSelection().
-	 * 
-	 * @see IPartListener2#partActivated(IWorkbenchPartReference)
 	 */
 	@Override
 	public void partActivated(IWorkbenchPartReference partRef) {
@@ -463,14 +484,21 @@ public class ICEResourceView extends PlayableViewPart implements
 		System.out.println("ICEResourceView Message: Called partActivated("
 				+ partRef.getId() + ")");
 
-		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			// Get the activated editor
+		if (ICEFormEditor.ID.equals(partRef.getId())) {
+			// Get the activated editor.
 			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
+
+			// If the editor is already the active one, there is nothing to do.
+			if (activeEditor == editor) {
+				return;
+			}
+
+			// Set the currently active editor.
+			editor = activeEditor;
+
 			// Pull the form from the editor
 			Form activeForm = ((ICEFormInput) activeEditor.getEditorInput())
 					.getForm();
-			// Record the ID of this form
-			lastFormItemID = activeForm.getItemID();
 
 			// Set the resourceComponent to the input component and update the
 			// resourceTreeViewer.
@@ -500,6 +528,7 @@ public class ICEResourceView extends PlayableViewPart implements
 			// We would like to call ICEResourcePage#selectionChanged here to
 			// update the browser, but a solution to this has not been found
 			// yet.
+			// TODO Make the previous method fire a selection changed event.
 		}
 
 		return;
@@ -519,18 +548,19 @@ public class ICEResourceView extends PlayableViewPart implements
 		System.out.println("ICEResourceView Message: Called partClosed("
 				+ partRef.getId() + ")");
 
-		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			// Get the closed editor
+		if (ICEFormEditor.ID.equals(partRef.getId())) {
+			// Get the closed editor.
 			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
-			// Get the form from the editor
-			Form activeForm = ((ICEFormInput) activeEditor.getEditorInput())
-					.getForm();
-			// If this is the most recently active form, clear the TreeViewer.
-			if (activeForm.getItemID() == lastFormItemID) {
+
+			// If this is the most recently active editor, clear the widgets.
+			if (activeEditor == editor) {
 				textList.clear();
 				imageList.clear();
 				resourceTreeViewer.refresh();
 				resourceTreeViewer.getTree().redraw();
+
+				// Unset the editor.
+				editor = null;
 			}
 		}
 
@@ -547,67 +577,65 @@ public class ICEResourceView extends PlayableViewPart implements
 	 */
 	@Override
 	public void partHidden(IWorkbenchPartReference partRef) {
-
-		System.out.println("ICEResourceView Message: Called partHidden("
-				+ partRef.getId() + ")");
-
-		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			// Get the hidden editor
-			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
-			// Get the form from the editor
-			Form activeForm = ((ICEFormInput) activeEditor.getEditorInput())
-					.getForm();
-			// Record the ID of this form
-			lastFormItemID = activeForm.getItemID();
-		}
-
-		return;
+		// Do nothing.
 	}
 
-	/**
-	 * @see IPartListener2#partBroughtToTop(IWorkbenchPartReference)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partBroughtToTop(org.eclipse.ui.
+	 * IWorkbenchPartReference)
 	 */
 	@Override
 	public void partBroughtToTop(IWorkbenchPartReference partRef) {
 		// Do nothing.
-		return;
 	}
 
-	/**
-	 * @see IPartListener2#partDeactivated(IWorkbenchPartReference)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partDeactivated(org.eclipse.ui.
+	 * IWorkbenchPartReference)
 	 */
 	@Override
 	public void partDeactivated(IWorkbenchPartReference partRef) {
 		// Do nothing.
-		return;
 	}
 
-	/**
-	 * @see IPartListener2#partOpened(IWorkbenchPartReference)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partOpened(org.eclipse.ui.
+	 * IWorkbenchPartReference)
 	 */
 	@Override
 	public void partOpened(IWorkbenchPartReference partRef) {
 		// Do nothing.
-		return;
 	}
 
-	/**
-	 * @see IPartListener2#partVisible(IWorkbenchPartReference)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partVisible(org.eclipse.ui.
+	 * IWorkbenchPartReference)
 	 */
 	@Override
 	public void partVisible(IWorkbenchPartReference partRef) {
 		// Do nothing.
-		return;
 	}
 
-	/**
-	 * @see IPartListener2#partInputChanged(IWorkbenchPartReference)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IPartListener2#partInputChanged(org.eclipse.ui.
+	 * IWorkbenchPartReference)
 	 */
 	@Override
 	public void partInputChanged(IWorkbenchPartReference partRef) {
 		// Do nothing.
-		return;
 	}
+
+	// ----------------------------------- //
 
 	/**
 	 * This operation sets the default selection in the TreeViewer and returns
@@ -752,7 +780,7 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * A private subclass of PropertySource to implement the superclass features
 	 * used by ICEResourceView.
 	 */
-	private static class NRVPropertySource extends PropertySource {
+	private static class ResourcePropertySource extends PropertySource {
 
 		// Property IDs
 		public static final String ID_PATH = "Path";
@@ -773,7 +801,7 @@ public class ICEResourceView extends PlayableViewPart implements
 		 *            The object to be wrapped by PropertySource. For this
 		 *            subclass, this will be an ICEResource.
 		 */
-		public NRVPropertySource(Object obj) {
+		public ResourcePropertySource(Object obj) {
 
 			// Just call the superclass constructor
 			super(obj);
