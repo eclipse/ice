@@ -136,11 +136,4 @@ public interface IPlot {
 	 * @return True if the source is on a remote machine, false otherwise
 	 */
 	public boolean isSourceRemote();
-	
-	/**
-	 * This operation conducts a check to verify if the IPlot object contains
-	 * valid plotting data. It is up to each implementation of IPlot to define
-	 * what is valid/invalid data, and to perform this check in a specific way.
-	 */
-	public boolean isValidPlot();
 }

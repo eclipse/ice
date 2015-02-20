@@ -110,11 +110,4 @@ public class VisItPlot implements IPlot {
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public boolean isValidPlot() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

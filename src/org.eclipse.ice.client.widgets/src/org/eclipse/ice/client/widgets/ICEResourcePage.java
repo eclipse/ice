@@ -279,20 +279,6 @@ public class ICEResourcePage extends ICEFormPage implements
 					if (plotMap.get(selectedResource.getPath().toString()) != null) {
 						plot = plotMap.get(selectedResource.getPath().toString());
 					}
-					// Otherwise, if it's not in the map, create it and add it
-					else {
-						plot = vizFactory.get().createPlot(selectedResource.getPath());
-						plotMap.put(plot.getDataSource().toString(), plot);
-					}
-					
-					// Check if the plot is valid (it is still possible to have
-					// a valid IPlot object without valid plotting data in it)
-					if (!plot.isValidPlot()) {
-						System.out.println("ICEResourcePage Error: "
-								+ "File contains data that cannot be plotted, "
-								+ selectedResource.getPath().toString());
-						return;
-					}
 					
 					// Get the plot types and pick a plot type
 					Map<String,String[]> plotTypes = plot.getPlotTypes();
@@ -420,7 +406,6 @@ public class ICEResourcePage extends ICEFormPage implements
 							if (plot != null) {
 								plotMap.put(plot.getDataSource().toString(), plot);
 							}
-
 						} catch (Exception e) {
 							// Complain
 							e.printStackTrace();

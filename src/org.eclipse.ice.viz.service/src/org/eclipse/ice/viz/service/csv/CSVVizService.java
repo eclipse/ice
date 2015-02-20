@@ -77,20 +77,27 @@ public class CSVVizService implements IVizService {
 	}
 
 	/**
+	 * @throws Exception 
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
 	 * .net.URI)
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		// Create and load the plot
-		CSVPlot plot = new CSVPlot(file);
-		plot.load();
 		
+		// Create the plot and load it
+		CSVPlot plot = new CSVPlot(file);
+		try {
+			plot.load();
+		} catch (Exception e) {
+			// Rethrow the exception
+			throw new Exception(e);
+		}
+
 		// Wait a second, the load() thread needs a second to complete
 		// before we can use the new plot.
 		Thread.sleep(1000);
-			
+
 		return plot;
 	}
 

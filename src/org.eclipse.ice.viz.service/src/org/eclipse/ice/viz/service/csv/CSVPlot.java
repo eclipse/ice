@@ -12,11 +12,13 @@
 package org.eclipse.ice.viz.service.csv;
 
 import java.io.File;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.viz.plotviewer.CSVDataLoader;
@@ -33,7 +35,7 @@ import org.eclipse.swt.widgets.Composite;
  * In addition to the IPlot operations it provides the load() operation that
  * should be called after construction.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Anna Wojtowicz
  *
  */
 public class CSVPlot implements IPlot {
@@ -76,15 +78,19 @@ public class CSVPlot implements IPlot {
 	 * This operation loads the data that will be plotted. It uses a separate
 	 * thread to avoid hanging the UI in the event that the file is large. It
 	 * does not attempt to load the file if the source is null.
+	 * 
+	 * @throws Exception 
 	 */
-	public void load() {
+	public void load() throws Exception {
 
 		if (source != null) {
+					
 			// Create the loading thread
-			Thread loadingThread = new Thread(new Runnable() {
+			final Thread loadingThread = new Thread(new Runnable() {
 
 				@Override
 				public void run() {
+					
 					// Create a file handle from the source
 					File file = new File(source);
 					// Get a CSV loader and try to load the file
@@ -92,10 +98,11 @@ public class CSVPlot implements IPlot {
 						// Load the file
 						CSVDataLoader dataLoader = new CSVDataLoader();
 						provider = dataLoader.load(file);
-						// If the file is an invalid CSV format for any reason,
-						// exit now
+						// Check if the provider is invalid for any reason (ie.
+						// data couldn't load correctly)
 						if (provider == null) {
-							return;
+ 							throw new RuntimeException("CSV data in "
+									+ "an unexpected format, provider is null");
 						}
 						// Set the source so the title and everything gets
 						// loaded right later
@@ -129,6 +136,54 @@ public class CSVPlot implements IPlot {
 
 				}
 			});
+			
+			// Set up a custom exception handler to catch and pass the
+			// loadingThread's exceptions to the parent thread's exception handler
+			class LoadingThreadExceptionHandler implements UncaughtExceptionHandler {
+				
+				// A handle to the parent exception handler
+				private UncaughtExceptionHandler defaultHandler;
+				
+				// Constructor to get a handle on the parent's exception handler
+				public void LoadingThreadExceptionHandler() {
+					
+					// Check if the parent thread has an exception handler
+					if (Thread.getDefaultUncaughtExceptionHandler() == null) {
+						
+						// FIXME get rid of this print statement later
+						System.out.println("Default handler doesn't exist, wuah wuah wuaaah");
+						
+						// Create a new default exception handler
+						Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+							@Override
+							public void uncaughtException(Thread t, Throwable e) {
+								// FIXME get rid of this print statement later
+								System.out.println("this is the default handler called");
+								// Throw the error up the chain
+								throw new RuntimeException(e);								
+							}
+						});
+					}
+					
+					// Get the parent's default exception handler
+					defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
+					
+					return;
+				}
+				
+				 // Override the default uncaught exception behaviour to re-throw
+				 // exceptions up to the parent thread's handler
+				@Override
+				public void uncaughtException(Thread t, Throwable e) {
+					// FIXME get rid of this print statement later
+					System.out.println("this is the nested thread handler called");
+					defaultHandler.uncaughtException(t, e);
+				}
+			}
+
+			// Set the custom exception handler on the loadingThread
+			loadingThread.setUncaughtExceptionHandler(new LoadingThreadExceptionHandler());
+			
 			// Start the thread
 			loadingThread.start();
 		}
@@ -231,7 +286,8 @@ public class CSVPlot implements IPlot {
 			throws Exception {
 
 		// Make sure the plot type is valid
-		if (category != null && types.keySet().contains(category)
+		if (provider != null && category != null 
+				&& types.keySet().contains(category)
 				&& plotType != null && plotType.contains(" vs. ")) {
 			// Get the axes to plot
 			String[] axes = plotType.split(" ");
@@ -269,23 +325,11 @@ public class CSVPlot implements IPlot {
 			// Add the new plot to the editor
 			plotEditor.showPlotProvider(plotProvider);
 		} else {
-			// Complain that the plot type is invalid
-			throw new Exception("Invalid plot type: category = " + category
-					+ ", type = " + plotType + "\n");
+			// Complain that the plot is invalid
+			throw new Exception("Invalid plot: category = " + category
+					+ ", type = " + plotType + ", provider = " + provider.toString());
 		}
 		
 		return;
-	}
-
-	/**
-	 * This method verifies if the CSVPlot contains valid, plottable data. It
-	 * does this by verifying that the data provider is not null.
-	 * 
-	 * @return	True if the CSVPlot contains valid plotting data, otherwise
-	 * 			false.
-	 */
-	@Override
-	public boolean isValidPlot() {
-		return (provider != null ? true : false);
 	}
 }
