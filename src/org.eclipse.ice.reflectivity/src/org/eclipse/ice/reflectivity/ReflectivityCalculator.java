@@ -333,7 +333,6 @@ public class ReflectivityCalculator {
 		for (j = numRough / 2 - 1; j >= 0; j--) {
 			dist = dist - step;
 			zInt[j] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
-			System.out.println("Line = " + j + " " + zInt[j]);
 			rufInt[j] = Erf.erf(cE * zInt[j]);
 		}
 
@@ -359,7 +358,6 @@ public class ReflectivityCalculator {
 			zInt[j] = oHalfstep + 0.5 * (zInt[j + 1] - zInt[j]);
 			zInt[numRough - j] = zInt[j];
 			oHalfstep = 0.5 * (zInt[j + 1] - zTemp);
-			System.out.println(j + " " + zInt[j] + " " + zTemp);
 		}
 
 		return;
