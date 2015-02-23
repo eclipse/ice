@@ -540,16 +540,20 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				// contents of the Resource Page's widgets. This must be done on
 				// the UI thread.
 				if (display != null) {
-					display.asyncExec(new Runnable() {
-						@Override
-						public void run() {
-							ICEResource currentResource = resourceView
-									.setDefaultResourceSelection();
-							if (currentResource != null) {
+					// Get the current selection from the Resource View and set
+					// the current Resource to it if possible.
+					ISelection selection;
+					selection = getSite().getPage().getSelection(
+							ICEResourceView.ID);
+					final ICEResource currentResource = getResourceFromSelection(selection);
+					if (currentResource != null) {
+						display.asyncExec(new Runnable() {
+							@Override
+							public void run() {
 								setCurrentResource(currentResource);
 							}
-						}
-					});
+						});
+					}
 				}
 			}
 		}

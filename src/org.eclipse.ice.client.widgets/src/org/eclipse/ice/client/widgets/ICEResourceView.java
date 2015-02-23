@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.client.common.PropertySource;
 import org.eclipse.ice.datastructures.ICEObject.Component;
@@ -44,9 +45,13 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IPartService;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -66,11 +71,23 @@ public class ICEResourceView extends PlayableViewPart implements
 
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEResourceView";
 
+	// ---- Current Editor and Resources ---- //
+	/**
+	 * The currently active ICEFormEditor. This should only be set by the
+	 * IPartListener2 methods.
+	 */
+	private ICEFormEditor editor;
+
 	/**
 	 * The ResourceComponent managed by this view. This changes based on the
 	 * currently active ICEFormEditor.
+	 * <p>
+	 * When the ResourceComponent is set or updated, the contents of the view
+	 * should also update accordingly.
+	 * </p>
 	 */
 	private ResourceComponent resourceComponent;
+	// -------------------------------------- //
 
 	/**
 	 * The TreeViewer for the ResourceComponent.
@@ -91,12 +108,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * Data structure for image-based resources.
 	 */
 	private final List<ResourcePropertySource> imageList;
-
-	/**
-	 * The currently active ICEFormEditor. This should only be set by the
-	 * IPartListener2 methods.
-	 */
-	private ICEFormEditor editor;
 
 	/**
 	 * Mapping of children in the resource tree to their parent resource.
@@ -143,27 +154,116 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * This operation sets the ResourceComponent that should be used by the
-	 * ICEResourceView. It also registers the ICEResourceView with the
-	 * ResourceComponent so that it can be notified of state changes through the
-	 * IUpdateableListener interface.
+	 * Sets the currently active {@link #editor}. This triggers any necessary
+	 * updates to the UI asynchronously.
+	 * <p>
+	 * <b>Note:</b> This method should only be called when the active editor
+	 * changes, e.g., via the {@link IPartListener2} implementation in this
+	 * class.
+	 * </p>
+	 * 
+	 * @param activeEditor
+	 *            The new editor, or null to unset it. This is assumed to be a
+	 *            new value.
+	 */
+	private void setActiveEditor(ICEFormEditor activeEditor) {
+
+		// If necessary, clear the contents of the view.
+		if (editor != null) {
+			// Clear the ResourceComponent and related UI pieces.
+			setResourceComponent(null);
+
+			// Unset the reference to the active editor.
+			editor = null;
+		}
+
+		// If the new active editor is valid, update the contents of the view.
+		if (activeEditor != null) {
+
+			// ---- Determine the ResourceComponent from the editor ---- //
+			// Create a visitor to used to find a ResourceComponent.
+			final AtomicReference<ResourceComponent> componentRef;
+			componentRef = new AtomicReference<ResourceComponent>();
+			IComponentVisitor visitor = new SelectiveComponentVisitor() {
+				@Override
+				public void visit(ResourceComponent component) {
+					componentRef.set(component);
+				}
+			};
+
+			// Loop over the Form Components to find a ResourceComponent.
+			Form activeForm = ((ICEFormInput) activeEditor.getEditorInput())
+					.getForm();
+			for (Component i : activeForm.getComponents()) {
+				i.accept(visitor);
+				// TODO We should actually show all resources rather than just
+				// those in the last ResourceComponent!
+				// // Exit the loop when the first ResourceComponent is found.
+				// if (componentRef.get() != null) {
+				// break;
+				// }
+			}
+			// --------------------------------------------------------- //
+
+			// If a ResourceComponent was found, update the known
+			// ResourceComponent.
+			if (componentRef.get() != null) {
+				setResourceComponent(componentRef.get());
+			}
+
+			// TODO We would like to call ICEResourcePage#selectionChanged here
+			// to update the browser, but a solution to this has not been found
+			// yet.
+
+			// Set the reference to the new active editor.
+			editor = activeEditor;
+		}
+
+		return;
+	}
+
+	/**
+	 * Sets the current {@link #resourceComponent}. This triggers any updates to
+	 * the UI asynchronously.
+	 * <p>
+	 * <b>Note:</b> This method should only be called when the active
+	 * {@link #editor} changes, i.e., via
+	 * {@link #setActiveEditor(ICEFormEditor)}.
+	 * </p>
 	 * 
 	 * @param component
-	 *            The ResourceComponent
+	 *            The new ResourceComponent, or null to unset it. This is
+	 *            assumed to be a new value.
 	 */
 	private void setResourceComponent(ResourceComponent component) {
 
-		// Make sure the ResourceComponent exists
+		// If necessary, clear the contents of the view and unregister from the
+		// previous ResourceComponent.
+		if (resourceComponent != null) {
+			// Unregister from the old ResourceComponent.
+			resourceComponent.unregister(this);
+
+			// Clear the related UI pieces. TODO Put this on the UI thread?
+			if (resourceTreeViewer != null) {
+				textList.clear();
+				imageList.clear();
+				resourceTreeViewer.refresh();
+				resourceTreeViewer.getTree().redraw();
+			}
+
+			// Unset the reference to the old ResourceComponent.
+			resourceComponent = null;
+		}
+
+		// If the new ResourceComponent is valid, update the contents of the
+		// view and register for updates from it.
 		if (component != null) {
 			// Set the component reference
 			resourceComponent = component;
-			// Update the input - it should not be possible to call this without
-			// having resourceTreeViewer properly instantiated, so just update
-			// the input.
-			sortTreeContent();
-			setTreeContent();
 			// Register this view with the Component to receive updates
-			component.register(this);
+			resourceComponent.register(this);
+			// Trigger a UI update.
+			update(resourceComponent);
 		}
 
 		return;
@@ -208,10 +308,6 @@ public class ICEResourceView extends PlayableViewPart implements
 		resourceTreeViewer = new TreeViewer(tabFolder);
 		// Create content and label providers
 		initializeTreeViewer(resourceTreeViewer);
-		// Sort the resources into structures of text and images
-		sortTreeContent();
-		// Display the appropriate list for the selected tab
-		setTreeContent();
 		// Register the tree to the tabs
 		textTab.setControl(resourceTreeViewer.getControl());
 		imageTab.setControl(resourceTreeViewer.getControl());
@@ -235,18 +331,31 @@ public class ICEResourceView extends PlayableViewPart implements
 
 		// Create the Table and table viewer for the Plot tab
 		Table listTable = new Table(tabFolder, SWT.FLAT);
-		DefaultEventTableViewer listTableViewer = new DefaultEventTableViewer(
+		DefaultEventTableViewer<VizResource> listTableViewer = new DefaultEventTableViewer<VizResource>(
 				plotList, listTable, plotList);
 		// Register the table control with the plot tab
 		plotTab.setControl(listTable);
 
-		// TODO The view will not be updated until it has been created. However,
-		// we should still update the metadata before that point. We should
-		// update the listener logic to update all metadata but not try to
-		// update the UI until the view content has been created.
-		// Add this view as a part listener.
-		getSite().getWorkbenchWindow().getPartService().addPartListener(this);
-		
+		// We cannot keep track of the most recently active ICEFormEditor before
+		// this point. Try to sync this view with the active editor if it is an
+		// ICEFormEditor.
+		// PlatformUI.getWorkbench().getActiveWorkbenchWindow() TODO Try this
+		// line in the constructor.
+		IPartService partService = getSite().getWorkbenchWindow()
+				.getPartService();
+		// See if there is currently an active ICEFormEditor. If so, update the
+		// currently active editor and related UI pieces.
+		IWorkbenchPartReference partRef = partService.getActivePartReference();
+		if (ICEFormEditor.ID.equals(partRef.getId())) {
+			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
+			if (activeEditor != editor) {
+				setActiveEditor(activeEditor);
+			}
+		}
+		// Register as a listener to the part service so that the view can
+		// update when the active ICEFormEditor changes.
+		partService.addPartListener(this);
+
 		return;
 	}
 
@@ -355,13 +464,14 @@ public class ICEResourceView extends PlayableViewPart implements
 		return;
 	}
 
-	/**
-	 * @see WorkbenchPart#setFocus()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
 	@Override
 	public void setFocus() {
 		// Do nothing
-		return;
 	}
 
 	/**
@@ -370,22 +480,28 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * @see IUpdateableListener#update(IUpdateable)
 	 */
 	@Override
-	public void update(final IUpdateable component) {
+	public void update(IUpdateable component) {
 
-		// Sync with the display
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				// Just do a blanket update - no need to check the component
-				if (resourceTreeViewer != null) {
-					System.out.println("ICEResourceView Message: "
-							+ "Updating resource table.");
-					sortTreeContent();
-					setTreeContent();
-					resourceTreeViewer.refresh();
-					resourceTreeViewer.getTree().redraw();
+		// Only perform a UI update if the component is valid and the UI pieces
+		// exist.
+		if (component != null && component == resourceComponent
+				&& resourceTreeViewer != null) {
+
+			// Sync with the display
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					// Just do a blanket update - no need to check the component
+					if (resourceTreeViewer != null) {
+						System.out.println("ICEResourceView Message: "
+								+ "Updating resource table.");
+						sortTreeContent();
+						setTreeContent();
+						resourceTreeViewer.refresh();
+						resourceTreeViewer.getTree().redraw();
+					}
 				}
-			}
-		});
+			});
+		}
 
 		return;
 	}
@@ -432,10 +548,18 @@ public class ICEResourceView extends PlayableViewPart implements
 			resourceTreeViewer.setInput(imageList);
 			tabFolder.setSelection(1);
 			playable = true;
+
+			// Select the first available image resource.
+			resourceTreeViewer.setSelection(
+					new StructuredSelection(imageList.get(0)), true);
 		} else {
 			resourceTreeViewer.setInput(textList);
 			tabFolder.setSelection(0);
 			playable = false;
+
+			// Select the first available text resource.
+			resourceTreeViewer.setSelection(
+					new StructuredSelection(textList.get(0)), true);
 		}
 
 		return;
@@ -475,105 +599,50 @@ public class ICEResourceView extends PlayableViewPart implements
 
 	/**
 	 * This function is called whenever a Workbench part gains focus. Here, we
-	 * are only interested if the part is an ICEFormEditor. Get the Form from
-	 * the editor and accept its components. Call setDefaultResourceSelection().
+	 * are only interested if the part is an ICEFormEditor. When a new
+	 * ICEFormEditor is activated, sync the view with the activated editor.
 	 */
 	@Override
 	public void partActivated(IWorkbenchPartReference partRef) {
 
-		System.out.println("ICEResourceView Message: Called partActivated("
-				+ partRef.getId() + ")");
-
+		// If the activated editor is an ICEFormEditor different from the known
+		// active ICEFormEditor, call the method to update the currently active
+		// editor and affected UI pieces.
 		if (ICEFormEditor.ID.equals(partRef.getId())) {
-			// Get the activated editor.
 			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
-
-			// If the editor is already the active one, there is nothing to do.
-			if (activeEditor == editor) {
-				return;
+			if (activeEditor != editor) {
+				setActiveEditor(activeEditor);
 			}
-
-			// Set the currently active editor.
-			editor = activeEditor;
-
-			// Pull the form from the editor
-			Form activeForm = ((ICEFormInput) activeEditor.getEditorInput())
-					.getForm();
-
-			// Set the resourceComponent to the input component and update the
-			// resourceTreeViewer.
-			IComponentVisitor visitor = new SelectiveComponentVisitor() {
-				@Override
-				public void visit(ResourceComponent component) {
-					System.out.println("ICEResourceView Message: Called visit("
-							+ "ResourceComponent) with component ID = "
-							+ component.getId());
-
-					// Set the resource component
-					setResourceComponent(component);
-
-					// Update the TreeViewer
-					update(component);
-				}
-			};
-
-			// Loop over components to find ResourceComponents
-			for (Component i : activeForm.getComponents()) {
-				i.accept(visitor);
-			}
-			// Set the tree selection to the first available resource for this
-			// editor
-			setDefaultResourceSelection();
-
-			// We would like to call ICEResourcePage#selectionChanged here to
-			// update the browser, but a solution to this has not been found
-			// yet.
-			// TODO Make the previous method fire a selection changed event.
 		}
 
 		return;
 	}
 
 	/**
-	 * This function is called whenever a Workbench part is closed. Here, we are
-	 * only interested if the part is an ICEFormEditor. Get the Form from the
-	 * editor. If this is the most recently active form, clear its resources
-	 * from the resourceTreeViewer.
-	 * 
-	 * @see IPartListener2#partClosed(IWorkbenchPartReference)
+	 * This function is called whenever a Workbench part is closed. If the
+	 * current {@link #editor} is closed, then we need to clear the view's
+	 * contents.
 	 */
 	@Override
 	public void partClosed(IWorkbenchPartReference partRef) {
 
-		System.out.println("ICEResourceView Message: Called partClosed("
-				+ partRef.getId() + ")");
-
+		// If the closed editor is the known active ICEFormEditor, call the
+		// method to clear the currently active editor and related UI pieces.
 		if (ICEFormEditor.ID.equals(partRef.getId())) {
-			// Get the closed editor.
 			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
-
-			// If this is the most recently active editor, clear the widgets.
 			if (activeEditor == editor) {
-				textList.clear();
-				imageList.clear();
-				resourceTreeViewer.refresh();
-				resourceTreeViewer.getTree().redraw();
-
-				// Unset the editor.
-				editor = null;
+				setActiveEditor(null);
 			}
 		}
 
 		return;
 	}
 
-	/**
-	 * This function is called whenever a Workbench part is covered by another
-	 * part. Here, we are only interested if the part is an ICEFormEditor. For
-	 * our purposes, this function call always precedes a call to partClosed, so
-	 * here we are just recording the ID as the most recently active part.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @see IPartListener2#partHidden(IWorkbenchPartReference)
+	 * @see org.eclipse.ui.IPartListener2#partHidden(org.eclipse.ui.
+	 * IWorkbenchPartReference)
 	 */
 	@Override
 	public void partHidden(IWorkbenchPartReference partRef) {
@@ -636,32 +705,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	// ----------------------------------- //
-
-	/**
-	 * This operation sets the default selection in the TreeViewer and returns
-	 * the resource.
-	 * 
-	 * @return The ICEResource selected by this function.
-	 */
-	public ICEResource setDefaultResourceSelection() {
-
-		// Local Declarations
-		ICEResource resource = null;
-
-		// If there are files, use the first one. Otherwise, if there are images
-		// use the first one. Otherwise there are no resources.
-		if (!textList.isEmpty()) {
-			resourceTreeViewer.setSelection(
-					new StructuredSelection(textList.get(0)), true);
-			resource = (ICEResource) textList.get(0).getWrappedData();
-		} else if (!imageList.isEmpty()) {
-			resourceTreeViewer.setSelection(
-					new StructuredSelection(imageList.get(0)), true);
-			resource = (ICEResource) imageList.get(0).getWrappedData();
-		}
-
-		return resource;
-	}
 
 	/**
 	 * Create and add the play, previous, and next buttons to the tool bar for
