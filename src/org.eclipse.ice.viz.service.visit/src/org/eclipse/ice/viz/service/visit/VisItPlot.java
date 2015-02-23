@@ -305,22 +305,20 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 	}
 
 	/**
-	 * Sets the data source (which is currently rendered if the plot is drawn).
-	 * If the data source is valid and new, then the plot will be updated
-	 * accordingly.
+	 * Gets the path to the specified file.
 	 * 
-	 * @param uri
-	 *            The new data source URI.
+	 * @param source
+	 *            The source URI.
+	 * @return A VisIt-friendly file path.
 	 */
-	public void setDataSource(URI uri) {
-		if (uri != null) {
-			// Update the source.
-			source = uri;
+	protected static String getSourcePath(URI source) {
+		String path = null;
+		if (source != null) {
 			// On Windows, the File class inserts standard forward slashes as
 			// separators. VisIt, on the other hand, requires the native
 			// separator. If the URI uses the standard separator on Windows,
 			// update the source path to use the native Windows separator.
-			String path = source.getPath();
+			path = source.getPath();
 
 			// If the host is local and a Windows-based machine, we need to
 			// update the path to use Windows separators for VisIt.
@@ -336,6 +334,25 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 							System.getProperty("file.separator"));
 				}
 			}
+		}
+		return path;
+	}
+
+	/**
+	 * Sets the data source (which is currently rendered if the plot is drawn).
+	 * If the data source is valid and new, then the plot will be updated
+	 * accordingly.
+	 * 
+	 * @param uri
+	 *            The new data source URI.
+	 */
+	public void setDataSource(URI uri) {
+		if (uri != null) {
+			// Update the source.
+			source = uri;
+
+			String path = getSourcePath(uri);
+
 			// Update the source's VisIt-friendly path.
 			if (!path.equals(sourcePath)) {
 				sourcePath = path;

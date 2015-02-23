@@ -26,6 +26,9 @@ import org.eclipse.ice.viz.service.connections.visit.VisItConnectionManager;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
 
+import visit.java.client.FileInfo;
+import visit.java.client.ViewerMethods;
+
 /**
  * This is an implementation of the IVizService interface for the VisIt
  * visualization tool.
@@ -296,9 +299,12 @@ public class VisItVizService extends AbstractVizService {
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		VisItPlot plot = new VisItPlot(this, file);
-		plots.add(plot);
-		plot.setConnection(adapter);
+		VisItPlot plot = null;
+		if (canOpenFile(file)) {
+			plot = new VisItPlot(this, file);
+			plots.add(plot);
+			plot.setConnection(adapter);
+		}
 		return plot;
 	}
 
@@ -326,6 +332,47 @@ public class VisItVizService extends AbstractVizService {
 			}
 		}
 		return;
+	}
+
+	/**
+	 * Determines whether or not the file can be opened in VisIt.
+	 * 
+	 * @param file
+	 *            The file to test. May be {@code null}.
+	 * @return True if the file can be opened in VisIt, false otherwise.
+	 */
+	private boolean canOpenFile(URI file) {
+		boolean canOpen = false;
+
+		// FIXME We should be able to support remote connections...
+
+		// If the file is not null, the adapter is connected, and the adapter is
+		// a local connection, we can try to plot the file.
+		if (file != null && adapter.getState() == ConnectionState.Connected
+				&& "localhost".equals(adapter.getConnectionProperty("url"))) {
+
+			// Get the VisIt-friendly path for the URI.
+			String path = VisItPlot.getSourcePath(file);
+			if (path != null) {
+
+				// Determine the VisIt FileInfo for the file.
+				ViewerMethods methods = adapter.getConnection()
+						.getViewerMethods();
+				methods.openDatabase(path);
+				FileInfo info = methods.getDatabaseInfo();
+
+				// If the FileInfo is "empty", we can't plot the file.
+				canOpen = !(info.getMeshes().isEmpty()
+						&& info.getMaterials().isEmpty()
+						&& info.getScalars().isEmpty() && info.getVectors()
+						.isEmpty());
+
+				// Close the file.
+				methods.closeDatabase(path);
+			}
+		}
+
+		return canOpen;
 	}
 
 }
