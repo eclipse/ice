@@ -353,10 +353,12 @@ public class ReflectivityCalculatorTester {
 		// Check the results
 		System.out.println("numRough = " + numRough);
 		for (int i = 0; i < ReflectivityCalculator.maxRoughSize; i++) {
-			System.out.println("GenErf: " + i + " " + refZInt[i] + " " + zInt[i] + " "
-					+ Math.abs(refZInt[i]) * tol);
-			assertEquals(refZInt[i], zInt[i], Math.abs(refZInt[i]) * tol);
-			assertEquals(refRufInt[i], rufInt[i], Math.abs(refRufInt[i]) * tol);
+			// These values agree exceptionally well, so I decided to check with
+			// the square of the tolerance (MUCH tighter bound) for zInt and
+			// 10*tol*tol for refRuf, which is still better than we need.
+			assertEquals(refZInt[i], zInt[i], Math.abs(refZInt[i]) * tol * tol);
+			assertEquals(refRufInt[i], rufInt[i], Math.abs(refRufInt[i]) * 10.0
+					* tol * tol);
 		}
 
 		return;

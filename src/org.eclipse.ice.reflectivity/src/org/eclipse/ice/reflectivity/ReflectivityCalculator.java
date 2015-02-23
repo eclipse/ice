@@ -329,7 +329,7 @@ public class ReflectivityCalculator {
 		// shifted by -1 from the VB code because this version is zero indexed!
 		zInt[numRough / 2] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
 		rufInt[numRough / 2] = Erf.erf(cE * zInt[numRough / 2]);
-		System.out.println("numRough/2 = " + (numRough/2));
+		System.out.println("numRough/2 = " + (numRough / 2));
 		for (j = numRough / 2 - 1; j >= 0; j--) {
 			dist = dist - step;
 			zInt[j] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
@@ -354,6 +354,8 @@ public class ReflectivityCalculator {
 		oHalfstep = 0.5 * (zInt[1] - zInt[0]);
 		for (j = 0; j <= numRough / 2; j++) {
 			zTemp = zInt[j];
+			// The zInt values are symmetric, so this loop only computes the
+			// bottom half and sets the upper half without doing the calculation.
 			zInt[j] = oHalfstep + 0.5 * (zInt[j + 1] - zInt[j]);
 			zInt[numRough - j] = zInt[j];
 			oHalfstep = 0.5 * (zInt[j + 1] - zTemp);
