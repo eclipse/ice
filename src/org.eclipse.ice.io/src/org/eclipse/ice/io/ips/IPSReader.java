@@ -107,12 +107,15 @@ public class IPSReader implements IReader {
 		ArrayList<String> names = new ArrayList<String>();
 
 		// Read in each of the ports individually
-		for (int i = 0; i < numberPorts; i++) {
+		String name = "";
+		while (!name.equals("TIME_LOOP")) {
 			DataComponent ipsComponent = loadComponent(iniIterator);
-			ipsComponents.add(ipsComponent);
-			names.add(ipsComponent.getName());
+			name = ipsComponent.getName();
+			if (!name.equals("TIME_LOOP")) {
+				ipsComponents.add(ipsComponent);
+				names.add(ipsComponent.getName());
+			}
 		}
-
 		// Build a MasterDetailsComponent out of the DataComponents
 		MasterDetailsComponent portsMaster = buildMasterDetailsComponent(ipsComponents);
 
@@ -462,6 +465,10 @@ public class IPSReader implements IReader {
 		portComponent.setId(currID);
 		currID++;
 
+		if (portComponent.getName().equals("TIME_LOOP")) {
+			return portComponent;
+		}
+		
 		// Read parameters until reaching a whitespace line that separates ports
 		while (line.trim().length() > 0) {
 			// The format in this section is: KEY = VALUE # Comment
@@ -518,7 +525,7 @@ public class IPSReader implements IReader {
 				.setDescription("Setup for each of the ports in the simulation.");
 		String portName;
 		int masterId;
-
+		
 		// Set the allowed ports so that users don't try to go too far and end
 		// up with settings that don't exist
 		String[] allowedPortNames = { "INIT", "INIT_STATE", "AMPERES_THERMAL",
@@ -592,10 +599,6 @@ public class IPSReader implements IReader {
 					+ "Please check the INI file you have chosen and"
 					+ " try again.");
 			return null;
-		}
-
-		while (!line.contains("[TIME_LOOP]") && it.hasNext()) {
-			line = it.next();
 		}
 
 		// Pull the port name and start parsing through the parameters
