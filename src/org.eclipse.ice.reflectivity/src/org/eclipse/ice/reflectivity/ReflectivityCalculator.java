@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
+import org.apache.commons.math.MathException;
 import org.apache.commons.math.complex.Complex;
+import org.apache.commons.math.special.Erf;
 
 /**
  * This class performs all of the operations necessary to calculate the
@@ -29,6 +31,12 @@ public class ReflectivityCalculator {
 	 * The maximum number of points used by the convolution routine.
 	 */
 	public static final int maxPoints = 2000;
+
+	/**
+	 * The maximum number of layers of roughness that can be created when
+	 * generating the interfacial profile.
+	 */
+	public static final int maxRoughSize = 101;
 
 	/**
 	 * This operation returns the value of the squared modulus of the specular
@@ -145,7 +153,7 @@ public class ReflectivityCalculator {
 		boolean lFinish = false, hFinish = false;
 
 		// Perform convolution over nPnts between nLow and nHigh extensions
-		for (int i = numLowPoints; i < numLowPoints + numPoints; i++) {
+		for (int i = numLowPoints; i <= numLowPoints + numPoints - 1; i++) {
 			// Calculate resolution width and initialize resolution loop
 			if (waveVector[i] < 1.0e-10) {
 				qEff = 1.0e-10;
@@ -201,7 +209,7 @@ public class ReflectivityCalculator {
 			refTemp[i - numLowPoints] = refTemp[i - numLowPoints] / rNorm;
 		}
 		// Transfer convoluted values from refTemp to refFit
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < numPoints; i++) {
 			refFit[i] = refTemp[i];
 		}
 
@@ -284,5 +292,70 @@ public class ReflectivityCalculator {
 		}
 
 		return numHighPoints;
+	}
+
+	/**
+	 * This operation generates the interfacial profile using an error function
+	 * of numRough ordinate steps based on those of the hyperbolic tangent.
+	 * 
+	 * @param numRough
+	 *            the number of ordinate steps
+	 * @param zInt
+	 *            FIXME! This array must be preallocated with a size n =
+	 *            maxRoughSize.
+	 * @param rufInt
+	 *            FIXME! This array must be preallocated with a size n =
+	 *            maxRoughSize.
+	 * @throws MathException
+	 */
+	public void getInterfacialProfile(int numRough, double[] zInt,
+			double[] rufInt) throws MathException {
+
+		// cE ensures Gaussian = 0.5 when z = zhwhm
+		final double cE = 1.665;
+		double dist = 0.0, step = 0.0, oHalfstep = 0.0, zTemp = 0.0;
+		int j;
+
+		// Check nRough to make sure it is legitimate
+		if (numRough < 1) {
+			numRough = 1;
+		}
+		// Set the step size
+		step = 2.0 / ((double) (numRough + 1));
+
+		// Evaluate the lower half of the interface
+		dist = -step / 2.0;
+		// Steps calculated from inverse tanh
+		zInt[numRough / 2 + 1] = Math.log((1.0 + dist) / (1.0 - dist))
+				/ (2.0 * cE);
+		rufInt[numRough / 2 + 1] = Erf.erf(cE * zInt[numRough / 2 + 1]);
+		for (j = numRough / 2; j == 1; j--) {
+			dist = dist - step;
+			zInt[j] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
+			rufInt[j] = Erf.erf(cE * zInt[j]);
+		}
+
+		// Evaluate the upper half of the interface
+		dist = step / 2.0;
+		// Steps calculated from inverse tanh
+		zInt[numRough / 2 + 2] = Math.log((1.0 + dist) / (1.0 - dist))
+				/ (2.0 * cE);
+		rufInt[numRough / 2 + 2] = Erf.erf(cE * zInt[numRough / 2 + 2]);
+		for (j = numRough / 2 + 3; j < numRough+1; j++) {
+			dist = dist + step;
+			zInt[j] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
+			rufInt[j] = Erf.erf(cE * zInt[j]);
+		}
+		
+		// Calculate step widths
+		oHalfstep = 0.5*(zInt[2] - zInt[1]);
+		for (j = 1; j < numRough/2 + 1; j++) {
+			zTemp = zInt[j];
+	        zInt[j] = oHalfstep + 0.5 * (zInt[j + 1] - zInt[j]);
+	        zInt[numRough + 2 - j]= zInt[j];
+	        oHalfstep = 0.5 * (zInt[j + 1] - zTemp);
+		}
+
+		return;
 	}
 }

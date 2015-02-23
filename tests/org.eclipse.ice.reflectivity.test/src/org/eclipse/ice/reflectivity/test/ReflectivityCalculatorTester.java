@@ -30,6 +30,7 @@ import org.eclipse.ice.reflectivity.ReflectivityCalculator;
 import org.eclipse.ice.reflectivity.Tile;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.apache.commons.math.MathException;
 
 /**
  * This class tests {@link org.eclipse.ice.reflectivity.ReflectivityCalculator}.
@@ -54,6 +55,11 @@ public class ReflectivityCalculatorTester {
 	 * in the CSV tests.
 	 */
 	private static IProject project;
+
+	/**
+	 * A default tolerance for the tests.
+	 */
+	private double tol = 1.0e-3;
 
 	/**
 	 * This class loads the files for the test.
@@ -139,10 +145,10 @@ public class ReflectivityCalculatorTester {
 		// Call the function
 		int numLowPoints = 0, numHighPoints = 0;
 		ReflectivityCalculator calculator = new ReflectivityCalculator();
-		numLowPoints = calculator.getLowExtensionLength(waveVector, delQ0, delQ1oQ,
-				numPoints);
-		numHighPoints = calculator.getHighExtensionLength(waveVector, delQ0, delQ1oQ,
-				numPoints);
+		numLowPoints = calculator.getLowExtensionLength(waveVector, delQ0,
+				delQ1oQ, numPoints);
+		numHighPoints = calculator.getHighExtensionLength(waveVector, delQ0,
+				delQ1oQ, numPoints);
 
 		// Check the high and low extension lengths
 		assertEquals(refNumLowPoints, numLowPoints);
@@ -192,7 +198,9 @@ public class ReflectivityCalculatorTester {
 		Tile[] tiles = loadTiles(tileLines);
 		assertEquals(173, tiles.length);
 
-		// Compute the initial value of refFit
+		// Compute the initial value of refFit. This code was adapted from the
+		// original VB code and it is called, in that code, right before
+		// ManConFixedLambda.
 		double[] refFit = new double[lines.size() - 1];
 		double qEff = 0.0;
 		ReflectivityCalculator calculator = new ReflectivityCalculator();
@@ -205,12 +213,15 @@ public class ReflectivityCalculatorTester {
 			refFit[i] = calculator.getModSqrdSpecRef(qEff, wavelength, tiles);
 		}
 
-		// Do the convolution and check the result
+		// Do the convolution and check the result against the reference values.
 		calculator.convolute(waveVector, delQ0, delQ1oQ, wavelength, numPoints,
 				numLowPoints, numHighPoints, refFit);
 		for (int i = 0; i < refFit.length; i++) {
+			// Most of these results agree to roughly 1e-4, but some of them
+			// disagree by as much as 3.2%. They are clustered around 90 <= i <=
+			// 101.
 			assertEquals(refRefFit[i], refFit[i],
-					Math.abs(refRefFit[i]) / 1.0e-4);
+					Math.abs(refRefFit[i]) * 3.2e-2);
 		}
 
 		return;
@@ -249,7 +260,7 @@ public class ReflectivityCalculatorTester {
 		System.out.println("RERR = " + (specRefSqrd - expectedSpecRefSqrd)
 				/ expectedSpecRefSqrd);
 		assertEquals(expectedSpecRefSqrd, specRefSqrd,
-				Math.abs(expectedSpecRefSqrd) / 1.0e-4);
+				Math.abs(expectedSpecRefSqrd) * tol);
 
 		// Get the two single parameters and the final result out of the data
 		// for the second test case
@@ -268,7 +279,7 @@ public class ReflectivityCalculatorTester {
 		System.out.println("RERR = " + (specRefSqrd - expectedSpecRefSqrd)
 				/ expectedSpecRefSqrd);
 		assertEquals(expectedSpecRefSqrd, specRefSqrd,
-				Math.abs(expectedSpecRefSqrd / 1.0e-4));
+				Math.abs(expectedSpecRefSqrd) * tol);
 
 		return;
 	}
@@ -299,6 +310,55 @@ public class ReflectivityCalculatorTester {
 		}
 
 		return tiles;
+	}
+
+	/**
+	 * This class tests
+	 * {@link ReflectivityCalculator#getInterfacialProfile(int, double[], double[])}
+	 * .
+	 * 
+	 * @throws MathException
+	 *             This exception is thrown if the erf can't be computed during
+	 *             the calculation.
+	 */
+	@Test
+	public void testGetInterfacialProfile() throws MathException {
+		// Get the file holding the test values
+		Form form = reader.read(project.getFile("genErf.csv"));
+		ListComponent<String[]> lines = (ListComponent<String[]>) form
+				.getComponent(1);
+		assertEquals(101, lines.size());
+
+		// Create the reference data. Start by getting the number of roughness
+		// steps to make and then get the zInt and rufInt arrays.
+		int numRough = Integer.valueOf(lines.get(0)[2]);
+		double[] refZInt = new double[ReflectivityCalculator.maxRoughSize];
+		double[] refRufInt = new double[ReflectivityCalculator.maxRoughSize];
+
+		// Load the reference arrays
+		for (int i = 0; i < ReflectivityCalculator.maxRoughSize; i++) {
+			String[] line = lines.get(i);
+			refZInt[i] = Double.valueOf(line[0]);
+			refRufInt[i] = Double.valueOf(line[1]);
+		}
+
+		// Create the test arrays
+		double[] zInt = new double[ReflectivityCalculator.maxRoughSize];
+		double[] rufInt = new double[ReflectivityCalculator.maxRoughSize];
+
+		// Create the calculator and get the interfacial profile
+		ReflectivityCalculator calc = new ReflectivityCalculator();
+		calc.getInterfacialProfile(numRough, zInt, rufInt);
+
+		// Check the results
+		for (int i = 0; i < ReflectivityCalculator.maxRoughSize; i++) {
+			System.out.println("GenErf: " + refZInt[i] + " " + zInt[i] + " "
+					+ Math.abs(refZInt[i]) * tol);
+			assertEquals(refZInt[i], zInt[i], Math.abs(refZInt[i]) * tol);
+			assertEquals(refRufInt[i], rufInt[i], Math.abs(refRufInt[i]) * tol);
+		}
+
+		return;
 	}
 
 }
