@@ -953,7 +953,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 				// Add the page to the list
 				sectionPages.add(tmpPage);
 			}
-			System.out.println(i + numCompsPerPage);
+
 			// Clean up the left over components by just adding them to
 			// their own page.
 			if (i != comps.size()) {
