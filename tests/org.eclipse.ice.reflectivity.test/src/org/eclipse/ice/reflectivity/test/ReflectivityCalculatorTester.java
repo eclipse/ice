@@ -351,8 +351,9 @@ public class ReflectivityCalculatorTester {
 		calc.getInterfacialProfile(numRough, zInt, rufInt);
 
 		// Check the results
+		System.out.println("numRough = " + numRough);
 		for (int i = 0; i < ReflectivityCalculator.maxRoughSize; i++) {
-			System.out.println("GenErf: " + refZInt[i] + " " + zInt[i] + " "
+			System.out.println("GenErf: " + i + " " + refZInt[i] + " " + zInt[i] + " "
 					+ Math.abs(refZInt[i]) * tol);
 			assertEquals(refZInt[i], zInt[i], Math.abs(refZInt[i]) * tol);
 			assertEquals(refRufInt[i], rufInt[i], Math.abs(refRufInt[i]) * tol);

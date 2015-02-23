@@ -325,35 +325,39 @@ public class ReflectivityCalculator {
 
 		// Evaluate the lower half of the interface
 		dist = -step / 2.0;
-		// Steps calculated from inverse tanh
-		zInt[numRough / 2 + 1] = Math.log((1.0 + dist) / (1.0 - dist))
-				/ (2.0 * cE);
-		rufInt[numRough / 2 + 1] = Erf.erf(cE * zInt[numRough / 2 + 1]);
-		for (j = numRough / 2; j == 1; j--) {
+		// Steps calculated from inverse tanh. Note that all of the indices are
+		// shifted by -1 from the VB code because this version is zero indexed!
+		zInt[numRough / 2] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
+		rufInt[numRough / 2] = Erf.erf(cE * zInt[numRough / 2]);
+		System.out.println("numRough/2 = " + (numRough/2));
+		for (j = numRough / 2 - 1; j >= 0; j--) {
 			dist = dist - step;
 			zInt[j] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
+			System.out.println("Line = " + j + " " + zInt[j]);
 			rufInt[j] = Erf.erf(cE * zInt[j]);
 		}
 
 		// Evaluate the upper half of the interface
 		dist = step / 2.0;
-		// Steps calculated from inverse tanh
-		zInt[numRough / 2 + 2] = Math.log((1.0 + dist) / (1.0 - dist))
+		// Steps calculated from inverse tanh. Note that all of the indices are
+		// shifted by -1 from the VB code because this version is zero indexed!
+		zInt[numRough / 2 + 1] = Math.log((1.0 + dist) / (1.0 - dist))
 				/ (2.0 * cE);
-		rufInt[numRough / 2 + 2] = Erf.erf(cE * zInt[numRough / 2 + 2]);
-		for (j = numRough / 2 + 3; j < numRough+1; j++) {
+		rufInt[numRough / 2 + 1] = Erf.erf(cE * zInt[numRough / 2 + 1]);
+		for (j = numRough / 2 + 2; j <= numRough; j++) {
 			dist = dist + step;
 			zInt[j] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
 			rufInt[j] = Erf.erf(cE * zInt[j]);
 		}
-		
+
 		// Calculate step widths
-		oHalfstep = 0.5*(zInt[2] - zInt[1]);
-		for (j = 1; j < numRough/2 + 1; j++) {
+		oHalfstep = 0.5 * (zInt[1] - zInt[0]);
+		for (j = 0; j <= numRough / 2; j++) {
 			zTemp = zInt[j];
-	        zInt[j] = oHalfstep + 0.5 * (zInt[j + 1] - zInt[j]);
-	        zInt[numRough + 2 - j]= zInt[j];
-	        oHalfstep = 0.5 * (zInt[j + 1] - zTemp);
+			zInt[j] = oHalfstep + 0.5 * (zInt[j + 1] - zInt[j]);
+			zInt[numRough - j] = zInt[j];
+			oHalfstep = 0.5 * (zInt[j + 1] - zTemp);
+			System.out.println(j + " " + zInt[j] + " " + zTemp);
 		}
 
 		return;
