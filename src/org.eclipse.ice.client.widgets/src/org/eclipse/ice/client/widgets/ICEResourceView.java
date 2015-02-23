@@ -30,6 +30,8 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -112,8 +114,7 @@ public class ICEResourceView extends PlayableViewPart implements
 	/**
 	 * Mapping of children in the resource tree to their parent resource.
 	 */
-	// TODO Make this private and expose a method to get values from it.
-	protected final Map<String, ICEResource> resourceChildMap;
+	private final Map<String, ICEResource> resourceChildMap;
 
 	/**
 	 * The previous button in the tool bar.
@@ -705,6 +706,35 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	// ----------------------------------- //
+
+	/**
+	 * Attempts to determine the {@link ICEResource} from the selection. The
+	 * selection is assumed to be from this view, and so its selection structure
+	 * applies.
+	 * 
+	 * @param selection
+	 *            The selection to convert.
+	 * @return The Resource from the selection, or null if the selection was
+	 *         invalid.
+	 */
+	public ICEResource getResourceFromSelection(ISelection selection) {
+		ICEResource selectedResource = null;
+		if (selection != null && !selection.isEmpty()
+				&& selection instanceof IStructuredSelection) {
+			Object element = ((IStructuredSelection) selection)
+					.getFirstElement();
+			// Strings must be looked up in the Resource View's map.
+			if (element instanceof String) {
+				selectedResource = resourceChildMap.get(element);
+			}
+			// PropertySources should wrap ICEResources.
+			else if (element instanceof PropertySource) {
+				PropertySource source = (PropertySource) element;
+				selectedResource = (ICEResource) source.getWrappedData();
+			}
+		}
+		return selectedResource;
+	}
 
 	/**
 	 * Create and add the play, previous, and next buttons to the tool bar for

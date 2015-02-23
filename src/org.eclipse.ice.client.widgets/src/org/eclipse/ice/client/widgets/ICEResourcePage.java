@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.ice.client.common.PropertySource;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
@@ -28,7 +27,6 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
@@ -210,7 +208,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// current Resource to it.
 			ISelection selection;
 			selection = getSite().getPage().getSelection(ICEResourceView.ID);
-			currentResource = getResourceFromSelection(selection);
+			currentResource = resourceView.getResourceFromSelection(selection);
 
 			// Display the default-selected Resource from the Resource View in
 			// the browser, or a message that no resource is available.
@@ -229,35 +227,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	}
 
 	/**
-	 * Attempts to determine the {@link ICEResource} from the selection. The
-	 * selection is assumed to be from the {@link #resourceView}, and so its
-	 * selection structure applies.
-	 * 
-	 * @param selection
-	 *            The selection to convert.
-	 * @return The Resource from the selection, or null if the selection was
-	 *         invalid.
-	 */
-	private ICEResource getResourceFromSelection(ISelection selection) {
-		ICEResource selectedResource = null;
-		if (selection != null && !selection.isEmpty()
-				&& selection instanceof IStructuredSelection) {
-			Object element = ((IStructuredSelection) selection)
-					.getFirstElement();
-			// Strings must be looked up in the Resource View's map.
-			if (element instanceof String) {
-				selectedResource = resourceView.resourceChildMap.get(element);
-			}
-			// PropertySources should wrap ICEResources.
-			else if (element instanceof PropertySource) {
-				PropertySource source = (PropertySource) element;
-				selectedResource = (ICEResource) source.getWrappedData();
-			}
-		}
-		return selectedResource;
-	}
-
-	/**
 	 * This operation overrides the default/abstract implementation of
 	 * ISelectionListener.selectionChanged to display the resource selected in
 	 * the ICEResourceView.
@@ -272,7 +241,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		// If the selection comes from the Resource View, update the view.
 		if (ICEResourceView.ID.equals(part.getSite().getId())) {
-			ICEResource selectedResource = getResourceFromSelection(selection);
+			ICEResource selectedResource = resourceView
+					.getResourceFromSelection(selection);
 
 			// Refresh the page's widgets based on the selected resource.
 			if (selectedResource != null) {
@@ -478,6 +448,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * ICEResourcePage. It also registers the ICEResourcePage with the
 	 * ResourceComponent so that it can be notified of state changes through the
 	 * IUpdateableListener interface.
+	 * <p>
+	 * <b>Note:</b> This method should only be called when the page is created.
+	 * </p>
 	 * 
 	 * @param component
 	 *            The ResourceComponent
@@ -545,7 +518,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 					ISelection selection;
 					selection = getSite().getPage().getSelection(
 							ICEResourceView.ID);
-					final ICEResource currentResource = getResourceFromSelection(selection);
+					final ICEResource currentResource = resourceView
+							.getResourceFromSelection(selection);
 					if (currentResource != null) {
 						display.asyncExec(new Runnable() {
 							@Override
