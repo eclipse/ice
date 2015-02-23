@@ -47,15 +47,11 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -244,7 +240,7 @@ public class ICEResourceView extends PlayableViewPart implements
 			// Unregister from the old ResourceComponent.
 			resourceComponent.unregister(this);
 
-			// Clear the related UI pieces. TODO Put this on the UI thread?
+			// Clear the related UI pieces.
 			if (resourceTreeViewer != null) {
 				textList.clear();
 				imageList.clear();
@@ -385,12 +381,8 @@ public class ICEResourceView extends PlayableViewPart implements
 
 			@Override
 			public Object[] getElements(Object inputElement) {
-
 				// Cast the input and return it as an array
-				ArrayList<PropertySource> contents;
-				contents = (ArrayList<PropertySource>) inputElement;
-
-				return contents.toArray();
+				return ((List<?>) inputElement).toArray();
 			}
 
 			@Override
@@ -559,8 +551,10 @@ public class ICEResourceView extends PlayableViewPart implements
 			playable = false;
 
 			// Select the first available text resource.
-			resourceTreeViewer.setSelection(
-					new StructuredSelection(textList.get(0)), true);
+			if (!textList.isEmpty()) {
+				resourceTreeViewer.setSelection(new StructuredSelection(
+						textList.get(0)), true);
+			}
 		}
 
 		return;
