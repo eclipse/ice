@@ -252,8 +252,6 @@ public class CaebatLauncher extends JobLauncher {
 			backupKVFile = "mv input/input_keyvalue input/input_keyvalue.bak && ";
 			mvKVPairFile = "mv " + kvFileName + " input/input_keyvalue && ";
 		}
-		
-
 
 		// Pull some information from the form
 		TableComponent hostTable = (TableComponent) form.getComponent(4);
