@@ -343,7 +343,7 @@ public class ICEResourceView extends PlayableViewPart implements
 		// See if there is currently an active ICEFormEditor. If so, update the
 		// currently active editor and related UI pieces.
 		IWorkbenchPartReference partRef = partService.getActivePartReference();
-		if (ICEFormEditor.ID.equals(partRef.getId())) {
+		if (partRef != null && ICEFormEditor.ID.equals(partRef.getId())) {
 			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
 			if (activeEditor != editor) {
 				setActiveEditor(activeEditor);
