@@ -1,5 +1,5 @@
 /*******************************************************************************
-
+ * Copyright (c) 2013, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,6 @@ import javax.naming.OperationNotSupportedException;
 import org.yaml.snakeyaml.Yaml;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class reads and writes MOOSE Blocks and Parameters to and from the
  * different MOOSE file types, including parsing from YAML and writing to
@@ -71,12 +70,8 @@ import org.yaml.snakeyaml.Yaml;
  * input itself. The nodes of this tree are what could be configured, not what
  * is, so they must be setup as child exemplars on a TreeComposite.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
- * 
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey, Anna Wojtowicz         
  */
 public class MOOSEFileHandler implements IReader, IWriter {
 
@@ -93,31 +88,20 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation writes a set of MOOSE blocks to the specified file path.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param filePath
-	 *            <p>
 	 *            The file path to which the MOOSE blocks should be dumped. If
 	 *            the path is null or empty, the operation returns without doing
 	 *            any work.
-	 *            </p>
 	 * @param blockSet
-	 *            <p>
 	 *            The collection of TreeComposites that represent MOOSE blocks
 	 *            to be dumped to the file. The TreeComposites should only
 	 *            contain a single DataComponent, id = 1, and other
 	 *            TreeComposites. Any other components in the TreeComposite will
-	 *            be ignored.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 *            be ignored.        
 	 */
 	public void dumpInputFile(String filePath, ArrayList<TreeComposite> blockSet) {
-		// begin-user-code
 
 		// Local Declarations
 		File inputFile = null;
@@ -177,7 +161,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -317,33 +300,23 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operations loads a MOOSE YAML file at the specified path and returns
 	 * a fully-configured set of ICE TreeComposites.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param filePath
-	 *            <p>
 	 *            The file path from which the MOOSE blocks written in YAML
 	 *            should be read. If the path is null or empty, the operation
 	 *            returns without doing any work.
-	 *            </p>
-	 * @return <p>
+	 * @return
 	 *         The MOOSE input file specification as read from the YAML input
 	 *         and stored in TreeComposites. Each TreeComposite contains both
 	 *         parameters and exemplar children. Any parameters in a
 	 *         TreeComposite are contained in a DataComponent. The id of the
 	 *         data component is 1.
-	 *         </p>
-	 * @throws IOException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @throws IOException       
 	 */
 	public ArrayList<TreeComposite> loadYAML(String filePath)
 			throws IOException {
-		// begin-user-code
 
 		// Local Declarations
 		InputStream input = null;
@@ -596,8 +569,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		for (String nodeName : topLevelNodes) {
 			newTrees.add(treeMap.get(nodeName));
 		}
+		
 		return newTrees;
-		// end-user-code
+		
 	}
 
 	/**
@@ -710,9 +684,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see
 	 * org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.resources
 	 * .IFile, java.lang.String, java.lang.String)
@@ -726,6 +698,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return;
 	}
 
 	/**
@@ -942,5 +916,4 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		return;
 	}
-
 }
