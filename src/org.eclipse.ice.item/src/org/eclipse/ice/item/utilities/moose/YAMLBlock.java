@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,37 +18,22 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class represents a MOOSE block as loaded from YAML. Its sole purpose is
  * to overload toTreeComposite() and write the subblocks as exemplar children
  * instead of real children in the TreeComposite.
- * </p>
- * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class YAMLBlock extends Block {
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation overrides Block.toTreeComposite() to create a
 	 * TreeComposite from the Block with the sub-blocks configured as exemplar
 	 * children. Everything else is the same.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The tree composite.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The tree composite.
 	 */
 	@Override
 	public TreeComposite toTreeComposite() {
-		// begin-user-code
 
 		// Local Declarations
 		TreeComposite treeComp = new TreeComposite();
@@ -85,28 +70,17 @@ public class YAMLBlock extends Block {
 		}
 
 		return treeComp;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation overrides Block.getNewBlock() to create an instance of
 	 * YAMLBlocks that can be used when the tree is being walked instead of
 	 * instances of the Block base class.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The new YAMLBlock.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The new YAMLBlock.
 	 */
 	@Override
 	protected Block getNewBlock() {
-		// begin-user-code
 		return new YAMLBlock();
-		// end-user-code
 	}
 }

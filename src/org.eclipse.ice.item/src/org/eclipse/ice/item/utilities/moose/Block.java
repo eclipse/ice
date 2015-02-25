@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,107 +22,51 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class represents a MOOSE input block. This class is parsed from and
  * written to YAML using SnakeYAML's Java Bean parser. It can also be converted
  * to a GetPot compatible string and loaded from a map and a TreeComposite.
- * </p>
- * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Anna Wojtowicz         
  */
 public class Block {
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The name of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String name = "";
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The type of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * The type of the block.    
 	 */
 	protected String type = "";
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * A description of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * A description of the block. 
 	 */
 	protected String description = "";
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The parameters of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * The parameters of the block.   
 	 */
 	protected ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The subblocks that belong to this block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * The subblocks that belong to this block.  
 	 */
 	protected ArrayList<Block> subblocks = new ArrayList<Block>();
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The GetPot prefix for the name of the current, actual section.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static final String actualSectionPrefix = "./";
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The GetPot prefix for the name of parent section.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static final String parentSectionPrefix = "../";
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * True if the Block should be considered active, false if not.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected boolean active = false;
 
@@ -132,224 +76,110 @@ public class Block {
 	protected String indent = "";
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the name of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The name
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The name
 	 */
 	public String getName() {
-		// begin-user-code
 		return name;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the type of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The type
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The type         
 	 */
 	public String getType() {
-		// begin-user-code
 		return type;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the description of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The description
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The description         
 	 */
 	public String getDescription() {
-		// begin-user-code
 		return description;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the parameters of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The parameters.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The parameters.         
 	 */
 	public ArrayList<Parameter> getParameters() {
-		// begin-user-code
 		return parameters;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the subblocks of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The blocks
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The blocks         
 	 */
 	public ArrayList<Block> getSubblocks() {
-		// begin-user-code
 		return subblocks;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the parameters of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param params
-	 *            <p>
-	 *            The parameters
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param params 	The parameters         
 	 */
 	public void setParameters(ArrayList<Parameter> params) {
-		// begin-user-code
 		parameters = params;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the name of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param blockName
-	 *            <p>
-	 *            The name
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param blockName 	The name           
 	 */
 	public void setName(String blockName) {
-		// begin-user-code
 		name = blockName;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the description of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param desc
-	 *            <p>
-	 *            The description
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param desc 	The description
 	 */
 	public void setDescription(String desc) {
-		// begin-user-code
 		description = desc;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the type of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param blockType
-	 *            <p>
-	 *            The type
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param blockType 	The type
 	 */
 	public void setType(String blockType) {
-		// begin-user-code
 		type = blockType;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the subblocks of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param blocks
-	 *            <p>
-	 *            The blocks
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param blocks 	The blocks           
 	 */
 	public void setSubblocks(ArrayList<Block> blocks) {
-		// begin-user-code
 		subblocks = blocks;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operations returns an ICE TreeComposite for the Block. Any
 	 * parameters in the block are contained in a DataComponent as Entries
-	 * created by calling Parameter.toEntry() on each Parameter. The id of the
-	 * data component is 1. Subblocks are configured as children of the tree
+	 * created by calling Parameter.toEntry() on each Parameter. The ID of the
+	 * DataComponent is 1. Subblocks are configured as children of the tree
 	 * composite.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The tree composite.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The tree composite.          
 	 */
 	public TreeComposite toTreeComposite() {
-		// begin-user-code
 		
 		// Local Declarations
 		TreeComposite treeComp = new TreeComposite();
@@ -384,26 +214,15 @@ public class Block {
 		}
 
 		return treeComp;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation loads the block from an untyped Map. It should only be
 	 * used with a Map created by SnakeYAML.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param map
-	 *            <p>
-	 *            The map.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param map 	The map.
 	 */
 	public void loadFromMap(Map map) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Parameter> parameters = new ArrayList<Parameter>();
@@ -490,12 +309,10 @@ public class Block {
 			setSubblocks(subblocks);
 		}
 
-		// end-user-code
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation converts the Block to a standard GetPot-compatible format
 	 * and returns it as a string. If the name of the Block starts with "/", the
 	 * prefix will be changed so that the name will not start with ".//" or
@@ -504,8 +321,6 @@ public class Block {
 	 * to output. Additionally, parameters that may not be required, but are
 	 * enabled, are also written out. All other parameters are written, but
 	 * commented out.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param prefix
 	 *            <p>
@@ -522,14 +337,9 @@ public class Block {
 	 *            (Block.parentSectionPrefix). These are "./" and "../" for
 	 *            MOOSE, respectively and without the quotation marks.
 	 *            </p>
-	 * @return <p>
-	 *         The GetPot representation of this Block.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The GetPot representation of this Block.         
 	 */
 	public String toGetPot(String prefix) {
-		// begin-user-code
 
 		// Local Declarations
 		String realPrefix = (prefix != null) ? prefix : "";
@@ -634,7 +444,6 @@ public class Block {
 		indent = "";
 
 		return potString;
-		// end-user-code
 	}
 
 	/**
@@ -672,7 +481,6 @@ public class Block {
 	}
 	
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation converts the Block to a standard GetPot-compatible format
 	 * and returns it as a string. If the name of the Block starts with "/", the
@@ -685,7 +493,6 @@ public class Block {
 	 * This version is primarily used by the Block itself when dumping its
 	 * children.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param prefix
 	 *            <p>
@@ -704,19 +511,13 @@ public class Block {
 	 *            </p>
 	 * @param depthIndent
 	 *            The indentation of the block
-	 * @return <p>
-	 *         The GetPot representation of this Block.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return    The GetPot representation of this Block.         
 	 */
 	public String toGetPot(String prefix, String depthIndent) {
-		// begin-user-code
 
 		indent += depthIndent;
-
 		return toGetPot(prefix);
-		// end-user-code
+		
 	}
 
 	/**
@@ -786,6 +587,7 @@ public class Block {
 				: name.substring(1, name.length() - 1);
 
 		// What is this?! ~JJB 20140701 12:16
+		// I don't know, ask Alex! ~AW 20150224 17:52
 		boolean debug = false;
 		if ("Variables".equals(name)) {
 			debug = false;
@@ -980,7 +782,6 @@ public class Block {
 	 *            format.
 	 */
 	public void fromGetPot(String getPotString) {
-		// TODO Auto-generated method stub
 
 		// Create the array list from the string by splitting and converting to
 		// a List.
@@ -1003,7 +804,6 @@ public class Block {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates a fully-initialized Block from a TreeComposite. It
 	 * expects the same format as that produced from toTreeComposite() and will
@@ -1014,17 +814,10 @@ public class Block {
 	 * to a MOOSE input file because it depends on the creation of Parameters
 	 * from Entries and there is no 1-1 mapping between those entities.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param comp
-	 *            <p>
-	 *            The TreeComposite that should be loaded.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param comp	The TreeComposite that should be loaded.       
 	 */
 	public void fromTreeComposite(TreeComposite comp) {
-		// begin-user-code
 
 		// Only load up if it is possible
 		if (comp != null) {
@@ -1071,70 +864,37 @@ public class Block {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation creates a new instance of Block. It can be overridden by
 	 * subclasses to create the proper instance of Block subclasses (e.g. -
 	 * YAMLBlock) during the recursive walking operations on Block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The new Block, possibly of a subclass.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return 	The new Block, possibly of a subclass.          
 	 */
 	protected Block getNewBlock() {
-		// begin-user-code
 		return new Block();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation indicates if the block is Active. True if Active, false if
 	 * not.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         True if Active, false if not
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return 	True if Active, false if not        
 	 */
 	public boolean isActive() {
-		// begin-user-code
 		return active;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets specifies whether or not the block is Active. True
 	 * for Active, false if not.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param flag
-	 *            <p>
-	 *            True if Active, false if not
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param flag	True if Active, false if not          
 	 */
 	public void setActive(boolean flag) {
-		// begin-user-code
 		active = flag;
 		return;
-		// end-user-code
 	}
-
 }
