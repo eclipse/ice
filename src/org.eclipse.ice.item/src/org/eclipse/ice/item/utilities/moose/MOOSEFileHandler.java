@@ -194,7 +194,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			System.out.println("MOOSEFileHandler Message: "
 					+ "Attempting to loading GetPot file " + filePath);
 		}
-
+		
 		// Load the GetPot file
 		try {
 			RandomAccessFile mooseFile = new RandomAccessFile(filePath, "r");

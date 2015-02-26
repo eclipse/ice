@@ -46,6 +46,11 @@ public class Block {
 	protected String description = "";
 	
 	/**
+	 * A comment on the block.
+	 */
+	protected String comment = "";
+	
+	/**
 	 * The parameters of the block.   
 	 */
 	protected ArrayList<Parameter> parameters = new ArrayList<Parameter>();
@@ -264,6 +269,10 @@ public class Block {
 					param.setDescription((String) singleParamMap
 							.get("description"));
 				}
+				// comment
+				if (singleParamMap.get("comment") != null) {
+					param.setComment((String) singleParamMap.get("comment"));
+				}
 				// cpp_type
 				if (singleParamMap.get("cpp_type") != null) {
 					param.setCpp_type((String) singleParamMap.get("cpp_type"));
@@ -361,10 +370,10 @@ public class Block {
 			potString = indent + "[" + openingSection + "]";
 			
 			// Check if this section block has a comment, if it does, append it
-			hasComment = !description.isEmpty();
+			hasComment = !comment.isEmpty();
 			if (hasComment) {
 				// Remove newline characters from comment
-				commentString = description.replaceAll("[\n\r]", "");
+				commentString = comment.replaceAll("[\n\r]", "");
 				// Append the line
 				whiteSpaceString = makeWhiteSpaceString(potString);
 				potString += String.format("%s# %s\n", whiteSpaceString, commentString);
@@ -378,14 +387,14 @@ public class Block {
 					
 					// Get the parameter, determine if it has a comment
 					Parameter param = parameters.get(i);
-					hasComment = !param.getDescription().isEmpty();
+					hasComment = !param.getComment().isEmpty();
 					
 					// Always write out required parameters
 					if (param.isRequired()) {
 						
 						if (hasComment) {
 							// Remove newline characters from comment
-							commentString = param.getDescription().
+							commentString = param.getComment().
 									replaceAll("[\n\r]", "");
 							// Append the line
 							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
@@ -400,7 +409,7 @@ public class Block {
 					else if (param.isEnabled()) {
 						if (hasComment) {
 							// Remove newline characters from comment
-							commentString = param.getDescription().
+							commentString = param.getComment().
 									replaceAll("[\n\r]", "");
 							// Append the line
 							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
@@ -413,7 +422,7 @@ public class Block {
 					else {
 						if (hasComment) {
 							// Remove newline characters from comment
-							commentString = param.getDescription().
+							commentString = param.getComment().
 									replaceAll("[\n\r]", "");
 							// Append the line
 							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
@@ -550,7 +559,7 @@ public class Block {
 			// in-line comment
 			int firstHash = name.indexOf("#");
 			int lastHash = name.lastIndexOf("#");
-			String comment = "";
+			String blockComment = "";
 			
 			// If the whole line is commented out w/o an in-line comment
 			if (firstHash == 0 && firstHash == lastHash) {
@@ -561,25 +570,24 @@ public class Block {
 			// If there's only an in-line comment
 			else if (firstHash > 0 && firstHash == lastHash) {
 				// Split the name and comment up
-				comment = name.substring(firstHash + 1).trim();
+				blockComment = name.substring(firstHash + 1).trim();
 		
 				// Set the name and comment separately
-				description = comment;
+				comment = blockComment;
 				name = name.substring(0, firstHash).trim();
 			}
 			// If the whole line is commented out with an in-line comment too
 			else {
 				// Split the name and comment up
-				comment = name.substring(lastHash + 1).trim();
+				blockComment = name.substring(lastHash + 1).trim();
 		
 				// Set the name and comment separately, set as inactive
-				description = comment;
+				comment = blockComment;
 				name = name.substring(firstHash + 1, lastHash).trim();
 				active = false;
 			}
 			
 		}
-		
 		
 		// The name has to be checked to determine whether or not it is a
 		// subblock and the opening characters should be skipped.
@@ -702,7 +710,7 @@ public class Block {
 				Parameter tmpParam = new Parameter();
 				tmpParam.setName(parameterName);
 				tmpParam.setDefault(parameterValue);
-				tmpParam.setDescription(parameterComment);
+				tmpParam.setComment(parameterComment);
 				// Mark the parameter as required since it will be reused
 //				tmpParam.setRequired(true);
 				tmpParam.setEnabled(parameterEnabled);
@@ -766,16 +774,20 @@ public class Block {
 	}
 
 	/**
+	 * <p>
 	 * This operation loads the Block based on the content of a
 	 * GetPot-compatible String.
-	 * 
+	 * </p>
+	 * <p>
 	 * GetPot data has much less information than YAML. The only things that
 	 * will be loaded are the name of the block, its parameters and its
 	 * subblocks.
-	 * 
+	 * </p>
+	 * <p>
 	 * This operation expects that it will be given a single, complete block
 	 * that starts with the name and ends with the closing characters. It will
 	 * not handle multiple blocks.
+	 * </p>
 	 * 
 	 * @param getPotString
 	 *            The string that contains the Block information in GetPot
