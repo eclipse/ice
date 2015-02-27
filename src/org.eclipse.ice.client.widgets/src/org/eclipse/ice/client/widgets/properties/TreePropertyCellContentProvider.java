@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ public class TreePropertyCellContentProvider implements ICellContentProvider {
 	@Override
 	public String getText(Object element) {
 
-		Object value = getValue(element);
+		Object value = this.getValue(element);
 		String text = INVALID_ELEMENT_TEXT;
 
 		if (value != null) {
@@ -102,7 +102,7 @@ public class TreePropertyCellContentProvider implements ICellContentProvider {
 	 */
 	@Override
 	public String getToolTipText(Object element) {
-		return getText(element);
+		return getDescription(element);
 	}
 
 	/**
@@ -143,5 +143,18 @@ public class TreePropertyCellContentProvider implements ICellContentProvider {
 
 		return changed;
 	}
+	
+	/**
+	 * By default, returns the underlying {@link Entry}'s description as a
+	 * string, trimmed.
+	 */
+	public String getDescription(Object element) {
+		String desc = null;
 
+		if (isValid(element)) {
+			desc = ((TreeProperty) element).getEntry().getDescription().trim();
+		}
+
+		return desc;
+	}
 }

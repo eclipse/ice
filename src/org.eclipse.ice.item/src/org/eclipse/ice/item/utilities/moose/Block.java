@@ -99,6 +99,15 @@ public class Block {
 	}
 
 	/**
+	 * This operation retrieves the block's comment.
+	 * 
+	 * @return The block's comment.
+	 */
+	public String getComment() {
+		return comment;
+	}
+	
+	/**
 	 * This operation retrieves the description of the block.
 	 * 
 	 * @return The description         
@@ -152,6 +161,16 @@ public class Block {
 	 */
 	public void setDescription(String desc) {
 		description = desc;
+		return;
+	}
+	
+	/**
+	 * This operation sets the block's comment.
+	 * 
+	 * @param comm	The comment to set.
+	 */
+	public void setComment(String comm) {
+		comment = comm;
 		return;
 	}
 
@@ -711,8 +730,7 @@ public class Block {
 				tmpParam.setName(parameterName);
 				tmpParam.setDefault(parameterValue);
 				tmpParam.setComment(parameterComment);
-				// Mark the parameter as required since it will be reused
-//				tmpParam.setRequired(true);
+				// tmpParam.setRequired(true);
 				tmpParam.setEnabled(parameterEnabled);
 
 				if (debug) {

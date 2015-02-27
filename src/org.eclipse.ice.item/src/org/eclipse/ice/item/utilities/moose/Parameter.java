@@ -293,7 +293,6 @@ public class Parameter {
 					String value = Parameter.this.getDefault();
 					defaultValue = (allowedValues.contains(value) ?  
 											value : allowedValues.get(0));
-					description = Parameter.this.getDescription();
 				}
 				// If the value type is boolean
 				else if (("bool").equals(Parameter.this.cpp_type)) {
@@ -305,13 +304,11 @@ public class Parameter {
 					// Set the default value and description
 					defaultValue = (Parameter.this.getDefault().equals(0)) ? 
 							"false" : "true";
-					description = Parameter.this.getDescription();
 				} 
 				// Otherwise, for all other parameters
 				else {
 					allowedValueType = AllowedValueType.Undefined;
 					defaultValue = Parameter.this.getDefault();
-					description = Parameter.this.getDescription();
 				}
 			}
 		};
@@ -365,10 +362,13 @@ public class Parameter {
 	}
 
 	/**
+	 * <p>
 	 * This operation reads the parameter from a string of the form name =
 	 * defaultValue and loads the name and default value.
-	 * 
+	 * </p>
+	 * <p>
 	 * If the string is invalid then the parameter will remain unchanged.
+	 * </p>
 	 * 
 	 * @param paramString
 	 *            The parameter as a string.
