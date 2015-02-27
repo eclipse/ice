@@ -70,7 +70,7 @@ public class IPSReader implements IReader {
 
 	/**
 	 * <p>
-	 * Reads in the given IFile to the CaebatModel datastructures. There are
+	 * Reads in the given IFile to the VibeModel datastructures. There are
 	 * four components in each IPS INI file that are parsed and arranged into
 	 * the form that will be displayed to the user. Returns a form composed of
 	 * the data read in from the specified location which can be modified and

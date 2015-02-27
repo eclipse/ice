@@ -37,12 +37,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.caebat.launcher.CaebatLauncherBuilder;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.nuclear.MOOSEModelBuilder;
 import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
+import org.eclipse.ice.vibe.launcher.VibeLauncherBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -141,7 +141,7 @@ public class XMLPersistenceProviderTester {
 		// it so that it can determine class information for unmarshalling
 		// Items.
 		xmlpp.addBuilder(new MOOSEModelBuilder());
-		xmlpp.addBuilder(new CaebatLauncherBuilder());
+		xmlpp.addBuilder(new VibeLauncherBuilder());
 
 		// Add a Class Provider so that we can persist the forms. 
 		xmlpp.registerClassProvider(new ICEJAXBClassProvider());
@@ -292,7 +292,7 @@ public class XMLPersistenceProviderTester {
 
 		// Create a MOOSE item
 		MOOSEModelBuilder builder = new MOOSEModelBuilder();
-		CaebatLauncherBuilder caebatBuilder = new CaebatLauncherBuilder();
+		VibeLauncherBuilder vibeBuilder = new VibeLauncherBuilder();
 		Item item = builder.build(project);
 		String name;
 		int passedCount = 0;
@@ -349,16 +349,16 @@ public class XMLPersistenceProviderTester {
 
 		// Add a CAEBAT KVPair item, which has a hyphenated name, to make sure
 		// the the provider can handle it.
-		Item caebatItem = caebatBuilder.build(project);
-		caebatItem.setId(5);
-		assertTrue(xmlpp.persistItem(caebatItem));
+		Item vibeItem = vibeBuilder.build(project);
+		vibeItem.setId(5);
+		assertTrue(xmlpp.persistItem(vibeItem));
 		pause(2);
 		items = xmlpp.loadItems();
 		// Check the list
 		passedCount = 0;
 		for (Item listItem : items) {
 			// Look for the correct name and item ids
-			if (listItem.getName().equals("Caebat Launcher")
+			if (listItem.getName().equals("VIBE Launcher")
 					&& listItem.getId() == 5) {
 				passedCount++;
 			}
