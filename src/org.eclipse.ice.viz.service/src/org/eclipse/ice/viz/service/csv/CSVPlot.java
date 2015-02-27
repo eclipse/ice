@@ -57,14 +57,7 @@ public class CSVPlot implements IPlot {
 	/**
 	 * The CSVDataProvider used to store the CSV data
 	 */
-	private CSVDataProvider provider;
-
-	/**
-	 * A flag to indicate if the CSVPlot loaded data in and terminated the
-	 * load() thread.
-	 */
-	private boolean dataLoaded;
-	
+	private CSVDataProvider provider;	
 	
 	/**
 	 * The Constructor
@@ -80,7 +73,6 @@ public class CSVPlot implements IPlot {
 		String[] emptyStringArray = {};
 		types.put("line", emptyStringArray);
 		types.put("scatter", emptyStringArray);
-		dataLoaded = false;
 		
 		return;
 	}
@@ -286,17 +278,5 @@ public class CSVPlot implements IPlot {
 		}
 		
 		return;
-	}
-	
-	/**
-	 * A boolean method to indicate if data has finishing loading via the load()
-	 * method. It is necessary to check this, as load() executes on a separate
-	 * thread, and we don't want to try to plot anything before that thread
-	 * terminates.
-	 * 
-	 * @return	True if the load() thread has run and completed, false otherwise.
-	 */
-	public boolean isFinishedLoading() {
-		return dataLoaded;
 	}
 }
