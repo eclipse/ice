@@ -12,11 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
@@ -36,12 +40,17 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 
 /**
  * This class is a FormPage that creates a page with table and metadata viewing
@@ -85,7 +94,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 	/**
 	 * The service factory for visualization tools. This can be queried for
-	 * vizualization services.
+	 * visualization services.
 	 */
 	private IVizServiceFactory vizFactory;
 
@@ -93,12 +102,19 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * The map that holds any existing plots, keyed on the resource IDs.
 	 */
 	private final Map<String, IPlot> plots;
+	
 	/**
 	 * The map that holds any drawn plots, keyed on the resource IDs. A
 	 * Composite should only be added to this map if it already exists in
 	 * {@link #plots}.
 	 */
 	private final Map<String, Composite> plotComposites;
+	
+	/**
+	 * A list of file extensions that the ICEResourcePage should be treated as 
+	 * text and opened via the default Eclipse text editor.
+	 */
+	private ArrayList<String> textFileExtensions;
 
 	/**
 	 * The default constructor.
@@ -124,7 +140,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// Setup the plot maps.
 		plots = new HashMap<String, IPlot>();
 		plotComposites = new HashMap<String, Composite>();
-
+		
+		// Create the list of text file extensions
+		String[] extensions = {"txt", "sh", "i", "csv"};
+		textFileExtensions = new ArrayList<String>(Arrays.asList(extensions));
 		return;
 	}
 
@@ -246,7 +265,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 			// Refresh the page's widgets based on the selected resource.
 			if (selectedResource != null) {
-				setCurrentResource(selectedResource);
+				try {
+					setCurrentResource(selectedResource);
+				} catch (PartInitException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -261,12 +284,13 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * 
 	 * @param resource
 	 *            The resource to render. Assumed not to be {@code null}.
+	 * @throws PartInitException 
 	 */
-	private void setCurrentResource(ICEResource resource) {
+	private void setCurrentResource(ICEResource resource) throws PartInitException {
 
 		if (resource != currentResource) {
 			currentResource = resource;
-
+			
 			// VizResources should not use the browser. However, if it cannot be
 			// rendered with available VizResources, we should try using the
 			// browser.
@@ -285,18 +309,41 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				}
 
 				// If the plot and its drawn Composite could be found, update
-				// the StackLayout. Otherwise, we should try using the browser.
+				// the StackLayout. Otherwise, the next section will attempt to
+				// either open it in a text editor (if applicable), or the 
+				// browser as a last resort.
 				if (plotComposite != null) {
 					stackLayout.topControl = plotComposite;
 					pageComposite.layout();
-				} else {
-					useBrowser = true;
+					return;
 				}
 			}
+			
+			// Determine if the resource is a text file
+			int extIndex = resource.getPath().toString().lastIndexOf(".");
+			String fileExtension = resource.getPath().toString().substring(extIndex+1);
+			boolean useEditor = textFileExtensions.contains(fileExtension);
+			
+			// If the resource is a text file, open it via the Eclipse default
+			// text editor
+			if (useEditor) {
+				// Get the content of the file
+				IFileStore fileOnLocalDisk = 
+						EFS.getLocalFileSystem().getStore(resource.getPath());
+				FileStoreEditorInput editorInput = 
+						new FileStoreEditorInput(fileOnLocalDisk);
 
+				// Open the contents in the text editor
+				IWorkbenchWindow window = 
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				IWorkbenchPage page = window.getActivePage();
+				page.openEditor(editorInput, "org.eclipse.ui.DefaultTextEditor");
+			}
+			
 			// If the Resource is a regular Resource or cannot be rendered via
-			// the VizServices, try to open it in the browser.
-			if (useBrowser && browser != null && !browser.isDisposed()) {
+			// the VizServices or a text editor, try to open it in the browser
+			// as a last resort.
+			if (useBrowser && !useEditor && browser != null && !browser.isDisposed()) {
 				// Update the browser.
 				browser.setUrl(resource.getPath().toString());
 				stackLayout.topControl = browser;
@@ -524,7 +571,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						display.asyncExec(new Runnable() {
 							@Override
 							public void run() {
-								setCurrentResource(currentResource);
+								try {
+									setCurrentResource(currentResource);
+								} catch (PartInitException e) {
+									e.printStackTrace();
+								}
 							}
 						});
 					}
