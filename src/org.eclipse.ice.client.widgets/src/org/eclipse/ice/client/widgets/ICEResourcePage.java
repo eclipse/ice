@@ -40,7 +40,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -60,6 +60,8 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  */
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		IUpdateableListener {
+
+
 	/**
 	 * The ResourceComponent drawn by this page.
 	 */
@@ -74,7 +76,18 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * The ICEResourceView that holds resources for this page to display.
 	 */
 	private ICEResourceView resourceView;
-
+	
+	/**
+	 * The workbench page used by this ICEResourcePage.
+	 */
+	
+	private IWorkbenchPage workbenchPage;
+	
+	/**
+	 * The editor reference of this ICEResourcePage.
+	 */
+	private IEditorReference editorRef;
+	
 	/**
 	 * The primary composite for rendering the page.
 	 */
@@ -111,8 +124,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private final Map<String, Composite> plotComposites;
 	
 	/**
-	 * A list of file extensions that the ICEResourcePage should be treated as 
-	 * text and opened via the default Eclipse text editor.
+	 * A list of file extensions that the ICEResourcePage should be treat as 
+	 * text files and opened via the default Eclipse text editor.
 	 */
 	private ArrayList<String> textFileExtensions;
 
@@ -144,6 +157,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// Create the list of text file extensions
 		String[] extensions = {"txt", "sh", "i", "csv"};
 		textFileExtensions = new ArrayList<String>(Arrays.asList(extensions));
+		
 		return;
 	}
 
@@ -196,6 +210,12 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		browser = createBrowser(pageComposite, toolkit);
 		stackLayout.topControl = browser;
 		pageComposite.layout();
+		
+		// Set the workbench page and editor reference
+		workbenchPage = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
+		editorRef = editorReferences[0];
 
 		return;
 	}
@@ -266,7 +286,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// Refresh the page's widgets based on the selected resource.
 			if (selectedResource != null) {
 				try {
-					setCurrentResource(selectedResource);
+					setCurrentResource(selectedResource);					
 				} catch (PartInitException e) {
 					e.printStackTrace();
 				}
@@ -315,6 +335,12 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				if (plotComposite != null) {
 					stackLayout.topControl = plotComposite;
 					pageComposite.layout();
+	
+					// Reactivate the editor tab if it's not in the front
+					if (workbenchPage.getActiveEditor() != editorRef.getPart(true)) {
+						workbenchPage.activate(editorRef.getPart(true));
+					}
+										
 					return;
 				}
 			}
@@ -348,6 +374,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				browser.setUrl(resource.getPath().toString());
 				stackLayout.topControl = browser;
 				pageComposite.layout();
+				
+				// Reactivate the editor tab if it's not in the front
+				if (workbenchPage.getActiveEditor() != editorRef.getPart(true)) {
+					workbenchPage.activate(editorRef.getPart(true));
+				}
 			}
 		}
 
