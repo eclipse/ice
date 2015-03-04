@@ -22,7 +22,7 @@ public abstract class ConnectionClient<T> implements IConnectionClient<T> {
 	 * org.eclipse.ice.viz.service.connections.IConnectionClient#setConnection
 	 * (org.eclipse.ice.viz.service.connections.IConnectionAdapter)
 	 */
-	public void setConnection(IConnectionAdapter<T> adapter) {
+	public void setConnectionAdapter(IConnectionAdapter<T> adapter) {
 		if (adapter != this.adapter) {
 			if (this.adapter != null) {
 				this.adapter.unregister(this);

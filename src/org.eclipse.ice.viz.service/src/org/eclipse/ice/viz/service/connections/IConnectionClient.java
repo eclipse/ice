@@ -27,6 +27,6 @@ public interface IConnectionClient<T> extends IUpdateableListener {
 	 *            The new connection adapter. If {@code null}, the connection
 	 *            will be unset and the plot will be cleared.
 	 */
-	void setConnection(IConnectionAdapter<T> adapter);
+	void setConnectionAdapter(IConnectionAdapter<T> adapter);
 
 }
