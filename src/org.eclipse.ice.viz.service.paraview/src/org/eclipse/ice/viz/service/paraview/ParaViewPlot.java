@@ -15,7 +15,11 @@ import java.net.URI;
 import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.viz.service.connections.ConnectionClient;
 import org.eclipse.swt.widgets.Composite;
+
+import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class is responsible for embedding ParaView-supported graphics inside
@@ -30,8 +34,12 @@ import org.eclipse.swt.widgets.Composite;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPlot implements IPlot {
+public class ParaViewPlot extends ConnectionClient<VtkWebClient> implements IPlot {
 
+	public ParaViewPlot(ParaViewVizService vizService, URI file) {
+		
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -122,6 +130,13 @@ public class ParaViewPlot implements IPlot {
 	public boolean isSourceRemote() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	
+	@Override
+	public void update(IUpdateable component) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
