@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.paraview;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
-import org.eclipse.ice.viz.service.connections.ConnectionManager;
+import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.IKeyChangeListener;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.DynamicComboFieldEditor;
@@ -39,7 +39,7 @@ public class ParaViewPreferencePage extends AbstractVizPreferencePage {
 	 * The {@code ConnectionManager} used by this preference page. It is
 	 * represented by a table on the page.
 	 */
-	private final ConnectionManager connectionManager = new ConnectionManager();
+	private final ConnectionTable connectionManager = new ConnectionTable();
 
 	/**
 	 * The default constructor.
