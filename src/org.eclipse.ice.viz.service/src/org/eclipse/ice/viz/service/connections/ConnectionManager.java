@@ -166,7 +166,7 @@ public abstract class ConnectionManager<T> {
 	 * This method notifies the manager that the preferences have changed. Any
 	 * connections that have changed should be reset.
 	 */
-	protected void preferencesChanged(Map<String, String> changedKeys,
+	public void preferencesChanged(Map<String, String> changedKeys,
 			Set<String> addedKeys, Set<String> removedKeys) {
 
 		// Clear the old connection preferences.
