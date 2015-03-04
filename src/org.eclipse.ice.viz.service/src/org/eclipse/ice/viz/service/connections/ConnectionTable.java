@@ -53,7 +53,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  * @author Jordan Deyton
  *
  */
-public class ConnectionManager extends TableComponent implements IKeyManager,
+public class ConnectionTable extends TableComponent implements IKeyManager,
 		IUpdateableListener {
 
 	// TODO Remove the debug output from this class.
@@ -101,7 +101,7 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 	/**
 	 * The default constructor.
 	 */
-	public ConnectionManager() {
+	public ConnectionTable() {
 		// Set the default row template. This should never change.
 		super.setRowTemplate(getConnectionTemplate());
 	}
@@ -116,7 +116,7 @@ public class ConnectionManager extends TableComponent implements IKeyManager,
 
 	/**
 	 * Gets the row template for a connection as defined in the
-	 * {@link ConnectionManager documentation for the class}.
+	 * {@link ConnectionTable documentation for the class}.
 	 * 
 	 * @return An {@code ArrayList<Entry>} containing the template {@code Entry}
 	 *         s for each exposed connection property.

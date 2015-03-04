@@ -22,7 +22,7 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
-import org.eclipse.ice.viz.service.connections.visit.VisItConnectionManager;
+import org.eclipse.ice.viz.service.connections.visit.VisItConnectionTable;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
 
@@ -51,7 +51,7 @@ public class VisItVizService extends AbstractVizService {
 	 * This manages the {@code VisItVizService} connection preferences and
 	 * should be updated from the preference store when the preferences change.
 	 */
-	private final VisItConnectionManager connectionManager;
+	private final VisItConnectionTable connectionManager;
 
 	/**
 	 * This manages the default connection to VisIt and its settings. It handles
@@ -78,7 +78,7 @@ public class VisItVizService extends AbstractVizService {
 		plots = new ArrayList<VisItPlot>();
 
 		// Initialize the ConnectionManager based on the stored preferences.
-		connectionManager = new VisItConnectionManager();
+		connectionManager = new VisItConnectionTable();
 		TableComponentPreferenceAdapter tableAdapter;
 		tableAdapter = new TableComponentPreferenceAdapter();
 		tableAdapter.toTableComponent(
