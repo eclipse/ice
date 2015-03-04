@@ -40,7 +40,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -82,12 +81,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 */
 	
 	private IWorkbenchPage workbenchPage;
-	
-	/**
-	 * The editor reference of this ICEResourcePage.
-	 */
-	private IEditorReference editorRef;
-	
+		
 	/**
 	 * The primary composite for rendering the page.
 	 */
@@ -211,11 +205,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		stackLayout.topControl = browser;
 		pageComposite.layout();
 		
-		// Set the workbench page and editor reference
+		// Set the workbench page reference
 		workbenchPage = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage();
-		IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
-		editorRef = editorReferences[0];
 
 		return;
 	}
@@ -336,10 +328,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 					stackLayout.topControl = plotComposite;
 					pageComposite.layout();
 	
-					// Reactivate the editor tab if it's not in the front
-					if (workbenchPage.getActiveEditor() != editorRef.getPart(true)) {
-						workbenchPage.activate(editorRef.getPart(true));
-					}
+					// Reactivate the Item editor tab if it's not in the front			
+					activateEditor();
 										
 					return;
 				}
@@ -375,10 +365,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				stackLayout.topControl = browser;
 				pageComposite.layout();
 				
-				// Reactivate the editor tab if it's not in the front
-				if (workbenchPage.getActiveEditor() != editorRef.getPart(true)) {
-					workbenchPage.activate(editorRef.getPart(true));
-				}
+				// Reactivate the Item editor tab if it's not in the front			
+				activateEditor();
 			}
 		}
 
@@ -508,6 +496,31 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		}
 
 		return plotComposite;
+	}
+	
+	/**
+	 * Reactivates the Item's editor and brings it to the front if any other
+	 * editors have been opened on top of it.
+	 */
+	private void activateEditor() {
+		
+		// Check that the workbench page has been set correctly first
+		if (workbenchPage != null) {
+			
+			// Reactivate the editor tab if it's not in the front		
+			if (getEditor() != null	
+					&& workbenchPage.getActiveEditor() != getEditor()) {
+				workbenchPage.activate(getEditor());
+			}
+		} else {
+			
+			// Set the workbench page and try activating the editor again
+			workbenchPage = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage();
+			activateEditor();
+		}
+		
+		return;
 	}
 
 	/**
