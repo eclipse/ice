@@ -15,8 +15,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.viz.service.connections.ConnectionClient;
+import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.swt.widgets.Composite;
 
 import com.kitware.vtk.web.VtkWebClient;
@@ -34,12 +33,38 @@ import com.kitware.vtk.web.VtkWebClient;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPlot extends ConnectionClient<VtkWebClient> implements IPlot {
+public class ParaViewPlot extends ConnectionPlot<VtkWebClient> implements IPlot {
 
+	// ---- Service and Connection ---- //
+	// -------------------------------- //
+
+	// ---- Source and Plot Properties ---- //
+	// /**
+	// * The source path required by the VisIt widgets.
+	// */
+	// private String sourcePath;
+	// ------------------------------------ //
+
+	// ---- UI Widgets ---- //
+	// /**
+	// * The current VisIt widget used to draw VisIt plots. This should only be
+	// * visible if the connection is open.
+	// */
+	// private VisItSwtWidget canvas = null;
+	// -------------------- //
+
+	/**
+	 * The default constructor.
+	 * 
+	 * @param service
+	 *            The visualization service responsible for this plot.
+	 * @param file
+	 *            The data source, either a local or remote file.
+	 */
 	public ParaViewPlot(ParaViewVizService vizService, URI file) {
-		
+		super(vizService, file);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -54,60 +79,12 @@ public class ParaViewPlot extends ConnectionClient<VtkWebClient> implements IPlo
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
-	 * java.lang.String, org.eclipse.swt.widgets.Composite)
-	 */
-	@Override
-	public void draw(String category, String plotType, Composite parent)
-			throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
 	 */
 	@Override
 	public int getNumberOfAxes() {
+		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getProperties()
-	 */
-	@Override
-	public Map<String, String> getProperties() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IPlot#setProperties(java.util
-	 * .Map)
-	 */
-	@Override
-	public void setProperties(Map<String, String> props) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getDataSource()
-	 */
-	@Override
-	public URI getDataSource() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
@@ -124,19 +101,41 @@ public class ParaViewPlot extends ConnectionClient<VtkWebClient> implements IPlo
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#isSourceRemote()
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.ConnectionPlot#getPreferenceNodeID
+	 * ()
 	 */
 	@Override
-	public boolean isSourceRemote() {
-		// TODO Auto-generated method stub
-		return false;
+	protected String getPreferenceNodeID() {
+		return "org.eclipse.ice.viz.service.paraview.preferences";
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.ConnectionPlot#createCanvas(org
+	 * .eclipse.swt.widgets.Composite, int, java.lang.Object)
+	 */
 	@Override
-	public void update(IUpdateable component) {
+	protected Composite createCanvas(Composite parent, int style,
+			VtkWebClient connection) {
 		// TODO Auto-generated method stub
-		
+		return new Composite(parent, style);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.ConnectionPlot#updateCanvas(org
+	 * .eclipse.swt.widgets.Composite, java.lang.Object)
+	 */
+	@Override
+	protected void updateCanvas(Composite canvas, VtkWebClient connection)
+			throws Exception {
+		// TODO Auto-generated method stub
+
 	}
 
 }

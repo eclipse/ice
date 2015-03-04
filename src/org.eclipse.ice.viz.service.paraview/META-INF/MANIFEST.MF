@@ -17,6 +17,7 @@ Import-Package: com.kitware.vtk.web,
  org.eclipse.swt,
  org.eclipse.swt.layout,
  org.eclipse.swt.widgets,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.eclipse.ui.forms
 Export-Package: org.eclipse.ice.viz.service.paraview
 Service-Component: OSGI-INF/vizService.xml
