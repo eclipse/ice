@@ -60,7 +60,6 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		IUpdateableListener {
 
-
 	/**
 	 * The ResourceComponent drawn by this page.
 	 */
@@ -235,19 +234,23 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			toolkit.adapt(browser);
 			browser.setLayout(new FillLayout());
 
-			// Get the current selection from the Resource View and set the
-			// current Resource to it.
-			ISelection selection;
-			selection = getSite().getPage().getSelection(ICEResourceView.ID);
-			currentResource = resourceView.getResourceFromSelection(selection);
-
 			// Display the default-selected Resource from the Resource View in
-			// the browser, or a message that no resource is available.
+			// the browser, or a message.
 			if (currentResource != null
 					&& !(currentResource instanceof VizResource)) {
 				browser.setUrl(currentResource.getPath().toString());
 			} else {
-				browser.setText("<html><body><center>No resources available.</center></body></html>");
+				if (!resourceComponent.isEmpty()) {
+					browser.setText("<html><body>"
+							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+							+ "align=\"center\">Select a resource to view</p>"
+							+ "</body></html>");
+				} else {
+					browser.setText("<html><body>"
+							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+							+ "align=\"center\">No resources available</p>"
+							+ "</body></html>");
+				}
 			}
 		} catch (SWTError e) {
 			System.out.println("Client Message: "
