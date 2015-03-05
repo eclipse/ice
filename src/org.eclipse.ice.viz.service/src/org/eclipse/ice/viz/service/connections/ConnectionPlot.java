@@ -292,12 +292,12 @@ public abstract class ConnectionPlot<T> implements IPlot, IConnectionClient<T> {
 		// and not break!
 		if (connection == null && state == ConnectionState.Connected) {
 			System.err
-					.println("VisItPlot error: "
+					.println("IPlot error: "
 							+ "The connection is not available, although it was reported as connected.");
 			state = ConnectionState.Failed;
 		}
 
-		// If connected, try to render the plot in the VisItSwtWidget/canvas.
+		// If connected, try to render the plot in the canvas.
 		if (state == ConnectionState.Connected) {
 
 			// If necessary, create the canvas.
@@ -340,7 +340,7 @@ public abstract class ConnectionPlot<T> implements IPlot, IConnectionClient<T> {
 			}
 		}
 		// Otherwise, there is a problem of some sort. Give the user a link to
-		// the VisIt preferences along with an informative message.
+		// the viz service preferences along with an informative message.
 		else {
 
 			// Set the message and icon based on the state of the connection.
@@ -451,7 +451,7 @@ public abstract class ConnectionPlot<T> implements IPlot, IConnectionClient<T> {
 
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
-				// Open up the VisIt preferences.
+				// Open up the viz service connection preferences.
 				PreferencesUtil.createPreferenceDialogOn(shell,
 						getPreferenceNodeID(), null, null).open();
 			}
