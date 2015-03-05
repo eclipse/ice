@@ -1,7 +1,9 @@
 package org.eclipse.ice.viz.service;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
@@ -206,7 +208,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @return The visualization service responsible for this plot.
 	 */
-	protected IVizService getVizService() {
+	public IVizService getVizService() {
 		return vizService;
 	}
 
@@ -232,6 +234,16 @@ public abstract class MultiPlot implements IPlot {
 	 */
 	protected void updatePlotRender(PlotRender plotRender) {
 		plotRender.refresh();
+	}
+
+	/**
+	 * Gets a list of all current rendered plots.
+	 * 
+	 * @return A list containing each current {@link PlotRender} in this
+	 *         {@code MultiPlot}.
+	 */
+	protected List<PlotRender> getPlotRenders() {
+		return new ArrayList<PlotRender>(plotRenders.values());
 	}
 	// -------------------- //
 

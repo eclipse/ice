@@ -74,6 +74,11 @@ public abstract class PlotRender {
 	 */
 	private Label msgLabel;
 
+	/**
+	 * The image to display in the {@link #iconLabel}.
+	 */
+	protected Image infoIcon;
+
 	// -------------------- //
 
 	/**
@@ -152,7 +157,7 @@ public abstract class PlotRender {
 	 * update to the UI on the display's UI thread.
 	 * </p>
 	 */
-	protected void refresh() {
+	public void refresh() {
 
 		// If we are not on the UI thread, update the UI asynchronously on
 		// the UI thread.
@@ -305,15 +310,18 @@ public abstract class PlotRender {
 	protected void updateInfoComposite(Composite infoComposite,
 			final String message) {
 		// Set the message and icon based on the state of the connection.
-		final Image image;
 		final Display display = infoComposite.getDisplay();
-
-		// Set a default image.
-		image = display.getSystemImage(SWT.ICON_WARNING);
+		// If there's no icon set, default to something useful.
+		final Image image = (infoIcon != null ? infoIcon : display
+				.getSystemImage(SWT.ICON_WARNING));
 
 		// Update the contents of the infoComposite's widgets.
 		iconLabel.setImage(image);
 		msgLabel.setText(message);
+
+		// Force the StackLayout to refresh. We need the two boolean flags so
+		// that the text will wrap properly.
+		stackComposite.layout(true, true);
 
 		return;
 	}

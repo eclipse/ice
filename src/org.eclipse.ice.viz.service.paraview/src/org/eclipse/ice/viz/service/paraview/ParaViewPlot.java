@@ -14,12 +14,12 @@ package org.eclipse.ice.viz.service.paraview;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
-import org.eclipse.ice.viz.service.MultiPlot;
 import org.eclipse.ice.viz.service.PlotRender;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.swt.widgets.Composite;
+
+import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class is responsible for embedding ParaView-supported graphics inside
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPlot extends MultiPlot {
+public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 
 	/**
 	 * The default constructor.
@@ -55,6 +55,7 @@ public class ParaViewPlot extends MultiPlot {
 	 */
 	@Override
 	public Map<String, String[]> getPlotTypes() throws Exception {
+		// TODO
 		return new HashMap<String, String[]>();
 	}
 
@@ -82,18 +83,5 @@ public class ParaViewPlot extends MultiPlot {
 		// TODO We will need to update it in a custom way.
 		super.updatePlotRender(plotRender);
 	}
-
-	// /*
-	// * (non-Javadoc)
-	// *
-	// * @see
-	// *
-	// org.eclipse.ice.viz.service.connections.ConnectionPlot#getPreferenceNodeID
-	// * ()
-	// */
-	// @Override
-	// protected String getPreferenceNodeID() {
-	// return "org.eclipse.ice.viz.service.paraview.preferences";
-	// }
 
 }
