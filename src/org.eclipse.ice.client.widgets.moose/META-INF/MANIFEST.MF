@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.ice.client.widgets.moose;singleton:=true
 Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.jme3.math,
+ com.kitware.vtk.web,
  org.eclipse.core.resources,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.ice.client.common,
@@ -20,6 +21,8 @@ Import-Package: com.jme3.math,
  org.eclipse.ice.item.nuclear,
  org.eclipse.ice.reactor.plant,
  org.eclipse.ice.viz.service,
+ org.eclipse.ice.viz.service.connections,
+ org.eclipse.ice.viz.service.paraview,
  org.eclipse.ice.viz.service.visit,
  org.eclipse.ui,
  org.eclipse.ui.views.properties,

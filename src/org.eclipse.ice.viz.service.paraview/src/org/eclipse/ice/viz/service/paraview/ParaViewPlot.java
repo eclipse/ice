@@ -12,10 +12,15 @@
 package org.eclipse.ice.viz.service.paraview;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.ice.viz.service.MultiPlot;
+import org.eclipse.ice.viz.service.PlotComposite;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 
 import com.kitware.vtk.web.VtkWebClient;
@@ -33,25 +38,7 @@ import com.kitware.vtk.web.VtkWebClient;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPlot extends ConnectionPlot<VtkWebClient> implements IPlot {
-
-	// ---- Service and Connection ---- //
-	// -------------------------------- //
-
-	// ---- Source and Plot Properties ---- //
-	// /**
-	// * The source path required by the VisIt widgets.
-	// */
-	// private String sourcePath;
-	// ------------------------------------ //
-
-	// ---- UI Widgets ---- //
-	// /**
-	// * The current VisIt widget used to draw VisIt plots. This should only be
-	// * visible if the connection is open.
-	// */
-	// private VisItSwtWidget canvas = null;
-	// -------------------- //
+public class ParaViewPlot extends MultiPlot {
 
 	/**
 	 * The default constructor.
@@ -72,8 +59,9 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> implements IPlot 
 	 */
 	@Override
 	public Map<String, String[]> getPlotTypes() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, String[]> plotTypes = new HashMap<String, String[]>();
+		plotTypes.put("", new String[] { "" });
+		return plotTypes;
 	}
 
 	/*
@@ -98,44 +86,16 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> implements IPlot 
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.connections.ConnectionPlot#getPreferenceNodeID
-	 * ()
-	 */
-	@Override
-	protected String getPreferenceNodeID() {
-		return "org.eclipse.ice.viz.service.paraview.preferences";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.connections.ConnectionPlot#createCanvas(org
-	 * .eclipse.swt.widgets.Composite, int, java.lang.Object)
-	 */
-	@Override
-	protected Composite createCanvas(Composite parent, int style,
-			VtkWebClient connection) {
-		// TODO Auto-generated method stub
-		return new Composite(parent, style);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.connections.ConnectionPlot#updateCanvas(org
-	 * .eclipse.swt.widgets.Composite, java.lang.Object)
-	 */
-	@Override
-	protected void updateCanvas(Composite canvas, VtkWebClient connection)
-			throws Exception {
-		// TODO Auto-generated method stub
-
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * org.eclipse.ice.viz.service.connections.ConnectionPlot#getPreferenceNodeID
+//	 * ()
+//	 */
+//	@Override
+//	protected String getPreferenceNodeID() {
+//		return "org.eclipse.ice.viz.service.paraview.preferences";
+//	}
 
 }

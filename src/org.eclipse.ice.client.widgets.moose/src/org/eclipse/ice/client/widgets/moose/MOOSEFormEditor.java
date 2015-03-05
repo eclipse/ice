@@ -27,6 +27,7 @@ import org.eclipse.ice.client.widgets.ICESectionPage;
 import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.moose.components.PlantBlockManager;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
+import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -36,6 +37,8 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.paraview.ParaViewPlot;
+import org.eclipse.ice.viz.service.paraview.ParaViewVizService;
 import org.eclipse.ice.viz.service.visit.VisItPlot;
 import org.eclipse.ice.viz.service.visit.VisItVizService;
 import org.eclipse.jface.action.Action;
@@ -131,12 +134,12 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	/**
 	 * The visualization service used to render the mesh.
 	 */
-	private VisItVizService vizService;
+	private ParaViewVizService vizService;
 	/**
 	 * The plot provided from the {@link #vizService}. This should be able to
 	 * render the mesh specified by the {@link #meshURI}.
 	 */
-	private VisItPlot plot;
+	private ParaViewPlot plot;
 
 	/**
 	 * The URI of the mesh file. If {@code null}, then the file is assumed to be
@@ -196,10 +199,10 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								meshURI = null;
 							}
 
-							// If the plot is available, set its URI.
-							if (plot != null) {
-								plot.setDataSource(meshURI);
-							}
+//							// If the plot is available, set its URI.
+//							if (plot != null) {
+//								plot.setDataSource(meshURI);
+//							}
 
 							return;
 						}
@@ -892,7 +895,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// Try to get the VisItVizService.
 		IVizServiceFactory vizFactory = getVizServiceFactory();
 		if (vizFactory != null) {
-			vizService = (VisItVizService) vizFactory.get("VisIt");
+			vizService = (ParaViewVizService) vizFactory.get("ParaView");
 		}
 
 		// Either update the mesh plot or generate an error. Note that if the
@@ -905,15 +908,39 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 			try {
 				// Create the plot.
-				plot = (VisItPlot) vizService.createPlot(meshURI);
-				// Add the plot's Actions to the ToolBar.
-				for (IAction action : plot.getActions()) {
-					toolBarManager.add(action);
-				}
+				plot = (ParaViewPlot) vizService.createPlot(meshURI);
+//				// Add the plot's Actions to the ToolBar.
+//				for (IAction action : plot.getActions()) {
+//					toolBarManager.add(action);
+//				}
 				toolBarManager.update(true);
 				// TODO We're going to have to do some other things here to
 				// determine the plot type and category.
 				plot.draw("", "", meshPlotParent);
+				
+				// TODO Remove this test code below.
+				final Composite parent0 = new Composite(meshPlotParent, SWT.NONE);
+				Composite parent1 = new Composite(meshPlotParent, SWT.NONE);
+				Composite parent2 = new Composite(meshPlotParent, SWT.NONE);
+				plot.draw("cat0", "type0", parent0);
+				plot.draw("cat1", "type1", parent1);
+				plot.draw("cat2", "type2", parent2);
+				Thread thread = new Thread() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(4000);
+							plot.draw("cat1", "type1", parent0);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				};
+				thread.start();
+				// end of test code
+				
 			} catch (Exception e) {
 				System.err.println("MOOSEFormEditor error: "
 						+ "Error creating VisIt plot.");
@@ -923,7 +950,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		} else {
 			// Create an error message to show in the mesh view.
 			String errorMessage = "There was a problem connecting to "
-					+ "ICE's VisIt visualization service.";
+					+ "ICE's available visualization services.";
 			// To get the image/text side-by-side, use a 2-column GridLayout.
 			meshPlotParent.setLayout(new GridLayout(2, false));
 			// Create the label with the error icon.
