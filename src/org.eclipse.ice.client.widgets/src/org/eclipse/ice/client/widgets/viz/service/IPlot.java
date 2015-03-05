@@ -136,5 +136,4 @@ public interface IPlot {
 	 * @return True if the source is on a remote machine, false otherwise
 	 */
 	public boolean isSourceRemote();
-
 }

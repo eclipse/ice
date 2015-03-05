@@ -535,8 +535,6 @@ public class JobLauncherForm extends Form {
 	 * @param name	Name of the input file type.
 	 * @param desc	Description of the file type.
 	 * @param files	List of files available for the job.
-	 * @param isFileEntry	Flag to indicate if Entry created should be
-	 * 						considered a file entry (ie. have a browse button)
 	 * @generated 
 	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
