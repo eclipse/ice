@@ -9,7 +9,6 @@ import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * This class provides a basic plot capable of drawing in multiple parent
@@ -107,40 +106,18 @@ public abstract class MultiPlot implements IPlot {
 					+ "Cannot draw plot inside disposed Composite.");
 		}
 
-		final PlotRender plotRender;
+		// Get the PlotRender associated with the parent Composite.
+		PlotRender plotRender = plotRenders.get(parent);
 
-		// If necessary, create the PlotRender.
-		if (!plotRenders.containsKey(parent)) {
-			// Create it and save it in the map.
+		// Create the PlotRender and associate it with the parent as necessary.
+		if (plotRender == null) {
 			plotRender = createPlotRender(parent);
 			plotRenders.put(parent, plotRender);
-
-			// Send the new plot category and type to the PlotRender.
-			plotRender.setPlotCategory(category);
-			plotRender.setPlotType(plotType);
-
-			// If we are not on the UI thread, create its content asynchronously
-			// on the UI thread.
-			if (Display.getCurrent() == null) {
-				parent.getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						plotRender.createPlotContent(SWT.NONE);
-					}
-				});
-			}
-			// If we are on the UI thread, create the content synchronously.
-			else {
-				plotRender.createPlotContent(SWT.NONE);
-			}
-		} else {
-			// Get the existing PlotCopmosite.
-			plotRender = plotRenders.get(parent);
-
-			// Send the new plot category and type to the PlotRender.
-			plotRender.setPlotCategory(category);
-			plotRender.setPlotType(plotType);
 		}
+
+		// Send the new plot category and type to the PlotRender.
+		plotRender.setPlotCategory(category);
+		plotRender.setPlotType(plotType);
 
 		// Trigger the appropriate update to the PlotRender's content.
 		updatePlotRender(plotRender);

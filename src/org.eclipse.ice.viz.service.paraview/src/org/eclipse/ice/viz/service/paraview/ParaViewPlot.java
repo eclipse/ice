@@ -67,23 +67,7 @@ public class ParaViewPlot extends MultiPlot {
 	 */
 	@Override
 	protected PlotRender createPlotRender(Composite parent) {
-		// TODO We need a custom PlotRender.
-		return new PlotRender(parent, this) {
-			@Override
-			protected Composite createPlotComposite(Composite parent, int style) {
-				return new Composite(parent, style);
-			}
-
-			@Override
-			protected void updatePlotComposite(Composite plotComposite)
-					throws Exception {
-				int seed = (getPlotCategory() + getPlotType()).hashCode();
-				Random r = new Random(seed);
-				plotComposite.setBackground(new Color(plotComposite
-						.getDisplay(), r.nextInt(255), r.nextInt(255), r
-						.nextInt(255)));
-			}
-		};
+		return new ParaViewPlotRender(parent, this);
 	}
 
 	/*
