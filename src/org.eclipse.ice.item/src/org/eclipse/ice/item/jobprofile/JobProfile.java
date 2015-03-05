@@ -31,7 +31,9 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
@@ -131,9 +133,8 @@ public class JobProfile extends Item {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		// Use the JAXB handler to dump this to a file
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
-		ArrayList<Class> classList = new ArrayList<Class>();
-		classList.add(JobLauncher.class);
-		classList.add(Form.class);
+		ICEJAXBClassProvider classProvider = new ICEJAXBClassProvider();
+		ArrayList<Class> classList = (ArrayList<Class>) classProvider.getClasses();
 		try {
 			// Write the file to the output stream
 			xmlHandler.write(launcher, classList, outputStream);
