@@ -51,16 +51,19 @@ import org.yaml.snakeyaml.Yaml;
  * This class reads and writes MOOSE Blocks and Parameters to and from the
  * different MOOSE file types, including parsing from YAML and writing to
  * GetPot.
- * 
+ * </p>
+ * <p>
  * There are two primary types of files associated with MOOSE: the YAML file
  * used to specify the possible configuration of an input file and the input
  * file itself, which is a GetPot/Perl configuration file.
- * 
+ * </p>
+ * <p>
  * This class realizes the IComponentVisitor interface to find DataComponents in
  * the TreeComposites that can be converted into a parameter set for a MOOSE
  * input block. If there are other Components in a TreeComposite. They are
  * completely ignored.
- * 
+ * </p>
+ * <p>
  * Blocks and YAMLBlocks are used because each block needs to be converted to or
  * from a TreeComposite. This is complicated in the case of loading the YAML
  * input specification because it is a *specification* (or schema) and not the
@@ -306,7 +309,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *            The file path from which the MOOSE blocks written in YAML
 	 *            should be read. If the path is null or empty, the operation
 	 *            returns without doing any work.
-	 * @return The MOOSE input file specification as read from the YAML input
+	 * @return
+	 *         The MOOSE input file specification as read from the YAML input
 	 *         and stored in TreeComposites. Each TreeComposite contains both
 	 *         parameters and exemplar children. Any parameters in a
 	 *         TreeComposite are contained in a DataComponent. The id of the
