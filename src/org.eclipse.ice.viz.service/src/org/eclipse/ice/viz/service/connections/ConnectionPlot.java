@@ -32,16 +32,21 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  * @param <T>
  *            The type of the connection object.
  */
-public abstract class ConnectionPlot<T> extends ConnectionClient<T> implements
-		IPlot {
+public abstract class ConnectionPlot<T> implements IPlot, IConnectionClient<T> {
 
 	// TODO We should support drawing the same plot in multiple locations!
 	// TODO Provide access to plot properties.
 
+	// ---- Service and Connection ---- //
 	/**
 	 * The visualization service responsible for this plot.
 	 */
 	private final IVizService vizService;
+	/**
+	 * The current connection adapter associated with this client.
+	 */
+	private IConnectionAdapter<T> adapter;
+	// -------------------------------- //
 
 	// ---- Source and Plot Properties ---- //
 	/**
@@ -111,25 +116,6 @@ public abstract class ConnectionPlot<T> extends ConnectionClient<T> implements
 
 		// Set the data source now. This should build any required meta data.
 		setDataSource(file);
-	}
-
-	/**
-	 * This method informs the plot that its associated connection has been
-	 * updated. The plot can then update its contents if it has contributed to
-	 * the UI.
-	 * 
-	 * @param component
-	 *            The component that was updated. This is expected to be the
-	 *            associated {@link ConnectionAdapter}.
-	 */
-	@Override
-	public void update(IUpdateable component) {
-		// If the argument is null, then do nothing. Even if the current adapter
-		// is null, the UI should already be up to date!
-		if (component != null && component == getConnectionAdapter()) {
-			// Trigger an update to the UI.
-			updateUI();
-		}
 	}
 
 	/*
@@ -255,9 +241,6 @@ public abstract class ConnectionPlot<T> extends ConnectionClient<T> implements
 	 */
 	private void updateUI() {
 
-		// Get the current connection adapter.
-		final IConnectionAdapter<T> adapter = getConnectionAdapter();
-
 		// Determine the current connection and its state.
 		final ConnectionState state;
 		final T connection;
@@ -363,18 +346,22 @@ public abstract class ConnectionPlot<T> extends ConnectionClient<T> implements
 			// Set the message and icon based on the state of the connection.
 			final String message;
 			final Image image;
+			final String serviceName = vizService.getName();
 			if (state == ConnectionState.Connecting) {
-				message = "The VisIt connection is being established...";
+				message = "The " + serviceName
+						+ " connection is being established...";
 				image = display.getSystemImage(SWT.ICON_WORKING);
 			} else if (state == ConnectionState.Disconnected) {
 				if (connection == null) {
-					message = "The VisIt connection is not configured.";
+					message = "The " + serviceName
+							+ " connection is not configured.";
 				} else {
-					message = "The VisIt connection is currently disconnected.";
+					message = "The " + serviceName
+							+ " connection is currently disconnected.";
 				}
 				image = display.getSystemImage(SWT.ICON_WARNING);
 			} else {
-				message = "The VisIt connection failed!";
+				message = "The " + serviceName + " connection failed!";
 				image = display.getSystemImage(SWT.ICON_ERROR);
 			}
 
@@ -534,4 +521,50 @@ public abstract class ConnectionPlot<T> extends ConnectionClient<T> implements
 	protected IVizService getVizService() {
 		return vizService;
 	}
+
+	// ---- Implements IConnectionClient (and IUpdateableListener) ---- //
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.IConnectionClient#setConnection
+	 * (org.eclipse.ice.viz.service.connections.IConnectionAdapter)
+	 */
+	public void setConnectionAdapter(IConnectionAdapter<T> adapter) {
+		if (adapter != this.adapter) {
+			if (this.adapter != null) {
+				this.adapter.unregister(this);
+			}
+			this.adapter = adapter;
+
+			// Trigger an update.
+			update(adapter);
+
+			// Register for updates from the adapter if possible.
+			if (adapter != null) {
+				adapter.register(this);
+			}
+		}
+		return;
+	}
+
+	/**
+	 * This method informs the plot that its associated connection has been
+	 * updated. The plot can then update its contents if it has contributed to
+	 * the UI.
+	 * 
+	 * @param component
+	 *            The component that was updated. This is expected to be the
+	 *            associated {@link ConnectionAdapter}.
+	 */
+	@Override
+	public void update(IUpdateable component) {
+		// If the argument is null, then do nothing. Even if the current adapter
+		// is null, the UI should already be up to date!
+		if (component != null && component == adapter) {
+			// Trigger an update to the UI.
+			updateUI();
+		}
+	}
+	// ---------------------------------------------------------------- //
 }
