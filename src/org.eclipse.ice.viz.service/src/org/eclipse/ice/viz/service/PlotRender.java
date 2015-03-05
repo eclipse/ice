@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
-public class PlotComposite {
+public abstract class PlotRender {
 
 	public final Composite parent;
 	public final MultiPlot plot;
@@ -47,7 +47,7 @@ public class PlotComposite {
 
 	// -------------------- //
 
-	public PlotComposite(Composite parent, MultiPlot plot) {
+	public PlotRender(Composite parent, MultiPlot plot) {
 
 		this.parent = parent;
 		this.plot = plot;

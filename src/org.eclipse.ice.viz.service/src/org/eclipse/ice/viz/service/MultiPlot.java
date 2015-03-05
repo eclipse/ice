@@ -11,9 +11,38 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * This class provides a basic plot capable of drawing in multiple parent
+ * {@code Composite}s simply via the methods provided by the {@link IPlot}
+ * interface.
+ * <p>
+ * For client code that will be drawing these plots, do the following:
+ * <ol>
+ * <li>Call {@link #draw(String, String, Composite)} with a {@code Composite}
+ * and any category and type. This renders (if possible) a plot inside the
+ * specified {@code Composite} based on the specified plot category and type.</li>
+ * <li>Call {@link #draw(String, String, Composite)} with the same
+ * {@code Composite} but different category and type. <i>The plot rendered by
+ * the previous call will have its plot category and type changed.</i></li>
+ * <li>Call {@link #draw(String, String, Composite)} with a {@code Composite}
+ * and any category and type. This renders (if possible) a plot inside the
+ * {@code Composite} based on the specified plot category and type. <i>You now
+ * have two separate renderings based on the same {@code IPlot}.</i></li>
+ * </ol>
+ * </p>
+ * <p>
+ * Sub-classes should override the following methods so that the correct
+ * {@link PlotRender} is created and updated properly:
+ * <ol>
+ * <li>{@link #createPlotRender(Composite)}</li>
+ * <li>{@link #updatePlotRender(PlotRender)}</li>
+ * </ol>
+ * </p>
+ * 
+ * @author Jordan
+ *
+ */
 public abstract class MultiPlot implements IPlot {
-
-	// TODO Implement support for multiple plot Composites.
 
 	/**
 	 * The visualization service responsible for this plot.
@@ -26,9 +55,10 @@ public abstract class MultiPlot implements IPlot {
 	private URI source;
 
 	/**
-	 * The composite responsible for rendering the plot data.
+	 * The map of current {@link PlotRender}s, keyed on their parent
+	 * {@code Composite}s.
 	 */
-	private PlotComposite plotComposite;
+	private final Map<Composite, PlotRender> plotRenders;
 
 	/**
 	 * The default constructor.
@@ -47,6 +77,9 @@ public abstract class MultiPlot implements IPlot {
 
 		this.vizService = vizService;
 
+		// Initialize the map of PlotRenders.
+		plotRenders = new HashMap<Composite, PlotRender>();
+
 		// Set the data source now. This should build any required meta data.
 		setDataSource(file);
 
@@ -64,9 +97,6 @@ public abstract class MultiPlot implements IPlot {
 	@Override
 	public void draw(String category, String plotType, Composite parent)
 			throws Exception {
-		// Get the current parent control.
-		Composite currentParent = (plotComposite != null ? plotComposite.parent
-				: null);
 
 		// Check the parameters.
 		if (category == null || plotType == null || parent == null) {
@@ -75,18 +105,19 @@ public abstract class MultiPlot implements IPlot {
 		} else if (parent.isDisposed()) {
 			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED, "IPlot error: "
 					+ "Cannot draw plot inside disposed Composite.");
-		} else if (currentParent != null && parent != currentParent) {
-			throw new IllegalArgumentException("IPlot error: "
-					+ "Cannot draw same plot in multiple Composites.");
 		}
 
-		// If necessary, create the plotComposite.
-		if (plotComposite == null) {
-			plotComposite = createPlotComposite(parent);
+		final PlotRender plotRender;
 
-			// Send the new plot category and type to the plotComposite.
-			plotComposite.setPlotCategory(category);
-			plotComposite.setPlotType(plotType);
+		// If necessary, create the PlotRender.
+		if (!plotRenders.containsKey(parent)) {
+			// Create it and save it in the map.
+			plotRender = createPlotRender(parent);
+			plotRenders.put(parent, plotRender);
+
+			// Send the new plot category and type to the PlotRender.
+			plotRender.setPlotCategory(category);
+			plotRender.setPlotType(plotType);
 
 			// If we are not on the UI thread, create its content asynchronously
 			// on the UI thread.
@@ -94,24 +125,36 @@ public abstract class MultiPlot implements IPlot {
 				parent.getDisplay().asyncExec(new Runnable() {
 					@Override
 					public void run() {
-						plotComposite.createPlotContent(SWT.NONE);
+						plotRender.createPlotContent(SWT.NONE);
 					}
 				});
 			}
 			// If we are on the UI thread, create the content synchronously.
 			else {
-				plotComposite.createPlotContent(SWT.NONE);
+				plotRender.createPlotContent(SWT.NONE);
 			}
 		} else {
-			// Send the new plot category and type to the plotComposite.
-			plotComposite.setPlotCategory(category);
-			plotComposite.setPlotType(plotType);
+			// Get the existing PlotCopmosite.
+			plotRender = plotRenders.get(parent);
+
+			// Send the new plot category and type to the PlotRender.
+			plotRender.setPlotCategory(category);
+			plotRender.setPlotType(plotType);
 		}
 
-		// Trigger the appropriate update to the plotComposite's content.
-		updatePlotComposite(plotComposite);
+		// Trigger the appropriate update to the PlotRender's content.
+		updatePlotRender(plotRender);
 
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
+	 */
+	public int getNumberOfAxes() {
+		return 0;
 	}
 
 	/*
@@ -144,6 +187,15 @@ public abstract class MultiPlot implements IPlot {
 	@Override
 	public URI getDataSource() {
 		return source;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getSourceHost()
+	 */
+	public String getSourceHost() {
+		return source.getHost();
 	}
 
 	/*
@@ -182,12 +234,27 @@ public abstract class MultiPlot implements IPlot {
 	}
 
 	// ---- UI Widgets ---- //
-	protected PlotComposite createPlotComposite(Composite parent) {
-		return new PlotComposite(parent, this);
-	};
+	/**
+	 * Creates a {@link PlotRender} inside the specified parent
+	 * {@code Composite}. The {@code PlotRender}'s content should not be created
+	 * yet.
+	 * 
+	 * @param parent
+	 *            The parent {@code Composite} that will contain the new
+	 *            {@code PlotRender}.
+	 * @return The new {@code PlotRender}.
+	 */
+	protected abstract PlotRender createPlotRender(Composite parent);
 
-	protected void updatePlotComposite(PlotComposite composite) {
-		plotComposite.refresh();
+	/**
+	 * Updates the specified {@link PlotRender}. The default behavior of this
+	 * method is to call {@link PlotRender#refresh()}.
+	 * 
+	 * @param plotRender
+	 *            The {@code PlotRender} to update.
+	 */
+	protected void updatePlotRender(PlotRender plotRender) {
+		plotRender.refresh();
 	}
 	// -------------------- //
 

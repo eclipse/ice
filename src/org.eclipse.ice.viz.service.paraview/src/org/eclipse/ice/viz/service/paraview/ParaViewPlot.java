@@ -16,14 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.viz.service.MultiPlot;
-import org.eclipse.ice.viz.service.PlotComposite;
-import org.eclipse.ice.viz.service.connections.ConnectionPlot;
+import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
-
-import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class is responsible for embedding ParaView-supported graphics inside
@@ -59,43 +55,61 @@ public class ParaViewPlot extends MultiPlot {
 	 */
 	@Override
 	public Map<String, String[]> getPlotTypes() throws Exception {
-		Map<String, String[]> plotTypes = new HashMap<String, String[]>();
-		plotTypes.put("", new String[] { "" });
-		return plotTypes;
+		return new HashMap<String, String[]>();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
+	 * @see
+	 * org.eclipse.ice.viz.service.MultiPlot#createPlotRender(org.eclipse.swt
+	 * .widgets.Composite)
 	 */
 	@Override
-	public int getNumberOfAxes() {
-		// TODO Auto-generated method stub
-		return 0;
+	protected PlotRender createPlotRender(Composite parent) {
+		// TODO We need a custom PlotRender.
+		return new PlotRender(parent, this) {
+			@Override
+			protected Composite createPlotComposite(Composite parent, int style) {
+				return new Composite(parent, style);
+			}
+
+			@Override
+			protected void updatePlotComposite(Composite plotComposite)
+					throws Exception {
+				int seed = (getPlotCategory() + getPlotType()).hashCode();
+				Random r = new Random(seed);
+				plotComposite.setBackground(new Color(plotComposite
+						.getDisplay(), r.nextInt(255), r.nextInt(255), r
+						.nextInt(255)));
+			}
+		};
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getSourceHost()
+	 * @see
+	 * org.eclipse.ice.viz.service.MultiPlot#updatePlotRender(org.eclipse.ice
+	 * .viz.service.PlotRender)
 	 */
 	@Override
-	public String getSourceHost() {
-		// TODO Auto-generated method stub
-		return null;
+	protected void updatePlotRender(PlotRender plotRender) {
+		// TODO We will need to update it in a custom way.
+		super.updatePlotRender(plotRender);
 	}
 
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see
-//	 * org.eclipse.ice.viz.service.connections.ConnectionPlot#getPreferenceNodeID
-//	 * ()
-//	 */
-//	@Override
-//	protected String getPreferenceNodeID() {
-//		return "org.eclipse.ice.viz.service.paraview.preferences";
-//	}
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see
+	// *
+	// org.eclipse.ice.viz.service.connections.ConnectionPlot#getPreferenceNodeID
+	// * ()
+	// */
+	// @Override
+	// protected String getPreferenceNodeID() {
+	// return "org.eclipse.ice.viz.service.paraview.preferences";
+	// }
 
 }
