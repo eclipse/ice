@@ -922,6 +922,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				final Composite parent0 = new Composite(meshPlotParent, SWT.NONE);
 				Composite parent1 = new Composite(meshPlotParent, SWT.NONE);
 				Composite parent2 = new Composite(meshPlotParent, SWT.NONE);
+				parent0.setLayout(new FillLayout());
+				parent1.setLayout(new FillLayout());
+				parent2.setLayout(new FillLayout());
 				plot.draw("cat0", "type0", parent0);
 				plot.draw("cat1", "type1", parent1);
 				plot.draw("cat2", "type2", parent2);
