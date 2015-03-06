@@ -31,20 +31,15 @@ import org.eclipse.ice.client.widgets.viz.service.IVizService;
  */
 public class CSVVizService implements IVizService {
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getName()
 	 */
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return "ice-plot";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getVersion()
 	 */
 	@Override
@@ -52,22 +47,18 @@ public class CSVVizService implements IVizService {
 		return "2.0";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
 	 * getConnectionProperties()
 	 */
 	@Override
 	public Map<String, String> getConnectionProperties() {
-		// There are no connetion properties, but still an empty map is
+		// There are no connection properties, but still an empty map is
 		// required.
 		return new HashMap<String, String>();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
 	 * setConnectionProperties(java.util.Map)
 	 */
@@ -76,9 +67,7 @@ public class CSVVizService implements IVizService {
 		// Nothing to do
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#connect()
 	 */
 	@Override
@@ -87,30 +76,28 @@ public class CSVVizService implements IVizService {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
+	 * @throws Exception 
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
 	 * .net.URI)
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		// Create and load the plot
+		
+		// Create the plot and load it
 		CSVPlot plot = new CSVPlot(file);
 		plot.load();
+
 		return plot;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
 	 * hasConnectionProperties()
 	 */
 	@Override
 	public boolean hasConnectionProperties() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
