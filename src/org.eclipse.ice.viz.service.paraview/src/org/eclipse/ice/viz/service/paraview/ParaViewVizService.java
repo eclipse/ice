@@ -191,28 +191,15 @@ public class ParaViewVizService extends AbstractVizService {
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
 		ParaViewPlot plot = null;
-		if (canOpenFile(file)) {
-			plot = new ParaViewPlot(this, file);
-			connections.addClient(plot);
-		}
-		return plot;
-	}
 
-	/**
-	 * Determines whether or not the file can be opened in ParaView.
-	 * 
-	 * @param file
-	 *            The file to test. May be {@code null}.
-	 * @return True if the file can be opened in VisIt, false otherwise.
-	 */
-	private boolean canOpenFile(URI file) {
-		boolean canOpen = false;
-		// TODO We need to be able to determine whether the service can actually
-		// plot the file.
-//		if (file != null) {
-			canOpen = true;
-//		}
-		return canOpen;
+		// Create the plot.
+		plot = new ParaViewPlot(this);
+		// Associate the plot with the connection.
+		connections.addClient(plot);
+		// Set the data source for the file.
+		plot.setDataSource(file);
+
+		return plot;
 	}
 
 }

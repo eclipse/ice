@@ -1,5 +1,6 @@
 package org.eclipse.ice.viz.service;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,14 +63,17 @@ public abstract class MultiPlot implements IPlot {
 	private final Map<Composite, PlotRender> plotRenders;
 
 	/**
+	 * A map of the available plot types.
+	 */
+	private final Map<String, String[]> plotTypes;
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param vizService
 	 *            The visualization service responsible for this plot.
-	 * @param file
-	 *            The data source, either a local or remote file.
 	 */
-	public MultiPlot(IVizService vizService, URI file) {
+	public MultiPlot(IVizService vizService) {
 		// Check the parameters.
 		if (vizService == null) {
 			throw new NullPointerException("IPlot error: "
@@ -78,11 +82,9 @@ public abstract class MultiPlot implements IPlot {
 
 		this.vizService = vizService;
 
-		// Initialize the map of PlotRenders.
+		// Initialize any final collections.
 		plotRenders = new HashMap<Composite, PlotRender>();
-
-		// Set the data source now. This should build any required meta data.
-		setDataSource(file);
+		plotTypes = new HashMap<String, String[]>();
 
 		return;
 	}
@@ -125,6 +127,15 @@ public abstract class MultiPlot implements IPlot {
 		updatePlotRender(plotRender);
 
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
+	 */
+	public Map<String, String[]> getPlotTypes() throws Exception {
+		return plotTypes;
 	}
 
 	/*
@@ -194,14 +205,70 @@ public abstract class MultiPlot implements IPlot {
 	 * If the data source is valid and new, then the plot will be updated
 	 * accordingly.
 	 * 
-	 * @param uri
+	 * @param file
 	 *            The new data source URI.
+	 * @throws NullPointerException
+	 *             if the specified file is null
+	 * @throws IOException
+	 *             if there was an error while reading the file's contents
+	 * @throws IllegalArgumentException
+	 *             if there are no plots available
+	 * @throws Exception
+	 *             if there is some other unspecified problem with the file
 	 */
-	protected void setDataSource(URI file) {
-		if (file != null) {
-			source = file;
+	public void setDataSource(URI file) throws NullPointerException,
+			IOException, IllegalArgumentException, Exception {
+
+		// Throw an error if the file is null.
+		if (file == null) {
+			throw new NullPointerException("IPlot error: "
+					+ "The file is null.");
 		}
+
+		// Get the list of new plot types from the sub-class implementation.
+		Map<String, String[]> newPlotTypes = getPlotTypes(file);
+
+		// If empty, throw an IllegalArgumentException.
+		if (newPlotTypes.isEmpty()) {
+			throw new IllegalArgumentException("IPlot error: "
+					+ "No plots available in file.");
+		}
+
+		// Otherwise, replace the contents of plotTypes with the new plot types
+		// from the sub-class.
+		plotTypes.clear();
+		plotTypes.putAll(newPlotTypes);
+
+		// Update the reference to the data source.
+		source = file;
+
+		return;
 	}
+
+	/**
+	 * This operation returns a simple map of plot types that can be created by
+	 * the IPlot using its data source. The map is meant to have a structure
+	 * where each individual key is a type of plot - mesh, scalar, line, etc. -
+	 * with a list of values of all of the plots it can create of that given
+	 * type from the data source. For example, for a CSV file with three columns
+	 * x, y1, y2, y3, the map might be:
+	 * <p>
+	 * key | value<br>
+	 * line | "x vs y1", "x vs y2", "x vs y3"<br>
+	 * scatter | "x vs y1", "x vs y2", "x vs y3"<br>
+	 * contour | "x vs y1", "x vs y2", "x vs y3"
+	 * </p>
+	 * 
+	 * @param file
+	 *            The data source for the file.
+	 * @return The map of valid plot types this plot can be.
+	 * @throws IOException
+	 *             if there was an error while reading the file's contents
+	 * @throws Exception
+	 *             if there is some other unspecified problem with the file
+	 */
+	protected abstract Map<String, String[]> getPlotTypes(URI file)
+			throws IOException, Exception;
 
 	/**
 	 * Gets the visualization service responsible for this plot.

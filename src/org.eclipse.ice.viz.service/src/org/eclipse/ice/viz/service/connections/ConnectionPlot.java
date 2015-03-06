@@ -1,5 +1,7 @@
 package org.eclipse.ice.viz.service.connections;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
@@ -31,13 +33,91 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 	 * 
 	 * @param vizService
 	 *            The visualization service responsible for this plot.
-	 * @param file
-	 *            The data source, either a local or remote file.
 	 */
-	public ConnectionPlot(IVizService vizService, URI file) {
-		super(vizService, file);
+	public ConnectionPlot(IVizService vizService) {
+		super(vizService);
 
 		// Nothing else to do yet.
+	}
+
+	/**
+	 * Sets the data source (which is currently rendered if the plot is drawn).
+	 * If the data source is valid and new, then the plot will be updated
+	 * accordingly.
+	 * <p>
+	 * <b>Note:</b> {@link ConnectionPlot} additionally performs basic checks on
+	 * the files. For instance, it will throw an exception if the file does not
+	 * exist or if there are read permission issues.
+	 * </p>
+	 * 
+	 * @param file
+	 *            The new data source URI.
+	 * @throws NullPointerException
+	 *             if the specified file is null
+	 * @throws IOException
+	 *             if there was an error while reading the file's contents
+	 * @throws IllegalArgumentException
+	 *             if there are no plots available
+	 * @throws Exception
+	 *             if there is some other unspecified problem with the file
+	 */
+	@Override
+	public void setDataSource(URI file) throws NullPointerException,
+			IOException, IllegalArgumentException, Exception {
+
+		// Check that the file's host matches the connection host. Also check
+		// that the file exists. We check that the file is not null so that the
+		// super method can throw the NPE for null files.
+		if (file != null) {
+			// Set up a message in case the file cannot be read by this plot.
+			final String message;
+
+			// TODO We may need to reintroduce this code if we start putting
+			// connection info in the URI.
+			// // Check for a mismatched host.
+			// String fileHost = file.getHost();
+			// String connHost = adapter.getHost();
+			// if (fileHost != null && !fileHost.equals(connHost)) {
+			// message = "The file host \"" + fileHost
+			// + "\" does not match the connection's host \""
+			// + connHost + "\".";
+			// }
+			// // This is necessary in case the file's host is null (localhost).
+			// else if (fileHost == null && adapter.isRemote()) {
+			// message = "The file host is localhost, while the "
+			// + "connection host is \"" + connHost + "\".";
+			// }
+			// else
+
+			// Check that the local file exists and can be read.
+			if (!adapter.isRemote()) {
+				File fileRef = new File(file);
+				if (!fileRef.isFile()) {
+					message = "The path \"" + file
+							+ "\" does not exist or is not a file.";
+				} else if (!fileRef.canRead()) {
+					message = "The file \"" + file + "\" cannot be read.";
+				}
+				// Otherwise, there is no problem.
+				else {
+					message = null;
+				}
+			}
+			// Check that the remote file exists and can be read.
+			else {
+				// TODO We need to find a way to check remote files...
+				message = null;
+			}
+
+			// Throw an exception if necessary.
+			if (message != null) {
+				throw new IllegalArgumentException("IPlot error: " + message);
+			}
+		}
+
+		// Proceed with the super class' methods for error checking and setting
+		// the data source.
+		super.setDataSource(file);
 	}
 
 	// ---- Implements IConnectionClient (and IUpdateableListener) ---- //

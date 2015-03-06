@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,22 +42,9 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	 * 
 	 * @param service
 	 *            The visualization service responsible for this plot.
-	 * @param file
-	 *            The data source, either a local or remote file.
 	 */
-	public ParaViewPlot(ParaViewVizService vizService, URI file) {
-		super(vizService, file);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
-	 */
-	@Override
-	public Map<String, String[]> getPlotTypes() throws Exception {
-		// TODO
-		return new HashMap<String, String[]>();
+	public ParaViewPlot(ParaViewVizService vizService) {
+		super(vizService);
 	}
 
 	/*
@@ -74,14 +62,14 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.MultiPlot#updatePlotRender(org.eclipse.ice
-	 * .viz.service.PlotRender)
+	 * @see org.eclipse.ice.viz.service.MultiPlot#getPlotTypes(java.net.URI)
 	 */
 	@Override
-	protected void updatePlotRender(PlotRender plotRender) {
-		// TODO We will need to update it in a custom way.
-		super.updatePlotRender(plotRender);
+	protected Map<String, String[]> getPlotTypes(URI file) throws IOException,
+			Exception {
+		// TODO This needs to build from the contents of the file via the JSON
+		// RPC calls.
+		return new HashMap<String, String[]>();
 	}
 
 }
