@@ -113,4 +113,29 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 *         occurred, false otherwise.
 	 */
 	boolean setConnectionProperties(List<Entry> properties);
+
+	/**
+	 * A convenience method to get the host for the connection. This will be
+	 * either "localhost" or some other hostname/IP address.
+	 * 
+	 * @return The hostname.
+	 */
+	String getHost();
+
+	/**
+	 * A convenience method to get the port for the connection. This should be a
+	 * valid port value.
+	 * 
+	 * @return The port for the connection, or -1 if the port is not required.
+	 */
+	int getPort();
+
+	/**
+	 * A convenience method to determine whether the associated connection is to
+	 * a remote device.
+	 * 
+	 * @return True if the connection is remote, false otherwise (regardless of
+	 *         connection state).
+	 */
+	boolean isRemote();
 }
