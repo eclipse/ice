@@ -193,7 +193,7 @@ public class ParaViewVizService extends AbstractVizService {
 		ParaViewPlot plot = null;
 		if (canOpenFile(file)) {
 			plot = new ParaViewPlot(this, file);
-//			connections.addClient(plot);
+			connections.addClient(plot);
 		}
 		return plot;
 	}
@@ -207,6 +207,8 @@ public class ParaViewVizService extends AbstractVizService {
 	 */
 	private boolean canOpenFile(URI file) {
 		boolean canOpen = false;
+		// TODO We need to be able to determine whether the service can actually
+		// plot the file.
 //		if (file != null) {
 			canOpen = true;
 //		}
