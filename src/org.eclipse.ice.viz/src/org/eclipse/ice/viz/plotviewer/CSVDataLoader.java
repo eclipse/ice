@@ -118,7 +118,7 @@ public class CSVDataLoader {
 	 * @return The contents of the CSV file as a CSVDataProvider object
 	 * @throws Exception
 	 */
-	public CSVDataProvider load(File csvInputFile) {
+	public CSVDataProvider load(File csvInputFile) throws Exception {
 		// Local Declarations
 		CSVDataProvider dataSet = new CSVDataProvider();
 		ArrayList<String> features = new ArrayList<String>();
@@ -312,8 +312,13 @@ public class CSVDataLoader {
 					/**
 					 * Instantiate a new CSVData object
 					 */
-					data = new CSVData(features.get(i),
-							Double.parseDouble(dataLines[i]));
+					if (features.size() == dataLines.length) {
+						data = new CSVData(features.get(i),
+								Double.parseDouble(dataLines[i]));
+					} else {
+						throw new Exception("CSV file in an unexpected format, "
+								+ "data must be a (m x n) matrix");
+					}
 					/**
 					 * Set the units if the units exist
 					 */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2012, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,17 +13,11 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 
 import java.util.ArrayList;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -34,7 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The Entry class is responsible for collecting and managing the individual
  * values needed by the Item to perform a task. The Entry class is capable of
@@ -97,8 +90,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * </p>
  * <p>
  * Entry is a subclass of ICEObject. It overrides ICEObject.copy(),
- * ICEObject.clone() and ICEObject.loadFromXML() as specified and required by
- * the ICEObject class.
+ * ICEObject.clone() as specified and required by the ICEObject class.
  * </p>
  * <p>
  * Giving one Entry priority over another can be done in a couple of different
@@ -108,262 +100,149 @@ import javax.xml.bind.annotation.XmlTransient;
  * required for computation and prioritized higher than others that are not
  * required.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 @XmlRootElement(name = "Entry")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Entry extends ICEObject implements IUpdateable {
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The default value of the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	protected String defaultValue;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This list stores either the exact values that the Entry may have or a
 	 * range in which the value of the Entry must exist depending on the
 	 * AllowedValueType.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "AllowedValues")
 	protected ArrayList<String> allowedValues;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The value of the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	protected String value;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This attribute describes the types of values that Entry will accept and
 	 * is equal to AllowedValueType.Undefined if the Entry is created with the
 	 * simple constructor.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "AllowedValueType")
 	protected AllowedValueType allowedValueType;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * A String attribute where a comment about the Entry can be stored.
+	 */
+	@XmlElement(name = "Comment")
+	protected String comment;
+	
+	/**
 	 * This attribute stores the state of the Entry as either true if the Entry
 	 * is ready to be addressed and false if the Entry is not ready. This
 	 * attribute is true by default.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	protected boolean ready;
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This attribute describes the "changed" state of the Entry. It has a value
 	 * of true if the Entry's value was recently set and false if the Entry has
 	 * not changed or was recently updated. It defaults to false.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	// Binding set here instead of on a getter and setter because this is an
-	// internally set variable that is only available for public inspection.
-	// ~JJB 20120314 14:51
 	@XmlAttribute()
 	protected boolean changeState;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * True if the content of the Entry should be treated as something secret
 	 * and needs to be obscured from open view or print. Its default value is
 	 * false.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	// Binding set here instead of on a getter and setter because this is an
-	// internally set variable that is only available for public inspection.
-	// ~JJB 20120314 14:56
 	@XmlAttribute()
 	protected boolean secretFlag;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The name of the Entry that is the parent of this Entry. Parent Entries
 	 * are used, for example, to create dependencies among Entries such that
 	 * some subset of the Entries will not become available to update until the
 	 * parent notifies them that they should be ready.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	protected String parent;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The tag of an Entry is a secondary descriptive value that may be used to
 	 * "tag" an Entry with a small note or additional value. This information
-	 * should not be used in the UI! Another way to thing of the tag of an Entry
+	 * should not be used in the UI! Another way to think of the tag of an Entry
 	 * is to consider it as a second name that could be used, for example, when
 	 * writing to a file or stream where human readability is less of a factor
 	 * than the ability to parse the stream, (such as key-value pairs).
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	protected String tag;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This attribute stores a human-readable reason for rejecting an invalid
 	 * value passed to setValue(). It may be retrieved by calling
 	 * getErrorMessage().
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	protected String errorMessage = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The template for the error that is returned for set value if the allowed
 	 * value type is continuous.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	protected String continuousErrMsg = "'${incorrectValue}' is an unacceptable value. The value must be between ${lowerBound} and ${upperBound}.";
+	protected String continuousErrMsg = "'${incorrectValue}' is an "
+			+ "unacceptable value. The value must be between ${lowerBound} "
+			+ "and ${upperBound}.";
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The template for the error that is returned for set value if the allowed
 	 * value type is discrete.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	protected String discreteErrMsg = "'${incorrectValue}' is an unacceptable value. The value must be one of ${allowedValues}.";
+	protected String discreteErrMsg = "'${incorrectValue}' is an unacceptable "
+			+ "value. The value must be one of ${allowedValues}.";
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * The content provider for the Entry.
 	 */
 	@XmlAnyElement()
 	@XmlElementRef(name = "BasicEntryContentProvider", type = BasicEntryContentProvider.class)
 	protected IEntryContentProvider iEntryContentProvider;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This attribute indicates whether or not the Entry should be considered as
 	 * a required quantity.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected boolean required = false;
 	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * A constructor that will create an Entry with only a unique ID and a name.
 	 * Default values are set:
-	 * </p>
 	 * <ul>
-	 * <li>
-	 * <p>
-	 * objectDescription = "Entry" + uniqueId
-	 * </p>
-	 * </li>
-	 * <li>
-	 * <p>
-	 * defaultValue = ""
-	 * </p>
-	 * </li>
-	 * <li>
-	 * <p>
-	 * allowedValues = null
-	 * </p>
-	 * </li>
-	 * <li>
-	 * <p>
-	 * allowedValueType = AllowedValueType.Undefined
-	 * </p>
-	 * </li>
+	 * <li>objectDescription = "Entry" + uniqueId</li>
+	 * <li>defaultValue = ""</li>
+	 * <li>allowedValues = null</li>
+	 * <li>allowedValueType = AllowedValueType.Undefined</li>
 	 * </ul>
-	 * <p>
 	 * The constructor will call the setup function after setting the default
 	 * values. The setup function can be overridden to tailor the properties of
 	 * the Entry or otherwise overload the behavior of the Entry.
-	 * </p>
-	 * <p>
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	public Entry() {
-		// begin-user-code
 
 		// Set everything else to the default values
 		objectDescription = "Entry " + this.uniqueId;
 		defaultValue = "";
 		allowedValues = new ArrayList<String>();
 		allowedValueType = AllowedValueType.Undefined;
+		comment = "";
 		parent = "orphan";
 		ready = true;
 		changeState = false;
@@ -398,22 +277,15 @@ public class Entry extends ICEObject implements IUpdateable {
 		// Setup the list of Listeners
 		listeners = new ArrayList<IUpdateableListener>();
 
-		// end-user-code
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * A constructor that sets the entry to the content provider.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param contentProvider
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Entry(IEntryContentProvider contentProvider) {
-		// begin-user-code
 
 		// Call the super constructor
 		this();
@@ -422,72 +294,41 @@ public class Entry extends ICEObject implements IUpdateable {
 		if (contentProvider != null) {
 			this.iEntryContentProvider = contentProvider;
 		}
-
-		// end-user-code
+		
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This Entry returns the allowed values for the Entry and should only be
 	 * used when the AllowedValueType is defined as Discrete, in which case the
 	 * value must equal one of the allowed values. These allowed values types
 	 * should not be used to check the submitted value because the Entry class
 	 * will handle its own error checking upon the submission of a value in
 	 * setValue().
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The allowed values for the Entry.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return	The allowed values for the Entry.
 	 */
 	public ArrayList<String> getAllowedValues() {
-		// begin-user-code
+
 		return this.iEntryContentProvider.getAllowedValues();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the default value of the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The default value of the Entry.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return	The default value of the Entry.
 	 */
 	public String getDefaultValue() {
-		// begin-user-code
-
-		// Get from BECP!
-
 		return this.iEntryContentProvider.getDefaultValue();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the current value of the Entry or the default
 	 * value if no other has been specified.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The current value of the Entry.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The current value of the Entry.
 	 */
 	public String getValue() {
-		// begin-user-code
 
 		// Make sure there is a default value that makes sense - If it wasn't
 		// set in construction but allowed values were provided, it should be
@@ -503,96 +344,90 @@ public class Entry extends ICEObject implements IUpdateable {
 		// BECP, value is from Entry.
 		return (value != null) ? value : this.iEntryContentProvider
 				.getDefaultValue();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation returns the type of value that is stored in the Entry. A
-	 * response type of AllowedValueType.Discrete means that the answer must be
-	 * one of the values from getAllowedValues(), a response of
-	 * AllowedValueTypes.Continuous means that the value must exist within the
-	 * range of the maximum and minimum of the values from getAllowedValues()
-	 * and AllowedValueType.Undefined means that the response will not be
-	 * checked. Please note that the Entry class will check the validity of the
+	 * This operation returns the type of value that is stored in the Entry.
+	 * </p>
+	 * <p>
+	 * A response type of AllowedValueType.Discrete means that the answer must 
+	 * be one of the values from getAllowedValues(). 
+	 * </p>
+	 * <p>
+	 * A response of AllowedValueTypes.Continuous means that the value must 
+	 * exist within the range of the maximum and minimum of the values from 
+	 * getAllowedValues().
+	 * </p>
+	 * <p>
+	 * A response of AllowedValueType.Undefined means that the response will 
+	 * not be checked. 
+	 * </p>
+	 * <p>
+	 * A response of AllowedValueType.File means that the response will not be
+	 * checked just like an Undefined type, but should only be used for values
+	 * that represent actual files. File entries render differently in the UI.
+	 * </p>
+	 * <p>
+	 * Please note that the Entry class will check the validity of the
 	 * values submitted to it and the information returned from this method is
 	 * purely for information purposes (deciding how to draw the client, etc.).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The AllowedValueType for the Entry.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The AllowedValueType for the Entry.          
 	 */
 	public AllowedValueType getValueType() {
-		// begin-user-code
 		return this.iEntryContentProvider.getAllowedValueType();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation returns true if the Entry should be addressed and false if
-	 * the Entry is not ready to be addressed (waiting on a parent Entry, etc.).
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * Set the comment on the Entry. Empty strings are permitted.
 	 * 
-	 * @return <p>
-	 *         The readiness state of the Entry.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param comment	The comment to set on the Entry.
 	 */
-	public boolean isReady() {
-		// begin-user-code
-		return this.ready;
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation returns true if the Entry's value was recently set and
-	 * false if the Entry's value has not been changed or if the Entry was
-	 * recently updated.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @return <p>
-	 *         True if the Entry's value was recently set, false if the Entry's
-	 *         value has not been set or if the Entry was recently updated.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public boolean isModified() {
-		// begin-user-code
-		return this.changeState;
-		// end-user-code
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * Get the value of the Entry's comment.
+	 * 
+	 * @return	The comment.
+	 */
+	public String getComment() {
+		return this.comment;
+	}
+	
+	/**
+	 * This operation returns true if the Entry should be addressed and false if
+	 * the Entry is not ready to be addressed (waiting on a parent Entry, etc.).
+	 * 
+	 * @return	The readiness state of the Entry.
+	 */
+	public boolean isReady() {
+		return this.ready;
+	}
+
+	/**
+	 * This operation returns true if the Entry's value was recently set and
+	 * false if the Entry's value has not been changed or if the Entry was
+	 * recently updated.
+	 * 
+	 * @return True if the Entry's value was recently set, false if the Entry's
+	 *         value has not been set or if the Entry was recently updated.
+	 */
+	public boolean isModified() {
+		return this.changeState;
+	}
+	
+	/**
 	 * This operation stores the name of an Entry on which this Entry is
 	 * dependent. The "parent" Entry must be evaluated and notify this Entry by
 	 * calling update() before this Entry will mark itself as ready.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param parentName
-	 *            <p>
-	 *            The name of the parent Entry.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param parentName	The name of the parent Entry.           
 	 */
 	public void setParent(String parentName) {
-		// begin-user-code
 
 		// Take the parent name so long as it is not null
 		if (parentName != null) {
@@ -600,27 +435,16 @@ public class Entry extends ICEObject implements IUpdateable {
 		}
 
 		return;
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the name of the Entry on which this Entry is
 	 * dependent. The "parent" Entry must be evaluated and notify this Entry by
 	 * calling update() before this Entry will mark itself as ready.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The name of the parent Entry.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The name of the parent Entry.
 	 */
 	public String getParent() {
-		// begin-user-code
 
 		// The default parent value should not be returned. That would open the
 		// Entry up to updates without actually registering a parent.
@@ -629,30 +453,17 @@ public class Entry extends ICEObject implements IUpdateable {
 		}
 
 		return iEntryContentProvider.getParent();
-		// end-user-code
+		
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the value of the Entry to newValue and returns true
 	 * if it is successful.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param newValue
-	 *            <p>
-	 *            The new value of the Entry. This value will be checked by the
-	 *            Entry for validity.
-	 *            </p>
-	 * @return <p>
-	 *         True if setValue worked, false otherwise.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param newValue	The new value of the Entry. This value will be checked 
+	 * 					by the Entry for validity.
+	 * @return 			True if setValue worked, false otherwise.
 	 */
 	public boolean setValue(String newValue) {
-		// begin-user-code
 
 		// Local Declarations
 		Double lowerBound, upperBound, newValueDouble;
@@ -786,40 +597,24 @@ public class Entry extends ICEObject implements IUpdateable {
 			notifyListeners();
 		}
 		return returnCode;
-		// end-user-code
 	}
 	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the readiness state of the Entry to the value of
 	 * isReady.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param isReady
-	 *            <p>
-	 *            The value to which the readiness state of the Entry should be
-	 *            set.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param isReady 	The value to which the readiness state of the Entry 
+	 * 					should be set.          
 	 */
 	public void setReady(boolean isReady) {
-		// begin-user-code
 		this.ready = isReady;
-		// end-user-code
+		return;
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * 
 	 * @see IUpdateable#update(String updatedKey, String newValue)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(String updatedKey, String newValue) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> readyEquivalentValues = new ArrayList<String>();
@@ -861,54 +656,28 @@ public class Entry extends ICEObject implements IUpdateable {
 		}
 
 		return;
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets up the allowed values and allowed value type of the
 	 * Entry. Default values and the "secret" flag are also specified in this
 	 * operation. It is called during construction and should be overloaded to
-	 * tailor the Entry. Note for JPA Database Persistence: If this operation is
-	 * overridden, it must be "cloned" and reinserted into it's component class
-	 * before being inserted into the database because JPA can not handle
-	 * overridden classes during runtime.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * tailor the Entry.
 	 */
 	protected void setup() {
-		// begin-user-code
-
 		// No default implementation
 		return;
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This method is used to check equality between the Entry and another
 	 * Entry. It returns true if the Entries are equal and false if they are
 	 * not.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param otherEntry
-	 *            <p>
-	 *            The Entry that should be checked for equality.
-	 *            </p>
-	 * @return <p>
-	 *         True if the Entries are equal, false if not
-	 *         </p>
+	 * @param otherEntry	The Entry that should be checked for equality.
+	 * @return 				True if the Entries are equal, false if not
 	 */
 	public boolean equals(Object otherEntry) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean retVal = false;
@@ -929,6 +698,7 @@ public class Entry extends ICEObject implements IUpdateable {
 						&& (this.objectDescription
 								.equals(other.objectDescription))
 						// Check data not available on the provider
+						&& (this.comment.equals(other.comment))
 						&& (this.ready == other.ready)
 						&& (this.changeState == other.changeState)
 						&& (this.secretFlag == other.secretFlag)
@@ -940,24 +710,14 @@ public class Entry extends ICEObject implements IUpdateable {
 			}
 		}
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the hashcode value of the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The hashcode
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The hashcode
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declarations
 		int hash = 8;
@@ -967,62 +727,40 @@ public class Entry extends ICEObject implements IUpdateable {
 		hash = 31 * hash + (this.ready ? 1 : 0);
 		hash = 31 * hash + (this.changeState ? 1 : 0);
 		hash = 31 * hash + (this.secretFlag ? 1 : 0);
+		hash = 31 * hash + (null == this.comment ? 0 : this.comment.hashCode());
 		hash = 31 * hash + (null == this.value ? 0 : this.value.hashCode());
-		hash = 31
-				* hash
-				+ (null == this.defaultValue ? 0 : this.defaultValue.hashCode());
+		hash = 31 * hash + (null == this.defaultValue ? 
+								0 : this.defaultValue.hashCode());
 		hash = 31 * hash + (null == this.parent ? 0 : this.parent.hashCode());
-		hash = 31
-				* hash
-				+ (null == this.allowedValues ? 0 : this.allowedValues
-						.hashCode());
-		hash = 31
-				* hash
-				+ (null == this.allowedValueType ? 0 : this.allowedValueType
-						.hashCode());
+		hash = 31 * hash + (null == this.allowedValues ? 
+								0 : this.allowedValues.hashCode());
+		hash = 31 * hash + (null == this.allowedValueType ? 
+								0 : this.allowedValueType.hashCode());
 		hash = 31 * hash + (null == this.tag ? 0 : this.tag.hashCode());
 		hash = 31 * hash + this.iEntryContentProvider.hashCode();
 		hash = 31 * hash + (required ? 1 : 0);
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns true if the Entry is "secret" and its contents
 	 * should be obscured if displayed or printed and false if not.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return	True if the entry is "secret", false otherwise.
 	 */
 	public boolean isSecret() {
-		// begin-user-code
 		return secretFlag;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation performs a deep copy of the attributes of another Entry
 	 * into the current Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param otherEntry
-	 *            <p>
-	 *            The Entry from which information should be copied.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param otherEntry The Entry from which information should be copied.         
 	 */
 	public void copy(Entry otherEntry) {
-		// begin-user-code
+		
 		// if entry is null, return
 		if (otherEntry == null) {
 			return;
@@ -1035,6 +773,7 @@ public class Entry extends ICEObject implements IUpdateable {
 		this.allowedValueType = otherEntry.allowedValueType;
 		this.changeState = otherEntry.changeState;
 		this.defaultValue = otherEntry.defaultValue;
+		this.comment = otherEntry.comment;
 		this.ready = otherEntry.ready;
 		this.value = otherEntry.value;
 		this.secretFlag = otherEntry.secretFlag;
@@ -1051,110 +790,78 @@ public class Entry extends ICEObject implements IUpdateable {
 
 		// Notify all of the people watching this Entry
 		notifyListeners();
-
-		// end-user-code
+		
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation provides a deep copy of the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         A clone of the Entry.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return A clone of the Entry.
+    
 	 */
 	public Object clone() {
-		// begin-user-code
-		// Create a new instance, copy contents, and return it
 
-		// create a new instance of entry and copy contents
+		// Create a new instance of entry and copy the contents
 		Entry entry = new Entry();
 		entry.copy(this);
 
-		// return
 		return entry;
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the Entry's tag.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The Entry's tag.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The Entry's tag.    
 	 */
 	public String getTag() {
-		// begin-user-code
 		return this.iEntryContentProvider.getTag();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the tag of the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param tagValue
-	 *            <p>
-	 *            The Entry's new tag.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param tagValue The Entry's new tag.   
 	 */
 	public void setTag(String tagValue) {
-		// begin-user-code
-
+		
 		this.tag = tagValue;
 		this.iEntryContentProvider.setTag(tagValue);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns a human-readable reason for a rejected value
 	 * passed to setValue().
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The error message. If the AllowedValueType of the Entry is
-	 *         Continuous, it will be an error of the form
-	 *         "'${incorrectValue}' in an unacceptable value. The value must be between ${lowerBound} and ${upperBound}."
+	 *         Continuous, it will be an error of the form:
+	 *         </p>
+	 *         <p>
+	 *         <b>'${incorrectValue}' in an unacceptable value. The value must be 
+	 *         between ${lowerBound} and ${upperBound}.</b>
+	 *         </p>
+	 *         <p>
 	 *         If the AllowedValueType is Discrete, it will be an error of the
-	 *         form
-	 *         "'${incorrectValue}' in an unacceptable value. The value must be one of ${allowedValues}."
+	 *         form:
+	 *         </p>
+	 *         <p>
+	 *         <b>'${incorrectValue}' in an unacceptable value. The value must 
+	 *         be one of ${allowedValues}.</b>
+	 *         </p>
+	 *         <p>
 	 *         The variables are:
 	 *         </p>
-	 *         <p>
-	 *         ${incorrectValue} - The incorrect value submitted to setValue()
-	 *         </p>
-	 *         <p>
-	 *         ${lowerBound} - The lower bound of the range.
-	 *         </p>
-	 *         <p>
-	 *         ${upperBound} - The upper bound of the range
-	 *         </p>
-	 *         <p>
-	 *         ${allowedValue} - The entire set of allowed values for
-	 *         AllowedValueType.Discrete.
-	 *         </p>
+	 *         <ul>
+	 *         <li> ${incorrectValue} - The incorrect value submitted to 
+	 *         setValue()</li>
+	 *         <li>${lowerBound} - The lower bound of the range</li>
+	 *         <li>${upperBound} - The upper bound of the range</li>
+	 *         <li>${allowedValue} - The entire set of allowed values for
+	 *         AllowedValueType.Discrete.</li>
+	 *         </ul>
 	 *         <p>
 	 *         An error message will never be posted if the type is
 	 *         AllowedValueType.Undefined and this value will be null.
@@ -1162,76 +869,46 @@ public class Entry extends ICEObject implements IUpdateable {
 	 *         <p>
 	 *         If the value of setValue() was accepted, this operation will
 	 *         return null.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 *         </p>            
 	 */
 	public String getErrorMessage() {
-		// begin-user-code
-		// TODO Auto-generated method stub
 		return this.errorMessage;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * Sets the content provider. Resets the value to null.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param contentProvider
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param contentProvider	The content provider.          
 	 */
 	public void setContentProvider(IEntryContentProvider contentProvider) {
-		// begin-user-code
+		
 		if (contentProvider != null) {
 			this.iEntryContentProvider = contentProvider;
 		}
 
-		// end-user-code
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns true if the Entry should be treated as a required
 	 * quantity.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         True if required, false if not.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return True if required, false if not.        
 	 */
 	public boolean isRequired() {
-		// begin-user-code
 		return required;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the marks the Entry as required or not to indicate
 	 * where or not it should be treated as a required quantity.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param entryRequired
-	 *            <p>
-	 *            The value to which the required state of the Entry should be
-	 *            set; true if required, false if not.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 *        	The value to which the required state of the Entry should be
+	 *          set; true if required, false if not.          
 	 */
 	public void setRequired(boolean entryRequired) {
-		// begin-user-code
 		required = entryRequired;
-		// end-user-code
+		return;
 	}
 }

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
@@ -31,9 +30,8 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.item.Item;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
-import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.jobprofile.JobProfile;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -160,6 +158,7 @@ public class JobProfileTester {
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(JobLauncher.class);
+		classList.add(ResourceComponent.class);
 		launcher = (JobLauncher) xmlHandler.read(classList, inputStream);
 		
 		// check contents of JobLauncher (item portion). Should be default
