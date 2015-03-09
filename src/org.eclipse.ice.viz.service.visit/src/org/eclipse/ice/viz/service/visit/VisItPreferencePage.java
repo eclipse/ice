@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.IKeyChangeListener;
@@ -268,6 +269,17 @@ public class VisItPreferencePage extends AbstractVizPreferencePage implements
 			}
 		}
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractVizPreferencePage#getVizService()
+	 */
+	@Override
+	protected IVizService getVizService() {
+		return VisItVizService.getInstance();
 	}
 
 }

@@ -11,10 +11,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
+import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
@@ -83,6 +85,17 @@ public abstract class AbstractVizPreferencePage extends
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 */
+	@Override
+	public void init(IWorkbench workbench) {
+		setDescription(getVizService().getName() + " Preferences");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
 	 */
 	protected IPreferenceStore doGetPreferenceStore() {
@@ -101,4 +114,8 @@ public abstract class AbstractVizPreferencePage extends
 		return new CustomScopedPreferenceStore(getClass());
 	}
 
+	/**
+	 * Gets the IVizService whose preferences are displayed here.
+	 */
+	protected abstract IVizService getVizService();
 }
