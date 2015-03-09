@@ -38,49 +38,29 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the HdfWriterFactory class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class HdfWriterFactoryTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation conducts any required initialization for the tests.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
-	public static void beforeClass() {
-		// begin-user-code
-
-		// end-user-code
-	}
+	public static void beforeClass() {}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the createFloatDatatype, createH5Group, and
 	 * createIntegerH5Datatype operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreators() {
-		// begin-user-code
-
 		// Local declarations
 		String separator = System.getProperty("file.separator");
 		String testFileName = "hdfWriterFactoryFile1.h5";
@@ -205,25 +185,16 @@ public class HdfWriterFactoryTester {
 		if (dataFile.exists()) {
 			dataFile.delete();
 		}
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the writeDoubleAttribute, writeStringAttribute, and
 	 * writeIntegerAttribute operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkWriters() {
-		// begin-user-code
-
 		// Local declarations
 		String separator = System.getProperty("file.separator");
 		String testFileName = "hdfWriterFactoryFile2.h5";
@@ -368,7 +339,5 @@ public class HdfWriterFactoryTester {
 		if (dataFile.exists()) {
 			dataFile.delete();
 		}
-
-		// end-user-code
 	}
 }

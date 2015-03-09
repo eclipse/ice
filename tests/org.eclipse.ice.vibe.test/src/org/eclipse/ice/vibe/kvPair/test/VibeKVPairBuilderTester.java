@@ -53,8 +53,6 @@ public class VibeKVPairBuilderTester {
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
-
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = null;
@@ -91,9 +89,7 @@ public class VibeKVPairBuilderTester {
 
 		// Set the global project reference.
 		projectSpace = project;
-
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -103,10 +99,7 @@ public class VibeKVPairBuilderTester {
 	 */
 	@Test
 	public void checkGetItemType() {
-		// Load it up
 		VibeKVPairBuilder vibeKVBuilder = new VibeKVPairBuilder();
-
-		// Check the ItemType
 		assertEquals(ItemType.Model, vibeKVBuilder.getItemType());
 	}
 
@@ -138,10 +131,7 @@ public class VibeKVPairBuilderTester {
 	 */
 	@Test
 	public void checkGetItemName() {
-		// Create it
 		VibeKVPairBuilder vibeKVBuilder = new VibeKVPairBuilder();
-
-		// Check the ItemName
 		assertEquals("VIBE Key-Value Pair", vibeKVBuilder.getItemName());
 	}
 	
@@ -154,7 +144,6 @@ public class VibeKVPairBuilderTester {
 			projectSpace.close(null);
 			projectSpace.delete(true, null);
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			fail("Could not clean up project space");
 		}

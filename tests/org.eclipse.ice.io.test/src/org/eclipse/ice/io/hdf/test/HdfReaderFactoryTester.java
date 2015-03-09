@@ -41,26 +41,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the HdfReaderFactory class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class HdfReaderFactoryTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation conducts any required initialization for the tests.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeClass() {
@@ -70,15 +61,10 @@ public class HdfReaderFactoryTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getChildH5Group, getChildH5Groups, and
 	 * getDataset operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetters() {
@@ -258,15 +244,10 @@ public class HdfReaderFactoryTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the readDoubleAttribute, readStringAttribute, and
 	 * readIntegerAttribute operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkReaders() {

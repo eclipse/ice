@@ -19,7 +19,7 @@ import org.eclipse.ice.item.ItemType;
 
 /**
  * The ItemBuilder for the VibeKVPair Item.
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Andrew Bennett
  *
  */
 public class VibeKVPairBuilder implements ItemBuilder {
