@@ -391,7 +391,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * org.eclipse.ice.viz.service.connections.IConnectionAdapter#isRemote()
 	 */
 	public boolean isRemote() {
-		return "localhost".equals(getHost());
+		return !("localhost".equals(getHost()));
 	}
 
 	// ------------------------ //
