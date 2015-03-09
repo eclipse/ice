@@ -71,7 +71,7 @@ import org.yaml.snakeyaml.Yaml;
  * is, so they must be setup as child exemplars on a TreeComposite.
  * </p>
  * 
- * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey, Anna Wojtowicz         
+ * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  */
 public class MOOSEFileHandler implements IReader, IWriter {
 
@@ -80,7 +80,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 */
 	private static boolean debugFlag = false;
 
-	// Set the debug flag
+	/**
+	 * Set the debug flag
+	 */
 	static {
 		if (System.getProperty("DebugICE") != null) {
 			debugFlag = true;
@@ -313,7 +315,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *         parameters and exemplar children. Any parameters in a
 	 *         TreeComposite are contained in a DataComponent. The id of the
 	 *         data component is 1.
-	 * @throws IOException       
+	 * @throws IOException
 	 */
 	public ArrayList<TreeComposite> loadYAML(String filePath)
 			throws IOException {
@@ -571,7 +573,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		}
 		
 		return newTrees;
-		
 	}
 
 	/**
@@ -675,9 +676,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			dumpInputFile(uri.getPath(), children);
 		} else {
 			throw new IllegalArgumentException(
-					"Error: MOOSEFileHandler.write() expects a Form "
-							+ "with a MOOSE TreeComposite with Id = MOOSEModel.mooseTreeCompositeId. "
-							+ "Write failed.");
+					"Error: MOOSEFileHandler.write() expects a Form with a "
+					+ "MOOSE TreeComposite at ID = " 
+					+ MOOSEModel.mooseTreeCompositeId + ". Write failed.");
 		}
 
 		return;
@@ -695,7 +696,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			throw new OperationNotSupportedException("MOOSEFileHandler Error: "
 					+ "IWriter.replace() is not supported.");
 		} catch (OperationNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -731,7 +731,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		// Make sure we have a valid file reference
 		if (file != null && file.exists()) {
-			// Local Declarations
+
+			// Local declarations
 			File mooseFile = new File(file.getLocationURI());
 			ArrayList<TreeComposite> blocks = null;
 			TreeComposite rootNode = new TreeComposite();
@@ -761,8 +762,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				if (blocks != null) {
 					for (TreeComposite block : blocks) {
 						// Clone the block
-						TreeComposite blockClone = (TreeComposite) block
-								.clone();
+						TreeComposite blockClone = 
+								(TreeComposite) block.clone();
 
 						// Don't want to do this if the file is a YAML file.
 						if (!fileExt.toLowerCase().equals("yaml")) {
@@ -802,14 +803,13 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	/**
 	 * This realization of IReader.findAll() reads a Form in from the given file
-	 * reference and walks the corresponding TreeComposite for occurences of the 
+	 * reference and walks the corresponding TreeComposite for occurrences of the 
 	 * given regular expression.
 	 * 
 	 * @param file
 	 *            The reference to the file we are searching in.
 	 * @param regex
 	 *            The regular expression we should search for.
-	 * 
 	 */
 	@Override
 	public ArrayList<Entry> findAll(IFile file, String regex) {
@@ -827,28 +827,27 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		}
 
 		// Walk the tree and get all Entries that may represent a file
-		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-				tree);
+		BreadthFirstTreeCompositeIterator iter = 
+				new BreadthFirstTreeCompositeIterator(tree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
+			
 			// Make sure we have a valid DataComponent
 			if (child.getActiveDataNode() != null) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
 				for (Entry e : data.retrieveAllEntries()) {
+					
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
 					if (!"false".equals(e.getTag()) && e.getValue() != null
 							&& !e.getValue().isEmpty()
-							&& e.getName().toLowerCase().contains(regex) // FIXME
-																			// USE
-																			// REG
-																			// EXPS
+							&& e.getName().toLowerCase().contains(regex) 
 							&& !e.getName().toLowerCase().contains("profile")) {
+						
 						// If this Entry does not have a very descriptive name
 						// we should reset its name to the block it belongs to
 						if ("file".equals(e.getName().toLowerCase())
-								|| "data_file"
-										.equals(e.getName().toLowerCase())) {
+								|| "data_file".equals(e.getName().toLowerCase())) {
 							e.setName(child.getName());
 						}
 						retEntries.add((Entry) e.clone());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
@@ -46,16 +47,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class tests the MOOSEModel Item to make sure that it can correctly
  * create its Form and process a modified Form.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MOOSEModelTester {
 
@@ -70,19 +65,11 @@ public class MOOSEModelTester {
 	private static IOService service;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets up the workspace. It copies the necessary MOOSE data
 	 * files into ${workspace}/MOOSE.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -165,23 +152,14 @@ public class MOOSEModelTester {
 		service.addReader(new MOOSEFileHandler());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the MOOSEModel and makes sure that it can properly
 	 * construct its Form.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Create a MOOSEModel to test
 		MOOSEModel model = setupMOOSEItem();
@@ -189,11 +167,12 @@ public class MOOSEModelTester {
 		// Check the form
 		Form form = model.getForm();
 		assertNotNull(form);
-		assertEquals(2, form.getComponents().size());
+		assertEquals(3, form.getComponents().size());
 
 		// Check the data component
-		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) instanceof DataComponent);
-
+		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) 
+				instanceof DataComponent);
+		
 		// Check the MOOSE app entry
 		Entry mooseAppEntry = ((DataComponent) form
 				.getComponent(MOOSEModel.fileDataComponentId))
@@ -209,28 +188,24 @@ public class MOOSEModelTester {
 		assertNotNull(outputFileEntry);
 		assertEquals(2, outputFileEntry.getId());
 		assertEquals("mooseModel.i", outputFileEntry.getValue());
-
-		// Check the input tree composite.
-		assertTrue(form.getComponent(2) instanceof TreeComposite);
+		
+		// Check the TreeComposite
+		assertTrue(form.getComponent(MOOSEModel.mooseTreeCompositeId) 
+				instanceof TreeComposite);
+		
+		// Check the ResourceComponent
+		assertTrue(form.getComponent(MOOSEModel.resourceComponentId)
+				instanceof ResourceComponent);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the MOOSEModel to make sure that it can correctly
 	 * process its Form and generate a MOOSE input file.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkProcessing() {
-		// begin-user-code
 
 		// Local Declarations
 		String testFilename = "bison_test_file.inp";
@@ -264,7 +239,6 @@ public class MOOSEModelTester {
 		assertTrue(projectSpace.getFile(testFilename).exists());
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -396,27 +370,18 @@ public class MOOSEModelTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation configures a MOOSEModel. It is used by both test
 	 * operations.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
+	 * @return 
 	 *         A newly instantiated MOOSEModel.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private MOOSEModel setupMOOSEItem() {
-		// begin-user-code
 
 		// Local Declarations
 		MOOSEModel model = new MOOSEModel(projectSpace);
 
 		return model;
-		// end-user-code
 	}
 
 	/**
@@ -424,7 +389,6 @@ public class MOOSEModelTester {
 	 */
 	@AfterClass
 	public static void afterTests() {
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		try {
 			// Close and delete the fake workspace created
 			projectSpace.close(null);
