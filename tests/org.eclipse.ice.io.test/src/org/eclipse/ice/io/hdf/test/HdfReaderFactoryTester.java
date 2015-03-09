@@ -88,7 +88,7 @@ public class HdfReaderFactoryTester {
 		String separator = System.getProperty("file.separator");
 		String testFileName = "hdfReaderFactoryFile1.h5";
 		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "ioData";
+				+ "ICETests";
 		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
 		H5File h5File;
@@ -276,7 +276,7 @@ public class HdfReaderFactoryTester {
 		String separator = System.getProperty("file.separator");
 		String testFileName = "hdfReaderFactoryFile2.h5";
 		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "ioData";
+				+ "ICETests";
 		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
 		H5File h5File = null;

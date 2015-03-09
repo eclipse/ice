@@ -477,8 +477,6 @@ public class IPSReader implements IReader {
 		portComponent.setDescription("A port in an IPS file.");
 		portComponent.setId(currID);
 		currID++;
-
-		System.out.println("Reading in " + portName);
 		
 		if (portComponent.getName().equals("TIME_LOOP")) {
 			return portComponent;
@@ -513,6 +511,7 @@ public class IPSReader implements IReader {
 				line = line.split("#", 2)[0];
 			}
 			
+			// Check if we are at a new port section
 			if (line.trim().startsWith("[") && line.trim().endsWith("]")) {
 				foundNextPort = true;
 			}

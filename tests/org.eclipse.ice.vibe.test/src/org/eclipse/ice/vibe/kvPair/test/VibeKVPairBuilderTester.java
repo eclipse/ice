@@ -26,6 +26,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.ice.vibe.kvPair.VibeKVPair;
+import org.eclipse.ice.vibe.kvPair.VibeKVPairBuilder;
 import org.eclipse.ice.vibe.launcher.VibeLauncher;
 import org.eclipse.ice.vibe.launcher.VibeLauncherBuilder;
 import org.junit.AfterClass;
@@ -102,88 +104,45 @@ public class VibeKVPairBuilderTester {
 	@Test
 	public void checkGetItemType() {
 		// Load it up
-		VibeLauncherBuilder vibeMPLauncherBuilder = new VibeLauncherBuilder();
+		VibeKVPairBuilder vibeKVBuilder = new VibeKVPairBuilder();
 
 		// Check the ItemType
-		assertEquals(ItemType.Simulation, vibeMPLauncherBuilder.getItemType());
+		assertEquals(ItemType.Model, vibeKVBuilder.getItemType());
 	}
 
 	/**
 	 * <p>
-	 * This operation checks the build(). It will go through and make sure that
-	 * all the data on the launcher is also configured correctly (hostnames,
-	 * name, description, etc).
+	 * This operation checks the build method.  Checks to make sure that the item name
+	 * and description match.
 	 * </p>
 	 */
 	@Test
 	public void checkBuild() {
-		// begin-user-code
+		VibeKVPairBuilder vibeKVBuilder = new VibeKVPairBuilder();
 
-		// Local declarations
-		VibeLauncherBuilder vibeMPLauncherBuilder;
-		VibeLauncher vibeMPLauncher;
-		// Create the builder
-		vibeMPLauncherBuilder = new VibeLauncherBuilder();
-
-		// call the build operation with project as null
-		vibeMPLauncher = (VibeLauncher) vibeMPLauncherBuilder.build(null);
-
-		// Check information
-		assertNotNull(vibeMPLauncher);
-		// Check the item builders name
-		assertEquals(vibeMPLauncherBuilder.getItemName(),
-				vibeMPLauncher.getItemBuilderName());
-
-		// Check values stored on the form
-		// Check to see if executable exists
-		assertEquals("VIBE Launcher", vibeMPLauncher.getForm().getName());
-		assertEquals("Run a VIBE simulation.",vibeMPLauncher.getForm().getDescription());
-
-		// Check to see if the hosts exist
-		assertNotNull(vibeMPLauncher.getAllHosts());
-		assertEquals(1, vibeMPLauncher.getAllHosts().size());
-
-		// check the contents of the hosts
-		assertEquals("localhost", vibeMPLauncher.getAllHosts()
-				.get(0));
-
-		// call the build operation with project is not null
-		IProject project = projectSpace;
-		vibeMPLauncher = (VibeLauncher) vibeMPLauncherBuilder
-				.build(project);
-
-		// Check information
-		assertNotNull(vibeMPLauncher);
-		// Check values stored on the form
-		// Check to see if executable exists
-		assertEquals("VIBE Launcher", vibeMPLauncher.getForm().getName());
-		assertEquals("Run a VIBE simulation.",vibeMPLauncher.getForm().getDescription());
-
-		// Check to see if the hosts exist
-		assertNotNull(vibeMPLauncher.getAllHosts());
-		assertEquals(1, vibeMPLauncher.getAllHosts().size());
-
-		// Check hosts
-		assertEquals("localhost", vibeMPLauncher.getAllHosts()
-				.get(0));
+		// Call the build operation with project as null
+		VibeKVPair vibeKV = (VibeKVPair) vibeKVBuilder.build(null);
+		assertNotNull(vibeKV);
+		
+		// Check the item name and description
+		assertEquals(vibeKVBuilder.getItemName(),
+				vibeKV.getItemBuilderName());
+		assertEquals("VIBE Key-Value Pair", vibeKV.getForm().getName());
+		assertEquals("Generate input files for VIBE.",vibeKV.getForm().getDescription());
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getItemName().
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
+	@Test
 	public void checkGetItemName() {
 		// Create it
-		VibeLauncherBuilder vibeMPLauncherBuilder = new VibeLauncherBuilder();
+		VibeKVPairBuilder vibeKVBuilder = new VibeKVPairBuilder();
 
 		// Check the ItemName
-		assertEquals("VIBE Launcher", vibeMPLauncherBuilder.getItemName());
+		assertEquals("VIBE Key-Value Pair", vibeKVBuilder.getItemName());
 	}
 	
 	/**

@@ -67,7 +67,7 @@ public class HdfFileFactoryTester {
 		int fileHandle = -1;
 		int newFileHandle = -1;
 		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "ioData";
+				+ "ICETests";
 
 		// Creating a file:
 

@@ -85,7 +85,7 @@ public class HdfWriterFactoryTester {
 		String separator = System.getProperty("file.separator");
 		String testFileName = "hdfWriterFactoryFile1.h5";
 		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "ioData";
+				+ "ICETests";
 		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
 		H5File h5File;
@@ -228,7 +228,7 @@ public class HdfWriterFactoryTester {
 		String separator = System.getProperty("file.separator");
 		String testFileName = "hdfWriterFactoryFile2.h5";
 		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "ioData";
+				+ "ICETests";
 		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
 		H5File h5File;
