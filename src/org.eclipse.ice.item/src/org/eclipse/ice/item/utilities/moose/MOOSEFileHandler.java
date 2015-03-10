@@ -196,7 +196,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			System.out.println("MOOSEFileHandler Message: "
 					+ "Attempting to loading GetPot file " + filePath);
 		}
-
+		
 		// Load the GetPot file
 		try {
 			RandomAccessFile mooseFile = new RandomAccessFile(filePath, "r");
@@ -238,14 +238,30 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// that aren't parameters and should be removed
 					potLines.remove(i);
 					// Update "i" so that we read correctly
-					--i;
+					--i;				
 				} else if (potLines.get(i).isEmpty()) {
 					// Remove empty lines
 					potLines.remove(i);
 					// Update "i" so that we read correctly
 					--i;
 				} else {
-					// All other lines should be trimmed
+					// This is a rare scenario to check for, but it's possible
+					// (and has happened at least once) where a line is just a 
+					// comment (starts with "#") AND includes a "=" in the text 
+					// of the comment
+					if (trimmedPotLine.startsWith("#") && trimmedPotLine.contains("=")) {
+						String[] splitTrimmedPotLine = trimmedPotLine.split("\\s+");
+						if (splitTrimmedPotLine.length > 4) {
+							// Skip this line, it's a comment that's been
+							// mistaken as a parameter
+							potLines.remove(i);
+							--i;
+							continue;
+						}
+					}
+					
+					// Otherwise, the normal behavior is that the line should be 
+					// trimmed and be considered a real parameter
 					potLines.set(i, potLines.get(i).trim());
 				}
 			}

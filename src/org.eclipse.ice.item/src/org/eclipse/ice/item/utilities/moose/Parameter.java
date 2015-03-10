@@ -70,6 +70,11 @@ public class Parameter {
 	 * A description of the parameter.  
 	 */
 	private String description = "";
+	
+	/**
+	 * A comment on the parameter.
+	 */
+	private String comment = "";
 
 	/**
 	 * This operation retrieves the name of the parameter.
@@ -106,6 +111,15 @@ public class Parameter {
 	 */
 	public String getDefault() {
 		return _default;
+	}
+	
+	/**
+	 * This method returns the parameter's comment, if it has one.
+	 * 
+	 * @return The parameter's comment, or an empty String if there is none.
+	 */
+	public String getComment() {
+		return comment;
 	}
 
 	/**
@@ -184,6 +198,15 @@ public class Parameter {
 	 */
 	public void setDefault(String defaultValue) {
 		_default = defaultValue;
+		return;
+	}
+	
+	/**
+	 * This method sets the parameter's comment.
+	 * @param comment
+	 */
+	public void setComment(String comment) {
+		this.comment = comment;
 		return;
 	}
 
@@ -266,11 +289,10 @@ public class Parameter {
 					allowedValueType = AllowedValueType.Discrete;
 					// Set the allowed values
 					allowedValues = options;
-					// Set the default value and description
+					// Set the default value, descri
 					String value = Parameter.this.getDefault();
 					defaultValue = (allowedValues.contains(value) ?  
 											value : allowedValues.get(0));
-					description = Parameter.this.getDescription();
 				}
 				// If the value type is boolean
 				else if (("bool").equals(Parameter.this.cpp_type)) {
@@ -282,18 +304,18 @@ public class Parameter {
 					// Set the default value and description
 					defaultValue = (Parameter.this.getDefault().equals(0)) ? 
 							"false" : "true";
-					description = Parameter.this.getDescription();
 				} 
 				// Otherwise, for all other parameters
 				else {
 					allowedValueType = AllowedValueType.Undefined;
 					defaultValue = Parameter.this.getDefault();
-					description = Parameter.this.getDescription();
 				}
 			}
 		};
+		// Set the rest of the attributes
 		entry.setName(getName());
 		entry.setDescription(getDescription());
+		entry.setComment(getComment());
 		entry.setRequired(required);
 		entry.setTag(enabled ? "true" : "false");
 		
@@ -330,6 +352,7 @@ public class Parameter {
 			name = entry.getName();
 			description = entry.getDescription();
 			_default = entry.getValue();
+			comment = entry.getComment();
 			required = entry.isRequired();
 			enabled = !"false".equalsIgnoreCase(entry.getTag());
 			options = entry.getAllowedValues();
@@ -339,10 +362,13 @@ public class Parameter {
 	}
 
 	/**
+	 * <p>
 	 * This operation reads the parameter from a string of the form name =
 	 * defaultValue and loads the name and default value.
-	 * 
+	 * </p>
+	 * <p>
 	 * If the string is invalid then the parameter will remain unchanged.
+	 * </p>
 	 * 
 	 * @param paramString
 	 *            The parameter as a string.
