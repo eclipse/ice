@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
@@ -73,16 +72,8 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	@Override
 	protected Map<String, String[]> getPlotTypes(URI file) throws IOException,
 			Exception {
-		// TODO This needs to build from the contents of the file via the JSON
-		// RPC calls.
 
-		VtkWebClient client = getConnectionAdapter().getConnection();
-
-		// The code below lists out the contents of the base directory for
-		// the http server.
-		JSONObject object;
-
-		List<Object> args = new ArrayList<Object>();
+		Map<String, String[]> plotTypes = new HashMap<String, String[]>();
 
 		// Determine the relative path of the file from the ParaView web
 		// client's working directory.
@@ -92,15 +83,43 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 		if (relativePath != null) {
 			int proxyId = openFile(relativePath);
 			System.out.println("The file proxy id: " + proxyId);
-			
-			// Get the file's properties.
-			args.clear();
+
+			// Get the file proxy's properties from the file.
+			VtkWebClient client = getConnectionAdapter().getConnection();
+			JSONObject object;
+			JSONArray array;
+			List<Object> args = new ArrayList<Object>(1);
 			args.add(proxyId);
-			object = client.call("pv.proxy.manager.get", args).get();
-			System.out.println(object.toString(4));
+			try {
+				object = client.call("pv.proxy.manager.get", args).get();
+				// Get the "ui" JSON array from the proxy's properties. This
+				// contains the names of all data sets that can be displayed in
+				// the plot.
+				if (object.has("ui")) {
+					array = object.getJSONArray("ui");
+
+					// Determine all plot categories and their types.
+					for (int i = 0; i < array.length(); i++) {
+						object = array.getJSONObject(i);
+
+						// Determine the plot category and its allowed types.
+						String name = object.getString("name");
+						JSONArray valueArray = object.getJSONArray("values");
+						String[] values = new String[valueArray.length()];
+						for (int j = 0; j < values.length; j++) {
+							values[j] = valueArray.getString(j);
+						}
+
+						// Store the plot category and types in the map.
+						plotTypes.put(name, values);
+					}
+				}
+			} catch (InterruptedException e) {
+			} catch (ExecutionException e) {
+			}
 		}
 
-		return new HashMap<String, String[]>();
+		return plotTypes;
 	}
 
 	private String getRelativePath(String fullPath) {
@@ -116,7 +135,7 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 			if (object != null) {
 				String directory = object.getJSONArray("path").getString(0);
 				System.out.println("The directory is: " + directory);
-				
+
 				// If the path is indeed a full path, we need to determine its
 				// relative path.
 				if (fullPath.startsWith("/")) {
@@ -163,4 +182,5 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 
 		return proxyId;
 	}
+
 }
