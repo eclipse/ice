@@ -61,6 +61,12 @@ public class IPSReader implements IReader {
 	private HashMap<String, ArrayList<String>> portMap = null;
 	
 	/**
+	 * The current line of the file that the iterator is on while parsing through 
+	 * the input file.
+	 */
+	private String line = "";
+	
+	/**
 	 * Nullary constructor
 	 */
 	public IPSReader() {
@@ -70,7 +76,7 @@ public class IPSReader implements IReader {
 
 	/**
 	 * <p>
-	 * Reads in the given IFile to the CaebatModel datastructures. There are
+	 * Reads in the given IFile to the VibeModel datastructures. There are
 	 * four components in each IPS INI file that are parsed and arranged into
 	 * the form that will be displayed to the user. Returns a form composed of
 	 * the data read in from the specified location which can be modified and
@@ -280,7 +286,7 @@ public class IPSReader implements IReader {
 
 		// Read in new parameters until we reach the PORTS entry or the end
 		// while only taking in lines that have variable assignments
-		String line = it.next();
+		line = it.next();
 		while (!line.contains("[PORTS]") && it.hasNext()) {
 
 			// The format in this section is: KEY = VALUE # Comment
@@ -364,7 +370,7 @@ public class IPSReader implements IReader {
 		// entry is an enumeration of the ports that will follow. We need to
 		// record those before going on so that we can verify that all of the
 		// ports are declared correctly.
-		String line = it.next();
+		line = it.next();
 		while (it.hasNext() && !line.contains("NAMES = ")) {
 			line = it.next();
 		}
@@ -461,7 +467,6 @@ public class IPSReader implements IReader {
 		String[] splitLine = null;
 
 		// Scan until we get to the next port component
-		String line = it.next();
 		while (!line.contains("[") && !line.contains("]") && it.hasNext()) {
 			line = it.next();
 		}
@@ -472,21 +477,19 @@ public class IPSReader implements IReader {
 		portComponent.setDescription("A port in an IPS file.");
 		portComponent.setId(currID);
 		currID++;
-
+		
 		if (portComponent.getName().equals("TIME_LOOP")) {
 			return portComponent;
 		}
 		
 		// Read parameters until reaching a whitespace line that separates ports
-		while (line.trim().length() > 0) {
+		boolean foundNextPort = false;
+		while (!foundNextPort) {
 			// The format in this section is: KEY = VALUE # Comment
 			// First check if the line contains a parameter
 			if (line.contains("=")) {
 
-				// If the line has a comment split on it and disregard it
-				if (line.contains("#")) {
-					line = line.split("#", 2)[0];
-				}
+
 
 				// Get the content for the entry
 				splitLine = line.split("=", 2);
@@ -502,13 +505,25 @@ public class IPSReader implements IReader {
 
 			// Read in another line
 			line = it.next();
+			
+			// If the line has a comment split on it and disregard it
+			if (line.contains("#")) {
+				line = line.split("#", 2)[0];
+			}
+			
+			// Check if we are at a new port section
+			if (line.trim().startsWith("[") && line.trim().endsWith("]")) {
+				foundNextPort = true;
+			}
 		}
+		
 		// Make sure that we are not at the end of the file
 		if (!it.hasNext()) {
 			System.err.println("IPS Reader Message: Reached unexpected "
 					+ "end of file while reading the port configuration.");
 			return null;
 		}
+		
 		// Return the parameters
 		return portComponent;
 	}
@@ -592,12 +607,9 @@ public class IPSReader implements IReader {
 		DataComponent timeLoopData = new DataComponent();
 		Entry entry;
 		String[] splitLine = null;
-		String line = "";
 
 		// Scan until we get to the next port component
-		if (it.hasNext()) {
-			line = it.next();
-		} else {
+		if (!it.hasNext()) {
 			System.err.println("Unexpectedly reached the end of file.  "
 					+ "Please check the INI file you have chosen and"
 					+ " try again.");
