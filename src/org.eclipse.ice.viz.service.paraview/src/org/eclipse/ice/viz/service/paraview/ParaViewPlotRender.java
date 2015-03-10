@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
@@ -29,6 +32,16 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 
 	private List<ActionTree> actions;
 
+	private final ReadLock readLock;
+	private final WriteLock writeLock;
+
+	private String plotCategory;
+	private String plotType;
+
+	private int id;
+	private int repId;
+	private int viewId;
+
 	/**
 	 * The default constructor.
 	 * 
@@ -39,8 +52,69 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 *            The rendered ConnectionPlot. This cannot be changed.
 	 */
 	public ParaViewPlotRender(Composite parent, ParaViewPlot plot) {
+		this(parent, plot, -1);
+	}
+
+	/**
+	 * The full constructor. <i>This should only be called once per plot so that
+	 * the view created to read the file's contents is not wasted.</i>
+	 * 
+	 * @param parent
+	 *            The parent Composite that contains the plot render.
+	 * 
+	 * @param plot
+	 *            The rendered ConnectionPlot. This cannot be changed.
+	 * @param viewId
+	 *            The ID of the view that was created to read the file's
+	 *            contents, or -1 to indicate that a view has not been created.
+	 */
+	public ParaViewPlotRender(Composite parent, ParaViewPlot plot, int viewId) {
 		super(parent, plot);
 
+		ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
+		readLock = lock.readLock();
+		writeLock = lock.writeLock();
+
+		// All negative IDs should be reverted to -1.
+		this.viewId = (viewId < 0 ? -1 : viewId);
+	}
+
+	/**
+	 * Overrides the default behavior so that the rendering widget is only
+	 * updated if the category changes to a new value.
+	 */
+	@Override
+	public void setPlotCategory(String category) {
+		writeLock.lock();
+		try {
+			// if (category != null && !category.equals(getPlotCategory())) {
+			// plotChanged = true;
+			// super.setPlotCategory(category);
+			// }
+			super.setPlotCategory(category);
+		} finally {
+			writeLock.unlock();
+		}
+		return;
+	}
+
+	/**
+	 * Overrides the default behavior so that the rendering widget is only
+	 * updated if the type changes to a new value.
+	 */
+	@Override
+	public void setPlotType(String type) {
+		writeLock.lock();
+		try {
+			// if (type != null && !type.equals(getPlotType())) {
+			// plotChanged = true;
+			// super.setPlotType(type);
+			// }
+			super.setPlotType(type);
+		} finally {
+			writeLock.unlock();
+		}
+		return;
 	}
 
 	/*
@@ -80,9 +154,15 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 				| SWT.DOUBLE_BUFFERED);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+		// Create a new view on the ParaView server if one does not already
+		// exist.
+		if (viewId < 0) {
+			viewId = connection.createView().get();
+		}
+
 		// Create the ParaView widget.
 		final InteractiveRenderPanel renderPanel = new InteractiveRenderPanel(
-				connection, 4, 100, 1);
+				connection, viewId, 4, 80, 1);
 
 		// Create an AWT Frame to contain the ParaView widget.
 		Frame frame = SWT_AWT.new_Frame(composite);
@@ -111,7 +191,30 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	protected void updatePlotComposite(Composite plotComposite,
 			VtkWebClient connection) throws Exception {
 
+		// FIXME Should this be done here on the UI thread, or elsewhere?
+
 		// TODO Update the contents of the ParaView widget if necessary.
+		boolean plotTypeChanged = false;
+		readLock.lock();
+		try {
+			String category = getPlotCategory();
+			String type = getPlotType();
+
+			if (category != null && !category.equals(plotCategory)) {
+				plotCategory = category;
+				plotTypeChanged = true;
+			}
+			if (type != null && !type.equals(plotType)) {
+				plotType = type;
+				plotTypeChanged = true;
+			}
+		} finally {
+			readLock.unlock();
+		}
+
+		if (plotTypeChanged) {
+
+		}
 
 		return;
 	}

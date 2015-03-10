@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
+import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,6 +44,11 @@ import com.kitware.vtk.web.VtkWebClient;
 public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 
 	/**
+	 * The ID of a view that was created in order to read the file contents.
+	 */
+	private int viewId = -1;
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param service
@@ -61,7 +67,11 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	 */
 	@Override
 	protected PlotRender createPlotRender(Composite parent) {
-		return new ParaViewPlotRender(parent, this);
+		// Reset the view ID to -1 every time so that the same view is not used
+		// twice.
+		int viewId = this.viewId;
+		this.viewId = -1;
+		return new ParaViewPlotRender(parent, this, viewId);
 	}
 
 	/*
@@ -172,6 +182,9 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 
 		args.add(relativePath);
 		try {
+			// Open a view in order to read the file.
+			viewId = client.createView().get();
+
 			object = client.call("pv.proxy.manager.create.reader", args).get();
 			if (object.has("id")) {
 				proxyId = object.getInt("id");
@@ -183,4 +196,7 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 		return proxyId;
 	}
 
+	protected ParaViewConnectionAdapter getParaViewConnectionAdapter() {
+		return (ParaViewConnectionAdapter) getConnectionAdapter();
+	}
 }

@@ -105,4 +105,8 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 		return changed;
 	}
 
+	protected int openFile(int viewId, String fullPath) {
+		return -1;
+	}
+	
 }
