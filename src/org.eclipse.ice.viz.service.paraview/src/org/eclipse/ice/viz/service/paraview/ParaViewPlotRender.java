@@ -22,6 +22,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.kitware.vtk.web.VtkWebClient;
 import com.kitware.vtk.web.util.InteractiveRenderPanel;
@@ -38,9 +40,9 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	private String plotCategory;
 	private String plotType;
 
-	private int id;
-	private int repId;
 	private int viewId;
+	private int fileId;
+	private int repId;
 
 	/**
 	 * The default constructor.
@@ -52,7 +54,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 *            The rendered ConnectionPlot. This cannot be changed.
 	 */
 	public ParaViewPlotRender(Composite parent, ParaViewPlot plot) {
-		this(parent, plot, -1);
+		this(parent, plot, -1, -1, -1);
 	}
 
 	/**
@@ -67,16 +69,23 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 * @param viewId
 	 *            The ID of the view that was created to read the file's
 	 *            contents, or -1 to indicate that a view has not been created.
+	 * @param repId
+	 *            The ID of the representation (i.e., the render properties) of
+	 *            the file.
 	 */
-	public ParaViewPlotRender(Composite parent, ParaViewPlot plot, int viewId) {
+	public ParaViewPlotRender(Composite parent, ParaViewPlot plot, int viewId,
+			int fileId, int repId) {
 		super(parent, plot);
 
 		ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
 		readLock = lock.readLock();
 		writeLock = lock.writeLock();
 
-		// All negative IDs should be reverted to -1.
-		this.viewId = (viewId < 0 ? -1 : viewId);
+		this.viewId = viewId;
+		this.fileId = fileId;
+		this.repId = repId;
+
+		return;
 	}
 
 	/**
@@ -128,6 +137,31 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	protected Composite createPlotComposite(Composite parent, int style,
 			VtkWebClient connection) throws Exception {
 
+		// Create a new view on the ParaView server if one does not already
+		// exist. We will need the corresponding view, file proxy, and
+		// representation proxy IDs.
+		if (viewId < 0 || fileId < 0 || repId < 0) {
+			String fullPath = ((ParaViewPlot) plot)
+					.getParaViewConnectionAdapter().findRelativePath(
+							plot.getDataSource().getPath());
+
+			// Create a new view from the file and get its associated IDs.
+			List<Object> args = new ArrayList<Object>();
+			JSONObject object;
+			args.add(fullPath);
+			object = connection.call("createView", args).get();
+			viewId = object.getInt("viewId");
+			fileId = object.getInt("proxyId");
+			repId = object.getInt("repId");
+
+			// Throw an exception if a view could not be created for the file.
+			if (viewId < 0 || fileId < 0 || repId < 0) {
+				throw new Exception("IPlot error: "
+						+ "The file could not be rendered with "
+						+ plot.getVizService().getName() + ".");
+			}
+		}
+
 		// Create a container to hold a ToolBar and the ParaView widget.
 		Composite plotContainer = new Composite(parent, style);
 		plotContainer.setBackground(parent.getBackground());
@@ -153,12 +187,6 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		final Composite composite = new Composite(plotContainer, SWT.EMBEDDED
 				| SWT.DOUBLE_BUFFERED);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		// Create a new view on the ParaView server if one does not already
-		// exist.
-		if (viewId < 0) {
-			viewId = connection.createView().get();
-		}
 
 		// Create the ParaView widget.
 		final InteractiveRenderPanel renderPanel = new InteractiveRenderPanel(
@@ -195,10 +223,12 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 
 		// TODO Update the contents of the ParaView widget if necessary.
 		boolean plotTypeChanged = false;
+		String category = null;
+		String type = null;
 		readLock.lock();
 		try {
-			String category = getPlotCategory();
-			String type = getPlotType();
+			category = getPlotCategory();
+			type = getPlotType();
 
 			if (category != null && !category.equals(plotCategory)) {
 				plotCategory = category;
@@ -212,9 +242,139 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 			readLock.unlock();
 		}
 
-		if (plotTypeChanged) {
+		final String plotType = "Battery_/TemperatureP1";
+		
+		// if (plotTypeChanged) {
+		List<Object> args = new ArrayList<Object>();
+		JSONObject object;
 
+		// Make sure this view is the active one.
+		args.add(viewId);
+		connection.call("activateView", args).get();
+		
+		// Set the representation proxy to show the mesh as
+		// "Surface With Edges".
+		args.clear();
+		JSONArray updatedProperties = new JSONArray();
+		JSONObject repProperty = new JSONObject();
+		repProperty.put("id", Integer.toString(repId));
+		repProperty.put("name", "Representation");
+		repProperty.put("value", "Surface");
+		updatedProperties.put(repProperty);
+
+		// Update the "status" of the mesh/material/cell/point arrays.
+		// For the silo file, we want to select Battery_/TemperatureP1.
+		JSONObject pointStatusProperty = new JSONObject();
+		pointStatusProperty.put("id", Integer.toString(fileId));
+		pointStatusProperty.put("name", "PointArrayStatus");
+		JSONArray pointArrays = new JSONArray();
+		pointArrays.put(plotType);
+		pointStatusProperty.put("value", pointArrays);
+		updatedProperties.put(pointStatusProperty);
+
+		// Update the properties that were configured.
+		args.add(updatedProperties);
+		object = connection.call("pv.proxy.manager.update", args).get();
+		if (!object.getBoolean("success")) {
+			System.out.println("Failed to set the representation: ");
+			JSONArray array = object.getJSONArray("errorList");
+			for (int i = 0; i < array.length(); i++) {
+				System.out.println(array.get(i));
+			}
 		}
+
+		// Set the representation to color based on the plot type.
+		args.clear();
+		args.add(Integer.toString(repId));
+		args.add("ARRAY");
+		args.add("POINTS");
+		args.add(plotType);
+		args.add("Magnitude");
+		args.add(0);
+		args.add(true);
+		object = connection.call("pv.color.manager.color.by", args).get();
+
+		// Set the visibility of the legend to true.
+		args.clear();
+		JSONObject legendVisibilities = new JSONObject();
+		legendVisibilities.put(Integer.toString(fileId), true);
+		args.add(legendVisibilities);
+		object = connection.call(
+				"pv.color.manager.scalarbar.visibility.set", args)
+				.get();
+		System.out.println(object.toString(4));
+
+		// Auto-scale the color map to the data.
+		args.clear();
+		JSONObject scaleOptions = new JSONObject();
+		scaleOptions.put("type", "data");
+		scaleOptions.put("proxyId", fileId);
+		args.add(scaleOptions);
+		object = connection.call(
+				"pv.color.manager.rescale.transfer.function", args)
+				.get();
+		System.out.println(object.toString(4));
+
+		// // ---- Set the plot representation style. ---- //
+		// // Set the representation proxy to show the mesh as
+		// // "Surface With Edges".
+		// args.clear();
+		// JSONArray updatedProperties = new JSONArray();
+		// JSONObject repProperty = new JSONObject();
+		// repProperty.put("id", Integer.toString(repId));
+		// repProperty.put("name", "Representation");
+		// repProperty.put("value", "Surface");
+		// updatedProperties.put(repProperty);
+		//
+		// // Update the "status" of the mesh/material/cell/point arrays.
+		// // For the silo file, we want to select Battery_/TemperatureP1.
+		// JSONObject pointStatusProperty = new JSONObject();
+		// pointStatusProperty.put("id", Integer.toString(fileId));
+		// pointStatusProperty.put("name", "PointArrayStatus");
+		// JSONArray pointArrays = new JSONArray();
+		// pointArrays.put("Battery_/TemperatureP1");
+		// pointStatusProperty.put("value", pointArrays);
+		// updatedProperties.put(pointStatusProperty);
+		//
+		// // Update the properties that were configured.
+		// args.add(updatedProperties);
+		// object = connection.call("pv.proxy.manager.update", args).get();
+		// if (!object.getBoolean("success")) {
+		// System.out.println("Failed to set the representation: ");
+		// JSONArray array = object.getJSONArray("errorList");
+		// for (int i = 0; i < array.length(); i++) {
+		// System.out.println(array.get(i));
+		// }
+		// }
+		// // -------------------------------------------- //
+		//
+		// // ---- Set the plot type via the ColorManager. ---- //
+		// args.clear();
+		// args.add(Integer.toString(repId)); // The rep ID to update.
+		// args.add("ARRAY"); // The "color mode".
+		// args.add("POINTS"); // The "array location".
+		// args.add("Battery_/TemperatureP1"); // The name of the array to plot,
+		// in this case the
+		// // plot type. The category does not need to be
+		// // specified.
+		// args.add("Magnitude"); // The default "vector mode".
+		// args.add(0); // The default "vector component".
+		// args.add(true); // This is supposed to rescale the colors.
+		//
+		// // Send these arguments to update the data set that the view plots.
+		// connection.call("pv.color.manager.color.by", args).get();
+		//
+		// // Auto-scale the color map to the data.
+		// // args.clear();
+		// // JSONObject scaleOptions = new JSONObject();
+		// // scaleOptions.put("type", "data");
+		// // scaleOptions.put("proxyId", fileId);
+		// // args.add(scaleOptions);
+		// // connection.call("pv.color.manager.rescale.transfer.function",
+		// // args)
+		// // .get();
+		// // ------------------------------------------------- //
+		// }
 
 		return;
 	}

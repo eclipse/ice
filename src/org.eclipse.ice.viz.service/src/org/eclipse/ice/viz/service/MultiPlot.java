@@ -226,7 +226,7 @@ public abstract class MultiPlot implements IPlot {
 		}
 
 		// Get the list of new plot types from the sub-class implementation.
-		Map<String, String[]> newPlotTypes = getPlotTypes(file);
+		Map<String, String[]> newPlotTypes = findPlotTypes(file);
 
 		// If empty, throw an IllegalArgumentException.
 		if (newPlotTypes.isEmpty()) {
@@ -246,12 +246,17 @@ public abstract class MultiPlot implements IPlot {
 	}
 
 	/**
+	 * <b>Note:</b> This method is called automatically in
+	 * {@link #setDataSource(URI)}. Implementations should always query the
+	 * file.
+	 * <p>
 	 * This operation returns a simple map of plot types that can be created by
 	 * the IPlot using its data source. The map is meant to have a structure
 	 * where each individual key is a type of plot - mesh, scalar, line, etc. -
 	 * with a list of values of all of the plots it can create of that given
 	 * type from the data source. For example, for a CSV file with three columns
 	 * x, y1, y2, y3, the map might be:
+	 * </p>
 	 * <p>
 	 * key | value<br>
 	 * line | "x vs y1", "x vs y2", "x vs y3"<br>
@@ -267,7 +272,7 @@ public abstract class MultiPlot implements IPlot {
 	 * @throws Exception
 	 *             if there is some other unspecified problem with the file
 	 */
-	protected abstract Map<String, String[]> getPlotTypes(URI file)
+	protected abstract Map<String, String[]> findPlotTypes(URI file)
 			throws IOException, Exception;
 
 	/**
