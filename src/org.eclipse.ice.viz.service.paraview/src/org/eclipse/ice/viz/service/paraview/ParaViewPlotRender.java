@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
@@ -39,6 +40,9 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 
 	private String plotCategory;
 	private String plotType;
+	private String plotRepType;
+
+	private String repType;
 
 	private int viewId;
 	private int fileId;
@@ -178,7 +182,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		toolBar.setBackground(parent.getBackground());
 		toolBar.setFont(parent.getFont());
 		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		fillToolBar(toolBarManager);
+		fillToolBar(toolBarManager, connection);
 
 		// Since the ParaView widget is built on AWT, we will need to use the
 		// SWT_AWT bridge below.
@@ -221,7 +225,22 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 
 		// FIXME Should this be done here on the UI thread, or elsewhere?
 
-		// TODO Update the contents of the ParaView widget if necessary.
+		List<Object> args = new ArrayList<Object>();
+		JSONObject object;
+
+		boolean repChanged = false;
+		String repType = null;
+		readLock.lock();
+		try {
+			repType = this.repType;
+			if (repType != null && !repType.equals(plotRepType)) {
+				plotRepType = repType;
+				repChanged = true;
+			}
+		} finally {
+			readLock.unlock();
+		}
+		
 		boolean plotTypeChanged = false;
 		String category = null;
 		String type = null;
@@ -241,141 +260,167 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		} finally {
 			readLock.unlock();
 		}
-
-		final String plotType = "Battery_/TemperatureP1";
 		
-		// if (plotTypeChanged) {
-		List<Object> args = new ArrayList<Object>();
-		JSONObject object;
+		if (repChanged || plotTypeChanged) {
+			// Make sure this view is the active one.
+			args.clear();
+			args.add(viewId);
+			connection.call("activateView", args).get();
+		}
 
-		// Make sure this view is the active one.
-		args.add(viewId);
-		connection.call("activateView", args).get();
-		
-		// Set the representation proxy to show the mesh as
-		// "Surface With Edges".
-		args.clear();
-		JSONArray updatedProperties = new JSONArray();
-		JSONObject repProperty = new JSONObject();
-		repProperty.put("id", Integer.toString(repId));
-		repProperty.put("name", "Representation");
-		repProperty.put("value", "Surface");
-		updatedProperties.put(repProperty);
 
-		// Update the "status" of the mesh/material/cell/point arrays.
-		// For the silo file, we want to select Battery_/TemperatureP1.
-		JSONObject pointStatusProperty = new JSONObject();
-		pointStatusProperty.put("id", Integer.toString(fileId));
-		pointStatusProperty.put("name", "PointArrayStatus");
-		JSONArray pointArrays = new JSONArray();
-		pointArrays.put(plotType);
-		pointStatusProperty.put("value", pointArrays);
-		updatedProperties.put(pointStatusProperty);
+		if (repChanged) {
+			// Set the representation proxy to show the mesh as a surface.
+			args.clear();
+			JSONArray updatedProperties = new JSONArray();
+			JSONObject repProperty = new JSONObject();
+			repProperty.put("id", Integer.toString(repId));
+			repProperty.put("name", "Representation");
+			repProperty.put("value", repType);
+			updatedProperties.put(repProperty);
 
-		// Update the properties that were configured.
-		args.add(updatedProperties);
-		object = connection.call("pv.proxy.manager.update", args).get();
-		if (!object.getBoolean("success")) {
-			System.out.println("Failed to set the representation: ");
-			JSONArray array = object.getJSONArray("errorList");
-			for (int i = 0; i < array.length(); i++) {
-				System.out.println(array.get(i));
+			// Update the properties that were configured.
+			args.add(updatedProperties);
+			object = connection.call("pv.proxy.manager.update", args).get();
+			if (!object.getBoolean("success")) {
+				System.out.println("Failed to set the representation: ");
+				JSONArray array = object.getJSONArray("errorList");
+				for (int i = 0; i < array.length(); i++) {
+					System.out.println(array.get(i));
+				}
 			}
 		}
 
-		// Set the representation to color based on the plot type.
-		args.clear();
-		args.add(Integer.toString(repId));
-		args.add("ARRAY");
-		args.add("POINTS");
-		args.add(plotType);
-		args.add("Magnitude");
-		args.add(0);
-		args.add(true);
-		object = connection.call("pv.color.manager.color.by", args).get();
+		if (plotTypeChanged) {
 
-		// Set the visibility of the legend to true.
-		args.clear();
-		JSONObject legendVisibilities = new JSONObject();
-		legendVisibilities.put(Integer.toString(fileId), true);
-		args.add(legendVisibilities);
-		object = connection.call(
-				"pv.color.manager.scalarbar.visibility.set", args)
-				.get();
-		System.out.println(object.toString(4));
+			JSONArray updatedProperties = new JSONArray();
 
-		// Auto-scale the color map to the data.
-		args.clear();
-		JSONObject scaleOptions = new JSONObject();
-		scaleOptions.put("type", "data");
-		scaleOptions.put("proxyId", fileId);
-		args.add(scaleOptions);
-		object = connection.call(
-				"pv.color.manager.rescale.transfer.function", args)
-				.get();
-		System.out.println(object.toString(4));
+			// Update the "status" of the mesh/material/cell/point arrays.
+			// For the silo file, we want to select Battery_/TemperatureP1.
+			JSONObject pointStatusProperty = new JSONObject();
+			pointStatusProperty.put("id", Integer.toString(fileId));
+			pointStatusProperty.put("name", "PointArrayStatus");
+			JSONArray pointArrays = new JSONArray();
+			pointArrays.put(type);
+			pointStatusProperty.put("value", pointArrays);
+			updatedProperties.put(pointStatusProperty);
 
-		// // ---- Set the plot representation style. ---- //
-		// // Set the representation proxy to show the mesh as
-		// // "Surface With Edges".
-		// args.clear();
-		// JSONArray updatedProperties = new JSONArray();
-		// JSONObject repProperty = new JSONObject();
-		// repProperty.put("id", Integer.toString(repId));
-		// repProperty.put("name", "Representation");
-		// repProperty.put("value", "Surface");
-		// updatedProperties.put(repProperty);
-		//
-		// // Update the "status" of the mesh/material/cell/point arrays.
-		// // For the silo file, we want to select Battery_/TemperatureP1.
-		// JSONObject pointStatusProperty = new JSONObject();
-		// pointStatusProperty.put("id", Integer.toString(fileId));
-		// pointStatusProperty.put("name", "PointArrayStatus");
-		// JSONArray pointArrays = new JSONArray();
-		// pointArrays.put("Battery_/TemperatureP1");
-		// pointStatusProperty.put("value", pointArrays);
-		// updatedProperties.put(pointStatusProperty);
-		//
-		// // Update the properties that were configured.
-		// args.add(updatedProperties);
-		// object = connection.call("pv.proxy.manager.update", args).get();
-		// if (!object.getBoolean("success")) {
-		// System.out.println("Failed to set the representation: ");
-		// JSONArray array = object.getJSONArray("errorList");
-		// for (int i = 0; i < array.length(); i++) {
-		// System.out.println(array.get(i));
-		// }
-		// }
-		// // -------------------------------------------- //
-		//
-		// // ---- Set the plot type via the ColorManager. ---- //
-		// args.clear();
-		// args.add(Integer.toString(repId)); // The rep ID to update.
-		// args.add("ARRAY"); // The "color mode".
-		// args.add("POINTS"); // The "array location".
-		// args.add("Battery_/TemperatureP1"); // The name of the array to plot,
-		// in this case the
-		// // plot type. The category does not need to be
-		// // specified.
-		// args.add("Magnitude"); // The default "vector mode".
-		// args.add(0); // The default "vector component".
-		// args.add(true); // This is supposed to rescale the colors.
-		//
-		// // Send these arguments to update the data set that the view plots.
-		// connection.call("pv.color.manager.color.by", args).get();
-		//
-		// // Auto-scale the color map to the data.
-		// // args.clear();
-		// // JSONObject scaleOptions = new JSONObject();
-		// // scaleOptions.put("type", "data");
-		// // scaleOptions.put("proxyId", fileId);
-		// // args.add(scaleOptions);
-		// // connection.call("pv.color.manager.rescale.transfer.function",
-		// // args)
-		// // .get();
-		// // ------------------------------------------------- //
-		// }
+			// Update the properties that were configured.
+			args.clear();
+			args.add(updatedProperties);
+			object = connection.call("pv.proxy.manager.update", args).get();
+			if (!object.getBoolean("success")) {
+				System.out.println("Failed to set the representation: ");
+				JSONArray array = object.getJSONArray("errorList");
+				for (int i = 0; i < array.length(); i++) {
+					System.out.println(array.get(i));
+				}
+			}
 
+			// Set the representation to color based on the plot type.
+			// FIXME The documentation for ParaView is a little unclear about
+			// most of these parameters. The only obvious ones are the
+			// representation proxy ID and the variable name. The rescale option
+			// does not appear to work as expected.
+			args.clear();
+			args.add(Integer.toString(repId));
+			args.add("ARRAY"); // TODO Not sure when to use SOLID here.
+			args.add("POINTS"); // TODO Not sure when to use CELLS here.
+			args.add(type);
+			args.add("Magnitude"); // TODO Not sure when to use Component here.
+			args.add(0); // TODO Not sure when to use another value here.
+			args.add(true);
+			object = connection.call("pv.color.manager.color.by", args).get();
+
+			// Set the visibility of the legend to true.
+			args.clear();
+			JSONObject legendVisibilities = new JSONObject();
+			legendVisibilities.put(Integer.toString(fileId), true);
+			args.add(legendVisibilities);
+			object = connection.call(
+					"pv.color.manager.scalarbar.visibility.set", args).get();
+			System.out.println(object.toString(4));
+
+			// Auto-scale the color map to the data.
+			args.clear();
+			JSONObject scaleOptions = new JSONObject();
+			scaleOptions.put("type", "data");
+			scaleOptions.put("proxyId", fileId);
+			args.add(scaleOptions);
+			object = connection.call(
+					"pv.color.manager.rescale.transfer.function", args).get();
+			System.out.println(object.toString(4));
+
+			// // ---- Set the plot representation style. ---- //
+			// // Set the representation proxy to show the mesh as
+			// // "Surface With Edges".
+			// args.clear();
+			// JSONArray updatedProperties = new JSONArray();
+			// JSONObject repProperty = new JSONObject();
+			// repProperty.put("id", Integer.toString(repId));
+			// repProperty.put("name", "Representation");
+			// repProperty.put("value", "Surface");
+			// updatedProperties.put(repProperty);
+			//
+			// // Update the "status" of the mesh/material/cell/point arrays.
+			// // For the silo file, we want to select Battery_/TemperatureP1.
+			// JSONObject pointStatusProperty = new JSONObject();
+			// pointStatusProperty.put("id", Integer.toString(fileId));
+			// pointStatusProperty.put("name", "PointArrayStatus");
+			// JSONArray pointArrays = new JSONArray();
+			// pointArrays.put("Battery_/TemperatureP1");
+			// pointStatusProperty.put("value", pointArrays);
+			// updatedProperties.put(pointStatusProperty);
+			//
+			// // Update the properties that were configured.
+			// args.add(updatedProperties);
+			// object = connection.call("pv.proxy.manager.update", args).get();
+			// if (!object.getBoolean("success")) {
+			// System.out.println("Failed to set the representation: ");
+			// JSONArray array = object.getJSONArray("errorList");
+			// for (int i = 0; i < array.length(); i++) {
+			// System.out.println(array.get(i));
+			// }
+			// }
+			// // -------------------------------------------- //
+			//
+			// // ---- Set the plot type via the ColorManager. ---- //
+			// args.clear();
+			// args.add(Integer.toString(repId)); // The rep ID to update.
+			// args.add("ARRAY"); // The "color mode".
+			// args.add("POINTS"); // The "array location".
+			// args.add("Battery_/TemperatureP1"); // The name of the array to
+			// plot,
+			// in this case the
+			// // plot type. The category does not need to be
+			// // specified.
+			// args.add("Magnitude"); // The default "vector mode".
+			// args.add(0); // The default "vector component".
+			// args.add(true); // This is supposed to rescale the colors.
+			//
+			// // Send these arguments to update the data set that the view
+			// plots.
+			// connection.call("pv.color.manager.color.by", args).get();
+			//
+			// // Auto-scale the color map to the data.
+			// // args.clear();
+			// // JSONObject scaleOptions = new JSONObject();
+			// // scaleOptions.put("type", "data");
+			// // scaleOptions.put("proxyId", fileId);
+			// // args.add(scaleOptions);
+			// // connection.call("pv.color.manager.rescale.transfer.function",
+			// // args)
+			// // .get();
+			// // ------------------------------------------------- //
+		}
+
+		if (repChanged || plotTypeChanged) {
+			// Make sure this view is the active one.
+			args.clear();
+			args.add(viewId);
+			connection.call("activateView", args).get();
+		}
+		
 		return;
 	}
 
@@ -390,7 +435,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 * @param toolBar
 	 *            The {@code ToolBarManager} that will be populated.
 	 */
-	private void fillToolBar(ToolBarManager toolBar) {
+	private void fillToolBar(ToolBarManager toolBar, VtkWebClient connection) {
 		actions = new ArrayList<ActionTree>();
 
 		ActionTree plotTypesTree = new ActionTree("Plot Types");
@@ -433,7 +478,41 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 			plotTypesTree.setEnabled(false);
 		}
 
-		// TODO Add widgets to change the representation.
+		// Add widgets to change the representation.
+		ActionTree repTypesTree = new ActionTree("Representations");
+		actions.add(repTypesTree);
+		try {
+			List<Object> args = new ArrayList<Object>(1);
+			JSONObject object;
+			args.add(repId);
+			object = connection.call("pv.proxy.manager.get", args).get();
+			JSONArray array = object.getJSONArray("ui");
+			for (int i = 0; i < array.length(); i++) {
+				object = array.getJSONObject(i);
+				if ("Representation".equals(object.get("name"))) {
+					array = object.getJSONArray("values");
+					for (i = 0; i < array.length(); i++) {
+						final String representation = array.getString(i);
+						repTypesTree.add(new ActionTree(new Action(
+								representation) {
+							@Override
+							public void run() {
+								writeLock.lock();
+								try {
+									repType = representation;
+								} finally {
+									writeLock.unlock();
+								}
+								refresh();
+							}
+						}));
+					}
+					break;
+				}
+			}
+		} catch (Exception e) {
+			repTypesTree.setEnabled(false);
+		}
 
 		// Populate the ToolBarManager with the ActionTrees.
 		for (ActionTree tree : actions) {
