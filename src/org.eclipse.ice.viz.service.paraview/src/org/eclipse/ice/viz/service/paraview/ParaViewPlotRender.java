@@ -116,6 +116,15 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 */
 	private int repId;
 
+	private InteractiveRenderPanel renderPanel;
+
+	/**
+	 * Contains the mapping from the plot category to the file proxy property
+	 * that must be updated when a plot type from the category is selected. This
+	 * map is keyed on the plot category.
+	 */
+	private final Map<String, String> plotTypeArrays;
+
 	/**
 	 * The default constructor.
 	 * 
@@ -155,6 +164,13 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 
 		// Store the adapter so that we can access its connection later.
 		this.adapter = plot.getParaViewConnectionAdapter();
+
+		// Build the map of file proxy properties for the plot type/category.
+		plotTypeArrays = new HashMap<String, String>();
+		plotTypeArrays.put("Meshes", "MeshStatus");
+		plotTypeArrays.put("Materials", "MaterialStatus");
+		plotTypeArrays.put("Cell Arrays", "CellArrayStatus");
+		plotTypeArrays.put("Point Arrays", "PointArrayStatus");
 
 		return;
 	}
@@ -321,8 +337,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Create the ParaView widget.
-		final InteractiveRenderPanel renderPanel = new InteractiveRenderPanel(
-				connection, viewId, 4, 80, 1);
+		renderPanel = new InteractiveRenderPanel(connection, viewId, 4, 80, 1);
 
 		// Create an AWT Frame to contain the ParaView widget.
 		Frame frame = SWT_AWT.new_Frame(composite);
@@ -337,6 +352,11 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 				renderPanel.dirty();
 			}
 		});
+
+		// Refresh the ParaView widget, forcing a re-render in case the
+		// "low interactive quality" (as in extremely low quality) image was the
+		// most recent one sent from the server.
+		refreshWidget(true, connection);
 
 		return plotContainer;
 	}
@@ -390,35 +410,33 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		// We always need to refresh the widget to make sure it's the active
 		// one, otherwise we could update the wrong ParaView view.
 		if (representationChanged || plotTypeChanged) {
-			refreshWidget(connection);
+			refreshWidget(false, connection);
 		}
 
 		// If the representation changed, update the reference to the currently
 		// drawn representation and update the widget.
 		if (representationChanged) {
-			plotRepresentation = representation;
 			refreshRepresentation(representation, connection);
+			plotRepresentation = representation;
 		}
 
 		// If the plot category or type changed (and they are both valid),
 		// update the reference to the currently drawn category and type and
 		// update the widget.
 		if (plotTypeChanged) {
+			refreshPlotType(category, type, connection);
 			if (category != null) {
 				plotCategory = category;
 			}
 			if (type != null) {
 				plotType = type;
 			}
-			refreshPlotType(type, connection);
 		}
 
-		// FIXME The below logic does not appear to actually refresh the widget
-		// after a change.
 		// We always need to refresh the widget after making changes so that
 		// those changes appear.
 		if (representationChanged || plotTypeChanged) {
-			refreshWidget(connection);
+			refreshWidget(true, connection);
 		}
 
 		return;
@@ -469,6 +487,8 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 			representationTree.dispose();
 			representationTree = null;
 		}
+
+		renderPanel = null;
 
 		return;
 	}
@@ -567,16 +587,28 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 * This method handles the proper JSON RPC to activate the associated view.
 	 * </p>
 	 * 
+	 * @param render
+	 *            If true, the widget will be re-rendered. If false, then the
+	 *            associated view will only be "activated".
 	 * @param connection
 	 *            The current connection.
 	 * @throws Exception
 	 *             If the connection is invalid or the command could not be
 	 *             completed.
 	 */
-	private void refreshWidget(VtkWebClient connection) throws Exception {
+	private void refreshWidget(boolean render, VtkWebClient connection)
+			throws Exception {
 		List<Object> args = new ArrayList<Object>(1);
 		args.add(viewId);
 		connection.call("activateView", args).get();
+
+		// Force a refresh of the ParaView rendering widget if necessary.
+		if (render) {
+			System.out.println("Rendering!!!");
+			renderPanel.dirty();
+		}
+
+		return;
 	}
 
 	/**
@@ -594,42 +626,55 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 *             If the connection is invalid or the command could not be
 	 *             completed.
 	 */
-	private void refreshPlotType(String plotType, VtkWebClient connection)
-			throws Exception {
-
-		// TODO We should also "uncheck" the previous plot category/type.
+	private void refreshPlotType(String plotCategory, String plotType,
+			VtkWebClient connection) throws Exception {
 
 		List<Object> args = new ArrayList<Object>();
 		JSONObject object;
 
 		JSONArray updatedProperties = new JSONArray();
+		JSONObject statusProperty;
+		JSONArray array;
+
+		// Disable the previously selected plot category and type if one was
+		// selected necessary.
+		if (this.plotCategory != null) {
+			statusProperty = new JSONObject();
+			statusProperty.put("id", Integer.toString(fileId));
+			statusProperty.put("name", plotTypeArrays.get(this.plotCategory));
+			array = new JSONArray();
+			statusProperty.put("value", array);
+			updatedProperties.put(statusProperty);
+		}
 
 		// Update the "status" of the mesh/material/cell/point arrays.
 		// For the silo file, we want to select Battery_/TemperatureP1.
-		JSONObject pointStatusProperty = new JSONObject();
-		pointStatusProperty.put("id", Integer.toString(fileId));
-		pointStatusProperty.put("name", "PointArrayStatus");
-		JSONArray pointArrays = new JSONArray();
-		pointArrays.put(plotType);
-		pointStatusProperty.put("value", pointArrays);
-		updatedProperties.put(pointStatusProperty);
+		statusProperty = new JSONObject();
+		statusProperty.put("id", Integer.toString(fileId));
+		statusProperty.put("name", plotTypeArrays.get(plotCategory));
+		array = new JSONArray();
+		array.put(plotType);
+		statusProperty.put("value", array);
+		updatedProperties.put(statusProperty);
 
-		// Update the properties that were configured.
+		// Update the properties that were changed.
 		args.add(updatedProperties);
 		object = connection.call("pv.proxy.manager.update", args).get();
 		if (!object.getBoolean("success")) {
 			System.out.println("Failed to set the representation: ");
-			JSONArray array = object.getJSONArray("errorList");
+			array = object.getJSONArray("errorList");
 			for (int i = 0; i < array.length(); i++) {
 				System.out.println(array.get(i));
 			}
 		}
 
 		// Set the representation to color based on the plot type.
-		// FIXME The documentation for ParaView is a little unclear about
-		// most of these parameters. The only obvious ones are the
-		// representation proxy ID and the variable name. The rescale option
-		// does not appear to work as expected.
+		/*
+		 * FIXME The documentation for ParaView is a little unclear about most
+		 * of these parameters. The only obvious ones are the representation
+		 * proxy ID and the variable name. The rescale option does not appear to
+		 * work as expected.
+		 */
 		args.clear();
 		args.add(Integer.toString(repId));
 		args.add("ARRAY"); // TODO Not sure when to use SOLID here.
@@ -639,6 +684,12 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		args.add(0); // TODO Not sure when to use another value here.
 		args.add(true);
 		object = connection.call("pv.color.manager.color.by", args).get();
+
+		// Refresh the scalar bars. If this is not done here, then the next call
+		// will place the new scalar bar in a different location.
+		args.clear();
+		args.add(viewId);
+		connection.call("refreshScalarBars", args).get();
 
 		// Set the visibility of the legend to true.
 		args.clear();

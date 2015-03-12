@@ -120,14 +120,17 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 
 			// Determine the plot category and its allowed types.
 			String name = object.getString("name");
-			JSONArray valueArray = object.getJSONArray("values");
-			String[] values = new String[valueArray.length()];
-			for (int j = 0; j < values.length; j++) {
-				values[j] = valueArray.getString(j);
+			// TODO Figure out how we should handle the meshes in the file.
+			// We do not want to set the mesh yet.
+			if (!"Meshes".equals(name)) {
+				JSONArray valueArray = object.getJSONArray("values");
+				String[] values = new String[valueArray.length()];
+				for (int j = 0; j < values.length; j++) {
+					values[j] = valueArray.getString(j);
+				}
+				// Store the plot category and types in the map.
+				plotTypes.put(name, values);
 			}
-
-			// Store the plot category and types in the map.
-			plotTypes.put(name, values);
 		}
 
 		return plotTypes;
