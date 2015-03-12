@@ -151,16 +151,40 @@ public abstract class PlotRender {
 
 	/**
 	 * This method updates the UI widgets based on the current settings. It
-	 * should be called whenever the UI needs to be updated in any way.
+	 * should be called whenever the UI needs to be updated in any way. It is
+	 * the same as calling {@link #refresh(boolean) refresh(false)}.
 	 * <p>
 	 * This will either immediately update the UI or trigger an asynchronous
 	 * update to the UI on the display's UI thread.
 	 * </p>
 	 */
 	public void refresh() {
+		refresh(false);
+	}
 
-		// If we are not on the UI thread, update the UI asynchronously on
-		// the UI thread.
+	/**
+	 * This method updates the UI widgets based on the current settings. It
+	 * should be called whenever the UI needs to be updated in any way.
+	 * <p>
+	 * This will either immediately update the UI or trigger an asynchronous
+	 * update to the UI on the display's UI thread.
+	 * </p>
+	 * 
+	 * @param clearCache
+	 *            Some sub-classes may cache certain meta data so that the
+	 *            refresh operation is faster. If true, this parameter causes
+	 *            the cached information to be rebuilt at the next available
+	 *            opportunity.
+	 */
+	public void refresh(boolean clearCache) {
+
+		// If necessary, clear the cached information.
+		if (clearCache) {
+			clearCache();
+		}
+
+		// If we are not on the UI thread, update the UI asynchronously on the
+		// UI thread.
 		if (Display.getCurrent() == null) {
 			parent.getDisplay().asyncExec(new Runnable() {
 				@Override
@@ -176,6 +200,11 @@ public abstract class PlotRender {
 
 		return;
 	}
+
+	/**
+	 * Clears any cached meta data used to speed up the refresh operation.
+	 */
+	protected abstract void clearCache();
 
 	/**
 	 * This method updates the UI contributions for this plot. This method

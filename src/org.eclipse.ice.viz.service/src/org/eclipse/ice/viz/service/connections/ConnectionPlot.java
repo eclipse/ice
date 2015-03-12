@@ -160,9 +160,12 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 		// If the argument is null, then do nothing. Even if the current adapter
 		// is null, the UI should already be up to date!
 		if (component != null && component == adapter) {
+			// Clear the cache for this plot, since the new connection may
+			// affect the available plot types.
+			clearCache();
 			// Trigger an update to the UI for all currently rendered plots.
 			for (PlotRender plotRender : getPlotRenders()) {
-				plotRender.refresh();
+				plotRender.refresh(true);
 			}
 		}
 	}

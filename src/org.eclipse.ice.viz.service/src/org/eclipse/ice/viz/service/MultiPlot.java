@@ -65,7 +65,7 @@ public abstract class MultiPlot implements IPlot {
 	/**
 	 * A map of the available plot types.
 	 */
-	private final Map<String, String[]> plotTypes;
+	private Map<String, String[]> plotTypes;
 
 	/**
 	 * The default constructor.
@@ -84,7 +84,6 @@ public abstract class MultiPlot implements IPlot {
 
 		// Initialize any final collections.
 		plotRenders = new HashMap<Composite, PlotRender>();
-		plotTypes = new HashMap<String, String[]>();
 
 		return;
 	}
@@ -135,6 +134,13 @@ public abstract class MultiPlot implements IPlot {
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
 	 */
 	public Map<String, String[]> getPlotTypes() throws Exception {
+		// If necessary, re-build the cache of plot types.
+		if (plotTypes == null) {
+			plotTypes = new HashMap<String, String[]>();
+
+			Map<String, String[]> newPlotTypes = findPlotTypes(source);
+			plotTypes.putAll(newPlotTypes);
+		}
 		return plotTypes;
 	}
 
@@ -234,9 +240,9 @@ public abstract class MultiPlot implements IPlot {
 					+ "No plots available in file.");
 		}
 
-		// Otherwise, replace the contents of plotTypes with the new plot types
-		// from the sub-class.
-		plotTypes.clear();
+		// Clear any cached meta data and rebuild the cache of plot types.
+		clearCache();
+		plotTypes = new HashMap<String, String[]>();
 		plotTypes.putAll(newPlotTypes);
 
 		// Update the reference to the data source.
@@ -246,9 +252,22 @@ public abstract class MultiPlot implements IPlot {
 	}
 
 	/**
+	 * Clears any cached meta data for the plot.
+	 */
+	protected void clearCache() {
+		// Clear the cache of known plot types.
+		if (plotTypes != null) {
+			plotTypes.clear();
+			plotTypes = null;
+		}
+
+		return;
+	}
+
+	/**
 	 * <b>Note:</b> This method is called automatically in
-	 * {@link #setDataSource(URI)}. Implementations should always query the
-	 * file.
+	 * {@link #setDataSource(URI)}. Implementations should always query the file
+	 * and should <i>not</i> cache the data.
 	 * <p>
 	 * This operation returns a simple map of plot types that can be created by
 	 * the IPlot using its data source. The map is meant to have a structure

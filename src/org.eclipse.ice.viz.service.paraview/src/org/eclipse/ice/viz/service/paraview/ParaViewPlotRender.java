@@ -39,10 +39,21 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	private final IConnectionAdapter<VtkWebClient> adapter;
 
 	/**
-	 * The list of actions that will be put into a {@code ToolBar} above the
-	 * plot widget.
+	 * The {@code ToolBarManager} that will contain the plot actions that can
+	 * update the plot widget.
 	 */
-	private List<ActionTree> actions;
+	private ToolBarManager toolBar;
+
+	/**
+	 * The {@code ActionTree} that can be used to update the plot category and
+	 * type.
+	 */
+	private ActionTree plotTypeTree;
+	/**
+	 * The {@code ActionTree} that can be used to update the plot
+	 * representation.
+	 */
+	private ActionTree representationTree;
 
 	/**
 	 * The current plot category rendered in the associated rendering widget.
@@ -142,6 +153,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		this.fileId = fileId;
 		this.repId = repId;
 
+		// Store the adapter so that we can access its connection later.
 		this.adapter = plot.getParaViewConnectionAdapter();
 
 		return;
@@ -222,6 +234,32 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.ice.viz.service.PlotRender#clearCache()
+	 */
+	@Override
+	protected void clearCache() {
+		// Clear and unset the set of representations, so the next time
+		// getPlotRepresentations() is called, it will be rebuilt.
+		if (representations != null) {
+			representations.clear();
+			representations = null;
+		}
+
+		// Clear the ActionTrees. These will be refreshed the next time the plot
+		// widget is updated.
+		if (plotTypeTree != null) {
+			plotTypeTree.removeAll();
+		}
+		if (representationTree != null) {
+			representationTree.removeAll();
+		}
+
+		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotRender#
 	 * createPlotComposite(org.eclipse.swt.widgets.Composite, int,
 	 * java.lang.Object)
@@ -267,6 +305,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 
 		// Create a ToolBar.
 		ToolBarManager toolBarManager = new ToolBarManager();
+		this.toolBar = toolBarManager;
 		ToolBar toolBar = toolBarManager.createControl(plotContainer);
 		toolBar.setBackground(parent.getBackground());
 		toolBar.setFont(parent.getFont());
@@ -317,6 +356,9 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		// invalid state when two threads update the same values at the same
 		// time. For example, thread 1 updates the category and type and
 		// refreshes, but just before the refresh thread 2 changes the category.
+
+		// Refresh the ToolBar as necessary.
+		refreshToolBar(toolBar);
 
 		// See if the representation has been updated since the last refresh. We
 		// should also make sure it is a valid representation.
@@ -395,69 +437,15 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 */
 	private void fillToolBar(ToolBarManager toolBar,
 			final VtkWebClient connection) {
-		actions = new ArrayList<ActionTree>();
 
-		ActionTree plotTypesTree = new ActionTree("Plot Types");
-		actions.add(plotTypesTree);
-
-		// Create an ActionTree for the available plot categories and types.
-		// Selecting one of the leaf nodes should set the category and type for
-		// the associated plot.
-
-		// Get the available plot categories and types. If there is a problem,
-		// create an empty map.
-		Map<String, String[]> plotTypes;
-		try {
-			plotTypes = plot.getPlotTypes();
-		} catch (Exception e) {
-			plotTypes = new HashMap<String, String[]>(0);
-		}
-		// Loop over the available categories/types and add widgets to set them.
-		for (Entry<String, String[]> entry : plotTypes.entrySet()) {
-			// Create a tree for the category and add it to the main plot
-			// type tree. It should contain all of the available types for
-			// the category.
-			final String category = entry.getKey();
-			ActionTree categoryTree = new ActionTree(category);
-			plotTypesTree.add(categoryTree);
-
-			// For each plot type in this category, add an ActionTree that,
-			// when clicked, updates the plot category and type.
-			for (final String type : entry.getValue()) {
-				ActionTree typeTree = new ActionTree(new Action(type) {
-					@Override
-					public void run() {
-						// Update the plot category and type.
-						setPlotCategory(category);
-						setPlotType(type);
-						// Trigger a refresh of the render widget.
-						refresh();
-					}
-				});
-				categoryTree.add(typeTree);
-			}
-		}
+		plotTypeTree = new ActionTree("Plot Types");
+		toolBar.add(plotTypeTree.getContributionItem());
 
 		// Add widgets to change the representation.
-		ActionTree repTypesTree = new ActionTree("Representations");
-		actions.add(repTypesTree);
-		// Loop over the available representations and add widgets to set them.
-		for (final String representation : getPlotRepresentations()) {
-			repTypesTree.add(new ActionTree(new Action(representation) {
-				@Override
-				public void run() {
-					// Update the representation.
-					setPlotRepresentation(representation);
-					// Trigger a refresh of the render widget.
-					refresh();
-				}
-			}));
-		}
+		representationTree = new ActionTree("Representations");
+		toolBar.add(representationTree.getContributionItem());
 
-		// Populate the ToolBarManager with the ActionTrees.
-		for (ActionTree tree : actions) {
-			toolBar.add(tree.getContributionItem());
-		}
+		// Refresh the ToolBar.
 		toolBar.update(true);
 
 		return;
@@ -473,11 +461,13 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	@Override
 	protected void disposePlotComposite(Composite plotComposite) {
 		// Dispose of the ActionTrees if necessary.
-		if (actions != null) {
-			for (ActionTree tree : actions) {
-				tree.dispose();
-			}
-			actions.clear();
+		if (plotTypeTree != null) {
+			plotTypeTree.dispose();
+			plotTypeTree = null;
+		}
+		if (representationTree != null) {
+			representationTree.dispose();
+			representationTree = null;
 		}
 
 		return;
@@ -492,6 +482,82 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	@Override
 	protected String getPreferenceNodeID() {
 		return "org.eclipse.ice.viz.service.paraview.preferences";
+	}
+
+	/**
+	 * Refreshes (if necessary) the widgets in the {@code ToolBar}.
+	 * <p>
+	 * Specifically, this method updates both the {@link #plotTypeTree} and
+	 * {@link #representationTree}.
+	 * </p>
+	 * 
+	 * @param toolBar
+	 *            The {@code ToolBar} to update.
+	 */
+	private void refreshToolBar(ToolBarManager toolBar) {
+		// Create an ActionTree for the available plot categories and types.
+		// Selecting one of the leaf nodes should set the category and type for
+		// the associated plot.
+
+		if (plotTypeTree.getChildren().isEmpty()) {
+			// Get the available plot categories and types. If there is a
+			// problem, create an empty map.
+			Map<String, String[]> plotTypes;
+			try {
+				plotTypes = plot.getPlotTypes();
+			} catch (Exception e) {
+				plotTypes = new HashMap<String, String[]>(0);
+			}
+			// Loop over the available categories/types and add widgets to set
+			// them.
+			for (Entry<String, String[]> entry : plotTypes.entrySet()) {
+				// Create a tree for the category and add it to the main plot
+				// type tree. It should contain all of the available types for
+				// the category.
+				final String category = entry.getKey();
+				ActionTree categoryTree = new ActionTree(category);
+				plotTypeTree.add(categoryTree);
+
+				// For each plot type in this category, add an ActionTree that,
+				// when clicked, updates the plot category and type.
+				for (final String type : entry.getValue()) {
+					ActionTree typeTree = new ActionTree(new Action(type) {
+						@Override
+						public void run() {
+							// Update the plot category and type.
+							setPlotCategory(category);
+							setPlotType(type);
+							// Trigger a refresh of the render widget.
+							refresh();
+						}
+					});
+					categoryTree.add(typeTree);
+				}
+			}
+		}
+
+		if (representationTree.getChildren().isEmpty()) {
+			// Add widgets to change the representation tree.
+			// Loop over the available representations and add widgets to set
+			// them.
+			for (final String representation : getPlotRepresentations()) {
+				representationTree.add(new ActionTree(
+						new Action(representation) {
+							@Override
+							public void run() {
+								// Update the representation.
+								setPlotRepresentation(representation);
+								// Trigger a refresh of the render widget.
+								refresh();
+							}
+						}));
+			}
+		}
+
+		// Refresh the ToolBar.
+		toolBar.update(true);
+
+		return;
 	}
 
 	/**
@@ -630,4 +696,5 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 
 		return;
 	}
+
 }
