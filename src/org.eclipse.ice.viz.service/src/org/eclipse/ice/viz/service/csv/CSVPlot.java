@@ -269,8 +269,8 @@ public class CSVPlot implements IPlot {
 			// Create the plot editor
 			CSVPlotEditor plotEditor = new CSVPlotEditor();
 			plotEditor.createPartControl(parent);
-			// Add the new plot to the editor
-			plotEditor.showPlotProvider(plotProvider);
+			// Add the new plot to the editor (with time slider disabled)
+			plotEditor.showPlotProvider(plotProvider, false);
 		} else {
 			// Complain that the plot is invalid
 			throw new Exception("Invalid plot: category = " + category

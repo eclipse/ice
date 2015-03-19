@@ -29,6 +29,7 @@ import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -146,15 +147,14 @@ public class CSVPlotEditor extends EditorPart {
 	public void createPartControl(Composite parent) {
 
 		// Create a top level composite to hold the canvas or text
-		vizComposite = new Composite(parent, SWT.FILL);
-		vizComposite.setLayout(new GridLayout());
-		vizComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		vizComposite = new Composite(parent, SWT.NONE);
+		vizComposite.setLayout(new GridLayout(1, true));
 
+		// Set up the canvas where the graph is displayed
 		Canvas plotCanvas = new Canvas(vizComposite, SWT.BORDER);
-		plotCanvas.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		lws = new LightweightSystem(plotCanvas);
-
+		
 		return;
 	}
 
@@ -180,8 +180,10 @@ public class CSVPlotEditor extends EditorPart {
 	 * 
 	 * @param displayPlotProvider
 	 *            The PlotProvider containing the information to create the plot
+	 * @param addSlider
+	 * 			  If a time slider should be added for non-contour plots
 	 */
-	public void showPlotProvider(PlotProvider displayPlotProvider) {
+	public void showPlotProvider(PlotProvider displayPlotProvider, boolean addSlider) {
 
 		// If it is not a contour plot then plot the regular series
 		if (!displayPlotProvider.isContour()) {
@@ -190,8 +192,10 @@ public class CSVPlotEditor extends EditorPart {
 					.get(0));
 
 			// Add the slider for a file set
-			Composite sliderComp = new Composite(vizComposite, SWT.NONE);
-			createSliderComp(sliderComp, displayPlotProvider);
+			if (addSlider) {
+				Composite sliderComp = new Composite(vizComposite, SWT.NONE);
+				createSliderComp(sliderComp, displayPlotProvider);
+			}
 
 		} else {
 			// Plot as a contour plot
@@ -264,6 +268,16 @@ public class CSVPlotEditor extends EditorPart {
 		}
 	}
 
+	/**
+	 * This method is equivalent to calling {@code showPlotProvider(provider, true)}
+	 * 
+	 * @param displayPlotProvider
+	 *            The PlotProvider containing the information to create the plot
+	 */
+	public void showPlotProvider(PlotProvider displayPlotProvider) {
+		showPlotProvider(displayPlotProvider, true);
+	}
+	
 	/**
 	 * 
 	 * @param plotProvider

@@ -39,9 +39,12 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -65,7 +68,7 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  */
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		IUpdateableListener {
-
+	
 	/**
 	 * The ResourceComponent drawn by this page.
 	 */
@@ -93,15 +96,27 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private Composite pageComposite;
 	
 	/**
-	 * The Composite used to contain the grid of plots.
+	 * A sub-composite of {@link #pageComposite}, used for drawing plots and 
+	 * any associated widgets.
 	 */
-	private Composite plotComposite;
+	private Composite drawingComposite;
+	
+	/**
+	 * A sub-composite of {@link #drawingComposite}, used for arranging
+	 * {@link #plotComposites} in a grid-like formation.
+	 */
+	private Composite gridComposite;
 	
 	/**
 	 * An Array storing the current dimensions of the plotComposite's grid.
 	 */
 	private int[] gridDimensions;
 
+//	/**
+//	 * A collection of objects managed for the GridLayout of IPlots.
+//	 */
+//	private ArrayList<Browser> gridManager;
+	
 	/**
 	 * The layout that stacks the plot and browser composites. We use a
 	 * StackLayout because we only show either the {@link #browser} or the
@@ -195,14 +210,15 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		resourceView = (ICEResourceView) getSite().getWorkbenchWindow()
 				.getActivePage().findView(ICEResourceView.ID);
 
-		// Get the parent Composite for the Resource Page widgets
+		// Get the parent Composite for the Resource Page widgets and set its
+		// layout to the StackLayout.
 		pageComposite = managedForm.getForm().getBody();
+		pageComposite.setLayout(stackLayout);
 
 		// Register the page as a selection listener. The page returned by
 		// getPage() is not the same as this page! There are some subtle UI
 		// differences under the hood.
 		getSite().getPage().addSelectionListener(this);
-		
 		// Add a dispose event listener on the parent. If disposed at any point,
 		// remove it from the workbench's SelectionService listeners (or else it
 		// will attempt to refresh disposed widgets).
@@ -213,77 +229,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						.removeSelectionListener(ICEResourcePage.this);
 			}
 		});
-		
-		// Create a composite for the "rows" and "columns" buttons/spinners
-		Composite buttonComposite = new Composite(pageComposite, SWT.BORDER);
-		buttonComposite.setLayoutData(new GridData(SWT.LEFT));
-	    buttonComposite.setLayout(new GridLayout(2, true));
-		
-		// Create buttons/spinners and labels for the button composite
-		Label rowsLabel = new Label(buttonComposite, SWT.NONE);
-		rowsLabel.setText("Rows:");
-		Label columnsLabel = new Label(buttonComposite, SWT.NONE);
-		columnsLabel.setText("Columns:");
-		Spinner rows = new Spinner(buttonComposite, SWT.READ_ONLY);
-		rows.setMinimum(1);
-		rows.setMaximum(6);
-		rows.setSelection(2);
-		rows.setIncrement(1);
-		Spinner columns = new Spinner(buttonComposite, SWT.READ_ONLY);
-		columns.setMinimum(1);
-		columns.setMaximum(6);
-		columns.setSelection(3);
-		columns.setIncrement(1);
-		
-		// Lay out the composite
-		buttonComposite.layout();
-		
-		// Set listeners on the rows and columns to update the plot grid when
-		// the number of rows or columns is changed
-		rows.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				int rows = ((Spinner) e.widget).getSelection();
-				System.out.println("Number of rows changed: " + rows);
-				updatePlotComposite(rows, -1);
-			}
-		});
-		columns.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				int columns = ((Spinner) e.widget).getSelection();
-				System.out.println("Number of columns changed: " + columns);
-				updatePlotComposite(-1, columns);
-			}
-		});
-		
-		// Construct the plot composite 
-		plotComposite = new Composite(pageComposite, SWT.NONE);
-		GridLayout plotGrid = new GridLayout(columns.getSelection(), true);
-		plotComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
-		// Generate browser with random BG color
-		for (int i = 0; i < rows.getSelection()*columns.getSelection(); i++) {
-			browser = createBrowser(plotComposite, toolkit);
-			int r = ((Double) (Math.random()*255)).intValue();
-			int g = ((Double) (Math.random()*255)).intValue();
-			int b = ((Double) (Math.random()*255)).intValue();
-			browser.setText("<html><body style=\"background-color:rgb(" + r + "," + g + "," + b + ");overflow:hidden;\"></body></html>");
-			browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		}
-		
-		// Update the gridDimensions
-		gridDimensions = new int[] {rows.getSelection(), columns.getSelection()};
-		
-		// Set and lay out the plot composite
-		plotComposite.setLayout(plotGrid);
-		plotComposite.pack();
-		plotComposite.layout();
-		
-		// Set and lay out the page composite
-		pageComposite.setLayout(new GridLayout());
-		pageComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		pageComposite.layout();		
+
+		// Create the browser.
+		browser = createBrowser(pageComposite, toolkit);
+		stackLayout.topControl = browser;
+		pageComposite.layout();
 		
 		// Set the workbench page reference
 		workbenchPage = PlatformUI.getWorkbench()
@@ -340,7 +290,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		return browser;
 	}
-
+	
 	/**
 	 * This operation overrides the default/abstract implementation of
 	 * ISelectionListener.selectionChanged to display the resource selected in
@@ -373,6 +323,75 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	}
 
 	/**
+	 * This method creates and sets up the composite which will contain a grid
+	 * of IPlots.
+	 */
+	private void createGridComposite(Composite parent) {
+		
+		// Create the enclosing composite the gridComposite is contained in
+//		drawingComposite = new Composite(parent, SWT.NONE);
+//		Display display = new Display();
+//		Color blue = display.getSystemColor(SWT.COLOR_BLUE);
+//		drawingComposite.setForeground(blue);
+//		drawingComposite.setLayout(new GridLayout(1, true));
+//		
+//		// Create a composite for the "rows" and "columns" buttons/spinners
+//		Composite buttonComposite = new Composite(drawingComposite, SWT.BORDER);
+//	    buttonComposite.setLayout(new GridLayout(2, true));
+////		buttonComposite.setLayoutData(new GridData(SWT.LEFT));
+//		
+//		// Create buttons/spinners and labels for the button composite
+//		Label rowsLabel = new Label(buttonComposite, SWT.NONE);
+//		rowsLabel.setText("Rows:");
+//		Label columnsLabel = new Label(buttonComposite, SWT.NONE);
+//		columnsLabel.setText("Columns:");
+//		Spinner rows = new Spinner(buttonComposite, SWT.READ_ONLY);
+////		rows.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true));
+//		rows.setMinimum(1);
+//		rows.setMaximum(6);
+//		rows.setSelection(2);
+//		rows.setIncrement(1);
+//		Spinner columns = new Spinner(buttonComposite, SWT.READ_ONLY);
+////		columns.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true));
+//		columns.setMinimum(1);
+//		columns.setMaximum(6);
+//		columns.setSelection(3);
+//		columns.setIncrement(1);
+//		
+//		// Lay out the composite
+////		buttonComposite.pack();
+////		buttonComposite.layout();
+//		
+//		// Set listeners on the rows and columns to update the plot grid when
+//		// the number of rows or columns is changed
+//		rows.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				int rows = ((Spinner) e.widget).getSelection();
+//				System.out.println("Number of rows changed: " + rows);
+//				updateGridComposite(rows, -1);
+//			}
+//		});
+//		columns.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				int columns = ((Spinner) e.widget).getSelection();
+//				System.out.println("Number of columns changed: " + columns);
+//				updateGridComposite(-1, columns);
+//			}
+//		});
+			
+		// Construct the plot composite that will hold IPlots
+		gridComposite = new Composite(parent, SWT.NONE);
+		gridComposite.setLayout(new GridLayout(3, true));
+		
+		// Update the gridDimensions
+//		gridDimensions = new int[] {rows.getSelection(), columns.getSelection()};
+		
+		return;
+	}
+	
+	/**
 	 * This method updates the plotComposite to reflect changes to the number
 	 * of columns and/or rows in the plotting grid area. Passing a value of -1
 	 * into the rows parameter indicates that the number of columns has been
@@ -386,8 +405,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * @param rows		The number of rows. Must be a positive integer, or -1 
 	 * 					to indicate that the number of rows has not been updated.
 	 */
-	private void updatePlotComposite(int rows, int columns) {
-		
+	private void updateGridComposite(int rows, int columns) {
 		
 		if (columns == -1 && rows > 0) {
 			System.out.println("Updating rows");
@@ -402,7 +420,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		} else if (rows == -1 && columns > 0) {
 			System.out.println("Updating columns");
 			
-			// Check if we're adding or subtracting rows
+			// Check if we're adding or subtracting columns
 			if (columns > gridDimensions[1]) {
 				// TODO add columns
 			} else if (columns < gridDimensions[1]) {
@@ -434,6 +452,12 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// browser.
 			boolean useBrowser = !(resource instanceof VizResource);
 			if (!useBrowser) {
+				
+				// Create the grid composite for plots if it hasn't already been
+				if (gridComposite == null) {
+					createGridComposite(pageComposite);
+				}
+				
 				VizResource vizResource = (VizResource) resource;
 				Composite plotComposite = null;
 
@@ -442,16 +466,17 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				String key = getPlotKey(vizResource);
 				plotComposite = plotComposites.get(key);
 				if (plotComposite == null) {
-					plotComposite = createPlotComposite(pageComposite,
-							vizResource);
+					plotComposite = 
+							createPlotComposite(gridComposite, vizResource);
 				}
 
 				// If the plot and its drawn Composite could be found, update
 				// the StackLayout. Otherwise, the next section will attempt to
 				// either open it in a text editor (if applicable), or the 
 				// browser as a last resort.
-				if (plotComposite != null) {
-					stackLayout.topControl = plotComposite;
+				if (gridComposite != null && plotComposite != null) {
+					stackLayout.topControl = gridComposite;
+					pageComposite.pack();
 					pageComposite.layout();
 	
 					// Reactivate the Item editor tab if it's not in the front			
@@ -602,12 +627,19 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 					// Try to draw the contents of the plot Composite. If
 					// successfully drawn, add it to the map of plot Composites.
 					try {
+						// Set up the composite that will contain a plot
 						FormToolkit toolkit = getManagedForm().getToolkit();
 						plotComposite = toolkit.createComposite(parent);
 						plotComposite.setLayout(new FillLayout());
+						plotComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+						// Draw and pack the plot in the parent composite
 						plot.draw(category, plotType, plotComposite);
+						parent.pack();
+						
+						// Store it in the plot map
 						plotComposites.put(key, plotComposite);
-					}
+					}	
 					// If the plot could not be drawn, dispose the plot
 					// Composite.
 					catch (Exception drawException) {
@@ -701,7 +733,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 					@Override
 					public void run() {
 						// Clear the browser and make it the top widget.
-						browser.setText("<html><body><center>No resources available.</center></body></html>");
+						browser.setText("<html><body>"
+								+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+								+ "align=\"center\">No resources available</p>"
+								+ "</body></html>");
 						stackLayout.topControl = browser;
 						pageComposite.layout();
 
