@@ -39,12 +39,9 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -109,13 +106,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	
 	/**
 	 * An Array storing the current dimensions of the plotComposite's grid.
+	 * [0] = rows, [1] = columns
 	 */
 	private int[] gridDimensions;
-
-//	/**
-//	 * A collection of objects managed for the GridLayout of IPlots.
-//	 */
-//	private ArrayList<Browser> gridManager;
 	
 	/**
 	 * The layout that stacks the plot and browser composites. We use a
@@ -146,6 +139,17 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * {@link #plots}.
 	 */
 	private final Map<String, Composite> plotComposites;
+	
+	/**
+	 * A list that manages the currently rendered {@link #plotComposites} in 
+	 * the {@link #gridComposite}. Plots in this list are ordered based on their
+	 * tiling position (like a book, from left to right, and top to bottom).
+	 * Note that this list differs from the {@link #plotComposites} map, as it
+	 * only contains plots currently shown on the {@link #pageComposite}, while 
+	 * {@link #plotComposites} can contain plots that have been drawn, but not
+	 * currently rendered on the page.
+	 */
+	private ArrayList<Composite> gridManager;
 	
 	/**
 	 * A list of file extensions that the ICEResourcePage should be treat as 
@@ -324,69 +328,64 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 	/**
 	 * This method creates and sets up the composite which will contain a grid
-	 * of IPlots.
+	 * of drawn IPlots.
 	 */
-	private void createGridComposite(Composite parent) {
+	private void createDrawingComposite(Composite parent) {
 		
 		// Create the enclosing composite the gridComposite is contained in
-//		drawingComposite = new Composite(parent, SWT.NONE);
-//		Display display = new Display();
-//		Color blue = display.getSystemColor(SWT.COLOR_BLUE);
-//		drawingComposite.setForeground(blue);
-//		drawingComposite.setLayout(new GridLayout(1, true));
-//		
-//		// Create a composite for the "rows" and "columns" buttons/spinners
-//		Composite buttonComposite = new Composite(drawingComposite, SWT.BORDER);
-//	    buttonComposite.setLayout(new GridLayout(2, true));
-////		buttonComposite.setLayoutData(new GridData(SWT.LEFT));
-//		
-//		// Create buttons/spinners and labels for the button composite
-//		Label rowsLabel = new Label(buttonComposite, SWT.NONE);
-//		rowsLabel.setText("Rows:");
-//		Label columnsLabel = new Label(buttonComposite, SWT.NONE);
-//		columnsLabel.setText("Columns:");
-//		Spinner rows = new Spinner(buttonComposite, SWT.READ_ONLY);
-////		rows.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true));
-//		rows.setMinimum(1);
-//		rows.setMaximum(6);
-//		rows.setSelection(2);
-//		rows.setIncrement(1);
-//		Spinner columns = new Spinner(buttonComposite, SWT.READ_ONLY);
-////		columns.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true));
-//		columns.setMinimum(1);
-//		columns.setMaximum(6);
-//		columns.setSelection(3);
-//		columns.setIncrement(1);
-//		
-//		// Lay out the composite
-////		buttonComposite.pack();
-////		buttonComposite.layout();
-//		
-//		// Set listeners on the rows and columns to update the plot grid when
-//		// the number of rows or columns is changed
-//		rows.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				int rows = ((Spinner) e.widget).getSelection();
-//				System.out.println("Number of rows changed: " + rows);
-//				updateGridComposite(rows, -1);
-//			}
-//		});
-//		columns.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				int columns = ((Spinner) e.widget).getSelection();
-//				System.out.println("Number of columns changed: " + columns);
-//				updateGridComposite(-1, columns);
-//			}
-//		});
+		drawingComposite = new Composite(parent, SWT.NONE);
+		drawingComposite.setLayout(new GridLayout());
+		
+		// Create a composite for the "rows" and "columns" buttons/spinners
+		Composite buttonComposite = new Composite(drawingComposite, SWT.BORDER);
+	    buttonComposite.setLayout(new GridLayout(2, true));
+		buttonComposite.setLayoutData(new GridData(SWT.LEFT));
+		
+		// Create buttons/spinners and labels for the button composite
+		Label rowsLabel = new Label(buttonComposite, SWT.NONE);
+		rowsLabel.setText("Rows:");
+		Label columnsLabel = new Label(buttonComposite, SWT.NONE);
+		columnsLabel.setText("Columns:");
+		Spinner rows = new Spinner(buttonComposite, SWT.READ_ONLY);
+		rows.setMinimum(1);
+		rows.setMaximum(6);
+		rows.setSelection(2);
+		rows.setIncrement(1);
+		Spinner columns = new Spinner(buttonComposite, SWT.READ_ONLY);
+		columns.setMinimum(1);
+		columns.setMaximum(6);
+		columns.setSelection(3);
+		columns.setIncrement(1);
+				
+		// Set listeners on the rows and columns to update the plot grid when
+		// the number of rows or columns is changed
+		rows.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int rows = ((Spinner) e.widget).getSelection();
+				System.out.println("Number of rows changed: " + rows);
+				updateGridComposite(rows, -1);
+			}
+		});
+		columns.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int columns = ((Spinner) e.widget).getSelection();
+				System.out.println("Number of columns changed: " + columns);
+				updateGridComposite(-1, columns);
+			}
+		});
 			
 		// Construct the plot composite that will hold IPlots
-		gridComposite = new Composite(parent, SWT.NONE);
-		gridComposite.setLayout(new GridLayout(3, true));
+		gridComposite = new Composite(drawingComposite, SWT.NONE);
+		gridComposite.setLayout(new GridLayout(columns.getSelection(), true));
+		gridComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		// Update the gridDimensions
-//		gridDimensions = new int[] {rows.getSelection(), columns.getSelection()};
+		// Create the gridDimensions
+		gridDimensions = new int[] {rows.getSelection(), columns.getSelection()};
+		
+		// Create the gridManager
+		gridManager = new ArrayList<Composite>();
 		
 		return;
 	}
@@ -408,7 +407,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private void updateGridComposite(int rows, int columns) {
 		
 		if (columns == -1 && rows > 0) {
-			System.out.println("Updating rows");
 			
 			// Check if we're adding or subtracting rows
 			if (rows > gridDimensions[0]) {
@@ -418,15 +416,35 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			}
 			
 		} else if (rows == -1 && columns > 0) {
-			System.out.println("Updating columns");
 			
-			// Check if we're adding or subtracting columns
-			if (columns > gridDimensions[1]) {
-				// TODO add columns
-			} else if (columns < gridDimensions[1]) {
-				// TODO subtract columns
-			} 
+			// Set a new layout on the gridComposite with the number of columns
+			gridComposite.setLayout(new GridLayout(columns, true));
+						
+			// Check if we're subtracting columns
+			if (columns < gridDimensions[1]) {
+				
+				// Check if there are more plots than there are available
+				// spaces to tile them
+				int numTiles = columns*gridDimensions[0];
+				if (gridManager.size() > numTiles) {
+					
+					// Dispose of any excess plotComposites we can't fit,
+					// starting by removing the last one
+					for (int i = gridManager.size()-1; i >= numTiles; i--) {
+						Composite plot = gridManager.get(i);
+						plot.dispose();
+					}
+				}
+			}
+			
+			// Update the gridDimensions
+			gridDimensions[1] = columns;
 		}
+		
+		// Pack and lay out the new grid configuration
+		gridComposite.pack();
+		drawingComposite.pack();
+		pageComposite.layout();
 		
 		return;
 	}
@@ -455,7 +473,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				
 				// Create the grid composite for plots if it hasn't already been
 				if (gridComposite == null) {
-					createGridComposite(pageComposite);
+					createDrawingComposite(pageComposite);
 				}
 				
 				VizResource vizResource = (VizResource) resource;
@@ -465,7 +483,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				// attempt to draw it.
 				String key = getPlotKey(vizResource);
 				plotComposite = plotComposites.get(key);
-				if (plotComposite == null) {
+				if (plotComposite == null || plotComposite.isDisposed()) {
 					plotComposite = 
 							createPlotComposite(gridComposite, vizResource);
 				}
@@ -475,7 +493,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				// either open it in a text editor (if applicable), or the 
 				// browser as a last resort.
 				if (gridComposite != null && plotComposite != null) {
-					stackLayout.topControl = gridComposite;
+					stackLayout.topControl = drawingComposite;
+					drawingComposite.pack();
 					pageComposite.pack();
 					pageComposite.layout();
 	
@@ -635,10 +654,21 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 						// Draw and pack the plot in the parent composite
 						plot.draw(category, plotType, plotComposite);
-						parent.pack();
+						parent.pack();					
 						
-						// Store it in the plot map
+						// Store it in the plot map and grid manager
 						plotComposites.put(key, plotComposite);
+						gridManager.add(plotComposite);
+						
+						// Add a dispose listener to remove the plot from the
+						// gridManager
+						plotComposite.addDisposeListener(new DisposeListener() {
+							@Override
+							public void widgetDisposed(DisposeEvent e) {
+								Composite c = (Composite) e.widget;
+								gridManager.remove(c);
+							}
+						});
 					}	
 					// If the plot could not be drawn, dispose the plot
 					// Composite.
