@@ -847,8 +847,17 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 		// Find the "file" Entry among the "Mesh" block's parameters.
 		TreeComposite meshBlock = findMeshBlock();
-		DataComponent activeNode = (DataComponent) meshBlock
-				.getActiveDataNode();
+		
+		// DataComponent activeNode = (DataComponent) meshBlock
+		// .getActiveDataNode();
+		
+		// The above call returns null, but the debugger (and the UI!) shows
+		// that the data is available. This is a more direct way to get the data
+		// that is OK to use since the specific mesh block is being called.
+		// There should be a check to make sure that the result isn't null
+		// though with an error/exception otherwise. ~JJB 20150322 11:15
+		DataComponent activeNode = (DataComponent) meshBlock.getDataNodes()
+				.get(0);
 
 		// Create the content for the DataComponent's Section.
 		ICEDataComponentSectionPart activeNodeSectionPart = new ICEDataComponentSectionPart(
