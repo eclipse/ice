@@ -110,5 +110,4 @@ public class VisItPlot implements IPlot {
 		// TODO Auto-generated method stub
 
 	}
-
 }

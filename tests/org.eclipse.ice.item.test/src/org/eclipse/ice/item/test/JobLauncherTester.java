@@ -18,9 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URI;
-import java.net.UnknownHostException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -30,7 +28,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -38,7 +35,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
-import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.action.LoginInfoForm;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
@@ -53,11 +49,9 @@ import javax.xml.bind.JAXBException;
  * @author Jay Jay Billings
  */
 public class JobLauncherTester {
+	
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * A fake JobLauncher to use for testing.
 	 */
 	private TestJobLauncher jobLauncher;
 
@@ -78,12 +72,9 @@ public class JobLauncherTester {
 	public void checkLoginInfoForm() {
 		// begin-user-code
 
-		// Local Declarations
-		String localHostname = null, remoteHost = null;
+		// Local declarations
 		Form form = null;
 		TableComponent hostsTable = null;
-		Entry platform = null;
-		ArrayList<String> hostnames = null;
 		FormStatus status = FormStatus.InfoError;
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
@@ -575,7 +566,7 @@ public class JobLauncherTester {
 	/**
 	 * <!-- begin-UML-doc -->
 	 * <p>
-	 * This operation checks the JobLauncher to insure that its equals()
+	 * This operation checks the JobLauncher to ensure that its equals()
 	 * operation works.
 	 * </p>
 	 * <!-- end-UML-doc -->
@@ -768,6 +759,7 @@ public class JobLauncherTester {
 		assertEquals(persistedItem.getStatus(), loadedItem.getStatus());
 		assertTrue(persistedItem.getAllHosts().equals(loadedItem.getAllHosts()));
 
+		return;
 		// end-user-code
 	}
 
