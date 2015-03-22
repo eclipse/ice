@@ -47,9 +47,12 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -328,29 +331,42 @@ public class ICEResourceView extends PlayableViewPart implements
 
 		// Create the Table and table viewer for the Plot tab
 		Table listTable = new Table(tabFolder, SWT.FLAT);
-		DefaultEventTableViewer<VizResource> listTableViewer = new DefaultEventTableViewer<VizResource>(
-				plotList, listTable, plotList);
+		DefaultEventTableViewer<VizResource> listTableViewer = 
+				new DefaultEventTableViewer<VizResource>(plotList, listTable, plotList);
 		// Register the table control with the plot tab
 		plotTab.setControl(listTable);
-
-		// We cannot keep track of the most recently active ICEFormEditor before
-		// this point. Try to sync this view with the active editor if it is an
-		// ICEFormEditor.
-		// PlatformUI.getWorkbench().getActiveWorkbenchWindow() TODO Try this
-		// line in the constructor.
-		IPartService partService = getSite().getWorkbenchWindow()
-				.getPartService();
-		// See if there is currently an active ICEFormEditor. If so, update the
-		// currently active editor and related UI pieces.
-		IWorkbenchPartReference partRef = partService.getActivePartReference();
-		if (partRef != null && ICEFormEditor.ID.equals(partRef.getId())) {
-			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
+		
+		// Check if there is currently an active ICEFormEditor. If so, update 
+		// the currently active editor and related UI pieces.
+		IEditorPart activeEditor = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();		
+		if (activeEditor != null && activeEditor instanceof ICEFormEditor) {
 			if (activeEditor != editor) {
-				setActiveEditor(activeEditor);
+				setActiveEditor((ICEFormEditor) activeEditor);
 			}
+		} else {
+			// Get a list of all the currently open editors
+			IWorkbenchPage workbenchPage = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage();
+			IEditorReference[] editorRefs = workbenchPage.getEditorReferences();
+			
+			if (editorRefs != null && editorRefs.length > 0) {
+				// Begin iterating through all the editors, looking for one
+				// that's an ICEFormEditor
+				for (IEditorReference e : editorRefs) {
+					// If it's an ICEFormEditor, set it as the active editor
+					if (e.getId().equals(ICEFormEditor.ID)) {
+						setActiveEditor((ICEFormEditor) e);
+						break;
+					}
+				}
+			}			
 		}
+		
 		// Register as a listener to the part service so that the view can
 		// update when the active ICEFormEditor changes.
+		IPartService partService = getSite().getWorkbenchWindow()
+				.getPartService();
 		partService.addPartListener(this);
 
 		return;

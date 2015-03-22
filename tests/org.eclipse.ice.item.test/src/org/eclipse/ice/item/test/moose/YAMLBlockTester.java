@@ -26,31 +26,18 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class is responsible for testing the YAMLBlock class.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class YAMLBlockTester {
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the YAMLBlock to write itself to a
 	 * ICE TreeComposite.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkToTreeComposite() {
-		// begin-user-code
+		
 		// Local Declarations
 		String name = "Snow", description = "Snow always mirrors";
 		String type = "std::string";
@@ -67,12 +54,14 @@ public class YAMLBlockTester {
 		param1.setDefault("Test Param 1");
 		param1.setCpp_type("Test Param 1");
 		param1.setDescription("Test Param 1");
+		param1.setComment("Test Param 1");
 		param1.setRequired(true);
 		paramList.add(param1);
 		param2.setName("Test Param 2");
 		param2.setDefault("Test Param 2");
 		param2.setCpp_type("Test Param 2");
 		param2.setDescription("Test Param 2");
+		param2.setComment("Test Param 2");
 		paramList.add(param2);
 		block.setParameters(paramList);
 		blockList.add(subBlock);
@@ -97,6 +86,5 @@ public class YAMLBlockTester {
 		assertEquals(blockList.size(), tree.getChildExemplars().size());
 
 		return;
-		// end-user-code
 	}
 }

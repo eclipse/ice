@@ -6,6 +6,6 @@ Bundle-Version: 2.1.01
 Fragment-Host: org.eclipse.ice.persistence.xml;bundle-version="2.1.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
-Import-Package: org.eclipse.ice.caebat.kvPair,
- org.eclipse.ice.caebat.launcher,
+Import-Package: org.eclipse.ice.vibe.kvPair,
+ org.eclipse.ice.vibe.launcher,
  org.eclipse.ice.item.nuclear
