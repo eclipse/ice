@@ -33,7 +33,7 @@ import visit.java.client.ViewerMethods;
  * This is an implementation of the IVizService interface for the VisIt
  * visualization tool.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Jordan Deyton
  * 
  */
 public class VisItVizService extends AbstractVizService {
@@ -55,7 +55,7 @@ public class VisItVizService extends AbstractVizService {
 
 	/**
 	 * This manages the default connection to VisIt and its settings. It handles
-	 * the implementation for connecting and disconnecting from the underlyign
+	 * the implementation for connecting and disconnecting from the underlying
 	 * VisIt connection.
 	 */
 	private VisItConnectionAdapter adapter;
@@ -233,8 +233,7 @@ public class VisItVizService extends AbstractVizService {
 	 */
 	@Override
 	public String getVersion() {
-		// TODO
-		return "";
+		return "2.8.2";
 	}
 
 	/*
