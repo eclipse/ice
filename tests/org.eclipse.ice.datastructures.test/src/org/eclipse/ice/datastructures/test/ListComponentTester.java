@@ -55,13 +55,6 @@ public class ListComponentTester implements IElementSource<Integer>,
 	boolean visited = false;
 
 	/**
-	 * The ListComponent that will be used for the test. This class is simply a
-	 * stub that makes it possible to instantiate the ListComponent so that it
-	 * can be tested.
-	 */
-	private ListComponent component;
-
-	/**
 	 * This operation checks the ListComponent to insure that the id, name and
 	 * description getters and setters function properly.
 	 */
@@ -75,7 +68,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 				+ "our Lord 2011";
 
 		// Create the ListComponent
-		ListComponent component = new ListComponent();
+		ListComponent<?> component = new ListComponent<Object>();
 
 		// Set up the id, name and description
 		component.setId(id);
@@ -100,7 +93,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		String name = "September 1st 2011";
 		String description = "The 1st day of the ninth month in the year of "
 				+ "our Lord 2011";
-		component = new ListComponent<Integer>();
+		ListComponent<Integer> component = new ListComponent<Integer>();
 
 		// Set up the id, name and description
 		component.setId(id);
@@ -111,7 +104,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		component.add(383400);
 
 		// Create a new instance of ListComponent and copy contents
-		ListComponent component2 = new ListComponent();
+		ListComponent<Integer> component2 = new ListComponent<Integer>();
 		component2.copy(component);
 
 		// Check the id, name and description with copy
@@ -123,8 +116,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		assertTrue(component2.contains(383400));
 
 		// Create a clone of the component and check it
-		ListComponent<Integer> componentClone = (ListComponent<Integer>) component
-				.clone();
+		ListComponent<?> componentClone = (ListComponent<?>) component.clone();
 		assertEquals(component, componentClone);
 
 		// Test to show an invalid use of copy - null args
@@ -134,7 +126,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		name = "September 1st 2011";
 		description = "The 1st day of the ninth month in the year of "
 				+ "our Lord 2011";
-		component = new ListComponent();
+		component = new ListComponent<Integer>();
 
 		// Set up the id, name and description
 		component.setId(id);
@@ -164,7 +156,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 			JAXBException, IOException {
 
 		// Local declarations
-		ListComponent<Integer> component2 = null;
+		ListComponent<?> component2 = null;
 		int id = 20110901;
 		String name = "September 1st 2011";
 		String description = "The 1st day of the ninth month in the year of "
@@ -180,7 +172,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 
 		// Demonstrate a basic "write" to file. Should not fail
 		// Initialize the object and set values.
-		component = new ListComponent<Integer>();
+		ListComponent<Integer> component = new ListComponent<Integer>();
 		component.setId(id);
 		component.setName(name);
 		component.setDescription(description);
@@ -194,7 +186,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(
 				outputStream.toByteArray());
 		// Load it up and check it
-		component2 = (ListComponent<Integer>) xmlHandler.read(classList,
+		component2 = (ListComponent<?>) xmlHandler.read(classList,
 				inputStream);
 		assertEquals(component.getId(), component2.getId());
 		assertEquals(component.getName(), component2.getName());
@@ -213,7 +205,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		xmlHandler.write(objList, classList, outputStream);
 		inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 		// Load it back up and check it
-		ListComponent<ICEObject> loadedList = (ListComponent<ICEObject>) xmlHandler
+		ListComponent<?> loadedList = (ListComponent<?>) xmlHandler
 				.read(classList, inputStream);
 		assertEquals(objList.getId(), loadedList.getId());
 		assertEquals(1, objList.size());
@@ -235,13 +227,13 @@ public class ListComponentTester implements IElementSource<Integer>,
 		file.deleteOnExit();
 		file2.deleteOnExit();
 		file3.deleteOnExit();
-		
+
 		// Write it to the stream
 		outputStream = new ByteArrayOutputStream();
 		xmlHandler.write(resList, classList, outputStream);
 		inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 		// Load it back up and check it
-		ListComponent<ICEResource> resLoadedList = (ListComponent<ICEResource>) xmlHandler
+		ListComponent<?> resLoadedList = (ListComponent<?>) xmlHandler
 				.read(classList, inputStream);
 		assertEquals(resList.getId(), resLoadedList.getId());
 		assertEquals(3, resList.size());
@@ -249,7 +241,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		assertEquals(res2, resLoadedList.get(1));
 		assertEquals(res3, resLoadedList.get(2));
 		assertTrue(resList.equals(resLoadedList));
-		
+
 		return;
 	}
 
@@ -261,13 +253,13 @@ public class ListComponentTester implements IElementSource<Integer>,
 	public void checkEquality() {
 
 		// Create an ListComponent
-		component = new ListComponent();
+		ListComponent<Integer> component = new ListComponent<Integer>();
 		// Create another ListComponent to assert Equality with the last
-		ListComponent equalComponent = new ListComponent();
+		ListComponent<Integer> equalComponent = new ListComponent<Integer>();
 		// Create an ListComponent that is not equal to component
-		ListComponent unequalComponent = new ListComponent();
+		ListComponent<Integer> unequalComponent = new ListComponent<Integer>();
 		// Create a third ListComponent to test Transitivity
-		ListComponent transitiveComponent = new ListComponent();
+		ListComponent<Integer> transitiveComponent = new ListComponent<Integer>();
 
 		// Set its data
 		component.setId(12);
@@ -365,7 +357,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		TestComponentListener secondListener = new TestComponentListener();
 
 		// Setup the component
-		component = new ListComponent();
+		ListComponent<Object> component = new ListComponent<Object>();
 
 		// Register the listener
 		component.register(firstListener);
@@ -399,6 +391,67 @@ public class ListComponentTester implements IElementSource<Integer>,
 		// Make sure the listener was notified
 		assertTrue(firstListener.wasNotified());
 
+		// Reset the listener
+		firstListener.reset();
+		// Add a value to the list
+		component.add("fred");
+		// Make sure the listener was notified
+		assertTrue(firstListener.wasNotified());
+		
+		
+		return;
+	}
+
+	/**
+	 * This method checks that glazed list listeners (ListEventListeners) can be
+	 * added and removed from the ListComponent. When registered, any updates to
+	 * the ListComponent should be passed to them.
+	 */
+	@Test
+	public void checkListNotifications() {
+
+		// Set up two listeners.
+		TestListComponentListener<String> listener1 = new TestListComponentListener<String>();
+		TestListComponentListener<String> listener2 = new TestListComponentListener<String>();
+
+		// Set up a component to test.
+		ListComponent<String> component = new ListComponent<String>();
+
+		// Register the first listener. Adding a value to the list should
+		// trigger a notification.
+		component.addListEventListener(listener1);
+		component.add("Some String");
+		assertTrue(listener1.wasNotified());
+
+		// Reset the listener's flags (the second one hasn't been used yet).
+		listener1.reset();
+
+		// Register the second listener. Updating the value should trigger
+		// a notification for both listeners.
+		component.addListEventListener(listener2);
+		component.set(0, "A different string.");
+		assertTrue(listener1.wasNotified());
+		assertTrue(listener2.wasNotified());
+
+		// Reset the listeners' flags.
+		listener1.reset();
+		listener2.reset();
+
+		// Remove the first listener. Removing the value should trigger a
+		// notification for only the remaining listener.
+		component.removeListEventListener(listener1);
+		component.clear();
+		assertFalse(listener1.wasNotified());
+		assertTrue(listener2.wasNotified());
+
+		// Reset the listeners' flags (the first one is no longer used).
+		listener2.reset();
+
+		// Updating a feature of the ListComponent that is NOT a glazed list
+		// feature shouldn't be sent to the listener. For that, we need an
+		// IUpdateableListener.
+		component.setId(99);
+
 		return;
 	}
 
@@ -414,7 +467,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		// Create a visitor, and try to visit the tree
 		SelectiveComponentVisitor visitor = new SelectiveComponentVisitor() {
 			@Override
-			public void visit(ListComponent component) {
+			public void visit(ListComponent<?> component) {
 				visited = true;
 			}
 		};
@@ -440,7 +493,7 @@ public class ListComponentTester implements IElementSource<Integer>,
 		IElementSource<Integer> source = component.getElementSource();
 		assertNotNull(source);
 		assertTrue(source == this);
-		
+
 		return;
 	}
 
