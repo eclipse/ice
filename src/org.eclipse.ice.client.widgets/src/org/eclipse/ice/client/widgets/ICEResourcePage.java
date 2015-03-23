@@ -39,10 +39,14 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
@@ -141,6 +145,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private final Map<String, Composite> plotComposites;
 	
 	/**
+	 * <p>
 	 * A list that manages the currently rendered {@link #plotComposites} in 
 	 * the {@link #gridComposite}. Plots in this list are ordered based on their
 	 * tiling position (like a book, from left to right, and top to bottom).
@@ -148,8 +153,14 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * only contains plots currently shown on the {@link #pageComposite}, while 
 	 * {@link #plotComposites} can contain plots that have been drawn, but not
 	 * currently rendered on the page.
+	 * </p>
+	 * <p>
+	 * Since you cannot explicitly set the number of rows in GridLayouts, 
+	 * this list can also contain empty Controls to meet the correct number
+	 * of rows in the {@link #gridComposite}.
+	 * </p>
 	 */
-	private ArrayList<Composite> gridManager;
+	private ArrayList<Control> gridManager;
 	
 	/**
 	 * A list of file extensions that the ICEResourcePage should be treat as 
@@ -348,13 +359,13 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		columnsLabel.setText("Columns:");
 		Spinner rows = new Spinner(buttonComposite, SWT.READ_ONLY);
 		rows.setMinimum(1);
-		rows.setMaximum(6);
+		rows.setMaximum(4);
 		rows.setSelection(2);
 		rows.setIncrement(1);
 		Spinner columns = new Spinner(buttonComposite, SWT.READ_ONLY);
 		columns.setMinimum(1);
-		columns.setMaximum(6);
-		columns.setSelection(3);
+		columns.setMaximum(4);
+		columns.setSelection(2);
 		columns.setIncrement(1);
 				
 		// Set listeners on the rows and columns to update the plot grid when
@@ -363,7 +374,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int rows = ((Spinner) e.widget).getSelection();
-				System.out.println("Number of rows changed: " + rows);
 				updateGridComposite(rows, -1);
 			}
 		});
@@ -371,7 +381,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int columns = ((Spinner) e.widget).getSelection();
-				System.out.println("Number of columns changed: " + columns);
 				updateGridComposite(-1, columns);
 			}
 		});
@@ -385,14 +394,17 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		gridDimensions = new int[] {rows.getSelection(), columns.getSelection()};
 		
 		// Create the gridManager
-		gridManager = new ArrayList<Composite>();
+		gridManager = new ArrayList<Control>(Arrays.asList(gridComposite.getChildren()));
+		
+		// Fill the gridComposite spaces with empty controls
+		addEmptyControls(gridComposite);
 		
 		return;
 	}
 	
 	/**
-	 * This method updates the plotComposite to reflect changes to the number
-	 * of columns and/or rows in the plotting grid area. Passing a value of -1
+	 * This method updates the {@link #gridComposite} to reflect changes to the 
+	 * number of columns and/or rows in the grid area. Passing a value of -1
 	 * into the rows parameter indicates that the number of columns has been
 	 * changed. Similarly, passing a value of -1 into the columns parameter 
 	 * indicates that the number of rows has been changed. A value of -1 in both
@@ -408,12 +420,22 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		
 		if (columns == -1 && rows > 0) {
 			
-			// Check if we're adding or subtracting rows
-			if (rows > gridDimensions[0]) {
-				// TODO add rows
-			} else if (rows < gridDimensions[0]) {
-				// TODO subtract rows
+			// Check if we're subtracting rows			
+			if (rows < gridDimensions[0]) {
+
+				// Check if there are more plots than there are available
+				// spaces to tile them
+				int numTiles = rows*gridDimensions[1];
+				if (gridManager.size() > numTiles) {
+					
+					// Dispose of any excess Composites that there aren't room for
+					disposeExcessControls(numTiles);
+				}
 			}
+			
+			// Update the gridDimensions (any extra spaces will be filled with
+			// BlankControls near the end of this method)
+			gridDimensions[0] = rows;
 			
 		} else if (rows == -1 && columns > 0) {
 			
@@ -428,18 +450,18 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				int numTiles = columns*gridDimensions[0];
 				if (gridManager.size() > numTiles) {
 					
-					// Dispose of any excess plotComposites we can't fit,
-					// starting by removing the last one
-					for (int i = gridManager.size()-1; i >= numTiles; i--) {
-						Composite plot = gridManager.get(i);
-						plot.dispose();
-					}
+					// Dispose of any excess Composites that there aren't room for
+					disposeExcessControls(numTiles);
 				}
 			}
 			
-			// Update the gridDimensions
+			// Update the gridDimensions (any extra spaces will be filled with
+			// BlankControls near the end of this method)
 			gridDimensions[1] = columns;
 		}
+		
+		// Fill in any remaining spaces with empty controls (if necessary)
+		addEmptyControls(gridComposite);
 		
 		// Pack and lay out the new grid configuration
 		gridComposite.pack();
@@ -449,6 +471,86 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		return;
 	}
 	
+	/**
+	 * This method is responsible for adding empty widgets to the 
+	 * {@link #gridComposite} (and {@link #gridManager} by proxy) if the grid 
+	 * doesn't contain enough {@link #plotComposites} to create the appropriate 
+	 * number of rows. This is necessary, as there is no way to specify the
+	 * number of rows in a GridLayout, and must be forced.
+	 * 
+	 * @param parent	The GridLayout Composite the empty controls will be 
+	 * 					added to.
+	 */
+	private void addEmptyControls(Composite parent) {
+		
+		// Figure out how many blank tiles we need to create
+		int numEmpties = 
+				(gridDimensions[0]*gridDimensions[1]) - gridManager.size();
+
+		if (numEmpties > 0) {			
+			// Add the empty controls to the gridComposite
+			for (int i = 0; i < numEmpties; i++) {
+				
+				// Create an empty control and add it to the gridManager
+				EmptyControl control = new EmptyControl(parent);
+				gridManager.add(control);
+				
+				// Add a listener to remove the empty control from the
+				// gridManager when it disposes
+				control.addDisposeListener(new DisposeListener() {
+					@Override
+					public void widgetDisposed(DisposeEvent e) {
+						Control c = (Control) e.widget;
+						gridManager.remove(c);
+					}
+				});
+			}
+			
+			// Pack the parent composite
+			parent.pack();
+		}
+		
+		return;		
+	}
+	
+	/**
+	 * This method goes through the list of currently displayed {@link Control}s
+	 * and disposes any that are {@link EmptyControl}s.
+	 */
+	private void disposeEmptyControls() {
+		
+		for (int i = 0; i < gridManager.size(); i++) {
+			
+			Control currControl = gridManager.get(i);
+			
+			if (currControl instanceof EmptyControl) {
+				currControl.dispose();
+				i--;
+			}
+		}
+		
+		return;
+	}
+	
+	/**
+	 * This method will dispose of any Controls contained in the 
+	 * {@link #gridManager} that exceed the number of spots available on the
+	 * {@link #gridComposite} area. It begins with the very last Control
+	 * contained in the {@link #gridManager} and works backwards.
+	 * 
+	 * @param numTiles	The number of tiles available for displaying plots.
+	 */
+	private void disposeExcessControls(int numTiles) {
+		
+		// Dispose of any excess plotComposites we can't fit,
+		// starting by removing the last one
+		for (int i = gridManager.size()-1; i >= numTiles; i--) {
+			Composite plot = (Composite) gridManager.get(i);
+			plot.dispose();
+		}
+		
+		return;
+	}
 	
 	/**
 	 * Updates the Resource Page's widgets to render the specified Resource.
@@ -471,22 +573,37 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			boolean useBrowser = !(resource instanceof VizResource);
 			if (!useBrowser) {
 				
-				// Create the grid composite for plots if it hasn't already been
-				if (gridComposite == null) {
+				// Create the drawing composite for plots if it hasn't already been
+				if (drawingComposite == null || drawingComposite.isDisposed()) {
 					createDrawingComposite(pageComposite);
 				}
 				
 				VizResource vizResource = (VizResource) resource;
 				Composite plotComposite = null;
 
-				// Find the drawn plot for this resource. If it does not exist,
-				// attempt to draw it.
+				// Dispose of any empty controls
+				disposeEmptyControls();
+				
+				// Try to find the drawn plot for this resource.
 				String key = getPlotKey(vizResource);
 				plotComposite = plotComposites.get(key);
+				
+				// If the plot wasn't found and we have enough space on the
+				// gridComposite, then create the plot and add it.
 				if (plotComposite == null || plotComposite.isDisposed()) {
-					plotComposite = 
-							createPlotComposite(gridComposite, vizResource);
+					
+					// Check that there is enough empty space on the grid
+					if ((gridDimensions[0]*gridDimensions[1]) > gridManager.size()) {
+						plotComposite = 
+								createPlotComposite(gridComposite, vizResource);
+					} else {
+						// Do nothing
+						return;
+					}
 				}
+				
+				// Re-fill any blank controls (if necessary)
+				addEmptyControls(gridComposite);
 
 				// If the plot and its drawn Composite could be found, update
 				// the StackLayout. Otherwise, the next section will attempt to
@@ -495,7 +612,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				if (gridComposite != null && plotComposite != null) {
 					stackLayout.topControl = drawingComposite;
 					drawingComposite.pack();
-					pageComposite.pack();
 					pageComposite.layout();
 	
 					// Reactivate the Item editor tab if it's not in the front			
@@ -651,7 +767,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						plotComposite = toolkit.createComposite(parent);
 						plotComposite.setLayout(new FillLayout());
 						plotComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+											
 						// Draw and pack the plot in the parent composite
 						plot.draw(category, plotType, plotComposite);
 						parent.pack();					
@@ -668,7 +784,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 								Composite c = (Composite) e.widget;
 								gridManager.remove(c);
 							}
-						});
+						});			
+						
 					}	
 					// If the plot could not be drawn, dispose the plot
 					// Composite.
@@ -855,9 +972,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	@Override
 	public void update(IUpdateable component) {
 
-		// TODO Remove any old plots.
-
 		if (component != null && component == resourceComponent) {
+			
 			// Get a local copy of the ResouceComponent.
 			ResourceComponent resourceComponent = (ResourceComponent) component;
 
@@ -877,4 +993,20 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		return;
 	}
+	
+	/**
+	 * This class is used to create empty controls to fill the 
+	 * {@link #gridComposite} when its number of rows must be forced. Although
+	 * this class is no different than a {@link Composite}, it is safer for the 
+	 * UI to check for instances of {@link EmptyControl}s than 
+	 * {@link Composite}s when it is time to dispose them.
+	 * 
+	 * @author Anna Wojtowicz
+	 */
+	class EmptyControl extends Composite {
+		public EmptyControl(Composite parent) {
+			super(parent, SWT.NONE);
+			setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		}
+	};
 }
