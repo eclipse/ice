@@ -224,6 +224,9 @@ public class CSVPlot implements IPlot {
 	}
 	
 	/**
+	 * This method is the same as calling 
+	 * {@code draw(category, plotType, parent, false)}
+	 * 
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
 	 * java.lang.String, org.eclipse.swt.widgets.Composite)
@@ -231,6 +234,16 @@ public class CSVPlot implements IPlot {
 	@Override
 	public void draw(String category, String plotType, Composite parent)
 			throws Exception {
+		draw(category, plotType, parent, false);
+	}
+	
+	/**
+	 * @see
+	 * org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
+	 * java.lang.String, org.eclipse.swt.widgets.Composite)
+	 */
+	public void draw(String category, String plotType, Composite parent, 
+			boolean addCloseButton) throws Exception {
 
 		// Make sure the plot type is valid
 		if (provider != null && category != null 
@@ -268,7 +281,8 @@ public class CSVPlot implements IPlot {
 			plotProvider.addSeries(plotTime, seriesProvider);
 			// Create the plot editor
 			CSVPlotEditor plotEditor = new CSVPlotEditor();
-			plotEditor.createPartControl(parent);
+			// Create the the plotting canvas (with "close" button enabled)
+			plotEditor.createPartControl(parent, true);
 			// Add the new plot to the editor (with time slider disabled)
 			plotEditor.showPlotProvider(plotProvider, false);
 		} else {

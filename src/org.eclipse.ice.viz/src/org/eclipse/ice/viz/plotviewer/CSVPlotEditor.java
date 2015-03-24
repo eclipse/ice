@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package org.eclipse.ice.viz.plotviewer;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.visualization.widgets.datadefinition.ColorMap;
@@ -29,16 +30,19 @@ import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Slider;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -50,7 +54,7 @@ import org.eclipse.ui.part.EditorPart;
  * files. It is opened by the associated visualization views in
  * org.eclipse.ice.viz.
  * 
- * @authors Matthew Wang, Taylor Patterson
+ * @authors Matthew Wang, Taylor Patterson, Anna Wojtowicz
  */
 public class CSVPlotEditor extends EditorPart {
 
@@ -64,6 +68,11 @@ public class CSVPlotEditor extends EditorPart {
 	 */
 	Composite vizComposite;
 
+	/**
+	 * The composite that contains the "close" button of the vizComposite.
+	 */
+	Button closeButton;
+	
 	/**
 	 * LightweightSystem for an SWT XYGraph
 	 */
@@ -137,27 +146,105 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/**
-	 * This operation sets up the Composite that contains the VisIt canvas and
-	 * create the VisIt widget.
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 *      .Composite)
+	 * This method is the same as calling 
+	 * {@code createPartControl(parent, false)}.
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		createPartControl(parent, false);
+		return;
+	}
+	
+	/**
+	 * This operation sets up the Composite that contains the VisIt canvas and
+	 * create the VisIt widget.
+	 * 
+	 * @param parent	The parent Composite to create the Control in.
+	 * @param addCloseButton
+	 * 					A flag to indicate if a "close" button should be enabled
+	 * 					in the upper right-hand corner of the plotCanvas (that
+	 * 					disposes the parent when clicked).
+	 */
+	public void createPartControl(Composite parent, boolean addCloseButton) {
 
 		// Create a top level composite to hold the canvas or text
 		vizComposite = new Composite(parent, SWT.NONE);
 		vizComposite.setLayout(new GridLayout(1, true));
-
+		
 		// Set up the canvas where the graph is displayed
 		Canvas plotCanvas = new Canvas(vizComposite, SWT.BORDER);
 		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		lws = new LightweightSystem(plotCanvas);
 		
+		if (addCloseButton) {
+			// Add a listener to the plotCanvas that displays a "close" button
+			// when the mouse hovers over it
+			plotCanvas.addListener(SWT.MouseEnter, new Listener() {
+				@Override
+				public void handleEvent(Event e) {
+					Composite parent = (Composite) e.widget;
+					showCloseButton(e, parent);
+					System.out.println("Mouse enter event");
+				}
+			});
+			// Add a listener to hide the "close" button once the mouse moves
+			// off the plotCanvas
+			plotCanvas.addListener(SWT.MouseExit, new Listener() {
+				@Override
+				public void handleEvent(Event e) {
+					hideCloseButton(e);
+					System.out.println("Mouse exit event");
+				}
+			});
+		}
+		
 		return;
 	}
 
+	public void showCloseButton(Event e, Composite parent) {
+		
+	    if (closeButton == null || closeButton.isDisposed())
+	    {
+	    	// Set up the close button
+	        closeButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+	        closeButton.setText("close");
+	        
+	        // Add a selection listener on it to dispose the composite
+	        closeButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					Control c = (Control) e.widget;				
+					vizComposite.getParent().dispose();
+				}
+	        });
+	        
+	        closeButton.pack();
+	        closeButton.forceFocus();
+	    }
+
+	    closeButton.setLocation(parent.getSize().x-closeButton.getSize().x-4, 0);
+		
+		return;
+	}
+	
+	public void hideCloseButton(Event e) {
+		
+		// Check if the cursor has exited the canvas, or is hovered over a child
+		Composite parent = (Composite) e.widget;
+        for (Control child : parent.getChildren()) {
+            if (child.getBounds().contains(new Point(e.x, e.y)))
+                return;
+        }
+		
+        // If the cursor has left the canvas, get rid of the closeButton
+	    if (closeButton != null && !closeButton.isDisposed()) {
+	        closeButton.dispose();
+	        closeButton = null;
+	    }
+		
+		return;
+	}
+	
 	/**
 	 * (non-Javadoc)
 	 * 

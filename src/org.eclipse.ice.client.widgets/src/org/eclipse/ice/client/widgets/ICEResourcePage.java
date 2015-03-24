@@ -39,16 +39,17 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -107,6 +108,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * {@link #plotComposites} in a grid-like formation.
 	 */
 	private Composite gridComposite;
+	
+	private static Button closeButton;
 	
 	/**
 	 * An Array storing the current dimensions of the plotComposite's grid.
@@ -601,7 +604,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						return;
 					}
 				}
-				
+								
 				// Re-fill any blank controls (if necessary)
 				addEmptyControls(gridComposite);
 
@@ -658,7 +661,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		return;
 	}
-
+	
 	/**
 	 * Gets the resource's key for use in the plot maps.
 	 * 
@@ -783,8 +786,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 							public void widgetDisposed(DisposeEvent e) {
 								Composite c = (Composite) e.widget;
 								gridManager.remove(c);
+
+								drawingComposite.pack();
+								pageComposite.layout();
 							}
-						});			
+						});
 						
 					}	
 					// If the plot could not be drawn, dispose the plot
