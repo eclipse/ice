@@ -144,28 +144,17 @@ public class CSVPlotEditor extends EditorPart {
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
-
-	/**
-	 * This method is the same as calling 
-	 * {@code createPartControl(parent, false)}.
-	 */
-	@Override
-	public void createPartControl(Composite parent) {
-		createPartControl(parent, false);
-		return;
-	}
 	
 	/**
 	 * This operation sets up the Composite that contains the VisIt canvas and
 	 * create the VisIt widget.
 	 * 
 	 * @param parent	The parent Composite to create the Control in.
-	 * @param addCloseButton
-	 * 					A flag to indicate if a "close" button should be enabled
-	 * 					in the upper right-hand corner of the plotCanvas (that
-	 * 					disposes the parent when clicked).
+	 * 
+	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(Composite)
 	 */
-	public void createPartControl(Composite parent, boolean addCloseButton) {
+	@Override
+	public void createPartControl(Composite parent) {
 
 		// Create a top level composite to hold the canvas or text
 		vizComposite = new Composite(parent, SWT.NONE);
@@ -175,72 +164,6 @@ public class CSVPlotEditor extends EditorPart {
 		Canvas plotCanvas = new Canvas(vizComposite, SWT.BORDER);
 		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		lws = new LightweightSystem(plotCanvas);
-		
-		if (addCloseButton) {
-			// Add a listener to the plotCanvas that displays a "close" button
-			// when the mouse hovers over it
-			plotCanvas.addListener(SWT.MouseEnter, new Listener() {
-				@Override
-				public void handleEvent(Event e) {
-					Composite parent = (Composite) e.widget;
-					showCloseButton(e, parent);
-					System.out.println("Mouse enter event");
-				}
-			});
-			// Add a listener to hide the "close" button once the mouse moves
-			// off the plotCanvas
-			plotCanvas.addListener(SWT.MouseExit, new Listener() {
-				@Override
-				public void handleEvent(Event e) {
-					hideCloseButton(e);
-					System.out.println("Mouse exit event");
-				}
-			});
-		}
-		
-		return;
-	}
-
-	public void showCloseButton(Event e, Composite parent) {
-		
-	    if (closeButton == null || closeButton.isDisposed())
-	    {
-	    	// Set up the close button
-	        closeButton = new Button(parent, SWT.PUSH | SWT.CENTER);
-	        closeButton.setText("close");
-	        
-	        // Add a selection listener on it to dispose the composite
-	        closeButton.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					Control c = (Control) e.widget;				
-					vizComposite.getParent().dispose();
-				}
-	        });
-	        
-	        closeButton.pack();
-	        closeButton.forceFocus();
-	    }
-
-	    closeButton.setLocation(parent.getSize().x-closeButton.getSize().x-4, 0);
-		
-		return;
-	}
-	
-	public void hideCloseButton(Event e) {
-		
-		// Check if the cursor has exited the canvas, or is hovered over a child
-		Composite parent = (Composite) e.widget;
-        for (Control child : parent.getChildren()) {
-            if (child.getBounds().contains(new Point(e.x, e.y)))
-                return;
-        }
-		
-        // If the cursor has left the canvas, get rid of the closeButton
-	    if (closeButton != null && !closeButton.isDisposed()) {
-	        closeButton.dispose();
-	        closeButton = null;
-	    }
 		
 		return;
 	}
@@ -266,9 +189,11 @@ public class CSVPlotEditor extends EditorPart {
 	 * This function sets up the SWT XYGraph
 	 * 
 	 * @param displayPlotProvider
-	 *            The PlotProvider containing the information to create the plot
+	 *        		The PlotProvider containing the information to create the 
+	 *        		plot
 	 * @param addSlider
-	 * 			  If a time slider should be added for non-contour plots
+	 * 			  	A flag to indicate if a time slider should be added for 
+	 * 				non-contour plots
 	 */
 	public void showPlotProvider(PlotProvider displayPlotProvider, boolean addSlider) {
 
@@ -363,10 +288,10 @@ public class CSVPlotEditor extends EditorPart {
 	 */
 	public void showPlotProvider(PlotProvider displayPlotProvider) {
 		showPlotProvider(displayPlotProvider, true);
+		return;
 	}
 	
 	/**
-	 * 
 	 * @param plotProvider
 	 * @param time
 	 */

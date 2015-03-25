@@ -282,7 +282,7 @@ public class CSVPlot implements IPlot {
 			// Create the plot editor
 			CSVPlotEditor plotEditor = new CSVPlotEditor();
 			// Create the the plotting canvas (with "close" button enabled)
-			plotEditor.createPartControl(parent, true);
+			plotEditor.createPartControl(parent);
 			// Add the new plot to the editor (with time slider disabled)
 			plotEditor.showPlotProvider(plotProvider, false);
 		} else {

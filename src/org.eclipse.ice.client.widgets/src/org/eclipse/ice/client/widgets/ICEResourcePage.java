@@ -39,6 +39,10 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -50,6 +54,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -567,7 +572,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 */
 	private void setCurrentResource(ICEResource resource) throws PartInitException {
 
-		if (resource != currentResource) {
+		
+		if (resource != currentResource) { // TODO if a plot, check if it's disposed somehow
 			currentResource = resource;
 			
 			// VizResources should not use the browser. However, if it cannot be
@@ -787,12 +793,55 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 								Composite c = (Composite) e.widget;
 								gridManager.remove(c);
 
+								
+								// Refresh the page content
+								gridComposite.pack();
 								drawingComposite.pack();
 								pageComposite.layout();
 							}
 						});
 						
+						// TODO Ideally we could just add listeners on the plotComposite...
+						// Find the plot's drawing canvas, if it has one
+						Canvas plotCanvas = null;
+						for (Control c : plotComposite.getChildren()) {
+							// Find a Composite
+							if (c instanceof Composite) {
+								for (Control p : ((Composite) c).getChildren()) {
+									// Find a canvas and set it
+									if (p instanceof Canvas) {
+										plotCanvas = (Canvas) p;
+									}
+								}
+							}
+						}						
+						
+						// If the plotComposite has a canvas and it's valid,
+						// enable a "close" button in the upper right-hand
+						// corner that disposes the plotComposite
+						if (plotCanvas != null && !plotCanvas.isDisposed()) {
+				
+						
+							// Add a listener to the canvas that displays a 
+							// "close" button when the mouse hovers over it
+							plotCanvas.addListener(SWT.MouseEnter, new Listener() {
+								@Override
+								public void handleEvent(Event e) {
+									showCloseButton(e);
+								}
+							});
+							
+							// Add a listener to hide the "close" button once 
+							// the mouse moves off the plot canvas
+							plotCanvas.addListener(SWT.MouseExit, new Listener() {
+								@Override
+								public void handleEvent(Event e) {
+									hideCloseButton(e);
+								}
+							});
+						}						
 					}	
+					
 					// If the plot could not be drawn, dispose the plot
 					// Composite.
 					catch (Exception drawException) {
@@ -807,6 +856,70 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		}
 
 		return plotComposite;
+	}
+	
+	public void showCloseButton(Event e) {
+		
+		// Get the Composite that triggered the event
+		Composite comp = (Composite) e.widget;
+		
+	    if (closeButton == null || closeButton.isDisposed())
+	    {
+	    	// Set up the close button
+	        closeButton = new Button(comp, SWT.FLAT | SWT.CENTER);
+	        closeButton.setText("close");
+	        FontData[] smallFont = closeButton.getFont().getFontData();
+	        for (FontData fd : smallFont) {
+	        	fd.setHeight(7);
+	        }
+	        closeButton.setFont(new Font(comp.getDisplay(), smallFont));
+	        closeButton.setToolTipText("Close plot");
+	        
+	        // Add a selection listener on it to dispose the composite
+	        closeButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					Control c = (Control) e.widget;
+					
+					// Find which plotComposite the canvas belongs to and
+					// dispose it
+					if (gridManager.contains(c.getParent().getParent().getParent())) {
+						c.getParent().getParent().getParent().dispose();		// TODO this isn't ideal...
+					}
+				}
+	        });
+	        
+	        closeButton.pack();
+	        pageComposite.layout();
+	    }
+
+	    // Set the location of the button to the upper right-hand corner
+	    closeButton.setLocation(
+	    		comp.getBounds().width-closeButton.getBounds().width-4, 0);
+		
+		return;
+	}
+	
+	public void hideCloseButton(Event e) {
+		
+		// Get the Composite that triggered the event
+		Composite comp = (Composite) e.widget;
+		
+		// Check if the cursor has truly exited the canvas area, or is just
+		// positioned over one of its children (yes, this technically counts
+		// as a MouseExit event... ugh)
+        for (Control child : comp.getChildren()) {
+            if (child.getBounds().contains(new Point(e.x, e.y)))
+                return;
+        }
+		
+        // If the cursor has left the canvas area, dispose the closeButton
+	    if (closeButton != null && !closeButton.isDisposed()) {
+	        closeButton.dispose();
+	        closeButton = null;
+	    }
+		
+		return;
 	}
 	
 	/**
