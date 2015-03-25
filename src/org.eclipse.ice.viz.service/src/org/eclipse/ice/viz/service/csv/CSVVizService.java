@@ -49,7 +49,7 @@ public class CSVVizService implements IVizService {
 
 	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * getConnectionProperties()
+	 *      getConnectionProperties()
 	 */
 	@Override
 	public Map<String, String> getConnectionProperties() {
@@ -60,7 +60,7 @@ public class CSVVizService implements IVizService {
 
 	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * setConnectionProperties(java.util.Map)
+	 *      setConnectionProperties(java.util.Map)
 	 */
 	@Override
 	public void setConnectionProperties(Map<String, String> props) {
@@ -77,14 +77,13 @@ public class CSVVizService implements IVizService {
 	}
 
 	/**
-	 * @throws Exception 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
-	 * .net.URI)
+	 * @throws Exception
+	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
+	 *      .net.URI)
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		
+
 		// Create the plot and load it
 		CSVPlot plot = new CSVPlot(file);
 		plot.load();
@@ -94,11 +93,21 @@ public class CSVVizService implements IVizService {
 
 	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * hasConnectionProperties()
+	 *      hasConnectionProperties()
 	 */
 	@Override
 	public boolean hasConnectionProperties() {
 		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#disconnect()
+	 */
+	@Override
+	public boolean disconnect() {
+		return true;
 	}
 
 }

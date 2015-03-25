@@ -16,10 +16,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.ice.client.widgets.EclipseFormWidget;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
+import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 
 /**
  * This class creates and displays a {@link MOOSEFormEditor} for modifying a
@@ -31,10 +31,21 @@ import org.eclipse.ice.client.widgets.ICEFormInput;
 public class MOOSEEclipseFormWidget extends EclipseFormWidget {
 
 	/**
-	 * The default constructor.
+	 * The visualization service factory provided to MOOSEFormEditors through
+	 * OSGi.
 	 */
-	public MOOSEEclipseFormWidget() {
+	private final IVizServiceFactory vizServiceFactory;
+
+	/**
+	 * The default constructor.
+	 * 
+	 * @param factory
+	 *            The visualization service factory provided to MOOSEFormEditors
+	 *            through OSGi.
+	 */
+	public MOOSEEclipseFormWidget(IVizServiceFactory factory) {
 		// Nothing to do yet.
+		this.vizServiceFactory = factory;
 	}
 
 	/**
@@ -58,6 +69,12 @@ public class MOOSEEclipseFormWidget extends EclipseFormWidget {
 			// Set this editor reference so that listeners can be registered
 			// later.
 			ICEFormEditor = (ICEFormEditor) formEditor;
+
+			// FIXME Since this is a static method, it should probably be set
+			// from a more general OSGi-referencing service in the main widgets
+			// bundle.
+			org.eclipse.ice.client.widgets.ICEFormEditor
+					.setVizServiceFactory(vizServiceFactory);
 
 		} catch (PartInitException e) {
 			// Dump the stacktrace if something happens.
