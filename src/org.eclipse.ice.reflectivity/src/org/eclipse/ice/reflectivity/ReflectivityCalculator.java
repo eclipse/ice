@@ -39,6 +39,11 @@ public class ReflectivityCalculator {
 	public static final int maxRoughSize = 101;
 
 	/**
+	 * A factor used in computing tile updates
+	 */
+	private static final double cE = 1.655;
+
+	/**
 	 * This operation returns the value of the squared modulus of the specular
 	 * reflectivity for a single wave vector Q.
 	 * 
@@ -307,6 +312,7 @@ public class ReflectivityCalculator {
 	 *            FIXME! This array must be preallocated with a size n =
 	 *            maxRoughSize.
 	 * @throws MathException
+	 *             Thrown if the error function cannot be calculated
 	 */
 	public void getInterfacialProfile(int numRough, double[] zInt,
 			double[] rufInt) throws MathException {
@@ -354,12 +360,162 @@ public class ReflectivityCalculator {
 		for (j = 0; j <= numRough / 2; j++) {
 			zTemp = zInt[j];
 			// The zInt values are symmetric, so this loop only computes the
-			// bottom half and sets the upper half without doing the calculation.
+			// bottom half and sets the upper half without doing the
+			// calculation.
 			zInt[j] = oHalfstep + 0.5 * (zInt[j + 1] - zInt[j]);
 			zInt[numRough - j] = zInt[j];
 			oHalfstep = 0.5 * (zInt[j + 1] - zTemp);
 		}
 
 		return;
+	}
+
+	/**
+	 * This operation generates a list of Tiles from the slabs with the
+	 * corresponding number of ordinate steps.
+	 * 
+	 * @param slabs
+	 *            the slabs of materials that define the system
+	 * @param numRough
+	 *            the number of ordinate steps
+	 * @param zInt
+	 *            FIXME! This array must be preallocated with a size n =
+	 *            maxRoughSize.
+	 * @param rufInt
+	 *            FIXME! This array must be preallocated with a size n =
+	 *            maxRoughSize.
+	 * @return the system of generated tiles
+	 * @throws MathException
+	 *             Thrown if the error function cannot be calculated
+	 */
+	public Tile[] generateTiles(Slab[] slabs, int numRough, double[] zInt,
+			double[] rufInt) throws MathException {
+
+		// Local Declarations
+		int nGlay = 0, step = 0, dist = 0;
+		Slab[] generatedSlabs = new Slab[numRough / 2 + 1];
+		for (int i = 0; i < numRough / 2 + 1; i++) {
+			generatedSlabs[i] = new Slab();
+		}
+		double totalThickness = 0.0, gDMid = 0.0, tExpFac = 0.0, bExpFac = 0.0;
+
+		// Evaluate the first half of the vacuum interface. Create the first
+		// slab.
+		Slab tmpSlab = generatedSlabs[0], refSlab = slabs[0], secondRefSlab = slabs[1], thirdRefSlab;
+		tmpSlab.scatteringLength = refSlab.scatteringLength;
+		tmpSlab.trueAbsLength = refSlab.trueAbsLength;
+		tmpSlab.incAbsLength = refSlab.incAbsLength;
+		tmpSlab.thickness = refSlab.thickness;
+		++nGlay;
+		for (int i = 0; i < numRough / 2 + 1; i++) {
+			tmpSlab = generatedSlabs[nGlay + i];
+			tmpSlab.thickness = zInt[i] * secondRefSlab.interfaceWidth;
+			tmpSlab.scatteringLength = 0.5 * (secondRefSlab.scatteringLength
+					+ refSlab.scatteringLength + (secondRefSlab.scatteringLength - refSlab.scatteringLength)
+					* rufInt[i]);
+			tmpSlab.trueAbsLength = 0.5 * (secondRefSlab.trueAbsLength
+					+ refSlab.trueAbsLength + (secondRefSlab.trueAbsLength - refSlab.trueAbsLength)
+					* rufInt[i]);
+			tmpSlab.incAbsLength = 0.5 * (secondRefSlab.incAbsLength
+					+ refSlab.incAbsLength + (secondRefSlab.incAbsLength - refSlab.incAbsLength)
+					* rufInt[i]);
+		}
+		nGlay += numRough / 2 + 1;
+
+		// Evaluate the total normalized thickness of the surface
+		for (int i = 0; i < numRough + 1; i++) {
+			totalThickness += zInt[i];
+		}
+
+		// Calculate gradation of layers
+		for (int i = 1; i < slabs.length; i++) {
+			refSlab = slabs[i];
+			secondRefSlab = slabs[i + 1];
+			thirdRefSlab = slabs[i - 1];
+			gDMid = refSlab.thickness - 0.5 * totalThickness
+					* refSlab.interfaceWidth;
+			if (gDMid <= 1.0e-10) {
+				// The interfaces are overlapping. Step through the entire slab
+				step = (int) refSlab.thickness / (numRough + 1);
+				// Take the first half step
+				tmpSlab = generatedSlabs[nGlay];
+				tmpSlab.thickness = (double) step / 2;
+				dist = step / 4;
+				updateTile(tmpSlab, thirdRefSlab, refSlab, secondRefSlab, dist);
+				++nGlay;
+				dist += 0.75 * ((double) step);
+				// Take the remaining steps
+
+				// Stopped here. The next step is to add the big loops. I will
+				// need to check indices and eventually fix the length of the
+				// tiles array.
+
+			} else {
+				// Evaluate contributions from interfaces separately.
+				// Top interface
+			}
+		}
+
+		return new Tile[1];
+	}
+
+	/**
+	 * This operation performs the tile updates needed by the generateTile()
+	 * operation.
+	 * 
+	 * @param tile
+	 *            the tile to update
+	 * @param slabM1
+	 *            the slab one index less than (so above) the middle slab
+	 * @param slab
+	 *            the middle slab
+	 * @param slabP1
+	 *            the slab one index greater than (so below) the middle slab
+	 * @param dist
+	 *            the step distance
+	 * @throws MathException
+	 *             Thrown if the error function cannot be evaluated
+	 */
+	private void updateTile(Slab updateSlab, Slab slabM1, Slab slab,
+			Slab slabP1, double dist) throws MathException {
+
+		// Compute the exponentials
+		double tExpFac = Erf.erf(cE * dist / slab.interfaceWidth);
+		double bExpFac = Erf.erf(cE * (dist - slab.thickness)
+				/ (slabP1.interfaceWidth));
+
+		// Update the slab properties
+		updateSlab.scatteringLength = getTileValue(slabM1.scatteringLength,
+				slab.scatteringLength, slabP1.scatteringLength, tExpFac,
+				bExpFac);
+		updateSlab.trueAbsLength = getTileValue(slabM1.trueAbsLength,
+				slab.trueAbsLength, slabP1.trueAbsLength, tExpFac, bExpFac);
+		updateSlab.incAbsLength = getTileValue(slabM1.incAbsLength,
+				slab.incAbsLength, slabP1.incAbsLength, tExpFac, bExpFac);
+
+		return;
+	}
+
+	/**
+	 * This is a convenience operation that performs a length, complicated
+	 * update operation. In the original code this formula was used for several
+	 * quantities and caused significant bloat.
+	 * 
+	 * @param xm1
+	 *            the value at one index less than the midpoint
+	 * @param x
+	 *            the midpoint
+	 * @param xp1
+	 *            the value at one index greater than the midpoint
+	 * @param tao
+	 *            the factor for scaling x-xm1
+	 * @param beta
+	 *            the factor for scaling xp1-x
+	 * @return the updated value
+	 */
+	private double getTileValue(double xm1, double x, double xp1, double tao,
+			double beta) {
+		return 0.5 * (xm1 + x + tao * (x - xm1) + x + xp1 + beta * (xp1 - x))
+				- x;
 	}
 }
