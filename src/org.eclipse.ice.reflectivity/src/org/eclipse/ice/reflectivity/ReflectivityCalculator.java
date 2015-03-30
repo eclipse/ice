@@ -441,22 +441,101 @@ public class ReflectivityCalculator {
 				tmpSlab = generatedSlabs[nGlay];
 				tmpSlab.thickness = (double) step / 2;
 				dist = step / 4;
-				updateTile(tmpSlab, thirdRefSlab, refSlab, secondRefSlab, dist);
+				updateTileByLayer(tmpSlab, thirdRefSlab, refSlab,
+						secondRefSlab, dist);
 				++nGlay;
 				dist += 0.75 * ((double) step);
 				// Take the remaining steps
-
-				// Stopped here. The next step is to add the big loops. I will
-				// need to check indices and eventually fix the length of the
-				// tiles array.
-
+				for (int j = 0; j < numRough - 1; j++) {
+					tmpSlab = generatedSlabs[nGlay + j];
+					tmpSlab.thickness = (double) step;
+					updateTileByLayer(tmpSlab, thirdRefSlab, refSlab,
+							secondRefSlab, dist);
+					dist += step;
+				}
+				nGlay += numRough;
+				// Take final half step
+				tmpSlab = generatedSlabs[nGlay + 1];
+				tmpSlab.thickness = (double) step / 2;
+				dist = ((int) refSlab.thickness) - step / 4;
+				updateTileByLayer(tmpSlab, thirdRefSlab, refSlab,
+						secondRefSlab, dist);
+				++nGlay;
 			} else {
 				// Evaluate contributions from interfaces separately.
 				// Top interface
+				for (int j = numRough / 2 + 1; j < numRough + 1; j++) {
+					// Get the next slab and update it by considering the
+					// interface contribution.
+					tmpSlab = generatedSlabs[nGlay + j - numRough / 2 - 2];
+					updateTileByInterface(tmpSlab, thirdRefSlab, refSlab,
+							zInt[j], rufInt[j]);
+				}
+				nGlay += numRough / 2 + 1;
+				// Central, bulk-like portion
+				tmpSlab = generatedSlabs[nGlay + 1];
+				tmpSlab.interfaceWidth = gDMid;
+				tmpSlab.trueAbsLength = refSlab.trueAbsLength;
+				tmpSlab.incAbsLength = refSlab.incAbsLength;
+				++nGlay;
+				// Bottom interface
+				for (int j = 1; j < numRough / 2 + 1; j++) {
+					tmpSlab = generatedSlabs[nGlay + j];
+					updateTileByInterface(tmpSlab, refSlab, secondRefSlab,
+							zInt[j], rufInt[j]);
+				}
+				nGlay += numRough / 2 + 1;
 			}
 		}
 
-		return new Tile[1];
+		// Evaluate substrate gradation
+		refSlab = slabs[slabs.length - 2];
+		secondRefSlab = slabs[slabs.length - 3];
+		for (int i = numRough / 2 + 2; i < numRough + 1; i++) {
+			tmpSlab = generatedSlabs[nGlay + i - numRough / 2 - 1];
+			updateTileByInterface(tmpSlab, secondRefSlab, refSlab, zInt[i],
+					rufInt[i]);
+		}
+		nGlay += numRough / 2 + 1;
+		// Handle the last layer
+		refSlab = slabs[slabs.length - 1];
+		tmpSlab = generatedSlabs[nGlay];
+		tmpSlab.scatteringLength = refSlab.scatteringLength;
+		tmpSlab.trueAbsLength = refSlab.trueAbsLength;
+		tmpSlab.incAbsLength = refSlab.incAbsLength;
+		tmpSlab.thickness = refSlab.thickness;
+		++nGlay;
+
+		return generatedSlabs;
+	}
+
+	/**
+	 * This operation performs the tile updates needed by the generateTile()
+	 * operation where interfaces should be considered.
+	 * 
+	 * @param tile
+	 *            the tile to update
+	 * @param slabM1
+	 *            the slab one index less than (so above) the middle slab
+	 * @param slab
+	 *            the middle slab
+	 * @param dist
+	 *            the step distance
+	 */
+	private void updateTileByInterface(Slab tile, Slab slabM1, Slab slab,
+			double zInt, double rufInt) {
+
+		// Update the tile
+		tile.thickness = zInt * slab.interfaceWidth;
+		tile.scatteringLength = 0.5 * (slab.scatteringLength
+				+ slabM1.scatteringLength + rufInt
+				* (slab.scatteringLength - slabM1.scatteringLength));
+		tile.trueAbsLength = 0.5 * (slab.trueAbsLength + slabM1.trueAbsLength + rufInt
+				* (slab.trueAbsLength - slabM1.trueAbsLength));
+		tile.incAbsLength = 0.5 * (slab.incAbsLength + slabM1.incAbsLength + rufInt
+				* (slab.incAbsLength - slabM1.incAbsLength));
+
+		return;
 	}
 
 	/**
@@ -476,7 +555,7 @@ public class ReflectivityCalculator {
 	 * @throws MathException
 	 *             Thrown if the error function cannot be evaluated
 	 */
-	private void updateTile(Slab updateSlab, Slab slabM1, Slab slab,
+	private void updateTileByLayer(Slab updateSlab, Slab slabM1, Slab slab,
 			Slab slabP1, double dist) throws MathException {
 
 		// Compute the exponentials
