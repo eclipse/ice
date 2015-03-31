@@ -42,19 +42,16 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -114,7 +111,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 */
 	private Composite gridComposite;
 	
-	private static Button closeButton;
+	/**
+	 * A close button displayed on plots when the mouse enters the plotting area.
+	 */
+	private Button closeButton;
 	
 	/**
 	 * An Array storing the current dimensions of the plotComposite's grid.
@@ -495,7 +495,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		int numEmpties = 
 				(gridDimensions[0]*gridDimensions[1]) - gridManager.size();
 
-		if (numEmpties > 0) {			
+		if (numEmpties > 0) {		
+			
 			// Add the empty controls to the gridComposite
 			for (int i = 0; i < numEmpties; i++) {
 				
@@ -513,9 +514,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 					}
 				});
 			}
-			
-			// Pack the parent composite
-			parent.pack();
 		}
 		
 		return;		
@@ -527,10 +525,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 */
 	private void disposeEmptyControls() {
 		
+		// Dispose all EmptyControls from the gridManager, working backwards
 		for (int i = 0; i < gridManager.size(); i++) {
-			
 			Control currControl = gridManager.get(i);
-			
 			if (currControl instanceof EmptyControl) {
 				currControl.dispose();
 				i--;
@@ -544,14 +541,15 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * This method will dispose of any Controls contained in the 
 	 * {@link #gridManager} that exceed the number of spots available on the
 	 * {@link #gridComposite} area. It begins with the very last Control
-	 * contained in the {@link #gridManager} and works backwards.
+	 * contained in the {@link #gridManager} and works backwards. Note that 
+	 * both valid plots and {@link EmptyControl}s are both disposed.
 	 * 
 	 * @param numTiles	The number of tiles available for displaying plots.
 	 */
 	private void disposeExcessControls(int numTiles) {
 		
-		// Dispose of any excess plotComposites we can't fit,
-		// starting by removing the last one
+		// Dispose of any excess plotComposites we can't fit, starting at the
+		// end of the gridManager and working backwards
 		for (int i = gridManager.size()-1; i >= numTiles; i--) {
 			Composite plot = (Composite) gridManager.get(i);
 			plot.dispose();
@@ -572,8 +570,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 */
 	private void setCurrentResource(ICEResource resource) throws PartInitException {
 
-		
-		if (resource != currentResource) { // TODO if a plot, check if it's disposed somehow
+		if (resource != currentResource) {	// TODO need a way to check if it's the same resource, but disposed...
 			currentResource = resource;
 			
 			// VizResources should not use the browser. However, if it cannot be
@@ -739,7 +736,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		Composite plotComposite = null;
 
 		// First, check the map of plot Composites.
-		String key = getPlotKey(resource);
+		final String key = getPlotKey(resource);
 
 		IPlot plot = plots.get(key);
 		if (plot != null) {
@@ -784,62 +781,52 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						// Store it in the plot map and grid manager
 						plotComposites.put(key, plotComposite);
 						gridManager.add(plotComposite);
-						
+											
 						// Add a dispose listener to remove the plot from the
 						// gridManager
 						plotComposite.addDisposeListener(new DisposeListener() {
 							@Override
 							public void widgetDisposed(DisposeEvent e) {
+								
+								// Remove the plot from the gridManager
 								Composite c = (Composite) e.widget;
 								gridManager.remove(c);
-
 								
-								// Refresh the page content
-								gridComposite.pack();
-								drawingComposite.pack();
-								pageComposite.layout();
+								// Add an empty control to the gridManager
+								addEmptyControls(gridComposite);
+								
+								// Refresh the display and grid area
+								Display display = pageComposite.getDisplay();
+								display.asyncExec(new Runnable() {
+									@Override
+									public void run() {
+										gridComposite.pack();
+										drawingComposite.pack();
+										pageComposite.layout();
+									}
+								});
 							}
 						});
 						
-						// TODO Ideally we could just add listeners on the plotComposite...
-						// Find the plot's drawing canvas, if it has one
-						Canvas plotCanvas = null;
-						for (Control c : plotComposite.getChildren()) {
-							// Find a Composite
-							if (c instanceof Composite) {
-								for (Control p : ((Composite) c).getChildren()) {
-									// Find a canvas and set it
-									if (p instanceof Canvas) {
-										plotCanvas = (Canvas) p;
-									}
-								}
+						// Create a mouse enter listener to show a "close" button
+						Listener mouseEnterListener = new Listener() {
+							@Override
+							public void handleEvent(Event event) {
+								showCloseButton(event);
 							}
-						}						
+						};
 						
-						// If the plotComposite has a canvas and it's valid,
-						// enable a "close" button in the upper right-hand
-						// corner that disposes the plotComposite
-						if (plotCanvas != null && !plotCanvas.isDisposed()) {
-				
+						// Create a mouse exit listener to hide the "close" button
+						Listener mouseExitListener = new Listener() {
+							@Override
+							public void handleEvent(Event event) {
+								hideCloseButton(event);
+							}
+						};
 						
-							// Add a listener to the canvas that displays a 
-							// "close" button when the mouse hovers over it
-							plotCanvas.addListener(SWT.MouseEnter, new Listener() {
-								@Override
-								public void handleEvent(Event e) {
-									showCloseButton(e);
-								}
-							});
-							
-							// Add a listener to hide the "close" button once 
-							// the mouse moves off the plot canvas
-							plotCanvas.addListener(SWT.MouseExit, new Listener() {
-								@Override
-								public void handleEvent(Event e) {
-									hideCloseButton(e);
-								}
-							});
-						}						
+						// Set the mouse event listeners on the plot
+						plot.setEventListener(SWT.MouseEnter, mouseEnterListener);
+						plot.setEventListener(SWT.MouseExit, mouseExitListener);
 					}	
 					
 					// If the plot could not be drawn, dispose the plot
@@ -867,7 +854,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	    {
 	    	// Set up the close button
 	        closeButton = new Button(comp, SWT.FLAT | SWT.CENTER);
-	        closeButton.setText("close");
+	        closeButton.setText("X");
 	        FontData[] smallFont = closeButton.getFont().getFontData();
 	        for (FontData fd : smallFont) {
 	        	fd.setHeight(7);
@@ -881,10 +868,14 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				public void widgetSelected(SelectionEvent e) {
 					Control c = (Control) e.widget;
 					
-					// Find which plotComposite the canvas belongs to and
+					// Find which plotComposite the control belongs to and
 					// dispose it
-					if (gridManager.contains(c.getParent().getParent().getParent())) {
-						c.getParent().getParent().getParent().dispose();		// TODO this isn't ideal...
+					for (Control plot : gridManager) {						
+						if (!(plot instanceof EmptyControl)
+								&& isChildControl(c, (Composite) plot)) {
+							plot.dispose();
+							break;
+						}
 					}
 				}
 	        });
@@ -902,15 +893,23 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	
 	public void hideCloseButton(Event e) {
 		
-		// Get the Composite that triggered the event
-		Composite comp = (Composite) e.widget;
+		// Get the widget which triggered the event
+		Control c = null;
+		if (e.widget instanceof Composite) {
+			c = (Composite) e.widget;
+		} else {
+			c = (Control) e.widget;
+		}
 		
-		// Check if the cursor has truly exited the canvas area, or is just
+		// Check if the cursor has actually exited the canvas area, or is just
 		// positioned over one of its children (yes, this technically counts
 		// as a MouseExit event... ugh)
-        for (Control child : comp.getChildren()) {
-            if (child.getBounds().contains(new Point(e.x, e.y)))
-                return;
+        if (c instanceof Composite) {
+        	for (Control child : ((Composite) c).getChildren()) {
+	            if (child.getBounds().contains(new Point(e.x, e.y))) {
+	                return;
+	            }
+        	}
         }
 		
         // If the cursor has left the canvas area, dispose the closeButton
@@ -920,6 +919,42 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	    }
 		
 		return;
+	}
+	
+	/**
+	 * This method checks the inputed child widget to see if it is either: 
+	 * a.) the same object as the parent Composite, or b.) a child of the 
+	 * parent Composite. This method uses recursion to check for controls 
+	 * nested more than one "level" deep.
+	 * 
+	 * @param child		The widget which triggered the event calling this method.
+	 * @param parent	The Composite we are checking the child against.
+	 * @return			True if the control is a child of parent (or is the
+	 * 					same object), otherwise false.
+	 */
+	private boolean isChildControl(Control child, Composite parent) {
+		
+		// Set result to false to begin with
+		boolean result = false;
+		
+		if (!child.isDisposed() && !parent.isDisposed()) {
+			
+			// First, check if the control and the parent are the same object
+			if (child == parent) {
+				return true;
+			}
+					
+			// Check if the control is a child of the parent Composite
+			for (Control c : parent.getChildren()) {
+		        if (c == child) {
+		        	return true;
+		        } else if (c instanceof Composite) {
+		            result = isChildControl(child, (Composite) c);
+		        }
+		    }
+		}
+		
+		return result;
 	}
 	
 	/**
