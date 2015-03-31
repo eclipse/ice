@@ -26,6 +26,7 @@ import org.eclipse.ice.viz.plotviewer.CSVPlotEditor;
 import org.eclipse.ice.viz.plotviewer.PlotProvider;
 import org.eclipse.ice.viz.plotviewer.SeriesProvider;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * This class implements the IPlot interface to provide access to a basic CSV
@@ -58,6 +59,11 @@ public class CSVPlot implements IPlot {
 	 * The CSVDataProvider used to store the CSV data
 	 */
 	private CSVDataProvider provider;	
+	
+	/**
+	 * The CSVPlotEditor used to render the plot
+	 */
+	private CSVPlotEditor editor;
 	
 	/**
 	 * The Constructor
@@ -224,26 +230,12 @@ public class CSVPlot implements IPlot {
 	}
 	
 	/**
-	 * This method is the same as calling 
-	 * {@code draw(category, plotType, parent, false)}
-	 * 
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
 	 * java.lang.String, org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void draw(String category, String plotType, Composite parent)
-			throws Exception {
-		draw(category, plotType, parent, false);
-	}
-	
-	/**
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
-	 * java.lang.String, org.eclipse.swt.widgets.Composite)
-	 */
-	public void draw(String category, String plotType, Composite parent, 
-			boolean addCloseButton) throws Exception {
+	public void draw(String category, String plotType, Composite parent) throws Exception {
 
 		// Make sure the plot type is valid
 		if (provider != null && category != null 
@@ -280,16 +272,39 @@ public class CSVPlot implements IPlot {
 			// Add this new series to the plot provider
 			plotProvider.addSeries(plotTime, seriesProvider);
 			// Create the plot editor
-			CSVPlotEditor plotEditor = new CSVPlotEditor();
-			// Create the the plotting canvas (with "close" button enabled)
-			plotEditor.createPartControl(parent);
+			editor = new CSVPlotEditor();
+			// Create the the plotting canvas
+			editor.createPartControl(parent);
 			// Add the new plot to the editor (with time slider disabled)
-			plotEditor.showPlotProvider(plotProvider, false);
+			editor.showPlotProvider(plotProvider, false);
 		} else {
 			// Complain that the plot is invalid
 			throw new Exception("Invalid plot: category = " + category
 					+ ", type = " + plotType + ", provider = " + provider.toString());
 		}
+		
+		return;
+	}
+
+	/**
+	 * This is an intermediary method, designed to give the UI the ability to 
+	 * set listeners on the CSV plot canvas, without having to explicitly 
+	 * access the canvas from the UI.
+	 * 
+	 * @param eventType	The SWT event type for which a listener will be added
+	 * 					to the plot canvas.
+	 * @param listener	The listener that will be added to the plot canvas.
+	 */
+	@Override
+	public void setEventListener(int eventType, Listener listener) {
+		
+		// Create a CSV editor, if one doesn't already exist
+		if (editor == null) {
+			editor = new CSVPlotEditor();
+		}
+		
+		// Set the listener on the plot canvas
+		editor.setPlotCanvasListener(eventType, listener);
 		
 		return;
 	}

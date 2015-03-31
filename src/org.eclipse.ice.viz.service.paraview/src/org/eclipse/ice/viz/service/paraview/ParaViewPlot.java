@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * This class is responsible for embedding ParaView-supported graphics inside
@@ -122,6 +123,12 @@ public class ParaViewPlot implements IPlot {
 	public boolean isSourceRemote() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void setEventListener(int eventType, Listener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

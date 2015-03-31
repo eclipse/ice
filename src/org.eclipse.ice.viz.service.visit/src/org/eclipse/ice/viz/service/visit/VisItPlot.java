@@ -38,6 +38,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -701,5 +702,11 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 		actions.add(new ImportLocalFileAction(this));
 
 		return actions;
+	}
+
+	@Override
+	public void setEventListener(int eventType, Listener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 }

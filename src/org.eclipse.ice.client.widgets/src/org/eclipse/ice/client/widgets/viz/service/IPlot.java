@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * This interface defines the principle type for plots created and handled by
@@ -140,4 +141,15 @@ public interface IPlot {
 	 * @return True if the source is on a remote machine, false otherwise
 	 */
 	public boolean isSourceRemote();
+	
+	/**
+	 * This method sets an event listener on the IPlot object.
+	 * 
+	 * @param eventType
+	 * 			The SWT event type to listen for (e.g. SWT.MouseHover, 
+	 * 			SWT.MouseEnter, SWT.MouseExit, etc.)
+	 * @param listener	
+	 * 			The listener to set on the plot.
+	 */
+	public void setEventListener(int eventType, Listener listener);
 }

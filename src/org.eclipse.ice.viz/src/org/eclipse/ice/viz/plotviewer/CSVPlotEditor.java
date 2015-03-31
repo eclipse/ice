@@ -66,17 +66,17 @@ public class CSVPlotEditor extends EditorPart {
 	/**
 	 * The top level composite that holds the editor's contents.
 	 */
-	Composite vizComposite;
-
+	private Composite vizComposite;
+	
 	/**
-	 * The composite that contains the "close" button of the vizComposite.
+	 * The canvas used for rendering the plot.
 	 */
-	Button closeButton;
+	private Canvas plotCanvas;
 	
 	/**
 	 * LightweightSystem for an SWT XYGraph
 	 */
-	LightweightSystem lws;
+	private LightweightSystem lws;
 
 	private int spinnerSliderSelectionIndex;
 
@@ -150,19 +150,19 @@ public class CSVPlotEditor extends EditorPart {
 	 * create the VisIt widget.
 	 * 
 	 * @param parent	The parent Composite to create the Control in.
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-
+		
 		// Create a top level composite to hold the canvas or text
 		vizComposite = new Composite(parent, SWT.NONE);
 		vizComposite.setLayout(new GridLayout(1, true));
 		
 		// Set up the canvas where the graph is displayed
-		Canvas plotCanvas = new Canvas(vizComposite, SWT.BORDER);
+		plotCanvas = new Canvas(vizComposite, SWT.BORDER);
 		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		// MAGIC 
 		lws = new LightweightSystem(plotCanvas);
 		
 		return;
@@ -466,5 +466,22 @@ public class CSVPlotEditor extends EditorPart {
 
 		return;
 	}
-
+	
+	/**
+	 * This method is designed to set listeners on the {@link #plotCanvas}.
+	 * 
+	 * @param eventType	The SWT event type for which a listener will be added
+	 * 					to the plot canvas.
+	 * @param listener	The listener that will be added to the plot canvas.
+	 */
+	public void setPlotCanvasListener(int eventType, Listener listener) {
+		
+		// Set the event listener if a valid listener has been supplied
+		if (plotCanvas != null && !plotCanvas.isDisposed() 
+				&& listener != null) {
+			plotCanvas.addListener(eventType, listener);
+		}
+		
+		return;
+	}
 }
