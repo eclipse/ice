@@ -800,9 +800,13 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 								display.asyncExec(new Runnable() {
 									@Override
 									public void run() {
-										gridComposite.pack();
-										drawingComposite.pack();
-										pageComposite.layout();
+										// Make sure we're not trying to update
+										// disposed widgets (ie. editor closed)
+										if (!pageComposite.isDisposed()) {
+											gridComposite.pack();
+											drawingComposite.pack();
+											pageComposite.layout();
+										}
 									}
 								});
 							}
