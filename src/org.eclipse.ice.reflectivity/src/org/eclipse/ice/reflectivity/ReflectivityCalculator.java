@@ -335,7 +335,6 @@ public class ReflectivityCalculator {
 		// shifted by -1 from the VB code because this version is zero indexed!
 		zInt[numRough / 2] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
 		rufInt[numRough / 2] = Erf.erf(cE * zInt[numRough / 2]);
-		System.out.println("numRough/2 = " + (numRough / 2));
 		for (j = numRough / 2 - 1; j >= 0; j--) {
 			dist = dist - step;
 			zInt[j] = Math.log((1.0 + dist) / (1.0 - dist)) / (2.0 * cE);
@@ -393,11 +392,17 @@ public class ReflectivityCalculator {
 
 		// Local Declarations
 		int nGlay = 0, step = 0, dist = 0;
-		Slab[] generatedSlabs = new Slab[numRough / 2 + 1];
-		for (int i = 0; i < numRough / 2 + 1; i++) {
+		double totalThickness = 0.0, gDMid = 0.0;
+		// The number of slabs was not defined in the original code. I computed
+		// it by counting up the loops. This formula is currently off a little
+		// bit.
+		int numSlabs = 2 + 2 * (numRough / 2 + 1) + (slabs.length - 2)
+				* (2 + numRough);
+		Slab[] generatedSlabs = new Slab[numSlabs];
+		// Create the slabs
+		for (int i = 0; i < numSlabs; i++) {
 			generatedSlabs[i] = new Slab();
 		}
-		double totalThickness = 0.0, gDMid = 0.0, tExpFac = 0.0, bExpFac = 0.0;
 
 		// Evaluate the first half of the vacuum interface. Create the first
 		// slab.
@@ -407,28 +412,23 @@ public class ReflectivityCalculator {
 		tmpSlab.incAbsLength = refSlab.incAbsLength;
 		tmpSlab.thickness = refSlab.thickness;
 		++nGlay;
+		// Create the other slabs for this half
 		for (int i = 0; i < numRough / 2 + 1; i++) {
 			tmpSlab = generatedSlabs[nGlay + i];
-			tmpSlab.thickness = zInt[i] * secondRefSlab.interfaceWidth;
-			tmpSlab.scatteringLength = 0.5 * (secondRefSlab.scatteringLength
-					+ refSlab.scatteringLength + (secondRefSlab.scatteringLength - refSlab.scatteringLength)
-					* rufInt[i]);
-			tmpSlab.trueAbsLength = 0.5 * (secondRefSlab.trueAbsLength
-					+ refSlab.trueAbsLength + (secondRefSlab.trueAbsLength - refSlab.trueAbsLength)
-					* rufInt[i]);
-			tmpSlab.incAbsLength = 0.5 * (secondRefSlab.incAbsLength
-					+ refSlab.incAbsLength + (secondRefSlab.incAbsLength - refSlab.incAbsLength)
-					* rufInt[i]);
+			updateTileByInterface(tmpSlab, refSlab, secondRefSlab, zInt[i],
+					rufInt[i]);
 		}
 		nGlay += numRough / 2 + 1;
+		System.out.println("NGLAY = " + nGlay);
 
 		// Evaluate the total normalized thickness of the surface
 		for (int i = 0; i < numRough + 1; i++) {
 			totalThickness += zInt[i];
 		}
 
-		// Calculate gradation of layers
-		for (int i = 1; i < slabs.length; i++) {
+		// Calculate gradation of layers. Using slabs.length - 1 because the
+		// last layer is at index 4.
+		for (int i = 1; i < slabs.length - 1; i++) {
 			refSlab = slabs[i];
 			secondRefSlab = slabs[i + 1];
 			thirdRefSlab = slabs[i - 1];
@@ -576,7 +576,7 @@ public class ReflectivityCalculator {
 	}
 
 	/**
-	 * This is a convenience operation that performs a length, complicated
+	 * This is a convenience operation that performs a lengthy, complicated
 	 * update operation. In the original code this formula was used for several
 	 * quantities and caused significant bloat.
 	 * 

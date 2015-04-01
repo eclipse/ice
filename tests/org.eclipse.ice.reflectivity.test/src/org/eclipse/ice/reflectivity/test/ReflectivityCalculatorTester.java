@@ -436,6 +436,7 @@ public class ReflectivityCalculatorTester {
 		
 		// Check the generated tiles against the reference data
 		assertEquals(refTiles.length,genTiles.length);
+		System.out.println(refTiles.length + " " + genTiles.length);
 		
 		fail();
 		return;
