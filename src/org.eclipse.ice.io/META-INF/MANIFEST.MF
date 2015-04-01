@@ -14,4 +14,5 @@ Service-Component: OSGI-INF/HdfIORegistry.xml,OSGI-INF/HdfIOFactory.xml,
 Comment: Service-Component: OSGI-INF/ICEDatabaseHarness.xml
 Export-Package: org.eclipse.ice.io.hdf,
  org.eclipse.ice.io.ips,
- org.eclipse.ice.io.serializable
+ org.eclipse.ice.io.serializable,
+ org.eclipse.io.ini

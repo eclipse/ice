@@ -66,7 +66,6 @@ public class VibeModel extends Item {
 	 */
 	public VibeModel() {
 		this(null);
-		return;
 	}
 
 	/**
@@ -80,14 +79,8 @@ public class VibeModel extends Item {
 	 *            The passed IProject for the workspace.
 	 */
 	public VibeModel(IProject project) {
-
-		// begin-user-code
-
 		// Setup the form and everything
 		super(project);
-		return;
-		// end-user-code
-
 	}
 
 	/**
@@ -191,16 +184,11 @@ public class VibeModel extends Item {
 				System.err.println("Not enough components to write new file!");
 				retStatus = FormStatus.InfoError;
 			}
-		}
-
-		// Otherwise let item deal with the process
-		else {
+		} else {
+			// Otherwise let item deal with the process
 			retStatus = super.process(actionName);
 		}
-
 		return retStatus;
-		// end-user-code
-
 	}
 
 	/**
