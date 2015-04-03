@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -115,8 +116,7 @@ public class INIReader implements IReader {
 				while((line = reader.readLine()) != null) {
 					// Make sure that comments are taken into consideration
 					splitLine = line.split(comment);
-					line = splitLine[0];
-					
+					line = splitLine[0].trim();
 					// If at a new section, add the previous section to 
 					// the list and create a new TableComponent for the
 					// next section
@@ -124,7 +124,7 @@ public class INIReader implements IReader {
 					if (sectionMatch.matches()) {
 						iniForm.addComponent(sectionTable);
 						sectionTable = new TableComponent();
-						sectionTable.setName(sectionMatch.group(0).trim());
+						sectionTable.setName(sectionMatch.group(0).trim().replace("[","").replace("]",""));
 						sectionTable.setRowTemplate(entries);
 					} else if ((splitLine = line.split(assignmentPattern)).length >= 2) {	
 						// Get the key and value and put it in the table
