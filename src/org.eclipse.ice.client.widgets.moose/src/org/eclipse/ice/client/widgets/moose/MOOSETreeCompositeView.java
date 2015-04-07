@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.eclipse.ice.client.common.AddNodeTreeAction;
 import org.eclipse.ice.client.common.DeleteNodeTreeAction;
 import org.eclipse.ice.client.common.RenameNodeTreeAction;
@@ -22,36 +19,13 @@ import org.eclipse.ice.client.common.TreeCompositeContentProvider;
 import org.eclipse.ice.client.common.TreeCompositeLabelProvider;
 import org.eclipse.ice.client.common.TreeCompositeViewer;
 import org.eclipse.ice.client.widgets.ICEFormInput;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
-import org.eclipse.jface.action.ControlContribution;
-import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -168,84 +142,84 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 //		// arrow.
 //		return combo.computeSize(extentWidth, SWT.DEFAULT, true).x;
 //	}
-
-	/**
-	 * Refreshes the view's <code>ToolBar</code>. This is used to force items in
-	 * the <code>ToolBar</code> to wrap when there is not enough space.
-	 */
-	private void refreshToolBar() {
-		// Get the ToolBar and its container.
-		ToolBarManager manager = (ToolBarManager) getViewSite().getActionBars()
-				.getToolBarManager();
-		ToolBar toolBar = manager.getControl();
-		Composite parent = toolBar.getParent();
-
-		// Get the ToolBar's RowData (we may need to create it). The
-		// RowData affects where the ancestor CTabFolder draws the
-		// ToolBar's container and the view's client Composite.
-		RowData rowData = (RowData) toolBar.getLayoutData();
-		if (rowData == null) {
-			rowData = new RowData();
-			toolBar.setLayoutData(rowData);
-		}
-
-		// Note: The 5 lines of code below produce some flicker when the
-		// ToolBar starts to wrap. This is likely because of the call to
-		// parent.setSize(defaultSize), but I have not found a better
-		// way to determine maxWidth.
-
-		// I had trouble determining the maximum width available to
-		// render the ToolBar (The relationship between the size of the
-		// ToolBar and its parent Composite is strange, and they are not
-		// at all independent.). I resorted to the following:
-		//
-		// 1) At each resize event, restore the parent Composite to the
-		// default, fully unwrapped size of the ToolBar (first 4 lines).
-		// 2) Then determine the available width of the parent Composite
-		// via getClientArea().
-		// 3) If the available width is not enough, restrict the
-		// ToolBar's size by its RowData.width (causes the wrap, affects
-		// the computed size of the parent) and update the size of the
-		// parent (this forces a re-layout).
-
-		// Determine the maximum horizontal space we actually have
-		// available for the ToolBar.
-		Point defaultSize = toolBar.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-		rowData.width = SWT.DEFAULT;
-		parent.setSize(defaultSize);
-		int maxWidth = parent.getClientArea().width;
-
-		// TODO We could perhaps optimize this so that the loop can be
-		// eliminated. But we may also need to create a custom
-		// ControlContribution, because the default implementations
-		// creates the ToolItem and forgets it.
-
-//		// Determine the app widget's corresponding ToolItem.
-//		Combo combo = appCombo.getCombo();
-//		for (ToolItem toolItem : toolBar.getItems()) {
-//			if (combo == toolItem.getControl()) {
-//				// Update the width of the ToolItem.
-//				int width = getPreferredComboWidth();
-//				if (maxWidth < width) {
-//					width = maxWidth;
-//				}
-//				toolItem.setWidth(width);
-//				break;
-//			}
+//
+//	/**
+//	 * Refreshes the view's <code>ToolBar</code>. This is used to force items in
+//	 * the <code>ToolBar</code> to wrap when there is not enough space.
+//	 */
+//	private void refreshToolBar() {
+//		// Get the ToolBar and its container.
+//		ToolBarManager manager = (ToolBarManager) getViewSite().getActionBars()
+//				.getToolBarManager();
+//		ToolBar toolBar = manager.getControl();
+//		Composite parent = toolBar.getParent();
+//
+//		// Get the ToolBar's RowData (we may need to create it). The
+//		// RowData affects where the ancestor CTabFolder draws the
+//		// ToolBar's container and the view's client Composite.
+//		RowData rowData = (RowData) toolBar.getLayoutData();
+//		if (rowData == null) {
+//			rowData = new RowData();
+//			toolBar.setLayoutData(rowData);
 //		}
-
-		// If the available space is not enough, we need to shrink the
-		// ToolBar. We use the RowData for this, and we have to force
-		// the container to resize itself appropriately.
-		if (maxWidth < defaultSize.x) {
-			// FIXME Neither of these calls do anything with gtk, but
-			// they work on Mac and Windows.
-			rowData.width = maxWidth;
-			parent.setSize(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
-		}
-
-		return;
-	}
+//
+//		// Note: The 5 lines of code below produce some flicker when the
+//		// ToolBar starts to wrap. This is likely because of the call to
+//		// parent.setSize(defaultSize), but I have not found a better
+//		// way to determine maxWidth.
+//
+//		// I had trouble determining the maximum width available to
+//		// render the ToolBar (The relationship between the size of the
+//		// ToolBar and its parent Composite is strange, and they are not
+//		// at all independent.). I resorted to the following:
+//		//
+//		// 1) At each resize event, restore the parent Composite to the
+//		// default, fully unwrapped size of the ToolBar (first 4 lines).
+//		// 2) Then determine the available width of the parent Composite
+//		// via getClientArea().
+//		// 3) If the available width is not enough, restrict the
+//		// ToolBar's size by its RowData.width (causes the wrap, affects
+//		// the computed size of the parent) and update the size of the
+//		// parent (this forces a re-layout).
+//
+//		// Determine the maximum horizontal space we actually have
+//		// available for the ToolBar.
+//		Point defaultSize = toolBar.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+//		rowData.width = SWT.DEFAULT;
+//		parent.setSize(defaultSize);
+//		int maxWidth = parent.getClientArea().width;
+//
+//		// TODO We could perhaps optimize this so that the loop can be
+//		// eliminated. But we may also need to create a custom
+//		// ControlContribution, because the default implementations
+//		// creates the ToolItem and forgets it.
+//
+////		// Determine the app widget's corresponding ToolItem.
+////		Combo combo = appCombo.getCombo();
+////		for (ToolItem toolItem : toolBar.getItems()) {
+////			if (combo == toolItem.getControl()) {
+////				// Update the width of the ToolItem.
+////				int width = getPreferredComboWidth();
+////				if (maxWidth < width) {
+////					width = maxWidth;
+////				}
+////				toolItem.setWidth(width);
+////				break;
+////			}
+////		}
+//
+//		// If the available space is not enough, we need to shrink the
+//		// ToolBar. We use the RowData for this, and we have to force
+//		// the container to resize itself appropriately.
+//		if (maxWidth < defaultSize.x) {
+//			// FIXME Neither of these calls do anything with gtk, but
+//			// they work on Mac and Windows.
+//			rowData.width = maxWidth;
+//			parent.setSize(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+//		}
+//
+//		return;
+//	}
 
 	/**
 	 * Overrides the parent class's behavior to add the {@link #appCombo} to the
@@ -254,10 +228,10 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 	@Override
 	public void createPartControl(Composite parent) {
 
-		// ---- Add the app selection widget to the view ToolBar. ---- //
-		// Get the TreeCompositeViewer's ToolBarManager.
-		ToolBarManager toolBarManager = (ToolBarManager) getViewSite()
-				.getActionBars().getToolBarManager();
+//		// ---- Add the app selection widget to the view ToolBar. ---- //
+//		// Get the TreeCompositeViewer's ToolBarManager.
+//		ToolBarManager toolBarManager = (ToolBarManager) getViewSite()
+//				.getActionBars().getToolBarManager();
 //		// Add the MOOSE app selection combo box to the toolbar before the other
 //		// actions.
 //		toolBarManager.add(new ControlContribution(
@@ -289,26 +263,26 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 //			}
 //		});
 //		// ----------------------------------------------------------- //
-
-		// ---- ControlListener for wrapping the ToolBar contents. ---- //
-		// The code below hacks around RCP to gain access to the ToolBar and its
-		// container (a CTabFolder). When the container is resized, it needs to
-		// adjust the size of the ToolBar so that its items wrap.
-
-		// We have to add a listener for resize events to the ToolBar's ancestor
-		// CTabFolder since it receives the resize events. The 3 lines below
-		// determine the CTabFolder.
-		Control control = toolBarManager.getControl().getParent();
-		for (; !(control instanceof CTabFolder); control = control.getParent()) {
-			// Do nothing... the loop determines the parent!
-		}
-		control.addControlListener(new ControlAdapter() {
-			@Override
-			public void controlResized(ControlEvent e) {
-				refreshToolBar();
-			}
-		});
-		// ------------------------------------------------------------ //
+//
+//		// ---- ControlListener for wrapping the ToolBar contents. ---- //
+//		// The code below hacks around RCP to gain access to the ToolBar and its
+//		// container (a CTabFolder). When the container is resized, it needs to
+//		// adjust the size of the ToolBar so that its items wrap.
+//
+//		// We have to add a listener for resize events to the ToolBar's ancestor
+//		// CTabFolder since it receives the resize events. The 3 lines below
+//		// determine the CTabFolder.
+//		Control control = toolBarManager.getControl().getParent();
+//		for (; !(control instanceof CTabFolder); control = control.getParent()) {
+//			// Do nothing... the loop determines the parent!
+//		}
+//		control.addControlListener(new ControlAdapter() {
+//			@Override
+//			public void controlResized(ControlEvent e) {
+//				refreshToolBar();
+//			}
+//		});
+//		// ------------------------------------------------------------ //
 
 		// Proceed with the default behavior.
 		super.createPartControl(parent);
