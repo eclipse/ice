@@ -224,7 +224,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 					+ "EMFFormEditor part activated.");
 
 			// Update the TreeViewer with the current TreeComposite.
-			setInput(inputTree);
+			setInput(inputTree, getFormEditor());
 		}
 
 		return;
@@ -239,7 +239,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 			System.out.println("EMFTreeCompositeViewer message: "
 					+ "EMFFormEditor part closed.");
 
-			setInput(new TreeComposite());
+			setInput(new TreeComposite(), null);
 
 			// If the active editor closed, reset the active editor reference.
 			if (partRef == activeEditorRef) {
