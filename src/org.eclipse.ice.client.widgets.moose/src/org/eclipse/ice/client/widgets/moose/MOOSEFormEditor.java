@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.ICEDataComponentSectionPart;
@@ -105,6 +106,12 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * The toolkit used to decorate {@code Control}s in this editor.
 	 */
 	private FormToolkit toolkit;
+
+	/**
+	 * The {@link Entry} corresponding to the available apps in the MOOSE Model
+	 * Builder.
+	 */
+	private Entry appsEntry;
 
 	// ---- Plant Page variables ---- //
 	/**
@@ -207,7 +214,13 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				};
 				resources.addListEventListener(listener);
 			}
+
+			// Get its Entry that contains the available apps.
+			DataComponent dataComp = (DataComponent) form
+					.getComponent(MOOSEModel.fileDataComponentId);
+			appsEntry = dataComp.retrieveEntry("MOOSE-Based Application");
 		}
+
 		return;
 	}
 
@@ -215,7 +228,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * Provides a Plant View page with a single {@link PlantApplication} for use
 	 * with RELAP-7.
 	 */
-	public void addPlantPage() {
+	private void addPlantPage() {
 		// Do not add more than one plant page.
 		if (findPage(PLANT_PAGE_ID) == null) {
 
@@ -582,7 +595,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	/**
 	 * Removes the Plant View page if possible.
 	 */
-	public void removePlantPage() {
+	private void removePlantPage() {
 		// Dispose any resources required for the plant view.
 		plantView = null;
 
@@ -594,7 +607,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * Provides a Mesh View page with a view of the MOOSE data tree's mesh
 	 * rendered by the current applicable visualization service.
 	 */
-	public void addMeshPage() {
+	private void addMeshPage() {
 		// Do not add more than one mesh page.
 		if (findPage(MESH_PAGE_ID) == null) {
 
@@ -683,10 +696,10 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 		// Find the "file" Entry among the "Mesh" block's parameters.
 		TreeComposite meshBlock = findMeshBlock();
-		
+
 		// DataComponent activeNode = (DataComponent) meshBlock
 		// .getActiveDataNode();
-		
+
 		// The above call returns null, but the debugger (and the UI!) shows
 		// that the data is available. This is a more direct way to get the data
 		// that is OK to use since the specific mesh block is being called.
@@ -792,7 +805,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	/**
 	 * Removes the Mesh View page if possible.
 	 */
-	public void removeMeshPage() {
+	private void removeMeshPage() {
 		// Dispose of any resources required for the mesh view.
 		if (meshPlotParent != null && !meshPlotParent.isDisposed()) {
 			meshPlotParent.dispose();
@@ -897,4 +910,32 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		return MOOSEModel.mooseTreeCompositeId;
 	}
 
+	/**
+	 * In additon to the default behavior when saved, this makes sure the plant
+	 * and/or mesh view pages are visible depending on the current MOOSE app and
+	 * input file settings.
+	 */
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		super.doSave(monitor);
+
+		// If the selection is for RELAP-7, create a Plant View page
+		// if one doesn't already exist. If the selection is NOT for
+		// RELAP-7, delete any existing Plant View page.
+		String appStr = appsEntry.getValue();
+		if ("relap".equals(appStr)) {
+			addPlantPage();
+		} else {
+			removePlantPage();
+		}
+		// TODO There may be more apps that use the mesh page! Could we perhaps
+		// use the mesh resource to determine whether to render this page?
+		if ("bison".equals(appStr) || "marmot".equals(appStr)) {
+			addMeshPage();
+		} else {
+			removeMeshPage();
+		}
+
+		return;
+	}
 }
