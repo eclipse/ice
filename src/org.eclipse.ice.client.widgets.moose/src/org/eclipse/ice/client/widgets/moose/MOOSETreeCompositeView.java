@@ -30,8 +30,15 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 
+/**
+ * This class extends the default ICE {@link TreeCompositeViewer} to add new
+ * functionality in support of MOOSE app trees.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class MOOSETreeCompositeView extends TreeCompositeViewer implements
-		IPartListener2 { // , ISelectionChangedListener {
+		IPartListener2 {
 
 	/**
 	 * The ID of this view. This should be the same as its ID in the
