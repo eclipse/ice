@@ -96,11 +96,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	/**
 	 * The Eclipse IFormPage ID used for the Plant View page.
 	 */
-	private static final String PLANT_PAGE_ID = "Plant";
+	private static final String PLANT_PAGE_ID = "Plant View";
 	/**
 	 * The Eclipse IFormPage ID used for the Mesh View page.
 	 */
-	private static final String MESH_PAGE_ID = "Mesh";
+	private static final String MESH_PAGE_ID = "Mesh View";
 
 	/**
 	 * The toolkit used to decorate {@code Control}s in this editor.
