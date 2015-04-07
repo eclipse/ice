@@ -41,6 +41,7 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
@@ -62,6 +63,8 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 
 	private String customTaggedExportString = "Export to key-value pair output";
 
+	private IOService ioService;
+	
 	/**
 	 * The nullary constructor.
 	 */
@@ -112,6 +115,14 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		setDescription("Generate input files for VIBE.");
 		allowedActions.remove("Export to ICE Native Format");
 		actionItems = getAvailableActions();
+		
+		ioService = getIOService();
+		if (ioService == null) {
+			setIOService(new IOService());
+			ioService = getIOService();
+		}
+		ioService.addReader(this);
+		ioService.addWriter(this);
 	}
 
 	/**
@@ -221,24 +232,19 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		// If nothing is specified, load case 6 from inside the plugin
 		IFile inputFile = null;
 		File temp = null;
-		System.out.println("Going to go for branch name = " + name);
 		if (name == null) {
 			try {
 				// Path to the default file
 				String defaultFilePath = null;
 				// Create a filepath for the default file
 				if (project != null) {
-					System.out.println("Took branch at line 223");
 					defaultFilePath = project.getLocation().toOSString()
 							+ System.getProperty("file.separator")
 							+ "case_6.dat";
-					System.out.println(defaultFilePath);
 				} else {
-					System.out.println("Took branch at line 226");
 					defaultFilePath = ResourcesPlugin.getWorkspace().getRoot()
 							.getLocation().toOSString()
 							+ System.getProperty("file.separator") + "case_6.dat";
-					System.out.println(defaultFilePath);
 				}
 
 				// Create a temporary location to load the default file
@@ -261,12 +267,9 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 				}
 				outStream.close();
 				if (project != null) {
-					System.out.println("Grabbing file from project at line 250 " + project.getLocation().toOSString());
 					inputFile = project.getFile("case_6.dat");
 					project.refreshLocal(IResource.DEPTH_INFINITE, null);
 				} else {
-					System.out.println("Grabbing file from project at line 253 " + ResourcesPlugin.getWorkspace().getRoot()
-							.getFile(new Path(defaultFilePath)).getLocation().toOSString());
 					inputFile = ResourcesPlugin.getWorkspace().getRoot()
 							.getFile(new Path(defaultFilePath));
 				}
@@ -357,7 +360,6 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 					.println("VibeKVPair Message: Error!  Trouble reading file.");
 			return null;
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			System.out.println("VibeKVPair Message: Error!  Trouble reading file from project location.");
 			return null;
 		}
