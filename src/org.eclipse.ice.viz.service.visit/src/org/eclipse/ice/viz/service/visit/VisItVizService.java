@@ -347,8 +347,7 @@ public class VisItVizService extends AbstractVizService {
 
 		// If the file is not null, the adapter is connected, and the adapter is
 		// a local connection, we can try to plot the file.
-		if (file != null && adapter != null 
-				&& adapter.getState() == ConnectionState.Connected
+		if (file != null && adapter != null && adapter.getState() == ConnectionState.Connected
 				&& "localhost".equals(adapter.getConnectionProperty("url"))) {
 
 			// Get the VisIt-friendly path for the URI.
