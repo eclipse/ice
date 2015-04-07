@@ -360,21 +360,6 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		return;
 	}
 
-//	/**
-//	 * Override the method in {@link ICEFormEditor} to prevent the DataComponent
-//	 * page from being rendered since this class has moved the output file text
-//	 * to the header and the app selection to the
-//	 * {@link MOOSETreeCompositeViewer}.
-//	 */
-//	@Override
-//	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
-//
-//		// Add an empty page for future additions to the MOOSE Model Builder.
-//		ArrayList<ICEFormPage> sectionPages = new ArrayList<ICEFormPage>();
-//		sectionPages.add(new ICESectionPage(this, "MOOSE Page", "MOOSE Page"));
-//		return sectionPages;
-//	}
-
 	/**
 	 * Provides a Plant View page with a single {@link PlantApplication} for use
 	 * with RELAP-7.
