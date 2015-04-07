@@ -296,6 +296,16 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	/**
+	 * This gets the current IVizServiceFactory component for use in the
+	 * FormEditor.
+	 * 
+	 * @return The {@link #vizFactory}.
+	 */
+	protected IVizServiceFactory getVizServiceFactory() {
+		return vizFactory;
+	}
+
+	/**
 	 * This operation changes the dirty state of the FormEditor.
 	 * 
 	 * @param value
@@ -610,7 +620,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// If there are some lists, render sections for them
 		if (lists.size() > 0) {
 			for (int i = 0; i < lists.size(); i++) {
-				ListComponent list = (ListComponent) lists.get(i);
+				ListComponent<?> list = (ListComponent<?>) lists.get(i);
 				// Make sure the list isn't null since that value can be put in
 				// a collection
 				if (list != null) {
@@ -1568,7 +1578,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	@Override
-	public void visit(ListComponent component) {
+	public void visit(ListComponent<?> component) {
 		// Add the ListComponent to the map of components
 		addComponentToMap(component, "list");
 	}

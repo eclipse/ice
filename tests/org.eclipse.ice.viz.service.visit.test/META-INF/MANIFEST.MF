@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: VisIt Visualization Service Pluging Test Bundle
+Bundle-Name: VisIt Visualization Service Plugin Test Bundle
 Bundle-SymbolicName: org.eclipse.ice.viz.service.visit.test
 Bundle-Version: 2.0.0
+Fragment-Host: org.eclipse.ice.viz.service.visit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.eclipse.ice.client.widgets.viz.service,
- org.eclipse.ice.viz.service.visit
 Require-Bundle: org.junit
+Import-Package: org.eclipse.ice.viz.service.visit

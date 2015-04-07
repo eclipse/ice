@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.eclipse.ice.viz.service.paraview.preferencePage"
+         name="ParaView Preferences"
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.ice.viz.service.preferences"
+            class="org.eclipse.ice.viz.service.paraview.ParaViewPreferencePage"
+            id="org.eclipse.ice.viz.service.paraview.preferences"
+            name="ParaView">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.ice.viz.service.paraview.ParaViewPreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>
