@@ -34,6 +34,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.Item;
 
 /**
@@ -61,6 +62,8 @@ public class VibeModel extends Item {
 	
 	private ArrayList<String> actionItems;
 
+	private IOService ioService;
+	
 	/**
 	 * A nullary constructor that delegates to the project constructor.
 	 */
@@ -80,14 +83,8 @@ public class VibeModel extends Item {
 	 *            The passed IProject for the workspace.
 	 */
 	public VibeModel(IProject project) {
-
-		// begin-user-code
-
-		// Setup the form and everything
+		// Setup the form and everything		
 		super(project);
-		return;
-		// end-user-code
-
 	}
 
 	/**
@@ -120,6 +117,19 @@ public class VibeModel extends Item {
 		customTaggedExportString = "Export to VIBE INI format";
 		allowedActions.add(0, customTaggedExportString);
 		actionItems = getAvailableActions();
+		
+		// Set up the necessary io services if they aren't already done.
+		ioService = getIOService();
+		if (ioService == null) {
+			setIOService(new IOService());
+			ioService = getIOService();
+		}
+		if (ioService.getReader("IPSReader") == null) {
+			ioService.addReader(new IPSReader());
+		}
+		if (ioService.getWriter("IPSWriter") == null) {
+			ioService.addWriter(new IPSWriter());
+		}
 	}
 
 	/**
@@ -172,7 +182,7 @@ public class VibeModel extends Item {
 			if (components.size() > 3) {
 
 				// create a new IPSWriter with the output file
-				IPSWriter writer = new IPSWriter();
+				IPSWriter writer = (IPSWriter) ioService.getWriter("IPSWriter"); //new IPSWriter();
 				try {
 					// Write the output file
 					writer.write(form, outputFile);
@@ -266,8 +276,9 @@ public class VibeModel extends Item {
 		
 		// Load the components from the file and setup the form
 		System.out.println("VibeModel Message: Loading " + inputFile.getName());
-
-		IPSReader reader = new IPSReader();
+		System.out.println(ioService.getReader("IPSReader"));
+		
+		IPSReader reader = (IPSReader) ioService.getReader("IPSReader"); //new IPSReader();
 		form = reader.read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());

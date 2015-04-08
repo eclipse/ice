@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 
+import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
@@ -93,6 +94,13 @@ public class TreeCompositeViewer extends ViewPart implements
 	protected RenameNodeTreeAction renameAction;
 
 	/**
+	 * A reference to the source of the {@link #inputTree}. This is useful if
+	 * the associated {@link ICEFormEditor} needs to be marked as dirty after
+	 * the tree's contents are changed.
+	 */
+	private ICEFormEditor editor;
+
+	/**
 	 * The input to the TreeViewer. This should be a single TreeComposite.
 	 */
 	protected TreeComposite inputTree;
@@ -121,6 +129,16 @@ public class TreeCompositeViewer extends ViewPart implements
 		// Initialize the meta data containers.
 		parentMap = new IdentityHashMap<Component, TreeComposite>();
 		childMap = new IdentityHashMap<TreeComposite, List<TreeComposite>>();
+	}
+
+	/**
+	 * Gets the source of the {@link #inputTree}. This should be marked as dirty
+	 * if and when the tree's contents are changed.
+	 * 
+	 * @return The associated {@link ICEFormEditor}, or null if none is set.
+	 */
+	public ICEFormEditor getFormEditor() {
+		return editor;
 	}
 
 	/**
@@ -416,8 +434,10 @@ public class TreeCompositeViewer extends ViewPart implements
 	 * 
 	 * @param tree
 	 *            The tree composite
+	 * @param source
+	 *            The source editor for the tree.
 	 */
-	public void setInput(TreeComposite tree) {
+	public void setInput(TreeComposite tree, ICEFormEditor source) {
 
 		if (tree != inputTree) {
 			// Unregister from the old root TreeComposite, if possible.
@@ -447,6 +467,10 @@ public class TreeCompositeViewer extends ViewPart implements
 			// Set the name of the view
 			setPartName(inputTree.getName() + " -- Tree View");
 		}
+
+		// Set the reference to the source of the input tree. It may need to be
+		// marked as dirty later if the tree is updated.
+		this.editor = source;
 
 		return;
 	}

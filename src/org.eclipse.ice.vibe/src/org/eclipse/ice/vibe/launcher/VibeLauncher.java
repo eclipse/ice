@@ -26,6 +26,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
@@ -56,6 +57,8 @@ public class VibeLauncher extends JobLauncher {
 	 */
 	private String IPS_ROOT;
 
+	private IOService ioService;
+	
 	/**
 	 * A nullary constructor that delegates to the project constructor.
 	 */
@@ -101,7 +104,19 @@ public class VibeLauncher extends JobLauncher {
 		// Set the name of the home directory
 		CAEBAT_ROOT = "/home/batsim/caebat";
 		IPS_ROOT = "$IPS_ROOT";
-
+		
+		// Set up the necessary io services if they aren't already done.
+		ioService = getIOService();
+		if (ioService == null) {
+			setIOService(new IOService());
+			ioService = getIOService();
+		}
+		if (ioService.getReader("IPSReader") == null) {
+			ioService.addReader(new IPSReader());
+		}
+		if (ioService.getWriter("IPSWriter") == null) {
+			ioService.addWriter(new IPSWriter());
+		}
 		return;
 		// end-user-code
 	}
@@ -181,8 +196,8 @@ public class VibeLauncher extends JobLauncher {
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
-		IPSReader reader = new IPSReader();
-		IPSWriter writer = new IPSWriter();
+		IPSReader reader = (IPSReader) ioService.getReader("IPSReader");
+		IPSWriter writer = (IPSWriter) ioService.getWriter("IPSWriter");
 		DataComponent fileComponent = (DataComponent) form.getComponent(1);
 		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
 		Entry kvPairFileEntry = fileComponent.retrieveEntry("Use custom key-value pair file?");
