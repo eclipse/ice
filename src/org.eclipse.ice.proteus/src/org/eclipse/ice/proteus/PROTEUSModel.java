@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.Item;
@@ -125,7 +126,7 @@ public class PROTEUSModel extends Item {
 	 */
 	protected void setupItemInfo() {
 		// Local Declarations
-		String desc = "Generate input files for the PROTEUS-SN neutron transport";
+		String desc = "Generate input files for the PROTEUS-SN neutron transport simulator";
 	
 		// Describe the Item
 		setName("PROTEUS Model");
@@ -229,10 +230,13 @@ public class PROTEUSModel extends Item {
 	public void loadInput(String name) {
 		// If nothing is specified, load case 6 from inside the plugin
 		IFile inputFile = null;
+		IFile templateFile = project.getFile("PROTEUS_Model_Builder" 
+							+ System.getProperty("file.separator") + "proteus_template.inp");
 		
 		// Get the file specified, or some default one
 		if (name == null) {
-			inputFile = project.getFile("PROTEUS_Model_Builder" + System.getProperty("file.separator") + "proteus_model.inp");
+			inputFile = project.getFile("PROTEUS_Model_Builder" 
+						+ System.getProperty("file.separator") + "proteus_model.inp");
 		} else {
 			inputFile = project.getFile(name);
 		}
@@ -240,7 +244,17 @@ public class PROTEUSModel extends Item {
 		// Load the components from the file and setup the form
 		System.out.println("ProteusModel Message: Loading " + inputFile.getLocation().toOSString());
 
-		INIReader reader = new INIReader();
+		// Set up the reader to use the template if it exists
+		INIReader reader = new INIReader("!");
+		if (templateFile.exists()) {
+			reader.addTemplateType("PROTUES", templateFile);
+			reader.setTemplateType("PROTEUS");
+		} else {
+			System.err.println("PROTEUS Model Warning: Could not find template file!  Building " 
+					+ "the model form with no template.");
+		}
+
+		// Try to read in the form, and if something went wrong give the user some information
 		form = reader.read(inputFile);
 		if (form != null) {
 			form.setName(getName());
@@ -249,7 +263,13 @@ public class PROTEUSModel extends Item {
 			form.setItemID(getId());
 			form.setActionList(actionItems);
 		} else {
-			System.out.println("FORM IS NULL");
+			DataComponent errorComponent = new DataComponent();
+			errorComponent.setName("Could not find PROTEUS input for model creation!");
+			errorComponent.setDescription("To load PROTEUS data into the model builder " 
+					+ "either use the import button, or set your data in a file named "
+					+ "proteus_model.inp in ICEFiles/default/PROTEUS_Model_Builder.");
+			form = new Form();
+			form.addComponent(errorComponent);
 		}
 	}
 }
