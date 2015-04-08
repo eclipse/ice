@@ -269,8 +269,10 @@ public class MOOSEModel extends Item {
 										.lastSegment().contains(".yaml")) {
 							String[] splitName = resource.getName()
 									.split("\\.");
-							// Only add the app name, not the file extension
-							mooseApps.add(splitName[0]);
+							// Only add the app name, not the file extension.
+							// Use upper case for consistency with the MOOSE
+							// Launcher, also since the app names are acronyms.
+							mooseApps.add(splitName[0].toUpperCase());
 						}
 					}
 				} catch (CoreException e) {
@@ -394,9 +396,10 @@ public class MOOSEModel extends Item {
 						+ "generator to populate with necessary data.");
 			}
 
-			// Get the file
-			IFile modelFile = mooseFolder
-					.getFile(mooseExecutableName + ".yaml");
+			// Get the file. We must convert to lower case to match the YAML
+			// files.
+			IFile modelFile = mooseFolder.getFile(mooseExecutableName
+					.toLowerCase() + ".yaml");
 
 			// Get the IReader instance
 			IReader reader = getReader();
