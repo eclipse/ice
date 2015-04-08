@@ -365,57 +365,56 @@ public class ReflectivityCalculatorTester {
 		return;
 	}
 
-
 	/**
-	 * This operation tests
-	 * {@link ReflectivityCalculator#generateTiles()}.
-	 * @throws MathException 
+	 * This operation tests {@link ReflectivityCalculator#generateTiles()}.
+	 * 
+	 * @throws MathException
 	 */
 	@Test
 	public void testGenerateTiles() throws MathException {
-		
+
 		// Create the calculator
 		ReflectivityCalculator calculator = new ReflectivityCalculator();
-		
+
 		// Create the slabs, starting with air
 		Slab air = new Slab();
 		air.thickness = 200.0;
 
 		// NiOx
 		Slab niOx = new Slab();
-		niOx.scatteringLength = 7.005e-6;
-		niOx.trueAbsLength = 2.28e-9;
-		niOx.incAbsLength = 4.75e-9;
+		niOx.scatteringLength = (0.00000686 + 0.00000715) / 2.0;
+		niOx.trueAbsLength = 2.27931868269305E-09;
+		niOx.incAbsLength = 4.74626235093697E-09;
 		niOx.thickness = 22.0;
-		niOx.interfaceWidth = 9.4;
+		niOx.interfaceWidth = 4.0 * 2.35;
 
 		// Ni
 		Slab ni = new Slab();
 		ni.scatteringLength = 9.31e-6;
-		ni.trueAbsLength = 2.28e-9;
-		ni.incAbsLength = 4.75e-9;
+		ni.trueAbsLength = 2.27931868269305E-09;
+		ni.incAbsLength = 4.74626235093697E-09;
 		ni.thickness = 551.0;
-		ni.interfaceWidth = 10.1;
-		
+		ni.interfaceWidth = 4.3 * 2.35;
+
 		// SiNiOx
 		Slab siNiOx = new Slab();
-		siNiOx.scatteringLength = 5.695e-6;
-		siNiOx.trueAbsLength = 2.28e-9;
-		siNiOx.incAbsLength = 4.75e-9;
+		siNiOx.scatteringLength = (0.00000554 + 0.00000585) / 2.0;
+		siNiOx.trueAbsLength = 2.27931868269305E-09;
+		siNiOx.incAbsLength = 4.74626235093697E-09;
 		siNiOx.thickness = 42.0;
-		siNiOx.interfaceWidth = 16.5;
-		
+		siNiOx.interfaceWidth = 7.0 * 2.35;
+
 		// SiOx
 		Slab si = new Slab();
 		si.scatteringLength = 2.070e-6;
-		si.trueAbsLength = 4.75e-11;
-		si.incAbsLength = 2.0e-12;
+		si.trueAbsLength = 4.74981478870069E-11;
+		si.incAbsLength = 1.99769988072137E-12;
 		si.thickness = 100.0;
 		si.interfaceWidth = 17.5;
-		
+
 		// Create the slab list
-		Slab [] slabs = {air,niOx,ni,siNiOx,si};
-		
+		Slab[] slabs = { air, niOx, ni, siNiOx, si };
+
 		// Create the test arrays
 		double[] zInt = new double[ReflectivityCalculator.maxRoughSize];
 		double[] rufInt = new double[ReflectivityCalculator.maxRoughSize];
@@ -423,23 +422,39 @@ public class ReflectivityCalculatorTester {
 		// Get the interfacial profile
 		int numRough = 41;
 		calculator.getInterfacialProfile(numRough, zInt, rufInt);
-		
+
 		// Generate the tiles
-		Tile[] genTiles = calculator.generateTiles(slabs,numRough,zInt,rufInt);
-		
+		Tile[] genTiles = calculator.generateTiles(slabs, numRough, zInt,
+				rufInt);
+
 		// Load the reference tiles
 		Form form = reader.read(project.getFile("getSpecRefSqrdMod_q841.csv"));
 		ListComponent<String[]> tileLines = (ListComponent<String[]>) form
 				.getComponent(1);
 		Tile[] refTiles = loadTiles(tileLines);
 		assertEquals(173, refTiles.length);
-		
+
 		// Check the generated tiles against the reference data
-		assertEquals(refTiles.length,genTiles.length);
+		assertEquals(refTiles.length, genTiles.length);
+		for (int i = 0; i < refTiles.length; i++) {
+			System.out.println("Tile = " + i);
+			// Scattering length
+			assertEquals(refTiles[i].scatteringLength,
+					genTiles[i].scatteringLength,
+					Math.abs(refTiles[i].scatteringLength * tol));
+			// True absorption cross section
+			assertEquals(refTiles[i].trueAbsLength, genTiles[i].trueAbsLength,
+					Math.abs(refTiles[i].trueAbsLength * tol));
+			// Incoherent absorption cross section
+			assertEquals(refTiles[i].incAbsLength, genTiles[i].incAbsLength,
+					Math.abs(refTiles[i].incAbsLength * tol));
+			// Thickness
+			assertEquals(refTiles[i].thickness, genTiles[i].thickness,
+					Math.abs(refTiles[i].thickness * tol));
+		}
 		System.out.println(refTiles.length + " " + genTiles.length);
-		
-		fail();
+
 		return;
 	}
-	
+
 }

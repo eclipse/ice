@@ -41,7 +41,7 @@ public class ReflectivityCalculator {
 	/**
 	 * A factor used in computing tile updates
 	 */
-	private static final double cE = 1.655;
+	private static final double cE = 1.665;
 
 	/**
 	 * This operation returns the value of the squared modulus of the specular
@@ -391,14 +391,14 @@ public class ReflectivityCalculator {
 			double[] rufInt) throws MathException {
 
 		// Local Declarations
-		int nGlay = 0, step = 0, dist = 0;
-		double totalThickness = 0.0, gDMid = 0.0;
+		int nGlay = 0;
+		double totalThickness = 0.0, gDMid = 0.0, step = 0.0, dist = 0.0;
 		// The number of slabs was not defined in the original code. I computed
 		// it by counting up the loops. This formula is currently off a little
 		// bit.
 		int numSlabs = 2 + 2 * (numRough / 2 + 1) + (slabs.length - 2)
 				* (2 + numRough);
-		Slab[] generatedSlabs = new Slab[numSlabs];
+		Tile[] generatedSlabs = new Tile[numSlabs];
 		// Create the slabs
 		for (int i = 0; i < numSlabs; i++) {
 			generatedSlabs[i] = new Slab();
@@ -406,7 +406,8 @@ public class ReflectivityCalculator {
 
 		// Evaluate the first half of the vacuum interface. Create the first
 		// slab.
-		Slab tmpSlab = generatedSlabs[0], refSlab = slabs[0], secondRefSlab = slabs[1], thirdRefSlab;
+		Tile tmpSlab = generatedSlabs[0];
+		Slab refSlab = slabs[0], secondRefSlab = slabs[1], thirdRefSlab;
 		tmpSlab.scatteringLength = refSlab.scatteringLength;
 		tmpSlab.trueAbsLength = refSlab.trueAbsLength;
 		tmpSlab.incAbsLength = refSlab.incAbsLength;
@@ -425,6 +426,7 @@ public class ReflectivityCalculator {
 		for (int i = 0; i < numRough + 1; i++) {
 			totalThickness += zInt[i];
 		}
+		System.out.println("zTot = " + totalThickness);
 
 		// Calculate gradation of layers. Using slabs.length - 1 because the
 		// last layer is at index 4.
@@ -432,69 +434,94 @@ public class ReflectivityCalculator {
 			refSlab = slabs[i];
 			secondRefSlab = slabs[i + 1];
 			thirdRefSlab = slabs[i - 1];
+			// FIXME! Review gDMid calculation with John because it can be
+			// negative.
 			gDMid = refSlab.thickness - 0.5 * totalThickness
-					* refSlab.interfaceWidth;
+					* (refSlab.interfaceWidth + secondRefSlab.interfaceWidth);
+			System.out.println("GDMid[" + i + "] = " + gDMid + ", " + refSlab.thickness
+					+ ", " + refSlab.interfaceWidth + ", "
+					+ secondRefSlab.interfaceWidth);
 			if (gDMid <= 1.0e-10) {
 				// The interfaces are overlapping. Step through the entire slab
-				step = (int) refSlab.thickness / (numRough + 1);
+				step = refSlab.thickness / ((double) (numRough + 1));
+				System.out.println("Step at i = " + i + " = " + step);
 				// Take the first half step
 				tmpSlab = generatedSlabs[nGlay];
-				tmpSlab.thickness = (double) step / 2;
-				dist = step / 4;
+				System.out.println("NGLAY in loop at i = " + i + " = " + nGlay);
+				tmpSlab.thickness = step / 2.0;
+				dist = step / 4.0;
 				updateTileByLayer(tmpSlab, thirdRefSlab, refSlab,
 						secondRefSlab, dist);
 				++nGlay;
-				dist += 0.75 * ((double) step);
+				dist += 0.75 * step;
 				// Take the remaining steps
-				for (int j = 0; j < numRough - 1; j++) {
+				for (int j = 0; j < numRough; j++) {
 					tmpSlab = generatedSlabs[nGlay + j];
-					tmpSlab.thickness = (double) step;
+					tmpSlab.thickness = step;
 					updateTileByLayer(tmpSlab, thirdRefSlab, refSlab,
 							secondRefSlab, dist);
 					dist += step;
+					System.out.println("q = " + (nGlay + j) + " "
+							+ tmpSlab.scatteringLength);
 				}
 				nGlay += numRough;
+				System.out.println("NGLAY = " + nGlay);
 				// Take final half step
-				tmpSlab = generatedSlabs[nGlay + 1];
-				tmpSlab.thickness = (double) step / 2;
-				dist = ((int) refSlab.thickness) - step / 4;
+				tmpSlab = generatedSlabs[nGlay];
+				tmpSlab.thickness = step / 2.0;
+				dist = refSlab.thickness - step / 4.0;
+				System.out.println("dist " + dist);
 				updateTileByLayer(tmpSlab, thirdRefSlab, refSlab,
 						secondRefSlab, dist);
+				System.out.println("q = " + (nGlay) + " "
+						+ tmpSlab.scatteringLength);
 				++nGlay;
+				System.out.println("Exiting if " + i);
 			} else {
 				// Evaluate contributions from interfaces separately.
 				// Top interface
 				for (int j = numRough / 2 + 1; j < numRough + 1; j++) {
 					// Get the next slab and update it by considering the
 					// interface contribution.
-					tmpSlab = generatedSlabs[nGlay + j - numRough / 2 - 2];
+					tmpSlab = generatedSlabs[nGlay + j - numRough / 2 - 1];
 					updateTileByInterface(tmpSlab, thirdRefSlab, refSlab,
 							zInt[j], rufInt[j]);
+					System.out.println("q = " + (nGlay + j - numRough/2 -1) + " "
+							+ tmpSlab.scatteringLength);
 				}
 				nGlay += numRough / 2 + 1;
 				// Central, bulk-like portion
-				tmpSlab = generatedSlabs[nGlay + 1];
-				tmpSlab.interfaceWidth = gDMid;
+				tmpSlab = generatedSlabs[nGlay];
+				tmpSlab.scatteringLength = refSlab.scatteringLength;
+				tmpSlab.thickness = gDMid;
 				tmpSlab.trueAbsLength = refSlab.trueAbsLength;
 				tmpSlab.incAbsLength = refSlab.incAbsLength;
+				System.out.println("q = " + (nGlay) + " "
+						+ tmpSlab.scatteringLength);
 				++nGlay;
 				// Bottom interface
-				for (int j = 1; j < numRough / 2 + 1; j++) {
+				for (int j = 0; j < numRough / 2 + 1; j++) {
 					tmpSlab = generatedSlabs[nGlay + j];
 					updateTileByInterface(tmpSlab, refSlab, secondRefSlab,
 							zInt[j], rufInt[j]);
+					System.out.println("q = " + (nGlay + j) + " "
+							+ tmpSlab.scatteringLength);
 				}
 				nGlay += numRough / 2 + 1;
+				System.out.println("Exiting else " + i);
 			}
 		}
 
 		// Evaluate substrate gradation
-		refSlab = slabs[slabs.length - 2];
-		secondRefSlab = slabs[slabs.length - 3];
-		for (int i = numRough / 2 + 2; i < numRough + 1; i++) {
+		refSlab = slabs[slabs.length - 1];
+		secondRefSlab = slabs[slabs.length - 2];
+		System.out.println("Entering substrate gradation");
+		for (int i = numRough / 2 + 1; i < numRough + 1; i++) {
 			tmpSlab = generatedSlabs[nGlay + i - numRough / 2 - 1];
 			updateTileByInterface(tmpSlab, secondRefSlab, refSlab, zInt[i],
 					rufInt[i]);
+			System.out.println("q = " + (nGlay + i - numRough/2 - 1) + " "
+					+ tmpSlab.scatteringLength);
 		}
 		nGlay += numRough / 2 + 1;
 		// Handle the last layer
@@ -522,7 +549,7 @@ public class ReflectivityCalculator {
 	 * @param dist
 	 *            the step distance
 	 */
-	private void updateTileByInterface(Slab tile, Slab slabM1, Slab slab,
+	private void updateTileByInterface(Tile tile, Slab slabM1, Slab slab,
 			double zInt, double rufInt) {
 
 		// Update the tile
@@ -555,7 +582,7 @@ public class ReflectivityCalculator {
 	 * @throws MathException
 	 *             Thrown if the error function cannot be evaluated
 	 */
-	private void updateTileByLayer(Slab updateSlab, Slab slabM1, Slab slab,
+	private void updateTileByLayer(Tile updateSlab, Slab slabM1, Slab slab,
 			Slab slabP1, double dist) throws MathException {
 
 		// Compute the exponentials
