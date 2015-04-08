@@ -463,7 +463,11 @@ public class JobLaunchAction extends Action implements Runnable {
 		
 		// Get the maxFileSize from the system properties
 		String fileSize = System.getProperty("max_download_size");
-		maxFileSize = Integer.parseInt(fileSize);
+		if (fileSize != null) {
+			maxFileSize = Integer.parseInt(fileSize);
+		} else {
+			maxFileSize = 52428800;
+		}
 		
 		return;
 	}
