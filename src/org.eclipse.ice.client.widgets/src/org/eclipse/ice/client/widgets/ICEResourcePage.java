@@ -39,6 +39,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -306,6 +307,30 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		if (resource != currentResource) {
 			currentResource = resource;
+
+			// If no resource is selected, then clear the current contents of
+			// the ResourcePage and set the top Control to be the browser with
+			// an informative text.
+			if (resource == null) {
+				Control topControl = stackLayout.topControl;
+				if (topControl != browser) {
+					// Update the browser.
+					browser.setText("<html><body>"
+							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+							+ "align=\"center\">Select a resource to view</p>"
+							+ "</body></html>");
+					stackLayout.topControl = browser;
+					pageComposite.layout();
+
+					// Dispose of the previous Control occupying the
+					// ResourcePage.
+					if (topControl != null && !topControl.isDisposed()) {
+						topControl.dispose();
+					}
+				}
+
+				return;
+			}
 
 			// VizResources should not use the browser. However, if it cannot be
 			// rendered with available VizResources, we should try using the
@@ -677,6 +702,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// Get a local copy of the ResouceComponent.
 			ResourceComponent resourceComponent = (ResourceComponent) component;
 
+			// Whether or not the currently selected or drawn resource is part
+			// of the ResourceComponent.
+			boolean currentResourceValid = false;
+
 			// Create plots for any VizResources in the ResourceComponent that
 			// do not already have plots.
 			for (ICEResource resource : resourceComponent.getResources()) {
@@ -688,6 +717,29 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						plot = createPlot((VizResource) resource);
 					}
 				}
+
+				// Update the flag to see if the currently-drawn resource is
+				// still in the ResourceComponent. This only applies if they are
+				// the same object!
+				currentResourceValid |= (resource == currentResource);
+			}
+
+			// If necessary, clear the current resource. Note that this must be
+			// done on the UI thread since setting the current resource updates
+			// the UI.
+			if (!currentResourceValid) {
+				PlatformUI.getWorkbench().getDisplay()
+						.asyncExec(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									setCurrentResource(null);
+								} catch (PartInitException e) {
+									e.printStackTrace();
+								}
+								return;
+							}
+						});
 			}
 		}
 
