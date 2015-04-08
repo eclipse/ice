@@ -115,7 +115,7 @@ public class INIReaderTester {
 		IFile inputFile = project.getFile("example.ini");
 
 		// Create an IPSReader to test
-		INIReader reader = new INIReader();
+		INIReader reader = new INIReader("!");
 		assertNotNull(reader);
 		assertEquals(reader.getReaderType(), "INIReader");
 		

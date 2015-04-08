@@ -246,8 +246,9 @@ public class PROTEUSModel extends Item {
 
 		// Set up the reader to use the template if it exists
 		INIReader reader = new INIReader("!");
+		reader.setAssignmentPattern("\\s\\s\\s+");
 		if (templateFile.exists()) {
-			reader.addTemplateType("PROTUES", templateFile);
+			reader.addTemplateType("PROTEUS", templateFile);
 			reader.setTemplateType("PROTEUS");
 		} else {
 			System.err.println("PROTEUS Model Warning: Could not find template file!  Building " 

@@ -162,7 +162,7 @@ public class PROTEUSModelTester {
 		// Create default values to check against
 		int defaultId = 1;
 		String defaultName = "PROTEUS Model";
-		String defaultDesc = "Generate input files for the PROTEUS-SN neutron transport";
+		String defaultDesc = "Generate input files for the PROTEUS-SN neutron transport simulator";
 		ItemType defaultType = ItemType.Model;
 		ArrayList<String> defaultActions = new ArrayList<String>();
 		defaultActions.add("Write PROTEUS Input File");

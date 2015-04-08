@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -273,10 +274,13 @@ public class INIReader implements IReader {
 			try {
 				// Open up the reader and start reading
 				reader = new BufferedReader(new InputStreamReader(templateFile.getContents()));
-				String line;
-				String[] splitLine;
+				String line, varName, defaultVal;
+				String[] splitLine, templateSections;
 				String section = "Default Section";
 				TableComponent sectionTable = new TableComponent();
+				String[] valueArray;
+				ArrayList<String> allowedValues;
+				AllowedValueType valueType;
 				sectionTable.setName(section);
 				sectionTable.setRowTemplate(entries);	
 				while((line = reader.readLine()) != null) {
@@ -292,15 +296,28 @@ public class INIReader implements IReader {
 						sectionTable = new TableComponent();
 						sectionTable.setName(sectionMatch.group(0).trim().replace("[","").replace("]",""));
 						sectionTable.setRowTemplate(entries);
-					} else if ((splitLine = line.split("=")).length >= 2) {	
+					} else if ((templateSections = line.split(";")).length >= 2) {	
 						// Get the key and value and put it in the table
 						int rowID = sectionTable.addRow();
 						ArrayList<Entry> row = sectionTable.getRow(rowID);
-						String varName = splitLine[0].trim();
+						varName = templateSections[0].split("=")[0].trim();
+						defaultVal = templateSections[0].split("=")[1].trim();
+						valueArray = templateSections[1].split(",\\s");
+						
+						allowedValues = new ArrayList<String>(Arrays.asList(valueArray));
+						if (templateSections.length > 2) {
+							valueType = AllowedValueType.valueOf(templateSections[2].trim());
+							System.out.println(valueType);
+						} else {
+							System.out.println("Couldn't read valueType");
+							valueType = AllowedValueType.Undefined;
+						}
 						row.get(0).setValue(varName);
+						row.get(1).setValue(defaultVal);
 						splitLine = line.split(";");
-						row.get(1).copy(makeTemplateEntry(splitLine[0].trim(), Arrays.asList(splitLine[1].split("\\s*,\\s"))));
-						variableToTableNumber.put(varName, componentNumber);
+						Entry rowEntry = makeTemplateEntry(defaultVal, allowedValues, valueType);
+						row.get(1).copy(rowEntry);
+						variableToTableNumber.put(varName, sectionTable.getId());
 					}
 				}
 				// Add the last section
@@ -315,7 +332,7 @@ public class INIReader implements IReader {
 				return null;
 			}						
 		}
-			
+		
 		
 		return templateForm;
 	}
@@ -337,7 +354,7 @@ public class INIReader implements IReader {
 		valueTemplate.setName("Value");
 		entries.add(variableTemplate);
 		entries.add(valueTemplate);		
-		
+
 		if (file != null && file.exists()) {
 			ArrayList<TableComponent> sections = null;
 			BufferedReader reader = null;
@@ -348,18 +365,32 @@ public class INIReader implements IReader {
 				String line, var, val;
 				String[] splitLine;
 				String section = "Default Section";
+				boolean foundInTemplate;
+				int rowNumber;
 				TableComponent sectionTable = new TableComponent();
 				sectionTable.setName(section);
 				sectionTable.setRowTemplate(entries);	
 				while((line = reader.readLine()) != null) {
 					// Make sure that comments are taken into consideration
 					splitLine = line.split(comment)[0].trim().split(assignmentPattern);
-					var = splitLine[0];
-					val = splitLine[1];
-					if (variableToTableNumber.containsKey(var)) {
-						TableComponent comp = (TableComponent) form.getComponent(variableToTableNumber.get(var));
-						for (int i = 0; i < comp.numberOfRows(); ++i) {
-							comp.getRow(i).get(1).setValue(val);
+					if (splitLine.length >= 2) {	
+						var = splitLine[0].trim();
+						val = splitLine[1].trim();
+						foundInTemplate = false;
+						if (variableToTableNumber.containsKey(var)) {
+							TableComponent comp = (TableComponent) form.getComponent(variableToTableNumber.get(var));
+							for (int i = 0; i < comp.numberOfRows(); ++i) {
+								if (comp.getRow(i).get(0).getValue().equals(var)) {
+									comp.getRow(i).get(1).setValue(val);
+									foundInTemplate = true;
+								}
+							}
+						}
+						if (!foundInTemplate) {
+							TableComponent comp = (TableComponent) form.getComponents().get(0);
+							rowNumber = comp.addRow();
+							comp.getRow(rowNumber).get(0).setValue(var);
+							comp.getRow(rowNumber).get(1).setValue(val);
 						}
 					}
 				}	
@@ -381,17 +412,18 @@ public class INIReader implements IReader {
 	 * 
 	 * @return the entry
 	 */
-	private Entry makeTemplateEntry(String defaultValue, List<String> allowedValues) {
+	private Entry makeTemplateEntry(final String defaultVal, final ArrayList<String> allowedVals, 
+			final AllowedValueType valueType) {
 		Entry entry = new Entry() {
 			protected void setup() {
 				this.setName("INI Default Entry");
 				this.tag = "";
 				this.ready = true;
 				this.setDescription("");
-				this.allowedValues = new ArrayList<String>();
-				this.defaultValue = defaultValue;
+				this.allowedValues = allowedVals;
+				this.defaultValue = defaultVal;
 				this.value = this.defaultValue;
-				this.allowedValueType = AllowedValueType.Undefined;
+				this.allowedValueType = valueType;
 			}
 		};
 
