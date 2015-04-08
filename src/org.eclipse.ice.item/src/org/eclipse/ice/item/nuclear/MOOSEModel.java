@@ -230,7 +230,6 @@ public class MOOSEModel extends Item {
 
 		// Local Declarations
 		Entry mooseAppEntry;
-		String selectAppText = "MOOSE app...";
 
 		// Create the Form
 		form = new Form();
@@ -253,7 +252,6 @@ public class MOOSEModel extends Item {
 
 		// Add the default dummy text to the list of available apps
 		mooseApps = new ArrayList<String>();
-		mooseApps.add(selectAppText);
 
 		// Get the list of MOOSE configuration files available to ICE, if
 		// possible, before creating the app Entry.
@@ -271,8 +269,10 @@ public class MOOSEModel extends Item {
 										.lastSegment().contains(".yaml")) {
 							String[] splitName = resource.getName()
 									.split("\\.");
-							// Only add the app name, not the file extension
-							mooseApps.add(splitName[0]);
+							// Only add the app name, not the file extension.
+							// Use upper case for consistency with the MOOSE
+							// Launcher, also since the app names are acronyms.
+							mooseApps.add(splitName[0].toUpperCase());
 						}
 					}
 				} catch (CoreException e) {
@@ -290,8 +290,7 @@ public class MOOSEModel extends Item {
 			// app when importing an Item
 			loadedApp = null;
 			// Create the MOOSE application Entry. Add all of the files if any
-			// were
-			// found.
+			// were found.
 			mooseAppEntry = new Entry() {
 				protected void setup() {
 					allowedValues = mooseApps;
@@ -397,9 +396,10 @@ public class MOOSEModel extends Item {
 						+ "generator to populate with necessary data.");
 			}
 
-			// Get the file
-			IFile modelFile = mooseFolder
-					.getFile(mooseExecutableName + ".yaml");
+			// Get the file. We must convert to lower case to match the YAML
+			// files.
+			IFile modelFile = mooseFolder.getFile(mooseExecutableName
+					.toLowerCase() + ".yaml");
 
 			// Get the IReader instance
 			IReader reader = getReader();
@@ -463,11 +463,6 @@ public class MOOSEModel extends Item {
 
 					// Get the app name
 					loadedApp = mooseSpecFileEntry.getValue();
-
-					// If it's the dummy default text, do nothing and stop here
-					if ("MOOSE app...".equals(loadedApp) || loadedApp == null) {
-						return FormStatus.ReadyToProcess;
-					}
 
 					// Grab a clone of the old form's TreeComposite with data
 					// imported into it

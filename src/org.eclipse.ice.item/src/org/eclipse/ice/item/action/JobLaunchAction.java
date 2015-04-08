@@ -447,7 +447,8 @@ public class JobLaunchAction extends Action implements Runnable {
 	/**
 	 * The maximum size limit of any file that will be downloaded from a remote
 	 * machine, in bytes. The default size is 50 MB and is set as a VM argument
-	 * called "max_download_size".
+	 * called "max_download_size", which can be edited by the user in the ICE
+	 * config file.
 	 */
 	private long maxFileSize;
 
@@ -466,6 +467,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		if (fileSize != null) {
 			maxFileSize = Integer.parseInt(fileSize);
 		} else {
+			// If the system property is invalid for any reason, default to a
+			// hardcoded value
 			maxFileSize = 52428800;
 		}
 		
