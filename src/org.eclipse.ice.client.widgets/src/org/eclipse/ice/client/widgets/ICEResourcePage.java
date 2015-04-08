@@ -74,13 +74,13 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * The ICEResourceView that holds resources for this page to display.
 	 */
 	private ICEResourceView resourceView;
-	
+
 	/**
 	 * The workbench page used by this ICEResourcePage.
 	 */
-	
+
 	private IWorkbenchPage workbenchPage;
-		
+
 	/**
 	 * The primary composite for rendering the page.
 	 */
@@ -108,16 +108,16 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * The map that holds any existing plots, keyed on the resource IDs.
 	 */
 	private final Map<String, IPlot> plots;
-	
+
 	/**
 	 * The map that holds any drawn plots, keyed on the resource IDs. A
 	 * Composite should only be added to this map if it already exists in
 	 * {@link #plots}.
 	 */
 	private final Map<String, Composite> plotComposites;
-	
+
 	/**
-	 * A list of file extensions that the ICEResourcePage should be treat as 
+	 * A list of file extensions that the ICEResourcePage should be treat as
 	 * text files and opened via the default Eclipse text editor.
 	 */
 	private ArrayList<String> textFileExtensions;
@@ -146,11 +146,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// Setup the plot maps.
 		plots = new HashMap<String, IPlot>();
 		plotComposites = new HashMap<String, Composite>();
-		
+
 		// Create the list of text file extensions
-		String[] extensions = {"txt", "sh", "i", "csv"};
+		String[] extensions = { "txt", "sh", "i", "csv" };
 		textFileExtensions = new ArrayList<String>(Arrays.asList(extensions));
-		
+
 		return;
 	}
 
@@ -203,10 +203,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		browser = createBrowser(pageComposite, toolkit);
 		stackLayout.topControl = browser;
 		pageComposite.layout();
-		
+
 		// Set the workbench page reference
-		workbenchPage = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage();
+		workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage();
 
 		return;
 	}
@@ -281,7 +281,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// Refresh the page's widgets based on the selected resource.
 			if (selectedResource != null) {
 				try {
-					setCurrentResource(selectedResource);					
+					setCurrentResource(selectedResource);
 				} catch (PartInitException e) {
 					e.printStackTrace();
 				}
@@ -299,13 +299,14 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * 
 	 * @param resource
 	 *            The resource to render. Assumed not to be {@code null}.
-	 * @throws PartInitException 
+	 * @throws PartInitException
 	 */
-	private void setCurrentResource(ICEResource resource) throws PartInitException {
+	private void setCurrentResource(ICEResource resource)
+			throws PartInitException {
 
 		if (resource != currentResource) {
 			currentResource = resource;
-			
+
 			// VizResources should not use the browser. However, if it cannot be
 			// rendered with available VizResources, we should try using the
 			// browser.
@@ -325,50 +326,53 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 				// If the plot and its drawn Composite could be found, update
 				// the StackLayout. Otherwise, the next section will attempt to
-				// either open it in a text editor (if applicable), or the 
+				// either open it in a text editor (if applicable), or the
 				// browser as a last resort.
 				if (plotComposite != null) {
 					stackLayout.topControl = plotComposite;
 					pageComposite.layout();
-	
-					// Reactivate the Item editor tab if it's not in the front			
+
+					// Reactivate the Item editor tab if it's not in the front
 					activateEditor();
-										
+
 					return;
 				}
 			}
-			
+
+			String path = resource.getPath().toString();
+
 			// Determine if the resource is a text file
-			int extIndex = resource.getPath().toString().lastIndexOf(".");
-			String fileExtension = resource.getPath().toString().substring(extIndex+1);
+			int extIndex = path.lastIndexOf(".");
+			String fileExtension = path.substring(extIndex + 1);
 			boolean useEditor = textFileExtensions.contains(fileExtension);
-			
+
 			// If the resource is a text file, open it via the Eclipse default
 			// text editor
 			if (useEditor) {
 				// Get the content of the file
-				IFileStore fileOnLocalDisk = 
-						EFS.getLocalFileSystem().getStore(resource.getPath());
-				FileStoreEditorInput editorInput = 
-						new FileStoreEditorInput(fileOnLocalDisk);
+				IFileStore fileOnLocalDisk = EFS.getLocalFileSystem().getStore(
+						resource.getPath());
+				FileStoreEditorInput editorInput = new FileStoreEditorInput(
+						fileOnLocalDisk);
 
 				// Open the contents in the text editor
-				IWorkbenchWindow window = 
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				IWorkbenchWindow window = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow();
 				IWorkbenchPage page = window.getActivePage();
 				page.openEditor(editorInput, "org.eclipse.ui.DefaultTextEditor");
 			}
-			
+
 			// If the Resource is a regular Resource or cannot be rendered via
 			// the VizServices or a text editor, try to open it in the browser
 			// as a last resort.
-			if (useBrowser && !useEditor && browser != null && !browser.isDisposed()) {
+			if (useBrowser && !useEditor && browser != null
+					&& !browser.isDisposed()) {
 				// Update the browser.
-				browser.setUrl(resource.getPath().toString());
+				browser.setUrl(path);
 				stackLayout.topControl = browser;
 				pageComposite.layout();
-				
-				// Reactivate the Item editor tab if it's not in the front			
+
+				// Reactivate the Item editor tab if it's not in the front
 				activateEditor();
 			}
 		}
@@ -500,29 +504,29 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		return plotComposite;
 	}
-	
+
 	/**
 	 * Reactivates the Item's editor and brings it to the front if any other
 	 * editors have been opened on top of it.
 	 */
 	private void activateEditor() {
-		
+
 		// Check that the workbench page has been set correctly first
 		if (workbenchPage != null) {
-			
-			// Reactivate the editor tab if it's not in the front		
-			if (getEditor() != null	
+
+			// Reactivate the editor tab if it's not in the front
+			if (getEditor() != null
 					&& workbenchPage.getActiveEditor() != getEditor()) {
 				workbenchPage.activate(getEditor());
 			}
 		} else {
-			
+
 			// Set the workbench page and try activating the editor again
 			workbenchPage = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getActivePage();
 			activateEditor();
 		}
-		
+
 		return;
 	}
 
