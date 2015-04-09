@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Listener;
 
 /**
  * This class is responsible for embedding ParaView-supported graphics inside
@@ -52,10 +51,10 @@ public class ParaViewPlot implements IPlot {
 	 * java.lang.String, org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void draw(String category, String plotType, Composite parent)
+	public Composite draw(String category, String plotType, Composite parent)
 			throws Exception {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	/*
@@ -125,10 +124,5 @@ public class ParaViewPlot implements IPlot {
 		return false;
 	}
 
-	@Override
-	public void setEventListener(int eventType, Listener listener) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

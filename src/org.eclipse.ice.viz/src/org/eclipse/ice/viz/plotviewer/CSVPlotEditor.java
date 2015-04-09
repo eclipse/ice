@@ -15,9 +15,7 @@ package org.eclipse.ice.viz.plotviewer;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.visualization.widgets.datadefinition.ColorMap;
 import org.eclipse.nebula.visualization.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.nebula.visualization.widgets.figures.IntensityGraphFigure;
@@ -30,19 +28,15 @@ import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Slider;
-import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -67,12 +61,12 @@ public class CSVPlotEditor extends EditorPart {
 	 * The top level composite that holds the editor's contents.
 	 */
 	private Composite vizComposite;
-	
+
 	/**
 	 * The canvas used for rendering the plot.
 	 */
 	private Canvas plotCanvas;
-	
+
 	/**
 	 * LightweightSystem for an SWT XYGraph
 	 */
@@ -144,30 +138,31 @@ public class CSVPlotEditor extends EditorPart {
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
-	
+
 	/**
 	 * This operation sets up the Composite that contains the VisIt canvas and
 	 * create the VisIt widget.
 	 * 
-	 * @param parent	The parent Composite to create the Control in.
+	 * @param parent
+	 *            The parent Composite to create the Control in.
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		
+
 		// Create a top level composite to hold the canvas or text
 		vizComposite = new Composite(parent, SWT.NONE);
 		vizComposite.setLayout(new GridLayout(1, true));
-		
+
 		// Set up the canvas where the graph is displayed
 		plotCanvas = new Canvas(vizComposite, SWT.BORDER);
 		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
-		// MAGIC 
+
+		// MAGIC
 		lws = new LightweightSystem(plotCanvas);
-		
+
 		return;
 	}
-	
+
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -189,13 +184,13 @@ public class CSVPlotEditor extends EditorPart {
 	 * This function sets up the SWT XYGraph
 	 * 
 	 * @param displayPlotProvider
-	 *        		The PlotProvider containing the information to create the 
-	 *        		plot
+	 *            The PlotProvider containing the information to create the plot
 	 * @param addSlider
-	 * 			  	A flag to indicate if a time slider should be added for 
-	 * 				non-contour plots
+	 *            A flag to indicate if a time slider should be added for
+	 *            non-contour plots
 	 */
-	public void showPlotProvider(PlotProvider displayPlotProvider, boolean addSlider) {
+	public void showPlotProvider(PlotProvider displayPlotProvider,
+			boolean addSlider) {
 
 		// If it is not a contour plot then plot the regular series
 		if (!displayPlotProvider.isContour()) {
@@ -281,7 +276,8 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/**
-	 * This method is equivalent to calling {@code showPlotProvider(provider, true)}
+	 * This method is equivalent to calling
+	 * {@code showPlotProvider(provider, true)}
 	 * 
 	 * @param displayPlotProvider
 	 *            The PlotProvider containing the information to create the plot
@@ -290,7 +286,7 @@ public class CSVPlotEditor extends EditorPart {
 		showPlotProvider(displayPlotProvider, true);
 		return;
 	}
-	
+
 	/**
 	 * @param plotProvider
 	 * @param time
@@ -466,22 +462,13 @@ public class CSVPlotEditor extends EditorPart {
 
 		return;
 	}
-	
+
 	/**
-	 * This method is designed to set listeners on the {@link #plotCanvas}.
+	 * Gets the canvas used to render the CSV plot.
 	 * 
-	 * @param eventType	The SWT event type for which a listener will be added
-	 * 					to the plot canvas.
-	 * @param listener	The listener that will be added to the plot canvas.
+	 * @return The plot canvas.
 	 */
-	public void setPlotCanvasListener(int eventType, Listener listener) {
-		
-		// Set the event listener if a valid listener has been supplied
-		if (plotCanvas != null && !plotCanvas.isDisposed() 
-				&& listener != null) {
-			plotCanvas.addListener(eventType, listener);
-		}
-		
-		return;
+	public Canvas getPlotCanvas() {
+		return plotCanvas;
 	}
 }

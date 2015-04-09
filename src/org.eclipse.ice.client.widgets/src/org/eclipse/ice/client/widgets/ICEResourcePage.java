@@ -37,6 +37,8 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -49,9 +51,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -815,12 +815,30 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 								SWT.FILL, true, true));
 
 						// Draw and pack the plot in the parent composite
-						plot.draw(category, plotType, plotComposite);
+						final Composite child;
+						child = plot.draw(category, plotType, plotComposite);
 						parent.pack();
 
 						// Store it in the plot map and grid manager
 						plotComposites.put(key, plotComposite);
 						gridManager.add(plotComposite);
+
+						// Create a listener to show the close button when the
+						// plot's render Composite is entered and hide the close
+						// button when exited.
+						final MouseTrackAdapter listener;
+						listener = new MouseTrackAdapter() {
+							@Override
+							public void mouseEnter(MouseEvent e) {
+								showCloseButton(e);
+							}
+
+							@Override
+							public void mouseExit(MouseEvent e) {
+								hideCloseButton(e);
+							}
+						};
+						child.addMouseTrackListener(listener);
 
 						// Add a dispose listener to remove the plot from the
 						// gridManager
@@ -846,34 +864,16 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 											gridComposite.pack();
 											drawingComposite.pack();
 											pageComposite.layout();
+
+											// Remove the listener that
+											// shows/hides the close button.
+											child.removeMouseTrackListener(listener);
 										}
+										return;
 									}
 								});
 							}
 						});
-
-						// Create a mouse enter listener to show a "close"
-						// button
-						Listener mouseEnterListener = new Listener() {
-							@Override
-							public void handleEvent(Event event) {
-								showCloseButton(event);
-							}
-						};
-
-						// Create a mouse exit listener to hide the "close"
-						// button
-						Listener mouseExitListener = new Listener() {
-							@Override
-							public void handleEvent(Event event) {
-								hideCloseButton(event);
-							}
-						};
-
-						// Set the mouse event listeners on the plot
-						plot.setEventListener(SWT.MouseEnter,
-								mouseEnterListener);
-						plot.setEventListener(SWT.MouseExit, mouseExitListener);
 					}
 
 					// If the plot could not be drawn, dispose the plot
@@ -892,7 +892,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		return plotComposite;
 	}
 
-	public void showCloseButton(Event e) {
+	private void showCloseButton(MouseEvent e) {
 
 		// Get the Composite that triggered the event
 		Composite comp = (Composite) e.widget;
@@ -937,7 +937,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		return;
 	}
 
-	public void hideCloseButton(Event e) {
+	private void hideCloseButton(MouseEvent e) {
 
 		// Get the widget which triggered the event
 		Control c = null;
