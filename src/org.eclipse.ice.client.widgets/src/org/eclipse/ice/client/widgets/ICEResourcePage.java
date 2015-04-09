@@ -39,6 +39,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
+import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -117,6 +118,19 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private Button closeButton;
 
 	/**
+	 * This listener is activated when the mouse enters or exits a plot
+	 * rendering, at which point it either shows or hides the
+	 * {@link #closeButton}.
+	 * <p>
+	 * One caveat is that by hovering over the close button, the listener's exit
+	 * event is thrown (standard behavior for SWT). Thus, the listener should
+	 * also be registered with the close button and should not disappear until
+	 * both the plot and the button have been exited.
+	 * </p>
+	 */
+	private final MouseTrackListener closeButtonListener;
+
+	/**
 	 * An Array storing the current dimensions of the plotComposite's grid. [0]
 	 * = rows, [1] = columns
 	 */
@@ -153,7 +167,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private final Map<String, Composite> plotComposites;
 
 	/**
-	 * <p>
 	 * A list that manages the currently rendered {@link #plotComposites} in the
 	 * {@link #gridComposite}. Plots in this list are ordered based on their
 	 * tiling position (like a book, from left to right, and top to bottom).
@@ -161,7 +174,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * only contains plots currently shown on the {@link #pageComposite}, while
 	 * {@link #plotComposites} can contain plots that have been drawn, but not
 	 * currently rendered on the page.
-	 * </p>
 	 * <p>
 	 * Since you cannot explicitly set the number of rows in GridLayouts, this
 	 * list can also contain empty Controls to meet the correct number of rows
@@ -204,6 +216,20 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// Create the list of text file extensions
 		String[] extensions = { "txt", "sh", "i", "csv" };
 		textFileExtensions = new ArrayList<String>(Arrays.asList(extensions));
+
+		// Create the close button listener to either show or hide the close
+		// button with the mouse enters or exits a plot.
+		closeButtonListener = new MouseTrackAdapter() {
+			@Override
+			public void mouseEnter(MouseEvent e) {
+				showCloseButton(e);
+			}
+
+			@Override
+			public void mouseExit(MouseEvent e) {
+				hideCloseButton(e);
+			}
+		};
 
 		return;
 	}
@@ -823,22 +849,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						plotComposites.put(key, plotComposite);
 						gridManager.add(plotComposite);
 
-						// Create a listener to show the close button when the
-						// plot's render Composite is entered and hide the close
-						// button when exited.
-						final MouseTrackAdapter listener;
-						listener = new MouseTrackAdapter() {
-							@Override
-							public void mouseEnter(MouseEvent e) {
-								showCloseButton(e);
-							}
-
-							@Override
-							public void mouseExit(MouseEvent e) {
-								hideCloseButton(e);
-							}
-						};
-						child.addMouseTrackListener(listener);
+						// Add the listener that enables/disables the close
+						// button to the main Composite that renders the plot.
+						child.addMouseTrackListener(closeButtonListener);
 
 						// Add a dispose listener to remove the plot from the
 						// gridManager
@@ -867,7 +880,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 											// Remove the listener that
 											// shows/hides the close button.
-											child.removeMouseTrackListener(listener);
+											child.removeMouseTrackListener(closeButtonListener);
 										}
 										return;
 									}
