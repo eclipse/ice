@@ -44,7 +44,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -877,10 +876,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 											gridComposite.pack();
 											drawingComposite.pack();
 											pageComposite.layout();
-
-											// Remove the listener that
-											// shows/hides the close button.
-											child.removeMouseTrackListener(closeButtonListener);
 										}
 										return;
 									}
@@ -907,12 +902,16 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 	private void showCloseButton(MouseEvent e) {
 
-		// Get the Composite that triggered the event
-		Composite comp = (Composite) e.widget;
-
 		if (closeButton == null || closeButton.isDisposed()) {
+			// Get the Composite that triggered the event
+			Composite comp = (Composite) e.widget;
+
 			// Set up the close button
 			closeButton = new Button(comp, SWT.FLAT | SWT.CENTER);
+
+			// Add the close button listener to the close button, too.
+			closeButton.addMouseTrackListener(closeButtonListener);
+
 			closeButton.setText("X");
 			FontData[] smallFont = closeButton.getFont().getFontData();
 			for (FontData fd : smallFont) {
@@ -941,38 +940,22 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 			closeButton.pack();
 			pageComposite.layout();
-		}
 
-		// Set the location of the button to the upper right-hand corner
-		closeButton.setLocation(
-				comp.getBounds().width - closeButton.getBounds().width - 4, 0);
+			// Set the location of the button to the upper right-hand corner
+			closeButton.setLocation(
+					comp.getBounds().width - closeButton.getBounds().width - 4,
+					0);
+		}
 
 		return;
 	}
 
 	private void hideCloseButton(MouseEvent e) {
 
-		// Get the widget which triggered the event
-		Control c = null;
-		if (e.widget instanceof Composite) {
-			c = (Composite) e.widget;
-		} else {
-			c = (Control) e.widget;
-		}
-
-		// Check if the cursor has actually exited the canvas area, or is just
-		// positioned over one of its children (yes, this technically counts
-		// as a MouseExit event... ugh)
-		if (c instanceof Composite) {
-			for (Control child : ((Composite) c).getChildren()) {
-				if (child.getBounds().contains(new Point(e.x, e.y))) {
-					return;
-				}
-			}
-		}
-
-		// If the cursor has left the canvas area, dispose the closeButton
-		if (closeButton != null && !closeButton.isDisposed()) {
+		// If the cursor has left the canvas area and the close button, dispose
+		// the button.
+		if (closeButton != null && !closeButton.isDisposed()
+				&& !closeButton.getBounds().contains(e.x, e.y)) {
 			closeButton.dispose();
 			closeButton = null;
 		}
