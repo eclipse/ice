@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -24,7 +25,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * A {@code PlotGridComposite} is designed to display a grid of drawn
@@ -65,7 +68,7 @@ public class PlotGridComposite extends Composite {
 	 */
 	private int rows = 2;
 	/**
-	 * The number of columsn to display in the grid.
+	 * The number of columns to display in the grid.
 	 */
 	private int columns = 2;
 
@@ -87,6 +90,11 @@ public class PlotGridComposite extends Composite {
 	private final List<DrawnPlot> drawnPlots;
 
 	/**
+	 * The toolkit used to decorate SWT components. May be null.
+	 */
+	private final FormToolkit toolkit;
+
+	/**
 	 * The default constructor. Creates a {@code Composite} designed to display
 	 * a grid of {@link IPlot} renderings.
 	 * 
@@ -97,7 +105,27 @@ public class PlotGridComposite extends Composite {
 	 *            The style of widget to construct.
 	 */
 	public PlotGridComposite(Composite parent, int style) {
+		this(parent, style, null);
+	}
+
+	/**
+	 * The full constructor. Children of this {@code Composite} will be
+	 * decorated with the specified {@code FormToolkit}.
+	 * 
+	 * @param parent
+	 *            A widget that will be the parent of the new instance (cannot
+	 *            be null).
+	 * @param style
+	 *            The style of widget to construct.
+	 * @param toolkit
+	 *            The toolkit used to decorate SWT components.
+	 */
+	public PlotGridComposite(Composite parent, int style, FormToolkit toolkit) {
 		super(parent, style);
+
+		// Set the form toolkit for decorating widgets in this Composite.
+		this.toolkit = toolkit;
+		adapt(this);
 
 		// Initialize the list of drawn plots.
 		drawnPlots = new ArrayList<DrawnPlot>();
@@ -107,6 +135,7 @@ public class PlotGridComposite extends Composite {
 
 		// Set up the Composite containing the grid of plots.
 		gridComposite = new Composite(this, SWT.NONE);
+		adapt(gridComposite);
 		gridLayout = new GridLayout();
 		gridComposite.setLayout(gridLayout);
 
@@ -142,6 +171,16 @@ public class PlotGridComposite extends Composite {
 	}
 
 	/**
+	 * A convenience method to use the {@link #toolkit}, if available, to
+	 * decorate a given {@code Composite}.
+	 */
+	private void adapt(Composite composite) {
+		if (toolkit != null) {
+			toolkit.adapt(composite);
+		}
+	}
+
+	/**
 	 * Creates a {@code ToolBar} for this {@code Composite}. It includes the
 	 * following controls:
 	 * <ol>
@@ -156,9 +195,58 @@ public class PlotGridComposite extends Composite {
 	 */
 	private ToolBar createToolBar(Composite parent) {
 
-		ToolBarManager toolBarManager = new ToolBarManager();
+		// Create and adapt the ToolBar first so that the default styles will be
+		// passed down to the widgets created by the ToolBarManager.
+		ToolBar toolBar = new ToolBar(parent, SWT.WRAP | SWT.FLAT
+				| SWT.HORIZONTAL);
+		adapt(toolBar);
+		ToolBarManager toolBarManager = new ToolBarManager(toolBar);
 
-		// TODO Add the grid controls.
+		// Add a "Rows" label next to the row Spinner.
+		LabelContribution rowLabel = new LabelContribution("rows.label");
+		rowLabel.setText("Rows:");
+		toolBarManager.add(rowLabel);
+
+		// Add a Spinner for setting the grid rows to the ToolBarManager (this
+		// requires a JFace ControlContribution).
+		SpinnerContribution rowSpinner = new SpinnerContribution("rows.spinner");
+		rowSpinner.setMinimum(1);
+		rowSpinner.setMaximum(4);
+		rowSpinner.setSelection(rows);
+		rowSpinner.setIncrement(1);
+		rowSpinner.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rows = ((Spinner) e.widget).getSelection();
+				refreshLayout();
+			}
+		});
+		toolBarManager.add(rowSpinner);
+
+		// Add a "Columns" label next to the row Spinner.
+		LabelContribution columnLabel = new LabelContribution("columns.label");
+		columnLabel.setText("Columns:");
+		toolBarManager.add(columnLabel);
+
+		// Add a Spinner for setting the grid columns to the ToolBarManager
+		// (this requires a JFace ControlContribution).
+		SpinnerContribution columnSpinner = new SpinnerContribution(
+				"columns.spinner");
+		columnSpinner.setMinimum(1);
+		columnSpinner.setMaximum(4);
+		columnSpinner.setSelection(columns);
+		columnSpinner.setIncrement(1);
+		columnSpinner.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				columns = ((Spinner) e.widget).getSelection();
+				refreshLayout();
+			}
+		});
+		toolBarManager.add(columnSpinner);
+
+		// Add a separator between the spinners and the clear button.
+		toolBarManager.add(new Separator());
 
 		// Add a ToolBar button to clear the plots.
 		toolBarManager.add(new Action("Clear") {
@@ -168,7 +256,10 @@ public class PlotGridComposite extends Composite {
 			}
 		});
 
-		return toolBarManager.createControl(parent);
+		// Apply the ToolBarManager changes to the ToolBar.
+		toolBarManager.update(true);
+
+		return toolBar;
 	}
 
 	/**
@@ -213,6 +304,7 @@ public class PlotGridComposite extends Composite {
 			if (category != null && type != null) {
 				// Create the Composite to contain the plot rendering.
 				Composite composite = new Composite(gridComposite, SWT.NONE);
+				adapt(composite);
 
 				// Try to create the plot rendering.
 				DrawnPlot drawnPlot;
