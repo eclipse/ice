@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
@@ -102,8 +103,7 @@ public class PlotGridComposite extends Composite {
 		drawnPlots = new ArrayList<DrawnPlot>();
 
 		// Set up the ToolBar.
-		ToolBarManager toolBarManager = new ToolBarManager();
-		toolBar = toolBarManager.createControl(this);
+		toolBar = createToolBar(this);
 
 		// Set up the Composite containing the grid of plots.
 		gridComposite = new Composite(this, SWT.NONE);
@@ -139,6 +139,36 @@ public class PlotGridComposite extends Composite {
 		};
 
 		return;
+	}
+
+	/**
+	 * Creates a {@code ToolBar} for this {@code Composite}. It includes the
+	 * following controls:
+	 * <ol>
+	 * <li>Grid rows and columns</li>
+	 * <li>A button to clear plots from the grid</li>
+	 * </ol>
+	 * 
+	 * @param parent
+	 *            The parent {@code Composite} in which to draw the
+	 *            {@code ToolBar}.
+	 * @return The newly created {@code ToolBar}.
+	 */
+	private ToolBar createToolBar(Composite parent) {
+
+		ToolBarManager toolBarManager = new ToolBarManager();
+
+		// TODO Add the grid controls.
+
+		// Add a ToolBar button to clear the plots.
+		toolBarManager.add(new Action("Clear") {
+			@Override
+			public void run() {
+				clearPlots();
+			}
+		});
+
+		return toolBarManager.createControl(parent);
 	}
 
 	/**
@@ -379,7 +409,7 @@ public class PlotGridComposite extends Composite {
 	 */
 	private void refreshLayout() {
 		// TODO
-		
+
 		gridComposite.layout();
 	}
 
