@@ -15,9 +15,7 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -37,22 +35,10 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseTrackAdapter;
-import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -79,11 +65,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private ResourceComponent resourceComponent;
 
 	/**
-	 * The current resource being managed by this page.
-	 */
-	private ICEResource currentResource = null;
-
-	/**
 	 * The ICEResourceView that holds resources for this page to display.
 	 */
 	private ICEResourceView resourceView;
@@ -99,43 +80,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private Composite pageComposite;
 
 	/**
-	 * A sub-composite of {@link #pageComposite}, used for drawing plots and any
-	 * associated widgets.
-	 */
-	private Composite drawingComposite;
-
-	/**
-	 * A sub-composite of {@link #drawingComposite}, used for arranging
-	 * {@link #plotComposites} in a grid-like formation.
-	 */
-	private Composite gridComposite;
-
-	/**
-	 * A close button displayed on plots when the mouse enters the plotting
-	 * area.
-	 */
-	private Button closeButton;
-
-	/**
-	 * This listener is activated when the mouse enters or exits a plot
-	 * rendering, at which point it either shows or hides the
-	 * {@link #closeButton}.
-	 * <p>
-	 * One caveat is that by hovering over the close button, the listener's exit
-	 * event is thrown (standard behavior for SWT). Thus, the listener should
-	 * also be registered with the close button and should not disappear until
-	 * both the plot and the button have been exited.
-	 * </p>
-	 */
-	private final MouseTrackListener closeButtonListener;
-
-	/**
-	 * An Array storing the current dimensions of the plotComposite's grid. [0]
-	 * = rows, [1] = columns
-	 */
-	private int[] gridDimensions;
-
-	/**
 	 * The layout that stacks the plot and browser composites. We use a
 	 * StackLayout because we only show either the {@link #browser} or the
 	 * {@link #plotComposite}.
@@ -148,6 +92,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private Browser browser;
 
 	/**
+	 * The {@code Composite} that contains the grid of drawn plots.
+	 */
+	private PlotGridComposite plotGridComposite;
+
+	/**
 	 * The service factory for visualization tools. This can be queried for
 	 * visualization services.
 	 */
@@ -157,29 +106,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * The map that holds any existing plots, keyed on the resource IDs.
 	 */
 	private final Map<String, IPlot> plots;
-
-	/**
-	 * The map that holds any drawn plots, keyed on the resource IDs. A
-	 * Composite should only be added to this map if it already exists in
-	 * {@link #plots}.
-	 */
-	private final Map<String, Composite> plotComposites;
-
-	/**
-	 * A list that manages the currently rendered {@link #plotComposites} in the
-	 * {@link #gridComposite}. Plots in this list are ordered based on their
-	 * tiling position (like a book, from left to right, and top to bottom).
-	 * Note that this list differs from the {@link #plotComposites} map, as it
-	 * only contains plots currently shown on the {@link #pageComposite}, while
-	 * {@link #plotComposites} can contain plots that have been drawn, but not
-	 * currently rendered on the page.
-	 * <p>
-	 * Since you cannot explicitly set the number of rows in GridLayouts, this
-	 * list can also contain empty Controls to meet the correct number of rows
-	 * in the {@link #gridComposite}.
-	 * </p>
-	 */
-	private ArrayList<Control> gridManager;
 
 	/**
 	 * A list of file extensions that the ICEResourcePage should be treat as
@@ -210,25 +136,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		// Setup the plot maps.
 		plots = new HashMap<String, IPlot>();
-		plotComposites = new HashMap<String, Composite>();
 
 		// Create the list of text file extensions
 		String[] extensions = { "txt", "sh", "i", "csv" };
 		textFileExtensions = new ArrayList<String>(Arrays.asList(extensions));
-
-		// Create the close button listener to either show or hide the close
-		// button with the mouse enters or exits a plot.
-		closeButtonListener = new MouseTrackAdapter() {
-			@Override
-			public void mouseEnter(MouseEvent e) {
-				showCloseButton(e);
-			}
-
-			@Override
-			public void mouseExit(MouseEvent e) {
-				hideCloseButton(e);
-			}
-		};
 
 		return;
 	}
@@ -283,6 +194,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		stackLayout.topControl = browser;
 		pageComposite.layout();
 
+		// Create the grid of plots.
+		plotGridComposite = new PlotGridComposite(pageComposite, SWT.NONE);
+		toolkit.adapt(plotGridComposite);
+
 		// Set the workbench page reference
 		workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 				.getActivePage();
@@ -315,21 +230,16 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 			// Display the default-selected Resource from the Resource View in
 			// the browser, or a message.
-			if (currentResource != null
-					&& !(currentResource instanceof VizResource)) {
-				browser.setUrl(currentResource.getPath().toString());
+			if (!resourceComponent.isEmpty()) {
+				browser.setText("<html><body>"
+						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">Select a resource to view</p>"
+						+ "</body></html>");
 			} else {
-				if (!resourceComponent.isEmpty()) {
-					browser.setText("<html><body>"
-							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-							+ "align=\"center\">Select a resource to view</p>"
-							+ "</body></html>");
-				} else {
-					browser.setText("<html><body>"
-							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-							+ "align=\"center\">No resources available</p>"
-							+ "</body></html>");
-				}
+				browser.setText("<html><body>"
+						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">No resources available</p>"
+						+ "</body></html>");
 			}
 		} catch (SWTError e) {
 			System.out.println("Client Message: "
@@ -360,231 +270,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// Refresh the page's widgets based on the selected resource.
 			if (selectedResource != null) {
 				try {
-					setCurrentResource(selectedResource);
+					showResource(selectedResource);
 				} catch (PartInitException e) {
 					e.printStackTrace();
 				}
 			}
-		}
-
-		return;
-	}
-
-	/**
-	 * This method creates and sets up the composite which will contain a grid
-	 * of drawn IPlots.
-	 */
-	private void createDrawingComposite(Composite parent) {
-
-		// Create the enclosing composite the gridComposite is contained in
-		drawingComposite = new Composite(parent, SWT.NONE);
-		drawingComposite.setLayout(new GridLayout());
-
-		// Create a composite for the "rows" and "columns" buttons/spinners
-		Composite buttonComposite = new Composite(drawingComposite, SWT.BORDER);
-		buttonComposite.setLayout(new GridLayout(2, true));
-		buttonComposite.setLayoutData(new GridData(SWT.LEFT));
-
-		// Create buttons/spinners and labels for the button composite
-		Label rowsLabel = new Label(buttonComposite, SWT.NONE);
-		rowsLabel.setText("Rows:");
-		Label columnsLabel = new Label(buttonComposite, SWT.NONE);
-		columnsLabel.setText("Columns:");
-		Spinner rows = new Spinner(buttonComposite, SWT.READ_ONLY);
-		rows.setMinimum(1);
-		rows.setMaximum(4);
-		rows.setSelection(2);
-		rows.setIncrement(1);
-		Spinner columns = new Spinner(buttonComposite, SWT.READ_ONLY);
-		columns.setMinimum(1);
-		columns.setMaximum(4);
-		columns.setSelection(2);
-		columns.setIncrement(1);
-
-		// Set listeners on the rows and columns to update the plot grid when
-		// the number of rows or columns is changed
-		rows.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				int rows = ((Spinner) e.widget).getSelection();
-				updateGridComposite(rows, -1);
-			}
-		});
-		columns.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				int columns = ((Spinner) e.widget).getSelection();
-				updateGridComposite(-1, columns);
-			}
-		});
-
-		// Construct the plot composite that will hold IPlots
-		gridComposite = new Composite(drawingComposite, SWT.NONE);
-		gridComposite.setLayout(new GridLayout(columns.getSelection(), true));
-		gridComposite
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		// Create the gridDimensions
-		gridDimensions = new int[] { rows.getSelection(),
-				columns.getSelection() };
-
-		// Create the gridManager
-		gridManager = new ArrayList<Control>(Arrays.asList(gridComposite
-				.getChildren()));
-
-		// Fill the gridComposite spaces with empty controls
-		addEmptyControls(gridComposite);
-
-		return;
-	}
-
-	/**
-	 * This method updates the {@link #gridComposite} to reflect changes to the
-	 * number of columns and/or rows in the grid area. Passing a value of -1
-	 * into the rows parameter indicates that the number of columns has been
-	 * changed. Similarly, passing a value of -1 into the columns parameter
-	 * indicates that the number of rows has been changed. A value of -1 in both
-	 * parameters means nothing will update.
-	 * 
-	 * @param columns
-	 *            The number of columns. Must be a positive integer, or -1 to
-	 *            indicate that the number of columns has not been updated.
-	 * @param rows
-	 *            The number of rows. Must be a positive integer, or -1 to
-	 *            indicate that the number of rows has not been updated.
-	 */
-	private void updateGridComposite(int rows, int columns) {
-
-		if (columns == -1 && rows > 0) {
-
-			// Check if we're subtracting rows
-			if (rows < gridDimensions[0]) {
-
-				// Check if there are more plots than there are available
-				// spaces to tile them
-				int numTiles = rows * gridDimensions[1];
-				if (gridManager.size() > numTiles) {
-
-					// Dispose of any excess Composites that there aren't room
-					// for
-					disposeExcessControls(numTiles);
-				}
-			}
-
-			// Update the gridDimensions (any extra spaces will be filled with
-			// BlankControls near the end of this method)
-			gridDimensions[0] = rows;
-
-		} else if (rows == -1 && columns > 0) {
-
-			// Set a new layout on the gridComposite with the number of columns
-			gridComposite.setLayout(new GridLayout(columns, true));
-
-			// Check if we're subtracting columns
-			if (columns < gridDimensions[1]) {
-
-				// Check if there are more plots than there are available
-				// spaces to tile them
-				int numTiles = columns * gridDimensions[0];
-				if (gridManager.size() > numTiles) {
-
-					// Dispose of any excess Composites that there aren't room
-					// for
-					disposeExcessControls(numTiles);
-				}
-			}
-
-			// Update the gridDimensions (any extra spaces will be filled with
-			// BlankControls near the end of this method)
-			gridDimensions[1] = columns;
-		}
-
-		// Fill in any remaining spaces with empty controls (if necessary)
-		addEmptyControls(gridComposite);
-
-		// Pack and lay out the new grid configuration
-		gridComposite.pack();
-		drawingComposite.pack();
-		pageComposite.layout();
-
-		return;
-	}
-
-	/**
-	 * This method is responsible for adding empty widgets to the
-	 * {@link #gridComposite} (and {@link #gridManager} by proxy) if the grid
-	 * doesn't contain enough {@link #plotComposites} to create the appropriate
-	 * number of rows. This is necessary, as there is no way to specify the
-	 * number of rows in a GridLayout, and must be forced.
-	 * 
-	 * @param parent
-	 *            The GridLayout Composite the empty controls will be added to.
-	 */
-	private void addEmptyControls(Composite parent) {
-
-		// Figure out how many blank tiles we need to create
-		int numEmpties = (gridDimensions[0] * gridDimensions[1])
-				- gridManager.size();
-
-		if (numEmpties > 0) {
-
-			// Add the empty controls to the gridComposite
-			for (int i = 0; i < numEmpties; i++) {
-
-				// Create an empty control and add it to the gridManager
-				EmptyControl control = new EmptyControl(parent);
-				gridManager.add(control);
-
-				// Add a listener to remove the empty control from the
-				// gridManager when it disposes
-				control.addDisposeListener(new DisposeListener() {
-					@Override
-					public void widgetDisposed(DisposeEvent e) {
-						Control c = (Control) e.widget;
-						gridManager.remove(c);
-					}
-				});
-			}
-		}
-
-		return;
-	}
-
-	/**
-	 * This method goes through the list of currently displayed {@link Control}s
-	 * and disposes any that are {@link EmptyControl}s.
-	 */
-	private void disposeEmptyControls() {
-
-		// Dispose all EmptyControls from the gridManager, working backwards
-		for (int i = 0; i < gridManager.size(); i++) {
-			Control currControl = gridManager.get(i);
-			if (currControl instanceof EmptyControl) {
-				currControl.dispose();
-				i--;
-			}
-		}
-
-		return;
-	}
-
-	/**
-	 * This method will dispose of any Controls contained in the
-	 * {@link #gridManager} that exceed the number of spots available on the
-	 * {@link #gridComposite} area. It begins with the very last Control
-	 * contained in the {@link #gridManager} and works backwards. Note that both
-	 * valid plots and {@link EmptyControl}s are both disposed.
-	 * 
-	 * @param numTiles
-	 *            The number of tiles available for displaying plots.
-	 */
-	private void disposeExcessControls(int numTiles) {
-
-		// Dispose of any excess plotComposites we can't fit, starting at the
-		// end of the gridManager and working backwards
-		for (int i = gridManager.size() - 1; i >= numTiles; i--) {
-			Composite plot = (Composite) gridManager.get(i);
-			plot.dispose();
 		}
 
 		return;
@@ -600,130 +290,96 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 *            The resource to render. Assumed not to be {@code null}.
 	 * @throws PartInitException
 	 */
-	private void setCurrentResource(ICEResource resource)
-			throws PartInitException {
+	private void showResource(ICEResource resource) throws PartInitException {
 
-		if (resource != currentResource) { // TODO need a way to check if it's
-											// the same resource, but
-											// disposed...
-			currentResource = resource;
+		// If no resource is selected, then clear the current contents of
+		// the ResourcePage and set the top Control to be the browser with
+		// an informative text.
+		if (resource == null) {
+			Control topControl = stackLayout.topControl;
+			if (topControl != browser) {
+				// Update the browser.
+				browser.setText("<html><body>"
+						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">Select a resource to view</p>"
+						+ "</body></html>");
+				stackLayout.topControl = browser;
+				pageComposite.layout();
 
-			// If no resource is selected, then clear the current contents of
-			// the ResourcePage and set the top Control to be the browser with
-			// an informative text.
-			if (resource == null) {
-				Control topControl = stackLayout.topControl;
-				if (topControl != browser) {
-					// Update the browser.
-					browser.setText("<html><body>"
-							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-							+ "align=\"center\">Select a resource to view</p>"
-							+ "</body></html>");
-					stackLayout.topControl = browser;
-					pageComposite.layout();
-
-					// Dispose of the previous Control occupying the
-					// ResourcePage.
-					if (topControl != null && !topControl.isDisposed()) {
-						topControl.dispose();
-					}
+				// Dispose of the previous Control occupying the
+				// ResourcePage.
+				if (topControl != null && !topControl.isDisposed()) {
+					topControl.dispose();
 				}
-
-				return;
 			}
 
-			// VizResources should not use the browser. However, if it cannot be
-			// rendered with available VizResources, we should try using the
-			// browser.
-			boolean useBrowser = !(resource instanceof VizResource);
-			if (!useBrowser) {
+			return;
+		}
 
-				// Create the drawing composite for plots if it hasn't already
-				// been
-				if (drawingComposite == null || drawingComposite.isDisposed()) {
-					createDrawingComposite(pageComposite);
-				}
+		// VizResources should not use the browser. However, if it cannot be
+		// rendered with available VizResources, we should try using the
+		// browser.
+		boolean useBrowser = !(resource instanceof VizResource);
+		if (!useBrowser) {
 
-				VizResource vizResource = (VizResource) resource;
-				Composite plotComposite = null;
+			VizResource vizResource = (VizResource) resource;
 
-				// Dispose of any empty controls
-				disposeEmptyControls();
+			// Try to find the plot for this resource.
+			String key = getPlotKey(vizResource);
+			IPlot plot = plots.get(key);
 
-				// Try to find the drawn plot for this resource.
-				String key = getPlotKey(vizResource);
-				plotComposite = plotComposites.get(key);
-
-				// If the plot wasn't found and we have enough space on the
-				// gridComposite, then create the plot and add it.
-				if (plotComposite == null || plotComposite.isDisposed()) {
-
-					// Check that there is enough empty space on the grid
-					if ((gridDimensions[0] * gridDimensions[1]) > gridManager
-							.size()) {
-						plotComposite = createPlotComposite(gridComposite,
-								vizResource);
-					} else {
-						// Do nothing
-						return;
-					}
-				}
-
-				// Re-fill any blank controls (if necessary)
-				addEmptyControls(gridComposite);
-
-				// If the plot and its drawn Composite could be found, update
-				// the StackLayout. Otherwise, the next section will attempt to
-				// either open it in a text editor (if applicable), or the
-				// browser as a last resort.
-				if (gridComposite != null && plotComposite != null) {
-					stackLayout.topControl = drawingComposite;
-					drawingComposite.pack();
+			// Try to draw the plot on the grid.
+			try {
+				if (plotGridComposite.addPlot(plot) != -1) {
+					stackLayout.topControl = plotGridComposite;
 					pageComposite.layout();
-
 					// Reactivate the Item editor tab if it's not in the front
 					activateEditor();
 
 					return;
 				}
+			} catch (Exception e) {
+				System.err.println("ICEResourcePage error: "
+						+ "The plot could not be drawn.");
+				e.printStackTrace();
 			}
+		}
 
-			String path = resource.getPath().toString();
+		String path = resource.getPath().toString();
 
-			// Determine if the resource is a text file
-			int extIndex = path.lastIndexOf(".");
-			String fileExtension = path.substring(extIndex + 1);
-			boolean useEditor = textFileExtensions.contains(fileExtension);
+		// Determine if the resource is a text file
+		int extIndex = path.lastIndexOf(".");
+		String fileExtension = path.substring(extIndex + 1);
+		boolean useEditor = textFileExtensions.contains(fileExtension);
 
-			// If the resource is a text file, open it via the Eclipse default
-			// text editor
-			if (useEditor) {
-				// Get the content of the file
-				IFileStore fileOnLocalDisk = EFS.getLocalFileSystem().getStore(
-						resource.getPath());
-				FileStoreEditorInput editorInput = new FileStoreEditorInput(
-						fileOnLocalDisk);
+		// If the resource is a text file, open it via the Eclipse default
+		// text editor
+		if (useEditor) {
+			// Get the content of the file
+			IFileStore fileOnLocalDisk = EFS.getLocalFileSystem().getStore(
+					resource.getPath());
+			FileStoreEditorInput editorInput = new FileStoreEditorInput(
+					fileOnLocalDisk);
 
-				// Open the contents in the text editor
-				IWorkbenchWindow window = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow();
-				IWorkbenchPage page = window.getActivePage();
-				page.openEditor(editorInput, "org.eclipse.ui.DefaultTextEditor");
-			}
+			// Open the contents in the text editor
+			IWorkbenchWindow window = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow();
+			IWorkbenchPage page = window.getActivePage();
+			page.openEditor(editorInput, "org.eclipse.ui.DefaultTextEditor");
+		}
 
-			// If the Resource is a regular Resource or cannot be rendered via
-			// the VizServices or a text editor, try to open it in the browser
-			// as a last resort.
-			if (useBrowser && !useEditor && browser != null
-					&& !browser.isDisposed()) {
-				// Update the browser.
-				browser.setUrl(path);
-				stackLayout.topControl = browser;
-				pageComposite.layout();
+		// If the Resource is a regular Resource or cannot be rendered via
+		// the VizServices or a text editor, try to open it in the browser
+		// as a last resort.
+		if (useBrowser && !useEditor && browser != null
+				&& !browser.isDisposed()) {
+			// Update the browser.
+			browser.setUrl(path);
+			stackLayout.topControl = browser;
+			pageComposite.layout();
 
-				// Reactivate the Item editor tab if it's not in the front
-				activateEditor();
-			}
+			// Reactivate the Item editor tab if it's not in the front
+			activateEditor();
 		}
 
 		return;
@@ -774,231 +430,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		}
 
 		return plot;
-	}
-
-	/**
-	 * This method attempts to create a plot {@code Composite} for the specified
-	 * resource. If one could be created, it will be added to the map of
-	 * {@link #plotComposites}.
-	 * <p>
-	 * <b>Note (1):</b> This method assumes it is called from the UI thread.
-	 * </p>
-	 * <p>
-	 * <b>Note (2):</b> If there is not a corresponding {@link IPlot} in the map
-	 * of {@link #plots}, no {@code Composite} will be created.
-	 * </p>
-	 * 
-	 * @param parent
-	 *            The parent {@code Composite} in which to draw the new plot
-	 *            {@code Composite}.
-	 * @param resource
-	 *            The resource that needs a plot {@code Composite}.
-	 * @return The plot {@code Composite}, or {@code null} if one could not be
-	 *         created.
-	 */
-	private Composite createPlotComposite(Composite parent, VizResource resource) {
-		Composite plotComposite = null;
-
-		// First, check the map of plot Composites.
-		final String key = getPlotKey(resource);
-
-		IPlot plot = plots.get(key);
-		if (plot != null) {
-
-			// Try to get the available categories and plot types, then try to
-			// plot the first available one.
-			try {
-				Map<String, String[]> plotTypes = plot.getPlotTypes();
-
-				// Find the first category and plot type.
-				String category = null;
-				String[] types = null;
-				Iterator<Entry<String, String[]>> iter = plotTypes.entrySet()
-						.iterator();
-				while (iter.hasNext() && (types == null || types.length == 0)) {
-					Entry<String, String[]> entry = iter.next();
-					category = entry.getKey();
-					types = entry.getValue();
-				}
-
-				// TODO We will want to expose the categories and plot types to
-				// the user.
-
-				// If there is an available category and plot type, try to
-				// render the plot.
-				if (types != null && types.length > 0) {
-					String plotType = types[0];
-
-					// Try to draw the contents of the plot Composite. If
-					// successfully drawn, add it to the map of plot Composites.
-					try {
-						// Set up the composite that will contain a plot
-						FormToolkit toolkit = getManagedForm().getToolkit();
-						plotComposite = toolkit.createComposite(parent);
-						plotComposite.setLayout(new FillLayout());
-						plotComposite.setLayoutData(new GridData(SWT.FILL,
-								SWT.FILL, true, true));
-
-						// Draw and pack the plot in the parent composite
-						final Composite child;
-						child = plot.draw(category, plotType, plotComposite);
-						parent.pack();
-
-						// Store it in the plot map and grid manager
-						plotComposites.put(key, plotComposite);
-						gridManager.add(plotComposite);
-
-						// Add the listener that enables/disables the close
-						// button to the main Composite that renders the plot.
-						child.addMouseTrackListener(closeButtonListener);
-
-						// Add a dispose listener to remove the plot from the
-						// gridManager
-						plotComposite.addDisposeListener(new DisposeListener() {
-							@Override
-							public void widgetDisposed(DisposeEvent e) {
-
-								// Remove the plot from the gridManager
-								Composite c = (Composite) e.widget;
-								gridManager.remove(c);
-
-								// Add an empty control to the gridManager
-								addEmptyControls(gridComposite);
-
-								// Refresh the display and grid area
-								Display display = pageComposite.getDisplay();
-								display.asyncExec(new Runnable() {
-									@Override
-									public void run() {
-										// Make sure we're not trying to update
-										// disposed widgets (ie. editor closed)
-										if (!pageComposite.isDisposed()) {
-											gridComposite.pack();
-											drawingComposite.pack();
-											pageComposite.layout();
-										}
-										return;
-									}
-								});
-							}
-						});
-					}
-
-					// If the plot could not be drawn, dispose the plot
-					// Composite.
-					catch (Exception drawException) {
-						drawException.printStackTrace();
-						plotComposite.dispose();
-						plotComposite = null;
-					}
-				}
-			} catch (Exception plotTypeException) {
-				plotTypeException.printStackTrace();
-			}
-		}
-
-		return plotComposite;
-	}
-
-	private void showCloseButton(MouseEvent e) {
-
-		if (closeButton == null || closeButton.isDisposed()) {
-			// Get the Composite that triggered the event
-			Composite comp = (Composite) e.widget;
-
-			// Set up the close button
-			closeButton = new Button(comp, SWT.FLAT | SWT.CENTER);
-
-			// Add the close button listener to the close button, too.
-			closeButton.addMouseTrackListener(closeButtonListener);
-
-			closeButton.setText("X");
-			FontData[] smallFont = closeButton.getFont().getFontData();
-			for (FontData fd : smallFont) {
-				fd.setHeight(7);
-			}
-			closeButton.setFont(new Font(comp.getDisplay(), smallFont));
-			closeButton.setToolTipText("Close plot");
-
-			// Add a selection listener on it to dispose the composite
-			closeButton.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					Control c = (Control) e.widget;
-
-					// Find which plotComposite the control belongs to and
-					// dispose it
-					for (Control plot : gridManager) {
-						if (!(plot instanceof EmptyControl)
-								&& isChildControl(c, (Composite) plot)) {
-							plot.dispose();
-							break;
-						}
-					}
-				}
-			});
-
-			closeButton.pack();
-			pageComposite.layout();
-
-			// Set the location of the button to the upper right-hand corner
-			closeButton.setLocation(
-					comp.getBounds().width - closeButton.getBounds().width - 4,
-					0);
-		}
-
-		return;
-	}
-
-	private void hideCloseButton(MouseEvent e) {
-
-		// If the cursor has left the canvas area and the close button, dispose
-		// the button.
-		if (closeButton != null && !closeButton.isDisposed()
-				&& !closeButton.getBounds().contains(e.x, e.y)) {
-			closeButton.dispose();
-			closeButton = null;
-		}
-
-		return;
-	}
-
-	/**
-	 * This method checks the inputed child widget to see if it is either: a.)
-	 * the same object as the parent Composite, or b.) a child of the parent
-	 * Composite. This method uses recursion to check for controls nested more
-	 * than one "level" deep.
-	 * 
-	 * @param child
-	 *            The widget which triggered the event calling this method.
-	 * @param parent
-	 *            The Composite we are checking the child against.
-	 * @return True if the control is a child of parent (or is the same object),
-	 *         otherwise false.
-	 */
-	private boolean isChildControl(Control child, Composite parent) {
-
-		// Set result to false to begin with
-		boolean result = false;
-
-		if (!child.isDisposed() && !parent.isDisposed()) {
-
-			// First, check if the control and the parent are the same object
-			if (child == parent) {
-				return true;
-			}
-
-			// Check if the control is a child of the parent Composite
-			for (Control c : parent.getChildren()) {
-				if (c == child) {
-					return true;
-				} else if (c instanceof Composite) {
-					result = isChildControl(child, (Composite) c);
-				}
-			}
-		}
-
-		return result;
 	}
 
 	/**
@@ -1070,7 +501,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// Clear out the old metadata that can be done from outside the UI
 			// thread.
 			plots.clear();
-			currentResource = null;
 
 			// Update the UI and dispose of any stale UI pieces.
 			if (display != null) {
@@ -1086,10 +516,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						pageComposite.layout();
 
 						// Dispose any plot Composites.
-						for (Composite plotComposite : plotComposites.values()) {
-							plotComposite.dispose();
-						}
-						plotComposites.clear();
+						plotGridComposite.clearPlots();
 
 						return;
 					}
@@ -1105,31 +532,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			if (component != null) {
 				resourceComponent.register(this);
 				update(resourceComponent);
-
-				// Set the default selection in the Resource View and update the
-				// contents of the Resource Page's widgets. This must be done on
-				// the UI thread.
-				if (display != null) {
-					// Get the current selection from the Resource View and set
-					// the current Resource to it if possible.
-					ISelection selection;
-					selection = getSite().getPage().getSelection(
-							ICEResourceView.ID);
-					final ICEResource currentResource = resourceView
-							.getResourceFromSelection(selection);
-					if (currentResource != null) {
-						display.asyncExec(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									setCurrentResource(currentResource);
-								} catch (PartInitException e) {
-									e.printStackTrace();
-								}
-							}
-						});
-					}
-				}
 			}
 		}
 
@@ -1175,9 +577,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// Get a local copy of the ResouceComponent.
 			ResourceComponent resourceComponent = (ResourceComponent) component;
 
-			// Whether or not the currently selected or drawn resource is part
-			// of the ResourceComponent.
-			boolean currentResourceValid = false;
+			// TODO Remove any IPlots associated with VizResources that are no
+			// longer available.
 
 			// Create plots for any VizResources in the ResourceComponent that
 			// do not already have plots.
@@ -1190,48 +591,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						plot = createPlot((VizResource) resource);
 					}
 				}
-
-				// Update the flag to see if the currently-drawn resource is
-				// still in the ResourceComponent. This only applies if they are
-				// the same object!
-				currentResourceValid |= (resource == currentResource);
-			}
-
-			// If necessary, clear the current resource. Note that this must be
-			// done on the UI thread since setting the current resource updates
-			// the UI.
-			if (!currentResourceValid) {
-				PlatformUI.getWorkbench().getDisplay()
-						.asyncExec(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									setCurrentResource(null);
-								} catch (PartInitException e) {
-									e.printStackTrace();
-								}
-								return;
-							}
-						});
 			}
 		}
 
 		return;
 	}
-
-	/**
-	 * This class is used to create empty controls to fill the
-	 * {@link #gridComposite} when its number of rows must be forced. Although
-	 * this class is no different than a {@link Composite}, it is safer for the
-	 * UI to check for instances of {@link EmptyControl}s than {@link Composite}
-	 * s when it is time to dispose them.
-	 * 
-	 * @author Anna Wojtowicz
-	 */
-	class EmptyControl extends Composite {
-		public EmptyControl(Composite parent) {
-			super(parent, SWT.NONE);
-			setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		}
-	};
 }

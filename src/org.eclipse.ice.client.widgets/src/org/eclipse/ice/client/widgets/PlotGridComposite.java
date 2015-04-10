@@ -379,6 +379,8 @@ public class PlotGridComposite extends Composite {
 	 */
 	private void refreshLayout() {
 		// TODO
+		
+		gridComposite.layout();
 	}
 
 	/**
@@ -393,6 +395,9 @@ public class PlotGridComposite extends Composite {
 		public final Composite composite;
 		public final Composite childComposite;
 
+		private String category;
+		private String type;
+
 		public DrawnPlot(IPlot plot, Composite composite, String category,
 				String type) throws Exception {
 			this.plot = plot;
@@ -404,7 +409,15 @@ public class PlotGridComposite extends Composite {
 		}
 
 		public void setPlotType(String category, String type) throws Exception {
-			// TODO
+			// Only process new, non-null plot category and type.
+			if (category != null
+					&& type != null
+					&& (!category.equals(this.category) || !type
+							.equals(this.type))) {
+				// TODO
+			}
+
+			return;
 		}
 	}
 }
