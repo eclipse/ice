@@ -10,6 +10,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -189,7 +193,52 @@ public class PlotGridComposite extends Composite {
 	 *            this call.
 	 */
 	private void showCloseButton(MouseEvent e) {
-		// TODO
+
+		if (closeButton == null || closeButton.isDisposed()) {
+			// Get the Composite that triggered the event.
+			Composite comp = (Composite) e.widget;
+
+			// Determine the index of the plot that was moused over. If a plot
+			// could not be found, then use -1 for the index.
+			int i;
+			for (i = 0; i < drawnPlots.size(); i++) {
+				if (comp == drawnPlots.get(i).childComposite) {
+					break;
+				}
+			}
+			final int plotIndex = (i < drawnPlots.size() ? i : -1);
+
+			// Set up the close button
+			closeButton = new Button(comp, SWT.FLAT | SWT.CENTER);
+
+			// Add the close button listener to the close button, too.
+			closeButton.addMouseTrackListener(closeButtonListener);
+
+			closeButton.setText("X");
+			FontData[] smallFont = closeButton.getFont().getFontData();
+			for (FontData fd : smallFont) {
+				fd.setHeight(7);
+			}
+			closeButton.setFont(new Font(comp.getDisplay(), smallFont));
+			closeButton.setToolTipText("Close plot");
+
+			// Add a selection listener on it to dispose the composite
+			closeButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					removePlot(plotIndex);
+				}
+			});
+
+			closeButton.pack();
+
+			// Set the location of the button to the upper right-hand corner
+			closeButton.setLocation(
+					comp.getBounds().width - closeButton.getBounds().width - 4,
+					0);
+		}
+
+		return;
 	}
 
 	/**
@@ -200,7 +249,16 @@ public class PlotGridComposite extends Composite {
 	 *            this call.
 	 */
 	private void hideCloseButton(MouseEvent e) {
-		// TODO
+
+		// If the cursor has left the canvas area and the close button, dispose
+		// the button.
+		if (closeButton != null && !closeButton.isDisposed()
+				&& !closeButton.getBounds().contains(e.x, e.y)) {
+			closeButton.dispose();
+			closeButton = null;
+		}
+
+		return;
 	}
 
 	/**
