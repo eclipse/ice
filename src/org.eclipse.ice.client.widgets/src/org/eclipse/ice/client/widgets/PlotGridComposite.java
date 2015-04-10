@@ -1,7 +1,10 @@
 package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.jface.action.MenuManager;
@@ -32,6 +35,8 @@ import org.eclipse.swt.widgets.ToolBar;
  */
 public class PlotGridComposite extends Composite {
 
+	// TODO Populate the context menu based on the clicked plot.
+
 	/**
 	 * The {@code ToolBar} that contains widgets to update the grid layout and
 	 * clear the grid.
@@ -56,11 +61,11 @@ public class PlotGridComposite extends Composite {
 	/**
 	 * The number of rows to display in the grid.
 	 */
-	private int rows;
+	private int rows = 2;
 	/**
 	 * The number of columsn to display in the grid.
 	 */
-	private int columns;
+	private int columns = 2;
 
 	/**
 	 * This is a button used to close the drawn plot over which the mouse is
@@ -148,9 +153,63 @@ public class PlotGridComposite extends Composite {
 	 *             cannot be rendered.
 	 */
 	public int addPlot(IPlot plot) throws Exception {
-		// TODO
-		refreshLayout();
-		return -1;
+		int index = -1;
+
+		if (plot != null) {
+
+			// Try to get the available categories and plot types, then try to
+			// plot the first available one.
+			Map<String, String[]> plotTypes = plot.getPlotTypes();
+
+			// Find the first category and plot type.
+			String category = null;
+			String type = null;
+			for (Entry<String, String[]> entry : plotTypes.entrySet()) {
+				category = entry.getKey();
+				String[] types = entry.getValue();
+				if (category != null && types != null) {
+					for (int i = 0; i < types.length && type == null; i++) {
+						type = types[i];
+					}
+					if (type != null) {
+						break;
+					}
+				}
+			}
+
+			// If a category and type could be found, try to draw the plot in a
+			// new cell in the grid.
+			if (category != null && type != null) {
+				// Create the Composite to contain the plot rendering.
+				Composite composite = new Composite(gridComposite, SWT.NONE);
+
+				// Try to create the plot rendering.
+				DrawnPlot drawnPlot;
+				try {
+					drawnPlot = new DrawnPlot(plot, composite, category, type);
+				} catch (Exception e) {
+					// In case of failure, dispose the Composite that was just
+					// created before sending the Exception on to the calling
+					// class.
+					composite.dispose();
+					throw e;
+				}
+
+				// If successful, we need to add the drawn plot to our
+				// bookkeeping. We also must hook it up to the close button.
+				drawnPlot.childComposite
+						.addMouseTrackListener(closeButtonListener);
+
+				// Add the drawn plot to the list.
+				index = drawnPlots.size();
+				drawnPlots.add(drawnPlot);
+
+				// Since a new plot was added, refresh the grid layout.
+				refreshLayout();
+			}
+		}
+
+		return index;
 	}
 
 	/**
@@ -161,8 +220,19 @@ public class PlotGridComposite extends Composite {
 	 *            done.
 	 */
 	public void removePlot(int index) {
-		// TODO
-		refreshLayout();
+
+		if (index >= 0 && index < drawnPlots.size()) {
+			// Pull the associated drawn plot from the list.
+			DrawnPlot drawnPlot = drawnPlots.remove(index);
+
+			// Dispose the plot's associated cell in the grid.
+			drawnPlot.composite.dispose();
+
+			// Since a plot was removed, refresh the grid layout.
+			refreshLayout();
+		}
+
+		return;
 	}
 
 	/**
@@ -173,16 +243,53 @@ public class PlotGridComposite extends Composite {
 	 *            invalid or not rendered, nothing is done.
 	 */
 	public void removeDrawnPlots(IPlot plot) {
-		// TODO
-		refreshLayout();
+
+		if (plot != null) {
+			boolean compositeDisposed = false;
+
+			Iterator<DrawnPlot> iterator = drawnPlots.iterator();
+			while (iterator.hasNext()) {
+				DrawnPlot drawnPlot = iterator.next();
+
+				if (drawnPlot.plot == plot) {
+					// Pull the drawn plot from the list.
+					iterator.remove();
+
+					// Dispose the plot's associated cell in the grid.
+					drawnPlot.composite.dispose();
+
+					compositeDisposed = true;
+				}
+			}
+
+			// If a Composite was removed, refresh the grid layout.
+			if (compositeDisposed) {
+				refreshLayout();
+			}
+		}
+
+		return;
 	}
 
 	/**
 	 * Removes all renderings from the grid.
 	 */
 	public void clearPlots() {
-		// TODO
-		refreshLayout();
+
+		if (!drawnPlots.isEmpty()) {
+
+			// Dispose all of the cells in the grid.
+			for (DrawnPlot drawnPlot : drawnPlots) {
+				drawnPlot.composite.dispose();
+			}
+			// Clear the list of drawn plots.
+			drawnPlots.clear();
+
+			// Since a Composite was removed, refresh the grid layout.
+			refreshLayout();
+		}
+
+		return;
 	}
 
 	/**
@@ -281,13 +388,18 @@ public class PlotGridComposite extends Composite {
 		public final Composite composite;
 		public final Composite childComposite;
 
-		public DrawnPlot(IPlot plot, Composite composite) throws Exception {
+		public DrawnPlot(IPlot plot, Composite composite, String category,
+				String type) throws Exception {
 			this.plot = plot;
 			this.composite = composite;
 
-			// TODO This should use the code from ICEResourcePage for drawing
-			// the plot.
-			childComposite = plot.draw("", "", composite);
+			childComposite = plot.draw(category, type, composite);
+
+			return;
+		}
+
+		public void setPlotType(String category, String type) throws Exception {
+			// TODO
 		}
 	}
 }
