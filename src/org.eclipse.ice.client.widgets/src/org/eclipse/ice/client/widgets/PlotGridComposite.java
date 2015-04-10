@@ -40,6 +40,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class PlotGridComposite extends Composite {
 
+	// FIXME There is a bug where plots are added more than expected. This may
+	// be an issue with duplicate selection events from the ICEResourceView.
+
 	// TODO Populate the context menu based on the clicked plot.
 
 	/**
@@ -303,7 +306,7 @@ public class PlotGridComposite extends Composite {
 			// new cell in the grid.
 			if (category != null && type != null) {
 				// Create the Composite to contain the plot rendering.
-				Composite composite = new Composite(gridComposite, SWT.NONE);
+				Composite composite = new Composite(gridComposite, SWT.BORDER);
 				adapt(composite);
 
 				// Try to create the plot rendering.
@@ -500,9 +503,21 @@ public class PlotGridComposite extends Composite {
 	 * on the {@link #rows} and {@link #columns} and the number of drawn plots.
 	 */
 	private void refreshLayout() {
-		// TODO
 
+		// Remove all excess drawn plots.
+		int limit = rows * columns;
+		for (int i = drawnPlots.size() - 1; i >= limit; i--) {
+			drawnPlots.remove(i).composite.dispose();
+		}
+
+		// Set the user-defined number of columns. The rows are handled already
+		// because we've removed all excess plots.
+		gridLayout.numColumns = columns;
+
+		// Refresh the grid layout.
 		gridComposite.layout();
+
+		return;
 	}
 
 	/**

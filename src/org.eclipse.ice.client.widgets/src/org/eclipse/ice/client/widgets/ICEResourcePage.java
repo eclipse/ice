@@ -293,6 +293,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 */
 	private void showResource(ICEResource resource) throws PartInitException {
 
+		// TODO This method has several return statements, making it a little
+		// hard to read. It should be updated and simplified.
+
 		// If no resource is selected, then clear the current contents of
 		// the ResourcePage and set the top Control to be the browser with
 		// an informative text.
