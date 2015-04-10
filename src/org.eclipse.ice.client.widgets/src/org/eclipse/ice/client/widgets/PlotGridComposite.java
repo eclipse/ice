@@ -17,6 +17,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -195,14 +196,18 @@ public class PlotGridComposite extends Composite {
 					throw e;
 				}
 
-				// If successful, we need to add the drawn plot to our
-				// bookkeeping. We also must hook it up to the close button.
-				drawnPlot.childComposite
-						.addMouseTrackListener(closeButtonListener);
-
 				// Add the drawn plot to the list.
 				index = drawnPlots.size();
 				drawnPlots.add(drawnPlot);
+
+				// Hook the new drawn plot up to the close button.
+				drawnPlot.childComposite
+						.addMouseTrackListener(closeButtonListener);
+
+				// Set up the layout and layout data for the new drawn plot.
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+				drawnPlot.composite.setLayoutData(gridData);
+				drawnPlot.composite.setLayout(new FillLayout());
 
 				// Since a new plot was added, refresh the grid layout.
 				refreshLayout();
