@@ -21,10 +21,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.cdt.core.CCorePlugin;
+import org.eclipse.cdt.core.model.CoreModel;
+import org.eclipse.cdt.core.settings.model.ICProjectDescriptionManager;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.User;
@@ -51,10 +59,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * The ForkStorkHandler displays a Wizard to the user 
- * to gather a new MOOSE application name and the users GitHub 
- * credentials, and then forks idaholab/stork and renames the 
- * repository to the provided application name. 
+ * The ForkStorkHandler displays a Wizard to the user to gather a new MOOSE
+ * application name and the users GitHub credentials, and then forks
+ * idaholab/stork and renames the repository to the provided application name.
  * 
  * @author Alex McCaskey
  *
@@ -63,6 +70,7 @@ public class ForkStorkHandler extends AbstractHandler {
 
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
@@ -70,13 +78,19 @@ public class ForkStorkHandler extends AbstractHandler {
 
 		// Local Declarations
 		Shell shell = HandlerUtil.getActiveWorkbenchWindow(event).getShell();
-		String sep = System.getProperty("file.separator"), appName = "", 
-				gitHubUser = "", password = "", remoteURI = "";
-		
+		String sep = System.getProperty("file.separator"), appName = "", gitHubUser = "", password = "", remoteURI = "";
+		ArrayList<String> cmdList = new ArrayList<String>();
+		ProcessBuilder jobBuilder = null;
+
+		// Set the pyton command
+		cmdList.add("/bin/bash");
+		cmdList.add("-c");
+		cmdList.add("python make_new_application.py");
+
 		// Create a new ForkStorkWizard and Dialog
 		ForkStorkWizard wizard = new ForkStorkWizard();
 		WizardDialog dialog = new WizardDialog(shell, wizard);
-		
+
 		// Open the dialog
 		if (dialog.open() != 0) {
 			return null;
@@ -86,23 +100,23 @@ public class ForkStorkHandler extends AbstractHandler {
 		appName = wizard.getMooseAppName();
 		gitHubUser = wizard.getGitUsername();
 		password = wizard.getGitPassword();
-		
+
 		// Construct the Remote URI for the repo
 		remoteURI = "https://github.com/" + gitHubUser + "/" + appName;
-		
+
 		// Create a File reference to the repo in the Eclipse workspace
 		File workspace = new File(ResourcesPlugin.getWorkspace().getRoot()
 				.getLocation().toOSString()
 				+ sep + appName);
 
-		// Create a EGit-GitHub RepositoryService and Id to 
+		// Create a EGit-GitHub RepositoryService and Id to
 		// connect and create our Fork
 		RepositoryService service = new RepositoryService();
 		RepositoryId id = new RepositoryId("idaholab", "stork");
-		
+
 		// Set the user's GitHub credentials
 		service.getClient().setCredentials(gitHubUser, password);
-		
+
 		// Fork the Repository!!!
 		try {
 			// Fork and get the repo
@@ -118,11 +132,11 @@ public class ForkStorkHandler extends AbstractHandler {
 			e1.printStackTrace();
 		}
 
-		// Now that it is all set on the GitHub end, 
+		// Now that it is all set on the GitHub end,
 		// Let's pull it down into our workspace
 		try {
-			Git result = Git.cloneRepository().setURI(remoteURI).setDirectory(workspace)
-					.call();
+			Git result = Git.cloneRepository().setURI(remoteURI)
+					.setDirectory(workspace).call();
 		} catch (InvalidRemoteException e1) {
 			e1.printStackTrace();
 		} catch (TransportException e1) {
@@ -131,7 +145,35 @@ public class ForkStorkHandler extends AbstractHandler {
 			e1.printStackTrace();
 		}
 
+		// Create the ProcessBuilder and change to the project dir
+		jobBuilder = new ProcessBuilder(cmdList);
+		jobBuilder.directory(new File(workspace.getAbsolutePath()));
 
+		// Do not direct the error to stdout. Catch it separately.
+		jobBuilder.redirectErrorStream(false);
+		try {
+			// Execute the python script!
+			Process job = jobBuilder.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Pull this into the Project Explorer as CDT project!
+		IProject appProject = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(appName);
+		IProjectDescription desc = ResourcesPlugin.getWorkspace()
+				.newProjectDescription(appName);
+		try {
+			IProject proj = CCorePlugin.getDefault().createCDTProject(desc,
+					appProject, null);
+			proj.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (OperationCanceledException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
+		
 		return null;
 
 	}
