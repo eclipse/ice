@@ -342,9 +342,6 @@ public class PlotGridComposite extends Composite {
 		final Action removeAction = new Action("Remove") {
 			@Override
 			public void run() {
-				// Remove the context Menu from the child Composite or it will
-				// be disposed with the plot!
-				drawnPlots.get(clickedPlotIndex).childComposite.setMenu(null);
 				// Now we can remove the plot.
 				removePlot(clickedPlotIndex);
 				clickedPlotIndex = -1;
@@ -370,16 +367,9 @@ public class PlotGridComposite extends Composite {
 						// Add the remove action.
 						manager.add(removeAction);
 
-						// Add the plot categories and types.
+						// Add any plot-specific properties.
 						manager.add(new Separator());
-						manager.add(plotTypeTree.getContributionItem());
-						// Update the plotTypeTree based on the selected plot's
-						// categories and types.
-						// TODO
-
-						// Add other implementation-specific actions...
-						// TODO
-						// manager.add(new Separator());
+						refreshContextMenu(drawnPlots.get(clickedPlotIndex));
 					}
 
 					menuStale = false;
@@ -390,6 +380,69 @@ public class PlotGridComposite extends Composite {
 		});
 
 		return contextMenuManager;
+	}
+
+	/**
+	 * Refreshes the {@link #contextMenuManager} based on the specified
+	 * {@link DrawnPlot}. This includes adding the {@link #plotTypeTree} so that
+	 * the plot category and type can be set and any {@code IPlot}
+	 * -implementation-specific actions.
+	 * 
+	 * @param drawnPlot
+	 *            A reference to the drawn plot for which the context
+	 *            {@code Menu} should be populated.
+	 */
+	private void refreshContextMenu(DrawnPlot drawnPlot) {
+
+		// Refresh the ActionTree of plot types and categories.
+		plotTypeTree.removeAll();
+
+		// A final reference to the DrawnPlot for use in Actions/Runnables.
+		final DrawnPlot drawnPlotRef = drawnPlot;
+
+		try {
+			// Add an ActionTree for each category, and then add ActionTree leaf
+			// nodes for each type.
+			Map<String, String[]> plotTypes = drawnPlot.plot.getPlotTypes();
+			for (Entry<String, String[]> entry : plotTypes.entrySet()) {
+				String category = entry.getKey();
+				String[] types = entry.getValue();
+
+				if (category != null && types != null && types.length > 0) {
+					// Create the category ActionTree.
+					ActionTree categoryTree = new ActionTree(category);
+					plotTypeTree.add(categoryTree);
+
+					// Add all types to the category ActionTree. Each Action
+					// should try to set the plot category and type of the drawn
+					// plot.
+					final String categoryRef = category;
+					for (String type : types) {
+						final String typeRef = type;
+						categoryTree.add(new ActionTree(new Action(type) {
+							@Override
+							public void run() {
+								try {
+									drawnPlotRef.setPlotType(categoryRef,
+											typeRef);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}));
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// Finally, add the plot category/type ActionTree to the context Menu.
+		contextMenuManager.add(plotTypeTree.getContributionItem());
+
+		// TODO Add any implementation-specific actions.
+
+		return;
 	}
 
 	/**
@@ -490,7 +543,7 @@ public class PlotGridComposite extends Composite {
 			DrawnPlot drawnPlot = drawnPlots.remove(index);
 
 			// Dispose the plot's associated cell in the grid.
-			drawnPlot.composite.dispose();
+			drawnPlot.dispose();
 
 			// Since a plot was removed, refresh the grid layout.
 			refreshLayout();
@@ -516,12 +569,9 @@ public class PlotGridComposite extends Composite {
 				DrawnPlot drawnPlot = iterator.next();
 
 				if (drawnPlot.plot == plot) {
-					// Pull the drawn plot from the list.
+					// Pull the drawn plot from the list, then dispose it.
 					iterator.remove();
-
-					// Dispose the plot's associated cell in the grid.
-					drawnPlot.composite.dispose();
-
+					drawnPlot.dispose();
 					compositeDisposed = true;
 				}
 			}
@@ -544,7 +594,7 @@ public class PlotGridComposite extends Composite {
 
 			// Dispose all of the cells in the grid.
 			for (DrawnPlot drawnPlot : drawnPlots) {
-				drawnPlot.composite.dispose();
+				drawnPlot.dispose();
 			}
 			// Clear the list of drawn plots.
 			drawnPlots.clear();
@@ -641,7 +691,7 @@ public class PlotGridComposite extends Composite {
 		// Remove all excess drawn plots.
 		int limit = rows * columns;
 		for (int i = drawnPlots.size() - 1; i >= limit; i--) {
-			drawnPlots.remove(i).composite.dispose();
+			drawnPlots.remove(i).dispose();
 		}
 
 		// Reset all cells to only take up one grid cell.
@@ -684,33 +734,98 @@ public class PlotGridComposite extends Composite {
 	 */
 	private class DrawnPlot {
 
+		/**
+		 * The {@link IPlot} instance/implementation that is drawn.
+		 */
 		public final IPlot plot;
+		/**
+		 * A {@code Composite} that contains the rendering of the plot. This is
+		 * passed, as the parent, to
+		 * {@link IPlot#draw(String, String, Composite)}.
+		 */
 		public final Composite composite;
+		/**
+		 * The child {@code Composite} in which the plot is rendered. This is
+		 * returned from {@link IPlot#draw(String, String, Composite)}.
+		 */
 		public final Composite childComposite;
 
+		/**
+		 * The current category.
+		 */
 		private String category;
+		/**
+		 * The current type.
+		 */
 		private String type;
 
+		/**
+		 * Creates a new {@code DrawnPlot} to manage the plot's meta-data and
+		 * renders the plot in the specified parent {@code Composite}.
+		 * 
+		 * @param plot
+		 *            The {@code IPlot} to be drawn.
+		 * @param composite
+		 *            The {@code Composite} in which to draw the plot.
+		 * @param category
+		 *            The initial category for the plot.
+		 * @param type
+		 *            The initial type for the plot category.
+		 * @throws Exception
+		 *             An exception may be thrown by the {@code IPlot}
+		 *             implementation if the plot could not be drawn.
+		 */
 		public DrawnPlot(IPlot plot, Composite composite, String category,
 				String type) throws Exception {
 			this.plot = plot;
 			this.composite = composite;
 
+			// Render the plot.
 			childComposite = plot.draw(category, type, composite);
 
 			return;
 		}
 
+		/**
+		 * Sets the current category and type of the drawn plot.
+		 * 
+		 * @param category
+		 *            The new category for the plot.
+		 * @param type
+		 *            The new type for the plot category.
+		 * @throws Exception
+		 *             An exception may be thrown by the {@code IPlot}
+		 *             implementation if the plot could not be drawn. An
+		 *             exception may also be thrown if the {@code IPlot}
+		 *             implementation returns a new child {@code Composite} when
+		 *             drawing the plot.
+		 */
 		public void setPlotType(String category, String type) throws Exception {
 			// Only process new, non-null plot category and type.
 			if (category != null
 					&& type != null
 					&& (!category.equals(this.category) || !type
 							.equals(this.type))) {
-				// TODO
+
+				// Try to draw the plot with the new category and type. Note
+				// that the parent and child Composites should remain the same.
+				if (childComposite != plot.draw(category, type, composite)) {
+					throw new Exception("IPlot error: "
+							+ "The plot was drawn in a new Composite.");
+				}
 			}
 
 			return;
+		}
+
+		/**
+		 * A convenience method to dispose of resources used by this drawn plot.
+		 */
+		public void dispose() {
+			childComposite.setMenu(null);
+			composite.dispose();
+			category = null;
+			type = null;
 		}
 	}
 }
