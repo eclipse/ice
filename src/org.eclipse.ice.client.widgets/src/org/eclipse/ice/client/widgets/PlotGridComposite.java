@@ -280,7 +280,9 @@ public class PlotGridComposite extends Composite {
 	public int addPlot(IPlot plot) throws Exception {
 		int index = -1;
 
-		if (plot != null) {
+		// Proceed if the plot is not null and there is still space available in
+		// the grid.
+		if (plot != null && drawnPlots.size() < rows * columns) {
 
 			// Try to get the available categories and plot types, then try to
 			// plot the first available one.
