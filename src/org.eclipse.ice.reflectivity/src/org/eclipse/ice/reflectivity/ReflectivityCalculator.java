@@ -675,7 +675,8 @@ public class ReflectivityCalculator {
 		}
 
 		// Create a temporary array to hold the extended reflectivity.
-		double[] tempReflectivity = new double[numPoints+numLowPoints+numHighPoints];
+		double[] tempReflectivity = new double[numPoints + numLowPoints
+				+ numHighPoints];
 		// Generate reflectivity values for convolution.
 		// Calculate perfect-resolution reflectivity on extended wave vector
 		for (int i = 0; i < numPoints + numLowPoints + numHighPoints; i++) {
@@ -706,4 +707,43 @@ public class ReflectivityCalculator {
 
 		return reflectivity;
 	}
+
+	/**
+	 * This operation computes the neutron scattering density profile for a set
+	 * of tiles.
+	 * 
+	 * @param tiles
+	 *            the set of tiles that define the material
+	 * @return The neutron scattering density profile.
+	 */
+	public Profile getProfile(Tile[] tiles) {
+		// Create an empty profile
+		Profile profile = new Profile();
+		profile.depth = new double[2 * tiles.length];
+		profile.scatteringDensity = new double[2 * tiles.length];
+
+		// Put down the first tile as two steps. Step one
+		profile.depth[0] = -10.0;
+		// Note that I am doing 2.0*n because that layer is the same as the
+		// first slab. The original code ready n[slab] + n[tile], but they are
+		// always the same.
+		profile.scatteringDensity[0] = 2.0 * tiles[0].scatteringLength;
+		double sumD = tiles[0].thickness;
+		// Step two
+		profile.depth[1] = sumD;
+		profile.scatteringDensity[1] = 2.0 * tiles[0].scatteringLength;
+
+		// Load the remaining tiles
+		for (int i = 1; i < tiles.length; i++) {
+			profile.depth[2 * i] = sumD;
+			sumD += tiles[i].thickness;
+			profile.depth[2 * i + 1] = sumD;
+			profile.scatteringDensity[2 * i] = tiles[i].scatteringLength
+					+ tiles[0].scatteringLength;
+			profile.scatteringDensity[2 * i + 1] = profile.scatteringDensity[2 * i];
+		}
+
+		return profile;
+	}
+
 }
