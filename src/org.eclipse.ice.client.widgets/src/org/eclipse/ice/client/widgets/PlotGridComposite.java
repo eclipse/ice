@@ -512,9 +512,31 @@ public class PlotGridComposite extends Composite {
 			drawnPlots.remove(i).composite.dispose();
 		}
 
+		// Reset all cells to only take up one grid cell.
+		GridData gridData;
+		for (DrawnPlot drawnPlot : drawnPlots) {
+			gridData = (GridData) drawnPlot.composite.getLayoutData();
+			gridData.verticalSpan = 1;
+		}
+
 		// Set the user-defined number of columns. The rows are handled already
 		// because we've removed all excess plots.
 		gridLayout.numColumns = columns;
+
+		// If the last row has empty cells, then all of the cells directly above
+		// those empty cells should grab the excess vertical space by updating
+		// the verticalSpan property.
+		int lastRowSize = drawnPlots.size() % columns;
+		// We shouldn't do anything if the last row is full or if there is only
+		// one row.
+		if (lastRowSize > 0 && drawnPlots.size() > columns) {
+			int lastIndex = drawnPlots.size() - 1 - lastRowSize;
+			for (int i = 0; i < columns - lastRowSize; i++) {
+				DrawnPlot drawnPlot = drawnPlots.get(lastIndex - i);
+				gridData = (GridData) drawnPlot.composite.getLayoutData();
+				gridData.verticalSpan = 2;
+			}
+		}
 
 		// Refresh the grid layout.
 		gridComposite.layout();
