@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
@@ -57,7 +58,15 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	/**
 	 * The name of the custom MOOSE executable.
 	 */
-	private static final String customExecName = "Custom executable name";	
+	private static final String customExecName = "Custom executable name";
+	
+	/**
+	 * The DataComponent on the form that is used to store the list of
+	 * executable apps. This DataComponent contains two Entries: [0] The Entry 
+	 * containing BISON, MARMOT, RAVEN and RELAP-7, and [1] An Entry of type
+	 * Undefined in which the user can enter their own MOOSE app name.
+	 */
+	private DataComponent execDataComp;
 	
 	/**
 	 * Nullary constructor.
@@ -102,8 +111,12 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Setup the Form
 		super.setupForm();
 		
+		// Get a handle on the "executables" DataComponent
+		execDataComp = (DataComponent) form.getComponent(5);
+		// Register the launcher as a listener of the executables DataComponent
+		execDataComp.register(this);
+		
 		// Create an entry for a "custom" MOOSE executable
-		DataComponent execDataComp = (DataComponent) form.getComponent(5);
 		Entry customExecEntry = new Entry();
 		customExecEntry.setName(customExecName);
 		customExecEntry.setDescription("A custom MOOSE-based executable. Note "
@@ -112,7 +125,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		customExecEntry.setId(2);
 		customExecEntry.setParent(execDataComp.retrieveAllEntries().get(0).getName());
 		customExecEntry.setReady(false);
-
+		
 		// Add it to the form
 		execDataComp.addEntry(customExecEntry);
 
@@ -272,10 +285,6 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// If the super's status review was successful, keep going
 		if (!retStatus.equals(FormStatus.InfoError)) {
 
-			// Grab the DataComponent in the from that lists available
-			// executables
-			DataComponent execDataComp = (DataComponent) preparedForm
-					.getComponent(5);
 			if (execDataComp != null) {
 				// Grab the name of the current executable selected by the
 				// client
@@ -289,19 +298,6 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 				// action syntax generator
 				setUploadInputFlag(true);
 				
-				Entry parentEntry = execDataComp.retrieveEntry("Executable");
-				Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
-				
-				if (execName.equals(customExecName) && !customExecEntry.isReady()) {
-					// Reveal the custom app Entry if it's currently hidden and 
-					// the user wants to enter a name
-					customExecEntry.update(parentEntry.getName(), "true");
-				} else if (!execName.equals(customExecName) && customExecEntry.isReady()) {
-					// Hide the custom app Entry if it's exposed and the user
-					// selected another app
-					customExecEntry.update(parentEntry.getName(), "false");
-				}
-				
 				if (yamlSyntaxGenerator.equals(execName)) {
 					// Disable input file appending (no input file to append)
 					setAppendInputFlag(false);
@@ -309,13 +305,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					setUploadInputFlag(false);
 				}
 				
-				// If we're dealing with a custom app, the super's reviewEntries()
-				// needs to be called once more to update the executable list 
-				if (customExecEntry.isReady() && !customExecEntry.getValue().isEmpty()) {
-					retStatus = super.reviewEntries(preparedForm);
-				} else {
-					retStatus = FormStatus.ReadyToProcess;
-				}
+				retStatus = FormStatus.ReadyToProcess;
 								
 			} else {
 				retStatus = FormStatus.InfoError;
@@ -506,6 +496,33 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		return;
 	}
 
+	@Override
+	public void update(IUpdateable component) {
+		
+		if (component instanceof DataComponent) {
+			
+			// Grab the name of the current executable selected by the user
+			if (execDataComp != null) {
+				execName = execDataComp.retrieveAllEntries().get(0).getValue();
+			}
+			
+			Entry parentEntry = execDataComp.retrieveEntry("Executable");
+			Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
+			
+			if (execName.equals(customExecName) && !customExecEntry.isReady()) {
+				// Reveal the custom app Entry if it's currently hidden and 
+				// the user wants to enter a name
+				customExecEntry.update(parentEntry.getName(), "true");
+			} else if (!execName.equals(customExecName) && customExecEntry.isReady()) {
+				// Hide the custom app Entry if it's exposed and the user
+				// selected another app
+				customExecEntry.update(parentEntry.getName(), "false");
+			}
+		}
+		
+		return;		
+	}
+	
 	@Override
 	protected String getFileDependenciesSearchString() {
 		return "file";
