@@ -26,7 +26,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.csv.CSVReader;
-import org.eclipse.ice.reflectivity.Profile;
+import org.eclipse.ice.reflectivity.ReflectivityProfile;
+import org.eclipse.ice.reflectivity.ScatteringDensityProfile;
 import org.eclipse.ice.reflectivity.ReflectivityCalculator;
 import org.eclipse.ice.reflectivity.Slab;
 import org.eclipse.ice.reflectivity.Tile;
@@ -50,6 +51,11 @@ public class ReflectivityCalculatorTester {
 	 * The reader that will be tested.
 	 */
 	private static CSVReader reader;
+
+	/**
+	 * The set of slabs that define the system.
+	 */
+	private static Slab[] slabs;
 
 	/**
 	 * The project used by the test. It currently points to the
@@ -107,6 +113,50 @@ public class ReflectivityCalculatorTester {
 
 		// Create the reader
 		reader = new CSVReader();
+
+		// Create the slabs that define the system, starting with air
+		Slab air = new Slab();
+		air.thickness = 200.0;
+
+		// NiOx
+		Slab niOx = new Slab();
+		niOx.scatteringLength = (0.00000686 + 0.00000715) / 2.0;
+		niOx.trueAbsLength = 2.27931868269305E-09;
+		niOx.incAbsLength = 4.74626235093697E-09;
+		niOx.thickness = 22.0;
+		niOx.interfaceWidth = 4.0 * 2.35;
+
+		// Ni
+		Slab ni = new Slab();
+		ni.scatteringLength = 9.31e-6;
+		ni.trueAbsLength = 2.27931868269305E-09;
+		ni.incAbsLength = 4.74626235093697E-09;
+		ni.thickness = 551.0;
+		ni.interfaceWidth = 4.3 * 2.35;
+
+		// SiNiOx
+		Slab siNiOx = new Slab();
+		siNiOx.scatteringLength = (0.00000554 + 0.00000585) / 2.0;
+		siNiOx.trueAbsLength = 2.27931868269305E-09;
+		siNiOx.incAbsLength = 4.74626235093697E-09;
+		siNiOx.thickness = 42.0;
+		siNiOx.interfaceWidth = 7.0 * 2.35;
+
+		// SiOx
+		Slab si = new Slab();
+		si.scatteringLength = 2.070e-6;
+		si.trueAbsLength = 4.74981478870069E-11;
+		si.incAbsLength = 1.99769988072137E-12;
+		si.thickness = 100.0;
+		si.interfaceWidth = 17.5;
+
+		// Create the slab list
+		slabs = new Slab[5];
+		slabs[0] = air;
+		slabs[1] = niOx;
+		slabs[2] = ni;
+		slabs[3] = siNiOx;
+		slabs[4] = si;
 
 		return;
 
@@ -377,45 +427,6 @@ public class ReflectivityCalculatorTester {
 		// Create the calculator
 		ReflectivityCalculator calculator = new ReflectivityCalculator();
 
-		// Create the slabs, starting with air
-		Slab air = new Slab();
-		air.thickness = 200.0;
-
-		// NiOx
-		Slab niOx = new Slab();
-		niOx.scatteringLength = (0.00000686 + 0.00000715) / 2.0;
-		niOx.trueAbsLength = 2.27931868269305E-09;
-		niOx.incAbsLength = 4.74626235093697E-09;
-		niOx.thickness = 22.0;
-		niOx.interfaceWidth = 4.0 * 2.35;
-
-		// Ni
-		Slab ni = new Slab();
-		ni.scatteringLength = 9.31e-6;
-		ni.trueAbsLength = 2.27931868269305E-09;
-		ni.incAbsLength = 4.74626235093697E-09;
-		ni.thickness = 551.0;
-		ni.interfaceWidth = 4.3 * 2.35;
-
-		// SiNiOx
-		Slab siNiOx = new Slab();
-		siNiOx.scatteringLength = (0.00000554 + 0.00000585) / 2.0;
-		siNiOx.trueAbsLength = 2.27931868269305E-09;
-		siNiOx.incAbsLength = 4.74626235093697E-09;
-		siNiOx.thickness = 42.0;
-		siNiOx.interfaceWidth = 7.0 * 2.35;
-
-		// SiOx
-		Slab si = new Slab();
-		si.scatteringLength = 2.070e-6;
-		si.trueAbsLength = 4.74981478870069E-11;
-		si.incAbsLength = 1.99769988072137E-12;
-		si.thickness = 100.0;
-		si.interfaceWidth = 17.5;
-
-		// Create the slab list
-		Slab[] slabs = { air, niOx, ni, siNiOx, si };
-
 		// Create the test arrays
 		double[] zInt = new double[ReflectivityCalculator.maxRoughSize];
 		double[] rufInt = new double[ReflectivityCalculator.maxRoughSize];
@@ -502,9 +513,8 @@ public class ReflectivityCalculatorTester {
 
 		// Check the results
 		assertEquals(refReflectivity.length, reflectivity.length);
-		// FIXME! - Do value comparisons!
 		for (int i = 0; i < refReflectivity.length; i++) {
-			// Three percent error is the best that I can do on this because the
+			// Four percent error is the best that I can do on this because the
 			// behavior at the end points does not match. I think it is due to
 			// an accumulation of errors from other sources.
 			assertEquals(refReflectivity[i], reflectivity[i],
@@ -515,7 +525,8 @@ public class ReflectivityCalculatorTester {
 	}
 
 	/**
-	 * This operation tests {@link ReflectivityCalculator#getProfile()}.
+	 * This operation tests
+	 * {@link ReflectivityCalculator#getScatteringDensityProfile()}.
 	 */
 	@Test
 	public void testGetProfile() {
@@ -545,7 +556,8 @@ public class ReflectivityCalculatorTester {
 
 		// Get the profile
 		ReflectivityCalculator calc = new ReflectivityCalculator();
-		Profile profile = calc.getProfile(refTiles);
+		ScatteringDensityProfile profile = calc
+				.getScatteringDensityProfile(refTiles);
 
 		// Check the values
 		assertEquals(refDepth.length, profile.depth.length);
@@ -556,6 +568,90 @@ public class ReflectivityCalculatorTester {
 					* tol);
 			assertEquals(refScatteringDensity[i], profile.scatteringDensity[i],
 					Math.abs(refScatteringDensity[i]) * 3.0 * tol);
+		}
+
+		return;
+	}
+
+	/**
+	 * This operation tests
+	 * {@link ReflectivityCalculator#getReflectivityProfile()}.
+	 */
+	@Test
+	public void testGetReflectivityProfile() {
+
+		// Load the parameters and reference data
+		Form form = reader.read(project.getFile("conRefTileFixedLambda.csv"));
+		ListComponent<String[]> refLines = (ListComponent<String[]>) form
+				.getComponent(1);
+		assertEquals(403, refLines.size());
+
+		// Get the parameters
+		double deltaQ0 = Double.valueOf(refLines.get(0)[0]);
+		double deltaQ1ByQ = Double.valueOf(refLines.get(0)[1]);
+		double lambda = Double.valueOf(refLines.get(0)[2]);
+		boolean getRQ4 = Boolean.valueOf(refLines.get(0)[3]);
+
+		// Get the reference reflectivity results and the q input array
+		double[] waveVector = new double[402];
+		double[] refReflectivity = new double[402];
+
+		// Load the reference arrays. Skip the first line because this file has
+		// additional parameters on that line.
+		for (int i = 1; i < 403; i++) {
+			String[] line = refLines.get(i);
+			refReflectivity[i - 1] = Double.valueOf(line[0]);
+			waveVector[i - 1] = Double.valueOf(line[1]);
+		}
+
+		// Load the reference data for the scattering density profile
+		form = reader.read(project.getFile("plotProfile.csv"));
+		ListComponent<String[]> refPlotProfileLines = (ListComponent<String[]>) form
+				.getComponent(1);
+		assertEquals(346, refPlotProfileLines.size());
+
+		// Get the reference reflectivity results and the q input array
+		double[] refDepth = new double[346];
+		double[] refScatteringDensity = new double[346];
+
+		// Load the reference arrays.
+		for (int i = 0; i < refDepth.length; i++) {
+			String[] line = refPlotProfileLines.get(i);
+			refDepth[i] = Double.valueOf(line[0]);
+			refScatteringDensity[i] = Double.valueOf(line[1]);
+		}
+		
+		// Calculate the reflectivity profile
+		ReflectivityCalculator calc = new ReflectivityCalculator();
+		ReflectivityProfile profile = calc.getReflectivityProfile(slabs, 41,
+				deltaQ0, deltaQ1ByQ, lambda, waveVector, false);
+
+		// Check the results
+		assertEquals(refReflectivity.length, profile.reflectivity.length);
+		assertEquals(waveVector.length, profile.waveVector.length);
+		// Check the reflectivity values
+		//System.out.println("----- Dumping Reflectivity ----- ");
+		for (int i = 0; i < refReflectivity.length; i++) {
+			// They should be exact because the wave vector is an input
+			assertEquals(waveVector[i], profile.waveVector[i],0.0);
+			// Four percent error is the best that I can do on the reflectivity
+			// because the behavior at the end points does not match. I think it
+			// is due to an accumulation of errors from other sources.
+			assertEquals(refReflectivity[i], profile.reflectivity[i],
+					Math.abs(refReflectivity[i]) * 0.04);
+			//System.out.println(profile.waveVector[i]+","+profile.reflectivity[i]);
+		}
+		//System.out.println("----- Dumping Scattering Density ----- ");
+		// Check the scattering density values
+		assertEquals(refDepth.length, profile.depth.length);
+		assertEquals(refScatteringDensity.length,
+				profile.scatteringDensity.length);
+		for (int i = 0; i < refDepth.length; i++) {
+			assertEquals(refDepth[i], profile.depth[i], Math.abs(refDepth[i])
+					* tol);
+			assertEquals(refScatteringDensity[i], profile.scatteringDensity[i],
+					Math.abs(refScatteringDensity[i]) * 3.0 * tol);
+			//System.out.println(profile.depth[i]+","+profile.scatteringDensity[i]);
 		}
 
 		return;

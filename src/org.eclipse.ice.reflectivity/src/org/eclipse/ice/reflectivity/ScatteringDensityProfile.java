@@ -18,7 +18,7 @@ package org.eclipse.ice.reflectivity;
  * @author Jay Jay Billings
  *
  */
-public class Profile {
+public class ScatteringDensityProfile {
 
 	// The array of points that define the depth of the material and the where
 	// the neutron scattering density is calculated.

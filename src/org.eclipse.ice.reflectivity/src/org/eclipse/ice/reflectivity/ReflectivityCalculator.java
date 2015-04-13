@@ -420,13 +420,11 @@ public class ReflectivityCalculator {
 					rufInt[i]);
 		}
 		nGlay += numRough / 2 + 1;
-		System.out.println("NGLAY = " + nGlay);
 
 		// Evaluate the total normalized thickness of the surface
 		for (int i = 0; i < numRough + 1; i++) {
 			totalThickness += zInt[i];
 		}
-		System.out.println("zTot = " + totalThickness);
 
 		// Calculate gradation of layers. Using slabs.length - 1 because the
 		// last layer is at index 4.
@@ -438,16 +436,11 @@ public class ReflectivityCalculator {
 			// negative.
 			gDMid = refSlab.thickness - 0.5 * totalThickness
 					* (refSlab.interfaceWidth + secondRefSlab.interfaceWidth);
-			System.out.println("GDMid[" + i + "] = " + gDMid + ", "
-					+ refSlab.thickness + ", " + refSlab.interfaceWidth + ", "
-					+ secondRefSlab.interfaceWidth);
 			if (gDMid <= 1.0e-10) {
 				// The interfaces are overlapping. Step through the entire slab
 				step = refSlab.thickness / ((double) (numRough + 1));
-				System.out.println("Step at i = " + i + " = " + step);
 				// Take the first half step
 				tmpSlab = generatedSlabs[nGlay];
-				System.out.println("NGLAY in loop at i = " + i + " = " + nGlay);
 				tmpSlab.thickness = step / 2.0;
 				dist = step / 4.0;
 				updateTileByLayer(tmpSlab, thirdRefSlab, refSlab,
@@ -461,22 +454,15 @@ public class ReflectivityCalculator {
 					updateTileByLayer(tmpSlab, thirdRefSlab, refSlab,
 							secondRefSlab, dist);
 					dist += step;
-					System.out.println("q = " + (nGlay + j) + " "
-							+ tmpSlab.scatteringLength);
 				}
 				nGlay += numRough;
-				System.out.println("NGLAY = " + nGlay);
 				// Take final half step
 				tmpSlab = generatedSlabs[nGlay];
 				tmpSlab.thickness = step / 2.0;
 				dist = refSlab.thickness - step / 4.0;
-				System.out.println("dist " + dist);
 				updateTileByLayer(tmpSlab, thirdRefSlab, refSlab,
 						secondRefSlab, dist);
-				System.out.println("q = " + (nGlay) + " "
-						+ tmpSlab.scatteringLength);
 				++nGlay;
-				System.out.println("Exiting if " + i);
 			} else {
 				// Evaluate contributions from interfaces separately.
 				// Top interface
@@ -486,8 +472,6 @@ public class ReflectivityCalculator {
 					tmpSlab = generatedSlabs[nGlay + j - numRough / 2 - 1];
 					updateTileByInterface(tmpSlab, thirdRefSlab, refSlab,
 							zInt[j], rufInt[j]);
-					System.out.println("q = " + (nGlay + j - numRough / 2 - 1)
-							+ " " + tmpSlab.scatteringLength);
 				}
 				nGlay += numRough / 2 + 1;
 				// Central, bulk-like portion
@@ -496,32 +480,24 @@ public class ReflectivityCalculator {
 				tmpSlab.thickness = gDMid;
 				tmpSlab.trueAbsLength = refSlab.trueAbsLength;
 				tmpSlab.incAbsLength = refSlab.incAbsLength;
-				System.out.println("q = " + (nGlay) + " "
-						+ tmpSlab.scatteringLength);
 				++nGlay;
 				// Bottom interface
 				for (int j = 0; j < numRough / 2 + 1; j++) {
 					tmpSlab = generatedSlabs[nGlay + j];
 					updateTileByInterface(tmpSlab, refSlab, secondRefSlab,
 							zInt[j], rufInt[j]);
-					System.out.println("q = " + (nGlay + j) + " "
-							+ tmpSlab.scatteringLength);
 				}
 				nGlay += numRough / 2 + 1;
-				System.out.println("Exiting else " + i);
 			}
 		}
 
 		// Evaluate substrate gradation
 		refSlab = slabs[slabs.length - 1];
 		secondRefSlab = slabs[slabs.length - 2];
-		System.out.println("Entering substrate gradation");
 		for (int i = numRough / 2 + 1; i < numRough + 1; i++) {
 			tmpSlab = generatedSlabs[nGlay + i - numRough / 2 - 1];
 			updateTileByInterface(tmpSlab, secondRefSlab, refSlab, zInt[i],
 					rufInt[i]);
-			System.out.println("q = " + (nGlay + i - numRough / 2 - 1) + " "
-					+ tmpSlab.scatteringLength);
 		}
 		nGlay += numRough / 2 + 1;
 		// Handle the last layer
@@ -642,6 +618,8 @@ public class ReflectivityCalculator {
 	 *            The wave vector - FIXME!
 	 * @param tiles
 	 *            The tiles that define the layered structure of the materials.
+	 * @param the
+	 *            reflectivity
 	 */
 	public double[] convoluteReflectivity(double deltaQ0, double deltaQ1ByQ,
 			double wavelength, boolean getRQ4, double[] waveVector, Tile[] tiles) {
@@ -716,9 +694,9 @@ public class ReflectivityCalculator {
 	 *            the set of tiles that define the material
 	 * @return The neutron scattering density profile.
 	 */
-	public Profile getProfile(Tile[] tiles) {
+	public ScatteringDensityProfile getScatteringDensityProfile(Tile[] tiles) {
 		// Create an empty profile
-		Profile profile = new Profile();
+		ScatteringDensityProfile profile = new ScatteringDensityProfile();
 		profile.depth = new double[2 * tiles.length];
 		profile.scatteringDensity = new double[2 * tiles.length];
 
@@ -741,6 +719,80 @@ public class ReflectivityCalculator {
 			profile.scatteringDensity[2 * i] = tiles[i].scatteringLength
 					+ tiles[0].scatteringLength;
 			profile.scatteringDensity[2 * i + 1] = profile.scatteringDensity[2 * i];
+		}
+
+		return profile;
+	}
+
+	/**
+	 * This operation returns the reflectivity profile for the given wave vector
+	 * and set of slabs that define the material.
+	 * 
+	 * This function has entirely too many arguments and needs to be refactored.
+	 * 
+	 * @param slabs
+	 *            the slabs that define the material
+	 * @param numRough
+	 *            the number of layers of roughness
+	 * @param deltaQ0
+	 *            FIXME!
+	 * @param deltaQ1ByQ
+	 *            FIXME!
+	 * @param wavelength
+	 *            FIXME!
+	 * @param waveVector
+	 *            the wave vector
+	 * @param getRQ4
+	 *            true if the RQ^4 should be calculated, false otherwise
+	 * @return The reflectivity profile. It contains both the reflectivity as a
+	 *         function of the wave vector and the neutron scattering density as
+	 *         a function of depth.
+	 */
+	public ReflectivityProfile getReflectivityProfile(Slab[] slabs,
+			int numRough, double deltaQ0, double deltaQ1ByQ, double wavelength,
+			double[] waveVector, boolean getRQ4) {
+
+		ReflectivityProfile profile = new ReflectivityProfile();
+
+		try {
+			// Generate the interfacial profile
+			double[] zInt = new double[ReflectivityCalculator.maxRoughSize];
+			double[] rufInt = new double[ReflectivityCalculator.maxRoughSize];
+			getInterfacialProfile(numRough, zInt, rufInt);
+
+			// Correct the refractive indices for incident medium
+			double qCCorr = slabs[0].scatteringLength;
+			for (int i = 0; i < slabs.length; i++) {
+				slabs[i].scatteringLength -= qCCorr;
+			}
+
+			// Generate tiled roughness layers
+			Tile[] tiles = generateTiles(slabs, numRough, zInt, rufInt);
+
+			// Un-correct the refractive indices for incident medium
+			for (int i = 0; i < slabs.length; i++) {
+				slabs[i].scatteringLength += qCCorr;
+			}
+
+			// Calculate the reflectivities
+			double[] reflectivity = convoluteReflectivity(deltaQ0, deltaQ1ByQ,
+					wavelength, getRQ4, waveVector, tiles);
+
+			// Get the scattering profile
+			ScatteringDensityProfile scatteringProfile = getScatteringDensityProfile(tiles);
+
+			// Put everything into the reflectivity profile
+			profile.depth = scatteringProfile.depth;
+			profile.reflectivity = reflectivity;
+			profile.waveVector = waveVector;
+			profile.scatteringDensity = scatteringProfile.scatteringDensity;
+
+		} catch (MathException e) {
+			// Complain
+			System.err.println("Unable to generate the interfacial profile!");
+			e.printStackTrace();
+			// Null out the profile so no bad data is returned
+			profile = null;
 		}
 
 		return profile;
