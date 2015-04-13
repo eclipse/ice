@@ -6,13 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -43,19 +48,11 @@ public class PlotGridComposite extends Composite {
 	// FIXME There is a bug where plots are added more than expected. This may
 	// be an issue with duplicate selection events from the ICEResourceView.
 
-	// TODO Populate the context menu based on the clicked plot.
-
 	/**
 	 * The {@code ToolBar} that contains widgets to update the grid layout and
 	 * clear the grid.
 	 */
 	private final ToolBar toolBar;
-
-	/**
-	 * The context menu that will be used by both this plot grid
-	 * {@code Composite} and all drawn plots.
-	 */
-	private final Menu contextMenu;
 
 	/**
 	 * The grid of drawn plots.
@@ -84,7 +81,7 @@ public class PlotGridComposite extends Composite {
 	/**
 	 * The listener responsible for showing and hiding the {@link #closeButton}.
 	 */
-	private final MouseTrackListener closeButtonListener;
+	private final MouseTrackListener plotHoverListener;
 
 	/**
 	 * The list of currently drawn plots. A nested class, {@link DrawnPlot}, is
@@ -96,6 +93,37 @@ public class PlotGridComposite extends Composite {
 	 * The toolkit used to decorate SWT components. May be null.
 	 */
 	private final FormToolkit toolkit;
+
+	// ---- Context Menu Management ---- //
+	/**
+	 * The index of the current plot on which the user clicked the mouse. This
+	 * is set when the {@link #plotClickListener} is triggered.
+	 */
+	private int clickedPlotIndex;
+	/**
+	 * Whether or not the context {@code Menu} is stale. This should be true if
+	 * a different plot was clicked since the last time the context {@code Menu}
+	 * was populated.
+	 */
+	private boolean menuStale = true;
+	/**
+	 * The listener responsible for setting the {@link #clickedPlotIndex} when a
+	 * plot is right-clicked.
+	 */
+	private final MouseListener plotClickListener;
+
+	/**
+	 * Handles the context menu that will be used by both this plot grid
+	 * {@code Composite} and all drawn plots.
+	 */
+	private final MenuManager contextMenuManager;
+
+	/**
+	 * The {@code ActionTree} containing the plot categories and types.
+	 */
+	private ActionTree plotTypeTree;
+
+	// --------------------------------- //
 
 	/**
 	 * The default constructor. Creates a {@code Composite} designed to display
@@ -136,6 +164,10 @@ public class PlotGridComposite extends Composite {
 		// Set up the ToolBar.
 		toolBar = createToolBar(this);
 
+		// Create the context Menu that will be used for this and all child plot
+		// Composites.
+		contextMenuManager = createContextMenu();
+
 		// Set up the Composite containing the grid of plots.
 		gridComposite = new Composite(this, SWT.NONE);
 		adapt(gridComposite);
@@ -152,13 +184,8 @@ public class PlotGridComposite extends Composite {
 		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gridComposite.setLayoutData(gridData);
 
-		// Create the context Menu that will be used for this and all child plot
-		// Composites.
-		MenuManager menuManager = new MenuManager();
-		contextMenu = menuManager.createContextMenu(this);
-
 		// Create the listener that will be used to show/hide the close button.
-		closeButtonListener = new MouseTrackAdapter() {
+		plotHoverListener = new MouseTrackAdapter() {
 			@Override
 			public void mouseEnter(MouseEvent e) {
 				showCloseButton(e);
@@ -167,6 +194,35 @@ public class PlotGridComposite extends Composite {
 			@Override
 			public void mouseExit(MouseEvent e) {
 				hideCloseButton(e);
+			}
+		};
+
+		// Create a listener to get the right-clicked plot.
+		plotClickListener = new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				if (e.button == 3) {
+					// Determine the index of the plot that was clicked. If a
+					// plot could not be found, then use -1 for the index.
+					Composite comp = (Composite) e.widget;
+					int i;
+					for (i = 0; i < drawnPlots.size(); i++) {
+						DrawnPlot drawnPlot = drawnPlots.get(i);
+						if (comp == drawnPlot.childComposite) {
+							break;
+						}
+					}
+					final int plotIndex = (i < drawnPlots.size() ? i : -1);
+
+					// The Menu may need to be updated if a new plot was
+					// clicked.
+					if (plotIndex != clickedPlotIndex) {
+						clickedPlotIndex = plotIndex;
+						menuStale = true;
+					}
+				}
+
+				return;
 			}
 		};
 
@@ -266,6 +322,77 @@ public class PlotGridComposite extends Composite {
 	}
 
 	/**
+	 * Creates a context {@code Menu} for this {@code Composite} and all of the
+	 * child plots. It includes the following controls by default:
+	 * <ol>
+	 * <li>Remove Plot</li>
+	 * <li>Separator</li>
+	 * <li>Set Plot Type</li>
+	 * <li>Separator</li>
+	 * <li>Any implementation-specific plot actions...</li>
+	 * </ol>
+	 * 
+	 * @return The JFace {@code MenuManager} for the context {@code Menu}.
+	 */
+	private MenuManager createContextMenu() {
+		MenuManager contextMenuManager = new MenuManager();
+		contextMenuManager.createContextMenu(this);
+
+		// Create an action to remove the moused-over or clicked plot rendering.
+		final Action removeAction = new Action("Remove") {
+			@Override
+			public void run() {
+				// Remove the context Menu from the child Composite or it will
+				// be disposed with the plot!
+				drawnPlots.get(clickedPlotIndex).childComposite.setMenu(null);
+				// Now we can remove the plot.
+				removePlot(clickedPlotIndex);
+				clickedPlotIndex = -1;
+			}
+		};
+
+		// Create the root ActionTree for setting the plot category and type.
+		plotTypeTree = new ActionTree("Set Plot Type");
+
+		// When the Menu is about to be opened, we may need to refresh its
+		// contents based on the currently selected plot.
+		contextMenuManager.addMenuListener(new IMenuListener() {
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				// If the context Menu needs to be updated, re-populate it.
+				if (menuStale) {
+
+					manager.removeAll();
+
+					// Add all actions that require a drawn plot to be
+					// "selected"/mouse-over/clicked.
+					if (clickedPlotIndex != -1) {
+						// Add the remove action.
+						manager.add(removeAction);
+
+						// Add the plot categories and types.
+						manager.add(new Separator());
+						manager.add(plotTypeTree.getContributionItem());
+						// Update the plotTypeTree based on the selected plot's
+						// categories and types.
+						// TODO
+
+						// Add other implementation-specific actions...
+						// TODO
+						// manager.add(new Separator());
+					}
+
+					menuStale = false;
+				}
+
+				return;
+			}
+		});
+
+		return contextMenuManager;
+	}
+
+	/**
 	 * Adds a plot to be drawn inside the plot grid. Note that the same plot can
 	 * be added more than once.
 	 * 
@@ -329,7 +456,12 @@ public class PlotGridComposite extends Composite {
 
 				// Hook the new drawn plot up to the close button.
 				drawnPlot.childComposite
-						.addMouseTrackListener(closeButtonListener);
+						.addMouseTrackListener(plotHoverListener);
+
+				// Hook the new drawn plot up to the context Menu.
+				Menu contextMenu = contextMenuManager.getMenu();
+				drawnPlot.childComposite.setMenu(contextMenu);
+				drawnPlot.childComposite.addMouseListener(plotClickListener);
 
 				// Set up the layout and layout data for the new drawn plot.
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -451,7 +583,7 @@ public class PlotGridComposite extends Composite {
 			closeButton = new Button(comp, SWT.FLAT | SWT.CENTER);
 
 			// Add the close button listener to the close button, too.
-			closeButton.addMouseTrackListener(closeButtonListener);
+			closeButton.addMouseTrackListener(plotHoverListener);
 
 			closeButton.setText("X");
 			FontData[] smallFont = closeButton.getFont().getFontData();
