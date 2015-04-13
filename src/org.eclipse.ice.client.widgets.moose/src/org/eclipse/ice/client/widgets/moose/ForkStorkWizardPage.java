@@ -23,6 +23,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 /**
+ * The ForkStorkWizardPage is a subclass of WizardPage that 
+ * provides a Composite for the Wizard that takes the user's 
+ * desired MOOSE app name and GitHub credentials for forking the 
+ * MOOSE stork. 
  * 
  * @author Alex McCaskey
  *
@@ -30,24 +34,28 @@ import org.eclipse.swt.widgets.Text;
 public class ForkStorkWizardPage extends WizardPage {
 
 	/**
-	 * 
+	 * Reference to the Parent Composite.
 	 */
 	private Composite container;
 
 	/**
-	 * 
+	 * The text box for the Moose application name.
 	 */
 	private Text appName;
 
+	/**
+	 * The text box for the GitHub user name.
+	 */
 	private Text uName;
 	
 	/**
+	 * The text box for the user's password.
 	 * 
 	 */
 	private Text password;
 	
 	/**
-	 * 
+	 * The constructor
 	 * @param pageName
 	 */
 	protected ForkStorkWizardPage(String pageName) {
@@ -57,7 +65,8 @@ public class ForkStorkWizardPage extends WizardPage {
 	}
 
 	/**
-	 * 
+	 * Create a Composite with fields for the application name 
+	 * and GitHub user credentials. 
 	 */
 	@Override
 	public void createControl(Composite parent) {
@@ -105,7 +114,7 @@ public class ForkStorkWizardPage extends WizardPage {
 	}
 
 	/**
-	 * 
+	 * Return the Moose application name
 	 * @return
 	 */
 	public String getMooseAppName() {
@@ -113,7 +122,7 @@ public class ForkStorkWizardPage extends WizardPage {
 	}
 	
 	/**
-	 * 
+	 * Return the GitHub user name. 
 	 * @return
 	 */
 	public String getGitUserName() {
@@ -121,7 +130,7 @@ public class ForkStorkWizardPage extends WizardPage {
 	}
 	
 	/**
-	 * 
+	 * Return the GitHub password. 
 	 * @return
 	 */
 	public String getGitPassword() {

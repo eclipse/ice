@@ -51,56 +51,78 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
+ * The ForkStorkHandler displays a Wizard to the user 
+ * to gather a new MOOSE application name and the users GitHub 
+ * credentials, and then forks idaholab/stork and renames the 
+ * repository to the provided application name. 
  * 
  * @author Alex McCaskey
  *
  */
 public class ForkStorkHandler extends AbstractHandler {
 
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		// Create a new Generate YAML Wizard and Dialog
+		// Local Declarations
 		Shell shell = HandlerUtil.getActiveWorkbenchWindow(event).getShell();
+		String sep = System.getProperty("file.separator"), appName = "", 
+				gitHubUser = "", password = "", remoteURI = "";
+		
+		// Create a new ForkStorkWizard and Dialog
 		ForkStorkWizard wizard = new ForkStorkWizard();
 		WizardDialog dialog = new WizardDialog(shell, wizard);
-		Git result = null;
-		String sep = System.getProperty("file.separator");
-
+		
 		// Open the dialog
 		if (dialog.open() != 0) {
 			return null;
 		}
 
-		String appName = wizard.getMooseAppName();
-		String gitHubUser = wizard.getGitUsername();
-		String password = wizard.getGitPassword();
-		String remoteURI = "https://github.com/" + gitHubUser + "/" + appName;
+		// Get the User Input Data
+		appName = wizard.getMooseAppName();
+		gitHubUser = wizard.getGitUsername();
+		password = wizard.getGitPassword();
+		
+		// Construct the Remote URI for the repo
+		remoteURI = "https://github.com/" + gitHubUser + "/" + appName;
+		
+		// Create a File reference to the repo in the Eclipse workspace
 		File workspace = new File(ResourcesPlugin.getWorkspace().getRoot()
-				.getLocation().toOSString() + sep + appName);
-		
-		System.out.println(appName + ", " + gitHubUser + ", ");
-		
+				.getLocation().toOSString()
+				+ sep + appName);
+
+		// Create a EGit-GitHub RepositoryService and Id to 
+		// connect and create our Fork
 		RepositoryService service = new RepositoryService();
-		service.getClient().setCredentials(gitHubUser, password);
 		RepositoryId id = new RepositoryId("idaholab", "stork");
+		
+		// Set the user's GitHub credentials
+		service.getClient().setCredentials(gitHubUser, password);
+		
+		// Fork the Repository!!!
 		try {
+			// Fork and get the repo
 			Repository repo = service.forkRepository(id);
-			//GitHubClient client = service.getClient();
-			System.out.println(repo.getCloneUrl() + ", " + repo.getName());
-			
+
+			// Reset the project name to the provided app name
 			Map<String, Object> fields = new HashMap<String, Object>();
 			fields.put("name", appName);
-			
+
+			// Edit the name
 			service.editRepository(repo, fields);
-			
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 
+		// Now that it is all set on the GitHub end, 
+		// Let's pull it down into our workspace
 		try {
-			result = Git.cloneRepository().setURI(remoteURI)
-					.setDirectory(workspace).call();
+			Git result = Git.cloneRepository().setURI(remoteURI).setDirectory(workspace)
+					.call();
 		} catch (InvalidRemoteException e1) {
 			e1.printStackTrace();
 		} catch (TransportException e1) {
@@ -109,16 +131,6 @@ public class ForkStorkHandler extends AbstractHandler {
 			e1.printStackTrace();
 		}
 
-		try {
-			System.out.println("HELLO: " + result.status().call().toString());
-		} catch (NoWorkTreeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		result.close();
 
 		return null;
 

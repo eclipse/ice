@@ -19,6 +19,9 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbenchWindow;
 
 /**
+ * The ForkStorkWizard is a subclass of Wizard that 
+ * provides a ForkStorkWizardPage to get user input for 
+ * forking the MOOSE Stork. 
  * 
  * @author Alex McCaskey
  *
@@ -31,12 +34,13 @@ public class ForkStorkWizard extends Wizard {
 	protected IWorkbenchWindow workbenchWindow;
 
 	/**
-	 * 
+	 * Reference to the ForStorkWizardPage 
 	 */
 	private ForkStorkWizardPage page;
 	
 	/**
-	 * 
+	 * List of retrieved user input data 
+	 * from the ForkStorkWizardPage
 	 */
 	private ArrayList<String> forkData;
 	
@@ -93,6 +97,7 @@ public class ForkStorkWizard extends Wizard {
 	}
 
 	/**
+	 * Return the input Moose App name.
 	 * 
 	 * @return
 	 */
@@ -100,10 +105,15 @@ public class ForkStorkWizard extends Wizard {
 		return forkData.get(0);
 	}
 	
+	/**
+	 * Retrieve the users GitHub username
+	 * @return
+	 */
 	public String getGitUsername() {
 		return forkData.get(1);
 	}
 	
+	// Retrieve the GitHub password
 	public String getGitPassword() {
 		return forkData.get(2);
 	}
