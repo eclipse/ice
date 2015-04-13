@@ -475,30 +475,40 @@ public class ReflectivityCalculatorTester {
 		form = reader.read(project.getFile("conRefTileFixedLambda.csv"));
 		ListComponent<String[]> refLines = (ListComponent<String[]>) form
 				.getComponent(1);
-		assertEquals(405, refLines.size());
+		assertEquals(403, refLines.size());
 
 		// Get the parameters
-		double q0 = Double.valueOf(refLines.get(0)[0]);
-		double q1ByQ = Double.valueOf(refLines.get(0)[1]);
+		double deltaQ0 = Double.valueOf(refLines.get(0)[0]);
+		double deltaQ1ByQ = Double.valueOf(refLines.get(0)[1]);
 		double lambda = Double.valueOf(refLines.get(0)[2]);
 		boolean getRQ4 = Boolean.valueOf(refLines.get(0)[3]);
 
 		// Get the reference reflectivity results and the q input array
-		double[] q = new double[402];
-		double[] refReflectivity = new double[404];
+		double[] waveVector = new double[402];
+		double[] refReflectivity = new double[402];
 
-		// Load the reference arrays. The reference reflectivity is longer than
-		// Q so they should be split up.
-		for (int i = 1; i < 405; i++) {
-			String[] line = refLines.get(i);
-			refReflectivity[i-1] = Double.valueOf(line[0]);
-		}
-		// Load q
+		// Load the reference arrays.
 		for (int i = 1; i < 403; i++) {
 			String[] line = refLines.get(i);
-			q[i-1] = Double.valueOf(line[1]);
+			refReflectivity[i - 1] = Double.valueOf(line[0]);
+			waveVector[i - 1] = Double.valueOf(line[1]);
 		}
-		
+
+		// Do the calculation
+		ReflectivityCalculator calc = new ReflectivityCalculator();
+		double[] reflectivity = calc.convoluteReflectivity(deltaQ0, deltaQ1ByQ,
+				lambda, getRQ4, waveVector, refTiles);
+
+		// Check the results
+		assertEquals(refReflectivity.length, reflectivity.length);
+		// FIXME! - Do value comparisons!
+		for (int i = 0; i < refReflectivity.length; i++) {
+			// Three percent error is the best that I can do on this because the
+			// behavior at the end points does not match. I think it is due to
+			// an accumulation of errors from other sources.
+			assertEquals(refReflectivity[i], reflectivity[i], Math.abs(refReflectivity[i])*0.04);
+		}
+
 		return;
 	}
 

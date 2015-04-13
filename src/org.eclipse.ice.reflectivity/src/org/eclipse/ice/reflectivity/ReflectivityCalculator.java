@@ -52,7 +52,7 @@ public class ReflectivityCalculator {
 	 * @param wavelength
 	 *            the wavelength of the incident neutrons
 	 * @param tiles
-	 *            the list of TIles that contains the physical parameters needed
+	 *            the list of Tiles that contains the physical parameters needed
 	 *            for the calculation, including the scattering densities,
 	 *            absorption parameters and thicknesses.
 	 * @return the squared modulus of the specular reflectivity
@@ -125,11 +125,11 @@ public class ReflectivityCalculator {
 	 * @param q
 	 *            the wave vector (Q) plus additional space for the convolution.
 	 *            This array should have length = numPoints + numLowPoints.
-	 * @param delQ0
+	 * @param deltaQ0
 	 *            the zeroth order term of a Taylor expansion of the
 	 *            reflectometer resolution function dQ = dQ_0 + (dQ/Q)_1 x Q +
 	 *            ...
-	 * @param delQ1oQ
+	 * @param deltaQ1ByQ
 	 *            the zeroth order term of the Q resolution Taylor expansion
 	 * @param wavelength
 	 *            the wavelength of the incident neutrons
@@ -147,9 +147,9 @@ public class ReflectivityCalculator {
 	 *            OUTPUT - the specular reflectivity values for each Q in q
 	 *            convoluted with instrumental resolution.
 	 */
-	public void convolute(double[] waveVector, double delQ0, double delQ1oQ,
-			double wavelength, int numPoints, int numLowPoints,
-			int numHighPoints, double[] refFit) {
+	public void convolute(double[] waveVector, double deltaQ0,
+			double deltaQ1ByQ, double wavelength, int numPoints,
+			int numLowPoints, int numHighPoints, double[] refFit) {
 
 		double ln2 = Math.log(2.0);
 		double qEff = 0.0, qRes = 0.0, rExp = 0.0, rNorm = 0.0;
@@ -165,7 +165,7 @@ public class ReflectivityCalculator {
 			} else {
 				qEff = waveVector[i];
 			}
-			double qDel = delQ0 + qEff * delQ1oQ;
+			double qDel = deltaQ0 + qEff * deltaQ1ByQ;
 			double twSgSq = 2.0 * qDel * qDel / (8.0 * ln2);
 			if (twSgSq < 1.0e-10) {
 				twSgSq = 1.0e-10;
@@ -229,11 +229,11 @@ public class ReflectivityCalculator {
 	 * @param q
 	 *            the wave vector (Q) plus additional space for the convolution.
 	 *            This array should have length = numPoints + numLowPoints.
-	 * @param delQ0
+	 * @param deltaQ0
 	 *            the zeroth order term of a Taylor expansion of the
 	 *            reflectometer resolution function dQ = dQ_0 + (dQ/Q)_1 x Q +
 	 *            ...
-	 * @param delQ1oQ
+	 * @param deltaQ1ByQ
 	 *            the zeroth order term of the Q resolution Taylor expansion
 	 * @param numPoints
 	 *            the number of points in the wave vector
@@ -241,13 +241,13 @@ public class ReflectivityCalculator {
 	 *         used for convolution of the data with the resolution function.
 	 *         Returned by ExtResFixedLambda.
 	 */
-	public int getLowExtensionLength(double[] waveVector, double delQ0,
-			double delQ1oQ, int numPoints) {
+	public int getLowExtensionLength(double[] waveVector, double deltaQ0,
+			double deltaQ1ByQ, int numPoints) {
 
 		double ln2 = Math.log(2.0);
 
 		// Determine the loq-Q extension
-		double qDel = delQ0 + waveVector[0] * delQ1oQ;
+		double qDel = deltaQ0 + waveVector[0] * deltaQ1ByQ;
 		double qStep = waveVector[1] - waveVector[0];
 		double twSgSq = Math.max(2.0 * qDel * qDel / (8.0 * ln2), 1.0e-10);
 		int numLowPoints = 0;
@@ -268,11 +268,11 @@ public class ReflectivityCalculator {
 	 * @param q
 	 *            the wave vector (Q) plus additional space for the convolution.
 	 *            This array should have length = numPoints + numLowPoints.
-	 * @param delQ0
+	 * @param deltaQ0
 	 *            the zeroth order term of a Taylor expansion of the
 	 *            reflectometer resolution function dQ = dQ_0 + (dQ/Q)_1 x Q +
 	 *            ...
-	 * @param delQ1oQ
+	 * @param deltaQ1ByQ
 	 *            the zeroth order term of the Q resolution Taylor expansion
 	 * @param numPoints
 	 *            the number of points in the wave vector
@@ -280,13 +280,13 @@ public class ReflectivityCalculator {
 	 *         used for convolution of the data with the resolution function.
 	 *         Returned by ExtResFixedLambda.
 	 */
-	public int getHighExtensionLength(double[] waveVector, double delQ0,
-			double delQ1oQ, int numPoints) {
+	public int getHighExtensionLength(double[] waveVector, double deltaQ0,
+			double deltaQ1ByQ, int numPoints) {
 
 		double ln2 = Math.log(2.0);
 
 		// Determine the high-Q extension
-		double qDel = delQ0 + waveVector[numPoints - 1] * delQ1oQ;
+		double qDel = deltaQ0 + waveVector[numPoints - 1] * deltaQ1ByQ;
 		double qStep = waveVector[numPoints - 1] - waveVector[numPoints - 2];
 		double twSgSq = 2.0 * qDel * qDel / (8.0 * ln2);
 		int numHighPoints = 0;
@@ -438,8 +438,8 @@ public class ReflectivityCalculator {
 			// negative.
 			gDMid = refSlab.thickness - 0.5 * totalThickness
 					* (refSlab.interfaceWidth + secondRefSlab.interfaceWidth);
-			System.out.println("GDMid[" + i + "] = " + gDMid + ", " + refSlab.thickness
-					+ ", " + refSlab.interfaceWidth + ", "
+			System.out.println("GDMid[" + i + "] = " + gDMid + ", "
+					+ refSlab.thickness + ", " + refSlab.interfaceWidth + ", "
 					+ secondRefSlab.interfaceWidth);
 			if (gDMid <= 1.0e-10) {
 				// The interfaces are overlapping. Step through the entire slab
@@ -486,8 +486,8 @@ public class ReflectivityCalculator {
 					tmpSlab = generatedSlabs[nGlay + j - numRough / 2 - 1];
 					updateTileByInterface(tmpSlab, thirdRefSlab, refSlab,
 							zInt[j], rufInt[j]);
-					System.out.println("q = " + (nGlay + j - numRough/2 -1) + " "
-							+ tmpSlab.scatteringLength);
+					System.out.println("q = " + (nGlay + j - numRough / 2 - 1)
+							+ " " + tmpSlab.scatteringLength);
 				}
 				nGlay += numRough / 2 + 1;
 				// Central, bulk-like portion
@@ -520,7 +520,7 @@ public class ReflectivityCalculator {
 			tmpSlab = generatedSlabs[nGlay + i - numRough / 2 - 1];
 			updateTileByInterface(tmpSlab, secondRefSlab, refSlab, zInt[i],
 					rufInt[i]);
-			System.out.println("q = " + (nGlay + i - numRough/2 - 1) + " "
+			System.out.println("q = " + (nGlay + i - numRough / 2 - 1) + " "
 					+ tmpSlab.scatteringLength);
 		}
 		nGlay += numRough / 2 + 1;
@@ -624,8 +624,86 @@ public class ReflectivityCalculator {
 		return 0.5 * (xm1 + x + tao * (x - xm1) + x + xp1 + beta * (xp1 - x))
 				- x;
 	}
-	
-	public void convoluteReflectivity() {
-		
+
+	/**
+	 * This operation computes the convolution of the reflectivity with a
+	 * variable Gaussian resolution function.
+	 * 
+	 * @param deltaQ0
+	 *            - FIXME!
+	 * @param deltaQ1ByQ
+	 *            - FIXME!
+	 * @param wavelength
+	 *            - FIXME!
+	 * @param getRQ4
+	 *            - FIXME! True if the routine should compute rq^4, false
+	 *            otherwise.
+	 * @param waveVector
+	 *            The wave vector - FIXME!
+	 * @param tiles
+	 *            The tiles that define the layered structure of the materials.
+	 */
+	public double[] convoluteReflectivity(double deltaQ0, double deltaQ1ByQ,
+			double wavelength, boolean getRQ4, double[] waveVector, Tile[] tiles) {
+
+		// Local Declarations
+		double qEff = 0.0;
+		int numPoints = waveVector.length, numLowPoints = 0, numHighPoints = 0;
+		double[] reflectivity = new double[numPoints];
+
+		// Determine the length of the high- and low-Q extensions
+		numLowPoints = getLowExtensionLength(waveVector, deltaQ0, deltaQ1ByQ,
+				numPoints);
+		numHighPoints = getHighExtensionLength(waveVector, deltaQ0, deltaQ1ByQ,
+				numPoints);
+
+		// Extend the wave vector in a temporary array
+		double[] tempWaveVector = new double[numLowPoints + numHighPoints
+				+ numPoints];
+		double waveVecStep = waveVector[1] - waveVector[0];
+		for (int i = 0; i < numLowPoints; i++) {
+			tempWaveVector[i] = waveVector[0] - waveVecStep
+					* ((double) numLowPoints + 1 - i);
+		}
+		for (int i = 0; i < numPoints; i++) {
+			tempWaveVector[numLowPoints + i] = waveVector[i];
+		}
+		waveVecStep = waveVector[numPoints - 1] - waveVector[numPoints - 2];
+		for (int i = 0; i < numHighPoints; i++) {
+			tempWaveVector[i + numLowPoints + numPoints] = waveVector[numPoints - 1]
+					+ waveVecStep * ((double) i);
+		}
+
+		// Create a temporary array to hold the extended reflectivity.
+		double[] tempReflectivity = new double[numPoints+numLowPoints+numHighPoints];
+		// Generate reflectivity values for convolution.
+		// Calculate perfect-resolution reflectivity on extended wave vector
+		for (int i = 0; i < numPoints + numLowPoints + numHighPoints; i++) {
+			if (tempWaveVector[i] < 1.0e-10) {
+				qEff = 1.0e-10;
+			} else {
+				qEff = tempWaveVector[i];
+			}
+			tempReflectivity[i] = getModSqrdSpecRef(qEff, wavelength, tiles);
+		}
+
+		// Convolve with instrumental resolution
+		convolute(tempWaveVector, deltaQ0, deltaQ1ByQ, wavelength, numPoints,
+				numLowPoints, numHighPoints, tempReflectivity);
+
+		// Transfer the results to the reflectivity array.
+		for (int i = 0; i < numPoints; i++) {
+			reflectivity[i] = tempReflectivity[i];
+		}
+		// Calculate RQ^4 if needed. FIXME! This is not covered by the current
+		// tests and should actually be a separate function!
+		if (getRQ4) {
+			for (int i = 0; i < numPoints; i++) {
+				reflectivity[i] = Math.pow(waveVector[i], 4.0)
+						* reflectivity[i];
+			}
+		}
+
+		return reflectivity;
 	}
 }
