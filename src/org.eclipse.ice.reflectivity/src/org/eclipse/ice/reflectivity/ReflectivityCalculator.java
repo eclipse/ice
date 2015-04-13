@@ -624,4 +624,8 @@ public class ReflectivityCalculator {
 		return 0.5 * (xm1 + x + tao * (x - xm1) + x + xp1 + beta * (xp1 - x))
 				- x;
 	}
+	
+	public void convoluteReflectivity() {
+		
+	}
 }

@@ -457,4 +457,49 @@ public class ReflectivityCalculatorTester {
 		return;
 	}
 
+	/**
+	 * This operation tests
+	 * {@link ReflectivityCalculator#convoluteReflectivity()}.
+	 */
+	@Test
+	public void testConvoluteReflectivity() {
+
+		// Load the reference tiles
+		Form form = reader.read(project.getFile("getSpecRefSqrdMod_q841.csv"));
+		ListComponent<String[]> tileLines = (ListComponent<String[]>) form
+				.getComponent(1);
+		Tile[] refTiles = loadTiles(tileLines);
+		assertEquals(173, refTiles.length);
+
+		// Load Parameters and reference data
+		form = reader.read(project.getFile("conRefTileFixedLambda.csv"));
+		ListComponent<String[]> refLines = (ListComponent<String[]>) form
+				.getComponent(1);
+		assertEquals(405, refLines.size());
+
+		// Get the parameters
+		double q0 = Double.valueOf(refLines.get(0)[0]);
+		double q1ByQ = Double.valueOf(refLines.get(0)[1]);
+		double lambda = Double.valueOf(refLines.get(0)[2]);
+		boolean getRQ4 = Boolean.valueOf(refLines.get(0)[3]);
+
+		// Get the reference reflectivity results and the q input array
+		double[] q = new double[402];
+		double[] refReflectivity = new double[404];
+
+		// Load the reference arrays. The reference reflectivity is longer than
+		// Q so they should be split up.
+		for (int i = 1; i < 405; i++) {
+			String[] line = refLines.get(i);
+			refReflectivity[i-1] = Double.valueOf(line[0]);
+		}
+		// Load q
+		for (int i = 1; i < 403; i++) {
+			String[] line = refLines.get(i);
+			q[i-1] = Double.valueOf(line[1]);
+		}
+		
+		return;
+	}
+
 }
