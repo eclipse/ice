@@ -58,7 +58,7 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  */
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		IUpdateableListener {
-
+	
 	/**
 	 * The ResourceComponent drawn by this page.
 	 */
@@ -251,37 +251,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	}
 
 	/**
-	 * This operation overrides the default/abstract implementation of
-	 * ISelectionListener.selectionChanged to display the resource selected in
-	 * the ICEResourceView.
-	 * 
-	 * @param part
-	 *            The IWorkbenchPart that called this function.
-	 * @param selection
-	 *            The ISelection chosen in the part parameter.
-	 */
-	@Override
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-
-		// If the selection comes from the Resource View, update the view.
-		if (ICEResourceView.ID.equals(part.getSite().getId())) {
-			ICEResource selectedResource = resourceView
-					.getResourceFromSelection(selection);
-
-			// Refresh the page's widgets based on the selected resource.
-			if (selectedResource != null) {
-				try {
-					showResource(selectedResource);
-				} catch (PartInitException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		return;
-	}
-
-	/**
 	 * Updates the Resource Page's widgets to render the specified Resource.
 	 * <p>
 	 * <b>Note:</b> This method assumes it is called from the UI thread.
@@ -291,7 +260,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 *            The resource to render. Assumed not to be {@code null}.
 	 * @throws PartInitException
 	 */
-	private void showResource(ICEResource resource) throws PartInitException {
+	void showResource(ICEResource resource) throws PartInitException {
 
 		// TODO This method has several return statements, making it a little
 		// hard to read. It should be updated and simplified.
@@ -599,5 +568,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		}
 
 		return;
+	}
+	
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		// Do nothing
 	}
 }

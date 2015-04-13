@@ -30,6 +30,8 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -55,6 +57,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -66,10 +69,10 @@ import ca.odell.glazedlists.swt.DefaultEventTableViewer;
  * This class is a ViewPart that creates a tree of text files and a tree of
  * image files collected as ICEResourceComponents.
  * 
- * @authors Jay Jay Billings, Taylor Patterson, Jordan Deyton
+ * @authors Jay Jay Billings, Taylor Patterson, Jordan Deyton, Anna Wojtowicz
  */
 public class ICEResourceView extends PlayableViewPart implements
-		IUpdateableListener, IPartListener2 {
+		IUpdateableListener, IPartListener2, IDoubleClickListener {
 
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEResourceView";
 
@@ -89,6 +92,14 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * </p>
 	 */
 	private ResourceComponent resourceComponent;
+	
+	/**
+	 * The ICEResourcePage managed by this view. This changes based on the 
+	 * currently active ICEFormEditor. This page should also refer to the same 
+	 * ResourceComponent used by this view.
+	 */
+	private ICEResourcePage resourcePage;
+	
 	// -------------------------------------- //
 
 	/**
@@ -173,7 +184,8 @@ public class ICEResourceView extends PlayableViewPart implements
 		if (editor != null) {
 			// Clear the ResourceComponent and related UI pieces.
 			setResourceComponent(null);
-
+			// Unset the reference to the ICEResourcePage.
+			resourcePage = null;
 			// Unset the reference to the active editor.
 			editor = null;
 		}
@@ -216,8 +228,9 @@ public class ICEResourceView extends PlayableViewPart implements
 			// to update the browser, but a solution to this has not been found
 			// yet.
 
-			// Set the reference to the new active editor.
+			// Set the reference to the new active editor and its resource page.
 			editor = activeEditor;
+			resourcePage = editor.getResourcePage();
 		}
 
 		return;
@@ -314,6 +327,8 @@ public class ICEResourceView extends PlayableViewPart implements
 		imageTab.setControl(resourceTreeViewer.getControl());
 		// Register this view as a SelectionProvider
 		getSite().setSelectionProvider(resourceTreeViewer);
+		// Registered the view as a double click listener of the TreeViewer
+		resourceTreeViewer.addDoubleClickListener(this);
 
 		// Add a listener to catch tab selection changes.
 		// NOTE: In Windows, this event is fired instantly, so this listener
@@ -474,6 +489,25 @@ public class ICEResourceView extends PlayableViewPart implements
 		return;
 	}
 
+	@Override
+	public void doubleClick(DoubleClickEvent event) {
+		
+		// Get the associated resource
+		ISelection selection = event.getSelection();
+		ICEResource selectedResource = getResourceFromSelection(selection);
+	
+		// If it's valid, try to display it on the ResourcePage
+		if (selectedResource != null) {
+			try {
+				resourcePage.showResource(selectedResource);
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -937,5 +971,4 @@ public class ICEResourceView extends PlayableViewPart implements
 			}
 		}
 	}
-
 }
