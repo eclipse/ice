@@ -279,7 +279,7 @@ public class CSVPlot implements IPlot {
 			// Create the the plotting canvas
 			editor.createPartControl(parent);
 			// Add the new plot to the editor (with time slider disabled)
-			editor.showPlotProvider(plotProvider, false);
+			editor.showPlotProvider(plotProvider, true);
 
 			// We need to return the Composite used to render the CSV plot.
 			child = editor.getPlotCanvas();
