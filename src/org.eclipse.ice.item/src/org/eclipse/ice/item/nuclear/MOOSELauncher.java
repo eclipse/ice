@@ -175,15 +175,23 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	@Override
 	protected String updateExecutablePath(String installDir, String executable) {
 
+		// Local declarations
+		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
+		String customExecValue = "";
+		if (execDataComp != null && customExecEntry != null 
+				&& customExecEntry.getValue() != null) {
+			customExecValue = 
+					execDataComp.retrieveEntry(customExecName).getValue();
+		}
+		
 		// A HashMap of MOOSE product executables that can be launched
 		HashMap<String, String> executableMap = new HashMap<String, String>();
-		DataComponent execDataComp = (DataComponent) form.getComponent(5);
 		executableMap.put("MARMOT", "marmot");
 		executableMap.put("BISON", "bison");
 		executableMap.put("RELAP-7", "relap-7");
 		executableMap.put("RAVEN", "raven");
 		executableMap.put("MOOSE_TEST", "moose_test");
-		executableMap.put(customExecName, execDataComp.retrieveEntry(customExecName).getValue());
+		executableMap.put(customExecName, customExecValue);
 		executableMap.put(yamlSyntaxGenerator, yamlSyntaxGenerator);
 
 		// Create the command that will launch the MOOSE product
@@ -499,6 +507,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	@Override
 	public void update(IUpdateable component) {
 		
+		// If the component is a DataComponent, then toggle the custom MOOSE
+		// app entry on/off
 		if (component instanceof DataComponent) {
 			
 			// Grab the name of the current executable selected by the user
@@ -518,6 +528,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 				// selected another app
 				customExecEntry.update(parentEntry.getName(), "false");
 			}
+		} else {
+			super.update(component);
 		}
 		
 		return;		

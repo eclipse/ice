@@ -185,7 +185,7 @@ public class MOOSELauncherTester {
 		DataComponent execDataComp = 
 				(DataComponent) launcher.getForm().getComponent(5);
 		final String customExecName = "Custom executable name";
-		Entry standardExecEntry = execDataComp.retrieveEntry("Executables");
+		Entry standardExecEntry = execDataComp.retrieveEntry("Executable");
 		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
 		
 		// Verify the DataComponent that holds the executable Entries
