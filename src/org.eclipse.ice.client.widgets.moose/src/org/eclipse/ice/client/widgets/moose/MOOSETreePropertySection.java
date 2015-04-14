@@ -108,7 +108,18 @@ public class MOOSETreePropertySection extends TreePropertySection {
 			// Create an ICellContentProvider for a column that should have a
 			// checkbox in each cell. Then hook it up to the column as a label
 			// provider and editing support.
-			contentProvider = new CheckboxCellContentProvider(tableViewer);
+			contentProvider = new CheckboxCellContentProvider(tableViewer) {
+				@Override
+				public boolean setValue(Object element, Object value) {
+					boolean changed = super.setValue(element, value);
+					// If the value changed, mark the associated ICEFormEditor
+					// as dirty.
+					if (changed && getFormEditor() != null) {
+						getFormEditor().setDirty(true);
+					}
+					return changed;
+				}
+			};
 			checkColumn.setLabelProvider(new CheckboxCellLabelProvider(
 					contentProvider));
 			checkColumn.setEditingSupport(new CheckboxCellEditingSupport(
@@ -128,7 +139,18 @@ public class MOOSETreePropertySection extends TreePropertySection {
 			// Create an ICellContentProvider for a column that shows the
 			// descriptions of Entries. Then hook it up as a label provider and
 			// for editing support.
-			contentProvider = new DescriptionCellContentProvider();
+			contentProvider = new DescriptionCellContentProvider() {
+				@Override
+				public boolean setValue(Object element, Object value) {
+					boolean changed = super.setValue(element, value);
+					// If the value changed, mark the associated ICEFormEditor
+					// as dirty.
+					if (changed && getFormEditor() != null) {
+						getFormEditor().setDirty(true);
+					}
+					return changed;
+				}
+			};
 			descriptionColumn.setLabelProvider(new CellColumnLabelProvider(
 					contentProvider));
 			descriptionColumn.setEditingSupport(new TextCellEditingSupport(

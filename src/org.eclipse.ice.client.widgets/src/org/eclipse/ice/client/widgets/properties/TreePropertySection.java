@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.ice.client.common.TreeCompositeViewer;
+import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
@@ -168,6 +170,12 @@ public class TreePropertySection extends AbstractPropertySection implements
 	private Button delete;
 
 	// -------------------------- //
+
+	/**
+	 * The currently associated {@link ICEFormEditor} to which the {@link #tree}
+	 * belongs, or null if one does not exist.
+	 */
+	private ICEFormEditor editor;
 
 	/**
 	 * The default constructor.
@@ -328,6 +336,14 @@ public class TreePropertySection extends AbstractPropertySection implements
 		if (add != null) {
 			boolean canAdd = (canAdd(tree) != null);
 			add.setEnabled(canAdd);
+		}
+
+		// Try to find the associated ICEFormEditor. It will be marked as dirty
+		// if the properties change.
+		if (part instanceof TreeCompositeViewer) {
+			editor = ((TreeCompositeViewer) part).getFormEditor();
+		} else {
+			editor = null;
 		}
 
 		// Refresh the type Combo widget.
@@ -613,7 +629,18 @@ public class TreePropertySection extends AbstractPropertySection implements
 			column.setResizable(true);
 			// Create an ICellContentProvider, then use it to generate the
 			// column labels and provide editing support for the name column.
-			contentProvider = new NameCellContentProvider();
+			contentProvider = new NameCellContentProvider() {
+				@Override
+				public boolean setValue(Object element, Object value) {
+					boolean changed = super.setValue(element, value);
+					// If the value changed, mark the associated ICEFormEditor
+					// as dirty.
+					if (changed && editor != null) {
+						editor.setDirty(true);
+					}
+					return changed;
+				}
+			};
 			nameColumn.setLabelProvider(new CellColumnLabelProvider(
 					contentProvider));
 			nameColumn.setEditingSupport(new TextCellEditingSupport(
@@ -628,7 +655,18 @@ public class TreePropertySection extends AbstractPropertySection implements
 			column.setResizable(true);
 			// Create an ICellContentProvider, then use it to generate the
 			// column labels and provide editing support for the value column.
-			contentProvider = new ValueCellContentProvider();
+			contentProvider = new ValueCellContentProvider() {
+				@Override
+				public boolean setValue(Object element, Object value) {
+					boolean changed = super.setValue(element, value);
+					// If the value changed, mark the associated ICEFormEditor
+					// as dirty.
+					if (changed && editor != null) {
+						editor.setDirty(true);
+					}
+					return changed;
+				}
+			};
 			valueColumn.setLabelProvider(new CellColumnLabelProvider(
 					contentProvider));
 			valueColumn.setEditingSupport(new ComboCellEditingSupport(
@@ -895,6 +933,16 @@ public class TreePropertySection extends AbstractPropertySection implements
 		scrollComposite.setRedraw(true);
 
 		return;
+	}
+
+	/**
+	 * Gets the currently associated {@link ICEFormEditor} to which the
+	 * {@link #tree} belongs, or null if one does not exist.
+	 * 
+	 * @return The associated {@code ICEFormEditor}, or {@code null} if none.
+	 */
+	protected ICEFormEditor getFormEditor() {
+		return editor;
 	}
 
 	// ---- Implements IUpdateableListener ---- //

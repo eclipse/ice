@@ -27,6 +27,11 @@ Import-Package: com.jme3.math,
  org.osgi.framework;version="1.7.0"
 Require-Bundle: org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
  org.eclipse.ice.datastructures;bundle-version="2.0.0",
- org.eclipse.jface
+ org.eclipse.jface,
+ org.eclipse.jgit;bundle-version="3.2.0",
+ org.eclipse.egit;bundle-version="3.2.0",
+ org.eclipse.egit.core;bundle-version="3.2.0",
+ org.eclipse.egit.github.core;bundle-version="3.2.0",
+ org.eclipse.cdt.core;bundle-version="5.6.0"
 Service-Component: OSGI-INF/MOOSEEditorComponent.xml
 Export-Package: org.eclipse.ice.client.widgets.moose

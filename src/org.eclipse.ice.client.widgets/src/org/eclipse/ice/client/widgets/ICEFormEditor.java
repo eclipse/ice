@@ -310,7 +310,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @param value
 	 */
-	void setDirty(boolean value) {
+	public void setDirty(boolean value) {
 		// begin-user-code
 
 		// Set the dirty value and fire a property change
@@ -684,7 +684,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 					.getWorkbenchWindow().getActivePage()
 					.findView(getTreeCompositeViewerID());
 			// Set the tree as input to the tree view
-			treeView.setInput(tree);
+			treeView.setInput(tree, this);
 
 			// Register the FormEditor to receive updates from the TreeComposite
 			// and its children because they are being edited externally but
