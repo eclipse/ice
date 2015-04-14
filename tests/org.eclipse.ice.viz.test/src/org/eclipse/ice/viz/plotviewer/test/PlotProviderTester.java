@@ -15,6 +15,7 @@ package org.eclipse.ice.viz.plotviewer.test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.eclipse.ice.viz.plotviewer.PlotProvider;
@@ -90,6 +91,91 @@ public class PlotProviderTester {
 		assertEquals(seriesMap, newSeriesMap);
 		assertEquals(seriesMap.size(), newSeriesMap.size());
 
+		return;
+	}
+
+	/**
+	 * Checks that SeriesProviders can be correctly removed from the
+	 * PlotProvider.
+	 */
+	@Test
+	public void checkRemoveSeries() {
+
+		// A PlotProvider whose remove functionality will be tested. No other
+		// tests should interfere, hence we do not use the class variable.
+		PlotProvider plotProvider = new PlotProvider();
+
+		// Series and times to add and later *remove*. Each series is added for
+		// each time, resulting in 4 total additions.
+		SeriesProvider series1 = new SeriesProvider();
+		SeriesProvider series2 = new SeriesProvider();
+		double time1 = 42.0;
+		double time2 = 343.1337;
+
+		// Used as the return value from getSeriesAtTime(). This is necessary to
+		// verify that series were in fact removed from the PlotProvider.
+		List<SeriesProvider> seriesProviders;
+
+		// Add each series to each time.
+		plotProvider.addSeries(time1, series1);
+		plotProvider.addSeries(time2, series1);
+		plotProvider.addSeries(time1, series2);
+		plotProvider.addSeries(time2, series2);
+
+		// Verify that all series are associated with each time.
+		seriesProviders = plotProvider.getSeriesAtTime(time1);
+		assertEquals(2, seriesProviders.size());
+		assertTrue(seriesProviders.contains(series1));
+		assertTrue(seriesProviders.contains(series2));
+		seriesProviders = plotProvider.getSeriesAtTime(time2);
+		assertEquals(2, seriesProviders.size());
+		assertTrue(seriesProviders.contains(series1));
+		assertTrue(seriesProviders.contains(series2));
+
+		// Try some invalid remove commands. Nothing should change.
+		plotProvider.removeSeries(-1.0, series1);
+		plotProvider.removeSeries(time1, null);
+
+		// Verify that nothing changed.
+		seriesProviders = plotProvider.getSeriesAtTime(time1);
+		assertEquals(2, seriesProviders.size());
+		assertTrue(seriesProviders.contains(series1));
+		assertTrue(seriesProviders.contains(series2));
+		seriesProviders = plotProvider.getSeriesAtTime(time2);
+		assertEquals(2, seriesProviders.size());
+		assertTrue(seriesProviders.contains(series1));
+		assertTrue(seriesProviders.contains(series2));
+
+		// Now remove series 1 from time 1, and remove series 2 from time 2.
+		plotProvider.removeSeries(time1, series1);
+		plotProvider.removeSeries(time2, series2);
+
+		// Series 2 should be the only series for time 1. Likewise, series 1
+		// should be the only series for time 2.
+		seriesProviders = plotProvider.getSeriesAtTime(time1);
+		assertEquals(1, seriesProviders.size());
+		assertFalse(seriesProviders.contains(series1));
+		assertTrue(seriesProviders.contains(series2));
+		seriesProviders = plotProvider.getSeriesAtTime(time2);
+		assertEquals(1, seriesProviders.size());
+		assertTrue(seriesProviders.contains(series1));
+		assertFalse(seriesProviders.contains(series2));
+
+		// Try the same remove commands. Nothing should change.
+		plotProvider.removeSeries(time1, series1);
+		plotProvider.removeSeries(time2, series2);
+
+		// Verify that nothing changed.
+		seriesProviders = plotProvider.getSeriesAtTime(time1);
+		assertEquals(1, seriesProviders.size());
+		assertFalse(seriesProviders.contains(series1));
+		assertTrue(seriesProviders.contains(series2));
+		seriesProviders = plotProvider.getSeriesAtTime(time2);
+		assertEquals(1, seriesProviders.size());
+		assertTrue(seriesProviders.contains(series1));
+		assertFalse(seriesProviders.contains(series2));
+
+		return;
 	}
 
 	/**
