@@ -108,7 +108,9 @@ public class PlotProviderTester {
 		// Series and times to add and later *remove*. Each series is added for
 		// each time, resulting in 4 total additions.
 		SeriesProvider series1 = new SeriesProvider();
+		series1.setSeriesTitle("series1");
 		SeriesProvider series2 = new SeriesProvider();
+		series2.setSeriesTitle("series2");
 		double time1 = 42.0;
 		double time2 = 343.1337;
 
