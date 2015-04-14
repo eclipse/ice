@@ -57,12 +57,18 @@ public class CSVPlot implements IPlot {
 	/**
 	 * The CSVDataProvider used to store the CSV data
 	 */
-	private CSVDataProvider provider;	
-	
+	private CSVDataProvider provider;
+
+	/**
+	 * The CSVPlotEditor used to render the plot
+	 */
+	private CSVPlotEditor editor;
+
 	/**
 	 * The Constructor
 	 * 
-	 * @param source	The URI of the CSV file.
+	 * @param source
+	 *            The URI of the CSV file.
 	 */
 	public CSVPlot(URI source) {
 		this.source = source;
@@ -73,7 +79,7 @@ public class CSVPlot implements IPlot {
 		String[] emptyStringArray = {};
 		types.put("line", emptyStringArray);
 		types.put("scatter", emptyStringArray);
-		
+
 		return;
 	}
 
@@ -82,17 +88,17 @@ public class CSVPlot implements IPlot {
 	 * thread to avoid hanging the UI in the event that the file is large. It
 	 * does not attempt to load the file if the source is null.
 	 * 
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void load() {
 
 		if (source != null) {
-			
+
 			// Create the loading thread
 			Thread loadingThread = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					
+
 					// Create a file handle from the source
 					File file = new File(source);
 					// Get a CSV loader and try to load the file
@@ -132,28 +138,29 @@ public class CSVPlot implements IPlot {
 						// Add the qualifier
 						types.put("scatter",
 								plotTypes.toArray(emptyStringArray));
-						
+
 					}
 				}
 			});
-			
+
 			// Get a handle on the parent thread's exception handler
-			final UncaughtExceptionHandler parentHandler = 
-					Thread.currentThread().getUncaughtExceptionHandler();
-			
+			final UncaughtExceptionHandler parentHandler = Thread
+					.currentThread().getUncaughtExceptionHandler();
+
 			// Override the loadingThread's exception handler
-			loadingThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-				@Override
-				public void uncaughtException(Thread t, Throwable e) {
-					// Pass the exception to the parent thread's handler
-					parentHandler.uncaughtException(t, e);
-				}
-			});
-		
+			loadingThread
+					.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+						@Override
+						public void uncaughtException(Thread t, Throwable e) {
+							// Pass the exception to the parent thread's handler
+							parentHandler.uncaughtException(t, e);
+						}
+					});
+
 			// Start the thread
 			loadingThread.start();
 		}
-		
+
 		return;
 	}
 
@@ -222,20 +229,21 @@ public class CSVPlot implements IPlot {
 
 		return retVal;
 	}
-	
+
 	/**
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
-	 * java.lang.String, org.eclipse.swt.widgets.Composite)
+	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
+	 *      java.lang.String, org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void draw(String category, String plotType, Composite parent)
+	public Composite draw(String category, String plotType, Composite parent)
 			throws Exception {
 
+		Composite child = null;
+
 		// Make sure the plot type is valid
-		if (provider != null && category != null 
-				&& types.keySet().contains(category)
-				&& plotType != null && plotType.contains(" vs. ")) {
+		if (provider != null && category != null
+				&& types.keySet().contains(category) && plotType != null
+				&& plotType.contains(" vs. ")) {
 			// Get the axes to plot
 			String[] axes = plotType.split(" ");
 			String axis1 = axes[0];
@@ -244,9 +252,9 @@ public class CSVPlot implements IPlot {
 			PlotProvider plotProvider = new PlotProvider();
 			// The new plot's title (the filename)
 			int lastSeparator = provider.getSourceInfo().lastIndexOf("/");
-			String newPlotTitle = (lastSeparator > -1 ? 
-					provider.getSourceInfo().substring(lastSeparator+1) : 
-						provider.getSourceInfo());
+			String newPlotTitle = (lastSeparator > -1 ? provider
+					.getSourceInfo().substring(lastSeparator + 1) : provider
+					.getSourceInfo());
 			// Set the title for the new plot provider
 			plotProvider.setPlotTitle(newPlotTitle);
 			// The plot's set time
@@ -267,16 +275,22 @@ public class CSVPlot implements IPlot {
 			// Add this new series to the plot provider
 			plotProvider.addSeries(plotTime, seriesProvider);
 			// Create the plot editor
-			CSVPlotEditor plotEditor = new CSVPlotEditor();
-			plotEditor.createPartControl(parent);
-			// Add the new plot to the editor
-			plotEditor.showPlotProvider(plotProvider);
+			editor = new CSVPlotEditor();
+			// Create the the plotting canvas
+			editor.createPartControl(parent);
+			// Add the new plot to the editor (with time slider disabled)
+			editor.showPlotProvider(plotProvider, true);
+
+			// We need to return the Composite used to render the CSV plot.
+			child = editor.getPlotCanvas();
 		} else {
 			// Complain that the plot is invalid
 			throw new Exception("Invalid plot: category = " + category
-					+ ", type = " + plotType + ", provider = " + provider.toString());
+					+ ", type = " + plotType + ", provider = "
+					+ provider.toString());
 		}
-		
-		return;
+
+		return child;
 	}
+
 }
