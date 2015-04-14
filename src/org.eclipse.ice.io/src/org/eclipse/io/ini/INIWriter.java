@@ -106,8 +106,8 @@ public class INIWriter implements IWriter {
 			try {
 				PipedInputStream in = new PipedInputStream(8196);
 				PipedOutputStream out = new PipedOutputStream(in);
-				TableComponent table;
-				String tableContents, tableName, currIndent;
+				DataComponent dataComp;
+				String tableContents, compName, currIndent;
 				Boolean inSection;
 				String newLine = System.getProperty("line.separator");
 				ArrayList<Entry> row;
@@ -122,14 +122,14 @@ public class INIWriter implements IWriter {
 				
 				// Each component corresponds to a section in the INI file
 				for (Component comp : components) {
-					table = (TableComponent) comp;
-					tableName = table.getName();
+					dataComp = (DataComponent) comp;
+					compName = dataComp.getName();
 					
 					// If the section had a name start by adding that
 					// Otherwise, just leave it blank
 					// Then set the indentation required accordingly
-					if (tableName != "Default Section") {
-						tableContents = "[" + tableName + "]" + newLine;
+					if (compName != "Default Section") {
+						tableContents = "[" + compName + "]" + newLine;
 						currIndent = sectionIndent;
 					} else {
 						tableContents = "";
@@ -137,10 +137,9 @@ public class INIWriter implements IWriter {
 					}
 					
 					// Now go through the rows and add each variable
-					for (int i = 0; i < table.numberOfRows(); i++) {
-						row = table.getRow(i);
-						tableContents += row.get(0).getValue().trim() + assignmentPattern
-								+ row.get(1).getValue().trim() + newLine;
+					for (Entry ent : dataComp.retrieveAllEntries()){
+						tableContents += ent.getName().trim() + assignmentPattern
+								+ ent.getValue().trim() + newLine;
 					}
 					tableContents += newLine;
 

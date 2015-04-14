@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.proteus;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,6 +26,7 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.io.ini.INIReader;
@@ -66,6 +68,12 @@ public class PROTEUSModel extends Item {
 	 * A list of the things that the PROTEUS Model can do
 	 */
 	private ArrayList<String> actionItems;
+	
+	/**
+	 * The ioService that tracks readers and writers
+	 */
+	private IOService ioService;
+	
 	
 	/**
 	 * <p>
@@ -138,6 +146,20 @@ public class PROTEUSModel extends Item {
 		// Add PROTEUS GetPot export action
 		allowedActions.add(0, proteusProcessActionString);
 		actionItems = getAvailableActions();
+		
+		// Set up the necessary io services if they aren't already done.
+		ioService = getIOService();
+		if (ioService == null) {
+			setIOService(new IOService());
+			ioService = getIOService();
+		}
+		if (ioService.getReader("INIReader") == null) {
+			ioService.addReader(new INIReader());
+		}
+		if (ioService.getWriter("INIWriter") == null) {
+			ioService.addWriter(new INIWriter());
+		}
+
 		return;
 	}
 
@@ -194,7 +216,7 @@ public class PROTEUSModel extends Item {
 			if (components.size() > 0) {
 
 				// create a new IPSWriter with the output file
-				INIWriter writer = new INIWriter();
+				INIWriter writer = (INIWriter) ioService.getWriter("INIWriter");
 				try {
 					// Write the output file
 					writer.write(form, outputFile);
@@ -245,14 +267,16 @@ public class PROTEUSModel extends Item {
 		System.out.println("ProteusModel Message: Loading " + inputFile.getLocation().toOSString());
 
 		// Set up the reader to use the template if it exists
-		INIReader reader = new INIReader("!");
+		INIReader reader = (INIReader) ioService.getReader("INIReader");
+		reader.setCommentString("!");
 		reader.setAssignmentPattern("\\s\\s\\s+");
-		if (templateFile.exists()) {
+		if (new File(templateFile.getLocation().toOSString()).exists()) {
 			reader.addTemplateType("PROTEUS", templateFile);
 			reader.setTemplateType("PROTEUS");
 		} else {
 			System.err.println("PROTEUS Model Warning: Could not find template file!  Building " 
 					+ "the model form with no template.");
+			reader.setTemplateType(null);
 		}
 
 		// Try to read in the form, and if something went wrong give the user some information

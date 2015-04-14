@@ -132,8 +132,8 @@ public class INIReaderTester {
 
 		ArrayList<Component> sections = form.getComponents();
 		for (Component section : sections) {
-			TableComponent table = (TableComponent) section;
-			assertEquals(table.numberOfRows(), 4);
+			DataComponent data = (DataComponent) section;
+			assertEquals(data.retrieveAllEntries().size(), 4);
 		}
 		
 		// Okay good job
