@@ -58,16 +58,11 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  */
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		IUpdateableListener {
-	
+
 	/**
 	 * The ResourceComponent drawn by this page.
 	 */
 	private ResourceComponent resourceComponent;
-
-	/**
-	 * The ICEResourceView that holds resources for this page to display.
-	 */
-	private ICEResourceView resourceView;
 
 	/**
 	 * The workbench page used by this ICEResourcePage.
@@ -164,23 +159,19 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
-		// Get the Resource View and set its content to this page's
-		// ResourceComponent.
-		resourceView = (ICEResourceView) getSite().getWorkbenchWindow()
-				.getActivePage().findView(ICEResourceView.ID);
 
 		// Get the parent Composite for the Resource Page widgets and set its
 		// layout to the StackLayout.
 		pageComposite = managedForm.getForm().getBody();
 		pageComposite.setLayout(stackLayout);
 
-		// Register the page as a selection listener. The page returned by
-		// getPage() is not the same as this page! There are some subtle UI
-		// differences under the hood.
-		getSite().getPage().addSelectionListener(this);
-		// Add a dispose event listener on the parent. If disposed at any point,
-		// remove it from the workbench's SelectionService listeners (or else it
-		// will attempt to refresh disposed widgets).
+		// Register the page with the SelectionService as a listener. Note that
+		// this call can be updated to only listen for selections from a
+		// particular part.
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addSelectionListener(this);
+		// If the page is disposed, then this should be removed as a selection
+		// listener.
 		pageComposite.addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent event) {
@@ -550,8 +541,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// Get a local copy of the ResouceComponent.
 			ResourceComponent resourceComponent = (ResourceComponent) component;
 
-			// TODO Remove any IPlots associated with VizResources that are no
-			// longer available.
+			// TODO Do we want to remove any IPlots associated with VizResources
+			// that are no longer available, or should we just let the user
+			// close them out?
 
 			// Create plots for any VizResources in the ResourceComponent that
 			// do not already have plots.
@@ -569,9 +561,17 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		return;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.
+	 * IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		// Do nothing
+		// This method should be used if we need to respond to the current
+		// selection. Note that the current selection can change based on the
+		// currently active view/part.
 	}
 }

@@ -161,7 +161,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	/**
 	 * This class' ICEFormPage that displays the MeshEditor powered by JME3.
 	 */
-	// TODO Add to model if necessary.
 	protected ICEMeshPage meshPage;
 
 	/**
@@ -406,7 +405,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @return	The MeshPage created.
 	 */
-	// TODO Add to model if necessary.
 	private ICEFormPage createMeshPage() {
 
 		// Local Declarations

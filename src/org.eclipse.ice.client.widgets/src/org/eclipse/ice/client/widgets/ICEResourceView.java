@@ -209,12 +209,10 @@ public class ICEResourceView extends PlayableViewPart implements
 					.getForm();
 			for (Component i : activeForm.getComponents()) {
 				i.accept(visitor);
-				// TODO We should actually show all resources rather than just
-				// those in the last ResourceComponent!
-				// // Exit the loop when the first ResourceComponent is found.
-				// if (componentRef.get() != null) {
-				// break;
-				// }
+				// Exit the loop when the first ResourceComponent is found.
+				if (componentRef.get() != null) {
+					break;
+				}
 			}
 			// --------------------------------------------------------- //
 
@@ -223,10 +221,6 @@ public class ICEResourceView extends PlayableViewPart implements
 			if (componentRef.get() != null) {
 				setResourceComponent(componentRef.get());
 			}
-
-			// TODO We would like to call ICEResourcePage#selectionChanged here
-			// to update the browser, but a solution to this has not been found
-			// yet.
 
 			// Set the reference to the new active editor and its resource page.
 			editor = activeEditor;
