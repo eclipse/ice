@@ -97,8 +97,10 @@ public abstract class MultiPlot implements IPlot {
 	 * java.lang.String, org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void draw(String category, String plotType, Composite parent)
+	public Composite draw(String category, String plotType, Composite parent)
 			throws Exception {
+
+		Composite child = null;
 
 		// Check the parameters.
 		if (category == null || plotType == null || parent == null) {
@@ -125,7 +127,10 @@ public abstract class MultiPlot implements IPlot {
 		// Trigger the appropriate update to the PlotRender's content.
 		updatePlotRender(plotRender);
 
-		return;
+		// FIXME The child needs to be set to something, or we need to come up
+		// with an alternate strategy.
+
+		return child;
 	}
 
 	/*

@@ -1,5 +1,5 @@
 /*******************************************************************************
-
+ * Copyright (c) 2013, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,24 +47,29 @@ import javax.naming.OperationNotSupportedException;
 import org.yaml.snakeyaml.Yaml;
 
 /**
+ * <p>
  * This class reads and writes MOOSE Blocks and Parameters to and from the
  * different MOOSE file types, including parsing from YAML and writing to
  * GetPot.
- * 
+ * </p>
+ * <p>
  * There are two primary types of files associated with MOOSE: the YAML file
  * used to specify the possible configuration of an input file and the input
  * file itself, which is a GetPot/Perl configuration file.
- * 
+ * </p>
+ * <p>
  * This class realizes the IComponentVisitor interface to find DataComponents in
  * the TreeComposites that can be converted into a parameter set for a MOOSE
  * input block. If there are other Components in a TreeComposite. They are
  * completely ignored.
- * 
+ * </p>
+ * <p>
  * Blocks and YAMLBlocks are used because each block needs to be converted to or
  * from a TreeComposite. This is complicated in the case of loading the YAML
  * input specification because it is a *specification* (or schema) and not the
  * input itself. The nodes of this tree are what could be configured, not what
  * is, so they must be setup as child exemplars on a TreeComposite.
+ * </p>
  * 
  * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  */
@@ -96,7 +101,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *            to be dumped to the file. The TreeComposites should only
 	 *            contain a single DataComponent, id = 1, and other
 	 *            TreeComposites. Any other components in the TreeComposite will
-	 *            be ignored.
+	 *            be ignored.        
 	 */
 	public void dumpInputFile(String filePath, ArrayList<TreeComposite> blockSet) {
 
@@ -191,7 +196,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			System.out.println("MOOSEFileHandler Message: "
 					+ "Attempting to loading GetPot file " + filePath);
 		}
-
+		
 		// Load the GetPot file
 		try {
 			RandomAccessFile mooseFile = new RandomAccessFile(filePath, "r");
@@ -233,14 +238,30 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// that aren't parameters and should be removed
 					potLines.remove(i);
 					// Update "i" so that we read correctly
-					--i;
+					--i;				
 				} else if (potLines.get(i).isEmpty()) {
 					// Remove empty lines
 					potLines.remove(i);
 					// Update "i" so that we read correctly
 					--i;
 				} else {
-					// All other lines should be trimmed
+					// This is a rare scenario to check for, but it's possible
+					// (and has happened at least once) where a line is just a 
+					// comment (starts with "#") AND includes a "=" in the text 
+					// of the comment
+					if (trimmedPotLine.startsWith("#") && trimmedPotLine.contains("=")) {
+						String[] splitTrimmedPotLine = trimmedPotLine.split("\\s+");
+						if (splitTrimmedPotLine.length > 4) {
+							// Skip this line, it's a comment that's been
+							// mistaken as a parameter
+							potLines.remove(i);
+							--i;
+							continue;
+						}
+					}
+					
+					// Otherwise, the normal behavior is that the line should be 
+					// trimmed and be considered a real parameter
 					potLines.set(i, potLines.get(i).trim());
 				}
 			}
@@ -298,17 +319,18 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	/**
 	 * This operations loads a MOOSE YAML file at the specified path and returns
+	 * a fully-configured set of ICE TreeComposites.
 	 * 
 	 * @param filePath
 	 *            The file path from which the MOOSE blocks written in YAML
 	 *            should be read. If the path is null or empty, the operation
 	 *            returns without doing any work.
-	 * @return The MOOSE input file specification as read from the YAML input
+	 * @return
+	 *         The MOOSE input file specification as read from the YAML input
 	 *         and stored in TreeComposites. Each TreeComposite contains both
 	 *         parameters and exemplar children. Any parameters in a
 	 *         TreeComposite are contained in a DataComponent. The id of the
 	 *         data component is 1.
-
 	 * @throws IOException
 	 */
 	public ArrayList<TreeComposite> loadYAML(String filePath)
@@ -565,6 +587,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		for (String nodeName : topLevelNodes) {
 			newTrees.add(treeMap.get(nodeName));
 		}
+		
 		return newTrees;
 	}
 
@@ -678,9 +701,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see
 	 * org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.resources
 	 * .IFile, java.lang.String, java.lang.String)
@@ -693,6 +714,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		} catch (OperationNotSupportedException e) {
 			e.printStackTrace();
 		}
+		
+		return;
 	}
 
 	/**
@@ -725,6 +748,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		// Make sure we have a valid file reference
 		if (file != null && file.exists()) {
 
+			// Local declarations
 			File mooseFile = new File(file.getLocationURI());
 			ArrayList<TreeComposite> blocks = null;
 			TreeComposite rootNode = new TreeComposite();
@@ -907,5 +931,4 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		return;
 	}
-
 }

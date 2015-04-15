@@ -14,16 +14,12 @@ package org.eclipse.ice.client.widgets;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -234,7 +230,8 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 		// And give it the EMFComponent reference
 		emfTreeView = (EMFTreeCompositeViewer) getSite().getWorkbenchWindow()
 				.getActivePage().findView(EMFTreeCompositeViewer.ID);
-		emfTreeView.setInput(emfComponent.getEMFTreeComposite());
+		emfTreeView.setInput(emfComponent.getEMFTreeComposite(),
+				(ICEFormEditor) getEditor());
 
 		// Register this guy as a listener of clicks on the
 		// EMFTreeView ViewPart

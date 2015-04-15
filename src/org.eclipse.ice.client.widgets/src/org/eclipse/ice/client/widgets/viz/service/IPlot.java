@@ -81,11 +81,12 @@ public interface IPlot {
 	 *            The type of plot that this IPlot should show
 	 * @param parent
 	 *            The composite in which the plot should be drawn.
+	 * @return The primary child Composite used to draw the plot.
 	 * @throws Exception
 	 *             This exception indicates that they IPlot could not be drawn
 	 *             with either the given type or parent and explains why.
 	 */
-	public void draw(String category, String plotType, Composite parent)
+	public Composite draw(String category, String plotType, Composite parent)
 			throws Exception;
 
 	/**
@@ -140,4 +141,5 @@ public interface IPlot {
 	 * @return True if the source is on a remote machine, false otherwise
 	 */
 	public boolean isSourceRemote();
+
 }

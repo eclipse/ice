@@ -28,31 +28,17 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class tests the MOOSEFileHandler.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MOOSEFileHandlerTester {
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation makes sure that MOOSE data can be loaded a gold-standard
 	 * YAML file.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadingFromYAML() {
-		// begin-user-code
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -72,7 +58,6 @@ public class MOOSEFileHandlerTester {
 		try {
 			blocks = handler.loadYAML(shortFilePath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -95,7 +80,6 @@ public class MOOSEFileHandlerTester {
 		try {
 			blocks = handler.loadYAML(mediumFilePath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -114,7 +98,6 @@ public class MOOSEFileHandlerTester {
 		try {
 			blocks = handler.loadYAML(largeFilePath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -132,7 +115,6 @@ public class MOOSEFileHandlerTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
@@ -180,19 +162,11 @@ public class MOOSEFileHandlerTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation ensures that the MOOSEFileHandler can create a MOOSE input
 	 * file from a set of incoming TreeComposites.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkWritingInputFileFromTree() {
-		// begin-user-code
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -212,7 +186,6 @@ public class MOOSEFileHandlerTester {
 		try {
 			blocks = handler.loadYAML(filePath);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -241,7 +214,6 @@ public class MOOSEFileHandlerTester {
 		adaptivityData.retrieveEntry("initial_steps").setTag("true");
 		adaptivityData.retrieveEntry("marker").setTag("true");
 		adaptivityData.retrieveEntry("steps").setTag("true");
-
 		
 		// Get and set entries for the Indicators subblocks
 		DataComponent analyticalIndicatorsComponent = 
@@ -362,7 +334,6 @@ public class MOOSEFileHandlerTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**

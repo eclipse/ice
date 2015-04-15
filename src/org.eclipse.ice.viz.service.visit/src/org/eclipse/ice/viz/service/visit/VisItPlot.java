@@ -267,8 +267,10 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 	 * java.lang.String, org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void draw(String category, String plotType, Composite parent)
+	public Composite draw(String category, String plotType, Composite parent)
 			throws Exception {
+
+		Composite child = null;
 
 		// Get the current parent control.
 		Composite currentParent = (plotComposite != null ? plotComposite
@@ -301,7 +303,10 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 		// Trigger an update to the UI.
 		updateUI();
 
-		return;
+		// Return a reference to the Composite that renders the VisIt plot.
+		child = canvas;
+
+		return child;
 	}
 
 	/**
@@ -702,4 +707,5 @@ public class VisItPlot implements IPlot, IUpdateableListener {
 
 		return actions;
 	}
+
 }

@@ -33,7 +33,7 @@ import visit.java.client.ViewerMethods;
  * This is an implementation of the IVizService interface for the VisIt
  * visualization tool.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Jordan Deyton
  * 
  */
 public class VisItVizService extends AbstractVizService {
@@ -55,7 +55,7 @@ public class VisItVizService extends AbstractVizService {
 
 	/**
 	 * This manages the default connection to VisIt and its settings. It handles
-	 * the implementation for connecting and disconnecting from the underlyign
+	 * the implementation for connecting and disconnecting from the underlying
 	 * VisIt connection.
 	 */
 	private VisItConnectionAdapter adapter;
@@ -348,7 +348,7 @@ public class VisItVizService extends AbstractVizService {
 
 		// If the file is not null, the adapter is connected, and the adapter is
 		// a local connection, we can try to plot the file.
-		if (file != null && adapter.getState() == ConnectionState.Connected
+		if (file != null && adapter != null && adapter.getState() == ConnectionState.Connected
 				&& "localhost".equals(adapter.getConnectionProperty("url"))) {
 
 			// Get the VisIt-friendly path for the URI.

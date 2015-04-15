@@ -6,3 +6,4 @@ Bundle-Version: 2.0.0
 Fragment-Host: org.eclipse.ice.viz.service.visit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit
+Import-Package: org.eclipse.ice.viz.service.visit

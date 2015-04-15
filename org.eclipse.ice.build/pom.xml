@@ -330,8 +330,8 @@
 		<module>../src/org.eclipse.ice.reactor.perspective</module>
 		<module>../src/org.eclipse.ice.reactorAnalyzer</module>
 		<module>../tests/org.eclipse.ice.reactorAnalyzer.test</module>
-		<module>../src/org.eclipse.ice.caebat</module>
-		<module>../tests/org.eclipse.ice.caebat.test</module>
+		<module>../src/org.eclipse.ice.vibe</module>
+		<module>../tests/org.eclipse.ice.vibe.test</module>
 		<module>../src/org.eclipse.ice.kdd</module>
 		<module>../tests/org.eclipse.ice.kdd.test</module>
 		<module>../src/org.eclipse.ice.proteus</module>

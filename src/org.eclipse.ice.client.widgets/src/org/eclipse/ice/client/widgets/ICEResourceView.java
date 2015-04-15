@@ -30,6 +30,8 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -47,10 +49,15 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -62,10 +69,10 @@ import ca.odell.glazedlists.swt.DefaultEventTableViewer;
  * This class is a ViewPart that creates a tree of text files and a tree of
  * image files collected as ICEResourceComponents.
  * 
- * @authors Jay Jay Billings, Taylor Patterson, Jordan Deyton
+ * @authors Jay Jay Billings, Taylor Patterson, Jordan Deyton, Anna Wojtowicz
  */
 public class ICEResourceView extends PlayableViewPart implements
-		IUpdateableListener, IPartListener2 {
+		IUpdateableListener, IPartListener2, IDoubleClickListener {
 
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEResourceView";
 
@@ -85,6 +92,14 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * </p>
 	 */
 	private ResourceComponent resourceComponent;
+	
+	/**
+	 * The ICEResourcePage managed by this view. This changes based on the 
+	 * currently active ICEFormEditor. This page should also refer to the same 
+	 * ResourceComponent used by this view.
+	 */
+	private ICEResourcePage resourcePage;
+	
 	// -------------------------------------- //
 
 	/**
@@ -169,7 +184,8 @@ public class ICEResourceView extends PlayableViewPart implements
 		if (editor != null) {
 			// Clear the ResourceComponent and related UI pieces.
 			setResourceComponent(null);
-
+			// Unset the reference to the ICEResourcePage.
+			resourcePage = null;
 			// Unset the reference to the active editor.
 			editor = null;
 		}
@@ -193,12 +209,10 @@ public class ICEResourceView extends PlayableViewPart implements
 					.getForm();
 			for (Component i : activeForm.getComponents()) {
 				i.accept(visitor);
-				// TODO We should actually show all resources rather than just
-				// those in the last ResourceComponent!
-				// // Exit the loop when the first ResourceComponent is found.
-				// if (componentRef.get() != null) {
-				// break;
-				// }
+				// Exit the loop when the first ResourceComponent is found.
+				if (componentRef.get() != null) {
+					break;
+				}
 			}
 			// --------------------------------------------------------- //
 
@@ -208,12 +222,9 @@ public class ICEResourceView extends PlayableViewPart implements
 				setResourceComponent(componentRef.get());
 			}
 
-			// TODO We would like to call ICEResourcePage#selectionChanged here
-			// to update the browser, but a solution to this has not been found
-			// yet.
-
-			// Set the reference to the new active editor.
+			// Set the reference to the new active editor and its resource page.
 			editor = activeEditor;
+			resourcePage = editor.getResourcePage();
 		}
 
 		return;
@@ -310,6 +321,8 @@ public class ICEResourceView extends PlayableViewPart implements
 		imageTab.setControl(resourceTreeViewer.getControl());
 		// Register this view as a SelectionProvider
 		getSite().setSelectionProvider(resourceTreeViewer);
+		// Registered the view as a double click listener of the TreeViewer
+		resourceTreeViewer.addDoubleClickListener(this);
 
 		// Add a listener to catch tab selection changes.
 		// NOTE: In Windows, this event is fired instantly, so this listener
@@ -333,24 +346,37 @@ public class ICEResourceView extends PlayableViewPart implements
 		// Register the table control with the plot tab
 		plotTab.setControl(listTable);
 
-		// We cannot keep track of the most recently active ICEFormEditor before
-		// this point. Try to sync this view with the active editor if it is an
-		// ICEFormEditor.
-		// PlatformUI.getWorkbench().getActiveWorkbenchWindow() TODO Try this
-		// line in the constructor.
-		IPartService partService = getSite().getWorkbenchWindow()
-				.getPartService();
-		// See if there is currently an active ICEFormEditor. If so, update the
-		// currently active editor and related UI pieces.
-		IWorkbenchPartReference partRef = partService.getActivePartReference();
-		if (partRef != null && ICEFormEditor.ID.equals(partRef.getId())) {
-			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
+		// Check if there is currently an active ICEFormEditor. If so, update
+		// the currently active editor and related UI pieces.
+		IEditorPart activeEditor = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		if (activeEditor != null && activeEditor instanceof ICEFormEditor) {
 			if (activeEditor != editor) {
-				setActiveEditor(activeEditor);
+				setActiveEditor((ICEFormEditor) activeEditor);
+			}
+		} else {
+			// Get a list of all the currently open editors
+			IWorkbenchPage workbenchPage = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage();
+			IEditorReference[] editorRefs = workbenchPage.getEditorReferences();
+
+			if (editorRefs != null && editorRefs.length > 0) {
+				// Begin iterating through all the editors, looking for one
+				// that's an ICEFormEditor
+				for (IEditorReference e : editorRefs) {
+					// If it's an ICEFormEditor, set it as the active editor
+					if (e.getId().equals(ICEFormEditor.ID)) {
+						setActiveEditor((ICEFormEditor) e);
+						break;
+					}
+				}
 			}
 		}
+
 		// Register as a listener to the part service so that the view can
 		// update when the active ICEFormEditor changes.
+		IPartService partService = getSite().getWorkbenchWindow()
+				.getPartService();
 		partService.addPartListener(this);
 
 		return;
@@ -457,6 +483,25 @@ public class ICEResourceView extends PlayableViewPart implements
 		return;
 	}
 
+	@Override
+	public void doubleClick(DoubleClickEvent event) {
+		
+		// Get the associated resource
+		ISelection selection = event.getSelection();
+		ICEResource selectedResource = getResourceFromSelection(selection);
+	
+		// If it's valid, try to display it on the ResourcePage
+		if (selectedResource != null) {
+			try {
+				resourcePage.showResource(selectedResource);
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -603,8 +648,9 @@ public class ICEResourceView extends PlayableViewPart implements
 		// If the activated editor is an ICEFormEditor different from the known
 		// active ICEFormEditor, call the method to update the currently active
 		// editor and affected UI pieces.
-		if (ICEFormEditor.ID.equals(partRef.getId())) {
-			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
+		IWorkbenchPart part = partRef.getPart(false);
+		if (part != null && part instanceof ICEFormEditor) {
+			ICEFormEditor activeEditor = (ICEFormEditor) part;
 			if (activeEditor != editor) {
 				setActiveEditor(activeEditor);
 			}
@@ -623,7 +669,8 @@ public class ICEResourceView extends PlayableViewPart implements
 
 		// If the closed editor is the known active ICEFormEditor, call the
 		// method to clear the currently active editor and related UI pieces.
-		if (ICEFormEditor.ID.equals(partRef.getId())) {
+		IWorkbenchPart part = partRef.getPart(false);
+		if (part != null && part instanceof ICEFormEditor) {
 			ICEFormEditor activeEditor = (ICEFormEditor) partRef.getPart(false);
 			if (activeEditor == editor) {
 				setActiveEditor(null);
@@ -918,5 +965,4 @@ public class ICEResourceView extends PlayableViewPart implements
 			}
 		}
 	}
-
 }

@@ -134,16 +134,18 @@ public class ImportFileWizardPage extends WizardPage {
 			fileLabel.setLayoutData(gridData);
 
 			// Create the Text.
+			gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true);
+			gridData.minimumHeight = 30;
 			final Text fileText = new Text(wizardPageComposite, SWT.NONE
 					| SWT.BORDER);
 			fileText.setEditable(false);
-			fileText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true,
-					true));
+			fileText.setLayoutData(gridData);
 
 			// Create the browse button.
+			gridData = new GridData(SWT.RIGHT, SWT.BEGINNING, false, true);
+			gridData.minimumHeight = 30;
 			Button browseButton = new Button(wizardPageComposite, SWT.NONE);
-			browseButton.setLayoutData(new GridData(SWT.RIGHT, SWT.BEGINNING,
-					false, true));
+			browseButton.setLayoutData(gridData);
 			browseButton.setText("Browse...");
 			// Add a listener to open a file dialog when the button is clicked
 			final Shell shell = parent.getShell();

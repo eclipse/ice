@@ -58,7 +58,7 @@ public class MOOSEModelTester {
 	 * The project space used to create the workspace for the tests.
 	 */
 	private static IProject projectSpace;
-	
+
 	/**
 	 * The IO Service used to read/write via MOOSEFileHandler.
 	 */
@@ -93,9 +93,8 @@ public class MOOSEModelTester {
 			if (!project.exists()) {
 				// Set the location as
 				// ${workspace_loc}/MOOSEModelTesterWorkspace
-				defaultProjectLocation = (new File(
-						userDir + separator
-								+ projectName)).toURI();
+				defaultProjectLocation = (new File(userDir + separator
+						+ projectName)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(projectName);
@@ -145,7 +144,7 @@ public class MOOSEModelTester {
 
 		// Set the global project reference.
 		projectSpace = project;
-		
+
 		// Set up an IO service and add a reader and writer
 		service = new IOService();
 		service.addWriter(new MOOSEFileHandler());
@@ -170,16 +169,17 @@ public class MOOSEModelTester {
 		assertEquals(3, form.getComponents().size());
 
 		// Check the data component
-		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) 
-				instanceof DataComponent);
-		
+		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) instanceof DataComponent);
+
 		// Check the MOOSE app entry
 		Entry mooseAppEntry = ((DataComponent) form
 				.getComponent(MOOSEModel.fileDataComponentId))
 				.retrieveEntry("MOOSE-Based Application");
 		assertNotNull(mooseAppEntry);
 		assertEquals(1, mooseAppEntry.getId());
-		assertEquals("MOOSE app...", mooseAppEntry.getValue());
+		assertEquals("No MOOSE apps were found.",
+				mooseAppEntry.getDefaultValue());
+		assertEquals(mooseAppEntry.getDefaultValue(), mooseAppEntry.getValue());
 
 		// Check the output file Entry
 		Entry outputFileEntry = ((DataComponent) form
@@ -188,14 +188,12 @@ public class MOOSEModelTester {
 		assertNotNull(outputFileEntry);
 		assertEquals(2, outputFileEntry.getId());
 		assertEquals("mooseModel.i", outputFileEntry.getValue());
-		
+
 		// Check the TreeComposite
-		assertTrue(form.getComponent(MOOSEModel.mooseTreeCompositeId) 
-				instanceof TreeComposite);
-		
+		assertTrue(form.getComponent(MOOSEModel.mooseTreeCompositeId) instanceof TreeComposite);
+
 		// Check the ResourceComponent
-		assertTrue(form.getComponent(MOOSEModel.resourceComponentId)
-				instanceof ResourceComponent);
+		assertTrue(form.getComponent(MOOSEModel.resourceComponentId) instanceof ResourceComponent);
 
 		return;
 	}
@@ -209,10 +207,10 @@ public class MOOSEModelTester {
 
 		// Local Declarations
 		String testFilename = "bison_test_file.inp";
-		
+
 		// Create a MOOSEModel to test
 		MOOSEModel model = setupMOOSEItem();
-		
+
 		// Set the IOService on the model so we can write out
 		model.setIOService(service);
 
@@ -253,10 +251,10 @@ public class MOOSEModelTester {
 
 		// Create a MOOSE Item
 		MOOSEModel mooseItem = setupMOOSEItem();
-		
+
 		// Set the IO service on the item so we can read/load data in
 		mooseItem.setIOService(service);
-		
+
 		// Load the input
 		mooseItem.loadInput("input_coarse10.i");
 
@@ -373,8 +371,7 @@ public class MOOSEModelTester {
 	 * This operation configures a MOOSEModel. It is used by both test
 	 * operations.
 	 * 
-	 * @return 
-	 *         A newly instantiated MOOSEModel.
+	 * @return A newly instantiated MOOSEModel.
 	 */
 	private MOOSEModel setupMOOSEItem() {
 

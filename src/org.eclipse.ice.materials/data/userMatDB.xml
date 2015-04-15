@@ -5,14 +5,6 @@
         <size>1</size>
         <properties>
             <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>1.1E15</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>0.3326</value>
-            </entry>
-            <entry>
                 <key>Inc xs</key>
                 <value>80.27</value>
             </entry>
@@ -21,24 +13,32 @@
                 <value>82.03</value>
             </entry>
             <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>1.0079</value>
+                <key>mmabs/l (Å-2)</key>
+                <value>1.1E15</value>
             </entry>
             <entry>
                 <key>Inc b</key>
                 <value>25.274</value>
             </entry>
             <entry>
+                <key>M (amu)</key>
+                <value>1.0079</value>
+            </entry>
+            <entry>
                 <key>Coh b</key>
                 <value>-3.7406</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>0.3326</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>mminc (Å-1)</key>
@@ -51,6 +51,60 @@
             <entry>
                 <key>conc</key>
                 <value>99.985</value>
+            </entry>
+        </properties>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>H</name>
+        <size>1</size>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>80.26</value>
+            </entry>
+            <entry>
+                <key>Scatt xs</key>
+                <value>82.02</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Å-2)</key>
+                <value>1.1E15</value>
+            </entry>
+            <entry>
+                <key>Inc b</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>1.0079</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>-3.739</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>0.3326</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.05</value>
+            </entry>
+            <entry>
+                <key>mminc (Å-1)</key>
+                <value>4.79E17</value>
+            </entry>
+            <entry>
+                <key>Coh xs</key>
+                <value>1.7568</value>
+            </entry>
+            <entry>
+                <key>conc</key>
+                <value>0.0</value>
             </entry>
         </properties>
     </ListElement>
@@ -79,71 +133,9 @@
         </Material>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>H</name>
-        <size>1</size>
-        <properties>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>1.1E15</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>0.3326</value>
-            </entry>
-            <entry>
-                <key>Inc xs</key>
-                <value>80.26</value>
-            </entry>
-            <entry>
-                <key>Scatt xs</key>
-                <value>82.02</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.05</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>1.0079</value>
-            </entry>
-            <entry>
-                <key>Inc b</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>-3.739</value>
-            </entry>
-            <entry>
-                <key>mminc (Å-1)</key>
-                <value>4.79E17</value>
-            </entry>
-            <entry>
-                <key>Coh xs</key>
-                <value>1.7568</value>
-            </entry>
-            <entry>
-                <key>conc</key>
-                <value>0.0</value>
-            </entry>
-        </properties>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>2H</name>
         <size>1</size>
         <properties>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>8.69E11</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>5.19E-4</value>
-            </entry>
             <entry>
                 <key>Inc xs</key>
                 <value>2.05</value>
@@ -153,24 +145,32 @@
                 <value>7.64</value>
             </entry>
             <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>2.0</value>
+                <key>mmabs/l (Å-2)</key>
+                <value>8.69E11</value>
             </entry>
             <entry>
                 <key>Inc b</key>
                 <value>4.04</value>
             </entry>
             <entry>
+                <key>M (amu)</key>
+                <value>2.0</value>
+            </entry>
+            <entry>
                 <key>Coh b</key>
                 <value>6.671</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>5.19E-4</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>mminc (Å-1)</key>
