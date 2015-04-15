@@ -17,10 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
-import org.eclipse.ice.viz.service.connections.ConnectionManager;
+import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.IKeyChangeListener;
-import org.eclipse.ice.viz.service.connections.visit.VisItConnectionManager;
+import org.eclipse.ice.viz.service.connections.visit.VisItConnectionTable;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.DynamicComboFieldEditor;
 import org.eclipse.ice.viz.service.preferences.TableComponentComposite;
@@ -45,7 +46,7 @@ public class VisItPreferencePage extends AbstractVizPreferencePage implements
 	 * The {@code ConnectionManager} used by this preference page. It is
 	 * represented by a {@link ConnectionComposite} on the page.
 	 */
-	private final ConnectionManager connectionManager = new VisItConnectionManager();
+	private final ConnectionTable connectionManager = new VisItConnectionTable();
 
 	/**
 	 * This set contains removed keys for pre-existing connections (those that
@@ -268,6 +269,17 @@ public class VisItPreferencePage extends AbstractVizPreferencePage implements
 			}
 		}
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractVizPreferencePage#getVizService()
+	 */
+	@Override
+	protected IVizService getVizService() {
+		return VisItVizService.getInstance();
 	}
 
 }
