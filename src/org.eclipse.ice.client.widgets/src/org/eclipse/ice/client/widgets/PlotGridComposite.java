@@ -15,20 +15,22 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseTrackAdapter;
-import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.ToolBar;
@@ -81,7 +83,7 @@ public class PlotGridComposite extends Composite {
 	/**
 	 * The listener responsible for showing and hiding the {@link #closeButton}.
 	 */
-	private final MouseTrackListener plotHoverListener;
+	private final Listener plotHoverListener;
 
 	/**
 	 * The list of currently drawn plots. A nested class, {@link DrawnPlot}, is
@@ -106,11 +108,12 @@ public class PlotGridComposite extends Composite {
 	 * was populated.
 	 */
 	private boolean menuStale = true;
-	/**
-	 * The listener responsible for setting the {@link #clickedPlotIndex} when a
-	 * plot is right-clicked.
-	 */
-	private final MouseListener plotClickListener;
+	// /**
+	// * The listener responsible for setting the {@link #clickedPlotIndex} when
+	// a
+	// * plot is right-clicked.
+	// */
+	// private final MouseListener plotClickListener;
 
 	/**
 	 * Handles the context menu that will be used by both this plot grid
@@ -172,6 +175,7 @@ public class PlotGridComposite extends Composite {
 		gridComposite = new Composite(this, SWT.NONE);
 		adapt(gridComposite);
 		gridLayout = new GridLayout();
+		gridLayout.makeColumnsEqualWidth = true;
 		gridComposite.setLayout(gridLayout);
 
 		// Lay out this Composite. The ToolBar should be across the top, while
@@ -184,47 +188,79 @@ public class PlotGridComposite extends Composite {
 		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gridComposite.setLayoutData(gridData);
 
-		// Create the listener that will be used to show/hide the close button.
-		plotHoverListener = new MouseTrackAdapter() {
-			@Override
-			public void mouseEnter(MouseEvent e) {
-				showCloseButton(e);
-			}
+		// Create the listener that creates the close button when the mouse
+		// enters a plot Composite (in the grid).
+		plotHoverListener = new Listener() {
+
+			/**
+			 * The most recent plot Composite that was entered, or null.
+			 */
+			private Composite lastParent;
 
 			@Override
-			public void mouseExit(MouseEvent e) {
-				hideCloseButton(e);
-			}
-		};
+			public void handleEvent(Event event) {
+				// We only deal with Composites here.
+				if (event.widget instanceof Composite) {
+					// Determine the plot Composite that the mouse entered.
+					Composite child = (Composite) event.widget;
+					Composite plotComposite = findPlotComposite(child);
 
-		// Create a listener to get the right-clicked plot.
-		plotClickListener = new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				if (e.button == 3) {
-					// Determine the index of the plot that was clicked. If a
-					// plot could not be found, then use -1 for the index.
-					Composite comp = (Composite) e.widget;
-					int i;
-					for (i = 0; i < drawnPlots.size(); i++) {
-						DrawnPlot drawnPlot = drawnPlots.get(i);
-						if (comp == drawnPlot.childComposite) {
-							break;
+					// If the mouse entered a new plot Composite (or exited
+					// one), then a change occurred and requires an update to
+					// the close button.
+					if (plotComposite != lastParent) {
+						// If necessary, dispose the old close button.
+						if (closeButton != null) {
+							System.out.println("Disposing close button");
+							closeButton.dispose();
 						}
+						// If a plot Composite (or one of its children) was
+						// entered, create a new close button in it.
+						if (plotComposite != null) {
+							System.out.println("Creating close button");
+							createCloseButton(plotComposite);
+						}
+						// Set the reference to the most recently entered plot.
+						lastParent = plotComposite;
 					}
-					final int plotIndex = (i < drawnPlots.size() ? i : -1);
 
-					// The Menu may need to be updated if a new plot was
-					// clicked.
-					if (plotIndex != clickedPlotIndex) {
-						clickedPlotIndex = plotIndex;
-						menuStale = true;
-					}
 				}
-
 				return;
 			}
 		};
+		// Add the listener as a filter so that it will be notified of *all*
+		// SWT.MouseEnter events. This listener *must* be removed when this plot
+		// grid is disposed.
+		getDisplay().addFilter(SWT.MouseEnter, plotHoverListener);
+
+//		// Create a listener to get the right-clicked plot.
+//		plotClickListener = new MouseAdapter() {
+//			@Override
+//			public void mouseUp(MouseEvent e) {
+//				if (e.button == 3) {
+//					// Determine the index of the plot that was clicked. If a
+//					// plot could not be found, then use -1 for the index.
+//					Composite comp = (Composite) e.widget;
+//					int i;
+//					for (i = 0; i < drawnPlots.size(); i++) {
+//						DrawnPlot drawnPlot = drawnPlots.get(i);
+//						if (comp == drawnPlot.childComposite) {
+//							break;
+//						}
+//					}
+//					final int plotIndex = (i < drawnPlots.size() ? i : -1);
+//
+//					// The Menu may need to be updated if a new plot was
+//					// clicked.
+//					if (plotIndex != clickedPlotIndex) {
+//						clickedPlotIndex = plotIndex;
+//						menuStale = true;
+//					}
+//				}
+//
+//				return;
+//			}
+//		};
 
 		return;
 	}
@@ -487,39 +523,42 @@ public class PlotGridComposite extends Composite {
 			// If a category and type could be found, try to draw the plot in a
 			// new cell in the grid.
 			if (category != null && type != null) {
-				// Create the Composite to contain the plot rendering.
-				Composite composite = new Composite(gridComposite, SWT.BORDER);
-				adapt(composite);
+
+				// Create the basic plot Composite.
+				final int plotIndex = drawnPlots.size();
+				final Composite plotComposite = new Composite(gridComposite,
+						SWT.BORDER);
+				plotComposite.setBackground(getDisplay().getSystemColor(
+						SWT.COLOR_RED));
+
+				// Adapt the plot Composite's appearance to the defaults.
+				adapt(plotComposite);
 
 				// Try to create the plot rendering.
-				DrawnPlot drawnPlot;
-				try {
-					drawnPlot = new DrawnPlot(plot, composite, category, type);
-				} catch (Exception e) {
-					// In case of failure, dispose the Composite that was just
-					// created before sending the Exception on to the calling
-					// class.
-					composite.dispose();
-					throw e;
-				}
+				DrawnPlot drawnPlot = new DrawnPlot(plot, plotComposite,
+						category, type, contextMenuManager.getMenu());
 
 				// Add the drawn plot to the list.
-				index = drawnPlots.size();
+				index = plotIndex;
 				drawnPlots.add(drawnPlot);
-
-				// Hook the new drawn plot up to the close button.
-				drawnPlot.childComposite
-						.addMouseTrackListener(plotHoverListener);
-
-				// Hook the new drawn plot up to the context Menu.
-				Menu contextMenu = contextMenuManager.getMenu();
-				drawnPlot.childComposite.setMenu(contextMenu);
-				drawnPlot.childComposite.addMouseListener(plotClickListener);
 
 				// Set up the layout and layout data for the new drawn plot.
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 				drawnPlot.composite.setLayoutData(gridData);
-				drawnPlot.composite.setLayout(new FillLayout());
+				// The plot Composite should have a FormLayout so that the close
+				// button can be properly displayed in the top-right corner on
+				// top of all other controls. Otherwise, this is effectively a
+				// FillLayout.
+				plotComposite.setLayout(new FormLayout());
+				for (Control child : plotComposite.getChildren()) {
+					// Set up the child to fill the plot Composite.
+					FormData formData = new FormData();
+					formData.top = new FormAttachment(0, 0);
+					formData.bottom = new FormAttachment(100, 0);
+					formData.left = new FormAttachment(0, 0);
+					formData.right = new FormAttachment(100, 0);
+					child.setLayoutData(formData);
+				}
 
 				// Since a new plot was added, refresh the grid layout.
 				refreshLayout();
@@ -607,79 +646,102 @@ public class PlotGridComposite extends Composite {
 	}
 
 	/**
-	 * Shows the close button in the correct location if necessary.
+	 * Creates a new {@link #closeButton} in the corner of the drawn plot.
+	 * <p>
+	 * To get rid of the close button, simply dispose it. {@link #closeButton}
+	 * will automatically be set to {@code null}.
+	 * </p>
 	 * 
-	 * @param e
-	 *            The {@code MouseEvent} (usually mouse enter) that triggered
-	 *            this call.
+	 * @param plotComposite
+	 *            The main plot {@code Composite} on which to draw the close
+	 *            button.
 	 */
-	private void showCloseButton(MouseEvent e) {
+	private void createCloseButton(final Composite plotComposite) {
 
-		if (closeButton == null || closeButton.isDisposed()) {
-			// Get the Composite that triggered the event.
-			Composite comp = (Composite) e.widget;
-
-			// Determine the index of the plot that was moused over. If a plot
-			// could not be found, then use -1 for the index.
-			int i;
-			for (i = 0; i < drawnPlots.size(); i++) {
-				if (comp == drawnPlots.get(i).childComposite) {
-					break;
-				}
-			}
-			final int plotIndex = (i < drawnPlots.size() ? i : -1);
-
-			// Set up the close button
-			closeButton = new Button(comp, SWT.FLAT | SWT.CENTER);
-
-			// Add the close button listener to the close button, too.
-			closeButton.addMouseTrackListener(plotHoverListener);
-
-			closeButton.setText("X");
-			FontData[] smallFont = closeButton.getFont().getFontData();
-			for (FontData fd : smallFont) {
-				fd.setHeight(7);
-			}
-			closeButton.setFont(new Font(comp.getDisplay(), smallFont));
-			closeButton.setToolTipText("Close plot");
-
-			// Add a selection listener on it to dispose the composite
-			closeButton.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					removePlot(plotIndex);
-				}
-			});
-
-			closeButton.pack();
-
-			// Set the location of the button to the upper right-hand corner
-			closeButton.setLocation(
-					comp.getBounds().width - closeButton.getBounds().width - 4,
-					0);
+		// Set up the close button.
+		closeButton = new Button(plotComposite, SWT.FLAT | SWT.CENTER);
+		closeButton.setText("X");
+		FontData[] smallFont = closeButton.getFont().getFontData();
+		for (FontData fd : smallFont) {
+			fd.setHeight(7);
 		}
+		closeButton.setFont(new Font(plotComposite.getDisplay(), smallFont));
+		closeButton.setToolTipText("Close plot");
+		closeButton.pack();
+
+		// Set the location of the button to the upper right-hand corner of the
+		// plot Composite, and above all other children of the plot Composite.
+		FormData formData = new FormData();
+		formData.top = new FormAttachment(0, 0);
+		formData.right = new FormAttachment(100, -4);
+		closeButton.setLayoutData(formData);
+		closeButton.moveAbove(null);
+		plotComposite.layout();
+
+		// Add a selection listener on it to close the drawn plot.
+		closeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Determine the actual drawn plot here so that the "bad"
+				// performance of the linear search is performed only when the
+				// user actually wants to remove the plot.
+				removePlot(findPlotIndex(plotComposite));
+			}
+		});
+
+		// When the button is disposed, its reference should be cleared.
+		closeButton.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				closeButton = null;
+			}
+		});
 
 		return;
 	}
 
 	/**
-	 * Hides (and disposes) the close button if necessary.
+	 * Traverses {@link #drawnPlots} until one is found whose main plot
+	 * {@code Composite} matches the specified {@code Composite}.
 	 * 
-	 * @param e
-	 *            The {@code MouseEvent} (usually a mouse exit) that triggered
-	 *            this call.
+	 * @param plotComposite
+	 *            The main plot {@code Composite} to search for in the list of
+	 *            drawn plots.
+	 * @return The index of the {@link DrawnPlot} associated with the plot
+	 *         {@code Composite}, or -1 if one could not be found.
 	 */
-	private void hideCloseButton(MouseEvent e) {
-
-		// If the cursor has left the canvas area and the close button, dispose
-		// the button.
-		if (closeButton != null && !closeButton.isDisposed()
-				&& !closeButton.getBounds().contains(e.x, e.y)) {
-			closeButton.dispose();
-			closeButton = null;
+	private int findPlotIndex(Composite plotComposite) {
+		// This loop breaks when all drawn plots have been checked OR when the
+		// index is found.
+		int index = -1;
+		for (int i = 0; i < drawnPlots.size() && index == -1; i++) {
+			if (plotComposite == drawnPlots.get(i).composite) {
+				index = i;
+			}
 		}
+		return index;
+	}
 
-		return;
+	/**
+	 * Finds the ancestor plot {@code Composite} for the specified child
+	 * {@code Composite}.
+	 * 
+	 * @param child
+	 *            The child {@code Composite} from which to start the search.
+	 *            This could even be the plot {@code Composite} itself. Assumed
+	 *            not to be null.
+	 * @return The main plot {@code Composite} that is an ancestor of the child,
+	 *         or {@code null} if one could not be found.
+	 */
+	private Composite findPlotComposite(Composite child) {
+		// This loop breaks when all ancestors have been searched OR when the
+		// child plot Composite (whose parent is gridComposite) has been found.
+		Composite parent = child.getParent();
+		while (parent != gridComposite && parent != null) {
+			child = parent;
+			parent = child.getParent();
+		}
+		return (parent != null ? child : null);
 	}
 
 	/**
@@ -701,18 +763,20 @@ public class PlotGridComposite extends Composite {
 			gridData.verticalSpan = 1;
 		}
 
+		int size = drawnPlots.size();
+
 		// Set the user-defined number of columns. The rows are handled already
 		// because we've removed all excess plots.
-		gridLayout.numColumns = columns;
+		gridLayout.numColumns = (size > columns ? columns : size);
 
 		// If the last row has empty cells, then all of the cells directly above
 		// those empty cells should grab the excess vertical space by updating
 		// the verticalSpan property.
-		int lastRowSize = drawnPlots.size() % columns;
+		int lastRowSize = size % columns;
 		// We shouldn't do anything if the last row is full or if there is only
 		// one row.
-		if (lastRowSize > 0 && drawnPlots.size() > columns) {
-			int lastIndex = drawnPlots.size() - 1 - lastRowSize;
+		if (lastRowSize > 0 && size > columns) {
+			int lastIndex = size - 1 - lastRowSize;
 			for (int i = 0; i < columns - lastRowSize; i++) {
 				DrawnPlot drawnPlot = drawnPlots.get(lastIndex - i);
 				gridData = (GridData) drawnPlot.composite.getLayoutData();
@@ -724,6 +788,22 @@ public class PlotGridComposite extends Composite {
 		gridComposite.layout();
 
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.swt.widgets.Widget#dispose()
+	 */
+	@Override
+	public void dispose() {
+
+		// Remove the filter for the listener that creates the close button on
+		// certain SWT.MouseEnter events.
+		getDisplay().removeFilter(SWT.MouseEnter, plotHoverListener);
+
+		// Proceed with the normal dispose operation.
+		super.dispose();
 	}
 
 	/**
@@ -744,11 +824,6 @@ public class PlotGridComposite extends Composite {
 		 * {@link IPlot#draw(String, String, Composite)}.
 		 */
 		public final Composite composite;
-		/**
-		 * The child {@code Composite} in which the plot is rendered. This is
-		 * returned from {@link IPlot#draw(String, String, Composite)}.
-		 */
-		public final Composite childComposite;
 
 		/**
 		 * The current category.
@@ -766,22 +841,34 @@ public class PlotGridComposite extends Composite {
 		 * @param plot
 		 *            The {@code IPlot} to be drawn.
 		 * @param composite
-		 *            The {@code Composite} in which to draw the plot.
+		 *            The plot {@code Composite} in which to draw the plot.
 		 * @param category
 		 *            The initial category for the plot.
 		 * @param type
 		 *            The initial type for the plot category.
+		 * @param menu
+		 *            The context {@code Menu} to use for the drawn plot.
 		 * @throws Exception
 		 *             An exception may be thrown by the {@code IPlot}
 		 *             implementation if the plot could not be drawn.
 		 */
 		public DrawnPlot(IPlot plot, Composite composite, String category,
-				String type) throws Exception {
+				String type, Menu contextMenu) throws Exception {
 			this.plot = plot;
+
+			// Set the reference to the plot Composite.
 			this.composite = composite;
 
+			// Set the base Menu to the provided context Menu.
+			this.composite.setMenu(contextMenu);
+
 			// Render the plot.
-			childComposite = plot.draw(category, type, composite);
+			try {
+				plot.draw(category, type, composite);
+			} catch (Exception e) {
+				dispose();
+				throw e;
+			}
 
 			return;
 		}
@@ -795,10 +882,7 @@ public class PlotGridComposite extends Composite {
 		 *            The new type for the plot category.
 		 * @throws Exception
 		 *             An exception may be thrown by the {@code IPlot}
-		 *             implementation if the plot could not be drawn. An
-		 *             exception may also be thrown if the {@code IPlot}
-		 *             implementation returns a new child {@code Composite} when
-		 *             drawing the plot.
+		 *             implementation if the plot could not be drawn.
 		 */
 		public void setPlotType(String category, String type) throws Exception {
 			// Only process new, non-null plot category and type.
@@ -809,10 +893,7 @@ public class PlotGridComposite extends Composite {
 
 				// Try to draw the plot with the new category and type. Note
 				// that the parent and child Composites should remain the same.
-				if (childComposite != plot.draw(category, type, composite)) {
-					throw new Exception("IPlot error: "
-							+ "The plot was drawn in a new Composite.");
-				}
+				plot.draw(category, type, composite);
 			}
 
 			return;
@@ -822,7 +903,7 @@ public class PlotGridComposite extends Composite {
 		 * A convenience method to dispose of resources used by this drawn plot.
 		 */
 		public void dispose() {
-			childComposite.setMenu(null);
+			composite.setMenu(null);
 			composite.dispose();
 			category = null;
 			type = null;
