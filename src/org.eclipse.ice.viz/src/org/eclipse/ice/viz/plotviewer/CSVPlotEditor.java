@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.visualization.widgets.datadefinition.ColorMap;
 import org.eclipse.nebula.visualization.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.nebula.visualization.widgets.figures.IntensityGraphFigure;
@@ -49,7 +48,7 @@ import org.eclipse.ui.part.EditorPart;
  * files. It is opened by the associated visualization views in
  * org.eclipse.ice.viz.
  * 
- * @authors Matthew Wang, Taylor Patterson
+ * @authors Matthew Wang, Taylor Patterson, Anna Wojtowicz
  */
 public class CSVPlotEditor extends EditorPart {
 
@@ -61,12 +60,17 @@ public class CSVPlotEditor extends EditorPart {
 	/**
 	 * The top level composite that holds the editor's contents.
 	 */
-	Composite vizComposite;
+	private Composite vizComposite;
+
+	/**
+	 * The canvas used for rendering the plot.
+	 */
+	private Canvas plotCanvas;
 
 	/**
 	 * LightweightSystem for an SWT XYGraph
 	 */
-	LightweightSystem lws;
+	private LightweightSystem lws;
 
 	private int spinnerSliderSelectionIndex;
 
@@ -139,20 +143,21 @@ public class CSVPlotEditor extends EditorPart {
 	 * This operation sets up the Composite that contains the VisIt canvas and
 	 * create the VisIt widget.
 	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 *      .Composite)
+	 * @param parent
+	 *            The parent Composite to create the Control in.
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
 
 		// Create a top level composite to hold the canvas or text
-		vizComposite = new Composite(parent, SWT.FILL);
-		vizComposite.setLayout(new GridLayout());
-		vizComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		vizComposite = new Composite(parent, SWT.NONE);
+		vizComposite.setLayout(new GridLayout(1, true));
 
-		Canvas plotCanvas = new Canvas(vizComposite, SWT.BORDER);
-		plotCanvas.setLayoutData(new GridData(GridData.FILL_BOTH));
+		// Set up the canvas where the graph is displayed
+		plotCanvas = new Canvas(vizComposite, SWT.BORDER);
+		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+		// MAGIC
 		lws = new LightweightSystem(plotCanvas);
 
 		return;
@@ -180,8 +185,12 @@ public class CSVPlotEditor extends EditorPart {
 	 * 
 	 * @param displayPlotProvider
 	 *            The PlotProvider containing the information to create the plot
+	 * @param addSlider
+	 *            A flag to indicate if a time slider should be added for
+	 *            non-contour plots
 	 */
-	public void showPlotProvider(PlotProvider displayPlotProvider) {
+	public void showPlotProvider(PlotProvider displayPlotProvider,
+			boolean addSlider) {
 
 		// If it is not a contour plot then plot the regular series
 		if (!displayPlotProvider.isContour()) {
@@ -190,8 +199,10 @@ public class CSVPlotEditor extends EditorPart {
 					.get(0));
 
 			// Add the slider for a file set
-			Composite sliderComp = new Composite(vizComposite, SWT.NONE);
-			createSliderComp(sliderComp, displayPlotProvider);
+			if (addSlider) {
+				Composite sliderComp = new Composite(vizComposite, SWT.NONE);
+				createSliderComp(sliderComp, displayPlotProvider);
+			}
 
 		} else {
 			// Plot as a contour plot
@@ -265,7 +276,18 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/**
+	 * This method is equivalent to calling
+	 * {@code showPlotProvider(provider, true)}
 	 * 
+	 * @param displayPlotProvider
+	 *            The PlotProvider containing the information to create the plot
+	 */
+	public void showPlotProvider(PlotProvider displayPlotProvider) {
+		showPlotProvider(displayPlotProvider, true);
+		return;
+	}
+
+	/**
 	 * @param plotProvider
 	 * @param time
 	 */
@@ -441,4 +463,12 @@ public class CSVPlotEditor extends EditorPart {
 		return;
 	}
 
+	/**
+	 * Gets the canvas used to render the CSV plot.
+	 * 
+	 * @return The plot canvas.
+	 */
+	public Canvas getPlotCanvas() {
+		return plotCanvas;
+	}
 }
