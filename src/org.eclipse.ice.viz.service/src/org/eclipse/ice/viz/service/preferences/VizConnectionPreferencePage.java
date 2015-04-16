@@ -20,10 +20,10 @@ public abstract class VizConnectionPreferencePage extends
 		AbstractVizPreferencePage implements IKeyChangeListener {
 
 	/**
-	 * The {@code ConnectionManager} used by this preference page. It is
+	 * The {@code ConnectionTable} used by this preference page. It is
 	 * represented by a {@link TableComponentComposite} on the page.
 	 */
-	private final ConnectionTable connectionManager = new ConnectionTable();
+	private final ConnectionTable connectionManager = createConnectionTable();
 
 	/**
 	 * This set contains removed keys for pre-existing connections (those that
@@ -259,5 +259,16 @@ public abstract class VizConnectionPreferencePage extends
 			}
 		}
 		return;
+	}
+
+	/**
+	 * This method is used to create the {@code ConnectionTable} used by this
+	 * preference page. It is represented by a {@link TableComponentComposite}
+	 * on the page.
+	 * 
+	 * @return The page's connection table.
+	 */
+	protected ConnectionTable createConnectionTable() {
+		return new ConnectionTable();
 	}
 }
