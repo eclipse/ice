@@ -1535,8 +1535,12 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
-	 * This method is intended primarily to update the ResourceComponet with a
-	 * new VizResource if the Mesh block's "file" Entry has changed.
+	 * This method updates the ResourceComponet with a new VizResource if the 
+	 * Mesh block's "file" Entry has changed. It is also used to correctly 
+	 * display the "file" Entry as commented/uncommented depending on the Mesh 
+	 * block's currently set type. Lastly, it will listen to updates from the
+	 * Mesh's active data node in case a new "file" Entry is ever manually
+	 * added (in which case it will register the new Entry with the form).
 	 * 
 	 * @param component
 	 *            The component that triggered an update
