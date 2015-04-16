@@ -332,6 +332,7 @@ public class PlotGridComposite extends Composite {
 					drawnPlot.draw(category, type);
 				} catch (Exception e) {
 					drawnPlot.dispose();
+					throw e;
 				}
 
 				// Add the drawn plot to the list.
