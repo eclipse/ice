@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * A {@code PlotGridComposite} is designed to display a grid of drawn
@@ -104,13 +103,8 @@ public class PlotGridComposite extends Composite {
 	};
 
 	/**
-	 * The toolkit used to decorate SWT components. May be null.
-	 */
-	private final FormToolkit toolkit;
-
-	/**
 	 * The default constructor. Creates a {@code Composite} designed to display
-	 * a grid of {@link IPlot} renderings.
+	 * a grid of {@code Composites} populated by {@code IPlot} implementations.
 	 * 
 	 * @param parent
 	 *            A widget that will be the parent of the new instance (cannot
@@ -119,27 +113,10 @@ public class PlotGridComposite extends Composite {
 	 *            The style of widget to construct.
 	 */
 	public PlotGridComposite(Composite parent, int style) {
-		this(parent, style, null);
-	}
-
-	/**
-	 * The full constructor. Children of this {@code Composite} will be
-	 * decorated with the specified {@code FormToolkit}.
-	 * 
-	 * @param parent
-	 *            A widget that will be the parent of the new instance (cannot
-	 *            be null).
-	 * @param style
-	 *            The style of widget to construct.
-	 * @param toolkit
-	 *            The toolkit used to decorate SWT components.
-	 */
-	public PlotGridComposite(Composite parent, int style, FormToolkit toolkit) {
 		super(parent, style);
 
-		// Set the form toolkit for decorating widgets in this Composite.
-		this.toolkit = toolkit;
-		adapt(this);
+		// Set the background to be the same as the parent's.
+		setBackground(parent.getBackground());
 
 		// Initialize the list of drawn plots.
 		drawnPlots = new ArrayList<DrawnPlot>();
@@ -150,7 +127,7 @@ public class PlotGridComposite extends Composite {
 
 		// Set up the Composite containing the grid of plots.
 		gridComposite = new Composite(this, SWT.NONE);
-		adapt(gridComposite);
+		gridComposite.setBackground(getBackground());
 		gridLayout = new GridLayout();
 		gridLayout.makeColumnsEqualWidth = true;
 		gridComposite.setLayout(gridLayout);
@@ -222,16 +199,6 @@ public class PlotGridComposite extends Composite {
 	}
 
 	/**
-	 * A convenience method to use the {@link #toolkit}, if available, to
-	 * decorate a given {@code Composite}.
-	 */
-	private void adapt(Composite composite) {
-		if (toolkit != null) {
-			toolkit.adapt(composite);
-		}
-	}
-
-	/**
 	 * Creates a {@code ToolBar} for this {@code Composite}. It includes the
 	 * following controls:
 	 * <ol>
@@ -250,7 +217,7 @@ public class PlotGridComposite extends Composite {
 		// passed down to the widgets created by the ToolBarManager.
 		ToolBar toolBar = new ToolBar(parent, SWT.WRAP | SWT.FLAT
 				| SWT.HORIZONTAL);
-		adapt(toolBar);
+		toolBar.setBackground(parent.getBackground());
 		ToolBarManager toolBarManager = new ToolBarManager(toolBar);
 
 		// Add a "Rows" label next to the row Spinner.
@@ -358,7 +325,6 @@ public class PlotGridComposite extends Composite {
 
 				// Create the basic plot Composite.
 				final DrawnPlot drawnPlot = new DrawnPlot(gridComposite, plot);
-				adapt(drawnPlot);
 
 				// Try to draw the category and type. If the underlying IPlot
 				// cannot draw, then dispose of the undrawn plot Composite.
@@ -654,7 +620,6 @@ public class PlotGridComposite extends Composite {
 		 */
 		private MenuManager createContextMenu() {
 			MenuManager contextMenuManager = new MenuManager();
-			contextMenuManager.createContextMenu(this);
 
 			// Create an action to remove the moused-over or clicked plot
 			// rendering.
@@ -713,7 +678,7 @@ public class PlotGridComposite extends Composite {
 			contextMenuManager.add(plotTypeTree.getContributionItem());
 
 			// Set the context Menu for the plot Composite.
-			setMenu(contextMenuManager.getMenu());
+			setMenu(contextMenuManager.createContextMenu(this));
 
 			return contextMenuManager;
 		}
