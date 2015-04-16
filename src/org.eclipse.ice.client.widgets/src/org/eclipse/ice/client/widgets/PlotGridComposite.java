@@ -9,8 +9,6 @@ import java.util.Map.Entry;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
@@ -31,7 +29,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -46,9 +43,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  *
  */
 public class PlotGridComposite extends Composite {
-
-	// FIXME There is a bug where plots are added more than expected. This may
-	// be an issue with duplicate selection events from the ICEResourceView.
 
 	/**
 	 * The {@code ToolBar} that contains widgets to update the grid layout and
@@ -96,38 +90,6 @@ public class PlotGridComposite extends Composite {
 	 */
 	private final FormToolkit toolkit;
 
-	// ---- Context Menu Management ---- //
-	/**
-	 * The index of the current plot on which the user clicked the mouse. This
-	 * is set when the {@link #plotClickListener} is triggered.
-	 */
-	private int clickedPlotIndex;
-	/**
-	 * Whether or not the context {@code Menu} is stale. This should be true if
-	 * a different plot was clicked since the last time the context {@code Menu}
-	 * was populated.
-	 */
-	private boolean menuStale = true;
-	// /**
-	// * The listener responsible for setting the {@link #clickedPlotIndex} when
-	// a
-	// * plot is right-clicked.
-	// */
-	// private final MouseListener plotClickListener;
-
-	/**
-	 * Handles the context menu that will be used by both this plot grid
-	 * {@code Composite} and all drawn plots.
-	 */
-	private final MenuManager contextMenuManager;
-
-	/**
-	 * The {@code ActionTree} containing the plot categories and types.
-	 */
-	private ActionTree plotTypeTree;
-
-	// --------------------------------- //
-
 	/**
 	 * The default constructor. Creates a {@code Composite} designed to display
 	 * a grid of {@link IPlot} renderings.
@@ -167,10 +129,6 @@ public class PlotGridComposite extends Composite {
 		// Set up the ToolBar.
 		toolBar = createToolBar(this);
 
-		// Create the context Menu that will be used for this and all child plot
-		// Composites.
-		contextMenuManager = createContextMenu();
-
 		// Set up the Composite containing the grid of plots.
 		gridComposite = new Composite(this, SWT.NONE);
 		adapt(gridComposite);
@@ -203,12 +161,12 @@ public class PlotGridComposite extends Composite {
 				if (event.widget instanceof Composite) {
 					// Determine the plot Composite that the mouse entered.
 					Composite child = (Composite) event.widget;
-					Composite plotComposite = findPlotComposite(child);
+					Composite plotAncestor = findPlotComposite(child);
 
 					// If the mouse entered a new plot Composite (or exited
 					// one), then a change occurred and requires an update to
 					// the close button.
-					if (plotComposite != lastParent) {
+					if (plotAncestor != lastParent) {
 						// If necessary, dispose the old close button.
 						if (closeButton != null) {
 							System.out.println("Disposing close button");
@@ -216,12 +174,12 @@ public class PlotGridComposite extends Composite {
 						}
 						// If a plot Composite (or one of its children) was
 						// entered, create a new close button in it.
-						if (plotComposite != null) {
+						if (plotAncestor != null) {
 							System.out.println("Creating close button");
-							createCloseButton(plotComposite);
+							createCloseButton(plotAncestor);
 						}
 						// Set the reference to the most recently entered plot.
-						lastParent = plotComposite;
+						lastParent = plotAncestor;
 					}
 
 				}
@@ -232,35 +190,6 @@ public class PlotGridComposite extends Composite {
 		// SWT.MouseEnter events. This listener *must* be removed when this plot
 		// grid is disposed.
 		getDisplay().addFilter(SWT.MouseEnter, plotHoverListener);
-
-//		// Create a listener to get the right-clicked plot.
-//		plotClickListener = new MouseAdapter() {
-//			@Override
-//			public void mouseUp(MouseEvent e) {
-//				if (e.button == 3) {
-//					// Determine the index of the plot that was clicked. If a
-//					// plot could not be found, then use -1 for the index.
-//					Composite comp = (Composite) e.widget;
-//					int i;
-//					for (i = 0; i < drawnPlots.size(); i++) {
-//						DrawnPlot drawnPlot = drawnPlots.get(i);
-//						if (comp == drawnPlot.childComposite) {
-//							break;
-//						}
-//					}
-//					final int plotIndex = (i < drawnPlots.size() ? i : -1);
-//
-//					// The Menu may need to be updated if a new plot was
-//					// clicked.
-//					if (plotIndex != clickedPlotIndex) {
-//						clickedPlotIndex = plotIndex;
-//						menuStale = true;
-//					}
-//				}
-//
-//				return;
-//			}
-//		};
 
 		return;
 	}
@@ -358,8 +287,8 @@ public class PlotGridComposite extends Composite {
 	}
 
 	/**
-	 * Creates a context {@code Menu} for this {@code Composite} and all of the
-	 * child plots. It includes the following controls by default:
+	 * Creates a context {@code Menu} for the specified {@code Composite} . It
+	 * includes the following controls by default:
 	 * <ol>
 	 * <li>Remove Plot</li>
 	 * <li>Separator</li>
@@ -367,75 +296,36 @@ public class PlotGridComposite extends Composite {
 	 * <li>Separator</li>
 	 * <li>Any implementation-specific plot actions...</li>
 	 * </ol>
+	 * It is up to the related {@code IPlot} implementation to take the created
+	 * {@code Menu} and add it to child {@code Composite}s or update it.
+	 * 
+	 * @param plotComposite
+	 *            The plot {@code Composite} that will get the context
+	 *            {@code Menu}.
 	 * 
 	 * @return The JFace {@code MenuManager} for the context {@code Menu}.
 	 */
-	private MenuManager createContextMenu() {
+	private MenuManager createContextMenu(final Composite plotComposite) {
 		MenuManager contextMenuManager = new MenuManager();
 		contextMenuManager.createContextMenu(this);
+
+		final DrawnPlot drawnPlot = drawnPlots
+				.get(findPlotIndex(plotComposite));
 
 		// Create an action to remove the moused-over or clicked plot rendering.
 		final Action removeAction = new Action("Remove") {
 			@Override
 			public void run() {
-				// Now we can remove the plot.
-				removePlot(clickedPlotIndex);
-				clickedPlotIndex = -1;
+				removePlot(findPlotIndex(plotComposite));
 			}
 		};
+		contextMenuManager.add(removeAction);
+
+		// Add a separator between the remove and set plot type MenuItems.
+		contextMenuManager.add(new Separator());
 
 		// Create the root ActionTree for setting the plot category and type.
-		plotTypeTree = new ActionTree("Set Plot Type");
-
-		// When the Menu is about to be opened, we may need to refresh its
-		// contents based on the currently selected plot.
-		contextMenuManager.addMenuListener(new IMenuListener() {
-			@Override
-			public void menuAboutToShow(IMenuManager manager) {
-				// If the context Menu needs to be updated, re-populate it.
-				if (menuStale) {
-
-					manager.removeAll();
-
-					// Add all actions that require a drawn plot to be
-					// "selected"/mouse-over/clicked.
-					if (clickedPlotIndex != -1) {
-						// Add the remove action.
-						manager.add(removeAction);
-
-						// Add any plot-specific properties.
-						manager.add(new Separator());
-						refreshContextMenu(drawnPlots.get(clickedPlotIndex));
-					}
-
-					menuStale = false;
-				}
-
-				return;
-			}
-		});
-
-		return contextMenuManager;
-	}
-
-	/**
-	 * Refreshes the {@link #contextMenuManager} based on the specified
-	 * {@link DrawnPlot}. This includes adding the {@link #plotTypeTree} so that
-	 * the plot category and type can be set and any {@code IPlot}
-	 * -implementation-specific actions.
-	 * 
-	 * @param drawnPlot
-	 *            A reference to the drawn plot for which the context
-	 *            {@code Menu} should be populated.
-	 */
-	private void refreshContextMenu(DrawnPlot drawnPlot) {
-
-		// Refresh the ActionTree of plot types and categories.
-		plotTypeTree.removeAll();
-
-		// A final reference to the DrawnPlot for use in Actions/Runnables.
-		final DrawnPlot drawnPlotRef = drawnPlot;
-
+		ActionTree plotTypeTree = new ActionTree("Set Plot Type");
 		try {
 			// Add an ActionTree for each category, and then add ActionTree leaf
 			// nodes for each type.
@@ -459,8 +349,7 @@ public class PlotGridComposite extends Composite {
 							@Override
 							public void run() {
 								try {
-									drawnPlotRef.setPlotType(categoryRef,
-											typeRef);
+									drawnPlot.setPlotType(categoryRef, typeRef);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -472,13 +361,13 @@ public class PlotGridComposite extends Composite {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		// Finally, add the plot category/type ActionTree to the context Menu.
+		// Add the ActionTree to the context Menu.
 		contextMenuManager.add(plotTypeTree.getContributionItem());
 
-		// TODO Add any implementation-specific actions.
+		// Set the context Menu for the specified plot Composite.
+		plotComposite.setMenu(contextMenuManager.getMenu());
 
-		return;
+		return contextMenuManager;
 	}
 
 	/**
@@ -536,7 +425,7 @@ public class PlotGridComposite extends Composite {
 
 				// Try to create the plot rendering.
 				DrawnPlot drawnPlot = new DrawnPlot(plot, plotComposite,
-						category, type, contextMenuManager.getMenu());
+						category, type);
 
 				// Add the drawn plot to the list.
 				index = plotIndex;
@@ -824,7 +713,7 @@ public class PlotGridComposite extends Composite {
 		 * {@link IPlot#draw(String, String, Composite)}.
 		 */
 		public final Composite composite;
-
+		
 		/**
 		 * The current category.
 		 */
@@ -846,21 +735,19 @@ public class PlotGridComposite extends Composite {
 		 *            The initial category for the plot.
 		 * @param type
 		 *            The initial type for the plot category.
-		 * @param menu
-		 *            The context {@code Menu} to use for the drawn plot.
 		 * @throws Exception
 		 *             An exception may be thrown by the {@code IPlot}
 		 *             implementation if the plot could not be drawn.
 		 */
 		public DrawnPlot(IPlot plot, Composite composite, String category,
-				String type, Menu contextMenu) throws Exception {
+				String type) throws Exception {
 			this.plot = plot;
 
 			// Set the reference to the plot Composite.
 			this.composite = composite;
 
-			// Set the base Menu to the provided context Menu.
-			this.composite.setMenu(contextMenu);
+			// Create a default context Menu for the plot Composite.
+			createContextMenu(this.composite);
 
 			// Render the plot.
 			try {
@@ -903,7 +790,6 @@ public class PlotGridComposite extends Composite {
 		 * A convenience method to dispose of resources used by this drawn plot.
 		 */
 		public void dispose() {
-			composite.setMenu(null);
 			composite.dispose();
 			category = null;
 			type = null;
