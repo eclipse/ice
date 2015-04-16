@@ -124,6 +124,9 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// canvas.
 		new VisItMouseManager(canvas);
 
+		// Set the canvas' context Menu to the parent's.
+		canvas.setMenu(parent.getMenu());
+
 		return canvas;
 	}
 
@@ -175,6 +178,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// update the widget.
 		if (plotTypeChanged) {
 
+			// TODO Remove this output...
 			System.out.println("VisItPlot message: " + "Drawing plot "
 					+ category + " - " + type + " for source file \""
 					+ sourcePath + "\".");

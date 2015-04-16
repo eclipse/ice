@@ -278,6 +278,9 @@ public abstract class PlotRender {
 		stackComposite.setBackground(parent.getBackground());
 		stackComposite.setLayout(new StackLayout());
 
+		// Set the stackComposite's context Menu to the parent's.
+		stackComposite.setMenu(parent.getMenu());
+
 		return;
 	}
 
