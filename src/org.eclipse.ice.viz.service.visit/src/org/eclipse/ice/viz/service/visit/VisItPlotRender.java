@@ -5,10 +5,16 @@ import java.util.List;
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
 
+import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 
 import visit.java.client.ViewerMethods;
 
@@ -65,6 +71,13 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	private VisItSwtWidget canvas;
 
 	/**
+	 * An ActionTree for populating the context menu with a list of allowed
+	 * representations. This should be updated (as necessary) when the context
+	 * menu is opened.
+	 */
+	private final ActionTree repTree;
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param parent
@@ -81,6 +94,10 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// Set a reference to the VisItPlot. We specifically need this
 		// implementation to access the plot representations.
 		this.plot = plot;
+
+		// Create the ActionTree that will contain the representations for the
+		// current plot category.
+		repTree = new ActionTree("Representation");
 
 		return;
 	}
@@ -128,8 +145,32 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// canvas.
 		new VisItMouseManager(canvas);
 
-		// Set the canvas' context Menu to the parent's.
-		canvas.setMenu(parent.getMenu());
+		// Set up the canvas' context Menu.
+		MenuManager menuManager = new MenuManager();
+		// If the parent context Menu is not available, create a new one.
+		Menu menu = parent.getMenu();
+		if (menu == null) {
+			menu = menuManager.createContextMenu(canvas);
+			// TODO Populate the "Set Plot Type" menu with the plot categories
+			// and types in case it's not already available.
+		}
+
+		// FIXME There may be a better way to do this...
+		// When the Menu is about to be shown, add the representation options to
+		// it.
+		menu.addMenuListener(new MenuListener() {
+			@Override
+			public void menuHidden(MenuEvent e) {
+				// Nothing to do.
+			}
+
+			@Override
+			public void menuShown(MenuEvent e) {
+				repTree.getContributionItem().fill((Menu) e.widget, -1);
+			}
+		});
+
+		canvas.setMenu(menu);
 
 		return canvas;
 	}
@@ -209,6 +250,21 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 			widget.openDatabase(sourcePath);
 			widget.addPlot(representation, type);
 			widget.drawPlots();
+
+			// Rebuild the VisIt representation tree based on the current
+			// category (if the category actually changed).
+			if (!category.equals(plotCategory)) {
+				repTree.removeAll();
+				for (final String rep : plot.getRepresentations(category)) {
+					repTree.add(new ActionTree(new Action(rep) {
+						@Override
+						public void run() {
+							setPlotRepresentation(rep);
+							refresh();
+						}
+					}));
+				}
+			}
 
 			// Change the record of the current plot category and type for this
 			// PlotRender.

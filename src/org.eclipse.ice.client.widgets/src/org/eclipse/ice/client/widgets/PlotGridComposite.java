@@ -630,14 +630,10 @@ public class PlotGridComposite extends Composite {
 					dispose();
 				}
 			};
-			contextMenuManager.add(removeAction);
-
-			// Add a separator between the remove and set plot type MenuItems.
-			contextMenuManager.add(new Separator());
 
 			// Create the root ActionTree for setting the plot category and
 			// type.
-			ActionTree plotTypeTree = new ActionTree("Set Plot Type");
+			final ActionTree plotTypeTree = new ActionTree("Set Plot Type");
 			try {
 				// Add an ActionTree for each category, and then add ActionTree
 				// leaf
@@ -675,7 +671,10 @@ public class PlotGridComposite extends Composite {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			// Add the ActionTree to the context Menu.
+
+			// Add the items to the context menu.
+			contextMenuManager.add(removeAction);
+			contextMenuManager.add(new Separator());
 			contextMenuManager.add(plotTypeTree.getContributionItem());
 
 			// Set the context Menu for the plot Composite.
