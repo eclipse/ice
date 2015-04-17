@@ -163,7 +163,7 @@ public class VisItConnectionAdapter extends
 		// FIXME There is a bug that prevents any window ID besides 1 from
 		// working as expected. For now, just return 1. A bug ticket has been
 		// filed.
-//		int windowId = 1;
+		int windowId = 1;
 //		if (getState() == ConnectionState.Connected) {
 //			// The order of the returned list is not guaranteed. Throw it into
 //			// an ordered set and get the lowest positive ID not in the set.
@@ -176,7 +176,6 @@ public class VisItConnectionAdapter extends
 //		} else {
 //			windowId = -1;
 //		}
-//		return windowId;
-		return 1;
+		return windowId;
 	}
 }
