@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0",
 Service-Component: OSGI-INF/HdfIORegistry.xml,OSGI-INF/HdfIOFactory.xml,
  OSGI-INF/ioservice.xml
 Comment: Service-Component: OSGI-INF/ICEDatabaseHarness.xml
-Export-Package: org.eclipse.ice.io.hdf,
+Export-Package: org.eclipse.ice.io.csv,
+ org.eclipse.ice.io.hdf,
  org.eclipse.ice.io.ips,
  org.eclipse.ice.io.serializable

@@ -57,8 +57,6 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class is a subclass of SectionPart from org.eclipse.ui.forms that
  * renders, updates and monitors an ICE DataComponent that is part of a ICEForm.
  * The ICESectionPart takes place in the IManagedForm lifecycle and receives is
@@ -66,63 +64,31 @@ import org.eclipse.ui.forms.widgets.Section;
  * (i.e. - "gone stale" in the Eclipse parlance). The Java source code for this
  * class contains a private hashmap that is not represented in the model because
  * Jay can not figure out how to show a java.util.hashmap in RSA.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICETableComponentSectionPart extends SectionPart implements
 		IUpdateableListener {
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This attribute is a reference to an ICE TableComponent that stores the
 	 * data that should be displayed by this SectionPart. The TableComponent
 	 * will also update the ICESectionPart when its state changes (i.e. -
 	 * becomes "stale" in the Eclipse parlance).
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected TableComponent tableComponent;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The TableViewer that is used rendered by the SectionPart.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected TableViewer tableComponentViewer;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Eclipse Managed Form in which the SectionPart will be rendered.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected IManagedForm parentForm;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Composite in which the TableViewer is drawn.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected Composite sectionClient;
 
@@ -132,37 +98,22 @@ public class ICETableComponentSectionPart extends SectionPart implements
 	private ICEFormEditor editor;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * Class used to pass information for the rows in TableComponent to
 	 * TableViewer
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 */
 	private class RowWrapper {
 
 		/**
-		 * <!-- begin-UML-doc -->
-		 * <p>
 		 * Holds an ArrayList of Entries in the TableComponent for TableViewer.
-		 * </p>
-		 * <!-- end-UML-doc -->
-		 * 
 		 */
 		private List<Entry> list;
 
 		/**
-		 * <!-- begin-UML-doc -->
-		 * <p>
 		 * The Constructor, injects the ArrayList of Entries at this row.
-		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param list
-		 *            <p>
 		 *            The list of Entries that make up this RowWrapper.
-		 *            </p>
 		 * 
 		 */
 		public RowWrapper(List<Entry> list) {

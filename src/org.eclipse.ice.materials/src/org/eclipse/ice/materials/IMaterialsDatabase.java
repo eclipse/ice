@@ -14,6 +14,7 @@ package org.eclipse.ice.materials;
 
 import java.util.List;
 
+import org.eclipse.ice.datastructures.ICEObject.IElementSource;
 import org.eclipse.ice.datastructures.form.Material;
 
 /**
@@ -29,7 +30,7 @@ import org.eclipse.ice.datastructures.form.Material;
  * @author Jay Jay Billings
  * 
  */
-public interface IMaterialsDatabase {
+public interface IMaterialsDatabase extends IElementSource<Material> {
 
 	/**
 	 * This operation returns all of the materials in the database.

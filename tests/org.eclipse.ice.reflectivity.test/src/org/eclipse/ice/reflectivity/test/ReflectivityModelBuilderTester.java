@@ -1,14 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.reflectivity.test;
 
@@ -16,45 +15,50 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.IElementSource;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.reflectivity.ReflectivityModel;
-import org.junit.BeforeClass;
+import org.eclipse.ice.reflectivity.ReflectivityModelBuilder;
 import org.junit.Test;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
 
 /**
- * This class is responsible for testing the ReflectivityModel. It implements
- * the IMaterialsDatabase interface so that it can make sure the reflectivity
- * model initializes properly when setupFormWithServices() is called.
+ * This class is responsible for making sure that the ReflectivityModelBuilder
+ * can correctly build a ReflectivityModel.
  * 
  * @author Jay Jay Billings
  *
  */
-public class ReflectivityModelTester implements IMaterialsDatabase {
+public class ReflectivityModelBuilderTester implements IMaterialsDatabase {
 
 	/**
-	 * This operation checks the ReflectivityModel and makes sure that it can
-	 * properly construct its Form.
+	 * Test method for
+	 * {@link org.eclipse.ice.item.AbstractItemBuilder#build(org.eclipse.core.resources.IProject)}
+	 * .
 	 */
 	@Test
-	public void checkConstruction() {
-		// begin-user-code
+	public void testBuild() {
+
+		// This test is identical to the ReflectivityModelTester, but it does
+		// everything through the builder instead of creating it directly. The
+		// important part is to make sure that the ListComponent has an
+		// ElementSource. That is, that the setupFormWithServices() operation is
+		// called.
 
 		// Local Declarations
 		int listID = 1;
 		ListComponent<Material> list;
 
+		// Create the builder
+		ReflectivityModelBuilder builder = new ReflectivityModelBuilder();
+		builder.setMaterialsDatabase(this);
+
 		// Just create one with the nullary constructor
 		// No need to check the Item with a IProject instance
-		ReflectivityModel model = new ReflectivityModel();
-		model.setMaterialsDatabase(this);
-		model.setupFormWithServices();
+		ReflectivityModel model = (ReflectivityModel) builder.build(null);
 
 		// Make sure we have a form and some components
 		assertNotNull(model.getForm());
@@ -70,9 +74,8 @@ public class ReflectivityModelTester implements IMaterialsDatabase {
 		// Make sure that the element source of the list is set to insure that
 		// setupFormWithServices() worked.
 		assertNotNull(list.getElementSource());
-		assertEquals(list.getElementSource(),this);
+		assertEquals(list.getElementSource(), this);
 
-		return;
 	}
 
 	@Override

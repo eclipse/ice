@@ -5,7 +5,11 @@ Bundle-SymbolicName: org.eclipse.ice.reflectivity
 Bundle-Version: 2.0.0
 Service-Component: OSGI-INF/ReflectivityModelComponent.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.eclipse.ice.item,
+Import-Package: org.apache.commons.math;version="2.1.0",
+ org.apache.commons.math.complex;version="2.1.0",
+ org.apache.commons.math.special;version="2.1.0",
+ org.eclipse.ice.item,
+ org.eclipse.ice.item.model,
  org.eclipse.ice.materials
 Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0",
  org.eclipse.core.resources;bundle-version="3.8.101",
