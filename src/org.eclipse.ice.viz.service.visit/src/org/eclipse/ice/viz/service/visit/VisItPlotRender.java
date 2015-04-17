@@ -59,12 +59,6 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	private String plotType;
 
 	/**
-	 * The ID of the associated VisIt window. Each window corresponds to a
-	 * unique "view" for a VisIt connection.
-	 */
-	private final int windowId;
-
-	/**
 	 * The plot {@code Composite} that renders the files through the VisIt
 	 * connection.
 	 */
@@ -79,27 +73,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 *            The rendered ConnectionPlot. This cannot be changed.
 	 */
 	public VisItPlotRender(Composite parent, VisItPlot plot) {
-		// TODO If the window ID is -1, VisIt won't automatically create a new
-		// one...
-		this(parent, plot, 1);
-	}
-
-	/**
-	 * The full constructor.
-	 * 
-	 * @param parent
-	 *            The parent Composite that contains the plot render.
-	 * @param plot
-	 *            The rendered ConnectionPlot. This cannot be changed.
-	 * @param windowId
-	 *            The ID of the associated VisIt window. Each window corresponds
-	 *            to a unique "view" for a VisIt connection.
-	 */
-	public VisItPlotRender(Composite parent, VisItPlot plot, int windowId) {
 		super(parent, plot);
-
-		// Set the reference to the VisIt window ID.
-		this.windowId = windowId;
 
 		// Store the adapter so that we can access its connection later.
 		adapter = plot.getVisItConnectionAdapter();
@@ -146,6 +120,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 		// Establish the canvas' connection to the VisIt server. This may throw
 		// an exception.
+		int windowId = plot.getVisItConnectionAdapter().getNextWindowId();
 		canvas.setVisItSwtConnection(connection, windowId, windowWidth,
 				windowHeight);
 
