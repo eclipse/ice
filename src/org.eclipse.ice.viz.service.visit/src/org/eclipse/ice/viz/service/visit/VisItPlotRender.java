@@ -1,5 +1,7 @@
 package org.eclipse.ice.viz.service.visit;
 
+import java.util.List;
+
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
 
@@ -12,9 +14,23 @@ import visit.java.client.ViewerMethods;
 
 public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
+	/**
+	 * A reference to the associated {@code IPlot} implementation. This may be
+	 * required for specific implementation details, e.g., for determining the
+	 * {@link #representation}.
+	 */
+	private final VisItPlot plot;
+
 	// TODO This could be moved to the parent class, as the connection adapter
 	// may prove useful.
 	private final IConnectionAdapter<VisItSwtConnection> adapter;
+
+	/**
+	 * 
+	 * The current plot representation. This must be pulled from the list of
+	 * representations from {@link VisItPlot#getRepresentations(String)}.
+	 */
+	private String representation;
 
 	/**
 	 * The current plot category rendered in the associated rendering widget.
@@ -24,6 +40,15 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * </p>
 	 */
 	private String plotCategory;
+	/**
+	 * The current plot representation rendered in the associated rendering
+	 * widget.
+	 * <p>
+	 * <b>Note:</b> This value should only be updated when the corresponding UI
+	 * piece is updated.
+	 * </p>
+	 */
+	private String plotRepresentation;
 	/**
 	 * The current plot type rendered in the associated rendering widget.
 	 * <p>
@@ -78,6 +103,10 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 		// Store the adapter so that we can access its connection later.
 		adapter = plot.getVisItConnectionAdapter();
+
+		// Set a reference to the VisItPlot. We specifically need this
+		// implementation to access the plot representations.
+		this.plot = plot;
 
 		return;
 	}
@@ -150,19 +179,22 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// unfortunately, use the URI as specified.
 		String sourcePath = VisItPlot.getSourcePath(plot.getDataSource());
 
-		// Make sure the Canvas is activated.
-		canvas.activate();
-
 		// See if the plot category and type have been updated since the last
 		// refresh. We should also make sure the current plot category and type
 		// are valid before we try to update them.
 		final String category = getPlotCategory();
+		final String representation = getPlotRepresentation();
 		final String type = getPlotType();
-		boolean plotTypeChanged = ((category != null && !category
-				.equals(plotCategory)) || (type != null && !type
-				.equals(plotType)));
+		// Check that the type is non-null and new. Then do the same for the
+		// representation and category.
+		boolean plotTypeChanged = (type != null && !type.equals(plotType));
+		plotTypeChanged |= (representation != null && !representation
+				.equals(plotRepresentation));
+		plotTypeChanged |= (category != null && !category.equals(plotCategory));
+		// Now check the validity of each property.
 		if (plotTypeChanged && type != null) {
 			plotTypeChanged = false;
+			// Check that the category and type is valid.
 			String[] types = plot.getPlotTypes().get(category);
 			if (types != null) {
 				for (int i = 0; !plotTypeChanged && i < types.length; i++) {
@@ -171,7 +203,16 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 					}
 				}
 			}
+			// Check that the representation is valid.
+			List<String> reps = plot.getRepresentations(category);
+			plotTypeChanged &= reps.contains(representation);
+		} else {
+			// If the type is null, then don't proceed.
+			plotTypeChanged = false;
 		}
+
+		// Make sure the Canvas is activated.
+		canvas.activate();
 
 		// If the plot category or type changed (and they are both valid),
 		// update the reference to the currently drawn category and type and
@@ -191,17 +232,14 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 			// FIXME How do we handle invalid paths?
 			widget.openDatabase(sourcePath);
-			widget.addPlot(category, type);
+			widget.addPlot(representation, type);
 			widget.drawPlots();
 
 			// Change the record of the current plot category and type for this
 			// PlotRender.
-			if (category != null) {
-				plotCategory = category;
-			}
-			if (type != null) {
-				plotType = type;
-			}
+			plotCategory = category;
+			plotRepresentation = representation;
+			plotType = type;
 		}
 
 		return;
@@ -215,5 +253,53 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	@Override
 	protected void clearCache() {
 		// Nothing to do yet.
+	}
+
+	/**
+	 * Overrides the default behavior to set the plot representation to its
+	 * default value given the new category.
+	 */
+	@Override
+	public void setPlotCategory(String category) {
+		String oldCategory = getPlotCategory();
+
+		// Proceed with the normal process that sets the plot category.
+		super.setPlotCategory(category);
+
+		// If the category changed, we will need to update the representation to
+		// the default representation for the new category, or null if the
+		// category has no valid representations.
+		if (oldCategory != category
+				&& (oldCategory == null || !oldCategory.equals(category))) {
+			List<String> reps = plot.getRepresentations(category);
+			setPlotRepresentation(reps.isEmpty() ? null : reps.get(0));
+		}
+
+		return;
+	}
+
+	/**
+	 * Sets the current plot representation. This is a "sub-category" that lies
+	 * between the plot category and type as derived from the {@link VisItPlot}.
+	 * <p>
+	 * <b>Note:</b> A subsequent call to {@link #refresh()} will be necessary to
+	 * sync the UI with this call's changes.
+	 * </p>
+	 * 
+	 * @param representation
+	 *            The new plot representation.
+	 */
+	private void setPlotRepresentation(String representation) {
+		this.representation = representation;
+	}
+
+	/**
+	 * Gets the current plot representation. This is a "sub-category" that lies
+	 * between the plot category and type as derived from the {@link VisItPlot}.
+	 * 
+	 * @return The current plot representation.
+	 */
+	private String getPlotRepresentation() {
+		return representation;
 	}
 }

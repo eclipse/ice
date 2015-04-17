@@ -15,6 +15,8 @@ import gov.lbnl.visit.swt.VisItSwtConnection;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -39,6 +41,13 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	// TODO We should manage the window IDs here.
 
 	/**
+	 * A map of allowed representations, keyed on the category. Instead of
+	 * passing the category and type to the VisIt widget, a representation and
+	 * type are passed. The first value in each list is considered the default.
+	 */
+	private final Map<String, List<String>> representations;
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param vizService
@@ -46,6 +55,33 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	 */
 	public VisItPlot(VisItVizService vizService) {
 		super(vizService);
+
+		// Create the map of VisIt plot representations. The keys are the
+		// categories exposed by VisItPlot in findPlotTypes(...). The first
+		// value in each list is considered the default.
+		representations = new HashMap<String, List<String>>();
+		List<String> types;
+		// The category "Materials" has two types: Boundary and FilledBoundary.
+		types = new ArrayList<String>(2);
+		types.add("Boundary");
+		types.add("FilledBoundary");
+		representations.put("Materials", types);
+		// "Meshes" has one type: Mesh.
+		types = new ArrayList<String>(1);
+		types.add("Mesh");
+		representations.put("Meshes", types);
+		// "Scalars" has three types: Pseudocolor, Contour, Volume.
+		types = new ArrayList<String>(3);
+		types.add("Pseudocolor");
+		types.add("Contour");
+		types.add("Volume");
+		representations.put("Scalars", types);
+		// "Vectors" has one type: Vector.
+		types = new ArrayList<String>(1);
+		types.add("Vector");
+		representations.put("Vectors", types);
+
+		return;
 	}
 
 	/*
@@ -87,13 +123,13 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 		// Get all of the plot types and plots in the file.
 		List<String> plots;
 		plots = info.getMeshes();
-		plotTypes.put("Mesh", plots.toArray(new String[plots.size()]));
+		plotTypes.put("Meshes", plots.toArray(new String[plots.size()]));
 		plots = info.getMaterials();
-		plotTypes.put("Material", plots.toArray(new String[plots.size()]));
+		plotTypes.put("Materials", plots.toArray(new String[plots.size()]));
 		plots = info.getScalars();
-		plotTypes.put("Scalar", plots.toArray(new String[plots.size()]));
+		plotTypes.put("Scalars", plots.toArray(new String[plots.size()]));
 		plots = info.getVectors();
-		plotTypes.put("Vector", plots.toArray(new String[plots.size()]));
+		plotTypes.put("Vectors", plots.toArray(new String[plots.size()]));
 
 		return plotTypes;
 	}
@@ -140,6 +176,25 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 			}
 		}
 		return path;
+	}
+
+	/**
+	 * Gets the list of allowed plot representations for a category. This is
+	 * required for a VisIt canvas and should be passed to it along with the
+	 * plot type.
+	 * 
+	 * @param category
+	 *            An {@code IPlot} category.
+	 * @return A list of allowed representations for the specified category. The
+	 *         first value can be considered the default. If the category is
+	 *         invalid, an empty list is returned.
+	 */
+	protected List<String> getRepresentations(String category) {
+		// Always return a copy so the list of representations for a category is
+		// not (un)intentionally modified.
+		List<String> types = representations.get(category);
+		return (types != null ? new ArrayList<String>(types)
+				: new ArrayList<String>());
 	}
 
 }
