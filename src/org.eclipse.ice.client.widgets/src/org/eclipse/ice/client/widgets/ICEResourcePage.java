@@ -15,9 +15,7 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -67,19 +65,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private ResourceComponent resourceComponent;
 
 	/**
-	 * The current resource being managed by this page.
-	 */
-	private ICEResource currentResource = null;
-
-	/**
-	 * The ICEResourceView that holds resources for this page to display.
-	 */
-	private ICEResourceView resourceView;
-
-	/**
 	 * The workbench page used by this ICEResourcePage.
 	 */
-
 	private IWorkbenchPage workbenchPage;
 
 	/**
@@ -100,6 +87,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private Browser browser;
 
 	/**
+	 * The {@code Composite} that contains the grid of drawn plots.
+	 */
+	private PlotGridComposite plotGridComposite;
+
+	/**
 	 * The service factory for visualization tools. This can be queried for
 	 * visualization services.
 	 */
@@ -109,13 +101,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * The map that holds any existing plots, keyed on the resource IDs.
 	 */
 	private final Map<String, IPlot> plots;
-
-	/**
-	 * The map that holds any drawn plots, keyed on the resource IDs. A
-	 * Composite should only be added to this map if it already exists in
-	 * {@link #plots}.
-	 */
-	private final Map<String, Composite> plotComposites;
 
 	/**
 	 * A list of file extensions that the ICEResourcePage should be treat as
@@ -146,7 +131,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		// Setup the plot maps.
 		plots = new HashMap<String, IPlot>();
-		plotComposites = new HashMap<String, Composite>();
 
 		// Create the list of text file extensions
 		String[] extensions = { "txt", "sh", "i", "csv" };
@@ -175,23 +159,19 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
-		// Get the Resource View and set its content to this page's
-		// ResourceComponent.
-		resourceView = (ICEResourceView) getSite().getWorkbenchWindow()
-				.getActivePage().findView(ICEResourceView.ID);
 
 		// Get the parent Composite for the Resource Page widgets and set its
 		// layout to the StackLayout.
 		pageComposite = managedForm.getForm().getBody();
 		pageComposite.setLayout(stackLayout);
 
-		// Register the page as a selection listener. The page returned by
-		// getPage() is not the same as this page! There are some subtle UI
-		// differences under the hood.
-		getSite().getPage().addSelectionListener(this);
-		// Add a dispose event listener on the parent. If disposed at any point,
-		// remove it from the workbench's SelectionService listeners (or else it
-		// will attempt to refresh disposed widgets).
+		// Register the page with the SelectionService as a listener. Note that
+		// this call can be updated to only listen for selections from a
+		// particular part.
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addSelectionListener(this);
+		// If the page is disposed, then this should be removed as a selection
+		// listener.
 		pageComposite.addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent event) {
@@ -204,6 +184,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		browser = createBrowser(pageComposite, toolkit);
 		stackLayout.topControl = browser;
 		pageComposite.layout();
+
+		// Create the grid of plots.
+		plotGridComposite = new PlotGridComposite(pageComposite, SWT.NONE);
+		toolkit.adapt(plotGridComposite);
 
 		// Set the workbench page reference
 		workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
@@ -237,21 +221,16 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 			// Display the default-selected Resource from the Resource View in
 			// the browser, or a message.
-			if (currentResource != null
-					&& !(currentResource instanceof VizResource)) {
-				browser.setUrl(currentResource.getPath().toString());
+			if (!resourceComponent.isEmpty()) {
+				browser.setText("<html><body>"
+						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">Select a resource to view</p>"
+						+ "</body></html>");
 			} else {
-				if (!resourceComponent.isEmpty()) {
-					browser.setText("<html><body>"
-							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-							+ "align=\"center\">Select a resource to view</p>"
-							+ "</body></html>");
-				} else {
-					browser.setText("<html><body>"
-							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-							+ "align=\"center\">No resources available</p>"
-							+ "</body></html>");
-				}
+				browser.setText("<html><body>"
+						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">No resources available</p>"
+						+ "</body></html>");
 			}
 		} catch (SWTError e) {
 			System.out.println("Client Message: "
@@ -259,37 +238,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		}
 
 		return browser;
-	}
-
-	/**
-	 * This operation overrides the default/abstract implementation of
-	 * ISelectionListener.selectionChanged to display the resource selected in
-	 * the ICEResourceView.
-	 * 
-	 * @param part
-	 *            The IWorkbenchPart that called this function.
-	 * @param selection
-	 *            The ISelection chosen in the part parameter.
-	 */
-	@Override
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-
-		// If the selection comes from the Resource View, update the view.
-		if (ICEResourceView.ID.equals(part.getSite().getId())) {
-			ICEResource selectedResource = resourceView
-					.getResourceFromSelection(selection);
-
-			// Refresh the page's widgets based on the selected resource.
-			if (selectedResource != null) {
-				try {
-					setCurrentResource(selectedResource);
-				} catch (PartInitException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		return;
 	}
 
 	/**
@@ -302,104 +250,99 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 *            The resource to render. Assumed not to be {@code null}.
 	 * @throws PartInitException
 	 */
-	private void setCurrentResource(ICEResource resource)
-			throws PartInitException {
+	void showResource(ICEResource resource) throws PartInitException {
 
-		if (resource != currentResource) {
-			currentResource = resource;
+		// TODO This method has several return statements, making it a little
+		// hard to read. It should be updated and simplified.
 
-			// If no resource is selected, then clear the current contents of
-			// the ResourcePage and set the top Control to be the browser with
-			// an informative text.
-			if (resource == null) {
-				Control topControl = stackLayout.topControl;
-				if (topControl != browser) {
-					// Update the browser.
-					browser.setText("<html><body>"
-							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-							+ "align=\"center\">Select a resource to view</p>"
-							+ "</body></html>");
-					stackLayout.topControl = browser;
-					pageComposite.layout();
+		// If no resource is selected, then clear the current contents of
+		// the ResourcePage and set the top Control to be the browser with
+		// an informative text.
+		if (resource == null) {
+			Control topControl = stackLayout.topControl;
+			if (topControl != browser) {
+				// Update the browser.
+				browser.setText("<html><body>"
+						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">Select a resource to view</p>"
+						+ "</body></html>");
+				stackLayout.topControl = browser;
+				pageComposite.layout();
 
-					// Dispose of the previous Control occupying the
-					// ResourcePage.
-					if (topControl != null && !topControl.isDisposed()) {
-						topControl.dispose();
-					}
+				// Dispose of the previous Control occupying the
+				// ResourcePage.
+				if (topControl != null && !topControl.isDisposed()) {
+					topControl.dispose();
 				}
-
-				return;
 			}
 
-			// VizResources should not use the browser. However, if it cannot be
-			// rendered with available VizResources, we should try using the
-			// browser.
-			boolean useBrowser = !(resource instanceof VizResource);
-			if (!useBrowser) {
-				VizResource vizResource = (VizResource) resource;
-				Composite plotComposite = null;
+			return;
+		}
 
-				// Find the drawn plot for this resource. If it does not exist,
-				// attempt to draw it.
-				String key = getPlotKey(vizResource);
-				plotComposite = plotComposites.get(key);
-				if (plotComposite == null) {
-					plotComposite = createPlotComposite(pageComposite,
-							vizResource);
-				}
+		// VizResources should not use the browser. However, if it cannot be
+		// rendered with available VizResources, we should try using the
+		// browser.
+		boolean useBrowser = !(resource instanceof VizResource);
+		if (!useBrowser) {
 
-				// If the plot and its drawn Composite could be found, update
-				// the StackLayout. Otherwise, the next section will attempt to
-				// either open it in a text editor (if applicable), or the
-				// browser as a last resort.
-				if (plotComposite != null) {
-					stackLayout.topControl = plotComposite;
+			VizResource vizResource = (VizResource) resource;
+
+			// Try to find the plot for this resource.
+			String key = getPlotKey(vizResource);
+			IPlot plot = plots.get(key);
+
+			// Try to draw the plot on the grid.
+			try {
+				if (plotGridComposite.addPlot(plot) != -1) {
+					stackLayout.topControl = plotGridComposite;
 					pageComposite.layout();
-
 					// Reactivate the Item editor tab if it's not in the front
 					activateEditor();
 
 					return;
 				}
+			} catch (Exception e) {
+				System.err.println("ICEResourcePage error: "
+						+ "The plot could not be drawn.");
+				e.printStackTrace();
 			}
+		}
 
-			String path = resource.getPath().toString();
+		String path = resource.getPath().toString();
 
-			// Determine if the resource is a text file
-			int extIndex = path.lastIndexOf(".");
-			String fileExtension = path.substring(extIndex + 1);
-			boolean useEditor = textFileExtensions.contains(fileExtension);
+		// Determine if the resource is a text file
+		int extIndex = path.lastIndexOf(".");
+		String fileExtension = path.substring(extIndex + 1);
+		boolean useEditor = textFileExtensions.contains(fileExtension);
 
-			// If the resource is a text file, open it via the Eclipse default
-			// text editor
-			if (useEditor) {
-				// Get the content of the file
-				IFileStore fileOnLocalDisk = EFS.getLocalFileSystem().getStore(
-						resource.getPath());
-				FileStoreEditorInput editorInput = new FileStoreEditorInput(
-						fileOnLocalDisk);
+		// If the resource is a text file, open it via the Eclipse default
+		// text editor
+		if (useEditor) {
+			// Get the content of the file
+			IFileStore fileOnLocalDisk = EFS.getLocalFileSystem().getStore(
+					resource.getPath());
+			FileStoreEditorInput editorInput = new FileStoreEditorInput(
+					fileOnLocalDisk);
 
-				// Open the contents in the text editor
-				IWorkbenchWindow window = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow();
-				IWorkbenchPage page = window.getActivePage();
-				page.openEditor(editorInput, "org.eclipse.ui.DefaultTextEditor");
-			}
+			// Open the contents in the text editor
+			IWorkbenchWindow window = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow();
+			IWorkbenchPage page = window.getActivePage();
+			page.openEditor(editorInput, "org.eclipse.ui.DefaultTextEditor");
+		}
 
-			// If the Resource is a regular Resource or cannot be rendered via
-			// the VizServices or a text editor, try to open it in the browser
-			// as a last resort.
-			if (useBrowser && !useEditor && browser != null
-					&& !browser.isDisposed()) {
-				// Update the browser.
-				browser.setUrl(path);
-				stackLayout.topControl = browser;
-				pageComposite.layout();
+		// If the Resource is a regular Resource or cannot be rendered via
+		// the VizServices or a text editor, try to open it in the browser
+		// as a last resort.
+		if (useBrowser && !useEditor && browser != null
+				&& !browser.isDisposed()) {
+			// Update the browser.
+			browser.setUrl(path);
+			stackLayout.topControl = browser;
+			pageComposite.layout();
 
-				// Reactivate the Item editor tab if it's not in the front
-				activateEditor();
-			}
+			// Reactivate the Item editor tab if it's not in the front
+			activateEditor();
 		}
 
 		return;
@@ -450,84 +393,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		}
 
 		return plot;
-	}
-
-	/**
-	 * This method attempts to create a plot {@code Composite} for the specified
-	 * resource. If one could be created, it will be added to the map of
-	 * {@link #plotComposites}.
-	 * <p>
-	 * <b>Note (1):</b> This method assumes it is called from the UI thread.
-	 * </p>
-	 * <p>
-	 * <b>Note (2):</b> If there is not a corresponding {@link IPlot} in the map
-	 * of {@link #plots}, no {@code Composite} will be created.
-	 * </p>
-	 * 
-	 * @param parent
-	 *            The parent {@code Composite} in which to draw the new plot
-	 *            {@code Composite}.
-	 * @param resource
-	 *            The resource that needs a plot {@code Composite}.
-	 * @return The plot {@code Composite}, or {@code null} if one could not be
-	 *         created.
-	 */
-	private Composite createPlotComposite(Composite parent, VizResource resource) {
-		Composite plotComposite = null;
-
-		// First, check the map of plot Composites.
-		String key = getPlotKey(resource);
-
-		IPlot plot = plots.get(key);
-		if (plot != null) {
-
-			// Try to get the available categories and plot types, then try to
-			// plot the first available one.
-			try {
-				Map<String, String[]> plotTypes = plot.getPlotTypes();
-
-				// Find the first category and plot type.
-				String category = null;
-				String[] types = null;
-				Iterator<Entry<String, String[]>> iter = plotTypes.entrySet()
-						.iterator();
-				while (iter.hasNext() && (types == null || types.length == 0)) {
-					Entry<String, String[]> entry = iter.next();
-					category = entry.getKey();
-					types = entry.getValue();
-				}
-
-				// TODO We will want to expose the categories and plot types to
-				// the user.
-
-				// If there is an available category and plot type, try to
-				// render the plot.
-				if (types != null && types.length > 0) {
-					String plotType = types[0];
-
-					// Try to draw the contents of the plot Composite. If
-					// successfully drawn, add it to the map of plot Composites.
-					try {
-						FormToolkit toolkit = getManagedForm().getToolkit();
-						plotComposite = toolkit.createComposite(parent);
-						plotComposite.setLayout(new FillLayout());
-						plot.draw(category, plotType, plotComposite);
-						plotComposites.put(key, plotComposite);
-					}
-					// If the plot could not be drawn, dispose the plot
-					// Composite.
-					catch (Exception drawException) {
-						drawException.printStackTrace();
-						plotComposite.dispose();
-						plotComposite = null;
-					}
-				}
-			} catch (Exception plotTypeException) {
-				plotTypeException.printStackTrace();
-			}
-		}
-
-		return plotComposite;
 	}
 
 	/**
@@ -599,7 +464,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// Clear out the old metadata that can be done from outside the UI
 			// thread.
 			plots.clear();
-			currentResource = null;
 
 			// Update the UI and dispose of any stale UI pieces.
 			if (display != null) {
@@ -607,15 +471,15 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 					@Override
 					public void run() {
 						// Clear the browser and make it the top widget.
-						browser.setText("<html><body><center>No resources available.</center></body></html>");
+						browser.setText("<html><body>"
+								+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+								+ "align=\"center\">No resources available</p>"
+								+ "</body></html>");
 						stackLayout.topControl = browser;
 						pageComposite.layout();
 
 						// Dispose any plot Composites.
-						for (Composite plotComposite : plotComposites.values()) {
-							plotComposite.dispose();
-						}
-						plotComposites.clear();
+						plotGridComposite.clearPlots();
 
 						return;
 					}
@@ -631,31 +495,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			if (component != null) {
 				resourceComponent.register(this);
 				update(resourceComponent);
-
-				// Set the default selection in the Resource View and update the
-				// contents of the Resource Page's widgets. This must be done on
-				// the UI thread.
-				if (display != null) {
-					// Get the current selection from the Resource View and set
-					// the current Resource to it if possible.
-					ISelection selection;
-					selection = getSite().getPage().getSelection(
-							ICEResourceView.ID);
-					final ICEResource currentResource = resourceView
-							.getResourceFromSelection(selection);
-					if (currentResource != null) {
-						display.asyncExec(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									setCurrentResource(currentResource);
-								} catch (PartInitException e) {
-									e.printStackTrace();
-								}
-							}
-						});
-					}
-				}
 			}
 		}
 
@@ -696,15 +535,14 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	@Override
 	public void update(IUpdateable component) {
 
-		// TODO Remove any old plots.
-
 		if (component != null && component == resourceComponent) {
+
 			// Get a local copy of the ResouceComponent.
 			ResourceComponent resourceComponent = (ResourceComponent) component;
 
-			// Whether or not the currently selected or drawn resource is part
-			// of the ResourceComponent.
-			boolean currentResourceValid = false;
+			// TODO Do we want to remove any IPlots associated with VizResources
+			// that are no longer available, or should we just let the user
+			// close them out?
 
 			// Create plots for any VizResources in the ResourceComponent that
 			// do not already have plots.
@@ -717,32 +555,22 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						plot = createPlot((VizResource) resource);
 					}
 				}
-
-				// Update the flag to see if the currently-drawn resource is
-				// still in the ResourceComponent. This only applies if they are
-				// the same object!
-				currentResourceValid |= (resource == currentResource);
-			}
-
-			// If necessary, clear the current resource. Note that this must be
-			// done on the UI thread since setting the current resource updates
-			// the UI.
-			if (!currentResourceValid) {
-				PlatformUI.getWorkbench().getDisplay()
-						.asyncExec(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									setCurrentResource(null);
-								} catch (PartInitException e) {
-									e.printStackTrace();
-								}
-								return;
-							}
-						});
 			}
 		}
 
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.
+	 * IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+	 */
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		// This method should be used if we need to respond to the current
+		// selection. Note that the current selection can change based on the
+		// currently active view/part.
 	}
 }

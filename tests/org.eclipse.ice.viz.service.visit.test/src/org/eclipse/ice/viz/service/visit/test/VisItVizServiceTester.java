@@ -55,7 +55,7 @@ public class VisItVizServiceTester {
 		// TODO Update this test. For now, the version should always be the
 		// same. However, it may be that we can connect to multiple versions at
 		// run-time!
-		final String expectedVersion = "2.8.2";
+		final String expectedVersion = "1.0";
 
 		// The name should always be the same. Just try getting it a few times.
 		VisItVizService service = new VisItVizService();

@@ -14,21 +14,21 @@ package org.eclipse.ice.reflectivity;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.resource.VizResource;
-import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.model.Model;
+import org.eclipse.ice.materials.IMaterialsDatabase;
+import org.eclipse.ice.materials.MaterialWritableTableFormat;
 
 /**
  * This classes calculates the reflectivity profile of a set of materials
@@ -38,15 +38,13 @@ import org.eclipse.ice.item.Item;
  * @author Jay Jay Billings, Alex McCaskey
  */
 @XmlRootElement(name = "ReflectivityModel")
-public class ReflectivityModel extends Item {
+public class ReflectivityModel extends Model {
 
 	/**
 	 * The constructor.
 	 */
 	public ReflectivityModel() {
-		// begin-user-code
 		this(null);
-		// end-user-code
 	}
 
 	/**
@@ -83,30 +81,44 @@ public class ReflectivityModel extends Item {
 		// begin-user-code
 
 		// Create an empty stream for the output files
-		
+
 		// FIXME! Simple data entered now for testing
 		String line1 = "#features,t, p_x, p_y\n";
 		String line2 = "#units,t,p_x,p_y\n";
 		String line3 = "1.0,1.0,1.0\n";
 		String line4 = "2.0,4.0,8.0\n";
 		String line5 = "3.0,9.0,27.0\n";
-		String allLines = line1+line2+line3+line4+line5;
+		String allLines = line1 + line2 + line3 + line4 + line5;
+
+		ByteArrayInputStream stream = new ByteArrayInputStream(
+				allLines.getBytes());
+
+		// Let the parent setup the Form
+		super.setupForm();
+
+		// Add a data component for the number of rough layers and the input file
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(allLines.getBytes());
-
-		// Create the Form
-		form = new Form();
-		TableComponent table = new TableComponent();
-		table.setId(1);
-		table.setName("Reflectivity Input Data");
-		table.setDescription("");
-
+		// FIXME!
+		
+		// Configure a list of property names for the materials
+		ArrayList<String> names = new ArrayList<String>();
+		names.add("Material ID");
+		names.add("Thickness (A)");
+		names.add("Roughness (A)");
+		names.add("Scattering Length Density (A^-2)");
+		names.add("Mu_abs (A^-2)");
+		names.add("Mu_inc (A^-1)");
+		// Create the writable format to be used by the list
+		MaterialWritableTableFormat format = new MaterialWritableTableFormat(names);
+		
 		// Create the list that will contain all of the material information
 		ListComponent<Material> matList = new ListComponent<Material>();
 		matList.setId(1);
 		matList.setName("Reflectivity Input Data");
 		matList.setDescription("Reflectivity Input Data");
 		matList.add(new Material());
+		matList.setTableFormat(format);
+		// Make sure to put it in the form!
 		form.addComponent(matList);
 
 		if (project != null) {
@@ -128,7 +140,7 @@ public class ReflectivityModel extends Item {
 				}
 				stream.reset();
 				scatteringFile.create(stream, true, null);
-				
+
 				// Create the VizResource to hold the reflectivity data
 				VizResource reflectivitySource = new VizResource(
 						reflectivityFile.getLocation().toFile());
@@ -136,7 +148,7 @@ public class ReflectivityModel extends Item {
 				reflectivitySource.setId(1);
 				reflectivitySource
 						.setDescription("Data from reflectivity calculation");
-				
+
 				// Create the VizResource to hold the scatDensity data
 				VizResource scatDensitySource = new VizResource(scatteringFile
 						.getLocation().toFile());
@@ -165,10 +177,12 @@ public class ReflectivityModel extends Item {
 		// end-user-code
 	}
 
-	/**
-	 * This operation is used to setup the name and description of the model as
-	 * well as register its builder.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.item.Item#setupItemInfo()
 	 */
+	@Override
 	protected void setupItemInfo() {
 		// begin-user-code
 
@@ -185,4 +199,25 @@ public class ReflectivityModel extends Item {
 		// end-user-code
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
+	 */
+	@Override
+	public void setupFormWithServices() {
+
+		// If the materials database is available, register it as the element
+		// provider for the list component of materials on the Form.
+		IMaterialsDatabase database = getMaterialsDatabase();
+		if (database != null) {
+			// Grab the component
+			ListComponent<Material> matList = (ListComponent<Material>) form.getComponent(1);
+			// Set the database as an element source
+			matList.setElementSource(database);
+		}
+
+		return;
+	}
+	
 }

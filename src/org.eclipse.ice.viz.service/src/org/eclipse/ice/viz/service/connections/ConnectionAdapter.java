@@ -44,7 +44,8 @@ import org.eclipse.ice.datastructures.form.Entry;
  * @param <T>
  *            The type of the connection object.
  */
-public abstract class ConnectionAdapter<T> extends ICEObject {
+public abstract class ConnectionAdapter<T> extends ICEObject implements
+		IConnectionAdapter<T> {
 
 	/**
 	 * The current connection managed by this adapter.
@@ -71,6 +72,15 @@ public abstract class ConnectionAdapter<T> extends ICEObject {
 	}
 
 	// ---- Connect, Disconnect, and implementations. ---- //
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#connect()
+	 */
+	public boolean connect() {
+		return connect(false);
+	}
+
 	/**
 	 * Connects to the associated {@link #connection} if not already connected
 	 * or connecting.
@@ -159,6 +169,16 @@ public abstract class ConnectionAdapter<T> extends ICEObject {
 	 *         could not be opened.
 	 */
 	protected abstract T openConnection();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.IConnectionAdapter#disconnect()
+	 */
+	public boolean disconnect() {
+		return disconnect(false);
+	}
 
 	/**
 	 * Disconnects the associated {@link #connection} if not already
@@ -297,121 +317,83 @@ public abstract class ConnectionAdapter<T> extends ICEObject {
 	}
 
 	// ---- Public Methods ---- //
-	/**
-	 * Gets the connection managed by this adapter.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The associated connection.
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.IConnectionAdapter#getConnection
+	 * ()
 	 */
 	public T getConnection() {
 		return connection;
 	}
 
-	/**
-	 * Gets the connection property corresponding to the specified key.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param key
-	 *            The key or ID of the required connection property.
-	 * @return The value of the connection property, or {@code null} if the key
-	 *         did not exist.
+	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#
+	 * getConnectionProperty(java.lang.String)
 	 */
 	public String getConnectionProperty(String key) {
 		return connectionProperties.get(key);
 	}
 
-	/**
-	 * Gets the key currently associated with this connection. The value is
-	 * usually maintained by a connection manager.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The connection key.
+	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#getKey()
 	 */
 	public String getKey() {
 		return getName();
 	}
 
-	/**
-	 * Gets the current state of the associated connection.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The current state of the associated connection.
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.IConnectionAdapter#getState()
 	 */
 	public ConnectionState getState() {
 		return state;
 	}
 
-	/**
-	 * Sets the connection's required {@link #connectionProperties properties}
-	 * based on the provided list of {@code Entry}s (usually a row from a
-	 * {@link ConnectionManager}).
-	 * <p>
-	 * The associated connection will <i>not</i> be reset if the connection
-	 * properties have changed.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param properties
-	 *            The list of new connection properties.
-	 * @return True if the new connection properties were valid and a change
-	 *         occurred, false otherwise.
+	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#
+	 * setConnectionProperties(java.util.List)
 	 */
 	public abstract boolean setConnectionProperties(List<Entry> properties);
 
-	// TODO Remove this old code
-	// public boolean setConnectionProperties(List<Entry> properties) {
-	// // Store the old key and ID.
-	// String oldKey = getKey();
-	// int oldId = getId();
-	//
-	// System.out.println("ConnectionAdapter message: "
-	// + "The connection properties for \"" + oldKey
-	// + "\" are being updated.");
-	//
-	// // Update the properties. Use the sub-class' implementation.
-	// boolean changed = updateProperties(properties, connectionProperties);
-	// if (changed) {
-	// System.out.println("ConnectionAdapter message: "
-	// + "The connection properties for \"" + oldKey
-	// + "\" changed. The connection will be reset.");
-	//
-	// // Temporarily reset to the old key and ID.
-	// final String newKey = getKey();
-	// final int newId = getId();
-	// objectName = oldKey;
-	// uniqueId = oldId;
-	//
-	// // Create a new thread to disconnect from the old connection and
-	// // reconnect to the new one.
-	// Thread thread = new Thread() {
-	// @Override
-	// public void run() {
-	//
-	// // Disconnect based on the old connection settings.
-	// disconnect(true);
-	//
-	// // Restore the new key and ID.
-	// objectName = newKey;
-	// uniqueId = newId;
-	//
-	// // Re-connect based on the new connection settings.
-	// connect(true);
-	// }
-	// };
-	// thread.start();
-	// }
-	// return changed;
-	// }
-	//
-	// /**
-	// * Updates the connection's required properties based on the new input
-	// * properties and notifies the caller if the properties changed.
-	// *
-	// * @param newProperties
-	// * The list of new connection properties (usually a row from a
-	// * {@link ConnectionManager}).
-	// * @param propertyMap
-	// * The map of required connection properties. This should be
-	// * updated based on the list of new properties.
-	// * @return True if the new changes require a
-	// */
-	// protected abstract boolean updateProperties(List<Entry> newProperties,
-	// Map<String, String> propertyMap);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#getHost()
+	 */
+	public String getHost() {
+		return getConnectionProperty("host");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#getPort()
+	 */
+	public int getPort() {
+		String port = getConnectionProperty("port");
+		return (port != null ? Integer.parseInt(port) : -1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.IConnectionAdapter#isRemote()
+	 */
+	public boolean isRemote() {
+		return !("localhost".equals(getHost()));
+	}
+
 	// ------------------------ //
 
 	// ---- Extends ICEObject ---- //

@@ -84,8 +84,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * The Item class is responsible for carrying out activities necessary to
  * perform certain tasks with ICE. The operations process(), setupForm(), and
  * reviewEntries() should be tailored and called by subclasses as needed. The
@@ -95,8 +93,10 @@ import java.nio.file.StandardCopyOption;
  * FormStatus.ReadyToProcess state and all subclasses shall obey the rule that
  * Items are initialized with an acceptable set of default parameters such that
  * they could be processed immediately.
- * </p>
- * <p>
+ * 
+ * Subclasses that require platform services to fully configure their form
+ * should see and override setupFormWithServices() in addition to setupForm().
+ * 
  * Instances of classes that realize the IUpdateable interface can be registered
  * to receive updates from others in the Item with the Registry. Subclasses
  * should override registerUpdateables(). This operation performs parent-child
@@ -106,35 +106,29 @@ import java.nio.file.StandardCopyOption;
  * re-registered if the Item is copied. IUpdateables should never be registered
  * outside of this operation. (We'll cross the bridge of dynamically updated
  * dependencies when we get to it...)
- * </p>
- * <p>
+ *
  * Items may be loaded from a file. This file is either an XML file of the form
  * required by the Item's JAXB annotations or it is in the Painfully Simple Form
  * file format. Items may be initialized using either file type, but they will
  * only persist to the ICE database or to the XML form of an Item. Items must be
  * loaded by calling either loadFromXML() or loadFromPSF() after construction.
  * If it can not read properly either a PSF or XML format, it will fail.
- * </p>
- * <p>
+ * 
  * By default, the reviewEntries() operation on an Item only performs simple
  * dependency checks to determine if Entries should or should not be notified
  * that their parents have changed or been marked ready. The default
  * implementation of setupForm() will add Entries with parents to the Registry
  * if the Item is loaded from a file, otherwise it will do nothing.
- * </p>
- * <p>
+ *
  * The only Actions available to the Item by default are actions to write the
  * Item's Form to an XML file or a "tagged output" where the tags of Entries are
  * used as keys associated with the values of the Entry. If the Entries do not
  * have tags, then the names of the Entries are used.
- * </p>
- * <p>
+ * 
  * The Item class realizes the IComponent Visitor interface so that it can map
  * the Components in the Form and determine their types.
- * </p>
- * <p>
+ * 
  * The Item behaves as follows for each state:
- * </p>
  * <table border="1">
  * <col width="50.0%"></col><col width="50.0%"></col>
  * <tr>
@@ -242,19 +236,17 @@ import java.nio.file.StandardCopyOption;
  * </td>
  * </tr>
  * </table>
- * <p>
+ * 
  * Items can be stored to JPA databases. See the *Database() operations for more
  * information.
- * </p>
- * <p>
+ * 
  * Items can be disabled and put in to a "read-only" mode where their forms can
  * be read, but the Item will not accept updated Forms or process actions.
  * Attempts to process the Item or submit a form will return
  * FormStatus.Unacceptable if the Item is disabled. Checking the Item's status
  * with getStatus() will also return FormStatus.Unacceptable. Items are enabled
  * by default.
- * </p>
- * <p>
+ * 
  * The Item class also logs output to an output file. This file includes any
  * information that the author of the subclass of the Item wants to persist when
  * the Item is processed. It may or may not include, at the discretion of the
@@ -268,72 +260,47 @@ import java.nio.file.StandardCopyOption;
  * clients should be careful to only read from the file. Unfortunately there is
  * no good way to pass a read-only file in Java because that is an OS dependent
  * operation.
- * </p>
- * <p>
- * If the project space for the Item has not be set upon construction, the
- * output file will not be configured and getOutputFile() will be null.
- * </p>
- * <p>
+ * 
+ * If the project space for the Item is not set upon construction, the output
+ * file will not be configured and getOutputFile() will be null.
+ * 
  * Items can also be observed by ItemListeners. Subclasses must implement the
  * calls to update the listeners on their own, although some protected utility
  * operations like notifyListenersOfProjectChange() exist.
- * </p>
- * <p>
+ * 
  * Every Item has a directory at its disposal for storing preferences or scratch
  * data. This directory can be retrieved by subclasses by calling
  * getPreferencesDirectory(). This directory should only include preferences,
  * configuration information, scratch data or other types of data that are not
  * directly consumed by users.
- * </p>
- * <p>
+ * 
  * Subclasses may override the loadInput() operation to handle input data
  * import. This operation is passed an inputstream that should contain data of
  * the proper format when a client tries to import data.
- * </p>
- * <p>
+ * 
  * Items can also receive updates from other ICE subsystems, remote ICE
  * subsystems or external third-party processes through via the update()
  * operation. In practice, these messages are filtered by classes higher up the
  * call stack and acted upon by the Item.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings, Anna Wojtowicz
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Item")
 public class Item implements IComponentVisitor, Identifiable,
 		IUpdateableListener {
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The ItemType of the Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	protected ItemType itemType;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * The Registry used to manage registration and update events between the
+	 * Item and the various data structures.
 	 */
 	@XmlTransient()
 	protected Registry registry;
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Item's Form.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAnyElement()
 	@XmlElementRefs(value = {
@@ -342,225 +309,113 @@ public class Item implements IComponentVisitor, Identifiable,
 	protected Form form;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The action that is currently being performed by the Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient()
 	protected Action action;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The list of Actions that the Item can perform. It must be specified by a
 	 * subclass during construction.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "AllowedActions")
 	protected ArrayList<String> allowedActions;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Eclipse Project where the ICEResources created by this project should
 	 * be stored.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient()
 	protected IProject project;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The most recent status of the Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	protected FormStatus status;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The list of Entries from the Form. This list is maintained to improve the
 	 * speed of reviewEntries() and is created in setupForm() when it is called
 	 * by loadFromXML() or loadFromPSF().
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected ArrayList<Entry> entryList;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The string that is used to describe the process by which the Item class
 	 * writes the Form in ICE's native XML format.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String nativeExportActionString = "Export to ICE Native Format";
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The string that is used to describe the process by which the Item class
 	 * writes the values of the Entries in the Form to a file using their tags,
 	 * or their names if no tags are available, as keys.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String taggedExportActionString = "Export to key-value pair output";
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * A map that contains all of the Components of the Form with each Component
 	 * type as a key (data, output or table) and an arraylist of the Components
 	 * as the value.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	protected HashMap<String, ArrayList<Component>> componentMap;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The unique identification number of the Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected int uniqueId;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The name of the Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String itemName;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The description of the Item. This description should be different than
 	 * the name of the Item and should contain information that would be useful
 	 * to a human user.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String itemDescription;
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The ICEJAXBHandler used to marshal Items to and from XML.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	protected ICEJAXBHandler jaxbManipulator;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * A specifically attribute designed to be utilized by the JPA database.
 	 * This variable should not be accessed normally by ICE, only by JPA. DO NOT
 	 * OVERRIDE THIS VARIABLE!
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected int DB_ID;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The itemBuilder's name. The default value is null and can only be set
 	 * once.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute(name = "builderName")
 	protected String builderName;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * True if the Item is enabled, false if the Item is disabled.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private boolean enabled = true;
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The last status of the Item before it was process or modified. This is
 	 * used, for example, when killing processes or disabling the Item so that
 	 * the it can be reverted to the last state.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private FormStatus lastStatus;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The file handle to the output file that stores output generated by this
 	 * Item during processing. The data in this file is information provided by
 	 * the Item and may or may not include, at the discretion of the author of
 	 * the subclass, output collected from externally launched programs.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	protected File outputFile;
@@ -572,14 +427,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	private static ResourceHandler resourceHandler = new ResourceHandler();
 	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The list of listeners observing this Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient()
 	protected ArrayList<ItemListener> listeners;
@@ -605,8 +453,6 @@ public class Item implements IComponentVisitor, Identifiable,
 	private IActionFactory actionFactory;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The constructor. Subclasses of Item should implement their own
 	 * constructor, but creating the Form should be done in the setupForm()
 	 * operation, which is called by this constructor. Creating the Form
@@ -614,19 +460,12 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * project where the Item should store files is passed as an argument. Since
 	 * there is no guarantee that the Item will actually need this argument, it
 	 * may be null.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
-	 *            <p>
 	 *            The Eclipse project where files should be stored for this
 	 *            Item.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Item(IProject projectSpace) {
-		// begin-user-code
 
 		// Determine whether or not ICE is in debug mode
 		if (System.getProperty("DebugICE") != null) {
@@ -695,29 +534,19 @@ public class Item implements IComponentVisitor, Identifiable,
 		setupOutputFile();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * A nullary constructor. This constructor should only be used by JAXB or
 	 * JPA for loading the Item from a serialized or transactional form
 	 * respectively. If this constructor is used, setProject() must be called
 	 * immediately after or an Item will not function.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Item() {
-		// begin-user-code
 
 		// Just call the other constructor with a null argument.
 		this(null);
 
-		// end-user-code
 	}
 
 	/**
@@ -791,11 +620,8 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#setId(int id)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setId(int id) {
-		// begin-user-code
 
 		if (id >= 0) {
 			// Set the unique id
@@ -807,94 +633,70 @@ public class Item implements IComponentVisitor, Identifiable,
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#getDescription()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	public String getDescription() {
-		// begin-user-code
 		return itemDescription;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#getId()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	public int getId() {
-		// begin-user-code
 		return uniqueId;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#setName(String name)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setName(String name) {
-		// begin-user-code
 
 		if (name != null) {
 			itemName = name;
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#getName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	public String getName() {
-		// begin-user-code
 		return itemName;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#setDescription(String description)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setDescription(String description) {
-		// begin-user-code
 
 		if (description != null) {
 			this.itemDescription = description;
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#equals(Object otherObject)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean retVal = false;
@@ -925,52 +727,31 @@ public class Item implements IComponentVisitor, Identifiable,
 
 		return retVal;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the type of the Item. The type of the Item is
 	 * determined by the Item class or a subclass and can not be set.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The type of the Item.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The type of the Item.
 	 */
 	public ItemType getItemType() {
-		// begin-user-code
 		return this.itemType;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns a Form for the Item.
-	 * </p>
-	 * <p>
+	 * 
 	 * If this operation is called immediately after processItem() with the same
 	 * Item id and the call to processItem() returns FormStatus.NeedsInfo, then
 	 * this operation will return a simple Form composed of a single
 	 * DataComponent with Entries for all of the additional required
 	 * information. The smaller Form is created by the Action that is executed
 	 * during the call to processItem().
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The Form that Eclipse User must prepare.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The Form that Eclipse User must prepare.
 	 */
 	public Form getForm() {
-		// begin-user-code
 
 		// Local Declarations
 		Form actionForm = null;
@@ -986,37 +767,24 @@ public class Item implements IComponentVisitor, Identifiable,
 			return actionForm;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation submits a Form to the Item for processing.
-	 * </p>
-	 * <p>
+	 * 
 	 * This operation only reviews the contractual obligations of the Form and
 	 * the Item class, such as matching Item and Form.getItemId() values.
 	 * Business concerns are reviewed in Item.reviewEntries, which is called by
 	 * this class. This class also handles overwriting or discarding Forms as
 	 * required.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
-	 *            <p>
 	 *            A Form that has been prepared by the Eclipse User with
 	 *            information that is required by the Item.
-	 *            </p>
-	 * @return <p>
-	 *         The ItemStatus value that specifies whether or not the Form was
+	 * @return The ItemStatus value that specifies whether or not the Form was
 	 *         accepted by the Item.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus submitForm(Form preparedForm) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus retVal = FormStatus.InfoError;
@@ -1090,17 +858,13 @@ public class Item implements IComponentVisitor, Identifiable,
 		status = retVal;
 
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The process operation processes the data in the Form to perform a certain
 	 * action. The action name must be one of the set of actions from the Form
 	 * that represents this Item.
-	 * </p>
-	 * <p>
+	 * 
 	 * It is possible that ICE may require information in addition to that which
 	 * was requested in the original Form, such as for a username and password
 	 * for a remote machine. If this is the case, process will return
@@ -1108,8 +872,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * Item by calling getItem(). Once this new Form is submitted (by calling
 	 * Item.submitForm() with the completed Form), the Item will finish
 	 * processing.
-	 * </p>
-	 * <p>
+	 * 
 	 * This operation must be tailored by subclasses to initiate specific
 	 * Actions. The only Actions available to the Item by default are actions to
 	 * write the Item's Form to an XML file or a "tagged output" where the tags
@@ -1122,25 +885,16 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * actions are be "Export to ICE Native Format" and
 	 * "Export to key-value pair output." Subclasses may choose to add
 	 * additional actions or to remove the default actions.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param actionName
-	 *            <p>
 	 *            The name of action that should be performed using the
 	 *            processed Form data.
-	 *            </p>
-	 * @return <p>
-	 *         The status of the Item after processing the Form and executing
+	 * @return The status of the Item after processing the Form and executing
 	 *         the action. It returns FormStatus.InfoError if it is unable to
 	 *         run for any reason, including being asked to run actions that are
 	 *         not in the list of available actions.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus process(String actionName) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
@@ -1212,50 +966,28 @@ public class Item implements IComponentVisitor, Identifiable,
 			return FormStatus.Unacceptable;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation cancels all processes with the specified name.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param actionName
-	 *            <p>
 	 *            The name of action that should be canceled.
-	 *            </p>
-	 * @return <p>
-	 *         The status of the Item after canceling or trying to cancel an
+	 * @return The status of the Item after canceling or trying to cancel an
 	 *         action.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus cancelProcess(String actionName) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return FormStatus.InfoError;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation cancels the last process request sent to the Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The status of the Item after canceling or trying to cancel an
+	 * @return The status of the Item after canceling or trying to cancel an
 	 *         action.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus cancelProcess() {
-		// begin-user-code
 
 		// Only cancel if the Item is actuallly processing
 		if (action != null && status.equals(FormStatus.Processing)) {
@@ -1266,41 +998,23 @@ public class Item implements IComponentVisitor, Identifiable,
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the list of available actions for an Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The list of actions available in the Item.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The list of actions available in the Item.
 	 */
 	public ArrayList<String> getAvailableActions() {
-		// begin-user-code
 		return (ArrayList<String>) allowedActions.clone();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the status of the Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The current status of the Item.
 	 */
 	public FormStatus getStatus() {
-		// begin-user-code
 
 		// If the Item is disabled, do not do any further checks. Just report
 		// it.
@@ -1315,88 +1029,87 @@ public class Item implements IComponentVisitor, Identifiable,
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This protected operation setups the Entries, DataComponents and Form for
-	 * a subclass of Item. The default implementation of setupForm() will add
-	 * Entries with parents to the Registry if the Item is loaded from a file,
-	 * otherwise it will do nothing. Subclasses should tailor this operation as
-	 * needed. The list of allowed Actions may also be specified here.
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * a subclass of Item. Subclasses should tailor this operation as needed.
+	 * The list of allowed Actions may also be specified here.
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * This operation should always be called first in a subclasses
+	 * implementation to instantiate the Form.
+	 * 
+	 * Subclasses that need platform services, such as the IOService, should
+	 * override setupFormWithServices() in addition to this operation. In that
+	 * scenario, setupForm() will contain the code necessary to instantiate and
+	 * add empty data structures to the Form and setupFormWithServices() will
+	 * fill those structures with data.
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		// Initialize the Form it should be a PSF in case the Item is loaded
 		// from a PSF file.
 		form = new PainfullySimpleForm();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation is used to setup the name and description of an Item. This
 	 * information can be provided by the ItemBuilder responsible for this Item
 	 * or any client, but it is convenient to define it on the class. It is also
 	 * convenient to define it separately of the work in setupForm(). The
 	 * default implementation of this operation does nothing and subclasses must
 	 * override it.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupItemInfo() {
-		// begin-user-code
 
 		// Do nothing by default
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * This operation directs the Item to setup its Form using the services that
+	 * were registered with it after construction. It is separate from
+	 * setupForm() because services are not injected upon construction, but it
+	 * is still necessary to construct the Form in some rudimentary way.
+	 * 
+	 * Subclasses should override this operation as well as setupForm() whenever
+	 * they need to use services, such as the IOService, to completely
+	 * initialize their Form.
+	 * 
+	 * This operation should always be called after an Item is constructed and
+	 * its services are set.
+	 * 
+	 * It is not necessary to call the base class implementation of this
+	 * operation before doing work as is suggested for setupForm().
+	 */
+	public void setupFormWithServices() {
+
+		// Do nothing by default
+
+	}
+
+	/**
 	 * The reviewEntries operations reviews and updates Entry values as needed.
 	 * This is an abstract operation that must be implemented by a subclass.
-	 * </p>
-	 * <p>
+	 * 
 	 * This operation is only concerned with the business issues of the Form and
 	 * not the contractual obligations that it must fulfill to satisfy ICE. For
 	 * example, reviewEntries() should make sure that the Form has acceptable
 	 * Entries for the particular business problem instead of worrying about
 	 * unique identifiers. This operation should also return the status of the
 	 * Form as a literal from the FormStatus enumeration.
-	 * </p>
-	 * <p>
+	 *
 	 * By default, the reviewEntries() operation on an Item only performs simple
 	 * dependency checks to determine if Entries should or should not be
 	 * notified that their parents have changed or been marked ready.<b></b>
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
-	 * @return <p>
-	 *         True if the Entries are completely specified and the Item can be
+	 * @return True if the Entries are completely specified and the Item can be
 	 *         processed, false otherwise.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected FormStatus reviewEntries(Form preparedForm) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
@@ -1423,31 +1136,21 @@ public class Item implements IComponentVisitor, Identifiable,
 		}
 		return retStatus;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation performs dependency matching by registering IUpdateable
 	 * objects with the registry based on values and child names. Subclasses
 	 * should always override this operation to register their dependencies
 	 * since dependencies must be re-registered if the Item is copied. This
 	 * operation does a non-trivial task, so subclasses should always call
 	 * super.registerUpdateables() too.
-	 * </p>
-	 * <p>
+	 * 
 	 * The default implementation pulls all Entries from all Data, Table and
 	 * Output components and registers parent-child dependencies for those
 	 * Entries.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void registerUpdateables() {
-		// begin-user-code
 
 		// Create the registry
 		registry = new Registry();
@@ -1483,24 +1186,14 @@ public class Item implements IComponentVisitor, Identifiable,
 		// can mark themselves ready.
 		registry.dispatch();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the hashcode value of the Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The hashcode
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The hashcode
 	 */
 	public int hashCode() {
-		// begin-user-code
 		// Local Declaration
 		int hash = 9;
 
@@ -1524,26 +1217,16 @@ public class Item implements IComponentVisitor, Identifiable,
 		hash += 31 * this.builderName.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation performs a deep copy of the attributes of another Item
 	 * into the current Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherItem
-	 *            <p>
 	 *            The Item from which information should be copied.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(Item otherItem) {
-		// begin-user-code
 
 		// Return if otherItem is null
 		if (otherItem == null) {
@@ -1570,24 +1253,14 @@ public class Item implements IComponentVisitor, Identifiable,
 		setupEntryList();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation provides a deep copy of the Item.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         A clone of the Item.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return A clone of the Item.
 	 */
 	public Object clone() {
-		// begin-user-code
 		// Create a new instance, copy contents, and return it
 
 		// create a new instance of Item and copy contents
@@ -1595,31 +1268,22 @@ public class Item implements IComponentVisitor, Identifiable,
 		item.copy(this);
 		return item;
 
-		// end-user-code
-
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation loads the SerializedItem from a Painfully Simple Form file
 	 * format. If it is unable to load the InputStream or determines that the
 	 * contents of the stream are not consistent with the PSF format, then it
 	 * will throw an IOException. It delegates the actual work to a
 	 * PainfullySimpleForm.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param inputStream
-	 *            <p>
 	 *            The InputStream that contains a PSF file.
-	 *            </p>
 	 * @throws IOException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 *             This exception is thrown if there is a problem with the
+	 *             Inputstream.
 	 */
 	public void loadFromPSF(InputStream inputStream) throws IOException {
-		// begin-user-code
 
 		// Local Declarations
 		InputStreamReader inputStreamReader = null;
@@ -1660,54 +1324,34 @@ public class Item implements IComponentVisitor, Identifiable,
 			throw new IOException(
 					"PSF cannot be loaded from a null InputStream!");
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns true if the Item is already associated with a
 	 * project space that it can use for storing and retrieving files. That is,
 	 * it returns true if the non-nullary constructor was called or setProject()
 	 * has been called.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         True if the Item has a project, false otherwise.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return True if the Item has a project, false otherwise.
 	 */
 	public boolean hasProject() {
-		// begin-user-code
 
 		// Return true if the Project is set
 		return (project != null);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the project for the Item. It should only be called
 	 * after the Item is constructed with its nullary constructor. Calling it
 	 * after the Item has been running for a time could lead to unintended
 	 * consequences.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
-	 *            <p>
 	 *            The Eclipse Platform IProject that should be referenced for
 	 *            project space information by this Item.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setProject(IProject projectSpace) {
-		// begin-user-code
 
 		// Set the project so long as it is not null
 		if (projectSpace != null) {
@@ -1719,24 +1363,15 @@ public class Item implements IComponentVisitor, Identifiable,
 		// FIXME - SHOULD THIS ONLY BE ALLOWED TO BE CALLED ONCE??? ~JJB
 		// 20120502 14:01
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets up a master list of Entries that are managed by the
 	 * Item base class to handle dependencies and accelerate dependency
 	 * checking. It is called by the non-nullary constructor and the loadFrom*
 	 * operations. It also add the components to the Item's component map.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void setupEntryList() {
-		// begin-user-code
 
 		// Local Declarations
 		int numComps = 0;
@@ -1763,32 +1398,20 @@ public class Item implements IComponentVisitor, Identifiable,
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation adds a Component to the component map with the specified
 	 * key (data, output or table). It is called by the visit() operations that
 	 * the Item realizes to satisfy the IComponentVisitor interface.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
-	 *            <p>
 	 *            The Component to insert into the map of Components.
-	 *            </p>
 	 * @param key
-	 *            <p>
 	 *            The key that identifies the type of the Component, equal to
 	 *            one of "data," "output" or "table."
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void addComponentToMap(Component component, String key) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Component> components = null;
@@ -1802,21 +1425,12 @@ public class Item implements IComponentVisitor, Identifiable,
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation instantiates the output file.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void setupOutputFile() {
-		// begin-user-code
 
 		// Setup the output file handle name
 		String outputFilename = form.getName().replaceAll("\\s+", "_") + "_"
@@ -1839,35 +1453,23 @@ public class Item implements IComponentVisitor, Identifiable,
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns a list of files in the current project space with
 	 * the given type or all of the files in the project space if no type is
 	 * selected (type = null) if and only if the project space is available. If
 	 * the project space is not available, it will return null.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
-	 *            <p>
 	 *            The file extension or type of the file that should be
 	 *            discovered in the project or null if all files should be
 	 *            returned by this operation.
-	 *            </p>
-	 * @return <p>
-	 *         The names of the files in the project space with the given type
+	 * @return The names of the files in the project space with the given type
 	 *         or names of all of the files in the project space if no type is
 	 *         specified.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected ArrayList<String> getProjectFileNames(String type) {
-		// begin-user-code
 
 		ArrayList<String> files = null, allFiles = null;
 
@@ -1910,72 +1512,42 @@ public class Item implements IComponentVisitor, Identifiable,
 		}
 
 		return files;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation directs the Item to reload data that it has read from its
 	 * project. Calling this operation signifies to the Item that new files have
 	 * been added or old files have been updated in the project.
-	 * </p>
-	 * <p>
+	 * 
 	 * Calling this operation does not refresh the IProject.
-	 * </p>
-	 * <p>
+	 * 
 	 * This operation is meant to be overridden by subclasses and customized. It
 	 * does nothing on the base class.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void reloadProjectData() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation adds a listeners to the Item's set of listeners.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param listener
-	 *            <p>
 	 *            The new listener that is subscribing to the Item for updates.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addListener(ItemListener listener) {
-		// begin-user-code
 
 		if (listener != null) {
 			listeners.add(listener);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation notifies the listeners of a change in the IProject,
 	 * normally do to a newly created or deleted resource.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void notifyListenersOfProjectChange() {
-		// begin-user-code
 
 		// Notify all of the listeners that they should reload their project
 		// data because the project has been changed somehow.
@@ -1984,27 +1556,17 @@ public class Item implements IComponentVisitor, Identifiable,
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the Eclipse IFolder that points to the preferences
 	 * directory for this Item. This operation will try to create the directory
 	 * in the project if the project exists. It will return null if the project
 	 * space doesn't exist or it can't create the directory.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The directory where preferences should be stored.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The directory where preferences should be stored.
 	 */
 	protected IFolder getPreferencesDirectory() {
-		// begin-user-code
 
 		// Local Declarations
 		String folderName = getName().replaceAll("\\s+", "_");
@@ -2026,7 +1588,6 @@ public class Item implements IComponentVisitor, Identifiable,
 
 		return folder;
 
-		// end-user-code
 	}
 
 	/**
@@ -2357,67 +1918,43 @@ public class Item implements IComponentVisitor, Identifiable,
 	}
 	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation loads data into the Item from an input file. This
 	 * operation should be overridden by subclasses and specialized for the
 	 * correct behavior. The implementation on the base class does nothing.
-	 * </p>
-	 * <p>
+	 * 
 	 * Subclasses that override this operation should make sure that a failed
 	 * load does not result in a partially initialized or incorrect Form and an
 	 * erroneous Item state.
-	 * </p>
-	 * <p>
+	 *
 	 * This operation expects that the file is in the workspace and only needs
 	 * its name to find it.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param input
-	 *            <p>
 	 *            The file containing the input that should be loaded. It should
 	 *            be a file in the project space.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void loadInput(String input) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation updates the Item to let it know that a particular event
 	 * has occurred in an ICE subsystem, remote ICE subsystem or external
 	 * third-party process.
-	 * </p>
-	 * <p>
+	 * 
 	 * The base class takes care of a small amount of worked related to
 	 * messages, namely writing them to the process log, and subclasses should
 	 * override this operation to specialize the behavior. Subclasses should
 	 * still call the operation on the base class (via super.update(msg)) from
 	 * their overridden operation so that the message can be properly logged.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param msg
-	 *            <p>
 	 *            The incoming Message.
-	 *            </p>
-	 * @return <p>
-	 *         True if the Item was able to respond to the Message, false
+	 * @return True if the Item was able to respond to the Message, false
 	 *         otherwise.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean update(Message msg) {
-		// begin-user-code
 
 		// Dump the text to stdout if we are in debugging mode.
 		if (debuggingEnabled) {
@@ -2431,28 +1968,18 @@ public class Item implements IComponentVisitor, Identifiable,
 		// Just return true for now until the logging functionality can be moved
 		// from JobLauncher to Item.
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the Item's builderName. This operation can only be
 	 * called once. Although this operation is public, it should only be called
 	 * in the respective ItemBuilder class.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param builderName
-	 *            <p>
 	 *            The builderName to be set. Can not be null or the empty
 	 *            string.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setItemBuilderName(String builderName) {
-		// begin-user-code
 
 		// If the passed parameter is not null, not an empty string, and the
 		// builder name has not been set.
@@ -2463,76 +1990,43 @@ public class Item implements IComponentVisitor, Identifiable,
 			this.builderName = builderName;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the Item's builderName. This operation can only be
 	 * called once. Although this operation is public, it should only be called
 	 * in the respective ItemBuilder class.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         Returns the builder name. This can be null.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return Returns the builder name. This can be null.
 	 */
 	public String getItemBuilderName() {
-		// begin-user-code
 		return this.builderName;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation disables the Item. Disabled Items will not accept changes
 	 * to their Forms and they cannot be processed.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param state
-	 *            <p>
 	 *            True if the Item is disabled, false if not.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disable(boolean state) {
-		// begin-user-code
 
 		// Enable is the opposite of disabled.
 		enabled = !state;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * True if the Item is enabled, false if it is disabled.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         True if the Item is enabled, false if not.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return True if the Item is enabled, false if not.
 	 */
 	public boolean isEnabled() {
-		// begin-user-code
 		return enabled;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns a file handle to the output file for the Item. It
 	 * returns a handle to the file whether or not it actually exists and
 	 * clients should check the File.exists() operation before attempting to
@@ -2542,17 +2036,10 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * to only read from the file. Nullerizing the file handle will not
 	 * nullerize it in the Item. If the output file for the Item has not been
 	 * configured, this operation will return null.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The output file for this Item, thoroughly documented elsewhere.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The output file for this Item, thoroughly documented elsewhere.
 	 */
 	public File getOutputFile() {
-		// begin-user-code
 
 		// Local Declarations
 		File copiedFileHandle = null;
@@ -2562,7 +2049,6 @@ public class Item implements IComponentVisitor, Identifiable,
 			copiedFileHandle = new File(outputFile.toURI());
 		}
 		return copiedFileHandle;
-		// end-user-code
 	}
 
 	/**
@@ -2589,134 +2075,98 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(DataComponent component) {
-		// begin-user-code
 
 		// Add the Component to the map of components
 		addComponentToMap(component, "data");
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(ResourceComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(ResourceComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TableComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TableComponent component) {
-		// begin-user-code
 
 		// Add the Component to the map of components
 		addComponentToMap(component, "table");
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MatrixComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MatrixComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IShape component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IShape component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(GeometryComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(GeometryComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MasterDetailsComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TreeComposite component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TreeComposite component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IReactorComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IReactorComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	@Override
@@ -2731,14 +2181,10 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MeshComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MeshComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	@Override

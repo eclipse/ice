@@ -33,6 +33,11 @@ import org.eclipse.ice.item.jobLauncher.JobLauncher;
 public class TestJobLauncher extends JobLauncher {
 
 	/**
+	 * True if the setupFormWithServices() operation was called, false otherwise.
+	 */
+	boolean setupAfterServices = false;
+	
+	/**
 	 * The Constructor
 	 * 
 	 * @param projectSpace
@@ -70,5 +75,25 @@ public class TestJobLauncher extends JobLauncher {
 	public IActionFactory getActionFactoryForTest() {
 		return getActionFactory();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
+	 */
+	public void setupFormWithServices() {
+		setupAfterServices = true;
+	}
 	
+	/**
+	 * This operation describes whether or not the setupFormWithServices
+	 * operation was called after the Item was constructed. It is used by the
+	 * tests to make sure that the AbstractItemBuilder builds the Item properly.
+	 * 
+	 * @return True if the setupFormWithServices operation was called, false
+	 *         otherwise.
+	 */
+	public boolean setupFormWithServicesWasCalled() {
+		return setupAfterServices;
+	}
+
 }

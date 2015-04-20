@@ -13,6 +13,7 @@
 package org.eclipse.ice.viz.plotviewer;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -82,7 +83,7 @@ public class PlotProvider {
 	 * @param time
 	 * @param newSeries
 	 */
-	public void addSeries(Double time, SeriesProvider newSeries) {
+	public void addSeries(double time, SeriesProvider newSeries) {
 		// Checks if a series is added to a new time and initializes an
 		// arraylist
 		if (!seriesMap.containsKey(time)) {
@@ -95,12 +96,29 @@ public class PlotProvider {
 	}
 
 	/**
+	 * Removes an existing SeriesProvider from the specified time. Does nothing
+	 * if the arguments are invalid.
+	 * 
+	 * @param time
+	 *            The time at which the series should be removed.
+	 * @param oldSeries
+	 *            The series that should be removed.
+	 */
+	public void removeSeries(double time, SeriesProvider oldSeries) {
+		List<SeriesProvider> seriesProviders = seriesMap.get(time);
+		if (seriesProviders != null) {
+			seriesProviders.remove(oldSeries);
+		}
+		return;
+	}
+
+	/**
 	 * Returns all the series at a specified time
 	 * 
 	 * @param time
 	 * @return
 	 */
-	public ArrayList<SeriesProvider> getSeriesAtTime(Double time) {
+	public ArrayList<SeriesProvider> getSeriesAtTime(double time) {
 		if (seriesMap.containsKey(time)) {
 			return seriesMap.get(time);
 		} else {

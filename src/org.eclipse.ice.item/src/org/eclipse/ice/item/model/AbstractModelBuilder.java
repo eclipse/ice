@@ -20,18 +20,25 @@ import org.eclipse.ice.materials.IMaterialsDatabase;
  * services for Models, which are Items that generate input files or data.
  * 
  * @author Jay Jay Billings
- *
+ * 
  */
 public class AbstractModelBuilder extends AbstractItemBuilder {
+
+	/**
+	 * The materials database that is available to the Model Item and provided,
+	 * usually, by the OSGi Declarative Services Framework.
+	 */
+	private IMaterialsDatabase materialsDatabase;
 
 	/**
 	 * This operation sets the service reference for the IMaterialsDatabase
 	 * service.
 	 * 
-	 * @param database the service
+	 * @param database
+	 *            the service
 	 */
 	public void setMaterialsDatabase(IMaterialsDatabase database) {
-
+		materialsDatabase = database;
 	}
 
 	/*
@@ -43,7 +50,11 @@ public class AbstractModelBuilder extends AbstractItemBuilder {
 	 */
 	@Override
 	protected void setServices(Item item) {
-
+		// Give the Item the IMaterialsDatabase service.
+		((Model) item).setMaterialsDatabase(materialsDatabase);
+		
+		// Let the base class set any other services.
+		super.setServices(item);
 	}
 
 }

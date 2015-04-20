@@ -351,23 +351,28 @@ public class Block {
 	 * commented out.
 	 * 
 	 * @param prefix
-	 *            <p>
-	 *            The prefix for the name of the block. This is most commonly
-	 *            null or the actual section prefix (Block.actualSectionPrefix).
-	 *            If the prefix is not equal to Block.actualSectionPrefix, it
-	 *            will be replaced with an empty string.
-	 *            </p>
-	 *            <p>
-	 *            The prefix is used in GetPot to note the relationship of a
-	 *            section with its parent. In MOOSE it is either null or equal
-	 *            to the actual prefix. In the latter case the section is always
-	 *            closed by the parent section prefix
-	 *            (Block.parentSectionPrefix). These are "./" and "../" for
-	 *            MOOSE, respectively and without the quotation marks.
-	 *            </p>
+	 *           	<p>
+	 *            	The prefix for the name of the block. This is most commonly
+	 *            	null or the actual section prefix (Block.actualSectionPrefix).
+	 *            	If the prefix is not equal to Block.actualSectionPrefix, it
+	 *            	will be replaced with an empty string.
+	 *            	</p>
+	 *            	<p>
+	 *            	The prefix is used in GetPot to note the relationship of a
+	 *            	section with its parent. In MOOSE it is either null or equal
+	 *            	to the actual prefix. In the latter case the section is always
+	 *            	closed by the parent section prefix
+	 *            	(Block.parentSectionPrefix). These are "./" and "../" for
+	 *           	 MOOSE, respectively and without the quotation marks.
+	 *            	</p>
+	 * @param writeInactiveBlocks
+	 * 			  	This flag determines if inactive blocks should still be
+	 * 				written out to the GetPot string, but commented out (with a
+	 * 				("#" in front). By default, all subblocks have this behavior 
+	 * 				set to true.
 	 * @return The GetPot representation of this Block.         
 	 */
-	public String toGetPot(String prefix) {
+	public String toGetPot(String prefix, boolean writeInactiveBlocks) {
 
 		// Local Declarations
 		String realPrefix = (prefix != null) ? prefix : "";
@@ -376,17 +381,19 @@ public class Block {
 				: name;
 		String closingSection = (realPrefix.equals(Block.actualSectionPrefix)) ? parentSectionPrefix
 				: "";
-		String potString = "", commentString = "", whiteSpaceString = "", hash = "";
+		String potString = "", commentString = "", whiteSpaceString = "";
 		boolean hasComment = false;
 
 		// Fix the indentation
 		indent += (realPrefix.equals(actualSectionPrefix)) ? "  " : "";
 
-		// Only write the block if it is active!
-		if (isActive()) {
+		// Only write the block if it is active! (or the inactive writing flag is true)
+		if (active || writeInactiveBlocks) {
 
 			// Open the section
-			potString = indent + "[" + openingSection + "]";
+			potString = (!active && writeInactiveBlocks) ? 
+					indent.substring(0, indent.length()-2) + "# [" + openingSection + "]" :
+					indent + "[" + openingSection + "]";
 			
 			// Check if this section block has a comment, if it does, append it
 			hasComment = !comment.isEmpty();
@@ -417,10 +424,15 @@ public class Block {
 									replaceAll("[\n\r]", "");
 							// Append the line
 							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
-							potString += String.format("%s  %s%s# %s\n",
-									indent, param.toString(), whiteSpaceString,commentString);
+							potString += (!active && writeInactiveBlocks) ?
+									String.format("%s# %s%s# %s\n",
+											indent, param.toString(), whiteSpaceString,commentString) :
+									String.format("%s  %s%s# %s\n",
+											indent, param.toString(), whiteSpaceString,commentString)	;
 						} else {
-							potString += indent + "  " + param.toString() + "\n";
+							potString += (!active && writeInactiveBlocks) ?
+									indent + "# " + param.toString() + "\n" :
+									indent + "  " + param.toString() + "\n";
 						}
 					}
 					// If the parameter is not explicitly required, check if it
@@ -432,12 +444,18 @@ public class Block {
 									replaceAll("[\n\r]", "");
 							// Append the line
 							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
-							potString += String.format("%s  %s%s# %s\n",
-									indent, param.toString(), whiteSpaceString, commentString);
+							potString += (!active) ? 
+									String.format("%s# %s%s# %s\n",
+											indent, param.toString(), whiteSpaceString, commentString) :
+									String.format("%s  %s%s# %s\n",
+											indent, param.toString(), whiteSpaceString, commentString);
 						} else {
-							potString += indent + "  " + param.toString() + "\n";
+							potString += (!active) ?
+									indent + "# " + param.toString() + "\n" :
+									indent + "  " + param.toString() + "\n";
 						}
 					} 
+					// Otherwise, the parameter will be commented out
 					else {
 						if (hasComment) {
 							// Remove newline characters from comment
@@ -459,12 +477,14 @@ public class Block {
 				for (int i = 0; i < subblocks.size(); i++) {
 					Block block = subblocks.get(i);
 					potString += block.toGetPot(Block.actualSectionPrefix,
-							indent);
+							indent, true);
 				}
 			}
 
 			// Close the section
-			potString += indent + "[" + closingSection + "]\n";
+			potString += (!active && writeInactiveBlocks) ? 
+					indent.substring(0, indent.length()-2) + "# [" + closingSection + "]\n":
+					indent + "[" + closingSection + "]\n";
 
 		}
 
@@ -473,39 +493,29 @@ public class Block {
 
 		return potString;
 	}
-
-	/**
-	 * This is a utility method that will construct and return a String of
-	 * whitespaces, depending on the length of the current line. This is used
-	 * by the toGetPot() method when appending comments, to try to make comments
-	 * align in columns for neatness' sake.
-	 * 
-	 * @param getPotLine	Current line that the comment will be appended to
-	 * @return				A string of whitespace characters that will separate
-	 * 						the current line's text from its comment
-	 */
-	private String makeWhiteSpaceString(String getPotLine) {
 	
-		String whiteSpaceString = "";
-		int whiteSpaceCount = 0, lineLength = 0;
-		
-		lineLength = getPotLine.length();
-		
-		if (lineLength < 30) {
-			whiteSpaceCount = 30 - lineLength;
-		} else if (lineLength < 45) {
-			whiteSpaceCount = 45 - lineLength;
-		} else if (lineLength < 60) {
-			whiteSpaceCount = 60 - lineLength;
-		} else {
-			whiteSpaceCount = 15;
-		}
-		
-		for (int i = 0; i < whiteSpaceCount; i++) {
-			whiteSpaceString += " ";
-		}
-		
-		return whiteSpaceString;
+	/**
+	 * This method is the same as calling {@code toGetPot(prefix, false)}.
+	 * 
+	 * @param prefix
+	 * 	            <p>
+	 *            	The prefix for the name of the block. This is most commonly
+	 *            	null or the actual section prefix (Block.actualSectionPrefix).
+	 *            	If the prefix is not equal to Block.actualSectionPrefix, it
+	 *            	will be replaced with an empty string.
+	 *            	</p>
+	 *            	<p>
+	 *            	The prefix is used in GetPot to note the relationship of a
+	 *            	section with its parent. In MOOSE it is either null or equal
+	 *            	to the actual prefix. In the latter case the section is always
+	 *            	closed by the parent section prefix
+	 *            	(Block.parentSectionPrefix). These are "./" and "../" for
+	 *           	 MOOSE, respectively and without the quotation marks.
+	 *            	</p>
+	 * @return The GetPot representation of this Block. 
+	 */
+	public String toGetPot(String prefix) {
+		return toGetPot(prefix, false);
 	}
 	
 	/**
@@ -539,13 +549,52 @@ public class Block {
 	 *            </p>
 	 * @param depthIndent
 	 *            The indentation of the block
+	 * @param writeInactiveBlocks
+	 * 			  This flag determines if inactive blocks should still be
+	 * 			  written out to the GetPot string, but commented out (with a
+	 * 			  "#" in front).
 	 * @return    The GetPot representation of this Block.         
 	 */
-	public String toGetPot(String prefix, String depthIndent) {
+	public String toGetPot(String prefix, String depthIndent, 
+			boolean writeInactiveBlocks) {
 
 		indent += depthIndent;
-		return toGetPot(prefix);
+		return toGetPot(prefix, writeInactiveBlocks);
 		
+	}
+	
+	/**
+	 * This is a utility method that will construct and return a String of
+	 * whitespaces, depending on the length of the current line. This is used
+	 * by the toGetPot() method when appending comments, to try to make comments
+	 * align in columns for neatness' sake.
+	 * 
+	 * @param getPotLine	Current line that the comment will be appended to
+	 * @return				A string of whitespace characters that will separate
+	 * 						the current line's text from its comment
+	 */
+	private String makeWhiteSpaceString(String getPotLine) {
+	
+		String whiteSpaceString = "";
+		int whiteSpaceCount = 0, lineLength = 0;
+		
+		lineLength = getPotLine.length();
+		
+		if (lineLength < 30) {
+			whiteSpaceCount = 30 - lineLength;
+		} else if (lineLength < 45) {
+			whiteSpaceCount = 45 - lineLength;
+		} else if (lineLength < 60) {
+			whiteSpaceCount = 60 - lineLength;
+		} else {
+			whiteSpaceCount = 15;
+		}
+		
+		for (int i = 0; i < whiteSpaceCount; i++) {
+			whiteSpaceString += " ";
+		}
+		
+		return whiteSpaceString;
 	}
 
 	/**

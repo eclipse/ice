@@ -14,11 +14,14 @@ package org.eclipse.ice.viz.service.connections.visit;
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.connections.ConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -79,7 +82,8 @@ public class VisItConnectionAdapter extends
 			changed |= setConnectionProperty("port", row.get(2).getValue());
 			changed |= setConnectionProperty("visDir", row.get(4).getValue());
 			changed |= setConnectionProperty("gateway", row.get(7).getValue());
-			changed |= setConnectionProperty("localGatewayPort", row.get(8).getValue());
+			changed |= setConnectionProperty("localGatewayPort", row.get(8)
+					.getValue());
 			changed |= setConnectionProperty("username", row.get(9).getValue());
 			changed |= setConnectionProperty("password", "notused");
 			changed |= setConnectionProperty("windowWidth", "1340");
@@ -147,4 +151,31 @@ public class VisItConnectionAdapter extends
 		return shell;
 	}
 
+	/**
+	 * Gets the next available window ID from the underlying connection. Each
+	 * unique, disjoint view powered by VisIt requires a separate "window" in
+	 * VisIt. Views that share a window ID will be updated concurrently.
+	 * 
+	 * @return The next available window ID, or -1 if the connection is not
+	 *         open.
+	 */
+	public int getNextWindowId() {
+		// FIXME There is a bug that prevents any window ID besides 1 from
+		// working as expected. For now, just return 1. A bug ticket has been
+		// filed.
+		int windowId = 1;
+//		if (getState() == ConnectionState.Connected) {
+//			// The order of the returned list is not guaranteed. Throw it into
+//			// an ordered set and get the lowest positive ID not in the set.
+//			Set<Integer> ids = new HashSet<Integer>(getConnection()
+//					.getWindowIds());
+//			// Find the first integer not in the set.
+//			while (ids.contains(windowId)) {
+//				windowId++;
+//			}
+//		} else {
+//			windowId = -1;
+//		}
+		return windowId;
+	}
 }

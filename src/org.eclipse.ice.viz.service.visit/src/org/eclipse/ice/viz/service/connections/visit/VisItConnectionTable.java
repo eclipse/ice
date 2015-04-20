@@ -17,18 +17,18 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-import org.eclipse.ice.viz.service.connections.ConnectionManager;
+import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.PortEntry;
 import org.eclipse.ice.viz.service.connections.PortEntryContentProvider;
 
 /**
- * This class extends {@link ConnectionManager} to provide additional connection
+ * This class extends {@link ConnectionTable} to provide additional connection
  * preferences specific to the VisIt vizualization service.
  * 
  * @author Jordan Deyton
  *
  */
-public class VisItConnectionManager extends ConnectionManager {
+public class VisItConnectionTable extends ConnectionTable {
 
 	/*
 	 * (non-Javadoc)
