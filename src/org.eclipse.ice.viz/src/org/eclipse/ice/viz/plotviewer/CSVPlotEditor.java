@@ -33,9 +33,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
@@ -48,7 +46,7 @@ import org.eclipse.ui.part.EditorPart;
  * files. It is opened by the associated visualization views in
  * org.eclipse.ice.viz.
  * 
- * @authors Matthew Wang, Taylor Patterson, Anna Wojtowicz
+ * @authors Matthew Wang, Taylor Patterson, Anna Wojtowicz, Jordan Deyton
  */
 public class CSVPlotEditor extends EditorPart {
 
@@ -63,6 +61,11 @@ public class CSVPlotEditor extends EditorPart {
 	private Composite vizComposite;
 
 	/**
+	 * The {@code Composite} that contains the time slider.
+	 */
+	private Composite sliderComposite;
+
+	/**
 	 * The canvas used for rendering the plot.
 	 */
 	private Canvas plotCanvas;
@@ -71,8 +74,6 @@ public class CSVPlotEditor extends EditorPart {
 	 * LightweightSystem for an SWT XYGraph
 	 */
 	private LightweightSystem lws;
-
-	private int spinnerSliderSelectionIndex;
 
 	/**
 	 * The constructor
@@ -185,12 +186,8 @@ public class CSVPlotEditor extends EditorPart {
 	 * 
 	 * @param displayPlotProvider
 	 *            The PlotProvider containing the information to create the plot
-	 * @param addSlider
-	 *            A flag to indicate if a time slider should be added for
-	 *            non-contour plots
 	 */
-	public void showPlotProvider(PlotProvider displayPlotProvider,
-			boolean addSlider) {
+	public void showPlotProvider(PlotProvider displayPlotProvider) {
 
 		// If it is not a contour plot then plot the regular series
 		if (!displayPlotProvider.isContour()) {
@@ -198,10 +195,18 @@ public class CSVPlotEditor extends EditorPart {
 			showXYGraph(displayPlotProvider, displayPlotProvider.getTimes()
 					.get(0));
 
-			// Add the slider for a file set
-			if (addSlider) {
-				Composite sliderComp = new Composite(vizComposite, SWT.NONE);
-				createSliderComp(sliderComp, displayPlotProvider);
+			// Re-create the slider only if there are alternate times to use.
+			if (displayPlotProvider.getTimes().size() > 1) {
+				if (sliderComposite != null) {
+					sliderComposite.dispose();
+					sliderComposite = createSliderComp(vizComposite,
+							displayPlotProvider);
+				}
+			}
+			// Otherwise, dispose the slider if it is not needed and exists.
+			else if (sliderComposite != null) {
+				sliderComposite.dispose();
+				sliderComposite = null;
 			}
 
 		} else {
@@ -270,20 +275,12 @@ public class CSVPlotEditor extends EditorPart {
 
 					// Set the contents
 					lws.setContents(intensityGraph);
+
+					return;
 				}
 			});
 		}
-	}
 
-	/**
-	 * This method is equivalent to calling
-	 * {@code showPlotProvider(provider, true)}
-	 * 
-	 * @param displayPlotProvider
-	 *            The PlotProvider containing the information to create the plot
-	 */
-	public void showPlotProvider(PlotProvider displayPlotProvider) {
-		showPlotProvider(displayPlotProvider, true);
 		return;
 	}
 
@@ -341,6 +338,7 @@ public class CSVPlotEditor extends EditorPart {
 			newXYGraph.performAutoScale();
 		}
 
+		return;
 	}
 
 	/**
@@ -352,8 +350,10 @@ public class CSVPlotEditor extends EditorPart {
 	 * @param displayPlotProvider
 	 *            The PlotProvider containing the information to create the plot
 	 */
-	private void createSliderComp(final Composite sliderComp,
+	private Composite createSliderComp(Composite parent,
 			final PlotProvider displayPlotProvider) {
+
+		final Composite sliderComp = new Composite(parent, SWT.NONE);
 
 		// Set the layout and layout data for this Composite
 		sliderComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -371,9 +371,8 @@ public class CSVPlotEditor extends EditorPart {
 
 		// Set the selection, minimum, maximum, thumb, increment, and page
 		// increment
-		spinnerSliderSelectionIndex = 0;
 		final int spinnerSliderMin = 0;
-		final int spinnerSliderMax = displayPlotProvider.getTimes().size();
+		final int spinnerSliderMax = displayPlotProvider.getTimes().size() - 1;
 		slider.setValues(0, spinnerSliderMin, spinnerSliderMax, 1, 1, 1);
 
 		// Create the label for the selected time
@@ -394,73 +393,77 @@ public class CSVPlotEditor extends EditorPart {
 				false));
 		downSpinnerButton.setText("<");
 
-		// The listener for the slider
-		slider.addListener(SWT.Selection, new Listener() {
+		final Runnable setPlotTime = new Runnable() {
 			@Override
-			public void handleEvent(Event event) {
+			public void run() {
 				// Get the slider's selection which is an index to the times
-				spinnerSliderSelectionIndex = slider.getSelection();
+				int sliderValue = slider.getSelection();
 
-				double time = displayPlotProvider.getTimes().get(
-						spinnerSliderSelectionIndex);
+				double time = displayPlotProvider.getTimes().get(sliderValue);
 				showXYGraph(displayPlotProvider, time);
-				timeSelectedLabel.setText(displayPlotProvider.getTimes()
-						.get(spinnerSliderSelectionIndex).toString());
+				timeSelectedLabel.setText(Double.toString(time));
 
 				// Refresh the slider composite
+				vizComposite.layout();
 				sliderComp.layout();
+
+				return;
+			}
+		};
+
+		// The listener for the slider.
+		slider.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Apply the new time to the plot.
+				setPlotTime.run();
 			}
 		});
-		// The listener for the up button in the slider
+
+		// The listener for the up button in the slider.
 		upSpinnerButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// Get the slider's selection which is an index to the times
+				int sliderValue = slider.getSelection();
+
 				// Check that the index is not out of bounds
-				if (spinnerSliderSelectionIndex < spinnerSliderMax - 1) {
+				if (sliderValue < spinnerSliderMax) {
 					// increment the index from the up button click
-					spinnerSliderSelectionIndex++;
+					sliderValue++;
 					// Move the slider to the index of the selection
-					slider.setSelection(spinnerSliderSelectionIndex);
+					slider.setSelection(sliderValue);
 
-					double time = displayPlotProvider.getTimes().get(
-							spinnerSliderSelectionIndex);
-					showXYGraph(displayPlotProvider, time);
-					timeSelectedLabel.setText(displayPlotProvider.getTimes()
-							.get(spinnerSliderSelectionIndex).toString());
-
-					// Refresh the slider composite
-					vizComposite.layout();
-					sliderComp.layout();
-
+					// Apply the new time to the plot.
+					setPlotTime.run();
 				}
+
+				return;
 			}
 		});
-		// The listener for the down button in the slider
+		// The listener for the down button in the slider.
 		downSpinnerButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// Get the slider's selection which is an index to the times
+				int sliderValue = slider.getSelection();
+
 				// Check that the index is within bounds
-				if (spinnerSliderSelectionIndex > spinnerSliderMin) {
+				if (sliderValue > spinnerSliderMin) {
 					// Decrement the index
-					spinnerSliderSelectionIndex--;
+					sliderValue--;
 					// Move the slider to the index of the selection
-					slider.setSelection(spinnerSliderSelectionIndex);
+					slider.setSelection(sliderValue);
 
-					double time = displayPlotProvider.getTimes().get(
-							spinnerSliderSelectionIndex);
-					showXYGraph(displayPlotProvider, time);
-					timeSelectedLabel.setText(displayPlotProvider.getTimes()
-							.get(spinnerSliderSelectionIndex).toString());
-
-					// Refresh the slider composite
-					vizComposite.layout();
-					sliderComp.layout();
-
+					// Apply the new time to the plot.
+					setPlotTime.run();
 				}
+
+				return;
 			}
 		});
 
-		return;
+		return sliderComp;
 	}
 
 	/**

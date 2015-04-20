@@ -53,7 +53,7 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 	 * The test shell
 	 */
 	private Shell shell;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -221,7 +221,7 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 
 		// Grab the shell to render the plot.
 		Display.getDefault().syncExec(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				shell = new Shell(Display.getDefault(), SWT.SHELL_TRIM);
@@ -231,8 +231,8 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 				// Create a composite for it.
 				Composite testComposite = new Composite(shell, SWT.None);
 				testComposite.setLayout(new GridLayout(1, true));
-				testComposite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true,
-						true, 1, 1));
+				testComposite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL,
+						true, true, 1, 1));
 
 				// Draw the plot in the test composite.
 				try {
@@ -247,17 +247,19 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 				shell.open();
 				shell.layout();
 			}
-		}); 
+		});
 
-		// Check for a few simple things just to make sure the plot area was
-		// rendered.
-		SWTBotLabel sliderLabel = bot.label("Slider: ");
-		SWTBotButton upButton = bot.button(">");
-		SWTBotButton downButton = bot.button("<");
+		// FIXME The slider should only show if the plot has multiple times
+		// defined.
+		// // Check for a few simple things just to make sure the plot area was
+		// // rendered.
+		// SWTBotLabel sliderLabel = bot.label("Slider: ");
+		// SWTBotButton upButton = bot.button(">");
+		// SWTBotButton downButton = bot.button("<");
 
 		// Cleaning up just seems like the right proper thing to do.
 		Display.getDefault().asyncExec(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				shell.dispose();

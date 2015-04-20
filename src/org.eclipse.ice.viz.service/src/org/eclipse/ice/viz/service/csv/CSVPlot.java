@@ -367,7 +367,7 @@ public class CSVPlot implements IPlot {
 		drawnPlot.plotProvider.addSeries(plotTime, seriesProvider);
 
 		// Add the new plot to the editor.
-		drawnPlot.editor.showPlotProvider(drawnPlot.plotProvider, true);
+		drawnPlot.editor.showPlotProvider(drawnPlot.plotProvider);
 
 		return;
 	}
