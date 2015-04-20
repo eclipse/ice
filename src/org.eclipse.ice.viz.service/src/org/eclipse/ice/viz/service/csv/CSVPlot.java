@@ -28,6 +28,7 @@ import org.eclipse.ice.viz.plotviewer.PlotProvider;
 import org.eclipse.ice.viz.plotviewer.SeriesProvider;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MenuEvent;
@@ -293,16 +294,14 @@ public class CSVPlot implements IPlot {
 			// FIXME Won't this affect all of the drawn plots?
 			baseProvider.setTime(plotTime);
 
-			// FIXME This only affects one series...
-			// Remove the previously plotted series, if any exist.
-			if (drawnPlot.seriesProvider != null) {
-				drawnPlot.plotProvider.removeSeries(plotTime,
-						drawnPlot.seriesProvider);
-				drawnPlot.seriesProvider = null;
-			}
+			// Remove all previous plots.
+			drawnPlot.clear();
 
 			// Add the specified series to the drawn plot.
-			addSeries(category, plotType, drawnPlot);
+			drawnPlot.addSeries(category, plotType);
+
+			// Refresh the drawn plot.
+			drawnPlot.refresh();
 
 			// We need to return the Composite used to render the CSV plot.
 			child = drawnPlot.editor.getPlotCanvas();
@@ -317,62 +316,6 @@ public class CSVPlot implements IPlot {
 	}
 
 	/**
-	 * Removes the specified series from the drawn plot.
-	 * 
-	 * @param series
-	 *            The series to remove.
-	 * @param drawnPlot
-	 *            The drawn plot that will lose its series.
-	 */
-	private void removeSeries(SeriesProvider series, DrawnPlot drawnPlot) {
-		Double plotTime = baseProvider.getTimes().get(0);
-		drawnPlot.plotProvider.removeSeries(plotTime, series);
-	}
-
-	/**
-	 * Adds a new series to the drawn plot.
-	 * 
-	 * @param category
-	 *            The category of the series to add.
-	 * @param type
-	 *            The type of the series to add.
-	 * @param drawnPlot
-	 *            The drawn plot that will get a new series.
-	 */
-	private void addSeries(String category, String type, DrawnPlot drawnPlot) {
-		// As this is a private method, the parameters are expected to be valid.
-
-		// Reset the plot time to the initial time.
-		Double plotTime = baseProvider.getTimes().get(0);
-		// FIXME Won't this affect all of the drawn plots?
-		baseProvider.setTime(plotTime);
-
-		// Get the axes to plot
-		String[] axes = type.split(" ");
-		String axis1 = axes[0];
-		String axis2 = axes[2];
-
-		// Create a new series title for the new series
-		String seriesTitle = axis1 + " vs. " + axis2 + " at " + plotTime;
-		// Create a new series provider
-		SeriesProvider seriesProvider = new SeriesProvider();
-		seriesProvider.setDataProvider(drawnPlot.dataProvider);
-		seriesProvider.setTimeForDataProvider(plotTime);
-		seriesProvider.setSeriesTitle(seriesTitle);
-		seriesProvider.setXDataFeature(axis1);
-		seriesProvider.setYDataFeature(axis2);
-		seriesProvider.setSeriesType(category);
-		// Add this new series to the plot provider
-		drawnPlot.seriesProvider = seriesProvider;
-		drawnPlot.plotProvider.addSeries(plotTime, seriesProvider);
-
-		// Add the new plot to the editor.
-		drawnPlot.editor.showPlotProvider(drawnPlot.plotProvider);
-
-		return;
-	}
-
-	/**
 	 * An instance of this nested class is composed of the drawn
 	 * {@link CSVPlotEditor} and all providers necessary to populate it with CSV
 	 * data.
@@ -381,6 +324,9 @@ public class CSVPlot implements IPlot {
 	 *
 	 */
 	private class DrawnPlot {
+		// TODO Change CSVPlot to extend MultiPlot and create a PlotRender based
+		// off this nested class.
+
 		/**
 		 * The editor in which the CSV plot is rendered.
 		 */
@@ -395,11 +341,6 @@ public class CSVPlot implements IPlot {
 		public final PlotProvider plotProvider;
 
 		/**
-		 * The current series rendered on the plot.
-		 */
-		public SeriesProvider seriesProvider;
-
-		/**
 		 * A tree of JFace {@code Action}s for adding new series to the drawn
 		 * plot.
 		 */
@@ -409,6 +350,12 @@ public class CSVPlot implements IPlot {
 		 * drawn plot.
 		 */
 		private final ActionTree removeSeriesTree;
+
+		/**
+		 * A map keyed on the series and containing the ActionTrees for removing
+		 * them from the plot.
+		 */
+		private final Map<SeriesProvider, ActionTree> seriesMap = new HashMap<SeriesProvider, ActionTree>();
 
 		/**
 		 * Creates a {@link CSVPlotEditor} and all providers necessary to
@@ -450,6 +397,15 @@ public class CSVPlot implements IPlot {
 			// Create the ActionTrees for adding and removing series on the fly.
 			addSeriesTree = new ActionTree("Add Series");
 			removeSeriesTree = new ActionTree("Remove Series");
+			final Separator separator = new Separator();
+			final ActionTree clearAction = new ActionTree(new Action(
+					"Clear Plot") {
+				@Override
+				public void run() {
+					clear();
+					refresh();
+				}
+			});
 
 			// Fill out the add series tree. This tree will never need to be
 			// updated.
@@ -468,15 +424,14 @@ public class CSVPlot implements IPlot {
 							catTree.add(new ActionTree(new Action(type) {
 								@Override
 								public void run() {
-									addSeries(category, type, DrawnPlot.this);
+									addSeries(category, type);
+									refresh();
 								}
 							}));
 						}
 					}
 				}
 			}
-
-			// TODO Set up the remove series tree...
 
 			// When the Menu is about to be shown, add the add/remove series
 			// actions to it.
@@ -488,8 +443,12 @@ public class CSVPlot implements IPlot {
 
 				@Override
 				public void menuShown(MenuEvent e) {
+					// Rebuild the menu.
 					Menu menu = (Menu) e.widget;
 					addSeriesTree.getContributionItem().fill(menu, -1);
+					removeSeriesTree.getContributionItem().fill(menu, -1);
+					separator.fill(menu, -1);
+					clearAction.getContributionItem().fill(menu, -1);
 				}
 			});
 
@@ -498,6 +457,93 @@ public class CSVPlot implements IPlot {
 			editor.getPlotCanvas().setMenu(menu);
 
 			return;
+		}
+
+		/**
+		 * Adds a new series to the drawn plot.
+		 * 
+		 * @param category
+		 *            The category of the series to add.
+		 * @param type
+		 *            The type of the series to add.
+		 * @param drawnPlot
+		 *            The drawn plot that will get a new series.
+		 */
+		public void addSeries(String category, String type) {
+			// Reset the plot time to the initial time.
+			Double plotTime = baseProvider.getTimes().get(0);
+			// FIXME Won't this affect all of the drawn plots?
+			baseProvider.setTime(plotTime);
+
+			// Get the axes to plot
+			String[] axes = type.split(" ");
+			String axis1 = axes[0];
+			String axis2 = axes[2];
+
+			// Create a new series title for the new series
+			String seriesTitle = axis1 + " vs. " + axis2 + " at " + plotTime;
+			// Create a new series provider
+			final SeriesProvider seriesProvider = new SeriesProvider();
+			seriesProvider.setDataProvider(dataProvider);
+			seriesProvider.setTimeForDataProvider(plotTime);
+			seriesProvider.setSeriesTitle(seriesTitle);
+			seriesProvider.setXDataFeature(axis1);
+			seriesProvider.setYDataFeature(axis2);
+			seriesProvider.setSeriesType(category);
+			// Add this new series to the plot provider
+			plotProvider.addSeries(plotTime, seriesProvider);
+
+			// Add an ActionTree to remove the series.
+			ActionTree tree = new ActionTree(new Action(seriesTitle) {
+				@Override
+				public void run() {
+					removeSeries(seriesProvider);
+					refresh();
+				}
+			});
+			removeSeriesTree.add(tree);
+
+			// Store the series and ActionTree for later reference.
+			seriesMap.put(seriesProvider, tree);
+
+			return;
+		}
+
+		/**
+		 * Removes the specified series from the drawn plot.
+		 * 
+		 * @param series
+		 *            The series to remove.
+		 */
+		public void removeSeries(SeriesProvider series) {
+			ActionTree tree = seriesMap.remove(series);
+			if (tree != null) {
+				double plotTime = baseProvider.getTimes().get(0);
+				removeSeriesTree.remove(tree);
+				plotProvider.removeSeries(plotTime, series);
+			}
+			return;
+		}
+
+		/**
+		 * Clears all series from the drawn plot.
+		 */
+		public void clear() {
+			double plotTime = baseProvider.getTimes().get(0);
+			for (Entry<SeriesProvider, ActionTree> e : seriesMap.entrySet()) {
+				plotProvider.removeSeries(plotTime, e.getKey());
+			}
+			seriesMap.clear();
+			removeSeriesTree.removeAll();
+			return;
+		}
+
+		/**
+		 * Refreshes the drawn plot after a change has occurred.
+		 */
+		public void refresh() {
+			// Add the new plot to the editor.
+			editor.showPlotProvider(plotProvider);
 		}
 
 		/**

@@ -13,6 +13,7 @@
 package org.eclipse.ice.viz.plotviewer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
@@ -192,8 +193,9 @@ public class CSVPlotEditor extends EditorPart {
 		// If it is not a contour plot then plot the regular series
 		if (!displayPlotProvider.isContour()) {
 
-			showXYGraph(displayPlotProvider, displayPlotProvider.getTimes()
-					.get(0));
+			List<Double> times = displayPlotProvider.getTimes();
+			double time = (times.isEmpty() ? 0.0 : times.get(0));
+			showXYGraph(displayPlotProvider, time);
 
 			// Re-create the slider only if there are alternate times to use.
 			if (displayPlotProvider.getTimes().size() > 1) {
@@ -306,6 +308,9 @@ public class CSVPlotEditor extends EditorPart {
 		// Get the series
 		ArrayList<SeriesProvider> seriesProviderList = plotProvider
 				.getSeriesAtTime(time);
+		if (seriesProviderList == null) {
+			seriesProviderList = new ArrayList<SeriesProvider>();
+		}
 		for (SeriesProvider series : seriesProviderList) {
 
 			CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(
@@ -334,9 +339,9 @@ public class CSVPlotEditor extends EditorPart {
 
 			// Add the trace to newXYGraph
 			newXYGraph.addTrace(trace);
-			// Auto-scale the image
-			newXYGraph.performAutoScale();
 		}
+		// Auto-scale the image
+		newXYGraph.performAutoScale();
 
 		return;
 	}
