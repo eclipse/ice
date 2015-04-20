@@ -9,7 +9,7 @@
    <launcherArgs>
       <programArgs>-consoleLog -console -clean
       </programArgs>
-      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800
+      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080
       </vmArgs>
       <vmArgsLin>-Dosgi.instance.area=@user.home/ICEFiles -Dvisit.binpath=@user.home/visit/bin
       </vmArgsLin>

@@ -13,9 +13,17 @@ package org.eclipse.ice.viz.service.paraview;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.AbstractVizService;
+import org.eclipse.ice.viz.service.connections.ConnectionManager;
+import org.eclipse.ice.viz.service.connections.ConnectionTable;
+import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+
+import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class is responsible for providing a service to connect to (or launch)
@@ -29,7 +37,74 @@ import org.eclipse.ice.client.widgets.viz.service.IVizService;
  * @author Jordan Deyton
  *
  */
-public class ParaViewVizService implements IVizService {
+public class ParaViewVizService extends AbstractVizService {
+
+	/**
+	 * The current instance of the viz service. This instance was created when
+	 * the OSGi viz service was instantiated.
+	 */
+	private static ParaViewVizService instance;
+
+	/**
+	 * The manager for all of the ParaView connections.
+	 */
+	private final ConnectionManager<VtkWebClient> connections;
+
+	/**
+	 * The default constructor.
+	 * <p>
+	 * <b>Note:</b> Only OSGi should call this method!
+	 * </p>
+	 */
+	public ParaViewVizService() {
+		// Update the instance to point to this viz service (there should be
+		// only one).
+		instance = this;
+
+		// Set up the connection manager.
+		connections = new ConnectionManager<VtkWebClient>() {
+			@Override
+			protected CustomScopedPreferenceStore getPreferenceStore() {
+				return (CustomScopedPreferenceStore) ParaViewVizService.this
+						.getPreferenceStore();
+			}
+
+			@Override
+			protected ConnectionTable createConnectionTable() {
+				return new ConnectionTable();
+			}
+
+			@Override
+			protected IConnectionAdapter<VtkWebClient> createConnectionAdapter() {
+				return new ParaViewConnectionAdapter();
+			}
+		};
+
+		return;
+	}
+
+	/**
+	 * Gets the current instance of the viz service. This instance was created
+	 * by OSGi.
+	 * <p>
+	 * <b>Note:</b> This method is only intended to be used by the preference
+	 * page to notify the service when the preferences have changed.
+	 * </p>
+	 * 
+	 * @return The current instance of the viz service.
+	 */
+	protected static ParaViewVizService getInstance() {
+		return instance;
+	}
+
+	/**
+	 * This method notifies the service that the preferences have changed. Any
+	 * connections that have changed should be reset.
+	 */
+	protected void preferencesChanged(Map<String, String> changedKeys,
+			Set<String> addedKeys, Set<String> removedKeys) {
+		connections.preferencesChanged(changedKeys, addedKeys, removedKeys);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -48,8 +123,7 @@ public class ParaViewVizService implements IVizService {
 	 */
 	@Override
 	public String getVersion() {
-		// TODO Update this value.
-		return "";
+		return "0.0";
 	}
 
 	/*
@@ -60,7 +134,7 @@ public class ParaViewVizService implements IVizService {
 	 */
 	@Override
 	public boolean hasConnectionProperties() {
-		// TODO Auto-generated method stub
+		// Do nothing yet.
 		return false;
 	}
 
@@ -72,7 +146,7 @@ public class ParaViewVizService implements IVizService {
 	 */
 	@Override
 	public Map<String, String> getConnectionProperties() {
-		// TODO Auto-generated method stub
+		// Do nothing yet.
 		return null;
 	}
 
@@ -84,8 +158,7 @@ public class ParaViewVizService implements IVizService {
 	 */
 	@Override
 	public void setConnectionProperties(Map<String, String> props) {
-		// TODO Auto-generated method stub
-
+		// Do nothing yet.
 	}
 
 	/*
@@ -95,8 +168,7 @@ public class ParaViewVizService implements IVizService {
 	 */
 	@Override
 	public boolean connect() {
-		// TODO Auto-generated method stub
-		return false;
+		return connections.connect();
 	}
 
 	/*
@@ -106,8 +178,7 @@ public class ParaViewVizService implements IVizService {
 	 */
 	@Override
 	public boolean disconnect() {
-		// TODO Auto-generated method stub
-		return false;
+		return connections.disconnect();
 	}
 
 	/*
@@ -119,8 +190,16 @@ public class ParaViewVizService implements IVizService {
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		ParaViewPlot plot = null;
+
+		// Create the plot.
+		plot = new ParaViewPlot(this);
+		// Associate the plot with the connection.
+		connections.addClient(plot);
+		// Set the data source for the file.
+		plot.setDataSource(file);
+
+		return plot;
 	}
 
 }

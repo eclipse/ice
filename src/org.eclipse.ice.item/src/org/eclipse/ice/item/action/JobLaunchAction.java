@@ -300,11 +300,9 @@ import org.eclipse.ptp.remote.core.exception.RemoteConnectionException;
  * The JobLaunchAction adds the working directory to the map with the key
  * "workingDir".
  * 
- * <p>
  * The Action appends to the end of each output file listed in the map. It never
  * overwrites these files.
- * </p>
- * <p>
+ * 
  * Additional parameters may be specified in the dictionary and the
  * JobLaunchAction will replace them in the executable if required. For a key
  * "v" in the dictionary, each instance of the search string "${v}" in the
@@ -315,11 +313,9 @@ import org.eclipse.ptp.remote.core.exception.RemoteConnectionException;
  * properly name files will result in a failure. Capitalization does not matter.
  * The stdOutFile and stdErrFile are exceptions that are not transferred to
  * remote machines.
- * </p>
- * <p>
+ * 
  * The cancel() operation attempts to kill the process if it is still running.
- * </p>
- * <p>
+ * 
  * This class launches the job on a separate thread. An AtomicReference is used
  * for managing access to the Form information an the LoginInfoForm is used
  * simply as an internal reference to the current Form within an operation. It
@@ -327,17 +323,13 @@ import org.eclipse.ptp.remote.core.exception.RemoteConnectionException;
  * and that a semicolon at the end of the line is acceptable to denote the end
  * of a command. This assumption is valid on Windows, Linux and Unix systems so
  * long as the Windows shell is Powershell.
- * </p>
  * <p>
- * </p>
- * 
  * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class JobLaunchAction extends Action implements Runnable {
 
 	/**
 	 * The username with which to log into the remote system.
-	 * 
 	 */
 	private String username;
 

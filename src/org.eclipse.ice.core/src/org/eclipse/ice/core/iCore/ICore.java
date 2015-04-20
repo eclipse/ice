@@ -481,30 +481,20 @@ public interface ICore {
 	public String importFileAsItem(URI file, String itemType);
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation posts a message containing an update to the ICE Item
 	 * designated in the body of the message.
-	 * </p>
 	 * <p>
 	 * This operation is primarily used by the ICE Updater to post messages to
 	 * the Core from remote processes. The message format can be found in the
 	 * documentation for the Updater.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
 	 * @param message
-	 *            <p>
-	 *            The message that should be passed on the the specified Item.
+	 *            The message that should be passed on to the specified Item.
 	 *            This string must be in JSON and conform to the message format
 	 *            of the ICE Updater.
-	 *            </p>
-	 * @return <p>
+	 * @return 
 	 *         "OK" if the post was successful, null if not to conform to JAX-RS
 	 *         HTTP 200/204 return code conversion.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@POST
 	@Path("update")

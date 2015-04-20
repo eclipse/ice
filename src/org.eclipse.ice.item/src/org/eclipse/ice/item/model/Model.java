@@ -12,48 +12,57 @@
  *******************************************************************************/
 package org.eclipse.ice.item.model;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.Item;
+import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.core.resources.IProject;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * A Model in ICE contains all of the information necessary to describe a
  * physical system that will be simulated.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class Model extends Item {
+
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * The materials database that is available to the Model Item and provided,
+	 * usually, by the OSGi Declarative Services Framework.
+	 */
+	private IMaterialsDatabase materialsDatabase;
+
+	/**
 	 * The constructor.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
-	 *            <p>
 	 *            The Eclipse project where the Item should store files and from
 	 *            which they should be retrieved.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Model(IProject projectSpace) {
-		// begin-user-code
-
 		// Call the super class constructor
 		super(projectSpace);
-
-		// end-user-code
 	}
+
+	/**
+	 * This operations sets the materials database service that should be used
+	 * by the Model.
+	 * 
+	 * @param materialDatabase
+	 *            The database
+	 */
+	public void setMaterialsDatabase(IMaterialsDatabase database) {
+		System.out.println("Model Message: IMaterialsDatabase Registered!");
+		materialsDatabase = database;
+	}
+
+	/**
+	 * This operation returns the materials database available to the Model
+	 * without exposing the handle in a protected or public way that would allow
+	 * it to be modified.
+	 * 
+	 * @return the database
+	 */
+	protected IMaterialsDatabase getMaterialsDatabase() {
+		return materialsDatabase;
+	}
+
 }

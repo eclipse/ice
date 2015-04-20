@@ -49,7 +49,7 @@ public class AbstractItemBuilder implements ItemBuilder {
 	 * The IActionFactory that will provide Actions to the Items created by this
 	 * Builder.
 	 */
-	private static IActionFactory actionFactory;
+	private IActionFactory actionFactory;
 
 	/*
 	 * (non-Javadoc)
@@ -88,6 +88,10 @@ public class AbstractItemBuilder implements ItemBuilder {
 
 		// Set the services
 		setServices(item);
+
+		// Tell the Item it can configure any data on its Form that requires the
+		// services
+		item.setupFormWithServices();
 
 		return item;
 	}

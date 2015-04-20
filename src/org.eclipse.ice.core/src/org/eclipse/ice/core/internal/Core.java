@@ -748,7 +748,18 @@ public class Core extends Application implements ICore {
 			// Register the service
 			try {
 				// Get the bundle
-				Bundle bundle = componentContext.getBundleContext().getBundle();
+				Bundle bundle = null;
+				if (componentContext != null) {
+					bundle = componentContext.getBundleContext().getBundle();
+				} else {
+					return;
+				}
+				
+				// Make sure we got a valid bundle
+				if (bundle == null) {
+					return;
+				}
+				
 				// Find the root location and the jaas_config file
 				URL resourceURL = bundle.getEntry("");
 				URL configFileURL = bundle.getEntry("jaas_config.txt");

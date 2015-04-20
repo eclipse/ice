@@ -386,6 +386,10 @@ public class CSVPlot implements IPlot {
 			// Create the plot inside the parent Composite.
 			editor.createPartControl(parent);
 
+			// Set the context Menu for the main plot canvas. The slider can
+			// have its own menu set later.
+			editor.getPlotCanvas().setMenu(parent.getMenu());
+
 			return;
 		}
 

@@ -177,8 +177,7 @@ public class MOOSEModelTester {
 				.retrieveEntry("MOOSE-Based Application");
 		assertNotNull(mooseAppEntry);
 		assertEquals(1, mooseAppEntry.getId());
-		assertEquals("No MOOSE apps were found.",
-				mooseAppEntry.getDefaultValue());
+		assertEquals("None", mooseAppEntry.getDefaultValue());
 		assertEquals(mooseAppEntry.getDefaultValue(), mooseAppEntry.getValue());
 
 		// Check the output file Entry

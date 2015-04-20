@@ -25,11 +25,14 @@ import javax.xml.bind.Marshaller;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.ice.materials.MaterialWritableTableFormat;
 import org.eclipse.ice.materials.XMLMaterialsDatabase;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import ca.odell.glazedlists.gui.TableFormat;
 
 /**
  * This class is responsible for testing the XMLMaterialsDatabase class. Since
@@ -102,7 +105,8 @@ public class XMLMaterialDatabaseTester {
 		Material co2 = TestMaterialFactory.createCO2();
 		Material h2o = TestMaterialFactory.createH2O();
 		ArrayList<Material> materials = new ArrayList<Material>();
-		ArrayList<Material> defaultMaterials = (ArrayList<Material>) materials.clone();
+		ArrayList<Material> defaultMaterials = (ArrayList<Material>) materials
+				.clone();
 		ICEList<Material> jaxbMaterialsList = new ICEList<Material>();
 		materials.add(h2o);
 		materials.add(co2);
@@ -195,14 +199,27 @@ public class XMLMaterialDatabaseTester {
 				assertTrue(reloadedMaterials.contains(material));
 			}
 
-			// Stop the service and restart it to make sure the defaults persist.
+			// Stop the service and restart it to make sure the defaults
+			// persist.
 			database.stop();
 			database.start();
 			reloadedMaterials = database.getMaterials();
 			for (Material material : defaultMaterials) {
 				assertTrue(reloadedMaterials.contains(material));
 			}
-			
+
+			// Check the implementation of IElementSource provided by
+			// the database. Make sure the EventList is correct.
+			assertEquals(reloadedMaterials.size(), database.getElements()
+					.size());
+			assertEquals(reloadedMaterials.get(0), database.getElements()
+					.get(0));
+			// The table format is checked in detail in its own test, so just
+			// make sure it isn't null and that it is the right type.
+			TableFormat format = database.getTableFormat();
+			assertNotNull(format);
+			assertTrue(format instanceof MaterialWritableTableFormat);
+
 			// Kill the service for completeness I suppose.
 			database.stop();
 		} catch (NullPointerException | JAXBException e) {

@@ -186,8 +186,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		pageComposite.layout();
 
 		// Create the grid of plots.
-		plotGridComposite = new PlotGridComposite(pageComposite, SWT.NONE,
-				toolkit);
+		plotGridComposite = new PlotGridComposite(pageComposite, SWT.NONE);
 		toolkit.adapt(plotGridComposite);
 
 		// Set the workbench page reference

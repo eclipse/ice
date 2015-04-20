@@ -36,7 +36,7 @@ public class Launcher {
 
 		Logger.getGlobal().setLevel(Level.ALL);
 
-		final ConnectionManager connections = new ConnectionManager();
+		final ConnectionTable connections = new ConnectionTable();
 
 		// Create a TableComponentComposite.
 		TableComponentComposite table = new TableComponentComposite(shell,
