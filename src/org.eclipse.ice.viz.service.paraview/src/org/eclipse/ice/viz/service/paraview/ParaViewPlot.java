@@ -51,10 +51,10 @@ public class ParaViewPlot implements IPlot {
 	 * java.lang.String, org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void draw(String category, String plotType, Composite parent)
+	public Composite draw(String category, String plotType, Composite parent)
 			throws Exception {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	/*
@@ -123,5 +123,6 @@ public class ParaViewPlot implements IPlot {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 
 }

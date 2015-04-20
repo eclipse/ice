@@ -24,6 +24,10 @@ import java.util.Map;
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.settings.model.ICProjectDescriptionManager;
+import org.eclipse.cdt.make.core.IMakeCommonBuildInfo;
+import org.eclipse.cdt.make.core.IMakeTarget;
+import org.eclipse.cdt.make.core.IMakeTargetManager;
+import org.eclipse.cdt.make.core.MakeCorePlugin;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -167,16 +171,34 @@ public class ForkStorkHandler extends AbstractHandler {
 				.getProject(appName);
 		IProjectDescription desc = ResourcesPlugin.getWorkspace()
 				.newProjectDescription(appName);
+		IProject cProject = null;
 		try {
-			IProject proj = CCorePlugin.getDefault().createCDTProject(desc,
+			cProject = CCorePlugin.getDefault().createCDTProject(desc,
 					appProject, null);
-			proj.refreshLocal(IResource.DEPTH_INFINITE, null);
+			cProject.refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (OperationCanceledException e) {
 			e.printStackTrace();
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-		
+
+		try {
+			IMakeTargetManager manager = MakeCorePlugin.getDefault()
+					.getTargetManager();
+			String[] ids = manager.getTargetBuilders(cProject);
+			IMakeTarget target = manager
+					.createTarget(cProject, "all", ids[0]);
+			target.setStopOnError(false);
+			target.setRunAllBuilders(false);
+			target.setUseDefaultBuildCmd(true);
+			target.setBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND, "make");
+			target.setBuildAttribute(IMakeTarget.BUILD_LOCATION, "/" + appName);
+			target.setBuildAttribute(IMakeTarget.BUILD_ARGUMENTS, "-j 4");
+			target.setBuildAttribute(IMakeTarget.BUILD_TARGET, "all");
+			manager.addTarget(cProject, target);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 		return null;
 
 	}

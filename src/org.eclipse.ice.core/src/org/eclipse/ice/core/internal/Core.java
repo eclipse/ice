@@ -1032,10 +1032,10 @@ public class Core extends Application implements ICore {
 		String retVal = null;
 
 		// Print the message if debugging is enabled
-		if (debuggingEnabled) {
+		//if (debuggingEnabled) {
 			System.out.println("Core Message: "
 					+ "Update received with message: " + message);
-		}
+		//}
 
 		// Only process the message if it exists and is not empty
 		if (message != null && !message.isEmpty() && message.contains("=")) {

@@ -152,5 +152,13 @@
             </toolbar>
          </menuContribution>
       </extension>
+      <extension
+            point="org.eclipse.ui.preferencePages">
+         <page
+               class="org.eclipse.ice.client.widgets.moose.MoosePreferencePage"
+               id="org.eclipse.ice.client.widgets.moose.page1"
+               name="MOOSE">
+         </page>
+      </extension>
       
 </plugin>
