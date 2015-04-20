@@ -18,19 +18,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.ITemplatedReader;
 
 /**
  * The INIReader provides functionality for parsing files that use the INI structure.
@@ -38,7 +36,7 @@ import org.eclipse.ice.io.serializable.IReader;
  * @author Andrew Bennett
  *
  */
-public class INIReader implements IReader {
+public class INIReader implements ITemplatedReader {
 
 	/**
 	 * The character to use as a comment symbol
@@ -186,7 +184,7 @@ public class INIReader implements IReader {
 		ArrayList<Entry> entries = new ArrayList<Entry>();
 		Entry variableTemplate = new Entry();
 		Entry valueTemplate = new Entry();
-		int componentNumber = 0;
+		int componentNumber = 1;
 		variableTemplate.setName("Name");
 		valueTemplate.setName("Value");
 		entries.add(variableTemplate);
@@ -206,6 +204,7 @@ public class INIReader implements IReader {
 				ArrayList<String> allowedValues;
 				AllowedValueType valueType;
 				sectionComp.setName(section);
+				sectionComp.setId(componentNumber);
 				while((line = reader.readLine()) != null) {
 					// If at a new section, add the previous section to 
 					// the list and create a new TableComponent for the
@@ -219,6 +218,7 @@ public class INIReader implements IReader {
 						// Set up the new data component
 						sectionComp = new DataComponent();
 						sectionComp.setName(sectionMatch.group(0).trim().replace("[","").replace("]",""));
+						sectionComp.setId(componentNumber);
 					} else if ((templateSections = line.split(";")).length >= 2) {	
 						// Get the key and value and put it in the table
 						varName = templateSections[0].split("=")[0].trim();
@@ -289,14 +289,16 @@ public class INIReader implements IReader {
 				DataComponent sectionTable = new DataComponent();
 				sectionTable.setName(section);
 				while((line = reader.readLine()) != null) {
-					
-					// Make sure that comments are taken into consideration
-					splitLine = line.split(comment)[0].trim().split(assignmentPattern);
-					if (splitLine.length >= 2) {	
+					Matcher sectionMatch = sectionPattern.matcher(line);
+					if (sectionMatch.matches()) {
+						System.err.println("INIReader Message: Found invalid section header: " + 
+								sectionMatch.group(0).trim().replace("[","").replace("]",""));
 						
+					// Make sure that comments are taken into consideration
+					} else if ((splitLine = line.split(comment)[0].trim().split(assignmentPattern)).length >= 2) {	
 						// Get the variable name and value
 						var = splitLine[0].trim();
-						val = splitLine[1].trim();
+						val = splitLine[splitLine.length - 1].trim();
 						foundInTemplate = false;
 						
 						// Try to find the variable in the existing form.  If it exists update the data component

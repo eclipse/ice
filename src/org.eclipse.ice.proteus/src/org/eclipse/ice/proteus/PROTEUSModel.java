@@ -27,6 +27,7 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.ITemplatedReader;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.io.ini.INIReader;
@@ -153,8 +154,8 @@ public class PROTEUSModel extends Item {
 			setIOService(new IOService());
 			ioService = getIOService();
 		}
-		if (ioService.getReader("INIReader") == null) {
-			ioService.addReader(new INIReader());
+		if (ioService.getTemplatedReader("INIReader") == null) {
+			ioService.addTemplatedReader(new INIReader());
 		}
 		if (ioService.getWriter("INIWriter") == null) {
 			ioService.addWriter(new INIWriter());
@@ -217,6 +218,7 @@ public class PROTEUSModel extends Item {
 
 				// create a new IPSWriter with the output file
 				INIWriter writer = (INIWriter) ioService.getWriter("INIWriter");
+				writer.setSectionPattern("!", " ");
 				try {
 					// Write the output file
 					writer.write(form, outputFile);
@@ -267,7 +269,7 @@ public class PROTEUSModel extends Item {
 		System.out.println("ProteusModel Message: Loading " + inputFile.getLocation().toOSString());
 
 		// Set up the reader to use the template if it exists
-		INIReader reader = (INIReader) ioService.getReader("INIReader");
+		ITemplatedReader reader = ioService.getTemplatedReader("INIReader");
 		reader.setCommentString("!");
 		reader.setAssignmentPattern("\\s\\s\\s+");
 		if (new File(templateFile.getLocation().toOSString()).exists()) {

@@ -32,10 +32,22 @@ public class IOService {
 	private HashMap<String, IReader> readerMap;
 	
 	/**
+	 * Reference to the mapping between IReader type Strings 
+	 * and the corresponding IReader. 
+	 */
+	private HashMap<String, ITemplatedReader> templatedReaderMap;
+	
+	/**
 	 * Reference to the mapping between IWriter type Strings 
 	 * and the corresponding IWriter.
 	 */
 	private HashMap<String, IWriter> writerMap;
+
+	/**
+	 * Reference to the mapping between ITemplatedWriter type Strings 
+	 * and the corresponding ITemplatedWriter.
+	 */
+	private HashMap<String, ITemplatedWriter> templatedWriterMap;
 	
 	/**
 	 * The constructor
@@ -43,7 +55,9 @@ public class IOService {
 	public IOService() {
 		// Initialize our containers
 		readerMap = new HashMap<String, IReader>();
+		templatedReaderMap = new HashMap<String, ITemplatedReader>();
 		writerMap = new HashMap<String, IWriter>();
+		templatedWriterMap = new HashMap<String, ITemplatedWriter>();
 	}
 	
 	/**
@@ -64,6 +78,22 @@ public class IOService {
 	
 	/**
 	 * This method is used by the underlying OSGi framework to 
+	 * add available ITemplatedReaders exposed as a Declarative Service. 
+	 * 
+	 * @param templatedReader The ITemplatedReader realization exposed as a Declarative Service.
+	 */
+	public void addTemplatedReader(ITemplatedReader templatedReader) {
+		
+		if (templatedReader != null) {
+			System.out.println("[IOService Message] Adding " + templatedReader.getReaderType() + " templated reader to the IOService Mapping.");
+			templatedReaderMap.put(templatedReader.getReaderType(), templatedReader);
+		}
+		
+		return;
+	}
+	
+	/**
+	 * This method is used by the underlying OSGi framework to 
 	 * add available IWriters exposed as a Declarative Service. 
 	 * 
 	 * @param writer The IWriter realization exposed as a Declarative Service.  
@@ -73,6 +103,20 @@ public class IOService {
 		if (writer != null) {
 			System.out.println("[IOService Message] Adding " + writer.getWriterType() + " writer to the IOService Mapping.");
 			writerMap.put(writer.getWriterType(), writer);
+		}
+	}
+
+	/**
+	 * This method is used by the underlying OSGi framework to 
+	 * add available ITemplatedWriters exposed as a Declarative Service. 
+	 * 
+	 * @param writer The ITemplatedWriter realization exposed as a Declarative Service.  
+	 */
+	public void addTemplatedWriter(ITemplatedWriter writer) {
+		
+		if (writer != null) {
+			System.out.println("[IOService Message] Adding " + writer.getWriterType() + " templated writer to the IOService Mapping.");
+			templatedWriterMap.put(writer.getWriterType(), writer);
 		}
 	}
 	
@@ -91,6 +135,22 @@ public class IOService {
 		
 		return null;
 	}
+
+	/**
+	 * Return the ITemplatedReader realization of type readerType.
+	 * 
+	 * @param readerType The ITemplatedReader type to return.
+	 * @return ITemplatedReader realization 
+	 */
+	public ITemplatedReader getTemplatedReader(String readerType) {
+
+		// Make sure we have this Reader and if so return it
+		if (templatedReaderMap.containsKey(readerType)) {
+			return templatedReaderMap.get(readerType);
+		} 
+		
+		return null;
+	}
 	
 	/**
 	 * Return the IWriter realization of type writerType.
@@ -103,6 +163,22 @@ public class IOService {
 		// Make sure we have this Writer and if so return it
 		if (writerMap.containsKey(writerType)) {
 			return writerMap.get(writerType);
+		} 
+		
+		return null;
+	}
+
+	/**
+	 * Return the ITemplatedWriter realization of type writerType.
+	 * 
+	 * @param writerType The ITemplatedWriter type to return.
+	 * @return ITemplatedWriter realization 
+	 */
+	public ITemplatedWriter getTemplatedWriter(String writerType) {
+		
+		// Make sure we have this Writer and if so return it
+		if (templatedWriterMap.containsKey(writerType)) {
+			return templatedWriterMap.get(writerType);
 		} 
 		
 		return null;

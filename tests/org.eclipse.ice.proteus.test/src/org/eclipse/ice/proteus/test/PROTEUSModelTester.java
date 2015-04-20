@@ -96,7 +96,7 @@ public class PROTEUSModelTester {
 			IPath projectPath = new Path(userDir + separator + ".project");
 			// Create the project description
 			IProjectDescription desc = ResourcesPlugin.getWorkspace()
-			                    .loadProjectDescription(projectPath);
+					.loadProjectDescription(projectPath);
 			// Get the project handle and create it
 			project = workspaceRoot.getProject(desc.getName());
 			// Create the project if it doesn't exist
@@ -105,7 +105,7 @@ public class PROTEUSModelTester {
 			}
 			// Open the project if it is not already open
 			if (project.exists() && !project.isOpen()) {
-			   project.open(new NullProgressMonitor());
+				project.open(new NullProgressMonitor());
 			}
 			// Refresh the workspace
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -119,8 +119,8 @@ public class PROTEUSModelTester {
 
 		return;
 		// end-user-code
-	}	
-	
+	}
+
 	/**
 	 * Tests the PROTEUSModel constructors. Only tests that objects inherit
 	 * correctly from the parent class (Item). All other relevant construction
@@ -168,7 +168,6 @@ public class PROTEUSModelTester {
 		defaultActions.add("Write PROTEUS Input File");
 		defaultActions.add("Export to ICE Native Format");
 
-
 		// Call nullary constructor to test
 		PROTEUSModel model = new PROTEUSModel();
 
@@ -197,7 +196,7 @@ public class PROTEUSModelTester {
 	 * model's Form contains 6 DataComponents, each containing 5 fake entries.
 	 * 
 	 * @author w5q
-	 * @throws JAXBException 
+	 * @throws JAXBException
 	 * 
 	 */
 	@Test
@@ -209,7 +208,7 @@ public class PROTEUSModelTester {
 
 		// Check the form's Component (should have 6 components, which
 		// corresponds to the to ICEProteusInput.xml file
-		assertEquals(form.getNumberOfComponents(), 1);
+		assertEquals(form.getNumberOfComponents(), 4);
 	}
 
 	/**
@@ -223,6 +222,15 @@ public class PROTEUSModelTester {
 	@Test
 	public void checkProcess() {
 
+		String[] fileLines = { "!Required Options ", "option=invalue",
+				"option2=4", "tabbedOption=tabbedValue",
+				"spacedOption=spacedValue", "section2val=value",
+				"anotherVar=anotherValue", "", "!First Section ",
+				"section1var=value", "newvariable=newvalue",
+				"newTabbedOption=tabbedValue", "newSpacedOption=spacedValue",
+				"", "!Second Section ", "section2var=nothing", "",
+				"!Third Section ", "section3var=nope", ""};
+
 		// Create a model to test
 		PROTEUSModel model = new PROTEUSModel(project);
 
@@ -234,8 +242,7 @@ public class PROTEUSModelTester {
 
 		// Verify the PROTEUS output file was created
 		IFile outputFile;
-		outputFile = project.getFile("PROTEUS_Model_" + model.getId()
-				+ ".inp");
+		outputFile = project.getFile("PROTEUS_Model_" + model.getId() + ".inp");
 		assertTrue(outputFile.exists());
 
 		// Read in the contents of the output file, and verify it's not null
@@ -250,29 +257,25 @@ public class PROTEUSModelTester {
 		// Convert file contents from InputStream to String
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				fileContents));
-		StringBuilder builder = new StringBuilder();
 		String line;
+		int numberLines = 0;
 		try {
 			while ((line = reader.readLine()) != null) {
-				builder.append(line);
+				assertEquals(line, fileLines[numberLines]);
+				++numberLines;
 			}
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		// Split the file contents at every instance of "\t!" to represent one
-		// line. It would be more logical to use every instance of a "\n" to
-		// represent 1 line, but newline characters seem to get fudged up in the
-		// InputStream. Using "\t!" instead will result in a String array with
-		// (n + 1) elements, where n is the number of lines in the file.
-		String[] splitLines = (builder.toString()).split("\t!");
+		assertEquals(20, numberLines);
 
 		// Verify there are as many lines in the PROTEUS file as there are
 		// entries
-		// in the model's 6 DataComponents (6 components x 5 entries each = 30)
 		Form form = model.getForm();
-		assertEquals(1, form.getNumberOfComponents());
+		assertEquals(4, form.getNumberOfComponents());
+
 	}
 
 	/**
@@ -289,5 +292,5 @@ public class PROTEUSModelTester {
 			fail("PROTEUS Model Tester: Error!  Could not clean up project space");
 		}
 	}
-	
+
 }

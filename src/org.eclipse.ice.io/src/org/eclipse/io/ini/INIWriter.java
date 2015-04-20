@@ -56,7 +56,8 @@ public class INIWriter implements IWriter {
 	/**
 	 * Regex to match the section headers
 	 */
-	private Pattern sectionPattern = Pattern.compile("\\[.*\\]");
+	private String sectionPrefix = "[";
+	private String sectionPostfix = "]";
 	
 	/**
 	 * Regex to match the variable assignments.  The default
@@ -129,7 +130,7 @@ public class INIWriter implements IWriter {
 					// Otherwise, just leave it blank
 					// Then set the indentation required accordingly
 					if (compName != "Default Section") {
-						tableContents = "[" + compName + "]" + newLine;
+						tableContents = sectionPrefix + compName + sectionPostfix + newLine;
 						currIndent = sectionIndent;
 					} else {
 						tableContents = "";
@@ -171,7 +172,18 @@ public class INIWriter implements IWriter {
 	public void setSectionIndentation(String indent) {
 		sectionIndent = indent;
 	}
-	
+
+	/**
+	 * Allows the changing of the syntax for section 
+	 * headers.
+	 * 
+	 * @param regex: A regular expression to match to 
+	 *               section headers
+	 */
+	public void setSectionPattern(String prefix, String postfix) {
+		sectionPrefix = prefix;
+		sectionPostfix = postfix;
+	}
 	
 	/**
 	 * Change the string used to separate variables from values

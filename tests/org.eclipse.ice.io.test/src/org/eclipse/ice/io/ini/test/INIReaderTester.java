@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.io.ini.INIReader;
@@ -111,9 +112,13 @@ public class INIReaderTester {
 		String separator = System.getProperty("file.separator");
 		String filePath = System.getProperty("user.home") + separator + "ICETests" 
 				+ separator + "ioTesterWorkspace" + separator + "example.ini";
+		String templatePath = System.getProperty("user.home") + separator + "ICETests" 
+				+ separator + "ioTesterWorkspace" + separator + "example_template.ini";		
 		IPath fileIPath = new Path(filePath);
+		IPath templateIPath = new Path(templatePath);
 		IFile inputFile = project.getFile("example.ini");
-
+		IFile templateFile = project.getFile("example_template.ini");
+		
 		// Create an IPSReader to test
 		INIReader reader = new INIReader("!");
 		assertNotNull(reader);
@@ -131,10 +136,32 @@ public class INIReaderTester {
 		assertEquals(form.getComponents().size(), 3);
 
 		ArrayList<Component> sections = form.getComponents();
-		for (Component section : sections) {
-			DataComponent data = (DataComponent) section;
-			assertEquals(data.retrieveAllEntries().size(), 4);
-		}
+		assertEquals(((DataComponent)sections.get(0)).retrieveAllEntries().size(), 4);
+		assertEquals(((DataComponent)sections.get(1)).retrieveAllEntries().size(), 1);
+		assertEquals(((DataComponent)sections.get(2)).retrieveAllEntries().size(), 2);
+		
+		
+		// Test setting the template
+		reader.addTemplateType("template", templateFile);
+		reader.setTemplateType("template");
+		
+		// Test reading into the form using the template
+		form = reader.read(inputFile);
+		assertNotNull(form);
+		assertEquals(form.getComponents().size(), 4);
+		
+		sections = form.getComponents();
+		for (int i = 0 ; i < sections.size(); i++) {
+			System.out.println((sections.get(i)).getName());
+			for (Entry each : ((DataComponent)sections.get(i)).retrieveAllEntries()) {
+				System.out.println("    " + each.getName() + " = " + each.getValue());
+			}
+		}	
+		assertEquals(((DataComponent)sections.get(0)).retrieveAllEntries().size(), 5);
+		assertEquals(((DataComponent)sections.get(1)).retrieveAllEntries().size(), 4);
+		assertEquals(((DataComponent)sections.get(2)).retrieveAllEntries().size(), 1);		
+		assertEquals(((DataComponent)sections.get(3)).retrieveAllEntries().size(), 1);			
+		
 		
 		// Okay good job
 		return;
