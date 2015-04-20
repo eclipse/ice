@@ -190,6 +190,28 @@ public class VisItVizService extends AbstractVizService {
 	public IPlot createPlot(URI file) throws Exception {
 		VisItPlot plot = null;
 
+		// If the file is a valid URI and the file type is not supported,
+		// throw an Exception.
+		if (file != null) {
+			String fullPath = file.getPath();
+			int index = fullPath.lastIndexOf(".");
+			if (index != -1) {
+				String ext = fullPath.substring(index + 1);
+				try {
+					if (!"e".equals(ext) && !"silo".equals(ext)) {
+						throw new Exception("VisItVizService error: "
+								+ "File type not supported.");
+					}
+				} catch (IndexOutOfBoundsException e) {
+					throw new Exception("VisItVizService error: "
+							+ "File type not found.");
+				}
+			} else {
+				throw new Exception("VisItVizService error: "
+						+ "File extension not found.");
+			}
+		}
+
 		// Create the plot.
 		plot = new VisItPlot(this);
 		// Associate the plot with the connection.
