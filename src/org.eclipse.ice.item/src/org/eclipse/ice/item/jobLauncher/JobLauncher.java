@@ -637,12 +637,20 @@ public class JobLauncher extends Item {
 		// Check the components and fail if they are null
 		if (fileData == null) {
 			return FormStatus.InfoError;
+		} else {
+			// Make sure if there are any additional input files, that they are
+			// all valid too
+			for (Entry entry : fileData.retrieveAllEntries()) {
+				if (entry.getValue() == null || entry.getValue().isEmpty()) {
+					System.out.println("JobLauncher Error: All input file "
+							+ "entries must be set!");
+					return FormStatus.InfoError;
+				}
+			}
 		}
 		// Allocate the map
 		actionDataMap = new Hashtable<String, String>();
 
-		// Get the input file's name
-		fileData = (DataComponent) form.getComponent(1);
 		// Write the file name for debug info
 		for (String entryName : inputFileNameMap.keySet()) {
 			fileEntry = fileData.retrieveEntry(entryName);
