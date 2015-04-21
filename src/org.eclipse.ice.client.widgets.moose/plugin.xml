@@ -167,12 +167,12 @@
       <command
             defaultHandler="org.eclipse.ice.client.widgets.moose.NewKernelHandler"
             id="org.eclipse.ice.client.widgets.moose.newkernel"
-            name="New MOOOSE Kernel">
+            name="Kernel">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
-      <menuContribution
+      <!--<menuContribution
             locationURI="popup:common.new.menu?after=new">
          <command
                commandId="org.eclipse.ice.client.widgets.moose.newkernel"
@@ -188,15 +188,15 @@
                </with>
             </visibleWhen>
          </command>
-      </menuContribution>
+      </menuContribution>-->
       <menuContribution
             locationURI="popup:common.new.menu?after=new">
          <menu
-               id="org.eclipse.ui.navigator.ProjectExplorer.newkernel"
-               label="New MOOSE Kernel">
+               id="org.eclipse.ui.navigator.ProjectExplorer.newmooseobject"
+               label="MOOSE Object">
             <command
                   commandId="org.eclipse.ice.client.widgets.moose.newkernel"
-                  label="New MOOSE Kernel"
+                  label="Kernel"
                   style="push">
             </command>
          </menu>

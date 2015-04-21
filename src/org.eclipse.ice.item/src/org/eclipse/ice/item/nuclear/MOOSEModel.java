@@ -118,6 +118,8 @@ public class MOOSEModel extends Item {
 	 */
 	@XmlTransient
 	protected String meshFileName;
+	
+	private TreeComposite meshBlock;
 
 	/**
 	 * An ArrayList of TreeComposites, constructed from the top-level children
@@ -252,6 +254,7 @@ public class MOOSEModel extends Item {
 
 		// Add the default dummy text to the list of available apps
 		mooseApps = new ArrayList<String>();
+		mooseApps.add("None");
 
 		// Get the list of MOOSE configuration files available to ICE, if
 		// possible, before creating the app Entry.
@@ -284,11 +287,8 @@ public class MOOSEModel extends Item {
 
 		// Only load up the Entry if some MOOSE apps were discovered.
 		if (!mooseApps.isEmpty()) {
-			// Set the default as null, which will default to "MOOSE app..."
-			// from the Entry's list of allowed values when Entry.getValue() is
-			// called. This is done intentionally to force the user to select an
-			// app when importing an Item
-			loadedApp = null;
+			// Set the default to "none", forcing the user to make a selection.
+			loadedApp = mooseApps.get(0);
 			// Create the MOOSE application Entry. Add all of the files if any
 			// were found.
 			mooseAppEntry = new Entry() {
@@ -451,6 +451,8 @@ public class MOOSEModel extends Item {
 		// Get the MOOSE file information, if available
 		mooseFileComponent = (DataComponent) preparedForm.getComponent(1);
 		if (mooseFileComponent != null) {
+			
+			// Get the entry that stores the currently-selected MOOSE app name
 			Entry mooseSpecFileEntry = mooseFileComponent
 					.retrieveEntry("MOOSE-Based Application");
 
@@ -458,8 +460,11 @@ public class MOOSEModel extends Item {
 			// currently loaded.
 			if (mooseSpecFileEntry != null) {
 
-				if (loadedApp == null
-						|| !loadedApp.equals(mooseSpecFileEntry.getValue())) {
+				// Get the current value of the MOOSE app Entry and determine
+				String mooseSpecValue = mooseSpecFileEntry.getValue();
+				if (loadedApp == null ||
+						(!mooseSpecValue.equalsIgnoreCase("none") 
+							&& !loadedApp.equals(mooseSpecValue))) {
 
 					// Get the app name
 					loadedApp = mooseSpecFileEntry.getValue();
@@ -1257,9 +1262,9 @@ public class MOOSEModel extends Item {
 							.getDataNodes().get(0);
 					Entry meshEntry = dataComp.retrieveEntry("file");
 
-					// Convert to a File type Entry
+					// Convert the Entry to a "File" type Entry
 					if (meshEntry != null) {
-						convertMeshEntry(meshEntry);
+						convertMeshEntry(meshEntry);						
 					}
 				}
 			}
@@ -1368,33 +1373,34 @@ public class MOOSEModel extends Item {
 		ICEResource mesh = null;
 
 		// Try to find the Mesh block on the TreeComposite
-		TreeComposite meshTree = findMeshBlock();
+		if (meshBlock == null) {
+			meshBlock = findMeshBlock();
+		}
 
-		if (meshTree != null) {
+		if (meshBlock != null) {
 
 			// Try to find the Entry with the mesh filename
-			DataComponent meshBlock = (DataComponent) meshTree.getDataNodes()
-					.get(0);
-			Entry meshEntry = meshBlock.retrieveEntry("file");
-
-			// Convert the Mesh entry to a File Entry
+			DataComponent meshDataComp = 
+					(DataComponent) meshBlock.getDataNodes().get(0);
+			Entry meshEntry = meshDataComp.retrieveEntry("file");
 			if (meshEntry != null) {
+				
+				// Convert the Mesh entry to a File Entry
 				convertMeshEntry(meshEntry);
+				
+				// Create an ICEResource from the entry
+				if (!meshEntry.getValue().isEmpty()) {
+					mesh = getResource(meshEntry);
+				}
 			}
-
-			if (meshEntry != null && !meshEntry.getValue().isEmpty()) {
-				// Create an ICEResource from the entry and stop
-				mesh = getResource(meshEntry);
-			}
-
 		}
 
 		return mesh;
 	}
 
 	/**
-	 * This method convert the mesh "file" Entry into a File Entry and registers
-	 * the Form as a listener.
+	 * This method convert the mesh "file" Entry into a Entry with 
+	 * AllowedValueType.File and registers the Form as a listener.
 	 * 
 	 * @param meshEntry
 	 *            The "file" Entry on the Mesh TreeComposite
@@ -1500,20 +1506,41 @@ public class MOOSEModel extends Item {
 		// Get the DataComponent on the tree
 		DataComponent dataNode = (DataComponent) tree.getDataNodes().get(0);
 
-		// Get the "type" parameter
+		// Get the "type" and "file" parameters
 		Entry typeEntry = dataNode.retrieveEntry("type");
+		Entry fileEntry = dataNode.retrieveEntry("file");
 
-		// If it's valid, set it
-		if (typeEntry != null && typeEntry.getValue() != null
-				&& !typeEntry.getValue().isEmpty() && !tree.setType(typeName)) {
+		// Check if we're given a valid type name
+		if (typeEntry != null && typeEntry.getValue() 
+				!= null && !typeEntry.getValue().isEmpty()) {
+			typeName = typeEntry.getValue();
+		}
+		
+		// Try setting the type
+		if (typeName != null && !typeName.isEmpty() && tree.setType(typeName)) {
+			
+		} else if (tree.getName().equals("Mesh") 
+				&& fileEntry != null && fileEntry.getValue() != null 
+				&& !fileEntry.getValue().isEmpty()) {
+			// Otherwise try setting the Mesh type "FileMesh", if appropriate
+			tree.setType("FileMesh");
+		}
+		
+		// Lastly, if this is the Mesh block, set a listener on its type
+		if (tree.getName().equals("Mesh")) {
+			tree.register(this);
 		}
 
 		return;
 	}
 
 	/**
-	 * This method is intended primarily to update the ResourceComponet with a
-	 * new VizResource if the Mesh block's "file" Entry has changed.
+	 * This method updates the ResourceComponet with a new VizResource if the 
+	 * Mesh block's "file" Entry has changed. It is also used to correctly 
+	 * display the "file" Entry as commented/uncommented depending on the Mesh 
+	 * block's currently set type. Lastly, it will listen to updates from the
+	 * Mesh's active data node in case a new "file" Entry is ever manually
+	 * added (in which case it will register the new Entry with the form).
 	 * 
 	 * @param component
 	 *            The component that triggered an update
@@ -1521,14 +1548,101 @@ public class MOOSEModel extends Item {
 	@Override
 	public void update(IUpdateable component) {
 
-		// If the mesh file name is different, update the ResourceComponent
-		if (component instanceof Entry
-				&& (meshFileName == null || meshFileName.isEmpty() || !((Entry) component)
-						.getValue().equals(meshFileName))) {
-			try {
-				updateMeshResource();
-			} catch (IOException e) {
-				e.printStackTrace();
+		// If the mesh file name is different, update the ResourceComponent and
+		// the Mesh block type
+		if (component instanceof Entry) {
+			
+			Entry fileEntry = (Entry) component;
+			if (meshFileName == null || meshFileName.isEmpty()
+					|| !fileEntry.getValue().equals(meshFileName)) {
+				try {
+					// Update the mesh resource
+					updateMeshResource();
+					
+					// Also change the file type on the Mesh block to "FileEntry"
+					if (meshBlock == null ) {
+						meshBlock = (AdaptiveTreeComposite) findMeshBlock();
+					}
+					DataComponent meshDataComp = 
+							(DataComponent) meshBlock.getActiveDataNode();
+					if (meshDataComp != null 
+							&& meshDataComp.retrieveEntry("file") != null) {
+						String meshFileName = 
+								meshDataComp.retrieveEntry("file").getValue();
+						if (!meshFileName.isEmpty() 
+								&& ((AdaptiveTreeComposite) meshBlock).getType() == null) {
+							((AdaptiveTreeComposite) meshBlock).setType("FileMesh");
+						}
+					}
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		// If the Mesh type has changed, evaluate if the "file" parameter should
+		// be commented/uncommented
+		} else if (component instanceof AdaptiveTreeComposite 
+				&& component.getName().equals("Mesh")) {
+			
+			AdaptiveTreeComposite meshBlock = (AdaptiveTreeComposite) component;	
+			if (meshBlock.getActiveDataNode() != null) {
+				
+				// Get the "file" Entry/parameter
+				DataComponent dataComp = 
+						(DataComponent) meshBlock.getActiveDataNode();
+				Entry fileParam = dataComp.retrieveEntry("file");
+				
+				if (fileParam != null) {
+					
+					// Get the type and tag
+					String type = meshBlock.getType();
+					String fileTag = fileParam.getTag();
+				
+					// Set the tag and required flag correctly
+					if (!type.equals("FileMesh")
+							&& (fileTag.equalsIgnoreCase("true")) 
+								|| fileTag.equalsIgnoreCase("new_parameter")) {
+						// Comment out the "file" parameter
+						fileParam.setTag("false");	
+						fileParam.setRequired(false);
+					} else if (type.equals("FileMesh")
+							&& fileTag.equalsIgnoreCase("false")) {
+						// Enable the "file" parameter
+						fileParam.setTag("true");
+						fileParam.setRequired(true);
+					} else if (!type.equals("FileMesh")) {
+						fileParam.setRequired(false);
+					} else {
+						fileParam.setRequired(true);
+					}
+				}
+			}
+		
+		// If a "file" Entry is added, make sure everything is hooked up
+		// correctly to the mesh
+		} else if (component instanceof DataComponent) {
+			
+			DataComponent dataComp = (DataComponent) component;
+			if (dataComp.retrieveEntry("file") != null) {
+				
+				Entry fileEntry = dataComp.retrieveEntry("file");
+				if (!fileEntry.getValue().isEmpty()) {
+					
+					// Re-register the fileEntry in case this "file" parameter
+					// parameter was created after the tree was set up
+					fileEntry.unregister(this);
+					fileEntry.register(this);
+					
+					// Try updating the Mesh block so the file parameter will
+					// be set correctly depending on the current block type
+					if (meshBlock == null) {
+						meshBlock = findMeshBlock();
+					}
+					if (meshBlock != null) {
+						update(meshBlock);
+					}
+				}
 			}
 		}
 

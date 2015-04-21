@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
+import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -86,6 +87,17 @@ public class VizPreferencePage extends AbstractVizPreferencePage {
 				parent));
 
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractVizPreferencePage#getVizService()
+	 */
+	@Override
+	protected IVizService getVizService() {
+		return null;
 	}
 
 }

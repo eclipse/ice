@@ -596,7 +596,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// If the selection is for RELAP-7, create a Plant View page
 		// if one doesn't already exist. If the selection is NOT for
 		// RELAP-7, delete any existing Plant View page.
-		String appStr = appsEntry.getValue();
+		String appStr = appsEntry.getValue().toLowerCase();
 		if ("relap".equals(appStr)) {
 			addPlantPage();
 		} else {

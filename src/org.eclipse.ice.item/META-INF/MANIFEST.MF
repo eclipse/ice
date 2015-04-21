@@ -23,6 +23,7 @@ Export-Package: org.eclipse.ice.item,
  org.eclipse.ice.item.jobLauncher,
  org.eclipse.ice.item.jobprofile,
  org.eclipse.ice.item.messaging,
+ org.eclipse.ice.item.model,
  org.eclipse.ice.item.nuclear
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",
  org.eclipse.core.runtime;bundle-version="3.7.0",

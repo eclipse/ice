@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -32,6 +33,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.gui.TableFormat;
 
 /**
  * This realization of the IMaterialDatabase interface manages the materials in
@@ -302,7 +308,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 			logTracker = new ServiceTracker(bundleContext,
 					LogService.class.getName(), null);
 			logger = (LogService) logTracker.getService();
-			
+
 			// Once the files are set, just call the other start operation
 			start();
 		} catch (IOException e) {
@@ -330,4 +336,44 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IElementSource#getElements()
+	 */
+	@Override
+	public EventList<Material> getElements() {
+		// Create a new event list and return it using the standard factory
+		// method for GlazedLists.
+		EventList<Material> list = GlazedLists.eventList(materialsMap.values());
+		return list;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IElementSource#getTableFormat()
+	 */
+	@Override
+	public TableFormat<Material> getTableFormat() {
+		
+		MaterialWritableTableFormat format = null;
+		
+		// Build and return a table format if there are materials in the
+		// database
+		if (!materialsMap.isEmpty()) {
+			// Get the properties off the map. Pulling back the array is more
+			// efficient than getting an iterator. I think...
+			Material[] emptyArray = {};
+			Map<String, Double> props = materialsMap.values().toArray(
+					emptyArray)[0].getProperties();
+			ArrayList<String> propNames = new ArrayList<String>(props.keySet());
+			// Initialize the table format
+			format = new MaterialWritableTableFormat(propNames);
+		}
+
+		return format;
+	}
 }

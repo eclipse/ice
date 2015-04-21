@@ -82,6 +82,9 @@ public class AbstractItemBuilderTester {
 		// Check the fake
 		IActionFactory returnedFactory = ((TestJobLauncher) item).getActionFactoryForTest();
 		assertNotNull(returnedFactory);
+		
+		// Check that setupFormWithServices was called
+		assertTrue(((TestJobLauncher) item).setupFormWithServicesWasCalled());
 
 	}
 

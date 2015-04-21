@@ -11,11 +11,21 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview;
 
+import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.ice.viz.service.PlotRender;
+import org.eclipse.ice.viz.service.connections.ConnectionPlot;
+import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.swt.widgets.Composite;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class is responsible for embedding ParaView-supported graphics inside
@@ -30,99 +40,109 @@ import org.eclipse.swt.widgets.Composite;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPlot implements IPlot {
+public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
+	/**
+	 * The ID of a view that was created in order to read the file contents.
 	 */
-	@Override
-	public Map<String, String[]> getPlotTypes() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	private int viewId = -1;
+	private int fileId = -1;
+	private int repId = -1;
+
+	/**
+	 * The default constructor.
+	 * 
+	 * @param service
+	 *            The visualization service responsible for this plot.
+	 */
+	public ParaViewPlot(ParaViewVizService vizService) {
+		super(vizService);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
-	 * java.lang.String, org.eclipse.swt.widgets.Composite)
+	 * org.eclipse.ice.viz.service.MultiPlot#createPlotRender(org.eclipse.swt
+	 * .widgets.Composite)
 	 */
 	@Override
-	public Composite draw(String category, String plotType, Composite parent)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	protected PlotRender createPlotRender(Composite parent) {
+		// Reset the view IDs so that the same view is not used twice.
+		int viewId = this.viewId;
+		int fileId = this.fileId;
+		int repId = this.repId;
+		this.viewId = -1;
+		this.fileId = -1;
+		this.repId = -1;
+		return new ParaViewPlotRender(parent, this, viewId, fileId, repId);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
+	 * @see org.eclipse.ice.viz.service.MultiPlot#getPlotTypes(java.net.URI)
 	 */
 	@Override
-	public int getNumberOfAxes() {
-		return 0;
+	protected Map<String, String[]> findPlotTypes(URI file) throws IOException,
+			Exception {
+
+		// Set up the default return value.
+		Map<String, String[]> plotTypes = new HashMap<String, String[]>();
+
+		ParaViewConnectionAdapter adapter = getParaViewConnectionAdapter();
+		VtkWebClient client = adapter.getConnection();
+
+		List<Object> args = new ArrayList<Object>();
+		JSONObject object;
+
+		// Open the file. We *have* to create a new view to open the file. Use
+		// the custom server method, as the default ParaViewWeb method uses the
+		// currently active view.
+		args.clear();
+		args.add(adapter.findRelativePath(file.getPath()));
+		object = client.call("createView", args).get();
+		viewId = object.getInt("viewId");
+		fileId = object.getInt("proxyId");
+		repId = object.getInt("repId");
+
+		// Read the contents of the file to populate the map of plot types.
+		args.clear();
+		args.add(fileId);
+		object = client.call("pv.proxy.manager.get", args).get();
+		// Get the "ui" JSON array from the proxy's properties. This contains
+		// the names of all data sets that can be displayed in the plot.
+		JSONArray array = object.getJSONArray("ui");
+
+		// Determine all plot categories and their types.
+		for (int i = 0; i < array.length(); i++) {
+			object = array.getJSONObject(i);
+
+			// Determine the plot category and its allowed types.
+			String name = object.getString("name");
+			// TODO Figure out how we should handle the meshes in the file.
+			// We do not want to set the mesh yet.
+			if (!"Meshes".equals(name)) {
+				JSONArray valueArray = object.getJSONArray("values");
+				String[] values = new String[valueArray.length()];
+				for (int j = 0; j < values.length; j++) {
+					values[j] = valueArray.getString(j);
+				}
+				// Store the plot category and types in the map.
+				plotTypes.put(name, values);
+			}
+		}
+
+		return plotTypes;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Gets the connection adapter for the associated connection cast as a
+	 * {@link ParaViewConnectionAdapter}.
 	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getProperties()
+	 * @return The associated connection adapter.
 	 */
-	@Override
-	public Map<String, String> getProperties() {
-		// TODO Auto-generated method stub
-		return null;
+	protected ParaViewConnectionAdapter getParaViewConnectionAdapter() {
+		return (ParaViewConnectionAdapter) getConnectionAdapter();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IPlot#setProperties(java.util
-	 * .Map)
-	 */
-	@Override
-	public void setProperties(Map<String, String> props) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getDataSource()
-	 */
-	@Override
-	public URI getDataSource() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getSourceHost()
-	 */
-	@Override
-	public String getSourceHost() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#isSourceRemote()
-	 */
-	@Override
-	public boolean isSourceRemote() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
 }

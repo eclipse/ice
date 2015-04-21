@@ -30,7 +30,6 @@ import org.eclipse.swtbot.eclipse.gef.finder.SWTBotGefTestCase;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,7 +53,7 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 	 * The test shell
 	 */
 	private Shell shell;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -120,10 +119,12 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		Map<String, String[]> types = plot.getPlotTypes();
 
 		// Check them
-		assertTrue(types.containsKey("line"));
-		assertTrue(types.containsKey("scatter"));
-		List<String> lineTypes = Arrays.asList(types.get("line"));
-		List<String> scatterTypes = Arrays.asList(types.get("scatter"));
+		assertTrue(types.containsKey("Line"));
+		assertTrue(types.containsKey("Scatter"));
+		assertTrue(types.containsKey("Bar"));
+		List<String> lineTypes = Arrays.asList(types.get("Line"));
+		List<String> scatterTypes = Arrays.asList(types.get("Scatter"));
+		List<String> barTypes = Arrays.asList(types.get("Bar"));
 		// Check line types
 		assertTrue(lineTypes.contains("t vs. p_x"));
 		assertTrue(lineTypes.contains("t vs. p_y"));
@@ -138,6 +139,13 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		assertTrue(scatterTypes.contains("p_x vs. p_y"));
 		assertTrue(scatterTypes.contains("p_y vs. t"));
 		assertTrue(scatterTypes.contains("p_y vs. p_x"));
+		// Check bar types
+		assertTrue(barTypes.contains("t vs. p_x"));
+		assertTrue(barTypes.contains("t vs. p_y"));
+		assertTrue(barTypes.contains("p_x vs. t"));
+		assertTrue(barTypes.contains("p_x vs. p_y"));
+		assertTrue(barTypes.contains("p_y vs. t"));
+		assertTrue(barTypes.contains("p_y vs. p_x"));
 
 		return;
 	}
@@ -213,7 +221,7 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 
 		// Grab the shell to render the plot.
 		Display.getDefault().syncExec(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				shell = new Shell(Display.getDefault(), SWT.SHELL_TRIM);
@@ -223,12 +231,12 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 				// Create a composite for it.
 				Composite testComposite = new Composite(shell, SWT.None);
 				testComposite.setLayout(new GridLayout(1, true));
-				testComposite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true,
-						true, 1, 1));
+				testComposite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL,
+						true, true, 1, 1));
 
 				// Draw the plot in the test composite.
 				try {
-					plot.draw("scatter", "t vs. p_x", testComposite);
+					plot.draw("Scatter", "t vs. p_x", testComposite);
 				} catch (Exception e) {
 					// Complain
 					e.printStackTrace();
@@ -239,21 +247,22 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 				shell.open();
 				shell.layout();
 			}
-		}); 
+		});
 
-		// Check for a few simple things just to make sure the plot area was
-		// rendered.
-		SWTBotLabel sliderLabel = bot.label("Slider: ");
-		SWTBotButton upButton = bot.button(">");
-		SWTBotButton downButton = bot.button("<");
+		// FIXME The slider should only show if the plot has multiple times
+		// defined.
+		// // Check for a few simple things just to make sure the plot area was
+		// // rendered.
+		// SWTBotLabel sliderLabel = bot.label("Slider: ");
+		// SWTBotButton upButton = bot.button(">");
+		// SWTBotButton downButton = bot.button("<");
 
 		// Cleaning up just seems like the right proper thing to do.
 		Display.getDefault().asyncExec(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				shell.dispose();
-
 			}
 		});
 		return;

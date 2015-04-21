@@ -30,55 +30,29 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class is a subclass of JFace's Dialog that renders a DataComponent to
  * the screen using the EntryComposite. It also maintains a collection of
  * IWidgetClosedListeners which it notifies when the widget is closed. It does
  * this by overriding okPressed() and cancelPressed() from the Dialog base
  * class.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ExtraInfoDialog extends Dialog {
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The DataComponent displayed for editing by this dialog.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DataComponent dataComp;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The list of IWidgetClosedListeners that should be notified when the
 	 * widget is closed.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IWidgetClosedListener> listeners;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The set of EntryComposites used to display Entries.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<EntryComposite> entryComposites;
 
@@ -88,66 +62,34 @@ public class ExtraInfoDialog extends Dialog {
 	DataComponentComposite dataComposite = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the DataComponent that is currently rendered by
 	 * the ExtraInfoDialog.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
+	 * @return
 	 *         The DataComponent
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public DataComponent getDataComponent() {
-		// begin-user-code
-		// TODO Auto-generated method stub
 		return dataComp;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the DataComponent that the dialog should render.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param comp
-	 *            <p>
 	 *            The DataComponent
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setDataComponent(DataComponent comp) {
-		// begin-user-code
-
 		dataComp = comp;
-
 		return;
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Constructor
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parentShell
-	 *            <p>
 	 *            The shell into which the dialog should be rendered.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ExtraInfoDialog(Shell parentShell) {
-		// begin-user-code
 
 		// Call the Dialog constructor
 		super(parentShell);
@@ -159,39 +101,26 @@ public class ExtraInfoDialog extends Dialog {
 		entryComposites = new ArrayList<EntryComposite>();
 
 		return;
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets a listener, an IWidgetClosedListener, that is waiting
 	 * to be notified with the widget is closed and whether it was closed OK or
 	 * if it was cancelled.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param listener
-	 *            <p>
 	 *            An IWidgetClosedListener
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setCloseListener(IWidgetClosedListener listener) {
-		// begin-user-code
-
 		// Add the widget to the list so long as it is not null
 		if (listener != null) {
 			listeners.add(listener);
 		}
-		// end-user-code
 	}
 
-	/**
-	 * This operation configured the title of the shell to be the name of the
-	 * data component.
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
 	 */
 	@Override
 	protected void configureShell(Shell shell) {
@@ -199,8 +128,9 @@ public class ExtraInfoDialog extends Dialog {
 		shell.setText(dataComp.getName());
 	}
 
-	/**
-	 * Overridden createDialogArea to create the client area of the dialog
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
@@ -236,8 +166,9 @@ public class ExtraInfoDialog extends Dialog {
 		return swtComposite;
 	}
 
-	/**
-	 * Overridden okPressed to notify the listeners
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
 	@Override
 	protected void okPressed() {
@@ -262,8 +193,9 @@ public class ExtraInfoDialog extends Dialog {
 
 	}
 
-	/**
-	 * Overridden cancelPressed to notify the listeners
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
 	 */
 	@Override
 	protected void cancelPressed() {

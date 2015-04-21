@@ -6,7 +6,9 @@ Bundle-Version: 2.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/MaterialDatabase.xml
-Import-Package: org.eclipse.core.runtime;version="3.4.0",
+Import-Package: ca.odell.glazedlists,
+ ca.odell.glazedlists.gui,
+ org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.form,
  org.osgi.framework;version="1.7.0",

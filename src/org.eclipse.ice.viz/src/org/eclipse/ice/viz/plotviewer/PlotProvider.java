@@ -13,6 +13,7 @@
 package org.eclipse.ice.viz.plotviewer;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -58,11 +59,7 @@ public class PlotProvider {
 	 * Default constructor
 	 */
 	public PlotProvider() {
-		plotTitle = null;
-		seriesMap = new TreeMap<Double, ArrayList<SeriesProvider>>();
-		xAxisTitle = "X-Axis";
-		yAxisTitle = "Y-Axis";
-		timeUnits = null;
+		this(null);
 	}
 
 	/**
@@ -82,16 +79,40 @@ public class PlotProvider {
 	 * @param time
 	 * @param newSeries
 	 */
-	public void addSeries(Double time, SeriesProvider newSeries) {
-		// Checks if a series is added to a new time and initializes an
-		// arraylist
-		if (!seriesMap.containsKey(time)) {
-			seriesMap.put(time, new ArrayList<SeriesProvider>());
-			seriesMap.get(time).add(newSeries);
-		} else {
-			// Adds to a pre-existing arraylist at the specified time
-			seriesMap.get(time).add(newSeries);
+	public void addSeries(double time, SeriesProvider newSeries) {
+		// Only add non-null SeriesProviders.
+		if (newSeries != null) {
+			ArrayList<SeriesProvider> seriesProviders = seriesMap.get(time);
+			// Create an entry in the Map of SeriesProviders if the time is new.
+			if (seriesProviders == null) {
+				seriesProviders = new ArrayList<SeriesProvider>();
+				seriesMap.put(time, seriesProviders);
+			}
+			seriesProviders.add(newSeries);
 		}
+		return;
+	}
+
+	/**
+	 * Removes an existing SeriesProvider from the specified time. Does nothing
+	 * if the arguments are invalid.
+	 * 
+	 * @param time
+	 *            The time at which the series should be removed.
+	 * @param oldSeries
+	 *            The series that should be removed.
+	 */
+	public void removeSeries(double time, SeriesProvider oldSeries) {
+		List<SeriesProvider> seriesProviders = seriesMap.get(time);
+		if (seriesProviders != null) {
+			// Remove the old series. If it was removed and the list of
+			// SeriesProviders is now empty, remove the time and its now-empty
+			// list from the seriesMap.
+			if (seriesProviders.remove(oldSeries) && seriesProviders.isEmpty()) {
+				seriesMap.remove(time);
+			}
+		}
+		return;
 	}
 
 	/**
@@ -100,12 +121,8 @@ public class PlotProvider {
 	 * @param time
 	 * @return
 	 */
-	public ArrayList<SeriesProvider> getSeriesAtTime(Double time) {
-		if (seriesMap.containsKey(time)) {
-			return seriesMap.get(time);
-		} else {
-			return null;
-		}
+	public ArrayList<SeriesProvider> getSeriesAtTime(double time) {
+		return seriesMap.get(time);
 	}
 
 	/**
