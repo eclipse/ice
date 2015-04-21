@@ -182,7 +182,7 @@ public class ForkStorkHandler extends AbstractHandler {
 			e.printStackTrace();
 		}
 
-		try {
+		/*try {
 			IMakeTargetManager manager = MakeCorePlugin.getDefault()
 					.getTargetManager();
 			String[] ids = manager.getTargetBuilders(cProject);
@@ -198,7 +198,7 @@ public class ForkStorkHandler extends AbstractHandler {
 			manager.addTarget(cProject, target);
 		} catch (CoreException e) {
 			e.printStackTrace();
-		}
+		}*/
 		return null;
 
 	}

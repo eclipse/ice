@@ -161,4 +161,46 @@
          </page>
       </extension>
       
+      
+      <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.ice.client.widgets.moose.NewKernelHandler"
+            id="org.eclipse.ice.client.widgets.moose.newkernel"
+            name="New MOOOSE Kernel">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:common.new.menu?after=new">
+         <command
+               commandId="org.eclipse.ice.client.widgets.moose.newkernel"
+               label="New MOOSE Kernel"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeWorkbenchWindow.activePerspective">
+                  <equals
+                        value="org.eclipse.cdt.ui.CPerspective">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:common.new.menu?after=new">
+         <menu
+               id="org.eclipse.ui.navigator.ProjectExplorer.newkernel"
+               label="New MOOSE Kernel">
+            <command
+                  commandId="org.eclipse.ice.client.widgets.moose.newkernel"
+                  label="New MOOSE Kernel"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+      
 </plugin>
