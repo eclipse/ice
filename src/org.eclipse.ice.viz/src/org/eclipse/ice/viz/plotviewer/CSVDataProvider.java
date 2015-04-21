@@ -277,9 +277,10 @@ public class CSVDataProvider implements IDataProvider {
 			// Get the features at the selected time
 			ArrayList<String> featuresAtSelectedTime = this
 					.getFeaturesAtCurrentTime();
-			// Remove the independent variable from the features
-			featuresAtSelectedTime.remove(featuresAtSelectedTime
-					.indexOf(feature));
+			// Do not remove the independent variable feature from the list of
+			// features. Effectively, this means we can plot it against itself,
+			// but it also means the position arrays for each CSVData share the
+			// same order (based on the list of independent variables).
 			for (String featureIndex : featuresAtSelectedTime) {
 				ArrayList<IData> independentVar = this
 						.getDataAtCurrentTime(featureIndex);
@@ -290,10 +291,9 @@ public class CSVDataProvider implements IDataProvider {
 							.addPosition(independentVarData.get(i).getValue());
 				}
 			}
-			// remove the independent variable feature
-			dataSet.get(time).remove(feature);
-
-			// Need to clean up that ArrayList<IData> independentVarData
+			// Do not remove the independent variable feature from the map of
+			// data, else it will not be found when plotting another
+			// "independent" variable against it.
 		}
 		// Add to the independentVar list
 		if (!independentVars.contains(feature)) {

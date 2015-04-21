@@ -12,7 +12,6 @@
 package org.eclipse.ice.viz.service.csv;
 
 import java.io.File;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -155,9 +154,6 @@ public class CSVPlot implements IPlot {
 		List<String> variables = baseProvider.getFeatureList();
 		int nVariables = variables.size();
 
-		// FIXME Remove this and set the independent variables elsewhere.
-		baseProvider.setFeatureAsIndependentVariable(variables.get(0));
-
 		// Create a list to hold all available series. Each combination of
 		// feature names (except for feature vs. itself) should be an allowed
 		// series. Populate the list with the series names, which should be
@@ -171,6 +167,11 @@ public class CSVPlot implements IPlot {
 					plotTypes.add(type);
 				}
 			}
+
+			// Mark the variable as independent. The order in which they are
+			// marked independent does not really matter, since all are
+			// "independent" in the end.
+			baseProvider.setFeatureAsIndependentVariable(variableY);
 		}
 
 		// Put the types in the map of types. Line, scatter, and bar plots can
@@ -294,7 +295,7 @@ public class CSVPlot implements IPlot {
 			}
 
 			// Reset the plot time to the initial time.
-			Double plotTime = baseProvider.getTimes().get(0);
+			double plotTime = baseProvider.getTimes().get(0);
 			// FIXME Won't this affect all of the drawn plots?
 			baseProvider.setTime(plotTime);
 
@@ -475,9 +476,9 @@ public class CSVPlot implements IPlot {
 		 */
 		public void addSeries(String category, String type) {
 			// Reset the plot time to the initial time.
-			Double plotTime = baseProvider.getTimes().get(0);
+			double plotTime = dataProvider.getTimes().get(0);
 			// FIXME Won't this affect all of the drawn plots?
-			baseProvider.setTime(plotTime);
+			dataProvider.setTime(plotTime);
 
 			// Get the axes to plot
 			String[] axes = type.split(" ");
@@ -522,7 +523,7 @@ public class CSVPlot implements IPlot {
 		public void removeSeries(SeriesProvider series) {
 			ActionTree tree = seriesMap.remove(series);
 			if (tree != null) {
-				double plotTime = baseProvider.getTimes().get(0);
+				double plotTime = dataProvider.getTimes().get(0);
 				removeSeriesTree.remove(tree);
 				plotProvider.removeSeries(plotTime, series);
 			}
@@ -533,7 +534,7 @@ public class CSVPlot implements IPlot {
 		 * Clears all series from the drawn plot.
 		 */
 		public void clear() {
-			double plotTime = baseProvider.getTimes().get(0);
+			double plotTime = dataProvider.getTimes().get(0);
 			for (Entry<SeriesProvider, ActionTree> e : seriesMap.entrySet()) {
 				plotProvider.removeSeries(plotTime, e.getKey());
 			}
