@@ -752,14 +752,18 @@ public class Core extends Application implements ICore {
 				if (componentContext != null) {
 					bundle = componentContext.getBundleContext().getBundle();
 				} else {
+					System.out
+							.println("ICore Message: ICE Core ComponentContext was null! No web service started.");
 					return;
 				}
-				
+
 				// Make sure we got a valid bundle
 				if (bundle == null) {
+					System.out
+							.println("ICore Message: ICE Core Bundle was null! No web service started.");
 					return;
 				}
-				
+
 				// Find the root location and the jaas_config file
 				URL resourceURL = bundle.getEntry("");
 				URL configFileURL = bundle.getEntry("jaas_config.txt");
@@ -1043,10 +1047,10 @@ public class Core extends Application implements ICore {
 		String retVal = null;
 
 		// Print the message if debugging is enabled
-		//if (debuggingEnabled) {
-			System.out.println("Core Message: "
-					+ "Update received with message: " + message);
-		//}
+		// if (debuggingEnabled) {
+		System.out.println("Core Message: " + "Update received with message: "
+				+ message);
+		// }
 
 		// Only process the message if it exists and is not empty
 		if (message != null && !message.isEmpty() && message.contains("=")) {

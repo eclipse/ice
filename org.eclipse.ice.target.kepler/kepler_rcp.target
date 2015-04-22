@@ -1,40 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="kepler_rcp" sequenceNumber="50">
+<?pde version="3.8"?><target name="kepler_rcp" sequenceNumber="54">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.swtbot.eclipse.test.junit.feature.group" version="2.2.1.201402241301"/>
-<unit id="org.apache.log4j.source" version="1.2.15.v201012070815"/>
-<unit id="org.hamcrest.core" version="1.3.0.v201303031735"/>
-<unit id="org.apache.log4j" version="1.2.15.v201012070815"/>
-<unit id="org.eclipse.swtbot.forms.feature.group" version="2.2.1.201402241301"/>
-<unit id="org.eclipse.swtbot.eclipse.gef.feature.group" version="2.2.1.201402241301"/>
-<unit id="org.hamcrest.library.source" version="1.3.0.v201305281000"/>
-<unit id="org.hamcrest.library" version="1.3.0.v201305281000"/>
-<unit id="org.eclipse.swtbot.feature.group" version="2.2.1.201402241301"/>
-<unit id="org.eclipse.swtbot.ide.feature.group" version="2.2.1.201402241301"/>
-<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.2.1.201402241301"/>
-<unit id="org.eclipse.swtbot.generator.feature.feature.group" version="2.2.1.201402241301"/>
-<unit id="org.hamcrest.core.source" version="1.3.0.v201303031735"/>
-<repository location="http://download.eclipse.org/technology/swtbot/releases/latest/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.ptp.etfw.tau.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.debug.sdm.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.pldt.fortran.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.etfw.tau.fortran.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.sci.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.sdk.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.pldt.upc.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.fortran.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.rm.jaxb.contrib.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.remote.rse.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.gem.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.rdt.editor.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.rdt.sync.fortran.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.rdt.xlc.feature.group" version="7.0.5.201404110147"/>
-<unit id="org.eclipse.ptp.rdt.feature.group" version="7.0.5.201404110147"/>
-<repository location="http://download.eclipse.org/tools/ptp/updates/kepler"/>
+<unit id="org.eclipse.nebula.feature.feature.group" version="1.0.0.201409040043"/>
+<repository location="http://download.eclipse.org/technology/nebula/archives/Q32014/release/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.cdt.feature.group" version="8.3.0.201402142303"/>
@@ -70,8 +39,13 @@
 <repository location="http://download.eclipse.org/releases/kepler"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.nebula.feature.feature.group" version="1.0.0.201409040043"/>
-<repository location="http://download.eclipse.org/technology/nebula/archives/Q32014/release/"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.feature.feature.group" version="1.3.0.201503261201"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature.feature.group" version="1.3.0.201503261201"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.source.feature.feature.group" version="1.3.0.201503261201"/>
+<unit id="org.eclipse.nebula.widgets.nattable.core.source.feature.feature.group" version="1.3.0.201503261201"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.source.feature.feature.group" version="1.3.0.201503261201"/>
+<unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="1.3.0.201503261201"/>
+<repository location="http://download.eclipse.org/nattable/releases/1.3.0/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="ca.odell.glazedlists" version="1.9.0.v201303080712"/>
@@ -83,17 +57,43 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.feature.feature.group" version="1.3.0.201503261201"/>
-<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature.feature.group" version="1.3.0.201503261201"/>
-<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.source.feature.feature.group" version="1.3.0.201503261201"/>
-<unit id="org.eclipse.nebula.widgets.nattable.core.source.feature.feature.group" version="1.3.0.201503261201"/>
-<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.source.feature.feature.group" version="1.3.0.201503261201"/>
-<unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="1.3.0.201503261201"/>
-<repository location="http://download.eclipse.org/nattable/releases/1.3.0/repository/"/>
+<unit id="org.eclipse.ptp.etfw.tau.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.debug.sdm.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.pldt.fortran.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.etfw.tau.fortran.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.sci.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.sdk.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.pldt.upc.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.fortran.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.rm.jaxb.contrib.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.remote.rse.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.gem.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.rdt.editor.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.rdt.sync.fortran.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.rdt.xlc.feature.group" version="7.0.5.201404110147"/>
+<unit id="org.eclipse.ptp.rdt.feature.group" version="7.0.5.201404110147"/>
+<repository location="http://download.eclipse.org/tools/ptp/updates/kepler"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.mylyn.github.feature.feature.group" version="3.2.0.201312181205-r"/>
 <repository location="http://download.eclipse.org/releases/kepler"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.swtbot.eclipse.test.junit.feature.group" version="2.2.1.201402241301"/>
+<unit id="org.apache.log4j.source" version="1.2.15.v201012070815"/>
+<unit id="org.hamcrest.core" version="1.3.0.v201303031735"/>
+<unit id="org.apache.log4j" version="1.2.15.v201012070815"/>
+<unit id="org.eclipse.swtbot.forms.feature.group" version="2.2.1.201402241301"/>
+<unit id="org.eclipse.swtbot.eclipse.gef.feature.group" version="2.2.1.201402241301"/>
+<unit id="org.hamcrest.library.source" version="1.3.0.v201305281000"/>
+<unit id="org.hamcrest.library" version="1.3.0.v201305281000"/>
+<unit id="org.eclipse.swtbot.feature.group" version="2.2.1.201402241301"/>
+<unit id="org.eclipse.swtbot.ide.feature.group" version="2.2.1.201402241301"/>
+<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.2.1.201402241301"/>
+<unit id="org.eclipse.swtbot.generator.feature.feature.group" version="2.2.1.201402241301"/>
+<unit id="org.hamcrest.core.source" version="1.3.0.v201303031735"/>
+<repository location="http://download.eclipse.org/technology/swtbot/releases/latest/"/>
 </location>
 </locations>
 </target>

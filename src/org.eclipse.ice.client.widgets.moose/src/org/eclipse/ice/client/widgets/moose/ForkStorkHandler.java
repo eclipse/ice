@@ -25,6 +25,7 @@ import java.util.Map;
 import org.eclipse.cdt.core.CCProjectNature;
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.dom.IPDOMManager;
+import org.eclipse.cdt.core.index.IIndex;
 import org.eclipse.cdt.core.index.IIndexManager;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICProject;
@@ -69,6 +70,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
@@ -200,15 +202,42 @@ public class ForkStorkHandler extends AbstractHandler {
 		}
 
 		// Pull this into the Project Explorer as CDT project!
+		String projectTypeString = "cdt.managedbuild.target.macosx.so";
 		IProject appProject = root.getProject(appName), cProject = null;
 		IWorkspaceDescription workspaceDesc = workspace.getDescription();
 		workspaceDesc.setAutoBuilding(false);
 		try {
+
+			/*
+			 * 
+			 * 
+			 * PROJECT TYPE:
+			 * org.eclipse.linuxtools.cdt.autotools.core.projectType PROJECT
+			 * TYPE: cdt.managedbuild.target.gnu.cross.exe PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.cross.so PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.cross.lib PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.exe PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.so PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.lib PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.cygwin.exe PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.cygwin.so PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.cygwin.lib PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.mingw.exe PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.mingw.so PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.mingw.lib PROJECT TYPE:
+			 * cdt.managedbuild.target.macosx.exe PROJECT TYPE:
+			 * cdt.managedbuild.target.macosx.so PROJECT TYPE:
+			 * cdt.managedbuild.target.macosx.lib PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.solaris.exe PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.solaris.so PROJECT TYPE:
+			 * cdt.managedbuild.target.gnu.solaris.lib
+			 */
 			workspace.setDescription(workspaceDesc);
 
 			IProjectDescription description = workspace
 					.newProjectDescription(appProject.getName());
 
+			// Create the CDT Project
 			cProject = CCorePlugin.getDefault().createCDTProject(description,
 					appProject, null);
 
@@ -216,25 +245,21 @@ public class ForkStorkHandler extends AbstractHandler {
 				cProject.open(null);
 			}
 			cProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e1) {
-			e1.printStackTrace();
-		}
 
-		String projTypeId = "cdt.managedbuild.target.macosx.exe";
+			// Set the project type id
+			String projTypeId = "cdt.managedbuild.target.macosx.exe";
 
-		// ICProjectDescription des =
-		// CCorePlugin.getDefault().getProjectDescription(cProject, true);
-		IManagedBuildInfo info = ManagedBuildManager.createBuildInfo(cProject);
+			// Create the ManagedBuildInfo
+			IManagedBuildInfo info = ManagedBuildManager
+					.createBuildInfo(cProject);
 
-		for (IProjectType t : ManagedBuildManager.getDefinedProjectTypes()) {
-			System.out.println("PROJECT TYPE: " + t.getId());
-		}
+			for (IProjectType t : ManagedBuildManager.getDefinedProjectTypes()) {
+				System.out.println("PROJECT TYPE: " + t.getId());
+			}
 
-		try {
 			IProjectType type = ManagedBuildManager.getProjectType(projTypeId);
 			IManagedProject mProj = ManagedBuildManager.createManagedProject(
 					cProject, type);
-			// info.setManagedProject(mProj);
 
 			IConfiguration cfgs[] = type.getConfigurations();
 			IConfiguration config = mProj
@@ -254,19 +279,18 @@ public class ForkStorkHandler extends AbstractHandler {
 			cConfigDescription.setSourceEntries(null);
 			IFolder srcFolder = cProject.getFolder("src");
 			IFolder includeFolder = cProject.getFolder("include");
-			ICSourceEntry srcFolderEntry = new CSourceEntry(srcFolder, null, ICSettingEntry.RESOLVED);
-			ICSourceEntry includeFolderEntry = new CSourceEntry(includeFolder, null, ICSettingEntry.RESOLVED);
+			ICSourceEntry srcFolderEntry = new CSourceEntry(srcFolder, null,
+					ICSettingEntry.RESOLVED);
+			ICSourceEntry includeFolderEntry = new CSourceEntry(includeFolder,
+					null, ICSettingEntry.RESOLVED);
 
-			cConfigDescription.setSourceEntries(new ICSourceEntry[]{srcFolderEntry, includeFolderEntry});
-			
+			cConfigDescription.setSourceEntries(new ICSourceEntry[] {
+					srcFolderEntry, includeFolderEntry });
+
 			info.setManagedProject(mProj);
 
 			cDescription.setCdtProjectCreated();
 
-			//IIndexManager indexMgr = CCorePlugin.getIndexManager();
-			//ICProject proj = CoreModel.getDefault().getCModel()
-			//		.getCProject(cProject.getName());
-			//indexMgr.setIndexerId(proj, IPDOMManager.ID_FAST_INDEXER);
 			CoreModel.getDefault()
 					.setProjectDescription(cProject, cDescription);
 			ManagedBuildManager.setDefaultConfiguration(cProject, config);
@@ -274,28 +298,8 @@ public class ForkStorkHandler extends AbstractHandler {
 			ManagedBuildManager.setNewProjectVersion(cProject);
 			ManagedBuildManager.saveBuildInfo(cProject, true);
 
-		} catch (CoreException e) {
-			e.printStackTrace();
-		} catch (BuildException b) {
-			b.printStackTrace();
-		}
-		// IProjectDescription desc = ResourcesPlugin.getWorkspace()
-		// .newProjectDescription(appName);
-		// IProject cProject = null;
-		// try {
-		// cProject = CCorePlugin.getDefault().createCDTProject(desc,
-		// appProject, null);
-		// MakeProjectNature.addNature(cProject, null);
-		// cProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-		// } catch (OperationCanceledException e) {
-		// e.printStackTrace();
-		// } catch (CoreException e) {
-		// e.printStackTrace();
-		// }
-
-		// Now create a default Make Target for the Moose user to use to
-		// build the new app
-		try {
+			// Now create a default Make Target for the Moose user to use to
+			// build the new app
 			IMakeTargetManager manager = MakeCorePlugin.getDefault()
 					.getTargetManager();
 			String[] ids = manager.getTargetBuilders(cProject);
@@ -305,138 +309,133 @@ public class ForkStorkHandler extends AbstractHandler {
 			target.setRunAllBuilders(false);
 			target.setUseDefaultBuildCmd(true);
 			target.setBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND, "make");
-			target.setBuildAttribute(IMakeTarget.BUILD_LOCATION, "");
+			target.setBuildAttribute(IMakeTarget.BUILD_LOCATION, cProject
+					.getLocation().toOSString());
 			target.setBuildAttribute(IMakeTarget.BUILD_ARGUMENTS, "");
 			target.setBuildAttribute(IMakeTarget.BUILD_TARGET, "all");
 			manager.addTarget(cProject, target);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 
-		String workspacePath = ResourcesPlugin.getWorkspace().getRoot()
-				.getLocation().toOSString();
-		ICProjectDescription projectDescription = CoreModel.getDefault()
-				.getProjectDescription(cProject, true);
-		ICConfigurationDescription configDecriptions[] = projectDescription
-				.getConfigurations();
-		for (ICConfigurationDescription configDescription : configDecriptions) {
-			ICFolderDescription projectRoot = configDescription
-					.getRootFolderDescription();
-			ICLanguageSetting[] settings = projectRoot.getLanguageSettings();
-			for (ICLanguageSetting setting : settings) {
-				List<ICLanguageSettingEntry> includes = new ArrayList<ICLanguageSettingEntry>();
-				includes.addAll(setting
-						.getSettingEntriesList(ICSettingEntry.INCLUDE_PATH));
-
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/actions",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/auxkernels",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/base", ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/bcs", ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/contraints",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/dampers",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/dgkernels",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/dirackernels",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/executioners",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/functions",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/geomsearch",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/ics",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/indicators",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/kernels",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/markers",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/materials",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/mesh",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/meshmodifiers",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/multiapps",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/outputs",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/parser",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/postprocessors",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/preconditioners",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/predictors",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/restart",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/splits",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/timeintegrators",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/timesteppers",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/userobject",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/utils",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/framework/include/vectorpostprocessors",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				includes.add(new CIncludePathEntry(
-						 "/moose/libmesh/installed/include",
-						ICSettingEntry.VALUE_WORKSPACE_PATH));
-				//includes.add(new CIncludePathEntry(appName + "/include/base",
-				//		ICSettingEntry.VALUE_WORKSPACE_PATH));
-				
-				setting.setSettingEntries(ICSettingEntry.INCLUDE_PATH, includes);
+			ICProjectDescription projectDescription = CoreModel.getDefault()
+					.getProjectDescription(cProject, true);
+			ICConfigurationDescription configDecriptions[] = projectDescription
+					.getConfigurations();
+			for (ICConfigurationDescription configDescription : configDecriptions) {
+				ICFolderDescription projectRoot = configDescription
+						.getRootFolderDescription();
+				ICLanguageSetting[] settings = projectRoot
+						.getLanguageSettings();
+				for (ICLanguageSetting setting : settings) {
+					System.out.println("Setting: " + setting.toString());
+					List<ICLanguageSettingEntry> includes = getIncludePaths();
+					includes.addAll(setting
+							.getSettingEntriesList(ICSettingEntry.INCLUDE_PATH));
+					setting.setSettingEntries(ICSettingEntry.INCLUDE_PATH,
+							includes);
+				}
 			}
-		}
-		
-		try {
+
 			CoreModel.getDefault().setProjectDescription(cProject,
 					projectDescription);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
+
+			ICProject proj = CoreModel.getDefault().getCModel()
+					.getCProject(cProject.getName());
+			IIndexManager indexManager = CCorePlugin.getIndexManager();
+			IIndex index = indexManager.getIndex(proj,
+					IIndexManager.ADD_DEPENDENCIES);
+			indexManager.reindex(proj);
+		} catch (BuildException | CoreException e) {
 			e.printStackTrace();
 		}
 		return null;
 
+	}
+
+	private List<ICLanguageSettingEntry> getIncludePaths() {
+		List<ICLanguageSettingEntry> includes = new ArrayList<ICLanguageSettingEntry>();
+
+		includes.add(new CIncludePathEntry("/moose/framework/include/actions",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/auxkernels",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/base",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/bcs",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/constraints",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/dampers",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/dgkernels",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/dirackernels",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/executioners",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/functions",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/geomsearch",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/ics",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/indicators",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/kernels",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/markers",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/materials",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/mesh",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/meshmodifiers",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/multiapps",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/outputs",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/parser",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/postprocessors",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/preconditioners",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/predictors",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/restart",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/splits",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/timeintegrators",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/timesteppers",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/userobject",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/framework/include/utils",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry(
+				"/moose/framework/include/vectorpostprocessors",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+		includes.add(new CIncludePathEntry("/moose/libmesh/installed/include",
+				ICSettingEntry.VALUE_WORKSPACE_PATH));
+
+		return includes;
 	}
 }
