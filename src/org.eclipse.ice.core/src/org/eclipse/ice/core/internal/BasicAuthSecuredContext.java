@@ -150,6 +150,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 
 		// Make sure an authorization header is available
 		String auth = request.getHeader("Authorization");
+
 		// Fail if not
 		if (auth == null) {
 			return failAuthorization(request, response);
@@ -157,14 +158,17 @@ public class BasicAuthSecuredContext implements HttpContext {
 		// Determine the authentication schemed
 		StringTokenizer tokens = new StringTokenizer(auth);
 		String authscheme = tokens.nextToken();
+
 		// Fail if HTTP Basic authentication is not used
 		if (!("Basic".equals(authscheme))) {
 			return failAuthorization(request, response);
 		}
+
 		// Decode the credentials, which are encoded in Base64
 		String base64credentials = tokens.nextToken();
 		String credentials = new String(Base64.decodeBase64(base64credentials
 				.getBytes()));
+
 		// The userid is on the left side of the colon and the password on the
 		// right
 		int colon = credentials.indexOf(':');
