@@ -13,11 +13,12 @@
 package org.eclipse.ice.viz.plotviewer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
@@ -33,7 +34,7 @@ public class CSVDataProvider implements IDataProvider {
 	/**
 	 * Structure to contain all the data for each feature at each time step
 	 */
-	private HashMap<Double, HashMap<String, ArrayList<IData>>> dataSet;
+	private final Map<Double, Map<String, List<IData>>> dataSet;
 
 	/**
 	 * Units for the time
@@ -53,7 +54,7 @@ public class CSVDataProvider implements IDataProvider {
 	/**
 	 * ArrayList of independent variables
 	 */
-	private ArrayList<String> independentVars;
+	private final List<String> independentVars;
 
 	/**
 	 * Create a default time
@@ -84,7 +85,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * Default constructor
 	 */
 	public CSVDataProvider() {
-		dataSet = new HashMap<Double, HashMap<String, ArrayList<IData>>>();
+		dataSet = new HashMap<Double, Map<String, List<IData>>>();
 		currentTime = defaultTime;
 		timeUnits = null;
 		source = null;
@@ -116,7 +117,7 @@ public class CSVDataProvider implements IDataProvider {
 			}
 		} else {
 			// The time does not exist so need a new HashMap for the given time
-			HashMap<String, ArrayList<IData>> dataSetComponent = new HashMap<String, ArrayList<IData>>();
+			Map<String, List<IData>> dataSetComponent = new HashMap<String, List<IData>>();
 			// Initialize the HashMap and add in the feature and an empty
 			// ArrayList
 			dataSetComponent.put(feature, new ArrayList<IData>());
@@ -125,6 +126,7 @@ public class CSVDataProvider implements IDataProvider {
 			// Add this new HashMap to the dataSet
 			dataSet.put(time, dataSetComponent);
 		}
+		return;
 	}
 
 	/**
@@ -135,7 +137,7 @@ public class CSVDataProvider implements IDataProvider {
 	 */
 	public void addData(IData data) {
 		// Add the single data with no given time to the dataSet
-		this.addData(defaultTime, data);
+		addData(defaultTime, data);
 	}
 
 	/**
@@ -145,7 +147,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * @param time
 	 * @param dataSeries
 	 */
-	public void addDataSeries(double time, ArrayList<IData> dataSeries) {
+	public void addDataSeries(double time, List<IData> dataSeries) {
 		// Get the feature of the dataSeries
 		String feature = dataSeries.get(0).getFeature();
 		// Add to the dataSet
@@ -159,13 +161,13 @@ public class CSVDataProvider implements IDataProvider {
 			}
 		} else {
 			// Creates a new HashMap for the new time, feature, and dataSeries
-			HashMap<String, ArrayList<IData>> dataSetComponent = new HashMap<String, ArrayList<IData>>();
+			Map<String, List<IData>> dataSetComponent = new HashMap<String, List<IData>>();
 			// Sets the given feature and dataSeries
 			dataSetComponent.put(feature, dataSeries);
 			// Adds the HashMap of the feature to the time
 			dataSet.put(time, dataSetComponent);
 		}
-
+		return;
 	}
 
 	/**
@@ -174,9 +176,9 @@ public class CSVDataProvider implements IDataProvider {
 	 * 
 	 * @param dataSeries
 	 */
-	public void addDataSeries(ArrayList<IData> dataSeries) {
+	public void addDataSeries(List<IData> dataSeries) {
 		// Add the dataSeries with no given time to the dataSet
-		this.addDataSeries(defaultTime, dataSeries);
+		addDataSeries(defaultTime, dataSeries);
 	}
 
 	/**
@@ -191,6 +193,7 @@ public class CSVDataProvider implements IDataProvider {
 		if (dataSet.containsKey(time) && dataSet.get(time).containsKey(feature)) {
 			dataSet.get(time).remove(feature);
 		}
+		// FIXME What if the feature is an independent variable?
 	}
 
 	/**
@@ -213,18 +216,18 @@ public class CSVDataProvider implements IDataProvider {
 
 	// should be int?: public void setTime(int step)
 	// Sets the current time based on the step, an integer starting at 0
-	@Override
 	/**
-	 * Sets the currentTime based on the specified step/time. Checks if the time exists first. 
+	 * Sets the currentTime based on the specified step/time. Checks if the time
+	 * exists first.
 	 */
+	@Override
 	public void setTime(double step) {
-		// TODO Auto-generated method stub
 		if (dataSet.containsKey(step)) {
 			currentTime = step;
 		} else {
 			// Invalid time
 		}
-
+		return;
 	}
 
 	/**
@@ -238,14 +241,15 @@ public class CSVDataProvider implements IDataProvider {
 			String feature) {
 		if (dataSet.containsKey(prevTime)) {
 			// Saves the data before removal from the dataSet
-			ArrayList<IData> data = dataSet.get(prevTime).get(feature);
+			List<IData> data = dataSet.get(prevTime).get(feature);
 			// Removes the data from the dataSet
-			this.removeDataSeries(prevTime, feature);
+			removeDataSeries(prevTime, feature);
 			// Adds the data into the newTime
-			this.addDataSeries(newTime, data);
+			addDataSeries(newTime, data);
 		} else {
 			// Throw invalid time exception
 		}
+		return;
 	}
 
 	/**
@@ -256,7 +260,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * @param feature
 	 */
 	public void setTimeForFeature(double newTime, String feature) {
-		this.setTimeForFeature(defaultTime, newTime, feature);
+		setTimeForFeature(defaultTime, newTime, feature);
 	}
 
 	/**
@@ -264,41 +268,55 @@ public class CSVDataProvider implements IDataProvider {
 	 * need to check that the independent variable exists across all times.
 	 * Right now just assumes it does)
 	 * 
-	 * @param feature
+	 * @param independent
 	 */
-	public void setFeatureAsIndependentVariable(String feature) {
-		ArrayList<Double> times = this.getTimes();
-		// Loop through each time to set the independent variable and remove it
-		// from the features
-		for (Double time : times) {
-			this.setTime(time);
-			ArrayList<IData> independentVarData = this
-					.getDataAtCurrentTime(feature);
-			// Get the features at the selected time
-			ArrayList<String> featuresAtSelectedTime = this
-					.getFeaturesAtCurrentTime();
-			// Remove the independent variable from the features
-			featuresAtSelectedTime.remove(featuresAtSelectedTime
-					.indexOf(feature));
-			for (String featureIndex : featuresAtSelectedTime) {
-				ArrayList<IData> independentVar = this
-						.getDataAtCurrentTime(featureIndex);
-				// loop through each data
-				for (int i = 0; i < independentVar.size(); i++) {
-					// set the position
-					((CSVData) independentVar.get(i))
-							.addPosition(independentVarData.get(i).getValue());
-				}
-			}
-			// remove the independent variable feature
-			dataSet.get(time).remove(feature);
+	public void setFeatureAsIndependentVariable(String independent) {
+		// FIXME Presumably, this method is called AFTER all data has been
+		// added. Otherwise, new features will not have the correct positional
+		// data.
 
-			// Need to clean up that ArrayList<IData> independentVarData
+		// Don't add the same variable twice!
+		if (!independentVars.contains(independent)) {
+			// Loop through each time to add the independent variable's data at
+			// that time to the positions for all features.
+			List<Double> times = getTimes();
+			for (double time : times) {
+				// Set the current time.
+				setTime(time);
+
+				// Get the data at the current time for the new independent
+				// feature.
+				List<IData> independentData = getDataAtCurrentTime(independent);
+				// Get all features at the current time.
+				List<String> featuresAtTime = getFeaturesAtCurrentTime();
+
+				// Do not remove the independent variable feature from the list
+				// of features. Effectively, this means we can plot it against
+				// itself, but it also means the position arrays for each
+				// CSVData share the same order (based on the list of
+				// independent variables).
+
+				// For each feature at the current time, add the independent
+				// variable's data as positional data.
+				for (String feature : featuresAtTime) {
+					List<IData> featureData = getDataAtCurrentTime(feature);
+					for (int i = 0; i < featureData.size(); i++) {
+						// set the position
+						((CSVData) featureData.get(i))
+								.addPosition(independentData.get(i).getValue());
+					}
+				}
+				// Do not remove the independent variable feature from the map
+				// of data, else it will not be found when plotting another
+				// "independent" variable against it.
+			}
+
+			// Add to the independentVar list. We can use the independent
+			// feature's index in this list to pull the correct positional data
+			// from the features later.
+			independentVars.add(independent);
 		}
-		// Add to the independentVar list
-		if (!independentVars.contains(feature)) {
-			independentVars.add(feature);
-		}
+		return;
 	}
 
 	/**
@@ -343,7 +361,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * @return
 	 */
 	public ArrayList<String> getIndependentVariables() {
-		return independentVars;
+		return new ArrayList<String>(independentVars);
 	}
 
 	/**
@@ -367,66 +385,66 @@ public class CSVDataProvider implements IDataProvider {
 		return timesForFeature;
 	}
 
-	@Override
 	/**
 	 * Returns the lists of features across all times
 	 */
+	@Override
 	public ArrayList<String> getFeatureList() {
-		// TODO Auto-generated method stub
-		ArrayList<String> featureList = new ArrayList<String>();
+		// Traverse the map of data, adding all feature names to the Set.
+		// The Set will only contain unique values.
+		Set<String> featureSet = new HashSet<String>();
 		for (Double time : dataSet.keySet()) {
-			for (String feature : dataSet.get(time).keySet()) {
-				if (!featureList.contains(feature)) {
-					featureList.add(feature);
-				}
-			}
+			featureSet.addAll(dataSet.get(time).keySet());
 		}
-		return featureList;
+		// Return the TreeSet as an ArrayList.
+		return new ArrayList<String>(featureSet);
 	}
 
-	@Override
 	/**
 	 * Returns the number of time steps
 	 */
+	@Override
 	public int getNumberOfTimeSteps() {
-		// TODO Auto-generated method stub
 		return dataSet.size();
 	}
 
-	@Override
 	/**
-	 * Returns the series of data at the set current time for a specified feature
+	 * Returns the series of data at the set current time for a specified
+	 * feature, or null if data could not be found. Will not return an empty
+	 * list.
 	 */
+	@Override
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
-		// TODO Auto-generated method stub
 		// Check that the dataSet at the current time has the specified feature
-		if (!dataSet.get(currentTime).get(feature).isEmpty()) {
-			return dataSet.get(currentTime).get(feature);
-		} else {
-			// Feature does not exist at the current time
-			return null;
+		ArrayList<IData> data = null;
+		List<IData> sourceData = dataSet.get(currentTime).get(feature);
+		if (!sourceData.isEmpty()) {
+			// Send a copy of the list so the data map can't be altered.
+			data = new ArrayList<IData>(sourceData);
 		}
+		return data;
 	}
 
 	/**
 	 * Returns the values of each IData at the current time for a specified
+	 * feature.
 	 * 
 	 * @param feature
-	 * @return
+	 * @return An array of values for each IData at the current time, or null if
+	 *         data could not be found. Will not return an empty array.
 	 */
 	public double[] getValuesAtCurrentTime(String feature) {
 		// Create the double array
 		double[] values = null;
 		// Check that the dataSet at the current time has the specified feature
-		if (!dataSet.get(currentTime).get(feature).isEmpty()) {
-			// Get the ArrayList of IData
-			ArrayList<IData> iDataSeries = dataSet.get(currentTime)
-					.get(feature);
+		List<IData> data = getDataAtCurrentTime(feature);
+		if (data != null) {
 			// Initialize the Array
-			values = new double[iDataSeries.size()];
+			int size = data.size();
+			values = new double[size];
 			// Fill in the values
-			for (int i = 0; i < iDataSeries.size(); i++) {
-				values[i] = iDataSeries.get(i).getValue();
+			for (int i = 0; i < size; i++) {
+				values[i] = data.get(i).getValue();
 			}
 		}
 		return values;
@@ -445,8 +463,7 @@ public class CSVDataProvider implements IDataProvider {
 		// Check that the dataSet at the current time has the specified feature
 		if (!dataSet.get(currentTime).get(feature).isEmpty()) {
 			// Get the ArrayList of IData
-			ArrayList<IData> iDataSeries = dataSet.get(currentTime)
-					.get(feature);
+			List<IData> iDataSeries = dataSet.get(currentTime).get(feature);
 			// Initialize the Array
 			uncertainties = new double[iDataSeries.size()];
 			// Fill in the values
@@ -470,22 +487,16 @@ public class CSVDataProvider implements IDataProvider {
 		// Create the position array
 		double[] position = null;
 
-		// Get the features at the current time
-		ArrayList<String> features = getFeaturesAtCurrentTime();
-		// Check that the dataSet at the current time has the specified
-		// independent variable
-		if (independentVars.contains(independentVar)) {
-			// The index of the independent variable
-			int independentVarIndex = independentVars.indexOf(independentVar);
-			// Get the ArrayList of IData
-			ArrayList<IData> iDataSeries = this.getDataAtCurrentTime(features
-					.get(0));
-			// Initialize the Array
-			position = new double[iDataSeries.size()];
-			// Fill in the values
-			for (int i = 0; i < iDataSeries.size(); i++) {
-				position[i] = iDataSeries.get(i).getPosition()
-						.get(independentVarIndex);
+		// Get the data for the independent variable.
+		List<IData> independentVarData = getDataAtCurrentTime(independentVar);
+
+		// If the data could be found, create the array of doubles based on its
+		// values at the current time.
+		if (independentVarData != null) {
+			int size = independentVarData.size();
+			position = new double[size];
+			for (int i = 0; i < size; i++) {
+				position[i] = independentVarData.get(i).getValue();
 			}
 		}
 
@@ -498,7 +509,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * @return
 	 */
 	public int getDataWidth() {
-		return this.dataWidth;
+		return dataWidth;
 	}
 
 	/**
@@ -507,7 +518,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * @return
 	 */
 	public int getDataHeight() {
-		return this.dataHeight;
+		return dataHeight;
 	}
 
 	/**
@@ -516,7 +527,7 @@ public class CSVDataProvider implements IDataProvider {
 	 * @return
 	 */
 	public double getDataMin() {
-		return this.dataMin;
+		return dataMin;
 	}
 
 	/**
@@ -525,55 +536,53 @@ public class CSVDataProvider implements IDataProvider {
 	 * @return
 	 */
 	public double getDataMax() {
-		return this.dataMax;
+		return dataMax;
 	}
 
-	@Override
 	/**
 	 * Returns the source
 	 */
+	@Override
 	public String getSourceInfo() {
-		// TODO Auto-generated method stub
 		return source;
 	}
 
-	@Override
 	/**
 	 * Returns the features at the current time
 	 */
+	@Override
 	public ArrayList<String> getFeaturesAtCurrentTime() {
 		return new ArrayList<String>(dataSet.get(currentTime).keySet());
 	}
 
-	@Override
 	/**
 	 * Returns the times in the data set
 	 */
+	@Override
 	public ArrayList<Double> getTimes() {
 		// Get the list of times from the key set, sort it, and return it.
 		ArrayList<Double> times = new ArrayList<Double>(dataSet.keySet());
 		Collections.sort(times);
-		times = new ArrayList<Double>(times);
 		return times;
 	}
 
-	@Override
 	/**
 	 * Returns the integer time step at the given time
-	 * @param the time
+	 * 
+	 * @param the
+	 *            time, or -1 if the time is invalid.
 	 */
+	@Override
 	public int getTimeStep(double time) {
 		// Get the times and then pull the time step if it is in there.
-		ArrayList<Double> times = getTimes();
-		return times.indexOf(time);
+		return getTimes().indexOf(time);
 	}
 
-	@Override
 	/**
 	 * Returns the time units
 	 */
+	@Override
 	public String getTimeUnits() {
-		// TODO Auto-generated method stub
 		return timeUnits;
 	}
 }

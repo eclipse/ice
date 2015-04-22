@@ -154,6 +154,11 @@ public class DataComponentComposite extends Composite implements
 	public void refresh() {
 		// begin-user-code
 
+		// Don't try to refresh anything if this composite is already disposed
+		if (isDisposed()) {
+			return;
+		}
+		
 		// Local Declarations
 		boolean rewrite = false;
 		List<Entry> entries = dataComp.retrieveAllEntries();
