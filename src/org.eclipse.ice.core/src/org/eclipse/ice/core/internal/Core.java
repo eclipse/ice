@@ -76,74 +76,43 @@ import com.google.gson.JsonPrimitive;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * The Core class is responsible for implementing and/or managing all of the
  * data and workflow management capabilities of ICE. It implements the ICore
  * interface and provides additional administration operations not found on
  * ICore. Most of the operations performed for managing Items are forwarded
  * directly to the ItemManager class.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @ApplicationPath("/ice")
 public class Core extends Application implements ICore {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * Reference to the ItemManager responsible for creating, querying, and
+	 * updating available Items.
 	 */
 	private ItemManager itemManager;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The component context for the ICE Core OSGi component.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ComponentContext componentContext;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The master table of IProject Eclipse projects, keyed by username.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	private Hashtable<String, IProject> projectTable;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The OSGi HTTP Service used by the Core to publish itself.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HttpService httpService;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The persistence provided by the osgi. This piece is set by the
 	 * setPersistenceProvider method. This piece is passed to the ItemManager to
 	 * be used for persisting Items.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IPersistenceProvider provider;
 
@@ -160,22 +129,13 @@ public class Core extends Application implements ICore {
 	private AtomicBoolean updateLock;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * An alternative constructor that allows the Core to be constructed with a
 	 * particular ItemManager. This is used for testing.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param manager
-	 *            <p>
 	 *            The alternative ItemManager.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Core(ItemManager manager) {
-		// begin-user-code
 
 		// Setup the ItemManager and the project table
 		itemManager = manager;
@@ -195,26 +155,16 @@ public class Core extends Application implements ICore {
 		updateLock = new AtomicBoolean(false);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation starts the Core, sets the component context and starts the
 	 * web client if the HTTP service is available.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param context
-	 *            <p>
 	 *            The bundle context for this OSGi bundle.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void start(ComponentContext context) {
-		// begin-user-code
 
 		// Store the component's context
 		componentContext = context;
@@ -229,42 +179,27 @@ public class Core extends Application implements ICore {
 		// Tell the ItemManager to suit up. It's time to rock and roll.
 		itemManager.loadItems(projectTable.get("defaultUser"));
 
+		// Start the webservice!
+		startHttpService();
+		
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation stops the Core.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void stop() {
-		// begin-user-code
-
 		// Update everything in the ItemManager that requires it
 		itemManager.persistItems();
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Constructor
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Core() {
-		// begin-user-code
 
 		// Setup the ItemManager and the project table
 		itemManager = new ItemManager();
@@ -284,31 +219,23 @@ public class Core extends Application implements ICore {
 		updateLock = new AtomicBoolean(false);
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getFileSystem(int uniqueClientID)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Form getFileSystem(int uniqueClientID) {
-		// begin-user-code
 		return new Form();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#registerItem(ItemBuilder itemBuilder)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerItem(ItemBuilder itemBuilder) {
-		// begin-user-code
 
 		// Register the builder with the ItemManager so long as it is not null
 		if (itemBuilder != null) {
@@ -318,18 +245,14 @@ public class Core extends Application implements ICore {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#registerCompositeItem(ICompositeItemBuilder builder)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerCompositeItem(ICompositeItemBuilder builder) {
-		// begin-user-code
 
 		// Register the builder with the ItemManager so long as it is not null
 		if (builder != null) {
@@ -339,32 +262,22 @@ public class Core extends Application implements ICore {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#unregisterItem(ItemBuilder itemBuilder)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void unregisterItem(ItemBuilder itemBuilder) {
-		// begin-user-code
-		// TODO Auto-generated method stub
-
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#createItem(String itemType)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String createItem(String itemType) {
-		// begin-user-code
 
 		// Local Declarations
 		int newItemId = -1;
@@ -378,62 +291,46 @@ public class Core extends Application implements ICore {
 
 		return String.valueOf(newItemId);
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#deleteItem(String itemId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void deleteItem(String itemId) {
-		// begin-user-code
 
 		// Forward the call to the ItemManager if the String is OK
 		if (itemId != null) {
 			itemManager.deleteItem(Integer.parseInt(itemId));
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItemStatus(Integer id)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus getItemStatus(Integer id) {
-		// begin-user-code
 		return itemManager.getItemStatus(id);
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItem(int itemId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Form getItem(int itemId) {
-		// begin-user-code
 		return itemManager.retrieveItem(itemId);
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getAvailableItemTypes()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEList<String> getAvailableItemTypes() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> types = itemManager.getAvailableBuilders();
@@ -446,19 +343,14 @@ public class Core extends Application implements ICore {
 		retList.setList(types);
 
 		return retList;
-
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#updateItem(Form form, int uniqueClientId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus updateItem(Form form, int uniqueClientId) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus status = FormStatus.InfoError;
@@ -470,19 +362,15 @@ public class Core extends Application implements ICore {
 		status = itemManager.updateItem(form);
 
 		return status;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#processItem(int itemId, String actionName, int uniqueClientId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus processItem(int itemId, String actionName,
 			int uniqueClientId) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus status = FormStatus.InfoError;
@@ -494,59 +382,41 @@ public class Core extends Application implements ICore {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItemList()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Identifiable> getItemList() {
-		// begin-user-code
 		return itemManager.retrieveItemList();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItemOutputFile(int id)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public File getItemOutputFile(int id) {
-		// begin-user-code
 		return itemManager.getOutputFile(id);
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#cancelItemProcess(int itemId, String actionName)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus cancelItemProcess(int itemId, String actionName) {
-		// begin-user-code
-		// TODO Auto-generated method stub
 		return itemManager.cancelItemProcess(itemId, actionName);
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#importFile(URI file)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void importFile(URI file) {
-		// begin-user-code
-
 		// Local Declarations
 		IProject project = projectTable.get("defaultUser");
 
@@ -611,50 +481,27 @@ public class Core extends Application implements ICore {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation publishes a message to a publicly available log that may
 	 * be consumed by clients.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param message
-	 *            <p>
 	 *            The message that should be published.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void publishMessage(String message) {
-		// begin-user-code
-
-		// TODO Auto-generated method stub
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation scans the default project area for SerializedItems and
 	 * loads them into the Core. It returns false if it encounters and error and
 	 * true if it is successful.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         True if the SerializedItems stored in the default project area
+	 * @return True if the SerializedItems stored in the default project area
 	 *         were loaded successfully, false otherwise.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean loadDefaultAreaItems() {
-		// begin-user-code
 
 		// Local Declarations
 		boolean status = false;
@@ -706,36 +553,30 @@ public class Core extends Application implements ICore {
 				project.getFolder("jobProfiles").create(true, true, null);
 			}
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the HTTP service that should be used by the Core to
 	 * publish itself.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param service
-	 *            <p>
 	 *            The HTTP service.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setHttpService(HttpService service) {
-		// begin-user-code
 
 		// Set the webservice reference
 		httpService = service;
 		System.out.println("ICore Message: Web service set!");
+	}
 
+	/**
+	 * Private method used by Core.start() method to start the HttpService.
+	 */
+	private void startHttpService() {
 		// If it is good to go, start up the webserver
 		if (httpService != null) {
 
@@ -748,18 +589,14 @@ public class Core extends Application implements ICore {
 			// Register the service
 			try {
 				// Get the bundle
-				Bundle bundle = null;
-				if (componentContext != null) {
-					bundle = componentContext.getBundleContext().getBundle();
-				} else {
-					return;
-				}
-				
+				Bundle bundle = componentContext.getBundleContext().getBundle();
 				// Make sure we got a valid bundle
 				if (bundle == null) {
+					System.out
+							.println("ICore Message: Could not get a valid reference to the Bundle. Start Http Service Failed.");
 					return;
 				}
-				
+
 				// Find the root location and the jaas_config file
 				URL resourceURL = bundle.getEntry("");
 				URL configFileURL = bundle.getEntry("jaas_config.txt");
@@ -771,14 +608,7 @@ public class Core extends Application implements ICore {
 						"ICE Core Server Configuration");
 				httpService.registerServlet("/ice", new ServletContainer(this),
 						servletParams, httpContext);
-			} catch (ServletException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NamespaceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} catch (ServletException | NamespaceException | IOException e) {
 				e.printStackTrace();
 			}
 			System.out.println("ICore Message: ICE Core Server loaded and web "
@@ -791,49 +621,28 @@ public class Core extends Application implements ICore {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns the current instance of the ICE core to the HTTP
 	 * service so that it can be published. It overrides
 	 * Application.getSingletons().
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The set of "singletons" - in this case just the running instance
+	 * @return The set of "singletons" - in this case just the running instance
 	 *         of the Core.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Set<Object> getSingletons() {
-		// begin-user-code
-
 		// Create a set that just points to this class as the servlet
 		Set<Object> result = new HashSet<Object>();
 		result.add(this);
 		return result;
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This private operation configures the project area for the Core. It uses
 	 * the Eclipse Resources Plugin and behaves differently based on the value
-	 * of the osgi.instance.area system property.
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * of the osgi.instance.area system property. </p> <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         True if the setup operation was successful and false otherwise.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return True if the setup operation was successful and false otherwise.
 	 */
 	private boolean setupProjectLocation() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -882,72 +691,47 @@ public class Core extends Application implements ICore {
 			status = loadDefaultAreaItems();
 		}
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the persistence provider from the
 	 * IPersistenceProvider interface. This is picked up via OSGI.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param provider
-	 *            <p>
 	 *            The persistence provider.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPersistenceProvider(IPersistenceProvider provider) {
-		// begin-user-code
 
 		// If the provider is not null, store the reference and log a message.
 		if (provider != null) {
 			System.out.println("ICore Message: PersistenceProvider set!");
 			this.provider = provider;
 		}
-
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#connect()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String connect() {
-		// begin-user-code
 		return "1";
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#disconnect(int uniqueClientId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disconnect(int uniqueClientId) {
-		// begin-user-code
-		// TODO Auto-generated method stub
-
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#importFileAsItem(URI file, String itemType)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String importFileAsItem(URI file, String itemType) {
-		// begin-user-code
 
 		// Local Declarations
 		int newItemId = -1;
@@ -966,7 +750,6 @@ public class Core extends Application implements ICore {
 		}
 
 		return String.valueOf(newItemId);
-		// end-user-code
 	}
 
 	/**
@@ -977,7 +760,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @param messageString
 	 *            The original message, as a string
-	 * @return
+	 * @return list list of built messages.
 	 */
 	private ArrayList<Message> buildMessagesFromString(String messageString) {
 
@@ -1030,11 +813,8 @@ public class Core extends Application implements ICore {
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#postUpdateMessage(String message)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String postUpdateMessage(String message) {
-		// begin-user-code
 
 		// Lock the operation
 		updateLock.set(true);
@@ -1070,6 +850,5 @@ public class Core extends Application implements ICore {
 
 		// Unlock the operation and return safely
 		return (updateLock.getAndSet(false)) ? retVal : null;
-		// end-user-code
 	}
 }
