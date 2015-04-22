@@ -307,7 +307,7 @@ public class ForkStorkHandler extends AbstractHandler {
 					ids[0]);
 			target.setStopOnError(false);
 			target.setRunAllBuilders(false);
-			target.setUseDefaultBuildCmd(true);
+			target.setUseDefaultBuildCmd(false);
 			target.setBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND, "make");
 			target.setBuildAttribute(IMakeTarget.BUILD_LOCATION, cProject
 					.getLocation().toOSString());

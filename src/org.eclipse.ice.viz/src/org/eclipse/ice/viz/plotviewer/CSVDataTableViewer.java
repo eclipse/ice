@@ -12,15 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.plotviewer;
 
-import java.io.File;
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.VizFileViewer;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;

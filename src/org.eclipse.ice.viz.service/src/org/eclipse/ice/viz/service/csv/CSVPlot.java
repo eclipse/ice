@@ -12,10 +12,10 @@
 package org.eclipse.ice.viz.service.csv;
 
 import java.io.File;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -101,81 +101,86 @@ public class CSVPlot implements IPlot {
 	 * thread to avoid hanging the UI in the event that the file is large. It
 	 * does not attempt to load the file if the source is null.
 	 * 
-	 * @throws Exception
 	 */
 	public void load() {
 
 		if (source != null) {
-
-			// Create the loading thread
-			Thread loadingThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-
-					// Create a file handle from the source
-					File file = new File(source);
-					// Get a CSV loader and try to load the file
-					if (file.getName().endsWith("csv")) {
-						// Load the file
-						CSVDataLoader dataLoader = new CSVDataLoader();
-						try {
-							baseProvider = dataLoader.load(file);
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-						// Set the source so the title and everything gets
-						// loaded right later
-						baseProvider.setSource(source.toString());
-						// Get the variables
-						ArrayList<String> variables = baseProvider
-								.getFeatureList();
-						// Set the first feature as an independent variable
-						baseProvider.setFeatureAsIndependentVariable(variables
-								.get(0));
-						// Create lists to hold the plot types
-						ArrayList<String> plotTypes = new ArrayList<String>(
-								variables.size());
-						// Create the type list. Loop over every variable and
-						// make it possible to plot it against the others.
-						for (int i = 0; i < variables.size(); i++) {
-							for (int j = 0; j < variables.size(); j++) {
-								if (i != j) {
-									String type = variables.get(i) + " vs. "
-											+ variables.get(j);
-									plotTypes.add(type);
-								}
-							}
-						}
-						// Put the types in the map. Line, scatter, and bar
-						// plots can be created for any of the plot types, so we
-						// can re-use the same string array.
-						String[] plotTypesArray = plotTypes
-								.toArray(new String[] {});
-						types.put("Line", plotTypesArray);
-						types.put("Scatter", plotTypesArray);
-						types.put("Bar", plotTypesArray);
-
+			// Only load the file if it is a CSV file.
+			final File file = new File(source);
+			if (file.getName().endsWith(".csv")) {
+				// Create the loading thread.
+				Thread loadingThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						load(file);
 					}
-				}
-			});
+				});
 
-			// Get a handle on the parent thread's exception handler
-			final UncaughtExceptionHandler parentHandler = Thread
-					.currentThread().getUncaughtExceptionHandler();
+				// Force the loading thread to report unhandled exceptions to
+				// this thread's exception handler.
+				loadingThread.setUncaughtExceptionHandler(Thread
+						.currentThread().getUncaughtExceptionHandler());
 
-			// Override the loadingThread's exception handler
-			loadingThread
-					.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-						@Override
-						public void uncaughtException(Thread t, Throwable e) {
-							// Pass the exception to the parent thread's handler
-							parentHandler.uncaughtException(t, e);
-						}
-					});
-
-			// Start the thread
-			loadingThread.start();
+				// Start the thread
+				loadingThread.start();
+			}
 		}
+
+		return;
+	}
+
+	/**
+	 * Attempts to load the specified file. This should populate the
+	 * {@link #baseProvider} as well as the map of {@link #types} or plot
+	 * series.
+	 * 
+	 * @param file
+	 *            The file to load. This is assumed to be a valid file.
+	 */
+	private void load(File file) {
+
+		// Load the file using the CSV utilities.
+		CSVDataLoader dataLoader = new CSVDataLoader();
+		try {
+			baseProvider = dataLoader.load(file);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+		// Set the source so the title (and other properties) are set correctly.
+		baseProvider.setSource(source.toString());
+
+		// Get the variables from the base IDataProvider.
+		List<String> variables = baseProvider.getFeatureList();
+		int nVariables = variables.size();
+
+		// Create a list to hold all available series. Each combination of
+		// feature names (except for feature vs. itself) should be an allowed
+		// series. Populate the list with the series names, which should be
+		// "y-variable vs. x-variable".
+		List<String> plotTypes = new ArrayList<String>(nVariables * nVariables);
+		for (int y = 0; y < nVariables; y++) {
+			String variableY = variables.get(y);
+			for (int x = 0; x < nVariables; x++) {
+				if (y != x) {
+					String type = variableY + " vs. " + variables.get(x);
+					plotTypes.add(type);
+				}
+			}
+
+			// Mark the variable as independent. The order in which they are
+			// marked independent does not really matter, since all are
+			// "independent" in the end.
+			baseProvider.setFeatureAsIndependentVariable(variableY);
+		}
+
+		// Put the types in the map of types. Line, scatter, and bar plots can
+		// be created for any of the plot types, so we can re-use the same
+		// string array.
+		String[] plotTypesArray = plotTypes.toArray(new String[] {});
+		types.put("Line", plotTypesArray);
+		types.put("Scatter", plotTypesArray);
+		types.put("Bar", plotTypesArray);
 
 		return;
 	}
@@ -290,7 +295,7 @@ public class CSVPlot implements IPlot {
 			}
 
 			// Reset the plot time to the initial time.
-			Double plotTime = baseProvider.getTimes().get(0);
+			double plotTime = baseProvider.getTimes().get(0);
 			// FIXME Won't this affect all of the drawn plots?
 			baseProvider.setTime(plotTime);
 
@@ -471,24 +476,24 @@ public class CSVPlot implements IPlot {
 		 */
 		public void addSeries(String category, String type) {
 			// Reset the plot time to the initial time.
-			Double plotTime = baseProvider.getTimes().get(0);
+			double plotTime = dataProvider.getTimes().get(0);
 			// FIXME Won't this affect all of the drawn plots?
-			baseProvider.setTime(plotTime);
+			dataProvider.setTime(plotTime);
 
 			// Get the axes to plot
 			String[] axes = type.split(" ");
-			String axis1 = axes[0];
-			String axis2 = axes[2];
+			String yAxis = axes[0];
+			String xAxis = axes[2];
 
 			// Create a new series title for the new series
-			String seriesTitle = axis1 + " vs. " + axis2 + " at " + plotTime;
+			String seriesTitle = yAxis + " vs. " + xAxis + " at " + plotTime;
 			// Create a new series provider
 			final SeriesProvider seriesProvider = new SeriesProvider();
 			seriesProvider.setDataProvider(dataProvider);
 			seriesProvider.setTimeForDataProvider(plotTime);
 			seriesProvider.setSeriesTitle(seriesTitle);
-			seriesProvider.setXDataFeature(axis1);
-			seriesProvider.setYDataFeature(axis2);
+			seriesProvider.setXDataFeature(xAxis);
+			seriesProvider.setYDataFeature(yAxis);
 			seriesProvider.setSeriesType(category);
 			// Add this new series to the plot provider
 			plotProvider.addSeries(plotTime, seriesProvider);
@@ -518,7 +523,7 @@ public class CSVPlot implements IPlot {
 		public void removeSeries(SeriesProvider series) {
 			ActionTree tree = seriesMap.remove(series);
 			if (tree != null) {
-				double plotTime = baseProvider.getTimes().get(0);
+				double plotTime = dataProvider.getTimes().get(0);
 				removeSeriesTree.remove(tree);
 				plotProvider.removeSeries(plotTime, series);
 			}
@@ -529,7 +534,7 @@ public class CSVPlot implements IPlot {
 		 * Clears all series from the drawn plot.
 		 */
 		public void clear() {
-			double plotTime = baseProvider.getTimes().get(0);
+			double plotTime = dataProvider.getTimes().get(0);
 			for (Entry<SeriesProvider, ActionTree> e : seriesMap.entrySet()) {
 				plotProvider.removeSeries(plotTime, e.getKey());
 			}
