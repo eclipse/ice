@@ -589,11 +589,19 @@ public class Core extends Application implements ICore {
 			// Register the service
 			try {
 				// Get the bundle
-				Bundle bundle = componentContext.getBundleContext().getBundle();
+				Bundle bundle = null;
+				if (componentContext != null) {
+					bundle = componentContext.getBundleContext().getBundle();
+				} else {
+					System.out
+							.println("ICore Message: ICE Core ComponentContext was null! No web service started.");
+					return;
+				}
+
 				// Make sure we got a valid bundle
 				if (bundle == null) {
 					System.out
-							.println("ICore Message: Could not get a valid reference to the Bundle. Start Http Service Failed.");
+							.println("ICore Message: ICE Core Bundle was null! No web service started.");
 					return;
 				}
 
@@ -823,10 +831,10 @@ public class Core extends Application implements ICore {
 		String retVal = null;
 
 		// Print the message if debugging is enabled
-		if (debuggingEnabled) {
-			System.out.println("Core Message: "
-					+ "Update received with message: " + message);
-		}
+		// if (debuggingEnabled) {
+		System.out.println("Core Message: " + "Update received with message: "
+				+ message);
+		// }
 
 		// Only process the message if it exists and is not empty
 		if (message != null && !message.isEmpty() && message.contains("=")) {

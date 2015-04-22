@@ -125,4 +125,82 @@
             </toolbar>
          </menuContribution>
       </extension>
+      
+      
+       <extension
+            point="org.eclipse.ui.commands">
+         <command
+               defaultHandler="org.eclipse.ice.client.widgets.moose.ForkStorkHandler"
+               description="Generate YAML and Action Syntax"
+               id="org.eclipse.ice.client.widgets.moose.command.ForkStork"
+               name="MOOSE Fork the Stork">
+         </command>
+      </extension>
+      <extension
+            point="org.eclipse.ui.menus">
+         <menuContribution
+               allPopups="false"
+               locationURI="toolbar:org.eclipse.ui.main.toolbar">
+            <toolbar
+                  id="org.eclipse.ice.client.widgets.toolbar">
+               <command
+                     commandId="org.eclipse.ice.client.widgets.moose.command.ForkStork"
+                     id="MOOSE Fork the Stork"
+                     label="MOOSE Fork the Stork"
+                     style="push">
+               </command>
+            </toolbar>
+         </menuContribution>
+      </extension>
+      <extension
+            point="org.eclipse.ui.preferencePages">
+         <page
+               class="org.eclipse.ice.client.widgets.moose.MoosePreferencePage"
+               id="org.eclipse.ice.client.widgets.moose.page1"
+               name="MOOSE">
+         </page>
+      </extension>
+      
+      
+      <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.ice.client.widgets.moose.NewKernelHandler"
+            id="org.eclipse.ice.client.widgets.moose.newkernel"
+            name="Kernel">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <!--<menuContribution
+            locationURI="popup:common.new.menu?after=new">
+         <command
+               commandId="org.eclipse.ice.client.widgets.moose.newkernel"
+               label="New MOOSE Kernel"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeWorkbenchWindow.activePerspective">
+                  <equals
+                        value="org.eclipse.cdt.ui.CPerspective">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>-->
+      <menuContribution
+            locationURI="popup:common.new.menu?after=new">
+         <menu
+               id="org.eclipse.ui.navigator.ProjectExplorer.newmooseobject"
+               label="MOOSE Object">
+            <command
+                  commandId="org.eclipse.ice.client.widgets.moose.newkernel"
+                  label="Kernel"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+      
 </plugin>
