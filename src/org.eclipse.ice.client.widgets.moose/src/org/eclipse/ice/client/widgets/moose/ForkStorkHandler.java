@@ -47,15 +47,18 @@ import org.eclipse.cdt.make.core.IMakeTargetManager;
 import org.eclipse.cdt.make.core.MakeCorePlugin;
 import org.eclipse.cdt.make.core.MakeProjectNature;
 import org.eclipse.cdt.managedbuilder.core.BuildException;
+import org.eclipse.cdt.managedbuilder.core.IBuilder;
 import org.eclipse.cdt.managedbuilder.core.IConfiguration;
 import org.eclipse.cdt.managedbuilder.core.IManagedBuildInfo;
 import org.eclipse.cdt.managedbuilder.core.IManagedProject;
 import org.eclipse.cdt.managedbuilder.core.IProjectType;
+import org.eclipse.cdt.managedbuilder.core.IToolChain;
 import org.eclipse.cdt.managedbuilder.core.ManagedBuildManager;
 import org.eclipse.cdt.managedbuilder.core.ManagedCProjectNature;
 import org.eclipse.cdt.managedbuilder.internal.core.Configuration;
 import org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo;
 import org.eclipse.cdt.managedbuilder.internal.core.ManagedProject;
+import org.eclipse.cdt.managedbuilder.ui.wizards.CfgHolder;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -69,9 +72,11 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.User;
@@ -124,6 +129,7 @@ public class ForkStorkHandler extends AbstractHandler {
 		String sep = System.getProperty("file.separator"), appName = "", gitHubUser = "", password = "", remoteURI = "";
 		ArrayList<String> cmdList = new ArrayList<String>();
 		ProcessBuilder jobBuilder = null;
+		String os = System.getProperty("os.name");
 
 		// Set the pyton command
 		cmdList.add("/bin/bash");
@@ -188,118 +194,86 @@ public class ForkStorkHandler extends AbstractHandler {
 			e1.printStackTrace();
 		}
 
-		// Create the ProcessBuilder and change to the project dir
-		jobBuilder = new ProcessBuilder(cmdList);
-		jobBuilder.directory(new File(workspaceFile.getAbsolutePath()));
+		// We can only run the python script on Linux or Mac
+		// And Moose devs only use Linux or Macs to build their apps
+		if (os.contains("Linux") || os.contains("Mac")) {
+			// Create the ProcessBuilder and change to the project dir
+			jobBuilder = new ProcessBuilder(cmdList);
+			jobBuilder.directory(new File(workspaceFile.getAbsolutePath()));
 
-		// Do not direct the error to stdout. Catch it separately.
-		jobBuilder.redirectErrorStream(false);
-		try {
-			// Execute the python script!
-			jobBuilder.start();
-		} catch (IOException e) {
-			e.printStackTrace();
+			// Do not direct the error to stdout. Catch it separately.
+			jobBuilder.redirectErrorStream(false);
+			try {
+				// Execute the python script!
+				jobBuilder.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
-		// Pull this into the Project Explorer as CDT project!
-		String projectTypeString = "cdt.managedbuild.target.macosx.so";
-		IProject appProject = root.getProject(appName), cProject = null;
-		IWorkspaceDescription workspaceDesc = workspace.getDescription();
-		workspaceDesc.setAutoBuilding(false);
+		// The rest is about importing the C++ project correctly
+		IProject project = workspace.getRoot().getProject(appName);
+		IProjectDescription description = workspace
+				.newProjectDescription(appName);
+
 		try {
+			// Create the Project
+			CCorePlugin.getDefault().createCDTProject(description, project,
+					new NullProgressMonitor());
 
-			/*
-			 * 
-			 * 
-			 * PROJECT TYPE:
-			 * org.eclipse.linuxtools.cdt.autotools.core.projectType PROJECT
-			 * TYPE: cdt.managedbuild.target.gnu.cross.exe PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.cross.so PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.cross.lib PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.exe PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.so PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.lib PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.cygwin.exe PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.cygwin.so PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.cygwin.lib PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.mingw.exe PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.mingw.so PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.mingw.lib PROJECT TYPE:
-			 * cdt.managedbuild.target.macosx.exe PROJECT TYPE:
-			 * cdt.managedbuild.target.macosx.so PROJECT TYPE:
-			 * cdt.managedbuild.target.macosx.lib PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.solaris.exe PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.solaris.so PROJECT TYPE:
-			 * cdt.managedbuild.target.gnu.solaris.lib
-			 */
-			workspace.setDescription(workspaceDesc);
+			// Add the CPP nature
+			CCProjectNature.addCCNature(project, new NullProgressMonitor());
 
-			IProjectDescription description = workspace
-					.newProjectDescription(appProject.getName());
-
-			// Create the CDT Project
-			cProject = CCorePlugin.getDefault().createCDTProject(description,
-					appProject, null);
-
-			if (!cProject.isOpen()) {
-				cProject.open(null);
-			}
-			cProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-
-			// Set the project type id
-			String projTypeId = "cdt.managedbuild.target.macosx.exe";
-
-			// Create the ManagedBuildInfo
-			IManagedBuildInfo info = ManagedBuildManager
-					.createBuildInfo(cProject);
-
-			for (IProjectType t : ManagedBuildManager.getDefinedProjectTypes()) {
-				System.out.println("PROJECT TYPE: " + t.getId());
-			}
-
-			IProjectType type = ManagedBuildManager.getProjectType(projTypeId);
-			IManagedProject mProj = ManagedBuildManager.createManagedProject(
-					cProject, type);
-
-			IConfiguration cfgs[] = type.getConfigurations();
-			IConfiguration config = mProj
-					.createConfiguration(
-							cfgs[0],
-							ManagedBuildManager.calculateChildId(
-									cfgs[0].getId(), null));
-
-			ICProjectDescription cDescription = CoreModel.getDefault()
-					.getProjectDescriptionManager()
-					.createProjectDescription(cProject, false);
-			ICConfigurationDescription cConfigDescription = cDescription
-					.createConfiguration(
-							ManagedBuildManager.CFG_DATA_PROVIDER_ID,
-							config.getConfigurationData());
-			cDescription.setActiveConfiguration(cConfigDescription);
-			cConfigDescription.setSourceEntries(null);
-			IFolder srcFolder = cProject.getFolder("src");
-			IFolder includeFolder = cProject.getFolder("include");
-			ICSourceEntry srcFolderEntry = new CSourceEntry(srcFolder, null,
-					ICSettingEntry.RESOLVED);
-			ICSourceEntry includeFolderEntry = new CSourceEntry(includeFolder,
-					null, ICSettingEntry.RESOLVED);
-
-			cConfigDescription.setSourceEntries(new ICSourceEntry[] {
-					srcFolderEntry, includeFolderEntry });
-
+			// Set up build information
+			ICProjectDescriptionManager pdMgr = CoreModel.getDefault()
+					.getProjectDescriptionManager();
+			ICProjectDescription projDesc = pdMgr.createProjectDescription(
+					project, false);
+			ManagedBuildInfo info = ManagedBuildManager
+					.createBuildInfo(project);
+			ManagedProject mProj = new ManagedProject(projDesc);
 			info.setManagedProject(mProj);
 
-			cDescription.setCdtProjectCreated();
+			IToolChain toolChain = null;
+			for (IToolChain tool : ManagedBuildManager.getRealToolChains()) {
+				if (os.contains("Mac") && tool.getName().contains("Mac")
+						&& tool.getName().contains("GCC")) {
+					toolChain = tool;
+					break;
+				} else if (os.contains("Linux")
+						&& tool.getName().contains("Linux")
+						&& tool.getName().contains("GCC")) {
+					toolChain = tool;
+					break;
+				} else if (os.contains("Windows")
+						&& tool.getName().contains("Cygwin")) {
+					toolChain = tool;
+					break;
+				} else {
+					toolChain = null;
+				}
+			}
 
-			CoreModel.getDefault()
-					.setProjectDescription(cProject, cDescription);
-			ManagedBuildManager.setDefaultConfiguration(cProject, config);
-			ManagedBuildManager.setSelectedConfiguration(cProject, config);
-			ManagedBuildManager.setNewProjectVersion(cProject);
-			ManagedBuildManager.saveBuildInfo(cProject, true);
+			System.out.println("Setting the tool chain to be "
+					+ toolChain.getName());
+
+			CfgHolder cfgHolder = new CfgHolder(toolChain, null);
+			String s = toolChain == null ? "0" : toolChain.getId(); //$NON-NLS-1$
+			IConfiguration config = new Configuration(
+					mProj,
+					(org.eclipse.cdt.managedbuilder.internal.core.ToolChain) toolChain,
+					ManagedBuildManager.calculateChildId(s, null), cfgHolder
+							.getName());
+			IBuilder builder = config.getEditableBuilder();
+			builder.setManagedBuildOn(false);
+			CConfigurationData data = config.getConfigurationData();
+			projDesc.createConfiguration(
+					ManagedBuildManager.CFG_DATA_PROVIDER_ID, data);
+			pdMgr.setProjectDescription(project, projDesc);
 
 			// Now create a default Make Target for the Moose user to use to
 			// build the new app
+			IProject cProject = projDesc.getProject();
 			IMakeTargetManager manager = MakeCorePlugin.getDefault()
 					.getTargetManager();
 			String[] ids = manager.getTargetBuilders(cProject);
@@ -315,6 +289,26 @@ public class ForkStorkHandler extends AbstractHandler {
 			target.setBuildAttribute(IMakeTarget.BUILD_TARGET, "all");
 			manager.addTarget(cProject, target);
 
+			// Set the include and src folders as CDT source folders
+			ICProjectDescription cDescription = CoreModel.getDefault()
+					.getProjectDescriptionManager()
+					.createProjectDescription(cProject, false);
+			ICConfigurationDescription cConfigDescription = cDescription
+					.createConfiguration(
+							ManagedBuildManager.CFG_DATA_PROVIDER_ID,
+							config.getConfigurationData());
+			cDescription.setActiveConfiguration(cConfigDescription);
+			cConfigDescription.setSourceEntries(null);
+			IFolder srcFolder = cProject.getFolder("src");
+			IFolder includeFolder = cProject.getFolder("include");
+			ICSourceEntry srcFolderEntry = new CSourceEntry(srcFolder, null,
+					ICSettingEntry.RESOLVED);
+			ICSourceEntry includeFolderEntry = new CSourceEntry(includeFolder,
+					null, ICSettingEntry.RESOLVED);
+			cConfigDescription.setSourceEntries(new ICSourceEntry[] {
+					srcFolderEntry, includeFolderEntry });
+			
+			// Add the Moose include paths
 			ICProjectDescription projectDescription = CoreModel.getDefault()
 					.getProjectDescription(cProject, true);
 			ICConfigurationDescription configDecriptions[] = projectDescription
@@ -325,7 +319,6 @@ public class ForkStorkHandler extends AbstractHandler {
 				ICLanguageSetting[] settings = projectRoot
 						.getLanguageSettings();
 				for (ICLanguageSetting setting : settings) {
-					System.out.println("Setting: " + setting.toString());
 					List<ICLanguageSettingEntry> includes = getIncludePaths();
 					includes.addAll(setting
 							.getSettingEntriesList(ICSettingEntry.INCLUDE_PATH));
@@ -337,17 +330,11 @@ public class ForkStorkHandler extends AbstractHandler {
 			CoreModel.getDefault().setProjectDescription(cProject,
 					projectDescription);
 
-			ICProject proj = CoreModel.getDefault().getCModel()
-					.getCProject(cProject.getName());
-			IIndexManager indexManager = CCorePlugin.getIndexManager();
-			IIndex index = indexManager.getIndex(proj,
-					IIndexManager.ADD_DEPENDENCIES);
-			indexManager.reindex(proj);
-		} catch (BuildException | CoreException e) {
+		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-		return null;
 
+		return null;
 	}
 
 	private List<ICLanguageSettingEntry> getIncludePaths() {
