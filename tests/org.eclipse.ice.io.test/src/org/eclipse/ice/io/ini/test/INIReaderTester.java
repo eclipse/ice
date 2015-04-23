@@ -10,18 +10,14 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.io.ips.test;
+package org.eclipse.ice.io.ini.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
@@ -38,19 +34,18 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.io.ips.IPSReader;
+import org.eclipse.io.ini.INIReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests the methods of the IPSReader class.  
+ * Tests the methods of the INIReader class.  
  * 
  * @author Andrew Bennett
  *
  */
-public class IPSReaderTester {
+public class INIReaderTester {
 	/**
 	 * The project space used to create the workspace for the tests.
 	 */
@@ -68,7 +63,7 @@ public class IPSReaderTester {
 		IProject project = null;
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "caebatTesterWorkspace";
+				+ "ICETests" + separator + "ioTesterWorkspace";
 		// Enable Debugging
 		System.setProperty("DebugICE", "");
 
@@ -110,81 +105,63 @@ public class IPSReaderTester {
 	 * Tests the IPSReader
 	 */
 	@Test
-	public void checkIPSReader() {
+	public void checkINIReader() {
 		
 		// Set up where to look
 		IProject project = projectSpace;
 		String separator = System.getProperty("file.separator");
 		String filePath = System.getProperty("user.home") + separator + "ICETests" 
-				+ separator + "caebatTesterWorkspace" + separator 
-				+ "Caebat_Model" + separator + "example_ini.conf";
+				+ separator + "ioTesterWorkspace" + separator + "example.ini";
+		String templatePath = System.getProperty("user.home") + separator + "ICETests" 
+				+ separator + "ioTesterWorkspace" + separator + "example_template.ini";		
 		IPath fileIPath = new Path(filePath);
-		IFile inputFile = project.getFile("Caebat_Model" + separator + "example_ini.conf");
-
+		IPath templateIPath = new Path(templatePath);
+		IFile inputFile = project.getFile("example.ini");
+		IFile templateFile = project.getFile("example_template.ini");
+		
 		// Create an IPSReader to test
-		IPSReader reader = new IPSReader();
+		INIReader reader = new INIReader("!");
 		assertNotNull(reader);
-		assertEquals(reader.getReaderType(), "IPSReader");
+		assertEquals(reader.getReaderType(), "INIReader");
 		
 		// Try to read in invalid INI file
 		IFile fakeFile = null;
 		Form form = null;
 		form = reader.read(fakeFile);
-		assertTrue(form == null);
+		assertNull(form);
 		
 		// Load the INI file and parse the contents into Components
 		form = reader.read(inputFile);
-		
-		// Make sure we found some components
-		ArrayList<Component> components = form.getComponents();
-		assertEquals(4,components.size());	
-		DataComponent timeLoopData = (DataComponent) components.get(0);
-		TableComponent globalConfig = (TableComponent) components.get(1);
-		TableComponent portsTable = (TableComponent) components.get(2);
-		MasterDetailsComponent portsMaster = (MasterDetailsComponent) components.get(3);
+		assertNotNull(form);
+		assertEquals(form.getComponents().size(), 3);
 
-
-		/* --- Check the GLOBAL CONFIGURATION component --- */
-		String configName = "Global Configuration";
-		assertEquals(configName, globalConfig.getName());
-		assertEquals(20, globalConfig.numberOfRows());
-		for (int i = 0; i < 20; i++) {
-			assertNotNull(globalConfig.getRow(i));
-		}
+		ArrayList<Component> sections = form.getComponents();
+		assertEquals(((DataComponent)sections.get(0)).retrieveAllEntries().size(), 4);
+		assertEquals(((DataComponent)sections.get(1)).retrieveAllEntries().size(), 1);
+		assertEquals(((DataComponent)sections.get(2)).retrieveAllEntries().size(), 2);
 		
 		
-		/* --- Check the PORTS TABLE component --- */		
-		String portsName = "Ports Table";
-		assertEquals(portsName, portsTable.getName());
-		assertEquals(5, portsTable.numberOfRows());
-		for (int i = 0; i < 5; i++) {
-			assertNotNull(portsTable.getRow(i));
-		}
+		// Test setting the template
+		reader.addTemplateType("template", templateFile);
+		reader.setTemplateType("template");
 		
-		/* --- Check the Ports Master component --- */
-		String masterName = "Ports Master";
-		assertEquals(masterName, portsMaster.getName());
-		assertEquals(5, portsMaster.numberOfMasters());
-		for (int i = 0; i < 5; i++) {
-			assertNotNull(portsMaster.getMasterAtIndex(i));
-		}
-				
-		/* --- Check the TIME LOOP component --- */
-		String timeLoopName = "Time Loop Data";
-		assertEquals(timeLoopName, timeLoopData.getName());
-		assertEquals(5, timeLoopData.retrieveAllEntries().size());
-		for (int i = 0; i < 5; i++) {
-			assertNotNull(timeLoopData.retrieveAllEntries().get(i));
-		}		
+		// Test reading into the form using the template
+		form = reader.read(inputFile);
+		assertNotNull(form);
+		assertEquals(form.getComponents().size(), 4);
 		
-		/* --- Test the findAll method --- */
-		String regex = "SIM_ROOT = .*";
-		String fakex = "Sassafras my mass";
-		ArrayList<Entry> matches = reader.findAll(inputFile, regex);
-		ArrayList<Entry> fakes = reader.findAll(inputFile, fakex);
-		assertEquals(fakes.size(),0);
-		assertEquals(matches.size(),1);
-		assertEquals(matches.get(0).getValue(), "SIM_ROOT = $CAEBAT_ROOT/vibe/trunk/examples/${SIM_NAME}");
+		sections = form.getComponents();
+		for (int i = 0 ; i < sections.size(); i++) {
+			System.out.println((sections.get(i)).getName());
+			for (Entry each : ((DataComponent)sections.get(i)).retrieveAllEntries()) {
+				System.out.println("    " + each.getName() + " = " + each.getValue());
+			}
+		}	
+		assertEquals(((DataComponent)sections.get(0)).retrieveAllEntries().size(), 5);
+		assertEquals(((DataComponent)sections.get(1)).retrieveAllEntries().size(), 4);
+		assertEquals(((DataComponent)sections.get(2)).retrieveAllEntries().size(), 1);		
+		assertEquals(((DataComponent)sections.get(3)).retrieveAllEntries().size(), 1);			
+		
 		
 		// Okay good job
 		return;

@@ -12,31 +12,26 @@
  *******************************************************************************/
 package org.eclipse.ice.proteus;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.emf.ICEXMLProcessor;
-import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
-import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemType;
-
-import java.io.ByteArrayInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 import java.util.ArrayList;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.ITemplatedReader;
+import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.ItemType;
+import org.eclipse.io.ini.INIReader;
+import org.eclipse.io.ini.INIWriter;
 
 /**
  * <p>
@@ -52,40 +47,39 @@ import org.eclipse.core.runtime.CoreException;
  * using loadSpecContents().
  * </p>
  * 
- * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Andrew Bennett
  */
 @XmlRootElement(name = "PROTEUSModel")
 public class PROTEUSModel extends Item {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The process tag for writing the PROTEUS output file.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
-	protected static final String proteusProcessActionString = "Write PROTEUS File";
+	protected static final String proteusProcessActionString = "Write PROTEUS Input File";
 
 	/**
 	 * The id of the neutronics data component in the Form
 	 */
 	private int neutronicsComponentId = 1;
-
+	
 	/**
-	 * <!-- begin-UML-doc -->
+	 * A list of the things that the PROTEUS Model can do
+	 */
+	private ArrayList<String> actionItems;
+	
+	/**
+	 * The ioService that tracks readers and writers
+	 */
+	private IOService ioService;
+	
+	
+	/**
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PROTEUSModel() {
 		// begin-user-code
@@ -94,20 +88,14 @@ public class PROTEUSModel extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor with a project space in which files should be
 	 * manipulated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
-	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PROTEUSModel(IProject projectSpace) {
 		// begin-user-code
@@ -119,109 +107,6 @@ public class PROTEUSModel extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation creates the PROTEUS input file.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @param actionName
-	 *            <p>
-	 *            The name of action that should be performed using the
-	 *            processed Form data.
-	 *            </p>
-	 * @return <p>
-	 *         The status of the Item after processing the Form and executing
-	 *         the action. It returns FormStatus.InfoError if it is unable to
-	 *         run for any reason, including being asked to run actions that are
-	 *         not in the list of available actions.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	public FormStatus process(String actionName) {
-		// begin-user-code
-
-		// Local Declarations
-		FormStatus retStatus = FormStatus.InfoError;
-		String outputFilename = "proteus_neutronics_" + getId() + ".inp";
-		IFile outputFile;
-		FileWriter writer = null;
-		DataComponent neutronicsComponent = null;
-		ArrayList<Entry> neutronicsEntries = null;
-		Entry tmpEntry = null;
-		String headerString = "! PROTEUS Input File. Created by ICE.";
-		InputStream headerStream = new ByteArrayInputStream(
-				headerString.getBytes());
-
-		// Check that the process is something that we will do and that the Item
-		// is enabled
-		if (proteusProcessActionString.equals(actionName) && isEnabled()) {
-			// Get the file
-			outputFile = project.getFile(outputFilename);
-			// Write the file and update the project space
-			try {
-				// Create the file if necessary
-				if (!outputFile.exists()) {
-					outputFile.create(headerStream, true, null);
-				}
-				// Create the writer. Overwrite, never append.
-				writer = new FileWriter(outputFile.getLocation().toFile(),
-						false);
-
-				// Loop through each DataComponent contained in the Form
-				for (int i = 1; i <= form.getNumberOfComponents(); i++) {
-
-					// Grab the Entries from the Form
-					neutronicsComponent = (DataComponent) form.getComponent(i);
-					neutronicsEntries = neutronicsComponent
-							.retrieveAllEntries();
-
-					// Write the Entries to the output file
-					for (int j = 0; j < neutronicsEntries.size(); j++) {
-						tmpEntry = neutronicsEntries.get(j);
-						writer.write(tmpEntry.getName() + "\t"
-								+ tmpEntry.getValue() + "\t!"
-								+ tmpEntry.getDescription() + "\n");
-					}
-				}
-				// Close the writer
-				writer.close();
-				// Refresh the project
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			} catch (CoreException e) {
-				// Complain
-				System.out.println("PROTEUSModel Exception: "
-						+ "Unable to refresh "
-						+ "project space after creating output file!");
-				e.printStackTrace();
-			} catch (IOException e) {
-				// Complain
-				System.out.println("PROTEUSModel Exception: "
-						+ "Unable to save neutronics file!");
-				e.printStackTrace();
-			}
-			// Update the status
-			retStatus = FormStatus.Processed;
-		} else {
-			// Otherwise, punt it up to the parent to see if it can handle it.
-			super.process(actionName);
-		}
-
-		// Reset the status and return. It should only be updated if the Item is
-		// enabled.
-		if (isEnabled()) {
-			status = retStatus;
-			return retStatus;
-		} else {
-			return FormStatus.Unacceptable;
-		}
-
-		// end-user-code
-	}
-
-	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the Form for the PROTEUSModel. The Form contains a
 	 * DataComponent with id=1 that contains Entries for the names of the
@@ -233,71 +118,185 @@ public class PROTEUSModel extends Item {
 	 * The Entries in the DataComponent are named "PROTEUS-Based Application"
 	 * with id = 1 and "Output File Name" with id=2. The TreeComposite is empty.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupForm() {
-		// begin-user-code
-
 		// Create the Form
 		form = new Form();
-
-		// Get the neutronics spec file from the project
-		if (project != null && project.isAccessible()) {
-			// Get the PROTEUS spec file
-			IFile specFile = getPreferencesDirectory().getFile("ICEProteusInput.xml");
-			// Try to get the Form from it
-			ArrayList<Class> classList = new ArrayList<Class>();
-			classList.add(Form.class);
-			classList.addAll(new ICEJAXBClassProvider().getClasses());
-			ICEJAXBHandler handler = new ICEJAXBHandler();
-			try {
-				form = (Form) handler.read(classList, specFile.getContents());
-			} catch (NullPointerException | JAXBException | IOException
-					| CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			// This should only take one line!!! What do we need to do to fix this?
-			// form = getIOService().getReader("xml").read(specFile);
+	
+		if (project != null) {
+			loadInput(null);
 		}
-
-		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to setup the name and description of the model.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupItemInfo() {
-		// begin-user-code
-
 		// Local Declarations
-		String desc = "This item builds models for "
-				+ "PROTEUS-based applications for simulating "
-				+ "sodium-cooled fast reactors.";
-
+		String desc = "Generate input files for the PROTEUS-SN neutron transport simulator";
+	
 		// Describe the Item
-		setName("PROTEUS Model Builder");
+		setName("PROTEUS Model");
 		setDescription(desc);
 		itemType = ItemType.Model;
-
+	
 		// Setup the action list. Remove key-value pair support.
 		allowedActions.remove(taggedExportActionString);
 		// Add PROTEUS GetPot export action
-		allowedActions.add(proteusProcessActionString);
+		allowedActions.add(0, proteusProcessActionString);
+		actionItems = getAvailableActions();
+		
+		// Set up the necessary io services if they aren't already done.
+		ioService = getIOService();
+		if (ioService == null) {
+			setIOService(new IOService());
+			ioService = getIOService();
+		}
+		if (ioService.getTemplatedReader("INIReader") == null) {
+			ioService.addTemplatedReader(new INIReader());
+		}
+		if (ioService.getWriter("INIWriter") == null) {
+			ioService.addWriter(new INIWriter());
+		}
 
 		return;
-		// end-user-code
 	}
 
+	/**
+	 * <p>
+	 * Overrides the reviewEntries operation. This will still call
+	 * super.reviewEntries, but will handle the dependencies after all other dep
+	 * handing is finished.
+	 * </p>
+	 * 
+	 * @return the status of the form
+	 */
+	protected FormStatus reviewEntries(Form preparedForm) {
+		FormStatus retStatus = FormStatus.ReadyToProcess;
+		ArrayList<Component> components = preparedForm.getComponents();
+
+		// Make sure the form has the right amount of data
+		if (components.size() < 1) {
+			System.out.println("ProteusModel Message: Could not find enough data to write a complete input format.");
+			retStatus = FormStatus.InfoError;
+		}
+		return retStatus;
+	}	
+	
+	/**
+	 * <p>
+	 * This operation creates the PROTEUS input file.
+	 * </p>
+	 * 
+	 * @param actionName
+	 *            The name of action that should be performed using the
+	 *            processed Form data.
+	 * @return 
+	 *         The status of the Item after processing the Form and executing
+	 *         the action. It returns FormStatus.InfoError if it is unable to
+	 *         run for any reason, including being asked to run actions that are
+	 *         not in the list of available actions.
+	 */
+	public FormStatus process(String actionName) {
+		FormStatus retStatus;
+		
+		if (this.proteusProcessActionString.equals(actionName)) {
+
+			// Get the file from the project space to create the output
+			String filename = getName().replaceAll("\\s+", "_") + "_" + getId()
+					+ ".inp";
+			// Get the file path and build the URI that will be used to write
+			IFile outputFile = project.getFile(filename);
+
+			// Get the data from the form
+			ArrayList<Component> components = form.getComponents();
+
+			// A valid VibeModel needs 4 components
+			if (components.size() > 0) {
+
+				// create a new IPSWriter with the output file
+				INIWriter writer = (INIWriter) ioService.getWriter("INIWriter");
+				writer.setSectionPattern("!", " ");
+				try {
+					// Write the output file
+					writer.write(form, outputFile);
+					// Refresh the project space
+					project.refreshLocal(IResource.DEPTH_ONE, null);
+				} catch (CoreException e) {
+					// Complain
+					System.err.println("ProteusModel Message: "
+							+ "Failed to refresh the project space.");
+					e.printStackTrace();
+				}
+				// return a success
+				retStatus = FormStatus.Processed;
+			} else {
+				// return an error
+				System.err.println("Not enough components to write new file!");
+				retStatus = FormStatus.InfoError;
+			}			
+		} else {
+			retStatus = super.process(actionName);
+		}
+		
+		return retStatus;
+	}
+
+	
+	/**
+	 * This operation loads the given example into the Form.
+	 * 
+	 * @param name
+	 *            The path name of the example file name to load.
+	 */
+	public void loadInput(String name) {
+		// If nothing is specified, load case 6 from inside the plugin
+		IFile inputFile = null;
+		IFile templateFile = project.getFile("PROTEUS_Model_Builder" 
+							+ System.getProperty("file.separator") + "proteus_template.inp");
+		
+		// Get the file specified, or some default one
+		if (name == null) {
+			inputFile = project.getFile("PROTEUS_Model_Builder" 
+						+ System.getProperty("file.separator") + "proteus_model.inp");
+		} else {
+			inputFile = project.getFile(name);
+		}
+		
+		// Load the components from the file and setup the form
+		System.out.println("ProteusModel Message: Loading " + inputFile.getLocation().toOSString());
+
+		// Set up the reader to use the template if it exists
+		ITemplatedReader reader = ioService.getTemplatedReader("INIReader");
+		reader.setCommentString("!");
+		reader.setAssignmentPattern("\\s\\s\\s+");
+		if (new File(templateFile.getLocation().toOSString()).exists()) {
+			reader.addTemplateType("PROTEUS", templateFile);
+			reader.setTemplateType("PROTEUS");
+		} else {
+			System.err.println("PROTEUS Model Warning: Could not find template file!  Building " 
+					+ "the model form with no template.");
+			reader.setTemplateType(null);
+		}
+
+		// Try to read in the form, and if something went wrong give the user some information
+		form = reader.read(inputFile);
+		if (form != null) {
+			form.setName(getName());
+			form.setDescription(getDescription());
+			form.setId(getId());
+			form.setItemID(getId());
+			form.setActionList(actionItems);
+		} else {
+			DataComponent errorComponent = new DataComponent();
+			errorComponent.setName("Could not find PROTEUS input for model creation!");
+			errorComponent.setDescription("To load PROTEUS data into the model builder " 
+					+ "either use the import button, or set your data in a file named "
+					+ "proteus_model.inp in ICEFiles/default/PROTEUS_Model_Builder.");
+			form = new Form();
+			form.addComponent(errorComponent);
+		}
+	}
 }
