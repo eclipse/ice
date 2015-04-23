@@ -231,12 +231,11 @@ public class CreateCSVPlotAction extends Action {
 							// Add this new series to the plot provider
 							newPlotProvider.addSeries(plotTime,
 									newSeriesProvider);
-
-							// Send it to the visualization view to display the
-							// plot
-							plotViewer.addPlot(newPlotProvider);
 						}
 					}
+					// Send it to the visualization view to display the
+					// plot
+					plotViewer.addPlot(newPlotProvider);
 				}
 			}
 		}
