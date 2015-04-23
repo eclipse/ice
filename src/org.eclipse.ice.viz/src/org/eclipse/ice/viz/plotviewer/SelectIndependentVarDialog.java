@@ -120,10 +120,10 @@ public class SelectIndependentVarDialog extends Dialog {
 	/**
 	 * Returns the selected dependent variables from the dialog window
 	 * 
-	 * @return
+	 * @return A list of selected x axis features. This will never be null.
 	 */
 	public ArrayList<String> getIndependentVars() {
-		return this.independentVariables;
+		return new ArrayList<String>(independentVariables);
 	}
 
 	/**
