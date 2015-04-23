@@ -13,6 +13,7 @@
 package org.eclipse.ice.viz.plotviewer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -30,11 +31,11 @@ public class SelectIndependentVarDialog extends Dialog {
 	/**
 	 * The ArrayList of selected features for independent variable
 	 */
-	private ArrayList<String> independentVariables;
+	private final ArrayList<String> independentVariables;
 	/**
 	 * The list of features to be displayed in the feature selection dialog
 	 */
-	private ArrayList<String> featureList;
+	private final ArrayList<String> featureList;
 	/**
 	 * The source or name of the provider
 	 */
@@ -47,8 +48,7 @@ public class SelectIndependentVarDialog extends Dialog {
 	 */
 	public SelectIndependentVarDialog(Shell parent) {
 		super(parent);
-		// TODO Auto-generated constructor stub
-		featureList = null;
+		featureList = new ArrayList<String>();
 		source = null;
 		independentVariables = new ArrayList<String>();
 	}
@@ -87,18 +87,16 @@ public class SelectIndependentVarDialog extends Dialog {
 
 			// The listener for the xFeatureList which sets what the user
 			// selected to xAxisFeature
-			independentFeatureList
-					.addSelectionListener(new SelectionAdapter() {
-						@Override
-						public void widgetSelected(SelectionEvent event) {
-							independentVariables.clear();
-							String[] selection = independentFeatureList
-									.getSelection();
-							for (int i = 0; i < selection.length; i++) {
-								independentVariables.add(selection[i]);
-							}
-						}
-					});
+			independentFeatureList.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent event) {
+					independentVariables.clear();
+					String[] selection = independentFeatureList.getSelection();
+					for (int i = 0; i < selection.length; i++) {
+						independentVariables.add(selection[i]);
+					}
+				}
+			});
 
 			// Select the first item by default.
 			if (!featureList.isEmpty()) {
@@ -134,7 +132,12 @@ public class SelectIndependentVarDialog extends Dialog {
 	 * @param features
 	 */
 	public void setFeatureList(ArrayList<String> features) {
-		this.featureList = features;
+		featureList.clear();
+		if (features != null) {
+			featureList.addAll(features);
+			// Sort the list of features.
+			Collections.sort(featureList);
+		}
 	}
 
 	public void setProviderName(String source) {
