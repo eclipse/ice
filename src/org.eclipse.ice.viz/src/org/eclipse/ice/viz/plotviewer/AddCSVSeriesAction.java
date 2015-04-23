@@ -14,6 +14,7 @@ package org.eclipse.ice.viz.plotviewer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
@@ -146,8 +147,9 @@ public class AddCSVSeriesAction extends Action {
 		}
 		String[] userSelectedPlotTypes = plotDialog.getSelections();
 
-		if (userSelectedPlotTypes != null) {
-			if ("Contour".equals(userSelectedPlotTypes[0])) {
+		if (userSelectedPlotTypes != null && userSelectedPlotTypes.length > 0) {
+			final String plotType = userSelectedPlotTypes[0];
+			if ("Contour".equals(plotType)) {
 				return;
 			} else {
 				// Handle plotting a scatter, line, or bar series graph
@@ -162,43 +164,46 @@ public class AddCSVSeriesAction extends Action {
 				featureDialog
 						.setYAxisFeatures(newDataProvider.getFeatureList());
 				if (featureDialog.open() == Window.OK
-						&& featureDialog.getXAxisFeature() != null
-						&& featureDialog.getYAxisFeature() != null) {
+						&& !featureDialog.getXAxisFeatures().isEmpty()
+						&& !featureDialog.getYAxisFeatures().isEmpty()) {
 
-					// The x axis feature to use for plotting
-					String xAxisFeature = featureDialog.getXAxisFeature();
-					// The y axis feature to use for plotting
-					String yAxisFeature = featureDialog.getYAxisFeature();
-
-					// The plot's set time
+					// Reset the plot's time to the default (first) one.
 					Double plotTime = newDataProvider.getTimes().get(0);
-
-					// Set the time, just in case
 					newDataProvider.setTime(plotTime);
 
-					// Create a new series title for the new series
-					String newSeriesTitle = xAxisFeature + " vs. "
-							+ yAxisFeature + " at " + plotTime;
+					// Get the features that need to be plotted against each
+					// other.
+					List<String> xAxisFeatures = featureDialog
+							.getXAxisFeatures();
+					List<String> yAxisFeatures = featureDialog
+							.getYAxisFeatures();
 
-					// Create a new series provider
-					SeriesProvider newSeriesProvider = new SeriesProvider();
-					// Set the provider to use for this series
-					newSeriesProvider.setDataProvider(newDataProvider);
-					// Set the time the provider will use for this series
-					newSeriesProvider.setTimeForDataProvider(plotTime);
-					// Set the series title
-					newSeriesProvider.setSeriesTitle(newSeriesTitle);
-					// Set the series x axis feature
-					newSeriesProvider.setXDataFeature(xAxisFeature);
-					// Set the series y axis feature
-					newSeriesProvider.setYDataFeature(yAxisFeature);
-					// Set the type of plot
-					newSeriesProvider.setSeriesType(userSelectedPlotTypes[0]);
-					// Add this new series to the plot provider
-					plotToAddSeries.addSeries(plotTime, newSeriesProvider);
+					for (String xAxisFeature : xAxisFeatures) {
+						// Every series will have this basic title. The x-axis
+						// data name goes second.
+						String baseTitle = " vs. " + xAxisFeature + " at "
+								+ plotTime;
+						for (String yAxisFeature : yAxisFeatures) {
+							// Create a new series title for the new series
+							String newSeriesTitle = yAxisFeature + baseTitle;
+
+							// Create a new series provider
+							SeriesProvider newSeriesProvider = new SeriesProvider();
+							newSeriesProvider.setDataProvider(newDataProvider);
+							newSeriesProvider.setTimeForDataProvider(plotTime);
+							newSeriesProvider.setSeriesTitle(newSeriesTitle);
+							newSeriesProvider.setXDataFeature(xAxisFeature);
+							newSeriesProvider.setYDataFeature(yAxisFeature);
+							newSeriesProvider.setSeriesType(plotType);
+							// Add this new series to the plot provider
+							plotToAddSeries.addSeries(plotTime,
+									newSeriesProvider);
+						}
+					}
 				}
 			}
 		}
+		return;
 	}
 
 	/**
@@ -216,6 +221,8 @@ public class AddCSVSeriesAction extends Action {
 	 */
 	public void addSeriesFromFileSet(Shell shell, PlotProvider plotToAddSeries,
 			VizResource resource) {
+		// FIXME Doesn't this method need to mirror what's in
+		// CreateCSVPlotAction#plotFileSet(...)?
 		String[] fileSet = resource.getFileSet();
 
 		// Creating a new CSVDataProvider for the new file
@@ -246,9 +253,10 @@ public class AddCSVSeriesAction extends Action {
 		// The selected plot types the user would like
 		String[] userSelectedPlotTypes = plotDialog.getSelections();
 
-		if (userSelectedPlotTypes == null) {
+		if (userSelectedPlotTypes == null || userSelectedPlotTypes.length == 0) {
 			return;
 		}
+		final String plotType = userSelectedPlotTypes[0];
 
 		// If there's more than one time, open a select time dialog
 		Double currentTime = null;
@@ -283,43 +291,54 @@ public class AddCSVSeriesAction extends Action {
 			featureDialog.setYAxisFeatures(newDataSetProvider.getFeatureList());
 			// Open the dialog
 			if (featureDialog.open() == Window.OK
-					&& featureDialog.getXAxisFeature() != null
-					&& featureDialog.getYAxisFeature() != null) {
+					&& featureDialog.getXAxisFeatures() != null
+					&& featureDialog.getYAxisFeatures() != null) {
 
-				// The x axis feature to use for plotting
-				String xAxisFeature = featureDialog.getXAxisFeature();
-				// The y axis feature to use for plotting
-				String yAxisFeature = featureDialog.getYAxisFeature();
+				// Get the features that need to be plotted against each other.
+				List<String> xAxisFeatures = featureDialog.getXAxisFeatures();
+				List<String> yAxisFeatures = featureDialog.getYAxisFeatures();
 
-				// Get the independent variables
-				ArrayList<String> independentVariables = newDataSetProvider
+				// Get the independent variables and features for the data set.
+				List<String> independentVariables = newDataSetProvider
 						.getIndependentVariables();
-				// Get the features
-				ArrayList<String> featureVariables = newDataSetProvider
+				List<String> featureVariables = newDataSetProvider
 						.getFeaturesAtCurrentTime();
-				// Check that the desired xAxisFeature and yAxisFeature exist at
-				// the current time
-				if (independentVariables.contains(xAxisFeature)
-						&& featureVariables.contains(yAxisFeature)) {
-					// Create a new series title for the new series
-					String newSeriesTitle = xAxisFeature + " vs. "
-							+ yAxisFeature + " at " + currentTime;
-					// Create a new series provider
-					SeriesProvider newSeriesProvider = new SeriesProvider();
-					// Set the provider to use for this series
-					newSeriesProvider.setDataProvider(newDataSetProvider);
-					// Set the time the provider will use for this series
-					newSeriesProvider.setTimeForDataProvider(currentTime);
-					// Set the series title
-					newSeriesProvider.setSeriesTitle(newSeriesTitle);
-					// Set the series x axis feature
-					newSeriesProvider.setXDataFeature(xAxisFeature);
-					// Set the series y axis feature
-					newSeriesProvider.setYDataFeature(yAxisFeature);
-					// Set the type of plot
-					newSeriesProvider.setSeriesType(userSelectedPlotTypes[0]);
-					// Add this new series to the plot provider
-					plotToAddSeries.addSeries(currentTime, newSeriesProvider);
+
+				// Remove all selected x and y axis variables that are not valid
+				// independent and feature variables in the data set.
+				for (int x = xAxisFeatures.size() - 1; x >= 0; x--) {
+					if (!independentVariables.contains(xAxisFeatures.get(x))) {
+						xAxisFeatures.remove(x);
+					}
+				}
+				for (int y = yAxisFeatures.size() - 1; y >= 0; y--) {
+					if (!featureVariables.contains(yAxisFeatures.get(y))) {
+						yAxisFeatures.remove(y);
+					}
+				}
+
+				// For all remaning selected x and y axis, plot them.
+				for (String xAxisFeature : xAxisFeatures) {
+					// Every series will have this basic title. The x-axis
+					// data name goes second.
+					String baseTitle = " vs. " + xAxisFeature + " at "
+							+ currentTime;
+					for (String yAxisFeature : yAxisFeatures) {
+						// Create a new series title for the new series
+						String newSeriesTitle = yAxisFeature + baseTitle;
+
+						// Create a new series provider.
+						SeriesProvider newSeriesProvider = new SeriesProvider();
+						newSeriesProvider.setDataProvider(newDataSetProvider);
+						newSeriesProvider.setTimeForDataProvider(currentTime);
+						newSeriesProvider.setSeriesTitle(newSeriesTitle);
+						newSeriesProvider.setXDataFeature(xAxisFeature);
+						newSeriesProvider.setYDataFeature(yAxisFeature);
+						newSeriesProvider.setSeriesType(plotType);
+						// Add this new series to the plot provider
+						plotToAddSeries.addSeries(currentTime,
+								newSeriesProvider);
+					}
 				}
 			}
 		}
