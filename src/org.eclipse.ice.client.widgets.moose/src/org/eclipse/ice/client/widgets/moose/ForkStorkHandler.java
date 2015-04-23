@@ -236,6 +236,7 @@ public class ForkStorkHandler extends AbstractHandler {
 
 			IToolChain toolChain = null;
 			for (IToolChain tool : ManagedBuildManager.getRealToolChains()) {
+				System.out.println("Tool: " + tool.getName() + ", " + os );
 				if (os.contains("Mac") && tool.getName().contains("Mac")
 						&& tool.getName().contains("GCC")) {
 					toolChain = tool;
