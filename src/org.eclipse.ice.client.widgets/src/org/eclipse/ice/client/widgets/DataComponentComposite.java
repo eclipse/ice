@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,8 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -40,7 +42,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * DataComponents. It can take a message manager for posting messages and it can
  * be configured to post save events.
  * 
- * @author Jay Jay Billings, Jordan H. Deyton
+ * @author Jay Jay Billings, Jordan H. Deyton, Anna Wojtowicz
  */
 public class DataComponentComposite extends Composite implements
 		IUpdateableListener {
@@ -122,6 +124,14 @@ public class DataComponentComposite extends Composite implements
 		if (dataComp != null) {
 			dataComp.register(this);
 		}
+		
+		// Add a dispose listener which unregisters from the DataComponent
+		addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				dataComp.unregister(DataComponentComposite.this);
+			}
+		});
 
 		// Set the initial layout for the parent class. This should default to
 		// a GridLayout with 3 equally sized columns.
@@ -148,97 +158,90 @@ public class DataComponentComposite extends Composite implements
 	}
 
 	/**
-	 * This operation handles a re-draw, if needed, of all of the
+	 * This operation handles a re-draw of EntryComposites that have been 
+	 * recently changed. This method attempts to avoid a complete redraw of all
 	 * EntryComposites.
 	 */
 	public void refresh() {
-		// begin-user-code
-
-		// Don't try to refresh anything if this composite is already disposed
-		if (isDisposed()) {
-			return;
-		}
-		
+	
 		// Local Declarations
-		boolean rewrite = false;
 		List<Entry> entries = dataComp.retrieveAllEntries();
-
+		
 		// If there's an empty label set and it's not longer necessary, dispose
 		if (!entries.isEmpty() && emptyLabel != null) {
 			emptyLabel.dispose();
 			emptyLabel = null;
 		}
-
-		// Check and refresh the Entries. Make sure the view is synced
-		// with the underlying data. Using ArrayList here because we need to
-		// use Entry.equals and not Entry.hashCode
-		for (int i = 0; !rewrite && i < entries.size(); i++) {
-			Entry entry = entries.get(i);
-
-			if (!entryMap.containsKey(i)) {
-				// If the Entry has not been rendered, see if we can add a new
-				// EntryComposite to the view.
-				if (entry.isReady()) {
-					// Make sure the new Entry is at the end.
-					if (entryMap.isEmpty() || i > entryMap.lastKey()) {
+		
+		// Begin comparing the list of Entries to the EntryComposites in 
+		// entryMap to determine what needs to be done
+		boolean renderedEntry = false;
+		int maxIterations = entries.size() > entryMap.size() ? 
+				entries.size() : entryMap.size();
+				
+		for (int i = 0; i < maxIterations; i++) {
+			Entry entry = (i < entries.size() ? entries.get(i) : null);
+			EntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i) : null);
+			
+			// First, if the Entry isn't supposed to be displayed, dispose it
+			// and move on (she ain't worth it, man...)
+			if (entry == null || !entry.isReady()) {
+				disposeEntry(i);
+				continue;
+				
+			} else if (entryComp == null) {
+				
+	 			// If the EntryComposite hasn't been rendered yet, render it,
+				// and add it to the entryMap
+				String oldValue = entry.getValue();
+				renderEntry(entry, i);
+				entryComp = entryMap.get(i);
+				entryComp.setEntryValue(oldValue);
+				renderedEntry = true;
+				
+			} else {
+			
+				// Iterate through the Entry.AllowedValues and compare to the 
+				// values of the corresponding EntryComposite in the map
+				for (int j = 0; j < entry.getAllowedValues().size(); j++) {
+					String allowedValue = entry.getAllowedValues().get(j);
+					
+					// Re-render Entries only if they've had a new AllowedValue 
+					// added
+					if (!entryComp.entry.getAllowedValues().contains(allowedValue)) {
+						String oldValue = entryComp.entry.getValue();
+						disposeEntry(i);
 						renderEntry(entry, i);
-					} else {
-						// Otherwise, the list will be out of order. Redraw.
-						rewrite = true;
+						entryComp = entryMap.get(i);
+						entryComp.setEntryValue(oldValue);
+						renderedEntry = true;
 					}
 				}
-			} else if (entry != entryMap.get(i).getEntry()) {
-				// If the Entry is not the same reference as the rendered one,
-				// redraw.
-				rewrite = true;
-			} else if (!entry.isReady()) {
-				// If the Entry is no longer ready, remove its rendered
-				// EntryComposite.
-				disposeEntry(i);
 			}
 		}
-
-		// This was added specifically to handle the issues with adding entries
-		// on the fly. This also forces the entries to be ordered correctly on
-		// the screen based on id/ - 20130608@8:39am SFH
-		if (rewrite
-				|| dataComp.retrieveReadyEntries().size() != entryMap.size()) {
-			// Dispose the old EntryComposites.
-			disposeEntries();
-			// Re-render the current EntryComposites.
-			renderEntries();
-		}
-
-		// Refresh all EntryComposites
-		for (EntryComposite comp : entryMap.values()) {
-			comp.refresh();
+		
+		// Refresh EntryComposites if any have been re-rendered recently
+		if (renderedEntry) {
+			for (EntryComposite comp : entryMap.values()) { 
+				comp.refresh();
+			}
 		}
 
 		// Layout the DataComponentComposite. This can redraw stale widgets.
 		layout();
 
 		return;
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the DataComponent that should be rendered, updated
 	 * and monitored by the composite.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
-	 *            <p>
 	 *            The DataComponent
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setDataComponent(DataComponent component) {
-		// begin-user-code
 
 		// If the Component is not null, store it and register as a listener
 		if (component != null && component != dataComp) {
@@ -272,46 +275,27 @@ public class DataComponentComposite extends Composite implements
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the DataComponent that is currently rendered,
 	 * updated and monitored by the composite.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The DataComponent
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The DataComponent
 	 */
 	public DataComponent getDataComponent() {
-		// begin-user-code
 		return dataComp;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation renders the Entries in the DataComponent in the Section
 	 * managed by the composite.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void renderEntries() {
-		// begin-user-code
 
 		// Try to get the list of ready Entries from the DataComponent.
-		List<Entry> entries = (dataComp != null ? dataComp.retrieveAllEntries()
-				: null);
+		List<Entry> entries = (dataComp != null ? 
+				dataComp.retrieveAllEntries() : null);
 
 		// If the list is not null and not empty, try to render the Entries.
 		if (entries != null && !entries.isEmpty()) {
@@ -361,7 +345,6 @@ public class DataComponentComposite extends Composite implements
 		layout();
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -382,22 +365,13 @@ public class DataComponentComposite extends Composite implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation creates an EntryComposite for an Entry and adds that Entry
 	 * to the EntryMap.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param entry
-	 *            <p>
 	 *            The Entry for which the Control should be created.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void renderEntry(Entry entry, int index) {
-		// begin-user-code
 
 		// Local Declarations
 		EntryComposite entryComposite = null;
@@ -436,26 +410,16 @@ public class DataComponentComposite extends Composite implements
 		entryMap.put(index, entryComposite);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation removes an Entry and its associated SWT Control from the
 	 * composite.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param entry
-	 *            <p>
 	 *            The Entry that should be removed.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void disposeEntry(int index) {
-		// begin-user-code
 
 		// Remove the Control
 		EntryComposite composite = entryMap.remove(index);
@@ -464,7 +428,6 @@ public class DataComponentComposite extends Composite implements
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -516,23 +479,22 @@ public class DataComponentComposite extends Composite implements
 	 * (non-Javadoc)
 	 * 
 	 * @see IUpdateableListener#update(Component component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(IUpdateable component) {
-		// begin-user-code
 
 		// When the DataComponent has updated, refresh on the Eclipse UI thread.
 		if (component == dataComp) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					refresh();
+					if (!DataComponentComposite.this.isDisposed()) {
+						refresh();
+					} else {
+						dataComp.unregister(DataComponentComposite.this);
+					}
 				}
 			});
 		}
 
 		return;
-		// end-user-code
 	}
-
 }
