@@ -32,14 +32,15 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.nuclear.MOOSELauncher;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * This class executes the steps needed to generate MOOSE YAML and 
- * Action Syntax files by using the MOOSELauncher. 
+ * This class executes the steps needed to generate MOOSE YAML and Action Syntax
+ * files by using the MOOSELauncher.
  * 
  * @author Alex McCaskey
  *
@@ -47,27 +48,27 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class GenerateYAMLHandler extends AbstractHandler implements Runnable {
 
 	/**
-	 * Reference to the MOOSELauncher that we will use to 
-	 * generate the YAML and Action Syntax files. 
+	 * Reference to the MOOSELauncher that we will use to generate the YAML and
+	 * Action Syntax files.
 	 */
 	private MOOSELauncher launcher;
 
 	/**
-	 * Reference to the wizard that will get the required info 
-	 * we need to generate yaml and syntax files. 
+	 * Reference to the wizard that will get the required info we need to
+	 * generate yaml and syntax files.
 	 */
 	private GenerateYAMLWizard wizard;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
+
 		// Create a new Generate YAML Wizard and Dialog
 		Shell shell = HandlerUtil.getActiveWorkbenchWindow(event).getShell();
 		wizard = new GenerateYAMLWizard();
 		WizardDialog dialog = new WizardDialog(shell, wizard);
 
-		// The MOOSELauncher has the functionality needed to generate 
-		// yaml and syntax files, so lets create one. 
+		// The MOOSELauncher has the functionality needed to generate
+		// yaml and syntax files, so lets create one.
 		// FIXME NOT SURE HOW TO GET THE CORRECT PROJECT
 		launcher = new MOOSELauncher(ResourcesPlugin.getWorkspace().getRoot()
 				.getProject("default"));
@@ -77,15 +78,17 @@ public class GenerateYAMLHandler extends AbstractHandler implements Runnable {
 			return null;
 		}
 
-		// Since this action now takes care of the generate yaml stuff, 
-		// we don't need to explicitly show the generate yaml executable on the 
-		// Moose Launcher form. So I've removed it, but we need to set it here so 
-		// we can use that action. So here I'm creating a new IEntryContentProvider 
-		// that has that executable in the Entry. 
+		// Since this action now takes care of the generate yaml stuff,
+		// we don't need to explicitly show the generate yaml executable on the
+		// Moose Launcher form. So I've removed it, but we need to set it here
+		// so
+		// we can use that action. So here I'm creating a new
+		// IEntryContentProvider
+		// that has that executable in the Entry.
 		IEntryContentProvider execContentProvider = new BasicEntryContentProvider();
 		ArrayList<String> execList = ((DataComponent) launcher.getForm()
-				.getComponent(5)).retrieveEntry("Executable")
-				.getAllowedValues();
+				.getComponent(JobLauncherForm.parallelId + 2)).retrieveEntry(
+				"Executable").getAllowedValues();
 		execList.add("Generate YAML/action syntax");
 
 		// Finish setting the allowed values and default value
@@ -93,25 +96,34 @@ public class GenerateYAMLHandler extends AbstractHandler implements Runnable {
 		execContentProvider.setAllowedValueType(AllowedValueType.Discrete);
 		execContentProvider.setDefaultValue("Generate YAML/action syntax");
 
+		// Now remove all the file entries since we don't need input files for
+		// this.
+		((DataComponent) launcher.getForm().getComponent(
+				JobLauncherForm.filesId)).clearEntries();
+
 		// Give the Launcher form's executable Entry a new IEntryContentProvider
 		// so that we can execute the YAML generation stuff
-		((DataComponent) launcher.getForm().getComponent(5)).retrieveEntry(
-				"Executable").setContentProvider(execContentProvider);
-		
+		((DataComponent) launcher.getForm().getComponent(
+				JobLauncherForm.parallelId + 2)).retrieveEntry("Executable")
+				.setContentProvider(execContentProvider);
+
 		// Set the executable to Generate YAML
-		((DataComponent) launcher.getForm().getComponent(5)).retrieveEntry(
-				"Executable").setValue("Generate YAML/action syntax");
-		
+		((DataComponent) launcher.getForm().getComponent(
+				JobLauncherForm.parallelId + 2)).retrieveEntry("Executable")
+				.setValue("Generate YAML/action syntax");
+
 		// Set the Host and Exec path information
-		((TableComponent) launcher.getForm().getComponent(4)).getRow(0).get(0)
+		((TableComponent) launcher.getForm().getComponent(
+				JobLauncherForm.parallelId + 1)).getRow(0).get(0)
 				.setValue(wizard.getHostName());
-		((TableComponent) launcher.getForm().getComponent(4)).getRow(0).get(2)
+		((TableComponent) launcher.getForm().getComponent(
+				JobLauncherForm.parallelId + 1)).getRow(0).get(2)
 				.setValue(wizard.getExecPath());
 
 		// Submit the Form
 		launcher.submitForm(launcher.getForm());
 
-		// Launch the execution thread. 
+		// Launch the execution thread.
 		Thread thread = new Thread(this);
 		thread.start();
 
