@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.moose;
+package org.eclipse.ice.client.widgets.moose.wizards;
 
 import java.io.BufferedReader;
 import java.io.File;

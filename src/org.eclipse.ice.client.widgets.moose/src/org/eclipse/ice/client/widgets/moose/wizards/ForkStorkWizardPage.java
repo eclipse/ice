@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.moose;
+package org.eclipse.ice.client.widgets.moose.wizards;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -23,51 +23,50 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 /**
+ * The ForkStorkWizardPage is a subclass of WizardPage that 
+ * provides a Composite for the Wizard that takes the user's 
+ * desired MOOSE app name and GitHub credentials for forking the 
+ * MOOSE stork. 
  * 
  * @author Alex McCaskey
  *
  */
-public class GenerateYAMLWizardPage extends WizardPage {
+public class ForkStorkWizardPage extends WizardPage {
 
 	/**
-	 * 
+	 * Reference to the Parent Composite.
 	 */
 	private Composite container;
 
 	/**
-	 * 
+	 * The text box for the Moose application name.
 	 */
-	private Text hostname;
+	private Text appName;
 
 	/**
-	 * 
+	 * The text box for the GitHub user name.
 	 */
-	private Text execPath;
+	private Text uName;
 	
 	/**
-	 * 
-	 */
-	private Text username;
-	
-	/**
+	 * The text box for the user's password.
 	 * 
 	 */
 	private Text password;
 	
 	/**
-	 * 
+	 * The constructor
 	 * @param pageName
 	 */
-	protected GenerateYAMLWizardPage(String pageName) {
+	protected ForkStorkWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName);
-		setDescription("Please provide the hostname and execution "
-				+ "path for your MOOSE \napplications, and a username "
-				+ "and password if they exist on a remote host.");
+		setDescription("Please provide the name of the Moose Application you'd like to create.");
 	}
 
 	/**
-	 * 
+	 * Create a Composite with fields for the application name 
+	 * and GitHub user credentials. 
 	 */
 	@Override
 	public void createControl(Composite parent) {
@@ -76,11 +75,11 @@ public class GenerateYAMLWizardPage extends WizardPage {
 		container.setLayout(layout);
 		layout.numColumns = 1;
 		Label label1 = new Label(container, SWT.NONE);
-		label1.setText("Hostname:");
+		label1.setText("MooseApp Name:");
 
-		hostname = new Text(container, SWT.BORDER | SWT.SINGLE);
-		hostname.setText("localhost");
-		hostname.addKeyListener(new KeyListener() {
+		appName = new Text(container, SWT.BORDER | SWT.SINGLE);
+		appName.setText("");
+		appName.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -88,7 +87,7 @@ public class GenerateYAMLWizardPage extends WizardPage {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (!hostname.getText().isEmpty()) {
+				if (!appName.getText().isEmpty()) {
 					setPageComplete(true);
 
 				}
@@ -96,19 +95,14 @@ public class GenerateYAMLWizardPage extends WizardPage {
 
 		});
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		hostname.setLayoutData(gd);
+		appName.setLayoutData(gd);
 		
-		new Label(container, SWT.NONE).setText("Execution Path:");
-		execPath = new Text(container, SWT.BORDER | SWT.SINGLE);
-		execPath.setText(System.getProperty("user.home") + System.getProperty("file.separator") + "projects");
-		execPath.setLayoutData(gd);
+		new Label(container, SWT.NONE).setText("GitHub Username:");
+		uName = new Text(container, SWT.BORDER | SWT.SINGLE);
+		uName.setText(System.getProperty("user.name"));
+		uName.setLayoutData(gd);
 		
-		new Label(container, SWT.NONE).setText("Username:");
-		username = new Text(container, SWT.BORDER | SWT.SINGLE);
-		username.setText(System.getProperty("user.name"));
-		username.setLayoutData(gd);
-		
-		new Label(container, SWT.NONE).setText("Password (if remote):");
+		new Label(container, SWT.NONE).setText("GitHub Password:");
 		password = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.PASSWORD);
 		password.setText("");
 		password.setLayoutData(gd);
@@ -120,34 +114,27 @@ public class GenerateYAMLWizardPage extends WizardPage {
 	}
 
 	/**
-	 * 
+	 * Return the Moose application name
 	 * @return
 	 */
-	public String getHostName() {
-		return hostname.getText();
-	}
-	
-	/*
-	 * 
-	 */
-	public String getExecPath() {
-		return execPath.getText();
+	public String getMooseAppName() {
+		return appName.getText();
 	}
 	
 	/**
-	 * 
+	 * Return the GitHub user name. 
 	 * @return
 	 */
-	public String getUsername() {
-		return username.getText();
+	public String getGitUserName() {
+		return uName.getText();
 	}
 	
 	/**
-	 * 
+	 * Return the GitHub password. 
 	 * @return
 	 */
-	public String getPassword() {
+	public String getGitPassword() {
 		return password.getText();
 	}
-
+	
 }

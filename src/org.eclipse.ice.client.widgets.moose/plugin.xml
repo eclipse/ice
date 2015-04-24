@@ -102,7 +102,7 @@
       <extension
             point="org.eclipse.ui.commands">
          <command
-               defaultHandler="org.eclipse.ice.client.widgets.moose.GenerateYAMLHandler"
+               defaultHandler="org.eclipse.ice.client.widgets.moose.wizards.GenerateYAMLHandler"
                description="Generate YAML and Action Syntax"
                id="org.eclipse.ice.client.widgets.moose.command.GenerateYAML"
                name="Generate MOOSE YAML and Action syntax files">
@@ -130,7 +130,7 @@
        <extension
             point="org.eclipse.ui.commands">
          <command
-               defaultHandler="org.eclipse.ice.client.widgets.moose.ForkStorkHandler"
+               defaultHandler="org.eclipse.ice.client.widgets.moose.wizards.ForkStorkHandler"
                description="Generate YAML and Action Syntax"
                id="org.eclipse.ice.client.widgets.moose.command.ForkStork"
                name="MOOSE Fork the Stork">
@@ -165,7 +165,7 @@
       <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.eclipse.ice.client.widgets.moose.NewKernelHandler"
+            defaultHandler="org.eclipse.ice.client.widgets.moose.actions.NewKernelHandler"
             id="org.eclipse.ice.client.widgets.moose.newkernel"
             name="Kernel">
       </command>

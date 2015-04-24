@@ -10,12 +10,9 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.moose;
+package org.eclipse.ice.client.widgets.moose.wizards;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,11 +21,7 @@ import java.util.Map;
 
 import org.eclipse.cdt.core.CCProjectNature;
 import org.eclipse.cdt.core.CCorePlugin;
-import org.eclipse.cdt.core.dom.IPDOMManager;
-import org.eclipse.cdt.core.index.IIndex;
-import org.eclipse.cdt.core.index.IIndexManager;
 import org.eclipse.cdt.core.model.CoreModel;
-import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.settings.model.CIncludePathEntry;
 import org.eclipse.cdt.core.settings.model.CSourceEntry;
 import org.eclipse.cdt.core.settings.model.ICConfigurationDescription;
@@ -39,22 +32,15 @@ import org.eclipse.cdt.core.settings.model.ICProjectDescription;
 import org.eclipse.cdt.core.settings.model.ICProjectDescriptionManager;
 import org.eclipse.cdt.core.settings.model.ICSettingEntry;
 import org.eclipse.cdt.core.settings.model.ICSourceEntry;
-import org.eclipse.cdt.core.settings.model.WriteAccessException;
 import org.eclipse.cdt.core.settings.model.extension.CConfigurationData;
 import org.eclipse.cdt.make.core.IMakeCommonBuildInfo;
 import org.eclipse.cdt.make.core.IMakeTarget;
 import org.eclipse.cdt.make.core.IMakeTargetManager;
 import org.eclipse.cdt.make.core.MakeCorePlugin;
-import org.eclipse.cdt.make.core.MakeProjectNature;
-import org.eclipse.cdt.managedbuilder.core.BuildException;
 import org.eclipse.cdt.managedbuilder.core.IBuilder;
 import org.eclipse.cdt.managedbuilder.core.IConfiguration;
-import org.eclipse.cdt.managedbuilder.core.IManagedBuildInfo;
-import org.eclipse.cdt.managedbuilder.core.IManagedProject;
-import org.eclipse.cdt.managedbuilder.core.IProjectType;
 import org.eclipse.cdt.managedbuilder.core.IToolChain;
 import org.eclipse.cdt.managedbuilder.core.ManagedBuildManager;
-import org.eclipse.cdt.managedbuilder.core.ManagedCProjectNature;
 import org.eclipse.cdt.managedbuilder.internal.core.Configuration;
 import org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo;
 import org.eclipse.cdt.managedbuilder.internal.core.ManagedProject;
@@ -65,49 +51,28 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceDescription;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.RepositoryService;
-import org.eclipse.ice.client.widgets.EclipseStreamingTextWidget;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.item.nuclear.MOOSELauncher;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkingSetManager;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * The ForkStorkHandler displays a Wizard to the user to gather a new MOOSE
  * application name and the users GitHub credentials, and then forks
  * idaholab/stork and renames the repository to the provided application name.
+ * Additionally, it imports the project as a CDT Makefile project with 
+ * existing code, creates a new Make Target, and adds the appropriate MOOSE 
+ * include files to the Paths and Symbols preference page. 
  * 
  * @author Alex McCaskey
  *
@@ -124,7 +89,6 @@ public class ForkStorkHandler extends AbstractHandler {
 
 		// Local Declarations
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
 		Shell shell = HandlerUtil.getActiveWorkbenchWindow(event).getShell();
 		String sep = System.getProperty("file.separator"), appName = "", gitHubUser = "", password = "", remoteURI = "";
 		ArrayList<String> cmdList = new ArrayList<String>();
@@ -211,13 +175,15 @@ public class ForkStorkHandler extends AbstractHandler {
 			}
 		}
 
-		// The rest is about importing the C++ project correctly
+		/*------------ The rest is about importing the C++ project correctly ---------*/
+		
+		// Get the project and project description handles
 		IProject project = workspace.getRoot().getProject(appName);
 		IProjectDescription description = workspace
 				.newProjectDescription(appName);
 
 		try {
-			// Create the Project
+			// Create the CDT Project
 			CCorePlugin.getDefault().createCDTProject(description, project,
 					new NullProgressMonitor());
 
@@ -234,6 +200,8 @@ public class ForkStorkHandler extends AbstractHandler {
 			ManagedProject mProj = new ManagedProject(projDesc);
 			info.setManagedProject(mProj);
 
+			// Grab the correct toolchain
+			// FIXME this should be better...
 			IToolChain toolChain = null;
 			for (IToolChain tool : ManagedBuildManager.getRealToolChains()) {
 				if (os.contains("Mac") && tool.getName().contains("Mac")
@@ -254,9 +222,7 @@ public class ForkStorkHandler extends AbstractHandler {
 				}
 			}
 
-			System.out.println("Setting the tool chain to be "
-					+ toolChain.getName());
-
+			// Set up the Build configuratino
 			CfgHolder cfgHolder = new CfgHolder(toolChain, null);
 			String s = toolChain == null ? "0" : toolChain.getId(); //$NON-NLS-1$
 			IConfiguration config = new Configuration(
@@ -289,7 +255,7 @@ public class ForkStorkHandler extends AbstractHandler {
 			target.setBuildAttribute(IMakeTarget.BUILD_TARGET, "all");
 			manager.addTarget(cProject, target);
 
-			// Set the include and src folders as CDT source folders
+			// Set the include and src folders as actual CDT source folders
 			ICProjectDescription cDescription = CoreModel.getDefault()
 					.getProjectDescriptionManager()
 					.createProjectDescription(cProject, false);
@@ -326,7 +292,6 @@ public class ForkStorkHandler extends AbstractHandler {
 							includes);
 				}
 			}
-
 			CoreModel.getDefault().setProjectDescription(cProject,
 					projectDescription);
 
@@ -334,9 +299,19 @@ public class ForkStorkHandler extends AbstractHandler {
 			e.printStackTrace();
 		}
 
+		// FIXME SHOULD WE CHECK IF MOOSE IS IN THE WORKSPACE 
+		// AND CLONE IT IF ITS NOT
+		
+		
 		return null;
 	}
 
+	/**
+	 * Private method used basically to just compartimentalize 
+	 * all the include additions for the MOOSE build system. 
+	 * 
+	 * @return
+	 */
 	private List<ICLanguageSettingEntry> getIncludePaths() {
 		List<ICLanguageSettingEntry> includes = new ArrayList<ICLanguageSettingEntry>();
 
