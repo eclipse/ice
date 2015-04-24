@@ -623,8 +623,8 @@ public class JobLauncher extends Item {
 		String installDir = ".";
 		IResource fileResource = null;
 		String os = "linux", accountCode = "";
-		DataComponent fileData = null, execData = null, parallelData = null;
-		Entry fileEntry = null, mpiEntry = null, execEntry = null;
+		DataComponent fileData = null, parallelData = null;
+		Entry fileEntry = null, mpiEntry = null;
 		int numProcs = 1, numTBBThreads = 1;
 
 		// Get the project space directory 
@@ -634,30 +634,14 @@ public class JobLauncher extends Item {
 		fileData = (DataComponent) form.getComponent(JobLauncherForm.filesId);
 		parallelData = (DataComponent) form
 				.getComponent(JobLauncherForm.parallelId);
-		execData = (DataComponent) form.getComponent(5);
 		// Check the components and fail if they are null
 		if (fileData == null) {
 			return FormStatus.InfoError;
 		} else {
 			// Make sure if there are any additional input files, that they are
 			// all valid too
-			int filesToCheck = fileData.retrieveAllEntries().size();
-			
-			// If the executable name is the YAML/action syntax generator, don't
-			// check any files
-			if (execData != null) {
-				execEntry = execData.retrieveEntry("Executable");
-				if (execEntry != null && execEntry.getValue() != null 
-						&& !execEntry.getValue().isEmpty()) {
-					if (execEntry.getValue().equals("Generate YAML/action syntax")) {
-						filesToCheck = 0;
-					}
-				}
-			}
-			for (int i = 0; i < filesToCheck; i++) {
-				Entry entry = fileData.retrieveAllEntries().get(i);
-				if (entry.isReady() && 
-						(entry.getValue() == null || entry.getValue().isEmpty())) {
+			for (Entry entry : fileData.retrieveAllEntries()) {
+				if (entry.getValue() == null || entry.getValue().isEmpty()) {
 					System.out.println("JobLauncher Error: All input file "
 							+ "entries must be set!");
 					return FormStatus.InfoError;
