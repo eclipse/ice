@@ -77,6 +77,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author Alex McCaskey
  *
  */
+@SuppressWarnings("restriction")
 public class ForkStorkHandler extends AbstractHandler {
 
 	/**
