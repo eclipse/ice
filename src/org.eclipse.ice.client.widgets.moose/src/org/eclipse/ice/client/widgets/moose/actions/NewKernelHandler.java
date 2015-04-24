@@ -110,7 +110,7 @@ public class NewKernelHandler extends AbstractHandler {
 		sourceFileBuffer
 				.append("\tInputParameters params = validParams<Kernel>();\n");
 		sourceFileBuffer.append("\treturn params;\n");
-		sourceFileBuffer.append("};\n\n");
+		sourceFileBuffer.append("}\n\n");
 		sourceFileBuffer
 				.append(kernelName
 						+ "::"
@@ -119,7 +119,8 @@ public class NewKernelHandler extends AbstractHandler {
 		sourceFileBuffer.append("}\n\n");
 		sourceFileBuffer.append("double " + kernelName
 				+ "::computeQpResidual() {\n");
-		sourceFileBuffer.append("};\n\n");
+		sourceFileBuffer.append("\treturn 0.0;");
+		sourceFileBuffer.append("}\n\n");
 
 		// Get a reference to the src,include folders so that we can get 
 		// a handle to the kernel folders
