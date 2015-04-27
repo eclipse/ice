@@ -1,4 +1,4 @@
-%Report on initial RELAP7 support in NiCE.
+%%Report on initial RELAP7 support in NiCE.
 \documentclass{report}
 %Use authblk for ``affil'' command
 \usepackage{authblk}
@@ -6,6 +6,7 @@
 \usepackage{longtable,booktabs}
 \usepackage{hyperref}
 \usepackage{pdfpages}
+\usepackage[nottoc,notlot,notlof]{tocbibind}
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
@@ -16,7 +17,7 @@
 \begin{document}
 
 \begin{titlepage}
-\includepdf{ICEManual}
+\includepdf{sections/ICEManual}
 %Construct the title and author list
 \title{ICE Manual for MOOSE Users} 
 \author[a,b]{Jay Jay Billings, \thanks{Corresponding author.
@@ -30,20 +31,22 @@ Telephone:
 \end{titlepage}
 \maketitle
 
-
 \tableofcontents
-
-%C-symbol Copyright 2015 UT-Battelle, LLC, All Rights Reserved
-
-
 
 %Input all of the sections of the paper
 \input{sections/usingMoose}
 \input{sections/embeddedViz}
 \input{sections/visOutput}
 \input{sections/devMoose}
-\input{sections/onlineResources}
+
+\renewcommand{\bibname}{Online Resources}
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{sections/mainBib}
+%\input{sections/biblio}
+%\input{sections/onlineResources}
 %\input{availability}
 %\input{tutorial}
 
 \end{document}
+
