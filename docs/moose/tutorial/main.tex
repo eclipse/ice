@@ -1,0 +1,49 @@
+%Report on initial RELAP7 support in NiCE.
+\documentclass{report}
+%Use authblk for ``affil'' command
+\usepackage{authblk}
+\usepackage{graphicx}
+\usepackage{longtable,booktabs}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\begin{document}
+
+\begin{titlepage}
+\includepdf{ICEManual}
+%Construct the title and author list
+\title{ICE Manual for MOOSE Users} 
+\author[a,b]{Jay Jay Billings, \thanks{Corresponding author.
+Telephone:
++1 865 241 6308, Email: billingsjj@ornl.gov}} %, Twitter: @jayjaybillings}}
+\author[a]{Alexander McCaskey, }
+\author[a]{Anna Wojtowicz, }
+\author[a]{Jordan H.\ Deyton}
+\affil[a]{Oak Ridge National Laboratory PO Box 2008 MS 6173 Oak Ridge, TN 37831 USA}
+\affil[b]{The Bredesen Center for Interdisciplinary Research and Education, The University of Tennessee, Knoxville, TN 37996 USA}
+\end{titlepage}
+\maketitle
+
+
+\tableofcontents
+
+%C-symbol Copyright 2015 UT-Battelle, LLC, All Rights Reserved
+
+
+
+%Input all of the sections of the paper
+\input{sections/usingMoose}
+\input{sections/embeddedViz}
+\input{sections/visOutput}
+\input{sections/devMoose}
+\input{sections/onlineResources}
+%\input{availability}
+%\input{tutorial}
+
+\end{document}
