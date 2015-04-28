@@ -10,18 +10,6 @@ import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
 
 /**
- * This is an implementation of the {@link IVizService} interface. It is
- * specifically designed to handle multiple simultaneous connections--local or
- * remote--that are used to render plots. It implements only the required
- * methods to manage these connections, and works with {@link ConnectionTable}
- * s and {@link ConnectionAdapter}s to help store the connection properties and
- * interact with the underlying connections.
- * 
- * @author Jordan Deyton
- *
- */
-
-/**
  * A {@code ConnectionManager} maps {@link IConnectionAdapter}s to
  * {@link IConnectionClient}s. This class manages the following aspects of the
  * connection-client lifecycle:
