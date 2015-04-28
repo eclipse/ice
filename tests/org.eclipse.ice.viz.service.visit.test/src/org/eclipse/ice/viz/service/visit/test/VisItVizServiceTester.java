@@ -13,6 +13,11 @@ package org.eclipse.ice.viz.service.visit.test;
 
 import static org.junit.Assert.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.ice.viz.service.visit.VisItVizService;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -92,6 +97,46 @@ public class VisItVizServiceTester {
 	}
 
 	/**
+	 * Checks that the VisItVizService supports the correct file extensions.
+	 */
+	@Test
+	public void checkExtensions() {
+		VisItVizService service = new VisItVizService();
+
+		List<String> extensions = new ArrayList<String>();
+		// ExodusII
+		extensions.add("ex");
+		extensions.add("e");
+		extensions.add("exo");
+		extensions.add("ex2");
+		extensions.add("exii");
+		extensions.add("gen");
+		extensions.add("exodus");
+		extensions.add("nemesis");
+		// Silo
+		extensions.add("silo");
+
+		// Check that each extension is supported by creating a simple URI with
+		// its extension and calling extensionSupported(URI).
+		for (String extension : extensions) {
+			try {
+				// Check that the extension is supported.
+				URI uri = new URI("blah." + extension);
+				assertTrue("The extension \"" + extension
+						+ "\" is not supported.",
+						service.extensionSupported(uri));
+			} catch (URISyntaxException e) {
+				// This should never happen...
+				fail("VisItVizServiceTester error: "
+						+ "A test URI was invalid.");
+				e.printStackTrace();
+			}
+		}
+
+		return;
+	}
+
+	/**
 	 * This test checks the plots created by the service.
 	 * 
 	 * @see VisItVizService#createPlot(java.net.URI)
@@ -99,6 +144,9 @@ public class VisItVizServiceTester {
 	@Ignore
 	@Test
 	public void checkPlot() {
-		fail("Not implemented.");
+		// TODO Implement this. It should also check that the different file
+		// formats can be loaded (it is not necessary to check one for every
+		// extension).
+		return;
 	}
 }
