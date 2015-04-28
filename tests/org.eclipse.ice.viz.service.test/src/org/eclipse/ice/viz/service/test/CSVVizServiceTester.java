@@ -11,10 +11,18 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
@@ -67,7 +75,7 @@ public class CSVVizServiceTester {
 		// Make sure that the service says it doesn't need properties from the
 		// convenience method.
 		assertFalse(service.hasConnectionProperties());
-		
+
 		return;
 	}
 
@@ -96,6 +104,36 @@ public class CSVVizServiceTester {
 
 		// In the future this should somehow test that the plot was actually
 		// loaded.
+
+		return;
+	}
+
+	/**
+	 * Checks that the VisItVizService supports the correct file extensions.
+	 */
+	@Test
+	public void checkExtensions() {
+		CSVVizService service = new CSVVizService();
+
+		List<String> extensions = new ArrayList<String>();
+		// Only CSV files are supported.
+		extensions.add("csv");
+
+		// Check that each extension is supported by creating a simple URI with
+		// its extension and calling extensionSupported(URI).
+		for (String extension : extensions) {
+			try {
+				// Check that the extension is supported.
+				URI uri = new URI("blah." + extension);
+				assertTrue("The extension \"" + extension
+						+ "\" is not supported.",
+						service.extensionSupported(uri));
+			} catch (URISyntaxException e) {
+				// This should never happen...
+				fail("CSVVizServiceTester error: " + "A test URI was invalid.");
+				e.printStackTrace();
+			}
+		}
 
 		return;
 	}
