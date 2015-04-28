@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.csv.CSVPlot;
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.junit.Test;
 
@@ -91,19 +92,20 @@ public class CSVVizServiceTester {
 		// Make sure the properties are initially empty
 		IVizService service = new CSVVizService();
 
-		// Create a small CSV file for testing the plot
-		String separator = System.getProperty("file.separator");
+		// Create a URI pointing to the fib8.csv file for testing.
+		String s = System.getProperty("file.separator");
 		String home = System.getProperty("user.home");
-		File file = new File(home + separator + "ICETests");
+		File file = new File(home + s + "ICETests" + s + "CSVVizService" + s
+				+ "fib8.csv");
 
-		// Try to create a plot using the file... er... directory. It shouldn't
-		// matter for this test anyway. (At least not yet.)
+		// Try to create a plot using the file.
 		IPlot plot = service.createPlot(file.toURI());
 		assertNotNull(plot);
 		assertEquals(file.toURI(), plot.getDataSource());
 
-		// In the future this should somehow test that the plot was actually
-		// loaded.
+		// It should actually return a CSVPlot, although that *could* change in
+		// the future.
+		assertTrue(plot instanceof CSVPlot);
 
 		return;
 	}
