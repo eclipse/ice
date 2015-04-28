@@ -174,8 +174,9 @@ public class MOOSEFileHandlerTester {
 				+ "ICETests" + separator + "itemData";
 		String filePath = userDir + separator + "bison_short.yaml";
 		String inputFilePath = userDir + separator + "bison_short.input";
+		String outputFilePath = userDir + separator + "bison_short.output";
 		String refFilePath = userDir + separator + "bison_short.input.ref";
-		File inputFile = null;
+		File outputFile = null;
 		MOOSEFileHandler handler = new MOOSEFileHandler();
 		TreeComposite adaptivity = null, indicators = null;
 		TreeComposite analyticalIndicator = null, fluxJumpIndicator = null;
@@ -263,11 +264,11 @@ public class MOOSEFileHandlerTester {
 		powerData.addEntry(dataFileParam.toEntry());
 
 		// Dump the input file
-		handler.dumpInputFile(inputFilePath, blocks);
+		handler.dumpInputFile(outputFilePath, blocks);
 
-		// Check to see if the file exists
-		inputFile = new File(inputFilePath);
-		assertTrue(inputFile.exists());
+		// Check to see if the file(s) exists
+		outputFile = new File(outputFilePath);
+		assertTrue(outputFile.exists());
 
 		// Compare the input file to the reference file
 		int firstHash, lastHash;
@@ -302,7 +303,9 @@ public class MOOSEFileHandlerTester {
 					if (firstHash == 0 && firstHash == lastHash) {
 						// do nothing
 					} else {
-						// Lop off the in-line comment
+						// Lop off the in-line comment. Unfortunately we must
+						// do this, as loading up a YAML file adds descriptions
+						// as comments, so the files won't be exactly the same.
 						line = line.substring(0, line.lastIndexOf(" # "));
 						line = line.replaceAll("\\s+$", "");
 					}
@@ -328,6 +331,7 @@ public class MOOSEFileHandlerTester {
 			// Close everything
 			inputFileRAF.close();
 			refFileRAF.close();
+			outputFile.deleteOnExit();
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
