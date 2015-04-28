@@ -69,6 +69,13 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 		// that the file exists. We check that the file is not null so that the
 		// super method can throw the NPE for null files.
 		if (file != null) {
+			// Check if the connection exists. If not, we need to throw an
+			// exception.
+			if (adapter != null) {
+				throw new NullPointerException("IPlot error: "
+						+ "The plot's connection is not set.");
+			}
+
 			// Set up a message in case the file cannot be read by this plot.
 			final String message;
 
