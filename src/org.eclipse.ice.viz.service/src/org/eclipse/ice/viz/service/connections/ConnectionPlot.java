@@ -71,7 +71,7 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 		if (file != null) {
 			// Check if the connection exists. If not, we need to throw an
 			// exception.
-			if (adapter != null) {
+			if (adapter == null) {
 				throw new NullPointerException("IPlot error: "
 						+ "The plot's connection is not set.");
 			}
