@@ -18,6 +18,8 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -485,35 +487,38 @@ public class Entry extends ICEObject implements IUpdateable {
 			return true;
 		}
 
+		// Get the allowed values and allowed value type from the content
+		// provider for use below.
+		final AllowedValueType allowedValueType = iEntryContentProvider
+				.getAllowedValueType();
+		final List<String> allowedValues = iEntryContentProvider
+				.getAllowedValues();
+
 		// Make sure there is a default value that makes sense - If it wasn't
 		// set in construction but allowed values were provided, it should be
 		// reset to allowedValues.get(0). The default value should always be
 		// equal to something if there are allowed values for the Entry!
 		if ("".equals(iEntryContentProvider.getDefaultValue())
-				&& !iEntryContentProvider.getAllowedValues().isEmpty()) {
-			iEntryContentProvider.setDefaultValue(iEntryContentProvider
-					.getAllowedValues().get(0));
+				&& !allowedValues.isEmpty()) {
+			iEntryContentProvider.setDefaultValue(allowedValues.get(0));
 		}
 		// Check discrete values
-		if (this.iEntryContentProvider.getAllowedValueType().equals(
-				AllowedValueType.Discrete)) {
-			if (this.iEntryContentProvider.getAllowedValues()
-					.contains(newValue)) {
+		if (allowedValueType == AllowedValueType.Discrete) {
+			if (allowedValues.contains(newValue)) {
 				this.value = newValue;
 				returnCode = true;
 			} else {
 				returnCode = false;
 			}
-		} else if (this.iEntryContentProvider.getAllowedValueType().equals(
-				AllowedValueType.Continuous)
-				&& this.iEntryContentProvider.getAllowedValues() != null) {
+		} else if (allowedValueType == AllowedValueType.Continuous
+				&& allowedValues != null) {
 			// Check continuous value against the bounds. Doing this with
 			// doubles is simplest. allowedValues should only have two
 			// values for Continuous values.
-			if (this.iEntryContentProvider.getAllowedValues().size() == 2) {
-				lowerBound = Double.valueOf(this.iEntryContentProvider
+			if (allowedValues.size() == 2) {
+				lowerBound = Double.valueOf(iEntryContentProvider
 						.getAllowedValues().get(0));
-				upperBound = Double.valueOf(this.iEntryContentProvider
+				upperBound = Double.valueOf(iEntryContentProvider
 						.getAllowedValues().get(1));
 				// Try to cast to a double, but fail if it is impossible.
 				try {
@@ -531,10 +536,8 @@ public class Entry extends ICEObject implements IUpdateable {
 					returnCode = false;
 				}
 			}
-		} else if (this.iEntryContentProvider.getAllowedValueType().equals(
-				AllowedValueType.Undefined)
-				|| this.iEntryContentProvider.getAllowedValueType().equals(
-						AllowedValueType.File)) {
+		} else if (allowedValueType == AllowedValueType.Undefined
+				|| allowedValueType == AllowedValueType.File) {
 			this.value = newValue;
 			returnCode = true;
 		}
@@ -544,65 +547,52 @@ public class Entry extends ICEObject implements IUpdateable {
 			this.changeState = true;
 			// set the error message to null if the returncode is true
 			this.errorMessage = null;
-		} else {
-			// Setup the error messages accordingly because setting the value
-			// has failed.
-			if (this.iEntryContentProvider.getAllowedValueType().equals(
-					AllowedValueType.Continuous)) {
-				if (this.iEntryContentProvider.getAllowedValues().size() != 2) {
-					// We return false here because this is an entirely
-					// unexpected error and should never occur due to user
-					// input.
-					return false;
-				}
-				String error = this.continuousErrMsg;
-				// Replace the default error values with the ones for this Entry
-				error = error.replace("${incorrectValue}",
-						newValue != null ? newValue : "null");
-				error = error.replace("${lowerBound}",
-						this.iEntryContentProvider.getAllowedValues().get(0));
-				error = error.replace("${upperBound}",
-						this.iEntryContentProvider.getAllowedValues().get(1));
-				this.errorMessage = error;
+		}
+		// Setup the error messages accordingly because setting the value
+		// has failed.
+		else if (allowedValueType == AllowedValueType.Continuous) {
+			if (allowedValues.size() != 2) {
+				// We return false here because this is an entirely unexpected
+				// error and should never occur due to user
+				// input.
+				return false;
 			}
-			// Modify it according if the error message is for discrete allowed
-			// values
-			else if (this.iEntryContentProvider.getAllowedValueType().equals(
-					AllowedValueType.Discrete)) {
-				String error = this.discreteErrMsg;
+			String error = this.continuousErrMsg;
+			// Replace the default error values with the ones for this Entry
+			error = error.replace("${incorrectValue}",
+					newValue != null ? newValue : "null");
+			error = error.replace("${lowerBound}", iEntryContentProvider
+					.getAllowedValues().get(0));
+			error = error.replace("${upperBound}", iEntryContentProvider
+					.getAllowedValues().get(1));
+			this.errorMessage = error;
+		}
+		// Modify it according if the error message is for discrete allowed
+		// values
+		else if (allowedValueType == AllowedValueType.Discrete) {
+			String error = this.discreteErrMsg;
 
-				// loop to get all the values of the allowedValues
-				String tempValues = "";
-				for (int i = 0; i < this.iEntryContentProvider
-						.getAllowedValues().size(); i++) {
-					// If it is a list and it is the last item, add an "or"
-					if (i == this.iEntryContentProvider.getAllowedValues()
-							.size() - 1
-							&& this.iEntryContentProvider.getAllowedValues()
-									.size() > 1) {
-						tempValues += " or";
-					}
-					// Add the value to the message
-					tempValues += " "
-							+ this.iEntryContentProvider.getAllowedValues()
-									.get(i);
-					// Add a comma for the allowedValues
-					if (i < this.iEntryContentProvider.getAllowedValues()
-							.size() - 1
-							&& this.iEntryContentProvider.getAllowedValues()
-									.size() > 2) {
-						tempValues += ",";
-					}
-
+			// loop to get all the values of the allowedValues
+			String tempValues = "";
+			for (int i = 0; i < allowedValues.size(); i++) {
+				// If it is a list and it is the last item, add an "or"
+				if (i == allowedValues.size() - 1 && allowedValues.size() > 1) {
+					tempValues += " or";
+				}
+				// Add the value to the message
+				tempValues += " " + allowedValues.get(i);
+				// Add a comma for the allowedValues
+				if (i < allowedValues.size() - 1 && allowedValues.size() > 2) {
+					tempValues += ",";
 				}
 
-				// Replace with correct errors
-				error = error.replace("${incorrectValue}",
-						newValue != null ? newValue : "null");
-				error = error.replace(" ${allowedValues}", tempValues);
-				this.errorMessage = error;
 			}
 
+			// Replace with correct errors
+			error = error.replace("${incorrectValue}",
+					newValue != null ? newValue : "null");
+			error = error.replace(" ${allowedValues}", tempValues);
+			this.errorMessage = error;
 		}
 
 		// Notify the listeners of the change if the value was correctly set
