@@ -173,15 +173,27 @@ public class DataComponentComposite extends Composite implements
 			emptyLabel = null;
 		}
 		
+		// If a selection change triggered this refresh, make sure to update 
+		// any Entries on the dataComp that need their value(s) updating
+		for (int i = 0; i < entries.size(); i++) {
+			Entry entry = dataComp.retrieveAllEntries().get(i);
+			EntryComposite entryComp = entryMap.get(i);
+			if (entryComp != null && 
+					!entry.getValue().equals(entryComp.entry.getValue())) {
+				entry.setValue(entryComp.entry.getValue());	
+			}
+		}
+				
 		// Begin comparing the list of Entries to the EntryComposites in 
 		// entryMap to determine what needs to be done
-		boolean renderedEntry = false;
+//		boolean renderedEntry = false;
 		int maxIterations = entries.size() > entryMap.size() ? 
 				entries.size() : entryMap.size();
 				
 		for (int i = 0; i < maxIterations; i++) {
 			Entry entry = (i < entries.size() ? entries.get(i) : null);
 			EntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i) : null);
+			String value = (entryComp != null ? entryComp.entry.getValue() : (entry != null ? entry.getValue() : ""));
 			
 			// First, if the Entry isn't supposed to be displayed, dispose it
 			// and move on (she ain't worth it, man...)
@@ -193,11 +205,11 @@ public class DataComponentComposite extends Composite implements
 				
 	 			// If the EntryComposite hasn't been rendered yet, render it,
 				// and add it to the entryMap
-				String oldValue = entry.getValue();
 				renderEntry(entry, i);
 				entryComp = entryMap.get(i);
-				entryComp.setEntryValue(oldValue);
-				renderedEntry = true;
+				entryComp.setEntryValue(value);
+				entryComp.refresh();
+//				renderedEntry = true;
 				
 			} else {
 			
@@ -209,23 +221,24 @@ public class DataComponentComposite extends Composite implements
 					// Re-render Entries only if they've had a new AllowedValue 
 					// added
 					if (!entryComp.entry.getAllowedValues().contains(allowedValue)) {
-						String oldValue = entryComp.entry.getValue();
-						disposeEntry(i);
-						renderEntry(entry, i);
-						entryComp = entryMap.get(i);
-						entryComp.setEntryValue(oldValue);
-						renderedEntry = true;
-					}
+						disposeEntry(j);
+						renderEntry(entry, j);
+						entryComp = entryMap.get(j);
+						entryComp.setEntryValue(value);
+						entryComp.refresh();
+//						renderedEntry = true;
+
+					}			
 				}
 			}
 		}
 		
 		// Refresh EntryComposites if any have been re-rendered recently
-		if (renderedEntry) {
-			for (EntryComposite comp : entryMap.values()) { 
-				comp.refresh();
-			}
-		}
+//		if (renderedEntry) {
+//			for (EntryComposite comp : entryMap.values()) { 
+//				comp.refresh();
+//			}
+//		}
 
 		// Layout the DataComponentComposite. This can redraw stale widgets.
 		layout();

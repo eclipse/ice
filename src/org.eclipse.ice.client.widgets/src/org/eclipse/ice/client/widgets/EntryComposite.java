@@ -312,7 +312,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	
 			// Determine the current value of the entry.
 			String currentValue = entry.getValue();
-	
+			
 			// Add the allowed values to the dropdown menu. If the allowed value
 			// matches the current value, select it.
 			List<String> allowedValues = entry.getAllowedValues();
@@ -324,16 +324,17 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				}
 			}
 			
-			// Add the listener
+			// Add a selection listener
 			dropDown.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
+					// Set the value of the Entry
+					setEntryValue(((Combo) e.widget).getText());
 					// Notify any listeners that the selection has changed
 					notifyListeners(SWT.Selection, new Event());
-					// Set the value of the Entry
-					setEntryValue(dropDown.getItem(dropDown.getSelectionIndex()));
 				}
 			});
+
 		} else {
 			// If the dropDown hasn't been disposed, check if a new AllowedValue
 			// has been added to the Entry

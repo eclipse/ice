@@ -235,6 +235,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 
 		// Refresh the section client to draw any new Entries
 		sectionClient.redraw();
+		
 		// Reflow the managed form to correct for any part overlap
 		parentForm.reflow(true);
 
