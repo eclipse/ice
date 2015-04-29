@@ -12,6 +12,8 @@
 package org.eclipse.ice.viz.service.connections.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
@@ -70,22 +72,23 @@ public class SecretEntryTester {
 		// Double-check that its secret flag is set.
 		assertTrue(entry.isSecret());
 
-		// Copy it and it should still be equal.
+		// Copying it should yield an equivalent SecretEntry.
 		copy = new SecretEntry();
+		assertFalse(entry.equals(copy));
+		// After copying, check that they're unique references but equal.
 		copy.copy(entry);
-		// Check that the copy's secret flag is set.
-		assertTrue(copy.isSecret());
-		// They should also be equal (but different references).
 		assertNotSame(entry, copy);
 		assertEquals(entry, copy);
 		assertEquals(copy, entry);
 
-		// Clone it and it should be an equivalent *SecretEntry*.
+		// Cloning it should yield an equivalent *SecretEntry*.
 		clone = entry.clone();
+		// Check that it's a non-null SecretEntry.
+		assertNotNull(clone);
 		assertTrue(clone instanceof SecretEntry);
 		// Check that the clone's secret flag is set.
 		assertTrue(((Entry) clone).isSecret());
-		// They should also be equal (but different references).
+		// Check that they're unique references but equal.
 		assertNotSame(entry, clone);
 		assertEquals(entry, clone);
 		assertEquals(clone, entry);
