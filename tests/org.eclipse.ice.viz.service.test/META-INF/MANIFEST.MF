@@ -6,6 +6,7 @@ Bundle-Version: 2.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.client.widgets.viz.service,
+ org.eclipse.ice.datastructures.form,
  org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.connections,
  org.eclipse.ice.viz.service.csv,
