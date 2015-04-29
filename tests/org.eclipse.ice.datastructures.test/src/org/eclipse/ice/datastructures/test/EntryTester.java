@@ -23,6 +23,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -103,7 +104,7 @@ public class EntryTester {
 	/**
 	 * This operation tests the readyState attribute of the Entry by first
 	 * trying to set the readiness state using setReady() and then calling
-	 * isReady(). 
+	 * isReady().
 	 */
 	@Test
 	public void checkReadiness() {
@@ -216,6 +217,9 @@ public class EntryTester {
 	@Test
 	public void checkValue() {
 
+		boolean changed;
+		final String nullString = null;
+
 		// Create the test Entry, just use the default since the string
 		// doesn't need to be checked for validity.
 		entry = new Entry() {
@@ -282,8 +286,9 @@ public class EntryTester {
 		// Make sure the the Entry returns false
 		// the value is not accepted
 		assertEquals(false, entry.setValue("Overburdened."));
-		assertEquals("'Overburdened.' is an unacceptable value. The value must "
-				+ "be one of true, or false.", entry.getErrorMessage());
+		assertEquals(
+				"'Overburdened.' is an unacceptable value. The value must "
+						+ "be one of true or false.", entry.getErrorMessage());
 		// Set value back to make sure the error is false
 		assertEquals(true, entry.setValue("true"));
 		// Check value to make sure no error is set.
@@ -342,7 +347,6 @@ public class EntryTester {
 		assertEquals(true, entry.isModified());
 		// Check an invalid Entry
 		assertEquals(false, entry.setValue("3"));
-		
 
 		// Discrete test - error message catching - list of one size
 		entry = new Entry() {
@@ -359,6 +363,38 @@ public class EntryTester {
 		assertEquals("'false' is an unacceptable value. The value must be "
 				+ "one of true.", entry.getErrorMessage());
 
+		// Try setting the Entry's value to null. This should not break the
+		// operation (via NPE) or the error message.
+		IEntryContentProvider contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Continuous);
+		ArrayList<String> allowedValues = new ArrayList<String>(2);
+		allowedValues.add("0.0");
+		allowedValues.add("1.0");
+		contentProvider.setAllowedValues(allowedValues);
+		entry = new Entry(contentProvider);
+		// Try setting the value to null, then check the error message.
+		changed = entry.setValue(nullString);
+		assertFalse(changed);
+		assertNotNull(entry.getErrorMessage());
+		assertEquals("'null' is an unacceptable value. The value must be "
+				+ "between 0.0 and 1.0.", entry.getErrorMessage());
+
+		// Try setting the Entry's value to null. This should not break the
+		// operation (via NPE) or the error message.
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Discrete);
+		allowedValues = new ArrayList<String>(2);
+		allowedValues.add("0.0");
+		allowedValues.add("1.0");
+		contentProvider.setAllowedValues(allowedValues);
+		entry = new Entry(contentProvider);
+		// Try setting the value to null, then check the error message.
+		changed = entry.setValue(nullString);
+		assertFalse(changed);
+		assertNotNull(entry.getErrorMessage());
+		assertEquals("'null' is an unacceptable value. The value must be "
+				+ "one of 0.0 or 1.0.", entry.getErrorMessage());
+
 		return;
 	}
 
@@ -368,7 +404,7 @@ public class EntryTester {
 	 */
 	@Test
 	public void checkChanged() {
-		
+
 		// Create the test Entry
 		entry = new Entry();
 		entry.setId(5);
@@ -380,7 +416,7 @@ public class EntryTester {
 		entry.setValue("Get stoned.");
 		// Make sure that the Entry's change state is true
 		assertEquals(true, entry.isModified());
-		
+
 		return;
 	}
 
@@ -451,13 +487,13 @@ public class EntryTester {
 		copyOfEntry.setId(444);
 		assertEquals(entry.hashCode() == copyOfEntry.hashCode(), false);
 		assertEquals(entry.hashCode() == otherEntry.hashCode(), false);
-		
+
 		return;
 	}
 
 	/**
 	 * This operation checks the Entry to ensure that its copy() and clone()
-	 * operations work as specified.      
+	 * operations work as specified.
 	 */
 	@Test
 	public void checkCopying() {
@@ -517,16 +553,16 @@ public class EntryTester {
 
 	/**
 	 * This operation checks the ability of the Entry to persist itself to XML
-	 * and to load itself from an XML input stream.   
+	 * and to load itself from an XML input stream.
 	 */
 	@Test
 	public void checkXMLPersistence() {
-		
+
 		/*
 		 * The following sets of operations will be used to test the
 		 * "read and write" portion of the Entry. It will demonstrate the
-		 * behavior of reading and writing from an "XML (inputStream and 
-		 * outputStream)" file. It will use an annotated Entry to demonstrate 
+		 * behavior of reading and writing from an "XML (inputStream and
+		 * outputStream)" file. It will use an annotated Entry to demonstrate
 		 * basic behavior.
 		 */
 
@@ -576,7 +612,8 @@ public class EntryTester {
 			entry2 = (Entry) xmlHandler.read(classList, inputStream);
 			System.out.println(entry2.getAllowedValues());
 
-			// Check contents - currently broken due to isReady() needs to return a
+			// Check contents - currently broken due to isReady() needs to
+			// return a
 			// class Boolean
 			// not an attribute s4h
 			assertTrue(myEntry.equals(entry2));
@@ -585,15 +622,15 @@ public class EntryTester {
 			e.printStackTrace();
 			fail();
 		}
-		
+
 		return;
 	}
 
 	/**
-	 * Checks the Entry(IEntryContentProvider) method.          
+	 * Checks the Entry(IEntryContentProvider) method.
 	 */
 	public void checkContentProviderConstructor() {
-		
+
 		// Local Declarations
 		BasicEntryContentProvider contentProvider = new BasicEntryContentProvider();
 		ArrayList<String> goodValues = new ArrayList<String>();
@@ -697,7 +734,7 @@ public class EntryTester {
 
 	/**
 	 * This operation tests the Entry to insure that it can properly dispatch
-	 * notifications when its value changes.          
+	 * notifications when its value changes.
 	 */
 	@Test
 	public void checkNotifications() {

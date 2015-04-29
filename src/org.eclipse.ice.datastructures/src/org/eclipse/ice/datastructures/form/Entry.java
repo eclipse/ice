@@ -106,13 +106,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement(name = "Entry")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Entry extends ICEObject implements IUpdateable {
-	
+
 	/**
 	 * The default value of the Entry.
 	 */
 	@XmlAttribute()
 	protected String defaultValue;
-	
+
 	/**
 	 * This list stores either the exact values that the Entry may have or a
 	 * range in which the value of the Entry must exist depending on the
@@ -120,13 +120,13 @@ public class Entry extends ICEObject implements IUpdateable {
 	 */
 	@XmlElement(name = "AllowedValues")
 	protected ArrayList<String> allowedValues;
-	
+
 	/**
 	 * The value of the Entry.
 	 */
 	@XmlAttribute()
 	protected String value;
-	
+
 	/**
 	 * This attribute describes the types of values that Entry will accept and
 	 * is equal to AllowedValueType.Undefined if the Entry is created with the
@@ -134,13 +134,13 @@ public class Entry extends ICEObject implements IUpdateable {
 	 */
 	@XmlElement(name = "AllowedValueType")
 	protected AllowedValueType allowedValueType;
-	
+
 	/**
 	 * A String attribute where a comment about the Entry can be stored.
 	 */
 	@XmlElement(name = "Comment")
 	protected String comment;
-	
+
 	/**
 	 * This attribute stores the state of the Entry as either true if the Entry
 	 * is ready to be addressed and false if the Entry is not ready. This
@@ -221,7 +221,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * a required quantity.
 	 */
 	protected boolean required = false;
-	
+
 	/**
 	 * A constructor that will create an Entry with only a unique ID and a name.
 	 * Default values are set:
@@ -294,7 +294,7 @@ public class Entry extends ICEObject implements IUpdateable {
 		if (contentProvider != null) {
 			this.iEntryContentProvider = contentProvider;
 		}
-		
+
 		return;
 	}
 
@@ -306,7 +306,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * will handle its own error checking upon the submission of a value in
 	 * setValue().
 	 * 
-	 * @return	The allowed values for the Entry.
+	 * @return The allowed values for the Entry.
 	 */
 	public ArrayList<String> getAllowedValues() {
 
@@ -316,7 +316,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	/**
 	 * This operation returns the default value of the Entry.
 	 * 
-	 * @return	The default value of the Entry.
+	 * @return The default value of the Entry.
 	 */
 	public String getDefaultValue() {
 		return this.iEntryContentProvider.getDefaultValue();
@@ -351,17 +351,17 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * This operation returns the type of value that is stored in the Entry.
 	 * </p>
 	 * <p>
-	 * A response type of AllowedValueType.Discrete means that the answer must 
-	 * be one of the values from getAllowedValues(). 
+	 * A response type of AllowedValueType.Discrete means that the answer must
+	 * be one of the values from getAllowedValues().
 	 * </p>
 	 * <p>
-	 * A response of AllowedValueTypes.Continuous means that the value must 
-	 * exist within the range of the maximum and minimum of the values from 
+	 * A response of AllowedValueTypes.Continuous means that the value must
+	 * exist within the range of the maximum and minimum of the values from
 	 * getAllowedValues().
 	 * </p>
 	 * <p>
-	 * A response of AllowedValueType.Undefined means that the response will 
-	 * not be checked. 
+	 * A response of AllowedValueType.Undefined means that the response will not
+	 * be checked.
 	 * </p>
 	 * <p>
 	 * A response of AllowedValueType.File means that the response will not be
@@ -369,12 +369,12 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * that represent actual files. File entries render differently in the UI.
 	 * </p>
 	 * <p>
-	 * Please note that the Entry class will check the validity of the
-	 * values submitted to it and the information returned from this method is
-	 * purely for information purposes (deciding how to draw the client, etc.).
+	 * Please note that the Entry class will check the validity of the values
+	 * submitted to it and the information returned from this method is purely
+	 * for information purposes (deciding how to draw the client, etc.).
 	 * </p>
 	 * 
-	 * @return The AllowedValueType for the Entry.          
+	 * @return The AllowedValueType for the Entry.
 	 */
 	public AllowedValueType getValueType() {
 		return this.iEntryContentProvider.getAllowedValueType();
@@ -383,26 +383,27 @@ public class Entry extends ICEObject implements IUpdateable {
 	/**
 	 * Set the comment on the Entry. Empty strings are permitted.
 	 * 
-	 * @param comment	The comment to set on the Entry.
+	 * @param comment
+	 *            The comment to set on the Entry.
 	 */
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	
+
 	/**
 	 * Get the value of the Entry's comment.
 	 * 
-	 * @return	The comment.
+	 * @return The comment.
 	 */
 	public String getComment() {
 		return this.comment;
 	}
-	
+
 	/**
 	 * This operation returns true if the Entry should be addressed and false if
 	 * the Entry is not ready to be addressed (waiting on a parent Entry, etc.).
 	 * 
-	 * @return	The readiness state of the Entry.
+	 * @return The readiness state of the Entry.
 	 */
 	public boolean isReady() {
 		return this.ready;
@@ -419,13 +420,14 @@ public class Entry extends ICEObject implements IUpdateable {
 	public boolean isModified() {
 		return this.changeState;
 	}
-	
+
 	/**
 	 * This operation stores the name of an Entry on which this Entry is
 	 * dependent. The "parent" Entry must be evaluated and notify this Entry by
 	 * calling update() before this Entry will mark itself as ready.
 	 * 
-	 * @param parentName	The name of the parent Entry.           
+	 * @param parentName
+	 *            The name of the parent Entry.
 	 */
 	public void setParent(String parentName) {
 
@@ -453,20 +455,24 @@ public class Entry extends ICEObject implements IUpdateable {
 		}
 
 		return iEntryContentProvider.getParent();
-		
+
 	}
 
 	/**
 	 * This operation sets the value of the Entry to newValue and returns true
 	 * if it is successful.
-	 * @param newValue	The new value of the Entry. This value will be checked 
-	 * 					by the Entry for validity.
-	 * @return 			True if setValue worked, false otherwise.
+	 * 
+	 * @param newValue
+	 *            The new value of the Entry. This value will be checked by the
+	 *            Entry for validity.
+	 * @return True if setValue worked, false otherwise.
 	 */
 	public boolean setValue(String newValue) {
 
 		// Local Declarations
-		Double lowerBound, upperBound, newValueDouble;
+		Double lowerBound = null;
+		Double upperBound = null;
+		Double newValueDouble = null;
 		boolean returnCode = false;
 
 		// ---- USE BasicEntryContentProvider VALUES ONLY! ----
@@ -474,6 +480,7 @@ public class Entry extends ICEObject implements IUpdateable {
 		// Check to see if the value actually needs to be changed. If the values
 		// are the same, don't do any work. Just return true and do not notify
 		// the listeners.
+		// FIXME What if value is null and newValue is null?
 		if (value != null && value.equals(newValue)) {
 			return true;
 		}
@@ -511,22 +518,23 @@ public class Entry extends ICEObject implements IUpdateable {
 				// Try to cast to a double, but fail if it is impossible.
 				try {
 					newValueDouble = Double.valueOf(newValue);
-				} catch (NumberFormatException e) {
-					return false;
+				} catch (NumberFormatException | NullPointerException e) {
+					returnCode = false;
 				}
 				// Set the value if it is within the bounds
-				if (newValueDouble.compareTo(lowerBound) != -1
-						&& newValueDouble.compareTo(upperBound) != 1) {
+				if (newValueDouble != null
+						&& (newValueDouble.compareTo(lowerBound) != -1 && newValueDouble
+								.compareTo(upperBound) != 1)) {
 					this.value = newValue;
 					returnCode = true;
 				} else {
 					returnCode = false;
 				}
 			}
-		} else if (this.iEntryContentProvider.getAllowedValueType()
-						.equals(AllowedValueType.Undefined)
-				|| this.iEntryContentProvider.getAllowedValueType()
-						.equals(AllowedValueType.File)) {
+		} else if (this.iEntryContentProvider.getAllowedValueType().equals(
+				AllowedValueType.Undefined)
+				|| this.iEntryContentProvider.getAllowedValueType().equals(
+						AllowedValueType.File)) {
 			this.value = newValue;
 			returnCode = true;
 		}
@@ -542,11 +550,15 @@ public class Entry extends ICEObject implements IUpdateable {
 			if (this.iEntryContentProvider.getAllowedValueType().equals(
 					AllowedValueType.Continuous)) {
 				if (this.iEntryContentProvider.getAllowedValues().size() != 2) {
+					// We return false here because this is an entirely
+					// unexpected error and should never occur due to user
+					// input.
 					return false;
 				}
 				String error = this.continuousErrMsg;
 				// Replace the default error values with the ones for this Entry
-				error = error.replace("${incorrectValue}", newValue);
+				error = error.replace("${incorrectValue}",
+						newValue != null ? newValue : "null");
 				error = error.replace("${lowerBound}",
 						this.iEntryContentProvider.getAllowedValues().get(0));
 				error = error.replace("${upperBound}",
@@ -578,14 +590,15 @@ public class Entry extends ICEObject implements IUpdateable {
 					if (i < this.iEntryContentProvider.getAllowedValues()
 							.size() - 1
 							&& this.iEntryContentProvider.getAllowedValues()
-									.size() > 1) {
+									.size() > 2) {
 						tempValues += ",";
 					}
 
 				}
 
 				// Replace with correct errors
-				error = error.replace("${incorrectValue}", newValue);
+				error = error.replace("${incorrectValue}",
+						newValue != null ? newValue : "null");
 				error = error.replace(" ${allowedValues}", tempValues);
 				this.errorMessage = error;
 			}
@@ -598,13 +611,14 @@ public class Entry extends ICEObject implements IUpdateable {
 		}
 		return returnCode;
 	}
-	
+
 	/**
 	 * This operation sets the readiness state of the Entry to the value of
 	 * isReady.
 	 * 
-	 * @param isReady 	The value to which the readiness state of the Entry 
-	 * 					should be set.          
+	 * @param isReady
+	 *            The value to which the readiness state of the Entry should be
+	 *            set.
 	 */
 	public void setReady(boolean isReady) {
 		this.ready = isReady;
@@ -674,8 +688,9 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * Entry. It returns true if the Entries are equal and false if they are
 	 * not.
 	 * 
-	 * @param otherEntry	The Entry that should be checked for equality.
-	 * @return 				True if the Entries are equal, false if not
+	 * @param otherEntry
+	 *            The Entry that should be checked for equality.
+	 * @return True if the Entries are equal, false if not
 	 */
 	public boolean equals(Object otherEntry) {
 
@@ -729,13 +744,18 @@ public class Entry extends ICEObject implements IUpdateable {
 		hash = 31 * hash + (this.secretFlag ? 1 : 0);
 		hash = 31 * hash + (null == this.comment ? 0 : this.comment.hashCode());
 		hash = 31 * hash + (null == this.value ? 0 : this.value.hashCode());
-		hash = 31 * hash + (null == this.defaultValue ? 
-								0 : this.defaultValue.hashCode());
+		hash = 31
+				* hash
+				+ (null == this.defaultValue ? 0 : this.defaultValue.hashCode());
 		hash = 31 * hash + (null == this.parent ? 0 : this.parent.hashCode());
-		hash = 31 * hash + (null == this.allowedValues ? 
-								0 : this.allowedValues.hashCode());
-		hash = 31 * hash + (null == this.allowedValueType ? 
-								0 : this.allowedValueType.hashCode());
+		hash = 31
+				* hash
+				+ (null == this.allowedValues ? 0 : this.allowedValues
+						.hashCode());
+		hash = 31
+				* hash
+				+ (null == this.allowedValueType ? 0 : this.allowedValueType
+						.hashCode());
 		hash = 31 * hash + (null == this.tag ? 0 : this.tag.hashCode());
 		hash = 31 * hash + this.iEntryContentProvider.hashCode();
 		hash = 31 * hash + (required ? 1 : 0);
@@ -747,7 +767,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * This operation returns true if the Entry is "secret" and its contents
 	 * should be obscured if displayed or printed and false if not.
 	 * 
-	 * @return	True if the entry is "secret", false otherwise.
+	 * @return True if the entry is "secret", false otherwise.
 	 */
 	public boolean isSecret() {
 		return secretFlag;
@@ -757,10 +777,11 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * This operation performs a deep copy of the attributes of another Entry
 	 * into the current Entry.
 	 * 
-	 * @param otherEntry The Entry from which information should be copied.         
+	 * @param otherEntry
+	 *            The Entry from which information should be copied.
 	 */
 	public void copy(Entry otherEntry) {
-		
+
 		// if entry is null, return
 		if (otherEntry == null) {
 			return;
@@ -790,7 +811,7 @@ public class Entry extends ICEObject implements IUpdateable {
 
 		// Notify all of the people watching this Entry
 		notifyListeners();
-		
+
 		return;
 	}
 
@@ -798,7 +819,6 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * This operation provides a deep copy of the Entry.
 	 * 
 	 * @return A clone of the Entry.
-    
 	 */
 	public Object clone() {
 
@@ -812,7 +832,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	/**
 	 * This operation returns the Entry's tag.
 	 * 
-	 * @return The Entry's tag.    
+	 * @return The Entry's tag.
 	 */
 	public String getTag() {
 		return this.iEntryContentProvider.getTag();
@@ -821,10 +841,11 @@ public class Entry extends ICEObject implements IUpdateable {
 	/**
 	 * This operation sets the tag of the Entry.
 	 * 
-	 * @param tagValue The Entry's new tag.   
+	 * @param tagValue
+	 *            The Entry's new tag.
 	 */
 	public void setTag(String tagValue) {
-		
+
 		this.tag = tagValue;
 		this.iEntryContentProvider.setTag(tagValue);
 
@@ -840,22 +861,22 @@ public class Entry extends ICEObject implements IUpdateable {
 	 *         Continuous, it will be an error of the form:
 	 *         </p>
 	 *         <p>
-	 *         <b>'${incorrectValue}' in an unacceptable value. The value must be 
-	 *         between ${lowerBound} and ${upperBound}.</b>
+	 *         <b>'${incorrectValue}' in an unacceptable value. The value must
+	 *         be between ${lowerBound} and ${upperBound}.</b>
 	 *         </p>
 	 *         <p>
 	 *         If the AllowedValueType is Discrete, it will be an error of the
 	 *         form:
 	 *         </p>
 	 *         <p>
-	 *         <b>'${incorrectValue}' in an unacceptable value. The value must 
+	 *         <b>'${incorrectValue}' in an unacceptable value. The value must
 	 *         be one of ${allowedValues}.</b>
 	 *         </p>
 	 *         <p>
 	 *         The variables are:
 	 *         </p>
 	 *         <ul>
-	 *         <li> ${incorrectValue} - The incorrect value submitted to 
+	 *         <li>${incorrectValue} - The incorrect value submitted to
 	 *         setValue()</li>
 	 *         <li>${lowerBound} - The lower bound of the range</li>
 	 *         <li>${upperBound} - The upper bound of the range</li>
@@ -869,7 +890,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 *         <p>
 	 *         If the value of setValue() was accepted, this operation will
 	 *         return null.
-	 *         </p>            
+	 *         </p>
 	 */
 	public String getErrorMessage() {
 		return this.errorMessage;
@@ -878,10 +899,11 @@ public class Entry extends ICEObject implements IUpdateable {
 	/**
 	 * Sets the content provider. Resets the value to null.
 	 * 
-	 * @param contentProvider	The content provider.          
+	 * @param contentProvider
+	 *            The content provider.
 	 */
 	public void setContentProvider(IEntryContentProvider contentProvider) {
-		
+
 		if (contentProvider != null) {
 			this.iEntryContentProvider = contentProvider;
 		}
@@ -893,7 +915,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * This operation returns true if the Entry should be treated as a required
 	 * quantity.
 	 * 
-	 * @return True if required, false if not.        
+	 * @return True if required, false if not.
 	 */
 	public boolean isRequired() {
 		return required;
@@ -904,8 +926,8 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * where or not it should be treated as a required quantity.
 	 * 
 	 * @param entryRequired
-	 *        	The value to which the required state of the Entry should be
-	 *          set; true if required, false if not.          
+	 *            The value to which the required state of the Entry should be
+	 *            set; true if required, false if not.
 	 */
 	public void setRequired(boolean entryRequired) {
 		required = entryRequired;
