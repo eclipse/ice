@@ -24,6 +24,8 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -37,6 +39,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
@@ -50,6 +53,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IMessageManager;
 
@@ -96,6 +101,11 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * The Entry that is displayed by the EntryComposite.
 	 */
 	protected Entry entry;
+	
+	/**
+	 * The currently set value of the entry.
+	 */
+	private String currentSelection;
 
 	/**
 	 * The message manager to which message about the success or failure of
@@ -124,6 +134,11 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * file entries.
 	 */
 	private ControlListener resizeListener = null;
+	
+	/**
+	 * A ControlDecoration that can be added to the EntryComposite if desired.
+	 */
+	private ControlDecoration decoration = null;
 
 	/**
 	 * The Constructor
@@ -183,6 +198,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			}
 		});
 
+		// Set the current selection
+		currentSelection = entry.getValue();
+		
 		// Render the entry
 		render();
 
@@ -670,7 +688,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		
 		// Re-render the Composite
 		render();
-
+		
 		// Re-draw the Composite
 		layout();
 		
@@ -750,8 +768,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		return;
 	}
 
-	int hitCounter = 0;
-
 	/**
 	 * Listen for updates from the Entry and redraw if needed.
 	 */
@@ -760,15 +776,72 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		if (component == entry) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					if (!EntryComposite.this.isDisposed()) {
+					if (!EntryComposite.this.isDisposed()) {					
 						refresh();
+						toggleSaveDecoration();
+						currentSelection = EntryComposite.this.entry.getValue();
 					} else {
 						entry.unregister(EntryComposite.this);
 					}
 				}
 			});
 		}
-		++hitCounter;
+		return;
+	}
+	
+	/**
+	 * This method is responsible for toggling a ControlDecoration on and off
+	 * on the EntryComposite. The decoration will toggle on if the editor is
+	 * dirty and the selection was recently changed (monitored by 
+	 * {@link EntryComposite#currentSelection}). Otherwise, it will
+	 * toggle off.
+	 */
+	public void toggleSaveDecoration() {
+		
+		if (decoration == null) {
+			decoration = new ControlDecoration(this, SWT.TOP | SWT.LEFT);
+			
+			final String saveMessage = "The form contains unsaved changes";
+			
+			// Set a description and image
+			decoration.setDescriptionText(saveMessage);
+			Image image = FieldDecorationRegistry.
+					  getDefault().
+					  getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).
+					  getImage();
+			decoration.setImage(image);
+					
+			// Set a listener to hide/show the decoration according to the
+			// editor's state
+			final IEditorPart editor = PlatformUI.getWorkbench()
+			        .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			editor.addPropertyListener(new IPropertyListener() {
+				@Override
+				public void propertyChanged(Object source, int propId) {
+					System.out.println("Entry value: " + EntryComposite.this.entry.getValue());
+					System.out.println("Selection value: " + currentSelection);
+					System.out.println("Form is " + (editor.isDirty() ? "DIRTY" : "clean"));
+					
+					// Toggle the decoration on if the form is dirty
+					if (editor != null 
+							&& editor.isDirty()
+							&& !EntryComposite.this.entry.getValue().equals(currentSelection)) {
+						EntryComposite.this.decoration.show();
+//						if (messageManager != null) {
+//							Form form = (Form) editor;
+//							setMessageManager(new MessageManager(null);
+//						} 
+//						messageManager.addMessage(messageName, saveMessage, null,
+//								IMessageProvider.ERROR);
+					} else if (editor != null && !editor.isDirty()){
+						EntryComposite.this.decoration.hide();
+					}
+					return;
+				}	
+			});
+			
+		}
+		
 		return;
 	}
 }
