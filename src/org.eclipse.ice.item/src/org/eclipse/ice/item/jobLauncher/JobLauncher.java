@@ -1905,9 +1905,10 @@ public class JobLauncher extends Item {
 
 			// If this is an Entry, cast it
 			Entry entry = (Entry) component;
-			if (entry.getName().equals("Input File")) {
-				// The input file has changed, so let's make sure
-				// we are showing the correct related files
+			
+			// The input file has changed, so let's make sure
+			// we are showing the correct related files
+			if (entry.getName().equals("Input File") && !entry.getValue().isEmpty()) {
 
 				// Get the regex from the subclass
 				String regex = getFileDependenciesSearchString();
@@ -1948,9 +1949,8 @@ public class JobLauncher extends Item {
 			}
 		}
 
-		// Use the IReader to find all occurrances of the given Regular
-		// Expression
-		// For each of those add a new Input file Entry
+		// Use the IReader to find all occurrences of the given Regular
+		// Expression for each of those add a new Input file Entry
 		for (Entry e : getReader().findAll(file, regex)) {
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
 					e.getDescription(),

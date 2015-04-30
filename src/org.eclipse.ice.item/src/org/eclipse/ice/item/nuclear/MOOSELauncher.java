@@ -49,6 +49,11 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * The currently selected MOOSE application. Set by reviewEntries().
 	 */
 	private String execName = "";
+	
+	/**
+	 * The currently selected *.i input file.
+	 */
+	private String inputFileName = "";
 
 	/**
 	 * The name of the YAML/action syntax generator
@@ -504,6 +509,13 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		return;
 	}
 
+	/**
+	 * This method provides a implementation of the IUpdateable interface that
+	 * listens for changes in objects that are registered with this MOOSE
+	 * Launcher. Primarily, it will toggle a "custom MOOSE executable" on and
+	 * off, in addition reducing the number of updates that are called on the
+	 * "Input File" Entry if it's value hasn't changed.
+	 */
 	@Override
 	public void update(IUpdateable component) {
 		
@@ -529,6 +541,38 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 				customExecEntry.update(parentEntry.getName(), "false");
 			}
 		} else {
+			
+			if (component instanceof Entry) {
+
+				// Check if this is the Input File entry and has a valid value
+				Entry entry = (Entry) component;
+				if (entry.getName().equals("Input File") && !entry.getValue().isEmpty()) {
+					
+					// First, check if the file extension on the value is valid
+					if (!entry.getValue().contains(".i")) {
+						// Complain and exit
+						System.out.println("MOOSELauncher Message: Input files"
+								+ "must have a *.i extension!");
+						return;
+					}
+					
+					System.out.println("Old input file: " + inputFileName);
+					
+					// Check if the input file name has changed
+					if (!entry.getValue().equals(inputFileName)) {
+						// Set the new reference value
+						inputFileName = entry.getValue();
+						System.out.println("New input file: " + inputFileName);
+					} else {
+						// If the file name hasn't changed, just stop here
+						// (otherwise super.update will be called, which will
+						// redundantly re-search the whole file for dependencies
+						// and re-draw them)
+						return;
+					}
+				}
+			}
+			
 			super.update(component);
 		}
 		

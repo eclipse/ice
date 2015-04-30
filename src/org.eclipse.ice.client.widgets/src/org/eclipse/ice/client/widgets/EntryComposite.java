@@ -301,10 +301,8 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * This operation creates a drop-down menu on the Composite.
 	 */
 	private void createDropdown() {
-
-		boolean redraw = (dropDown == null || dropDown.isDisposed());
-		
-		if (redraw) {
+	
+		if (dropDown == null || dropDown.isDisposed()) {
 			// Create a drop-down menu
 			dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL
 					| SWT.H_SCROLL | SWT.READ_ONLY);
@@ -340,6 +338,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			// has been added to the Entry
 			List<String> allowedValues = entry.getAllowedValues();
 			List<String> comboValues = Arrays.asList(dropDown.getItems());
+			
 			for (int i = 0; i < allowedValues.size(); i++) {
 				String allowedValue = allowedValues.get(i);
 				// Add any new AllowedValues to the dropDown
