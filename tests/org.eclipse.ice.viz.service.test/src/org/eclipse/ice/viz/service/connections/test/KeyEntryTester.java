@@ -11,28 +11,26 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.test;
 
-import org.eclipse.ice.viz.service.connections.ConnectionPlot;
-import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
-import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.IKeyManager;
+import org.eclipse.ice.viz.service.connections.KeyEntry;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This class checks that the {@link ConnectionPlot} correctly synchronizes the
- * associated {@link ConnectionPlotRender} with changes to its properties or to
- * its associated {@link IConnectionAdapter}.
+ * This class verifies the expected behavior of the {@link KeyEntry} and its
+ * interaction with an associated {@link IKeyManager}.
  * 
  * @author Jordan Deyton
  *
  */
 @Ignore
-public class ConnectionPlotTester {
+public class KeyEntryTester {
 
 	// TODO Implement these tests.
 
 	/**
-	 * This test checks the default state of a {@code ConnectionPlot} after
-	 * being constructed.
+	 * This checks the constructor for {@code KeyEntry} to ensure that the
+	 * default values are properly set.
 	 */
 	@Test
 	public void checkConstruction() {
@@ -40,20 +38,21 @@ public class ConnectionPlotTester {
 	}
 
 	/**
-	 * Tests {@code ConnectionPlot}'s response to updating the plot's data
-	 * source URI.
+	 * Tests the clone operation to ensure that it properly returns a copied
+	 * {@code KeyEntry} rather than a plain {@code Entry}.
 	 */
 	@Test
-	public void checkDataSource() {
+	public void checkClone() {
 
 	}
 
 	/**
-	 * Tests the {@code IConnectionAdapter} associated with a
-	 * {@code ConnectionPlot}.
+	 * Checks that the {@link KeyEntry#setValue(String)} properly assigns valid
+	 * values (valid, unused keys in the associated key manager) and rejects
+	 * invalid values (invalid or used keys in the key manager).
 	 */
 	@Test
-	public void checkConnectionAdapter() {
+	public void checkValue() {
 
 	}
 

@@ -30,10 +30,13 @@ public class PortEntry extends Entry {
 	 * The default constructor.
 	 * 
 	 * @param contentProvider
-	 *            The {@code PortEntry}'s content provider.
+	 *            The {@code PortEntry}'s content provider. If null, a default
+	 *            content provider is used.
 	 */
 	public PortEntry(PortEntryContentProvider contentProvider) {
-		super(contentProvider);
+		// If the provided content provider is null, create a default one.
+		super(contentProvider != null ? contentProvider
+				: new PortEntryContentProvider());
 	}
 
 	/**
@@ -99,7 +102,8 @@ public class PortEntry extends Entry {
 		// Otherwise, update the error message.
 		else {
 			String error = continuousErrMsg;
-			error = error.replace("${incorrectValue}", newValue);
+			error = error.replace("${incorrectValue}",
+					newValue != null ? newValue : "null");
 			error = error.replace("${lowerBound}", allowedValues.get(0));
 			error = error.replace("${upperBound}", allowedValues.get(1));
 			errorMessage = error;
