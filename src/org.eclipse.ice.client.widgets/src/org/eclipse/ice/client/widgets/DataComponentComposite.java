@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
@@ -28,6 +29,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -163,7 +165,7 @@ public class DataComponentComposite extends Composite implements
 	 * EntryComposites.
 	 */
 	public void refresh() {
-	
+		
 		// Local Declarations
 		List<Entry> entries = dataComp.retrieveAllEntries();
 		
@@ -175,14 +177,14 @@ public class DataComponentComposite extends Composite implements
 		
 		// If a selection change triggered this refresh, make sure to update 
 		// any Entries on the dataComp that need their value(s) updating
-//		for (int i = 0; i < entries.size(); i++) {
-//			Entry entry = dataComp.retrieveAllEntries().get(i);
-//			EntryComposite entryComp = entryMap.get(i);
-//			if (entryComp != null && 
-//					!entry.getValue().equals(entryComp.entry.getValue())) {
-//				entry.setValue(entryComp.entry.getValue());
-//			}
-//		}
+		for (int i = 0; i < entries.size(); i++) {
+			Entry entry = dataComp.retrieveAllEntries().get(i);
+			EntryComposite entryComp = entryMap.get(i);
+			if (entryComp != null && 
+					!entry.getValue().equals(entryComp.entry.getValue())) {
+				entry.setValue(entryComp.entry.getValue());
+			}
+		}
 				
 		// Begin comparing the list of Entries to the EntryComposites in 
 		// entryMap to determine what needs to be done
@@ -192,15 +194,6 @@ public class DataComponentComposite extends Composite implements
 		for (int i = 0; i < maxIterations; i++) {
 			Entry entry = (i < entries.size() ? entries.get(i) : null);
 			EntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i) : null);
-			String value = (entryComp != null ? 
-					entryComp.entry.getValue() : 
-					(entry != null ? entry.getValue() : ""));
-			
-			if (entry != null && entryComp != null 
-					&& !entryComp.entry.getName().equals(entry.getName())) {
-				disposeEntry(i);
-				entryComp = null;
-			}
 			
 			// First, if the Entry isn't supposed to be displayed, dispose it
 			// and move on (she ain't worth it, man...)
@@ -214,7 +207,6 @@ public class DataComponentComposite extends Composite implements
 				// and add it to the entryMap
 				renderEntry(entry, i);
 				entryComp = entryMap.get(i);
-				entryComp.setEntryValue(value);
 				entryComp.refresh();
 				
 			} else {
@@ -230,19 +222,9 @@ public class DataComponentComposite extends Composite implements
 						disposeEntry(i);
 						renderEntry(entry, i);
 						entryComp = entryMap.get(i);
-						entryComp.setEntryValue(value);
 						entryComp.refresh();
 					}			
 				}
-			}
-		}
-		
-		//TODO remove this later
-		for (int i = 0; i < entries.size(); i++) {
-			Entry entry = dataComp.retrieveAllEntries().get(i);
-			EntryComposite entryComp = entryMap.get(i);
-			if (entryComp != null && !entryComp.entry.getValue().equals(entry.getValue())) {
-				System.out.println("============\n" + entry.getName() + "\nEntry: " + entry.getValue() + "\nComp: " + entryComp.entry.getValue());
 			}
 		}
 		
@@ -389,6 +371,9 @@ public class DataComponentComposite extends Composite implements
 	 * 
 	 * @param entry
 	 *            The Entry for which the Control should be created.
+	 * @param index
+	 * 			  The index in the entryMap of where the rendered EntryComposite
+	 * 			  will be put.
 	 */
 	private void renderEntry(Entry entry, int index) {
 
@@ -398,10 +383,6 @@ public class DataComponentComposite extends Composite implements
 		// Create a listener for the Entry composite that will pass events to
 		// any other listeners.
 		Listener entryListener = new Listener() {
-			/**
-			 * This operation will pass an event to all of this listeners of
-			 * this composite.
-			 */
 			@Override
 			public void handleEvent(Event e) {
 				// Let them know
@@ -425,8 +406,43 @@ public class DataComponentComposite extends Composite implements
 				true, false));
 		// Set the Listener.
 		entryComposite.addListener(SWT.Selection, entryListener);
+		
 		// Add the EntryComposite to the Map
 		entryMap.put(index, entryComposite);
+		
+		// Get the list of EntryComposites in the order they appear in the UI
+		List<Control> uiEntryComps = Arrays.asList(getChildren());
+		
+		// TODO fix this....
+		// Lastly, reorder the EntryComposites on this DataComponentComposite 
+		// to be in the correct order (according to their index in the entryMap)
+//		for (int i = 0; i < entryMap.size(); i++) {
+//			EntryComposite uiEntryComp = (EntryComposite) uiEntryComps.get(i);
+//			Entry uiEntry = uiEntryComp.entry;
+//			Entry mapEntry = entryMap.get(i).entry;
+//			
+//			// Check if the uiEntry is out of place
+//			int uiIndex = 0;
+//			if (!mapEntry.getName().equals(uiEntry.getName())) {
+//			
+//				// If it's out of place, figure out where it is in the UI
+//				for (int j = 0; j < uiEntryComps.size(); j++) {
+//					EntryComposite e = (EntryComposite) uiEntryComps.get(j);
+//					if (mapEntry.getName().equals(e.entry.getName())) {
+//						uiIndex = j;
+//						break;
+//					}
+//				}
+//				
+//				// Move the UI EntryComposite up as many times necessary so its
+//				// position in the UI matches its index in the entryMap
+//				for (int k = 0; k < (uiIndex-i); k++) {
+//					if (uiEntryComps.get(i+1) != null) {
+//					uiEntryComp.moveBelow(uiEntryComps.get(i+1));
+//					}
+//				}
+//			}
+//		}
 
 		return;
 	}

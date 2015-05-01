@@ -556,13 +556,10 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 						return;
 					}
 					
-					System.out.println("Old input file: " + inputFileName);
-					
 					// Check if the input file name has changed
 					if (!entry.getValue().equals(inputFileName)) {
 						// Set the new reference value
 						inputFileName = entry.getValue();
-						System.out.println("New input file: " + inputFileName);
 					} else {
 						// If the file name hasn't changed, just stop here
 						// (otherwise super.update will be called, which will

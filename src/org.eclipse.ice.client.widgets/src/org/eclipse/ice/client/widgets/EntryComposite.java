@@ -417,8 +417,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					notifyListeners(SWT.Selection, new Event());
 					// Get the Client
 					IClient client = ClientHolder.getClient();
-	
-					// Create the dialog and get the files
+					// Open up a file browser
 					FileDialog fileDialog = new FileDialog(getShell());
 					fileDialog.setText("Select a file to import into ICE");
 					String filePath = fileDialog.open();
