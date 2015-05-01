@@ -8,8 +8,8 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-#   Initial API and implementation and/or initial documentation -
-#   Jordan H. Deyton
+#   Jordan H. Deyton - Initial API and implementation and/or initial documentation
+#   
 # ******************************************************************************
 
 # This is the desired execution environment. I'm lazy, so it's not a command
@@ -27,8 +27,7 @@ echo -e $msg
 
 # Prompt the user to continue.
 read -p "Are you sure you wish to continue? " -n 1 -r
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo
     exit 1
 fi
@@ -40,7 +39,7 @@ cd ../
 # Use find to find all MANIFEST.MF files, then use grep to find all files that
 # do *not* have the execution environment set to JavaSE-1.7. Case is ignored
 # for the file names and grep pattern matching.
-matches=$(find . -iname 'MANIFEST.MF' -exec grep -iL "$key JavaSE-1.7" {} \;)
+matches=$(find . -iname 'MANIFEST.MF' -exec grep -iL "$key $ee" {} \;)
 
 # For each match, do an in-place replacement of the previous execution
 # environment.
