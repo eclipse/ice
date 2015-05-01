@@ -858,7 +858,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					if (!"false".equals(e.getTag()) && e.getValue() != null
 							&& !e.getValue().isEmpty()
 							&& e.getName().toLowerCase().contains(regex) 
-							&& !e.getName().toLowerCase().contains("profile")) {
+							&& !e.getName().toLowerCase().contains("profile")
+							&& !e.getName().toLowerCase().contains("file_base")) {
 						
 						// If this Entry does not have a very descriptive name
 						// we should reset its name to the block it belongs to

@@ -98,7 +98,7 @@ public class NewKernelHandler extends AbstractHandler {
 				.append("\t"
 						+ kernelName
 						+ "(const std::string & name, InputParameters parameters);\n\n");
-		includeFileBuffer.append("\tvirtual double computeQpResidual();\n\n");
+		includeFileBuffer.append("\tvirtual Real computeQpResidual();\n\n");
 		includeFileBuffer.append("};\n\n");
 		includeFileBuffer.append("#endif\n");
 
@@ -117,9 +117,9 @@ public class NewKernelHandler extends AbstractHandler {
 						+ kernelName
 						+ "(const std::string & name, InputParameters parameters) : Kernel(name, parameters) {\n");
 		sourceFileBuffer.append("}\n\n");
-		sourceFileBuffer.append("double " + kernelName
+		sourceFileBuffer.append("Real " + kernelName
 				+ "::computeQpResidual() {\n");
-		sourceFileBuffer.append("\treturn 0.0;");
+		sourceFileBuffer.append("\treturn 0.0;\n");
 		sourceFileBuffer.append("}\n\n");
 
 		// Get a reference to the src,include folders so that we can get 
