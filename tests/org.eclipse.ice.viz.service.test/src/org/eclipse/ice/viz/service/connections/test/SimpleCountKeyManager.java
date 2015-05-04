@@ -33,12 +33,41 @@ public class SimpleCountKeyManager implements IKeyManager {
 	private int count = 0;
 
 	/**
+	 * A list of key change listeners that will be notified when a key is taken
+	 * or released (or changed).
+	 */
+	final List<IKeyChangeListener> listeners = new ArrayList<IKeyChangeListener>();
+
+	/**
 	 * Takes the next available key if it is available.
-	 * 
+	 * <p>
+	 * Listeners are notified that the key has been taken.
+	 * </p>
 	 * @return The next available key, {@link #count}, as a string.
 	 */
 	public String takeKey() {
-		return Integer.toString(count++);
+		String key = Integer.toString(count++);
+		for (IKeyChangeListener listener : listeners) {
+			listener.keyChanged(null, key);
+		}
+		return key;
+	}
+	
+	/**
+	 * Releases the specified key if it is valid.
+	 * <p>
+	 * Listeners are notified that the key has been released.
+	 * </p>
+	 * @param key The key to release.
+	 */
+	public void releaseKey(String key) {
+		int keyInt = Integer.parseInt(key);
+		if (keyInt >= 0 && keyInt < count) {
+			for (IKeyChangeListener listener : listeners) {
+				listener.keyChanged(key, null);
+			}
+		}
+		return;
 	}
 
 	/*
@@ -95,7 +124,7 @@ public class SimpleCountKeyManager implements IKeyManager {
 	 */
 	@Override
 	public void addKeyChangeListener(IKeyChangeListener listener) {
-		// Nothing to do yet.
+		listeners.add(listener);
 	}
 
 	/*
@@ -107,7 +136,7 @@ public class SimpleCountKeyManager implements IKeyManager {
 	 */
 	@Override
 	public void removeKeyChangeListener(IKeyChangeListener listener) {
-		// Nothing to do yet.
+		listeners.remove(listener);
 	}
 
 }

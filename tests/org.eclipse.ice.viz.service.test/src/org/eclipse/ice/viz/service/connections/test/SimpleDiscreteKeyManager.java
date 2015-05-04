@@ -41,6 +41,12 @@ public class SimpleDiscreteKeyManager implements IKeyManager {
 	private final Set<String> takenKeys = new HashSet<String>();
 
 	/**
+	 * A list of key change listeners that will be notified when a key is taken
+	 * or released (or changed).
+	 */
+	final List<IKeyChangeListener> listeners = new ArrayList<IKeyChangeListener>();
+	
+	/**
 	 * Creates a simple key manager with a pre-defined list of allowed keys. All
 	 * specified keys are available by default.
 	 * 
@@ -66,6 +72,9 @@ public class SimpleDiscreteKeyManager implements IKeyManager {
 		for (String key : keys) {
 			if (availableKeys.remove(key)) {
 				takenKeys.add(key);
+				for (IKeyChangeListener listener : listeners) {
+					listener.keyChanged(null, key);
+				}
 			}
 		}
 	}
@@ -81,6 +90,9 @@ public class SimpleDiscreteKeyManager implements IKeyManager {
 		for (String key : keys) {
 			if (takenKeys.remove(key)) {
 				availableKeys.add(key);
+				for (IKeyChangeListener listener : listeners) {
+					listener.keyChanged(key, null);
+				}
 			}
 		}
 	}
@@ -131,7 +143,7 @@ public class SimpleDiscreteKeyManager implements IKeyManager {
 	 */
 	@Override
 	public void addKeyChangeListener(IKeyChangeListener listener) {
-		// Nothing to do yet.
+		listeners.add(listener);
 	}
 
 	/*
@@ -143,7 +155,7 @@ public class SimpleDiscreteKeyManager implements IKeyManager {
 	 */
 	@Override
 	public void removeKeyChangeListener(IKeyChangeListener listener) {
-		// Nothing to do yet.
+		listeners.remove(listener);
 	}
 
 }
