@@ -14,6 +14,7 @@ package org.eclipse.ice.client.widgets;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.ice.client.common.internal.ClientHolder;
@@ -67,9 +68,10 @@ import org.eclipse.ui.forms.IMessageManager;
  * IMessageManager if it is set by calling setMessageManager().
  * </p>
  * 
- * @author gqx
+ * @author gqx, Anna Wojtowicz
  */
 public class EntryComposite extends Composite implements IUpdateableListener {
+	
 	/**
 	 * A label that describes the Entry.
 	 */
@@ -256,7 +258,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		// Add the button to the list
 		tmpButton.setBackground(getBackground());
 		buttons.add(tmpButton);
-
 	}
 
 	/**
@@ -300,36 +301,52 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * This operation creates a drop-down menu on the Composite.
 	 */
 	private void createDropdown() {
+	
+		if (dropDown == null || dropDown.isDisposed()) {
+			// Create a drop-down menu
+			dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL
+					| SWT.H_SCROLL | SWT.READ_ONLY);
+			dropDown.setBackground(getBackground());
+	
+			// Determine the current value of the entry.
+			String currentValue = entry.getValue();
+			
+			// Add the allowed values to the dropdown menu. If the allowed value
+			// matches the current value, select it.
+			List<String> allowedValues = entry.getAllowedValues();
+			for (int i = 0; i < allowedValues.size(); i++) {
+				String allowedValue = allowedValues.get(i);
+				dropDown.add(allowedValue);
+				if (allowedValue.equals(currentValue)) {
+					dropDown.select(i);
+				}
+			}
+			
+			// Add a selection listener
+			dropDown.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					// Set the value of the Entry
+					setEntryValue(((Combo) e.widget).getText());
+					// Notify any listeners that the selection has changed
+					notifyListeners(SWT.Selection, new Event());
+				}
+			});
 
-		// Create a drop-down menu
-		dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL
-				| SWT.H_SCROLL | SWT.READ_ONLY);
-		dropDown.setBackground(getBackground());
-
-		// Determine the current value of the entry.
-		String currentValue = entry.getValue();
-
-		// Add the allowed values to the dropdown menu. If the allowed value
-		// matches the current value, select it.
-		List<String> allowedValues = entry.getAllowedValues();
-		for (int i = 0; i < allowedValues.size(); i++) {
-			String allowedValue = allowedValues.get(i);
-			dropDown.add(allowedValue);
-			if (allowedValue.equals(currentValue)) {
-				dropDown.select(i);
+		} else {
+			// If the dropDown hasn't been disposed, check if a new AllowedValue
+			// has been added to the Entry
+			List<String> allowedValues = entry.getAllowedValues();
+			List<String> comboValues = Arrays.asList(dropDown.getItems());
+			
+			for (int i = 0; i < allowedValues.size(); i++) {
+				String allowedValue = allowedValues.get(i);
+				// Add any new AllowedValues to the dropDown
+				if (!comboValues.contains(allowedValue)) {
+					dropDown.add(allowedValue);
+				}
 			}
 		}
-
-		// Add the listener
-		dropDown.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Notify any listeners that the selection has changed
-				notifyListeners(SWT.Selection, new Event());
-				// Set the value of the Entry
-				setEntryValue(dropDown.getItem(dropDown.getSelectionIndex()));
-			}
-		});
 
 		return;
 	}
@@ -385,36 +402,39 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 */
 	private void createBrowseButton() {
 
-		// Create a new button, set the text
-		Button browseButton = new Button(this, SWT.PUSH);
-		browseButton.setText("Browse...");
-
-		// Add an event listener that displays a Directory Dialog prompt
-		browseButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Notify any listeners that the selection has changed
-				notifyListeners(SWT.Selection, new Event());
-				// Get the Client
-				IClient client = ClientHolder.getClient();
-
-				// Create the dialog and get the files
-				FileDialog fileDialog = new FileDialog(getShell());
-				fileDialog.setText("Select a file to import into ICE");
-				String filePath = fileDialog.open();
-				if (filePath != null) {
-					// Import the files
-					File importedFile = new File(filePath);
-					client.importFile(importedFile.toURI());
-					setEntryValue(importedFile.getName());
+		boolean redraw = buttons.isEmpty();
+		
+		if (redraw) {
+			// Create a new button, set the text
+			Button browseButton = new Button(this, SWT.PUSH);
+			browseButton.setText("Browse...");
+	
+			// Add an event listener that displays a Directory Dialog prompt
+			browseButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					// Notify any listeners that the selection has changed
+					notifyListeners(SWT.Selection, new Event());
+					// Get the Client
+					IClient client = ClientHolder.getClient();
+					// Open up a file browser
+					FileDialog fileDialog = new FileDialog(getShell());
+					fileDialog.setText("Select a file to import into ICE");
+					String filePath = fileDialog.open();
+					if (filePath != null) {
+						// Import the files
+						File importedFile = new File(filePath);
+						client.importFile(importedFile.toURI());
+						setEntryValue(importedFile.getName());
+					}
+	
+					return;
 				}
-
-				return;
-			}
-		});
-
-		// Add the browse button
-		buttons.add(browseButton);
+			});
+	
+			// Add the browse button
+			buttons.add(browseButton);
+		}
 
 		return;
 	}
@@ -646,7 +666,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			removeControlListener(resizeListener);
 			resizeListener = null;
 		}
-
+		
 		// Re-render the Composite
 		render();
 
@@ -701,6 +721,14 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					text.setFont(font);
 				}
 			}
+
+		} else if (value == null) {
+			// Set the Entry to the first AllowedValue
+			String allowedValue = entry.getAllowedValues().get(1);
+			if (allowedValue != null) {
+				entry.setValue(allowedValue);
+			}
+			
 		} else {
 			// Remove a posted message if necessary
 			if (messageManager != null) {
@@ -716,7 +744,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				Font font = new Font(getDisplay(), fontData);
 				text.setFont(font);
 			}
-
 		}
 
 		return;
@@ -732,7 +759,11 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		if (component == entry) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					refresh();
+					if (!EntryComposite.this.isDisposed()) {
+						refresh();
+					} else {
+						entry.unregister(EntryComposite.this);
+					}
 				}
 			});
 		}
