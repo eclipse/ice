@@ -121,16 +121,9 @@ public class KeyEntryContentProviderTester {
 		assertNotNull(allowedValues);
 		assertEquals(0, allowedValues.size());
 
-		// Try getting the default value. Since this pulls from the key
-		// manager's next available key, and there are no more keys left, it
-		// should throw an IllegalStateException.
-		try {
-			contentProvider.getDefaultValue();
-			fail("An IllegalStateException (stating that no keys are left) "
-					+ "should have been thrown.");
-		} catch (IllegalStateException e) {
-			// Passed. Do nothing.
-		}
+		// Since there is no key available, the content provider's default value
+		// should be the empty string.
+		assertEquals("", contentProvider.getDefaultValue());
 		// -------------------------------------------------------- //
 
 		// Try invalid arguments.
@@ -225,13 +218,9 @@ public class KeyEntryContentProviderTester {
 		// Take all of the keys. An exception should be thrown the next time.
 		discreteKeys.takeKeys("Motoko", "Batou", "Togusa", "Ishikawa", "Saito",
 				"Paz", "Borma");
-		try {
-			contentProvider.getDefaultValue();
-			fail("An IllegalStateException (stating that no keys are left) "
-					+ "should have been thrown.");
-		} catch (IllegalStateException e) {
-			// Passed. Do nothing.
-		}
+		// Since there are no keys left, the content provider's default value is
+		// the empty string.
+		assertEquals("", contentProvider.getDefaultValue());
 		// -------------------------------------------------------------- //
 
 		// Release all of the keys, then try setting a null default value.

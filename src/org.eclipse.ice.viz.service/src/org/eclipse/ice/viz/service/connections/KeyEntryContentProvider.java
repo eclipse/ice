@@ -12,6 +12,7 @@
 package org.eclipse.ice.viz.service.connections;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
@@ -26,11 +27,16 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
  * manage allowed values or default values. Likewise, the {@code IKeyManager}
  * does not need to worry about how {@code Entry}s work.
  * </p>
+ * <p>
+ * Notifications sent from the key manager will automatically update the default
+ * and allowed values for this content provider.
+ * </p>
  * 
  * @author Jordan Deyton
  *
  */
-public class KeyEntryContentProvider extends BasicEntryContentProvider {
+public class KeyEntryContentProvider extends BasicEntryContentProvider
+		implements IKeyChangeListener {
 
 	/**
 	 * This manages all allowed keys for associated {@link KeyEntry}s.
@@ -44,11 +50,11 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 	 *            This manages all allowed keys for associated {@link KeyEntry}
 	 *            s.
 	 */
-	public KeyEntryContentProvider(IKeyManager manager) {
-		keyManager = manager;
+	public KeyEntryContentProvider(IKeyManager keyManager) {
+		this.keyManager = keyManager;
 
 		// Check for a null key manager.
-		if (manager == null) {
+		if (keyManager == null) {
 			throw new NullPointerException("KeyEntryContentProvider error: "
 					+ "Cannot use null key manager.");
 		}
@@ -60,19 +66,33 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 		// If the key manager has a list of keys, then the type is discrete.
 		if (!keyManager.getAvailableKeys().isEmpty()) {
 			type = AllowedValueType.Discrete;
+			super.setDefaultValue(keyManager.getNextKey());
 		} else {
 			// If the list is empty and requesting the next key throws an
 			// exception, then the type is discrete. In this case, the
 			// KeyManager is just out of keys. Otherwise, the keys are not
 			// restricted.
 			try {
-				keyManager.getNextKey();
+				String defaultKey = keyManager.getNextKey();
+				// Set the default key to the next available one. This will need
+				// to be updated when the next available key is taken.
 				type = AllowedValueType.Undefined;
+				super.setDefaultValue(defaultKey);
 			} catch (IllegalStateException e) {
 				type = AllowedValueType.Discrete;
+				super.setDefaultValue("");
 			}
 		}
 		super.setAllowedValueType(type);
+
+		// Set the default allowed values. This will need to be updated when one
+		// of the key manager's keys is taken or released.
+		super.setAllowedValues((ArrayList<String>) keyManager
+				.getAvailableKeys());
+
+		// Register with the key manager as a key change listener so we can
+		// update the default value and allowed values when the keys change.
+		keyManager.addKeyChangeListener(this);
 
 		return;
 	}
@@ -100,47 +120,6 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 			// default constructor.
 		}
 		return;
-	}
-
-	/**
-	 * Does nothing.
-	 */
-	@Override
-	public void setDefaultValue(String defaultValue) {
-		// Do nothing. The default value cannot be specified.
-	}
-
-	/**
-	 * Returns the next available key from the {@link #keyManager}.
-	 */
-	@Override
-	public String getDefaultValue() {
-		return keyManager.getNextKey();
-	}
-
-	/**
-	 * Does nothing.
-	 */
-	@Override
-	public void setAllowedValueType(AllowedValueType allowedValueType) {
-		// Do nothing. The allowed value type is based on the key manager.
-	}
-
-	/**
-	 * Does nothing.
-	 */
-	@Override
-	public void setAllowedValues(ArrayList<String> allowedValues) {
-		// Do nothing. The allowed values are based on the available keys from
-		// the key manager.
-	}
-
-	/**
-	 * Returns the available keys from the {@link #keyManager}.
-	 */
-	@Override
-	public ArrayList<String> getAllowedValues() {
-		return (ArrayList<String>) keyManager.getAvailableKeys();
 	}
 
 	/**
@@ -181,13 +160,37 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 	public boolean equals(Object object) {
 		boolean equals = false;
 
-		// If the other object is an equal (as a BasicEntryContentProvider) and
-		// is a KeyEntryContentProvider, cast it to a KeyEntryContentProvider
-		// and compare the variables managed by this class.
-		if (super.equals(object) && object instanceof KeyEntryContentProvider) {
-			KeyEntryContentProvider otherProvider = (KeyEntryContentProvider) object;
-			// Compare all class variables:
-			equals = (keyManager.equals(otherProvider.keyManager));
+		// Since there's another equals method (thanks to
+		// IEntryContentProvider), redirect the call to that method.
+		if (object instanceof IEntryContentProvider) {
+			equals = equals((KeyEntryContentProvider) object);
+		}
+
+		return equals;
+	}
+
+	/**
+	 * We must override the default typed equals method as the values returned
+	 * by this content provider are dynamic.
+	 */
+	@Override
+	public boolean equals(IEntryContentProvider otherProvider) {
+		boolean equals = false;
+
+		// This can only be equivalent to non-null objects.
+		if (otherProvider != null) {
+			// If the references match, we know it is equivalent.
+			if (otherProvider == this) {
+				equals = true;
+			}
+			// Otherwise, we need to run a full check on the other object.
+			else if (otherProvider instanceof KeyEntryContentProvider) {
+				KeyEntryContentProvider otherKeyProvider = (KeyEntryContentProvider) otherProvider;
+
+				// Compare all class variables.
+				equals = super.equals(otherProvider)
+						&& keyManager.equals(otherKeyProvider.keyManager);
+			}
 		}
 
 		return equals;
@@ -208,5 +211,70 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 		hash += 31 * keyManager.hashCode();
 
 		return hash;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.connections.IKeyChangeListener#keyChanged
+	 * (java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void keyChanged(String oldKey, String newKey) {
+		// Update the allowed values to those that are now available. This only
+		// needs to be done for discrete key managers, as this list is always
+		// empty for undefined key managers.
+		if (getAllowedValueType() == AllowedValueType.Discrete) {
+			List<String> availableKeys = keyManager.getAvailableKeys();
+			super.setAllowedValues((ArrayList<String>) availableKeys);
+			// We can't get the next available key if there are none left. In
+			// that case, set the default value to the empty string.
+			if (availableKeys.isEmpty()) {
+				super.setDefaultValue("");
+			}
+			// If there is a key available, set it as the default key.
+			else {
+				super.setDefaultValue(keyManager.getNextKey());
+			}
+		}
+		// For "undefined" key managers, get the next available key.
+		else {
+			super.setDefaultValue(keyManager.getNextKey());
+		}
+		return;
+	}
+
+	/**
+	 * Overrides the parent behavior to do nothing. The default is determined by
+	 * the associated {@link #keyManager}.
+	 * 
+	 * @param defaultValue
+	 */
+	@Override
+	public void setDefaultValue(String defaultValue) {
+		// Do nothing.
+	}
+
+	/**
+	 * Overrides the parent behavior to do nothing. The allowed values are
+	 * determined by the associated {@link #keyManager}.
+	 * 
+	 * @param allowedValues
+	 */
+	@Override
+	public void setAllowedValues(ArrayList<String> allowedValues) {
+		// Do nothing.
+	}
+
+	/**
+	 * Overrides the parent behavior to do nothing. The allowed value type is
+	 * determined by the associated {@link #keyManager}.
+	 * 
+	 * @param allowedValueType
+	 */
+	@Override
+	public void setAllowedValueType(AllowedValueType allowedValueType) {
+		// Do nothing.
 	}
 }
