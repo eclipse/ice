@@ -78,6 +78,31 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 	}
 
 	/**
+	 * A copy constructor.
+	 * <p>
+	 * Note that the key manager is not re-created for the copy.
+	 * </p>
+	 * 
+	 * @param otherProvider
+	 *            The other KeyEntryContentProvider to copy.
+	 */
+	public KeyEntryContentProvider(KeyEntryContentProvider provider) {
+		// Perform the default construction, using the specified provider's key
+		// manager if possible.
+		this(provider != null ? provider.keyManager : null);
+
+		if (provider != null) {
+			// Copy the super class' variables.
+			super.copy(provider);
+
+			// Copy this class' variables.
+			// Nothing to copy, as the key manager was already set by the
+			// default constructor.
+		}
+		return;
+	}
+
+	/**
 	 * Does nothing.
 	 */
 	@Override
@@ -118,4 +143,70 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 		return (ArrayList<String>) keyManager.getAvailableKeys();
 	}
 
+	/**
+	 * Gets whether the specified key is available for this content provider.
+	 * <p>
+	 * This provides an alternative to checking {@link #getAllowedValues()} when
+	 * the key set is unlimited or "undefined" (in which case the other method
+	 * returns an empty list).
+	 * </p>
+	 * 
+	 * @param key
+	 *            The key to check for availability.
+	 * @return True if the specified key is available, false otherwise.
+	 */
+	public boolean keyAvailable(String key) {
+		return keyManager.keyAvailable(key);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.form.BasicEntryContentProvider#clone()
+	 */
+	@Override
+	public Object clone() {
+		return new KeyEntryContentProvider(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.ICEObject#equals(java.lang.Object
+	 * )
+	 */
+	@Override
+	public boolean equals(Object object) {
+		boolean equals = false;
+
+		// If the other object is an equal (as a BasicEntryContentProvider) and
+		// is a KeyEntryContentProvider, cast it to a KeyEntryContentProvider
+		// and compare the variables managed by this class.
+		if (super.equals(object) && object instanceof KeyEntryContentProvider) {
+			KeyEntryContentProvider otherProvider = (KeyEntryContentProvider) object;
+			// Compare all class variables:
+			equals = (keyManager.equals(otherProvider.keyManager));
+		}
+
+		return equals;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.form.BasicEntryContentProvider#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		// Get the default hash code.
+		int hash = super.hashCode();
+
+		// Add local variable hash codes here:
+		hash += 31 * keyManager.hashCode();
+
+		return hash;
+	}
 }

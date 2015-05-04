@@ -58,6 +58,26 @@ public class SecretEntry extends Entry {
 		secretFlag = true;
 	}
 
+	/**
+	 * A copy constructor.
+	 * 
+	 * @param entry
+	 *            The entry whose data will be copied into this one.
+	 */
+	public SecretEntry(SecretEntry entry) {
+		// Perform the default construction first.
+		this();
+
+		if (entry != null) {
+			// Copy the super class' variables.
+			super.copy(entry);
+
+			// Copy this class' variables.
+			// Nothing to copy.
+		}
+		return;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -65,12 +85,47 @@ public class SecretEntry extends Entry {
 	 */
 	@Override
 	public Object clone() {
-		// Create a new entry and copy the contents. Note that since we already
-		// set the secret flag to true in the constructor, we can rely on the
-		// default copy operation.
-		Entry entry = new SecretEntry();
-		entry.copy(this);
+		return new SecretEntry(this);
+	}
 
-		return entry;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		boolean equals = false;
+
+		// If the other object is equal (as an Entry) and is a SecretEntry, cast
+		// it to a SecretEntry and compare the variables managed by SecretEntry.
+		if (super.equals(object) && object instanceof SecretEntry) {
+			// Compare all class variables:
+			// Nothing to compare.
+			equals = true;
+		}
+
+		return equals;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		// Get the default hash code.
+		int hash = super.hashCode();
+
+		// Add class variable hash codes here:
+		// Nothing to add. The secretness is stored as a flag in the base class.
+
+		// To avoid an equivalent hash code from a regular Entry copied from
+		// this one (which should not be the case), add a static value to the
+		// hash code.
+		hash += 31 * 1;
+
+		return hash;
 	}
 }

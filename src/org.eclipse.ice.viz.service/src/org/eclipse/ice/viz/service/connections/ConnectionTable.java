@@ -132,7 +132,7 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 		// ---- name ---- //
 		KeyEntryContentProvider keyContentProvider = new KeyEntryContentProvider(
 				this);
-		Entry keyEntry = new KeyEntry(keyContentProvider, this);
+		Entry keyEntry = new Entry(keyContentProvider);
 		keyEntry.setName("Name");
 		template.add(keyEntry);
 		// ---- host ---- //

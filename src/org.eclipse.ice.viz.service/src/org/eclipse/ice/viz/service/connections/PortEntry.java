@@ -14,6 +14,7 @@ package org.eclipse.ice.viz.service.connections;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 
 /**
  * This class provides an {@link Entry} that is a "continuous" {@code Entry}
@@ -113,15 +114,81 @@ public class PortEntry extends Entry {
 	}
 
 	/**
-	 * Overrides the default clone operation on {@code Entry}.
-	 * <p>
-	 * <b>Note:</b> This method should not be used. It is implemented so that a
-	 * template {@code KeyEntry} can be copied when used in
-	 * {@code ConnectionManager} {@code TableComponent}s.
-	 * </p>
+	 * Overrides the parent method to enforce the rule that content providers
+	 * *must* be {@link PortEntryContentProvider}s.
+	 */
+	@Override
+	public void setContentProvider(IEntryContentProvider contentProvider) {
+		if (contentProvider instanceof PortEntryContentProvider) {
+			setContentProvider((PortEntryContentProvider) contentProvider);
+		}
+	}
+
+	/**
+	 * Sets the content provider. Resets the value to the default.
+	 * 
+	 * @param contentProvider
+	 *            The new {@code PortEntryContentProvider}. If null, nothing is
+	 *            done.
+	 */
+	public void setContentProvider(PortEntryContentProvider contentProvider) {
+		// Update the references to the PortEntryContentProvider (including the
+		// super class) and reset the value to default.
+		if (contentProvider != null) {
+			super.setContentProvider(contentProvider);
+			value = null;
+		}
+		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#clone()
 	 */
 	@Override
 	public Object clone() {
 		return new PortEntry(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		boolean equals = false;
+
+		// If the other object is equal (as an Entry) and is a PortEntry, cast
+		// it to a PortEntry and compare the variables managed by PortEntry.
+		if (super.equals(object) && object instanceof PortEntry) {
+			// Compare all class variables:
+			// Nothing to compare.
+			equals = true;
+		}
+
+		return equals;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		// Get the default hash code.
+		int hash = super.hashCode();
+
+		// Add class variable hash codes here:
+		// Nothing to add. The port value is stored as a regular Entry value.
+
+		// To avoid an equivalent hash code from a regular Entry copied from
+		// this one (which should not be the case), add a static value to the
+		// hash code.
+		hash += 31 * 1;
+
+		return hash;
 	}
 }
