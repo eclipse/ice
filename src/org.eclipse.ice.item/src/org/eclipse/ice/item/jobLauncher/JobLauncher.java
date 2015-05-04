@@ -1949,15 +1949,9 @@ public class JobLauncher extends Item {
 		}
 
 		// Use the IReader to find all occurrences of the given Regular
-<<<<<<< HEAD
-		// Expression
-		// For each of those add a new Input file Entry
-		for (Entry e : getReader().findAll(file, regex)) {
-=======
 		// Expression for each of those add a new Input file Entry
 		ArrayList<Entry> entriesFound = getReader().findAll(file, regex);
 		for (Entry e : entriesFound) {
->>>>>>> refs/remotes/origin/anna/entrycompredraw
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
 					e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
