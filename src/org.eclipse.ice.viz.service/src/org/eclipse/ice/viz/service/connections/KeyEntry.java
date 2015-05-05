@@ -79,20 +79,23 @@ public class KeyEntry extends Entry {
 	 * @param otherEntry
 	 *            The other {@code KeyEntry} to copy.
 	 */
-	private KeyEntry(KeyEntry entry) {
-		// Perform the default construction, using the specified content
-		// provider if possible.
-		this(entry != null ? entry.contentProvider : null);
-
+	public KeyEntry(KeyEntry entry) {
+		// If the specified entry is not null, we can copy it.
 		if (entry != null) {
 			// Copy the super class' variables.
 			super.copy(entry);
 
 			// Copy this class' variables.
-			// Nothing to copy, as the content provider was already set by the
-			// default constructor.
+			// The super class clones the content provider, so we just need to
+			// set the cast reference to it.
+			contentProvider = (KeyEntryContentProvider) iEntryContentProvider;
 		}
-
+		// Otherwise, we must throw an exception as this KeyEntry will be in an
+		// invalid state (no KeyEntryContentProvider).
+		else {
+			throw new NullPointerException("KeyEntry error: "
+					+ "Cannot copy null KeyEntry.");
+		}
 		return;
 	}
 
@@ -135,13 +138,19 @@ public class KeyEntry extends Entry {
 	public boolean setValue(String newValue) {
 		boolean returnCode = false;
 
-		AllowedValueType valueType = iEntryContentProvider
-				.getAllowedValueType();
+		AllowedValueType valueType = contentProvider.getAllowedValueType();
 
+		// If the new value is the same, do nothing.
+		if (value == newValue || (value != null && value.equals(newValue))) {
+			returnCode = true;
+
+			changeState = false;
+			errorMessage = null;
+		}
 		// For an undefined set of keys, we need to check if the specified key
 		// is valid.
-		if (valueType == AllowedValueType.Undefined) {
-			// Update the key value if we can.
+		else if (valueType == AllowedValueType.Undefined) {
+			// If the new value is valid, change it.
 			if (contentProvider.keyAvailable(newValue)) {
 				value = newValue;
 				returnCode = true;
@@ -149,9 +158,13 @@ public class KeyEntry extends Entry {
 				changeState = true;
 				errorMessage = null;
 				notifyListeners();
-			} else {
+			}
+			// If the new value is invalid, set up the error message.
+			else {
 				String error = undefinedErrMsg;
-				error = error.replace("${incorrectValue}", newValue);
+				changeState = false;
+				errorMessage = error.replace("${incorrectValue}",
+						newValue != null ? newValue : "null");
 			}
 		}
 		// Otherwise, for a discrete set of keys, we can rely on the default
@@ -182,13 +195,17 @@ public class KeyEntry extends Entry {
 	public boolean equals(Object object) {
 		boolean equals = false;
 
-		// If the other object is equal (as an Entry) and is a KeyEntry, cast it
-		// to a KeyEntry and compare the variables managed by the KeyEntry.
-		if (super.equals(object) && object instanceof KeyEntry) {
-			// Compare all class variables.
-			// Since the content provider is the same reference as the one used
-			// by the parent class, we don't need to check it again.
-			equals = true;
+		// This can only be equivalent to non-null objects.
+		if (object != null) {
+			// If the references match, we know it is equivalent.
+			if (object == this) {
+				equals = true;
+			}
+			// Otherwise, we need to run a full check on the other object.
+			else if (object instanceof KeyEntry) {
+				// Compare all class variables.
+				equals = super.equals(object);
+			}
 		}
 
 		return equals;
