@@ -19,23 +19,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -49,12 +44,10 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.action.JobLaunchAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
-import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 
 /**
  * <!-- begin-UML-doc -->
@@ -1905,9 +1898,10 @@ public class JobLauncher extends Item {
 
 			// If this is an Entry, cast it
 			Entry entry = (Entry) component;
-			if (entry.getName().equals("Input File")) {
-				// The input file has changed, so let's make sure
-				// we are showing the correct related files
+			
+			// Verify this is the "Input File" Entry and it has a valid value
+			if (entry.getName().equals("Input File") 
+					&& !entry.getValue().isEmpty()) {
 
 				// Get the regex from the subclass
 				String regex = getFileDependenciesSearchString();
@@ -1934,7 +1928,7 @@ public class JobLauncher extends Item {
 	 */
 	protected void updateFileDependencies(IFile file, String regex) {
 
-		// Get the old file component and clear the old Entries
+		// Get the file DataComponent and Entry names
 		ArrayList<String> entryNames = new ArrayList<String>();
 		DataComponent fileComp = (DataComponent) form
 				.getComponent(JobLauncherForm.filesId);
@@ -1942,22 +1936,29 @@ public class JobLauncher extends Item {
 			entryNames.add(e.getName());
 		}
 
+		// Remove all old Entries from the Item
 		for (String s : entryNames) {
 			if (!"Input File".equals(s)) {
+				Entry entry = fileComp.retrieveEntry(s);
+				if (inputFileNameMap.containsKey(entry.getName())) {
+					inputFileNameMap.remove(entry.getName());
+				}
+				entryList.remove(entry);
 				fileComp.deleteEntry(s);
 			}
 		}
 
 		// Use the IReader to find all occurrences of the given Regular
-		// Expression
-		// For each of those add a new Input file Entry
-		for (Entry e : getReader().findAll(file, regex)) {
+		// Expression for each of those add a new Input file Entry
+		ArrayList<Entry> entriesFound = getReader().findAll(file, regex);
+		for (Entry e : entriesFound) {
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
 					e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
 
 		}
-
+		
+		return;
 	}
 
 	/**
