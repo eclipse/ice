@@ -12,17 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import java.util.ArrayList;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 
 /**
  * <!-- begin-UML-doc -->
@@ -258,48 +254,53 @@ public class BasicEntryContentProvider extends ICEObject implements
 		// end-user-code
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IEntryContentProvider#equals(IEntryContentProvider otherProvider)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.ICEObject#equals(java.lang.Object
+	 * )
 	 */
-	public boolean equals(IEntryContentProvider otherProvider) {
-		// begin-user-code
+	public boolean equals(Object object) {
+		boolean equals = false;
 
-		// Local Declarations
-		boolean retVal = false;
-
-		// Check the provider, null and base type check first.
-		if (otherProvider != null) {
-			// See if they are the same reference on the heap
-			if (this == otherProvider) {
-				retVal = true;
-			} else {
-				// Check each member value
-				retVal = super.equals((ICEObject) otherProvider)
-						&& (this.defaultValue.equals(otherProvider
-								.getDefaultValue()))
-						&& (this.allowedValues.equals(otherProvider
-								.getAllowedValues()))
-						&& (this.parent.equals(otherProvider.getParent()))
-						&& (this.allowedValueType.equals(otherProvider
-								.getAllowedValueType()));
-				// Check the tag if it is already set
-				if (this.tag != null) {
-					retVal = retVal
-							&& (this.tag.equals(otherProvider.getTag()));
-				} else {
-					if (otherProvider.getTag() != null) {
-						return false;
-					}
-				}
-			}
+		// Just re-direct to the typed equals method if possible.
+		if (object instanceof IEntryContentProvider) {
+			equals = equals((IEntryContentProvider) object);
 		}
-		return retVal;
 
-		// end-user-code
+		return equals;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.form.IEntryContentProvider#equals(org.
+	 * eclipse.ice.datastructures.form.IEntryContentProvider)
+	 */
+	@Override
+	public boolean equals(IEntryContentProvider otherProvider) {
+		boolean equals = false;
+
+		// If the references match, we know it is equivalent.
+		if (otherProvider == this) {
+			equals = true;
+		}
+		// Otherwise, we will need to run a full check.
+		else if (otherProvider != null) {
+			// Compare class variables.
+			equals = defaultValue.equals(otherProvider.getDefaultValue())
+					&& allowedValues.equals(otherProvider.getAllowedValues())
+					&& parent.equals(otherProvider.getParent())
+					&& allowedValueType.equals(otherProvider
+							.getAllowedValueType());
+			// Also compare the tags between the two.
+			equals &= (tag != null ? tag.equals(otherProvider.getTag())
+					: otherProvider.getTag() == null);
+		}
+
+		return equals;
 	}
 
 	/**
@@ -409,4 +410,5 @@ public class BasicEntryContentProvider extends ICEObject implements
 
 		// end-user-code
 	}
+
 }

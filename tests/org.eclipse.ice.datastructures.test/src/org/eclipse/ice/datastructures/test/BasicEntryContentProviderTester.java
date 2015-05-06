@@ -12,7 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,11 +26,9 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -239,7 +240,7 @@ public class BasicEntryContentProviderTester {
 				&& !contentProvider.equals(unEqualContentProvider));
 
 		// Assert checking equality with null is false
-		assertFalse(contentProvider==null);
+		assertFalse(contentProvider == null);
 
 		// Assert that two equal objects return same hashcode
 		assertTrue(contentProvider.equals(equalContentProvider)
@@ -252,6 +253,16 @@ public class BasicEntryContentProviderTester {
 		// Assert that hashcodes from unequal objects are different
 		assertTrue(contentProvider.hashCode() != unEqualContentProvider
 				.hashCode());
+
+		// Check that the overridden equals(Object) works.
+		assertFalse(contentProvider.equals((Object) unEqualContentProvider));
+
+		// We can set up an ICEObject that thinks it's equal to the content
+		// provider, but the same is not true vice versa.
+		ICEObject superObject = new ICEObject();
+		superObject.copy(contentProvider);
+		assertTrue(superObject.equals(contentProvider));
+		assertFalse(contentProvider.equals(superObject));
 
 		// end-user-code
 	}
@@ -305,12 +316,14 @@ public class BasicEntryContentProviderTester {
 
 	/**
 	 * Checks the xml persistence (load/persist) operations.
-	 * @throws IOException 
-	 * @throws JAXBException 
-	 * @throws NullPointerException 
+	 * 
+	 * @throws IOException
+	 * @throws JAXBException
+	 * @throws NullPointerException
 	 */
 	@Test
-	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
+	public void checkXMLPersistence() throws NullPointerException,
+			JAXBException, IOException {
 
 		// Local Declarations
 		BasicEntryContentProvider persistProvider, loadedProvider = null;
@@ -340,7 +353,8 @@ public class BasicEntryContentProviderTester {
 
 		// Initialize object and pass inputStream to read()
 		loadedProvider = new BasicEntryContentProvider();
-		loadedProvider = (BasicEntryContentProvider) xmlHandler.read(classList, inputStream);
+		loadedProvider = (BasicEntryContentProvider) xmlHandler.read(classList,
+				inputStream);
 
 		// Check contents
 		assertTrue(persistProvider.equals(loadedProvider));
