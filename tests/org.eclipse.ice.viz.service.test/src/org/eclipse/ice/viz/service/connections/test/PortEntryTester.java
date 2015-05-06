@@ -19,7 +19,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.connections.KeyEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.PortEntry;
 import org.eclipse.ice.viz.service.connections.PortEntryContentProvider;
 import org.junit.Test;
@@ -207,7 +210,85 @@ public class PortEntryTester {
 	 */
 	@Test
 	public void checkContentProvider() {
-		fail();
+		// To test this, we'll focus on switching back and forth between two
+		// content providers with different configurations.
+
+		// Afterwards, we'll also test setting it to the same content provider
+		// and invalid content providers (null or just a
+		// BasicEntryContentProvider).
+
+		PortEntry entry;
+
+		// Set up two different providers.
+		PortEntryContentProvider provider1 = new PortEntryContentProvider();
+		provider1.setRange(50000, 50200);
+		PortEntryContentProvider provider2 = new PortEntryContentProvider();
+		provider2.setRange(50100, 50300);
+
+		String min1 = provider1.getAllowedValues().get(0);
+		String max2 = provider2.getAllowedValues().get(1);
+
+		// ---- Set the initial content provider. ---- //
+		entry = new PortEntry(provider1);
+
+		// Make sure it works.
+		assertTrue(entry.setValue("50050"));
+		assertFalse(entry.setValue("-1"));
+		// ------------------------------------------- //
+
+		// ---- Change to the other content provider. ---- //
+		entry.setContentProvider(provider2);
+
+		// Check the entry's value. It should be the new provider's default.
+		assertEquals(provider2.getDefaultValue(), entry.getValue());
+
+		// Check that the entry works with the new content provider and not the
+		// old one.
+		assertFalse(entry.setValue(min1));
+		assertTrue(entry.setValue("50250"));
+		// ----------------------------------------------- //
+
+		// ---- Revert back to the first content provider. ---- //
+		entry.setContentProvider(provider1);
+
+		// Check the entry's value. It should be the new provider's default.
+		assertEquals(provider1.getDefaultValue(), entry.getValue());
+
+		// Check that the entry works with the new content provider and not the
+		// old one.
+		assertFalse(entry.setValue(max2));
+		assertTrue(entry.setValue("50050"));
+		// ---------------------------------------------------- //
+
+		// ---- Try invalid content providers. ---- //
+		// Try a BasicEntryContentProvider.
+		entry.setContentProvider(new BasicEntryContentProvider());
+
+		// The value should not have changed, and the old content provider
+		// should still be used.
+		assertEquals("50050", entry.getValue());
+		assertTrue(entry.setValue("50051"));
+
+		// Try a null *IEntryContentProvider*.
+		final IEntryContentProvider nullContentProvider = null;
+		entry.setContentProvider(nullContentProvider);
+
+		// The value should not have changed, and the old content provider
+		// should still be used.
+		assertEquals("50051", entry.getValue());
+		assertTrue(entry.setValue("50100"));
+
+		// Try a null *KeyEntryContentProvider*.
+		final KeyEntryContentProvider nullKeyContentProvider = null;
+		entry.setContentProvider(nullKeyContentProvider);
+
+		// The value should not have changed, and the old content provider
+		// should still be used.
+		assertEquals("50100", entry.getValue());
+		assertTrue(entry.setValue("50101"));
+		// ---------------------------------------- //
+
+		return;
 	}
 
 	/**
@@ -291,42 +372,45 @@ public class PortEntryTester {
 	@Test
 	public void checkCopy() {
 
-		PortEntry entry;
+		PortEntry object;
 		PortEntry copy;
 		Object clone;
+
+		final PortEntry nullObject = null;
 
 		PortEntryContentProvider contentProvider = new PortEntryContentProvider();
 		contentProvider.setRange(50000, 60000);
 		contentProvider.setDefaultValue(55000);
 
-		// Create the initial Entry that will be copied and cloned later.
-		entry = new PortEntry(contentProvider);
-		entry.setName("Newport");
-		entry.setValue(Integer.toString(55001));
+		// Create the initial object that will be copied and cloned later.
+		object = new PortEntry(contentProvider);
+		object.setName("Newport");
+		object.setValue(Integer.toString(55001));
 
-		// Copying it should yield an equivalent PortEntry.
-		copy = new PortEntry(new PortEntryContentProvider());
-		copy.setName("Kingsport");
-		// At first, they are not equal.
-		assertFalse(entry.equals(copy));
+		// Copying it should yield an equivalent object.
+		copy = new PortEntry(object);
 		// After copying, check that they're unique references but equal.
-		copy.copy(entry);
-		assertNotSame(entry, copy);
-		assertEquals(entry, copy);
-		assertEquals(copy, entry);
+		copy.copy(object);
+		assertNotSame(object, copy);
+		assertEquals(object, copy);
+		assertEquals(copy, object);
 
-		// Cloning it should yield an equivalent *PortEntry*.
-		clone = entry.clone();
-		// Check that it's a non-null PortEntry.
+		// Cloning it should yield an equivalent object of the correct type.
+		clone = object.clone();
+		// Check that it's a non-null object of the correct type.
 		assertNotNull(clone);
 		assertTrue(clone instanceof PortEntry);
 		// Check that they're unique references but equal.
-		assertNotSame(entry, clone);
-		assertEquals(entry, clone);
-		assertEquals(clone, entry);
+		assertNotSame(object, clone);
+		assertEquals(object, clone);
+		assertEquals(clone, object);
 
 		// Check invalid arguments to the copy constructor.
-		fail();
+		try {
+			copy = new PortEntry(nullObject);
+		} catch (NullPointerException e) {
+			// Exception thrown as expected. Nothing to do.
+		}
 
 		return;
 	}

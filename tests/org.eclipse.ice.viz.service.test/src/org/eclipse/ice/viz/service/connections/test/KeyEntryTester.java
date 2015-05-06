@@ -465,14 +465,16 @@ public class KeyEntryTester {
 		KeyEntry copy;
 		Object clone;
 
+		final KeyEntry nullObject = null;
+
 		KeyEntryContentProvider contentProvider = new KeyEntryContentProvider(
 				new SimpleCountKeyManager());
 
-		// Create the initial Entry that will be copied and cloned later.
+		// Create the initial object that will be copied and cloned later.
 		object = new KeyEntry(contentProvider);
 		object.setName("Olympus");
 
-		// Copying it should yield an equivalent KeyEntry.
+		// Copying it should yield an equivalent object.
 		copy = new KeyEntry(object);
 		// After copying, check that they're unique references but equal.
 		copy.copy(object);
@@ -480,9 +482,9 @@ public class KeyEntryTester {
 		assertEquals(object, copy);
 		assertEquals(copy, object);
 
-		// Cloning it should yield an equivalent *KeyEntry*.
+		// Cloning it should yield an equivalent object of the correct type.
 		clone = object.clone();
-		// Check that it's a non-null KeyEntry.
+		// Check that it's a non-null object of the correct type.
 		assertNotNull(clone);
 		assertTrue(clone instanceof KeyEntry);
 		// Check that they're unique references but equal.
@@ -491,7 +493,11 @@ public class KeyEntryTester {
 		assertEquals(clone, object);
 
 		// Check invalid arguments to the copy constructor.
-		fail();
+		try {
+			copy = new KeyEntry(nullObject);
+		} catch (NullPointerException e) {
+			// Exception thrown as expected. Nothing to do.
+		}
 
 		return;
 	}

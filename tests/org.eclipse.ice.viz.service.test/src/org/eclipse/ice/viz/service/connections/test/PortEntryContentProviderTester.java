@@ -602,7 +602,44 @@ public class PortEntryContentProviderTester {
 	 */
 	@Test
 	public void checkCopy() {
-		fail();
+
+		PortEntryContentProvider object;
+		PortEntryContentProvider copy;
+		Object clone;
+
+		final PortEntryContentProvider nullObject = null;
+
+		// Create the initial object that will be copied and cloned later.
+		object = new PortEntryContentProvider();
+		object.setRange(737, 747);
+		object.setName("Dengar");
+
+		// Copying it should yield an equivalent object.
+		copy = new PortEntryContentProvider(object);
+		// After copying, check that they're unique references but equal.
+		copy.copy(object);
+		assertNotSame(object, copy);
+		assertEquals(object, copy);
+		assertEquals(copy, object);
+
+		// Cloning it should yield an equivalent object of the correct type.
+		clone = object.clone();
+		// Check that it's a non-null object of the correct type.
+		assertNotNull(clone);
+		assertTrue(clone instanceof PortEntryContentProvider);
+		// Check that they're unique references but equal.
+		assertNotSame(object, clone);
+		assertEquals(object, clone);
+		assertEquals(clone, object);
+
+		// Check invalid arguments to the copy constructor.
+		try {
+			copy = new PortEntryContentProvider(nullObject);
+		} catch (NullPointerException e) {
+			// Exception thrown as expected. Nothing to do.
+		}
+
+		return;
 	}
 
 	/**

@@ -610,31 +610,38 @@ public class KeyEntryContentProviderTester {
 		KeyEntryContentProvider copy;
 		Object clone;
 
+		final KeyEntryContentProvider nullObject = null;
+
 		SimpleCountKeyManager intKeys = new SimpleCountKeyManager();
 
 		// Create the initial object that will be copied and cloned later.
 		object = new KeyEntryContentProvider(intKeys);
 		object.setName("Puppetmaster");
 
-		// Copying it should yield an equivalent object of the proper type.
+		// Copying it should yield an equivalent object.
 		copy = new KeyEntryContentProvider(object);
-		// After copying, check that they're unique references, but equal.
+		// After copying, check that they're unique references but equal.
+		copy.copy(object);
 		assertNotSame(object, copy);
 		assertEquals(object, copy);
 		assertEquals(copy, object);
 
-		// Cloning it should yield an equivalent object of the proper type.
+		// Cloning it should yield an equivalent object of the correct type.
 		clone = object.clone();
-		// Check that the clone is not null and of the right type.
+		// Check that it's a non-null object of the correct type.
 		assertNotNull(clone);
 		assertTrue(clone instanceof KeyEntryContentProvider);
-		// Check that they're unique references, but equal.
+		// Check that they're unique references but equal.
 		assertNotSame(object, clone);
 		assertEquals(object, clone);
 		assertEquals(clone, object);
 
 		// Check invalid arguments to the copy constructor.
-		fail();
+		try {
+			copy = new KeyEntryContentProvider(nullObject);
+		} catch (NullPointerException e) {
+			// Exception thrown as expected. Nothing to do.
+		}
 
 		return;
 	}
