@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 
 /**
  * This class provides a basic content provider for {@link PortEntry}s. Some
@@ -68,9 +69,11 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 	 *            The other PortEntryContentProvider to copy.
 	 */
 	public PortEntryContentProvider(PortEntryContentProvider provider) {
-		// Perform the default construction.
+		// Use the default setup initially. This is reasonable since the default
+		// construction doesn't create any heavy-weight objects.
 		this();
 
+		// If the specified content provider is not null, we can copy it.
 		if (provider != null) {
 			// Copy the super class' variables.
 			super.copy(provider);
@@ -78,6 +81,7 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 			// Copy this class' variables.
 			// Nothing to copy.
 		}
+		// Otherwise, the default settings have already been set.
 		return;
 	}
 
@@ -205,13 +209,39 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 	public boolean equals(Object object) {
 		boolean equals = false;
 
-		// If the other object is an equal (as a BasicEntryContentProvider) and
-		// is a PortEntryContentProvider, cast it to a PortEntryContentProvider
-		// and compare the variables managed by this class.
-		if (super.equals(object) && object instanceof PortEntryContentProvider) {
-			// Compare all class variables:
-			// Nothing to compare.
+		// Since there's another equals method (thanks to
+		// IEntryContentProvider), redirect the call to that method.
+		if (object instanceof IEntryContentProvider) {
+			equals = equals((IEntryContentProvider) object);
+		}
+
+		return equals;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.form.BasicEntryContentProvider#equals(
+	 * org.eclipse.ice.datastructures.form.IEntryContentProvider)
+	 */
+	@Override
+	public boolean equals(IEntryContentProvider otherProvider) {
+		boolean equals = false;
+
+		// If the references match, we know it is equivalent.
+		if (otherProvider == this) {
 			equals = true;
+		}
+		// Otherwise, if the type of the object is correct, we need to perform a
+		// full equivalence check.
+		else if (otherProvider != null
+				&& otherProvider instanceof PortEntryContentProvider) {
+			// Check all of the super class variables.
+			equals = super.equals(otherProvider);
+
+			// Compare all class variables.
+			// Nothing to do.
 		}
 
 		return equals;

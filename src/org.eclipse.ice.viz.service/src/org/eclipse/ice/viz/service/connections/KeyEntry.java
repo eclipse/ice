@@ -49,8 +49,12 @@ public class KeyEntry extends Entry {
 	 * @param manager
 	 *            The manager for the keys stored in this and other
 	 *            {@code KeyEntry}s.
+	 * @throws NullPointerException
+	 *             An NPE is thrown if the provided content provider is null, as
+	 *             a valid {@code KeyEntryContentProvider} is required.
 	 */
-	public KeyEntry(KeyEntryContentProvider contentProvider) {
+	public KeyEntry(KeyEntryContentProvider contentProvider)
+			throws NullPointerException {
 		super(contentProvider);
 
 		// Store a reference to the content provider if applicable. Otherwise,
@@ -70,16 +74,15 @@ public class KeyEntry extends Entry {
 	/**
 	 * The copy constructor. When used, both {@code KeyEntry}s will use the
 	 * exact same {@link #keyManager} (but valid or unique keys).
-	 * <p>
-	 * <b>Note:</b> This method should not be used. It is implemented so that a
-	 * template {@code KeyEntry} can be copied when used in
-	 * {@code ConnectionManager} {@code TableComponent}s.
-	 * </p>
 	 * 
-	 * @param otherEntry
+	 * @param entry
 	 *            The other {@code KeyEntry} to copy.
+	 * @throws NullPointerException
+	 *             An NPE is thrown if the provided entry to copy is null, as a
+	 *             valid {@code KeyEntryContentProvider} cannot be acquired from
+	 *             a null entry.
 	 */
-	public KeyEntry(KeyEntry entry) {
+	public KeyEntry(KeyEntry entry) throws NullPointerException {
 		// If the specified entry is not null, we can copy it.
 		if (entry != null) {
 			// Copy the super class' variables.
@@ -90,8 +93,8 @@ public class KeyEntry extends Entry {
 			// set the cast reference to it.
 			contentProvider = (KeyEntryContentProvider) iEntryContentProvider;
 		}
-		// Otherwise, we must throw an exception as this KeyEntry will be in an
-		// invalid state (no KeyEntryContentProvider).
+		// Otherwise, we must throw an exception as this will be in an invalid
+		// state (no KeyEntryContentProvider).
 		else {
 			throw new NullPointerException("KeyEntry error: "
 					+ "Cannot copy null KeyEntry.");
@@ -195,17 +198,19 @@ public class KeyEntry extends Entry {
 	public boolean equals(Object object) {
 		boolean equals = false;
 
-		// This can only be equivalent to non-null objects.
-		if (object != null) {
-			// If the references match, we know it is equivalent.
-			if (object == this) {
-				equals = true;
-			}
-			// Otherwise, we need to run a full check on the other object.
-			else if (object instanceof KeyEntry) {
-				// Compare all class variables.
-				equals = super.equals(object);
-			}
+		// If the references match, we know it is equivalent.
+		if (object == this) {
+			equals = true;
+		}
+		// Otherwise, if the type of the object is correct, we need to perform a
+		// full equivalence check.
+		else if (object != null && object instanceof KeyEntry) {
+			// Check all of the super class variables.
+			equals = super.equals(object);
+
+			// Compare all class variables.
+			// Nothing to do (the content provider was already compared in the
+			// super method).
 		}
 
 		return equals;

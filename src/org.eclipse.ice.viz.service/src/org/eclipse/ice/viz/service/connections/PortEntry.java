@@ -42,30 +42,23 @@ public class PortEntry extends Entry {
 
 	/**
 	 * The copy constructor.
-	 * <p>
-	 * <b>Note:</b> This method should not be used. It is implemented so that a
-	 * template {@code KeyEntry} can be copied when used in
-	 * {@code ConnectionManager} {@code TableComponent}s.
-	 * </p>
 	 * 
-	 * @param otherEntry
-	 *            The other {@code KeyEntry} to copy.
+	 * @param entry
+	 *            The other {@code PortEntry} to copy.
 	 */
-	private PortEntry(PortEntry otherEntry) {
-		// Perform the typical Entry copy method.
-		super.copy(otherEntry);
+	public PortEntry(PortEntry entry) {
+		// If the specified entry is not null, we can copy it.
+		if (entry != null) {
+			// Copy the super class' variables.
+			super.copy(entry);
 
-		// Copy the PortEntry-specific features.
-		if (otherEntry != null) {
-
-			// Share the custom content provider!
-			iEntryContentProvider = otherEntry.iEntryContentProvider;
-		} else {
-			// We should throw an exception.
-			throw new NullPointerException("PortEntry error: "
-					+ "Null copy constructor argument.");
+			// Copy this class' variables.
+			// Nothing to do.
 		}
-
+		// Otherwise, we must set up the default entry.
+		else {
+			setContentProvider(new PortEntryContentProvider());
+		}
 		return;
 	}
 
@@ -160,12 +153,18 @@ public class PortEntry extends Entry {
 	public boolean equals(Object object) {
 		boolean equals = false;
 
-		// If the other object is equal (as an Entry) and is a PortEntry, cast
-		// it to a PortEntry and compare the variables managed by PortEntry.
-		if (super.equals(object) && object instanceof PortEntry) {
-			// Compare all class variables:
-			// Nothing to compare.
+		// If the references match, we know it is equivalent.
+		if (object == this) {
 			equals = true;
+		}
+		// Otherwise, if the type of the object is correct, we need to perform a
+		// full equivalence check.
+		else if (object != null && object instanceof PortEntry) {
+			// Check all of the super class variables.
+			equals = super.equals(object);
+
+			// Compare all class variables.
+			// Nothing to do.
 		}
 
 		return equals;

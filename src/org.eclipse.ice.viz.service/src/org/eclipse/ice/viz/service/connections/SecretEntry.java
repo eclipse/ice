@@ -65,9 +65,11 @@ public class SecretEntry extends Entry {
 	 *            The entry whose data will be copied into this one.
 	 */
 	public SecretEntry(SecretEntry entry) {
-		// Perform the default construction first.
+		// Use the default setup initially. This is reasonable since the default
+		// construction doesn't create any heavy-weight objects.
 		this();
 
+		// If the specified entry is not null, we can copy it.
 		if (entry != null) {
 			// Copy the super class' variables.
 			super.copy(entry);
@@ -75,6 +77,7 @@ public class SecretEntry extends Entry {
 			// Copy this class' variables.
 			// Nothing to copy.
 		}
+		// Otherwise, the default settings have already been set.
 		return;
 	}
 
@@ -97,12 +100,18 @@ public class SecretEntry extends Entry {
 	public boolean equals(Object object) {
 		boolean equals = false;
 
-		// If the other object is equal (as an Entry) and is a SecretEntry, cast
-		// it to a SecretEntry and compare the variables managed by SecretEntry.
-		if (super.equals(object) && object instanceof SecretEntry) {
-			// Compare all class variables:
-			// Nothing to compare.
+		// If the references match, we know it is equivalent.
+		if (object == this) {
 			equals = true;
+		}
+		// Otherwise, if the type of the object is correct, we need to perform a
+		// full equivalence check.
+		else if (object != null && object instanceof SecretEntry) {
+			// Check all of the super class variables.
+			equals = super.equals(object);
+
+			// Compare all class variables.
+			// Nothing to do.
 		}
 
 		return equals;

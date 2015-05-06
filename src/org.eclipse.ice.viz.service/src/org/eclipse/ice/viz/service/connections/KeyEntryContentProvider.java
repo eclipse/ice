@@ -49,8 +49,13 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 	 * @param manager
 	 *            This manages all allowed keys for associated {@link KeyEntry}
 	 *            s.
+	 * 
+	 * @throws NullPointerException
+	 *             An NPE is thrown if the specified key manager is null, as a
+	 *             valid key manager is required.
 	 */
-	public KeyEntryContentProvider(IKeyManager keyManager) {
+	public KeyEntryContentProvider(IKeyManager keyManager)
+			throws NullPointerException {
 		this.keyManager = keyManager;
 
 		// Check for a null key manager.
@@ -105,12 +110,17 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 	 * 
 	 * @param otherProvider
 	 *            The other KeyEntryContentProvider to copy.
+	 * @throws NullPointerException
+	 *             An NPE is thrown if the specified content provider is null,
+	 *             as its valid key manager is required.
 	 */
-	public KeyEntryContentProvider(KeyEntryContentProvider provider) {
+	public KeyEntryContentProvider(KeyEntryContentProvider provider)
+			throws NullPointerException {
 		// Perform the default construction, using the specified provider's key
-		// manager if possible.
+		// manager if possible. This is OK since the same key manager is shared.
 		this(provider != null ? provider.keyManager : null);
 
+		// If the specified content provider is not null, we can copyt it.
 		if (provider != null) {
 			// Copy the super class' variables.
 			super.copy(provider);
@@ -119,6 +129,7 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 			// Nothing to copy, as the key manager was already set by the
 			// default constructor.
 		}
+		// Otherwise, the default settings have already been set.
 		return;
 	}
 
@@ -177,20 +188,20 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 	public boolean equals(IEntryContentProvider otherProvider) {
 		boolean equals = false;
 
-		// This can only be equivalent to non-null objects.
-		if (otherProvider != null) {
-			// If the references match, we know it is equivalent.
-			if (otherProvider == this) {
-				equals = true;
-			}
-			// Otherwise, we need to run a full check on the other object.
-			else if (otherProvider instanceof KeyEntryContentProvider) {
-				KeyEntryContentProvider otherKeyProvider = (KeyEntryContentProvider) otherProvider;
+		// If the references match, we know it is equivalent.
+		if (otherProvider == this) {
+			equals = true;
+		}
+		// Otherwise, if the type of the object is correct, we need to perform a
+		// full equivalence check.
+		else if (otherProvider != null
+				&& otherProvider instanceof KeyEntryContentProvider) {
+			// Check all of the super class variables.
+			equals = super.equals(otherProvider);
 
-				// Compare all class variables.
-				equals = super.equals(otherProvider)
-						&& keyManager.equals(otherKeyProvider.keyManager);
-			}
+			// Compare all class variables.
+			KeyEntryContentProvider otherKeyProvider = (KeyEntryContentProvider) otherProvider;
+			equals &= keyManager.equals(otherKeyProvider.keyManager);
 		}
 
 		return equals;
