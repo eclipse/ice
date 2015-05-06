@@ -402,28 +402,35 @@ public class KeyEntryTester {
 		contentProvider = new KeyEntryContentProvider(intKeys);
 		object = new KeyEntry(contentProvider);
 		object.setName("Doom");
+
 		// Set up the equivalent object.
 		contentProvider = new KeyEntryContentProvider(intKeys);
 		equalObject = new KeyEntry(contentProvider);
 		((KeyEntry) equalObject).setName("Doom");
+
 		// Set up the different object.
 		contentProvider = new KeyEntryContentProvider(discreteKeys); // Different!
 		unequalObject = new KeyEntry(contentProvider);
 		((KeyEntry) unequalObject).setName("Doom");
-		// Set up an "equivalent" super class object.
-		superObject = new Entry(new KeyEntryContentProvider(intKeys));
-		superObject.setName("Doom");
 
-		// TODO Check for equivalence (reflective case).
+		// Set up an "equivalent" super class object.
+		superObject = new Entry();
+		superObject.copy(object);
+
+		// Check for equivalence (reflective case).
+		assertTrue(object.equals(object));
+		assertEquals(object.hashCode(), object.hashCode());
 
 		// Check that the object and its equivalent object are, in fact, equal,
 		// and that their hash codes match.
+		assertNotSame(object, equalObject);
 		assertTrue(object.equals(equalObject));
 		assertTrue(equalObject.equals(object));
 		assertTrue(object.hashCode() == equalObject.hashCode());
 
 		// Check that the object and the different object are not equal and that
 		// their hash codes are different.
+		assertNotSame(object, unequalObject);
 		assertFalse(object.equals(unequalObject));
 		assertFalse(unequalObject.equals(object));
 		assertFalse(object.hashCode() == unequalObject.hashCode());
@@ -439,6 +446,7 @@ public class KeyEntryTester {
 		// Test against a super-class object that is technically equivalent.
 		// While the super class may think it is equivalent, the same should not
 		// be true in the reverse direction.
+		assertNotSame(object, superObject);
 		assertTrue(superObject.equals(object));
 		assertFalse(object.equals(superObject));
 		// Their hash codes should also be different.
@@ -481,6 +489,9 @@ public class KeyEntryTester {
 		assertNotSame(object, clone);
 		assertEquals(object, clone);
 		assertEquals(clone, object);
+
+		// Check invalid arguments to the copy constructor.
+		fail();
 
 		return;
 	}

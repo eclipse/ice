@@ -549,26 +549,33 @@ public class KeyEntryContentProviderTester {
 		// Set up the object under test.
 		object = new KeyEntryContentProvider(keyManager);
 		object.setName("Individual Eleven");
+
 		// Set up the equivalent object.
 		equalObject = new KeyEntryContentProvider(keyManager);
 		((KeyEntryContentProvider) equalObject).setName("Individual Eleven");
+
 		// Set up the different object.
 		unequalObject = new KeyEntryContentProvider(keyManagerDifferent);
 		((KeyEntryContentProvider) unequalObject).setName("Individual Eleven");
+
 		// Set up the "equivalent" super class object.
 		superObject = new BasicEntryContentProvider();
-		superObject.setName("Individual Eleven");
-		superObject.setAllowedValues(object.getAllowedValues());
-		superObject.setDefaultValue(object.getDefaultValue());
+		superObject.copy(object);
+
+		// Check for equivalence (reflective case).
+		assertTrue(object.equals(object));
+		assertEquals(object.hashCode(), object.hashCode());
 
 		// Check that the object and its equivalent object are, in fact, equal,
 		// and that their hash codes match.
+		assertNotSame(object, equalObject);
 		assertTrue(object.equals(equalObject));
 		assertTrue(equalObject.equals(object));
 		assertTrue(object.hashCode() == equalObject.hashCode());
 
 		// Check that the object and the different object are not equal and that
 		// their hash codes are different.
+		assertNotSame(object, unequalObject);
 		assertFalse(object.equals(unequalObject));
 		assertFalse(unequalObject.equals(object));
 		assertFalse(object.hashCode() == unequalObject.hashCode());
@@ -584,6 +591,7 @@ public class KeyEntryContentProviderTester {
 		// Test against a super-class object that is technically equivalent.
 		// While the super class may think it is equivalent, the same should not
 		// be true in the reverse direction.
+		assertNotSame(object, superObject);
 		assertTrue(superObject.equals(object));
 		assertFalse(object.equals(superObject));
 		// Their hash codes should also be different.
@@ -624,6 +632,9 @@ public class KeyEntryContentProviderTester {
 		assertNotSame(object, clone);
 		assertEquals(object, clone);
 		assertEquals(clone, object);
+
+		// Check invalid arguments to the copy constructor.
+		fail();
 
 		return;
 	}

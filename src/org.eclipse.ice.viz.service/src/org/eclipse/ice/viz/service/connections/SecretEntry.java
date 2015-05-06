@@ -23,9 +23,6 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
  */
 public class SecretEntry extends Entry {
 
-	// If we add any other properties, then we will need to override the clone
-	// operation and provide a copy constructor.
-
 	/**
 	 * A constructor that will create an {@code Entry} with only a unique ID and
 	 * a name. Default values are set:
