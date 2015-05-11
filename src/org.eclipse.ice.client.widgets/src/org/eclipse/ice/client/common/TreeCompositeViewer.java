@@ -37,6 +37,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
@@ -462,7 +463,10 @@ public class TreeCompositeViewer extends ViewPart implements
 			}
 
 			// Send the updated tree to the TreeViewer.
-			treeViewer.setInput(inputTree);
+			Tree treeWidget = treeViewer.getTree();
+			if (treeWidget != null && !treeWidget.isDisposed()) {
+				treeViewer.setInput(inputTree);
+			}
 
 			// Set the name of the view
 			setPartName(inputTree.getName() + " -- Tree View");

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2015- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jordan Deyton
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
 import java.io.File;
@@ -69,6 +80,13 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 		// that the file exists. We check that the file is not null so that the
 		// super method can throw the NPE for null files.
 		if (file != null) {
+			// Check if the connection exists. If not, we need to throw an
+			// exception.
+			if (adapter == null) {
+				throw new NullPointerException("IPlot error: "
+						+ "The plot's connection is not set.");
+			}
+
 			// Set up a message in case the file cannot be read by this plot.
 			final String message;
 

@@ -47,7 +47,7 @@ import org.junit.Test;
 /**
  * Tests the methods of the IPSReader class.  
  * 
- * @author bzq
+ * @author Andrew Bennett
  *
  */
 public class IPSReaderTester {

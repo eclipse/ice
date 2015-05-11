@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2015- UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jordan Deyton
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation 
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.visit;
 
@@ -96,12 +96,16 @@ public class VisItConnectionAdapter extends
 					: "true";
 			changed |= setConnectionProperty("useTunneling", value);
 
-			// Print out some debug messages about the new input.
-			System.out.println("VisItConnectionAdapter message: "
-					+ "Connection input properties:");
-			for (java.util.Map.Entry<String, String> e : getConnectionProperties()
-					.entrySet()) {
-				System.out.println(e.getKey() + "," + e.getValue());
+			// Print out some debug messages about the new input when debugging.
+			if (System.getProperty("DebugICE") != null) {
+				System.out.println("VisItConnectionAdapter message: "
+						+ "Connection input properties:");
+				for (java.util.Map.Entry<String, String> e : getConnectionProperties()
+						.entrySet()) {
+					System.out.println("  " + e.getKey() + "," + e.getValue());
+				}
+				System.out.println("VisItConnectionAdapter message: "
+						+ "End of connection input properties.");
 			}
 
 			// Update the reference to the key.

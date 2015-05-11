@@ -47,9 +47,15 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -64,8 +70,56 @@ public class PROTEUSModelTester {
 	 * A fake project and workspace root for tester classes to use when a null
 	 * IProject will not work. Setup using the setupFakeProject() method.
 	 */
-	private IProject project;
+	private static IProject project;
 	private IWorkspaceRoot workspaceRoot;
+
+	/**
+	 * <p>
+	 * This operation sets up the workspace.
+	 * </p>
+	 */
+	@BeforeClass
+	public static void beforeTests() {
+		// begin-user-code
+
+		// Local Declarations
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "proteusTesterWorkspace";
+		// Enable Debugging
+		System.setProperty("DebugICE", "");
+
+		// Setup the project
+		try {
+			// Get the project handle
+			IPath projectPath = new Path(userDir + separator + ".project");
+			// Create the project description
+			IProjectDescription desc = ResourcesPlugin.getWorkspace()
+					.loadProjectDescription(projectPath);
+			// Get the project handle and create it
+			project = workspaceRoot.getProject(desc.getName());
+			// Create the project if it doesn't exist
+			if (!project.exists()) {
+				project.create(desc, new NullProgressMonitor());
+			}
+			// Open the project if it is not already open
+			if (project.exists() && !project.isOpen()) {
+				project.open(new NullProgressMonitor());
+			}
+			// Refresh the workspace
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			// Catch exception for creating the project
+			e.printStackTrace();
+			fail("PROTEUS Model Tester: Error!  Could not set up project space");
+		}
+
+		// Set the global project reference.
+
+		return;
+		// end-user-code
+	}
 
 	/**
 	 * Tests the PROTEUSModel constructors. Only tests that objects inherit
@@ -86,22 +140,11 @@ public class PROTEUSModelTester {
 		// Verify it inherits correctly
 		assertTrue(model instanceof Item);
 
-		// Setup a fake project
-		setupFakeProject();
-
 		// Call parameterized constructor
 		model = new PROTEUSModel(project);
 
 		// Verify it inherits correctly
 		assertTrue(model instanceof Item);
-
-		// Close and delete the fake workspace created
-		try {
-			project.close(null);
-			workspaceRoot.delete(true, true, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -118,14 +161,12 @@ public class PROTEUSModelTester {
 
 		// Create default values to check against
 		int defaultId = 1;
-		String defaultName = "PROTEUS Model Builder";
-		String defaultDesc = "This item builds models for "
-				+ "PROTEUS-based applications for simulating "
-				+ "sodium-cooled fast reactors.";
+		String defaultName = "PROTEUS Model";
+		String defaultDesc = "Generate input files for the PROTEUS-SN neutron transport simulator";
 		ItemType defaultType = ItemType.Model;
 		ArrayList<String> defaultActions = new ArrayList<String>();
+		defaultActions.add("Write PROTEUS Input File");
 		defaultActions.add("Export to ICE Native Format");
-		defaultActions.add("Write PROTEUS File");
 
 		// Call nullary constructor to test
 		PROTEUSModel model = new PROTEUSModel();
@@ -137,9 +178,6 @@ public class PROTEUSModelTester {
 		assertEquals(defaultType, model.getItemType());
 		assertEquals(defaultActions, model.getAvailableActions());
 
-		// Setup a fake project
-		setupFakeProject();
-
 		// Call parameterized constructor
 		model = new PROTEUSModel(project);
 
@@ -149,14 +187,6 @@ public class PROTEUSModelTester {
 		assertEquals(defaultDesc, model.getDescription());
 		assertEquals(defaultType, model.getItemType());
 		assertEquals(defaultActions, model.getAvailableActions());
-
-		// Close and delete the fake workspace created
-		try {
-			project.close(null);
-			workspaceRoot.delete(true, true, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -166,15 +196,11 @@ public class PROTEUSModelTester {
 	 * model's Form contains 6 DataComponents, each containing 5 fake entries.
 	 * 
 	 * @author w5q
-	 * @throws JAXBException 
+	 * @throws JAXBException
 	 * 
 	 */
 	@Test
 	public void checkFormSetup() throws JAXBException {
-
-		// Setup the fake project and generate a test XML input file
-		setupFakeProject();
-		createXMLInput();
 
 		// Create a PROTEUS model to test
 		PROTEUSModel model = new PROTEUSModel(project);
@@ -182,40 +208,7 @@ public class PROTEUSModelTester {
 
 		// Check the form's Component (should have 6 components, which
 		// corresponds to the to ICEProteusInput.xml file
-		assertEquals(form.getNumberOfComponents(), 6);
-
-		// Initialize a DataComponent to use in tests
-		DataComponent modelDataComponent = null;
-
-		for (int i = 0; i < form.getNumberOfComponents(); i++) {
-
-			// Cast the Component to DataComponent to access entries, verify
-			// entries exist
-			modelDataComponent = (DataComponent) form.getComponents().get(i);
-			assertEquals(5, modelDataComponent.retrieveAllEntries().size());
-
-			// Verify entries of each DataComponent are not null
-			for (int j = 0; j < modelDataComponent.retrieveAllEntries().size(); j++) {
-				Entry entry = modelDataComponent.retrieveAllEntries().get(j);
-				assertNotNull(entry);
-			}
-		}
-
-		// FIXME This approach is rather simplistic and doesn't actually verify
-		// the
-		// contents of the Entries. If we wanted to be thorough, we could
-		// construct
-		// a fake DataComponent that contains the Entries of ICEProteusInput.xml
-		// As of right now though, createXMLFile() just creates a form with 6
-		// DataComponents and 5 arbitrary entries each.
-
-		// Close and delete the fake workspace created
-		try {
-			project.close(null);
-			workspaceRoot.delete(true, true, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
+		assertEquals(form.getNumberOfComponents(), 4);
 	}
 
 	/**
@@ -229,9 +222,14 @@ public class PROTEUSModelTester {
 	@Test
 	public void checkProcess() {
 
-		// Setup the fake project and XML input file
-		setupFakeProject();
-		createXMLInput();
+		String[] fileLines = { "!Required Options ", "option=invalue",
+				"option2=4", "tabbedOption=tabbedValue",
+				"spacedOption=spacedValue", "section2val=value",
+				"anotherVar=anotherValue", "", "!First Section ",
+				"section1var=value", "newvariable=newvalue",
+				"newTabbedOption=tabbedValue", "newSpacedOption=spacedValue",
+				"", "!Second Section ", "section2var=nothing", "",
+				"!Third Section ", "section3var=nope", ""};
 
 		// Create a model to test
 		PROTEUSModel model = new PROTEUSModel(project);
@@ -240,12 +238,11 @@ public class PROTEUSModelTester {
 		assertEquals(FormStatus.InfoError, model.process("FIRE ZE MISSILES!"));
 
 		// Process the model with a valid action
-		model.process("Write PROTEUS File");
+		model.process("Write PROTEUS Input File");
 
 		// Verify the PROTEUS output file was created
 		IFile outputFile;
-		outputFile = project.getFile("proteus_neutronics_" + model.getId()
-				+ ".inp");
+		outputFile = project.getFile("PROTEUS_Model_" + model.getId() + ".inp");
 		assertTrue(outputFile.exists());
 
 		// Read in the contents of the output file, and verify it's not null
@@ -260,223 +257,40 @@ public class PROTEUSModelTester {
 		// Convert file contents from InputStream to String
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				fileContents));
-		StringBuilder builder = new StringBuilder();
 		String line;
+		int numberLines = 0;
 		try {
 			while ((line = reader.readLine()) != null) {
-				builder.append(line);
+				assertEquals(line, fileLines[numberLines]);
+				++numberLines;
 			}
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		// Split the file contents at every instance of "\t!" to represent one
-		// line. It would be more logical to use every instance of a "\n" to
-		// represent 1 line, but newline characters seem to get fudged up in the
-		// InputStream. Using "\t!" instead will result in a String array with
-		// (n + 1) elements, where n is the number of lines in the file.
-		String[] splitLines = (builder.toString()).split("\t!");
+		assertEquals(20, numberLines);
 
 		// Verify there are as many lines in the PROTEUS file as there are
 		// entries
-		// in the model's 6 DataComponents (6 components x 5 entries each = 30)
 		Form form = model.getForm();
-		assertEquals(6, form.getNumberOfComponents());
+		assertEquals(4, form.getNumberOfComponents());
 
-		DataComponent component;
-		int entriesCounter = 0;
-		for (int i = 0; i < form.getNumberOfComponents(); i++) {
-			component = (DataComponent) form.getComponents().get(i);
-			entriesCounter += component.retrieveAllEntries().size();
-		}
-		assertEquals(splitLines.length - 1, entriesCounter);
+	}
 
-		// Close and delete the fake workspace created
+	/**
+	 * Clean up after ourselves
+	 */
+	@AfterClass
+	public static void cleanup() {
 		try {
 			project.close(null);
-			workspaceRoot.delete(true, true, null);
+			project.delete(true, null);
 		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 
+			e.printStackTrace();
+			fail("PROTEUS Model Tester: Error!  Could not clean up project space");
+		}
 	}
 
-	/**
-	 * Creates a fake workspace in the bundle for all PROTEUSModel unit tests to
-	 * utilize throughout their execution. Once the workspace resource is no
-	 * longer needed, it is left to each individual test to close and delete the
-	 * project workspace.
-	 * 
-	 * @author w5q
-	 * 
-	 */
-	public void setupFakeProject() {
-		// Setup a dummy project workspace
-		URI projectLocation = null;
-		String separator = System.getProperty("file.separator");
-
-		try {
-			// Get the project handle
-			workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-			project = workspaceRoot.getProject("PROTEUSTesterWorkspace");
-
-			// If the project does not exist, create it
-			if (!project.exists()) {
-
-				// Define the location as
-				// ${workspace_loc}/PROTEUSTesterWorkspace
-				projectLocation = (new File(System.getProperty("user.dir")
-						+ separator + "PROTEUSTesterWorkspace")).toURI();
-
-				// Create the project description
-				IProjectDescription desc = ResourcesPlugin.getWorkspace()
-						.newProjectDescription("PROTEUSTesterWorkspace");
-
-				// Set the location of the project
-				desc.setLocationURI(projectLocation);
-
-				// Create the project
-				project.create(desc, null);
-			}
-
-			// Open the project if it is not already open
-			if (project.exists() && !project.isOpen()) {
-				project.open(null);
-			}
-
-		} catch (CoreException e) {
-			e.printStackTrace();
-			fail("Project workspace could not be created.");
-		}
-
-	}
-
-	/**
-	 * Creates a DataComponent with 32 entries, to mimic the contents of
-	 * ICEProteusInput.xml. Writes the DataComponent into an XML file in the
-	 * tester project workspace.
-	 * 
-	 * @author w5q
-	 * 
-	 */
-	public void createXMLInput() {
-
-		// Local declarations
-		DataComponent dataComponent;
-		Entry entry;
-		Form form = new Form();
-		ArrayList<String> actionList = new ArrayList<String>();
-		actionList.add("Export to key-value pair output");
-		actionList.add("Write PROTEUS File");
-		form.setActionList(actionList);
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
-		ArrayList<Class> classList = new ArrayList<Class>();
-		classList.add(PROTEUSModel.class);
-		classList.addAll(new ICEJAXBClassProvider().getClasses());
-		
-		// Create 6 DataComponents and append them to the form
-		for (int i = 1; i <= 6; i++) {
-
-			// Define the data component and add it to the form
-			dataComponent = new DataComponent();
-			dataComponent.setName("Neutronics Parameters");
-			dataComponent
-					.setDescription("SHARP Parameters for the PROTEUS Neutronics Module");
-			dataComponent.setId(i);
-
-			// Generate 5 fake entries and append them to the DataComponent
-			for (int j = 1; j <= 5; j++) {
-
-				entry = new Entry() {
-					protected void setup() {
-						this.setName("fakeName");
-						this.tag = "";
-						this.setDescription("fakeDescription");
-						this.allowedValues = new ArrayList<String>();
-						this.defaultValue = "fakeValue";
-						this.value = this.defaultValue;
-						this.allowedValueType = AllowedValueType.Undefined;
-					}
-				};
-
-				// Set a unique ID and add the entry to the DataComponent
-				entry.setId(j);
-				dataComponent.addEntry(entry);
-			}
-
-			// Add the component to the form
-			form.addComponent(dataComponent);
-		}
-
-		// Set the folder in which the XML file will be located
-		IFolder folder = project.getFolder("PROTEUS_Model_Builder");
-
-		// If it already exists, delete it
-		if (folder.exists()) {
-			try {
-				folder.delete(true, null);
-			} catch (CoreException e) {
-				e.printStackTrace();
-				fail("Could not delete PROTEUS_Model_Builder folder");
-			}
-		}
-
-		// If it doesn't exist, create it
-		if (!folder.exists()) {
-			try {
-				folder.create(true, true, null);
-			} catch (CoreException e1) {
-				e1.printStackTrace();
-				fail("Could not create PROTEUS_Model_Builder folder");
-			}
-		}
-
-		// Check to see if the ICEProteusInput.xml file already exists
-		IFile file = folder.getFile("ICEProteusInput.xml");
-
-		// If it already exists, delete it
-		if (file != null) {
-			try {
-				file.delete(true, null);
-			} catch (CoreException e) {
-				e.printStackTrace();
-				fail("Could not delete ICEProteusInput.xml");
-			}
-		}
-
-		// Create the OutputStream to copy information
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-		// Persist the form to XML
-		try {
-			xmlHandler.write(form, classList, outputStream);
-		} catch (NullPointerException e1) {
-			e1.printStackTrace();
-			fail();
-		} catch (JAXBException e1) {
-			e1.printStackTrace();
-			fail();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Create the file
-		ByteArrayInputStream source;
-
-		// Convert the outputStream to inputStream
-		source = new ByteArrayInputStream(outputStream.toByteArray());
-
-		IFile inputFile = folder.getFile("ICEProteusInput.xml");
-
-		// Try to create the file
-		try {
-			inputFile.create(source, true, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-			fail("Could not create ICEProteusInput.xml");
-		}
-
-	}
 }

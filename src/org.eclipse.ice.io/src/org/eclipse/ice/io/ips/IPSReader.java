@@ -489,8 +489,6 @@ public class IPSReader implements IReader {
 			// First check if the line contains a parameter
 			if (line.contains("=")) {
 
-
-
 				// Get the content for the entry
 				splitLine = line.split("=", 2);
 

@@ -13,6 +13,7 @@
 package org.eclipse.ice.viz.plotviewer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -37,20 +38,20 @@ public class SelectFeatureDialog extends Dialog {
 	/**
 	 * The list of features to be displayed in the feature selection dialog
 	 */
-	private ArrayList<String> featureList;
+	private final ArrayList<String> featureList;
 	/**
 	 * The list of dependent variables to be displayed in the feature selection
 	 * dialog
 	 */
-	private ArrayList<String> independentVarList;
+	private final ArrayList<String> independentVarList;
 	/**
 	 * The selected X Axis Feature or independent variable
 	 */
-	private String xAxisFeature;
+	private final ArrayList<String> xAxisFeatures;
 	/**
 	 * The selected Y Axis Feature or independent/dependent variable
 	 */
-	private String yAxisFeature;
+	private final ArrayList<String> yAxisFeatures;
 
 	/**
 	 * Constructor that sets the shell and attributes to null
@@ -61,10 +62,10 @@ public class SelectFeatureDialog extends Dialog {
 	protected SelectFeatureDialog(Shell parentShell) {
 		super(parentShell);
 		// Sets the attributes to null
-		featureList = null;
-		xAxisFeature = null;
-		yAxisFeature = null;
-		// TODO Auto-generated constructor stub
+		featureList = new ArrayList<String>();
+		xAxisFeatures = new ArrayList<String>();
+		yAxisFeatures = new ArrayList<String>();
+		independentVarList = new ArrayList<String>();
 	}
 
 	/**
@@ -108,12 +109,12 @@ public class SelectFeatureDialog extends Dialog {
 
 			// The list for the X features
 			final List xFeatureList = new List(scrollLists, SWT.V_SCROLL
-					| SWT.BORDER | SWT.H_SCROLL);
+					| SWT.BORDER | SWT.H_SCROLL | SWT.MULTI);
 			xFeatureList.setLayoutData(new GridData(100, 150));
 
 			// The list for the Y features
 			final List yFeatureList = new List(scrollLists, SWT.V_SCROLL
-					| SWT.BORDER | SWT.H_SCROLL);
+					| SWT.BORDER | SWT.H_SCROLL | SWT.MULTI);
 			yFeatureList.setLayoutData(new GridData(100, 150));
 
 			// Add the dependent variables to the lists for display and
@@ -133,9 +134,13 @@ public class SelectFeatureDialog extends Dialog {
 				@Override
 				public void widgetSelected(SelectionEvent event) {
 					String[] selection = xFeatureList.getSelection();
+					xAxisFeatures.clear();
 					if (selection.length > 0) {
-						xAxisFeature = selection[0];
+						for (String selected : selection) {
+							xAxisFeatures.add(selected);
+						}
 					}
+					return;
 				}
 			});
 
@@ -145,22 +150,26 @@ public class SelectFeatureDialog extends Dialog {
 				@Override
 				public void widgetSelected(SelectionEvent event) {
 					String[] selection = yFeatureList.getSelection();
+					yAxisFeatures.clear();
 					if (selection.length > 0) {
-						yAxisFeature = selection[0];
+						for (String selected : selection) {
+							yAxisFeatures.add(selected);
+						}
 					}
+					return;
 				}
 			});
 
 			// Select the first available independent variable by default.
 			if (!independentVarList.isEmpty()) {
 				xFeatureList.setSelection(0);
-				xAxisFeature = independentVarList.get(0);
+				xAxisFeatures.add(independentVarList.get(0));
 			}
 
 			// Select the first available feature by default.
 			if (!featureList.isEmpty()) {
 				yFeatureList.setSelection(0);
-				yAxisFeature = featureList.get(0);
+				yAxisFeatures.add(featureList.get(0));
 			}
 		}
 
@@ -182,7 +191,12 @@ public class SelectFeatureDialog extends Dialog {
 	 * @param features
 	 */
 	public void setXAxisFeatures(ArrayList<String> independentVars) {
-		this.independentVarList = independentVars;
+		independentVarList.clear();
+		if (independentVars != null) {
+			independentVarList.addAll(independentVars);
+			// Sort the list of x-axis variables.
+			Collections.sort(independentVarList);
+		}
 	}
 
 	/**
@@ -191,25 +205,30 @@ public class SelectFeatureDialog extends Dialog {
 	 * @param features
 	 */
 	public void setYAxisFeatures(ArrayList<String> features) {
-		this.featureList = features;
+		featureList.clear();
+		if (features != null) {
+			featureList.addAll(features);
+			// Sort the list of y-axis variables.
+			Collections.sort(featureList);
+		}
 	}
 
 	/**
 	 * Returns the selected X axis feature
 	 * 
-	 * @return
+	 * @return A list of selected X axis features. This will never be null.
 	 */
-	public String getXAxisFeature() {
-		return this.xAxisFeature;
+	public ArrayList<String> getXAxisFeatures() {
+		return new ArrayList<String>(xAxisFeatures);
 	}
 
 	/**
 	 * Returns the selected Y axis feature
 	 * 
-	 * @return
+	 * @return A list of selected Y axis features. This will never be null.
 	 */
-	public String getYAxisFeature() {
-		return this.yAxisFeature;
+	public ArrayList<String> getYAxisFeatures() {
+		return new ArrayList<String>(yAxisFeatures);
 	}
 
 }

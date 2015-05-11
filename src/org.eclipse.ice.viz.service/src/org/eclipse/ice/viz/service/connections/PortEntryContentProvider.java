@@ -12,6 +12,7 @@
 package org.eclipse.ice.viz.service.connections;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
@@ -51,7 +52,12 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 	public PortEntryContentProvider() {
 		// PortEntries are strictly continuous between some min and max value.
 		super.setAllowedValueType(AllowedValueType.Continuous);
-		// Set the default min and max port.
+
+		// Set the default port and range. We call the super
+		// setDefaultValue(...) method so that the default value is invalid.
+		// Subsequently setting the range will update the default value to the
+		// default min port value.
+		super.setDefaultValue(Integer.toString(-1));
 		setRange(MIN_PORT_PREFERRED, MAX_PORT);
 	}
 
@@ -61,15 +67,29 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 	@Override
 	public void setAllowedValueType(AllowedValueType allowedValueType) {
 		// Do nothing.
-	};
+	}
 
 	/**
-	 * Does nothing. Use {@link #setRange(int, int)} instead.
+	 * If possible, converts the new allowed value list into the min and max
+	 * ports, then redirects to {@link #setRange(int, int)}. Note that the
+	 * incoming list is also rejected if it does not have exactly two elements.
 	 */
 	@Override
 	public void setAllowedValues(ArrayList<String> allowedValues) {
-		// Do nothing.
-	};
+		// If possible, convert the *two* allowed values into integers and pass
+		// them on to the setRange(...) method. The first allowed value is the
+		// min, and the second is the max.
+		if (allowedValues != null && allowedValues.size() == 2) {
+			try {
+				int min = Integer.parseInt(allowedValues.get(0));
+				int max = Integer.parseInt(allowedValues.get(1));
+				setRange(min, max);
+			} catch (NumberFormatException e) {
+				// The allowed values could not be parsed. Do nothing.
+			}
+		}
+		return;
+	}
 
 	/**
 	 * Sets the range of allowed ports. This range may exclude the default port
@@ -88,10 +108,37 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 			ArrayList<String> allowedValues = new ArrayList<String>(2);
 			allowedValues.add(Integer.toString(min));
 			allowedValues.add(Integer.toString(max));
+
+			// Continue with the default setAllowedValues(...) procedure.
 			super.setAllowedValues(allowedValues);
+
+			// If necessary, clamp the default port to the allowed port range.
+			int defaultPort = Integer.parseInt(getDefaultValue());
+			if (defaultPort < min) {
+				setDefaultValue(min);
+			} else if (defaultPort > max) {
+				setDefaultValue(max);
+			}
+
 			changed = true;
 		}
 		return changed;
+	}
+
+	/**
+	 * Sets the default port for managed {@link PortEntry}s. The specified value
+	 * may be outside the range as specified via {@link #setRange(int, int)}.
+	 */
+	@Override
+	public void setDefaultValue(String defaultValue) {
+		// If possible, convert the new default value into an integer and pass
+		// it on to the setDefaultValue(int) method.
+		try {
+			setDefaultValue(Integer.parseInt(defaultValue));
+		} catch (NumberFormatException e) {
+			// The number string could not be parsed. Do nothing.
+		}
+		return;
 	}
 
 	/**
@@ -102,26 +149,17 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 	 *            The default port as an integer.
 	 */
 	public void setDefaultValue(int defaultValue) {
-		setDefaultValue(Integer.toString(defaultValue));
-	}
+		// Get the current min and max port. (Parsing here shouldn't fail.)
+		List<String> allowedValues = getAllowedValues();
+		int min = Integer.parseInt(allowedValues.get(0));
+		int max = Integer.parseInt(allowedValues.get(1));
 
-	/**
-	 * Sets the default port for managed {@link PortEntry}s. The specified value
-	 * may be outside the range as specified via {@link #setRange(int, int)}.
-	 */
-	@Override
-	public void setDefaultValue(String defaultValue) {
-		// Only set the default value if it is a valid port number within the
-		// statically defined range. This does NOT check that the default value
-		// is within the range specified by setRange(int,int).
-		try {
-			int defaultPort = Integer.valueOf(defaultValue);
-			if (defaultPort >= MIN_PORT && defaultPort <= MAX_PORT) {
-				super.setDefaultValue(defaultValue);
-			}
-		} catch (NumberFormatException e) {
-			// Don't set it.
+		// If the new value is between the min and max (inclusive), set it by
+		// diverting to the super class' operation.
+		if (defaultValue >= min && defaultValue <= max) {
+			super.setDefaultValue(Integer.toString(defaultValue));
 		}
+
 		return;
 	}
 }
