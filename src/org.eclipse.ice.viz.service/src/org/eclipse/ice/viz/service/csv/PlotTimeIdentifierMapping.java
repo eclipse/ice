@@ -1,4 +1,4 @@
-package org.eclipse.ice.viz.plotviewer;
+package org.eclipse.ice.viz.service.csv;
 
 
 /**

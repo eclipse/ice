@@ -4,10 +4,10 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.plotviewer.PlotProvider;
-import org.eclipse.ice.viz.plotviewer.PlotTimeIdentifierMapping;
-import org.eclipse.ice.viz.plotviewer.PlotTreeLabelProvider;
-import org.eclipse.ice.viz.plotviewer.SeriesProvider;
+import org.eclipse.ice.viz.csv.viewer.PlotTreeLabelProvider;
+import org.eclipse.ice.viz.service.csv.PlotProvider;
+import org.eclipse.ice.viz.service.csv.PlotTimeIdentifierMapping;
+import org.eclipse.ice.viz.service.csv.SeriesProvider;
 import org.junit.Before;
 import org.junit.Test;
 

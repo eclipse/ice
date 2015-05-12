@@ -10,13 +10,18 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.plotviewer;
+package org.eclipse.ice.viz.csv.viewer;
 
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-public class PlotTreeLabelProvider implements ILabelProvider {
+/**
+ * 
+ * @author Matthew Wang
+ * 
+ */
+public class DataTableLabelProvider implements ITableLabelProvider {
 
 	@Override
 	public void addListener(ILabelProviderListener listener) {
@@ -43,32 +48,18 @@ public class PlotTreeLabelProvider implements ILabelProvider {
 	}
 
 	@Override
-	public Image getImage(Object element) {
+	public Image getColumnImage(Object element, int columnIndex) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getText(Object element) {
+	public String getColumnText(Object element, int columnIndex) {
 		// TODO Auto-generated method stub
 
-		// Check if element is instanceof class PlotProvider, Double,
-		// SeriesProvider, or String
-		if (element instanceof PlotProvider) {
-			PlotProvider plot = (PlotProvider) element;
-			// return element
-			return plot.getPlotTitle();
-		} else if (element instanceof PlotTimeIdentifierMapping) {
-			PlotTimeIdentifierMapping plotTime = (PlotTimeIdentifierMapping) element;
-			return plotTime.getTime() + "";
-		} else if (element instanceof SeriesProvider) {
-			SeriesProvider series = (SeriesProvider) element;
-			// return element
-			return series.getSeriesTitle();
-		} else if (element instanceof String) {
-			String feature = (String) element;
-			// return element
-			return feature;
+		if (element instanceof double[]) {
+			double[] elementArray = (double[]) element;
+			return elementArray[columnIndex] + "";
 		}
 
 		return null;

@@ -20,8 +20,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.plotviewer.PlotProvider;
-import org.eclipse.ice.viz.plotviewer.SeriesProvider;
+import org.eclipse.ice.viz.service.csv.PlotProvider;
+import org.eclipse.ice.viz.service.csv.SeriesProvider;
 import org.junit.Before;
 import org.junit.Test;
 

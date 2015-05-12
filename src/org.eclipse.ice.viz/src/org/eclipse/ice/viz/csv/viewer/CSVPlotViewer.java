@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.plotviewer;
+package org.eclipse.ice.viz.csv.viewer;
 
 import org.eclipse.ice.client.widgets.NextAction;
 import org.eclipse.ice.client.widgets.PlayAction;
@@ -23,6 +23,8 @@ import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.DeletePlotAction;
 import org.eclipse.ice.viz.IDeletePlotActionViewPart;
 import org.eclipse.ice.viz.VizFileViewer;
+import org.eclipse.ice.viz.service.csv.CSVPlotEditor;
+import org.eclipse.ice.viz.service.csv.PlotProvider;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;

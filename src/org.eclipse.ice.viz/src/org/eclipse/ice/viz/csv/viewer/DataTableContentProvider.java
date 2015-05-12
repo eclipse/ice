@@ -10,11 +10,12 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.plotviewer;
+package org.eclipse.ice.viz.csv.viewer;
 
 import java.util.ArrayList;
 
 import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.viz.service.csv.CSVDataProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

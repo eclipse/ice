@@ -21,11 +21,6 @@ import java.util.Map.Entry;
 
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.viz.plotviewer.CSVDataLoader;
-import org.eclipse.ice.viz.plotviewer.CSVDataProvider;
-import org.eclipse.ice.viz.plotviewer.CSVPlotEditor;
-import org.eclipse.ice.viz.plotviewer.PlotProvider;
-import org.eclipse.ice.viz.plotviewer.SeriesProvider;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;

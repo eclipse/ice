@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.plotviewer;
+package org.eclipse.ice.viz.csv.viewer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,6 +18,10 @@ import java.util.List;
 
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.VizFileViewer;
+import org.eclipse.ice.viz.service.csv.CSVDataLoader;
+import org.eclipse.ice.viz.service.csv.CSVDataProvider;
+import org.eclipse.ice.viz.service.csv.PlotProvider;
+import org.eclipse.ice.viz.service.csv.SeriesProvider;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;

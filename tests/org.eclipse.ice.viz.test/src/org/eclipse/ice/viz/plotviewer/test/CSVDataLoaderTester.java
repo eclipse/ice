@@ -25,8 +25,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.viz.plotviewer.CSVDataLoader;
-import org.eclipse.ice.viz.plotviewer.CSVDataProvider;
+import org.eclipse.ice.viz.service.csv.CSVDataLoader;
+import org.eclipse.ice.viz.service.csv.CSVDataProvider;
 import org.junit.Before;
 import org.junit.Test;
 

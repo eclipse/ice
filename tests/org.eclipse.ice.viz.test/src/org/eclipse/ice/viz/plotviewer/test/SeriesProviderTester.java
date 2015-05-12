@@ -14,8 +14,8 @@ package org.eclipse.ice.viz.plotviewer.test;
 
 import static org.junit.Assert.*;
 
-import org.eclipse.ice.viz.plotviewer.CSVDataProvider;
-import org.eclipse.ice.viz.plotviewer.SeriesProvider;
+import org.eclipse.ice.viz.service.csv.CSVDataProvider;
+import org.eclipse.ice.viz.service.csv.SeriesProvider;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -17,8 +17,8 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.viz.plotviewer.CSVData;
-import org.eclipse.ice.viz.plotviewer.CSVDataProvider;
+import org.eclipse.ice.viz.service.csv.CSVData;
+import org.eclipse.ice.viz.service.csv.CSVDataProvider;
 import org.junit.Before;
 import org.junit.Test;
 
