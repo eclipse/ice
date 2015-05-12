@@ -97,7 +97,6 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 *         otherwise.
 	 */
 	public boolean connect(boolean block) {
-		boolean connected = false;
 
 		String key = getKey();
 
@@ -107,8 +106,6 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 				+ "be blocked.");
 
 		if (state == ConnectionState.Connected) {
-			connected = true;
-
 			System.out.println("ConnectionAdapter message: " + "Connection \""
 					+ key + "\" is already connected.");
 
@@ -117,13 +114,13 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 			System.out.println("ConnectionAdapter message: " + "Connection \""
 					+ key + "\" is not connected.");
 
+			// Update the state.
+			setState(ConnectionState.Connecting);
+
 			// Create a new thread to open the connection.
 			Thread thread = new Thread() {
 				@Override
 				public void run() {
-					// Update the state.
-					setState(ConnectionState.Connecting);
-
 					// Try to open the connection.
 					connection = openConnection();
 
@@ -142,8 +139,6 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 			if (block) {
 				try {
 					thread.join();
-					// The connection is now open.
-					connected = (state == ConnectionState.Connected);
 				} catch (InterruptedException e) {
 					// In the event the thread has an exception, show an error
 					// and carry on.
@@ -155,7 +150,8 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 			}
 		}
 
-		return connected;
+		// Return whether or not the connection is established.
+		return state == ConnectionState.Connected;
 	}
 
 	/**
@@ -195,7 +191,6 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * @return True if the connection is closed upon returning, false otherwise.
 	 */
 	public boolean disconnect(boolean block) {
-		boolean connected = false;
 
 		String key = getKey();
 
@@ -205,7 +200,6 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 				+ "be blocked.");
 
 		if (state == ConnectionState.Connected) {
-			connected = true;
 
 			System.out.println("ConnectionAdapter message: " + "Connection \""
 					+ key + "\" is connected. It will be disconnected.");
@@ -232,8 +226,6 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 			if (block) {
 				try {
 					thread.join();
-					// The connection is now closed.
-					connected = (state == ConnectionState.Disconnected);
 				} catch (InterruptedException e) {
 					// In the event the thread has an exception, show an error
 					// and carry on.
@@ -243,12 +235,16 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 					e.printStackTrace();
 				}
 			}
+		} else if (state == ConnectionState.Connecting) {
+			System.out.println("ConnectionAdapter message: " + "Connection \""
+					+ key + "\" is still connecting.");
 		} else {
 			System.out.println("ConnectionAdapter message: " + "Connection \""
 					+ key + "\" is already disconnected.");
+			setState(ConnectionState.Disconnected);
 		}
 
-		return !connected;
+		return state == ConnectionState.Disconnected;
 	}
 
 	/**
@@ -371,7 +367,8 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#getHost()
 	 */
 	public String getHost() {
-		return getConnectionProperty("host");
+		String host = getConnectionProperty("host");
+		return (host != null && !host.isEmpty() ? host : "localhost");
 	}
 
 	/*
@@ -380,8 +377,18 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#getPort()
 	 */
 	public int getPort() {
-		String port = getConnectionProperty("port");
-		return (port != null ? Integer.parseInt(port) : -1);
+		// Set the default return value.
+		int port = -1;
+		// Try to convert the value from the connection properties to an int.
+		String portString = getConnectionProperty("port");
+		if (portString != null) {
+			try {
+				port = Integer.parseInt(portString);
+			} catch (NumberFormatException e) {
+				// Nothing to do.
+			}
+		}
+		return port;
 	}
 
 	/*

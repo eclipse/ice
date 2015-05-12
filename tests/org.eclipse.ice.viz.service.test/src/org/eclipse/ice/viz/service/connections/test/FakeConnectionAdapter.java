@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.connections.ConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.IConnectionClient;
 
 /**
  * This class provides a concrete sub-class of {@link ConnectionAdapter} for
@@ -78,5 +79,24 @@ public class FakeConnectionAdapter extends ConnectionAdapter<FakeConnection> {
 	@Override
 	public boolean setConnectionProperties(List<Entry> properties) {
 		return success;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionAdapter#
+	 * setConnectionProperty(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean setConnectionProperty(String key, String value) {
+		return super.setConnectionProperty(key, value);
+	}
+
+	/**
+	 * Posts an update notification to listeners (registered
+	 * {@link IConnectionClient}s).
+	 */
+	public void postUpdate() {
+		notifyListeners();
 	}
 }
