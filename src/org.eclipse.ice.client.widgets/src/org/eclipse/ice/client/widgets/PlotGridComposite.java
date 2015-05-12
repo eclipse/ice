@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.ice.client.common.ActionTree;
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;

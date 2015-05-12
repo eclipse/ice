@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.preferences;
 
 import java.util.List;
 
-import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
+import org.eclipse.ice.client.common.properties.ICellContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.graphics.Image;
 

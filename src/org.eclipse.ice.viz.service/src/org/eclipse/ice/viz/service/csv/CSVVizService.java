@@ -15,8 +15,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
 import org.eclipse.ice.viz.service.AbstractVizService;
+import org.eclipse.ice.viz.service.IPlot;
 
 /**
  * This class implements the IVizService interface to provide CSV plotting tools
@@ -43,7 +43,7 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getName()
+	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
 	public String getName() {
@@ -51,7 +51,7 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getVersion()
+	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
 	public String getVersion() {
@@ -59,7 +59,7 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
+	 * @see org.eclipse.ice.viz.service.IVizService#
 	 *      getConnectionProperties()
 	 */
 	@Override
@@ -70,7 +70,7 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
+	 * @see org.eclipse.ice.viz.service.IVizService#
 	 *      setConnectionProperties(java.util.Map)
 	 */
 	@Override
@@ -79,7 +79,7 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#connect()
+	 * @see org.eclipse.ice.viz.service.IVizService#connect()
 	 */
 	@Override
 	public boolean connect() {
@@ -89,7 +89,7 @@ public class CSVVizService extends AbstractVizService {
 
 	/**
 	 * @throws Exception
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
+	 * @see org.eclipse.ice.viz.service.IVizService#createPlot(java
 	 *      .net.URI)
 	 */
 	@Override
@@ -105,7 +105,7 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
+	 * @see org.eclipse.ice.viz.service.IVizService#
 	 *      hasConnectionProperties()
 	 */
 	@Override

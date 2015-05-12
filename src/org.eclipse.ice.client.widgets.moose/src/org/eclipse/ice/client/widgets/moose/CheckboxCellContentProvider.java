@@ -14,10 +14,10 @@ package org.eclipse.ice.client.widgets.moose;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.client.widgets.properties.IButtonCellContentProvider;
-import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
-import org.eclipse.ice.client.widgets.properties.TreeProperty;
-import org.eclipse.ice.client.widgets.properties.TreePropertyCellContentProvider;
+import org.eclipse.ice.client.common.properties.IButtonCellContentProvider;
+import org.eclipse.ice.client.common.properties.ICellContentProvider;
+import org.eclipse.ice.client.common.properties.TreeProperty;
+import org.eclipse.ice.client.common.properties.TreePropertyCellContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;

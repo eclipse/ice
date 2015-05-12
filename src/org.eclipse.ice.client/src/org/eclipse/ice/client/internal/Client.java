@@ -22,6 +22,8 @@ import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 
 import static org.eclipse.ice.client.internal.ItemProcessor.*;
+
+import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.core.iCore.ICore;
 
 import java.util.ArrayList;
@@ -187,6 +189,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		statusMessageMap.put(FormStatus.Unacceptable, "This Form will not be "
 				+ "processed or updated. It should be considered read-only.");
 
+		// Set the reference to this in the Singleton for the widget classes to retrieve as needed.
+		ClientHolder.setClient(this);
+		
 		// end-user-code
 	}
 

@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.ice.client.common.ActionTree;
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -181,7 +181,7 @@ public class CSVPlot implements IPlot {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
+	 * @see org.eclipse.ice.viz.service.IPlot#getPlotTypes()
 	 */
 	@Override
 	public Map<String, String[]> getPlotTypes() throws Exception {
@@ -189,7 +189,7 @@ public class CSVPlot implements IPlot {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
+	 * @see org.eclipse.ice.viz.service.IPlot#getNumberOfAxes()
 	 */
 	@Override
 	public int getNumberOfAxes() {
@@ -198,7 +198,7 @@ public class CSVPlot implements IPlot {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getProperties()
+	 * @see org.eclipse.ice.viz.service.IPlot#getProperties()
 	 */
 	@Override
 	public Map<String, String> getProperties() {
@@ -206,7 +206,7 @@ public class CSVPlot implements IPlot {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#setProperties(java.util.Map)
+	 * @see org.eclipse.ice.viz.service.IPlot#setProperties(java.util.Map)
 	 */
 	@Override
 	public void setProperties(Map<String, String> props) throws Exception {
@@ -214,7 +214,7 @@ public class CSVPlot implements IPlot {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getDataSource()
+	 * @see org.eclipse.ice.viz.service.IPlot#getDataSource()
 	 */
 	@Override
 	public URI getDataSource() {
@@ -222,7 +222,7 @@ public class CSVPlot implements IPlot {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getSourceHost()
+	 * @see org.eclipse.ice.viz.service.IPlot#getSourceHost()
 	 */
 	@Override
 	public String getSourceHost() {
@@ -230,7 +230,7 @@ public class CSVPlot implements IPlot {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#isSourceRemote()
+	 * @see org.eclipse.ice.viz.service.IPlot#isSourceRemote()
 	 */
 	@Override
 	public boolean isSourceRemote() {
@@ -247,7 +247,7 @@ public class CSVPlot implements IPlot {
 	}
 
 	/**
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
+	 * @see org.eclipse.ice.viz.service.IPlot#draw(java.lang.String,
 	 *      java.lang.String, org.eclipse.swt.widgets.Composite)
 	 */
 	@Override

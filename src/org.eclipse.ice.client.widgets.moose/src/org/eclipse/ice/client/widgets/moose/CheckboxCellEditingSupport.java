@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
-import org.eclipse.ice.client.widgets.properties.ButtonCellEditor;
-import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
-import org.eclipse.ice.client.widgets.properties.TextCellEditingSupport;
+import org.eclipse.ice.client.common.properties.ButtonCellEditor;
+import org.eclipse.ice.client.common.properties.ICellContentProvider;
+import org.eclipse.ice.client.common.properties.TextCellEditingSupport;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;

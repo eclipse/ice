@@ -14,8 +14,6 @@ package org.eclipse.ice.viz.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
-import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;

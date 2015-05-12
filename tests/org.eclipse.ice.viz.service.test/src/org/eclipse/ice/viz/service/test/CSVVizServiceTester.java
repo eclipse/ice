@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.csv.CSVPlot;
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.junit.Test;

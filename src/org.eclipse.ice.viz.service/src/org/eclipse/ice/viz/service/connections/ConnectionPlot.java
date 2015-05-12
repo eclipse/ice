@@ -15,9 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.MultiPlot;
 import org.eclipse.ice.viz.service.PlotRender;
 

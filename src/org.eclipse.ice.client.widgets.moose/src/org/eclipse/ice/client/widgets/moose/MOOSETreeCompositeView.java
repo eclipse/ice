@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
-import org.eclipse.ice.client.common.AddNodeTreeAction;
-import org.eclipse.ice.client.common.DeleteNodeTreeAction;
-import org.eclipse.ice.client.common.RenameNodeTreeAction;
-import org.eclipse.ice.client.common.TreeCompositeContentProvider;
 import org.eclipse.ice.client.common.TreeCompositeLabelProvider;
-import org.eclipse.ice.client.common.TreeCompositeViewer;
+import org.eclipse.ice.client.widgets.AddNodeTreeAction;
+import org.eclipse.ice.client.widgets.DeleteNodeTreeAction;
 import org.eclipse.ice.client.widgets.ICEFormInput;
+import org.eclipse.ice.client.widgets.RenameNodeTreeAction;
+import org.eclipse.ice.client.widgets.TreeCompositeContentProvider;
+import org.eclipse.ice.client.widgets.TreeCompositeViewer;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.nuclear.MOOSEModel;

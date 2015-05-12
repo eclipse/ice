@@ -4,5 +4,5 @@
    <service>
       <provide interface="org.eclipse.ice.client.widgets.IFormWidgetBuilder"/>
    </service>
-   <reference bind="setVizServiceFactory" cardinality="1..1" interface="org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory" name="IVizServiceFactory" policy="dynamic" unbind="unsetVizServiceFactory"/>
+   <reference bind="setVizServiceFactory" cardinality="1..1" interface="org.eclipse.ice.viz.service.IVizServiceFactory" name="IVizServiceFactory" policy="dynamic" unbind="unsetVizServiceFactory"/>
 </scr:component>

@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.preferences;
 
-import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
+import org.eclipse.ice.client.common.properties.ICellContentProvider;
 
 /**
  * An {@code ISecretCellContentProvider} is simply a basic

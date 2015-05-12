@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.test;
 
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.IConnectionClient;

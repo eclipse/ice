@@ -13,8 +13,8 @@
 package org.eclipse.ice.client.widgets.moose;
 
 import org.eclipse.ice.client.widgets.IFormWidgetBuilder;
-import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 
 /**
  * This class provides the declarative service that registers the MOOSE

@@ -19,7 +19,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ice.client.widgets.EclipseFormWidget;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
-import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 
 /**
  * This class creates and displays a {@link MOOSEFormEditor} for modifying a

@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.ice.client.common.TreeCompositeViewer;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;

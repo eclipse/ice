@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.visit;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionTable;
 import org.eclipse.ice.viz.service.preferences.VizConnectionPreferencePage;

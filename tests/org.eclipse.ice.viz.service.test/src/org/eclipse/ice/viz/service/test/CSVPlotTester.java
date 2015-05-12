@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.csv.CSVPlot;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

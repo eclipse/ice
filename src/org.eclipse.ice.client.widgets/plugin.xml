@@ -208,7 +208,7 @@
       <extension point="org.eclipse.ui.views.properties.tabbed.propertySections">
       <propertySections contributorId="org.eclipse.ice.client.common.TreeCompositeViewer">
          <propertySection
-               class="org.eclipse.ice.client.widgets.properties.TreePropertySection"
+               class="org.eclipse.ice.client.common.properties.TreePropertySection"
                id="DataSection"
                tab="TreeViewer.Data">
             <input type="org.eclipse.ice.datastructures.form.TreeComposite"/>
@@ -241,7 +241,7 @@
     <propertySections
           contributorId="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer">
        <propertySection
-             class="org.eclipse.ice.client.widgets.properties.TreePropertySection"
+             class="org.eclipse.ice.client.common.properties.TreePropertySection"
              id="DataSection"
              tab="TreeViewer.Data">
           <input
@@ -394,7 +394,7 @@
     </category>
     <wizard
             name="Create Item Wizard"
-            class="org.eclipse.ice.client.widgets.wizards.NewItemWizard"
+            class="org.eclipse.ice.client.common.wizards.NewItemWizard"
             id="org.eclipse.ice.client.common.CreateItemWizard"
             category="org.eclipse.ice.wizards">
     </wizard>
@@ -410,14 +410,14 @@
     </category>
     <wizard
           category="org.eclipse.ice.wizards"
-          class="org.eclipse.ice.client.widgets.wizards.ImportFileWizard"
+          class="org.eclipse.ice.client.common.wizards.ImportFileWizard"
           icon="icons/importArrow.gif"
           id="org.eclipse.ice.client.widgets.wizards.ImportFile"
           name="Import existing files into the workspace">
     </wizard>
     <wizard
           category="org.eclipse.ice.wizards"
-          class="org.eclipse.ice.client.widgets.wizards.ImportItemWizard"
+          class="org.eclipse.ice.client.common.wizards.ImportItemWizard"
           icon="icons/itemImport.gif"
           id="org.eclipse.ice.client.widgets.wizards.ImportItem"
           name="Import existing files into an Item">
