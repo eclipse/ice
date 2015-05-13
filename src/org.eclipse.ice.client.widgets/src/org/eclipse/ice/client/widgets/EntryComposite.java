@@ -776,9 +776,16 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		if (component == entry) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					if (!EntryComposite.this.isDisposed()) {					
+					if (!EntryComposite.this.isDisposed()) {
+						// Refresh the EntryComposite
 						refresh();
-						toggleSaveDecoration();
+						// If the value has changed, toggle the "unsaved
+						// changes" decoration
+						if (!EntryComposite.this.entry.getValue().equals(currentSelection)) {
+							// Toggle the "unsaved changes" decoration if necessary
+							toggleSaveDecoration();
+						}
+						// Keep track of the currentSelection
 						currentSelection = EntryComposite.this.entry.getValue();
 					} else {
 						entry.unregister(EntryComposite.this);
@@ -799,8 +806,8 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	public void toggleSaveDecoration() {
 		
 		if (decoration == null) {
+			// Create a new decoration and message
 			decoration = new ControlDecoration(this, SWT.TOP | SWT.LEFT);
-			
 			final String saveMessage = "The form contains unsaved changes";
 			
 			// Set a description and image
@@ -818,23 +825,19 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			editor.addPropertyListener(new IPropertyListener() {
 				@Override
 				public void propertyChanged(Object source, int propId) {
-					System.out.println("Entry value: " + EntryComposite.this.entry.getValue());
-					System.out.println("Selection value: " + currentSelection);
-					System.out.println("Form is " + (editor.isDirty() ? "DIRTY" : "clean"));
-					
 					// Toggle the decoration on if the form is dirty
-					if (editor != null 
-							&& editor.isDirty()
-							&& !EntryComposite.this.entry.getValue().equals(currentSelection)) {
+					if (editor != null && editor.isDirty()) {
+						// Show the decoration
 						EntryComposite.this.decoration.show();
-//						if (messageManager != null) {
-//							Form form = (Form) editor;
-//							setMessageManager(new MessageManager(null);
-//						} 
-//						messageManager.addMessage(messageName, saveMessage, null,
-//								IMessageProvider.ERROR);
-					} else if (editor != null && !editor.isDirty()){
+						// Push a message to the messageManager
+						if (messageManager != null) {
+//							messageManager.removeAllMessages();
+							messageManager.addMessage(messageName, saveMessage, null,
+								IMessageProvider.ERROR);
+						}
+					} else if (editor != null) {
 						EntryComposite.this.decoration.hide();
+						messageManager.removeMessage(messageName);
 					}
 					return;
 				}	
