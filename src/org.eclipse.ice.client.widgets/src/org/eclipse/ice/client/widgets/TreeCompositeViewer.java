@@ -66,7 +66,7 @@ public class TreeCompositeViewer extends ViewPart implements
 	/**
 	 * The id
 	 */
-	public static final String ID = "org.eclipse.ice.client.common.TreeCompositeViewer";
+	public static final String ID = "org.eclipse.ice.client.widgets.TreeCompositeViewer";
 
 	/**
 	 * The JFace TreeViewer used to display the TreeComposite
