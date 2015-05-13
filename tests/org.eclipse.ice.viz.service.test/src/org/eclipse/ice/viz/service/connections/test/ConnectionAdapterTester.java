@@ -171,7 +171,7 @@ public class ConnectionAdapterTester {
 		castAdapter.delay = 0;
 		castAdapter.success = false;
 
-		// --- Try the default connection operation with a failure. ---- //
+		// ---- Try the default connection operation with a failure. ---- //
 		assertFalse(adapter.connect());
 		// There's no guarantee that the adapter will have finished this
 		// operation even if the underlying connection is "instant" because the
@@ -190,7 +190,7 @@ public class ConnectionAdapterTester {
 		}
 		// The connection should have failed by this point.
 		assertEquals(ConnectionState.Failed, adapter.getState());
-		// ------------------------------------------------------------- //
+		// -------------------------------------------------------------- //
 
 		// There is no need to reset as we can re-attempt the failed connection.
 
@@ -353,7 +353,7 @@ public class ConnectionAdapterTester {
 				}
 			}
 		}
-		// The connection should have failed by this point.
+		// The connection should have disconnected by this point.
 		assertEquals(ConnectionState.Disconnected, adapter.getState());
 		// Attempting to disconnect again shouldn't change anything.
 		assertTrue(adapter.disconnect());
@@ -383,7 +383,7 @@ public class ConnectionAdapterTester {
 				}
 			}
 		}
-		// The connection should have failed by this point.
+		// The connection should have disconnected by this point.
 		assertEquals(ConnectionState.Disconnected, adapter.getState());
 		// Attempting to disconnect again shouldn't change anything.
 		assertTrue(adapter.disconnect());
