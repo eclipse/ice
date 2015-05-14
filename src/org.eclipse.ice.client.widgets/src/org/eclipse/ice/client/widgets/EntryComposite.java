@@ -829,18 +829,10 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					if (editor != null) {
 						if (editor.isDirty()
 								&& !EntryComposite.this.entry.getValue().equals(currentSelection)) {
-//						if (!EntryComposite.this.entry.getValue().equals(currentSelection)) {
 							// Show the decoration
 							EntryComposite.this.decoration.show();
-							// Push a message to the messageManager
-							if (messageManager != null) {
-	//							messageManager.removeAllMessages();
-	//							messageManager.addMessage(messageName, saveMessage, null,
-	//								IMessageProvider.ERROR);
-							}
 						} else if (!editor.isDirty()) {
 							EntryComposite.this.decoration.hide();
-	//						messageManager.removeMessage(messageName);
 						}
 					}
 					return;
