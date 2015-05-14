@@ -825,19 +825,24 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			editor.addPropertyListener(new IPropertyListener() {
 				@Override
 				public void propertyChanged(Object source, int propId) {
-					// Toggle the decoration on if the form is dirty
-					if (editor != null && editor.isDirty()) {
-						// Show the decoration
-						EntryComposite.this.decoration.show();
-						// Push a message to the messageManager
-						if (messageManager != null) {
-//							messageManager.removeAllMessages();
-							messageManager.addMessage(messageName, saveMessage, null,
-								IMessageProvider.ERROR);
+					// Toggle the decoration on if the form is dirty and the
+					// value has changed
+					if (editor != null) {
+						if (editor.isDirty()
+								&& !EntryComposite.this.entry.getValue().equals(currentSelection)) {
+//						if (!EntryComposite.this.entry.getValue().equals(currentSelection)) {
+							// Show the decoration
+							EntryComposite.this.decoration.show();
+							// Push a message to the messageManager
+							if (messageManager != null) {
+	//							messageManager.removeAllMessages();
+	//							messageManager.addMessage(messageName, saveMessage, null,
+	//								IMessageProvider.ERROR);
+							}
+						} else if (!editor.isDirty()) {
+							EntryComposite.this.decoration.hide();
+	//						messageManager.removeMessage(messageName);
 						}
-					} else if (editor != null) {
-						EntryComposite.this.decoration.hide();
-						messageManager.removeMessage(messageName);
 					}
 					return;
 				}	
