@@ -47,6 +47,12 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 	public KeyEntryContentProvider(IKeyManager manager) {
 		keyManager = manager;
 
+		// Check for a null key manager.
+		if (manager == null) {
+			throw new NullPointerException("KeyEntryContentProvider error: "
+					+ "Cannot use null key manager.");
+		}
+
 		// Determine whether the key manager supports any string key or a
 		// pre-defined set of keys. Then set the allowed value type.
 		AllowedValueType type;

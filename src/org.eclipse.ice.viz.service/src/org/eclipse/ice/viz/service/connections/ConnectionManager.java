@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2015- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jordan Deyton
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
 import java.util.ArrayList;
@@ -8,18 +19,6 @@ import java.util.Set;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
-
-/**
- * This is an implementation of the {@link IVizService} interface. It is
- * specifically designed to handle multiple simultaneous connections--local or
- * remote--that are used to render plots. It implements only the required
- * methods to manage these connections, and works with {@link ConnectionTable}
- * s and {@link ConnectionAdapter}s to help store the connection properties and
- * interact with the underlying connections.
- * 
- * @author Jordan Deyton
- *
- */
 
 /**
  * A {@code ConnectionManager} maps {@link IConnectionAdapter}s to

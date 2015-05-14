@@ -319,10 +319,8 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * This operation creates a drop-down menu on the Composite.
 	 */
 	private void createDropdown() {
-
-		boolean redraw = (dropDown == null || dropDown.isDisposed());
-		
-		if (redraw) {
+	
+		if (dropDown == null || dropDown.isDisposed()) {
 			// Create a drop-down menu
 			dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL
 					| SWT.H_SCROLL | SWT.READ_ONLY);
@@ -330,7 +328,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	
 			// Determine the current value of the entry.
 			String currentValue = entry.getValue();
-	
+			
 			// Add the allowed values to the dropdown menu. If the allowed value
 			// matches the current value, select it.
 			List<String> allowedValues = entry.getAllowedValues();
@@ -342,21 +340,23 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				}
 			}
 			
-			// Add the listener
+			// Add a selection listener
 			dropDown.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
+					// Set the value of the Entry
+					setEntryValue(((Combo) e.widget).getText());
 					// Notify any listeners that the selection has changed
 					notifyListeners(SWT.Selection, new Event());
-					// Set the value of the Entry
-					setEntryValue(dropDown.getItem(dropDown.getSelectionIndex()));
 				}
 			});
+
 		} else {
 			// If the dropDown hasn't been disposed, check if a new AllowedValue
 			// has been added to the Entry
 			List<String> allowedValues = entry.getAllowedValues();
 			List<String> comboValues = Arrays.asList(dropDown.getItems());
+			
 			for (int i = 0; i < allowedValues.size(); i++) {
 				String allowedValue = allowedValues.get(i);
 				// Add any new AllowedValues to the dropDown
@@ -435,8 +435,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					notifyListeners(SWT.Selection, new Event());
 					// Get the Client
 					IClient client = ClientHolder.getClient();
-	
-					// Create the dialog and get the files
+					// Open up a file browser
 					FileDialog fileDialog = new FileDialog(getShell());
 					fileDialog.setText("Select a file to import into ICE");
 					String filePath = fileDialog.open();

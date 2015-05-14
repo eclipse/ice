@@ -58,4 +58,19 @@ public class SecretEntry extends Entry {
 		secretFlag = true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#clone()
+	 */
+	@Override
+	public Object clone() {
+		// Create a new entry and copy the contents. Note that since we already
+		// set the secret flag to true in the constructor, we can rely on the
+		// default copy operation.
+		Entry entry = new SecretEntry();
+		entry.copy(this);
+
+		return entry;
+	}
 }

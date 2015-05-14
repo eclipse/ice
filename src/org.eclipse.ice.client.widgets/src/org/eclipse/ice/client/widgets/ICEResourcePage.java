@@ -302,9 +302,10 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 					return;
 				}
 			} catch (Exception e) {
+				// Instead of printing the stack trace, print the error message.
+				System.err.println(e.getMessage());
 				System.err.println("ICEResourcePage error: "
 						+ "The plot could not be drawn.");
-				e.printStackTrace();
 			}
 		}
 
@@ -387,7 +388,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						break;
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					// Instead of printing the stack trace, print the error
+					// message. This means the plot could not be created.
+					System.err.println(e.getMessage());
 				}
 			}
 		}

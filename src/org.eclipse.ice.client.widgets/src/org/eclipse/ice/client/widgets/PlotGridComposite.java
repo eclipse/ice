@@ -636,8 +636,7 @@ public class PlotGridComposite extends Composite {
 			final ActionTree plotTypeTree = new ActionTree("Set Plot Type");
 			try {
 				// Add an ActionTree for each category, and then add ActionTree
-				// leaf
-				// nodes for each type.
+				// leaf nodes for each type.
 				Map<String, String[]> plotTypes = plot.getPlotTypes();
 				for (Entry<String, String[]> entry : plotTypes.entrySet()) {
 					String category = entry.getKey();
@@ -669,7 +668,8 @@ public class PlotGridComposite extends Composite {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				// Print out the error message (from getPlotTypes()).
+				System.err.println(e.getMessage());
 			}
 
 			// Add the items to the context menu.

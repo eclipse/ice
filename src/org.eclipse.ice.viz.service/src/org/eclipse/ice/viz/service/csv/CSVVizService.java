@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.AbstractVizService;
 
 /**
  * This class implements the IVizService interface to provide CSV plotting tools
@@ -29,7 +29,18 @@ import org.eclipse.ice.client.widgets.viz.service.IVizService;
  * @author Jay Jay Billings
  * 
  */
-public class CSVVizService implements IVizService {
+public class CSVVizService extends AbstractVizService {
+
+	/**
+	 * The default constructor.
+	 * <p>
+	 * <b>Note:</b> Only OSGi should call this method!
+	 * </p>
+	 */
+	public CSVVizService() {
+		// Add supported CSV extensions.
+		supportedExtensions.add("csv");
+	}
 
 	/**
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getName()
@@ -83,6 +94,8 @@ public class CSVVizService implements IVizService {
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
+		// Call the super method to validate the URI's extension.
+		super.createPlot(file);
 
 		// Create the plot and load it
 		CSVPlot plot = new CSVPlot(file);

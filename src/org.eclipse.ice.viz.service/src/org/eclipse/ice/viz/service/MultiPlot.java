@@ -235,6 +235,12 @@ public abstract class MultiPlot implements IPlot {
 			throw new NullPointerException("IPlot error: "
 					+ "The file is null.");
 		}
+		// This handles the unusual (but perhaps entirely possible) situation
+		// where the URI is opaque, e.g., "mailto:user@site.com".
+		else if (file.getPath() == null) {
+			throw new IllegalArgumentException("IPlot error: "
+					+ "The file is not a valid URI.");
+		}
 
 		// Get the list of new plot types from the sub-class implementation.
 		Map<String, String[]> newPlotTypes = findPlotTypes(file);
