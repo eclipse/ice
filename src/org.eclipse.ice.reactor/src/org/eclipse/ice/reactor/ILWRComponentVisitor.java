@@ -20,168 +20,128 @@ import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This interface defines the "visitation" routines that LWRComponents and
  * subclasses may use to reveal their types to visitors.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface ILWRComponentVisitor {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs a visitor to perform its actions on the
 	 * LWRComponent as a PWReactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lwrComp
 	 *            <p>
 	 *            The PWReactor that must accept this visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(PressurizedWaterReactor lwrComp);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs a visitor to perform its actions on the
 	 * LWRComponent as a BWReactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lwrComp
 	 *            <p>
 	 *            The BWReactor that must accept this visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(BWReactor lwrComp);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs a visitor to perform its actions on the
 	 * LWRComponent as a FuelAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lwrComp
 	 *            <p>
 	 *            The FuelAssembly that must accept this visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(FuelAssembly lwrComp);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs a visitor to perform its actions on the
 	 * LWRComponent as a RodClusterAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lwrComp
 	 *            <p>
 	 *            The RCA that must accept this visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(RodClusterAssembly lwrComp);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs a visitor to perform its actions on the
 	 * LWRComponent as a LWRRod.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lwrComp
 	 *            <p>
 	 *            The LWRRod that must accept this visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(LWRRod lwrComp);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs a visitor to perform its actions on the
 	 * LWRComponent as a ControlBank.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lwrComp
 	 *            <p>
 	 *            The ControlBank that must accept this visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(ControlBank lwrComp);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs a visitor to perform its actions on the
 	 * LWRComponent as an IncoreInstrument.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lwrComp
 	 *            <p>
 	 *            The IncoreInstrument that must accept this visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IncoreInstrument lwrComp);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs a visitor to perform its actions on the
 	 * LWRComponent as a Ring.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lwrComp
 	 *            <p>
 	 *            The Ring that must accept this visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(Tube lwrComp);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs a visitor to perform its actions on the
 	 * LWRComponent as a Tube.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lwrComp
 	 *            <p>
 	 *            The Tube that must accept this visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(Ring lwrComp);
 }

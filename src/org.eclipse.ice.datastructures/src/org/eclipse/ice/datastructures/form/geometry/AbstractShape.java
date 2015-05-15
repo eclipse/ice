@@ -26,46 +26,33 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Implements a number of operations shared between the components in the Shape
  * composite pattern
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlSeeAlso({ PrimitiveShape.class, ComplexShape.class })
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractShape extends ICEObject implements IShape {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Stores the list of keys for the property list
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Keys")
 	private ArrayList<String> keys;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Stores the list of values for the property list
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Values")
 	private ArrayList<String> values;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The matrix transformation applied to the shape
 	 * </p>
@@ -78,40 +65,28 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 * <p>
 	 * The transformation matrix applied to this node in the CSG tree
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Transformation")
 	protected Transformation transformation;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * If applicable, the parent of the shape in the CSG tree
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private IShape parent;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes the transformation matrix, creates the array containing the
 	 * key/value property pairs, and creates a listeners list
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public AbstractShape() {
-		// begin-user-code
 
 		// Initialize transformation
 		transformation = new Transformation();
@@ -123,38 +98,29 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 		// Create listeners list
 		listeners = new ArrayList<IUpdateableListener>();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a copy of the transformation matrix associated with this shape
 	 * node
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The transformation matrix applied to this node in the CSG tree
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Transformation getTransformation() {
-		// begin-user-code
 		return this.transformation;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Replaces the transformation matrix with a copy of the given Matrix4x4
 	 * </p>
 	 * <p>
 	 * Returns whether the setting was successful
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param transformation
 	 *            <p>
@@ -164,11 +130,8 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *         True if setting the transformation was successful, false
 	 *         otherwise
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setTransformation(Transformation transformation) {
-		// begin-user-code
 
 		// Fail if null and return false
 		if (transformation == null) {
@@ -183,18 +146,15 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 		notifyListeners();
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the value associated with the property key
 	 * </p>
 	 * <p>
 	 * If the key does not exist, this operation returns null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param key
 	 *            <p>
@@ -203,11 +163,8 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 * @return <p>
 	 *         The value associated with the property key
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getProperty(String key) {
-		// begin-user-code
 
 		if (key == null || "".equals(key)) {
 			return null;
@@ -227,11 +184,9 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 			return null;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the property value associated with the key string
 	 * </p>
@@ -240,7 +195,6 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 * the property list. If it exists, find and replace the property value with
 	 * the new one.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param key
 	 *            <p>
@@ -253,11 +207,8 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 * @return <p>
 	 *         True if the property setting is valid, false otherwise
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setProperty(String key, String value) {
-		// begin-user-code
 
 		// Validate parameters
 		if (key == null || "".equals(key) || value == null) {
@@ -283,18 +234,15 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 		notifyListeners();
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the value associated with the key in the properties list
 	 * </p>
 	 * <p>
 	 * This operation returns whether the key was found and removed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param key
 	 *            <p>
@@ -303,11 +251,8 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 * @return <p>
 	 *         True if the value was found and removed, false otherwise
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeProperty(String key) {
-		// begin-user-code
 		// Validate parameters
 
 		if (key == null) {
@@ -326,24 +271,18 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 		// Notify listeners and return success
 		notifyListeners();
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hashcode value of the shape.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashcode of the object
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 		// Get initial hash code
 		int hash = super.hashCode();
 
@@ -355,16 +294,13 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 		hash = 31 * hash + values.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this shape and another
 	 * shape. It returns true if the shape are equal and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -373,11 +309,8 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 * @return <p>
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Check if a similar reference
 		if (this == otherObject) {
@@ -408,25 +341,19 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 		// The two objects are equal
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Copies the contents of a shape into the current object using a deep copy
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iceObject
 	 *            <p>
 	 *            The ICEObject from which the values should be copied
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(AbstractShape iceObject) {
-		// begin-user-code
 
 		// Return if object is null
 		if (iceObject == null) {
@@ -453,27 +380,21 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 
 		this.notifyListeners();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs the Component to call back to an IComponentVisitor
 	 * so that the visitor can perform its required actions for the exact type
 	 * of the Component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The visitor querying the type of the object
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(IComponentVisitor visitor) {
-		// begin-user-code
 
 		// Call the visitor's visit operation
 		// This is okay to do so in the AbstractClass because it is only
@@ -481,23 +402,17 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 
 		visitor.visit(this);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Notifies all IUpdateableListeners in the listener list that an event has
 	 * occurred which has changed the state of the shape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	protected void notifyListeners() {
-		// begin-user-code
 
 		// Let the base class handle most of the notifications
 		super.notifyListeners();
@@ -506,46 +421,33 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 		if (parent != null) {
 			((AbstractShape) parent).notifyListeners();
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the parent associated with this shape, or null if the shape does
 	 * not have a parent
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The parent of the shape
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IShape getParent() {
-		// begin-user-code
 		return parent;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the parent of the IShape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parent
 	 *            <p>
 	 *            The parent of the IShape
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setParent(IShape parent) {
-		// begin-user-code
 		this.parent = parent;
-		// end-user-code
 	}
 }

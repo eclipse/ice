@@ -55,15 +55,11 @@ import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Sphere;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The JME3 entry point for rendering the geometry editor viewport
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class GeometryApplication extends SimpleApplication implements
 		IUpdateableListener {

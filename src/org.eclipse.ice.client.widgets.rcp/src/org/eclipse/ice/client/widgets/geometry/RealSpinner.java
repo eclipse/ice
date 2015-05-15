@@ -28,27 +28,19 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Wrapper for a spinner-like SWT widget which supports real numbers and helpful
  * key commands for value manipulation
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class RealSpinner {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The internal text box
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Text textWidget;
 
@@ -73,21 +65,16 @@ public class RealSpinner {
 	private List<RealSpinnerListener> listeners = new ArrayList<RealSpinnerListener>();
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes the object and adds the widget to the given parent
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parent
 	 *            <p>
 	 *            The parent of the new RealSpinner
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public RealSpinner(Composite parent) {
-		// begin-user-code
 
 		textWidget = new Text(parent, SWT.LEFT | SWT.BORDER);
 
@@ -173,25 +160,19 @@ public class RealSpinner {
 
 		setValue(0);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Replaces the value with the given number
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param value
 	 *            <p>
 	 *            The new value
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setValue(double value) {
-		// begin-user-code
 
 		// Clip the value to the closest allowed number
 
@@ -212,38 +193,29 @@ public class RealSpinner {
 			listener.update(this);
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the real input value
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The value
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getValue() {
-		// begin-user-code
 
 		// Return the last value
 
 		return value;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the minimum and maximum bounds (inclusive)
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param minimum
 	 *            <p>
@@ -253,11 +225,8 @@ public class RealSpinner {
 	 *            <p>
 	 *            The maximum value to enforce
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setBounds(double minimum, double maximum) {
-		// begin-user-code
 
 		// Assert that the bounds contain at least one possible allowed value
 
@@ -273,7 +242,6 @@ public class RealSpinner {
 
 		setValue(value);
 
-		// end-user-code
 	}
 
 	/**

@@ -18,40 +18,32 @@ import java.io.FileOutputStream;
 import org.eclipse.ice.datastructures.form.Entry;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The DecoratedEntry class is used by the Registry to manage updates that need
  * to be sent to the Entry. It partially decorates the functionality of the
  * Entry class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
  */
 class DecoratedEntry extends Entry {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Entry that is to be decorated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	private Entry entry;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if the Entry should be updated, false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	private boolean updateFlag;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param dEntry
 	 *            <p>
@@ -59,17 +51,13 @@ class DecoratedEntry extends Entry {
 	 *            </p>
 	 */
 	public DecoratedEntry(Entry dEntry) {
-		// begin-user-code
 		this.entry = dEntry;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation marks the DecoratedEntry for an update.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param newState
 	 *            <p>
@@ -79,28 +67,22 @@ class DecoratedEntry extends Entry {
 	 *            </p>
 	 */
 	public void setUpdateFlag(boolean newState) {
-		// begin-user-code
 		this.updateFlag = newState;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns true if the DecoratedEntry is marked to be updated
 	 * and false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         True if the Entry is marked for an update, false otherwise.
 	 *         </p>
 	 */
 	public boolean getUpdateFlag() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return this.updateFlag;
-		// end-user-code
 	}
 
 	/**

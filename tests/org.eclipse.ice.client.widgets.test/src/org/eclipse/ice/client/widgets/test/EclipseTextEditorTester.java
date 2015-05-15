@@ -23,39 +23,27 @@ import org.eclipse.ice.client.widgets.EclipseTextEditor;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible checking the EclipseTextEditor.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EclipseTextEditorTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private EclipseTextEditor eclipseTextEditor;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation ensures that the EclipseTextEditor can manage ICEResources
 	 * with its getter and setter operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkResources() {
-		// begin-user-code
 
 		// Local Declarations
 		ICEResource res1 = null, retResource = null;
@@ -92,6 +80,5 @@ public class EclipseTextEditorTester {
 		assertEquals(res1.getDescription(), retResource.getDescription());
 
 		return;
-		// end-user-code
 	}
 }

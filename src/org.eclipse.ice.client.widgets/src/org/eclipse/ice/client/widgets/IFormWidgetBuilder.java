@@ -15,28 +15,19 @@ package org.eclipse.ice.client.widgets;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>This interface can be realized by client developers to customize the way that the EclipseUIWidgetFactory renders Forms for the user. Realizations of this interface should be registered as an OSGi Declarative service.</p><p>IFormWidgetBuilders must provide the name of the Form that they are meant to render. This requires that a Form with that name exist for the IFormWidget that the Builder creates to work properly. Thus, if no Form with the target name does not exist, the Builder should never be called.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IFormWidgetBuilder {
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation returns the name of the target Form that the Builder will render.</p>
-	 * <!-- end-UML-doc -->
 	 * @return <p>The name of the Form.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getTargetFormName();
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation builds the IFormWidget.</p>
-	 * <!-- end-UML-doc -->
 	 * @return <p>The specialized IFormWidget from the service.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IFormWidget build();
 }

@@ -46,7 +46,6 @@ import org.eclipse.ice.kdd.kddstrategy.compositestrategy.CompositeStrategy;
 import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The GodfreyStrategy is a CompositeStrategy that is composed of a number of
  * KDDStrategies that are used in calculating various statistics on the axial
@@ -58,104 +57,70 @@ import org.eclipse.ice.analysistool.IDataProvider;
  * levels, and create a HashMap of assembly indices to an ArrayList of
  * KDDMatrices of size number of axial levels.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class GodfreyStrategy extends CompositeStrategy {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of rows in the pin powers matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nPinRows;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of columns in the pin powers matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nPinCols;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of Axial levels.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nAxial;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of Assemblies.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nAssemblies;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to pin power difference between the data and the reference
 	 * data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<Integer, ArrayList<IDataMatrix>> loadedPinPowers;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the rank-4 weight tensor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<Integer, ArrayList<KDDMatrix>> weights;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<Integer, ArrayList<IDataMatrix>> refPinPowers;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private SubStrategyFactory subStrategyFactory;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor. Should initialize the following properties: Symmetry
 	 * (default is Full, other options are Half, Quarter, Eighth),
@@ -164,7 +129,6 @@ public class GodfreyStrategy extends CompositeStrategy {
 	 * user wants to run the particular sub strategy algorithm. Note that at
 	 * this point, the data should already be validated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param nRows
 	 * @param nCols
@@ -173,12 +137,9 @@ public class GodfreyStrategy extends CompositeStrategy {
 	 * @param data
 	 * @param refData
 	 * @throws IllegalArgumentException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GodfreyStrategy(int nRows, int nCols, int nAxial, int nAssemblies,
 			ArrayList<IData> data, ArrayList<IData> refData) {
-		// begin-user-code
 		super();
 
 		// Set the name of this Strategy,
@@ -209,23 +170,17 @@ public class GodfreyStrategy extends CompositeStrategy {
 		weights = new HashMap<Integer, ArrayList<KDDMatrix>>();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GodfreyStrategy(SubStrategyFactory factory, int nRows, int nCols,
 			int nAxial, int nAssemblies, ArrayList<IData> data,
 			ArrayList<IData> refData) {
-		// begin-user-code
 		super();
 
 		// Set the name of this Strategy,
@@ -256,24 +211,17 @@ public class GodfreyStrategy extends CompositeStrategy {
 		weights = new HashMap<Integer, ArrayList<KDDMatrix>>();
 
 		return;
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GodfreyStrategy() {
-		// begin-user-code
 		super();
-		// end-user-code
 	}
 
 	@Override
@@ -322,7 +270,6 @@ public class GodfreyStrategy extends CompositeStrategy {
 	}
 
 	private boolean createAsset() {
-		// begin-user-code
 		ArrayList<URI> uris = new ArrayList<URI>();
 		ArrayList<String> fileContents = new ArrayList<String>();
 		String line = "", contents = "";
@@ -419,90 +366,60 @@ public class GodfreyStrategy extends CompositeStrategy {
 		uri = file.getLocationURI();
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the number of rows in the pin powers matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfPinRows() {
-		// begin-user-code
 		return nPinRows;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the number of columns in the pin powers matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfPinCols() {
-		// begin-user-code
 		return nPinCols;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the number of axial levels in a given fuel pin.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfAxialLevels() {
-		// begin-user-code
 		return nAxial;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the number of fuel pin assemblies.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfAssemblies() {
-		// begin-user-code
 		return nAssemblies;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the asset's properties as a list of Entry objects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Entry> getPropertiesAsEntryList() {
-		// begin-user-code
 
 		// Value could also be Relative
 		// Could be Half, Quarter, Eighth
@@ -575,25 +492,19 @@ public class GodfreyStrategy extends CompositeStrategy {
 		retEntries.add(radial);
 
 		return retEntries;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Partition this list of IData elements into nAxial matrices per each
 	 * assembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param data
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<Integer, ArrayList<IDataMatrix>> partitionData(
 			ArrayList<IData> data) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<ArrayList<IData>> assemblyPartitions = new ArrayList<ArrayList<IData>>();
@@ -645,23 +556,17 @@ public class GodfreyStrategy extends CompositeStrategy {
 		}
 
 		return result;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method generates the rank-4 weight tensor to be used in the
 	 * calculation of all required quantities. Its construction is dependent on
 	 * the Symmetry Type property
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean calculateWeights() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		ArrayList<KDDMatrix> matrices = new ArrayList<KDDMatrix>();
 		KDDMatrix matrix = new KDDMatrix(nPinRows, nPinCols);
@@ -695,7 +600,6 @@ public class GodfreyStrategy extends CompositeStrategy {
 		// Bad if we get here, return false
 		return false;
 
-		// end-user-code
 	}
 
 }

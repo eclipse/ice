@@ -80,7 +80,6 @@ public class PROTEUSModelTester {
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -118,7 +117,6 @@ public class PROTEUSModelTester {
 		// Set the global project reference.
 
 		return;
-		// end-user-code
 	}
 
 	/**

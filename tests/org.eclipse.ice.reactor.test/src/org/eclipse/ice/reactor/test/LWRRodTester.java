@@ -42,22 +42,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the LWRRod class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRRodTester {
 	// An @BeforeClass that sets up the library path. This should be added to
 	// the model or removed if it can be fixed for local machine
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
@@ -65,22 +60,16 @@ public class LWRRodTester {
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the constructors and their default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		// Local declarations
 		LWRRod testRod;
 
@@ -169,22 +158,16 @@ public class LWRRodTester {
 		testRod = new LWRRod(null, newFillGas, newGasPressure, null);
 		assertEquals(materialBlockSizeDefault, testRod.getMaterialBlocks()
 				.size());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for the fill gas.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFillGas() {
-		// begin-user-code
 		LWRRod testRod = new LWRRod();
 		Material newFillGas = new Material("Helium", MaterialType.GAS);
 
@@ -195,22 +178,16 @@ public class LWRRodTester {
 		// check null, it should return previous value
 		testRod.setFillGas(null);
 		assertEquals(newFillGas, testRod.getFillGas());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for the pressure.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkPressure() {
-		// begin-user-code
 		LWRRod testRod = new LWRRod();
 		double newGasPressure = 2200.34344512434;
 		// check setter Legal value
@@ -224,22 +201,16 @@ public class LWRRodTester {
 		// check setting illegal negative value
 		testRod.setPressure(-1.0);
 		assertEquals(newGasPressure, testRod.getPressure(), 0.0);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for the MaterialBlock.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkMaterialBlock() {
-		// begin-user-code
 		LWRRod testRod = new LWRRod();
 		MaterialBlock materialBlock = new MaterialBlock();
 		TreeSet<MaterialBlock> materialBlocks = new TreeSet<MaterialBlock>();
@@ -257,22 +228,16 @@ public class LWRRodTester {
 		testRod.setMaterialBlocks(new TreeSet<MaterialBlock>());
 		assertTrue(testRod.getMaterialBlocks().equals(materialBlocks));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations checks getters and setters for the clad object
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkClad() {
-		// begin-user-code
 
 		LWRRod testRod = new LWRRod();
 		Material cladMaterial = new Material("Steel304", MaterialType.SOLID);
@@ -286,22 +251,16 @@ public class LWRRodTester {
 		testRod.setClad(null);
 		assertEquals(newClad, testRod.getClad());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the equals and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRRod object, equalObject, unEqualObject, transitiveObject;
@@ -388,22 +347,16 @@ public class LWRRodTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone routines.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRRod object, copyObject, clonedObject;
@@ -454,22 +407,16 @@ public class LWRRodTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 writing operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Writeables() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRRod rod = new LWRRod();
@@ -657,12 +604,10 @@ public class LWRRodTester {
 		// Delete the file once you are done
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	@AfterClass
 	public static void afterClass() {
-		// begin-user-code
 
 		// Cleans up the datafile if it exists due to a failed test
 		File dataFile = new File(System.getProperty("user.dir")
@@ -673,22 +618,16 @@ public class LWRRodTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 readable operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Readables() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRRod component = new LWRRod();
@@ -831,7 +770,6 @@ public class LWRRodTester {
 
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 }

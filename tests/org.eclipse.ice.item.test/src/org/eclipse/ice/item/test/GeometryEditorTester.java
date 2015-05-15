@@ -35,43 +35,30 @@ import org.eclipse.ice.item.geometry.GeometryEditor;
 import org.eclipse.ice.item.geometry.GeometryEditorBuilder;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the GeometryEditor.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class GeometryEditorTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The instance of the GeometryEditor under test.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private GeometryEditor geometryEditor;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations checks the GeometryEditor to make sure that it properly
 	 * creates its Form.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Local Declarations
 		GeometryEditor editor = new GeometryEditor();
@@ -97,6 +84,5 @@ public class GeometryEditorTester {
 
 		return;
 
-		// end-user-code
 	}
 }

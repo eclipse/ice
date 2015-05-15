@@ -27,7 +27,6 @@ import java.net.URI;
 import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * RawKMeansStrategy is a subclass of KDDStrategy that provides an
  * executeStrategy method that runs the KMeans clustering algorithm for a raw
@@ -44,45 +43,33 @@ import org.eclipse.ice.analysistool.IDataProvider;
  * of rows in the matrix; and "Number of Columns", which corresponds to an IData
  * element detailing the number of columns in the matrix to be clustered.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class RawKMeansStrategy extends KDDStrategy {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to this RawKMeansStrategy's ClusterKDDMatrix that clusters its
 	 * matrix data into N centroids, refining itself over a specified number of
 	 * iterations.
 	 * </p>
 	 * 
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ClusterKDDMatrix matrixToCluster;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor, takes an array of IDataProviders. By convention, the
 	 * first IDataProvider of that array will be the loaded data to be analyzed.
 	 * Any other IDataProviders will be reference or extra data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param data
 	 * @throws IllegalArgumentException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public RawKMeansStrategy(ArrayList<IDataProvider> data)
 			throws IllegalArgumentException {
-		// begin-user-code
 		super("Raw KMeans", data);
 
 		// Create the matrix to cluster, making
@@ -97,23 +84,17 @@ public class RawKMeansStrategy extends KDDStrategy {
 		properties.put("Visualization Dimension", "2");
 		properties.put("Distance Measure", "Euclidean");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Constructor used for injecting a specific ClusterKDDMatrix. Primarily
 	 * used for unit testing.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param matrix
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public RawKMeansStrategy(ClusterKDDMatrix matrix) {
-		// begin-user-code
 		super("Raw KMeans", null);
 		matrixToCluster = matrix;
 
@@ -122,19 +103,14 @@ public class RawKMeansStrategy extends KDDStrategy {
 		properties.put("Visualization Dimension", "2");
 		properties.put("Distance Measure", "Euclidean");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the asset's properties as a list of Entry objects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public ArrayList<Entry> getPropertiesAsEntryList() {
@@ -185,21 +161,15 @@ public class RawKMeansStrategy extends KDDStrategy {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the number of clusters after the kmeans clustering algorithm is
 	 * executed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfClusters() {
-		// begin-user-code
 		return matrixToCluster.getNumberOfClusters();
-		// end-user-code
 	}
 
 	@Override

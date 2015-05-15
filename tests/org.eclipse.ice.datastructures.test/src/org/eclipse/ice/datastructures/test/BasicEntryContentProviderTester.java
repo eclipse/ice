@@ -31,30 +31,21 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A class that tests the BasicEntryContentProvider.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class BasicEntryContentProviderTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		// Local Declarations
 		BasicEntryContentProvider contentProvider = new BasicEntryContentProvider();
 
@@ -71,22 +62,16 @@ public class BasicEntryContentProviderTester {
 		assertEquals(AllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the valid and invalid use of getters and setters.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGettersAndSetters() {
-		// begin-user-code
 		// Local Declarations
 		BasicEntryContentProvider contentProvider = new BasicEntryContentProvider();
 		ArrayList<String> goodValues = new ArrayList<String>();
@@ -165,22 +150,16 @@ public class BasicEntryContentProviderTester {
 		assertEquals(AllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the equality (equals and hashCode) operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 		// Local Declarations
 		BasicEntryContentProvider contentProvider, equalContentProvider, unEqualContentProvider, transitiveContentProvider = null;
 		ArrayList<String> allowedValues = new ArrayList<String>();
@@ -253,22 +232,16 @@ public class BasicEntryContentProviderTester {
 		assertTrue(contentProvider.hashCode() != unEqualContentProvider
 				.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone operations().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 		// Local Declarations
 		BasicEntryContentProvider contentProvider, contentProviderCopy, contentProviderClone = null;
 		ArrayList<String> allowedValues = new ArrayList<String>();

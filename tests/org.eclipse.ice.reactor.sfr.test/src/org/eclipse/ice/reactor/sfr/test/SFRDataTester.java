@@ -23,31 +23,22 @@ import org.eclipse.ice.reactor.sfr.base.SFRData;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the SFRData class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SFRDataTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructors and default values of the SFRData class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		SFRData data;
 
@@ -104,22 +95,16 @@ public class SFRDataTester {
 		/* -------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter of the value attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkValue() {
-		// begin-user-code
 
 		// Initialize a new SFRData.
 		SFRData data = new SFRData();
@@ -146,22 +131,16 @@ public class SFRDataTester {
 		assertEquals(value, data.getValue(), 0);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter for the uncertainty attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUncertainty() {
-		// begin-user-code
 
 		// Initialize a new SFRData.
 		SFRData data = new SFRData();
@@ -188,22 +167,16 @@ public class SFRDataTester {
 		assertEquals(uncertainty, data.getUncertainty(), 0);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter of the units attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUnits() {
-		// begin-user-code
 
 		// Initialize a new SFRData.
 		SFRData data = new SFRData();
@@ -242,22 +215,16 @@ public class SFRDataTester {
 		assertEquals(normalString, data.getUnits());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter of the feature attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFeature() {
-		// begin-user-code
 
 		// Initialize a new SFRData.
 		SFRData data = new SFRData();
@@ -296,22 +263,16 @@ public class SFRDataTester {
 		assertEquals(normalString, data.getFeature());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter for the position attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkPosition() {
-		// begin-user-code
 
 		// Initialize a new SFRData.
 		SFRData data = new SFRData();
@@ -366,19 +327,15 @@ public class SFRDataTester {
 		assertEquals(position, data.getPosition());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality operation of SFRData.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		SFRData object, equalObject, unequalObject, invalidObject;
 
@@ -450,19 +407,15 @@ public class SFRDataTester {
 		assertFalse("just a string".equals(object));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning methods of SFRData.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		String feature = "Acceleration";
 		String units = "ft/s/s";
@@ -534,6 +487,5 @@ public class SFRDataTester {
 		/* ----------------------- */
 
 		return;
-		// end-user-code
 	}
 }

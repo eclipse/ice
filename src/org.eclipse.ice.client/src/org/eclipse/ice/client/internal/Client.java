@@ -46,7 +46,6 @@ import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.FormStatus;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The Client class is a base class for clients of the Core. It's primary
  * function is to manage calls to and from the Core to and from whatever user
@@ -60,87 +59,60 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * that it can handle notifications and requests from the widgets and data
  * structures.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class Client implements IUpdateEventListener, IProcessEventListener,
 		ISimpleResourceProvider, IWidgetClosedListener, IClient {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICore iCore;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of ErroBoxWidgets used by the Client.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IErrorBox> errorBoxWidgets;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IWidgetFactory iWidgetFactory;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of IFormWidgets used by the Client. This set is stored in a
 	 * HashTable with Forms as keys and IFormWidgets as the values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	private Hashtable<Integer, IFormWidget> formWidgetTable;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the Client was
 	 * closed OK and is false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicBoolean widgetClosedOK;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the Client was
 	 * cancelled and is false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicBoolean widgetCancelled;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The unique id assigned to this client by the ICE server.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int clientId = -1;
 
@@ -151,17 +123,12 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	HashMap<FormStatus, String> statusMessageMap = new HashMap<FormStatus, String>();
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Client() {
-		// begin-user-code
 
 		// Create the lists of widgets
 		errorBoxWidgets = new ArrayList<IErrorBox>();
@@ -187,11 +154,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		statusMessageMap.put(FormStatus.Unacceptable, "This Form will not be "
 				+ "processed or updated. It should be considered read-only.");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This private operation is called by the implementations of
 	 * IClient.processItem() and IProcessEventListener.processSelected(). It
@@ -199,7 +164,6 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * launches a FormProcessor to handle polling and update the IFormWidget for
 	 * the Item as it is processed by the Core.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param formWidget
 	 *            <p>
@@ -210,11 +174,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 *            The name of the action which should be performed when the Item
 	 *            is processed.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void processItem(IFormWidget formWidget, String actionName) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
 		// Local Declarations
@@ -243,32 +204,24 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			throwSimpleError("IClient Message: "
 					+ "Item has no parent widget in this client.");
 		}
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#setCoreService(ICore core)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setCoreService(ICore core) {
-		// begin-user-code
 		System.out.println("IClient Message: Core service set.");
 		this.iCore = core;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#createItem(String itemType)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int createItem(String itemType) {
-		// begin-user-code
 
 		// Local Declarations
 		int itemId = -1;
@@ -286,18 +239,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		}
 
 		return itemId;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#setUIWidgetFactory(IWidgetFactory widgetFactory)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setUIWidgetFactory(IWidgetFactory widgetFactory) {
-		// begin-user-code
 
 		iWidgetFactory = widgetFactory;
 
@@ -308,18 +257,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 					.println("IClient Message: Widget Factory set, but is null.");
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#loadItem(int itemId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void loadItem(int itemId) {
-		// begin-user-code
 
 		// Local Declarations
 		IFormWidget formWidget = null;
@@ -362,18 +307,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#throwSimpleError(String error)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void throwSimpleError(String error) {
-		// begin-user-code
 
 		// Local Declarations
 		IErrorBox errorBox = null;
@@ -387,18 +328,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#getAvailableItemTypes()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getAvailableItemTypes() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> types = null;
@@ -407,18 +344,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		types = this.iCore.getAvailableItemTypes().getList();
 
 		return types;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#processItem(int itemId, String actionName)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void processItem(int itemId, String actionName) {
-		// begin-user-code
 
 		// Local Declarations
 		Form itemForm = null;
@@ -446,18 +379,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 					+ "or notify your systems administrator.");
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#connectToCore(String hostname, int port)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean connectToCore(String hostname, int port) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean status = false;
@@ -482,64 +411,48 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		System.out.println("IClient Message: Connected to core... " + status);
 
 		return status;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#getItems()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Identifiable> getItems() {
-		// begin-user-code
 		return iCore.getItemList();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#deleteItem(int id)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void deleteItem(int id) {
-		// begin-user-code
 
 		// Forward the call
 		iCore.deleteItem(String.valueOf(id));
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#importFile(URI file)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void importFile(URI file) {
-		// begin-user-code
 
 		// Just forward the call
 		iCore.importFile(file);
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IUpdateEventListener#formUpdated(Form form)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void formUpdated(Form form) {
-		// begin-user-code
 
 		// Local Declarations
 		int formId = -1;
@@ -578,18 +491,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IProcessEventListener#processSelected(Form form, String process)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void processSelected(Form form, String process) {
-		// begin-user-code
 
 		// Forward the request to process the form on to the Core. The
 		// actual processing is done by the Item that is represented by the
@@ -597,36 +506,28 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		processItem(form.getItemID(), process);
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IProcessEventListener#cancelRequested(Form form, String process)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void cancelRequested(Form form, String process) {
-		// begin-user-code
 
 		// Forward the request to the core so that it can try to shut the
 		// process down.
 		iCore.cancelItemProcess(form.getId(), process);
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ISimpleResourceProvider#loadResource(ICEResource resource)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void loadResource(ICEResource resource) {
-		// begin-user-code
 
 		// Make sure the ICEResource is not null
 		if (resource != null) {
@@ -640,51 +541,38 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			throwSimpleError("The resource that you asked to load does not "
 					+ "exist or is erroneously linked.");
 		}
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IWidgetClosedListener#closedOK()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void closedOK() {
-		// begin-user-code
 
 		widgetClosedOK.set(true);
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IWidgetClosedListener#cancelled()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void cancelled() {
-		// begin-user-code
 
 		widgetCancelled.set(true);
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IClient#getFileSystem()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object getFileSystem() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return iCore.getFileSystem(1);
-		// end-user-code
 	}
 
 	@Override

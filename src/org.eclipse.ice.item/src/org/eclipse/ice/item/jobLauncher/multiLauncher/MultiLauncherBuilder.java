@@ -24,7 +24,6 @@ import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for building instances of the MultiLauncher Item.
  * Since the MultiLauncher is a composite Item, this builder will not create a
@@ -37,74 +36,51 @@ import org.eclipse.ice.item.jobLauncher.JobLauncher;
  * type of ItemType.Simulation. It will not include itself in the list it
  * creates.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MultiLauncherBuilder implements ICompositeItemBuilder {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<ItemBuilder> builders = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public MultiLauncherBuilder() {
-		// begin-user-code
 
 		builders = new ArrayList<ItemBuilder>();
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getItemName() {
-		// begin-user-code
 		return "MultiLauncher";
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemType()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ItemType getItemType() {
-		// begin-user-code
 		return ItemType.Simulation;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Item build(IProject projectSpace) {
-		// begin-user-code
 
 		// Local Declarations
 		MultiLauncher launcher = null;
@@ -130,7 +106,6 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 		}
 
 		return null;
-		// end-user-code
 	}
 
 	/**
@@ -138,15 +113,11 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 	 * 
 	 * @see ICompositeItemBuilder#addBuilders(ArrayList<ItemBuilder>
 	 *      itemBuilders)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addBuilders(ArrayList<ItemBuilder> itemBuilders) {
-		// begin-user-code
 
 		if (itemBuilders != null) {
 			builders = itemBuilders;
 		}
-		// end-user-code
 	}
 }

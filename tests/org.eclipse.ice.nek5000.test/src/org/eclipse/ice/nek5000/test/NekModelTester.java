@@ -41,16 +41,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the NekModel Item to make sure that it can correctly create
  * its Form and process a modified Form.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class NekModelTester {
 
@@ -65,7 +61,6 @@ public class NekModelTester {
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -133,7 +128,6 @@ public class NekModelTester {
 		projectSpace = project;
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -142,7 +136,6 @@ public class NekModelTester {
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Create a NekModel to test
 		NekModel model = setupNekItem();
@@ -155,7 +148,6 @@ public class NekModelTester {
 		assertTrue(form.getId() > 0);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -164,7 +156,6 @@ public class NekModelTester {
 	 */
 	@Test
 	public void checkProcessing() {
-		// begin-user-code
 
 		// Local Declarations
 		String testFilename = "Nek5000_Model_Builder_1.rea";
@@ -204,30 +195,23 @@ public class NekModelTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation configures a NekModel. It is used by both test operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         A newly instantiated NekModel.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private NekModel setupNekItem() {
-		// begin-user-code
 
 		// Local Declarations
 		NekModel model = new NekModel(projectSpace);
 
 		return model;
-		// end-user-code
 	}
 
 }

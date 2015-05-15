@@ -33,30 +33,21 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the BoundaryCondition class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton, w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class BoundaryConditionTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of BoundaryCondition objects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		/**
 		 * Check both constructors. Make sure the condition's type enum is
@@ -105,23 +96,17 @@ public class BoundaryConditionTester {
 		}
 		/* ---------------------------------------- */
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests getters and setters for the BoundaryCondition's
 	 * type.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkType() {
-		// begin-user-code
 
 		/**
 		 * Try setting the type to different valid and invalid values. First, a
@@ -144,23 +129,17 @@ public class BoundaryConditionTester {
 		assertEquals(BoundaryConditionType.Outflow, condition.getType());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests getters and setters for the BoundaryCondition's
 	 * values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkValues() {
-		// begin-user-code
 
 		/**
 		 * Try setting valid and invalid values for the condition. First, try a
@@ -237,23 +216,17 @@ public class BoundaryConditionTester {
 		/* -------------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation ensures that the BoundaryCondition properly notifies
 	 * registered listeners when its properties are set.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkNotifications() {
-		// begin-user-code
 
 		/**
 		 * We just need to test that setType and setValues notifies listeners.
@@ -284,22 +257,17 @@ public class BoundaryConditionTester {
 		// not notify listeners, but the wasNotified() method is expensive.
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the BoundaryCondition to persist
 	 * itself to XML and to load itself from an XML input stream.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * @throws IOException 
 	 * @throws JAXBException 
 	 * @throws NullPointerException 
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
@@ -329,23 +297,17 @@ public class BoundaryConditionTester {
 		// Check invalid parameters.
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks BoundaryCondition to ensure that its equals() and
 	 * hashCode() operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		BoundaryCondition object = new BoundaryCondition();
@@ -382,23 +344,17 @@ public class BoundaryConditionTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks BoundaryCondition to ensure that its copy() and
 	 * clone() operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		BoundaryCondition object = new BoundaryCondition();
@@ -437,6 +393,5 @@ public class BoundaryConditionTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

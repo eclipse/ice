@@ -42,111 +42,74 @@ import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class unit tests the GodfreyStrategy. It checks that it executes its
  * strategy correctly, and can set and get properties and URI.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class GodfreyStrategyTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private GodfreyStrategy godfreyStrategy;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IDataProvider> providers;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of rows in the pin powers matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nPinRows;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of columns in the pin powers matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nPinCols;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of Axial levels.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nAxial;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of Assemblies.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nAssemblies;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<Integer, ArrayList<KDDMatrix>> weights;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeSubStrategyFactory fakeSubFactory;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes any data
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void beforeClass() {
-		// begin-user-code
 
 		// Set the number of rows and cols, axial levels
 		// and number of assemblies
@@ -159,22 +122,16 @@ public class GodfreyStrategyTester {
 		providers = this.getTestData();
 		fakeSubFactory = new FakeSubStrategyFactory();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that we can execute this strategy correctly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkExecuteStrategy() {
-		// begin-user-code
 
 		// Create the strategy, which could throw an
 		// exception. If it does, fail
@@ -199,51 +156,34 @@ public class GodfreyStrategyTester {
 		// Make sure we created a valid URI.
 		assertNotNull(godfreyStrategy.getURI());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that we can get and set properties correctly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkGetSetProperties() {
-		// begin-user-code
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that we can get this IAnalyisAsset's properties as a list of
 	 * Entries.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkGetPropertiesAsEntryList() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IDataProvider> getTestData() {
-		// begin-user-code
 
 		// Need some data....
 		IDataProvider provider = new SimpleDataProvider();
@@ -388,7 +328,6 @@ public class GodfreyStrategyTester {
 
 		return retProvs;
 
-		// end-user-code
 	}
 
 }

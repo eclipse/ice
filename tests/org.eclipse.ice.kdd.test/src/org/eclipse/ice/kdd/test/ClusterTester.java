@@ -22,56 +22,38 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is used to unit test the Cluster class. It checks that we can add
  * and get vectors correctly, and that we can get a valid cluster mean vector.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ClusterTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Cluster cluster;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes the data needed for the cluster to be tested.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void beforeClass() {
-		// begin-user-code
 		cluster = new Cluster(1);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests that we can add and get vectors correctly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetAddVectors() {
-		// begin-user-code
 		KDDMatrix vector = new KDDMatrix(10, 1);
 		for (int i = 0; i < 10; i++) {
 			assertTrue(vector.setElement(i, 0, (double) i));
@@ -85,23 +67,17 @@ public class ClusterTester {
 		for (int i = 0; i < 10; i++) {
 			assertTrue(getVector.getElement(i, 0).equals((double) i));
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that we can get random cluster means as well as true cluster
 	 * means.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkMeans() {
-		// begin-user-code
 		// just make up some random number of rows
 		int nRows = 0;
 		int nIterations = 100;
@@ -128,6 +104,5 @@ public class ClusterTester {
 			}
 		}
 
-		// end-user-code
 	}
 }

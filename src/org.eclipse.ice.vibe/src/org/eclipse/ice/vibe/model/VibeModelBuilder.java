@@ -31,9 +31,7 @@ public class VibeModelBuilder implements ItemBuilder {
 	 * @see ItemBuilder#getItemName()
 	 */
 	public String getItemName() {
-		// begin-user-code
 		return "VIBE Model";
-		// end-user-code
 	}
 
 	/**
@@ -41,16 +39,13 @@ public class VibeModelBuilder implements ItemBuilder {
 	 * @see ItemBuilder#getItemType()
 	 */
 	public ItemType getItemType() {
-		// begin-user-code
 		return ItemType.Model;
-		// end-user-code
 	}
 
 	/**
 	 * @see ItemBuilder#build(Interface projectSpace)
 	 */
 	public Item build(IProject projectSpace) {
-		// begin-user-code
 
 		// Create a model
 		Item item = new VibeModel(projectSpace);
@@ -60,6 +55,5 @@ public class VibeModelBuilder implements ItemBuilder {
 
 		// Return the item
 		return item;
-		// end-user-code
 	}
 }

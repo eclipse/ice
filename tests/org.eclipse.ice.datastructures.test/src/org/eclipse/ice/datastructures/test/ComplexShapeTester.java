@@ -33,19 +33,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the ComplexShape class
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ComplexShapeTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks setting and getting the OperatorType of a ComplexShape
 	 * </p>
@@ -56,14 +51,10 @@ public class ComplexShapeTester {
 	 * only allowed for new ComplexShapes, its final type should be the second
 	 * given OperatorType.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkOperatorType() {
-		// begin-user-code
 
 		// Instantiate a ComplexShape
 		ComplexShape complexShape = new ComplexShape();
@@ -88,23 +79,17 @@ public class ComplexShapeTester {
 		complexShape.setType(null);
 		assertEquals(OperatorType.None, complexShape.getType());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Attempts to add a PrimitiveShape with each available ShapeType (including
 	 * None) to a ComplexShape to verify that all can be added correctly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAddPrimitiveShape() {
-		// begin-user-code
 
 		// Instantiate a ComplexShape
 		ComplexShape complexShape = new ComplexShape();
@@ -139,23 +124,17 @@ public class ComplexShapeTester {
 		complexShape.setShapes(null);
 		assertEquals(0, complexShape.getShapes().size());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds a new ComplexShape as a child to the existing ComplexShape and
 	 * verifies that it can be accepted
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAddComplexShape() {
-		// begin-user-code
 
 		// Create a new ComplexShape
 		ComplexShape complexShape = new ComplexShape(OperatorType.Union);
@@ -175,23 +154,17 @@ public class ComplexShapeTester {
 		complexShape.addShape(complexShape);
 		assertEquals(0, complexShape.getShapes().size());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ComplexShape to insure that it can be correctly
 	 * visited by a realization of the IShapeVisitor interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// Instantiate TestShapeVisitor
 		TestShapeVisitor visitor = new TestShapeVisitor();
@@ -204,41 +177,29 @@ public class ComplexShapeTester {
 
 		assertEquals(1, visitor.getVisits());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the ComplexShape to update its
 	 * Entries.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUpdate() {
-		// begin-user-code
 		// Not implemented
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the ComplexShape to ensure that it can properly
 	 * dispatch notifications when it receives an update that changes its state.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkNotifications() {
-		// begin-user-code
 		// Setup the listener
 		TestComponentListener testComponentListener = new TestComponentListener();
 
@@ -293,7 +254,6 @@ public class ComplexShapeTester {
 		assertTrue(testComponentListener.wasNotified());
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -346,19 +306,14 @@ public class ComplexShapeTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ComplexShape to ensure that its equals() and
 	 * hashcode() operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 		// Create Transformation to test
 		ComplexShape component = new ComplexShape();
 		ComplexShape equalComponent = new ComplexShape();
@@ -445,23 +400,17 @@ public class ComplexShapeTester {
 		assertFalse(component.equals(unequalPropertiesComponent));
 		assertFalse(component.hashCode() == unequalPropertiesComponent
 				.hashCode());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of the ComplexShape class and the
 	 * functionality inherited from ICEObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		// Test the nullery constructor
 		ComplexShape complexShape = new ComplexShape();
@@ -475,23 +424,17 @@ public class ComplexShapeTester {
 		complexShape = new ComplexShape(null);
 		assertEquals(OperatorType.None, complexShape.getType());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ComplexShape to ensure that its copy() and
 	 * clone() operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		ComplexShape cloneComplexShape, copyComplexShape;
 
@@ -535,22 +478,16 @@ public class ComplexShapeTester {
 		copyComplexShape.addShape(new PrimitiveShape(ShapeType.Cone));
 		assertFalse(copyComplexShape.equals(complexShape));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that the parent of a shape is properly set when added to a
 	 * ComplexShape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkParent() {
-		// begin-user-code
 
 		// Make some shapes
 
@@ -603,6 +540,5 @@ public class ComplexShapeTester {
 		assertNull(intersection.getParent());
 		assertEquals(intersection, cube.getParent());
 
-		// end-user-code
 	}
 }

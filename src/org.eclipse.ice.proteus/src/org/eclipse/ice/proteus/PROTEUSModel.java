@@ -82,9 +82,7 @@ public class PROTEUSModel extends Item {
 	 * </p>
 	 */
 	public PROTEUSModel() {
-		// begin-user-code
 		this(null);
-		// end-user-code
 	}
 
 	/**
@@ -98,12 +96,10 @@ public class PROTEUSModel extends Item {
 	 *            which they should be retrieved.
 	 */
 	public PROTEUSModel(IProject projectSpace) {
-		// begin-user-code
 
 		// Call super
 		super(projectSpace);
 
-		// end-user-code
 	}
 
 	/**

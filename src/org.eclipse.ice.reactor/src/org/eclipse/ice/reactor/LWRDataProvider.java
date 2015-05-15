@@ -21,79 +21,54 @@ import java.util.TreeMap;
 import java.util.ArrayList;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * An implementation of the IDataProvider. This class is used to store State
  * point data, usually for material decompositions or powers, that can be used
  * to store and display changes in value overtime across different features.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRDataProvider implements IDataProvider {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A TreeMap implementation of IData and features. Keep in mind that there
 	 * can be multiple IData for the same feature.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TreeMap<Double, ArrayList<FeatureSet>> dataTree;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current time step. Can not be less than 0, and must be strictly less
 	 * than the number of TimeSteps. Defaults to 0.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double time;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A description of the source of information for this provider and its
 	 * data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String sourceInfo;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The time unit.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String timeUnit;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRDataProvider() {
-		// begin-user-code
 		// Setup TreeMap
 		this.dataTree = new TreeMap<Double, ArrayList<FeatureSet>>();
 
@@ -103,51 +78,39 @@ public class LWRDataProvider implements IDataProvider {
 		// Setup time
 		this.time = 0;
 		this.timeUnit = "seconds";
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the sourceInfo. Can not be null or the empty string. Strings passed
 	 * will be trimmed before being set.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param sourceInfo
 	 *            <p>
 	 *            The sourceInfo to set.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setSourceInfo(String sourceInfo) {
-		// begin-user-code
 		if (sourceInfo != null && !sourceInfo.trim().isEmpty()) {
 			this.sourceInfo = sourceInfo.trim();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds a IData piece, keyed on the feature and timeStep, to the dataTree.
 	 * If the feature exists in the tree, it will append to the end of the list.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param data
 	 *            <p>
 	 *            The data to add.
 	 *            </p>
 	 * @param time
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addData(LWRData data, double time) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<FeatureSet> featureSetList;
@@ -197,28 +160,22 @@ public class LWRDataProvider implements IDataProvider {
 
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the feature and all associated IData from the dataTree at all
 	 * time steps. If a user wishes to remove a single piece of IData from the
 	 * tree, then use the appropriate getData operation on that feature and
 	 * manipulate the data that way.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param feature
 	 *            <p>
 	 *            The feature.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeAllDataFromFeature(String feature) {
-		// begin-user-code
 
 		// If feature is null, return
 		if (feature == null) {
@@ -242,25 +199,19 @@ public class LWRDataProvider implements IDataProvider {
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(LWRDataProvider otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		Iterator<Double> iter;
@@ -288,24 +239,18 @@ public class LWRDataProvider implements IDataProvider {
 		this.sourceInfo = otherObject.sourceInfo;
 		this.timeUnit = otherObject.timeUnit;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRDataProvider component = new LWRDataProvider();
@@ -316,39 +261,30 @@ public class LWRDataProvider implements IDataProvider {
 		// Return the component
 		return component;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the time units.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param timeUnit
 	 *            <p>
 	 *            The time unit to be set.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setTimeUnits(String timeUnit) {
-		// begin-user-code
 
 		if (timeUnit != null && !timeUnit.trim().isEmpty()) {
 			this.timeUnit = timeUnit;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Equality check. Returns true if equals, false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -357,11 +293,8 @@ public class LWRDataProvider implements IDataProvider {
 	 * @return <p>
 	 *         True if equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local declarations
 		LWRDataProvider component;
@@ -386,24 +319,18 @@ public class LWRDataProvider implements IDataProvider {
 
 		// Return retVal
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The hashcode.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         the hash.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		int hash = 31;
 
@@ -416,18 +343,14 @@ public class LWRDataProvider implements IDataProvider {
 		// return hash
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getFeatureList()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getFeatureList() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> featureList = new ArrayList<String>();
@@ -457,48 +380,36 @@ public class LWRDataProvider implements IDataProvider {
 		// Return the featureList
 		return featureList;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getNumberOfTimeSteps()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfTimeSteps() {
-		// begin-user-code
 
 		return this.dataTree.size();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#setTime(double step)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setTime(double step) {
-		// begin-user-code
 		if (step >= 0.0) {
 			this.time = step;
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getDataAtCurrentTime(String feature)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
-		// begin-user-code
 
 		// If feature is null, return
 		if (feature == null) {
@@ -520,33 +431,25 @@ public class LWRDataProvider implements IDataProvider {
 
 		return new ArrayList<IData>();
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getSourceInfo()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getSourceInfo() {
-		// begin-user-code
 
 		return this.sourceInfo;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getFeaturesAtCurrentTime()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getFeaturesAtCurrentTime() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> features = new ArrayList<String>();
@@ -566,18 +469,14 @@ public class LWRDataProvider implements IDataProvider {
 
 		return features;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getTimes()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Double> getTimes() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Double> times = new ArrayList<Double>();
@@ -593,18 +492,14 @@ public class LWRDataProvider implements IDataProvider {
 		// Return the list of times
 		return times;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getTimeStep(double time)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getTimeStep(double time) {
-		// begin-user-code
 
 		// Get the iterator
 		Iterator<Double> iter = this.dataTree.keySet().iterator();
@@ -624,41 +519,30 @@ public class LWRDataProvider implements IDataProvider {
 		// Time not found!
 		return -1;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getTimeUnits()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getTimeUnits() {
-		// begin-user-code
 
 		return this.timeUnit;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the current time step.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The current time step.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getCurrentTime() {
-		// begin-user-code
 
 		return this.time;
-		// end-user-code
 	}
 }

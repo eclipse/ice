@@ -38,35 +38,24 @@ import org.junit.Test;
  * end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PlantComponentTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Boolean flag to mark if the PlantComponent was successfully visited.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean wasVisited = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the construction of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		/* ---- Check nullary constructor ---- */
 
@@ -103,22 +92,16 @@ public class PlantComponentTester {
 		assertEquals(1, component.getId());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the hashCode and equality methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Construct a component to test against.
 		PlantComponent component = new PlantComponent("Arya");
@@ -167,22 +150,16 @@ public class PlantComponentTester {
 		assertFalse(component.hashCode() == unequalComponent.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Construct a base component to copy from.
 		PlantComponent component = new PlantComponent("Jon Snow");
@@ -238,7 +215,6 @@ public class PlantComponentTester {
 		assertTrue(component.equals(componentClone));
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -281,22 +257,16 @@ public class PlantComponentTester {
 		assertTrue(writeComponent.equals(loadComponent));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// Create a new component to visit.
 		PlantComponent component = new PlantComponent("Jon Snow");
@@ -324,15 +294,12 @@ public class PlantComponentTester {
 		assertTrue(component.equals(visitorComponent));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @author w5q
 	 */

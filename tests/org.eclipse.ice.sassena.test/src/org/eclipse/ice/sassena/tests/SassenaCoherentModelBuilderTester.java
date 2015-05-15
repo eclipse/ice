@@ -22,27 +22,20 @@ import org.eclipse.ice.sassena.SassenaCoherentModelBuilder;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the SassenaCoherentModelBuilder.
  * </p>
- * <!-- end-UML-doc -->
  */
 public class SassenaCoherentModelBuilderTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the CaebatModelBuilder.getItemName().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetItemName() {
 
-		// begin-user-code
 
 		// Local declarations
 		SassenaCoherentModelBuilder sassenaBuilder = new SassenaCoherentModelBuilder();
@@ -51,23 +44,19 @@ public class SassenaCoherentModelBuilderTester {
 		assertEquals("Sassena Coherent Model", sassenaBuilder.getItemName());
 
 		
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the SassenaCoherentModelBuilder.build(). This should check
 	 * to see if a form is created, but it should not check the contents of that
 	 * form. That is checked in a lower level tester.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkBuild() {
 
-		// begin-user-code
 
 		// Local declarations
 		SassenaCoherentModelBuilder sassenaBuilder = new SassenaCoherentModelBuilder();
@@ -83,21 +72,17 @@ public class SassenaCoherentModelBuilderTester {
 		// Just make sure the Form is created. Its contents will be checked later.
 		assertNotNull(sassenaModel.getForm());
 		
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the SassenaIncohrerentModelBuilder.getItemType().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkGetItemType() {
 
-		// begin-user-code
 
 		// Local declarations
 		SassenaCoherentModelBuilder sassenaBuilder = new SassenaCoherentModelBuilder();
@@ -105,7 +90,6 @@ public class SassenaCoherentModelBuilderTester {
 		// Check the Item name
 		assertEquals(ItemType.Model, sassenaBuilder.getItemType());
 
-		// end-user-code
 
 	}
 }

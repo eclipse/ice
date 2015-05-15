@@ -49,7 +49,6 @@ public class BatMLModelTester {
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -94,7 +93,6 @@ public class BatMLModelTester {
 		projectSpace = project;
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -103,7 +101,6 @@ public class BatMLModelTester {
 	@Test
 	public void checkSetupForm() {
 
-		// begin-user-code
 
 		// Local declarations
 		BatMLModel batMLModel;
@@ -119,7 +116,6 @@ public class BatMLModelTester {
 		assertEquals(1, form.getComponents().size());
 
 		return;
-		// end-user-code
 
 	}
 
@@ -129,7 +125,6 @@ public class BatMLModelTester {
 	@Test
 	public void checkProcess() {
 
-		// begin-user-code
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -167,7 +162,6 @@ public class BatMLModelTester {
 		// in relation to the Id of the item.
 		assertTrue(Files.exists(Paths.get(filePath)));
 
-		// end-user-code
 
 	}
 

@@ -22,7 +22,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.Entry;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A LoginInfoForm is a Form with a single DataComponent and two Entries. One
  * Entry is for a username and the second Entry is for a password. The text of
@@ -37,48 +36,32 @@ import org.eclipse.ice.datastructures.form.Entry;
  * accept a list of Actions in its constructor because it used by an Action, not
  * an Item.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LoginInfoForm extends Form {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An Entry for the username.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Entry username;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An Entry for the password.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Entry password;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LoginInfoForm() {
-		// begin-user-code
 
 		// Call the super constructor on Form
 		super();
@@ -140,79 +123,61 @@ public class LoginInfoForm extends Form {
 		addComponent(loginComponent);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the description of the LoginInfoForm and is the same
 	 * as calling the setDescription() operation. It is provided here as a
 	 * semantically appealing convenience method.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param promptDesc
 	 *            <p>
 	 *            The description of the prompt and, in particularl for this
 	 *            case, the description of the LoginInfoForm.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPromptDescription(String promptDesc) {
-		// begin-user-code
 
 		setDescription(promptDesc);
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the name of the username Entry to something other
 	 * than the default, which is "Username."
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param promptName
 	 *            <p>
 	 *            The name of the prompt.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setUsernamePrompt(String promptName) {
-		// begin-user-code
 
 		// Make sure the name is not null
 		if (promptName != null) {
 			username.setName(promptName);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the name of the password Entry to something other
 	 * than the default, which is "Password."
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param promptName
 	 *            <p>
 	 *            The name of the prompt.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPasswordPrompt(String promptName) {
-		// begin-user-code
 
 		// Make sure the name is not null
 		if (promptName != null) {
@@ -220,6 +185,5 @@ public class LoginInfoForm extends Form {
 		}
 		return;
 
-		// end-user-code
 	}
 }

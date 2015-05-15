@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * <!-- begin-UML-doc -->
  * <p >
  * The SFRComponent class represents all reactor components that can be stored
  * in a SFRComposite. This class should be treated as an extension of the Java
@@ -43,120 +42,80 @@ import java.util.TreeMap;
  * <p >
  * This class implements the ICE Component interface.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SFRComponent implements IReactorComponent, IDataProvider {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Name of the SFRComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String name;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Description of the SFRComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String description;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * ID of the SFRComponent; cannot be less than zero.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int id;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A description of the source of information for this provider and its
 	 * data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String sourceInfo;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current time step. Can not be less than 0, and must be strictly less
 	 * than the number of TimeSteps. Defaults to 0.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double time;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The time unit.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String timeUnits;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A TreeMap implementation of IData and features. Keep in mind that there
 	 * can be multiple IData for the same feature.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TreeMap<Double, HashMap<String, FeatureSet>> dataTree;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An ArrayList of ICE IComponentListeners that should be notified when the
 	 * Component has changed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private List<IUpdateableListener> listeners;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRComponent() {
-		// begin-user-code
 
 		// Initialize the default name, description, and ID.
 		name = "Component 1";
@@ -177,23 +136,17 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		listeners = new ArrayList<IUpdateableListener>();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor with name specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            Name of the SFRComponent. Cannot be an empty string or null.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRComponent(String name) {
-		// begin-user-code
 
 		// Call the nullary constructor to set all the defaults.
 		this();
@@ -202,22 +155,16 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		setName(name);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation notifies the listeners of the Component that its data
 	 * state has changed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void notifyListeners() {
-		// begin-user-code
 
 		// Stop if we have no listeners.
 		if (listeners.isEmpty()) {
@@ -246,84 +193,60 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		notifierThread.start();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the name of the SFRComponent as a String.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The name of the SFRComponent.
 	 * @see Identifiable#getName(String name)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getName() {
-		// begin-user-code
 
 		// Return the name.
 		return name;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the description of the SFRComponent as a String.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The description of the SFRComponent.
 	 * @see Identifiable#getDescription()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getDescription() {
-		// begin-user-code
 
 		// Return the description.
 		return description;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the ID of the SFRComponent as an int.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @see Identifiable#getId()
 	 * @return The ID of the SFRComponent.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getId() {
-		// begin-user-code
 
 		// Return the ID.
 		return id;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the source information.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param sourceInfo
 	 *            The source information of the SFRComponent. Cannot be an empty
 	 *            string or null.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setSourceInfo(String sourceInfo) {
-		// begin-user-code
 
 		// Only update the sourceInfo if the String is not null and not empty.
 		if (sourceInfo != null && !sourceInfo.trim().isEmpty()) {
@@ -334,62 +257,44 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the source information as a string.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The source information of the SFRComponent.
 	 * @see IDataProvider#getSourceInfo()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getSourceInfo() {
-		// begin-user-code
 
 		// Return the source information String.
 		return sourceInfo;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the current time as a double.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The current time.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getCurrentTime() {
-		// begin-user-code
 
 		// Return the current time.
 		return time;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the time units.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param timeUnits
 	 *            The time units. Cannot be an empty string or null.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setTimeUnits(String timeUnits) {
-		// begin-user-code
 
 		// Only set the time units if the String is not null and not empty.
 		if (timeUnits != null && !timeUnits.trim().isEmpty()) {
@@ -401,16 +306,13 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds a IData piece, keyed on the feature and time, to the dataTree. If
 	 * the feature exists in the tree, it will append to the end of the list.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param data
 	 *            The piece of data to be added to the dataTree. Cannot be null.
@@ -418,11 +320,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            The time at which the data will be added to the dataTree. If
 	 *            the time does not exist, it will be created. Time cannot be
 	 *            negative.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addData(SFRData data, double time) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (data == null || time < 0) {
@@ -458,27 +357,21 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 			notifyListeners();
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the feature and all associated IData from the dataTree at all
 	 * time steps. If a user wishes to remove a single piece of IData from the
 	 * tree, then use the appropriate getData operation on that feature and
 	 * manipulate the data that way.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param feature
 	 *            The name of the feature. Must be a valid feature, or not data
 	 *            will be removed.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeDataFromFeature(String feature) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (feature == null) {
@@ -502,7 +395,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 			notifyListeners();
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -512,11 +404,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @param id
 	 *            The ID of the SFRComponent. Must be non-negative.
 	 * @see Identifiable#setId(int id)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setId(int id) {
-		// begin-user-code
 
 		// Only allow non-negative IDs.
 		if (id >= 0) {
@@ -527,7 +416,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -538,11 +426,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            The name of the SFRComponent. Cannot be null or an empty
 	 *            string.
 	 * @see Identifiable#setName(String name)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setName(String name) {
-		// begin-user-code
 
 		// Only allow names that are not null and not empty.
 		if (name != null && !name.trim().isEmpty()) {
@@ -553,7 +438,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -564,11 +448,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            The description of the SFRComponent. Cannot be an empty string
 	 *            or null.
 	 * @see Identifiable#setDescription(String description)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setDescription(String description) {
-		// begin-user-code
 
 		// Only allow descriptions that are not null.
 		if (description != null && !description.trim().isEmpty()) {
@@ -579,26 +460,20 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Compares the contents of objects and returns true if they are identical,
 	 * otherwise returns false.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object to compare against.
 	 * @return Returns true if the two objects are equal, otherwise false.
 	 * @see Identifiable#equals(Object otherObject)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -625,23 +500,17 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hash of the object.
 	 * @see Identifiable#hashCode()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Static hash at 31.
 		int hash = 31;
@@ -656,22 +525,16 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		hash += 31 * dataTree.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The newly instantiated copied object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		SFRComponent object = new SFRComponent();
@@ -681,7 +544,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
@@ -690,11 +552,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * 
 	 * @param component
 	 *            The other SFRComponent to copy the contents of.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(SFRComponent component) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (component == null) {
@@ -732,58 +591,45 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		notifyListeners();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation notifies a class that has implemented IUpdateable that the
 	 * value associated with the particular key has been updated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param updatedKey
 	 *            A unique key that describes the value that is to be updated.
 	 * @param newValue
 	 *            The updated value of the key.
 	 * @see IUpdateable#update(String updatedKey, String newValue)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(String updatedKey, String newValue) {
-		// begin-user-code
 
 		// Nothing is required for this method.
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation registers a listener that realizes the IComponentListener
 	 * interface with the Component so that it can receive notifications of
 	 * changes to the Component, if the Component publishes such information.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param listener
 	 *            The new listener that should be notified when the the
 	 *            Component's state changes.
 	 * @see IUpdateable#register(IUpdateableListener listener)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void register(IUpdateableListener listener) {
-		// begin-user-code
 
 		// Only register listeners that are not null.
 		if (listener != null) {
 			listeners.add(listener);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -794,18 +640,14 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @param visitor
 	 *            The SFRComponent's visitor.
 	 * @see Component#accept(IComponentVisitor visitor)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(IComponentVisitor visitor) {
-		// begin-user-code
 
 		// Only accept valid visitors.
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -819,8 +661,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * 
 	 * @param visitor
 	 *            An ISFRComponentVisitor that is visiting this SFRComponent.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(ISFRComponentVisitor visitor) {
 
@@ -829,19 +669,14 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 
 	/**
 	 * <!-- begin-UML-doc --> Gets a String representation of the SFRComponent.
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The name of the SFRComponent as a string.
 	 * @see IReactorComponent#toString()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String toString() {
-		// begin-user-code
 
 		// Return the component's name.
 		return name;
-		// end-user-code
 	}
 
 	/**
@@ -852,11 +687,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return ArrayList of strings representing all unique features in the
 	 *         dataTree.
 	 * @see IDataProvider#getFeatureList()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getFeatureList() {
-		// begin-user-code
 
 		// Initialize the list of feature names.
 		ArrayList<String> featureList = new ArrayList<String>();
@@ -876,7 +708,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 
 		// Return the list of feature names.
 		return featureList;
-		// end-user-code
 	}
 
 	/**
@@ -885,15 +716,11 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * 
 	 * @return Returns the total time steps in the dataTree.
 	 * @see IDataProvider#getNumberOfTimeSteps()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfTimeSteps() {
-		// begin-user-code
 
 		// Return the size of the data tree ( which is keyed on time values).
 		return dataTree.size();
-		// end-user-code
 	}
 
 	/**
@@ -902,11 +729,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @param newTime
 	 *            The new time to set.
 	 * @see IDataProvider#setTime(double step)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setTime(double newTime) {
-		// begin-user-code
 
 		// We only allow non-negative times
 		if (newTime >= 0.0) {
@@ -917,7 +741,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -930,11 +753,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return An ArrayList of all data found with the specified feature, at the
 	 *         current time.
 	 * @see IDataProvider#getDataAtCurrentTime(String feature)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
-		// begin-user-code
 
 		// Don't process anything if the parameter is invalid.
 		if (feature != null) {
@@ -956,7 +776,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 
 		// No data was found, so return an empty list.
 		return new ArrayList<IData>();
-		// end-user-code
 	}
 
 	/**
@@ -967,11 +786,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return An ArrayList of strings representing all features in the
 	 *         dataTree, at the current time.
 	 * @see IDataProvider#getFeaturesAtCurrentTime()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getFeaturesAtCurrentTime() {
-		// begin-user-code
 
 		// Initialize the list of features to return.
 		ArrayList<String> features = new ArrayList<String>();
@@ -986,7 +802,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 		}
 		// Return the list of features.
 		return features;
-		// end-user-code
 	}
 
 	/**
@@ -995,11 +810,8 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * 
 	 * @return An ArrayList of doubles representing all times in the dataTree.
 	 * @see IDataProvider#getTimes()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Double> getTimes() {
-		// begin-user-code
 
 		// Initialize the list of times.
 		ArrayList<Double> times = new ArrayList<Double>();
@@ -1011,24 +823,19 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 
 		// Return the list of times.
 		return times;
-		// end-user-code
 	}
 
 	/**
 	 * <!-- begin-UML-doc --> Returns an integer representing the time step
 	 * associated to the specified time. Returns -1 if no time step is found.
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param time
 	 *            The time.
 	 * @return The time step associated to the input time. If no time step is
 	 *         found, returns -1.
 	 * @see IDataProvider#getTimeStep(double time)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getTimeStep(double time) {
-		// begin-user-code
 
 		// Initialize an iterator over the data tree's keys and a counter.
 		Iterator<Double> iter = dataTree.keySet().iterator();
@@ -1047,7 +854,6 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 
 		// A matching time was not found.
 		return -1;
-		// end-user-code
 	}
 
 	/**
@@ -1056,15 +862,11 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * 
 	 * @return The time units.
 	 * @see IDataProvider#getTimeUnits()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getTimeUnits() {
-		// begin-user-code
 
 		// Return the time units String.
 		return timeUnits;
-		// end-user-code
 	}
 
 	@Override

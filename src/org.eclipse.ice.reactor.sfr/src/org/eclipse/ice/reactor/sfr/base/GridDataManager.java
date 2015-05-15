@@ -42,14 +42,12 @@ public class GridDataManager extends GridManager {
 	 *            The size of the Grid.
 	 */
 	public GridDataManager(int size) {
-		// begin-user-code
 		super(size);
 
 		// Initialize the Map of IDataProviders.
 		dataProviders = new TreeMap<Integer, SFRComponent>();
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -71,7 +69,6 @@ public class GridDataManager extends GridManager {
 	 */
 	@Override
 	public boolean addComponent(String name, int location) {
-		// begin-user-code
 
 		// By default, we did not succeed in adding the Component.
 		boolean success = super.addComponent(name, location);
@@ -81,7 +78,6 @@ public class GridDataManager extends GridManager {
 			dataProviders.put(location, new SFRComponent());
 		}
 		return success;
-		// end-user-code
 	}
 
 	/**
@@ -90,7 +86,6 @@ public class GridDataManager extends GridManager {
 	 */
 	@Override
 	public boolean removeComponent(int location) {
-		// begin-user-code
 
 		// By default, we did not succeed in removing the Component location.
 		boolean success = super.removeComponent(location);
@@ -100,7 +95,6 @@ public class GridDataManager extends GridManager {
 			dataProviders.remove(location);
 		}
 		return success;
-		// end-user-code
 	}
 
 	/**
@@ -109,7 +103,6 @@ public class GridDataManager extends GridManager {
 	 */
 	@Override
 	public boolean removeComponent(String name) {
-		// begin-user-code
 
 		// Get the locations for this component.
 		List<Integer> locations = super.getComponentLocations(name);
@@ -125,7 +118,6 @@ public class GridDataManager extends GridManager {
 			}
 		}
 		return success;
-		// end-user-code
 	}
 
 	/**
@@ -135,11 +127,8 @@ public class GridDataManager extends GridManager {
 	 * @param otherObject
 	 *            The object to compare against.
 	 * @return True if otherObject is equal. False otherwise.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -160,22 +149,16 @@ public class GridDataManager extends GridManager {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hash of the object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Static hash at 31.
 		int hash = super.hashCode();
@@ -184,23 +167,17 @@ public class GridDataManager extends GridManager {
 		hash += 31 * dataProviders.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object from another object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object to copy the contents of.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(GridDataManager otherObject) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (otherObject == null) {
@@ -213,22 +190,16 @@ public class GridDataManager extends GridManager {
 		dataProviders.putAll(otherObject.dataProviders);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The newly instantiated cloned object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new GridManager.
 		GridDataManager manager = new GridDataManager(1);
@@ -238,6 +209,5 @@ public class GridDataManager extends GridManager {
 
 		// Return the newly instantiated object.
 		return manager;
-		// end-user-code
 	}
 }

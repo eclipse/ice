@@ -43,94 +43,64 @@ import org.eclipse.ice.kdd.test.fakeobjects.SimpleData;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleDataProvider;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for the integration testing of the
  * KDDAnalysisTool's GodfreyStrategy.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class GodfreyIntegrationTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Data to be analyzed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDataProvider provider;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Data to be used as reference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDataProvider refProvider;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the KDDAnalysisTool to test.
 	 * </p>
 	 * 
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private KDDAnalysisTool kddAnalysisTool;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the IFolder containing test data files.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IFolder dataFolder;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void beforeClass() {
-		// begin-user-code
 		kddAnalysisTool = new KDDAnalysisTool();
 		KDDStrategyFactory factory = new KDDStrategyFactory();
 		factory.registerStrategy(new GodfreyBuilder());
 		kddAnalysisTool.registerStrategyFactory(factory);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Check that we can successfully execute the GodfreyStrategy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkExecuteGodfreyStrategy() {
-		// begin-user-code
 		generateData();
 
 		// Create the document
@@ -161,21 +131,15 @@ public class GodfreyIntegrationTester {
 		// assertEquals(dataFolder.getProject().getFile("godfreydata.txt")
 		// .getLocationURI(), uri);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Private utility method used to populate the IDataProviders
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void generateData() {
-		// begin-user-code
 		provider = new SimpleDataProvider();
 		refProvider = new SimpleDataProvider();
 
@@ -316,6 +280,5 @@ public class GodfreyIntegrationTester {
 		((SimpleDataProvider) refProvider).addData(assemblyNumber,
 				"Number of Assemblies");
 
-		// end-user-code
 	}
 }

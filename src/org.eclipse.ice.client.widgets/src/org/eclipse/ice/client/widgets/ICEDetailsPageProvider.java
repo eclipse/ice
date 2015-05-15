@@ -22,18 +22,12 @@ import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ui.forms.IDetailsPage;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>This class implements the IDetailsPageProvider interface to provide a Details pages for a MasterDetailsBlock. The only way to provide the MasterDetailsComponent handle for this class is through the constructor.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEDetailsPageProvider implements IDetailsPageProvider {
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>The MasterDetailsComponent which should be queried for DataComponents to add to DetailsPages.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private MasterDetailsComponent component;
 
@@ -48,54 +42,39 @@ public class ICEDetailsPageProvider implements IDetailsPageProvider {
 	private ICEFormEditor formEditor;
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>The constructor. If the is null, this class will be unable to render anything to the screen.</p>
-	 * <!-- end-UML-doc -->
 	 * @param masterDetailsComponent <p>The MasterDetailsComponent that has the DataComponents that will be used as Details blocks in the MasterDetails table.</p>
 	 * @param editor <p>The ICEFormEditor in which the pages will exist. This editor is marked as dirty when the page changes.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEDetailsPageProvider(
 			MasterDetailsComponent masterDetailsComponent, ICEFormEditor editor) {
-		// begin-user-code
 
 		component = masterDetailsComponent;
 		formEditor = editor;
 
-		// end-user-code
 	};
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation returns the component that is used to gather details information or null if it was not set in the constructor.</p>
-	 * <!-- end-UML-doc -->
 	 * @return <p>The MasterDetailsComponent used in this provider or null if it was not set.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public MasterDetailsComponent getComponent() {
-		// begin-user-code
 		return component;
-		// end-user-code
 	}
 
 	/** 
 	 * (non-Javadoc)
 	 * @see IDetailsPageProvider#getPageKey(Object object)
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object getPageKey(Object object) {
-		// begin-user-code
 		return (String) object;
-		// end-user-code
 	}
 
 	/** 
 	 * (non-Javadoc)
 	 * @see IDetailsPageProvider#getPage(Object key)
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IDetailsPage getPage(Object key) {
-		// begin-user-code
 
 		// Local declarations
 		ICEDataComponentDetailsPage ICEDataComponentDetailsPage = null;
@@ -111,6 +90,5 @@ public class ICEDetailsPageProvider implements IDetailsPageProvider {
 
 		return ICEDataComponentDetailsPage;
 
-		// end-user-code
 	}
 }

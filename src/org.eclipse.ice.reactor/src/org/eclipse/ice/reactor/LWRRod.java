@@ -23,7 +23,6 @@ import org.eclipse.ice.io.hdf.IHdfReadable;
 import org.eclipse.ice.io.hdf.IHdfWriteable;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The LWRRod class is a generalized class representing a basic rod as a
  * collection of materialBlocks contained by a ring (aka the clad). A LWRRod
@@ -40,66 +39,43 @@ import org.eclipse.ice.io.hdf.IHdfWriteable;
  * </p>
  * <p>
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRRod extends LWRComponent {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An annular Ring which surrounds this LWRRod's MaterialBlocks list.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Ring clad;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A Material of MaterialType.GAS that fills the voids within this LWRRod.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Material fillGas;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The pressure of the fillGas Material. Can not be less than or equal to 0.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double pressure;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TreeSet<MaterialBlock> materialBlocks;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The nullary Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRRod() {
-		// begin-user-code
 
 		// Set default LWRComponent Values
 		this.name = "LWRRod";
@@ -116,38 +92,29 @@ public class LWRRod extends LWRComponent {
 		// Setup LWRComponentType to correct type
 		this.HDF5LWRTag = HDF5LWRTagType.LWRROD;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
 	 *            The name of this LWRRod.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRRod(String name) {
-		// begin-user-code
 		// Call nullary operator
 		this();
 		// Pass name
 		this.setName(name);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -166,12 +133,9 @@ public class LWRRod extends LWRComponent {
 	 *            <p>
 	 *            The MaterialBlock list within this LWRRod.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRRod(String name, Material fillGas, double pressure,
 			TreeSet<MaterialBlock> materialBlocks) {
-		// begin-user-code
 
 		// Call the respective operators for passed parameters
 		this(name);
@@ -179,187 +143,136 @@ public class LWRRod extends LWRComponent {
 		this.setPressure(pressure);
 		this.setMaterialBlocks(materialBlocks);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a Material of MaterialType.GAS that fills the voids within this
 	 * LWRRod.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         A Material of MaterialType.GAS that fills the voids within this
 	 *         LWRRod.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Material getFillGas() {
-		// begin-user-code
 		return this.fillGas;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the Material of MaterialType.GAS that fills the voids within this
 	 * LWRRod. Can not be set to null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param fillGas
 	 *            <p>
 	 *            A Material of MaterialType.GAS that fills the voids within
 	 *            this LWRRod.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setFillGas(Material fillGas) {
-		// begin-user-code
 		// if fillGas is not null
 		if (fillGas != null) {
 			this.fillGas = fillGas;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the pressure of the fillGas Material. Can not be set less than or
 	 * equal to 0.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param pressure
 	 *            <p>
 	 *            The pressure of the fillGas Material.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPressure(double pressure) {
-		// begin-user-code
 		// if pressure is not 0 or negative
 		if (pressure > 0.0) {
 			this.pressure = pressure;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the pressure of the fillGas Material.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The pressure of the fillGas Material.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getPressure() {
-		// begin-user-code
 		return this.pressure;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the list of MaterialBlocks within this LWRRod.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The Stack object within this LWRRod.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public TreeSet<MaterialBlock> getMaterialBlocks() {
-		// begin-user-code
 		return this.materialBlocks;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the list of MaterialBlocks within this LWRRod. Can not be set null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param materialBlocks
 	 *            <p>
 	 *            The materialBlocks list within this LWRRod.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setMaterialBlocks(TreeSet<MaterialBlock> materialBlocks) {
-		// begin-user-code
 		if (materialBlocks != null && !(materialBlocks.isEmpty())) {
 			this.materialBlocks = materialBlocks;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the clad object of this LWRRod object, if set or null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring getClad() {
-		// begin-user-code
 		return this.clad;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the clad object for this LWRRod. It can not be set to null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param clad
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setClad(Ring clad) {
-		// begin-user-code
 		// if clad is not null
 		if (clad != null) {
 			this.clad = clad;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -368,11 +281,8 @@ public class LWRRod extends LWRComponent {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		LWRRod rod;
@@ -394,24 +304,18 @@ public class LWRRod extends LWRComponent {
 		// Return retVal
 		return retVal;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declarations
 		int hash = super.hashCode();
@@ -425,25 +329,19 @@ public class LWRRod extends LWRComponent {
 		// Return the hash
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(LWRRod otherObject) {
-		// begin-user-code
 
 		// If the otherObject is null, return
 		if (otherObject == null) {
@@ -463,24 +361,18 @@ public class LWRRod extends LWRComponent {
 							.toArray()[i]).clone());
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRRod rod = new LWRRod();
@@ -491,20 +383,15 @@ public class LWRRod extends LWRComponent {
 		// Return newly instantiated object
 		return rod;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		// begin-user-code
 		boolean flag = true;
 
 		flag &= super.writeAttributes(h5File, h5Group);
@@ -512,18 +399,13 @@ public class LWRRod extends LWRComponent {
 				"pressure", pressure);
 
 		return flag;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
-		// begin-user-code
 
 		// Get the children in super
 		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
@@ -541,25 +423,19 @@ public class LWRRod extends LWRComponent {
 		children.addAll(this.materialBlocks);
 
 		return children;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns an ArrayList of IHdfReadable child objects. If
 	 * this IHdfReadable has no IHdfReadable child objects, then null is
 	 * returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iHdfReadable
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
-		// begin-user-code
 
 		// If the child is null or not an instance of LWRComponent, then return
 		// false.
@@ -591,19 +467,14 @@ public class LWRRod extends LWRComponent {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readAttributes(H5Group h5Group) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean flag = true;
@@ -624,29 +495,22 @@ public class LWRRod extends LWRComponent {
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation accepts an ILWRComponentVisitor that can be visit the
 	 * LWRComponent to ascertain its type and perform various type-specific
 	 * operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(ILWRComponentVisitor visitor) {
-		// begin-user-code
 		visitor.visit(this);
-		// end-user-code
 	}
 
 }

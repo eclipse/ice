@@ -34,30 +34,21 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Action for adding a specific shape to the ShapeTreeView
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ActionAddShape extends Action {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current ShapeTreeViewer associated with the AddShape action
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ShapeTreeView view;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The ShapeType used to create new PrimitiveShapes when the AddShape action
 	 * is triggered
@@ -65,14 +56,10 @@ public class ActionAddShape extends Action {
 	 * <p>
 	 * If the value is null, the Operator is used to create ComplexShapes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ShapeType shapeType;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The OperatorType used to create new ComplexShapes when the AddShape
 	 * action is triggered
@@ -80,15 +67,11 @@ public class ActionAddShape extends Action {
 	 * <p>
 	 * If the value is null, the ShapeType is used to create PrimitiveShapes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private OperatorType operatorType;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current used default shape number appended to the name of every newly
 	 * created shape
@@ -97,10 +80,7 @@ public class ActionAddShape extends Action {
 	 * Starting from zero, this number increments every time a new shape is
 	 * added to the tree.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int currentShapeId;
 
@@ -110,11 +90,9 @@ public class ActionAddShape extends Action {
 	private ImageDescriptor imageDescriptor;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Constructor for creating new PrimitiveShapes with a given ShapeType
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param view
 	 *            <p>
@@ -125,11 +103,8 @@ public class ActionAddShape extends Action {
 	 *            The type of PrimitiveShape to create with the action is
 	 *            triggered
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ActionAddShape(ShapeTreeView view, ShapeType shapeType) {
-		// begin-user-code
 
 		this.view = view;
 		this.shapeType = shapeType;
@@ -154,15 +129,12 @@ public class ActionAddShape extends Action {
 		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Constructor for creating new ComplexShapes with a given OperatorType
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param view
 	 *            <p>
@@ -173,11 +145,8 @@ public class ActionAddShape extends Action {
 	 *            The type of ComplexShape to create with the action is
 	 *            triggered
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ActionAddShape(ShapeTreeView view, OperatorType operatorType) {
-		// begin-user-code
 
 		this.view = view;
 		this.shapeType = null;
@@ -203,11 +172,9 @@ public class ActionAddShape extends Action {
 				"icons/" + operatorIcons.get(operatorType));
 		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Runs this action
 	 * </p>
@@ -215,13 +182,9 @@ public class ActionAddShape extends Action {
 	 * Each action implementation must define the steps needed to carry out this
 	 * action.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void run() {
-		// begin-user-code
 
 		// Get the selection
 
@@ -301,7 +264,6 @@ public class ActionAddShape extends Action {
 		if (childShape != null && operatorType != null) {
 			view.treeViewer.expandToLevel(childShape, 1);
 		}
-		// end-user-code
 	}
 
 	/**
@@ -317,20 +279,15 @@ public class ActionAddShape extends Action {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Creates a shape corresponding to this Action's ShapeType or OperatorType
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly created shape
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IShape createShape() {
-		// begin-user-code
 
 		AbstractShape shape = null;
 
@@ -363,6 +320,5 @@ public class ActionAddShape extends Action {
 
 		return shape;
 
-		// end-user-code
 	}
 }

@@ -24,31 +24,24 @@ import static org.eclipse.ice.kdd.test.fakeobjects.FakeStrategy.*;
 import static org.junit.Assert.assertTrue;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is a fake KDDStrategyFactory to be used in unit testing the
  * KDDAnalysisDocument.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeStrategyFactory extends KDDStrategyFactory {
 
 	@Override
 	public KDDStrategy createStrategy(String selectedAsset,
 			ArrayList<IDataProvider> data) {
-		// begin-user-code
 		return new FakeStrategy();
-		// end-user-code
 	}
 
 	@Override
 	public ArrayList<String> getAvailableStrategies(
 			ArrayList<IDataProvider> data) {
-		// begin-user-code
 		// Create a List to hold the valid, available strategies
 		ArrayList<String> retList = new ArrayList<String>();
 
@@ -63,7 +56,6 @@ public class FakeStrategyFactory extends KDDStrategyFactory {
 		}
 		// Return the list
 		return retList;
-		// end-user-code
 	}
 
 }

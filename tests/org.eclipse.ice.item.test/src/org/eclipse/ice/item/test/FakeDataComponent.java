@@ -15,16 +15,12 @@ package org.eclipse.ice.item.test;
 import org.eclipse.ice.datastructures.form.DataComponent;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The FakeDataComponent class is a subclass of DataComponent that is used for
  * testing.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeDataComponent extends DataComponent {
 
@@ -37,23 +33,17 @@ public class FakeDataComponent extends DataComponent {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the value that was passed to the update operation
 	 * inherited from DataComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The value submitted to the update operation.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getUpdatedValue() {
-		// begin-user-code
 		return value;
-		// end-user-code
 	}
 
 }

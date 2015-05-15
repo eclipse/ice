@@ -24,89 +24,60 @@ import org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The GodfreyBuilder is a realization of the KDDStrategyBuilder and is used to
  * validate incoming data and return a new instance of the
  * GodfreyStrategy.<b></b>
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class GodfreyBuilder implements IStrategyBuilder {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Boolean indicating whether this strategy is available or not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean isAvailable;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of rows in the pin powers matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nPinRows;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of columns in the pin powers matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nPinCols;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of Axial levels.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nAxial;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the number of Assemblies.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nAssemblies;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method should return a new instance of the KDDStrategy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param data
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public KDDStrategy build(ArrayList<IDataProvider> data) {
-		// begin-user-code
 
 		// Create a reference to create and return
 		GodfreyStrategy strategy = null;
@@ -121,28 +92,20 @@ public class GodfreyBuilder implements IStrategyBuilder {
 
 		// Now give it back...
 		return strategy;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the name of this KDDStrategy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getStrategyName() {
-		// begin-user-code
 		return "Godfrey Fuel Pin Powers Strategy";
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method should take the input IDataProvider list and perform custom
 	 * checks on the providers to indicate whether or not the given data can be
@@ -151,15 +114,11 @@ public class GodfreyBuilder implements IStrategyBuilder {
 	 * and columns, axial levels, and assemblies data for use in the build menu.
 	 * If valid, it sets the isAvailable flag to true.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param dataToCheck
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean isAvailable(ArrayList<IDataProvider> dataToCheck) {
-		// begin-user-code
 
 		isAvailable = false;
 
@@ -262,20 +221,15 @@ public class GodfreyBuilder implements IStrategyBuilder {
 		// FIXME Make sure there are position values.
 
 		return isAvailable;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IStrategyBuilder#getStrategyPropertiesAsEntries()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Entry> getStrategyPropertiesAsEntries() {
-		// begin-user-code
 		GodfreyStrategy temp = new GodfreyStrategy();
 		return temp.getPropertiesAsEntryList();
-		// end-user-code
 	}
 }

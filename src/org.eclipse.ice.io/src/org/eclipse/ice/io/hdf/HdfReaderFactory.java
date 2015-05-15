@@ -23,27 +23,21 @@ import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.HObject;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The HdfReaderFactory class contains static methods used to read elements from
  * an HDF5 file.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class HdfReaderFactory {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the child H5Group called name from parentH5Group. If
 	 * parentH5Group is null, then null is returned. If name is null or is an
 	 * empty String, then null is returned. If there is no child H5Group called
 	 * name, then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parentH5Group
 	 *            <p>
@@ -56,11 +50,8 @@ public class HdfReaderFactory {
 	 * @return <p>
 	 *         The child H5Group.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static H5Group getChildH5Group(H5Group parentH5Group, String name) {
-		// begin-user-code
 
 		// If the name or parentH5Group is null or size is 0, return null
 		if (name == null || parentH5Group == null
@@ -77,11 +68,9 @@ public class HdfReaderFactory {
 			return null;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the child H5Group at the provided index from parentH5Group's
 	 * member list. If parentH5Group is null, then null is returned. If index
@@ -89,7 +78,6 @@ public class HdfReaderFactory {
 	 * null is returned. If the object at located at the provided index is not
 	 * an H5Group, then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parentH5Group
 	 *            <p>
@@ -102,11 +90,8 @@ public class HdfReaderFactory {
 	 * @return <p>
 	 *         The child H5Group.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static H5Group getChildH5Group(H5Group parentH5Group, int index) {
-		// begin-user-code
 
 		// Return null if the parameters are invalid.
 		if (parentH5Group == null || index < 0) {
@@ -148,17 +133,14 @@ public class HdfReaderFactory {
 
 		// Now that we have the object's name, get the child H5Group.
 		return childGroup;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an ArrayList of all child H5Groups from parentH5Group's member
 	 * list. If parentH5Group is null, then null is returned. If parentH5Group
 	 * has no H5Group children, then an empty ArrayList is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parentH5Group
 	 *            <p>
@@ -167,11 +149,8 @@ public class HdfReaderFactory {
 	 * @return <p>
 	 *         An ArrayList of child H5Groups.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static ArrayList<H5Group> getChildH5Groups(H5Group parentH5Group) {
-		// begin-user-code
 
 		// Previously with this code, we used only the HDF5 Java object library
 		// to perform this function. However, when the child groups take up too
@@ -246,7 +225,6 @@ public class HdfReaderFactory {
 		}
 
 		return groupList;
-		// end-user-code
 	}
 
 	/**
@@ -261,7 +239,6 @@ public class HdfReaderFactory {
 	 *         the group cannot be read.
 	 */
 	public static ArrayList<HObject> getChildH5Members(H5Group parentH5Group) {
-		// begin-user-code
 
 		// Initialize the list to return.
 		ArrayList<HObject> groupList = new ArrayList<HObject>();
@@ -326,18 +303,15 @@ public class HdfReaderFactory {
 		}
 
 		return groupList;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the Dataset called name from h5Group. If h5Group is null, then
 	 * null is returned. If name is null or an empty String, then null is
 	 * returned. If h5Group has no Datasets, then null is returned. If a Dataset
 	 * called name can not be located, then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 *            <p>
@@ -350,11 +324,8 @@ public class HdfReaderFactory {
 	 * @return <p>
 	 *         The located Dataset.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static Dataset getDataset(H5Group h5Group, String name) {
-		// begin-user-code
 
 		// Check to make sure the group and name is not null AND that it
 		// contains members
@@ -372,11 +343,9 @@ public class HdfReaderFactory {
 			return null;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reads and returns a Double object read from the Attribute called name
 	 * from the metadata for h5Group. If name is null or an empty String, then
@@ -385,7 +354,6 @@ public class HdfReaderFactory {
 	 * Attribute called name is located but is not of Datatype.CLASS_FLOAT, then
 	 * null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 *            <p>
@@ -398,11 +366,8 @@ public class HdfReaderFactory {
 	 * @return <p>
 	 *         The Attribute's value as a Double object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static Double readDoubleAttribute(H5Group h5Group, String name) {
-		// begin-user-code
 
 		try {
 			// If the name or H5Group is null or if there is no meta data,
@@ -435,11 +400,9 @@ public class HdfReaderFactory {
 		// Return null, nothing found
 		return null;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reads and returns an Integer object read from the Attribute called name
 	 * from the metadata for h5Group. If name is null or an empty String, then
@@ -448,7 +411,6 @@ public class HdfReaderFactory {
 	 * Attribute called name is located but is not of Datatype.CLASS_INTEGER,
 	 * then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 *            <p>
@@ -461,11 +423,8 @@ public class HdfReaderFactory {
 	 * @return <p>
 	 *         The Attribute's value as an Integer object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static Integer readIntegerAttribute(H5Group h5Group, String name) {
-		// begin-user-code
 		try {
 			// If the name or H5Group is null or if there is no meta data,
 			// return null
@@ -496,11 +455,9 @@ public class HdfReaderFactory {
 		// Return null, nothing found
 		return null;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reads and returns a String object read from the Attribute called name
 	 * from the metadata for h5Group. If name is null or an empty String, then
@@ -509,7 +466,6 @@ public class HdfReaderFactory {
 	 * Attribute called name is located but is not of Datatype.CLASS_STRING,
 	 * then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 *            <p >
@@ -522,11 +478,8 @@ public class HdfReaderFactory {
 	 * @return <p>
 	 *         The Attribute's value as a String object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static String readStringAttribute(H5Group h5Group, String name) {
-		// begin-user-code
 
 		try {
 			// If the name or H5Group is null or if there is no meta data,
@@ -558,6 +511,5 @@ public class HdfReaderFactory {
 		// Return null, nothing found
 		return null;
 
-		// end-user-code
 	}
 }

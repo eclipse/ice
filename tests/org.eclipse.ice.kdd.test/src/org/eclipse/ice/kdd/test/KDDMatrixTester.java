@@ -27,89 +27,60 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the behavior and functionality of the KDDMatrix.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class KDDMatrixTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private KDDMatrix matrix;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nRows;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nCols;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private KDDMatrix refMatrix;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to a set of data to test the KDDMatrix with.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDataProvider provider;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to a set of data to test the KDDMatrix with.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDataProvider refProvider;
 
 	private boolean debug;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * checks the constructor.
 	 * </p>
 	 * <p>
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void beforeClass() {
-		// begin-user-code
 		debug = false;
 		// Initialize the number of rows and columns
 		nRows = 4;
@@ -151,22 +122,16 @@ public class KDDMatrixTester {
 		((SimpleDataProvider) refProvider)
 				.addData(colList, "Number of Columns");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Check that constructing with a set of IData correctly creates the matrix
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstructFromData() {
-		// begin-user-code
 		// Create the matrices
 		try {
 			matrix = new KDDMatrix(provider);
@@ -183,22 +148,16 @@ public class KDDMatrixTester {
 			assertNotNull(ex);
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Test that we can correctly add and subtract two KDDMatrices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAddSubtract() {
-		// begin-user-code
 		try {
 			matrix = new KDDMatrix(provider);
 			refMatrix = new KDDMatrix(refProvider);
@@ -231,22 +190,16 @@ public class KDDMatrixTester {
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Check that we can correctly set and get elements of a KDDMatrix
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetSetElements() {
-		// begin-user-code
 		try {
 			matrix = new KDDMatrix(provider);
 			refMatrix = new KDDMatrix(refProvider);
@@ -261,22 +214,16 @@ public class KDDMatrixTester {
 		assertTrue(matrix.getElement(2, 2).equals(5.0));
 		assertTrue(matrix.setElement(3, 3, 2.0));
 		assertTrue(matrix.setElement(2, 2, 2.0));
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Check that we can correctly row or column normalize a KDDMatrix
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRowColumnNormalize() {
-		// begin-user-code
 
 		try {
 			matrix = new KDDMatrix(provider);
@@ -296,22 +243,16 @@ public class KDDMatrixTester {
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Check that we can correctly scale with an uncertainty matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkScaleUncertainty() {
-		// begin-user-code
 		try {
 			matrix = new KDDMatrix(provider);
 			refMatrix = new KDDMatrix(refProvider);
@@ -336,22 +277,16 @@ public class KDDMatrixTester {
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Check that we can get the transpose of the KDDMatrix
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkTranspose() {
-		// begin-user-code
 
 		// Create a set of 4 IData representing
 		// a 2x2 Matrix
@@ -462,18 +397,13 @@ public class KDDMatrixTester {
 		assertTrue(m2.getElement(2, 1).equals(6.0));
 		printMatrix(m2);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAddRemoveColumnsRows() {
-		// begin-user-code
 		try {
 			matrix = new KDDMatrix(provider);
 		} catch (IllegalArgumentException e) {
@@ -508,7 +438,6 @@ public class KDDMatrixTester {
 		assertTrue(matrix.deleteColumn());
 		assertEquals(nCols - 1, matrix.numberOfColumns());
 		printMatrix(matrix);
-		// end-user-code
 	}
 
 	private void printMatrix(KDDMatrix m) {
@@ -524,14 +453,10 @@ public class KDDMatrixTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkSetData() {
-		// begin-user-code
 
 		KDDMatrix m = new KDDMatrix();
 		assertEquals(0, m.numberOfColumns());
@@ -580,20 +505,16 @@ public class KDDMatrixTester {
 			fail();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the KDDMatrix class to insure that its equal operation
 	 * works.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		KDDMatrix copy = null;
@@ -619,19 +540,13 @@ public class KDDMatrixTester {
 	}
 	
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests that we can pull row and column vectors from this Matrix
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkGetRowColumn() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 }

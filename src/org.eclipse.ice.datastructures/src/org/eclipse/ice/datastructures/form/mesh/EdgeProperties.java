@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class contains properties of an edge. These properties can be maintained
  * by either a Polygon or the Edge itself. All properties are private fields but
@@ -34,66 +33,46 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Shared faces can have two fluid, thermal, or nth passive scalar boundary
  * conditions.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "EdgeProperties")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EdgeProperties {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The fluid boundary condition for this edge in a polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "fluidCondition")
 	private BoundaryCondition fluidBoundaryCondition;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The thermal boundary condition for this edge in a polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "thermalCondition")
 	private BoundaryCondition thermalBoundaryCondition;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A list of passive scalar boundary condition for this edge in a polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "otherCondition")
 	private ArrayList<BoundaryCondition> otherBoundaryConditions;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default constructor for properties of an Edge. This initializes every
 	 * property it can to non-null values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public EdgeProperties() {
-		// begin-user-code
 
 		// Initialize the boundary condition fields.
 		fluidBoundaryCondition = new BoundaryCondition();
@@ -101,24 +80,18 @@ public class EdgeProperties {
 		otherBoundaryConditions = new ArrayList<BoundaryCondition>();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the fluid boundary condition for the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param condition
 	 *            The new BoundaryCondition.
 	 * @return True if the new condition was successfully set, false otherwise.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setFluidBoundaryCondition(BoundaryCondition condition) {
-		// begin-user-code
 
 		boolean changed = false;
 
@@ -131,41 +104,29 @@ public class EdgeProperties {
 		}
 
 		return changed;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the fluid boundary condition for the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The edge's BoundaryCondition. This should never be null.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public BoundaryCondition getFluidBoundaryCondition() {
-		// begin-user-code
 		return fluidBoundaryCondition;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the thermal boundary condition for the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param condition
 	 *            The new BoundaryCondition.
 	 * @return True if the new condition was successfully set, false otherwise.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setThermalBoundaryCondition(BoundaryCondition condition) {
-		// begin-user-code
 
 		boolean changed = false;
 
@@ -178,32 +139,23 @@ public class EdgeProperties {
 		}
 
 		return changed;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the thermal boundary condition for the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The edge's BoundaryCondition. This should never be null.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public BoundaryCondition getThermalBoundaryCondition() {
-		// begin-user-code
 		return thermalBoundaryCondition;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets a passive scalar boundary condition for the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherId
 	 *            The ID or index of the set of passive scalar boundary
@@ -211,12 +163,9 @@ public class EdgeProperties {
 	 * @param condition
 	 *            The new BoundaryCondition.
 	 * @return True if the new condition was successfully set, false otherwise.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setOtherBoundaryCondition(int otherId,
 			BoundaryCondition condition) {
-		// begin-user-code
 
 		boolean changed = false;
 
@@ -250,26 +199,20 @@ public class EdgeProperties {
 		}
 
 		return changed;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets a passive scalar boundary condition from the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherId
 	 *            The ID or index of the set of passive scalar boundary
 	 *            conditions.
 	 * @return The edge's BoundaryCondition, or null if the passive scalar index
 	 *         is invalid.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public BoundaryCondition getOtherBoundaryCondition(int otherId) {
-		// begin-user-code
 
 		// The default return value
 		BoundaryCondition condition = null;
@@ -280,41 +223,29 @@ public class EdgeProperties {
 		}
 
 		return condition;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets all passive scalar boundary conditions for the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return An ArrayList of all passive scalar boundary conditions for the
 	 *         edge. If no passive scalar boundary conditions exist, this will
 	 *         be an empty list.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<BoundaryCondition> getOtherBoundaryConditions() {
-		// begin-user-code
 		return new ArrayList<BoundaryCondition>(otherBoundaryConditions);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the EdgeProperties.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hash of the Object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based on super's hashCode.
 		int hash = 31;
@@ -325,25 +256,19 @@ public class EdgeProperties {
 		hash = 31 * hash + otherBoundaryConditions.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this EdgeProperties and
 	 * another. It returns true if they are equal and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other Object that should be compared with this one.
 	 * @return True if the Objects are equal, false otherwise.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -367,24 +292,18 @@ public class EdgeProperties {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a EdgeProperties into the current
 	 * object using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param properties
 	 *            The Object from which the values should be copied.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(EdgeProperties properties) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (properties == null) {
@@ -412,22 +331,16 @@ public class EdgeProperties {
 		/* -------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the EdgeProperties using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The new clone.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		EdgeProperties object = new EdgeProperties();
@@ -437,7 +350,6 @@ public class EdgeProperties {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 	
 }

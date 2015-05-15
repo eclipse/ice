@@ -19,47 +19,31 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ice.datastructures.form.Form;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>This class is a wrapper around the Form class in ICE that realizes the appropriate Eclipse interface and can be used by Eclipse Forms.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEFormInput implements IEditorInput {
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>An internal reference for storing the ICE Form.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Form form;
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>The constructor for this Eclipse editor input.</p>
-	 * <!-- end-UML-doc -->
 	 * @param inputForm <p>The Form that should be supplied as input to the Editor.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEFormInput(Form inputForm) {
-		// begin-user-code
 		this.form = inputForm;
-		// end-user-code
 	}
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation returns the Form that is represented by the ICEFormInput. It should never return null.</p>
-	 * <!-- end-UML-doc -->
 	 * @return <p>The Form from ICE.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Form getForm() {
-		// begin-user-code
 
 		return form;
 
-		// end-user-code
 	}
 
 	/**
@@ -68,22 +52,17 @@ public class ICEFormInput implements IEditorInput {
 	 * @see IAdaptable#getAdapter(Class adapter)
 	 */
 	public Object getAdapter(Class adapter) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/** 
 	 * (non-Javadoc)
 	 * @see IEditorInput#exists()
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean exists() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return false;
-		// end-user-code
 	}
 
 	@Override

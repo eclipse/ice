@@ -32,29 +32,21 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Opens a dialog box to replicate the selected shape
  * </p>
  * <p>
  * This action should be enabled only when exactly one shape is selected.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ActionReplicateShape extends Action {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current ShapeTreeView
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ShapeTreeView view;
 
@@ -64,21 +56,16 @@ public class ActionReplicateShape extends Action {
 	private ImageDescriptor imageDescriptor;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes the instance with the current ShapeTreeView
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param view
 	 *            <p>
 	 *            The current ShapeTreeView
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ActionReplicateShape(ShapeTreeView view) {
-		// begin-user-code
 
 		this.view = view;
 
@@ -90,7 +77,6 @@ public class ActionReplicateShape extends Action {
 		URL imagePath = BundleUtility.find(bundle, "icons/replicate.gif");
 		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
-		// end-user-code
 	}
 
 	@Override
@@ -99,18 +85,13 @@ public class ActionReplicateShape extends Action {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Opens the replicate dialog box and clones the selected shape to the
 	 * properties
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void run() {
-		// begin-user-code
 
 		GeometryComponent geometry = (GeometryComponent) view.treeViewer
 				.getInput();
@@ -227,6 +208,5 @@ public class ActionReplicateShape extends Action {
 
 		view.treeViewer.expandToLevel(parentShape, 1);
 
-		// end-user-code
 	}
 }

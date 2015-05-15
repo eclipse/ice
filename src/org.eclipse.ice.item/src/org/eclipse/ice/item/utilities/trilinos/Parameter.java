@@ -19,52 +19,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class represents a Teuchos parameter. It is a simple data structure that
  * only holds data.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Parameter")
 public class Parameter {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the parameter.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	public String name;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The type of the parameter.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	public String type;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The value of the parameter.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	public String value;
@@ -77,7 +61,6 @@ public class Parameter {
 	private AllowedValueType allowedType = AllowedValueType.Continuous;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns this parameter as an ICE Entry. The name and value
 	 * are translated directly. The value of the parameter at the time of
@@ -88,16 +71,12 @@ public class Parameter {
 	 * has bounds of Double.POSITIVE_INFINITY and Double.NEGATIVE_INFINITY.
 	 * Arrays of all types have an AllowedValueType of Undefined.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The Entry.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Entry toEntry() {
-		// begin-user-code
 
 		// Determine the type - default to continuous
 		allowedType = AllowedValueType.Continuous;
@@ -134,11 +113,9 @@ public class Parameter {
 		entry.setId(1);
 
 		return entry;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation loads the Parameter from an Entry. It performs the inverse
 	 * of the toEntry() operation with the added restrictions that all Arrays
@@ -147,17 +124,13 @@ public class Parameter {
 	 * ." for an AllowedValueType of Continuous) have type double. All types of
 	 * Discrete are consider to be bool.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param entry
 	 *            <p>
 	 *            The Entry.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void fromEntry(Entry entry) {
-		// begin-user-code
 
 		// Only load if the Entry is not null
 		if (entry != null) {
@@ -180,6 +153,5 @@ public class Parameter {
 
 		return;
 
-		// end-user-code
 	}
 }

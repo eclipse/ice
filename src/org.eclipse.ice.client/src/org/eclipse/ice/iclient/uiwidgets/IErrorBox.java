@@ -13,36 +13,24 @@
 package org.eclipse.ice.iclient.uiwidgets;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>The IErrorBox interface describes the operations that ICE expects from a Widget that can report errors.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IErrorBox {
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation sets the error string that will be displayed by the ErrorBoxWidget.</p>
-	 * <!-- end-UML-doc -->
 	 * @param error <p>A string containing the error message that should be displayed.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setErrorString(String error);
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation retrieves the error string that is currently stored in the ErrorBoxWidget.</p>
-	 * <!-- end-UML-doc -->
 	 * @return <p>The error string.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getErrorString();
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation directs the IErrorBox to display its message. It must be implemented by subclasses that code to a specific UI API (SWT, Swing).</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void display();
 }

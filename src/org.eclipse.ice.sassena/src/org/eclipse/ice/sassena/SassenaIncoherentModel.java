@@ -50,9 +50,7 @@ public class SassenaIncoherentModel extends Item {
 	 * 
 	 */
 	public SassenaIncoherentModel() {
-		// begin-user-code
 		this(null);
-		// end-user-code
 	}
 
 	/**
@@ -64,12 +62,10 @@ public class SassenaIncoherentModel extends Item {
 	 *            which they should be retrieved.
 	 */
 	public SassenaIncoherentModel(IProject projectSpace) {
-		// begin-user-code
 
 		// Call super
 		super(projectSpace);
 
-		// end-user-code
 	}
 
 	/**
@@ -79,7 +75,6 @@ public class SassenaIncoherentModel extends Item {
 	 * 
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		// Create the Form
 		EMFComponent emfComp = null;
@@ -131,7 +126,6 @@ public class SassenaIncoherentModel extends Item {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -139,7 +133,6 @@ public class SassenaIncoherentModel extends Item {
 	 * 
 	 */
 	protected void setupItemInfo() {
-		// begin-user-code
 
 		// Local Declarations
 		String desc = "This item builds models based on a Sassena Incoherent schema.";
@@ -154,7 +147,6 @@ public class SassenaIncoherentModel extends Item {
 		allowedActions.add("Write to XML");
 
 		return;
-		// end-user-code
 	}
 
 	/**

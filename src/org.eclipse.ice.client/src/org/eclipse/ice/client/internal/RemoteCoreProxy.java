@@ -35,7 +35,6 @@ import javax.ws.rs.core.MediaType;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class acts as a proxy for a realization of ICore that is running on an
  * entirely different machine. It uses the Jersey Client to connect to the
@@ -58,57 +57,38 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
  * The exact mechanism by which the HTTPS connection is made and utilized is not
  * modeled here. It is sufficient to say that ICE 2.0 uses the Jersey Client.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class RemoteCoreProxy implements ICore {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The hostname of the server to which the proxy is connected.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String host = null;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The port on which the proxy is connected to the server.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int serverPort = -1;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The time in milliseconds that the proxy should spend on any given request
 	 * to the server.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int timeout = 60000;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The unique client id assigned to this proxy and its connection to the
 	 * server.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int clientId = -1;
 
@@ -128,120 +108,88 @@ public class RemoteCoreProxy implements ICore {
 	/** ----- **/
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public RemoteCoreProxy() {
-		// begin-user-code
 
 		// Create the client
 		client = new Client();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hostname of the server to which the core is
 	 * connected or, if it is not connected, it returns null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hostname
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getHost() {
-		// begin-user-code
 		return host;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the port number on which the the proxy has made
 	 * its connection or, if it is not connected, it returns -1.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The port number
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getPort() {
-		// begin-user-code
 		return serverPort;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the hostname of the server to which the
 	 * RemoteCoreProxy should connect.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param hostname
 	 *            <p>
 	 *            The hostname.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setHost(String hostname) {
-		// begin-user-code
 
 		if (hostname != null) {
 			host = "http://" + hostname;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the port on which the RemoteCoreProxy should connect.
 	 * The port is only set if it is greater than zero.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param port
 	 *            <p>
 	 *            The port number.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPort(int port) {
-		// begin-user-code
 
 		// Set the port only if it is greater than zero
 		if (port > 0) {
 			serverPort = port;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation connects to the ICE Core using Basic authentication over
 	 * HTTPS.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param username
 	 *            <p>
@@ -254,11 +202,8 @@ public class RemoteCoreProxy implements ICore {
 	 * @return <p>
 	 *         The client id as specified by ICore.connect().
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String connect(String username, String password) {
-		// begin-user-code
 
 		// Create a filter for the client that sets the authentication
 		// credentials
@@ -268,18 +213,14 @@ public class RemoteCoreProxy implements ICore {
 
 		// Connect as usual
 		return connect();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#connect()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String connect() {
-		// begin-user-code
 
 		// Only load the resource if the hostname is valid
 		if (host != null) {
@@ -296,88 +237,64 @@ public class RemoteCoreProxy implements ICore {
 		System.out.println("\tUnique Client Id: " + response);
 
 		return response;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#disconnect(int uniqueClientId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disconnect(int uniqueClientId) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getFileSystem(int uniqueClientID)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Form getFileSystem(int uniqueClientID) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#registerItem(ItemBuilder itemBuilder)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerItem(ItemBuilder itemBuilder) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#registerCompositeItem(ICompositeItemBuilder builder)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerCompositeItem(ICompositeItemBuilder builder) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#unregisterItem(ItemBuilder itemBuilder)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void unregisterItem(ItemBuilder itemBuilder) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#createItem(String itemType)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String createItem(String itemType) {
-		// begin-user-code
 
 		// Local Declarations
 		String id = null;
@@ -398,46 +315,34 @@ public class RemoteCoreProxy implements ICore {
 		System.out.println("RemoteCoreProxy Message: Item id = " + id);
 
 		return id;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#deleteItem(String itemId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void deleteItem(String itemId) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItemStatus(Integer id)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus getItemStatus(Integer id) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItem(int itemId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Form getItem(int itemId) {
-		// begin-user-code
 
 		// Local Declarations
 		Form itemForm = null;
@@ -455,18 +360,14 @@ public class RemoteCoreProxy implements ICore {
 		}
 
 		return itemForm;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getAvailableItemTypes()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEList<String> getAvailableItemTypes() {
-		// begin-user-code
 
 		// Local Declarations
 		ICEList<String> types = null;
@@ -483,92 +384,67 @@ public class RemoteCoreProxy implements ICore {
 				.header("X-FOO", "BAR").get(ICEList.class);
 
 		return types;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#updateItem(Form form, int uniqueClientId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus updateItem(Form form, int uniqueClientId) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#processItem(int itemId, String actionName, int uniqueClientId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus processItem(int itemId, String actionName,
 			int uniqueClientId) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItemList()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Identifiable> getItemList() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItemOutputFile(int id)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public File getItemOutputFile(int id) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#cancelItemProcess(int itemId, String actionName)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus cancelItemProcess(int itemId, String actionName) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#importFile(URI file)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void importFile(URI file) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	@Override

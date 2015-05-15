@@ -26,110 +26,76 @@ import org.eclipse.ice.kdd.kddmath.IDataMatrix;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class RadialPower extends GodfreySubStrategy {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private PinPowerDifference differences;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the radial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<KDDMatrix> radialPower;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the generated radial power for the pin power differences.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<KDDMatrix> radialPowerDiff;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the average radial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double radialPowerAverage;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the average radial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double radialPowerDiffAverage;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the RMS average radial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double radialPowerRMS;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the RMS radial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double radialPowerDiffRMS;
 
 	private boolean calculateDiffs;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param difference
 	 * @param pinPowers
 	 * @param refPinPowers
 	 * @param weights
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public RadialPower(PinPowerDifference difference,
 			HashMap<Integer, ArrayList<IDataMatrix>> pinPowers,
 			HashMap<Integer, ArrayList<IDataMatrix>> refPinPowers,
 			HashMap<Integer, ArrayList<KDDMatrix>> weights) {
-		// begin-user-code
 		super(pinPowers, refPinPowers, weights);
 		differences = difference;
 
@@ -143,24 +109,18 @@ public class RadialPower extends GodfreySubStrategy {
 			differences = difference;
 			calculateDiffs = true;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method allows subclasses to implement a unique clustering or anomaly
 	 * detection algorithm and produce a KDDAnalysisAsset for clients to display
 	 * and manipulate.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean executeStrategy() {
-		// begin-user-code
 		// Local Declarations
 		int nAxial = loadedPinPowers.get(0).size();
 		int nAssemblies = loadedPinPowers.size();
@@ -256,23 +216,17 @@ public class RadialPower extends GodfreySubStrategy {
 		}
 
 		return createAsset();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This abstract method is for subclasses to implement their specific
 	 * creation algorithms.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean createAsset() {
-		// begin-user-code
 
 		ArrayList<String> fileContents = new ArrayList<String>();
 		String line = "", contents = "";
@@ -371,108 +325,71 @@ public class RadialPower extends GodfreySubStrategy {
 		uri = file.getLocationURI();
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the radial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<KDDMatrix> getRadialPower() {
-		// begin-user-code
 		return radialPower;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the radial power pin power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<KDDMatrix> getRadialPowerDifference() {
-		// begin-user-code
 		return radialPowerDiff;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the average radial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getRadialPowerAverage() {
-		// begin-user-code
 		return radialPowerAverage;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the average radial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getRadialPowerDifferenceAverage() {
-		// begin-user-code
 		return radialPowerDiffAverage;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the RMS radial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getRadialPowerRMS() {
-		// begin-user-code
 		return radialPowerRMS;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the RMS radial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getRadialPowerDifferenceRMS() {
-		// begin-user-code
 		return radialPowerDiffRMS;
-		// end-user-code
 	}
 }

@@ -228,7 +228,6 @@ public class VibeLauncherBuilderTester {
 			fail();
 		}
 
-		// end-user-code
 	}
 	
 	/**

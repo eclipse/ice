@@ -22,30 +22,21 @@ import org.eclipse.ice.reactor.LWRData;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the operations on LWRData.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRDataTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the constructors and their default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		// Local Declarations
 		LWRData data;
 
@@ -106,22 +97,16 @@ public class LWRDataTester {
 															// erroneous feature
 															// passed
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the equals and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 		// Local Declarations
 		LWRData object, equalObject, unEqualObject, transitiveObject;
 		String units = "inches";
@@ -207,22 +192,16 @@ public class LWRDataTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone routines.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 		// Local declarations
 		LWRData object;
 		LWRData copyObject = new LWRData(), clonedObject;
@@ -263,22 +242,16 @@ public class LWRDataTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for position.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkPosition() {
-		// begin-user-code
 		// Local Declarations
 		LWRData data = new LWRData();
 		ArrayList<Double> position = new ArrayList<Double>();
@@ -323,22 +296,16 @@ public class LWRDataTester {
 		// Check value
 		assertEquals(position, data.getPosition()); // Same as 3 positions
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for value.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkValue() {
-		// begin-user-code
 		// Local Declarations
 		LWRData data = new LWRData();
 		double posValue = 30.0;
@@ -360,22 +327,16 @@ public class LWRDataTester {
 		// Check value
 		assertEquals(zeroValue, data.getValue(), 0.0);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for uncertainty.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUncertainty() {
-		// begin-user-code
 		// Local Declarations
 		LWRData data = new LWRData();
 		double posValue = 30.0;
@@ -396,22 +357,16 @@ public class LWRDataTester {
 		data.setUncertainty(zeroValue);
 		// Check value
 		assertEquals(zeroValue, data.getUncertainty(), 0.0);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for units.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUnits() {
-		// begin-user-code
 		// Local Declarations
 		LWRData data = new LWRData();
 
@@ -446,22 +401,16 @@ public class LWRDataTester {
 		// Check value - nothing changed
 		assertEquals(normalString, data.getUnits());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for feature.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFeature() {
-		// begin-user-code
 		// Local Declarations
 		LWRData data = new LWRData();
 
@@ -495,6 +444,5 @@ public class LWRDataTester {
 		data.setFeature(null);
 		// Check value - nothing changed
 		assertEquals(normalString, data.getFeature());
-		// end-user-code
 	}
 }

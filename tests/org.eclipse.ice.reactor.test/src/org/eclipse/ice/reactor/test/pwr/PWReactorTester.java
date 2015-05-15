@@ -48,15 +48,11 @@ import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the PWReactor class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 
 public class PWReactorTester {
@@ -64,24 +60,17 @@ public class PWReactorTester {
 	// the model or removed if it can be fixed for local machine
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the constructor and it's default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Local Declarations
 		PressurizedWaterReactor reactor;
@@ -119,22 +108,16 @@ public class PWReactorTester {
 		assertEquals(defaultId, reactor.getId());
 		assertEquals(type, reactor.getHDF5LWRTag());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the operations for the GridLabelProvider.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLabels() {
-		// begin-user-code
 		// Local Declarations
 		PressurizedWaterReactor reactor = null;
 		ArrayList<String> rowLabels = new ArrayList<String>();
@@ -193,23 +176,17 @@ public class PWReactorTester {
 		assertTrue(this.doLabelsMatchLabelsInReactor(true, rowLabels, reactor));
 		assertTrue(this.doLabelsMatchLabelsInReactor(false, colLabels, reactor));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter, setter, and adding of FuelAssemblies to
 	 * the PWReactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFuelAssembly() {
-		// begin-user-code
 
 		// Local Declarations
 		int reactorSize = 17;
@@ -414,23 +391,17 @@ public class PWReactorTester {
 				reactor.getAssemblyByLocation(AssemblyType.Fuel, rowLoc2,
 						colLoc2).getName());
 		assertEquals(2, reactor.getNumberOfAssemblies(AssemblyType.Fuel));
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter, setter, and adding of ControlBanks to
 	 * the PWReactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkControlBank() {
-		// begin-user-code
 		// Local Declarations
 		int reactorSize = 17;
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(
@@ -616,23 +587,17 @@ public class PWReactorTester {
 						rowLoc2, colLoc2).getName());
 		assertEquals(2, reactor.getNumberOfAssemblies(AssemblyType.ControlBank));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter, setter, and adding ofInCoreInstruments
 	 * to the PWReactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkInCoreInstrument() {
-		// begin-user-code
 		// Local Declarations
 		int reactorSize = 17;
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(
@@ -820,23 +785,17 @@ public class PWReactorTester {
 		assertEquals(2,
 				reactor.getNumberOfAssemblies(AssemblyType.IncoreInstrument));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter, setter, and adding of
 	 * RodClusterAssemblies to the PWReactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRodClusterAssembly() {
-		// begin-user-code
 		// Local Declarations
 		int reactorSize = 17;
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(
@@ -1022,23 +981,17 @@ public class PWReactorTester {
 						colLoc2).getName());
 		assertEquals(2, reactor.getNumberOfAssemblies(AssemblyType.RodCluster));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation demonstrates the behaviors listed with the overridden
 	 * composite implementations from LWRComposite.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCompositeImplementations() {
-		// begin-user-code
 		// Local Declarations
 		int reactorSize = 17;
 		PressurizedWaterReactor reactor;
@@ -1163,11 +1116,9 @@ public class PWReactorTester {
 		// No size change!
 		assertEquals(numberOfDefaultComponents, reactor.getNumberOfComponents());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This is a utility operation that checks the operations for the labels on
 	 * the reactor to see if they are equal to the passed labels. Keep in mind
@@ -1175,7 +1126,6 @@ public class PWReactorTester {
 	 * (true) or columns (false). Returns true if the labels are equal, false
 	 * otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param rows
 	 *            <p>
@@ -1192,12 +1142,9 @@ public class PWReactorTester {
 	 * @return <p>
 	 *         True if they are equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean doLabelsMatchLabelsInReactor(boolean rows,
 			ArrayList<String> labels, PressurizedWaterReactor reactor) {
-		// begin-user-code
 		int colCount = 0, rowCount = 0;
 
 		if (rows == false) {
@@ -1238,22 +1185,16 @@ public class PWReactorTester {
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks equals() and hashCode() operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		PressurizedWaterReactor object, equalObject, unEqualObject, transitiveObject;
@@ -1366,22 +1307,16 @@ public class PWReactorTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the copy and clone routines.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local Declarations
 		PressurizedWaterReactor object;
@@ -1427,22 +1362,16 @@ public class PWReactorTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 writing operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Writeables() {
-		// begin-user-code
 
 		// Local Declarations
 		int size = 5;
@@ -1779,23 +1708,17 @@ public class PWReactorTester {
 		// Delete the file once you are done
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the test.h5 file after the tests fails (to keep the workspace
 	 * clean).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@AfterClass
 	public static void afterClass() {
-		// begin-user-code
 
 		// Cleans up the datafile if it exists due to a failed test
 		File dataFile = new File(System.getProperty("user.dir")
@@ -1806,22 +1729,16 @@ public class PWReactorTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 readable operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Readables() {
-		// begin-user-code
 
 		// Local Declarations
 		int size = 5;
@@ -2097,22 +2014,16 @@ public class PWReactorTester {
 
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that checks the data providers by location.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkDataProviderLocations() {
-		// begin-user-code
 
 		// Local Declarations
 
@@ -2292,7 +2203,6 @@ public class PWReactorTester {
 		assertTrue(object.getAssemblyDataProviderAtLocation(
 				AssemblyType.IncoreInstrument, row1, col1).equals(provider));
 
-		// end-user-code
 	}
 
 }

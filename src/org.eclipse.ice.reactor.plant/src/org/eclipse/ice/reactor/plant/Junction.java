@@ -23,53 +23,37 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Base class for junction-like components that connect objects, such as pipes.
  * The class keeps track of what is an input and what is an output.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class Junction extends PlantComponent implements IJunction {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The inputs of this junction.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected final ArrayList<PlantComponent> inputs;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Outputs of this junction.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected final ArrayList<PlantComponent> outputs;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A list of coupled input-output pairs representing the connections of the
 	 * junction. Input-output pairs are based on component name.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected ArrayList<String> connections;
 
@@ -141,17 +125,12 @@ public class Junction extends PlantComponent implements IJunction {
 	};
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Junction() {
-		// begin-user-code
 		super();
 
 		// Initialize the input and output lists.
@@ -161,15 +140,12 @@ public class Junction extends PlantComponent implements IJunction {
 		// Initialize the list of listeners.
 		listeners = new ArrayList<IJunctionListener>();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param inputs
 	 *            <p>
@@ -184,12 +160,9 @@ public class Junction extends PlantComponent implements IJunction {
 	 *            A list of coupled input-output pairs representing the
 	 *            connections of the junction.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Junction(ArrayList<PlantComponent> ins,
 			ArrayList<PlantComponent> outs, ArrayList<String> conns) {
-		// begin-user-code
 		this();
 
 		// If the ins list is not null, add all non-null components from the ins
@@ -215,28 +188,20 @@ public class Junction extends PlantComponent implements IJunction {
 		}
 
 		connections = null;
-		// end-user-code
 	}
 
 	/**
 	 * @return the inputs
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<PlantComponent> getInputs() {
-		// begin-user-code
 		return new ArrayList<PlantComponent>(inputs);
-		// end-user-code
 	}
 
 	/**
 	 * @param inputs
 	 *            the inputs to set
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setInputs(ArrayList<PlantComponent> ins) {
-		// begin-user-code
 
 		if (ins != null) {
 
@@ -271,28 +236,20 @@ public class Junction extends PlantComponent implements IJunction {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * @return the outputs
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<PlantComponent> getOutputs() {
-		// begin-user-code
 		return new ArrayList<PlantComponent>(outputs);
-		// end-user-code
 	}
 
 	/**
 	 * @param outputs
 	 *            the outputs to set
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setOutputs(ArrayList<PlantComponent> outs) {
-		// begin-user-code
 
 		if (outs != null) {
 
@@ -328,38 +285,27 @@ public class Junction extends PlantComponent implements IJunction {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * @return the connections
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getConnections() {
-		// begin-user-code
 		return connections;
-		// end-user-code
 	}
 
 	/**
 	 * @param connections
 	 *            the connections to set
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setConnections(ArrayList<String> connections) {
-		// begin-user-code
 		this.connections = connections;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs an equality check between two Objects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -368,11 +314,8 @@ public class Junction extends PlantComponent implements IJunction {
 	 * @return <p>
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, assume the objects are not equivalent.
 		boolean equals = false;
@@ -392,46 +335,34 @@ public class Junction extends PlantComponent implements IJunction {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs a deep copy and returns a newly instantiated Object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 		Junction temp = new Junction();
 		temp.copy(this);
 		return temp;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of otherObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The other object to copy the contents from.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(Junction otherObject) {
-		// begin-user-code
 
 		// Make sure other is not null
 		if (otherObject == null) {
@@ -460,57 +391,43 @@ public class Junction extends PlantComponent implements IJunction {
 		notifyListeners();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashCode of the Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 		int hash = super.hashCode();
 		hash = 31 * hash + inputs.hashCode();
 		hash = 31 * hash + outputs.hashCode();
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Accepts PlantComponentVisitors to reveal the type of a PlantComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The PlantComponent's visitor.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(IPlantComponentVisitor visitor) {
-		// begin-user-code
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 		return;
-		// end-user-code
 	}
 
 	// ---- Implements IJunction ---- //
 	public void registerJunctionListener(IJunctionListener listener) {
-		// begin-user-code
 
 		if (listener != null) {
 
@@ -527,11 +444,9 @@ public class Junction extends PlantComponent implements IJunction {
 			}
 		}
 		return;
-		// end-user-code
 	}
 
 	public void unregisterJunctionListener(IJunctionListener listener) {
-		// begin-user-code
 
 		boolean found = false;
 
@@ -546,12 +461,10 @@ public class Junction extends PlantComponent implements IJunction {
 			listeners.remove(i - 1);
 		}
 		return;
-		// end-user-code
 	}
 
 	public void notifyJunctionListeners(final List<PlantComponent> components,
 			final boolean added) {
-		// begin-user-code
 
 		if (components != null && !components.isEmpty()) {
 			// Create a thread to notify IJunctionListeners that pipes were
@@ -574,11 +487,9 @@ public class Junction extends PlantComponent implements IJunction {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	public boolean isInput(PlantComponent component) {
-		// begin-user-code
 
 		boolean found = false;
 
@@ -588,11 +499,9 @@ public class Junction extends PlantComponent implements IJunction {
 			found = (component == inputs.get(i));
 		}
 		return found;
-		// end-user-code
 	}
 
 	public void addInput(PlantComponent input) {
-		// begin-user-code
 
 		if (input != null) {
 			int size = inputs.size();
@@ -613,11 +522,9 @@ public class Junction extends PlantComponent implements IJunction {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	public void removeInput(PlantComponent input) {
-		// begin-user-code
 
 		if (input != null) {
 
@@ -644,11 +551,9 @@ public class Junction extends PlantComponent implements IJunction {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	public void addOutput(PlantComponent output) {
-		// begin-user-code
 
 		if (output != null) {
 			int size = outputs.size();
@@ -669,11 +574,9 @@ public class Junction extends PlantComponent implements IJunction {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	public void removeOutput(PlantComponent output) {
-		// begin-user-code
 
 		if (output != null) {
 
@@ -700,7 +603,6 @@ public class Junction extends PlantComponent implements IJunction {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	// ------------------------------ //

@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Stores the information needed to generate a 4D affine transformation matrix
  * given certain transformation variables
@@ -34,95 +33,67 @@ import javax.xml.bind.annotation.XmlRootElement;
  * The matrix transformations are applied in the following order: skew, size,
  * scale, rotation, and translation
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Transformation")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Transformation extends ICEObject {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The amount of skew for each of the three axes: x, y, and z
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Skew")
 	@XmlList
 	private double[] skew = new double[3];
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Defines the amount of uniform scale for all three dimensions
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Size")
 	private double size;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Defines the scaling factors in each of the three dimensions: x, y, and z
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Scale")
 	@XmlList
 	private double[] scale = new double[3];
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Defines the rotation in radians along the x, y, and z axes passing
 	 * through the origin
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Rotation")
 	@XmlList
 	private double[] rotation = new double[3];
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Defines the translation along each of the three dimensions: x, y, and z
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Translation")
 	@XmlList
 	private double[] translation = new double[3];
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Upon creation, the Transformation should set its skew values to 0, sizes
 	 * to 1, scale to 1, rotations to 0, and translation to 0. The resultant
 	 * transformation matrix should be the 4x4 identity matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Transformation() {
-		// begin-user-code
 
 		// Set initial transformation variables
 
@@ -131,110 +102,77 @@ public class Transformation extends ICEObject {
 		scale[1] = 1.0;
 		scale[2] = 1.0;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an array of the 3 skew values
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The skew values
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double[] getSkew() {
-		// begin-user-code
 		return skew;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the size factor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The size value
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getSize() {
-		// begin-user-code
 		return size;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an array of the 3 scale values
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The scale values
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double[] getScale() {
-		// begin-user-code
 		return scale;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an array of the 3 rotation values
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The rotation values
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double[] getRotation() {
-		// begin-user-code
 		return rotation;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an array of the 3 translation values
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The translation values
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double[] getTranslation() {
-		// begin-user-code
 		return translation;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the skew values to the three given parameters
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param x
 	 *            <p>
@@ -248,43 +186,31 @@ public class Transformation extends ICEObject {
 	 *            <p>
 	 *            The skew on the z-axis
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setSkew(double x, double y, double z) {
-		// begin-user-code
 		skew[0] = x;
 		skew[1] = y;
 		skew[2] = z;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the size value to the given parameter
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param size
 	 *            <p>
 	 *            The size scaling factor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setSize(double size) {
-		// begin-user-code
 		this.size = size;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the scale values to the three given parameters
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param x
 	 *            <p>
@@ -298,23 +224,17 @@ public class Transformation extends ICEObject {
 	 *            <p>
 	 *            The scale on the z-axis
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setScale(double x, double y, double z) {
-		// begin-user-code
 		scale[0] = x;
 		scale[1] = y;
 		scale[2] = z;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the rotation values to the three given parameters
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param xAxis
 	 *            <p>
@@ -328,23 +248,17 @@ public class Transformation extends ICEObject {
 	 *            <p>
 	 *            The rotation on the z-axis through the origin
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setRotation(double xAxis, double yAxis, double zAxis) {
-		// begin-user-code
 		rotation[0] = xAxis;
 		rotation[1] = yAxis;
 		rotation[2] = zAxis;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the translation values to the three given parameters
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param x
 	 *            <p>
@@ -358,35 +272,26 @@ public class Transformation extends ICEObject {
 	 *            <p>
 	 *            The translation on the z-axis
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setTranslation(double x, double y, double z) {
-		// begin-user-code
 		translation[0] = x;
 		translation[1] = y;
 		translation[2] = z;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Applies an additional translation to the existing transformation
 	 * variables
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param translation
 	 *            <p>
 	 *            An array of three doubles to add to the existing translation
 	 *            values
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void translate(double[] translation) {
-		// begin-user-code
 
 		// Don't do anything if the translation array has less or greater
 		// than 3 elements
@@ -398,15 +303,12 @@ public class Transformation extends ICEObject {
 			this.translation[i] += translation[i];
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the flat array of elements in the matrix
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         Flat list of elements in the array
@@ -416,34 +318,25 @@ public class Transformation extends ICEObject {
 	 *         one-dimensional array. The ith row and the jth column can be
 	 *         accessed as index i * 4 + j in the flat array.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double[] getMatrixArray() {
-		// begin-user-code
 
 		// TODO Implement transformation-to-matrix conversion
 
 		return null;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hashcode value of the Transformation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashcode of the ICEObject.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declaration
 		int hash = 1;
@@ -460,17 +353,14 @@ public class Transformation extends ICEObject {
 
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this Transformation and
 	 * another Transformation. It returns true if the Transformations are equal
 	 * and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -479,11 +369,8 @@ public class Transformation extends ICEObject {
 	 * @return <p>
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Check if they are the same reference in memory
 		if (this == otherObject) {
@@ -509,26 +396,20 @@ public class Transformation extends ICEObject {
 				&& Arrays.equals(this.rotation, other.rotation) && Arrays
 					.equals(this.translation, other.translation));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Copies the contents of a Transformation into the current object using a
 	 * deep copy
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iceObject
 	 *            <p>
 	 *            The ICEObject from which the values should be copied
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(Transformation iceObject) {
-		// begin-user-code
 
 		// Return if object is null
 		if (iceObject == null) {
@@ -544,24 +425,18 @@ public class Transformation extends ICEObject {
 		this.rotation = iceObject.rotation.clone();
 		this.translation = iceObject.translation.clone();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a clone of the Transformation using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Create a new Transformation and copy the current object's data
 
@@ -569,7 +444,6 @@ public class Transformation extends ICEObject {
 		transformation.copy(this);
 		return transformation;
 
-		// end-user-code
 	}
 
 	/**

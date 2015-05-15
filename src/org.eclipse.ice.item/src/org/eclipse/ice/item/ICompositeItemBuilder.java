@@ -15,7 +15,6 @@ package org.eclipse.ice.item;
 import java.util.ArrayList;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class builds Items that depend on other Items. These "composite Items"
  * are themselves subclasses of Item, but they require functionality implemented
@@ -23,22 +22,17 @@ import java.util.ArrayList;
  * return null if the list of other ItemBuilders has not be set by calling
  * ICompositeItemBuilder.addBuilders().
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface ICompositeItemBuilder extends ItemBuilder {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the list of ItemBuilders that may be used by the
 	 * composite Item to construct its children. This operation should be called
 	 * before ICompositeItemBuilder.build().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param itemBuilders
 	 *            <p>
@@ -46,8 +40,6 @@ public interface ICompositeItemBuilder extends ItemBuilder {
 	 *            ItemBuilders. If it does not, then building a composite Item
 	 *            with this builder must fail.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addBuilders(ArrayList<ItemBuilder> itemBuilders);
 }

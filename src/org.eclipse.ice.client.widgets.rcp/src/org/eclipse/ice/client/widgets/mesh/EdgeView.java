@@ -17,15 +17,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.shape.Line;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class provides a basic view for an Edge, i.e., a line on the grid.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EdgeView extends AbstractMeshView {
 
@@ -35,17 +31,12 @@ public class EdgeView extends AbstractMeshView {
 	private Line line;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public EdgeView(String name, Material material) {
-		// begin-user-code
 		super(name, material);
 
 		// Create a Line mesh for the Geometry.
@@ -54,7 +45,6 @@ public class EdgeView extends AbstractMeshView {
 		geometry.setMesh(line);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -66,12 +56,10 @@ public class EdgeView extends AbstractMeshView {
 	 *            The end of the Edge.
 	 */
 	public void setLine(Vector3f start, Vector3f end) {
-		// begin-user-code
 
 		line.updatePoints(start, end);
 
 		return;
-		// end-user-code
 	}
 
 	// TODO Add to model.
@@ -86,13 +74,11 @@ public class EdgeView extends AbstractMeshView {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this VertexController
 	 * and another VertexController. It returns true if the objects are equal
 	 * and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -101,75 +87,53 @@ public class EdgeView extends AbstractMeshView {
 	 * @return <p>
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return false;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the VertexController.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashcode of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return 0;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a VertexController into the current
 	 * object using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param view
 	 *            <p>
 	 *            The object from which the values should be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(EdgeView view) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the VertexController using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 }

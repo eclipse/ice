@@ -36,38 +36,26 @@ import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PipeTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Boolean flag to mark if the component was successfully visited.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean wasVisited = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the construction of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		/* ---- Check nullary constructor ---- */
 
@@ -104,22 +92,16 @@ public class PipeTester {
 		// in construction will throw InvalidParameterExceptions.
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the getting and setting of the component's attributes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkProperties() {
-		// begin-user-code
 
 		// Create a new component.
 		Pipe component = new Pipe();
@@ -136,22 +118,16 @@ public class PipeTester {
 		// We don't need to check with invalid parameters as the setters will
 		// throw InvalidParameterExceptions.
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the hashCode and equality methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Construct a component to test against.
 		Pipe component = new Pipe();
@@ -214,22 +190,16 @@ public class PipeTester {
 		assertFalse(component.hashCode() == unequalComponent.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Construct a base component to copy from.
 		Pipe component = new Pipe();
@@ -288,7 +258,6 @@ public class PipeTester {
 		assertTrue(component.equals(componentClone));
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -334,22 +303,16 @@ public class PipeTester {
 		assertTrue(writeComponent.equals(loadComponent));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// Create a new component to visit.
 		Pipe component = new Pipe();
@@ -402,15 +365,12 @@ public class PipeTester {
 		assertTrue(component.equals(visitorPlantComponent));
 		
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @author w5q
 	 */

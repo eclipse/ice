@@ -17,99 +17,65 @@ import org.eclipse.swt.dnd.DropTargetEffect;
 import org.eclipse.swt.dnd.DropTargetEvent;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Handles the drop actions of the ShapeTreeViewer when the user releases the
  * mouse button on a tree item
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ShapeTreeDropListener {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param event
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void dragEnter(Class event) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param event
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void dragLeave(Class event) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param event
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void dragOperationChanged(Class event) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param event
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void dragOver(Class event) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param event
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void drop(Class event) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param event
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void dropAccept(Class event) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 }

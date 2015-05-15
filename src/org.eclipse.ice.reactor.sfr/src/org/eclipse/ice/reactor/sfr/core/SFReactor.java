@@ -23,92 +23,63 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Class represents a sodium fast reactor at the highest core-level view.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SFReactor extends SFRComposite {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Number of assemblies in the reactor core.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int size;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Shortest distance between centers of adjacent assemblies.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double latticePitch;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The physical size of assemblies within the SFR core; all assemblies are
 	 * assumed to be the same size. Defined as the distance from one flat outer
 	 * duct surface to the outer surface parallel to it.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double outerFlatToFlat;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The map of assembly composites, keyed by AssemblyType, that represent the
 	 * collections of the different assemblies in this reactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<AssemblyType, SFRComposite> assemblyComposites;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The map of GridManagers, keyed by AssemblyType, that manage the locations
 	 * of assemblies within a reactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<AssemblyType, GridManager> assemblyManagers;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor with reactor size (number of assemblies)
 	 * specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param size
 	 *            Size of the reactor (number of assemblies).
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFReactor(int size) {
-		// begin-user-code
 
 		// Store the size, but it must be a positive number.
 		this.size = (size > 0 ? size : 1);
@@ -160,188 +131,134 @@ public class SFReactor extends SFRComposite {
 		/* ------------------------------------------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the size (number of assemblies) of the reactor core.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return Size of the reactor (number of assemblies).
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getSize() {
-		// begin-user-code
 		return size;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the lattice pitch.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param latticePitch
 	 *            The lattice pitch of the reactor. Must be positive.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setLatticePitch(double latticePitch) {
-		// begin-user-code
 
 		// Only allow positive lattice pitch.
 		if (latticePitch > 0.0) {
 			this.latticePitch = latticePitch;
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the lattice pitch (shortest distance between centers of adjacent
 	 * assemblies) as a double.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The lattice pitch of the reactor.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getLatticePitch() {
-		// begin-user-code
 		return latticePitch;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the outer flat-to-flat distance.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param outerFlatToFlat
 	 *            The outer flat-to-flat distance. Must be positive.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setOuterFlatToFlat(double outerFlatToFlat) {
-		// begin-user-code
 
 		// Only allow outer flat-to-flat.
 		if (outerFlatToFlat > 0.0) {
 			this.outerFlatToFlat = outerFlatToFlat;
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the outer flat-to-flat distance as a double.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The outer flat-to-flat distance.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getOuterFlatToFlat() {
-		// begin-user-code
 		return outerFlatToFlat;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that overrides the SFRComposite's operation. This operation
 	 * does nothing and requires that the appropriate, more defined, associated
 	 * operation to be utilized on this class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param child
 	 *            The Component that should be added to the Composite.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public void addComponent(Component child) {
-		// begin-user-code
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that overrides the SFRComposite's operation. This operation
 	 * does nothing and requires that the appropriate, more defined, associated
 	 * operation to be utilized on this class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param childId
 	 *            The ID of the child Component to remove.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public void removeComponent(int childId) {
-		// begin-user-code
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that overrides the SFRComposite's operation. This operation
 	 * does nothing and requires that the appropriate, more defined, associated
 	 * operation to be utilized on this class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            The name of the child Component to remove.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public void removeComponent(String name) {
-		// begin-user-code
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds the specified assembly to the reactor core; returns true if the
 	 * operation was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            The AssemblyType of assembly being added.
 	 * @param assembly
 	 *            The assembly being added to the reactor.
 	 * @return Returns true if the operation was successful, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean addAssembly(AssemblyType type, SFRAssembly assembly) {
-		// begin-user-code
 
 		// Set the default initial status.
 		boolean success = false;
@@ -365,27 +282,21 @@ public class SFReactor extends SFRComposite {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the specified assembly from the reactor core; returns true if the
 	 * operation was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            The AssemblyType of the assembly being removed.
 	 * @param name
 	 *            The name of the assembly being removed.
 	 * @return Returns true if the operation was successful, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeAssembly(AssemblyType type, String name) {
-		// begin-user-code
 
 		// Set the default initial status.
 		boolean success = false;
@@ -410,16 +321,13 @@ public class SFReactor extends SFRComposite {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the assembly of AssemblyType, from the specified (x, y) location;
 	 * returns true if the operation was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            The AssemblyType of the assembly being removed.
@@ -430,12 +338,9 @@ public class SFReactor extends SFRComposite {
 	 *            The column in which the assembly to be removed is found in the
 	 *            AssemblyType's GridManager.
 	 * @return Returns true if the operation was successful, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeAssemblyFromLocation(AssemblyType type, int row,
 			int column) {
-		// begin-user-code
 
 		// Set the default initial status.
 		boolean success = false;
@@ -451,25 +356,19 @@ public class SFReactor extends SFRComposite {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the number of assemblies of AssemblyType in the reactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            The AssemblyType being searched for.
 	 * @return Returns the number of assemblies, of AssemblyType, contained in
 	 *         the reactor.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfAssemblies(AssemblyType type) {
-		// begin-user-code
 
 		// Initialize the number of assemblies we have.
 		int numberOfAssemblies = 0;
@@ -482,26 +381,20 @@ public class SFReactor extends SFRComposite {
 		}
 
 		return numberOfAssemblies;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a string ArrayList of the names of all assemblies of the
 	 * specified type.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            The AssemblyType being searched for.
 	 * @return An ArrayList of Strings containing names of all AssemblyType
 	 *         assemblies in the reactor.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getAssemblyNames(AssemblyType type) {
-		// begin-user-code
 
 		// Initialize a List of assembly names.
 		ArrayList<String> assemblyNames;
@@ -516,15 +409,12 @@ public class SFReactor extends SFRComposite {
 		}
 
 		return assemblyNames;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the assembly of the specified type and name.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            The AssemblyType of the assembly being searched for.
@@ -532,11 +422,8 @@ public class SFReactor extends SFRComposite {
 	 *            The name of the assembly being searched for.
 	 * @return The Component with the specified name and type. If no match was
 	 *         found, returns a null assembly.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRComponent getAssemblyByName(AssemblyType type, String name) {
-		// begin-user-code
 
 		// Set the default return value.
 		SFRComponent component = null;
@@ -547,16 +434,13 @@ public class SFReactor extends SFRComposite {
 			component = assemblyComposites.get(type).getComponent(name);
 		}
 		return component;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the assembly of AssemblyType, at the specified (x, y)
 	 * coordinates.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            The AssemblyType being searched for.
@@ -566,12 +450,9 @@ public class SFReactor extends SFRComposite {
 	 *            The column of the assembly in the AssemblyType GridManager.
 	 * @return Returns the Component in the specified location or null if one
 	 *         could not be found satisfying the arguments.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRComponent getAssemblyByLocation(AssemblyType type, int row,
 			int column) {
-		// begin-user-code
 
 		// Set the default return value.
 		SFRComponent component = null;
@@ -590,16 +471,13 @@ public class SFReactor extends SFRComposite {
 		}
 
 		return component;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds an assembly of the specified type and name to the reactor in the
 	 * specified location.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            The type of assembly that will be added.
@@ -612,12 +490,9 @@ public class SFReactor extends SFRComposite {
 	 *            The column in which to put the assembly.
 	 * @return Returns whether or not the assembly location was successfully
 	 *         set.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setAssemblyLocation(AssemblyType type, String name, int row,
 			int column) {
-		// begin-user-code
 
 		boolean success = false;
 
@@ -633,16 +508,13 @@ public class SFReactor extends SFRComposite {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an ArrayList of locations within the reactor that are occupied by
 	 * the assembly matching the specified type and name.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            The assembly type (fuel, control, reflector) of the assembly
@@ -651,12 +523,9 @@ public class SFReactor extends SFRComposite {
 	 *            The name of the assembly being searched for.
 	 * @return Returns an ArrayList of the locations the specified assembly
 	 *         occupies. If no match was found, returns an empty ArrayList.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Integer> getAssemblyLocations(AssemblyType type,
 			String name) {
-		// begin-user-code
 
 		// We need to return a List of Integers representing assembly locations.
 		ArrayList<Integer> locations;
@@ -676,26 +545,20 @@ public class SFReactor extends SFRComposite {
 		}
 
 		return locations;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The object to be compared against.
 	 * @return True if otherObject is equal. False otherwise.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -719,22 +582,16 @@ public class SFReactor extends SFRComposite {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hashcode of the object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based on super's hashCode.
 		int hash = super.hashCode();
@@ -747,23 +604,17 @@ public class SFReactor extends SFRComposite {
 		hash += 31 * assemblyComposites.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The object to be copied from.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(SFReactor otherObject) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (otherObject == null) {
@@ -782,22 +633,16 @@ public class SFReactor extends SFRComposite {
 		assemblyComposites.putAll(otherObject.assemblyComposites);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The newly instantiated copied object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		SFReactor object = new SFReactor(size);
@@ -807,7 +652,6 @@ public class SFReactor extends SFRComposite {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
@@ -816,13 +660,11 @@ public class SFReactor extends SFRComposite {
 	 */
 	@Override
 	public void accept(ISFRComponentVisitor visitor) {
-		// begin-user-code
 
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 		return;
-		// end-user-code
 	}
 
 }

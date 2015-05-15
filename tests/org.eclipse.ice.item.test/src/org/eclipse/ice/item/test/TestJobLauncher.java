@@ -18,17 +18,13 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class inherits from JobLauncher and sets the test executable to the "ls"
  * command. It is only used for testing and for setting this executable command
  * name. Everything else is handled by the JobLauncher.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class TestJobLauncher extends JobLauncher {
 
@@ -53,7 +49,6 @@ public class TestJobLauncher extends JobLauncher {
 	 */
 	@Override
 	protected void setupForm() {
-		// begin-user-code
 
 		// Setup the Form
 		super.setupForm();
@@ -65,7 +60,6 @@ public class TestJobLauncher extends JobLauncher {
 		addHost("notlocalhost", "linux", "/bin");
 
 		return;
-		// end-user-code
 	}
 
 	/**

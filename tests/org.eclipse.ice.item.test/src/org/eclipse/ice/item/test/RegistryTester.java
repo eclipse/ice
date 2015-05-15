@@ -23,40 +23,31 @@ import org.eclipse.ice.item.Registry;
 import org.junit.*;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The RegistryTester is responsible for testing the Registry class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
  */
 public class RegistryTester {
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 */
 	private Registry registry;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeDataComponent fakeDataComponent;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the Registry class by checking that values can be
 	 * set and retrieved and check for existence.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkValues() {
-		// begin-user-code
 
 		// Some keys and values
 		String key1 = "Stone Temple Pilots", value1 = "Dead & Bloated";
@@ -86,20 +77,16 @@ public class RegistryTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the Registry class by insuring that Entries can be
 	 * registered against keys.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkRegistration() {
-		// begin-user-code
 		// A key and a value
 		String key = "Seether";
 
@@ -121,20 +108,16 @@ public class RegistryTester {
 		// Make sure the Registry contains the key
 		assertTrue(registry.containsKey(key));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Registry class by checking that it will
 	 * properly update Entries.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void testDispatching() {
-		// begin-user-code
 		// A key and a value
 		String key = "Disturbed";
 		String value = "Prayer";
@@ -163,6 +146,5 @@ public class RegistryTester {
 		// Check the values of the entries and make sure they were set
 		assertEquals(value, dc1.getUpdatedValue());
 		assertEquals(value, dc2.getUpdatedValue());
-		// end-user-code
 	}
 }

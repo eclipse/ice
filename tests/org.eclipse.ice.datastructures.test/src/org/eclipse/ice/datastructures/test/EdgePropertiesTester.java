@@ -33,32 +33,23 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the EdgeProperties class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EdgePropertiesTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the ability to set and get fluid boundary conditions
 	 * for an EdgeProperties instance.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFluidBoundaryCondition() {
-		// begin-user-code
 
 		EdgeProperties properties = new EdgeProperties();
 
@@ -93,23 +84,17 @@ public class EdgePropertiesTester {
 		/* ------------------------------------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the ability to set and get thermal boundary
 	 * conditions for an EdgeProperties instance.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkThermalBoundaryCondition() {
-		// begin-user-code
 
 		EdgeProperties properties = new EdgeProperties();
 
@@ -144,23 +129,17 @@ public class EdgePropertiesTester {
 		/* ------------------------------------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the ability to set and get passive scalar boundary
 	 * conditions for an EdgeProperties instance.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkOtherBoundaryConditions() {
-		// begin-user-code
 
 		EdgeProperties properties = new EdgeProperties();
 
@@ -252,26 +231,20 @@ public class EdgePropertiesTester {
 		/* --------------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the EdgeProperties instance to
 	 * persist itself to XML and to load itself from an XML input stream.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * @throws IOException 
 	 * @throws JAXBException 
 	 * @throws NullPointerException 
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
-		// begin-user-code
 
 		// Create an object to test.
 		EdgeProperties properties = new EdgeProperties();
@@ -301,23 +274,17 @@ public class EdgePropertiesTester {
 		assertTrue(properties.equals(loadedProperties));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the EdgeProperties to insure that its equals() and
 	 * hashCode() operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		EdgeProperties object = new EdgeProperties();
@@ -364,23 +331,17 @@ public class EdgePropertiesTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the EdgeProperties to ensure that its copy() and
 	 * clone() operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Create a EdgeProperties to test.
 		EdgeProperties object = new EdgeProperties();
@@ -420,6 +381,5 @@ public class EdgePropertiesTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

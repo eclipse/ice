@@ -44,7 +44,6 @@ public class ReflectivityModelTester implements IMaterialsDatabase {
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Local Declarations
 		int listID = 1;

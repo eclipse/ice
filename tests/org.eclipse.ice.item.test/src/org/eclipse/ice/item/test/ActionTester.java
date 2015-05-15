@@ -19,40 +19,28 @@ import org.junit.Test;
 import org.eclipse.ice.datastructures.form.Form;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ActionTester is responsible for testing Actions.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ActionTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TestAction testAction;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Action accessors for Forms using a FakeAction.
 	 * It only tests the getForm and submitForm() operations, which are
 	 * implemented by Action, not FakeAction.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFormAccessors() {
-		// begin-user-code
 
 		// Local Declarations
 		Form returnedForm = null, updatedForm = new Form(), secondReturnedForm = null;
@@ -74,6 +62,5 @@ public class ActionTester {
 		assertEquals(updatedForm.getName(), secondReturnedForm.getName());
 
 		return;
-		// end-user-code
 	}
 }

@@ -28,80 +28,55 @@ import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The class tests the KDDAnalysisDocument.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class KDDAnalysisDocumentTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the KDDAnalysisDocument to unit test.
 	 * </p>
 	 * 
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private KDDAnalysisDocument document;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to a fake KDDStrategyFactory to inject into KDDAnalysisDocument
 	 * for purposes of unit testing.
 	 * </p>
 	 * 
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeStrategyFactory fakeStrategyFactory;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to some fake data to be analyzed
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDataProvider dataProvider;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to some fake reference data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDataProvider refProvider;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * checks the constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void beforeClass() {
-		// begin-user-code
 		fakeStrategyFactory = new FakeStrategyFactory();
 		document = new KDDAnalysisDocument(fakeStrategyFactory);
 		dataProvider = new SimpleDataProvider();
@@ -119,23 +94,17 @@ public class KDDAnalysisDocumentTester {
 		((SimpleDataProvider) dataProvider).addData(dataList, "feature");
 		((SimpleDataProvider) refProvider).addData(dataList, "feature");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Test that the data can be loaded correctly and that the correct assets
 	 * are set as available.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadData() {
-		// begin-user-code
 
 		// Make sure we don't accept null data
 		assertFalse(document.loadData((IDataProvider) null));
@@ -171,22 +140,16 @@ public class KDDAnalysisDocumentTester {
 		assertTrue(availableAssets
 				.contains("Anomaly Detection - Local Outlier Factor"));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Check that we can get and set the selected assets.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetSetSelectedAssets() {
-		// begin-user-code
 
 		// Local Declaration
 		ArrayList<String> selected = new ArrayList<String>();
@@ -235,22 +198,16 @@ public class KDDAnalysisDocumentTester {
 		assertFalse(document.getSelectedAssets().contains(available.get(5)));
 		assertFalse(document.getSelectedAssets().contains(available.get(6)));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Check that we can create all the user's selected assets.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreateSelectedAssets() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> selected = new ArrayList<String>();
@@ -281,6 +238,5 @@ public class KDDAnalysisDocumentTester {
 		assertNotNull(assets);
 		assertEquals(3, assets.size());
 
-		// end-user-code
 	}
 }

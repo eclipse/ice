@@ -51,7 +51,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ReactorAnalyzer class is the primary class in ICE for analyzing data
  * produced as part of a reactor simulation.
@@ -77,72 +76,49 @@ import org.eclipse.core.runtime.IPath;
  * The ResourceComponent is monitored for changes and the artifacts are updated
  * on the fly. The ResourceComponent is named "Analysis Artifacts" and has id=2.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "ReactorAnalyzer")
 public class ReactorAnalyzer extends Item implements Runnable {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of IAnalysisTools available to the ReactorAnalyzer. If this list
 	 * does not contain any tools, the ReactorAnalyzer can not perform any
 	 * analysis operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IAnalysisTool> analysisTools;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A reference to the IAnalysisDocuments used by the ReactorAnalyzer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IAnalysisDocument> analysisDocuments;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An AtomicReference to the status to keep the thread from messing things
 	 * up.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicReference<FormStatus> concurrentStatus;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An AtomicReference to the Form used for processing on the thread.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicReference<Form> concurrentForm;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of file extensions supported by the ReactorAnalyzer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<String> extensions;
 
@@ -202,21 +178,16 @@ public class ReactorAnalyzer extends Item implements Runnable {
 	private IReactorComponent referenceReactorComponent = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
 	 *            <p>
 	 *            The Eclipse project used by the ReactorAnalyzer.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ReactorAnalyzer(IProject projectSpace) {
-		// begin-user-code
 
 		// Call super's constructor
 		super(projectSpace);
@@ -230,70 +201,52 @@ public class ReactorAnalyzer extends Item implements Runnable {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An alternative nullary constructor used primarily for serialization. The
 	 * setProject() operation must be called if this constructor is used!
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ReactorAnalyzer() {
-		// begin-user-code
 
 		// Punt to the other constructor.
 		this(null);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the IAnalysisTools that are available to the
 	 * ReactorAnalyzer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param tools
 	 *            <p>
 	 *            The set of IAnalysisTools.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setAnalysisTools(ArrayList<IAnalysisTool> tools) {
-		// begin-user-code
 
 		// Only overwrite the tools if
 		if (tools != null) {
 			analysisTools = tools;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides the default setupForm() operation on Item and
 	 * creates a Form for the ReactorAnalyzer according to the specification on
 	 * the class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	protected void setupForm() {
-		// begin-user-code
 
 		// Set the name
 		setName("Reactor Analyzer");
@@ -402,11 +355,9 @@ public class ReactorAnalyzer extends Item implements Runnable {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides Item.reviewEntries() to customize the review
 	 * process for the ReactorAnalyzer. It is primarily concerned with changes
@@ -414,7 +365,6 @@ public class ReactorAnalyzer extends Item implements Runnable {
 	 * of the analysis artifacts. It delegates most of its work to the check*()
 	 * set of operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
 	 *            <p>
@@ -423,11 +373,8 @@ public class ReactorAnalyzer extends Item implements Runnable {
 	 * @return <p>
 	 *         The status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected FormStatus reviewEntries(Form preparedForm) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus reviewStatus = FormStatus.InfoError;
@@ -452,18 +399,15 @@ public class ReactorAnalyzer extends Item implements Runnable {
 		}
 
 		return reviewStatus;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the data source on the Form to determine if it has
 	 * been set or changed from the previous value. If the value has changed
 	 * (either case), then the MasterDetailsComponent is reconfigured to contain
 	 * the proper list of available analysis types for the new data source.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param source
 	 *            <p>
@@ -473,11 +417,8 @@ public class ReactorAnalyzer extends Item implements Runnable {
 	 *         True if the operation was successful, false if not.
 	 *         </p>
 	 * @throws RuntimeException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected boolean checkDataSource(String source) throws RuntimeException {
-		// begin-user-code
 
 		// Get the input reactor from the ReactorComposite.
 		ReactorComposite composite = (ReactorComposite) form
@@ -508,18 +449,15 @@ public class ReactorAnalyzer extends Item implements Runnable {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the properties of analysis artifacts, which are
 	 * ICEResources, in the ResourceComponent. If they have changed from the
 	 * properties that are currently stored for the IAnalysisAsset, then the
 	 * properties are updated on the asset and the asset itself is updated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param resources
 	 *            <p>
@@ -531,51 +469,36 @@ public class ReactorAnalyzer extends Item implements Runnable {
 	 *         false otherwise.
 	 *         </p>
 	 * @throws RuntimeException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected boolean checkArtifactProperties(ArrayList<ICEResource> resources)
 			throws RuntimeException {
-		// begin-user-code
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation updates global parameters for the assets.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void updateGlobalParametersMap() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation configures the MasterDetailsComponent that is used by the
 	 * ReactorAnalyzer to expose analysis asset types and the properties
 	 * available for each type. It is updated each time the data source is
 	 * changed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @throws RuntimeException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void configureMasterDetailsBlock() throws RuntimeException {
-		// begin-user-code
 
 		// Local Declarations
 		int pairId = 0;
@@ -652,17 +575,14 @@ public class ReactorAnalyzer extends Item implements Runnable {
 			form.addComponent(analysisConfigComp);
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides the operation on the Item base class to generate
 	 * analysis artifacts. The only valid action name is
 	 * "Generate Analysis Artifacts."
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param actionName
 	 *            <p>
@@ -673,11 +593,8 @@ public class ReactorAnalyzer extends Item implements Runnable {
 	 * @return <p>
 	 *         The status of the processing attempt.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus process(String actionName) {
-		// begin-user-code
 
 		// Check the action name and status
 		if ((actionName != null && "Generate Analysis Artifacts"
@@ -697,46 +614,34 @@ public class ReactorAnalyzer extends Item implements Runnable {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the status of the ReactorAnalyzer and returns true
 	 * if it can be processed safely.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         True if the ReactorAnalyzer is in either the ReadyToProcess or
 	 *         Processed states, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean checkProcessingStatus() {
-		// begin-user-code
 		return false;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates a list of data sources based on the contents of
 	 * the workspace. At the moment, it only finds .silo files.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The list of file names of the available data sources.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<String> getDataSources() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> dataSources = new ArrayList<String>();
@@ -771,24 +676,18 @@ public class ReactorAnalyzer extends Item implements Runnable {
 		}
 
 		return dataSources;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation functions as Item.getStatus(), but is overridden to handle
 	 * concurrency within the ReactorAnalyzer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public FormStatus getStatus() {
-		// begin-user-code
 
 		// Pass to super.getStatus() if the thread isn't involved
 		if (status != FormStatus.Processing) {
@@ -798,24 +697,18 @@ public class ReactorAnalyzer extends Item implements Runnable {
 			return status;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Given a general IDataProvider, attempt to construct an IDataProvider
 	 * required by the KDD Analysis Tool. If unsuccessful, return null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param generalProvider
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDataProvider getKDDIDataProvider(IDataProvider generalProvider) {
-		// begin-user-code
 
 		// FIXME - Temporary solution to keep Java from complaining when we have
 		// an SFReactor.
@@ -925,11 +818,9 @@ public class ReactorAnalyzer extends Item implements Runnable {
 		// Return the provider
 
 		return provider;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the reference data source on the Form to determine
 	 * if it has been set or changed from the previous value. If the value has
@@ -937,15 +828,11 @@ public class ReactorAnalyzer extends Item implements Runnable {
 	 * contain the proper list of available analysis types for the new reference
 	 * data source.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param source
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected boolean checkReferenceSource(String source) {
-		// begin-user-code
 
 		// Get the reference reactor from the ReactorComposite.
 		ReactorComposite composite = (ReactorComposite) form
@@ -980,18 +867,14 @@ public class ReactorAnalyzer extends Item implements Runnable {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Runnable#run()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void run() {
-		// begin-user-code
 
 		// Get the MasterDetailsComponent component from the concurrentForm
 		MasterDetailsComponent analysisConfigComp = (MasterDetailsComponent) concurrentForm
@@ -1072,7 +955,6 @@ public class ReactorAnalyzer extends Item implements Runnable {
 
 		return;
 
-		// end-user-code
 	}
 
 }

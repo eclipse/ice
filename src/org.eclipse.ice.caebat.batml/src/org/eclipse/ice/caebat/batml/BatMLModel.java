@@ -18,106 +18,79 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The BatMLModel extends the Item to provide a model generator for the CAEBAT
  * BatML input files. It uses an EMFComponent to map the BatML schema to an
  * Eclipse Modeling Framework Ecore model, which is then translated to an ICE
  * TreeComposite to be visualized and editted by the user.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "BatMLModel")
 public class BatMLModel extends Item {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the main BatML schema file.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	private static File xsdFile;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the EMFComponent that takes the XML Schema file and maps it
 	 * to an Ecore model.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	private static EMFComponent emfComp;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Flag to indicate whether this BatML Item has been initialized.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	static boolean initialized = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public BatMLModel() {
-		// begin-user-code
 		this(null);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor with a project space in which files should be
 	 * manipulated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
 	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public BatMLModel(IProject projectSpace) {
-		// begin-user-code
 
 		// Call super
 		super(projectSpace);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method sets up the BatMLModel Item's Form reference, specifically,
 	 * it searches for the correct XML schema and creates an EMFComponent and
 	 * adds it to the Form.
 	 * </p>
 	 * 
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		// Create the Form
 		form = new Form();
@@ -171,21 +144,15 @@ public class BatMLModel extends Item {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to setup the name and description of the model.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupItemInfo() {
-		// begin-user-code
 
 		// Local Declarations
 		String desc = "This item builds models based on a BatteryML schema.";
@@ -200,32 +167,23 @@ public class BatMLModel extends Item {
 		allowedActions.add("Write to XML");
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
 	 *            The form prepared for review.
 	 * @return The Form's status if the review was successful or not.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected FormStatus reviewEntries(Form preparedForm) {
-		// begin-user-code
 		return super.reviewEntries(preparedForm);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Override
 	public FormStatus process(String actionName) {

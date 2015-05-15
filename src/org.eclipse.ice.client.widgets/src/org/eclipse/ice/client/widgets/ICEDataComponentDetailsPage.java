@@ -31,18 +31,12 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>This class implements the IDetailsPage interface to provide a Details page for ICE DataComponents. The only way to provide the component handle for this class is through the constructor.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEDataComponentDetailsPage implements IDetailsPage {
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>The DataComponent whose data should be displayed.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DataComponent component;
 
@@ -57,32 +51,22 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	private IManagedForm mform;
 	
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>The constructor. If the component is null, this class will be unable to render anything to the screen.</p>
-	 * <!-- end-UML-doc -->
 	 * @param dataComponent <p>The data component that this page will display.</p>
 	 * @param editor <p>The ICEFormEditor in which the pages will exist. This editor is marked as dirty when the page changes.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEDataComponentDetailsPage(DataComponent dataComponent,
 			ICEFormEditor editor) {
-		// begin-user-code
 		formEditor = editor;
 		component = dataComponent;
-		// end-user-code
 	}
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation returns the component that the page is rendering or null if it was not set in the constructor.</p>
-	 * <!-- end-UML-doc -->
 	 * @return <p>The DataComponent used in this provider or null if it was not set.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public DataComponent getComponent() {
-		// begin-user-code
 		return component;
-		// end-user-code
 	}
 
 	/** 
@@ -90,9 +74,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * @see IFormPart#initialize(IManagedForm form)
 	 */
 	public void initialize(IManagedForm form) {
-		// begin-user-code
 		this.mform = form;
-		// end-user-code
 	}
 
 	/** 
@@ -100,9 +82,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * @see IFormPart#dispose()
 	 */
 	public void dispose() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/** 
@@ -110,9 +90,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * @see IFormPart#commit(boolean onSave)
 	 */
 	public void commit(boolean onSave) {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/** 
@@ -120,9 +98,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * @see IFormPart#setFormInput(Object input)
 	 */
 	public boolean setFormInput(Object input) {
-		// begin-user-code
 		return false;
-		// end-user-code
 	}
 
 	/** 
@@ -130,9 +106,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * @see IFormPart#setFocus()
 	 */
 	public void setFocus() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/** 
@@ -140,30 +114,21 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * @see IFormPart#refresh()
 	 */
 	public void refresh() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/** 
 	 * (non-Javadoc)
 	 * @see IPartSelectionListener#selectionChanged(IFormPart part, ISelection selection)
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void selectionChanged(IFormPart part, ISelection selection) {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/** 
-	 * <!-- begin-UML-doc -->
-	 * <!-- end-UML-doc -->
 	 * @param parent <p>The parent composite in which this page should be drawn.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void createContents(Composite parent) {
-		// begin-user-code
 
 		TableWrapLayout layout = new TableWrapLayout();
 		layout.topMargin = 5;
@@ -213,7 +178,6 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 		// Set the layout and then give the Section its client
 		section.setClient(client);
 
-		// end-user-code
 	}
 
 	@Override

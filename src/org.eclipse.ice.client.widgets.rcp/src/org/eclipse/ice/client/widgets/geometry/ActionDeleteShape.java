@@ -27,26 +27,18 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Action for deleting the currently selected shapes from the ShapeTreeView
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ActionDeleteShape extends Action {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current ShapeTreeViewer associated with the DeleteShape action
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ShapeTreeView view;
 
@@ -56,21 +48,16 @@ public class ActionDeleteShape extends Action {
 	private ImageDescriptor imageDescriptor;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Constructor for setting the current ShapeTreeViewer
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param view
 	 *            <p>
 	 *            The current ShapeTreeView
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ActionDeleteShape(ShapeTreeView view) {
-		// begin-user-code
 
 		this.view = view;
 
@@ -83,7 +70,6 @@ public class ActionDeleteShape extends Action {
 		URL imagePath = BundleUtility.find(bundle, "icons/delete.gif");
 		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
-		// end-user-code
 	}
 
 	/**
@@ -98,7 +84,6 @@ public class ActionDeleteShape extends Action {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Runs this action
 	 * </p>
@@ -106,13 +91,9 @@ public class ActionDeleteShape extends Action {
 	 * Each action implementation must define the steps needed to carry out this
 	 * action.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void run() {
-		// begin-user-code
 
 		// Get the tree paths of the current selection
 
@@ -162,6 +143,5 @@ public class ActionDeleteShape extends Action {
 			}
 		}
 
-		// end-user-code
 	}
 }

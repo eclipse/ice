@@ -31,33 +31,24 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the ReflectorAssembly class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ReflectorAssemblyTester {
 
 	// FIXME - removed checkRod
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests constructors and default values of the ReflectorAssembly class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// An assembly to test.
 		ReflectorAssembly assembly;
@@ -152,22 +143,16 @@ public class ReflectorAssemblyTester {
 		/* -------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter of the rodPitch attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRodPitch() {
-		// begin-user-code
 		ReflectorAssembly assembly = new ReflectorAssembly(1);
 		double defaultRodPitch = 1.0;
 
@@ -187,22 +172,16 @@ public class ReflectorAssemblyTester {
 		assertEquals(500, assembly.getRodPitch(), 0);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the addition and removal of SFRRods in the ReflectorAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRodAddRem() {
-		// begin-user-code
 
 		// Note: I only check assembly.getRodLocations() in a few spots
 		// below since it's a late addition. Further testing may be required.
@@ -593,23 +572,17 @@ public class ReflectorAssemblyTester {
 		/* --------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the methods inherited from SFRComposite. Users should not be able
 	 * to add SFRComponents to a ReflectorAssembly through these methods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCompositeImplementation() {
-		// begin-user-code
 
 		// Tests the following methods:
 
@@ -714,19 +687,15 @@ public class ReflectorAssemblyTester {
 		/* --------------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		int size = 78;
 
@@ -817,19 +786,15 @@ public class ReflectorAssemblyTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		int size = 79;
 
@@ -885,6 +850,5 @@ public class ReflectorAssemblyTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

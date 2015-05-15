@@ -44,7 +44,6 @@ import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWReactor;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The PressurizedWaterReactor (PWReactor) class represents any Pressurized
  * Water Reactor. This class extends the LWReactor and provides a defined
@@ -79,62 +78,43 @@ import org.eclipse.ice.reactor.LWReactor;
  * </p>
  * <p>
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement
 public class PressurizedWaterReactor extends LWReactor {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The map of grid managers, keyed by AssemblyType, that manage state point
 	 * data for the assemblies.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private HashMap<AssemblyType, LWRGridManager> managers;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The map of assembly composites, keyed by AssemblyType, that represent the
 	 * collections of the different assemblies in this reactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private HashMap<AssemblyType, LWRComposite> assemblyComposites;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * ﻿The distance between assemblies in the core, determined by the seating
 	 * location in the core plates.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private double fuelAssemblyPitch;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The GridLabelProvider for this PWReactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private GridLabelProvider gridLabelProvider;
@@ -167,21 +147,16 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param size
 	 *            <p>
 	 *            The number of fuel assemblies across the core.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PressurizedWaterReactor(int size) {
-		// begin-user-code
 		super(size);
 
 		// Set the default value of size
@@ -286,65 +261,47 @@ public class PressurizedWaterReactor extends LWReactor {
 		managers.put(AssemblyType.IncoreInstrument, incoreInstrumentGridManager);
 		managers.put(AssemblyType.RodCluster, rodClusterAssemblyGridManager);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the number of fuel assemblies across the core.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The number of fuel assemblies across the core.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getSize() {
-		// begin-user-code
 
 		return this.size;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the GridLabelProvider for this PWReactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The GridLabelProvider for this PWReactor.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GridLabelProvider getGridLabelProvider() {
-		// begin-user-code
 
 		return this.gridLabelProvider;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the GridLabelProvider for this PWReactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param gridLabelProvider
 	 *            <p>
 	 *            The GridLabelProvider for this FuelAssembly.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setGridLabelProvider(GridLabelProvider gridLabelProvider) {
-		// begin-user-code
 
 		// Set the grid label provider if it is not null and the same size
 		if (gridLabelProvider != null
@@ -352,74 +309,56 @@ public class PressurizedWaterReactor extends LWReactor {
 			this.gridLabelProvider = gridLabelProvider;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the distance between assemblies in the core, determined by the
 	 * seating location in the core plates.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The distance between assemblies in the core, determined by the
 	 *         seating location in the core plates.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getFuelAssemblyPitch() {
-		// begin-user-code
 
 		return this.fuelAssemblyPitch;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the distance between assemblies in the core, determined by the
 	 * seating location in the core plates.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param fuelAssemblyPitch
 	 *            <p>
 	 *            The distance between assemblies in the core, determined by the
 	 *            seating location in the core plates.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setFuelAssemblyPitch(double fuelAssemblyPitch) {
-		// begin-user-code
 
 		if (fuelAssemblyPitch >= 0.0) {
 			this.fuelAssemblyPitch = fuelAssemblyPitch;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation reads Attributes from h5Group and assigns their values to
 	 * class variables. If h5Group is null, false is returned. Otherwise, true
 	 * is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readAttributes(H5Group h5Group) {
-		// begin-user-code
 
 		boolean flag = super.readAttributes(h5Group);
 
@@ -460,21 +399,16 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 
-		// begin-user-code
 		boolean flag = true;
 
 		flag &= super.writeAttributes(h5File, h5Group);
@@ -482,17 +416,14 @@ public class PressurizedWaterReactor extends LWReactor {
 				"fuelAssemblyPitch", fuelAssemblyPitch);
 
 		return flag;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -501,11 +432,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 		// Local Declarations
 		PressurizedWaterReactor reactor;
 		boolean retVal = false;
@@ -530,18 +458,13 @@ public class PressurizedWaterReactor extends LWReactor {
 		}
 		// Return retVal
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
-		// begin-user-code
 
 		// Get the children in super
 		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
@@ -560,25 +483,19 @@ public class PressurizedWaterReactor extends LWReactor {
 		children.addAll(this.managers.values());
 
 		return children;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns an ArrayList of IHdfReadable child objects. If
 	 * this IHdfReadable has no IHdfReadable child objects, then null is
 	 * returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iHdfReadable
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
-		// begin-user-code
 
 		// If the child is null or not an instance of LWRComponent, then return
 		// false.
@@ -672,24 +589,18 @@ public class PressurizedWaterReactor extends LWReactor {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declarations
 		int hash = super.hashCode();
@@ -704,25 +615,19 @@ public class PressurizedWaterReactor extends LWReactor {
 		// Return the hash
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(PressurizedWaterReactor otherObject) {
-		// begin-user-code
 
 		// If otherObject is null, return
 		if (otherObject == null) {
@@ -778,24 +683,18 @@ public class PressurizedWaterReactor extends LWReactor {
 		this.gridLabelProvider = (GridLabelProvider) otherObject.gridLabelProvider
 				.clone();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(0);
@@ -806,40 +705,31 @@ public class PressurizedWaterReactor extends LWReactor {
 		// Return newly instantiated object
 		return reactor;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation accepts an ILWRComponentVisitor that can be visit the
 	 * LWRComponent to ascertain its type and perform various type-specific
 	 * operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(ILWRComponentVisitor visitor) {
-		// begin-user-code
 		visitor.visit(this);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation adds an assembly of the specified AssemblyType to the
 	 * reactor and return true. If an assembly of the same name and type already
 	 * exists in the reactor, then the new assembly will not be added and this
 	 * operation will return false.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            <p>
@@ -852,11 +742,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @return <p>
 	 *         True, if the assembly was added successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean addAssembly(AssemblyType type, LWRComponent assembly) {
-		// begin-user-code
 
 		// Local Declarations
 		LWRComposite composite = assemblyComposites.get(type);
@@ -870,17 +757,14 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		return status;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes an assembly of the specified type from the collection of
 	 * assemblies. Returns true if the operation was successful, false
 	 * otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            <p>
@@ -893,11 +777,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @return <p>
 	 *         True, if the assembly was removed successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeAssembly(AssemblyType type, String assemblyName) {
-		// begin-user-code
 
 		// Local Declarations
 		LWRComposite composite = assemblyComposites.get(type);
@@ -916,16 +797,13 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		return status;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an list of names for each assembly in the reactor of the
 	 * specified type.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            <p>
@@ -935,26 +813,20 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *         An ArrayList of names for each element of the collection of
 	 *         assemblies.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getAssemblyNames(AssemblyType type) {
-		// begin-user-code
 
 		// Local Declarations
 		LWRComposite composite = assemblyComposites.get(type);
 
 		return composite.getComponentNames();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the assembly of the specified type with the provided name or null
 	 * if an assembly of that type and name does not exist.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            <p>
@@ -967,11 +839,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @return <p>
 	 *         The assembly
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRComponent getAssemblyByName(AssemblyType type, String name) {
-		// begin-user-code
 
 		// Local Declarations
 		LWRComposite composite = assemblyComposites.get(type);
@@ -979,16 +848,13 @@ public class PressurizedWaterReactor extends LWReactor {
 		// Return the composite
 		return composite.getComponent(name);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the assembly of the specified type at the specified column and
 	 * row in the reactor or null if one is not found at the provided location.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            <p>
@@ -1006,12 +872,9 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *         The assembly corresponding to the provided type, column and row
 	 *         or null if one is not found at the provided location.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRComponent getAssemblyByLocation(AssemblyType type, int row,
 			int column) {
-		// begin-user-code
 
 		// Local Declarations
 		LWRGridManager manager = managers.get(type);
@@ -1023,18 +886,15 @@ public class PressurizedWaterReactor extends LWReactor {
 		// Return the component
 		return getAssemblyByName(type, name);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the location for the assembly of the specified type with the
 	 * provided name. Overrides the location of another assembly as required.
 	 * Returns true if this operation was successful, false otherwise. Note it
 	 * will return true if the same name is overridden.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            <p>
@@ -1055,12 +915,9 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @return <p>
 	 *         True, if the location of the assembly was set successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setAssemblyLocation(AssemblyType type, String assemblyName,
 			int row, int column) {
-		// begin-user-code
 
 		// Local declarations
 		LWRComposite composite = assemblyComposites.get(type);
@@ -1083,16 +940,13 @@ public class PressurizedWaterReactor extends LWReactor {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the assembly at the provided location and of the specified if it
 	 * exists. Returns true if the removal was successful, false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            <p>
@@ -1109,12 +963,9 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @return <p>
 	 *         True, if the assembly removal was successful.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeAssemblyFromLocation(AssemblyType type, int row,
 			int column) {
-		// begin-user-code
 
 		// Local Declarations
 		LWRGridManager manager = managers.get(type);
@@ -1131,16 +982,13 @@ public class PressurizedWaterReactor extends LWReactor {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the data provider for the assembly of the specified type at the
 	 * given location or null if it does not exist.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            <p>
@@ -1158,12 +1006,9 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *         The DataProvider that manages state point data for the specified
 	 *         assembly.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRDataProvider getAssemblyDataProviderAtLocation(AssemblyType type,
 			int row, int column) {
-		// begin-user-code
 
 		// Local Declarations
 		LWRGridManager manager = managers.get(type);
@@ -1171,15 +1016,12 @@ public class PressurizedWaterReactor extends LWReactor {
 		// Return the provider
 		return manager.getDataProviderAtLocation(new GridLocation(row, column));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the number of assemblies of the specified type.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 *            <p>
@@ -1188,13 +1030,9 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @return <p>
 	 *         The number of assemblies of the specified type.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfAssemblies(AssemblyType type) {
-		// begin-user-code
 		return assemblyComposites.get(type).getNumberOfComponents();
-		// end-user-code
 	}
 
 }

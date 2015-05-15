@@ -38,18 +38,13 @@ import org.eclipse.ice.item.utilities.trilinos.ParameterList;
  */
 public class ParameterListTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the parameter classes toEntry() operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkParameter() {
-		// begin-user-code
 
 		// Local Declarations
 		Parameter param = null, retParam = null;
@@ -149,22 +144,16 @@ public class ParameterListTester {
 		assertEquals(param.value, retParam.value);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ParameterLists toTreeComposite() operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkParameterList() {
-		// begin-user-code
 
 		// Create a couple of parameter lists
 		ParameterList pList = new ParameterList();
@@ -257,7 +246,6 @@ public class ParameterListTester {
 				retParamList.parameterLists.get(0).parameterLists.get(0).name);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -269,7 +257,6 @@ public class ParameterListTester {
 	 */
 	@Test
 	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
-		// begin-user-code
 
 		// Local Declarations
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -360,6 +347,5 @@ public class ParameterListTester {
 		assertEquals(secondParam.type, secondLoadedList.parameters.get(0).type);
 
 		return;
-		// end-user-code
 	}
 }

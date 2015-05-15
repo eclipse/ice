@@ -46,22 +46,17 @@ import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the operations on FuelAssembly.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FuelAssemblyTester {
 	// An @BeforeClass that sets up the library path. This should be added to
 	// the model or removed if it can be fixed for local machine
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
@@ -69,22 +64,16 @@ public class FuelAssemblyTester {
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the constructors and their default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		// Local Declarations
 		FuelAssembly assembly;
 		String defaultName = "FuelAssembly";
@@ -158,22 +147,16 @@ public class FuelAssemblyTester {
 		assertEquals(newSize, assembly.getSize());
 		assertEquals(type, assembly.getHDF5LWRTag());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the operations for the GridLabelProvider.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLabels() {
-		// begin-user-code
 		// Local Declarations
 		FuelAssembly assembly = null;
 		ArrayList<String> rowLabels = new ArrayList<String>();
@@ -239,22 +222,16 @@ public class FuelAssemblyTester {
 		assertTrue(this.doLabelsMatchLabelsInAssembly(false, colLabels,
 				assembly));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getters and setters for tube.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkTube() {
-		// begin-user-code
 		// Local Declarations
 		int assemblySize = 17;
 		FuelAssembly assembly = new FuelAssembly(assemblySize);
@@ -413,22 +390,16 @@ public class FuelAssemblyTester {
 				assembly.getTubeByLocation(rowLoc2, colLoc2).getName());
 		assertEquals(2, assembly.getNumberOfTubes());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for rodClusterAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRodClusterAssembly() {
-		// begin-user-code
 		// Local Declarations
 		RodClusterAssembly newRod = new RodClusterAssembly(1);
 		FuelAssembly assembly = new FuelAssembly(2);
@@ -451,23 +422,17 @@ public class FuelAssemblyTester {
 		// See that it is null
 		assertNull(assembly.getRodClusterAssembly());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation demonstrates the behaviors listed with the overridden
 	 * composite implementations from LWRComposite.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCompositeImplementations() {
-		// begin-user-code
 		// Local Declarations
 		int assemblySize = 17;
 		FuelAssembly assembly;
@@ -560,11 +525,9 @@ public class FuelAssemblyTester {
 		assertEquals(numberOfDefaultComponents,
 				assembly.getNumberOfComponents());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This is a utility operation that checks the operations for the labels on
 	 * the assembly to see if they are equal to the passed labels. Keep in mind
@@ -572,7 +535,6 @@ public class FuelAssemblyTester {
 	 * (true) or columns (false). Returns true if the labels are equal, false
 	 * otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param rows
 	 *            <p>
@@ -589,12 +551,9 @@ public class FuelAssemblyTester {
 	 * @return <p>
 	 *         True if they are equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean doLabelsMatchLabelsInAssembly(boolean rows,
 			ArrayList<String> labels, FuelAssembly assembly) {
-		// begin-user-code
 		int colCount = 0, rowCount = 0;
 
 		if (rows == false) {
@@ -633,22 +592,16 @@ public class FuelAssemblyTester {
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the equals and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		FuelAssembly object, equalObject, unEqualObject, transitiveObject;
@@ -726,22 +679,16 @@ public class FuelAssemblyTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the copying and clone operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local Declarations
 		FuelAssembly object, copyObject, clonedObject;
@@ -776,22 +723,16 @@ public class FuelAssemblyTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 writing operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Writeables() {
-		// begin-user-code
 
 		// Local Declarations
 		int size = 5;
@@ -1025,23 +966,17 @@ public class FuelAssemblyTester {
 		// Delete the file once you are done
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the test.h5 file after the tests fails (to keep the workspace
 	 * clean).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@AfterClass
 	public static void afterClass() {
-		// begin-user-code
 
 		// Cleans up the datafile if it exists due to a failed test
 		File dataFile = new File(System.getProperty("user.dir")
@@ -1052,22 +987,16 @@ public class FuelAssemblyTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 readable operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Readables() {
-		// begin-user-code
 
 		// Local Declarations
 		int size = 5;
@@ -1258,18 +1187,13 @@ public class FuelAssemblyTester {
 
 		dataFile.delete();
 
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkLWRDataProvider() {
-		// begin-user-code
 
 		// Make an assembly and setup some locations
 		FuelAssembly assembly;
@@ -1331,6 +1255,5 @@ public class FuelAssemblyTester {
 		assertTrue(provider.equals(assembly.getLWRRodDataProviderAtLocation(
 				row1, col1)));
 
-		// end-user-code
 	}
 }

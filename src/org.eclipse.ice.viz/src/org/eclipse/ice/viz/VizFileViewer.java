@@ -207,9 +207,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 	 *         set.
 	 */
 	public ResourceComponent getResourceComponent() {
-		// begin-user-code
 		return resourceComponent;
-		// end-user-code
 	}
 
 	/**

@@ -25,7 +25,6 @@ import org.eclipse.ice.datastructures.form.Entry;
 import java.util.ArrayList;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ICEJschUIInfo class gathers password information from a LoginInfoForm to
  * provide the password to Jsch. It implements both the Jsch UserInfo and
@@ -33,87 +32,64 @@ import java.util.ArrayList;
  * single request keyboard interactive login and (and it fakes the interactive
  * response at that...).
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An AtomicReference to the LoginInfoForm from which password information
 	 * should be gathered.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	private AtomicReference<LoginInfoForm> loginInfoFormAtomic;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEJschUIInfo() {
-		// begin-user-code
 
 		loginInfoFormAtomic = new AtomicReference<LoginInfoForm>();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the LoginInfoForm that should be used by the
 	 * ICEJschUIInfo class to gather the password information.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param form
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setForm(LoginInfoForm form) {
-		// begin-user-code
 
 		// Check the Form before setting it
 		if (form != null) {
 			loginInfoFormAtomic.set(form);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns true if the ICEJschUIInfo is ready and false
 	 * otherwise. The decision is based on the presence or absence of the
 	 * LoginInfoForm.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         True if ready, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean isReady() {
-		// begin-user-code
 		if (loginInfoFormAtomic.get() != null) {
 			return true;
 		} else {
 			return false;
 		}
-		// end-user-code
 	}
 
 	/**
@@ -122,13 +98,10 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	 * @see UIKeyboardInteractive#promptKeyboardInteractive(String destination,
 	 *      String name, String instruction, ArrayList<String> prompt,
 	 *      boolean... echo)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> promptKeyboardInteractive(String destination,
 			String name, String instruction, ArrayList<String> prompt,
 			boolean... echo) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> retList = new ArrayList<String>();
@@ -140,7 +113,6 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 			retList.add(i);
 		}
 		return retList;
-		// end-user-code
 	}
 
 	/**
@@ -153,7 +125,6 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	 */
 	public String[] promptKeyboardInteractive(String destination, String name,
 			String instruction, String[] prompt, boolean[] echo) {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent comp = null;
@@ -170,31 +141,23 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 		}
 
 		return response;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see UserInfo#getPassphrase()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getPassphrase() {
-		// begin-user-code
 		return null;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see UserInfo#getPassword()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getPassword() {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent comp = null;
@@ -210,18 +173,14 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 		}
 
 		return password;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see UserInfo#promptPassword(String message)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean promptPassword(String message) {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent comp = null;
@@ -241,46 +200,33 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 		} else {
 			return true;
 		}
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see UserInfo#promptPassphrase(String message)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean promptPassphrase(String message) {
-		// begin-user-code
 		return true;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see UserInfo#promptYesNo(String message)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean promptYesNo(String message) {
-		// begin-user-code
 		return false;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see UserInfo#showMessage(String message)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void showMessage(String message) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 }

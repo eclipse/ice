@@ -35,23 +35,18 @@ import org.eclipse.ice.reactor.Ring;
 import org.eclipse.ice.reactor.pwr.IncoreInstrument;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This test checks IncoreInstrument Class construction and passing a thimble
  * ring
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class IncoreInstrumentTester {
 	// An @BeforeClass that sets up the library path. This should be added to
 	// the model or removed if it can be fixed for local machine
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
@@ -59,22 +54,16 @@ public class IncoreInstrumentTester {
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the constructors and their default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		IncoreInstrument instrument;
 		// Default Values
 		String defaultName = "Instrument 1";
@@ -109,22 +98,16 @@ public class IncoreInstrumentTester {
 		assertNotNull(instrument.getThimble());
 		assertEquals(type, instrument.getHDF5LWRTag());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the getter and setter of the thimble.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkThimble() {
-		// begin-user-code
 		// check a legal value set
 		IncoreInstrument instrument = new IncoreInstrument();
 		Ring newThimble = new Ring("thimble");
@@ -133,22 +116,16 @@ public class IncoreInstrumentTester {
 		// check illegal value set
 		instrument.setThimble(null);
 		assertNotNull(instrument.getThimble());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the equals and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		IncoreInstrument object, equalObject, unEqualObject, transitiveObject;
@@ -211,22 +188,16 @@ public class IncoreInstrumentTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the copying and clone operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local Declarations
 		IncoreInstrument object, copyObject, clonedObject;
@@ -255,22 +226,16 @@ public class IncoreInstrumentTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 writing operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Writeables() {
-		// begin-user-code
 
 		// Local Declarations
 		IncoreInstrument instrument = new IncoreInstrument();
@@ -417,23 +382,17 @@ public class IncoreInstrumentTester {
 		// Delete the file once you are done
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the test.h5 file after the tests fails (to keep the workspace
 	 * clean).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@AfterClass
 	public static void afterClass() {
-		// begin-user-code
 
 		// Cleans up the datafile if it exists due to a failed test
 		File dataFile = new File(System.getProperty("user.dir")
@@ -444,22 +403,16 @@ public class IncoreInstrumentTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 readable operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Readables() {
-		// begin-user-code
 
 		// Local Declarations
 		IncoreInstrument component = new IncoreInstrument();
@@ -560,6 +513,5 @@ public class IncoreInstrumentTester {
 
 		dataFile.delete();
 
-		// end-user-code
 	}
 }

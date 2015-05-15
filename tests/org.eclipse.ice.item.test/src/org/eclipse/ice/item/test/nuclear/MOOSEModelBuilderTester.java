@@ -21,31 +21,22 @@ import org.eclipse.ice.item.nuclear.MOOSEModelBuilder;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the MOOSEModelBuilder.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MOOSEModelBuilderTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation insures that the builder can properly construct the
 	 * MOOSEModel.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemBuild() {
-		// begin-user-code
 
 		MOOSEModelBuilder builder = new MOOSEModelBuilder();
 		assertEquals("MOOSE Model Builder", MOOSEModelBuilder.name);
@@ -56,6 +47,5 @@ public class MOOSEModelBuilderTester {
 		assertTrue(model instanceof MOOSEModel);
 
 		return;
-		// end-user-code
 	}
 }
