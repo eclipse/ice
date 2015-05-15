@@ -21,43 +21,30 @@ import org.eclipse.ice.client.widgets.ICEResourcePage;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ICEResourcePage.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEResourcePageTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The ICEResourcePage that will be tested.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICEResourcePage page;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ResourceComponent accessor operations on
 	 * ICEResourcePage
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkResourceComponents() {
-		// begin-user-code
 
 		// Local Declarations
 		ResourceComponent comp = new ResourceComponent(), retComp = null;
@@ -81,6 +68,5 @@ public class ICEResourcePageTester {
 
 		return;
 
-		// end-user-code
 	}
 }

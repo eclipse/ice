@@ -871,7 +871,6 @@ public class MeshAppState extends ViewAppState implements
 	 *            The mesh that was updated.
 	 */
 	protected void updateMesh(MeshComponent mesh) {
-		// begin-user-code
 
 		System.out.println("MeshApplication message: Updating the mesh.");
 
@@ -1017,7 +1016,6 @@ public class MeshAppState extends ViewAppState implements
 				.println("MeshApplication message: Finished updating the mesh.");
 
 		return;
-		// end-user-code
 	}
 
 	// ---- Implements IMeshSelectionListener ---- //

@@ -18,16 +18,12 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class builds the SassenaCoherentModel. It inherits its operations
  * from ItemBuilder.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SassenaCoherentModelBuilder implements ItemBuilder {
 
@@ -35,8 +31,6 @@ public class SassenaCoherentModelBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public String getItemName() {
@@ -47,8 +41,6 @@ public class SassenaCoherentModelBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemType()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public ItemType getItemType() {
@@ -59,8 +51,6 @@ public class SassenaCoherentModelBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#build(Interface projectSpace)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public Item build(IProject projectSpace) {

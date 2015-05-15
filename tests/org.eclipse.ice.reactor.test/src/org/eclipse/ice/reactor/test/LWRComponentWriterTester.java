@@ -30,36 +30,24 @@ import org.eclipse.ice.reactor.*;
 import org.eclipse.ice.reactor.pwr.*;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRComponentWriterTester {
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkWriting() {
-		// begin-user-code
 
 		// Create a reactor of size 2 X 2
 		PressurizedWaterReactor pwReactor = new PressurizedWaterReactor(15);
@@ -899,7 +887,6 @@ public class LWRComponentWriterTester {
 			fail();
 		}
 
-		// end-user-code
 	}
 
 }

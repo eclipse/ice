@@ -41,19 +41,14 @@ import org.junit.Test;
  */
 public class QuadTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of the Quad class and the
 	 * functionality inherited from ICEObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		ArrayList<Edge> edges = new ArrayList<Edge>();
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
@@ -195,20 +190,15 @@ public class QuadTester {
 		/* ----------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the copying and cloning methods of Quad. Note that
 	 * since the Quad.copy(Quad) method just refers to the Polygon copy method,
 	 * it doesn't need to be tested here.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
@@ -292,19 +282,14 @@ public class QuadTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks Quad to ensure that it can be correctly visited by
 	 * a realization of the IMeshPartVisitor interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		IMeshPart part = new Quad();
 
@@ -325,7 +310,6 @@ public class QuadTester {
 		// -------------------------------------------------- //
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -337,7 +321,6 @@ public class QuadTester {
 	 */
 	@Test
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
-		// begin-user-code
 
 		// We need edges and vertices to supply to created Polygons.
 		ArrayList<Edge> edges = new ArrayList<Edge>();
@@ -380,6 +363,5 @@ public class QuadTester {
 		assertTrue(quad.equals(loadedQuad));
 
 		return;
-		// end-user-code
 	}
 }

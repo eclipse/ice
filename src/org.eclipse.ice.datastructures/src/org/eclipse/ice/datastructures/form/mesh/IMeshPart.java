@@ -13,34 +13,26 @@
 package org.eclipse.ice.datastructures.form.mesh;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This interface is for any part of a {@link MeshComponent} that can be visited
  * by an {@link IMeshPartVisitor}.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  * 
  */
 public interface IMeshPart {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method calls the {@link IMeshPartVisitor}'s visit method.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The {@link IMeshPartVisitor} that is visiting this
 	 *            {@link IMeshPart}.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void acceptMeshVisitor(IMeshPartVisitor visitor);
 

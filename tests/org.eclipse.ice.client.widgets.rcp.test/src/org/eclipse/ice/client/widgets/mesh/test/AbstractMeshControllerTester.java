@@ -28,32 +28,23 @@ import org.junit.Test;
 import com.jme3.scene.Node;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests that the AbstractMeshController hooks up with its model appropriately.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class AbstractMeshControllerTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of the AbstractMeshController
 	 * class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		// Create the parameters for input. It needs an IUpdateable and a
 		// ConcurrentLinkedQueue.
@@ -104,23 +95,17 @@ public class AbstractMeshControllerTester {
 		/* ------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This test ensures that the AbstractMeshController registers, updates, and
 	 * unregisters properly with its corresponding model (an IUpdateable).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUpdate() {
-		// begin-user-code
 
 		/*
 		 * This test creates a controller pointing to an ICEObject. It checks
@@ -158,23 +143,17 @@ public class AbstractMeshControllerTester {
 		/* ------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the ability to get and set the state of the view associated with
 	 * this controller.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkState() {
-		// begin-user-code
 
 		/*
 		 * Create a TestMeshController. Try setting its state to different
@@ -227,23 +206,17 @@ public class AbstractMeshControllerTester {
 		/* ------------------------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the ability to get and set the parent jME3 Node associated with
 	 * this controller.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkParentNode() {
-		// begin-user-code
 
 		/*
 		 * Create a TestMeshController. Try setting its parent to different
@@ -298,22 +271,16 @@ public class AbstractMeshControllerTester {
 		/* ----------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests that the controller tries to updates its view when necessary.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkSyncView() {
-		// begin-user-code
 
 		/*
 		 * For this test, we create a simple thread to call syncView for each
@@ -373,22 +340,16 @@ public class AbstractMeshControllerTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equals and hashCode methods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquals() {
-		// begin-user-code
 
 		// Create the parameters for input. It needs an IUpdateable and a
 		// ConcurrentLinkedQueue.
@@ -432,22 +393,16 @@ public class AbstractMeshControllerTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copy and clone methods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopy() {
-		// begin-user-code
 
 		// Create the parameters for input. It needs an IUpdateable and a
 		// ConcurrentLinkedQueue.
@@ -488,7 +443,6 @@ public class AbstractMeshControllerTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 
 }

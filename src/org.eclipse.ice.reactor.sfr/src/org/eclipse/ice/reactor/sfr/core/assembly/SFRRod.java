@@ -18,43 +18,30 @@ import org.eclipse.ice.reactor.sfr.core.Material;
 import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Class representing the solid cylindrical structure found inside radial
  * reflector assemblies.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SFRRod extends SFRComponent {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A solid cylindrical structure of uniform reflector material.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Ring reflector;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRRod() {
-		// begin-user-code
 
 		// Set the default name, description and ID
 		setName("SFR Rod 1");
@@ -72,23 +59,17 @@ public class SFRRod extends SFRComponent {
 		reflector.setInnerRadius(0.0);
 		reflector.setOuterRadius(26.666); // Rod diameter = 2 * pin diameter (?)
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor with name specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            Name of the SFRRod.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRRod(String name) {
-		// begin-user-code
 
 		// Call nullary constructor
 		this();
@@ -96,62 +77,44 @@ public class SFRRod extends SFRComponent {
 		// Set name
 		setName(name);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the rod.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param reflector
 	 *            The reflector rod.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setReflector(Ring reflector) {
-		// begin-user-code
 
 		// Check that the reflector is not null
 		if (reflector != null) {
 			this.reflector = reflector;
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the reflector rod as a Ring.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The reflector rod.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring getReflector() {
-		// begin-user-code
 		return reflector;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashcode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hashcode of the object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based upon superclass hash
 		int hash = super.hashCode();
@@ -161,22 +124,18 @@ public class SFRRod extends SFRComponent {
 
 		// Return the hash code
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Compares the contents of objects and returns true if that are identical.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object being compared against.
 	 * @return Returns true if the both objects are equal, otherwise false.
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Check if otherObject is invalid
 		if (otherObject != null && otherObject instanceof SFRRod) {
@@ -210,21 +169,17 @@ public class SFRRod extends SFRComponent {
 		else {
 			return false;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object to copy the contents of.
 	 */
 	public void copy(SFRRod otherObject) {
-		// begin-user-code
 
 		// Check if otherObject in invalid
 		if (otherObject == null) {
@@ -237,20 +192,16 @@ public class SFRRod extends SFRComponent {
 		reflector = otherObject.reflector;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The newly instantiated object.
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Create a new SFRRod
 		SFRRod rod = new SFRRod();
@@ -261,7 +212,6 @@ public class SFRRod extends SFRComponent {
 		// Return the new SFRRod
 		return rod;
 
-		// end-user-code
 	}
 
 	/**
@@ -270,12 +220,10 @@ public class SFRRod extends SFRComponent {
 	 */
 	@Override
 	public void accept(ISFRComponentVisitor visitor) {
-		// begin-user-code
 
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 		return;
-		// end-user-code
 	}
 }

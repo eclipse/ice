@@ -38,69 +38,49 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is a FormPage that creates a page with an embedded Form for
  * manipulating an EMFComponent.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEEMFPage";
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the EMFComponent being visualized.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private EMFComponent emfComponent;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the TreeViewer that shows the overall EMF Ecore model tree
 	 * structure.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private EMFTreeCompositeViewer emfTreeView;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the parent Composite that all TreeComposite DataComponent
 	 * nodes will be showed on.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Composite parent;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the DataComponentComposite used for displaying the
 	 * DataComponents from the EMFTreeComposite.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DataComponentComposite dataComposite;
 
@@ -121,11 +101,9 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	private MessageConsoleStream msgStream = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param editor
 	 *            <p>
@@ -139,48 +117,35 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 *            <p>
 	 *            The title of the page.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public EMFSectionPage(FormEditor editor, String id, String title) {
-		// begin-user-code
 		super(editor, id, title);
 		parent = null;
 		this.editor = (ICEFormEditor) editor;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Set the EMFComponent that this EMFSectionPage should display.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setEMFComponent(EMFComponent emf) {
 		emfComponent = emf;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides the default/abstract implementation of
 	 * FormPage.createFormContents to create the contents of the EMFSectionPage.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param managedForm
 	 *            <p>
 	 *            The Form widget on which the ICEMasterDetailsPage exists.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
-		// begin-user-code
 
 		// Get the Scrolled Form and set its GridLayout
 		final ScrolledForm scrolledForm = managedForm.getForm();
@@ -264,28 +229,21 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 					+ "stream text!");
 			e.printStackTrace();
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the EMFComponent that is currently managed by
 	 * the EMFSectionPage.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The EMFComponent or null if the component has not yet been set in
 	 *         the page.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public EMFComponent getEMFComponent() {
-		// begin-user-code
 		return emfComponent;
-		// end-user-code
 	}
 
 	@Override

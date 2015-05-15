@@ -27,50 +27,37 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class represents a single vertex in a polygon. Multiple Edges can be
  * registered with a single Vertex as listeners, and the Vertex's location can
  * be updated. A Vertex should have its ID set to a unique value before
  * constructing an Edge from it.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton, Taylor Patterson
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Vertex")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Vertex extends ICEObject implements IMeshPart {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current (x, y, z) coordinates of the vertex.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	private float[] location;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A nullary constructor. This creates a vertex at the origin and
 	 * initializes any fields necessary for the minimal function of a Vertex.
 	 * Required for persistence.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Vertex() {
-		// begin-user-code
 
 		// Call the super constructor.
 		super();
@@ -83,16 +70,13 @@ public class Vertex extends ICEObject implements IMeshPart {
 		setDescription("");
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default constructor. Sets the initial location to the specified
 	 * coordinates.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param x
 	 *            <p>
@@ -106,11 +90,8 @@ public class Vertex extends ICEObject implements IMeshPart {
 	 *            <p>
 	 *            The z component of the location.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Vertex(float x, float y, float z) {
-		// begin-user-code
 
 		// Initialize the defaults.
 		this();
@@ -121,25 +102,19 @@ public class Vertex extends ICEObject implements IMeshPart {
 		location[2] = z;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This constructor takes an array of floats as the location.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param location
 	 *            <p>
 	 *            A vector representing the Vertex's location in 3D space.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Vertex(float[] location) {
-		// begin-user-code
 
 		// Intialize the defaults.
 		this();
@@ -154,15 +129,12 @@ public class Vertex extends ICEObject implements IMeshPart {
 		this.location[2] = location[2];
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the current location of the Vertex.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param x
 	 *            <p>
@@ -176,11 +148,8 @@ public class Vertex extends ICEObject implements IMeshPart {
 	 *            <p>
 	 *            The z component of the location.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setLocation(float x, float y, float z) {
-		// begin-user-code
 
 		// Only update if necessary.
 		if (location[0] != x || location[1] != y || location[2] != z) {
@@ -193,69 +162,51 @@ public class Vertex extends ICEObject implements IMeshPart {
 			notifyListeners();
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the current location of the Vertex.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param location
 	 *            <p>
 	 *            A 3D vector of floats representing the Vertex's current
 	 *            location.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setLocation(float[] location) {
-		// begin-user-code
 
 		// Only update the location on well-formed input
 		if (location != null && location.length == 3) {
 			setLocation(location[0], location[1], location[2]);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the current location of the Vertex.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         A 3D vector of floats representing the Vertex's current location.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public float[] getLocation() {
-		// begin-user-code
 		return new float[] { location[0], location[1], location[2] };
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the Vertex.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Get initial hash code
 		int hash = super.hashCode();
@@ -266,17 +217,14 @@ public class Vertex extends ICEObject implements IMeshPart {
 		}
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this Vertex and another
 	 * Vertex. It returns true if the Vertices are equal and false if they are
 	 * not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -285,11 +233,8 @@ public class Vertex extends ICEObject implements IMeshPart {
 	 * @return <p>
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		boolean equal = false;
 
@@ -310,26 +255,20 @@ public class Vertex extends ICEObject implements IMeshPart {
 		}
 
 		return equal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a Vertex into the current object
 	 * using a deep copy. Listeners are not copied.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param vertex
 	 *            <p>
 	 *            The Object from which the values should be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(Vertex vertex) {
-		// begin-user-code
 
 		// Return if object is null
 		if (vertex == null) {
@@ -343,25 +282,19 @@ public class Vertex extends ICEObject implements IMeshPart {
 		setLocation(vertex.getLocation());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the Vertex using a deep copy. Listeners
 	 * are not copied.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Create a new Vertex
 		Vertex vertex = new Vertex();
@@ -370,7 +303,6 @@ public class Vertex extends ICEObject implements IMeshPart {
 		vertex.copy(this);
 
 		return vertex;
-		// end-user-code
 	}
 
 	/**
@@ -393,19 +325,15 @@ public class Vertex extends ICEObject implements IMeshPart {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method calls the {@link IMeshPartVisitor}'s visit method.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The {@link IMeshPartVisitor} that is visiting this
 	 *            {@link IMeshPart}.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void acceptMeshVisitor(IMeshPartVisitor visitor) {
 		if (visitor != null) {

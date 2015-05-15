@@ -20,43 +20,30 @@ import org.eclipse.ice.client.widgets.ExtraInfoDialog;
 import org.eclipse.ice.datastructures.form.DataComponent;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ExtraInfoDialog class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ExtraInfoDialogTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The dialog to test.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ExtraInfoDialog extraInfoDialog;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the DataComponent accessors on the ExtraInfoDialog
 	 * class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAccessors() {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent comp = new DataComponent();
@@ -78,6 +65,5 @@ public class ExtraInfoDialogTester {
 		assertEquals(comp, extraInfoDialog.getDataComponent());
 
 		return;
-		// end-user-code
 	}
 }

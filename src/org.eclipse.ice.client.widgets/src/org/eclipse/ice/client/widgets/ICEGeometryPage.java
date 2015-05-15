@@ -39,141 +39,95 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is ICEFormPage that displays the GeometryEditor powered by JME3.
  * It automatically opens the ShapeTreeView and TransformationView to allow the
  * user to add and edit geometry.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEGeometryPage extends ICEFormPage implements
 		IUpdateableListener {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The property that determines whether there is a need to Save.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean dirty;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The DataStructure that gives this page its data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private GeometryComponent geometryComp;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This sets the FormEditor to be opened on, as well as the id and title
 	 * Strings.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param editor
 	 * @param id
 	 * @param title
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEGeometryPage(FormEditor editor, String id, String title) {
-		// begin-user-code
 
 		super(editor, id, title);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the dirty status of the Page.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean isDirty() {
-		// begin-user-code
 		return dirty;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param allowed
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void isSaveAsAllowed(boolean allowed) {
-		// begin-user-code
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the geometryComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GeometryComponent getGeometry() {
-		// begin-user-code
 		return geometryComp;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the geometryComponent; giving the geometryEditor data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param geometryComponent
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setGeometry(GeometryComponent geometryComponent) {
-		// begin-user-code
 		geometryComp = geometryComponent;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Connects the ShapeTreeView with the geometryEditor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void getFocus() {
-		// begin-user-code
 
 		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite()
 				.getWorkbenchWindow().getActivePage()
@@ -181,23 +135,17 @@ public class ICEGeometryPage extends ICEFormPage implements
 		shapeTreeView.setGeometry(geometryComp);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Provides the page with the geometryApplication's information to display
 	 * geometry.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param managedForm
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void createFormContent(IManagedForm managedForm) {
-		// begin-user-code
 
 		// Local Declarations
 		final ScrolledForm form = managedForm.getForm();
@@ -233,20 +181,15 @@ public class ICEGeometryPage extends ICEFormPage implements
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IUpdateableListener#update(Component component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(IUpdateable component) {
-		// begin-user-code
 		dirty = true;
-		// end-user-code
 	}
 
 	@Override

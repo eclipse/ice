@@ -36,7 +36,6 @@ import java.util.Dictionary;
  */
 public abstract class Action {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A Form that is used to by the Action if it requires additional
 	 * information, such as a login username and password, that is not available
@@ -44,83 +43,58 @@ public abstract class Action {
 	 * contains one DataComponent with Entries for each additional piece of
 	 * required information.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected Form actionForm;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A Form that contains data from the Item that initiated the Action.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected Form dataForm;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current status of the Action.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected FormStatus status;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Action() {
-		// begin-user-code
 		// TODO Auto-generated constructor stub
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves a Form from the Action that is used to request
 	 * additional, unexpected information from the user such as a login username
 	 * and password.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The second Form created by the Action for retrieving, for
 	 *         example, a username and password.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Form getForm() {
-		// begin-user-code
 		return actionForm;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation submits a Form to the Action that contains additional,
 	 * unexpected information from the user such as a login username and
 	 * password. This Form was originally created by the Action and posted by
 	 * the calling Item.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param form
 	 *            <p>
@@ -133,11 +107,8 @@ public abstract class Action {
 	 *         FormStatus.Processing for any non-null Form and
 	 *         FormStatus.InfoError otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus submitForm(Form form) {
-		// begin-user-code
 
 		// Accept or reject the Form
 		if (form != null) {
@@ -146,18 +117,15 @@ public abstract class Action {
 		} else {
 			return FormStatus.InfoError;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation executes the Action based on the information provided in
 	 * the dictionary. Subclasses must implement this operation and should
 	 * publish the exact keys and values that they require to perform their
 	 * function in their documentation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param dictionary
 	 *            <p>
@@ -171,37 +139,27 @@ public abstract class Action {
 	public abstract FormStatus execute(Dictionary<String, String> dictionary);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation cancels the Action, if possible.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The ItemStatus value that specifies whether or not the Action was
 	 *         canceled successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public abstract FormStatus cancel();
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the current status of the Action.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The status
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus getStatus() {
-		// begin-user-code
 		return status;
-		// end-user-code
 	}
 }

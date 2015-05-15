@@ -13,19 +13,14 @@
 package org.eclipse.ice.datastructures.form.geometry;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Represents the set operator applied to a ComplexShape
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public enum OperatorType {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Default operator type
 	 * </p>
@@ -33,14 +28,10 @@ public enum OperatorType {
 	 * When rendering, None should be taken to mean "invisible". A ComplexShape
 	 * with this type should have no effect on its parent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	None,
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Union of any number of sets
 	 * </p>
@@ -48,14 +39,10 @@ public enum OperatorType {
 	 * The result of a union may be disjoint, meaning that the child shapes may
 	 * be separated with no points in common.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Union,
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Intersection of any number of sets
 	 * </p>
@@ -65,14 +52,10 @@ public enum OperatorType {
 	 * <p>
 	 * ((A_1 intersection A_2) intersection A_3) ...
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Intersection,
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Complement of any number of sets
 	 * </p>
@@ -88,10 +71,7 @@ public enum OperatorType {
 	 * where "/" is the complement operator. The first shape has significance as
 	 * the only additive shape in the final result of the operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Complement
 }

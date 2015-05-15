@@ -21,39 +21,27 @@ import org.eclipse.ice.item.action.LoginInfoForm;
 import org.eclipse.ice.item.action.ICEJschUIInfo;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ICEJschUIInfo class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEJschUIInfoTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICEJschUIInfo iCEJschUIInfo;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation ensures that the ICEJschUIInfo class can retrieve a
 	 * password from the LoginInfoForm.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkPassword() {
-		// begin-user-code
 
 		// Local Declarations
 		LoginInfoForm testForm = new LoginInfoForm();
@@ -101,6 +89,5 @@ public class ICEJschUIInfoTester {
 		assertEquals("Georgia", keyboardInteractiveArray[0]);
 
 		return;
-		// end-user-code
 	}
 }

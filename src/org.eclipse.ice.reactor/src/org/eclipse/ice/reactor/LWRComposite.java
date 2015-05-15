@@ -27,7 +27,6 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The LWRComposite class represents all reactor components that can store and
  * manage LWRComponents. This class implements the ICE Composite interface. This
@@ -37,38 +36,26 @@ import javax.xml.bind.annotation.XmlTransient;
  * will need to override the Composite Interface's operations to provide
  * specific utility as needed.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRComposite extends LWRComponent implements Composite {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A Hashtable keyed on LWRComponent name storing unique LWRComponents.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	protected Hashtable<String, LWRComponent> lWRComponents;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRComposite() {
-		// begin-user-code
 
 		// Setup the composite
 		this.name = "Composite 1";
@@ -81,16 +68,13 @@ public class LWRComposite extends LWRComponent implements Composite {
 		// Setup the LWRComponentType to correct type
 		this.HDF5LWRTag = HDF5LWRTagType.LWRCOMPOSITE;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the LWRComponent corresponding to the provided name or null if
 	 * the name is not found.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -100,11 +84,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 *         The LWRComponent corresponding to the provided name or null if
 	 *         the name is not found.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRComponent getComponent(String name) {
-		// begin-user-code
 
 		// if the name is not null, return the name
 		if (name != null) {
@@ -113,26 +94,20 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 		// Name was null, return
 		return null;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an ArrayList of Strings containing the names of all LWRComponents
 	 * contained in this LWRComposite.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         An ArrayList of Strings containing the names of all LWRComponents
 	 *         contained in this LWRComposite
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getComponentNames() {
-		// begin-user-code
 		// Local Declarations
 		ArrayList<String> keys = new ArrayList<String>();
 		Iterator<String> iter;
@@ -153,25 +128,19 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 		// Return the names
 		return keys;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes a LWRComponent with the provided name from this LWRComposite.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
 	 *            The name of the LWRComponent to remove.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeComponent(String name) {
-		// begin-user-code
 		// Local Declarations
 
 		// IF the name is not null and it is contained in the list (trimmed),
@@ -180,17 +149,14 @@ public class LWRComposite extends LWRComponent implements Composite {
 				&& !name.trim().isEmpty()) {
 			this.lWRComponents.remove(name);
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -199,11 +165,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local declarations
 		LWRComposite composite;
@@ -227,24 +190,18 @@ public class LWRComposite extends LWRComponent implements Composite {
 		// Return retVal
 		return retVal;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Get the super's hashCode
 		int hash = super.hashCode();
@@ -255,25 +212,19 @@ public class LWRComposite extends LWRComponent implements Composite {
 		// Return the hashCode
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(LWRComposite otherObject) {
-		// begin-user-code
 
 		// Local declarations
 		Iterator<String> iter;
@@ -296,24 +247,18 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRComposite composite = new LWRComposite();
@@ -324,18 +269,13 @@ public class LWRComposite extends LWRComponent implements Composite {
 		// Return the newly instantiated object
 		return composite;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
-		// begin-user-code
 
 		// Get the children in super
 		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
@@ -351,25 +291,19 @@ public class LWRComposite extends LWRComponent implements Composite {
 		children.addAll(lWRComponents.values());
 
 		return children;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns an ArrayList of IHdfReadable child objects. If
 	 * this IHdfReadable has no IHdfReadable child objects, then null is
 	 * returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iHdfReadable
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
-		// begin-user-code
 
 		// If the child is null or not an instance of LWRComponent, then return
 		// false.
@@ -388,18 +322,14 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 		// Return true for success
 		return true;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Composite#addComponent(Component child)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addComponent(Component child) {
-		// begin-user-code
 
 		// If the child is null or if the name is already in the table, return
 		if (child == null || this.lWRComponents.containsKey(child.getName())
@@ -410,18 +340,14 @@ public class LWRComposite extends LWRComponent implements Composite {
 		// Otherwise, add component
 		this.lWRComponents.put(child.getName(), (LWRComponent) child);
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Composite#removeComponent(int childId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeComponent(int childId) {
-		// begin-user-code
 		// Local declarations
 		Component component = null;
 		Iterator<LWRComponent> iter;
@@ -443,18 +369,14 @@ public class LWRComposite extends LWRComponent implements Composite {
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Composite#getComponent(int childId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Component getComponent(int childId) {
-		// begin-user-code
 		// Local declarations
 		Component component = null;
 		Iterator<LWRComponent> iter;
@@ -479,33 +401,25 @@ public class LWRComposite extends LWRComponent implements Composite {
 		// Nothing was found!
 		return null;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Composite#getNumberOfComponents()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfComponents() {
-		// begin-user-code
 
 		// Return the size
 		return this.lWRComponents.size();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Composite#getComponents()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Component> getComponents() {
-		// begin-user-code
 		// Local Declarations
 		ArrayList<Component> components = new ArrayList<Component>();
 		Component component;
@@ -527,6 +441,5 @@ public class LWRComposite extends LWRComponent implements Composite {
 		// Return the list
 		return components;
 
-		// end-user-code
 	}
 }

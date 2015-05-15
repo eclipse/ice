@@ -56,21 +56,16 @@ public class JobLauncherTester {
 	private TestJobLauncher jobLauncher;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations attempts to put the JobLauncher in the
 	 * FormStatus.NeedsInfo state by setting the hostname to something other
 	 * than localhost. It retrieves the Form from the Item after than and makes
 	 * sure that it is actually a LoginInfoForm and not a JobLauncherForm.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoginInfoForm() {
-		// begin-user-code
 
 		// Local declarations
 		Form form = null;
@@ -144,23 +139,17 @@ public class JobLauncherTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations makes sure that it is possible to add and remove hosts
 	 * from the JobLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHosts() {
-		// begin-user-code
 		// Local Declarations
 		ArrayList<String> list = new ArrayList<String>();
 
@@ -244,23 +233,17 @@ public class JobLauncherTester {
 		assertEquals(list.size(), 4);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation makes sure that it is possible to enable and disable
 	 * support for TBB, OpenMP and MPI in the JobLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEnablingParallelism() {
-		// begin-user-code
 		// Local Declarations:
 		JobLauncherForm form;
 		DataComponent dataC;
@@ -560,23 +543,17 @@ public class JobLauncherTester {
 		jobLauncher.disableTBB();
 		assertNull(form.getComponent(dataC.getId()));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the JobLauncher to ensure that its equals()
 	 * operation works.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Create JobLauncherItems to test
 		JobLauncher item = new JobLauncher();
@@ -632,23 +609,17 @@ public class JobLauncherTester {
 		// Assert that hashcodes from unequal objects are different
 		assertTrue(item.hashCode() != unEqualItem.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the JobLauncher to ensure that its copy() and
 	 * clone() operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local Declarations
 		JobLauncher cloneItem = new JobLauncher(null), copyItem = new JobLauncher(
@@ -702,7 +673,6 @@ public class JobLauncherTester {
 		assertEquals(jobItem.getAllHosts(), copyItem.getAllHosts());
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -714,7 +684,6 @@ public class JobLauncherTester {
 	 */
 	@Test
 	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
-		// begin-user-code
 		/*
 		 * The following sets of operations will be used to test the
 		 * "read and write" portion of the JobLauncher Item. It will demonstrate
@@ -760,23 +729,17 @@ public class JobLauncherTester {
 		assertTrue(persistedItem.getAllHosts().equals(loadedItem.getAllHosts()));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the JobLauncher to ensure that it can manage
 	 * multiple input files.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkMultipleInputFiles() {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "JLwMF"; // JobLauncher with Multiple Files
@@ -854,23 +817,17 @@ public class JobLauncherTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation insures that the JobLauncher properly refreshes after
 	 * being issued a reload command.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 //	@Test
 	public void checkDataReload() {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "JLwMF&R.test"; // JobLauncher with Multiple Files
@@ -1001,6 +958,5 @@ public class JobLauncherTester {
 		}
 
 		return;
-		// end-user-code
 	}
 }

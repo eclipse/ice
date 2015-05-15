@@ -39,7 +39,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The MultiLauncher is an Item that is capable of launching a set of multiple
  * jobs. It is a composite Item and requires information about the other job
@@ -77,27 +76,19 @@ import org.eclipse.core.resources.IProject;
  * parallel execution status and the ResourceComponent. I think, ideally, this
  * would be separated out to a couple of separate threads.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MultiLauncher extends Item implements Runnable {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of JobLaunchers that are available to the MultiLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<Item> launchers = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The DataComponent from the Form that is the header of the
 	 * MasterDetailsComponent and contains the Execution Mode information. It
@@ -108,94 +99,66 @@ public class MultiLauncher extends Item implements Runnable {
 	 * </p>
 	 * <p>
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DataComponent executionModeComp;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The MasterDetailsComponent from the Form that contains all of the job
 	 * launch information. The template for this component is set in
 	 * setJobLaunchers() after gathering the information from the Items.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private MasterDetailsComponent jobMasterDetailsComp;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The list of launchers that are currently being executed by the
 	 * MultiLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<Item> runningLaunchers;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An AtomicInteger for storing the current status of the jobs.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicReference<FormStatus> multiLaunchStatus;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An AtomicBoolean that evaluates to true if the launch is being performed
 	 * sequentially and false if not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicBoolean isSequential;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The foremost launcher whose status is FormStatus.NeedsInfo.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Item needyLauncher;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
 	 *            <p>
 	 *            The project space in which the MultiLauncher should manage its
 	 *            data.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public MultiLauncher(IProject projectSpace) {
-		// begin-user-code
 
 		// Setup the super class
 		super(projectSpace);
@@ -206,28 +169,22 @@ public class MultiLauncher extends Item implements Runnable {
 		multiLaunchStatus = new AtomicReference<FormStatus>();
 		multiLaunchStatus.set(FormStatus.InfoError);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets a set of Items that are capable of launching jobs.
 	 * This sets the list of jobs that a client may configure in the launcher's
 	 * Form.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param jobLaunchers
 	 *            <p>
 	 *            The list of launchers available to the MultiLauncher. These
 	 *            are Items with an Item type of Simulation.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setJobLaunchers(ArrayList<Item> jobLaunchers) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<MasterDetailsPair> pairs = null;
@@ -274,11 +231,9 @@ public class MultiLauncher extends Item implements Runnable {
 			jobMasterDetailsComp.setTemplates(pairs);
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides Item.setupForm and creates a Form for the
 	 * MultiLauncher that contains a MasterDetailsComponent and a DataComponent.
@@ -294,14 +249,10 @@ public class MultiLauncher extends Item implements Runnable {
 	 * <p>
 	 * Construction of these pieces is delegated to MultiLauncherForm.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	protected void setupForm() {
-		// begin-user-code
 
 		// Set some particulars
 		setName("MultiLauncher");
@@ -326,17 +277,14 @@ public class MultiLauncher extends Item implements Runnable {
 			i.accept(this);
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs the MultiLauncher to launch the jobs. The only
 	 * valid input for this operation is the word "Launch" and any other string
 	 * will result in failure.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param actionName
 	 *            <p>
@@ -347,11 +295,8 @@ public class MultiLauncher extends Item implements Runnable {
 	 *         The status of the launch or FormStatus.InfoError if the launch
 	 *         fails.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus process(String actionName) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus launcherStatus = FormStatus.InfoError;
@@ -389,27 +334,21 @@ public class MultiLauncher extends Item implements Runnable {
 		multiLaunchStatus.set(launcherStatus);
 
 		return launcherStatus;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides Item.getStatus(). It functions as
 	 * Item.getStatus(), but it must be overridden because the MultiLauncher
 	 * needs to check the status of each running job, not just the current
 	 * running action.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The status. See Item.getStatus() for an exact description.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus getStatus() {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus launcherStatus = FormStatus.InfoError;
@@ -418,27 +357,21 @@ public class MultiLauncher extends Item implements Runnable {
 		launcherStatus = multiLaunchStatus.get();
 
 		return launcherStatus;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides Item.getForm() to return the proper Form for one
 	 * of the launchers if it is needed. Otherwise, it behaves exactly like
 	 * Item.getForm().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The Form.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public Form getForm() {
-		// begin-user-code
 
 		// Local Declarations
 		Form retForm = form;
@@ -463,17 +396,14 @@ public class MultiLauncher extends Item implements Runnable {
 		}
 
 		return retForm;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides Item.submitForm() to make sure that the Form is
 	 * submitted to the proper JobLauncher and not submitted to an Action.
 	 * Otherwise, it behaves exactly like Item.submitForm().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
 	 *            <p>
@@ -482,12 +412,9 @@ public class MultiLauncher extends Item implements Runnable {
 	 * @return <p>
 	 *         The status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public FormStatus submitForm(Form preparedForm) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus launcherStatus = FormStatus.InfoError;
@@ -523,25 +450,19 @@ public class MultiLauncher extends Item implements Runnable {
 		}
 
 		return launcherStatus;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation launches the jobs sequentially. It starts the
 	 * MultiLauncher thread to do this.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The launch status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FormStatus launchSequentially() {
-		// begin-user-code
 
 		// Local Declarations
 		Thread launchThread = new Thread(this);
@@ -553,26 +474,20 @@ public class MultiLauncher extends Item implements Runnable {
 		launchThread.start();
 
 		return FormStatus.Processing;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation launches the jobs in parallel. They jobs are launched
 	 * asynchronously on their own threads, which they manage, so that this
 	 * operation need not be threaded.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The launch status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FormStatus launchInParallel() {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus retVal = FormStatus.InfoError;
@@ -605,16 +520,13 @@ public class MultiLauncher extends Item implements Runnable {
 		launchThread.start();
 
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up a chained input file from a previous job if it is
 	 * required based on the configuration.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param filename
 	 *            <p>
@@ -625,11 +537,8 @@ public class MultiLauncher extends Item implements Runnable {
 	 *            <p>
 	 *            The current job whose form should be reconfigured.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void setupChainedInput(String filename, Item currentJob) {
-		// begin-user-code
 
 		// Local Declarations
 		Form jobForm = null;
@@ -667,16 +576,13 @@ public class MultiLauncher extends Item implements Runnable {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the name of the first output file in the
 	 * ResourceComponent of the job's Form.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param job
 	 *            <p>
@@ -687,11 +593,8 @@ public class MultiLauncher extends Item implements Runnable {
 	 *         The name of the first output file in the ResourceComponent from
 	 *         the Job.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String getOutputFilename(Item job) {
-		// begin-user-code
 
 		// Local Declarations
 		Form jobForm = null;
@@ -714,28 +617,22 @@ public class MultiLauncher extends Item implements Runnable {
 
 		return outputName;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation configures the Forms of the JobLaunchers based on the Form
 	 * of the MultiLauncher. It submits the Forms to the launchers after it
 	 * commits them.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The status of the configuration attempt. It will be
 	 *         FormStatus.InfoError if something goes wrong or
 	 *         FormStatus.ReadyToProcess if everything is OK.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FormStatus configureSubforms() {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
@@ -803,18 +700,14 @@ public class MultiLauncher extends Item implements Runnable {
 		}
 
 		return retStatus;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Runnable#run()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void run() {
-		// begin-user-code
 
 		// Local Declarations
 		Item job = null;
@@ -932,7 +825,6 @@ public class MultiLauncher extends Item implements Runnable {
 			runningLaunchers.clear();
 		}
 
-		// end-user-code
 	}
 
 	/**
@@ -943,7 +835,6 @@ public class MultiLauncher extends Item implements Runnable {
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
 	 */
 	public void visit(MasterDetailsComponent component) {
-		// begin-user-code
 
 		jobMasterDetailsComp = component;
 
@@ -951,7 +842,6 @@ public class MultiLauncher extends Item implements Runnable {
 		if (jobMasterDetailsComp != null) {
 			executionModeComp = jobMasterDetailsComp.getGlobalsComponent();
 		}
-		// end-user-code
 	}
 
 }

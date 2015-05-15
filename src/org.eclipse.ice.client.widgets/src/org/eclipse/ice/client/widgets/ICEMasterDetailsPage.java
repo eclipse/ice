@@ -22,29 +22,21 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is a FormPage that creates a page with as master-details block for
  * manipulating an ICEMasterDetailsComponent. It presents information to users
  * in a way that is consistent with the master-details pattern.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEMasterDetailsPage extends ICEFormPage {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The MasterDetailsComponent that is being rendered and manipulated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private MasterDetailsComponent masterDetailsComponent;
 
@@ -57,11 +49,9 @@ public class ICEMasterDetailsPage extends ICEFormPage {
 	private ICEScrolledPropertiesBlock block;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param editor
 	 *            <p>
@@ -75,35 +65,26 @@ public class ICEMasterDetailsPage extends ICEFormPage {
 	 *            <p>
 	 *            The title of the page.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEMasterDetailsPage(FormEditor editor, String id, String title) {
-		// begin-user-code
 		super(editor, id, title);
 
 		ICEFormEditor = (ICEFormEditor) editor;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides the default/abstract implementation of
 	 * FormPage.createFormContents to create the contents of the
 	 * ICEMasterDetailsPage.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param managedForm
 	 *            <p>
 	 *            The Form widget on which the ICEMasterDetailsPage exists.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
-		// begin-user-code
 
 		// Set the Form
 		final ScrolledForm scrolledForm = managedForm.getForm();
@@ -134,53 +115,40 @@ public class ICEMasterDetailsPage extends ICEFormPage {
 				ICEFormEditor, pageProvider);
 		block.createContent(managedForm);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the MasterDetailsComponent that should be managed by
 	 * the ICEMasterDetailsPage.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
 	 *            <p>
 	 *            The MasterDetailsComponent.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setMasterDetailsComponent(MasterDetailsComponent component) {
-		// begin-user-code
 
 		masterDetailsComponent = component;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the MasterDetailsComponent that is currently
 	 * managed by the ICEMasterDetailsPage.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The MasterDetailsComponent or null if the component has not yet
 	 *         been set in the page.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public MasterDetailsComponent getMasterDetailsComponent() {
-		// begin-user-code
 
 		return masterDetailsComponent;
 
-		// end-user-code
 	}
 
 	/**

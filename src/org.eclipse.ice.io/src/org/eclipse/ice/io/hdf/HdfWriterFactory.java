@@ -20,20 +20,15 @@ import ncsa.hdf.object.h5.H5Group;
 import ncsa.hdf.object.h5.H5Datatype;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The HdfWriterFactory class contains static methods used to write elements to
  * an HDF5 file.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class HdfWriterFactory {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Creates and returns a child H5Group called name for parentH5Group using
 	 * the h5File. If h5File is null or can not be opened, then null is
@@ -41,7 +36,6 @@ public class HdfWriterFactory {
 	 * If parentH5Group is null, then null is returned. If an exception is
 	 * thrown, then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 *            <p>
@@ -58,12 +52,9 @@ public class HdfWriterFactory {
 	 * @return <p>
 	 *         An H5Group called name which is a child of parentH5Group.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static H5Group createH5Group(H5File h5File, String name,
 			H5Group parentH5Group) {
-		// begin-user-code
 
 		// If the file or the name is null, or if the name is the empty string,
 		// return
@@ -114,17 +105,14 @@ public class HdfWriterFactory {
 			return null;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Creates and returns a 64-bit floating point H5Datatype from h5File. If
 	 * h5File is null or can not be opened, then null is returned. If an
 	 * exception is thrown, then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 *            <p>
@@ -133,11 +121,8 @@ public class HdfWriterFactory {
 	 * @return <p>
 	 *         A 64-bit floating point H5Datatype.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static H5Datatype createFloatH5Datatype(H5File h5File) {
-		// begin-user-code
 
 		try {
 
@@ -182,17 +167,14 @@ public class HdfWriterFactory {
 			return null;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Creates and returns an integer H5Datatype from h5File. If h5File is null
 	 * or can not be opened, then null is returned. If an exception is thrown,
 	 * then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 *            <p>
@@ -201,11 +183,8 @@ public class HdfWriterFactory {
 	 * @return <p>
 	 *         A 32-bit integer H5Datatype.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static H5Datatype createIntegerH5Datatype(H5File h5File) {
-		// begin-user-code
 
 		try {
 
@@ -251,11 +230,9 @@ public class HdfWriterFactory {
 			return null;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Writes an Attribute to h5Group called name with a double value using
 	 * h5File. If h5File is null or can not be opened, then false is returned.
@@ -263,7 +240,6 @@ public class HdfWriterFactory {
 	 * is null, then false is returned. If an exception is thrown, then false is
 	 * returned. Otherwise, true is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 *            <p>
@@ -287,12 +263,9 @@ public class HdfWriterFactory {
 	 *         h5Group is null, then false is returned. If an exception is
 	 *         thrown, then false is returned. Otherwise, true is returned.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static boolean writeDoubleAttribute(H5File h5File, H5Group h5Group,
 			String name, double value) {
-		// begin-user-code
 
 		// If the file, h5Group, or the name is null, or if the name is the
 		// empty string, return false
@@ -353,11 +326,9 @@ public class HdfWriterFactory {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Writes an Attribute to h5Group called name with an integer value using
 	 * h5File. If h5File is null or can not be opened, then false is returned.
@@ -365,7 +336,6 @@ public class HdfWriterFactory {
 	 * is null, then false is returned. If an exception is thrown, then false is
 	 * returned. Otherwise, true is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 *            <p>
@@ -389,12 +359,9 @@ public class HdfWriterFactory {
 	 *         h5Group is null, then false is returned. If an exception is
 	 *         thrown, then false is returned. Otherwise, true is returned.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static boolean writeIntegerAttribute(H5File h5File, H5Group h5Group,
 			String name, int value) {
-		// begin-user-code
 
 		// If the file, h5Group, or the name is null, or if the name is the
 		// empty string, return false
@@ -454,11 +421,9 @@ public class HdfWriterFactory {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Writes an Attribute to h5Group called name with a String value using
 	 * h5File. If h5File is null or can not be opened, then false is returned.
@@ -467,7 +432,6 @@ public class HdfWriterFactory {
 	 * thrown, then false is returned. If h5Group is null, then false is
 	 * returned. Otherwise, true is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 *            <p>
@@ -492,12 +456,9 @@ public class HdfWriterFactory {
 	 *         an exception is thrown, then false is returned. If h5Group is
 	 *         null, then false is returned. Otherwise, true is returned.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static boolean writeStringAttribute(H5File h5File, H5Group h5Group,
 			String name, String value) {
-		// begin-user-code
 
 		// If the file, h5Group, or the name is null, or if the name is the
 		// empty string, return false
@@ -572,6 +533,5 @@ public class HdfWriterFactory {
 		}
 
 		return true;
-		// end-user-code
 	}
 }

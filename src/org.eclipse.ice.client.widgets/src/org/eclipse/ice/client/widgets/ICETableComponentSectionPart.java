@@ -121,11 +121,9 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Return the ArrayList of Entries for this row.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		public List<Entry> getRowWrapper() {
@@ -134,34 +132,28 @@ public class ICETableComponentSectionPart extends SectionPart implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * ICECellLabelProvider is a subclass of CellLabelProvider that keeps track
 	 * of the current column index. This enables the correct display of tool
 	 * tips that correspond to cells in the table
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 */
 	private class ICECellLabelProvider extends CellLabelProvider {
 
 		//
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * The index of the table column this CellLabelProvider corresponds to.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		private int tableColumn;
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * The Constructor, used to inject the current column index
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param index
 		 *            <p>
@@ -178,13 +170,11 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Update is called whenever data is entered into the cell. Current
 		 * implementation simply sets the text as what's currently the value on
 		 * the Entry
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param cell
 		 *            <p>
@@ -199,12 +189,10 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Return the tool tip when a MouseHover event occurs. Current
 		 * implementation displays the proper Entry's description attribute.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param element
 		 *            <p>
@@ -219,11 +207,9 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Set the tool tip shift from the Mouse pointer.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param object
 		 * 
@@ -234,11 +220,9 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Set the time it should take to pop up the tool tip.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param object
 		 * 
@@ -249,11 +233,9 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Set the time the tool tip should stay displayed.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param object
 		 * 
@@ -265,11 +247,9 @@ public class ICETableComponentSectionPart extends SectionPart implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param section
 	 *            <p>
@@ -284,12 +264,9 @@ public class ICETableComponentSectionPart extends SectionPart implements
 	 *            <p>
 	 *            The ManagedForm for the Section.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICETableComponentSectionPart(Section section, FormEditor formEditor,
 			IManagedForm managedForm) {
-		// begin-user-code
 		super(section);
 
 		// Set the ManagedForm
@@ -303,26 +280,20 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		// FIXME is this safe??? SFH
 		editor = (ICEFormEditor) formEditor;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the TableComponent that should be rendered, updated
 	 * and monitored by the ICESectionPart.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param table
 	 *            <p>
 	 *            The TableComponent that should be rendered by the SectionPart.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setTableComponent(TableComponent table) {
-		// begin-user-code
 
 		// If table is null or if the table's row template has not been set,
 		// return
@@ -336,42 +307,30 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		tableComponent.register(this);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the TableComponent that is currently rendered,
 	 * updated and monitored by the ICESectionPart.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The TableComponent that is rendered by the SectionPart.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public TableComponent getTableComponent() {
-		// begin-user-code
 		return tableComponent;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation reads the TableComponent assigned to this SectionPart and
 	 * renders the view of that data for the user.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void renderSection() {
-		// begin-user-code
 		// Local Declarations
 		Section section = getSection();
 
@@ -404,22 +363,16 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		section.setClient(sectionClient);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations sets up the add and delete row buttons for the
 	 * TableViewer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupButtons() {
-		// begin-user-code
 
 		// Checks to make sure the sectionClient is set. If not, returns and
 		// does not set up the buttons
@@ -524,21 +477,15 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		// Applies this instance of GridData to the deleteButton
 		deleteButton.setLayoutData(gridData3);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the TableViewer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupTableViewer() {
-		// begin-user-code
 
 		// Return if the sectionClient is null
 		if (sectionClient == null) {
@@ -685,22 +632,16 @@ public class ICETableComponentSectionPart extends SectionPart implements
 				});
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates the content provider that sets up the rows of the
 	 * TableViewer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void attachContentProvider() {
-		// begin-user-code
 
 		// If the tableComponentViewer has not been initialized, return
 		if (this.tableComponentViewer == null) {
@@ -732,22 +673,16 @@ public class ICETableComponentSectionPart extends SectionPart implements
 				});
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation attaches the CellModifiers to the TableViewer so that
 	 * Cells may be edited.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void attachCellModifiers() {
-		// begin-user-code
 		// If the tableComponentViewer has not been initialized, return
 		if (this.tableComponentViewer == null) {
 			return;
@@ -836,7 +771,6 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		});
 
 		return;
-		// end-user-code
 	}
 
 	/*
@@ -855,11 +789,8 @@ public class ICETableComponentSectionPart extends SectionPart implements
 	 * (non-Javadoc)
 	 * 
 	 * @see IUpdateableListener#update(Component component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(IUpdateable component) {
-		// begin-user-code
 
 		// Updating the view since the underlying data has changed
 
@@ -923,7 +854,6 @@ public class ICETableComponentSectionPart extends SectionPart implements
 			}
 		});
 
-		// end-user-code
 	}
 
 	/**

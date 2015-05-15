@@ -15,7 +15,6 @@ package org.eclipse.ice.datastructures.form.geometry;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Interface describing a type of solid in the geometry editor
  * </p>
@@ -23,38 +22,29 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
  * Each IShape is a node in the CSG tree and can affect the appearance of the
  * final surface or volume mesh when processed with the MeshKit.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IShape extends Component {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a copy of the transformation matrix associated with this shape
 	 * node
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The transformation matrix applied to this node in the CSG tree
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Transformation getTransformation();
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Replaces the transformation matrix with a copy of the given Matrix4x4
 	 * </p>
 	 * <p>
 	 * Returns whether the setting was successful
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param transformation
 	 *            <p>
@@ -64,20 +54,16 @@ public interface IShape extends Component {
 	 *         True if setting the transformation was successful, false
 	 *         otherwise
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setTransformation(Transformation transformation);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the value associated with the property key
 	 * </p>
 	 * <p>
 	 * If the key does not exist, this operation returns null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param key
 	 *            <p>
@@ -86,13 +72,10 @@ public interface IShape extends Component {
 	 * @return <p>
 	 *         The desired value, or null if the key does not exist
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getProperty(String key);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the property value associated with the key string
 	 * </p>
@@ -101,7 +84,6 @@ public interface IShape extends Component {
 	 * the property list. If it exists, find and replace the property value with
 	 * the new one.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param key
 	 *            <p>
@@ -114,20 +96,16 @@ public interface IShape extends Component {
 	 * @return <p>
 	 *         True if the property setting is valid, false otherwise
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setProperty(String key, String value);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the value associated with the key in the properties list
 	 * </p>
 	 * <p>
 	 * This operation returns whether the key was found and removed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param key
 	 *            <p>
@@ -136,13 +114,10 @@ public interface IShape extends Component {
 	 * @return <p>
 	 *         True if the value was found and removed, false otherwise
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeProperty(String key);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Calls back onto the visitor's visit() operation, revealing the concrete
 	 * type of the IShape
@@ -152,31 +127,24 @@ public interface IShape extends Component {
 	 * of the visitor pattern to avoid conflicts with the Component::accept()
 	 * operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The IShapeVisitor to call back in order to reveal the type of
 	 *            this IShape
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void acceptShapeVisitor(IShapeVisitor visitor);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the parent associated with this shape, or null if the shape does
 	 * not have a parent
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The IShape's parent
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IShape getParent();
 }

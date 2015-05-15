@@ -25,32 +25,23 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A class that implements the IEntryContentProvider interface.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "BasicEntryContentProvider")
 public class BasicEntryContentProvider extends ICEObject implements
 		IEntryContentProvider {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default value of the entry.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String defaultValue;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A list of allowed values for entry. If the allowedValueType is discrete,
 	 * there can be one to many allowed values. If the allowedValueType is
@@ -58,28 +49,20 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * be smaller than the second. If the allowedValueType is undefined, then no
 	 * allowedvalues (empty list) should be declared.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<String> allowedValues;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the Entry that is the parent of this Entry. Parent Entries
 	 * are used, for example, to create dependencies among Entries such that
 	 * some subset of the Entries will not become available to update until the
 	 * parent notifies them that they should be ready.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String parent;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The tag of an Entry is a secondary descriptive value that may be used to
 	 * "tag" an Entry with a small note or additional value. This information
@@ -88,55 +71,38 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * writing to a file or stream where human readability is less of a factor
 	 * than the ability to parse the stream, (such as key-value pairs).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String tag;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AllowedValueType allowedValueType;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor. Sets the default values accordingly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public BasicEntryContentProvider() {
-		// begin-user-code
 		this.defaultValue = "";
 		this.allowedValues = new ArrayList<String>();
 		this.allowedValueType = AllowedValueType.Undefined;
 		parent = "orphan";
 		tag = null;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 		int hashCode = 0;
 
 		// Get ICEObject's hashCode
@@ -151,22 +117,17 @@ public class BasicEntryContentProvider extends ICEObject implements
 
 		return hashCode;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#getAllowedValues()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "AllowedValues")
 	public ArrayList<String> getAllowedValues() {
-		// begin-user-code
 
 		return this.allowedValues;
-		// end-user-code
 	}
 
 	/**
@@ -174,43 +135,31 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#setAllowedValues(ArrayList<String>
 	 *      allowedValues)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setAllowedValues(ArrayList<String> allowedValues) {
-		// begin-user-code
 		if (allowedValues != null) {
 			this.allowedValues = allowedValues;
 		}
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#getDefaultValue()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute(name = "DefaultValue")
 	public String getDefaultValue() {
-		// begin-user-code
 		return this.defaultValue;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#getAllowedValueType()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "AllowedValueType")
 	public AllowedValueType getAllowedValueType() {
-		// begin-user-code
 		return this.allowedValueType;
-		// end-user-code
 	}
 
 	/**
@@ -218,55 +167,40 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#setAllowedValueType(AllowedValueType
 	 *      allowedValueType)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setAllowedValueType(AllowedValueType allowedValueType) {
-		// begin-user-code
 		if (allowedValueType != null) {
 			this.allowedValueType = allowedValueType;
 		}
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#setParent(String parentName)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setParent(String parentName) {
-		// begin-user-code
 		if (parentName != null) {
 			parent = parentName;
 		}
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#getParent()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute(name = "Parent")
 	public String getParent() {
-		// begin-user-code
 		return parent;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#equals(IEntryContentProvider otherProvider)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(IEntryContentProvider otherProvider) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean retVal = false;
@@ -299,25 +233,19 @@ public class BasicEntryContentProvider extends ICEObject implements
 		}
 		return retVal;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies another BasicEntryContentProvider.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherProvider
 	 *            <p>
 	 *            The provider to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(BasicEntryContentProvider otherProvider) {
-		// begin-user-code
 		// if otherProvider is null, return
 		if (otherProvider == null) {
 			return;
@@ -338,24 +266,18 @@ public class BasicEntryContentProvider extends ICEObject implements
 		this.parent = otherProvider.getParent();
 		this.tag = otherProvider.getTag();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation provides a deep copy of the BasicEntryContentProvider.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         A clone of the BasicEntryContentProvider.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Create a new instance of the object, copy contents, and return it
 		BasicEntryContentProvider contentProvider = new BasicEntryContentProvider();
@@ -363,50 +285,37 @@ public class BasicEntryContentProvider extends ICEObject implements
 
 		return contentProvider;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#getTag()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute(name = "Tag")
 	public String getTag() {
-		// begin-user-code
 		return tag;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#setTag(String tagValue)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setTag(String tagValue) {
-		// begin-user-code
 		tag = tagValue;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IEntryContentProvider#setDefaultValue(String defaultValue)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setDefaultValue(String defaultValue) {
-		// begin-user-code
 		if (defaultValue != null) {
 			this.defaultValue = defaultValue;
 		}
 
-		// end-user-code
 	}
 }

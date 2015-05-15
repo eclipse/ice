@@ -21,31 +21,22 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the accessors of the ICEGeometryPage.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author gqx
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEGeometryPageTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the accessors for getting and setting a geometryComponent in
 	 * geometryPage.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGeometryPageAccessors() {
-		// begin-user-code
 
 		// Get two GeometryComponent to check equality
 		GeometryComponent geometryComponent = new GeometryComponent();
@@ -63,6 +54,5 @@ public class ICEGeometryPageTester {
 		// Check the equality
 		assertTrue(geometryComponent.equals(otherGeometryComponent));
 
-		// end-user-code
 	}
 }

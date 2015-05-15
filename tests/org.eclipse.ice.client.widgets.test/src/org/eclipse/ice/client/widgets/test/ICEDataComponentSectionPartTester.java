@@ -31,43 +31,31 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ICEDataComponentSectionPart class.
  * It only tests the accessor operations for the DataComponent and the update
  * routine from IComponentListener.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEDataComponentSectionPartTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICEDataComponentSectionPart iCESectionPart;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ICESectionPart to make sure that it can store a
 	 * DataComponent. This operation also tests the update operation of
 	 * ICESectionPart by modifying a DataComponent and insuring that the
 	 * ICESectionPart gets the update.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkDataComponent() {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent comp1 = new DataComponent(), comp2 = null;
@@ -120,6 +108,5 @@ public class ICEDataComponentSectionPartTester {
 
 		return;
 
-		// end-user-code
 	}
 }

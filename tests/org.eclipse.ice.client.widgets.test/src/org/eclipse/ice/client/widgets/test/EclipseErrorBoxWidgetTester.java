@@ -19,39 +19,27 @@ import org.junit.Test;
 import org.eclipse.ice.client.widgets.EclipseErrorBoxWidget;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ErrorBoxWidgetTester is responsible for testing the ErrorBoxWidget.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EclipseErrorBoxWidgetTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private EclipseErrorBoxWidget eclipseErrorBoxWidget;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the error string getters and setters to make sure
 	 * that ErrorBoxWidget can properly manage the error string.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkErrorStrings() {
-		// begin-user-code
 
 		// Local Declarations
 		String testString = "You'll have to use those models.";
@@ -62,6 +50,5 @@ public class EclipseErrorBoxWidgetTester {
 		eclipseErrorBoxWidget.setErrorString(testString);
 		assertEquals(eclipseErrorBoxWidget.getErrorString(), testString);
 
-		// end-user-code
 	}
 }

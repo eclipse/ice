@@ -55,9 +55,7 @@ public class HdfReaderFactoryTester {
 	 */
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/**
@@ -68,7 +66,6 @@ public class HdfReaderFactoryTester {
 	 */
 	@Test
 	public void checkGetters() {
-		// begin-user-code
 
 		// Local declarations
 		String separator = System.getProperty("file.separator");
@@ -240,7 +237,6 @@ public class HdfReaderFactoryTester {
 		// Delete file
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
@@ -251,7 +247,6 @@ public class HdfReaderFactoryTester {
 	 */
 	@Test
 	public void checkReaders() {
-		// begin-user-code
 
 		// Local declarations
 		String separator = System.getProperty("file.separator");
@@ -450,6 +445,5 @@ public class HdfReaderFactoryTester {
 			fail();
 		}
 
-		// end-user-code
 	}
 }

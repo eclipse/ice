@@ -13,36 +13,24 @@
 package org.eclipse.ice.iclient.uiwidgets;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>This widget streams output text to a client. Text that is posted to this widget can not be retrieved and it is an append-only interface.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IStreamingTextWidget {
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation sets the label or name of the streaming output widget that should be displayed to clients.</p>
-	 * <!-- end-UML-doc -->
 	 * @param label <p>The label</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setLabel(String label);
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation appends text to the output of the streaming text widget.</p>
-	 * <!-- end-UML-doc -->
 	 * @param sText <p>The text that should be displayed.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void postText(String sText);
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation directs the IStreamingTextWidget to display. It must be implemented by subclasses that code to a specific UI API (SWT, Swing).</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void display();
 }

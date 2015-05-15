@@ -35,44 +35,32 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ICEDataComponentSectionPart class.
  * It only tests the accessor operations for the TableComponent and the update
  * routine from IComponentListener.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 
 public class ICETableComponentSectionPartTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICETableComponentSectionPart ICETableComponentSectionPart;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ICESectionPart to make sure that it can store a
 	 * TableComponent. This operation also tests the update operation of
 	 * ICESectionPart by modifying a TableComponent and insuring that the
 	 * ICESectionPart gets the update.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkTableComponent() {
-		// begin-user-code
 
 		// Local Declarations
 		TableComponent tableComponent = new TableComponent();
@@ -267,6 +255,5 @@ public class ICETableComponentSectionPartTester {
 		// close display
 		display.dispose();
 
-		// end-user-code
 	}
 }

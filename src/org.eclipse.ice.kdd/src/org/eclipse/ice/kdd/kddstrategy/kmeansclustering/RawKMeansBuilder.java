@@ -24,28 +24,20 @@ import org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The RawKMeansBuilder is a realization of the KDDStrategyBuilder and is used
  * to validate incoming data and return a new instance of the RawKMeansStrategy.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class RawKMeansBuilder implements IStrategyBuilder {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the RawKMeansStrategy to build and return.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private RawKMeansStrategy kmeans = null;
 
@@ -53,41 +45,30 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 	 * (non-Javadoc)
 	 * 
 	 * @see IStrategyBuilder#build(ArrayList<IDataProvider> data)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public KDDStrategy build(ArrayList<IDataProvider> data) {
-		// begin-user-code
 		if (kmeans != null) {
 			return kmeans;
 		} else {
 			return null;
 		}
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IStrategyBuilder#getStrategyName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getStrategyName() {
-		// begin-user-code
 		return "Raw KMeans Clustering";
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IStrategyBuilder#isAvailable(ArrayList<IDataProvider> dataToCheck)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean isAvailable(ArrayList<IDataProvider> dataToCheck) {
-		// begin-user-code
 
 		// Make sure we have only one data provider
 		if (dataToCheck.isEmpty() || dataToCheck.size() != 1) {
@@ -147,20 +128,15 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 				nCols));
 
 		return true;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IStrategyBuilder#getStrategyPropertiesAsEntries()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Entry> getStrategyPropertiesAsEntries() {
-		// begin-user-code
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
 		return retEntries;
-		// end-user-code
 	}
 }

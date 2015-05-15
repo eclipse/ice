@@ -26,40 +26,30 @@ import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is a factory class to create Composites that contain the Geometry
  * widgets. It is meant to be implemented by whichever version of the Geometry
  * widgets is loaded, whether RAP or RCP, but called only once from the
  * ICEGeometryPage.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings, Taylor Patterson, Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class GeometryCompositeFactory {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The actual JME3 application running the geometry under the hood.
 	 * </p>
 	 * 
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private SimpleApplication simpleApplication;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation renders the GeometryComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parent
 	 *            <p>
@@ -69,12 +59,9 @@ public class GeometryCompositeFactory {
 	 *            <p>
 	 *            The GeometryComponent that should be rendered.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void renderGeometryComposite(Composite parent,
 			GeometryComponent geometryComp) {
-		// begin-user-code
 
 		// Set JME3 application settings
 		AppSettings settings = new AppSettings(true);
@@ -121,7 +108,6 @@ public class GeometryCompositeFactory {
 		});
 
 		return;
-		// end-user-code
 	}
 
 	/**

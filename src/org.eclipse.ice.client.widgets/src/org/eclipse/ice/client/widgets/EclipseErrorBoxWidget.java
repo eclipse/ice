@@ -18,42 +18,30 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>This class implements IErrorBox interface to display an error box using elements of SWT/JFace and the Eclipse Rich Client Platform.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EclipseErrorBoxWidget implements IErrorBox {
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>The error string.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String errorString;
 
 	/** 
 	 * (non-Javadoc)
 	 * @see IErrorBox#setErrorString(String error)
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setErrorString(String error) {
-		// begin-user-code
 		errorString = error;
-		// end-user-code
 	}
 
 	/** 
 	 * (non-Javadoc)
 	 * @see IErrorBox#getErrorString()
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getErrorString() {
-		// begin-user-code
 		return errorString;
-		// end-user-code
 	}
 
 	/**

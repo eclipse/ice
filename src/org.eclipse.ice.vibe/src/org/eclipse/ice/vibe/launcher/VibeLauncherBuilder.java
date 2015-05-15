@@ -18,9 +18,7 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>This class inherits from ItemBuilder.  It builds the VibeLauncher.  </p>
- * <!-- end-UML-doc -->
  * @author s4h
  */
 public class VibeLauncherBuilder implements ItemBuilder {

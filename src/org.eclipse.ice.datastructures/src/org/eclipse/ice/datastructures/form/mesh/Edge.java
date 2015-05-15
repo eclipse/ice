@@ -32,17 +32,13 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class represents a single edge in a polygon. Each edge must be
  * registered with two Vertices. The default behavior of an Edge is that of a
  * straight line between the two vertices.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Edge")
 @XmlSeeAlso({ PolynomialEdge.class, BezierEdge.class })
@@ -50,59 +46,42 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An array holding the start and end vertices for this edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Vertex")
 	private final Vertex[] vertices;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The length of the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	private float length;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A lock for updating the edge. It is a read/write lock, meaning multiple
 	 * reads can occur simultaneously, whereas writes block the lock.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private final ReentrantReadWriteLock updateLock;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A nullary constructor. This creates an Edge with default (invalid)
 	 * vertices and initializes any fields necessary for the minimal function of
 	 * an Edge. Required for persistence.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Edge() {
-		// begin-user-code
 
 		// Call the super constructor.
 		super();
@@ -121,18 +100,15 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 		updateLock = new ReentrantReadWriteLock(true);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default constructor. It sets the edge's vertices based on the
 	 * supplied starting and ending vertices. The vertices should be different
 	 * and must have their IDs set to a non-negative integer. It registers the
 	 * edge as a listener with the provided vertices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param start
 	 *            <p>
@@ -142,11 +118,8 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 	 *            <p>
 	 *            The second Vertex in this Edge.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Edge(Vertex start, Vertex end) {
-		// begin-user-code
 
 		// The expected behavior is that if the supplied Vertices are invalid,
 		// then the edge's default vertices become an empty list and its length
@@ -177,28 +150,22 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 		end.register(this);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This constructor takes a collection of vertices. The collection should
 	 * contain only two different vertices. They must have their IDs set to a
 	 * non-negative integer. It registers the edge as a listener with the
 	 * provided vertices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param vertices
 	 *            <p>
 	 *            The two Vertices this Edge connects.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Edge(ArrayList<Vertex> vertices) {
-		// begin-user-code
 
 		// The expected behavior is that if the supplied ArrayList of Vertices
 		// is invalid, then the edge's default vertices become an empty list and
@@ -239,84 +206,60 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 		end.register(this);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the IDs of the vertices this edge connects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The IDs of the vertices this edge connects.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int[] getVertexIds() {
-		// begin-user-code
 
 		// Return a copy of the vertex IDs.
 		return new int[] { vertices[0].getId(), vertices[1].getId() };
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the location of the first vertex for this edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The location of the edge's starting vertex.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public float[] getStartLocation() {
-		// begin-user-code
 		return vertices[0].getLocation();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the location of the last vertex for this edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The location of the edge's ending vertex.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public float[] getEndLocation() {
-		// begin-user-code
 		return vertices[1].getLocation();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the length of the Edge. The default value is the Euclidean distance
 	 * between the Edge's vertices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         A float representing the length of the Edge.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public float getLength() {
-		// begin-user-code
 
 		// Set a default return value in case the length cannot be read.
 		float length = 0f;
@@ -330,14 +273,12 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 		}
 
 		return length;
-		// end-user-code
 	}
 
 	/**
 	 * Updates the Edge if the Vertex's ID matches one of its stored Vertices.
 	 */
 	public void update(IUpdateable component) {
-		// begin-user-code
 
 		// Check for null.
 		if (component != null) {
@@ -374,24 +315,18 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the Edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based on super's hashCode.
 		int hash = super.hashCode();
@@ -407,16 +342,13 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 			hash = 31 * hash + vertices[(i + j) % 2].hashCode();
 		}
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this Edge and another
 	 * Edge. It returns true if the Edges are equal and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -425,11 +357,8 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 	 * @return <p>
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -455,26 +384,20 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a Edge into the current object
 	 * using a deep copy. The copy will not be registered with its vertices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param edge
 	 *            <p>
 	 *            The Object from which the values should be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(Edge edge) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (edge == null) {
@@ -493,25 +416,19 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the Edge using a deep copy. The copy
 	 * will not be registered with its vertices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		Edge object = new Edge();
@@ -521,7 +438,6 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
@@ -544,40 +460,29 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method calls the {@link IMeshPartVisitor}'s visit method.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The {@link IMeshPartVisitor} that is visiting this
 	 *            {@link IMeshPart}.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void acceptMeshVisitor(IMeshPartVisitor visitor) {
-		// begin-user-code
 		if (visitor != null) {
 			visitor.visit(this);
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Recomputes the length of the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void updateLength() {
-		// begin-user-code
 		updateLock.writeLock().lock();
 		try {
 			// Recompute the length of the edge.
@@ -595,6 +500,5 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 		}
 
 		return;
-		// end-user-code
 	}
 }

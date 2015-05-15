@@ -38,32 +38,23 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the Polygon class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PolygonTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of the Polygon class and the
 	 * functionality inherited from ICEObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		Vertex vertex;
 		Edge edge;
@@ -231,23 +222,17 @@ public class PolygonTester {
 		/* -------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the ability to set and get fluid, thermal, and
 	 * passive scalar boundary conditions on edges of a polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkBoundaryConditions() {
-		// begin-user-code
 
 		/**
 		 * Boundary conditions can only be get or set for valid edges. The first
@@ -409,22 +394,16 @@ public class PolygonTester {
 		/* ---------------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the PolygonProperties getter and setter.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkPolygonProperites() {
-		// begin-user-code
 
 		// Create a Polygon and PolygonProperties for testing
 		Polygon polygon = new Polygon();
@@ -439,23 +418,17 @@ public class PolygonTester {
 		assertTrue(polygon.getPolygonProperties().equals(customProps));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks Polygon to ensure that it can be correctly visited
 	 * by a realization of the IMeshPartVisitor interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		IMeshPart part = new Polygon();
 
@@ -476,23 +449,17 @@ public class PolygonTester {
 		// -------------------------------------------------- //
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation ensures that notifications are sent out to listeners if
 	 * the polygon's properties have been changed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkNotifications() {
-		// begin-user-code
 
 		/**
 		 * We only need to check the three boundary condition setters. First,
@@ -568,7 +535,6 @@ public class PolygonTester {
 		/* ------------------------------------------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -580,7 +546,6 @@ public class PolygonTester {
 	 */
 	@Test
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
-		// begin-user-code
 
 		// We need edges and vertices to supply to created Polygons.
 		ArrayList<Edge> edges = new ArrayList<Edge>();
@@ -640,23 +605,17 @@ public class PolygonTester {
 		assertTrue(polygon.equals(loadedPolygon));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Polygon to insure that its equals() and
 	 * hashCode() operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// We need edges and vertices to supply to created Polygons.
 		ArrayList<Edge> edges = new ArrayList<Edge>();
@@ -728,23 +687,17 @@ public class PolygonTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Polygon to ensure that its copy() and clone()
 	 * operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// We need edges and vertices to supply to created Polygons.
 		ArrayList<Edge> edges = new ArrayList<Edge>();
@@ -804,6 +757,5 @@ public class PolygonTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

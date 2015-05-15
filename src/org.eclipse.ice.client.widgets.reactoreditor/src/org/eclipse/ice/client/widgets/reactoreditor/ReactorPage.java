@@ -217,7 +217,6 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 	 *            A new Component for this page to manage
 	 */
 	public void addComponent(Component component) {
-		// begin-user-code
 
 		if (component != null) {
 			// Visit the components so that they can be sorted
@@ -225,7 +224,6 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -237,7 +235,6 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 	 */
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
-		// begin-user-code
 
 		// Local Declarations
 		final ScrolledForm form = managedForm.getForm();
@@ -281,7 +278,6 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 		// ------------------------------------------ //
 
 		return;
-		// end-user-code
 	}
 
 	/**

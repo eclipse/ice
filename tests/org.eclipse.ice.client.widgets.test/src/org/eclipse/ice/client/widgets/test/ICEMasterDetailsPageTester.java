@@ -25,35 +25,26 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ICEMasterDetailsPage and its
  * associates. It is one of the only classes in ICE that tests multiple other
  * classes in the same test suite, but this makes sense because of the specific
  * nature of the additional classes.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEMasterDetailsPageTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the component getter and setter on the
 	 * ICEMasterDetailsPage class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkMasterDetailsPageAccessors() {
-		// begin-user-code
 
 		// Get two MasterDetailsComponent to check equality
 		MasterDetailsComponent masterDetailsComponent = new MasterDetailsComponent();
@@ -72,23 +63,17 @@ public class ICEMasterDetailsPageTester {
 		// Check the equality
 		assertTrue(masterDetailsComponent.equals(otherMasterDetailsComponent));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the component getter on the ICEDetailsPageProvider
 	 * class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkDetailsPageProvider() {
-		// begin-user-code
 
 		// Get two MasterDetailsComponent to check equality
 		MasterDetailsComponent masterDetailsComponent = new MasterDetailsComponent();
@@ -104,23 +89,17 @@ public class ICEMasterDetailsPageTester {
 		// Check the equality
 		assertTrue(masterDetailsComponent.equals(otherMasterDetailsComponent));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the providers getters and setters on the
 	 * ICEScrolledPropertiesBlock class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkScrolledPropertiesBlock() {
-		// begin-user-code
 
 		// Get two ICEDetailsPageProvider to check equality
 		MasterDetailsComponent masterDetailsComponent = new MasterDetailsComponent();
@@ -140,23 +119,17 @@ public class ICEMasterDetailsPageTester {
 		// Check the equality
 		assertTrue(pageProvider.equals(otherPageProvider));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the component getter on the
 	 * ICEDataComponentDetailsPage class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkDataComponentDetailsPage() {
-		// begin-user-code
 
 		// Get two MasterDetailsComponent to check equality
 		DataComponent dataComponent = new DataComponent();
@@ -172,6 +145,5 @@ public class ICEMasterDetailsPageTester {
 		// Check the equality
 		assertTrue(dataComponent.equals(otherDataComponent));
 
-		// end-user-code
 	}
 }

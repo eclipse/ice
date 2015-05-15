@@ -22,46 +22,31 @@ import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.datastructures.form.Form;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ICEFormEditor.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEFormEditorTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICEFormEditor ICEFormEditor;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TestListener testListener;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is run before the tests to setup the ICEFormEditor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void before() {
-		// begin-user-code
 
 		// Allocate the FormWidget
 		ICEFormEditor = new ICEFormEditor();
@@ -73,23 +58,17 @@ public class ICEFormEditorTester {
 		ICEFormEditor.registerProcessListener(testListener);
 		ICEFormEditor.registerUpdateListener(testListener);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ICEFormEditor to make sure that it can properly
 	 * handle update event notifications.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUpdateEvents() {
-		// begin-user-code
 
 		// Test updates 21 times
 		for (int i = 0; i < 21; i++) {
@@ -103,23 +82,17 @@ public class ICEFormEditorTester {
 			testListener.reset();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ICEFormEditor to make sure that it can properly
 	 * handle update event notifications.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkProcessEvents() {
-		// begin-user-code
 
 		// Test processing 23 times
 		for (int i = 0; i < 23; i++) {
@@ -136,6 +109,5 @@ public class ICEFormEditorTester {
 		// FIXME! - How should cancellation be tested?
 
 		return;
-		// end-user-code
 	}
 }

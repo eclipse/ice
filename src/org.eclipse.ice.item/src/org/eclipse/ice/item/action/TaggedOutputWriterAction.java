@@ -22,7 +22,6 @@ import java.util.Hashtable;
 import org.eclipse.ice.datastructures.form.FormStatus;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The TaggedOutputWriterAction will write a collection of key-value pairs to a
  * file. It requires that each key-value pair be listed in the dictionary and it
@@ -32,27 +31,18 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * that the size of the file is relatively small and that it can therefore be
  * written quickly enough that a separate thread is not needed.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class TaggedOutputWriterAction extends Action {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public TaggedOutputWriterAction() {
-		// begin-user-code
 		super();
-		// end-user-code
 	}
 
 	/**
@@ -61,7 +51,6 @@ public class TaggedOutputWriterAction extends Action {
 	 * @see Action#execute(Dictionary<Object> dictionary)
 	 */
 	public FormStatus execute(Dictionary<String, String> dictionary) {
-		// begin-user-code
 
 		// Local Declarations
 		String fileName = null, key = null, value = null;
@@ -100,20 +89,15 @@ public class TaggedOutputWriterAction extends Action {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Action#cancel()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus cancel() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return FormStatus.InfoError;
-		// end-user-code
 	}
 }

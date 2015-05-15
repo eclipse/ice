@@ -66,9 +66,7 @@ public class ReflectivityModel extends Model {
 	 */
 	@Override
 	public FormStatus process(String actionName) {
-		// begin-user-code
 		return super.process(actionName);
-		// end-user-code
 	}
 
 	/*
@@ -78,7 +76,6 @@ public class ReflectivityModel extends Model {
 	 */
 	@Override
 	protected void setupForm() {
-		// begin-user-code
 
 		// Create an empty stream for the output files
 
@@ -174,7 +171,6 @@ public class ReflectivityModel extends Model {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/*
@@ -184,7 +180,6 @@ public class ReflectivityModel extends Model {
 	 */
 	@Override
 	protected void setupItemInfo() {
-		// begin-user-code
 
 		// Local Declarations
 		String desc = "This item builds models for " + "Reflectivity.";
@@ -196,7 +191,6 @@ public class ReflectivityModel extends Model {
 		itemType = ReflectivityModelBuilder.type;
 
 		return;
-		// end-user-code
 	}
 
 	/*

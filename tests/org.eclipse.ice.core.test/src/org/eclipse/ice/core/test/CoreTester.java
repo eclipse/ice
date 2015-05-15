@@ -40,45 +40,31 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * CoreTester tests the functionality of Core. It checks its ability to get a
  * representation of the file system, the ability to set Locations, and the
  * ability to make a client-core connection. It uses an instance FakeItemManager
  * and calls the alternative constructor of Core to inject the dependency.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class CoreTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Core iCECore;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ItemManager fakeItemManager;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void BeforeClass() {
-		// begin-user-code
 
 		// Local Declarations
 		File testDir = new File(".");
@@ -92,23 +78,17 @@ public class CoreTester {
 		iCECore = new Core(fakeItemManager);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Core by insuring that instances of ItemBuilder
 	 * can be registered with the class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemRegistration() {
-		// begin-user-code
 
 		// Local Declarations
 		FakeGeometryBuilder fakeGeometryBuilder = new FakeGeometryBuilder();
@@ -160,11 +140,9 @@ public class CoreTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Core by creating a new Item and making sure
 	 * that it is available from the ItemManager. It also checks this
@@ -175,14 +153,10 @@ public class CoreTester {
 	 * getAvailableItemTypes are consistent with those registered with the
 	 * ItemManager that is used in the test.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemCreation() {
-		// begin-user-code
 
 		// Local Declarations
 		FakeGeometryBuilder fakeGeometryBuilder = new FakeGeometryBuilder();
@@ -243,22 +217,16 @@ public class CoreTester {
 				+ iCECore.getItemList().size());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Core by ensuring that Items can be updated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemUpdates() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> types = null;
@@ -313,11 +281,9 @@ public class CoreTester {
 		assertEquals(3, testForm.getNumberOfComponents());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Core to make sure that it can process Items. It
 	 * creates a FakeItem through the API and then directs the Core to process
@@ -326,14 +292,10 @@ public class CoreTester {
 	 * and confirms that the default name of the file is set according to the
 	 * default in the class documentation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemProcessing() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> types = null;
@@ -427,23 +389,17 @@ public class CoreTester {
 		assertEquals(FormStatus.ReadyToProcess, status);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Core to make sure that it can import files into
 	 * the project space.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFileImports() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> types = null;
@@ -556,23 +512,17 @@ public class CoreTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is responsible for testing the ability of the Core to post
 	 * updates from the ICEUpdater.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRealtimeUpdates() {
-		// begin-user-code
 
 		// Local Declarations
 		FakeGeometryBuilder fakeGeometryBuilder = new FakeGeometryBuilder();
@@ -609,52 +559,39 @@ public class CoreTester {
 		assertNull(iCECore.postUpdateMessage("not&realContent"));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * checkFS() checks Core's ability to return a valid file system
 	 * representation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFS() {
-		// begin-user-code
 
 		// Assert getFileSystem returns a valid Form
 		assertNotNull(this.iCECore.getFileSystem(1));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * checkConnection() checks Core's ability to make a client connection with
 	 * a given username, password, and Client ID.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConnection() {
-		// begin-user-code
 
 		// Make sure valid connection is made
 		int uID = Integer.parseInt(iCECore.connect());
 		assertTrue(uID > 0);
 
 		return;
-		// end-user-code
 	}
 
 }

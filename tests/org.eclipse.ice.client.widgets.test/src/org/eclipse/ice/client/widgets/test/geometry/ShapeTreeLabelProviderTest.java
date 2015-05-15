@@ -22,31 +22,22 @@ import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests ShapeTreeLabelProvider
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ShapeTreeLabelProviderTest {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that ShapeTreeLabelProvider can be created and initialized
 	 * properly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		// Create a new ShapeTreeLabelProvider and dispose it
 		// Currently there are no assertions to check, but we can make
@@ -55,23 +46,17 @@ public class ShapeTreeLabelProviderTest {
 		ShapeTreeLabelProvider labelProvider = new ShapeTreeLabelProvider();
 		labelProvider.dispose();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that ShapeTreeLabelProvider returns expected images<span
 	 * style="font-family:Serif;"></span>
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetImage() {
-		// begin-user-code
 
 		ShapeTreeLabelProvider labelProvider = new ShapeTreeLabelProvider();
 
@@ -84,22 +69,16 @@ public class ShapeTreeLabelProviderTest {
 		assertNull(labelProvider.getImage(intersection1));
 		assertNull(labelProvider.getImage(null));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that the getText operation returns valid names
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetText() {
-		// begin-user-code
 
 		ShapeTreeLabelProvider labelProvider = new ShapeTreeLabelProvider();
 
@@ -137,6 +116,5 @@ public class ShapeTreeLabelProviderTest {
 
 		assertNull(labelProvider.getText(new Object()));
 
-		// end-user-code
 	}
 }

@@ -28,11 +28,8 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author bkj
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 
@@ -62,28 +59,21 @@ public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 	 * (non-Javadoc)
 	 * 
 	 * @see IStreamingTextWidget#setLabel(String label)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setLabel(String label) {
-		// begin-user-code
 
 		// Set the label
 		consoleLabel = label;
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IStreamingTextWidget#postText(String sText)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void postText(final String sText) {
-		// begin-user-code
 
 		// Must sync with the display thread
 		Display.getDefault().asyncExec(new Runnable() {
@@ -97,18 +87,14 @@ public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 		});
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IStreamingTextWidget#display()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void display() {
-		// begin-user-code
 
 		// Must sync with the display thread
 		Display.getDefault().asyncExec(new Runnable() {
@@ -146,6 +132,5 @@ public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 		});
 
 		return;
-		// end-user-code
 	}
 }

@@ -55,7 +55,6 @@ public class VibeLauncherTester {
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -182,7 +181,6 @@ public class VibeLauncherTester {
 		// check the contents of the hosts
 		assertEquals("localhost", vibeLauncher.getAllHosts().get(0));
 
-		// end-user-code
 	}
 	
 	/**

@@ -26,16 +26,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Eclipse UI view with a series of inputs for manipulating the position and
  * transformation of a selected shape
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class TransformationView extends ViewPart {
 
@@ -44,50 +40,31 @@ public class TransformationView extends ViewPart {
 	 */
 	public static final String ID = "org.eclipse.ice.client.widgets.geometry.TransformationView";
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private RealSpinner[] skewSpinners = new RealSpinner[3];
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private RealSpinner sizeSpinner;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private RealSpinner[] scaleSpinners = new RealSpinner[3];
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private RealSpinner[] rotationSpinners = new RealSpinner[3];
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private RealSpinner[] translateSpinners = new RealSpinner[3];
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The IShape which represents the state of the TransformationView
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IShape currentShape;
 
@@ -97,14 +74,10 @@ public class TransformationView extends ViewPart {
 	private boolean degrees = true;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param enabled
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void setSpinnersEnabled(boolean enabled) {
-		// begin-user-code
 
 		sizeSpinner.getControl().setEnabled(enabled);
 
@@ -120,18 +93,13 @@ public class TransformationView extends ViewPart {
 			translateSpinner.getControl().setEnabled(enabled);
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param parent
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void createPartControl(Composite parent) {
-		// begin-user-code
 
 		// Create a scrolled composite - scroll bars!
 		ScrolledComposite scrolledParent = new ScrolledComposite(parent,
@@ -246,11 +214,9 @@ public class TransformationView extends ViewPart {
 				SWT.DEFAULT));
 		scrolledParent.setShowFocusedControl(true);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the input shape and updates the state of the TransformationView to
 	 * manipulate the input shape's transformation
@@ -259,14 +225,10 @@ public class TransformationView extends ViewPart {
 	 * Passing a null value for the input shape reinitializes and disables all
 	 * the text boxes in the view.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param shape
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setShape(IShape shape) {
-		// begin-user-code
 
 		this.currentShape = shape;
 
@@ -316,17 +278,12 @@ public class TransformationView extends ViewPart {
 
 		setSpinnersEnabled(shape != null);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createListeners() {
-		// begin-user-code
 
 		IWidgetValueProperty property = WidgetProperties.selection();
 
@@ -395,7 +352,6 @@ public class TransformationView extends ViewPart {
 		for (RealSpinner spinner : translateSpinners) {
 			spinner.listen(listener);
 		}
-		// end-user-code
 	}
 
 	@Override

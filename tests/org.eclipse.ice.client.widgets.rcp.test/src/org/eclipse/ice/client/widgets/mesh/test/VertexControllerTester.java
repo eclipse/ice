@@ -30,33 +30,24 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Checks the VertexController for changes to its fields and for connections
  * with its corresponding model (a Vertex).
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class VertexControllerTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the ability to get and set the location of the Vertex associated
 	 * with this controller.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLocation() {
-		// begin-user-code
 
 		/*
 		 * Create a VertexController. Try setting its location to different
@@ -113,23 +104,17 @@ public class VertexControllerTester {
 		// /* ------------------------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equals and hashCode methods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Ignore
 	@Test
 	public void checkEquals() {
-		// begin-user-code
 
 		// Create the parameters for input. It needs an IUpdateable and a
 		// ConcurrentLinkedQueue.
@@ -166,23 +151,17 @@ public class VertexControllerTester {
 		// assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copy and clone methods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Ignore
 	@Test
 	public void checkCopy() {
-		// begin-user-code
 
 		// Create the parameters for input. It needs an IUpdateable and a
 		// ConcurrentLinkedQueue.
@@ -225,6 +204,5 @@ public class VertexControllerTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

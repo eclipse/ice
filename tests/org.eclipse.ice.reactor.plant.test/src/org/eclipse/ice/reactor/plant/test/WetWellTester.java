@@ -30,38 +30,26 @@ import org.eclipse.ice.reactor.plant.WetWell;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class WetWellTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Boolean flag to mark if the PlantComponent was successfully visited.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean wasVisited = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the construction of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		WetWell well = new WetWell();
 		assertEquals(0.0, well.getHeight(), 1e-6);
 		assertEquals(0.0, well.getzIn(), 1e-6);
@@ -76,22 +64,16 @@ public class WetWellTester {
 		assertEquals(0.0, well.getzIn(), 1e-6);
 		assertEquals(0.0, well.getzOut(), 1e-6);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the getting and setting of the component's attributes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkProperties() {
-		// begin-user-code
 		// Create some inputs and outputs
 		PlantComponent input1 = new Pipe();
 		input1.setName("input1");
@@ -129,22 +111,16 @@ public class WetWellTester {
 		assertEquals(33.3, well.getzIn(), 1e-6);
 		assertEquals(23.3, well.getzOut(), 1e-6);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the hashCode and equality methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 		WetWell w1 = new WetWell();
 		w1.setName("w1");
 		w1.setDescription("Description");
@@ -177,22 +153,16 @@ public class WetWellTester {
 		assertFalse(w1.equals(equalW1));
 		assertFalse(equalW1.equals(w1));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 		WetWell w1 = new WetWell();
 		w1.setName("w1");
 		w1.setDescription("Description");
@@ -225,39 +195,27 @@ public class WetWellTester {
 
 		assertFalse(casted == w1);
 		assertTrue(casted.equals(w1));
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks for persistence in the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkPersistence() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// Create a new component to visit.
 		WetWell component = new WetWell();
@@ -310,15 +268,12 @@ public class WetWellTester {
 		assertTrue(component.equals(visitorPlantComponent));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @author w5q
 	 */

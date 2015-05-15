@@ -22,7 +22,6 @@ import ncsa.hdf.object.h5.H5Group;
 import org.eclipse.ice.io.hdf.IHdfWriteable;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The LWRComponentReader class writes an LWRComponent or LWRComposite tree to
  * an HDF5 file. This class implements the IHdfWriteable interface. This takes
@@ -31,11 +30,8 @@ import org.eclipse.ice.io.hdf.IHdfWriteable;
  * accordingly to any part of a Reactor or its delegated classes that inherit
  * from LWRComponent.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRComponentWriter implements IHdfWriter {
 
@@ -43,12 +39,9 @@ public class LWRComponentWriter implements IHdfWriter {
 	 * (non-Javadoc)
 	 * 
 	 * @see IHdfWriter#write(IHdfWriteable iHdfWriteable, URI uri)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean write(IHdfWriteable iHdfWriteable, URI uri) {
 
-		// begin-user-code
 
 		// Check for a null iHdfWriteable. If null then return false
 		if (iHdfWriteable == null) {
@@ -87,7 +80,6 @@ public class LWRComponentWriter implements IHdfWriter {
 
 		// Return the result
 		return flag;
-		// end-user-code
 	}
 
 	/**

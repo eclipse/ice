@@ -30,30 +30,21 @@ import org.eclipse.ice.reactor.sfr.base.SFRData;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the SFRComponent class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SFRComponentTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructors and default values of the SFRComponent class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// We have two constructors to test:
 		// new SFRComponent();
@@ -127,23 +118,17 @@ public class SFRComponentTester {
 		/* ----------------------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getters and setters for the name, description, id, sourceInfo
 	 * and timeUnits attributes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAttributes() {
-		// begin-user-code
 
 		SFRComponent component = new SFRComponent();
 
@@ -200,22 +185,16 @@ public class SFRComponentTester {
 		assertEquals("fooSeconds", component.getTimeUnits());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Test the addition and removal of SFRData from the SFRComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkDataAddRem() {
-		// begin-user-code
 
 		// The component that we will be updating for this test.
 		SFRComponent component = new SFRComponent();
@@ -715,22 +694,16 @@ public class SFRComponentTester {
 		/* ------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the visitation of ISFRComponentVisitors in the SFRComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// Create a new SFRComponent to visit.
 		SFRComponent component = new SFRComponent("Marvin");
@@ -759,22 +732,16 @@ public class SFRComponentTester {
 		assertTrue(component.equals(visitedObject));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality operation of SFRComponents.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Construct a component to test against
 		SFRComponent component = new SFRComponent("Earth");
@@ -826,22 +793,16 @@ public class SFRComponentTester {
 		// are/aren't different.
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operation of SFRComponents.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Construct a base component to copy from
 		SFRComponent component = new SFRComponent("Ford Prefect");
@@ -897,19 +858,15 @@ public class SFRComponentTester {
 		/* ------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the notifyListeners method of SFRComponents.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkNotifications() {
-		// begin-user-code
 
 		// Create a new component to listen to.
 		SFRComponent component = new SFRComponent("Tricia McMillan");
@@ -1006,7 +963,6 @@ public class SFRComponentTester {
 		// listener3.reset();
 
 		return;
-		// end-user-code
 	}
 
 	/**

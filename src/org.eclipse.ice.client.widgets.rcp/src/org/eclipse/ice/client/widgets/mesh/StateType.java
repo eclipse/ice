@@ -15,61 +15,41 @@ package org.eclipse.ice.client.widgets.mesh;
 import com.jme3.math.ColorRGBA;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This enumeration provides a list of possible states for Geometries displayed
  * in a jME3 scene. The states should be reflected somehow in the view, but may
  * or may not have any direct tie to the corresponding model.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public enum StateType {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The view has the normal or default features.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	None(ColorRGBA.Red),
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The view has been selected or has focus.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Selected(ColorRGBA.Green),
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The view is only temporary.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Temporary(ColorRGBA.Yellow),
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The view is disabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Disabled(ColorRGBA.Orange);
 

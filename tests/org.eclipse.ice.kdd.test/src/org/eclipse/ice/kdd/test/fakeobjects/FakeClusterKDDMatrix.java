@@ -18,15 +18,11 @@ import org.eclipse.ice.kdd.kddstrategy.kmeansclustering.ClusterKDDMatrix;
 import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Fake ClusterKDDMatrix used for unit testing the RawKMeansStrategy.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeClusterKDDMatrix extends ClusterKDDMatrix {
 
@@ -36,7 +32,6 @@ public class FakeClusterKDDMatrix extends ClusterKDDMatrix {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method performs a KMeans cluster algorithm on this matrix-structured
 	 * data set. It produces a map of cluster indices to vectors in an
@@ -45,16 +40,12 @@ public class FakeClusterKDDMatrix extends ClusterKDDMatrix {
 	 * of cluster centroids to produce, as well as the number of iterations to
 	 * use in refining the clusters.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param nCentroids
 	 * @param nIterations
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void cluster(int nCentroids, int nIterations) {
-		// begin-user-code
 		clusters.clear();
 		// We just need to return the correct number of Clusters
 		// for this fake cluster matrix
@@ -62,19 +53,13 @@ public class FakeClusterKDDMatrix extends ClusterKDDMatrix {
 			clusters.add(new Cluster(i));
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FakeClusterKDDMatrix() {
-		// begin-user-code
 		super(null);
 
-		// end-user-code
 	}
 }

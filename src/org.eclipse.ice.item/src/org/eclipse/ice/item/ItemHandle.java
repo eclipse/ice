@@ -13,47 +13,33 @@
 package org.eclipse.ice.item;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ItemHandle class is used by the ItemManager to store the unique ID and
  * name of an Item.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ItemHandle {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The ID of the Item represented by this ItemHandle.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Integer id;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the Item represented by this ItemHandle.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String name;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param itemID
 	 *            <p>
@@ -63,53 +49,37 @@ public class ItemHandle {
 	 *            <p>
 	 *            The name of the Item represented by this ItemHandle.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ItemHandle(Integer itemID, String itemName) {
-		// begin-user-code
 		// TODO Auto-generated constructor stub
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the ID of the Item represented by this ItemHandle.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The ID of the Item represented by this ItemHandle.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getID() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the name of the Item represented by this
 	 * ItemHandle.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The name of the Item represented by this ItemHandle.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getName() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 }

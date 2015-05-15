@@ -15,22 +15,16 @@ package org.eclipse.ice.kdd.kddstrategy.kmeansclustering;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EuclideanDistanceMeasure implements DistanceMeasure {
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see DistanceMeasure#getDistance(KDDMatrix vector1, KDDMatrix vector2)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getDistance(KDDMatrix vector1, KDDMatrix vector2) {
-		// begin-user-code
 
 		if (vector1.numberOfRows() != vector2.numberOfRows()) {
 			throw new IllegalArgumentException(
@@ -46,6 +40,5 @@ public class EuclideanDistanceMeasure implements DistanceMeasure {
 		}
 
 		return Math.sqrt(sum);
-		// end-user-code
 	}
 }

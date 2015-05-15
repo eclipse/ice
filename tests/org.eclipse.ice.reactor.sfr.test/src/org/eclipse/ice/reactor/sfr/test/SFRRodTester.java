@@ -24,30 +24,21 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the SFRRod class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SFRRodTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructors and default values for the SFRRod class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		/* --- Test the nullary constructor -------------------------------- */
 
@@ -85,22 +76,16 @@ public class SFRRodTester {
 		// Check the reflector
 		assertEquals(reflector, rodTwo.getReflector());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter for the rod attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAttributes() {
-		// begin-user-code
 
 		// Create a SFRRod for testing
 		SFRRod rod = new SFRRod();
@@ -122,19 +107,15 @@ public class SFRRodTester {
 		// Check that reflector remains unchanged
 		assertEquals(reflector, rod.getReflector());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality operation of SFRRods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		/* --- Check equality between like rods --------------------------- */
 
@@ -202,19 +183,15 @@ public class SFRRodTester {
 		assertFalse(rod.hashCode() == unequalRod.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations of SFRRods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		/* --- Testing the copy operation ---------------------------------- */
 
@@ -253,7 +230,6 @@ public class SFRRodTester {
 		assertTrue(rodClone.equals(rod));
 
 		return;
-		// end-user-code
 	}
 
 }

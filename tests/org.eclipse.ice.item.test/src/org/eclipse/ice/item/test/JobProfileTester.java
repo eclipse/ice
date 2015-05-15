@@ -43,25 +43,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the JobProfileBuilder. It is primarily
  * concerned with checking the ability of the JobProfileBuilder to write the new
  * profile to disk correctly after it is created.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 
 public class JobProfileTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private JobProfile jobProfile;
 
@@ -76,7 +69,6 @@ public class JobProfileTester {
 	 */
 	@Test
 	public void checkProfileWriting() throws NullPointerException, JAXBException, IOException {
-		// begin-user-code
 
 		// setup a link to the projectspace
 		// Local Declarations
@@ -225,6 +217,5 @@ public class JobProfileTester {
 		}
 
 		return;
-		// end-user-code
 	}
 }

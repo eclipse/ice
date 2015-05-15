@@ -13,43 +13,31 @@
 package org.eclipse.ice.datastructures.form.geometry;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Implementing&nbsp;this&nbsp;interface&nbsp;allows&nbsp;a&nbsp;class&nbsp;to&
  * nbsp
  * ;discover&nbsp;the&nbsp;type&nbsp;of&nbsp;an&nbsp;IShape&nbsp;through&nbsp
  * ;the&nbsp;visitor&nbsp;design&nbsp;pattern
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface IShapeVisitor {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Visits&nbsp;an&nbsp;IShapeVisitor&nbsp;as&nbsp;a&nbsp;ComplexShape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param complexShape
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(ComplexShape complexShape);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Visits&nbsp;an&nbsp;IShapeVisitor&nbsp;as&nbsp;a&nbsp;PrimitiveShape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param primitiveShape
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(PrimitiveShape primitiveShape);
 }

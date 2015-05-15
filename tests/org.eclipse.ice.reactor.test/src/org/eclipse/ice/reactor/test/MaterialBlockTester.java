@@ -41,30 +41,21 @@ import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the MaterialBlock's operations.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MaterialBlockTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the adding, getting and removing of Rings.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRingMutators() {
-		// begin-user-code
 
 		// Local Declarations
 		MaterialBlock materialBlock = new MaterialBlock();
@@ -155,22 +146,16 @@ public class MaterialBlockTester {
 		assertTrue(list.size() == 1);
 		assertEquals(list.get(0), ring2);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the constructor and it's default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		// Local Declaration
 		MaterialBlock materialBlock;
 		// Default values
@@ -190,22 +175,16 @@ public class MaterialBlockTester {
 		assertEquals(type, materialBlock.getHDF5LWRTag());
 		assertEquals(defaultPos, materialBlock.getPosition(), 0.0);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the equals and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		MaterialBlock object, equalObject, unEqualObject, transitiveObject;
@@ -276,22 +255,16 @@ public class MaterialBlockTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone routines.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local Declarations
 		MaterialBlock object, copyObject, clonedObject;
@@ -325,22 +298,16 @@ public class MaterialBlockTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 writing operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Writeables() {
-		// begin-user-code
 
 		// Local Declarations
 		MaterialBlock component = new MaterialBlock();
@@ -509,23 +476,17 @@ public class MaterialBlockTester {
 		// Delete the file once you are done
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the test.h5 file after the tests fails (to keep the workspace
 	 * clean).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@AfterClass
 	public static void afterClass() {
-		// begin-user-code
 
 		// Cleans up the datafile if it exists due to a failed test
 		File dataFile = new File(System.getProperty("user.dir")
@@ -536,22 +497,16 @@ public class MaterialBlockTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 readable operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Readables() {
-		// begin-user-code
 
 		// Local Declarations
 		MaterialBlock component = new MaterialBlock();
@@ -671,21 +626,15 @@ public class MaterialBlockTester {
 
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the get/set position operators.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkPosition() {
-		// begin-user-code
 		MaterialBlock materialBlock = new MaterialBlock();
 
 		assertEquals(0, materialBlock.getPosition(), 0.0);
@@ -703,21 +652,15 @@ public class MaterialBlockTester {
 		materialBlock.setPosition(1.0);
 		assertEquals(1, materialBlock.getPosition(), 0.0);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the comparison operator.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkCompareTo() {
-		// begin-user-code
 
 		// Local Declarations
 		MaterialBlock mBlock1, mBlock2, mBlock3;
@@ -743,6 +686,5 @@ public class MaterialBlockTester {
 		assertEquals(1, mBlock2.compareTo(mBlock1));
 		assertEquals(0, mBlock1.compareTo(mBlock3));
 
-		// end-user-code
 	}
 }

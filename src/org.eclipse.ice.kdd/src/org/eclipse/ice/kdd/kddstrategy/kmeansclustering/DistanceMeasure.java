@@ -15,30 +15,22 @@ package org.eclipse.ice.kdd.kddstrategy.kmeansclustering;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The DistanceMeasure interface gives users the ability to use a wide variety
  * of distance measures when performing KMeans clustering.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface DistanceMeasure {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Calculate the distance between the the two given vectors.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param vector1
 	 * @param vector2
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getDistance(KDDMatrix vector1, KDDMatrix vector2);
 }

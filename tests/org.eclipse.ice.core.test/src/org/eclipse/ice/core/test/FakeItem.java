@@ -21,16 +21,12 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.messaging.Message;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is a fake subclass of Item that is used to test the ItemManager and
  * Core.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeItem extends Item {
 
@@ -46,26 +42,18 @@ public class FakeItem extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The process state of the FakeItem. True if processed, false if not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean processed;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if the FakeItem was asked to reload data, false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean refreshed;
 
@@ -77,61 +65,42 @@ public class FakeItem extends Item {
 	private boolean cancelled = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if the FakeItem was asked to load an imported input file, false
 	 * otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean loaded;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if the FakeItem was successfully updated, false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean updated = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the process state of the FakeItem.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The state - true if the Item was processed, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean wasProcessed() {
-		// begin-user-code
 		return processed;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation resets the FakeItem's process state to false.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void reset() {
-		// begin-user-code
 
 		processed = false;
 		refreshed = false;
@@ -140,84 +109,59 @@ public class FakeItem extends Item {
 		updated = false;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns true if the FakeItem was refreshed by calling
 	 * reloadProjectData and false if not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean wasRefreshed() {
-		// begin-user-code
 		return refreshed;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs the TestItem to notify its listeners so that the
 	 * ItemTester can see that the Item super class correctly handles the
 	 * request.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void notifyListeners() {
-		// begin-user-code
 		notifyListenersOfProjectChange();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the load state of the FakeItem.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The state - true if the Item was loaded, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean wasLoaded() {
-		// begin-user-code
 		return loaded;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns true if the FakeItem was successfully updated,
 	 * false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         True if updated, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean wasUpdated() {
-		// begin-user-code
 		return updated;
-		// end-user-code
 	}
 
 	/**
@@ -226,7 +170,6 @@ public class FakeItem extends Item {
 	 * @see Item#setupForm()
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		form = new Form();
 		form.setId(1);
@@ -237,7 +180,6 @@ public class FakeItem extends Item {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
@@ -246,7 +188,6 @@ public class FakeItem extends Item {
 	 * @see Item#reviewEntries(Form preparedForm)
 	 */
 	protected FormStatus reviewEntries(Form preparedForm) {
-		// begin-user-code
 
 		status = FormStatus.InfoError;
 
@@ -258,7 +199,6 @@ public class FakeItem extends Item {
 
 		return status;
 
-		// end-user-code
 	}
 
 	@Override
@@ -286,22 +226,18 @@ public class FakeItem extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the true an attempt was made to cancel a process
 	 * request.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The status of the last call to process().
 	 *         </p>
 	 */
 	public boolean wasCancelled() {
-		// begin-user-code
 
 		return cancelled;
-		// end-user-code
 	}
 
 	/**

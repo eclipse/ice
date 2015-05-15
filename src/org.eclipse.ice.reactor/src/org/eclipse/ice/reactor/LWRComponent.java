@@ -42,7 +42,6 @@ import ncsa.hdf.object.h5.H5Group;
 import ncsa.hdf.object.h5.H5File;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The LWRComponent class represents all reactor components that can be stored
  * in a LWRComposite. This class should be treated as an extension of the Java
@@ -62,120 +61,83 @@ import ncsa.hdf.object.h5.H5File;
  * <p>
  * This class implements the ICE Component interface.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRComponent implements IReactorComponent, IDataProvider,
 		IHdfWriteable, IHdfReadable {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An ArrayList of ICE IComponentListeners.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private ArrayList<IUpdateableListener> listeners;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Classifies a LWRComponentType. This should only be set on the lowest
 	 * level constructor AND should represent the lowest level object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	protected HDF5LWRTagType HDF5LWRTag;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Name of this LWRComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	protected String name;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A TreeMap implementation of IData and features. Keep in mind that there
 	 * can be multiple IData for the same feature.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@XmlTransient
 	private TreeMap<Double, ArrayList<FeatureSet>> dataTree;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current time step. Can not be less than 0, and must be strictly less
 	 * than the number of TimeSteps. Defaults to 0.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private double time;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A description of the source of information for this provider and its
 	 * data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private String sourceInfo;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The time unit.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private String timeUnit;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The id of this LWRComponent. Can not be less than zero.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	protected int id;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The description of this LWRComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	protected String description;
@@ -187,17 +149,12 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	private String timeStepNamePrefix = "TimeStep: ";
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The nullary Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRComponent() {
-		// begin-user-code
 
 		// Setup default values
 		this.name = "Component 1";
@@ -220,47 +177,35 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		// Setup the HDF5LWRTagType to correct type
 		this.HDF5LWRTag = HDF5LWRTagType.LWRCOMPONENT;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
 	 *            Name of this LWRComponent
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRComponent(String name) {
-		// begin-user-code
 		// Call this constructor
 		this();
 
 		// Set name appropriately
 		this.setName(name);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation notifies the listeners of the LWRComponent that its data
 	 * state has changed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void notifyListeners() {
-		// begin-user-code
 
 		// If the listeners are empty, return
 		if (this.listeners == null || this.listeners.isEmpty()) {
@@ -289,53 +234,41 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the sourceInfo. Can not be null or the empty string. Strings passed
 	 * will be trimmed before being set.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param sourceInfo
 	 *            <p>
 	 *            The sourceInfo to set.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setSourceInfo(String sourceInfo) {
-		// begin-user-code
 		if (sourceInfo != null && !sourceInfo.trim().isEmpty()) {
 			this.sourceInfo = sourceInfo.trim();
 			// Notify listeners
 			this.notifyListeners();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds a IData piece, keyed on the feature and timeStep, to the dataTree.
 	 * If the feature exists in the tree, it will append to the end of the list.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param data
 	 *            <p>
 	 *            The data to add.
 	 *            </p>
 	 * @param time
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addData(LWRData data, double time) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<FeatureSet> featureSetList;
@@ -388,28 +321,22 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the feature and all associated IData from the dataTree at all
 	 * time steps. If a user wishes to remove a single piece of IData from the
 	 * tree, then use the appropriate getData operation on that feature and
 	 * manipulate the data that way.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param feature
 	 *            <p>
 	 *            The feature.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeAllDataFromFeature(String feature) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean updated = false;
@@ -443,18 +370,14 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 			this.notifyListeners();
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#setId(int id)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setId(int id) {
-		// begin-user-code
 
 		// If the id is less 0, then do not set it
 		if (id >= 0) {
@@ -464,46 +387,34 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 			this.notifyListeners();
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#getDescription()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getDescription() {
-		// begin-user-code
 
 		return this.description;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#getId()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getId() {
-		// begin-user-code
 
 		return this.id;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#setName(String name)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setName(String name) {
-		// begin-user-code
 
 		// If the name is not null, and if you trim it, it is not the emptry
 		// string
@@ -515,32 +426,24 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 			this.notifyListeners();
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#getName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getName() {
-		// begin-user-code
 
 		return this.name;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#setDescription(String description)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setDescription(String description) {
-		// begin-user-code
 
 		// If the name is not null, and if you trim it, it is not the emptry
 		// string
@@ -552,18 +455,14 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 			this.notifyListeners();
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#equals(Object otherObject)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local declarations
 		LWRComponent component;
@@ -593,18 +492,14 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		// Return retVal
 		return retVal;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Identifiable#hashCode()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 		// Static hash at 31
 		int hash = 31;
 
@@ -622,80 +517,60 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		// Return hash
 		return hash;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IUpdateable#update(String updatedKey, String newValue)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(String updatedKey, String newValue) {
-		// begin-user-code
 
 		// This does nothing at this time
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IUpdateable#register(IUpdateableListener listener)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void register(IUpdateableListener listener) {
-		// begin-user-code
 
 		// If the listener is not null, add it
 		if (listener != null) {
 			this.listeners.add(listener);
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Component#accept(IComponentVisitor visitor)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(IComponentVisitor visitor) {
-		// begin-user-code
 
 		if (visitor != null) {
 			visitor.visit(this);
 		}
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IReactorComponent#toString()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String toString() {
-		// begin-user-code
 		return this.name;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getFeatureList()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getFeatureList() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> featureList = new ArrayList<String>();
@@ -725,49 +600,37 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		// Return the featureList
 		return featureList;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getNumberOfTimeSteps()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfTimeSteps() {
-		// begin-user-code
 
 		return this.dataTree.size();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#setTime(double step)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setTime(double step) {
-		// begin-user-code
 		if (step >= 0.0) {
 			this.time = step;
 			this.notifyListeners();
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getDataAtCurrentTime(String feature)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
-		// begin-user-code
 
 		// If feature is null, return
 		if (feature == null) {
@@ -789,33 +652,25 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		return new ArrayList<IData>();
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getSourceInfo()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getSourceInfo() {
-		// begin-user-code
 
 		return this.sourceInfo;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getFeaturesAtCurrentTime()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getFeaturesAtCurrentTime() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> features = new ArrayList<String>();
@@ -835,18 +690,14 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		return features;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getTimes()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Double> getTimes() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Double> times = new ArrayList<Double>();
@@ -862,18 +713,14 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		// Return the list of times
 		return times;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getTimeStep(double time)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getTimeStep(double time) {
-		// begin-user-code
 
 		// Get the iterator
 		Iterator<Double> iter = this.dataTree.keySet().iterator();
@@ -893,33 +740,25 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		// Time not found!
 		return -1;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IDataProvider#getTimeUnits()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getTimeUnits() {
-		// begin-user-code
 
 		return this.timeUnit;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IHdfWriteable#createGroup(H5File h5File, H5Group parentH5Group)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public H5Group createGroup(H5File h5File, H5Group parentH5Group) {
-		// begin-user-code
 
 		// Create the group for this component
 		H5Group h5Group = HdfWriterFactory.createH5Group(h5File, name,
@@ -927,31 +766,23 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		// Return the group
 		return h5Group;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IHdfWriteable#getWriteableChildren()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
-		// begin-user-code
 		return null;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IHdfWriteable#writeAttributes(H5File h5File, H5Group h5Group)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		// begin-user-code
 
 		boolean flag = true;
 
@@ -965,18 +796,14 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 				"description", description);
 
 		return flag;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IHdfWriteable#writeDatasets(H5File h5File, H5Group h5Group)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
-		// begin-user-code
 
 		// If these pieces are null, return
 		if (h5File == null || h5Group == null) {
@@ -1115,31 +942,23 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		// Everything passed, return true!
 		return true;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IHdfReadable#readChild(IHdfReadable iHdfReadable)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
-		// begin-user-code
 		return true;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IHdfReadable#readAttributes(H5Group h5Group)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readAttributes(H5Group h5Group) {
-		// begin-user-code
 
 		// Local attributes (so we only call read ONCE)
 		// These will clear out by the garbage collector
@@ -1163,18 +982,14 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IHdfReadable#readDatasets(H5Group h5Group)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readDatasets(H5Group h5Group) {
-		// begin-user-code
 
 		// Local Declarations
 		int numOfTimeSteps = 0;
@@ -1283,65 +1098,47 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the current time step.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The current time step.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getCurrentTime() {
-		// begin-user-code
 
 		return this.time;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the LWRComponentType.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The LWRComponentType.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public HDF5LWRTagType getHDF5LWRTag() {
-		// begin-user-code
 
 		return this.HDF5LWRTag;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(LWRComponent otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		Iterator<Double> iter;
@@ -1383,24 +1180,18 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		// Notify the listeners
 		notifyListeners();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRComponent component = new LWRComponent();
@@ -1411,54 +1202,41 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		// Return the component
 		return component;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the time units.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param timeUnit
 	 *            <p>
 	 *            The time unit to be set.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setTimeUnits(String timeUnit) {
-		// begin-user-code
 
 		if (timeUnit != null && !timeUnit.trim().isEmpty()) {
 			this.timeUnit = timeUnit;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation accepts an ILWRComponentVisitor that can be visit the
 	 * LWRComponent to ascertain its type and perform various type-specific
 	 * operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(ILWRComponentVisitor visitor) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	@Override

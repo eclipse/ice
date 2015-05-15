@@ -57,7 +57,6 @@ public class INIWriterTester {
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -99,7 +98,6 @@ public class INIWriterTester {
 		projectSpace = project;
 
 		return;
-		// end-user-code
 	}
 	
 	/**
