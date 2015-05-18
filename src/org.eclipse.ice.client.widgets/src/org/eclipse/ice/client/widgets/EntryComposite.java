@@ -431,8 +431,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			browseButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					// Notify any listeners that the selection has changed
-					notifyListeners(SWT.Selection, new Event());
 					// Get the Client
 					IClient client = ClientHolder.getClient();
 					// Open up a file browser
@@ -445,6 +443,8 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						client.importFile(importedFile.toURI());
 						setEntryValue(importedFile.getName());
 					}
+					// Notify any listeners that the selection has changed
+					notifyListeners(SWT.Selection, new Event());
 	
 					return;
 				}
@@ -776,15 +776,18 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					if (!EntryComposite.this.isDisposed()) {
+						
 						// Refresh the EntryComposite
 						refresh();
-						// If the value has changed, toggle the "unsaved
-						// changes" decoration
-						if (!EntryComposite.this.entry.getValue().equals(currentSelection)) {
-							// Toggle the "unsaved changes" decoration if necessary
+						
+						// Toggle the "unsaved changes" decoration if the entry
+						// value has changed
+						if (!EntryComposite.this.entry.getValue()
+								.equals(currentSelection)) {
 							toggleSaveDecoration();
 						}
-						// Keep track of the currentSelection
+						
+						// Update the reference to the entry's value
 						currentSelection = EntryComposite.this.entry.getValue();
 					} else {
 						entry.unregister(EntryComposite.this);
@@ -818,7 +821,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			decoration.setImage(image);
 					
 			// Set a listener to hide/show the decoration according to the
-			// editor's state
+			// editor's state and the current entry value
 			final IEditorPart editor = PlatformUI.getWorkbench()
 			        .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 			editor.addPropertyListener(new IPropertyListener() {
@@ -828,17 +831,19 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					// value has changed
 					if (editor != null) {
 						if (editor.isDirty()
-								&& !EntryComposite.this.entry.getValue().equals(currentSelection)) {
+								&& !EntryComposite.this.entry.getValue()
+									.equals(currentSelection)) {
 							// Show the decoration
 							EntryComposite.this.decoration.show();
 						} else if (!editor.isDirty()) {
+							// Hide the decoration
 							EntryComposite.this.decoration.hide();
 						}
 					}
+					
 					return;
 				}	
 			});
-			
 		}
 		
 		return;
