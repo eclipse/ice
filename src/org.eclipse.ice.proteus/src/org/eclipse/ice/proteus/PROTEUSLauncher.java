@@ -24,7 +24,7 @@ import org.eclipse.core.resources.IProject;
  * A PROTEUS Item for launching jobs.
  * </p>
  * 
- * @author Jay Jay Billings, w5q
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 @XmlRootElement(name = "PROTEUSLauncher")
 public class PROTEUSLauncher extends JobLauncher {
@@ -94,7 +94,7 @@ public class PROTEUSLauncher extends JobLauncher {
 		String launchStep = "${installDir}sn2nd.x -input sahex1_unic.inp;";
 		String allLaunchSteps = cpDataStep + relinkStep + launchStep;
 		String localInstallDir = "sharp/trunk/modules/unic/src/bin";
-		String remoteInstallDir = "/home/nfs/w5q/sharp/defaultBuild/modules/unic/src/bin";
+		String remoteInstallDir = "/home/nfs/Anna Wojtowicz/sharp/defaultBuild/modules/unic/src/bin";
 
 		// Setup the Form
 		super.setupForm();

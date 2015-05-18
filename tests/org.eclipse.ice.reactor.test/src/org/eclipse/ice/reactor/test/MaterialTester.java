@@ -39,7 +39,7 @@ import org.eclipse.ice.reactor.MaterialType;
  * A class that tests the Material's operations.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class MaterialTester {
 	// An @BeforeClass that sets up the library path. This should be added to
@@ -49,7 +49,7 @@ public class MaterialTester {
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
-		// System.setProperty("java.library.path", "/home/s4h/usr/local/lib64");
+		// System.setProperty("java.library.path", "/home/Scott Forest Hull II/usr/local/lib64");
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 

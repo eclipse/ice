@@ -30,7 +30,7 @@ import ncsa.hdf.object.h5.H5Group;
  * LWRRod.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class MaterialBlock extends LWRComponent implements
 		Comparable<MaterialBlock> {

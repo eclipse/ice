@@ -31,7 +31,7 @@ import org.osgi.framework.FrameworkUtil;
  * Action for deleting the currently selected shapes from the ShapeTreeView
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ActionDeleteShape extends Action {
 	/**

@@ -1216,7 +1216,7 @@ public class MOOSEModel extends Item {
 				// TODO This is a quick fix for now and only checks children 1
 				// level deep for now. I will have to implement a more robust
 				// routine that recursively checks if any of the subchildren
-				// need to be converted to AdaptiveTreeComposites --w5q
+				// need to be converted to AdaptiveTreeComposites --Anna Wojtowicz
 				ArrayList<TreeComposite> exemplars = yamlCur
 						.getChildExemplars();
 				for (TreeComposite exemplar : exemplars) {
@@ -1663,7 +1663,7 @@ public class MOOSEModel extends Item {
 	 * Enumeration to discern if a tree object is an AdaptiveTreeComposite, or
 	 * just a TreeComposite. This is an alternative to using instanceof.
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 */
 	public enum TreeType {
 

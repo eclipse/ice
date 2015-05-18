@@ -19,7 +19,7 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
  * An interface for managing Components on a grid.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public interface IGridManager {
 	/**

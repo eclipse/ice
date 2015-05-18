@@ -29,7 +29,7 @@ import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 
 /**
  * 
- * @author bkj
+ * @author Jay Jay Billings
  */
 public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 

@@ -27,7 +27,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public class PWReactorHDF5IntegrationTester {
 

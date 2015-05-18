@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Text;
  * to establish a VisIt client connection. This connection may be via a local or
  * remote launch or by connecting to a running VisIt session.
  * 
- * @author Taylor Patterson, hkq
+ * @author Taylor Patterson, Harinarayan Krishnan
  * 
  */
 public class LaunchVisitWizardPage extends WizardPage {

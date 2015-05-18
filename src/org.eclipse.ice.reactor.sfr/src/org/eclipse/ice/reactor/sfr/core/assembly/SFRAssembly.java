@@ -23,7 +23,7 @@ import org.eclipse.ice.reactor.sfr.core.AssemblyType;
  * contains a lattice of either pins or rods.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFRAssembly extends SFRComposite {
 	/**

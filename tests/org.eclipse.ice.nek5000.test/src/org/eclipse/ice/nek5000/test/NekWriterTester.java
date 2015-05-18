@@ -36,7 +36,7 @@ import org.eclipse.ice.nek5000.ProblemProperties;
  * Tests the methods of the NekWriter class. Tests are broken down by Nek5000
  * examples.
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  *
  */
 public class NekWriterTester {

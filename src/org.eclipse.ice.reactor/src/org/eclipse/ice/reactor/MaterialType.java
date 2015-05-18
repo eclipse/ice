@@ -14,7 +14,7 @@ package org.eclipse.ice.reactor;
 
 /** 
  * <p>The MaterialType enumeration describes each type of material phase.</p>
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public enum MaterialType {
 	/** 

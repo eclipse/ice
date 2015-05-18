@@ -25,7 +25,7 @@ import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
  * subclasses may use to reveal their types to visitors.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public interface ILWRComponentVisitor {
 	/**

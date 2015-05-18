@@ -21,7 +21,7 @@ import org.eclipse.ice.reactor.ILWRComponentVisitor;
  * FuelAssembly object.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class RodClusterAssembly extends PWRAssembly {
 

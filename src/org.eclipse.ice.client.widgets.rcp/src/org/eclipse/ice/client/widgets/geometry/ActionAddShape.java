@@ -38,7 +38,7 @@ import org.osgi.framework.FrameworkUtil;
  * Action for adding a specific shape to the ShapeTreeView
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ActionAddShape extends Action {
 	/**

@@ -29,7 +29,7 @@ import org.eclipse.ice.reactor.Ring;
  * on this class.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class IncoreInstrument extends LWRComponent {
 	/**

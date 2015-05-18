@@ -20,7 +20,7 @@ import java.io.InputStream;
  * purposes of drawing, this is a specialized type of junction with one input.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Boundary extends Junction {
 

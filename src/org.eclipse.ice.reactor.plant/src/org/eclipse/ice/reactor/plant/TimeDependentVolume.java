@@ -20,7 +20,7 @@ import java.io.InputStream;
  * condition to the loop.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class TimeDependentVolume extends Boundary {
 	/**

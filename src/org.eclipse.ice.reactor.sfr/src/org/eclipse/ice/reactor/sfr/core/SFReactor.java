@@ -27,7 +27,7 @@ import java.util.HashMap;
  * Class represents a sodium fast reactor at the highest core-level view.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFReactor extends SFRComposite {
 	/**

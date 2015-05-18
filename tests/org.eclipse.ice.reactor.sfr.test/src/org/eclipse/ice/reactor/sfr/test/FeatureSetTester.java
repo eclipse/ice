@@ -26,7 +26,7 @@ import org.junit.Test;
  * Tests the operations of the FeatureSet class.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class FeatureSetTester {
 	/**

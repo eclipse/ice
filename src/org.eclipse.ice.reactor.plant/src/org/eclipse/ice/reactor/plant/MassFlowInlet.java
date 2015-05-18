@@ -19,7 +19,7 @@ import java.io.InputStream;
  * A specialized inlet.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class MassFlowInlet extends Boundary {
 

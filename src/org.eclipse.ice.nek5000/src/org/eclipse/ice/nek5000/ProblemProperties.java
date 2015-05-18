@@ -19,7 +19,7 @@ package org.eclipse.ice.nek5000;
  * pass around. The NekReader is responsible for constructing this object which 
  * the NekWriter later uses as input.
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  *
  */
 public class ProblemProperties {

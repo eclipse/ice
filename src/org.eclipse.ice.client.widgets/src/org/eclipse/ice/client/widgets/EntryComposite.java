@@ -68,7 +68,7 @@ import org.eclipse.ui.forms.IMessageManager;
  * IMessageManager if it is set by calling setMessageManager().
  * </p>
  * 
- * @author gqx, Anna Wojtowicz
+ * @author Gregory M. Lyon, Anna Wojtowicz
  */
 public class EntryComposite extends Composite implements IUpdateableListener {
 

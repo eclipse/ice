@@ -24,7 +24,7 @@ import ncsa.hdf.object.h5.H5Group;
  * thimbles (Instrument Tube).
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class Tube extends Ring {
 	/**

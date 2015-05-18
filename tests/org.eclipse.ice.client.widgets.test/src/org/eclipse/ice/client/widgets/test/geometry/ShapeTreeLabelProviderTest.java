@@ -26,7 +26,7 @@ import org.eclipse.ice.datastructures.form.geometry.ShapeType;
  * Tests ShapeTreeLabelProvider
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ShapeTreeLabelProviderTest {
 	/**

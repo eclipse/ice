@@ -42,7 +42,7 @@ import org.junit.Test;
  * This class tests the HdfWriterFactory class.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public class HdfWriterFactoryTester {
 	/**

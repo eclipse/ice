@@ -31,7 +31,7 @@ import org.eclipse.ice.reactor.pwr.*;
 
 /**
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public class LWRComponentWriterTester {
 

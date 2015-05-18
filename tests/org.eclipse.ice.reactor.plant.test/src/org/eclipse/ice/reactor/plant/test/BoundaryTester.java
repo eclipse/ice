@@ -30,7 +30,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class BoundaryTester {
 	/**
@@ -272,7 +272,7 @@ public class BoundaryTester {
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 */
 	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 

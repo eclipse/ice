@@ -19,7 +19,7 @@ import java.io.InputStream;
  * Joint for flow.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class FlowJunction extends Junction {
 	/**

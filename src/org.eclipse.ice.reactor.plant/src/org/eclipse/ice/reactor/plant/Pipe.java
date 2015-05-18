@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * A pipe is defined by its position, direction, length and area.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "Pipe")
 @XmlAccessorType(XmlAccessType.FIELD)

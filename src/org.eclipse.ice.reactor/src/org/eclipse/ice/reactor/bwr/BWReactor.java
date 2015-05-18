@@ -21,7 +21,7 @@ import org.eclipse.ice.reactor.LWReactor;
  * The BWReactor class represents any Boiling Water Reactor.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class BWReactor extends LWReactor {
 

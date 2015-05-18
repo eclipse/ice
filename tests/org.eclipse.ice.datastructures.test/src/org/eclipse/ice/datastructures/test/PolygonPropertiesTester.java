@@ -35,7 +35,7 @@ import org.junit.Test;
  * Tests the methods of the PolygonProperties class.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class PolygonPropertiesTester {
 

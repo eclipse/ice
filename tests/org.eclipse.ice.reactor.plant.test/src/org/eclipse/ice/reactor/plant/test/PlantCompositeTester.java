@@ -417,7 +417,7 @@ public class PlantCompositeTester {
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 */
 	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 

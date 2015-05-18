@@ -40,7 +40,7 @@ import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 
 /**
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public class LWRComponentReaderTester {
 	/**

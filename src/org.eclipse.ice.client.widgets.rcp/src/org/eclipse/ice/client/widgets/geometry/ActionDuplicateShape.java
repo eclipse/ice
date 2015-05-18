@@ -31,7 +31,7 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ActionDuplicateShape extends Action {
 	/**

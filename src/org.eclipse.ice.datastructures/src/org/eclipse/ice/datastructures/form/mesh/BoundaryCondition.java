@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * between two polygons.
  * </p>
  * 
- * @author Jordan H. Deyton, w5q
+ * @author Jordan H. Deyton, Anna Wojtowicz
  */
 @XmlRootElement(name = "BoundaryCondition")
 @XmlAccessorType(XmlAccessType.FIELD)

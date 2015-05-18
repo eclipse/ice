@@ -21,7 +21,7 @@ import org.junit.Test;
 /**
  * Tests the methods of the Nek ProblemProperties class.
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  * 
  */
 public class ProblemPropertiesTester {

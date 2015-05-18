@@ -31,7 +31,7 @@ import ncsa.hdf.object.h5.H5Group;
  * controlled independently.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class ControlBank extends LWRComponent {
 	/**
