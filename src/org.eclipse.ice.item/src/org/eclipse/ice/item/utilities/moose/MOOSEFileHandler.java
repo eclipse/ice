@@ -287,16 +287,22 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					}
 					// Create a new block
 					Block block = new Block();
-					ArrayList<String> blockLines = new ArrayList<String>(
-							potLines.subList(counter - 1, endCounter));
-					StringBuilder stringBuilder = new StringBuilder(
-							blockLines.get(0));
-					blockLines.set(0, stringBuilder.toString());
-					block.fromGetPot(blockLines);
-					// Add the block to the list
-					trees.add(block.toTreeComposite());
-					// Update the counter to point to the last read line
-					counter = endCounter;
+					ArrayList<String> blockLines = null;
+					if (endCounter >= counter-1) {
+						blockLines = new ArrayList<String>(
+								potLines.subList(counter - 1, endCounter));
+					}
+					if (blockLines != null && !blockLines.isEmpty()) {
+						StringBuilder stringBuilder = new StringBuilder(
+								blockLines.get(0));
+						blockLines.set(0, stringBuilder.toString());
+						block.fromGetPot(blockLines);
+						// Add the block to the list
+						trees.add(block.toTreeComposite());
+						// Update the counter to point to the last read line
+						counter = endCounter;
+					}
+
 					// Print some debug information
 					if (debugFlag) {
 						System.out.println("\nMOOSEFileHandler Message: "
@@ -307,6 +313,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 							System.out.println(line);
 						}
 					}
+
 				}
 			}
 		} else if (debugFlag) {
