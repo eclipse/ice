@@ -26,40 +26,28 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for checking that the TaggedOutputWriter action can
  * write a set of key-value pairs to an output file.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class TaggedOutputWriterActionTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TaggedOutputWriterAction taggedOutputWriterAction;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks that the TaggedOutputWriter action can write a set
 	 * of key-value pairs to an output file.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkWriting() {
-		// begin-user-code
 
 		// Local Declarations
 		Hashtable<String, String> testDictionary = new Hashtable<String, String>();
@@ -124,6 +112,5 @@ public class TaggedOutputWriterActionTester {
 
 		return;
 
-		// end-user-code
 	}
 }

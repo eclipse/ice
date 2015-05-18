@@ -37,38 +37,26 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class JunctionTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Boolean flag to mark if the PlantComponent was successfully visited.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean wasVisited = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the construction of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Create a Junction using the nullary constructor and assert that it
 		// initializes a non-null and empty list of inputs, outputs, and
@@ -113,22 +101,16 @@ public class JunctionTester {
 		assertEquals(2, junction.getInputs().size());
 		assertEquals(2, junction.getOutputs().size());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the getting and setting of the component's attributes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkProperties() {
-		// begin-user-code
 		// Create some inputs and outputs
 		PlantComponent input1 = new Pipe();
 		input1.setName("input1");
@@ -159,22 +141,16 @@ public class JunctionTester {
 		assertTrue(junction.getInputs().equals(inputs));
 		assertTrue(junction.getOutputs().equals(outputs));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the hashCode and equality methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 		// Create two equal Junctions with
 		// nullary constructor
 		Junction j1 = new Junction();
@@ -251,22 +227,16 @@ public class JunctionTester {
 
 		assertFalse(junction.equals(equalJunction));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Create a Junction to copy
 		Junction junction = new Junction();
@@ -320,26 +290,19 @@ public class JunctionTester {
 		assertTrue(casted.equals(junction));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks for persistence in the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Ignore
 	@Test
 	public void checkPersistence() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
@@ -347,7 +310,6 @@ public class JunctionTester {
 	 */
 	@Test
 	public void checkJunctionImplementation() {
-		// begin-user-code
 
 		Pipe pipe;
 
@@ -396,7 +358,6 @@ public class JunctionTester {
 		assertFalse(junction.isInput(new PlantComponent()));
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -404,7 +365,6 @@ public class JunctionTester {
 	 */
 	@Test
 	public void checkJunctionListeners() {
-		// begin-user-code
 
 		Pipe pipe;
 		List<PlantComponent> pipes = new ArrayList<PlantComponent>();
@@ -504,22 +464,16 @@ public class JunctionTester {
 		assertFalse(listener.wasNotified());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// Create a new component to visit.
 		Junction component = new Junction();
@@ -572,15 +526,12 @@ public class JunctionTester {
 		assertTrue(component.equals(visitorPlantComponent));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @author w5q
 	 */

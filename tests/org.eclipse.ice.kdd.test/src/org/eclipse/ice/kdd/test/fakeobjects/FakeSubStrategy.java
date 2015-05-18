@@ -22,28 +22,20 @@ import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 import org.eclipse.ice.kdd.kddstrategy.godfreystrategy.GodfreySubStrategy;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeSubStrategy extends GodfreySubStrategy {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method allows subclasses to implement a unique clustering or anomaly
 	 * detection algorithm and produce a KDDAnalysisAsset for clients to display
 	 * and manipulate.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean executeStrategy() {
-		// begin-user-code
 		try {
 			uri = new URI("temp.txt");
 		} catch (URISyntaxException e) {
@@ -53,25 +45,19 @@ public class FakeSubStrategy extends GodfreySubStrategy {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param pinPowers
 	 * @param refPinPowers
 	 * @param weights
 	 * @param props
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FakeSubStrategy(HashMap<Integer, ArrayList<IDataMatrix>> pinPowers,
 			HashMap<Integer, ArrayList<IDataMatrix>> refPinPowers,
 			HashMap<Integer, ArrayList<KDDMatrix>> weights,
 			HashMap<String, String> props) {
-		// begin-user-code
 		super(pinPowers, refPinPowers, weights);
-		// end-user-code
 	}
 }

@@ -44,7 +44,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * The default, nullary constructor. Initializes all default values.
 	 */
 	public PlantComposite() {
-		// begin-user-code
 
 		// Set the name, ID, and description.
 		this.objectName = "Plant Composite 1";
@@ -58,7 +57,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 		listeners = new ArrayList<IPlantCompositeListener>();
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -77,7 +75,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 *            The PlantComponent to add.
 	 */
 	public void addPlantComponent(PlantComponent component) {
-		// begin-user-code
 
 		if (component != null) {
 			int id = component.getId();
@@ -99,14 +96,12 @@ public class PlantComposite extends PlantComponent implements Composite {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * Removes the {@link PlantComponent} with the specified ID.
 	 */
 	public void removeComponent(int childId) {
-		// begin-user-code
 
 		// Try to remove the component with the ID.
 		PlantComponent component = components.remove(childId);
@@ -123,7 +118,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -131,9 +125,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * return value, use {@link #getPlantComponent(int)}.
 	 */
 	public Component getComponent(int childId) {
-		// begin-user-code
 		return components.get(childId);
-		// end-user-code
 	}
 
 	/**
@@ -145,18 +137,14 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 *         if one does not exist with the specified ID.
 	 */
 	public PlantComponent getPlantComponent(int childId) {
-		// begin-user-code
 		return components.get(childId);
-		// end-user-code
 	}
 
 	/**
 	 * Gets the number of {@link PlantComponent}s stored in this PlantComposite.
 	 */
 	public int getNumberOfComponents() {
-		// begin-user-code
 		return components.size();
-		// end-user-code
 	}
 
 	/**
@@ -164,9 +152,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * having to cast the return values, use {@link #getPlantComponents()}.
 	 */
 	public ArrayList<Component> getComponents() {
-		// begin-user-code
 		return new ArrayList<Component>(components.values());
-		// end-user-code
 	}
 
 	/**
@@ -175,9 +161,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * @return A list of PlantComponents stored in this PlantComposite.
 	 */
 	public List<PlantComponent> getPlantComponents() {
-		// begin-user-code
 		return new ArrayList<PlantComponent>(components.values());
-		// end-user-code
 	}
 
 	/**
@@ -190,7 +174,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 *            accepted.</b>
 	 */
 	public void registerPlantCompositeListener(IPlantCompositeListener listener) {
-		// begin-user-code
 
 		if (listener != null) {
 
@@ -207,7 +190,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 			}
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -219,7 +201,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 */
 	public void unregisterPlantCompositeListener(
 			IPlantCompositeListener listener) {
-		// begin-user-code
 
 		boolean found = false;
 
@@ -234,7 +215,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 			listeners.remove(i - 1);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -249,7 +229,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 */
 	public void notifyPlantCompositeListeners(
 			final List<PlantComponent> components, final boolean added) {
-		// begin-user-code
 
 		if (components != null && !components.isEmpty()) {
 			// Create a thread to notify IPlantCompositeListeners that
@@ -274,7 +253,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/*
@@ -297,7 +275,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * org.eclipse.ice.reactor.plant.PlantComponent#equals(java.lang.Object)
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, assume the objects are not equivalent.
 		boolean equals = false;
@@ -316,7 +293,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/*
@@ -325,11 +301,9 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * @see org.eclipse.ice.reactor.plant.PlantComponent#hashCode()
 	 */
 	public int hashCode() {
-		// begin-user-code
 		int hash = super.hashCode();
 		hash = 31 * hash + components.hashCode();
 		return hash;
-		// end-user-code
 	}
 
 	/*
@@ -338,11 +312,9 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * @see org.eclipse.ice.reactor.plant.PlantComponent#clone()
 	 */
 	public Object clone() {
-		// begin-user-code
 		PlantComposite clone = new PlantComposite();
 		clone.copy(this);
 		return clone;
-		// end-user-code
 	}
 
 	/**
@@ -353,7 +325,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 *            The other object to copy the contents from.
 	 */
 	public void copy(PlantComposite otherObject) {
-		// begin-user-code
 
 		if (otherObject != null) {
 
@@ -378,7 +349,6 @@ public class PlantComposite extends PlantComponent implements Composite {
 		}
 
 		return;
-		// end-user-code
 	}
 
 }

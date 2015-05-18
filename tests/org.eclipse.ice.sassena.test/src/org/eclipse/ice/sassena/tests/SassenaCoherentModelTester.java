@@ -33,13 +33,11 @@ import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.sassena.SassenaCoherentModel;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the operations on SassenaCoherentModel. This class is also
  * responsible for building the model files designed to be used in the Sassena
  * Model for production mode. 
  * </p>
- * <!-- end-UML-doc -->
  */
 public class SassenaCoherentModelTester {
 
@@ -49,18 +47,13 @@ public class SassenaCoherentModelTester {
 	private static IProject projectSpace;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the workspace.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -104,20 +97,16 @@ public class SassenaCoherentModelTester {
 		projectSpace = project;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks SassenaCoherentModel.setupForm operation. 
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkSetupForm() {
 
-		// begin-user-code
 
 		// Local declarations
 		SassenaCoherentModel sassenaModel;
@@ -133,21 +122,17 @@ public class SassenaCoherentModelTester {
 		assertEquals(1, form.getComponents().size());
 
 		return;
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks BatMLModel.process operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkProcess() {
 
-		// begin-user-code
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -187,7 +172,6 @@ public class SassenaCoherentModelTester {
 		// in relation to the Id of the item.
 		assertTrue(Files.exists(Paths.get(filePath)));
 
-		// end-user-code
 
 	}
 

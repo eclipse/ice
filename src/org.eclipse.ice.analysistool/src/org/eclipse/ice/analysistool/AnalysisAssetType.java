@@ -13,48 +13,32 @@
 package org.eclipse.ice.analysistool;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is an enumeration of all the types of assets that can be created.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public enum AnalysisAssetType {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This asset is a picture.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	PICTURE,
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This asset is a table of data organized into rows and columns.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	TABLE,
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This asset is a single number.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	VALUE
 }

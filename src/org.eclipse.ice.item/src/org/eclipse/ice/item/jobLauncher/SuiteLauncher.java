@@ -251,13 +251,11 @@ public class SuiteLauncher extends JobLauncher {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation reviews the Entries in the JobLauncherForm to make sure
 	 * that it can actually perform the launch and updates the executable if
 	 * needed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
 	 *            <p>
@@ -266,8 +264,6 @@ public class SuiteLauncher extends JobLauncher {
 	 * @return <p>
 	 *         The status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {

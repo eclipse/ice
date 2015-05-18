@@ -24,7 +24,6 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is the ItemBuilder for the ReactorAnalyzer. It constructs a
  * ReactorAnalyzer when build() is called if and only if at least one
@@ -36,87 +35,61 @@ import org.eclipse.ice.item.ItemType;
  * static variables on this class. Just something I'm trying out for
  * convenience...
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ReactorAnalyzerBuilder implements ItemBuilder {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of IAnalysisTools available for the ReactorAnalyzer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IAnalysisTool> analysisTools;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the ReactorAnalyzer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static final String name = "Reactor Analyzer";
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The type of the Item that this builder will create.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static final ItemType type = ItemType.AnalysisSession;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ReactorAnalyzerBuilder() {
-		// begin-user-code
 
 		// Allocate the list of tools
 		analysisTools = new ArrayList<IAnalysisTool>();
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation adds an IAnalysisTool to the list of analysis tools that
 	 * is available to the ReactorAnalyzer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param tool
 	 *            <p>
 	 *            The IAnalysisTool to add to the set.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addAnalysisTool(IAnalysisTool tool) {
-		// begin-user-code
 
 		// Add the tool
 		if (tool != null) {
@@ -125,66 +98,48 @@ public class ReactorAnalyzerBuilder implements ItemBuilder {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is called by the OSGI to close the associated
 	 * IAnalysisTools.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void stop() {
-		// begin-user-code
 
 		System.out
 				.println("ReactorAnalyzerBuilder Message: Closing Analysis Tools!");
 		for (int i = 0; i < this.analysisTools.size(); i++) {
 			this.analysisTools.get(i).close();
 		}
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getItemName() {
-		// begin-user-code
 		return name;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemType()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ItemType getItemType() {
-		// begin-user-code
 		return type;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Item build(IProject projectSpace) {
-		// begin-user-code
 
 		// Local Declarations
 		ReactorAnalyzer analyzer = null;
@@ -202,7 +157,6 @@ public class ReactorAnalyzerBuilder implements ItemBuilder {
 
 		return analyzer;
 
-		// end-user-code
 	}
 
 }

@@ -28,58 +28,41 @@ import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.SerializedItemBuilder;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The SerializedItemBuilderTester is responsible for testing the
  * SerializedItemBuilder. It is primarily concerned with ensuring that the
  * SerializedItemBuilder can load an Item from an InputStream and return the
  * proper name and type.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SerializedItemBuilderTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An Item reference used in the testing.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Item serializedItem;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The SerializedItemBuilder under test.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private SerializedItemBuilder serializedItemBuilder;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the SerializedItemBuilder using a Painfully Simple
 	 * Form (PSF) file. It checks the name and type of the Item and tries to
 	 * create and check a SerializedItem initialized from the PSF.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadingFromPSF() {
-		// begin-user-code
 
 		// Local Declarations
 		ByteArrayInputStream stream = null;
@@ -212,6 +195,5 @@ public class SerializedItemBuilderTester {
 
 		return;
 
-		// end-user-code
 	}
 }

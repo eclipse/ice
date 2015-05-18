@@ -136,7 +136,6 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	 */
 	protected FormStatus reviewEntries(Form preparedForm) {
 
-		// begin-user-code
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 
 		// Grab the data component from the Form and only proceed if it exists
@@ -162,7 +161,6 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	 * 			The status of the action
 	 */
 	public FormStatus process(String actionName) {
-		// begin-user-code
 		FormStatus retStatus;
 
 		// If it is the custom operation, call this here.
@@ -215,7 +213,6 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		}
 
 		return retStatus;
-		// end-user-code
 
 	}
 

@@ -22,44 +22,31 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.item.action.LoginInfoForm;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the LoginInfoForm class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LoginInfoFormTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The LoginInfoForm that is under test.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private LoginInfoForm loginInfoForm;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Form to ensure that it is a Form with single
 	 * DataComponent and that the Entries in that component are setup to reflect
 	 * usernames and passwords.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkForm() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Entry> entries = null;
@@ -85,24 +72,18 @@ public class LoginInfoFormTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the convenience methods on the LoginInfoForm that
 	 * are used to set the description of the Form and the prompt names for the
 	 * Entries.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConvenienceMethods() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Entry> entries = null;
@@ -132,6 +113,5 @@ public class LoginInfoFormTester {
 
 		return;
 
-		// end-user-code
 	}
 }

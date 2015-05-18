@@ -19,23 +19,17 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Provides the name and icon for shape items in the shape TreeViewer
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ShapeTreeLabelProvider extends LabelProvider {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the image associated with the given element object
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param element
 	 *            <p>
@@ -44,25 +38,19 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 	 * @return <p>
 	 *         The icon associated with the given IShape element
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Image getImage(Object element) {
-		// begin-user-code
 
 		// Don't display an image beside the shape
 
 		return null;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the name associated with the given element object
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param element
 	 *            <p>
@@ -71,11 +59,8 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 	 * @return <p>
 	 *         The name associated with the element's ICEObject properties
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getText(Object element) {
-		// begin-user-code
 
 		// Check that the element is an ICEObject and is not null
 
@@ -99,6 +84,5 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 			return null;
 		}
 
-		// end-user-code
 	}
 }

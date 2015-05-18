@@ -37,11 +37,9 @@ public class ICEFormPage extends FormPage {
 	 * @param title The title of the page.
 	 */
 	public ICEFormPage(FormEditor editor, String id, String title) {
-		// begin-user-code
 
 		// Call the super constructor
 		super(editor, id, title);
 
-		// end-user-code
 	}
 }

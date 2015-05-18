@@ -28,84 +28,59 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.messaging.Message;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is a subclass of Item that implements setupForm(), reviewEntries() and
  * process() so that the other operations of Item can be tested. It creates a
  * relatively simple Form that is used during the tests.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "TestItem")
 public class TestItem extends Item {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if the TestItem was successfully updated, false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean updated = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public TestItem() {
-		// begin-user-code
 		// Punt
 		this(null);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param project
 	 *            <p>
 	 *            The Eclipse IProject that should be used by the TestItem.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public TestItem(IProject project) {
-		// begin-user-code
 
 		super(project);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides setupForm() to setup a Form for the tests.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		// This operations creates four DataComponents and makes
 		// one of them dependent on the value of another. This setups up a Form
@@ -153,16 +128,13 @@ public class TestItem extends Item {
 		setDescription("An Item used for testing.");
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides reviewEntries to modify the Form that it setup
 	 * in some specific ways.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
 	 *            <p>
@@ -171,11 +143,8 @@ public class TestItem extends Item {
 	 * @return <p>
 	 *         The status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected FormStatus reviewEntries(Form preparedForm) {
-		// begin-user-code
 
 		// This implementation of reviewEntries looks for the value
 		// of David and passes it to Jay through the Registry.
@@ -207,21 +176,15 @@ public class TestItem extends Item {
 
 		// Return
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides super class operation to register a data component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void registerUpdateables() {
-		// begin-user-code
 
 		// Call the super class' registerUpdateables operation first
 		super.registerUpdateables();
@@ -230,70 +193,51 @@ public class TestItem extends Item {
 		registry.register(form.getComponent(1), "Boss");
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs the TestItem to notify its listeners so that the
 	 * ItemTester can see that the Item super class correctly handles the
 	 * request.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void notifyListeners() {
-		// begin-user-code
 
 		notifyListenersOfProjectChange();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation fakes setting some preferences, but calls
 	 * getPreferencesDirectory() so that the Item base class tries to create the
 	 * preferences directory.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPreferences() {
-		// begin-user-code
 
 		// Force the Item to create a preferences directory
 		getPreferencesDirectory();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns true if the TestItem was successfully updated,
 	 * false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         True if updated, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean wasUpdated() {
-		// begin-user-code
 		return updated;
-		// end-user-code
 	}
 
 	/**

@@ -42,7 +42,6 @@ public class ReactorReaderFactory {
 	private Map<Class, IReactorFactory> reactorFactoryMap;
 
 	public ReactorReaderFactory() {
-		// begin-user-code
 
 		reactorFactoryMap = new HashMap<Class, IReactorFactory>();
 		reactorFactoryMap.put(PressurizedWaterReactor.class,
@@ -71,7 +70,6 @@ public class ReactorReaderFactory {
 		});
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -84,7 +82,6 @@ public class ReactorReaderFactory {
 	 *         <code>null</code> if the file could not be read.
 	 */
 	public IReactorComponent readReactor(URI source) {
-		// begin-user-code
 
 		// Declare a component to return.
 		IReactorComponent component = null;
@@ -220,7 +217,6 @@ public class ReactorReaderFactory {
 			component = factory.read(source);
 		}
 		return component;
-		// end-user-code
 	}
 
 	/**
@@ -234,7 +230,6 @@ public class ReactorReaderFactory {
 	 */
 	public boolean copyReactor(IReactorComponent source,
 			IReactorComponent destination) {
-		// begin-user-code
 
 		boolean copied = false;
 
@@ -257,6 +252,5 @@ public class ReactorReaderFactory {
 		}
 
 		return copied;
-		// end-user-code
 	}
 }

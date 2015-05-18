@@ -112,7 +112,6 @@ public class ItemProcessorTester {
 	 */
 	@Test
 	public void checkProcessing() {
-		// begin-user-code
 
 		// Local Declarations
 		int itemId = -1;
@@ -239,6 +238,5 @@ public class ItemProcessorTester {
 		assertTrue(core.wasCancelled());
 
 		return;
-		// end-user-code
 	}
 }

@@ -40,7 +40,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ItemManagerTester class is responsible for testing the ItemManager class.
  * It does not explicitly test the ability of the ItemManager to persist and
@@ -51,74 +50,48 @@ import org.junit.Test;
  * that is performed before and after all work in the Core is performed. Those
  * tests are performed in the checkMassItemManagement() operation.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ItemManagerTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ItemManager itemManager;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeGeometryBuilder fakeGeometryBuilder;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeItem fakeItem;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeModuleBuilder fakeModuleBuilder;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeCompositeItemBuilder fakeCompositeItemBuilder;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakePersistenceProvider fakePersistenceProvider;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method is sets up the test ItemManagerTester.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void setup() {
-		// begin-user-code
 
 		// Setup the ItemManager to test
 		itemManager = new ItemManager();
@@ -136,11 +109,9 @@ public class ItemManagerTester {
 		// Register the fake persistence provider
 		itemManager.setPersistenceProvider(fakePersistenceProvider);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ItemManager by insuring that instances of
 	 * ItemBuilder can be registered with the class. It registers both the
@@ -149,14 +120,10 @@ public class ItemManagerTester {
 	 * FakeCompositeItemBuilder and makes sure that the ItemManager sets the
 	 * list of ItemBuilders during registration.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemRegistration() {
-		// begin-user-code
 
 		// Local Declarations
 		String testItemName;
@@ -226,23 +193,17 @@ public class ItemManagerTester {
 		assertEquals(1, itemManager.getAvailableBuilders().size());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ItemManager by creating an Item and then
 	 * retrieving it.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemCreation() {
-		// begin-user-code
 
 		// Local Declarations
 		int itemId = 99999;
@@ -282,24 +243,18 @@ public class ItemManagerTester {
 		assertTrue(testItem.wasLoaded());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the ItemManager by making sure that it can delete
 	 * Items. It creates a set of Items, deletes one or more of the Items and
 	 * then tries to retrieve the deleted Item or Items.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemDeletion() {
-		// begin-user-code
 
 		// Local Declarations
 		int itemIds[] = { 99998, 99999 };
@@ -335,24 +290,18 @@ public class ItemManagerTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the Item's ability to return an appropriate list of
 	 * Items. It creates several Items and requests the list of Items to do
 	 * this.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemList() {
-		// begin-user-code
 
 		// Local Declarations
 		int itemIds[] = { 99998, 99999 };
@@ -376,25 +325,19 @@ public class ItemManagerTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ItemManager by ensuring that Items can be
 	 * updated. This operation also insures that Items can be updated from other
 	 * ICE subsystems, remote ICE subsystems and third-party libraries via the
 	 * update() operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemUpdates() {
-		// begin-user-code
 
 		// Local Declarations
 		int itemId = -1;
@@ -460,11 +403,9 @@ public class ItemManagerTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ItemManager to make sure that it can process
 	 * Items. It creates a FakeItem with the ItemManager and then directs the
@@ -474,14 +415,10 @@ public class ItemManagerTester {
 	 * file handle from the Item by id and confirms that the default name of the
 	 * file is set according to the default in the class documentation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemProcessing() {
-		// begin-user-code
 
 		// Local Declarations
 		int itemId = -1;
@@ -579,23 +516,17 @@ public class ItemManagerTester {
 		assertEquals(FormStatus.ReadyToProcess, status);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks that the ItemManager loads and persists all Items
 	 * from and to the persistence provider when requested.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkMassItemManagement() {
-		// begin-user-code
 
 		// Reset the fake persistence provider
 		fakePersistenceProvider.reset();
@@ -630,6 +561,5 @@ public class ItemManagerTester {
 
 		return;
 
-		// end-user-code
 	}
 }

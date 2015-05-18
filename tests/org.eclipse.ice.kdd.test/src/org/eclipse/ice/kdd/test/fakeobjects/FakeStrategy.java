@@ -15,35 +15,24 @@ package org.eclipse.ice.kdd.test.fakeobjects;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is a fake KDDStrategy to be used in unit testing the KDD architecture.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeStrategy extends KDDStrategy {
 
 	@Override
 	public boolean executeStrategy() {
-		// begin-user-code
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FakeStrategy() {
-		// begin-user-code
 		super(null, null);
-		// end-user-code
 	}
 
 }

@@ -36,22 +36,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests LWRComposite.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRCompositeTester {
 	// An @BeforeClass that sets up the library path. This should be added to
 	// the model or removed if it can be fixed for local machine
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
@@ -59,22 +54,16 @@ public class LWRCompositeTester {
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the constructor and it's default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		// Local declarations
 		LWRComposite composite;
 		HDF5LWRTagType type = HDF5LWRTagType.LWRCOMPOSITE;
@@ -91,22 +80,16 @@ public class LWRCompositeTester {
 		assertEquals(defaultId, composite.getId());
 		assertEquals(type, composite.getHDF5LWRTag());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the getters and setters for component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkComponent() {
-		// begin-user-code
 		// Local Declarations
 		int compositeSize = 17;
 		LWRComposite composite = new LWRComposite();
@@ -220,22 +203,16 @@ public class LWRCompositeTester {
 		assertNull(composite.getComponent(testComponent.getName()));
 		assertEquals(0, composite.getComponents().size());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the equals and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRComposite object, equalObject, unEqualObject, transitiveObject;
@@ -303,22 +280,16 @@ public class LWRCompositeTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the copying and clone operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local declarations
 		LWRComposite object;
@@ -358,22 +329,16 @@ public class LWRCompositeTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 writing operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Writeables() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRComposite composite = new LWRComposite();
@@ -521,22 +486,16 @@ public class LWRCompositeTester {
 		// Delete the file once you are done
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 readable operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Readables() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRComposite component = new LWRComposite();
@@ -638,23 +597,17 @@ public class LWRCompositeTester {
 			fail();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the test.h5 file after the tests fails (to keep the workspace
 	 * clean).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@AfterClass
 	public static void afterClass() {
-		// begin-user-code
 
 		// Cleans up the datafile if it exists due to a failed test
 		File dataFile = new File(System.getProperty("user.dir")
@@ -665,6 +618,5 @@ public class LWRCompositeTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 }

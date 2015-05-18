@@ -42,22 +42,17 @@ import org.eclipse.ice.reactor.pwr.PWRAssembly;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the PWAssembly class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PWRAssemblyTester {
 	// An @BeforeClass that sets up the library path. This should be added to
 	// the model or removed if it can be fixed for local machine
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
@@ -65,22 +60,16 @@ public class PWRAssemblyTester {
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the constructors and their default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		// Local Declarations
 		PWRAssembly assembly;
 		// Default values. Change here as needed for tests
@@ -165,22 +154,16 @@ public class PWRAssemblyTester {
 		assertEquals(defaultRodPitch, assembly.getRodPitch(), 0.0);
 		assertEquals(type, assembly.getHDF5LWRTag());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the adders, getters, and setters for LWRRods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLWRRodOperations() {
-		// begin-user-code
 		// Local Declarations
 		int assemblySize = 17;
 		PWRAssembly assembly = new PWRAssembly(assemblySize);
@@ -358,23 +341,17 @@ public class PWRAssemblyTester {
 				assembly.getLWRRodByLocation(rowLoc2, colLoc2).getName());
 		assertEquals(2, assembly.getNumberOfLWRRods());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation demonstrates the behaviors listed with the overridden
 	 * composite implementations from LWRComposite.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCompositeImplementations() {
-		// begin-user-code
 		// Local Declarations
 		int assemblySize = 17;
 		PWRAssembly assembly;
@@ -442,22 +419,16 @@ public class PWRAssemblyTester {
 		assertEquals(numberOfDefaultComponents,
 				assembly.getNumberOfComponents());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the getter and setter for rodPitch.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRodPitch() {
-		// begin-user-code
 		PWRAssembly assembly = new PWRAssembly(2);
 		double defaultPitch = 1;
 
@@ -476,22 +447,16 @@ public class PWRAssemblyTester {
 		assembly.setRodPitch(-1.0);
 		assertEquals(1.0, assembly.getRodPitch(), 0.0);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the equals and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		PWRAssembly object, equalObject, unEqualObject, transitiveObject;
@@ -560,22 +525,16 @@ public class PWRAssemblyTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the copying and clone operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local Declarations
 		PWRAssembly object, copyObject, clonedObject;
@@ -607,22 +566,16 @@ public class PWRAssemblyTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 writing operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Writeables() {
-		// begin-user-code
 
 		// Local Declarations
 		int size = 5;
@@ -822,23 +775,17 @@ public class PWRAssemblyTester {
 		// Delete the file once you are done
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the test.h5 file after the tests fails (to keep the workspace
 	 * clean).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@AfterClass
 	public static void afterClass() {
-		// begin-user-code
 
 		// Cleans up the datafile if it exists due to a failed test
 		File dataFile = new File(System.getProperty("user.dir")
@@ -849,22 +796,16 @@ public class PWRAssemblyTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the HDF5 readable operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Readables() {
-		// begin-user-code
 
 		// Local Declarations
 		int size = 5;
@@ -1013,18 +954,13 @@ public class PWRAssemblyTester {
 
 		dataFile.delete();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLWRDataProvider() {
-		// begin-user-code
 
 		// Make an assembly and setup some locations
 		PWRAssembly assembly;
@@ -1086,6 +1022,5 @@ public class PWRAssemblyTester {
 		assertTrue(provider.equals(assembly.getLWRRodDataProviderAtLocation(
 				row1, col1)));
 
-		// end-user-code
 	}
 }

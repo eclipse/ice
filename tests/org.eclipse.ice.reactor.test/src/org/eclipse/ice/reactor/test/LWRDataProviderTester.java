@@ -23,30 +23,21 @@ import org.eclipse.ice.reactor.LWRDataProvider;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A class that tests the operations on LWRDataProvider.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRDataProviderTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that checks construction.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRDataProvider provider = new LWRDataProvider();
@@ -59,23 +50,17 @@ public class LWRDataProviderTester {
 		assertEquals("seconds", provider.getTimeUnits());
 		assertEquals(0, provider.getTimes().size());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that checks the IDataProvider and LWRDataPRovider
 	 * implementations of IData.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkDataProvider() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRDataProvider component;
@@ -279,22 +264,16 @@ public class LWRDataProviderTester {
 		// Check number of timesteps
 		assertEquals(2, component.getNumberOfTimeSteps());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copying and cloning operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRDataProvider object, copyObject, clonedObject;
@@ -324,22 +303,16 @@ public class LWRDataProviderTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the equals and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRDataProvider object, equalObject, unEqualObject, transitiveObject;
@@ -406,6 +379,5 @@ public class LWRDataProviderTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 }

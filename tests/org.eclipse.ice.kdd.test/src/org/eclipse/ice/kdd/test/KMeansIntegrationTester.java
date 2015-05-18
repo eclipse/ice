@@ -43,76 +43,52 @@ import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class runs an integration test on KDDAnalysisTool to make sure we can
  * successfully create a KMeans clustering strategy and get meaningful data from
  * it.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class KMeansIntegrationTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private KDDAnalysisTool kddAnalysisTool;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDataProvider dataProvider;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IProject project;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initialize necessary data
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void beforeClass() {
-		// begin-user-code
 		kddAnalysisTool = new KDDAnalysisTool();
 		KDDStrategyFactory factory = new KDDStrategyFactory();
 		factory.registerStrategy(new RawKMeansBuilder());
 		kddAnalysisTool.registerStrategyFactory(factory);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Create a KMeans strategy and check it executes correctly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRunRawKMeans() {
-		// begin-user-code
 		// Create a valid IDataProvider
 		populateData();
 
@@ -158,21 +134,15 @@ public class KMeansIntegrationTester {
 
 		assertFalse(assets.get(0).setProperty("Visualization Dimension",
 				"hello"));
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Fill the IDataProvider with valid data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void populateData() {
-		// begin-user-code
 		// Create a test IDataProvider
 		dataProvider = new SimpleDataProvider();
 
@@ -273,6 +243,5 @@ public class KMeansIntegrationTester {
 		((SimpleDataProvider) dataProvider).addData(rowList, "Number of Rows");
 		((SimpleDataProvider) dataProvider).addData(colList,
 				"Number of Columns");
-		// end-user-code
 	}
 }

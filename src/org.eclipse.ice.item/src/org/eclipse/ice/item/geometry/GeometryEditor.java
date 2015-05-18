@@ -21,57 +21,42 @@ import org.eclipse.ice.item.ItemType;
 import org.eclipse.core.resources.IProject;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is a subclass of Item that provides 3D geometry editing services to ICE.
  * It overrides the setupForm() operation and provides a Form that contains a
  * GeometryComponent. More information about the exact contents of the Form is
  * available on the setupForm() operation description below.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "GeometryEditor")
 public class GeometryEditor extends Item {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An alternative nullary constructor used primarily for serialization. The
 	 * setProject() operation must be called if this constructor is used!
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GeometryEditor() {
-		// begin-user-code
 
 		// Punt to the other Constructor
 		this(null);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param project
 	 *            <p>
 	 *            The Eclipse project used by the GeometryEditor.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GeometryEditor(IProject project) {
-		// begin-user-code
 
 		// Call the super constructor
 		super(project);
@@ -82,23 +67,17 @@ public class GeometryEditor extends Item {
 		allowedActions.remove(taggedExportActionString);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides setupForm() to provide a Form that contains a
 	 * single GeometryComponent. This component has id=1 and is named
 	 * "Geometry Data."
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		// Set the name, description and type
 		setName("Geometry Editor");
@@ -119,6 +98,5 @@ public class GeometryEditor extends Item {
 
 		return;
 
-		// end-user-code
 	}
 }

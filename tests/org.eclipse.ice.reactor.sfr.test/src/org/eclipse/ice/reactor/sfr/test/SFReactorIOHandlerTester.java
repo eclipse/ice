@@ -25,15 +25,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the SFReactorIOHandler class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SFReactorIOHandlerTester {
 
@@ -43,7 +39,6 @@ public class SFReactorIOHandlerTester {
 	@Ignore
 	@Test
 	public void checkRead() {
-		// begin-user-code
 
 		// Constants for this test.
 		int reactorSize = 0; // Use the default.
@@ -136,12 +131,10 @@ public class SFReactorIOHandlerTester {
 				/ 1000000000.0);
 
 		return;
-		// end-user-code
 	}
 
 	@Test
 	public void checkWriteAndRead() {
-		// begin-user-code
 
 		// Constants for this test.
 		int reactorSize = 0; // Use the default.
@@ -262,6 +255,5 @@ public class SFReactorIOHandlerTester {
 		}
 
 		return;
-		// end-user-code
 	}
 }

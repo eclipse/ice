@@ -35,16 +35,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class represents a polygon composed of a certain number of vertices
  * connected by edges.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Polygon")
 @XmlSeeAlso({ Quad.class, Hex.class })
@@ -53,71 +49,50 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 		IMeshPart {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The collection of Vertices composing the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Vertex")
 	protected ArrayList<Vertex> vertices;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The collection of Edges composing the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Edge")
 	protected ArrayList<Edge> edges;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The properties for each polygon defined in the MESH DATA section of a Nek
 	 * reafile. Contains a String representing the material ID, and an integer
 	 * representing the group number of the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "PolygonProperties")
 	protected PolygonProperties polygonProperties;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A map of edge properties for each edge, keyed on the edge IDs.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElementWrapper(name = "EdgeProperties")
 	private HashMap<Integer, EdgeProperties> edgeProperties;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A nullary constructor. This creates a Polygon with no vertices or edges
 	 * and initializes any fields necessary. Required for persistence.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Polygon() {
-		// begin-user-code
 		super();
 
 		// Initialize the lists of edges and vertices.
@@ -135,15 +110,12 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 		setDescription("");
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param edges
 	 *            <p>
@@ -153,11 +125,8 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 *            <p>
 	 *            A collection of vertices connected by a collection of edges.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Polygon(ArrayList<Edge> edges, ArrayList<Vertex> vertices) {
-		// begin-user-code
 
 		// Initialize the defaults.
 		this();
@@ -255,68 +224,50 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the collection of edges composing the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The collection of Edges composing the 2D polygon.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Edge> getEdges() {
-		// begin-user-code
 
 		// Return a copy of the edge list.
 		return new ArrayList<Edge>(edges);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the collection of vertices composing the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The collection of Vertices composing the 2D polygon.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Vertex> getVertices() {
-		// begin-user-code
 
 		// Return a copy of the vertex list.
 		return new ArrayList<Vertex>(vertices);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets a fluid boundary condition for an edge of the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param edgeId
 	 *            The ID of the edge that will have the new BoundaryCondition.
 	 * @param condition
 	 *            The new BoundaryCondition.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setFluidBoundaryCondition(int edgeId,
 			BoundaryCondition condition) {
-		// begin-user-code
 
 		// First, check that the edgeId is valid by performing a map lookup.
 		EdgeProperties properties = edgeProperties.get(edgeId);
@@ -337,25 +288,19 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the fluid boundary condition for an edge of the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param edgeId
 	 *            The ID of the edge that has a BoundaryCondition.
 	 * @return The edge's BoundaryCondition for this polygon, or null if the
 	 *         edge ID is invalid.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public BoundaryCondition getFluidBoundaryCondition(int edgeId) {
-		// begin-user-code
 
 		// If the edgeId is valid, we can pull the property from the
 		// EdgeProperty instance.
@@ -365,26 +310,20 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 			condition = properties.getFluidBoundaryCondition();
 		}
 		return condition;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets a thermal boundary condition for an edge of the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param edgeId
 	 *            The ID of the edge that will have the new BoundaryCondition.
 	 * @param condition
 	 *            The new BoundaryCondition.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setThermalBoundaryCondition(int edgeId,
 			BoundaryCondition condition) {
-		// begin-user-code
 
 		// First, check that the edgeId is valid by performing a map lookup.
 		EdgeProperties properties = edgeProperties.get(edgeId);
@@ -405,25 +344,19 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the thermal boundary condition for an edge of the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param edgeId
 	 *            The ID of the edge that has a BoundaryCondition.
 	 * @return The edge's BoundaryCondition for this polygon, or null if the
 	 *         edge ID is invalid.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public BoundaryCondition getThermalBoundaryCondition(int edgeId) {
-		// begin-user-code
 
 		// If the edgeId is valid, we can pull the property from the
 		// EdgeProperty instance.
@@ -433,15 +366,12 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 			condition = properties.getThermalBoundaryCondition();
 		}
 		return condition;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets a passive scalar boundary condition for an edge of the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param edgeId
 	 *            The ID of the edge that will have the new BoundaryCondition.
@@ -450,12 +380,9 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 *            conditions.
 	 * @param condition
 	 *            The new BoundaryCondition.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setOtherBoundaryCondition(int edgeId, int otherId,
 			BoundaryCondition condition) {
-		// begin-user-code
 
 		// First, check that the edgeId is valid by performing a map lookup.
 		EdgeProperties properties = edgeProperties.get(edgeId);
@@ -479,15 +406,12 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets a passive scalar boundary condition for an edge of the polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param edgeId
 	 *            The ID of the edge that has a BoundaryCondition.
@@ -496,11 +420,8 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 *            conditions.
 	 * @return The edge's BoundaryCondition for this polygon, or null if the
 	 *         edge ID is invalid.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public BoundaryCondition getOtherBoundaryCondition(int edgeId, int otherId) {
-		// begin-user-code
 
 		// If the edgeId is valid, we can pull the property from the
 		// EdgeProperty instance.
@@ -510,63 +431,45 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 			condition = properties.getOtherBoundaryCondition(otherId);
 		}
 		return condition;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the properties for the current polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param materialId
 	 *            The material ID of the current polygon.
 	 * @param group
 	 *            The group number of the current polygon.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPolygonProperties(String materialId, int group) {
-		// begin-user-code
 		polygonProperties = new PolygonProperties(materialId, group);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the properties for the current polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The properties for the current polygon.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PolygonProperties getPolygonProperties() {
-		// begin-user-code
 		return polygonProperties;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the Polygon.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based on super's hashCode.
 		int hash = super.hashCode();
@@ -578,17 +481,14 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 		hash = 31 * hash + polygonProperties.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this Polygon and another
 	 * Polygon. It returns true if the Polygons are equal and false if they are
 	 * not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -597,11 +497,8 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 * @return <p>
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -625,26 +522,20 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a Polygon into the current object
 	 * using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param polygon
 	 *            <p>
 	 *            The Object from which the values should be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(Polygon polygon) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (polygon == null) {
@@ -723,24 +614,18 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 				.clone();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the Polygon using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		Polygon object = new Polygon();
@@ -750,43 +635,33 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IShape#acceptShapeVisitor(IShapeVisitor visitor)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void acceptShapeVisitor(IShapeVisitor visitor) {
-		// begin-user-code
 
 		// Nothing to do here. We are currently only extending AbstractShape for
 		// the transformation tools.
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Implements the update operation. Currently, the Polygon registers with
 	 * its current set of BoundaryConditions.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
 	 *            <p>
 	 *            The updated component. This should always be a
 	 *            BoundaryCondition.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(IUpdateable component) {
-		// begin-user-code
 
 		// TODO Currently, this code has been disabled. We still need to decide
 		// if the polygon should pass on an update notification when a boundary
@@ -800,23 +675,18 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 		notifyListeners();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method calls the {@link IMeshPartVisitor}'s visit method.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The {@link IMeshPartVisitor} that is visiting this
 	 *            {@link IMeshPart}.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void acceptMeshVisitor(IMeshPartVisitor visitor) {
 		if (visitor != null) {

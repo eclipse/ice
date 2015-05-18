@@ -18,31 +18,22 @@ import org.eclipse.ice.item.messaging.Message;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the Message class to make sure the Bean
  * works correctly.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MessageTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation makes sure that the accessors of the Message class work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAccessors() {
-		// begin-user-code
 
 		// Local Declarations
 		int id = 1, itemId = 2;
@@ -62,6 +53,5 @@ public class MessageTester {
 		assertEquals(type, msg.getType());
 
 		return;
-		// end-user-code
 	}
 }

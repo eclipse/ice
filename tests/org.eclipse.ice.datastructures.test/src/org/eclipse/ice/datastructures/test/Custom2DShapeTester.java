@@ -34,15 +34,11 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the Custom2DShape class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @authors Jordan H. Deyton, Taylor Patterson
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class Custom2DShapeTester {
 
@@ -53,19 +49,14 @@ public class Custom2DShapeTester {
 	// updated to use unique vertex IDs, edge IDs, and polygon IDs.
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of the Custom2DShape class and the
 	 * functionality inherited from ICEObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		// Instantiate Custom2DShape
 		Custom2DShape shape = new Custom2DShape();
@@ -76,22 +67,16 @@ public class Custom2DShapeTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the ability to add Polygons to the Custom2DShape.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAddPolygons() {
-		// begin-user-code
 
 		// Useful variables.
 		Edge edge;
@@ -238,45 +223,33 @@ public class Custom2DShapeTester {
 		/* -------------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Custom2DShape to insure that it can be
 	 * correctly visited by a realization of the IShapeVisitor interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// TODO This method will require Custom2DShape to be added to the
 		// IShapesVisitor class or the IMeshVisitor class if one is created.
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the Custom2DShape to ensure that it can properly
 	 * dispatch notifications when it receives an update that changes its state.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkNotifications() {
-		// begin-user-code
 
 		// Useful variables.
 		Edge edge;
@@ -365,26 +338,20 @@ public class Custom2DShapeTester {
 		/* ------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the Custom2DShape to persist itself
 	 * to XML and to load itself from an XML input stream.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * @throws IOException 
 	 * @throws JAXBException 
 	 * @throws NullPointerException 
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
-		// begin-user-code
 
 		// Useful variables.
 		Edge edge;
@@ -456,23 +423,17 @@ public class Custom2DShapeTester {
 		assertTrue(shape.equals(loadedShape));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Custom2DShape to insure that its equals() and
 	 * hashCode() operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Useful variables.
 		Edge edge;
@@ -579,23 +540,17 @@ public class Custom2DShapeTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Custom2DShape to ensure that its copy() and
 	 * clone() operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Useful variables.
 		Edge edge;
@@ -670,6 +625,5 @@ public class Custom2DShapeTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

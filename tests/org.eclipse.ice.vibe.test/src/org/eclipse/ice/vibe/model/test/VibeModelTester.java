@@ -59,7 +59,6 @@ public class VibeModelTester {
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -99,7 +98,6 @@ public class VibeModelTester {
 		projectSpace = project;
 
 		return;
-		// end-user-code
 	}
 
 	/**

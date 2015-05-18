@@ -16,32 +16,23 @@ import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Used to test the functionality of AbstractShape
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class TestShape extends AbstractShape {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the ICEObject using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new cloned object
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Create a new instance of TestShape
 		TestShape testShape = new TestShape();
@@ -52,33 +43,24 @@ public class TestShape extends AbstractShape {
 		// Return the cloned TestShape
 		return testShape;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IUpdateable#update(String updatedKey, String newValue)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(String updatedKey, String newValue) {
-		// begin-user-code
 		// Not implemented
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IShape#acceptShapeVisitor(IShapeVisitor visitor)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void acceptShapeVisitor(IShapeVisitor visitor) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 }

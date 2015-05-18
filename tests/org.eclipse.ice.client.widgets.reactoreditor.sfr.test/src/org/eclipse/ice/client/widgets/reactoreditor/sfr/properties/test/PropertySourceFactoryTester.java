@@ -68,7 +68,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkSFRComponent() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -115,7 +114,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -185,7 +183,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkSFRAssembly() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -232,7 +229,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -314,7 +310,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkReflectorAssembly() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -362,7 +357,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -443,7 +437,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkSFRRod() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -491,7 +484,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -499,7 +491,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkMaterialBlock() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -547,7 +538,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -555,7 +545,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkMaterials() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -603,7 +592,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**

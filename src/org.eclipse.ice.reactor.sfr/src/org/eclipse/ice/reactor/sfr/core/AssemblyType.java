@@ -13,56 +13,41 @@
 package org.eclipse.ice.reactor.sfr.core;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Represents the three possible types of assemblies: fuel, control or
  * reflector.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public enum AssemblyType {
 	/**
 	 * <!-- begin-UML-doc --> Fuel type includes burnable (inner fuel, outer
 	 * fuel) and blanket (optional) assemblies. <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Fuel("Fuel Assembly"),
 	/**
 	 * <!-- begin-UML-doc --> Control type includes primary and secondary
 	 * (shutdown) assemblies. <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Control("Control Assembly"),
 	/**
 	 * <!-- begin-UML-doc --> Reflector type contains only reflector assemblies.
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Reflector("Reflector Assembly"),
 	/**
 	 * <!-- begin-UML-doc --> Shield type only contains shield assemblies. <!--
 	 * end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Shield("Shield Assembly"),
 	/**
 	 * <!-- begin-UML-doc --> Test type includes materials test and fuel test
 	 * assemblies. <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Test("Test Assembly");
 
@@ -70,8 +55,6 @@ public enum AssemblyType {
 	 * <!-- begin-UML-doc --> A user-friendly String for displaying an
 	 * AssemblyType value. <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private final String name;
 
@@ -81,8 +64,6 @@ public enum AssemblyType {
 	 * 
 	 * @param name
 	 *            The name of the assembly type.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AssemblyType(String name) {
 		// Set the user-friendly name String for this assembly type.
@@ -97,8 +78,6 @@ public enum AssemblyType {
 	 * end-UML-doc -->
 	 * 
 	 * @return Returns the assembly type as a String.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public String toString() {

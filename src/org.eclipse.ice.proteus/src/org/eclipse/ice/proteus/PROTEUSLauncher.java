@@ -20,65 +20,47 @@ import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.core.resources.IProject;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A PROTEUS Item for launching jobs.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings, w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "PROTEUSLauncher")
 public class PROTEUSLauncher extends JobLauncher {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PROTEUSLauncher() {
-		// begin-user-code
 		// Forward
 		this(null);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor with a project space in which files should be
 	 * manipulated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
 	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PROTEUSLauncher(IProject projectSpace) {
-		// begin-user-code
 		// Forward up
 		super(projectSpace);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation launches the PROTEUS job.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param actionName
 	 *            <p>
@@ -91,29 +73,20 @@ public class PROTEUSLauncher extends JobLauncher {
 	 *         run for any reason, including being asked to run actions that are
 	 *         not in the list of available actions.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus process(String actionName) {
-		// begin-user-code
 		// Just forward the request to the super class. This operation is only
 		// here in case we need to do some work before processing.
 		return super.process(actionName);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the form for the PROTEUSLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		// Local Declarations
 		String cpDataStep = "cp ${installDir}../../../../../install/sharp_examples/sahex1/sahex1_unic* .;";
@@ -134,21 +107,15 @@ public class PROTEUSLauncher extends JobLauncher {
 		addHost("ergaster.ornl.gov", "linux x86_64", remoteInstallDir);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to setup the name and description of the launcher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupItemInfo() {
-		// begin-user-code
 
 		// Set the name and description of the Item
 		setName(PROTEUSLauncherBuilder.name);
@@ -157,6 +124,5 @@ public class PROTEUSLauncher extends JobLauncher {
 				+ "on sodium-cooled fast reactors.");
 
 		return;
-		// end-user-code
 	}
 }

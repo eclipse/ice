@@ -33,7 +33,6 @@ import javax.xml.bind.UnmarshalException;
 import org.eclipse.core.resources.IProject;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The SerializedItemBuilder is responsible for building SerializedItems and
  * should be registered with the Core. It will store the name of a Painfully
@@ -49,51 +48,35 @@ import org.eclipse.core.resources.IProject;
  * The Item Builder name of the Item is set to the name of the Item in file and
  * the SerializedItemBuilder will return the same name by calling getItemName().
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SerializedItemBuilder implements ItemBuilder {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the Item that this builder can create.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String name;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The ItemType of the Item that this builder can create.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ItemType type;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An instance of the SerializedItem that this Builder can create that is
 	 * instantiated upon construction. All subsequent Items are created as
 	 * copies of this Item so that the InputStream can be released.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Item originalItem;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor. SerializedItemBuilders must be initialized with an
 	 * InputStream. The stream can contain either a Painfully Simple Form file
@@ -102,7 +85,6 @@ public class SerializedItemBuilder implements ItemBuilder {
 	 * the contents of the stream are not consistent with either the XML or the
 	 * PSF formats, then it will throw an IOException.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param inputStream
 	 *            <p>
@@ -110,11 +92,8 @@ public class SerializedItemBuilder implements ItemBuilder {
 	 *            build the SerializedItem.
 	 *            </p>
 	 * @throws IOException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SerializedItemBuilder(InputStream inputStream) throws IOException {
-		// begin-user-code
 
 		// Local Declarations
 		int numChars = 0;
@@ -220,44 +199,32 @@ public class SerializedItemBuilder implements ItemBuilder {
 		}
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getItemName() {
-		// begin-user-code
 		return name;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemType()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ItemType getItemType() {
-		// begin-user-code
 		return type;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Item build(IProject projectSpace) {
-		// begin-user-code
 
 		// Local Declarations
 		Item copiedItem = (Item) this.originalItem.clone();
@@ -266,6 +233,5 @@ public class SerializedItemBuilder implements ItemBuilder {
 		copiedItem.setProject(projectSpace);
 
 		return copiedItem;
-		// end-user-code
 	}
 }

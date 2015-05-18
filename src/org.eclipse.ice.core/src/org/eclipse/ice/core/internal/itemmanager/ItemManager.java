@@ -35,7 +35,6 @@ import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ItemManager is responsible for storing, managing and distributing all
  * instances of the Item class. The ItemManager implements a basic, CRUD-style
@@ -57,86 +56,63 @@ import org.eclipse.ice.item.messaging.Message;
  * output file and retrieving a Form are separated because they are treated as
  * two distinctly different things on the Item class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ItemManager implements ItemListener {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This is a list of all of the items that are managed by the ItemManger.
 	 * The key is the Item Id and the value is a reference to the Item.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 */
 	private HashMap<Integer, Item> itemList;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The list of ItemBuilders that can be used to create items. The keys are
 	 * the names of the builders and the values are the builders.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	private HashMap<String, ItemBuilder> itemBuilderList;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This private attribute is used to create Item Ids for newly created
 	 * Items. It equal to the next available integer, starting from 1, that has
 	 * not been used by an Item.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nextSequentialId;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This private list is used to store the ids of Items that have been
 	 * deleted from the system so that they may be reused without have to
 	 * compute their values, which would require a time consuming search over
 	 * all Items.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<Integer> reusableIds;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This list of ICompositeBuilders registered in ICE. This list is
 	 * maintained because composite Items must be notified when the list of
 	 * available builders changes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<ICompositeItemBuilder> compositeBuilders;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The persistence provider.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IPersistenceProvider provider;
 
@@ -147,17 +123,12 @@ public class ItemManager implements ItemListener {
 	private IProject loadedProject = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ItemManager() {
-		// begin-user-code
 
 		// Setup the ids
 		nextSequentialId = 1;
@@ -168,11 +139,9 @@ public class ItemManager implements ItemListener {
 		compositeBuilders = new ArrayList<ICompositeItemBuilder>();
 		itemList = new HashMap<Integer, Item>();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates a new item of type newItemType and returns the
 	 * unique integer id of the created Item or, if the Item can not be created,
@@ -187,7 +156,6 @@ public class ItemManager implements ItemListener {
 	 * The ItemManager will call the persistence provider to store the newly
 	 * created Item when this operation is called.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param newItemType
 	 *            <p>
@@ -202,11 +170,8 @@ public class ItemManager implements ItemListener {
 	 * @return <p>
 	 *         The new and unique id of the item that was created.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int createItem(String newItemType, IProject project) {
-		// begin-user-code
 
 		// Local Declarations
 		int retVal = -1;
@@ -253,11 +218,9 @@ public class ItemManager implements ItemListener {
 
 		return retVal;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p >
 	 * This operation creates a new item of type newItemType and returns the
 	 * unique integer id of the created Item or, if the Item can not be created,
@@ -276,7 +239,6 @@ public class ItemManager implements ItemListener {
 	 * This version takes a file that should be loaded as input by the newly
 	 * created Item and is primarily intend for file import.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param filename
 	 *            <p>
@@ -296,11 +258,8 @@ public class ItemManager implements ItemListener {
 	 *         The identification number of the newly created Item or -1 if it
 	 *         was unable to create the Item.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int createItem(String filename, String itemType, IProject project) {
-		// begin-user-code
 
 		// Local Declarations
 		int itemId = 0;
@@ -318,11 +277,9 @@ public class ItemManager implements ItemListener {
 		}
 
 		return itemId;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the Form that represents the Item with id equal
 	 * to itemID and returns it to the caller.
@@ -335,7 +292,6 @@ public class ItemManager implements ItemListener {
 	 * information. The smaller Form is created by the Action that is executed
 	 * during the call to processItem().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param itemID
 	 *            <p>
@@ -344,11 +300,8 @@ public class ItemManager implements ItemListener {
 	 * @return <p>
 	 *         The Form that represents the Item with id itemID.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Form retrieveItem(int itemID) {
-		// begin-user-code
 
 		// Local Declarations
 		Form form = null;
@@ -360,28 +313,22 @@ public class ItemManager implements ItemListener {
 		}
 
 		return form;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation registers an ItemBuilder and thereby a particular Item
 	 * class with the ItemManager. This operation is primarily used by the
 	 * underlying OSGi framework to publish available Item types to ICE.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param builder
 	 *            <p>
 	 *            An instance of ItemBuilder for a particular Item that is
 	 *            available to the Core.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerBuilder(ItemBuilder builder) {
-		// begin-user-code
 
 		// Make sure the builder is not null and add it to the list, if it's not
 		// there already.
@@ -413,11 +360,9 @@ public class ItemManager implements ItemListener {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation registers an ICompositeItemBuilder with the ItemManager.
 	 * This operation is primarily used by the underlying OSGi framework to
@@ -425,18 +370,14 @@ public class ItemManager implements ItemListener {
 	 * usual unregisterBuilder() operation should be called to unregister an
 	 * ICompositeItemBuilder.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param builder
 	 *            <p>
 	 *            The ICompositeItemBuilder that will be used to create an Item
 	 *            that depends on others.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerCompositeBuilder(ICompositeItemBuilder builder) {
-		// begin-user-code
 
 		// Register the composite builder if it is real
 		if (builder != null) {
@@ -444,27 +385,21 @@ public class ItemManager implements ItemListener {
 			registerBuilder(builder);
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation unregisters an ItemBuilder and thereby a particular Item
 	 * class with the ItemManager.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param builder
 	 *            <p>
 	 *            An instance of ItemBuilder for a particular Item that is now
 	 *            unavailable to the Core.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void unregisterBuilder(ItemBuilder builder) {
-		// begin-user-code
 
 		if (builder != null
 				&& this.itemBuilderList.containsKey(builder.getItemName())) {
@@ -473,26 +408,20 @@ public class ItemManager implements ItemListener {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a list of the names of Items that can be created
 	 * based on the ItemBuilders that have been registered in the ItemManager.
 	 * If no ItemBuilders have been registered, this operation returns null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The list of available Items.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getAvailableBuilders() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> builders = new ArrayList<String>();
@@ -511,26 +440,20 @@ public class ItemManager implements ItemListener {
 
 		return builders;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a list of the names of Items that can be created
 	 * based on the ItemBuilders that have been registered in the ItemManager by
 	 * ItemType. If no ItemBuilders have been registered for the specified
 	 * ItemType, this operation returns null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param type
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getAvailableBuilders(ItemType type) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> builders = new ArrayList<String>();
@@ -552,23 +475,17 @@ public class ItemManager implements ItemListener {
 		}
 		return builders;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the status of an Item with the specified id.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param itemId
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus getItemStatus(int itemId) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus status = null;
@@ -585,33 +502,26 @@ public class ItemManager implements ItemListener {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the persistence provider that implements the
 	 * IPersistenceProvider interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param provider
 	 *            <p>
 	 *            The persistence provider.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPersistenceProvider(IPersistenceProvider provider) {
-		// begin-user-code
 
 		if (provider != null) {
 			System.out.println("ItemManager Message: PersistenceProvider set!");
 			this.provider = provider;
 		}
 
-		// end-user-code
 	}
 
 	/**
@@ -639,7 +549,6 @@ public class ItemManager implements ItemListener {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is called to direct the ItemManager to load all Items that
 	 * are currently persisted via its IPersistenceProvider. This operation can
@@ -656,18 +565,14 @@ public class ItemManager implements ItemListener {
 	 * (No one wants to have five Items spread across three orders of magnitude
 	 * in ids!)
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
 	 *            <p>
 	 *            The project space that the Items should use for their work. It
 	 *            may be null, but it shouldn't be.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void loadItems(IProject projectSpace) {
-		// begin-user-code
 
 		// Make sure the persistence provider is available before requesting
 		// information from it.
@@ -726,11 +631,9 @@ public class ItemManager implements ItemListener {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is called to direct the ItemManager to persist all Items
 	 * via its IPersistenceProvider. This operation can only persist the Items
@@ -747,13 +650,9 @@ public class ItemManager implements ItemListener {
 	 * persistence provider is asked to update all of the information for the
 	 * persisted Items.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void persistItems() {
-		// begin-user-code
 
 		// I'm not sure how to check this in tests in a very detailed way. It is
 		// only minimally tested now.
@@ -767,11 +666,9 @@ public class ItemManager implements ItemListener {
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a file handle to the output file for the Item with
 	 * the specified id. It returns a handle to the file whether or not it
@@ -782,7 +679,6 @@ public class ItemManager implements ItemListener {
 	 * should be careful to only read from the file. It will return null if an
 	 * Item with the specified id does not exist.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
 	 *            <p>
@@ -792,11 +688,8 @@ public class ItemManager implements ItemListener {
 	 *         The output file for the specified Item, thoroughly documented
 	 *         elsewhere.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public File getOutputFile(int id) {
-		// begin-user-code
 
 		// Local Declarations
 		File outputFile = null;
@@ -806,16 +699,13 @@ public class ItemManager implements ItemListener {
 		}
 
 		return outputFile;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation cancels the process with the specified name for the Item
 	 * identified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param itemId
 	 *            <p>
@@ -829,11 +719,8 @@ public class ItemManager implements ItemListener {
 	 * @return <p>
 	 *         The status
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus cancelItemProcess(int itemId, String actionName) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus status = FormStatus.InfoError;
@@ -847,22 +734,16 @@ public class ItemManager implements ItemListener {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs the ItemManager to have its Items reload any data
 	 * because of updates to projects during runtime.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void reloadItemData() {
-		// begin-user-code
 
 		// Send a reload signal to all of the Items
 		for (Item item : itemList.values()) {
@@ -870,17 +751,14 @@ public class ItemManager implements ItemListener {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation updates the Item specified by the Message to let it know
 	 * that a particular event has occurred in an ICE subsystem, remote ICE
 	 * subsystem or external third-party process.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param msg
 	 *            <p>
@@ -890,11 +768,8 @@ public class ItemManager implements ItemListener {
 	 *         True if the ItemManager was able to forward the Message and if
 	 *         the Item was able to respond to the Message, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean postUpdateMessage(Message msg) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean retVal = false;
@@ -909,18 +784,14 @@ public class ItemManager implements ItemListener {
 		}
 
 		return retVal;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemListener#reloadProjectData()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void reloadProjectData() {
-		// begin-user-code
 
 		// Not threaded for now, but should it be? ~JJB 20130912 17:06
 
@@ -932,26 +803,20 @@ public class ItemManager implements ItemListener {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation will return a list of Identifiables that contain the names
 	 * and unique item ids of each Item that is managed by the ItemManager.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The list of ItemHandles that contains the names and unique ids of
 	 *         the Items managed by the ItemManager.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Identifiable> retrieveItemList() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Identifiable> items = new ArrayList<Identifiable>();
@@ -962,11 +827,9 @@ public class ItemManager implements ItemListener {
 		}
 
 		return items;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation updates an Item that is managed by the ItemManager using
 	 * the Form for that Item and returns the status of that Item. If the
@@ -978,7 +841,6 @@ public class ItemManager implements ItemListener {
 	 * The ItemManager will call the persistence provider to update the Item
 	 * when this operation is called.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param form
 	 *            <p>
@@ -988,11 +850,8 @@ public class ItemManager implements ItemListener {
 	 * @return <p>
 	 *         The status of the Item after the Form is submitted.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus updateItem(Form form) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus status = FormStatus.InfoError;
@@ -1016,11 +875,9 @@ public class ItemManager implements ItemListener {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation processes the Item with the specified id and action. The
 	 * action name must be one of the set of actions from the Form that
@@ -1043,7 +900,6 @@ public class ItemManager implements ItemListener {
 	 * The ItemManager will call the persistence provider to update the Item
 	 * when this operation is called.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param itemId
 	 *            <p>
@@ -1056,11 +912,8 @@ public class ItemManager implements ItemListener {
 	 * @return <p>
 	 *         The status of the Item after the action has been performed.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus processItem(int itemId, String actionName) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus status = FormStatus.InfoError;
@@ -1076,11 +929,9 @@ public class ItemManager implements ItemListener {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation will delete the item with id itemID.
 	 * </p>
@@ -1088,7 +939,6 @@ public class ItemManager implements ItemListener {
 	 * The ItemManager will call the persistence provider to delete the Item
 	 * when this operation is called.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param itemID
 	 *            <p>
@@ -1097,11 +947,8 @@ public class ItemManager implements ItemListener {
 	 * @return <p>
 	 *         True if the Item was deleted, false if something went wrong.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean deleteItem(int itemID) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean retVal = false;
@@ -1125,6 +972,5 @@ public class ItemManager implements ItemListener {
 
 		return retVal;
 
-		// end-user-code
 	}
 }

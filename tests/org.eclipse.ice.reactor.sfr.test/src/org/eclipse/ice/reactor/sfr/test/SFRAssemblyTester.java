@@ -21,31 +21,22 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRAssembly;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the SFRAssembly class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SFRAssemblyTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructors and default values of the SFRAssembly class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// An assembly to test.
 		SFRAssembly assembly;
@@ -147,22 +138,16 @@ public class SFRAssemblyTester {
 		/* -------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter of SFRAssembly's ductThickness attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkDuctThickness() {
-		// begin-user-code
 
 		SFRAssembly assembly = new SFRAssembly(1);
 		double defaultDuctThickness = 0.0;
@@ -183,19 +168,15 @@ public class SFRAssemblyTester {
 		assertEquals(500, assembly.getDuctThickness(), 0);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		int size = 18;
 		String name = "So long, and thanks for all the fish!";
@@ -238,19 +219,15 @@ public class SFRAssemblyTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		int size = 18;
 		String name = "So long, and thanks for all the fish!";
@@ -290,6 +267,5 @@ public class SFRAssemblyTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

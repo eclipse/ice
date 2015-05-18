@@ -19,30 +19,20 @@ import org.eclipse.ice.kdd.kddstrategy.kmeansclustering.EuclideanDistanceMeasure
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EuclideanDistanceMeasureTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private EuclideanDistanceMeasure dm;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetDistance() {
-		// begin-user-code
 		KDDMatrix vec1 = new KDDMatrix(2, 1);
 		assertTrue(vec1.setElement(0, 0, 1.0));
 		assertTrue(vec1.setElement(1, 0, 1.0));
@@ -55,6 +45,5 @@ public class EuclideanDistanceMeasureTester {
 
 		assertTrue(dm.getDistance(vec1, vec2).equals(Math.sqrt(5)));
 
-		// end-user-code
 	}
 }

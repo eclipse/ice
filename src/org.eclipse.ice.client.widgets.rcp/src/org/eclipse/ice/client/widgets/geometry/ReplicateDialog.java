@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Dialog box displaying parameters for the Replication action
  * </p>
@@ -35,35 +34,24 @@ import org.eclipse.swt.widgets.Spinner;
  * repeated shape will be shifted by the given Translation parameter relative to
  * the previous shape.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ReplicateDialog extends Dialog {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The quantity spinner's value
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int quantity;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An array of the shift spinner's values
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double[] shift = new double[3];
 
@@ -88,41 +76,29 @@ public class ReplicateDialog extends Dialog {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the translation parameters
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         An array of three values representing the translation parameters
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double[] getShift() {
-		// begin-user-code
 		return shift;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the desired number of total similar shapes when cloning
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The quantity
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getQuantity() {
-		// begin-user-code
 		return quantity;
-		// end-user-code
 	}
 
 	@Override

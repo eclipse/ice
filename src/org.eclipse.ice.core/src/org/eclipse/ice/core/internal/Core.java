@@ -625,7 +625,6 @@ public class Core extends Application implements ICore {
 			System.out.println("ICore Message: ICE Core Server loaded, but "
 					+ "without webservice.");
 		}
-		// end-user-code
 	}
 
 	/**

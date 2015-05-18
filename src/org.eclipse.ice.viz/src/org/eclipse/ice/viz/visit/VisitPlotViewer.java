@@ -350,9 +350,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 *         set.
 	 */
 	public ResourceComponent getResourceComponent() {
-		// begin-user-code
 		return resourceComponent;
-		// end-user-code
 	}
 
 	/**

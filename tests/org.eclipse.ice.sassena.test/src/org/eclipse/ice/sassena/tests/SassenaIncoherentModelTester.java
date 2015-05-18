@@ -34,13 +34,11 @@ import org.eclipse.ice.sassena.SassenaCoherentModel;
 import org.eclipse.ice.sassena.SassenaIncoherentModel;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the operations on SassenaIncoherent. This class is also
  * responsible for building the model files designed to be used in the Sassena
  * Model for production mode.
  * </p>
- * <!-- end-UML-doc -->
  */
 public class SassenaIncoherentModelTester {
 
@@ -50,18 +48,13 @@ public class SassenaIncoherentModelTester {
 	private static IProject projectSpace;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the workspace.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -105,20 +98,16 @@ public class SassenaIncoherentModelTester {
 		projectSpace = project;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks SassenaIncoherentModel.setupForm operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkSetupForm() {
 
-		// begin-user-code
 
 		// Local declarations
 		SassenaIncoherentModel sassenaModel;
@@ -134,21 +123,17 @@ public class SassenaIncoherentModelTester {
 		assertEquals(1, form.getComponents().size());
 
 		return;
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks BatMLModel.process operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkProcess() {
 
-		// begin-user-code
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -187,7 +172,6 @@ public class SassenaIncoherentModelTester {
 		// in relation to the Id of the item.
 		assertTrue(Files.exists(Paths.get(filePath)));
 
-		// end-user-code
 
 	}
 

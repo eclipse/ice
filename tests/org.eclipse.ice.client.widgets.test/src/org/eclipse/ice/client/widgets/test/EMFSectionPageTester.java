@@ -21,38 +21,26 @@ import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the EMFSectionPage class.
  * It only tests the accessor operations for the EMFComponent.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EMFSectionPageTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private EMFSectionPage emfSectionPage;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEMFComponent() {
-		// begin-user-code
 
 		// Local Declarations
 		EMFComponent comp1 = new EMFComponent(), comp2 = null;
@@ -78,6 +66,5 @@ public class EMFSectionPageTester {
 
 		return;
 
-		// end-user-code
 	}
 }

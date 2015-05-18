@@ -49,7 +49,6 @@ public class HdfFileFactoryTester {
 	 */
 	@Test
 	public void checkFileOperations() {
-		// begin-user-code
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -137,6 +136,5 @@ public class HdfFileFactoryTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 }

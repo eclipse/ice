@@ -89,7 +89,6 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 * .forms.IManagedForm)
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
-		// begin-user-code
 
 		// Get the parent form and the toolkit
 		final ScrolledForm scrolledForm = managedForm.getForm();
@@ -199,7 +198,6 @@ public class ListComponentSectionPage extends ICEFormPage {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**

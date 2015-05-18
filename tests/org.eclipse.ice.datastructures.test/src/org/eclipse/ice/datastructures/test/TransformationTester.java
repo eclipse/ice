@@ -41,18 +41,13 @@ import org.eclipse.ice.datastructures.form.geometry.Transformation;
  */
 public class TransformationTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that the skew values can be set and get correctly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkSkew() {
-		// begin-user-code
 
 		Transformation transformation = new Transformation();
 		transformation.setSkew(-1.0, 1.2, 5.0);
@@ -60,44 +55,32 @@ public class TransformationTester {
 		double[] expectedSkew = new double[] { -1.0, 1.2, 5.0 };
 		assertTrue(Arrays.equals(expectedSkew, transformation.getSkew()));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that the size value can be set and get correctly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkSize() {
-		// begin-user-code
 
 		Transformation transformation = new Transformation();
 		transformation.setSize(42.0);
 
 		assertEquals(42.0, transformation.getSize(), 0.0);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that the scale values can be set and get correctly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkScale() {
-		// begin-user-code
 
 		Transformation transformation = new Transformation();
 		transformation.setScale(-1.0, 1.2, 5.0);
@@ -105,22 +88,16 @@ public class TransformationTester {
 		double[] expectedScale = new double[] { -1.0, 1.2, 5.0 };
 		assertTrue(Arrays.equals(expectedScale, transformation.getScale()));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that the rotation values can be set and get correctly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRotation() {
-		// begin-user-code
 
 		Transformation transformation = new Transformation();
 		transformation.setRotation(-1.0, 1.2, 5.0);
@@ -129,22 +106,16 @@ public class TransformationTester {
 		assertTrue(Arrays
 				.equals(expectedRotation, transformation.getRotation()));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that the translation values can be set and get correctly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkTranslation() {
-		// begin-user-code
 
 		Transformation transformation = new Transformation();
 		transformation.setTranslation(-1.0, 1.2, 5.0);
@@ -153,7 +124,6 @@ public class TransformationTester {
 		assertTrue(Arrays.equals(expectedTranslation,
 				transformation.getTranslation()));
 
-		// end-user-code
 	}
 
 	/**
@@ -203,19 +173,14 @@ public class TransformationTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Transformation to ensure that its equals() and
 	 * hashcode() operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Create Matrix4x4 to test
 		Transformation component = new Transformation();
@@ -282,23 +247,17 @@ public class TransformationTester {
 
 		// Assert that hashcodes from unequal objects are different
 		assertTrue(component.hashCode() != unEqualComponent.hashCode());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of the Transformation class and the
 	 * functionality inherited from ICEObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		// Create a Transformation
 		Transformation transformation = new Transformation();
@@ -319,23 +278,17 @@ public class TransformationTester {
 		assertTrue(Arrays.equals(expectedTranslation,
 				transformation.getTranslation()));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Transformation to ensure that its copy() and
 	 * clone() operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		Transformation transformation = new Transformation();
 		Transformation cloneTransformation;
@@ -374,6 +327,5 @@ public class TransformationTester {
 		// Check equality of contents
 		assertTrue(copyTransformation.equals(transformation));
 
-		// end-user-code
 	}
 }

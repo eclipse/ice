@@ -45,18 +45,14 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is a subclass of MasterDetailsBlock that works with a structured content
  * provider that is provided by ICE. The only way to provide the content
  * provider and details page provider handles for this class is through the
  * constructor.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 
@@ -95,26 +91,18 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The MasterDetailsBlock used to populate the block.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private MasterDetailsComponent masterDetailsComponent;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The page provider that is used to retrieve IDetailsPages for the Details
 	 * block.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDetailsPageProvider detailsPageProvider;
 
@@ -126,12 +114,10 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	private TableViewer viewer;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor. If either argument is null, this class will be unable to
 	 * render anything to the screen.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
 	 *            <p>
@@ -148,69 +134,51 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	 *            The IDetailsPageProvider that will provide IDetailsPages for
 	 *            the Details block.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEScrolledPropertiesBlock(MasterDetailsComponent component,
 			ICEFormEditor editor, IDetailsPageProvider pageProvider) {
-		// begin-user-code
 
 		// Set the references
 		masterDetailsComponent = component;
 		detailsPageProvider = pageProvider;
 		formEditor = editor;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the content provider or null if it was not set in
 	 * the constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The MasterDetailsComponent that is used to populate the
 	 *         MasterDetailsBlock/ScrolledPropertiesBlock or null if it was not
 	 *         set.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public MasterDetailsComponent getComponent() {
-		// begin-user-code
 		return masterDetailsComponent;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the page provider or null if it was not set in the
 	 * constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The IDetailsPageProvider or null if it was not set.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IDetailsPageProvider getDetailsPageProvider() {
-		// begin-user-code
 		return detailsPageProvider;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates a master part in the block.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param managedForm
 	 *            <p>
@@ -220,11 +188,8 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	 *            <p>
 	 *            The parent Composite.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void createMasterPart(IManagedForm managedForm, Composite parent) {
-		// begin-user-code
 
 		FormToolkit toolkit = managedForm.getToolkit();
 
@@ -376,45 +341,33 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 			button.setEnabled(false);
 			button2.setEnabled(false);
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation registers the IDetailsPageProvider that provides pages to
 	 * the DetailsPart.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param detailsPart
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void registerPages(DetailsPart detailsPart) {
-		// begin-user-code
 
 		detailsPart.setPageProvider(detailsPageProvider);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates actions in the toolbar for the block.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param managedForm
 	 *            <p>
 	 *            The parent Form
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void createToolBarActions(IManagedForm managedForm) {
-		// begin-user-code
 		final ScrolledForm form = managedForm.getForm();
 		Action haction = new Action("Horizontal Orientation",
 				Action.AS_RADIO_BUTTON) {
@@ -436,7 +389,6 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		vaction.setToolTipText("Set Details Below Masters");
 		form.getToolBarManager().add(haction);
 		form.getToolBarManager().add(vaction);
-		// end-user-code
 	}
 
 	/**

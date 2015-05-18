@@ -93,7 +93,6 @@ public class MeshElementTreeView extends ViewPart implements
 	 *            The MeshComponent
 	 */
 	public void setMeshComponent(MeshComponent component) {
-		// begin-user-code
 
 		// Make sure the MeshComponent exists
 		if (component != null) {
@@ -109,7 +108,6 @@ public class MeshElementTreeView extends ViewPart implements
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
@@ -120,11 +118,9 @@ public class MeshElementTreeView extends ViewPart implements
 	 *         set.
 	 */
 	public MeshComponent getMeshComponent() {
-		// begin-user-code
 
 		return meshComponent;
 
-		// end-user-code
 	}
 
 	/**

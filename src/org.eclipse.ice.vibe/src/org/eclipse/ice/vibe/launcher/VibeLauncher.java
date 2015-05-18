@@ -30,12 +30,10 @@ import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class inherits from JobLauncher form. It will create the Vibe launcher
  * so that it can remote execute the code.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h, Andrew Bennett
  */
@@ -67,12 +65,10 @@ public class VibeLauncher extends JobLauncher {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor. Takes an IProject argument. Calls the super constructor
 	 * on JobLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param project
 	 *            <p>
@@ -81,13 +77,11 @@ public class VibeLauncher extends JobLauncher {
 	 */
 	public VibeLauncher(IProject project) {
 
-		// begin-user-code
 
 		// Call the JobLauncher constructor
 		super(project);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -95,7 +89,6 @@ public class VibeLauncher extends JobLauncher {
 	 * launcher, including the default project installation directory.
 	 */
 	protected void setupItemInfo() {
-		// begin-user-code
 
 		// Set the name and description of the Item
 		setName("VIBE Launcher");
@@ -118,17 +111,14 @@ public class VibeLauncher extends JobLauncher {
 			ioService.addWriter(new IPSWriter());
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides setupForm() on JobLauncher. It will setup the
 	 * paths and add the locations for the remote server addresses. It will call
 	 * super.setupForm() prior to setting up the executable and hostnames.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	public void setupForm() {
 		String copyCase = "cp -r ${installDir}vibe/examples/case6/* .;";
@@ -175,17 +165,14 @@ public class VibeLauncher extends JobLauncher {
 		update(fileComponent.retrieveEntry("Use custom key-value pair file?"));
 		
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides process by setting the executable correctly and then forwarding
 	 * later. Still calls super.process(actionName) once the executable is set
 	 * correctly for the workstation.conf file.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param the
 	 *            action name
@@ -283,7 +270,6 @@ public class VibeLauncher extends JobLauncher {
 
 		return super.process(actionName);
 
-		// end-user-code
 
 	}
 

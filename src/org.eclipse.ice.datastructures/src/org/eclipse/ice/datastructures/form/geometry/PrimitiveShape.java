@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Represents a mathematically simple solid with no child shapes
  * </p>
@@ -33,30 +32,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  * This is the leaf node of the composite pattern consisting of the ComplexShape
  * and PrimitiveShape
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "PrimitiveShape")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PrimitiveShape extends AbstractShape {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The type of shape of this PrimitiveShape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	private ShapeType shapeType;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Calls AbstractShape's constructor and initializes the ShapeType
 	 * </p>
@@ -65,13 +56,9 @@ public class PrimitiveShape extends AbstractShape {
 	 * appropriately in order for the PrimitiveShape to have an effect on a
 	 * generated mesh.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PrimitiveShape() {
-		// begin-user-code
 
 		// Call AbstractShape's constructor
 
@@ -81,11 +68,9 @@ public class PrimitiveShape extends AbstractShape {
 
 		shapeType = ShapeType.None;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Calls AbstractShape's constructor and initializes the ShapeType
 	 * </p>
@@ -93,17 +78,13 @@ public class PrimitiveShape extends AbstractShape {
 	 * When this constructor is called, the ShapeType enumerator is set to the
 	 * given value.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param shapeType
 	 *            <p>
 	 *            The type of shape to be set in this new PrimitiveShape
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PrimitiveShape(ShapeType shapeType) {
-		// begin-user-code
 
 		// Call nullery constructor first
 		this();
@@ -114,11 +95,9 @@ public class PrimitiveShape extends AbstractShape {
 		}
 		this.shapeType = shapeType;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the type of shape of the PrimitiveShape
 	 * </p>
@@ -127,17 +106,13 @@ public class PrimitiveShape extends AbstractShape {
 	 * additional calls to this function. That is, the shape type is permitted
 	 * to change only if the current shape type is None.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param shapeType
 	 *            <p>
 	 *            The type of shape to set on this PrimitiveShape
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setType(ShapeType shapeType) {
-		// begin-user-code
 
 		if (shapeType == null) {
 			return;
@@ -150,36 +125,27 @@ public class PrimitiveShape extends AbstractShape {
 			notifyListeners();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the ShapeType of the PrimitiveShape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The ShapeType corresponding to this PrimitiveShape
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ShapeType getType() {
-		// begin-user-code
 		return shapeType;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between the PrimitiveShape and
 	 * another PrimitiveShape. It returns true if the PrimitiveShapes are equal
 	 * and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -188,11 +154,8 @@ public class PrimitiveShape extends AbstractShape {
 	 * @return <p>
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Check if a similar reference
 		if (this == otherObject) {
@@ -217,26 +180,20 @@ public class PrimitiveShape extends AbstractShape {
 		// The two objects are equal
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a PrimitiveShape into the current
 	 * object using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iceObject
 	 *            <p>
 	 *            The ICEObject from which the values should be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(PrimitiveShape iceObject) {
-		// begin-user-code
 
 		// Return if object is null
 		if (iceObject == null) {
@@ -248,24 +205,18 @@ public class PrimitiveShape extends AbstractShape {
 		// Copy shapeType
 		this.shapeType = iceObject.shapeType;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the PrimitiveShape using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Create a new PrimitiveShape
 		PrimitiveShape primitiveShape = new PrimitiveShape();
@@ -275,24 +226,18 @@ public class PrimitiveShape extends AbstractShape {
 
 		return primitiveShape;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hashcode value of the PrimitiveShape.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashcode of the ICEObject.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 		// Get initial hash code
 		int hash = super.hashCode();
 
@@ -300,50 +245,37 @@ public class PrimitiveShape extends AbstractShape {
 		hash = 31 * hash + shapeType.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the PrimitiveShape using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IUpdateable#update(String updatedKey, String newValue)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(String updatedKey, String newValue) {
-		// begin-user-code
 		// Not implemented
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IShape#acceptShapeVisitor(IShapeVisitor visitor)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void acceptShapeVisitor(IShapeVisitor visitor) {
-		// begin-user-code
 
 		// Only visit if it is not null
 		if (visitor != null) {
 			visitor.visit(this);
 		}
-		// end-user-code
 	}
 }

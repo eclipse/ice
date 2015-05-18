@@ -68,7 +68,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkLWRComponent() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -116,7 +115,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -183,7 +181,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkBWReactor() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -231,7 +228,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -239,7 +235,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkFuelAssembly() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -292,7 +287,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -300,7 +294,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkRodClusterAssembly() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -353,7 +346,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -361,7 +353,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkLWRRod() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -429,7 +420,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -437,7 +427,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkControlBank() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -493,7 +482,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -501,7 +489,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkIncoreInstrument() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -576,7 +563,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -584,7 +570,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkTube() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -653,7 +638,6 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -661,7 +645,6 @@ public class PropertySourceFactoryTester {
 	 */
 	@Test
 	public void checkRing() {
-		// begin-user-code
 
 		// Initialize a PropertySourceFactory.
 		PropertySourceFactory factory = new PropertySourceFactory();
@@ -725,6 +708,5 @@ public class PropertySourceFactoryTester {
 		}
 
 		return;
-		// end-user-code
 	}
 }

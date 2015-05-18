@@ -21,40 +21,28 @@ import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class provides a controller for Edge instances, and it creates an
  * EdgeView for an Edge. It also listens for changes to its Edge, at which point
  * it updates its EdgeView. It can also send updates to the Edge model based on
  * user input.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EdgeController extends AbstractMeshController {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The EdgeView managed by this controller.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private EdgeView view;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Edge managed by this controller.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Edge model;
 
@@ -67,11 +55,9 @@ public class EdgeController extends AbstractMeshController {
 	// ----------------------- //
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param edge
 	 *            <p>
@@ -82,13 +68,10 @@ public class EdgeController extends AbstractMeshController {
 	 *            The queue used for updating views handled by this and other
 	 *            controllers.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public EdgeController(Edge edge,
 			ConcurrentLinkedQueue<AbstractMeshController> queue,
 			Material material) {
-		// begin-user-code
 		super(edge, queue);
 
 		// Store a reference to the model.
@@ -132,16 +115,13 @@ public class EdgeController extends AbstractMeshController {
 		// -------------------------------------------------------- //
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this Edge and another
 	 * Edge. It returns true if the objects are equal and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -150,73 +130,52 @@ public class EdgeController extends AbstractMeshController {
 	 * @return <p>
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return false;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the Edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashcode of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return 0;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a Edge into the current object
 	 * using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param controller
 	 *            <p>
 	 *            The object from which the values should be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(AbstractMeshController controller) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the Edge using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		EdgeController object = new EdgeController((Edge) model.clone(),
@@ -227,18 +186,14 @@ public class EdgeController extends AbstractMeshController {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see AbstractMeshController#syncView()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void syncView() {
-		// begin-user-code
 		super.syncView();
 
 		// If necessary, dispose of the view.
@@ -247,7 +202,6 @@ public class EdgeController extends AbstractMeshController {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**

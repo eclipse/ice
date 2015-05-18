@@ -27,54 +27,38 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleEntry;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The PainfullySimpleEntryTester is responsible for testing the
  * PainfullySimpleEntry class. It is primarily concerned with checking the
  * ability of the PainfullySimpleEntry to load itself from a block from a PSF
  * file.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PainfullySimpleEntryTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private PainfullySimpleEntry painfullySimpleEntry;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An arraylist of strings for PSF.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<String> PSFEntry;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the tests for PainfullySimpleEntryTester.
 	 * Annotated with an @Before clause.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void setupTests() {
-		// begin-user-code
 		// Local Declarations
 		PSFEntry = new ArrayList<String>();
 
@@ -111,23 +95,17 @@ public class PainfullySimpleEntryTester {
 				+ "                      //The group\n");
 		PSFEntry.add("  \t  \n");
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the PainfullySimpleEntry by loading it from a
 	 * string representation of an Entry block from a PSF.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadingFromPSFBlock() {
-		// begin-user-code
 
 		// Uses the Preloaded PSF file for testing.
 
@@ -256,27 +234,21 @@ public class PainfullySimpleEntryTester {
 		assertTrue(duplicateEntry.equals(painfullySimpleEntry));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the loadingFromPSFBlock() on PainfullySimpleEntry
 	 * for an invalid Type. Should throw an IOException.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @throws IOException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test()
 	public void checkLoadingFromPSFBlockwithInvalidType() throws IOException {
-		// begin-user-code
 		// Do one last check to make sure an exception is thrown if a bad flag
 		// is detected. In this case, it should be "allowedValueType" not
 		// "allowedType."
@@ -295,25 +267,19 @@ public class PainfullySimpleEntryTester {
 		painfullySimpleEntry = new PainfullySimpleEntry();
 		painfullySimpleEntry.loadFromPSFBlock(PSFEntry);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the loadingFromPSFBlock() on PainfullySimpleEntry
 	 * for a missing equals sign. Should throw an IOException.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @throws Class
 	 * @throws IOException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test(expected = java.io.IOException.class)
 	public void checkLoadingFromPSFBlockwithMissingEquals() throws IOException {
-		// begin-user-code
 		// Now replace the AllowedValueType string with an missing value and
 		// equals sign. The parser should throw an exception.
 		PSFEntry.set(6, "allowedValueType");
@@ -344,6 +310,5 @@ public class PainfullySimpleEntryTester {
 		// This should catch an error for missing equals sign!
 		painfullySimpleEntry.loadFromPSFBlock(PSFEntry);
 
-		// end-user-code
 	}
 }

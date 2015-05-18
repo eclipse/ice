@@ -32,31 +32,22 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the PinAssembly class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PinAssemblyTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructors and default values of the PinAssembly class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// An assembly to test.
 		PinAssembly assembly;
@@ -352,22 +343,16 @@ public class PinAssemblyTester {
 		/* ------------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter for the pinPitch attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkPinPitch() {
-		// begin-user-code
 		PinAssembly assembly = new PinAssembly(1);
 		double defaultPinPitch = 1.0;
 
@@ -387,22 +372,16 @@ public class PinAssemblyTester {
 		assertEquals(500, assembly.getPinPitch(), 0);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter for the inner duct attributes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkInnerDuct() {
-		// begin-user-code
 		PinAssembly assembly = new PinAssembly(1);
 		double defaultInnerDuctFlatToFlat = 0.0;
 		double defaultInnerDuctThickness = 0.0;
@@ -438,22 +417,16 @@ public class PinAssemblyTester {
 		assertEquals(500, assembly.getInnerDuctThickness(), 0);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the addition and removal of SFRPins to the PinAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkPinAddRem() {
-		// begin-user-code
 
 		// Note: I only check assembly.getPinLocations() in a few spots
 		// below since it's a late addition. Further testing may be required.
@@ -845,23 +818,17 @@ public class PinAssemblyTester {
 		/* --------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the methods inherited from SFRComposite. Users should not be able
 	 * to add SFRComponents to a PinAssembly through these methods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCompositeImplementation() {
-		// begin-user-code
 
 		// Tests the following methods:
 
@@ -966,19 +933,15 @@ public class PinAssemblyTester {
 		/* --------------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		int size = 78;
 
@@ -1069,19 +1032,15 @@ public class PinAssemblyTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		int size = 79;
 
@@ -1137,6 +1096,5 @@ public class PinAssemblyTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

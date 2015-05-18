@@ -27,7 +27,6 @@ import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is a concrete implementation of the UIWidgetFactory abstract class
  * and creates widgets that work with the Eclipse Rich Client Platform.
@@ -40,22 +39,15 @@ import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
  * of the IFormWidgetBuilders that have registered with it. If there is a match,
  * it will use that Builder to create a new IFormWidget and render the Form.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EclipseUIWidgetFactory implements IWidgetFactory {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of IFormWidgetBuilders registered with the Factory.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<String, IFormWidgetBuilder> widgetBuildersMap;
 
@@ -74,7 +66,6 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	 *            The builder that will generate the custom IFormWidget.
 	 */
 	public void registerFormWidgetBuilder(IFormWidgetBuilder builder) {
-		// begin-user-code
 
 		// Only add the widget builder if it is good
 		if (builder != null && builder.getTargetFormName() != null) {
@@ -85,7 +76,6 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/*
@@ -94,7 +84,6 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	 * @see IWidgetFactory#getFormWidget(String formName)
 	 */
 	public IFormWidget getFormWidget(String formName) {
-		// begin-user-code
 
 		// Local Declarations
 		IFormWidget widget = null;
@@ -107,58 +96,41 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 			widget = new EclipseFormWidget();
 		}
 		return widget;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IWidgetFactory#getErrorBox()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IErrorBox getErrorBox() {
-		// begin-user-code
 		return new EclipseErrorBoxWidget();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IWidgetFactory#getTextEditor()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ITextEditor getTextEditor() {
-		// begin-user-code
 		return new EclipseTextEditor();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IWidgetFactory#getExtraInfoWidget()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IExtraInfoWidget getExtraInfoWidget() {
-		// begin-user-code
 		return new EclipseExtraInfoWidget();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IWidgetFactory#getStreamingTextWidget()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IStreamingTextWidget getStreamingTextWidget() {
-		// begin-user-code
 		return new EclipseStreamingTextWidget();
-		// end-user-code
 	}
 }

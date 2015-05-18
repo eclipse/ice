@@ -41,7 +41,6 @@ import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The JobProfile is responsible for creating JobLaunchers programmatically
  * based on information contained within the JobProfileForm. Submitting a
@@ -58,11 +57,8 @@ import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
  * Item name so that the SerializedItemBuilder used to load it can be found even
  * after the Item is persisted to the database.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 /*
  * @Entity
@@ -72,42 +68,31 @@ import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 @XmlRootElement(name = "JobProfile")
 public class JobProfile extends Item {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public JobProfile() {
-		// begin-user-code
 
 		// Call the other constructor
 		this(null);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor with a project space in which files should be
 	 * manipulated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
 	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public JobProfile(IProject projectSpace) {
-		// begin-user-code
 
 		// Call the super constructor
 		super(projectSpace);
@@ -119,7 +104,6 @@ public class JobProfile extends Item {
 		// Set the Item type
 		itemType = ItemType.Model;
 
-		// end-user-code
 	}
 
 	/**
@@ -156,13 +140,11 @@ public class JobProfile extends Item {
 	}
 	
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates a new JobLauncher and writes it to disk if the
 	 * action name is equal to "Create new Job Launcher" and it forwards the
 	 * call to the Item base class if it is equal to something else.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param actionName
 	 *            <p>
@@ -171,11 +153,8 @@ public class JobProfile extends Item {
 	 * @return <p>
 	 *         The status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus process(String actionName) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus status = FormStatus.InfoError;
@@ -306,21 +285,15 @@ public class JobProfile extends Item {
 				.println("JobProfile Message: Successfully serialized the JobLauncher!");
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the JobProfileForm.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		// Copy only the forms contents. This is required for JPA to work.
 		this.form = new Form();
@@ -338,6 +311,5 @@ public class JobProfile extends Item {
 		this.setDescription("Create or edit a Job Profile that will be used "
 				+ "by ICE to launch jobs");
 
-		// end-user-code
 	}
 }

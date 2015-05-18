@@ -13,28 +13,20 @@
 package org.eclipse.ice.client.widgets.geometry;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Enables the implementer to be notified of changes to a RealSpinner by calling
  * its listen() operation
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface RealSpinnerListener {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The function to call when RealSpinner is updated
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param realSpinner
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(RealSpinner realSpinner);
 }

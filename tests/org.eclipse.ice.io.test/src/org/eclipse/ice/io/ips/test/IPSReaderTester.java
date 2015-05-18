@@ -61,7 +61,6 @@ public class IPSReaderTester {
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -103,7 +102,6 @@ public class IPSReaderTester {
 		projectSpace = project;
 
 		return;
-		// end-user-code
 	}
 	
 	/**

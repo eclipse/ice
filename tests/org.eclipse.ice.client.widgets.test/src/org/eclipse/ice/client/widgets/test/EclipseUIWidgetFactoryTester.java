@@ -30,17 +30,13 @@ import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the EclipseUIWidgetFactory. It only
  * checks the instance type of the widgets and makes sure that they are not
  * null.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EclipseUIWidgetFactoryTester {
 
@@ -83,27 +79,19 @@ public class EclipseUIWidgetFactoryTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private EclipseUIWidgetFactory eclipseUIWidgetFactory;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Widget types and makes sure that they are not
 	 * null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkWidgetTypes() {
-		// begin-user-code
 
 		// Setup the widget factory
 		eclipseUIWidgetFactory = new EclipseUIWidgetFactory();
@@ -150,6 +138,5 @@ public class EclipseUIWidgetFactoryTester {
 
 		return;
 
-		// end-user-code
 	}
 }

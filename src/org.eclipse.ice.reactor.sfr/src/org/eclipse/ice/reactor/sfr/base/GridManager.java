@@ -26,7 +26,6 @@ import java.util.TreeMap;
  * <p>
  * Classes that employ this GridManager are expected to translate between their
  * own geometric coordinate system and 0-based indexes used within this class.
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
  * 
@@ -61,7 +60,6 @@ public class GridManager implements IGridManager {
 	 *            The maximum index supported plus 1.
 	 */
 	public GridManager(int size) {
-		// begin-user-code
 
 		this.size = (size > 0 ? size : Integer.MAX_VALUE);
 
@@ -70,7 +68,6 @@ public class GridManager implements IGridManager {
 		locations = new TreeMap<Integer, String>();
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -82,7 +79,6 @@ public class GridManager implements IGridManager {
 	 * @return A Component name or <code>null</code> if no name is found.
 	 */
 	public String getComponentName(int location) {
-		// begin-user-code
 
 		String name = null;
 
@@ -90,7 +86,6 @@ public class GridManager implements IGridManager {
 			name = locations.get(location);
 		}
 		return name;
-		// end-user-code
 	}
 
 	/**
@@ -103,7 +98,6 @@ public class GridManager implements IGridManager {
 	 *         invalid.
 	 */
 	public List<Integer> getComponentLocations(String name) {
-		// begin-user-code
 
 		List<Integer> locations = new ArrayList<Integer>();
 
@@ -119,7 +113,6 @@ public class GridManager implements IGridManager {
 		}
 
 		return locations;
-		// end-user-code
 	}
 
 	/**
@@ -134,7 +127,6 @@ public class GridManager implements IGridManager {
 	 * @return True if the component was added to the location, false otherwise.
 	 */
 	public boolean addComponent(String name, int location) {
-		// begin-user-code
 
 		// By default, we did not succeed in adding the Component.
 		boolean success = false;
@@ -176,7 +168,6 @@ public class GridManager implements IGridManager {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
@@ -190,7 +181,6 @@ public class GridManager implements IGridManager {
 	 *         false otherwise.
 	 */
 	public boolean removeComponent(int location) {
-		// begin-user-code
 
 		// By default, we did not succeed in removing the Component location.
 		boolean success = false;
@@ -217,7 +207,6 @@ public class GridManager implements IGridManager {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
@@ -231,7 +220,6 @@ public class GridManager implements IGridManager {
 	 *         IGridManager. False otherwise.
 	 */
 	public boolean removeComponent(String name) {
-		// begin-user-code
 
 		// By default, we did not succeed in removing the Component.
 		boolean success = false;
@@ -251,7 +239,6 @@ public class GridManager implements IGridManager {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
@@ -261,11 +248,8 @@ public class GridManager implements IGridManager {
 	 * @param otherObject
 	 *            The object to compare against.
 	 * @return True if otherObject is equal. False otherwise.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -287,22 +271,16 @@ public class GridManager implements IGridManager {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hash of the object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Static hash at 31.
 		int hash = 31;
@@ -313,23 +291,17 @@ public class GridManager implements IGridManager {
 		hash += 31 * locations.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object from another object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object to copy the contents of.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(GridManager otherObject) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (otherObject == null) {
@@ -346,22 +318,16 @@ public class GridManager implements IGridManager {
 		locations.putAll(otherObject.locations);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The newly instantiated cloned object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new GridManager.
 		GridManager manager = new GridManager(size);
@@ -371,7 +337,6 @@ public class GridManager implements IGridManager {
 
 		// Return the newly instantiated object.
 		return manager;
-		// end-user-code
 	}
 
 }

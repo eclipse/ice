@@ -23,26 +23,18 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.ui.IWorkbenchPage;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Handles the selection or deselection of shape items in the shape TreeViewer
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The reference to the current IWorkbenchPage
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IWorkbenchPage workbenchPage;
 
@@ -52,30 +44,23 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 	private ArrayList<IShape> selectedShapes = new ArrayList<IShape>();
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor for setting the internal reference to the current
 	 * IWorkbenchPage
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param workbenchPage
 	 *            <p>
 	 *            The current IWorkbenchPage
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ShapeTreeSelectionListener(IWorkbenchPage workbenchPage) {
-		// begin-user-code
 
 		this.workbenchPage = workbenchPage;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Triggered with the shape tree selection is changed
 	 * </p>
@@ -83,20 +68,15 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 	 * The current implementation updates the referenced shape of the
 	 * TransformationView.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param event
 	 *            <p>
 	 *            The selection event
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void selectionChanged(Class event) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
@@ -107,7 +87,6 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 	 *      event)
 	 */
 	public void selectionChanged(SelectionChangedEvent event) {
-		// begin-user-code
 
 		// Get the TransformationView if it is open
 
@@ -168,6 +147,5 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 			transformationView.setShape(null);
 		}
 
-		// end-user-code
 	}
 }

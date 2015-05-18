@@ -15,36 +15,24 @@ package org.eclipse.ice.iclient.uiwidgets;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>The IErrorBox interface describes the operations that ICE expects from a Widget that can display a text editor to a user.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public interface ITextEditor {
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation sets the ICEResource that editor should display.</p>
-	 * <!-- end-UML-doc -->
 	 * @param resource <p>The ICEResource</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setResource(ICEResource resource);
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation retrieves the ICEResource that editor is displaying or null if it has not been set.</p>
-	 * <!-- end-UML-doc -->
 	 * @return <p>The ICEResource</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEResource getResource();
 
 	/** 
-	 * <!-- begin-UML-doc -->
 	 * <p>This operation directs the ITextEditor to display its text. It must be implemented by subclasses that code to a specific UI API (SWT, Swing).</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void display();
 }

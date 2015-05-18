@@ -27,7 +27,6 @@ import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The LWRComponentReader class creates and populates an LWRComponent or
  * LWRComposite tree from an HDF5 file. This class implements the IHdfReadable
@@ -36,11 +35,8 @@ import ncsa.hdf.object.h5.H5Group;
  * populate that list accordingly to any part of a Reactor or its delegated
  * classes that inherit from LWRComponent.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class LWRComponentReader implements IHdfReader {
 
@@ -56,7 +52,6 @@ public class LWRComponentReader implements IHdfReader {
 	 * The Constructor.
 	 */
 	public LWRComponentReader() {
-		// begin-user-code
 
 		// Create a new HashMap<HDF5LWRTagType, LWRComponent> for the
 		// LWRComponent instances
@@ -95,18 +90,14 @@ public class LWRComponentReader implements IHdfReader {
 		this.lWRComponentInstanceMap.put(HDF5LWRTagType.LWRGRIDMANAGER,
 				new LWRGridManager(-1));
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IHdfReader#read(URI uri)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IHdfReadable read(URI uri) {
-		// begin-user-code
 
 		// Open the file at the provided uri
 		H5File h5File = HdfFileFactory.openH5File(uri);
@@ -135,7 +126,6 @@ public class LWRComponentReader implements IHdfReader {
 		// Return the iHdfReadable
 		return iHdfReadable;
 
-		// end-user-code
 	}
 
 	/**
