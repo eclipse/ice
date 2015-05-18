@@ -25,7 +25,7 @@ import ncsa.hdf.object.h5.H5Group;
  * (solid, liquid, gas).
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class Material extends LWRComponent {
 	/**

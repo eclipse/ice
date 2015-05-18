@@ -19,7 +19,7 @@ import java.io.InputStream;
  * Flow junction using the approach based on "characteristics".
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class PipeToPipeJunction extends OneInOneOutJunction {
 	/**

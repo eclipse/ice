@@ -28,7 +28,7 @@ import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
  * case of reflector assemblies).
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class MaterialBlock extends SFRComponent implements
 		Comparable<MaterialBlock> {

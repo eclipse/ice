@@ -40,7 +40,7 @@ import ncsa.hdf.object.h5.H5File;
  * number if the size is non-positive or zero.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class GridLabelProvider extends LWRComponent {
 	/**

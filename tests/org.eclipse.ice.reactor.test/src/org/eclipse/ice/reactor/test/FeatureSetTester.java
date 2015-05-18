@@ -27,7 +27,7 @@ import org.eclipse.ice.analysistool.IData;
  * A class that tests the operations on FeatureSet.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class FeatureSetTester {
 	/**

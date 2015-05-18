@@ -8,6 +8,7 @@ Import-Package: gov.lbnl.visit.swt,
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.form,
  org.eclipse.ice.datastructures.resource,
+ org.eclipse.ice.viz.service.csv,
  org.eclipse.jface,
  org.eclipse.jface.util,
  org.eclipse.swt,
@@ -28,5 +29,5 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.100",
  org.eclipse.nebula.visualization.xygraph,
  org.eclipse.nebula.visualization.widgets
 Export-Package: org.eclipse.ice.viz,
- org.eclipse.ice.viz.plotviewer
+ org.eclipse.ice.viz.csv.viewer
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

@@ -36,7 +36,7 @@ import org.junit.Test;
 /**
  * A class that tests the VibeLauncher.
  * 
- * @author s4h, Andrew Bennett
+ * @author Scott Forest Hull II, Andrew Bennett
  * 
  */
 public class VibeLauncherTester {

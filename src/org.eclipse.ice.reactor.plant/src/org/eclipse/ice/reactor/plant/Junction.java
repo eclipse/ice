@@ -28,7 +28,7 @@ import javax.xml.bind.JAXBException;
  * The class keeps track of what is an input and what is an output.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Junction extends PlantComponent implements IJunction {
 

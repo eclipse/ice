@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.Viewer;
  * Provides IShape objects for a TreeViewer, given a parent IShape
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ShapeTreeContentProvider implements ITreeContentProvider,
 		IShapeVisitor {
@@ -199,7 +199,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * The blank state item to display in the shape TreeViewer when a
 	 * ComplexShape has no children
 	 * 
-	 * @author abd
+	 * @author Andrew P. Belt
 	 * 
 	 */
 	public class BlankShape {

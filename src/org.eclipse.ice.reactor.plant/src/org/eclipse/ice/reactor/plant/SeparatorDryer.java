@@ -19,7 +19,7 @@ import java.io.InputStream;
  * A separator dryer component.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SeparatorDryer extends Junction {
 	/**

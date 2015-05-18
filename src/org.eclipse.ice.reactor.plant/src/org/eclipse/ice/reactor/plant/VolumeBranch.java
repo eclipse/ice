@@ -19,7 +19,7 @@ import java.io.InputStream;
  * A VolumeBranch component.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class VolumeBranch extends Junction {
 	/**

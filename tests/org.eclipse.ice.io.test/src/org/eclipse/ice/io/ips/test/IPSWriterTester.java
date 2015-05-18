@@ -55,7 +55,7 @@ import org.junit.Test;
 /**
  * Tests the methods of the IPSWriter class.
  * 
- * @author bzq
+ * @author Andrew R. Bennett
  *
  */
 public class IPSWriterTester {

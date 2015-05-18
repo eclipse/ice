@@ -28,7 +28,7 @@ import org.eclipse.ice.reactor.sfr.core.MaterialBlock;
  * below the pellet columns.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFRPin extends SFRComponent {
 

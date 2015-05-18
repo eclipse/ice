@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;

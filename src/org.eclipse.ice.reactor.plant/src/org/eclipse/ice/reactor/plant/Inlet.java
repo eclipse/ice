@@ -19,7 +19,7 @@ import java.io.InputStream;
  * A component for an inlet with prescribed pressure and temperature.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Inlet extends Boundary {
 	/**

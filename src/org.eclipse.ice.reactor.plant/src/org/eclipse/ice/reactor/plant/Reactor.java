@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Describes reactor parameters.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Reactor extends PlantComponent {
 	/**

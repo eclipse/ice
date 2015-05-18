@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * to store and display changes in value overtime across different features.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWRDataProvider implements IDataProvider {
 	/**

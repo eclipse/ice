@@ -19,7 +19,7 @@ import java.io.InputStream;
  * A simple wet well model of non-LOCA BWR simulations.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class WetWell extends Junction {
 	/**

@@ -26,7 +26,7 @@ import ncsa.hdf.object.h5.H5Group;
  * The LWReactor class represents any Light Water Nuclear Reactor.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWReactor extends LWRComposite {
 

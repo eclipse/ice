@@ -33,7 +33,7 @@ import org.osgi.framework.FrameworkUtil;
  * actions
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class DropdownAction extends Action implements IMenuCreator {
 

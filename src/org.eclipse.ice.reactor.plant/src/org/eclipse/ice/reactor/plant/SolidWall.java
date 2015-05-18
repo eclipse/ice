@@ -19,7 +19,7 @@ import java.io.InputStream;
  * A simple component for a solid wall boundary condition.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SolidWall extends Boundary {
 	/**

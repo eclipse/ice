@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 /** 
  * <p>An interface that provides the position and value of a data entry as well as a descriptive tag about the featureof the entry that the data represents.</p>
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public interface IData {
 	/** 

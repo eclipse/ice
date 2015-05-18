@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 /** 
  * <p>An interface for determining what features are available  for a particular object(pin-power, temperature, etc).  IDataProviders are anything that have information to share regardless of their positions in any particular hierarchy.</p>
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public interface IDataProvider {
 	/** 

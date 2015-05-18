@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * as a heat transfer medium.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "HeatExchanger")
 @XmlAccessorType(XmlAccessType.FIELD)

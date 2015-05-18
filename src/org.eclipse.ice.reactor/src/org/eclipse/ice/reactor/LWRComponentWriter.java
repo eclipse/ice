@@ -31,7 +31,7 @@ import org.eclipse.ice.io.hdf.IHdfWriteable;
  * from LWRComponent.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWRComponentWriter implements IHdfWriter {
 

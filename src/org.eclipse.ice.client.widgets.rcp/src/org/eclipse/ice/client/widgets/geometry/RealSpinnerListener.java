@@ -18,7 +18,7 @@ package org.eclipse.ice.client.widgets.geometry;
  * its listen() operation
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public interface RealSpinnerListener {
 	/**

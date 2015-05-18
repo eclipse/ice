@@ -36,7 +36,7 @@ import ncsa.hdf.object.h5.H5Group;
  * classes that inherit from LWRComponent.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWRComponentReader implements IHdfReader {
 

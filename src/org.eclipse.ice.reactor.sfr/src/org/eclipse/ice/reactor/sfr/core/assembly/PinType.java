@@ -17,7 +17,7 @@ package org.eclipse.ice.reactor.sfr.core.assembly;
  * a PinAssembly. Currently, the PinType corresponds to an attribute of a
  * PinAssembly. <!-- end-UML-doc -->
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public enum PinType {
 	/**

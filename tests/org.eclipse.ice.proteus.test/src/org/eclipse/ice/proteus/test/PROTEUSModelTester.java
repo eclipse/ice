@@ -61,7 +61,7 @@ import org.junit.Test;
 /**
  * Class that tests PROTEUSModel methods.
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  * 
  */
 public class PROTEUSModelTester {
@@ -126,7 +126,7 @@ public class PROTEUSModelTester {
 	 * (setupItemInfo()) is always called by the parent class during
 	 * construction.
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */
 	@Test
@@ -151,7 +151,7 @@ public class PROTEUSModelTester {
 	 * attributes, as all other values will have been set and tested by the
 	 * parent class's tester (ItemTester).
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */
 	@Test
@@ -193,7 +193,7 @@ public class PROTEUSModelTester {
 	 * PROTEUS_Model_Builder/ICEProteusInput.xml input scheme, verifying the
 	 * model's Form contains 6 DataComponents, each containing 5 fake entries.
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * @throws JAXBException
 	 * 
 	 */
@@ -214,7 +214,7 @@ public class PROTEUSModelTester {
 	 * based upon parameters set in PROTEUSModel's setupForm() method (which is
 	 * always executed first in the super constructor).
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */
 	@Test

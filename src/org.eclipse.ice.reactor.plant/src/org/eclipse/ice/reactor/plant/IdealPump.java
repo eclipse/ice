@@ -19,7 +19,7 @@ import java.io.InputStream;
  * An ideal pump (isothermal).
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class IdealPump extends OneInOneOutJunction {
 	/**

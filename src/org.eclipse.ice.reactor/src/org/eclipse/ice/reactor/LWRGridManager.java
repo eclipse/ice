@@ -45,7 +45,7 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
  * GridLocation for more details on the usage of this delegation class.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWRGridManager extends LWRComponent implements IGridManager {
 	/**

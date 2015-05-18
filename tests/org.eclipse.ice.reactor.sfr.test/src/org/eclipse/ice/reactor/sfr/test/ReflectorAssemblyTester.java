@@ -35,7 +35,7 @@ import org.junit.Test;
  * Tests the operations of the ReflectorAssembly class.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class ReflectorAssemblyTester {
 

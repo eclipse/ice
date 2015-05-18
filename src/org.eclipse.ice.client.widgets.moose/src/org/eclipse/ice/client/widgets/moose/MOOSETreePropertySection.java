@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
-import org.eclipse.ice.client.widgets.properties.DescriptionCellContentProvider;
-import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
-import org.eclipse.ice.client.widgets.properties.CellColumnLabelProvider;
-import org.eclipse.ice.client.widgets.properties.TextCellEditingSupport;
-import org.eclipse.ice.client.widgets.properties.TreePropertySection;
+import org.eclipse.ice.client.common.properties.CellColumnLabelProvider;
+import org.eclipse.ice.client.common.properties.DescriptionCellContentProvider;
+import org.eclipse.ice.client.common.properties.ICellContentProvider;
+import org.eclipse.ice.client.common.properties.TextCellEditingSupport;
+import org.eclipse.ice.client.widgets.TreePropertySection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;

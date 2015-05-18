@@ -25,7 +25,7 @@ import ncsa.hdf.object.h5.H5Datatype;
  * an HDF5 file.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public class HdfWriterFactory {
 	/**

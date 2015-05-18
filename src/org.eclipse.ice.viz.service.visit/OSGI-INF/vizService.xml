@@ -2,6 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ice.viz.service.visit">
    <implementation class="org.eclipse.ice.viz.service.visit.VisItVizService"/>
    <service>
-      <provide interface="org.eclipse.ice.client.widgets.viz.service.IVizService"/>
+      <provide interface="org.eclipse.ice.viz.service.IVizService"/>
    </service>
 </scr:component>

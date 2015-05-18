@@ -31,7 +31,7 @@ import org.eclipse.ui.part.ViewPart;
  * transformation of a selected shape
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class TransformationView extends ViewPart {
 

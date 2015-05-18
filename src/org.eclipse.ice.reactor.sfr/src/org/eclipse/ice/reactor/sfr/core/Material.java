@@ -21,7 +21,7 @@ import org.eclipse.ice.reactor.sfr.base.SFRComponent;
  * throughout the reactor. Can include solid, liquid and gaseous states.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Material extends SFRComponent {
 	/**

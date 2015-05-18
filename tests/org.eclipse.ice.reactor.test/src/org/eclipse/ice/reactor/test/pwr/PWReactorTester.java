@@ -52,7 +52,7 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
  * This class is responsible for testing the PWReactor class.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 
 public class PWReactorTester {

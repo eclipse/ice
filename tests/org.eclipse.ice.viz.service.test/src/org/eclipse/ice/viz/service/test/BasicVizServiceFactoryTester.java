@@ -13,9 +13,9 @@ package org.eclipse.ice.viz.service.test;
 
 import static org.junit.Assert.*;
 
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
-import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.BasicVizServiceFactory;
+import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.junit.Test;
 
 /**
@@ -28,7 +28,7 @@ public class BasicVizServiceFactoryTester {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.BasicVizServiceFactory#register(org.eclipse.ice.client.widgets.viz.service.IVizService)}
+	 * {@link org.eclipse.ice.viz.service.BasicVizServiceFactory#register(org.eclipse.ice.viz.service.IVizService)}
 	 * .
 	 */
 	@Test

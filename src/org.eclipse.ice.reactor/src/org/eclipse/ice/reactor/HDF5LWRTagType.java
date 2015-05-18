@@ -17,7 +17,7 @@ package org.eclipse.ice.reactor;
  * Represents the LWRComponentTypes (stack, material, etc) for the object.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public enum HDF5LWRTagType {
 	/**

@@ -58,7 +58,7 @@ import org.eclipse.ice.datastructures.form.mesh.Vertex;
  * toggling between Nek examples) is deliberately placed at the beginning of the
  * NekModel Form (id = 1) when the Form is created.
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  * 
  */
 public class NekReader {

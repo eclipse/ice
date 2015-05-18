@@ -14,8 +14,8 @@ package org.eclipse.ice.viz.service.test;
 import java.net.URI;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IVizService;
 
 /**
  * This is a fake IVizService that is used in testing. The only thing it really

@@ -23,7 +23,7 @@ import java.io.InputStream;
  * A component with prescribed pressure.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Outlet extends Boundary {
 	/**

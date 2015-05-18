@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
  * Provides the name and icon for shape items in the shape TreeViewer
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ShapeTreeLabelProvider extends LabelProvider {
 	/**

@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * position, direction, etc. in space; they generate a mesh)
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "GeometricalComponent")
 @XmlAccessorType(XmlAccessType.FIELD)

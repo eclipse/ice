@@ -19,7 +19,7 @@ import java.io.InputStream;
  * A simple pump model for single phase fluid.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Pump extends OneInOneOutJunction {
 

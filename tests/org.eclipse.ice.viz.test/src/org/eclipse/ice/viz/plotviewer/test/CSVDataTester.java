@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.viz.plotviewer.CSVData;
+import org.eclipse.ice.viz.service.csv.CSVData;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.Before;

@@ -33,7 +33,7 @@ import org.junit.Test;
 
 /**
  * Class that tests PROTEUSLaucher methods.
- * @author w5q
+ * @author Anna Wojtowicz
  *
  */
 public class PROTEUSLauncherTester {
@@ -51,7 +51,7 @@ public class PROTEUSLauncherTester {
 	 * construction tests are in the checkItemInfoSetup() method, as the method 
 	 * it tests (setupItemInfo()) is always called in the chain of superclass
 	 * constructors.
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */	
 	@Test
@@ -82,7 +82,7 @@ public class PROTEUSLauncherTester {
 	 * like an extension of the construction tester. Only tests PROTEUS-specific
 	 * attributes, as all other values will have been set and tested by the 
 	 * parent class's tester (JobLauncherTester).
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */
 	@Test
@@ -124,7 +124,7 @@ public class PROTEUSLauncherTester {
 	/**
 	 * Tests the creation and setting of the PROTEUSLauncher Form and 
 	 * corresponding Hosts.
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */
 	@Test
@@ -170,7 +170,7 @@ public class PROTEUSLauncherTester {
 	 * to utilize throughout their execution. Once the workspace resource is no
 	 * longer needed, it is left to each individual test to close and delete
 	 * the project workspace.
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */
 	public void setupFakeProject() {

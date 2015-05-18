@@ -27,7 +27,7 @@ import java.util.Iterator;
  * references to other SFRComponents.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFRComposite extends SFRComponent implements Composite {
 	/**

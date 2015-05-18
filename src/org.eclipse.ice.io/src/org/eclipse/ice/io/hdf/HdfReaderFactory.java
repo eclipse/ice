@@ -28,7 +28,7 @@ import ncsa.hdf.object.HObject;
  * an HDF5 file.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public class HdfReaderFactory {
 	/**

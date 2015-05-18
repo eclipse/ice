@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Spinner;
  * the previous shape.
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ReplicateDialog extends Dialog {
 

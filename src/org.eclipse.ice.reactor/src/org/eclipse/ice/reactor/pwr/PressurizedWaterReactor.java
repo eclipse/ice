@@ -79,7 +79,7 @@ import org.eclipse.ice.reactor.LWReactor;
  * <p>
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 @XmlRootElement
 public class PressurizedWaterReactor extends LWReactor {

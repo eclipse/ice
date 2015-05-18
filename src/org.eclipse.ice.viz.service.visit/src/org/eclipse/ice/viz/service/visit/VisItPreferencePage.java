@@ -14,7 +14,8 @@ package org.eclipse.ice.viz.service.visit;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.AbstractVizService;
+import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionTable;
 import org.eclipse.ice.viz.service.preferences.VizConnectionPreferencePage;
@@ -59,6 +60,50 @@ public class VisItPreferencePage extends VizConnectionPreferencePage {
 	 */
 	@Override
 	protected IVizService getVizService() {
-		return VisItVizService.getInstance();
+		IVizService vizService = VisItVizService.getInstance();
+		// We don't want to return a null value if the service is not available.
+		// Create a blank viz service that does nothing.
+		if (vizService == null) {
+			// Print a debug message!
+			System.err.println("VizItPreferencePage error: "
+					+ "The VisItVizService is not running!");
+			vizService = new AbstractVizService() {
+				@Override
+				public String getName() {
+					return "VisIt";
+				}
+
+				@Override
+				public String getVersion() {
+					return "Not Available";
+				}
+
+				@Override
+				public boolean hasConnectionProperties() {
+					return false;
+				}
+
+				@Override
+				public Map<String, String> getConnectionProperties() {
+					return null;
+				}
+
+				@Override
+				public void setConnectionProperties(Map<String, String> props) {
+					return;
+				}
+
+				@Override
+				public boolean connect() {
+					return false;
+				}
+
+				@Override
+				public boolean disconnect() {
+					return false;
+				}
+			};
+		}
+		return vizService;
 	}
 }

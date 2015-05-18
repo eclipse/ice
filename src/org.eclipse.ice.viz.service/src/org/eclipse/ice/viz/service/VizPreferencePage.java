@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;

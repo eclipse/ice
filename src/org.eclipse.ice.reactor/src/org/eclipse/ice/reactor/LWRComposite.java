@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * specific utility as needed.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWRComposite extends LWRComponent implements Composite {
 	/**

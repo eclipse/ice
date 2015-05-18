@@ -25,7 +25,7 @@ import org.eclipse.ice.reactor.sfr.core.Material;
  * varying types of materials throughout a vertical segment of a pin or rod.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Ring extends SFRComponent implements Comparable<Ring> {
 	/**

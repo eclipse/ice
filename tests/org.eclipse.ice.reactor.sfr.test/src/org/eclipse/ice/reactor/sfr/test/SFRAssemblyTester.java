@@ -25,7 +25,7 @@ import org.junit.Test;
  * Tests the operations of the SFRAssembly class.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFRAssemblyTester {
 

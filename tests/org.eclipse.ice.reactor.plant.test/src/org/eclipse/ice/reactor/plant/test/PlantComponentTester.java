@@ -37,7 +37,7 @@ import org.junit.Test;
  * <!-- begin-UML-doc --> Checks the methods of the PlantComponent class. <!--
  * end-UML-doc -->
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class PlantComponentTester {
 	/**
@@ -301,7 +301,7 @@ public class PlantComponentTester {
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 */
 	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 

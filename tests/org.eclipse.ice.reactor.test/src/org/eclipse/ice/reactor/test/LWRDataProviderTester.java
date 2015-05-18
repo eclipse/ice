@@ -27,7 +27,7 @@ import org.junit.Test;
  * A class that tests the operations on LWRDataProvider.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWRDataProviderTester {
 	/**

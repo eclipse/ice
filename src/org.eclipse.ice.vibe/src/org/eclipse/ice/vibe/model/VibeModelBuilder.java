@@ -23,7 +23,7 @@ import org.eclipse.ice.item.ItemType;
  * from ItemBuilder.
  * </p>
  * 
- * @author s4h, Andrew Bennett
+ * @author Scott Forest Hull II, Andrew Bennett
  */
 public class VibeModelBuilder implements ItemBuilder {
 	/**

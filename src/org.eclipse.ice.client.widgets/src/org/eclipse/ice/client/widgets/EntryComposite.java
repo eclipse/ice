@@ -73,30 +73,34 @@ import org.eclipse.ui.forms.IMessageManager;
  * IMessageManager if it is set by calling setMessageManager().
  * </p>
  * 
+<<<<<<< HEAD
  * @author gqx, Anna Wojtowicz, Alex McCaskey
+=======
+ * @author Gregory M. Lyon, Anna Wojtowicz
+>>>>>>> branch 'master' of https://github.com/eclipse/ice
  */
 public class EntryComposite extends Composite implements IUpdateableListener {
-	
+
 	/**
 	 * A label that describes the Entry.
 	 */
 	private Label label;
-	
+
 	/**
 	 * A text field that is used if the Entry type is unspecified.
 	 */
 	private Text text;
-	
+
 	/**
 	 * A drop-down menu for the Entry.
 	 */
 	private Combo dropDown;
-	
+
 	/**
 	 * A set of buttons for the Entry.
 	 */
 	protected final List<Button> buttons;
-	
+
 	/**
 	 * The Entry that is displayed by the EntryComposite.
 	 */
@@ -112,7 +116,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * manipulating the Entry should be posted.
 	 */
 	private IMessageManager messageManager;
-	
+
 	/**
 	 * The name of the message posted to the message manager.
 	 */
@@ -319,16 +323,16 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * This operation creates a drop-down menu on the Composite.
 	 */
 	private void createDropdown() {
-	
+
 		if (dropDown == null || dropDown.isDisposed()) {
 			// Create a drop-down menu
-			dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL
-					| SWT.H_SCROLL | SWT.READ_ONLY);
+			dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE
+					| SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
 			dropDown.setBackground(getBackground());
-	
+
 			// Determine the current value of the entry.
 			String currentValue = entry.getValue();
-			
+
 			// Add the allowed values to the dropdown menu. If the allowed value
 			// matches the current value, select it.
 			List<String> allowedValues = entry.getAllowedValues();
@@ -339,7 +343,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					dropDown.select(i);
 				}
 			}
-			
+
 			// Add a selection listener
 			dropDown.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -356,7 +360,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			// has been added to the Entry
 			List<String> allowedValues = entry.getAllowedValues();
 			List<String> comboValues = Arrays.asList(dropDown.getItems());
-			
+
 			for (int i = 0; i < allowedValues.size(); i++) {
 				String allowedValue = allowedValues.get(i);
 				// Add any new AllowedValues to the dropDown
@@ -421,12 +425,12 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	private void createBrowseButton() {
 
 		boolean redraw = buttons.isEmpty();
-		
+
 		if (redraw) {
 			// Create a new button, set the text
 			Button browseButton = new Button(this, SWT.PUSH);
 			browseButton.setText("Browse...");
-	
+
 			// Add an event listener that displays a Directory Dialog prompt
 			browseButton.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -444,13 +448,18 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						// Set the entry's value to the new file
 						setEntryValue(importedFile.getName());
 					}
+<<<<<<< HEAD
 					// Notify any listeners of the selection event
 					notifyListeners(SWT.Selection, new Event());
 	
+=======
+
+>>>>>>> branch 'master' of https://github.com/eclipse/ice
 					return;
 				}
+
 			});
-	
+
 			// Add the browse button
 			buttons.add(browseButton);
 		}
@@ -679,19 +688,19 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					+ "This composite has been prematurely disposed!");
 			return;
 		}
-		
+
 		// Remove the resize listener.
 		if (resizeListener != null) {
 			removeControlListener(resizeListener);
 			resizeListener = null;
 		}
-		
+
 		// Re-render the Composite
 		render();
 		
 		// Re-draw the Composite
 		layout();
-		
+
 		return;
 	}
 
@@ -747,7 +756,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			if (allowedValue != null) {
 				entry.setValue(allowedValue);
 			}
-			
+
 		} else {
 			// Remove a posted message if necessary
 			if (messageManager != null) {

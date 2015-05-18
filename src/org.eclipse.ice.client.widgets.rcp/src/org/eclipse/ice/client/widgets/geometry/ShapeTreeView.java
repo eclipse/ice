@@ -38,7 +38,7 @@ import org.eclipse.ui.part.ViewPart;
  * structure and elements in a Constructive Solid Geometry (CSG) tree
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ShapeTreeView extends ViewPart implements
 		ISelectionChangedListener {

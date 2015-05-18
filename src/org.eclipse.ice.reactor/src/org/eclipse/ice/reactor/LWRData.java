@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * <p>
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWRData implements IData {
 	/**

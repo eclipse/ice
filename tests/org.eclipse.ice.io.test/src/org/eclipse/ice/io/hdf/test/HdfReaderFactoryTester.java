@@ -45,7 +45,7 @@ import org.junit.Test;
  * This class tests the HdfReaderFactory class.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public class HdfReaderFactoryTester {
 	/**

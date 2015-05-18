@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * PinAssembly, as radial reflectors contain solid rods rather than pins.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class ReflectorAssembly extends SFRAssembly {
 	/**

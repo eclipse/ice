@@ -45,7 +45,7 @@ import org.eclipse.ice.reactor.TubeType;
  * A class that tests Tube's operations.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class TubeTester {
 	// An @BeforeClass that sets up the library path. This should be added to
@@ -55,7 +55,7 @@ public class TubeTester {
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
-		// System.setProperty("java.library.path", "/home/s4h/usr/local/lib64");
+		// System.setProperty("java.library.path", "/home/Scott Forest Hull II/usr/local/lib64");
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 

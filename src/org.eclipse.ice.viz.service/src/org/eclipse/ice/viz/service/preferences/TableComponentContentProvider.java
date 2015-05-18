@@ -14,8 +14,8 @@ package org.eclipse.ice.viz.service.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.client.widgets.properties.CellColumnLabelProvider;
-import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
+import org.eclipse.ice.client.common.properties.CellColumnLabelProvider;
+import org.eclipse.ice.client.common.properties.ICellContentProvider;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Entry;

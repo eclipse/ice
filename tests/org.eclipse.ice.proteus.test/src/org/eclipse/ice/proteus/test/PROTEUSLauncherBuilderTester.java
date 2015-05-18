@@ -21,14 +21,14 @@ import org.junit.Test;
 
 /**
  * Class that tests PROTEUSLauncherBuilder methods.
- * @author w5q
+ * @author Anna Wojtowicz
  *
  */
 public class PROTEUSLauncherBuilderTester {
 	
 	/**
 	 * Tests the getItemName() and getItemType() methods.
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */
 	@Test
@@ -48,7 +48,7 @@ public class PROTEUSLauncherBuilderTester {
 	
 	/**
 	 * Tests the build() method that actually constructs a PROTEUSLauncher.
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */	
 	@Test

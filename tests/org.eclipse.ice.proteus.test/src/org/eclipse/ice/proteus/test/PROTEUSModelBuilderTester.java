@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * Class that tests PROTEUSModelBuilder methods.
- * @author w5q
+ * @author Anna Wojtowicz
  *
  */
 
@@ -30,7 +30,7 @@ public class PROTEUSModelBuilderTester {
 
 	/**
 	 * Tests the getItemName() and getItemType() methods.
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */
 	@Test
@@ -50,7 +50,7 @@ public class PROTEUSModelBuilderTester {
 	 * Tests the build() method that actually constructs a PROTEUSModel. The
 	 * default model (ie. when passing a null project) should contain one 
 	 * DataComponent in its Form, with no entries.
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 * 
 	 */
 	@Test
