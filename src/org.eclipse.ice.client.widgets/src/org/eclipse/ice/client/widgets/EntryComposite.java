@@ -73,7 +73,7 @@ import org.eclipse.ui.forms.IMessageManager;
  * IMessageManager if it is set by calling setMessageManager().
  * </p>
  * 
- * @author gqx, Anna Wojtowicz
+ * @author gqx, Anna Wojtowicz, Alex McCaskey
  */
 public class EntryComposite extends Composite implements IUpdateableListener {
 	
@@ -103,7 +103,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	protected Entry entry;
 	
 	/**
-	 * The currently set value of the entry.
+	 * The currently set value of the Entry.
 	 */
 	private String currentSelection;
 
@@ -198,7 +198,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			}
 		});
 
-		// Set the current selection
+		// Get a reference to the current Entry value
 		currentSelection = entry.getValue();
 		
 		// Render the entry
@@ -267,7 +267,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						.getAllowedValues().get(0);
 				setEntryValue(value);
 				System.out.println("EntryComposite Message: Updated Entry "
-						+ entry.getName() + " with value=" + entry.getValue());
+						+ entry.getName() + " with value =" + entry.getValue());
 
 				return;
 			}
@@ -441,9 +441,10 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						// Import the files
 						File importedFile = new File(filePath);
 						client.importFile(importedFile.toURI());
+						// Set the entry's value to the new file
 						setEntryValue(importedFile.getName());
 					}
-					// Notify any listeners that the selection has changed
+					// Notify any listeners of the selection event
 					notifyListeners(SWT.Selection, new Event());
 	
 					return;
@@ -781,14 +782,15 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						refresh();
 						
 						// Toggle the "unsaved changes" decoration if the entry
-						// value has changed
+						// value is different
 						if (!EntryComposite.this.entry.getValue()
 								.equals(currentSelection)) {
 							toggleSaveDecoration();
 						}
 						
-						// Update the reference to the entry's value
+						// Update the reference to the Entry's value
 						currentSelection = EntryComposite.this.entry.getValue();
+						
 					} else {
 						entry.unregister(EntryComposite.this);
 					}
