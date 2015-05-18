@@ -73,11 +73,7 @@ import org.eclipse.ui.forms.IMessageManager;
  * IMessageManager if it is set by calling setMessageManager().
  * </p>
  * 
-<<<<<<< HEAD
- * @author gqx, Anna Wojtowicz, Alex McCaskey
-=======
- * @author Gregory M. Lyon, Anna Wojtowicz
->>>>>>> branch 'master' of https://github.com/eclipse/ice
+ * @author Gregory M. Lyon, Anna Wojtowicz, Alex McCaskey
  */
 public class EntryComposite extends Composite implements IUpdateableListener {
 
@@ -448,13 +444,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						// Set the entry's value to the new file
 						setEntryValue(importedFile.getName());
 					}
-<<<<<<< HEAD
 					// Notify any listeners of the selection event
 					notifyListeners(SWT.Selection, new Event());
-	
-=======
-
->>>>>>> branch 'master' of https://github.com/eclipse/ice
+					
 					return;
 				}
 
