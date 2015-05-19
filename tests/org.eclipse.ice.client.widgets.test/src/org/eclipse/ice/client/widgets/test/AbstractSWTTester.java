@@ -160,6 +160,14 @@ public abstract class AbstractSWTTester extends SWTBotTestCase {
 	}
 
 	/**
+	 * Creates any resources shared among the tests in this class.
+	 * 
+	 * @param shell
+	 *            The {@link #shell} used for testing purposes.
+	 */
+	protected abstract void createTestResources(Shell shell);
+
+	/**
 	 * Disposes class instance resources (i.e., the {@link #bot}) after the
 	 * instance's tests have been run.
 	 * <p>
@@ -168,10 +176,15 @@ public abstract class AbstractSWTTester extends SWTBotTestCase {
 	 * </p>
 	 */
 	@After
-	public final void afterTests() {
+	public void afterTests() {
 		// Dispose the SWTBot.
 		bot = null;
 	}
+
+	/**
+	 * Disposes any resources shared among the tests in this class.
+	 */
+	protected abstract void disposeTestResources();
 
 	/**
 	 * Disposes shared class resources (i.e., the {@link #display} and
