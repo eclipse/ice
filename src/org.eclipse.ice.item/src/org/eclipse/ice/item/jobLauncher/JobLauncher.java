@@ -113,7 +113,7 @@ import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
  * launcher by calling the addInputType() operation.
  * </p>
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 @XmlRootElement(name = "JobLauncher")
 public class JobLauncher extends Item {

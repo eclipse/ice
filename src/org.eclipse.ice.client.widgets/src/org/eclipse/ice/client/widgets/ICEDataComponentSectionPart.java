@@ -37,7 +37,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * code for this class contains a private hashmap that is not represented in the
  * model because Jay can not figure out how to show a java.util.hashmap in RSA.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class ICEDataComponentSectionPart extends SectionPart implements
 		IUpdateableListener {
