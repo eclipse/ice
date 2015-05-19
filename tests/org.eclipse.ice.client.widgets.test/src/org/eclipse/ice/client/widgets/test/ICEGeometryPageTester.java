@@ -25,7 +25,7 @@ import org.junit.Test;
  * This class tests the accessors of the ICEGeometryPage.
  * </p>
  * 
- * @author gqx
+ * @author Gregory M. Lyon
  */
 public class ICEGeometryPageTester {
 	/**

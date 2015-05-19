@@ -17,7 +17,7 @@ package org.eclipse.ice.reactor;
  * The TubeType enumeration describes the types of Tubes that can be created.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public enum TubeType {
 	/**

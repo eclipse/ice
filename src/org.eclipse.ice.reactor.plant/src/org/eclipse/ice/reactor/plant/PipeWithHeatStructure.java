@@ -19,7 +19,7 @@ import java.io.InputStream;
  * Simulates the fluid flow associated with a solid heat structure part.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class PipeWithHeatStructure extends Pipe {
 

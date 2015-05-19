@@ -23,7 +23,7 @@ import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
  * reflector assemblies.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFRRod extends SFRComponent {
 

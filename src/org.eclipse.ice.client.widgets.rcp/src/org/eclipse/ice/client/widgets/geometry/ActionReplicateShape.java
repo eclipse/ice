@@ -39,7 +39,7 @@ import org.osgi.framework.FrameworkUtil;
  * This action should be enabled only when exactly one shape is selected.
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ActionReplicateShape extends Action {
 	/**

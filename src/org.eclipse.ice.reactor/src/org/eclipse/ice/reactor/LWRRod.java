@@ -40,7 +40,7 @@ import org.eclipse.ice.io.hdf.IHdfWriteable;
  * <p>
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWRRod extends LWRComponent {
 	/**

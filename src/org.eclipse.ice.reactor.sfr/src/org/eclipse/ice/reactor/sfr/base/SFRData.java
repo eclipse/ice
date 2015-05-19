@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * particular sets of IData associated with this class.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFRData implements IData {
 	/**

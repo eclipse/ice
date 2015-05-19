@@ -24,7 +24,7 @@ import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
  * Base class for RELAP7 components.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "PlantComponent")
 @XmlAccessorType(XmlAccessType.FIELD)

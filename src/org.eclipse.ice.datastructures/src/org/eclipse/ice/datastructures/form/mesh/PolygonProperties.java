@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * For this Polygon, materialId = "1R", groupNum = 0.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "PolygonProperties")
 @XmlAccessorType(XmlAccessType.FIELD)

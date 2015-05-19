@@ -20,7 +20,7 @@ import java.io.InputStream;
  * component.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class OneInOneOutJunction extends Junction {
 

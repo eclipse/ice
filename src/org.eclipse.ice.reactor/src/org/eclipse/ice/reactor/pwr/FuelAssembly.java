@@ -45,7 +45,7 @@ import java.util.ArrayList;
  * getTubeDataProviderAtLocation operation.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class FuelAssembly extends PWRAssembly {
 	/**

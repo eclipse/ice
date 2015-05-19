@@ -21,7 +21,7 @@ import java.security.InvalidParameterException;
  * purpose of drawing, this is just a specialized pipe.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Subchannel extends Pipe {
 	/**

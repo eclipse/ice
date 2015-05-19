@@ -28,7 +28,7 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
  * subclasses may use to reveal their types to visitors.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public interface ISFRComponentVisitor {
 	/**

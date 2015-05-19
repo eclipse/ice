@@ -20,7 +20,7 @@ import java.net.URI;
  * an IHdfWriteable tree from an HDF5 file.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public interface IHdfReader {
 	/**

@@ -19,7 +19,7 @@ import java.io.InputStream;
  * Flow branch.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Branch extends Junction {
 	/**

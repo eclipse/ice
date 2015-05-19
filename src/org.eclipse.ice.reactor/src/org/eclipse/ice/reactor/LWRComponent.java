@@ -62,7 +62,7 @@ import ncsa.hdf.object.h5.H5File;
  * This class implements the ICE Component interface.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class LWRComponent implements IReactorComponent, IDataProvider,
 		IHdfWriteable, IHdfReadable {

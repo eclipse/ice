@@ -35,7 +35,7 @@ import org.junit.Test;
  * Tests the methods of the NekReader class. Tests are broken down by Nek5000
  * examples.
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  *
  */
 public class NekReaderTester {

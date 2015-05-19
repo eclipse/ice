@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * should return the same value as the getName() operation on this class.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class FeatureSet {
 	/**

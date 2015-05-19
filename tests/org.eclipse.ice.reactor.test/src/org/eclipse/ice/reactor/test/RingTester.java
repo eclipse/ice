@@ -42,7 +42,7 @@ import org.junit.Test;
  * A class that tests the Ring's operations.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 
 public class RingTester {
@@ -53,7 +53,7 @@ public class RingTester {
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
-		// System.setProperty("java.library.path", "/home/s4h/usr/local/lib64");
+		// System.setProperty("java.library.path", "/home/Scott Forest Hull II/usr/local/lib64");
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 

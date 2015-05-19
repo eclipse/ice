@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Text;
  * key commands for value manipulation
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class RealSpinner {
 	/**

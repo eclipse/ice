@@ -46,7 +46,7 @@ import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
  * This class tests the RodClusterAssembly operations.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class RodClusterAssemblyTester {
 	// An @BeforeClass that sets up the library path. This should be added to

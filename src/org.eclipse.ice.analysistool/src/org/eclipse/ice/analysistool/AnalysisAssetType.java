@@ -17,7 +17,7 @@ package org.eclipse.ice.analysistool;
  * This is an enumeration of all the types of assets that can be created.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public enum AnalysisAssetType {
 	/**

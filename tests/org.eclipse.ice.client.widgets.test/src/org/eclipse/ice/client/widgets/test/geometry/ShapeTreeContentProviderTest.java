@@ -27,7 +27,7 @@ import org.junit.Test;
  * Tests ShapeTreeContentProvider handling of elements
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ShapeTreeContentProviderTest {
 	/**

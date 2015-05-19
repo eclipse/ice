@@ -59,7 +59,7 @@ import com.jme3.scene.shape.Sphere;
  * The JME3 entry point for rendering the geometry editor viewport
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class GeometryApplication extends SimpleApplication implements
 		IUpdateableListener {
@@ -332,7 +332,7 @@ public class GeometryApplication extends SimpleApplication implements
 	/**
 	 * Adds all visited shapes to the JME3 scene graph node
 	 * 
-	 * @author abd
+	 * @author Andrew P. Belt
 	 * 
 	 */
 	class AddShapeToNode implements IShapeVisitor {
@@ -455,7 +455,7 @@ public class GeometryApplication extends SimpleApplication implements
 	/**
 	 * Synchronizes the given JME3 node with each visited IShape child
 	 * 
-	 * @author abd
+	 * @author Andrew P. Belt
 	 * 
 	 */
 	class SyncShapes implements IShapeVisitor {

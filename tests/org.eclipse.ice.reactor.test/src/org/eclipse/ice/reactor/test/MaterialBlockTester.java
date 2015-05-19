@@ -45,7 +45,7 @@ import ncsa.hdf.object.h5.H5Group;
  * This class tests the MaterialBlock's operations.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class MaterialBlockTester {
 	/**

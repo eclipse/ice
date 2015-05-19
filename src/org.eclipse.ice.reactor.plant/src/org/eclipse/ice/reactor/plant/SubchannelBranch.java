@@ -20,7 +20,7 @@ import java.io.InputStream;
  * considered just a specialized junction.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SubchannelBranch extends Junction {
 	/**

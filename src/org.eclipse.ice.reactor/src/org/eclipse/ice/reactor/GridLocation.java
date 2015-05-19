@@ -51,7 +51,7 @@ import java.lang.Comparable;
  * in magnitudes and is more optimal.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class GridLocation implements Comparable<GridLocation> {
 	/**

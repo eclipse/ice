@@ -16,7 +16,7 @@ import java.io.InputStream;
 
 /** 
  * <p>Simulates the fluid flow associated with a solid heat structure part.</p>
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class CoreChannel extends Pipe {
 

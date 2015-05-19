@@ -19,7 +19,7 @@ import java.io.InputStream;
  * A simple turbine model ignoring thermal, inertial and gravity potential.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Turbine extends OneInOneOutJunction {
 

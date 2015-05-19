@@ -23,7 +23,7 @@ import org.junit.Test;
  * This class checks the operations on GridLocation.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class GridLocationTester {
 	/**

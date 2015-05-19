@@ -14,7 +14,7 @@ package org.eclipse.ice.reactor.plant;
 
 /** 
  * <p>Defines the visitation routine for PlantComponents so that the type of a PlantComponent can be revealed.</p>
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public interface IPlantComponentVisitor {
 	

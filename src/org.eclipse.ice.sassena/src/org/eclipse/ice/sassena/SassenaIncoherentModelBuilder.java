@@ -23,7 +23,7 @@ import org.eclipse.ice.item.ItemType;
  * from ItemBuilder.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class SassenaIncoherentModelBuilder implements ItemBuilder {
 

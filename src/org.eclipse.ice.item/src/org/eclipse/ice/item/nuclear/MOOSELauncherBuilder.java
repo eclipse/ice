@@ -21,7 +21,7 @@ import org.eclipse.ice.item.ItemType;
  * Class constructs a MOOSELauncher suite for launching MARMOT, BISON, RELAP7,
  * and RAVEN jobs.
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  * 
  */
 

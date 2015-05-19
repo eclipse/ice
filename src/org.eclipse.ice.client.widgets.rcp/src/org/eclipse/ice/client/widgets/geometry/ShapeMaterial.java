@@ -25,7 +25,7 @@ import com.jme3.math.ColorRGBA;
  * data
  * </p>
  * 
- * @author abd
+ * @author Andrew P. Belt
  */
 public class ShapeMaterial {
 	/**

@@ -35,7 +35,7 @@ import org.eclipse.ice.item.jobLauncher.JobLauncher;
  * so that it can remote execute the code.
  * </p>
  * 
- * @author s4h, Andrew Bennett
+ * @author Scott Forest Hull II, Andrew Bennett
  */
 @XmlRootElement(name = "VibeLauncher")
 public class VibeLauncher extends JobLauncher {

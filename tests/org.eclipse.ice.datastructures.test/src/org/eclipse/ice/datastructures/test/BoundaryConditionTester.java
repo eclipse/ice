@@ -37,7 +37,7 @@ import org.junit.Test;
  * Tests the BoundaryCondition class.
  * </p>
  * 
- * @author Jordan H. Deyton, w5q
+ * @author Jordan H. Deyton, Anna Wojtowicz
  */
 public class BoundaryConditionTester {
 	/**

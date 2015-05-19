@@ -18,7 +18,7 @@ package org.eclipse.ice.reactor.sfr.core;
  * reflector.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public enum AssemblyType {
 	/**

@@ -20,7 +20,7 @@ import ncsa.hdf.object.h5.H5Group;
  * structure from an HDF5 file.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public interface IHdfReadable {
 

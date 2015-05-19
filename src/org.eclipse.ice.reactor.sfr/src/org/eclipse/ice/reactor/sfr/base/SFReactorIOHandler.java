@@ -47,7 +47,7 @@ import ncsa.hdf.hdf5lib.structs.H5O_info_t;
  * HDF5 data.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFReactorIOHandler {
 	/**

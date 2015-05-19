@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * attribute.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class PinAssembly extends SFRAssembly {
 	/**

@@ -45,7 +45,7 @@ import org.eclipse.ice.item.Item;
  * loadInput method the VibeModel will automatically load the case 6 example.
  * </p>
  * 
- * @author s4h, Andrew Bennett
+ * @author Scott Forest Hull II, Andrew Bennett
  */
 @XmlRootElement(name = "VibeModel")
 public class VibeModel extends Item {

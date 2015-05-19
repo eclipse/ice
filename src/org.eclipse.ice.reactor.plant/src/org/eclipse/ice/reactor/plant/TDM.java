@@ -20,7 +20,7 @@ import java.io.InputStream;
  * loop.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class TDM extends Boundary {
 	/**

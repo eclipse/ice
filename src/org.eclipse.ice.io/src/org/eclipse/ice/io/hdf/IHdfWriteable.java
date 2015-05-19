@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * file from an ICE data structure.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public interface IHdfWriteable {
 	/**

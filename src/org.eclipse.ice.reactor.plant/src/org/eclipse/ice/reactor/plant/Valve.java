@@ -19,7 +19,7 @@ import java.io.InputStream;
  * A valve component to implement the basic on/off capability of valves.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class Valve extends OneInOneOutJunction {
 	/**

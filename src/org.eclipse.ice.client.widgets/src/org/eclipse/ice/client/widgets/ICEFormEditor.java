@@ -184,7 +184,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		componentMap.put("reactor", new ArrayList<Component>());
 		componentMap.put("emf", new ArrayList<Component>());
 		componentMap.put("list", new ArrayList<Component>());
-
 	}
 
 	/**
@@ -220,6 +219,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// Set the dirty value and fire a property change
 		dirty = value;
 		firePropertyChange(PROP_DIRTY);
+		
+		// Push a message to the message manager
+		if (getHeaderForm() != null) {
+			final IMessageManager messageManager = getHeaderForm()
+					.getMessageManager();
+			messageManager.addMessage("statusUpdate", 
+					"There are unsaved changes on the form.", null,
+					IMessageProvider.WARNING);
+		}
 
 	}
 

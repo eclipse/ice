@@ -32,7 +32,7 @@ import ncsa.hdf.object.h5.H5Group;
  * varying types of materials across a cylindrical segment of a rod.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class Ring extends LWRComponent implements Comparable<Ring> {
 	/**

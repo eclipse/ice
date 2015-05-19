@@ -46,7 +46,7 @@ import java.util.ArrayList;
  * getLWRRodDataProviderAtLocation operation.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class PWRAssembly extends LWRComposite {
 	/**

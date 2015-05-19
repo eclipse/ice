@@ -25,7 +25,7 @@ import ncsa.hdf.object.h5.H5File;
  * close HDF5 files.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public class HdfFileFactory {
 	/**

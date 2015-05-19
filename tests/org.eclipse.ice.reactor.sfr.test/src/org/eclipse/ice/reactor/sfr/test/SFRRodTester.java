@@ -28,7 +28,7 @@ import org.junit.Test;
  * Tests the operations of the SFRRod class.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFRRodTester {
 	/**

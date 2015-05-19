@@ -43,7 +43,7 @@ import java.util.TreeMap;
  * This class implements the ICE Component interface.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFRComponent implements IReactorComponent, IDataProvider {
 

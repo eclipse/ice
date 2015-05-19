@@ -32,7 +32,7 @@ import org.junit.Test;
  * This class tests the HdfFileFactory class.
  * </p>
  * 
- * @author els
+ * @author Eric J. Lingerfelt
  */
 public class HdfFileFactoryTester {
 

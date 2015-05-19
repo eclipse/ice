@@ -615,7 +615,7 @@ public class EntryTester {
 			// Check contents - currently broken due to isReady() needs to
 			// return a
 			// class Boolean
-			// not an attribute s4h
+			// not an attribute Scott Forest Hull II
 			assertTrue(myEntry.equals(entry2));
 
 		} catch (NullPointerException | JAXBException | IOException e) {

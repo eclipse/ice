@@ -22,7 +22,7 @@ import org.junit.Test;
  * A class that tests the HDF5LWRTagType's methods.
  * </p>
  * 
- * @author s4h
+ * @author Scott Forest Hull II
  */
 public class HDF5LWRTagTypeTester {
 	/**

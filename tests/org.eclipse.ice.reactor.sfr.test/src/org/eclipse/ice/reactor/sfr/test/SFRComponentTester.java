@@ -34,7 +34,7 @@ import org.junit.Test;
  * Tests the operations of the SFRComponent class.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class SFRComponentTester {
 	/**

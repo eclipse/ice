@@ -21,7 +21,7 @@ import java.io.InputStream;
  * channels.
  * </p>
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  */
 public class PointKinetics extends PlantComponent {
 	/**
