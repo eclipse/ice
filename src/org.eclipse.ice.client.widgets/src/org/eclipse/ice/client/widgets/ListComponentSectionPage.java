@@ -126,6 +126,8 @@ public class ListComponentSectionPage extends ICEFormPage {
 			listTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 					true, 1, 1));
 
+			//IColumnPropertyAccessor accessor = new Ref
+			
 			// Create a composite for holding Add/Delete buttons to manipulate
 			// the table and lay it out.
 			Composite listButtonComposite = new Composite(sectionClient,
