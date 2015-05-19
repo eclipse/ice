@@ -157,6 +157,9 @@ public abstract class AbstractSWTTester extends SWTBotTestCase {
 		// Don't create the instance's SWTBot until the shell is available.
 		shellLatch.await();
 		bot = new SWTBot(shell);
+
+		// Create all test resources for the sub-class.
+		createTestResources(shell);
 	}
 
 	/**
@@ -177,6 +180,9 @@ public abstract class AbstractSWTTester extends SWTBotTestCase {
 	 */
 	@After
 	public void afterTests() {
+		// Dispose all test resources for the sub-class.
+		disposeTestResources();
+
 		// Dispose the SWTBot.
 		bot = null;
 	}
