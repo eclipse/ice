@@ -11,13 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 /**
  * This abstract class provides a basic framework for performing SWTBot tests
@@ -46,35 +42,28 @@ import org.junit.BeforeClass;
  * @author Jordan Deyton
  *
  */
-public abstract class AbstractSWTTester extends AbstractICEUITester<SWTBot> {
+public class AbstractSWTTester extends AbstractICEUITester<SWTBot> {
+
+	/**
+	 * The {@code SWTBot} for this test class instance. This bot is to aid in
+	 * performing UI tests that simulate user interaction with workbench-based
+	 * plug-ins.
+	 */
+	private static SWTBot bot;
 
 	/**
 	 * The shell used when creating an {@code SWTBot} for unit tests.
 	 */
 	private static Shell shell;
 
-	/**
-	 * This latch is used to wait on the creation of the {@link #shell}.
-	 */
-	private static CountDownLatch shellLatch = new CountDownLatch(1);
-
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#createBot()
+	 * @see org.eclipse.ice.client.widgets.test.AbstractICEUITester#getBot()
 	 */
 	@Override
-	protected SWTBot createBot() {
-		// Wait for the CountDownLatch to hit zero, signifying that the shell
-		// has been created and opened.
-		try {
-			shellLatch.await();
-		} catch (InterruptedException e) {
-			fail("AbstractICESWTTester error: "
-					+ "Thread interrupted while waiting for test Shell!");
-		}
-		// We can now create the SWTBot for the shell.
-		return new SWTBot(shell);
+	protected SWTBot getBot() {
+		return bot;
 	}
 
 	/**
@@ -88,50 +77,81 @@ public abstract class AbstractSWTTester extends AbstractICEUITester<SWTBot> {
 		return shell;
 	}
 
-	/**
-	 * Creates the shared test shell on the UI thread. This decrements the
-	 * {@link #shellLatch} when the shell is opened.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeAllTests()
 	 */
-	@BeforeClass
-	public static void beforeSWTClass() {
+	@Override
+	public void beforeAllTests() {
+		super.beforeAllTests();
 
 		final Display display = getDisplay();
-		// We have to run this *synchronously* on the UI thread. If the JUnit
-		// tests are being run from the UI thread, running *a*synchronously can
-		// cause a deadlock because it will wait for the CountDownLatch to hit
-		// zero before creating the SWTBot.
+		// Creating the shell must be done on the UI thread.
 		display.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				// Create and open the shell.
 				shell = new Shell(display);
 				shell.open();
-
-				// Notify any blocking threads that the shell was created.
-				shellLatch.countDown();
 			}
 		});
+
+		// Initialize static or otherwise shared resources here.
+
+		// Set up the SWTBot for the shell.
+		bot = new SWTBot(shell);
 
 		return;
 	}
 
-	/**
-	 * Closes and unsets the {@link #shell} and resets the {@link #shellLatch}.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeEachTest()
 	 */
-	@AfterClass
-	public static void afterSWTClass() {
+	@Override
+	public void beforeEachTest() {
+		super.beforeEachTest();
 
-		// Close the shell. This must be done on the UI thread.
+		// Initialize per-test resources here.
+		// Nothing to do yet.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterEachTest()
+	 */
+	@Override
+	public void afterEachTest() {
+		// Dispose per-test resources here.
+		// Nothing to do yet.
+
+		// Proceed with the default post-test cleanup.
+		super.afterEachTest();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterAllTests()
+	 */
+	@Override
+	public void afterAllTests() {
+		// Dispose static or otherwise shared resources here.
+
+		// Close and unset the shell. This must be done on the UI thread.
 		getDisplay().syncExec(new Runnable() {
 			public void run() {
 				shell.close();
 			}
 		});
-
-		// Reset the latch and shell.
-		shellLatch = new CountDownLatch(1);
 		shell = null;
 
-		return;
+		// Proceed with the default post-tests cleanup.
+		super.afterAllTests();
 	}
 }

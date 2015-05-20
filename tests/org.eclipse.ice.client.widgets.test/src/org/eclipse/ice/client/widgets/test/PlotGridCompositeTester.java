@@ -44,15 +44,24 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	/**
 	 * The shared {@link PlotGridComposite} that will be tested.
 	 */
-	private PlotGridComposite composite;
+	private static PlotGridComposite composite;
+
+	/**
+	 * A non-static, non-shared {@link PlotGridComposite} for testing.
+	 */
+	private PlotGridComposite testComposite;
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#setupTests()
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeAllTests()
 	 */
 	@Override
-	protected void setupTests() {
+	public void beforeAllTests() {
+		super.beforeAllTests();
+
+		// Initialize static or otherwise shared resources here.
 
 		// Create the composite that will be tested.
 		getDisplay().syncExec(new Runnable() {
@@ -68,10 +77,37 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#cleanupTests()
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeEachTest()
 	 */
 	@Override
-	protected void cleanupTests() {
+	public void beforeEachTest() {
+		super.beforeEachTest();
+
+		// Initialize per-test resources here.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterEachTest()
+	 */
+	@Override
+	public void afterEachTest() {
+		// Dispose per-test resources here.
+
+		// Proceed with the default post-test cleanup.
+		super.afterEachTest();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterAllTests()
+	 */
+	@Override
+	public void afterAllTests() {
+		// Dispose static or otherwise shared resources here.
 
 		// Dispose the composite.
 		getDisplay().syncExec(new Runnable() {
@@ -82,7 +118,8 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		});
 		composite = null;
 
-		return;
+		// Proceed with the default post-tests cleanup.
+		super.afterAllTests();
 	}
 
 	/**
@@ -98,7 +135,16 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkToolBar() {
 
-		SWTBot bot = getBot();
+		// Create a new composite for testing.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				testComposite = new PlotGridComposite(getShell(), SWT.NONE);
+			}
+		});
+		PlotGridComposite composite = testComposite;
+
+		SWTBot bot = new SWTBot(composite);
 		SWTBotSpinner spinner;
 		SWTBotLabel label;
 		ToolBar toolBar;
@@ -117,7 +163,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		assertSame(children[0], getParent(label.widget));
 
 		// Check the order of the row spinner.
-		spinner = getRowSpinner();
+		spinner = bot.spinner(0);
 		assertSame(children[1], spinner.widget);
 		// Check the spinner's specifications.
 		assertEquals(1, spinner.getIncrement());
@@ -131,7 +177,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		assertSame(children[2], getParent(label.widget));
 
 		// Check the order of the row spinner.
-		spinner = getColumnSpinner();
+		spinner = bot.spinner(1);
 		assertSame(children[3], spinner.widget);
 		// Check the spinner's specifications.
 		assertEquals(1, spinner.getIncrement());
@@ -489,6 +535,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		try {
 			index = addPlot(plot);
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
