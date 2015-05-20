@@ -55,7 +55,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	protected void setupTests() {
 
 		// Create the composite that will be tested.
-		getShell().getDisplay().syncExec(new Runnable() {
+		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
 				composite = new PlotGridComposite(getShell(), SWT.NONE);
