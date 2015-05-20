@@ -25,8 +25,6 @@ import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
@@ -51,14 +49,13 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.test.AbstractSWTTester#createTestResources
-	 * (org.eclipse.swt.widgets.Shell)
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#setupTests()
 	 */
 	@Override
-	protected void createTestResources(Shell shell) {
+	protected void setupTests() {
+
 		// Create the composite that will be tested.
-		shell.getDisplay().syncExec(new Runnable() {
+		getShell().getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
 				composite = new PlotGridComposite(getShell(), SWT.NONE);
@@ -71,12 +68,11 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.test.AbstractSWTTester#disposeTestResources
-	 * ()
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#cleanupTests()
 	 */
 	@Override
-	protected void disposeTestResources() {
+	protected void cleanupTests() {
+
 		// Dispose the composite.
 		getDisplay().syncExec(new Runnable() {
 			@Override
@@ -1050,4 +1046,5 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 			return false;
 		}
 	}
+
 }

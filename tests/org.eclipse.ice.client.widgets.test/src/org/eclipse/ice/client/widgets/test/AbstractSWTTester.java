@@ -16,25 +16,20 @@ import java.util.concurrent.CountDownLatch;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.SWTBotTestCase;
-import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
 /**
  * This abstract class provides a basic framework for performing SWTBot tests
- * inside a JUnit test framework. As such, test classes sub-classing this
- * abstract class can be run as JUnit tests, JUnit plug-in tests, or SWTBot
- * tests.
+ * for an SWT application inside a JUnit test framework. As such, test classes
+ * sub-classing this abstract class can be run as JUnit tests, JUnit plug-in
+ * tests (on or off the UI thread), or SWTBot tests.
  * <p>
- * A {@link Shell} is opened outside the default Eclipse workbench (in the case
- * of plug-in and SWTBot tests). This shell provides the "sandbox" in which UI
- * tests are performed. For instance, to test a specific {@code Composite}, you
- * may create an instance of said {@code Composite} in the shell and perform its
- * UI tests. The shell is shared among sub-class tests, and can be acquired via
+ * A {@link Shell} is opened (outside the default Eclipse workbench if used as a
+ * plug-in test). This shell provides the "sandbox" in which UI tests are
+ * performed. For instance, to test a specific {@code Composite}, you may create
+ * an instance of said {@code Composite} in the shell and perform its UI tests.
+ * The shell is shared among sub-class tests, and can be acquired via
  * {@link #getShell()}.
  * </p>
  * <p>
@@ -51,14 +46,7 @@ import org.junit.runner.RunWith;
  * @author Jordan Deyton
  *
  */
-@RunWith(SWTBotJunit4ClassRunner.class)
-public abstract class AbstractSWTTester extends SWTBotTestCase {
-
-	/**
-	 * The display for the shell. This should be the workbench UI thread's
-	 * display. This class does not create the display or the UI thread.
-	 */
-	private static Display display;
+public abstract class AbstractSWTTester extends AbstractICEUITester<SWTBot> {
 
 	/**
 	 * The shell used when creating an {@code SWTBot} for unit tests.
@@ -70,21 +58,23 @@ public abstract class AbstractSWTTester extends SWTBotTestCase {
 	 */
 	private static CountDownLatch shellLatch = new CountDownLatch(1);
 
-	/**
-	 * The {@code SWTBot} for the {@link #shell}. This should be used by any
-	 * sub-classes to perform SWTBot UI tests.
-	 */
-	private SWTBot bot;
-
-	/**
-	 * Gets the main UI thread's {@code Display}. This should be used (via
-	 * {@code syncExec(...)} or {@code asyncExec(...)})when making changes to
-	 * the UI.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The main display.
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#createBot()
 	 */
-	protected static Display getDisplay() {
-		return display;
+	@Override
+	protected SWTBot createBot() {
+		// Wait for the CountDownLatch to hit zero, signifying that the shell
+		// has been created and opened.
+		try {
+			shellLatch.await();
+		} catch (InterruptedException e) {
+			fail("AbstractICESWTTester error: "
+					+ "Thread interrupted while waiting for test Shell!");
+		}
+		// We can now create the SWTBot for the shell.
+		return new SWTBot(shell);
 	}
 
 	/**
@@ -99,121 +89,48 @@ public abstract class AbstractSWTTester extends SWTBotTestCase {
 	}
 
 	/**
-	 * Gets the {@code SWTBot} for the {@link #shell}. This should be used by
-	 * any sub-classes to perform SWTBot UI tests.
-	 * 
-	 * @return The {@code SWTBot} for testing.
-	 */
-	protected SWTBot getBot() {
-		return bot;
-	}
-
-	/**
-	 * Creates the {@link #shell} on the main UI thread.
-	 * <p>
-	 * <b>Note:</b> If overridden, be sure to call {@code super.beforeClass()}
-	 * at the beginning of the method, or the shell will not be created.
-	 * </p>
+	 * Creates the shared test shell on the UI thread. This decrements the
+	 * {@link #shellLatch} when the shell is opened.
 	 */
 	@BeforeClass
-	public static void beforeClass() {
-		// An SWTBot created using the shell is required for any sub-class
-		// tests. If the shell is not configured, create it.
-		if (display == null) {
-			// Get the main UI thread's Display.
-			display = Display.getDefault();
+	public static void beforeSWTClass() {
 
-			// Create the shell on the UI thread.
-			display.syncExec(new Runnable() {
-				@Override
-				public void run() {
-					// Create and open the shell.
-					shell = new Shell(display);
-					shell.open();
+		final Display display = getDisplay();
+		// We have to run this *synchronously* on the UI thread. If the JUnit
+		// tests are being run from the UI thread, running *a*synchronously can
+		// cause a deadlock because it will wait for the CountDownLatch to hit
+		// zero before creating the SWTBot.
+		display.syncExec(new Runnable() {
+			@Override
+			public void run() {
+				// Create and open the shell.
+				shell = new Shell(display);
+				shell.open();
 
-					// Notify any blocking threads that the shell was created.
-					shellLatch.countDown();
-				}
-			});
-		}
+				// Notify any blocking threads that the shell was created.
+				shellLatch.countDown();
+			}
+		});
 
 		return;
 	}
 
 	/**
-	 * Creates the {@link #bot} for testing <i>after</i> the {@link #shell} is
-	 * created.
-	 * <p>
-	 * <b>Note:</b> If overridden, be sure to call {@code super.beforeTests()}
-	 * at the beginning of the method, or the bot will not be created.
-	 * </p>
-	 * 
-	 * @throws InterruptedException
-	 *             If there is an error while waiting for the shell to be
-	 *             created.
-	 */
-	@Before
-	public void beforeTests() throws InterruptedException {
-		// Don't create the instance's SWTBot until the shell is available.
-		shellLatch.await();
-		bot = new SWTBot(shell);
-
-		// Create all test resources for the sub-class.
-		createTestResources(shell);
-	}
-
-	/**
-	 * Creates any resources shared among the tests in this class.
-	 * 
-	 * @param shell
-	 *            The {@link #shell} used for testing purposes.
-	 */
-	protected abstract void createTestResources(Shell shell);
-
-	/**
-	 * Disposes class instance resources (i.e., the {@link #bot}) after the
-	 * instance's tests have been run.
-	 * <p>
-	 * <b>Note:</b> If overridden, be sure to call {@code super.afterTests()} at
-	 * the end of the method, or the bot will not be freed.
-	 * </p>
-	 */
-	@After
-	public void afterTests() {
-		// Dispose all test resources for the sub-class.
-		disposeTestResources();
-
-		// Dispose the SWTBot.
-		bot = null;
-	}
-
-	/**
-	 * Disposes any resources shared among the tests in this class.
-	 */
-	protected abstract void disposeTestResources();
-
-	/**
-	 * Disposes shared class resources (i.e., the {@link #display} and
-	 * {@link #shell})
-	 * <p>
-	 * <b>Note:</b> If overridden, be sure to call {@code super.afterClass()} at
-	 * the end of the method, or the shell and associated resources will not be
-	 * freed.
-	 * </p>
+	 * Closes and unsets the {@link #shell} and resets the {@link #shellLatch}.
 	 */
 	@AfterClass
-	public static void afterClass() {
-		// Close the shell and release both it and the display.
-		display.syncExec(new Runnable() {
+	public static void afterSWTClass() {
+
+		// Close the shell. This must be done on the UI thread.
+		getDisplay().syncExec(new Runnable() {
 			public void run() {
 				shell.close();
 			}
 		});
-		// Reset the latch, shell, and display, now that the shell has been
-		// closed.
+
+		// Reset the latch and shell.
 		shellLatch = new CountDownLatch(1);
 		shell = null;
-		display = null;
 
 		return;
 	}
