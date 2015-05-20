@@ -483,6 +483,11 @@ public class ICEResourceView extends PlayableViewPart implements
 		return;
 	}
 
+	/**
+	 * This method listens for a double click event on a resource. If the
+	 * selected resource is valid, then it will be displayed on the view's
+	 * associated {@link ICEResourceView#resourcePage}.
+	 */
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
 		

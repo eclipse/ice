@@ -7,3 +7,5 @@ Fragment-Host: org.eclipse.ice.client.widgets;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ui,
  org.junit
+Require-Bundle: org.eclipse.swtbot.eclipse.core;bundle-version="2.2.1",
+ org.eclipse.swtbot.go;bundle-version="2.2.1"

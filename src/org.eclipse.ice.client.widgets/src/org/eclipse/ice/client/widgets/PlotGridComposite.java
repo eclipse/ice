@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation 
+ *   
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
@@ -296,12 +307,14 @@ public class PlotGridComposite extends Composite {
 		int index = -1;
 
 		// Proceed if the plot is not null and there is still space available in
-		// the grid.
-		if (plot != null && drawnPlots.size() < rows * columns) {
+		// the grid. We also can only proceed if the map of plot types is not
+		// null.
+		Map<String, String[]> plotTypes;
+		if (plot != null && drawnPlots.size() < rows * columns
+				&& (plotTypes = plot.getPlotTypes()) != null) {
 
 			// Try to get the available categories and plot types, then try to
 			// plot the first available one.
-			Map<String, String[]> plotTypes = plot.getPlotTypes();
 
 			// Find the first category and plot type.
 			String category = null;

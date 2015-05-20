@@ -267,7 +267,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						.getAllowedValues().get(0);
 				setEntryValue(value);
 				System.out.println("EntryComposite Message: Updated Entry "
-						+ entry.getName() + " with value =" + entry.getValue());
+						+ entry.getName() + " with value = " + entry.getValue());
 
 				return;
 			}

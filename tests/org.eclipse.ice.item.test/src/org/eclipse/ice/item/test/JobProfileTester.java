@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2012, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,18 +43,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
 /**
- * <p>
  * This class is responsible for testing the JobProfileBuilder. It is primarily
  * concerned with checking the ability of the JobProfileBuilder to write the new
  * profile to disk correctly after it is created.
- * </p>
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
-
 public class JobProfileTester {
+	
 	/**
-	 * 
+	 * A JobProfile used for testing.
 	 */
 	private JobProfile jobProfile;
 
@@ -63,14 +61,16 @@ public class JobProfileTester {
 	 * comparing the Item it creates to the original. It also checks the
 	 * quantities in the XML to make sure that they are consistent with the
 	 * specification and useful for launching jobs.
+	 * 
 	 * @throws IOException 
 	 * @throws JAXBException 
 	 * @throws NullPointerException 
 	 */
 	@Test
 	public void checkProfileWriting() throws NullPointerException, JAXBException, IOException {
-
-		// setup a link to the projectspace
+	
+		// Begin by setting up a project space we can work with
+		
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
@@ -113,17 +113,16 @@ public class JobProfileTester {
 		// Should persist file to XML
 		jobProfile.process("Create a Job Launcher");
 
-		// To find the file, one must know the projectspace
-		IFile file = project.getFolder("jobProfiles").getFile(
-				"JobProfile" + ".xml");
+		// Get the persisted file and make sure it's valid
+		IFile file = project.getFolder("jobProfiles").getFile("JobProfile.xml");
 		assertTrue(file.exists());
 
-		// load file into inputstream
+		// Load file into inputStream
 		ByteArrayInputStream inputStream = null;
 		try {
 
 			// Convert to a string and then convert that string to an
-			// inputstream
+			// InputStream
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					file.getContents()));
 
@@ -134,17 +133,15 @@ public class JobProfileTester {
 					sb.append(line);
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println(sb.toString());
 			inputStream = new ByteArrayInputStream(sb.toString().getBytes());
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		// load file from inputstream to object
+		// Load file from inputSteam to object
 		JobLauncher launcher = new JobLauncher();
 
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
@@ -171,27 +168,18 @@ public class JobProfileTester {
 		// name according to the specification on the class.
 		assertEquals(launcher.getName(), launcher.getItemBuilderName());
 
-		// check contents of form
+		// Check contents of form
 		Form form = launcher.getForm();
 		assertEquals("JobProfile Launcher", form.getName());
 		assertEquals("This operation will execute JobProfile",
 				form.getDescription());
-		// This will fail because no hosts have been added! - FIXME
-		// assertEquals(1, form.getHosts().size());
-		// assertEquals("localhost", form.getHosts().get(0));
-
-		// Check Components on form for specific information
 		assertEquals(3, form.getComponents().size());
 
-		// Check mpi and openmp
-		// Mpi and open MP will not exists since the default form does not have
-		// them enabled.
-
-		// A test for enabling openMP and mpi
-		// Enable them on the launcher
+		// Enable OpenMP and MPI on the launcher
 		launcher.enableMPI(1, 512000, 1);
 		launcher.enableOpenMP(1, 16, 1);
 
+		// Verify they were set correctly
 		DataComponent component = (DataComponent) form.getComponents().get(3);
 		Entry mpiEntry = (Entry) component.retrieveAllEntries().get(1);
 		Entry openMPEntry = (Entry) component.retrieveAllEntries().get(2);
@@ -204,8 +192,16 @@ public class JobProfileTester {
 			for (IResource resource : project.members()) {
 				if (resource.getType() == IResource.FILE
 						&& !(".project").equals(resource.getName())) {
-
-					resource.delete(true, null);
+					// Convert the resource to a File resource. It's necessary
+					// to do this for the Windows build so we can use 
+					// File.deleteOnExit() here. When Windows attempts to delete 
+					// a resource, it does not automatically release any open 
+					// handles on files the same way *nix systems do. Failing 
+					// to delete these resources causes subsequent Item tests 
+					// to fail on a Windows build.
+					File fileResource = 
+							new File(resource.getLocation().toOSString());
+					fileResource.deleteOnExit();
 				}
 			}
 			// Refresh the project space
