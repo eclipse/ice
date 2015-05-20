@@ -163,7 +163,7 @@ public class DataComponentComposite extends Composite implements
 	/**
 	 * This operation handles a re-draw of EntryComposites that have been 
 	 * recently changed. This method attempts to avoid a complete redraw of all
-	 * EntryComposites.
+	 * EntryComposites and only re-draws those that have been recently changed.
 	 */
 	public void refresh() {
 		

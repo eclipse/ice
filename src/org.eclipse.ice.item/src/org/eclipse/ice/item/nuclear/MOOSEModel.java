@@ -119,6 +119,10 @@ public class MOOSEModel extends Item {
 	@XmlTransient
 	protected String meshFileName;
 	
+	/**
+	 * The "Mesh" block stored on the TreeComposite (if there is one). Used to
+	 * convert a mesh file into a VizResource by {@link #createMeshResource()}.
+	 */
 	private TreeComposite meshBlock;
 
 	/**
@@ -1214,9 +1218,9 @@ public class MOOSEModel extends Item {
 				// tree also need to be converted to AdaptiveTreeComposites
 
 				// TODO This is a quick fix for now and only checks children 1
-				// level deep for now. I will have to implement a more robust
+				// level deep for now. We will have to implement a more robust
 				// routine that recursively checks if any of the subchildren
-				// need to be converted to AdaptiveTreeComposites --Anna Wojtowicz
+				// need to be converted to AdaptiveTreeComposites
 				ArrayList<TreeComposite> exemplars = yamlCur
 						.getChildExemplars();
 				for (TreeComposite exemplar : exemplars) {
