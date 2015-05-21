@@ -31,20 +31,24 @@ public class EntryCompositeTester extends AbstractSWTTester {
 	 * The shared {@link Entry} that will be represented by the Entry
 	 * {@link #composite}.
 	 */
-	private Entry entry;
+	private static Entry entry;
 
 	/**
 	 * The shared {@link EntryComposite} that will be tested.
 	 */
-	private EntryComposite composite;
+	private static EntryComposite composite;
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.test.AbstractICEUITester#setupTests()
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeAllTests()
 	 */
 	@Override
-	protected void setupTests() {
+	public void beforeAllTests() {
+		super.beforeAllTests();
+
+		// Initialize static or otherwise shared resources here.
 		// Set up a new Entry.
 		entry = new Entry();
 
@@ -63,10 +67,36 @@ public class EntryCompositeTester extends AbstractSWTTester {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.client.widgets.test.AbstractICEUITester#cleanupTests()
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeEachTest()
 	 */
 	@Override
-	protected void cleanupTests() {
+	public void beforeEachTest() {
+		super.beforeEachTest();
+
+		// Initialize per-test resources here.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterEachTest()
+	 */
+	@Override
+	public void afterEachTest() {
+		// Dispose per-test resources here.
+
+		// Proceed with the default post-test cleanup.
+		super.afterEachTest();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterAllTests()
+	 */
+	@Override
+	public void afterAllTests() {
+		// Dispose static or otherwise shared resources here.
 
 		// Dispose the composite.
 		getDisplay().syncExec(new Runnable() {
@@ -80,7 +110,8 @@ public class EntryCompositeTester extends AbstractSWTTester {
 		// Dispose the Entry.
 		entry = null;
 
-		return;
+		// Proceed with the default post-tests cleanup.
+		super.afterAllTests();
 	}
 
 	/**
