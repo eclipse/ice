@@ -196,12 +196,9 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	}
 
 	/**
-	 * <p>
 	 * Returns the name of the SFRComponent as a String.
-	 * </p>
 	 * 
 	 * @return The name of the SFRComponent.
-	 * @see Identifiable#getName(String name)
 	 */
 	public String getName() {
 

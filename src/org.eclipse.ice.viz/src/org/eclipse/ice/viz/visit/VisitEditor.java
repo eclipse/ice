@@ -84,32 +84,24 @@ public class VisitEditor extends EditorPart {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.
-	 *      IProgressMonitor)
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void doSaveAs() {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite,
-	 *      org.eclipse.ui.IEditorInput)
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
@@ -122,20 +114,16 @@ public class VisitEditor extends EditorPart {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#isDirty()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public boolean isDirty() {
 		return false;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
@@ -145,9 +133,6 @@ public class VisitEditor extends EditorPart {
 	/**
 	 * This operation sets up the Composite that contains the VisIt canvas and
 	 * create the VisIt widget.
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 *      .Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
@@ -272,10 +257,8 @@ public class VisitEditor extends EditorPart {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void setFocus() {

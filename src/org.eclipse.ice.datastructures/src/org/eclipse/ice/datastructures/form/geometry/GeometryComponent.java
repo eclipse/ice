@@ -12,18 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.geometry;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -31,6 +21,12 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 /**
  * <p>
@@ -415,11 +411,10 @@ public class GeometryComponent extends ICEObject implements Component,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IUpdateableListener#update(Component component)
+	/*
+	 * Implements a method from IUpdateableListener.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// If the component is an IShape, we're receiving an event from one of

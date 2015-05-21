@@ -107,12 +107,10 @@ public class EclipseFormWidget implements IFormWidget {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IObservableWidget#registerProcessListener(IProcessEventListener
-	 *      listener)
+	/*
+	 * Implements a method from IObservableWidget.
 	 */
+	@Override
 	public void registerProcessListener(IProcessEventListener listener) {
 
 		// Delegate to the ICEFormEditor
@@ -121,12 +119,10 @@ public class EclipseFormWidget implements IFormWidget {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IObservableWidget#registerResourceProvider(ISimpleResourceProvider
-	 *      provider)
+	/*
+	 * Implements a method from IObservableWidget.
 	 */
+	@Override
 	public void registerResourceProvider(ISimpleResourceProvider provider) {
 
 		// Delegate to the ICEFormEditor
@@ -170,20 +166,18 @@ public class EclipseFormWidget implements IFormWidget {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IFormWidget#setForm(Form form)
+	/*
+	 * Implements a method from IFormWidget.
 	 */
+	@Override
 	public void setForm(Form form) {
 		widgetForm = form;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IFormWidget#getForm()
+	/*
+	 * Implements a method from IFormWidget.
 	 */
+	@Override
 	public Form getForm() {
 		return widgetForm;
 	}
@@ -208,7 +202,7 @@ public class EclipseFormWidget implements IFormWidget {
 			// Open the page
 			try {
 				IEditorPart formEditor = page.openEditor(ICEFormInput,
-						ICEFormEditor.ID);
+						org.eclipse.ice.client.widgets.ICEFormEditor.ID);
 				// Set this editor reference so that listeners can be registered
 				// later.
 				ICEFormEditor = (ICEFormEditor) formEditor;
@@ -222,11 +216,10 @@ public class EclipseFormWidget implements IFormWidget {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IFormWidget#updateStatus(String statusMessage)
+	/*
+	 * Implements a method from IFormWidget.
 	 */
+	@Override
 	public void updateStatus(String statusMessage) {
 
 		// Forward the updated status message
@@ -234,11 +227,10 @@ public class EclipseFormWidget implements IFormWidget {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IFormWidget#disable(boolean state)
+	/*
+	 * Implements a method from IFormWidget.
 	 */
+	@Override
 	public void disable(boolean state) {
 
 		// Forward the request

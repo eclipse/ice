@@ -42,25 +42,24 @@ public class CSVVizService extends AbstractVizService {
 		supportedExtensions.add("csv");
 	}
 
-	/**
-	 * @see org.eclipse.ice.viz.service.IVizService#getName()
+	/*
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public String getName() {
 		return "ice-plot";
 	}
 
-	/**
-	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
+	/*
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public String getVersion() {
 		return "2.0";
 	}
 
-	/**
-	 * @see org.eclipse.ice.viz.service.IVizService#
-	 *      getConnectionProperties()
+	/*
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public Map<String, String> getConnectionProperties() {
@@ -69,17 +68,16 @@ public class CSVVizService extends AbstractVizService {
 		return new HashMap<String, String>();
 	}
 
-	/**
-	 * @see org.eclipse.ice.viz.service.IVizService#
-	 *      setConnectionProperties(java.util.Map)
+	/*
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public void setConnectionProperties(Map<String, String> props) {
 		// Nothing to do
 	}
 
-	/**
-	 * @see org.eclipse.ice.viz.service.IVizService#connect()
+	/*
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public boolean connect() {
@@ -87,10 +85,8 @@ public class CSVVizService extends AbstractVizService {
 		return true;
 	}
 
-	/**
-	 * @throws Exception
-	 * @see org.eclipse.ice.viz.service.IVizService#createPlot(java
-	 *      .net.URI)
+	/*
+	 * Overrides a super class method. Tries to create a CSVPlot.
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
@@ -104,9 +100,8 @@ public class CSVVizService extends AbstractVizService {
 		return plot;
 	}
 
-	/**
-	 * @see org.eclipse.ice.viz.service.IVizService#
-	 *      hasConnectionProperties()
+	/*
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public boolean hasConnectionProperties() {
@@ -114,9 +109,7 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#disconnect()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public boolean disconnect() {

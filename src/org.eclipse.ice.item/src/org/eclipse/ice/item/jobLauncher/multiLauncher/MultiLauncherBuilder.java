@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.item.jobLauncher.multiLauncher;
 
-import static org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncher.*;
-
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
@@ -21,16 +19,13 @@ import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
-import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
- * <p>
  * This class is responsible for building instances of the MultiLauncher Item.
  * Since the MultiLauncher is a composite Item, this builder will not create a
  * MultiLauncher unless addBuilders() has been called with list of builders in
  * ICE that has a size greater than one. If it is unable to create a new
  * MultiLauncher, build() will return null.
- * </p>
  * <p>
  * The MultiLauncherBuilder will check the list of ItemBuilders for those with a
  * type of ItemType.Simulation. It will not include itself in the list it
@@ -46,10 +41,7 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 	private ArrayList<ItemBuilder> builders = null;
 
 	/**
-	 * <p>
 	 * The constructor.
-	 * </p>
-	 * 
 	 */
 	public MultiLauncherBuilder() {
 
@@ -57,29 +49,26 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemName()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
+	@Override
 	public String getItemName() {
 		return "MultiLauncher";
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemType()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
+	@Override
 	public ItemType getItemType() {
 		return ItemType.Simulation;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#build(IProject projectSpace)
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 
 		// Local Declarations
@@ -108,12 +97,10 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 		return null;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ICompositeItemBuilder#addBuilders(ArrayList<ItemBuilder>
-	 *      itemBuilders)
+	/*
+	 * Implements a method from ICompositeItemBuilder.
 	 */
+	@Override
 	public void addBuilders(ArrayList<ItemBuilder> itemBuilders) {
 
 		if (itemBuilders != null) {

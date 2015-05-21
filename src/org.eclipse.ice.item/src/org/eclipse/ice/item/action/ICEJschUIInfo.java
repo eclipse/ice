@@ -89,12 +89,6 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see UIKeyboardInteractive#promptKeyboardInteractive(String, String,
-	 * String, String[], boolean[])
-	 */
 	/**
 	 * Re-directs to
 	 * {@link #promptKeyboardInteractive(String, String, String, String[], boolean[])}
@@ -122,10 +116,6 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	/**
 	 * This operation fakes out Jsch's keyboard interactive check and gives it
 	 * the stored password.
-	 * 
-	 * @see UIKeyboardInteractive#promptKeyboardInteractive(String destination,
-	 *      String name, String instruction, ArrayList<String> prompt,
-	 *      boolean... echo)
 	 */
 	public String[] promptKeyboardInteractive(String destination, String name,
 			String instruction, String[] prompt, boolean[] echo) {

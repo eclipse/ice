@@ -145,9 +145,6 @@ public class CreateItemAction extends Action implements ISelectionListener,
 
 	/**
 	 * Empty method to override a change in the selection
-	 * 
-	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.
-	 *      IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {

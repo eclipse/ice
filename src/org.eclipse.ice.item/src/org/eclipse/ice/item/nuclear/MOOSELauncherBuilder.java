@@ -24,7 +24,6 @@ import org.eclipse.ice.item.ItemType;
  * @author Anna Wojtowicz
  * 
  */
-
 public class MOOSELauncherBuilder implements ItemBuilder {
 
 	/**
@@ -37,30 +36,24 @@ public class MOOSELauncherBuilder implements ItemBuilder {
 	 */
 	public static final ItemType type = ItemType.Simulation;
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemName()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public String getItemName() {
 		return name;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemType()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public ItemType getItemType() {
 		return type;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.item.ItemBuilder#build()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public Item build(IProject project) {

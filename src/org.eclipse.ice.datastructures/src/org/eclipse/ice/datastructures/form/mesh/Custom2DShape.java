@@ -12,18 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
 import java.util.ArrayList;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.xml.bind.JAXBException;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 
 /**
@@ -264,11 +261,10 @@ public class Custom2DShape extends AbstractShape {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IUpdateable#update(String updatedKey, String newValue)
+	/*
+	 * Overrides a super class method.
 	 */
+	@Override
 	public void update(String updatedKey, String newValue) {
 
 		// Not implemented
@@ -276,11 +272,10 @@ public class Custom2DShape extends AbstractShape {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShape#acceptShapeVisitor(IShapeVisitor visitor)
+	/*
+	 * Implements a method from IShape.
 	 */
+	@Override
 	public void acceptShapeVisitor(IShapeVisitor visitor) {
 
 		return;

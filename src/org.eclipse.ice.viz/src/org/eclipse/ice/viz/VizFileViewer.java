@@ -119,8 +119,6 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 
 	/**
 	 * Does nothing yet.
-	 * 
-	 * @see WorkbenchPart#setFocus()
 	 */
 	public void setFocus() {
 		return;

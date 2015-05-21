@@ -62,9 +62,6 @@ public class ItemViewer extends ViewPart {
 	/**
 	 * Create the table viewer that shows the list of Items accessible in the
 	 * Core by the Client.
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 *      .Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {

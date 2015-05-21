@@ -46,11 +46,10 @@ public class ICEFormInput implements IEditorInput {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAdaptable#getAdapter(Class adapter)
+	/*
+	 * Implements a method from IAdaptable.
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub
 		return null;

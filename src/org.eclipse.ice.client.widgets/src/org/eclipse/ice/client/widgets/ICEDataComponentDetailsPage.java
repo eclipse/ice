@@ -1,15 +1,15 @@
 /*******************************************************************************
-* Copyright (c) 2012, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
@@ -30,13 +30,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-/** 
- * <p>This class implements the IDetailsPage interface to provide a Details page for ICE DataComponents. The only way to provide the component handle for this class is through the constructor.</p>
+/**
+ * <p>
+ * This class implements the IDetailsPage interface to provide a Details page
+ * for ICE DataComponents. The only way to provide the component handle for this
+ * class is through the constructor.
+ * </p>
+ * 
  * @author Jay Jay Billings
  */
 public class ICEDataComponentDetailsPage implements IDetailsPage {
-	/** 
-	 * <p>The DataComponent whose data should be displayed.</p>
+	/**
+	 * <p>
+	 * The DataComponent whose data should be displayed.
+	 * </p>
 	 */
 	private DataComponent component;
 
@@ -49,11 +56,22 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * The managed form for this page.
 	 */
 	private IManagedForm mform;
-	
-	/** 
-	 * <p>The constructor. If the component is null, this class will be unable to render anything to the screen.</p>
-	 * @param dataComponent <p>The data component that this page will display.</p>
-	 * @param editor <p>The ICEFormEditor in which the pages will exist. This editor is marked as dirty when the page changes.</p>
+
+	/**
+	 * <p>
+	 * The constructor. If the component is null, this class will be unable to
+	 * render anything to the screen.
+	 * </p>
+	 * 
+	 * @param dataComponent
+	 *            <p>
+	 *            The data component that this page will display.
+	 *            </p>
+	 * @param editor
+	 *            <p>
+	 *            The ICEFormEditor in which the pages will exist. This editor
+	 *            is marked as dirty when the page changes.
+	 *            </p>
 	 */
 	public ICEDataComponentDetailsPage(DataComponent dataComponent,
 			ICEFormEditor editor) {
@@ -61,72 +79,88 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 		component = dataComponent;
 	}
 
-	/** 
-	 * <p>This operation returns the component that the page is rendering or null if it was not set in the constructor.</p>
-	 * @return <p>The DataComponent used in this provider or null if it was not set.</p>
+	/**
+	 * <p>
+	 * This operation returns the component that the page is rendering or null
+	 * if it was not set in the constructor.
+	 * </p>
+	 * 
+	 * @return <p>
+	 *         The DataComponent used in this provider or null if it was not
+	 *         set.
+	 *         </p>
 	 */
 	public DataComponent getComponent() {
 		return component;
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#initialize(IManagedForm form)
 	 */
 	public void initialize(IManagedForm form) {
 		this.mform = form;
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#dispose()
 	 */
 	public void dispose() {
 
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#commit(boolean onSave)
 	 */
 	public void commit(boolean onSave) {
 
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#setFormInput(Object input)
 	 */
 	public boolean setFormInput(Object input) {
 		return false;
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#setFocus()
 	 */
 	public void setFocus() {
 
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#refresh()
 	 */
 	public void refresh() {
 
 	}
 
-	/** 
-	 * (non-Javadoc)
-	 * @see IPartSelectionListener#selectionChanged(IFormPart part, ISelection selection)
+	/*
+	 * Implements a method from IPartSelectionListener.
 	 */
+	@Override
 	public void selectionChanged(IFormPart part, ISelection selection) {
 
 	}
 
-	/** 
-	 * @param parent <p>The parent composite in which this page should be drawn.</p>
+	/**
+	 * @param parent
+	 *            <p>
+	 *            The parent composite in which this page should be drawn.
+	 *            </p>
 	 */
 	public void createContents(Composite parent) {
 

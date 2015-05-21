@@ -117,9 +117,6 @@ public class DeleteItemAction extends Action implements ISelectionListener,
 
 	/**
 	 * Empty method to override a change in the selection
-	 * 
-	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.
-	 *      IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// TODO Auto-generated method stub
