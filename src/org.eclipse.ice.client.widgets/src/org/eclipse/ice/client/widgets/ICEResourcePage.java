@@ -54,7 +54,10 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  * This class is a FormPage that creates a page with table and metadata viewing
  * area for an ICE ResourceComponent.
  * 
- * @authors Jay Jay Billings, Taylor Patterson, Anna Wojtowicz, Jordan Deyton
+ * @author Jay Jay Billings
+ * @author Taylor Patterson
+ * @author Anna Wojtowicz
+ * @author Jordan Deyton
  */
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		IUpdateableListener {

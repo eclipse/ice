@@ -41,7 +41,8 @@ import org.eclipse.ui.part.EditorPart;
  * This is an editor for interacting with the VisIt SWT Widget. It is opened by
  * the associated visualization views in org.eclipse.ice.viz.
  * 
- * @authors Jay Jay Billings, Taylor Patterson
+ * @author Jay Jay Billings
+ * @author Taylor Patterson
  */
 public class VisitEditor extends EditorPart {
 

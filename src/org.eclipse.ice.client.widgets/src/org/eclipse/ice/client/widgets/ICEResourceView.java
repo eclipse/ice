@@ -69,7 +69,10 @@ import ca.odell.glazedlists.swt.DefaultEventTableViewer;
  * This class is a ViewPart that creates a tree of text files and a tree of
  * image files collected as ICEResourceComponents.
  * 
- * @authors Jay Jay Billings, Taylor Patterson, Jordan Deyton, Anna Wojtowicz
+ * @author Jay Jay Billings
+ * @author Taylor Patterson
+ * @author Jordan Deyton
+ * @author Anna Wojtowicz
  */
 public class ICEResourceView extends PlayableViewPart implements
 		IUpdateableListener, IPartListener2, IDoubleClickListener {

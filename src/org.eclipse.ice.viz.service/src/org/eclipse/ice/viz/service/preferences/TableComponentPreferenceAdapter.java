@@ -43,7 +43,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  * <pre>
  * <code>
  *  TableComponent table = new TableComponent();
- *  List{@literal<Entry>} template = new ArrayList{@literal<Entry>}(2);
+ *  List{@literal <Entry>} template = new ArrayList{@literal <Entry>}(2);
  *  // Create the template Entry for column "one" and add it to the list...
  *  // Create the template Entry for column "two" and add it to the list... 
  *  table.setRowTemplate(template);

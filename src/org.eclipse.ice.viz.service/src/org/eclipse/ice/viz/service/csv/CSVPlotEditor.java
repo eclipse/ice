@@ -47,7 +47,10 @@ import org.eclipse.ui.part.EditorPart;
  * files. It is opened by the associated visualization views in
  * org.eclipse.ice.viz.
  * 
- * @authors Matthew Wang, Taylor Patterson, Anna Wojtowicz, Jordan Deyton
+ * @author Matthew Wang
+ * @author Taylor Patterson
+ * @author Anna Wojtowicz
+ * @author Jordan Deyton
  */
 public class CSVPlotEditor extends EditorPart {
 

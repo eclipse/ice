@@ -26,18 +26,18 @@ import org.eclipse.ui.IWorkbench;
  * 
  * <pre>
  * <code>
- * {@literal<plugin>}
- *    {@literal<extension}
+ * {@literal <plugin>}
+ *    {@literal <extension}
  *          id="org.eclipse.ice.viz.service.preferencePage"
  *          name="Visualization Preferences"
- *          point="org.eclipse.ui.preferencePages"{@literal>}
- *       {@literal<page}
+ *          point="org.eclipse.ui.preferencePages"{@literal >}
+ *       {@literal <page}
  *             class="org.eclipse.ice.viz.service.VizPreferencePage"
  *             id="org.eclipse.ice.viz.service.preferences"
- *             name="Visualization"{@literal>}
- *       {@literal</page>}
- *    {@literal</extension>}
- * {@literal</plugin>}
+ *             name="Visualization"{@literal >}
+ *       {@literal </page>}
+ *    {@literal </extension>}
+ * {@literal </plugin>}
  * </code>
  * </pre>
  * 
