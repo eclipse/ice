@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.io.ini;
+package org.eclipse.ice.io.ini;
 
 import java.io.BufferedReader;
 import java.io.IOException;
