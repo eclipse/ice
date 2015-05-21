@@ -32,7 +32,7 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * This Action is used to open a FileDialog that allows the user to select
- * compatible files as {@link ICEResource}s into a {@link ResourceViewer}.
+ * compatible files as {@link ICEResource}s into a "Resources" View.
  * 
  * @author Taylor Patterson
  */

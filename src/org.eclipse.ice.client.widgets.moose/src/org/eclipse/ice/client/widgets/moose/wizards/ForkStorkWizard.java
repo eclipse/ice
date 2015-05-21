@@ -19,9 +19,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbenchWindow;
 
 /**
- * The ForkStorkWizard is a subclass of Wizard that 
- * provides a ForkStorkWizardPage to get user input for 
- * forking the MOOSE Stork. 
+ * The ForkStorkWizard is a subclass of Wizard that provides a
+ * ForkStorkWizardPage to get user input for forking the MOOSE Stork.
  * 
  * @author Alex McCaskey
  *
@@ -34,25 +33,24 @@ public class ForkStorkWizard extends Wizard {
 	protected IWorkbenchWindow workbenchWindow;
 
 	/**
-	 * Reference to the ForStorkWizardPage 
+	 * Reference to the ForStorkWizardPage
 	 */
 	private ForkStorkWizardPage page;
-	
+
 	/**
-	 * List of retrieved user input data 
-	 * from the ForkStorkWizardPage
+	 * List of retrieved user input data from the ForkStorkWizardPage
 	 */
 	private ArrayList<String> forkData;
-	
+
 	/**
 	 * A nullary constructor. This is used by the platform. <b>If called from an
-	 * {@link IHandler}, use {@link #NewItemWizard(IWorkbenchWindow)} </b>.
+	 * {@link IHandler}, use {@link #ForkStorkWizard(IWorkbenchWindow)} </b>.
 	 */
 	public ForkStorkWizard() {
 		page = new ForkStorkWizardPage("Fork the Stork!");
 		setWindowTitle("MOOSE Fork the Stork");
 		this.setForcePreviousAndNextButtons(false);
-		
+
 	}
 
 	/**
@@ -68,7 +66,7 @@ public class ForkStorkWizard extends Wizard {
 		// Store a reference to the workbench window.
 		workbenchWindow = window;
 		page = new ForkStorkWizardPage("Fork the Stork!");
-		
+
 	}
 
 	/*
@@ -86,7 +84,7 @@ public class ForkStorkWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		
+
 		// Gather up all the data entered by the user
 		forkData = new ArrayList<String>();
 		forkData.add(page.getMooseAppName());
@@ -104,15 +102,16 @@ public class ForkStorkWizard extends Wizard {
 	public String getMooseAppName() {
 		return forkData.get(0);
 	}
-	
+
 	/**
 	 * Retrieve the users GitHub username
+	 * 
 	 * @return
 	 */
 	public String getGitUsername() {
 		return forkData.get(1);
 	}
-	
+
 	// Retrieve the GitHub password
 	public String getGitPassword() {
 		return forkData.get(2);

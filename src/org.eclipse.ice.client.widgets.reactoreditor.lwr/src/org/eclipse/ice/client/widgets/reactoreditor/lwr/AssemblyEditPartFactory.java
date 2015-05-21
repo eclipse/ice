@@ -23,10 +23,11 @@ import org.eclipse.gef.EditPartFactory;
 /**
  * This class connects GEF EditParts to the GridEditor's model so that the
  * appropriate EditParts can be created from the corresponding model. This is
- * for rectangular grids.<br>
- * <br>
- * The AssemblyEditPartFactory uses {@link AssemblyGridEditPart}s for the Grid
- * and {@link AssemblyCellEditPart}s for the Cells.
+ * for rectangular grids.
+ * <p>
+ * The AssemblyEditPartFactory uses {@link GridEditPart}s for the Grid and
+ * {@link AssemblyCellEditPart}s for the Cells.
+ * </p>
  * 
  * @author Jordan H. Deyton
  * 

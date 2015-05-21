@@ -166,7 +166,7 @@ public class ReactorController extends AbstractPlantController implements
 	}
 
 	/**
-	 * Updates the {@link #view} depending on the changes in the {@link model}.
+	 * Updates the {@link #view} depending on the changes in the {@link #model}.
 	 * It also updates the view based on changes to pipes contained in this
 	 * reactor.
 	 */

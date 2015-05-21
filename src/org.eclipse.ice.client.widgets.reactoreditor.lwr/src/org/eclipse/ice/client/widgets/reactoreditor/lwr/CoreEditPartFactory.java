@@ -15,8 +15,8 @@ package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditPart;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalGridEditPart;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.IGridListener;
-
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 

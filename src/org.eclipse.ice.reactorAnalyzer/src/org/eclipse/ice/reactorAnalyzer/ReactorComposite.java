@@ -24,7 +24,7 @@ import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 
 /**
- * This class is intended to contain {@link IReactorComponents} by implementing
+ * This class is intended to contain {@link IReactorComponent}s by implementing
  * the {@link Composite} interface. However, it associates child components by
  * associating them with an ID, which is not necessarily the same as the
  * component IDs.

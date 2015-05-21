@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * This class provides all available {@link MeshApplicationMode}s for a
- * {@link MeshApplication}. If a new mode of operation for the MeshApplication
- * is necessary, it should be added to {@link #modes}.
+ * This class provides all available {@link MeshAppStateMode}s for a
+ * {@link MeshAppState}. If a new mode of operation for the MeshApplication is
+ * necessary, it should be added to {@link #modes}.
  * 
  * @author Jordan Deyton
  * 

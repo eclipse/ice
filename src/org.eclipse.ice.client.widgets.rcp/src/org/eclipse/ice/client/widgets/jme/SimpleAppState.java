@@ -565,10 +565,9 @@ public abstract class SimpleAppState implements AppState, IRenderQueue {
 
 	/**
 	 * Gets a {@link CollisionResults} between a {@link Collidable} and a
-	 * {@link Ray}. Collidables like Spatials and Nodes (e.g.,
-	 * {@link #getGrid()} and {@link #getVertexSpatials()}) can be tested for
-	 * collisions with Rays (e.g., {@link #getCrosshairRay()} and
-	 * {@link #getCursorRay()}.
+	 * {@link Ray}. Collidables like Spatials and Nodes can be tested for
+	 * collisions with Rays, which can be acquired via
+	 * {@link #getCrosshairRay(Camera)} and {@link #getCursorRay(Camera)}.
 	 * 
 	 * @param collidable
 	 *            The object we are trying to hit.
@@ -610,7 +609,8 @@ public abstract class SimpleAppState implements AppState, IRenderQueue {
 	 * determine where on the grid the cursor is pointed.
 	 * <p>
 	 * <b>Use this method when getting the cursor's location after a mouse-move
-	 * event. For mouse-click events, use {@link #getCursorRayFromClick()}.</b>
+	 * event. For mouse-click events, use
+	 * {@link #getCursorRayFromClick(EmbeddedView)}.</b>
 	 * </p>
 	 * 
 	 * @return A Ray derived from the cursor's location.
@@ -635,7 +635,7 @@ public abstract class SimpleAppState implements AppState, IRenderQueue {
 	 * <b>During click events, jME3 calculates the 2D cursor position as
 	 * Y-decreasing from top to bottom. Use this method when getting the
 	 * cursor's location after a mouse-click event. For mouse-move events, use
-	 * {@link #getCursorRay()}.</b>
+	 * {@link #getCursorRay(Camera)}.</b>
 	 * </p>
 	 * 
 	 * @return A Ray derived from the cursor's location.

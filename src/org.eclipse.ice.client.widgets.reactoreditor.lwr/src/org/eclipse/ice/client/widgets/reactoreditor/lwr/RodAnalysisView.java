@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.common.ActionTree;
-
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.Circle;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
@@ -28,7 +27,9 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRDataProvider;
+import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.Ring;
+import org.eclipse.ice.reactor.Tube;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;

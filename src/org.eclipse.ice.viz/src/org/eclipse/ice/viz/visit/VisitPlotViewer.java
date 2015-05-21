@@ -695,7 +695,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * 
 	 * @param inResource
 	 *            The VizResource in the {@link VizFileViewer} to set this
-	 *            object's {@link resource} to.
+	 *            object's {@link #resource} to.
 	 */
 	public void setResource(VizResource inResource) {
 		// Reset the VizResource

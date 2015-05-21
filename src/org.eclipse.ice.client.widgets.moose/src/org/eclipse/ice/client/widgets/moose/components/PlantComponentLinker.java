@@ -52,14 +52,12 @@ import org.eclipse.ice.reactor.plant.VolumeBranch;
 import org.eclipse.ice.reactor.plant.WetWell;
 
 /**
- * <p>
  * This class serves as a base for classes that must link {@link Entry} values
  * from {@link DataComponent}s with properties of {@link PlantComponent}s.
- * </p>
  * <p>
- * It is recommended that sub-classes use {@link BaseVisitor} and override visit
- * operations as necessary to determine which Entries to link with the
- * PlantComponent.
+ * It is recommended that sub-classes use the provided (and protected)
+ * {@code BaseVisitor} and override visit operations as necessary to determine
+ * which Entries to link with the PlantComponent.
  * </p>
  * 
  * @author Jordan

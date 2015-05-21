@@ -32,7 +32,10 @@ import org.eclipse.ui.IWorkbenchPartReference;
 
 /**
  * This class extends the default ICE {@link TreeCompositeViewer} to add new
- * functionality in support of MOOSE app trees.
+ * functionality in support of MOOSE model development. This includes:
+ * <ul>
+ * <li>Syncing with the currently active {@link MOOSEFormEditor}.</li>
+ * </ul>
  * 
  * @author Jordan Deyton
  *
@@ -57,8 +60,8 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 	private Form form;
 
 	/**
-	 * Overrides the parent class's behavior to add the {@link #appCombo} to the
-	 * view's <code>ToolBar</code>.
+	 * Overrides the parent class's behavior to register as a workbench part
+	 * listener.
 	 */
 	@Override
 	public void createPartControl(Composite parent) {

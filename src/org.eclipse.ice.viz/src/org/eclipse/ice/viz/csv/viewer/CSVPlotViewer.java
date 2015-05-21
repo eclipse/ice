@@ -575,7 +575,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	 * 
 	 * @param inResource
 	 *            The VizResource in the VizFileViewer to set this object's
-	 *            {@link resource} to.
+	 *            {@link #resource} to.
 	 */
 	public void setResource(VizResource inResource) {
 		// Reset the VizResource

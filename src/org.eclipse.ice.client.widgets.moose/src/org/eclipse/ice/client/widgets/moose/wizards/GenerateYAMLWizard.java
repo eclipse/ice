@@ -34,21 +34,22 @@ public class GenerateYAMLWizard extends Wizard {
 	 * 
 	 */
 	private GenerateYAMLWizardPage page;
-	
+
 	/**
 	 * 
 	 */
 	private ArrayList<String> launchData;
-	
+
 	/**
 	 * A nullary constructor. This is used by the platform. <b>If called from an
-	 * {@link IHandler}, use {@link #NewItemWizard(IWorkbenchWindow)} </b>.
+	 * {@link IHandler}, use {@link #GenerateYAMLWizard(IWorkbenchWindow)} </b>.
 	 */
 	public GenerateYAMLWizard() {
-		page = new GenerateYAMLWizardPage("Generate MOOSE YAML/Action Syntax Files");
+		page = new GenerateYAMLWizardPage(
+				"Generate MOOSE YAML/Action Syntax Files");
 		setWindowTitle("MOOSE YAML/Action Syntax File Generation");
 		this.setForcePreviousAndNextButtons(false);
-		
+
 	}
 
 	/**
@@ -63,8 +64,9 @@ public class GenerateYAMLWizard extends Wizard {
 		this();
 		// Store a reference to the workbench window.
 		workbenchWindow = window;
-		page = new GenerateYAMLWizardPage("Generate MOOSE YAML/Action Syntax Files");
-		
+		page = new GenerateYAMLWizardPage(
+				"Generate MOOSE YAML/Action Syntax Files");
+
 	}
 
 	/*
@@ -82,14 +84,14 @@ public class GenerateYAMLWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		
+
 		// Gather up all the data entered by the user
 		launchData = new ArrayList<String>();
 		launchData.add(page.getHostName());
 		launchData.add(page.getExecPath());
 		launchData.add(page.getUsername());
 		launchData.add(page.getPassword());
-		
+
 		return true;
 	}
 
@@ -100,7 +102,7 @@ public class GenerateYAMLWizard extends Wizard {
 	public String getHostName() {
 		return launchData.get(0);
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -108,7 +110,7 @@ public class GenerateYAMLWizard extends Wizard {
 	public String getExecPath() {
 		return launchData.get(1);
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -116,7 +118,7 @@ public class GenerateYAMLWizard extends Wizard {
 	public String getUsername() {
 		return launchData.get(2);
 	}
-	
+
 	/**
 	 * 
 	 * @return
