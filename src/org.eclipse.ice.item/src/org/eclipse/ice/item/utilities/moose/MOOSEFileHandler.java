@@ -101,7 +101,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *            to be dumped to the file. The TreeComposites should only
 	 *            contain a single DataComponent, id = 1, and other
 	 *            TreeComposites. Any other components in the TreeComposite will
-	 *            be ignored.        
+	 *            be ignored.
 	 */
 	public void dumpInputFile(String filePath, ArrayList<TreeComposite> blockSet) {
 
@@ -196,7 +196,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			System.out.println("MOOSEFileHandler Message: "
 					+ "Attempting to loading GetPot file " + filePath);
 		}
-		
+
 		// Load the GetPot file
 		try {
 			RandomAccessFile mooseFile = new RandomAccessFile(filePath, "r");
@@ -238,7 +238,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// that aren't parameters and should be removed
 					potLines.remove(i);
 					// Update "i" so that we read correctly
-					--i;				
+					--i;
 				} else if (potLines.get(i).isEmpty()) {
 					// Remove empty lines
 					potLines.remove(i);
@@ -246,11 +246,13 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					--i;
 				} else {
 					// This is a rare scenario to check for, but it's possible
-					// (and has happened at least once) where a line is just a 
-					// comment (starts with "#") AND includes a "=" in the text 
+					// (and has happened at least once) where a line is just a
+					// comment (starts with "#") AND includes a "=" in the text
 					// of the comment
-					if (trimmedPotLine.startsWith("#") && trimmedPotLine.contains("=")) {
-						String[] splitTrimmedPotLine = trimmedPotLine.split("\\s+");
+					if (trimmedPotLine.startsWith("#")
+							&& trimmedPotLine.contains("=")) {
+						String[] splitTrimmedPotLine = trimmedPotLine
+								.split("\\s+");
 						if (splitTrimmedPotLine.length > 4) {
 							// Skip this line, it's a comment that's been
 							// mistaken as a parameter
@@ -259,8 +261,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 							continue;
 						}
 					}
-					
-					// Otherwise, the normal behavior is that the line should be 
+
+					// Otherwise, the normal behavior is that the line should be
 					// trimmed and be considered a real parameter
 					potLines.set(i, potLines.get(i).trim());
 				}
@@ -288,9 +290,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// Create a new block
 					Block block = new Block();
 					ArrayList<String> blockLines = null;
-					if (endCounter >= counter-1) {
-						blockLines = new ArrayList<String>(
-								potLines.subList(counter - 1, endCounter));
+					if (endCounter >= counter - 1) {
+						blockLines = new ArrayList<String>(potLines.subList(
+								counter - 1, endCounter));
 					}
 					if (blockLines != null && !blockLines.isEmpty()) {
 						StringBuilder stringBuilder = new StringBuilder(
@@ -332,8 +334,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *            The file path from which the MOOSE blocks written in YAML
 	 *            should be read. If the path is null or empty, the operation
 	 *            returns without doing any work.
-	 * @return
-	 *         The MOOSE input file specification as read from the YAML input
+	 * @return The MOOSE input file specification as read from the YAML input
 	 *         and stored in TreeComposites. Each TreeComposite contains both
 	 *         parameters and exemplar children. Any parameters in a
 	 *         TreeComposite are contained in a DataComponent. The id of the
@@ -366,7 +367,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					+ filePath.toString());
 		}
 		Yaml yaml = new Yaml();
-		ArrayList list = (ArrayList) yaml.load(input);
+		ArrayList<?> list = (ArrayList<?>) yaml.load(input);
 		if (debugFlag) {
 			System.out.println("MOOSEFileHandler Message: File loaded.");
 		}
@@ -594,7 +595,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		for (String nodeName : topLevelNodes) {
 			newTrees.add(treeMap.get(nodeName));
 		}
-		
+
 		return newTrees;
 	}
 
@@ -666,8 +667,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	/**
 	 * This realization of IWriter.write() gets a valid TreeComposite from the
-	 * provided Form and writes it to the given file reference as a valid MOOSE 
-	 * *.i input file. It throws an uncaught IllegalArgumentException if the 
+	 * provided Form and writes it to the given file reference as a valid MOOSE
+	 * *.i input file. It throws an uncaught IllegalArgumentException if the
 	 * Form is not valid.
 	 * 
 	 * @param formToWrite
@@ -700,8 +701,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		} else {
 			throw new IllegalArgumentException(
 					"Error: MOOSEFileHandler.write() expects a Form with a "
-					+ "MOOSE TreeComposite at ID = " 
-					+ MOOSEModel.mooseTreeCompositeId + ". Write failed.");
+							+ "MOOSE TreeComposite at ID = "
+							+ MOOSEModel.mooseTreeCompositeId
+							+ ". Write failed.");
 		}
 
 		return;
@@ -709,9 +711,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/**
-	 * @see
-	 * org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.resources
-	 * .IFile, java.lang.String, java.lang.String)
+	 * @see org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.resources
+	 *      .IFile, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void replace(IFile file, String regex, String value) {
@@ -721,7 +722,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		} catch (OperationNotSupportedException e) {
 			e.printStackTrace();
 		}
-		
+
 		return;
 	}
 
@@ -729,8 +730,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 * Return the Writer type String that the IOService can use as a key in its
 	 * IWriter mapping.
 	 * 
-	 * @param type
-	 *            String type indicating the unique name of this IWriter.
+	 * @return String type indicating the unique name of this IWriter.
 	 */
 	@Override
 	public String getWriterType() {
@@ -760,14 +760,14 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			ArrayList<TreeComposite> blocks = null;
 			TreeComposite rootNode = new TreeComposite();
 
-			String[] splitPath = mooseFile.getAbsolutePath().split("\\.(?=[^\\.]+$)");
+			String[] splitPath = mooseFile.getAbsolutePath().split(
+					"\\.(?=[^\\.]+$)");
 			if (splitPath.length > 1) {
 				fileExt = splitPath[1];
 			} else {
-				System.out
-						.println("MOOSEFileHandler Message:"
-								+ "File did not have file extension: "
-								+ mooseFile.getAbsolutePath());
+				System.out.println("MOOSEFileHandler Message:"
+						+ "File did not have file extension: "
+						+ mooseFile.getAbsolutePath());
 				return null;
 			}
 
@@ -785,8 +785,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				if (blocks != null) {
 					for (TreeComposite block : blocks) {
 						// Clone the block
-						TreeComposite blockClone = 
-								(TreeComposite) block.clone();
+						TreeComposite blockClone = (TreeComposite) block
+								.clone();
 
 						// Don't want to do this if the file is a YAML file.
 						if (!fileExt.toLowerCase().equals("yaml")) {
@@ -826,8 +826,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	/**
 	 * This realization of IReader.findAll() reads a Form in from the given file
-	 * reference and walks the corresponding TreeComposite for occurrences of the 
-	 * given regular expression.
+	 * reference and walks the corresponding TreeComposite for occurrences of
+	 * the given regular expression.
 	 * 
 	 * @param file
 	 *            The reference to the file we are searching in.
@@ -850,28 +850,29 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		}
 
 		// Walk the tree and get all Entries that may represent a file
-		BreadthFirstTreeCompositeIterator iter = 
-				new BreadthFirstTreeCompositeIterator(tree);
+		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+				tree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
-			
+
 			// Make sure we have a valid DataComponent
 			if (child.getActiveDataNode() != null) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
 				for (Entry e : data.retrieveAllEntries()) {
-					
+
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
 					if (!"false".equals(e.getTag()) && e.getValue() != null
 							&& !e.getValue().isEmpty()
-							&& e.getName().toLowerCase().contains(regex) 
+							&& e.getName().toLowerCase().contains(regex)
 							&& !e.getName().toLowerCase().contains("profile")
 							&& !e.getName().toLowerCase().contains("file_base")) {
-						
+
 						// If this Entry does not have a very descriptive name
 						// we should reset its name to the block it belongs to
 						if ("file".equals(e.getName().toLowerCase())
-								|| "data_file".equals(e.getName().toLowerCase())) {
+								|| "data_file"
+										.equals(e.getName().toLowerCase())) {
 							e.setName(child.getName());
 						}
 						retEntries.add((Entry) e.clone());
@@ -889,8 +890,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 * Return the Reader type String that the IOService can use as a key in its
 	 * IReader mapping.
 	 * 
-	 * @param type
-	 *            String type indicating the unique name of this IReader.
+	 * @return String type indicating the unique name of this IReader.
 	 */
 	@Override
 	public String getReaderType() {

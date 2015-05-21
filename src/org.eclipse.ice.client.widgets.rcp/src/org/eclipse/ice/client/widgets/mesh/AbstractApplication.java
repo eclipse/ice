@@ -340,7 +340,7 @@ public abstract class AbstractApplication extends SimpleApplication {
 	/**
 	 * This operation sets the boolean to display or hide the heads-up display.
 	 * 
-	 * @param newVal
+	 * @param enabled
 	 *            The boolean value to indicate whether or not the HUD should be
 	 *            displayed.
 	 */

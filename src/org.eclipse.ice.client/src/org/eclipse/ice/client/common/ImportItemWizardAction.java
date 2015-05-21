@@ -52,8 +52,8 @@ public class ImportItemWizardAction extends Action implements IWorkbenchAction {
 	/**
 	 * Constructor
 	 * 
-	 * @param IWorkbenchWindow
-	 *            window - the window that should be used by the action
+	 * @param window
+	 *            The window that should be used by the action
 	 */
 	public ImportItemWizardAction(IWorkbenchWindow window) {
 

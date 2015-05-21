@@ -57,8 +57,8 @@ public class CreateItemAction extends Action implements ISelectionListener,
 	/**
 	 * Constructor
 	 * 
-	 * @param IWorkbenchWindow
-	 *            window - the window that should be used by the action
+	 * @param window
+	 *            The window that should be used by the action
 	 */
 	public CreateItemAction(IWorkbenchWindow window) {
 

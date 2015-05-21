@@ -122,7 +122,7 @@ public class ReflectivityCalculator {
 	 * This operation convolutes the data in refFit with a Gaussian resolution
 	 * function in q, calculated from theta, delThe, and delLamOLam.
 	 * 
-	 * @param q
+	 * @param waveVector
 	 *            the wave vector (Q) plus additional space for the convolution.
 	 *            This array should have length = numPoints + numLowPoints.
 	 * @param deltaQ0
@@ -226,7 +226,7 @@ public class ReflectivityCalculator {
 	 * to be convoluted with the delt-Q full-width half-maximum Gaussian
 	 * resolution function.
 	 * 
-	 * @param q
+	 * @param waveVector
 	 *            the wave vector (Q) plus additional space for the convolution.
 	 *            This array should have length = numPoints + numLowPoints.
 	 * @param deltaQ0
@@ -265,7 +265,7 @@ public class ReflectivityCalculator {
 	 * to be convoluted with the delt-Q full-width half-maximum Gaussian
 	 * resolution function.
 	 * 
-	 * @param q
+	 * @param waveVector
 	 *            the wave vector (Q) plus additional space for the convolution.
 	 *            This array should have length = numPoints + numLowPoints.
 	 * @param deltaQ0
@@ -618,8 +618,7 @@ public class ReflectivityCalculator {
 	 *            The wave vector - FIXME!
 	 * @param tiles
 	 *            The tiles that define the layered structure of the materials.
-	 * @param the
-	 *            reflectivity
+	 * @return the reflectivity
 	 */
 	public double[] convoluteReflectivity(double deltaQ0, double deltaQ1ByQ,
 			double wavelength, boolean getRQ4, double[] waveVector, Tile[] tiles) {

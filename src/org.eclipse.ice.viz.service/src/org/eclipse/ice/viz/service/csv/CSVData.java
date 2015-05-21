@@ -61,8 +61,8 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * Constructor takes in feature and value
 	 * 
-	 * @param newFeature
-	 * @param newValue
+	 * @param feature
+	 * @param value
 	 */
 	public CSVData(String feature, Double value) {
 		this.feature = feature;
@@ -76,7 +76,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * Constructor takes in feature, sets value to zero
 	 * 
-	 * @param feature
+	 * @param newFeature
 	 */
 	public CSVData(String newFeature) {
 		this.feature = newFeature;

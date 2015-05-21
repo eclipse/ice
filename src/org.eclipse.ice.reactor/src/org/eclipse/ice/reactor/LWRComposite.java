@@ -12,19 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.Composite;
-
-import java.util.Hashtable;
 import java.util.ArrayList;
-
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
-
+import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.Composite;
+import org.eclipse.ice.io.hdf.IHdfReadable;
+import org.eclipse.ice.io.hdf.IHdfWriteable;
 
 /**
  * <p>

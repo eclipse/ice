@@ -430,7 +430,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * This operation sets the IVizServiceFactory that should be used to create
 	 * plots.
 	 * 
-	 * @param service
+	 * @param factory
 	 *            The service factory that should be used
 	 */
 	public void setVizService(IVizServiceFactory factory) {

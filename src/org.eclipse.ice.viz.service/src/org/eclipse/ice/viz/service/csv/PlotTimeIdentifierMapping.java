@@ -19,7 +19,7 @@ public class PlotTimeIdentifierMapping {
 	/**
 	 * Constructor
 	 * 
-	 * @param providerName
+	 * @param plotTitle
 	 * @param time
 	 */
 	public PlotTimeIdentifierMapping(String plotTitle, Double time) {

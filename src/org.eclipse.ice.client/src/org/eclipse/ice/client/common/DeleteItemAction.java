@@ -56,8 +56,8 @@ public class DeleteItemAction extends Action implements ISelectionListener,
 	/**
 	 * Constructor
 	 * 
-	 * @param IWorkbenchWindow
-	 *            window - the window that should be used by the action
+	 * @param window
+	 *            The window that should be used by the action
 	 */
 	public DeleteItemAction(IWorkbenchWindow window) {
 

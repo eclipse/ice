@@ -135,7 +135,7 @@ public class AnalysisToolComposite extends Composite {
 	/* ------------------------ */
 
 	/**
-	 * The default constructor for an {@link AnalysisToolComposite} (or ATC).
+	 * The default constructor for an ATC.
 	 * 
 	 * @param parent
 	 *            The Composite that will contain this ATC.
@@ -145,8 +145,10 @@ public class AnalysisToolComposite extends Composite {
 	 * @param registry
 	 *            The {@link IAnalysisWidgetRegistry} used to get the
 	 *            appropriate IAnalysisViews.
-	 * @param name
-	 *            The name of this ATC.
+	 * @param selectionProvider
+	 *            The ISelectionProvider is used to feed the current selection
+	 *            to the Eclipse Workbench. This is necessary for properties to
+	 *            be sent to the ICE Properties View.
 	 */
 	public AnalysisToolComposite(Composite parent, StateBroker broker,
 			IAnalysisWidgetRegistry registry,

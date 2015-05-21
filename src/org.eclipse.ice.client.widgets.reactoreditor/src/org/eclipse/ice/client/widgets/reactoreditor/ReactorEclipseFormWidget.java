@@ -43,9 +43,12 @@ public class ReactorEclipseFormWidget extends EclipseFormWidget {
 	/**
 	 * The default constructor.
 	 * 
-	 * @param registry
+	 * @param widgetRegistry
 	 *            The {@link IAnalysisWidgetRegistry} used to pull tailored
 	 *            analysis views.
+	 * @param editorRegistry
+	 *            The {@link IReactorEditorRegistry} used to store references to
+	 *            open reactor editors.
 	 */
 	public ReactorEclipseFormWidget(IAnalysisWidgetRegistry widgetRegistry,
 			IReactorEditorRegistry editorRegistry) {

@@ -312,7 +312,7 @@ public class SFRData implements IData {
 	 * Deep copies the contents of the object.
 	 * </p>
 	 * 
-	 * @param otherObject
+	 * @param data
 	 *            The object to be copied from.
 	 */
 	public void copy(SFRData data) {

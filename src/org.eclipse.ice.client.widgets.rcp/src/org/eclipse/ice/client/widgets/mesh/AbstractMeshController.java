@@ -423,7 +423,7 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 * Sets the current scale of the mesh controller's view.
 	 * <p>
 	 * 
-	 * @param size
+	 * @param scale
 	 *            The new scale of the mesh controller's view.
 	 */
 	public void setScale(float scale) {

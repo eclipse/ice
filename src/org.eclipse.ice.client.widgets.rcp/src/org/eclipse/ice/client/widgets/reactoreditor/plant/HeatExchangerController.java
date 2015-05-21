@@ -63,10 +63,6 @@ public class HeatExchangerController extends PipeController {
 	 * @param renderQueue
 	 *            The queue responsible for tasks that need to be performed on
 	 *            the jME rendering thread.
-	 * @param manager
-	 *            A {@link PlantControllerManager} used for looking up
-	 *            {@link JunctionController}s for the current {@link Junction}s
-	 *            connected to the HeatExchanger as secondary input/output.
 	 */
 	public HeatExchangerController(HeatExchanger model, HeatExchangerView view,
 			IRenderQueue renderQueue) {

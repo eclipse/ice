@@ -53,17 +53,17 @@ public class AddTimeDependentSILOSetAction extends Action {
 	/**
 	 * The constructor
 	 * 
-	 * @param parent
+	 * @param parentView
 	 *            The ViewPart to whom the object of this class belongs.
 	 * @param parentAction
 	 *            The AddFileAction to whom the object of this class belongs.
 	 */
 	public AddTimeDependentSILOSetAction(ViewPart parentView,
-			AddFileAction parentButton) {
+			AddFileAction parentAction) {
 
 		// Keep track of the viewer and parent Action containing this Action
 		viewer = parentView;
-		parentAction = parentButton;
+		this.parentAction = parentAction;
 
 		// Set the display text
 		setText("Add a SILO file set");

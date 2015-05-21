@@ -15,59 +15,65 @@ package org.eclipse.ice.io.serializable;
 import org.eclipse.core.resources.IFile;
 
 /**
- * The ITemplatedReader interface defines the functionality needed to
- * read files into a form that has been built using a template file.
+ * The ITemplatedReader interface defines the functionality needed to read files
+ * into a form that has been built using a template file.
  * 
  * @author Andrew Bennett
  *
  */
-public interface ITemplatedReader extends IReader{
-	
+public interface ITemplatedReader extends IReader {
+
 	/**
-	 * Set the string that will be recognized as a comment when
-	 * reading the file.
+	 * Set the string that will be recognized as a comment when reading the
+	 * file.
 	 * 
-	 * @param regex: The pattern that will be matched to a comment
+	 * @param regex
+	 *            The pattern that will be matched to a comment
 	 */
 	public void setCommentString(String regex);
-	
+
 	/**
-	 * Set the string that will be recognized as indentation when 
-	 * reading the file
+	 * Set the string that will be recognized as indentation when reading the
+	 * file
 	 * 
-	 * @param regex: The pattern that will be matched to indentation
+	 * @param regex
+	 *            The pattern that will be matched to indentation
 	 */
 	public void setIndentString(String regex);
-	
+
 	/**
-	 * Set the string that will be recognized as the section delimiter
-	 * when reading the file.
+	 * Set the string that will be recognized as the section delimiter when
+	 * reading the file.
 	 * 
-	 * @param regex: The pattern that will be matched to a section header
+	 * @param regex
+	 *            The pattern that will be matched to a section header
 	 */
 	public void setSectionPattern(String regex);
-	
+
 	/**
-	 * Set the string that will be recognized as an assignment operator
-	 * for assigning variables values within the file.
+	 * Set the string that will be recognized as an assignment operator for
+	 * assigning variables values within the file.
 	 * 
-	 * @param regex: The pattern that will be matched to variable assignments
+	 * @param regex
+	 *            The pattern that will be matched to variable assignments
 	 */
 	public void setAssignmentPattern(String regex);
-	
+
 	/**
 	 * Set the type of template that will be used to build the initial Form
 	 * 
-	 * @param template: A string matching the type of template to use
+	 * @param template
+	 *            A string matching the type of template to use
 	 */
 	public void setTemplateType(String template);
-	
+
 	/**
 	 * Add new templates that can be used to build custom Forms
 	 * 
-	 * @param templateFile: The file representation of the template
-	 * @param templateName: A name to grab the template via the setTemplateType
-	 * 						method	
+	 * @param templateFile
+	 *            The file representation of the template
+	 * @param templateName
+	 *            A name to grab the template via the setTemplateType method
 	 */
 	public void addTemplateType(String templateName, IFile templateFile);
 

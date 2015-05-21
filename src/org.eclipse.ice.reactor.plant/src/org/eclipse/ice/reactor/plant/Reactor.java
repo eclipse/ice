@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -32,11 +31,7 @@ public class Reactor extends PlantComponent {
 	private ArrayList<CoreChannel> coreChannels;
 
 	/**
-	 * <p>
-	 * Null constructor.
-	 * </p>
-	 * 
-	 * @param channels
+	 * Nullary constructor.
 	 */
 	public Reactor() {
 		super();
@@ -47,9 +42,7 @@ public class Reactor extends PlantComponent {
 	}
 
 	/**
-	 * <p>
 	 * The core channel(s) contained in the reactor.
-	 * </p>
 	 * 
 	 * @param channels
 	 */

@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -28,68 +27,61 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.serializable.IWriter;
 
-
 /**
- * The INIWriter provides functionality for writing a group of TableComponents to a 
- * text file with the INI structure.
+ * The INIWriter provides functionality for writing a group of TableComponents
+ * to a text file with the INI structure.
  * 
  * @author Andrew Bennett
  *
  */
 public class INIWriter implements IWriter {
-	
+
 	/**
 	 * The character to use as a comment symbol
 	 */
 	private String comment;
-	
+
 	/**
-	 * A string that can be used if there is an unusual 
-	 * prefix before assignments within sections
+	 * A string that can be used if there is an unusual prefix before
+	 * assignments within sections
 	 */
 	private String sectionIndent = "";
-	
+
 	/**
 	 * Regex to match the section headers
 	 */
 	private String sectionPrefix = "[";
 	private String sectionPostfix = "]";
-	
+
 	/**
-	 * Regex to match the variable assignments.  The default
-	 * matches =, multiple spaces after test, or tabs after
-	 * text, in that order of precedence.
+	 * Regex to match the variable assignments. The default matches =, multiple
+	 * spaces after test, or tabs after text, in that order of precedence.
 	 */
 	private String assignmentPattern = "(=|\\b(\\s)+?|\\b\\t)";
-	
-	
+
 	/**
-	 * Constructor using the = as the way to assign variables
-	 * to their values is the default behavior
+	 * Constructor using the = as the way to assign variables to their values is
+	 * the default behavior
 	 */
 	public INIWriter() {
 		this("=");
 	}
-	
-	
+
 	/**
 	 * Constructor for using a custom variable assignment string
 	 */
 	public INIWriter(String pattern) {
 		assignmentPattern = pattern;
 	}
-	
-	
+
 	/**
 	 * Writes out an INI file from the given Form to the given IFile.
 	 * 
 	 * @param form
 	 *            The form containing the data to write.
-	 * @param ifile
+	 * @param file
 	 *            The file to write to.
 	 */
 	@Override
@@ -113,34 +105,36 @@ public class INIWriter implements IWriter {
 				String newLine = System.getProperty("line.separator");
 				ArrayList<Entry> row;
 				byte[] byteArray;
-				
+
 				// Make sure that we have a file to write to before proceeding
 				if (!file.exists()) {
 					byte[] blank = "".getBytes();
 					InputStream s = new ByteArrayInputStream(blank);
 					file.create(s, true, new NullProgressMonitor());
 				}
-				
+
 				// Each component corresponds to a section in the INI file
 				for (Component comp : components) {
 					dataComp = (DataComponent) comp;
 					compName = dataComp.getName();
-					
+
 					// If the section had a name start by adding that
 					// Otherwise, just leave it blank
 					// Then set the indentation required accordingly
 					if (compName != "Default Section") {
-						tableContents = sectionPrefix + compName + sectionPostfix + newLine;
+						tableContents = sectionPrefix + compName
+								+ sectionPostfix + newLine;
 						currIndent = sectionIndent;
 					} else {
 						tableContents = "";
 						currIndent = "";
 					}
-					
+
 					// Now go through the rows and add each variable
-					for (Entry ent : dataComp.retrieveAllEntries()){
-						tableContents += ent.getName().trim() + assignmentPattern
-								+ ent.getValue().trim() + newLine;
+					for (Entry ent : dataComp.retrieveAllEntries()) {
+						tableContents += ent.getName().trim()
+								+ assignmentPattern + ent.getValue().trim()
+								+ newLine;
 					}
 					tableContents += newLine;
 
@@ -148,7 +142,7 @@ public class INIWriter implements IWriter {
 					byteArray = tableContents.getBytes();
 					out.write(byteArray);
 				}
-				
+
 				// Close the stream and set the file contents
 				out.close();
 				file.setContents(in, true, false, new NullProgressMonitor());
@@ -165,7 +159,6 @@ public class INIWriter implements IWriter {
 		}
 	}
 
-	
 	/**
 	 * Change the string used to indent on sections
 	 */
@@ -174,25 +167,23 @@ public class INIWriter implements IWriter {
 	}
 
 	/**
-	 * Allows the changing of the syntax for section 
-	 * headers.
+	 * Allows the changing of the syntax for section headers.
 	 * 
-	 * @param regex: A regular expression to match to 
-	 *               section headers
+	 * @param prefix
+	 * @param postfix
 	 */
 	public void setSectionPattern(String prefix, String postfix) {
 		sectionPrefix = prefix;
 		sectionPostfix = postfix;
 	}
-	
+
 	/**
 	 * Change the string used to separate variables from values
 	 */
 	public void setAssignmentString(String assign) {
 		assignmentPattern = assign;
 	}
-	
-	
+
 	/**
 	 * This method is not used.
 	 */
@@ -201,7 +192,6 @@ public class INIWriter implements IWriter {
 		// Skipped for now
 	}
 
-	
 	/**
 	 * Return that this is an INIWriter.
 	 */

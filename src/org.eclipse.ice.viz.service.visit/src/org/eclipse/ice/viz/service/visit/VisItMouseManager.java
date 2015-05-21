@@ -107,7 +107,7 @@ public class VisItMouseManager {
 	/**
 	 * The constructor
 	 * 
-	 * @param widget
+	 * @param visItWidget
 	 *            The VisItSwtWidget for which this instance will manage the
 	 *            mouse input.
 	 */

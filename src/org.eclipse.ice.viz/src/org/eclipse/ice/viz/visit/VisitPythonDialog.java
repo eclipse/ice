@@ -87,7 +87,7 @@ public class VisitPythonDialog extends TitleAreaDialog {
 	 * 
 	 * @param parentShell
 	 *            The parent Shell for this dialog
-	 * @param widget
+	 * @param inWidget
 	 */
 	public VisitPythonDialog(Shell parentShell, VisItSwtWidget inWidget) {
 		super(parentShell);

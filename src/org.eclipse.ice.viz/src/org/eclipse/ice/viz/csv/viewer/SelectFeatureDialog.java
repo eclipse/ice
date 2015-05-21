@@ -188,7 +188,7 @@ public class SelectFeatureDialog extends Dialog {
 	/**
 	 * Sets the dependent variables List for the X Axis to the provided features
 	 * 
-	 * @param features
+	 * @param independentVars
 	 */
 	public void setXAxisFeatures(ArrayList<String> independentVars) {
 		independentVarList.clear();

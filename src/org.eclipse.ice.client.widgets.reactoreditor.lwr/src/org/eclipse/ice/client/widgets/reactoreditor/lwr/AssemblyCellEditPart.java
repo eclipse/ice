@@ -54,9 +54,9 @@ public class AssemblyCellEditPart extends CircularCellEditPart {
 	/**
 	 * Sets the SFRComponent tied to this EditPart and its associated Figure.
 	 * 
-	 * @param sfrComp
+	 * @param lwrComp
 	 *            The new SFRComponent (typically an SFRPin).
-	 * @param sfrData
+	 * @param lwrData
 	 *            The IDataProvider associated with it.
 	 */
 	public void setComponent(LWRComponent lwrComp, IDataProvider lwrData) {
