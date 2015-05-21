@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy.kmeansclustering;
 
-import static org.eclipse.ice.kdd.kddstrategy.kmeansclustering.RawKMeansStrategy.*;
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.analysistool.AnalysisAssetType;
-
-import java.util.Properties;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Properties;
 
+import org.eclipse.ice.analysistool.AnalysisAssetType;
+import org.eclipse.ice.analysistool.IAnalysisAsset;
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
-
-import java.net.URI;
 
 /**
  * <p>
@@ -158,13 +156,4 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 		return false;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see KDDStrategy#createAsset()
-	 */
-	protected boolean createAsset() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }
