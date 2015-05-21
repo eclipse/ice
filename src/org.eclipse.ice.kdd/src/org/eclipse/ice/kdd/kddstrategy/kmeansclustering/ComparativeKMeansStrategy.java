@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.eclipse.ice.analysistool.AnalysisAssetType;
-import org.eclipse.ice.analysistool.IAnalysisAsset;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
@@ -66,90 +65,94 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 		return 0;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IAnalysisAsset#getName()
+	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getName()
 	 */
 	public String getName() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IAnalysisAsset#getType()
+	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getType()
 	 */
 	public AnalysisAssetType getType() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IAnalysisAsset#getProperty(String key)
+	 * @see
+	 * org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getProperty(java.lang.String)
 	 */
 	public String getProperty(String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IAnalysisAsset#setProperty(String key, String value)
+	 * @see
+	 * org.eclipse.ice.kdd.kddstrategy.KDDStrategy#setProperty(java.lang.String,
+	 * java.lang.String)
 	 */
 	public boolean setProperty(String key, String value) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IAnalysisAsset#resetProperties()
+	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#resetProperties()
 	 */
 	public void resetProperties() {
 		// TODO Auto-generated method stub
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IAnalysisAsset#getProperties()
+	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getProperties()
 	 */
 	public Properties getProperties() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IAnalysisAsset#getPropertiesAsEntryList()
+	 * @see
+	 * org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getPropertiesAsEntryList()
 	 */
 	public ArrayList<Entry> getPropertiesAsEntryList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IAnalysisAsset#getURI()
+	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getURI()
 	 */
 	public URI getURI() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see KDDStrategy#executeStrategy()
+	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#executeStrategy()
 	 */
 	public boolean executeStrategy() {
 		// TODO Auto-generated method stub

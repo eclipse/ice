@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Label;
  * This class manages a single rendering of an {@link IPlot}.
  * <p>
  * After creating a {@code PlotRender}, its content will need to be created via
- * {@link #createRenderContent(int)}. It can be updated later by calling
+ * {@link #createBasicContent()}. It can be updated later by calling
  * {@link #refresh()}.
  * </p>
  * <p>

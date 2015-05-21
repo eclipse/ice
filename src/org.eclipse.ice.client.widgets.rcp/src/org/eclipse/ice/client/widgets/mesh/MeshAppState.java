@@ -1330,16 +1330,13 @@ public class MeshAppState extends ViewAppState implements
 			chaseCam = new CustomChaseCamera(camera, node,
 					getMasterApplication().getInputManager());
 			// Disable smooth motion is self-explanatory. Trailing causes the
-			// camera
-			// to slowly get behind the player. This has no effect because we
-			// are in
-			// a top-down view (and because smooth motion is disabled), but we
-			// disable it anyway.
+			// camera to slowly get behind the player. This has no effect
+			// because we are in a top-down view (and because smooth motion is
+			// disabled), but we disable it anyway.
 			chaseCam.setSmoothMotion(false);
 			chaseCam.setTrailingEnabled(false);
 			// This sets the camera so that "up the screen" from its perspective
-			// is
-			// the negated z-unit vector.
+			// is the negated z-unit vector.
 			chaseCam.setUpVector(Vector3f.UNIT_Y);
 			// This rotates the camera to look down from above the player's
 			// node.
@@ -1359,8 +1356,7 @@ public class MeshAppState extends ViewAppState implements
 
 			// Add a listener that sets the atomic boolean signifying that the
 			// camera has zoomed and the atomic integer that represents the
-			// current
-			// zoom when the chaseCam zooms.
+			// current zoom when the chaseCam zooms.
 			chaseCam.addCameraListener(new ICameraListener() {
 				public void zoomChanged(float distance) {
 					boolean updateVertices = false;
@@ -1496,7 +1492,7 @@ public class MeshAppState extends ViewAppState implements
 	/**
 	 * Gets the chase camera used to follow the player around the scene. It is
 	 * intialized and configured to have a top-down view in
-	 * {@link #initCamera()}.
+	 * {@link #createViewCamera(EmbeddedView)}.
 	 * 
 	 * @return The application's ChaseCamera.
 	 */

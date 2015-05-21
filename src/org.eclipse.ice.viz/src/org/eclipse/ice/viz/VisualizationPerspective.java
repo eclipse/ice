@@ -29,11 +29,12 @@ public class VisualizationPerspective implements IPerspectiveFactory {
 	 */
 	public static final String ID = "org.eclipse.ice.viz.VisualizationPerspective";
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui
-	 *      .IPageLayout)
+	 * @see
+	 * org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui
+	 * .IPageLayout)
 	 */
 	@Override
 	public void createInitialLayout(IPageLayout layout) {

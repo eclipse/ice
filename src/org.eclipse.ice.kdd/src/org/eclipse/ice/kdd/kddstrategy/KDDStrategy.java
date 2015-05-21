@@ -12,21 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy;
 
-import org.eclipse.ice.analysistool.IAnalysisAsset;
-import static org.eclipse.ice.analysistool.IAnalysisAsset.*;
-import static org.eclipse.ice.kdd.kddmath.KDDMatrix.*;
-
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.analysistool.AnalysisAssetType;
-
-import java.util.Hashtable;
-import java.net.URI;
 import java.util.Properties;
 
+import org.eclipse.ice.analysistool.AnalysisAssetType;
+import org.eclipse.ice.analysistool.IAnalysisAsset;
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 
 /**

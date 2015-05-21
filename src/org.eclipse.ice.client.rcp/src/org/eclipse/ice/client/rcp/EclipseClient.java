@@ -51,11 +51,11 @@ public class EclipseClient implements IApplication {
 	 */
 	private static IClient client;
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.
-	 *      IApplicationContext)
+	 * IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) throws Exception {
 

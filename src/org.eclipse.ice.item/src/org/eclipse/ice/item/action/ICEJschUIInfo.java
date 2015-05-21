@@ -12,17 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.item.action;
 
-import com.jcraft.jsch.UIKeyboardInteractive;
-import com.jcraft.jsch.UserInfo;
-
-import static org.eclipse.ice.item.action.LoginInfoForm.*;
-
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 
-import java.util.ArrayList;
+import com.jcraft.jsch.UIKeyboardInteractive;
+import com.jcraft.jsch.UserInfo;
 
 /**
  * <p>
@@ -92,12 +89,19 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 		}
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see UIKeyboardInteractive#promptKeyboardInteractive(String destination,
-	 *      String name, String instruction, ArrayList<String> prompt,
-	 *      boolean... echo)
+	 * @see UIKeyboardInteractive#promptKeyboardInteractive(String, String,
+	 * String, String[], boolean[])
+	 */
+	/**
+	 * Re-directs to
+	 * {@link #promptKeyboardInteractive(String, String, String, String[], boolean[])}
+	 * and has a different signature, although the functionality is the same.
+	 * 
+	 * @see #promptKeyboardInteractive(String, String, String, String[],
+	 *      boolean[])
 	 */
 	public ArrayList<String> promptKeyboardInteractive(String destination,
 			String name, String instruction, ArrayList<String> prompt,

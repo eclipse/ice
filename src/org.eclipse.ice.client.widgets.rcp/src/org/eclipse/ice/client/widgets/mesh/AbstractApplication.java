@@ -474,9 +474,8 @@ public abstract class AbstractApplication extends SimpleApplication {
 
 	/**
 	 * Gets a {@link CollisionResults} between a {@link Collidable} and a
-	 * {@link Ray}. Collidables like Spatials and Nodes (e.g.,
-	 * {@link #getGrid()} and {@link #getVertexSpatials()}) can be tested for
-	 * collisions with Rays (e.g., {@link #getCrosshairRay()} and
+	 * {@link Ray}. Collidables like Spatials and Nodes can be tested for
+	 * collisions with Rays (usually from {@link #getCrosshairRay()} and
 	 * {@link #getCursorRay()}.
 	 * 
 	 * @param collidable

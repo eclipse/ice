@@ -893,14 +893,6 @@ public class ICEResourceView extends PlayableViewPart implements
 	}
 
 	/**
-	 * @see PlayableViewPart#removeSelection()
-	 */
-	public void removeSelection() {
-		// Not used at this time
-		return;
-	}
-
-	/**
 	 * A private subclass of PropertySource to implement the superclass features
 	 * used by ICEResourceView.
 	 */

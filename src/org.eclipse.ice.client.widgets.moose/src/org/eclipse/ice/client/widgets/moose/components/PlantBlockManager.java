@@ -151,7 +151,7 @@ public class PlantBlockManager implements IUpdateableListener {
 
 	/**
 	 * Sets the current Components {@link #tree}. TreeComposites corresponding
-	 * to valid {@link #PlantComponent}s should be found under this tree.
+	 * to valid {@link PlantComponent}s should be found under this tree.
 	 * 
 	 * @param tree
 	 *            The new tree of components.

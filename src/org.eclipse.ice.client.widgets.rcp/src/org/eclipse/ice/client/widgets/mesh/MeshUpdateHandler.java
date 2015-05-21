@@ -13,12 +13,13 @@ import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
  * <p>
  * </p>
  * <p>
- * First, the {@link IUpdateableListener#update()} method does not give away any
- * more information about the prospective update other than that something has
- * changed. This means that each update from the <code>MeshComponent</code>
- * requires a comprehensive comparison with what is currently displayed in the
- * <code>MeshAppState</code>. In other words, the method implementing the update
- * is heavy-weight, and multiple updates cannot be performed simultaneously.
+ * First, the {@link IUpdateableListener#update(IUpdateable)} method does not
+ * give away any more information about the prospective update other than that
+ * something has changed. This means that each update from the
+ * <code>MeshComponent</code> requires a comprehensive comparison with what is
+ * currently displayed in the <code>MeshAppState</code>. In other words, the
+ * method implementing the update is heavy-weight, and multiple updates cannot
+ * be performed simultaneously.
  * </p>
  * <p>
  * Second, we need to process <i>all</i> updates. Since the update process may

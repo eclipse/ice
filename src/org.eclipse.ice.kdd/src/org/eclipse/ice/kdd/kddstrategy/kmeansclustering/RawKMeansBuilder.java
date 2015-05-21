@@ -1,50 +1,39 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Alex McCaskey - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy.kmeansclustering;
-
-import static org.eclipse.ice.kdd.kddstrategy.kmeansclustering.RawKMeansStrategy.*;
 
 import java.util.ArrayList;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
-
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 
 /**
- * <p>
  * The RawKMeansBuilder is a realization of the KDDStrategyBuilder and is used
  * to validate incoming data and return a new instance of the RawKMeansStrategy.
- * </p>
  * 
  * @author Alex McCaskey
  */
 public class RawKMeansBuilder implements IStrategyBuilder {
 
 	/**
-	 * <p>
 	 * Reference to the RawKMeansStrategy to build and return.
-	 * </p>
-	 * 
 	 */
 	private RawKMeansStrategy kmeans = null;
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IStrategyBuilder#build(ArrayList<IDataProvider> data)
+	/*
+	 * Implements a method in IStrategyBuilder.
 	 */
 	public KDDStrategy build(ArrayList<IDataProvider> data) {
 		if (kmeans != null) {
@@ -54,19 +43,15 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 		}
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IStrategyBuilder#getStrategyName()
+	/*
+	 * Implements a method in IStrategyBuilder.
 	 */
 	public String getStrategyName() {
 		return "Raw KMeans Clustering";
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IStrategyBuilder#isAvailable(ArrayList<IDataProvider> dataToCheck)
+	/*
+	 * Implements a method in IStrategyBuilder.
 	 */
 	public boolean isAvailable(ArrayList<IDataProvider> dataToCheck) {
 
@@ -130,10 +115,8 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 		return true;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IStrategyBuilder#getStrategyPropertiesAsEntries()
+	/*
+	 * Implements a method in IStrategyBuilder.
 	 */
 	public ArrayList<Entry> getStrategyPropertiesAsEntries() {
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
