@@ -156,7 +156,7 @@ public class DynamicComboFieldEditor extends FieldEditor {
 	 * <b>Note:</b>This value may not yet be in the preference store.
 	 * </p>
 	 * 
-	 * @return
+	 * @return The index of the selected value in the combo.
 	 */
 	public int getIndex() {
 		return value;

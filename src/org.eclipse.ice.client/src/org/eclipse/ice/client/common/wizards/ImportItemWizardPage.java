@@ -38,10 +38,10 @@ import org.eclipse.swt.widgets.MessageBox;
 
 /**
  * This class provides the main wizard page for importing files into ICE for
- * specific <code>Item</code>s. The primary difference between the
+ * specific {@code Item}s. The primary difference between the
  * {@link ImportFileWizardPage} is that this class additionally provides a
- * {@link ListViewer} that displays the available <code>Item</code> types. This
- * page also does not allow multiple files to be selected.
+ * {@link ListViewer} that displays the available {@code Item} types. This page
+ * also does not allow multiple files to be selected.
  * 
  * @author Jay Jay Billings, Jordan
  * 
@@ -49,8 +49,8 @@ import org.eclipse.swt.widgets.MessageBox;
 public class ImportItemWizardPage extends ImportFileWizardPage {
 
 	/**
-	 * The name of the <code>Item</code> that was selected from the list of
-	 * available <code>Item</code>s.
+	 * The name of the {@code Item} that was selected from the list of available
+	 * {@code Item}s.
 	 */
 	private String selectedItemType;
 
@@ -85,10 +85,11 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 	}
 
 	/**
-	 * Gets the type of <code>Item</code> that was selected from the list of
-	 * available <code>Item</code>s.
+	 * Gets the type of {@code Item} that was selected from the list of
+	 * available {@code Item}s.
 	 * 
-	 * @return
+	 * @return The name of the selected type of item, for instance a specific
+	 *         model builder or launcher.
 	 */
 	public String getSelectedItem() {
 		return selectedItemType;

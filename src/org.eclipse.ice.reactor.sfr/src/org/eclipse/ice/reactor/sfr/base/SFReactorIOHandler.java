@@ -63,11 +63,10 @@ public class SFReactorIOHandler {
 	}
 
 	/**
-	 * <p>
 	 * Reads data from an input HDF5 file into a SFReactor.
-	 * </p>
 	 * 
-	 * @return
+	 * @return A valid {@link SFReactor} if the file could be completely read,
+	 *         {@code null} if the file could not be opened.
 	 */
 	public SFReactor readHDF5(URI uri) {
 

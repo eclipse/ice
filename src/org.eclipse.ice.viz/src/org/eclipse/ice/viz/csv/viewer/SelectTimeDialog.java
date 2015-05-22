@@ -127,9 +127,9 @@ public class SelectTimeDialog extends Dialog {
 	}
 
 	/**
-	 * Returns the selectedTime from the dialog
+	 * Returns the selected time from the dialog.
 	 * 
-	 * @return
+	 * @return The selected time for the plot data.
 	 */
 	public Double getSelectedTime() {
 		return selectedTime;
