@@ -11,11 +11,15 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
@@ -285,5 +289,53 @@ public abstract class AbstractWorkbenchTester extends
 	 */
 	protected void closeView(String name) {
 		getBot().viewByTitle(name).close();
+	}
+
+	/**
+	 * Creates an {@link ICEResource}. The file's existence or filename validity
+	 * is not checked, so use wisely.
+	 * 
+	 * @param file
+	 *            The file for which an {@code ICEResource} will be created.
+	 *            Must not be {@code null}.
+	 * @return A new {@code ICEResource}, or {@code null} if a new resource
+	 *         could not be created.
+	 */
+	protected ICEResource createICEResource(File file) {
+		ICEResource iceResource = null;
+		if (file != null) {
+			try {
+				iceResource = new ICEResource(file);
+			} catch (IOException e) {
+				fail("ICEResourcePageTester error: "
+						+ "Error while attempting to create ICE resource \""
+						+ file.getName() + "\".");
+			}
+		}
+		return iceResource;
+	}
+
+	/**
+	 * Creates an {@link VizResource}. The file's existence or filename validity
+	 * is not checked, so use wisely.
+	 * 
+	 * @param file
+	 *            The file for which a {@code VizResource} will be created. Must
+	 *            not be {@code null}.
+	 * @return A new {@code VizResource}, or {@code null} if a new resource
+	 *         could not be created.
+	 */
+	protected VizResource createVizResource(File file) {
+		VizResource vizResource = null;
+		if (file != null) {
+			try {
+				vizResource = new VizResource(file);
+			} catch (IOException e) {
+				fail("ICEResourcePageTester error: "
+						+ "Error while attempting to create viz resource \""
+						+ file.getName() + "\".");
+			}
+		}
+		return vizResource;
 	}
 }

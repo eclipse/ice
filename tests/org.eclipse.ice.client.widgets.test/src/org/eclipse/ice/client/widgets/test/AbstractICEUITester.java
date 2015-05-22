@@ -11,6 +11,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.swt.widgets.Display;
@@ -76,6 +84,14 @@ public abstract class AbstractICEUITester<T extends SWTBot> extends
 	private static final AtomicReference<AbstractICEUITester<?>> firstTester = new AtomicReference<AbstractICEUITester<?>>();
 
 	/**
+	 * A map of temporary files, keyed on their filenames. This is created only
+	 * when {@link #createTemporaryFile(String, String...)} is called. All
+	 * temporary files created for a test method are deleted after the test
+	 * method completes.
+	 */
+	private Map<String, File> tmpFiles;
+
+	/**
 	 * Gets the main UI thread's {@code Display}. This should <b>always</b> be
 	 * used to perform updates to the UI from test code using the display's sync
 	 * methods.
@@ -98,6 +114,9 @@ public abstract class AbstractICEUITester<T extends SWTBot> extends
 	 */
 	protected abstract T getBot();
 
+	/**
+	 * Sets the shared reference to the UI thread's {@link #display}.
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		// Set the reference to the main UI thread's Display.
@@ -148,7 +167,23 @@ public abstract class AbstractICEUITester<T extends SWTBot> extends
 	 */
 	@After
 	public void afterEachTest() {
-		// Nothing to do yet.
+
+		// Delete all temporary files.
+		if (tmpFiles != null) {
+			Iterator<Entry<String, File>> iter = tmpFiles.entrySet().iterator();
+			while (iter.hasNext()) {
+				File file = iter.next().getValue();
+				if (!file.delete()) {
+					fail("AbstractICEUITester error: "
+							+ "Could not delete the file \"" + file.getPath()
+							+ "\".");
+				}
+				iter.remove();
+			}
+			tmpFiles = null;
+		}
+
+		return;
 	}
 
 	/**
@@ -197,5 +232,61 @@ public abstract class AbstractICEUITester<T extends SWTBot> extends
 				// Nothing to do.
 			}
 		};
+	}
+
+	/**
+	 * Creates a temporary file for a single test method. This file will be
+	 * stored in the directory equivalent to "/user.home/ICETests/" and with the
+	 * specified file name.
+	 * <p>
+	 * Files created with this method are <b>not</b> stored for use across test
+	 * methods. However, this file does not need to be deleted by the caller as
+	 * it will be deleted at the end of the test case.
+	 * </p>
+	 * 
+	 * @param filename
+	 *            The name of the file. If {@code null}, the name "tmp" will be
+	 *            used.
+	 * @param lines
+	 *            The contents of the file. Each non-null element will be placed
+	 *            on a new line.
+	 * @return The created file, or {@code null} if a file could not be created.
+	 * @throws IOException
+	 *             An IOException occurs if the file could not be written.
+	 */
+	protected File createTemporaryFile(String filename, String... lines)
+			throws IOException {
+
+		// Change the filename to "tmp" if none was provided.
+		if (filename == null) {
+			filename = "tmp";
+		}
+
+		// Set up the File based on the provided name.
+		String separator = System.getProperty("file.separator");
+		String home = System.getProperty("user.home");
+		File file = new File(home + separator + "ICETests" + separator
+				+ filename);
+
+		// Set up the writer and write out the lines.
+		FileWriter writer = new FileWriter(file);
+		BufferedWriter buffer = new BufferedWriter(writer);
+		for (String line : lines) {
+			if (line != null) {
+				buffer.write(line);
+				buffer.newLine();
+			}
+		}
+		// Be sure to close the writers!
+		buffer.close();
+		writer.close();
+
+		// Store the file in the collection of temporary files.
+		if (tmpFiles == null) {
+			tmpFiles = new HashMap<String, File>();
+		}
+		tmpFiles.put(filename, file);
+
+		return file;
 	}
 }
