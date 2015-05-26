@@ -1,16 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Alex McCaskey - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.moose.wizards;
+package org.eclipse.ice.client.widgets.moose.actions;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +57,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.RepositoryService;
+import org.eclipse.ice.client.widgets.moose.wizards.ForkStorkWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -70,9 +70,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * The ForkStorkHandler displays a Wizard to the user to gather a new MOOSE
  * application name and the users GitHub credentials, and then forks
  * idaholab/stork and renames the repository to the provided application name.
- * Additionally, it imports the project as a CDT Makefile project with 
- * existing code, creates a new Make Target, and adds the appropriate MOOSE 
- * include files to the Paths and Symbols preference page. 
+ * Additionally, it imports the project as a CDT Makefile project with existing
+ * code, creates a new Make Target, and adds the appropriate MOOSE include files
+ * to the Paths and Symbols preference page.
  * 
  * @author Alex McCaskey
  *
@@ -177,7 +177,7 @@ public class ForkStorkHandler extends AbstractHandler {
 		}
 
 		/*------------ The rest is about importing the C++ project correctly ---------*/
-		
+
 		// Get the project and project description handles
 		IProject project = workspace.getRoot().getProject(appName);
 		IProjectDescription description = workspace
@@ -274,7 +274,7 @@ public class ForkStorkHandler extends AbstractHandler {
 					null, ICSettingEntry.RESOLVED);
 			cConfigDescription.setSourceEntries(new ICSourceEntry[] {
 					srcFolderEntry, includeFolderEntry });
-			
+
 			// Add the Moose include paths
 			ICProjectDescription projectDescription = CoreModel.getDefault()
 					.getProjectDescription(cProject, true);
@@ -300,16 +300,15 @@ public class ForkStorkHandler extends AbstractHandler {
 			e.printStackTrace();
 		}
 
-		// FIXME SHOULD WE CHECK IF MOOSE IS IN THE WORKSPACE 
+		// FIXME SHOULD WE CHECK IF MOOSE IS IN THE WORKSPACE
 		// AND CLONE IT IF ITS NOT
-		
-		
+
 		return null;
 	}
 
 	/**
-	 * Private method used basically to just compartimentalize 
-	 * all the include additions for the MOOSE build system. 
+	 * Private method used basically to just compartimentalize all the include
+	 * additions for the MOOSE build system.
 	 * 
 	 * @return
 	 */
