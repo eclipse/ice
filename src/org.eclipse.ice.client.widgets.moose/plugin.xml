@@ -158,9 +158,9 @@
       </command>
       <command
             defaultHandler="org.eclipse.ice.client.widgets.moose.actions.GenerateYAMLHandler"
-            description="Generate YAML and Action Syntax"
+            description="Generates YAML and Action Syntax files"
             id="org.eclipse.ice.client.widgets.moose.commands.GenerateYAML"
-            name="Generate MOOSE YAML and Action syntax files">
+            name="Generate MOOSE YAML and Action Syntax">
       </command>
       <command
             defaultHandler="org.eclipse.ice.client.widgets.moose.actions.ForkStorkHandler"
@@ -211,7 +211,7 @@
                id="org.eclipse.ice.client.widgets.moose.commands.GenerateYAML.menuItem"
                label="Generate YAML and Action Syntax"
                style="push"
-               tooltip="Generates MOOSE YAML and Action syntax files">
+               tooltip="Generates MOOSE YAML and Action Syntax files">
          </command>
          <command
                commandId="org.eclipse.ice.client.widgets.moose.commands.ForkStork"
