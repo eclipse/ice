@@ -190,6 +190,15 @@
                   label="MOOSE Actions"
                   style="pulldown"
                   tooltip="Click the arrow to the right to view available MOOSE Actions.">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeWorkbenchWindow.activePerspective">
+                     <equals
+                           value="org.eclipse.ice.widgets.moose.MOOSEPerspective">
+                     </equals>
+                  </with>
+               </visibleWhen>
             </command>
          </toolbar>
       </menuContribution>
