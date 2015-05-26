@@ -168,6 +168,12 @@
             id="org.eclipse.ice.client.widgets.moose.commands.ForkStork"
             name="MOOSE Fork the Stork">
       </command>
+      <command
+            defaultHandler="org.eclipse.ice.client.widgets.moose.actions.CloneMOOSEHandler"
+            description="Clones MOOSE"
+            id="org.eclipse.ice.client.widgets.moose.commands.CloneMOOSE"
+            name="Clone MOOSE">
+      </command>
    </extension>
       
       
@@ -204,6 +210,12 @@
                label="MOOSE Fork the Stork"
                style="push"
                tooltip="Forks the Stork">
+         </command>
+         <command
+               commandId="org.eclipse.ice.client.widgets.moose.commands.CloneMOOSE"
+               label="Clone MOOSE"
+               style="push"
+               tooltip="Clones MOOSE">
          </command>
          <separator
                name="additions"
