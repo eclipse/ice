@@ -174,6 +174,12 @@
             id="org.eclipse.ice.client.widgets.moose.commands.CloneMOOSE"
             name="Clone MOOSE">
       </command>
+      <command
+            defaultHandler="org.eclipse.ice.client.widgets.moose.actions.ForkMOOSEHandler"
+            description="Forks MOOSE"
+            id="org.eclipse.ice.client.widgets.moose.commands.ForkMOOSE"
+            name="Fork MOOSE">
+      </command>
    </extension>
       
       
@@ -222,9 +228,17 @@
          </command>
          <command
                commandId="org.eclipse.ice.client.widgets.moose.commands.CloneMOOSE"
+               id="org.eclipse.ice.client.widgets.moose.commands.CloneMOOSE.menuItem"
                label="Clone MOOSE"
                style="push"
                tooltip="Clones MOOSE">
+         </command>
+         <command
+               commandId="org.eclipse.ice.client.widgets.moose.commands.ForkMOOSE"
+               id="org.eclipse.ice.client.widgets.moose.commands.ForkMOOSE.menuItem"
+               label="Fork MOOSE"
+               style="push"
+               tooltip="Forks MOOSE">
          </command>
          <separator
                name="additions"
