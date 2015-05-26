@@ -39,6 +39,14 @@
             </view>
             <view
                   closeable="false"
+                  id="org.eclipse.ice.client.widgets.ICEResourceView"
+                  minimized="false"
+                  relationship="stack"
+                  relative="org.eclipse.ice.client.common.ItemViewer"
+                  visible="true">
+            </view>
+            <view
+                  closeable="false"
                   id="org.eclipse.ui.console.ConsoleView"
                   ratio="0.75f"
                   relationship="bottom"
