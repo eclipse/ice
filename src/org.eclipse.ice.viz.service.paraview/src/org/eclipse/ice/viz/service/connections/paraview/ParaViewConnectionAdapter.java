@@ -1,6 +1,5 @@
 package org.eclipse.ice.viz.service.connections.paraview;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,8 +7,10 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.connections.ConnectionAdapter;
-import org.json.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.kitware.vtk.web.VtkWebClient;
 import com.kitware.vtk.web.VtkWebClientHttpImpl;
 
@@ -128,14 +129,15 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 		// TODO Move responsibility for this to the python code.
 		
 		VtkWebClient client = getConnection();
-		List<Object> args = new ArrayList<Object>();
-		JSONObject object;
+		JsonArray args = new JsonArray();
+		JsonObject object;
 
-		args.add(".");
+		args.add(new JsonPrimitive("."));
 		try {
 			object = client.call("file.server.directory.list", args).get();
 			if (object != null) {
-				String directory = object.getJSONArray("path").getString(0);
+				String directory = object.get("path").getAsJsonArray().get(0)
+						.getAsString();
 				System.out.println("The directory is: " + directory);
 
 				// If the path is indeed a full path, we need to determine its

@@ -22,9 +22,10 @@ import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.swt.widgets.Composite;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.kitware.vtk.web.VtkWebClient;
 
 /**
@@ -93,40 +94,40 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 		ParaViewConnectionAdapter adapter = getParaViewConnectionAdapter();
 		VtkWebClient client = adapter.getConnection();
 
-		List<Object> args = new ArrayList<Object>();
-		JSONObject object;
+		JsonArray args;
+		JsonObject object;
 
 		// Open the file. We *have* to create a new view to open the file. Use
 		// the custom server method, as the default ParaViewWeb method uses the
 		// currently active view.
-		args.clear();
-		args.add(adapter.findRelativePath(file.getPath()));
+		args = new JsonArray();
+		args.add(new JsonPrimitive(adapter.findRelativePath(file.getPath())));
 		object = client.call("createView", args).get();
-		viewId = object.getInt("viewId");
-		fileId = object.getInt("proxyId");
-		repId = object.getInt("repId");
+		viewId = object.get("viewId").getAsInt();
+		fileId = object.get("proxyId").getAsInt();
+		repId = object.get("repId").getAsInt();
 
 		// Read the contents of the file to populate the map of plot types.
-		args.clear();
-		args.add(fileId);
+		args = new JsonArray();
+		args.add(new JsonPrimitive(fileId));
 		object = client.call("pv.proxy.manager.get", args).get();
 		// Get the "ui" JSON array from the proxy's properties. This contains
 		// the names of all data sets that can be displayed in the plot.
-		JSONArray array = object.getJSONArray("ui");
+		JsonArray array = object.get("ui").getAsJsonArray();
 
 		// Determine all plot categories and their types.
-		for (int i = 0; i < array.length(); i++) {
-			object = array.getJSONObject(i);
+		for (int i = 0; i < array.size(); i++) {
+			object = array.get(i).getAsJsonObject();
 
 			// Determine the plot category and its allowed types.
-			String name = object.getString("name");
+			String name = object.get("name").getAsString();
 			// TODO Figure out how we should handle the meshes in the file.
 			// We do not want to set the mesh yet.
 			if (!"Meshes".equals(name)) {
-				JSONArray valueArray = object.getJSONArray("values");
-				String[] values = new String[valueArray.length()];
+				JsonArray valueArray = object.get("values").getAsJsonArray();
+				String[] values = new String[valueArray.size()];
 				for (int j = 0; j < values.length; j++) {
-					values[j] = valueArray.getString(j);
+					values[j] = valueArray.get(j).getAsString();
 				}
 				// Store the plot category and types in the map.
 				plotTypes.put(name, values);

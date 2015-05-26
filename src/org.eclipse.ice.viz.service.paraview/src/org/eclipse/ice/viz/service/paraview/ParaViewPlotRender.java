@@ -2,10 +2,8 @@ package org.eclipse.ice.viz.service.paraview;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -23,9 +21,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.kitware.vtk.web.VtkWebClient;
 import com.kitware.vtk.web.util.InteractiveRenderPanel;
 
@@ -210,28 +209,28 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 			representations = new LinkedHashSet<String>();
 
 			VtkWebClient connection = adapter.getConnection();
-			List<Object> args = new ArrayList<Object>(1);
-			JSONObject object;
+			JsonArray args;
+			JsonObject object;
 
 			// We need to call pv.proxy.manager.get to get the representation
 			// proxy's properties. We then must traverse its "ui" properties (a
-			// JSON
-			// array) to find the "Representation" list.
-			args.add(repId);
+			// JSON array) to find the "Representation" list.
+			args = new JsonArray();
+			args.add(new JsonPrimitive(repId));
 			try {
 				// Get the "ui" properties for the representation.
 				object = connection.call("pv.proxy.manager.get", args).get();
-				JSONArray array = object.getJSONArray("ui");
+				JsonArray array = object.get("ui").getAsJsonArray();
 				// Find the "Representation" object from the "ui" properties. We
 				// have to check each JSON object's "name" tag.
-				for (int i = 0; i < array.length(); i++) {
-					object = array.getJSONObject(i);
+				for (int i = 0; i < array.size(); i++) {
+					object = array.get(i).getAsJsonObject();
 					// When the "Representation" object is found, add all of its
 					// values to the list.
 					if ("Representation".equals(object.get("name"))) {
-						array = object.getJSONArray("values");
-						for (i = 0; i < array.length(); i++) {
-							representations.add(array.getString(i));
+						array = object.get("values").getAsJsonArray();
+						for (i = 0; i < array.size(); i++) {
+							representations.add(array.get(i).getAsString());
 						}
 						break;
 					}
@@ -293,13 +292,13 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 							plot.getDataSource().getPath());
 
 			// Create a new view from the file and get its associated IDs.
-			List<Object> args = new ArrayList<Object>();
-			JSONObject object;
-			args.add(fullPath);
+			JsonArray args = new JsonArray();
+			JsonObject object;
+			args.add(new JsonPrimitive(fullPath));
 			object = connection.call("createView", args).get();
-			viewId = object.getInt("viewId");
-			fileId = object.getInt("proxyId");
-			repId = object.getInt("repId");
+			viewId = object.get("viewId").getAsInt();
+			fileId = object.get("proxyId").getAsInt();
+			repId = object.get("repId").getAsInt();
 
 			// Throw an exception if a view could not be created for the file.
 			if (viewId < 0 || fileId < 0 || repId < 0) {
@@ -598,8 +597,8 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 */
 	private void refreshWidget(boolean render, VtkWebClient connection)
 			throws Exception {
-		List<Object> args = new ArrayList<Object>(1);
-		args.add(viewId);
+		JsonArray args = new JsonArray();
+		args.add(new JsonPrimitive(viewId));
 		connection.call("activateView", args).get();
 
 		// Force a refresh of the ParaView rendering widget if necessary.
@@ -629,41 +628,42 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	private void refreshPlotType(String plotCategory, String plotType,
 			VtkWebClient connection) throws Exception {
 
-		List<Object> args = new ArrayList<Object>();
-		JSONObject object;
+		JsonArray args = new JsonArray();
+		JsonObject object;
 
-		JSONArray updatedProperties = new JSONArray();
-		JSONObject statusProperty;
-		JSONArray array;
+		JsonArray updatedProperties = new JsonArray();
+		JsonObject statusProperty;
+		JsonArray array;
 
 		// Disable the previously selected plot category and type if one was
 		// selected necessary.
 		if (this.plotCategory != null) {
-			statusProperty = new JSONObject();
-			statusProperty.put("id", Integer.toString(fileId));
-			statusProperty.put("name", plotTypeArrays.get(this.plotCategory));
-			array = new JSONArray();
-			statusProperty.put("value", array);
-			updatedProperties.put(statusProperty);
+			statusProperty = new JsonObject();
+			statusProperty.addProperty("id", Integer.toString(fileId));
+			statusProperty.addProperty("name",
+					plotTypeArrays.get(this.plotCategory));
+			array = new JsonArray();
+			statusProperty.add("value", array);
+			updatedProperties.add(statusProperty);
 		}
 
 		// Update the "status" of the mesh/material/cell/point arrays.
 		// For the silo file, we want to select Battery_/TemperatureP1.
-		statusProperty = new JSONObject();
-		statusProperty.put("id", Integer.toString(fileId));
-		statusProperty.put("name", plotTypeArrays.get(plotCategory));
-		array = new JSONArray();
-		array.put(plotType);
-		statusProperty.put("value", array);
-		updatedProperties.put(statusProperty);
+		statusProperty = new JsonObject();
+		statusProperty.addProperty("id", Integer.toString(fileId));
+		statusProperty.addProperty("name", plotTypeArrays.get(plotCategory));
+		array = new JsonArray();
+		array.add(new JsonPrimitive(plotType));
+		statusProperty.add("value", array);
+		updatedProperties.add(statusProperty);
 
 		// Update the properties that were changed.
 		args.add(updatedProperties);
 		object = connection.call("pv.proxy.manager.update", args).get();
-		if (!object.getBoolean("success")) {
+		if (!object.get("success").getAsBoolean()) {
 			System.out.println("Failed to set the representation: ");
-			array = object.getJSONArray("errorList");
-			for (int i = 0; i < array.length(); i++) {
+			array = object.get("errorList").getAsJsonArray();
+			for (int i = 0; i < array.size(); i++) {
 				System.out.println(array.get(i));
 			}
 		}
@@ -675,40 +675,44 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		 * proxy ID and the variable name. The rescale option does not appear to
 		 * work as expected.
 		 */
-		args.clear();
-		args.add(Integer.toString(repId));
-		args.add("ARRAY"); // TODO Not sure when to use SOLID here.
-		args.add("POINTS"); // TODO Not sure when to use CELLS here.
-		args.add(plotType);
-		args.add("Magnitude"); // TODO Not sure when to use Component here.
-		args.add(0); // TODO Not sure when to use another value here.
-		args.add(true);
+		args = new JsonArray();
+		args.add(new JsonPrimitive(Integer.toString(repId)));
+		args.add(new JsonPrimitive("ARRAY")); // TODO Not sure when to use SOLID
+												// here.
+		args.add(new JsonPrimitive("POINTS")); // TODO Not sure when to use
+												// CELLS here.
+		args.add(new JsonPrimitive(plotType));
+		args.add(new JsonPrimitive("Magnitude")); // TODO Not sure when to use
+													// Component here.
+		args.add(new JsonPrimitive(0)); // TODO Not sure when to use another
+										// value here.
+		args.add(new JsonPrimitive(true));
 		object = connection.call("pv.color.manager.color.by", args).get();
 
 		// Refresh the scalar bars. If this is not done here, then the next call
 		// will place the new scalar bar in a different location.
-		args.clear();
-		args.add(viewId);
+		args = new JsonArray();
+		args.add(new JsonPrimitive(viewId));
 		connection.call("refreshScalarBars", args).get();
 
 		// Set the visibility of the legend to true.
-		args.clear();
-		JSONObject legendVisibilities = new JSONObject();
-		legendVisibilities.put(Integer.toString(fileId), true);
+		args = new JsonArray();
+		JsonObject legendVisibilities = new JsonObject();
+		legendVisibilities.addProperty(Integer.toString(fileId), true);
 		args.add(legendVisibilities);
 		object = connection.call("pv.color.manager.scalarbar.visibility.set",
 				args).get();
-		System.out.println(object.toString(4));
+		// System.out.println(object.toString(4));
 
 		// Auto-scale the color map to the data.
-		args.clear();
-		JSONObject scaleOptions = new JSONObject();
-		scaleOptions.put("type", "data");
-		scaleOptions.put("proxyId", fileId);
+		args = new JsonArray();
+		JsonObject scaleOptions = new JsonObject();
+		scaleOptions.addProperty("type", "data");
+		scaleOptions.addProperty("proxyId", fileId);
 		args.add(scaleOptions);
 		object = connection.call("pv.color.manager.rescale.transfer.function",
 				args).get();
-		System.out.println(object.toString(4));
+		// System.out.println(object.toString(4));
 
 		return;
 	}
@@ -731,15 +735,15 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	private void refreshRepresentation(String representation,
 			VtkWebClient connection) throws Exception {
 
-		List<Object> args = new ArrayList<Object>();
+		JsonArray args = new JsonArray();
 
 		// Set the representation proxy to show the mesh as a surface.
-		JSONArray updatedProperties = new JSONArray();
-		JSONObject repProperty = new JSONObject();
-		repProperty.put("id", Integer.toString(repId));
-		repProperty.put("name", "Representation");
-		repProperty.put("value", representation);
-		updatedProperties.put(repProperty);
+		JsonArray updatedProperties = new JsonArray();
+		JsonObject repProperty = new JsonObject();
+		repProperty.addProperty("id", Integer.toString(repId));
+		repProperty.addProperty("name", "Representation");
+		repProperty.addProperty("value", representation);
+		updatedProperties.add(repProperty);
 
 		// Update the properties that were configured.
 		args.add(updatedProperties);

@@ -15,7 +15,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
 import org.eclipse.ice.viz.service.connections.ConnectionTable;

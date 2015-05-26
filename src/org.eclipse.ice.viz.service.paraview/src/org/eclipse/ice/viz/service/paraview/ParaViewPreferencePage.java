@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.paraview;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.preferences.VizConnectionPreferencePage;
 
 /**
