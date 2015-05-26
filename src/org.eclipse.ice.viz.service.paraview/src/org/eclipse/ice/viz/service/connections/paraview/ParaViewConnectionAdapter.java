@@ -1,8 +1,6 @@
 package org.eclipse.ice.viz.service.connections.paraview;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.datastructures.form.Entry;
@@ -24,10 +22,12 @@ import com.kitware.vtk.web.VtkWebClientHttpImpl;
  */
 public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 
-	/**
-	 * A set containing the view IDs for all views created on this connection.
-	 */
-	private final Set<Integer> viewIds = new HashSet<Integer>();
+	// TODO Theoretically, one connection adapter could support multiple views.
+	// These will need to be managed somewhere.
+	// /**
+	// * A set containing the view IDs for all views created on this connection.
+	// */
+	// private final Set<Integer> viewIds = new HashSet<Integer>();
 
 	/*
 	 * (non-Javadoc)
@@ -127,7 +127,7 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 		String relativePath = null;
 
 		// TODO Move responsibility for this to the python code.
-		
+
 		VtkWebClient client = getConnection();
 		JsonArray args = new JsonArray();
 		JsonObject object;
