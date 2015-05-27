@@ -15,12 +15,15 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.swt.widgets.Composite;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -113,6 +116,24 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 		// the names of all data sets that can be displayed in the plot.
 		JsonArray array = object.get("ui").getAsJsonArray();
 
+		System.out.println("=============================");
+		System.out.println("View ID: " + viewId);
+		object = getProxyObject(viewId);
+		printProxyObject(object);
+		System.out.println("=============================");
+
+		System.out.println("=============================");
+		System.out.println("File ID: " + fileId);
+		object = getProxyObject(fileId);
+		printProxyObject(object);
+		System.out.println("=============================");
+
+		System.out.println("=============================");
+		System.out.println("Representation ID: " + repId);
+		object = getProxyObject(repId);
+		printProxyObject(object);
+		System.out.println("=============================");
+
 		// Determine all plot categories and their types.
 		for (int i = 0; i < array.size(); i++) {
 			object = array.get(i).getAsJsonObject();
@@ -121,7 +142,7 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 			String name = object.get("name").getAsString();
 			// TODO Figure out how we should handle the meshes in the file.
 			// We do not want to set the mesh yet.
-			if (!"Meshes".equals(name)) {
+			if (!"Mesh".equals(name)) {
 				JsonArray valueArray = object.get("values").getAsJsonArray();
 				String[] values = new String[valueArray.size()];
 				for (int j = 0; j < values.length; j++) {
@@ -133,6 +154,21 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 		}
 
 		return plotTypes;
+	}
+
+	private JsonObject getProxyObject(int id) throws InterruptedException,
+			ExecutionException {
+		JsonArray args = new JsonArray();
+		args.add(new JsonPrimitive(id));
+		return getParaViewConnectionAdapter().getConnection()
+				.call("pv.proxy.manager.get", args).get();
+	}
+
+	private void printProxyObject(JsonObject object) {
+		Gson gs = new GsonBuilder().setPrettyPrinting().create();
+		// Gson gs = new
+		// GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+		System.out.println(gs.toJson(object));
 	}
 
 	/**
