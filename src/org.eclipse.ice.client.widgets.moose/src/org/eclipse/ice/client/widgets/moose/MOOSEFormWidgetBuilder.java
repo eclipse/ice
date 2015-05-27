@@ -31,7 +31,7 @@ public class MOOSEFormWidgetBuilder implements IFormWidgetBuilder {
 	 * The name of the items/forms used to create {@link MOOSEFormEditor}s. This
 	 * should be the same as the name in the MOOSEModelBuilder item class.
 	 */
-	public static final String name = "MOOSE Model Builder";
+	public static final String name = "MOOSE Workflow";
 
 	/**
 	 * This class consumes (references) the {@link IVizServiceFactory} OSGi
