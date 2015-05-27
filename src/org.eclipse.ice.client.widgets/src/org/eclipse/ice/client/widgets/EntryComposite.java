@@ -830,10 +830,16 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			}
 
 		} else if (value == null) {
-			// Set the Entry to the first AllowedValue
-			String allowedValue = entry.getAllowedValues().get(1);
-			if (allowedValue != null) {
-				entry.setValue(allowedValue);
+			
+			if (entry.getValueType().equals(AllowedValueType.Discrete)) {
+				// Set the Entry to the first AllowedValue if it's Discrete
+				if (!entry.getAllowedValues().isEmpty()) {
+					String allowedValue = entry.getAllowedValues().get(0);
+					entry.setValue(allowedValue);
+				}
+			} else {
+				// Otherwise, set the default value
+				entry.setValue(entry.getDefaultValue());
 			}
 
 		} else {
