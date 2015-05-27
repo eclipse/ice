@@ -12,9 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,6 +38,9 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -45,6 +56,7 @@ import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * An MOOSE Item for creating MOOSE input files. This Item expects to find the
@@ -264,7 +276,20 @@ public class MOOSEModel extends Item {
 
 		// Add the default dummy text to the list of available apps
 		mooseApps = new ArrayList<String>();
-		// mooseApps.add("None");
+
+		IEclipsePreferences prefs = InstanceScope.INSTANCE
+				.getNode("org.eclipse.ice.item.moose");
+
+		try {
+			for (String key : prefs.keys()) {
+				String app = prefs.get(key, "");
+				if (!app.isEmpty()) {
+					mooseApps.add(app);
+				}
+			}
+		} catch (BackingStoreException e1) {
+			e1.printStackTrace();
+		}
 
 		// Get the list of MOOSE configuration files available to ICE, if
 		// possible, before creating the app Entry.
@@ -294,9 +319,7 @@ public class MOOSEModel extends Item {
 			mooseAppEntry = new Entry() {
 				protected void setup() {
 					allowedValues = mooseApps;
-					allowedValueType = AllowedValueType.File;// AllowedValueType.Discrete;
-																// // FIXME SET
-																// TO FILE
+					allowedValueType = AllowedValueType.File;
 					defaultValue = loadedApp;
 				}
 			};
@@ -337,6 +360,20 @@ public class MOOSEModel extends Item {
 		mooseDataTree.setName("Input Data");
 		form.addComponent(mooseDataTree);
 
+		if (project != null) {
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					if (!mooseApps.isEmpty()) {
+						try {
+							loadTreeContents(loadedApp);
+						} catch (IOException | CoreException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+			thread.start();
+		}
 		return;
 	}
 
@@ -362,7 +399,6 @@ public class MOOSEModel extends Item {
 
 		return;
 	}
-
 
 	/**
 	 * This operation loads the contents of the TreeComposite from the MOOSE
@@ -396,18 +432,15 @@ public class MOOSEModel extends Item {
 			// If the MOOSE folder doesn't exist, create it and complain
 			if (!mooseFolder.exists()) {
 				mooseFolder.create(true, true, null);
-				throw new IOException("MOOSEModel Exception: "
-						+ "MOOSE directory is empty. Run YAML/action syntax "
-						+ "generator to populate with necessary data.");
 			}
 
 			// Create the URI from the user's application path
 			URI uri = URI.create(mooseExecutableName);
-			
+
 			// Create a File so we can easily get its file name
 			File execFile = new File(uri);
 
-			// Get the YAML and Syntax files file. 
+			// Get the YAML and Syntax files file.
 			IFile yamlFile = mooseFolder.getFile(execFile.getName()
 					.toLowerCase() + ".yaml");
 			IFile syntaxFile = mooseFolder.getFile(execFile.getName()
@@ -417,34 +450,42 @@ public class MOOSEModel extends Item {
 			String[] yamlCmd = {
 					"/bin/sh",
 					"-c",
-					execFile.getAbsolutePath() + " --yaml &> "
+					execFile.getAbsolutePath() + " --yaml > "
 							+ yamlFile.getLocation().toOSString() };
 			String[] syntaxCmd = {
 					"/bin/sh",
 					"-c",
-					execFile.getAbsolutePath() + " --syntax &> "
+					execFile.getAbsolutePath() + " --syntax > "
 							+ syntaxFile.getLocation().toOSString() };
 
 			// Create the YAML and Syntax files
 			Process p1 = Runtime.getRuntime().exec(yamlCmd);
 			Process p2 = Runtime.getRuntime().exec(syntaxCmd);
+			try {
+				int code1 = p1.waitFor();
+				int code2 = p2.waitFor();
 
-			// Wait til the process is done, it shouldnt take too long for these
-			// things
-			while (p1.isAlive() || p2.isAlive()) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				if (code1 != 0 || code2 != 0) {
+					System.out.println("ERROR CREATING YAML SYNTAX");
 				}
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
 			}
 
-			// Clean up the comments in the files, this is 
-			// implemented in MooseLauncher so I'll just use that for now
-			MOOSELauncher launcher = new MOOSELauncher(project);
-			launcher.createCleanMOOSEFile(yamlFile.getLocation().toOSString());
-			launcher.createCleanMOOSEFile(syntaxFile.getLocation().toOSString());
-			
+			// Wait til the process is done, it shouldnt take too long for these
+			// // things
+			// while (p1.isAlive() && p2.isAlive()) {
+			// try {
+			// Thread.sleep(100);
+			// } catch (InterruptedException e) {
+			// e.printStackTrace();
+			// }
+			// }
+
+			// Clean up the comments in the files
+			createCleanMOOSEFile(yamlFile.getLocation().toOSString());
+			createCleanMOOSEFile(syntaxFile.getLocation().toOSString());
+
 			// Refresh the space
 			refreshProjectSpace();
 
@@ -468,7 +509,8 @@ public class MOOSEModel extends Item {
 			} else {
 				// Complain
 				throw new IOException("MOOSEModel Exception: Executable file, "
-						+ yamlFile.getName() + " or " + syntaxFile.getName() + ", not available!");
+						+ yamlFile.getName() + " or " + syntaxFile.getName()
+						+ ", not available!");
 			}
 		} else {
 			// Complain
@@ -533,6 +575,17 @@ public class MOOSEModel extends Item {
 
 					// Merge the input tree into the YAML spec
 					mergeTrees(inputTree, yamlTree);
+
+					// Save this App as a Preference
+					IEclipsePreferences prefs = InstanceScope.INSTANCE
+							.getNode("org.eclipse.ice.item.moose");
+					try {
+						prefs.put(new File(new URI(loadedApp)).getName(),
+								loadedApp);
+						prefs.flush();
+					} catch (BackingStoreException | URISyntaxException e1) {
+						e1.printStackTrace();
+					}
 
 				}
 
@@ -1697,6 +1750,123 @@ public class MOOSEModel extends Item {
 		}
 
 		return;
+	}
+
+	/**
+	 * This method is intended to take a filePath corresponding to a MOOSE YAML
+	 * or action syntax file, and remove any extraneous header or footer lines
+	 * that aren't valid syntax. If any lines from the file were removed, it
+	 * re-writes the file. If no changes were made (no header/footer to remove),
+	 * it does nothing.
+	 * 
+	 * @param filePath
+	 *            The filepath to the YAML or action syntax file.
+	 * @throws IOException
+	 * @throws CoreException
+	 */
+	private void createCleanMOOSEFile(String filePath) throws IOException,
+			CoreException {
+
+		// Local declarations
+		String fileExt, fileType = null;
+		boolean hasHeader = false, hasFooter = false;
+		int headerLine = 0, footerLine = 0;
+		String separator = System.getProperty("file.separator");
+		ArrayList<String> fileLines;
+
+		// Check if the MOOSE folder exists; create it if it doesn't
+		IFolder mooseFolder = project.getFolder("MOOSE");
+
+		// If the MOOSE folder doesn't exist, create it
+		if (!mooseFolder.exists()) {
+			mooseFolder.create(true, true, null);
+		}
+
+		// Define where the "clean" MOOSE file will be written
+		fileExt = filePath.substring(filePath.lastIndexOf("."));
+
+		if (".yaml".equals(fileExt)) {
+			fileType = "YAML";
+		} else if (".syntax".equals(fileExt)) {
+			fileType = "SYNTAX";
+		} else {
+			System.out.println("MOOSEFileHandler message: File does not have "
+					+ "vaid file extension. Must be .yaml or .syntax but is "
+					+ fileExt);
+		}
+
+		// Read in the MOOSE file into an ArrayList of Strings
+		java.nio.file.Path readPath = Paths.get(filePath);
+		fileLines = (ArrayList<String>) Files.readAllLines(readPath,
+				Charset.defaultCharset());
+
+		// Define what the header/footer lines look like
+		String header = "**START " + fileType + " DATA**";
+		String footer = "**END " + fileType + " DATA**";
+
+		// Determine if there is a header and/or footer
+		hasHeader = fileLines.contains(header);
+		hasFooter = fileLines.contains(footer);
+
+		// Cut off the footer, if there is one
+		if (hasFooter) {
+			
+			// Record the line number of the footer
+			footerLine = fileLines.indexOf(footer);
+			deleteLines(filePath, footerLine, fileLines.size() - footerLine + 1);
+		}
+		
+		// Cut off the header, if there is one
+		if (hasHeader) {
+
+			// Record the line number
+			headerLine = fileLines.indexOf(header);
+			deleteLines(filePath, 1, headerLine+1);
+			
+		}
+
+		return;
+	}
+
+	/**
+	 * A private utility used for deleting a range of lines in a text file.
+	 * 
+	 * @param filename
+	 * @param startline
+	 * @param numlines
+	 */
+	private void deleteLines(String filename, int startline, int numlines) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(filename));
+
+			// String buffer to store contents of the file
+			StringBuffer sb = new StringBuffer("");
+
+			// Keep track of the line number
+			int linenumber = 1;
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				// Store each valid line in the string buffer
+				if (linenumber < startline
+						|| linenumber >= startline + numlines) {
+					sb.append(line + "\n");
+				}
+				linenumber++;
+			}
+			if (startline + numlines > linenumber) {
+				System.out.println("End of file reached.");
+			}
+			br.close();
+
+			FileWriter fw = new FileWriter(new File(filename));
+			// Write entire string buffer into the file
+			fw.write(sb.toString());
+			fw.close();
+		} catch (Exception e) {
+			System.out.println("Something went horribly wrong: "
+					+ e.getMessage());
+		}
 	}
 
 	/**

@@ -342,10 +342,10 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		super.updateResourceComponent();
 
 		// Get the working directory for the job launch
-		String workingDirectory = getWorkingDirectory();
+		//String workingDirectory = getWorkingDirectory();
 
 		// If this is the YAML/action syntax process, we need a few extra steps
-		if (yamlSyntaxGenerator.equals(execName)) {
+		/*if (yamlSyntaxGenerator.equals(execName)) {
 
 			// Get the MOOSE folder
 			IFolder mooseFolder = project.getFolder("MOOSE");
@@ -392,121 +392,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 			// Refresh the project space
 			refreshProjectSpace();
-		}
+		}*/
 
-	}
-
-	/**
-	 * This method is intended to take a filePath corresponding to a MOOSE YAML
-	 * or action syntax file, and remove any extraneous header or footer lines
-	 * that aren't valid syntax. If any lines from the file were removed, it
-	 * re-writes the file. If no changes were made (no header/footer to remove),
-	 * it does nothing.
-	 * 
-	 * @param filePath
-	 *            The filepath to the YAML or action syntax file.
-	 * @throws IOException
-	 * @throws CoreException
-	 */
-	public void createCleanMOOSEFile(String filePath) throws IOException,
-			CoreException {
-
-		// Local declarations
-		String fileExt, execName, fileType = null;
-		boolean hasHeader = false, hasFooter = false;
-		int headerLine = 0, footerLine = 0;
-		String separator = System.getProperty("file.separator");
-		ArrayList<String> fileLines;
-
-		// Check if the MOOSE folder exists; create it if it doesn't
-		IFolder mooseFolder = project.getFolder("MOOSE");
-
-		// If the MOOSE folder doesn't exist, create it
-		if (!mooseFolder.exists()) {
-			mooseFolder.create(true, true, null);
-		}
-
-		// Define where the "clean" MOOSE file will be written
-		fileExt = filePath.substring(filePath.lastIndexOf("."));
-		execName = filePath.substring(filePath.lastIndexOf(separator) + 1,
-				filePath.lastIndexOf(fileExt));
-		String cleanFilePath = filePath.substring(0,
-				filePath.lastIndexOf(separator))
-				+ separator + execName + fileExt;
-
-		if (".yaml".equals(fileExt)) {
-			fileType = "YAML";
-		} else if (".syntax".equals(fileExt)) {
-			fileType = "SYNTAX";
-		} else {
-			System.out.println("MOOSEFileHandler message: File does not have "
-					+ "vaid file extension. Must be .yaml or .syntax but is "
-					+ fileExt);
-		}
-
-		// Read in the MOOSE file into an ArrayList of Strings
-		java.nio.file.Path readPath = Paths.get(filePath);
-		fileLines = (ArrayList<String>) Files.readAllLines(readPath,
-				Charset.defaultCharset());
-
-		// Define what the header/footer lines look like
-		String header = "**START " + fileType + " DATA**";
-		String footer = "**END " + fileType + " DATA**";
-
-		// Determine if there is a header and/or footer
-		hasHeader = fileLines.contains(header);
-		hasFooter = fileLines.contains(footer);
-
-		// Cut off the footer, if there is one
-		if (hasFooter) {
-
-			// Record the line number of the footer
-			footerLine = fileLines.indexOf(footer);
-
-			// Remove the footer line and anything after it
-			int i = footerLine;
-			while (i < fileLines.size()) {
-				fileLines.remove(i);
-			}
-		}
-
-		// Cut off the header, if there is one
-		if (hasHeader) {
-
-			// Record the line number
-			headerLine = fileLines.indexOf(header);
-
-			// Remove the header line and anything before it
-			for (int i = headerLine; i >= 0; i--) {
-				fileLines.remove(i);
-			}
-		}
-
-		// If there was any changes made to the file, write it out and replace
-		// the original one
-		if (hasHeader || hasFooter) {
-
-			// If there's an already existing file to where we want to write,
-			// get rid of it
-			IFile cleanFile = mooseFolder.getFile(execName + fileExt);
-			if (cleanFile.exists()) {
-				cleanFile.delete(true, null);
-			}
-
-			// Write out to the clean file now
-			java.nio.file.Path writePath = Paths.get(cleanFilePath);
-			Files.write(writePath, fileLines, Charset.defaultCharset(),
-					StandardOpenOption.CREATE);
-			System.out.println("MOOSELauncher Message: "
-					+ "Placing file in /ICEFiles/default/MOOSE: " + execName
-					+ fileExt);
-
-			// Delete the old file
-			// File oldFile = new File(filePath);
-			// oldFile.delete();
-		}
-
-		return;
 	}
 
 	/**

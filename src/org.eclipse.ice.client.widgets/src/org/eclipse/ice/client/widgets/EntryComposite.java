@@ -38,6 +38,8 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -487,8 +489,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	}
 
 	/**
-	 * This method is used to create a special drop down for File Entries that 
-	 * provides a Combo widget that allows the user to enter the File location as text. 
+	 * This method is used to create a special drop down for File Entries that
+	 * provides a Combo widget that allows the user to enter the File location
+	 * as text.
 	 */
 	private void createFileDropdown() {
 		if (dropDown == null || dropDown.isDisposed()) {
@@ -496,8 +499,8 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					| SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
 			dropDown.setFocus();
 			dropDown.setLayoutData(new GridData(400, SWT.DEFAULT));
-			List<String> allowedValues = entry.getAllowedValues();
 
+			List<String> allowedValues = entry.getAllowedValues();
 			// Add a selection listener
 			dropDown.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -506,6 +509,51 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					setEntryValue(((Combo) e.widget).getText());
 					// Notify any listeners that the selection has changed
 					notifyListeners(SWT.Selection, new Event());
+				}
+			});
+
+			// Add a traverse listener to validate the entry
+			// when the user hits Enter or Tab
+			dropDown.addTraverseListener(new TraverseListener() {
+				@Override
+				public void keyTraversed(TraverseEvent e) {
+					if (e.detail == SWT.TRAVERSE_RETURN
+							|| e.detail == SWT.TRAVERSE_TAB_NEXT) {
+
+						// Get the entered text and create a File
+						String path = dropDown.getText();
+						File file = new File(path);
+
+						// If this is an actual executable that exists, then
+						// add it to the File Entry.
+						if (file.exists() && file.isFile()) {
+							// Check if its an executable
+							if (file.canExecute()) {
+								IEntryContentProvider prov = new BasicEntryContentProvider();
+								ArrayList<String> valueList = entry
+										.getAllowedValues();
+								valueList.add(file.toURI().toString());
+								prov.setAllowedValueType(AllowedValueType.File);
+
+								// Finish setting the allowed values and default
+								// value
+								prov.setAllowedValues(valueList);
+								entry.setContentProvider(prov);
+
+								// If it is executable just add its absolute
+								// path
+								setEntryValue(file.toURI().toString());
+							} else {
+								// If its just a File, import it
+								IClient client = ClientHolder.getClient();
+								client.importFile(file.toURI());
+								// Set the entry's value to the new file
+								setEntryValue(file.getName());
+							}
+							
+							notifyListeners(SWT.Selection, new Event());
+						} 
+					}
 				}
 			});
 
@@ -533,17 +581,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			}
 		}
 
-		/*
-		 * dropDown.addModifyListener(new ModifyListener(){ public void
-		 * modifyText(ModifyEvent e) { Button okButton = getButton(Window.OK);
-		 * if(okButton != null && !okButton.isDisposed()) { boolean
-		 * nonWhitespaceFound = false; String characters =
-		 * getWorkspaceLocation(); for (int i = 0; !nonWhitespaceFound && i <
-		 * characters.length(); i++) { if
-		 * (!Character.isWhitespace(characters.charAt(i))) { nonWhitespaceFound
-		 * = true; } } okButton.setEnabled(nonWhitespaceFound); } } });
-		 */
-		// setInitialTextValues(text);
 	}
 
 	/**
@@ -609,9 +646,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			// If this is a File entry, draw dropdown (if applicable)
 			// and browse button
 			createLabel();
-			if (numAllowedValues > 0) {
-				createFileDropdown();
-			}
+			// if (numAllowedValues > 0) {
+			createFileDropdown();
+			// }
 			createBrowseButton();
 
 			// FIXME We should use either this GridLayout or the RowLayout below
@@ -648,7 +685,8 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			// If the file list Combo is rendered, we need to give it RowData so
 			// it will grab excess horizontal space. Otherwise, the default
 			// RowLayout above will suffice.
-			if (numAllowedValues > 0) {
+			if (numAllowedValues > 0
+					|| entry.getValueType().equals(AllowedValueType.File)) {
 				// Use a RowData for the dropdown Combo so it can get excess
 				// space.
 				final RowData rowData = new RowData();
@@ -830,7 +868,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			}
 
 		} else if (value == null) {
-			
+
 			if (entry.getValueType().equals(AllowedValueType.Discrete)) {
 				// Set the Entry to the first AllowedValue if it's Discrete
 				if (!entry.getAllowedValues().isEmpty()) {
