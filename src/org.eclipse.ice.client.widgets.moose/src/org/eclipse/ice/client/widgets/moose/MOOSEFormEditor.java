@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
+import java.net.URI;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -31,6 +32,9 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.paraview.ParaViewVizService;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
@@ -43,11 +47,15 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.eclipse.ui.forms.events.ExpansionAdapter;
+import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.osgi.framework.Bundle;
@@ -99,6 +107,156 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	private boolean wireframe;
 
 	// ------------------------------ //
+
+	// TODO Remove this. This is just for testing the ParaViewVizService.
+	@Override
+	protected void addPages() {
+		super.addPages();
+		// Add a page with a plant view.
+		try {
+			addPage(new ICEFormPage(this, "ParaView Mesh", "Mesh View") {
+				@Override
+				protected void createFormContent(final IManagedForm managedForm) {
+
+					// On the left should be a DataComponentComposite for
+					// the "Mesh" block's active data node. On the right
+					// should be a view of the mesh, if applicable.
+					Section section;
+					FormToolkit toolkit = managedForm.getToolkit();
+
+					// Set up the overall layout. Use a GridLayout to get
+					// the horizontal layout of the DataComponent and mesh.
+					Composite body = managedForm.getForm().getBody();
+					body.setLayout(new GridLayout(2, false));
+
+					// Create a section for the mesh view.
+					Composite parent = managedForm.getForm().getBody();
+					int style = Section.DESCRIPTION | Section.TITLE_BAR
+							| Section.TWISTIE | Section.EXPANDED;
+					section = toolkit.createSection(parent, style);
+					section.addExpansionListener(new ExpansionAdapter() {
+						public void expansionStateChanged(ExpansionEvent e) {
+							managedForm.reflow(true);
+						}
+					});
+					populateMeshViewSection(section, toolkit);
+					// The mesh view should grab all excess space.
+					section.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+							true, true));
+
+					return;
+				}
+			});
+		} catch (PartInitException e) {
+
+		}
+		return;
+	}
+
+	private void populateMeshViewSection(Section section, FormToolkit toolkit) {
+		section.setText("Mesh");
+		section.setDescription("The current mesh configured for MOOSE input.");
+
+		// Create a container to hold a plot ToolBar and the mesh plot.
+		Composite container = toolkit.createComposite(section, SWT.NONE);
+		section.setClient(container);
+		container.setLayout(new GridLayout(1, false));
+
+		// Create a ToolBar using JFace utilities.
+		ToolBarManager toolBarManager = new ToolBarManager();
+		ToolBar toolBar = toolBarManager.createControl(container);
+		toolkit.adapt(toolBar);
+		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		// Create the parent Composite for the mesh plot.
+		Composite meshPlotParent = toolkit.createComposite(container,
+				SWT.BORDER);
+		meshPlotParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true));
+
+		// TODO Use the preferred visualization service.
+		// Try to get the VisItVizService.
+		IVizServiceFactory vizFactory = getVizServiceFactory();
+		ParaViewVizService vizService = (vizFactory != null ? (ParaViewVizService) vizFactory
+				.get("ParaView") : null);
+
+		// Either update the mesh plot or generate an error. Note that if the
+		// visualization service is not running, there is no way we will ever be
+		// able to generate a plot.
+		if (vizService != null) {
+			// We can attempt to draw a plot. Set the parent's layout to a
+			// FillLayout.
+			meshPlotParent.setLayout(new FillLayout());
+
+			try {
+				// FIXME We need to be able to get a remote URI
+				String siloPath = "/home/NiCE/output-Battery_1.1.silo";
+				String exodusPath = "/home/NiCE/DualRolledCell3.e";
+				URI meshURI = new URI(siloPath);
+
+				// Create the plot.
+				IPlot plot = vizService.createPlot(meshURI);
+				// TODO We're going to have to do some other things here to
+				// determine the plot type and category.
+				plot.draw("", "", meshPlotParent);
+
+				// // TODO Remove this test code below.
+				// final Composite parent0 = new Composite(meshPlotParent,
+				// SWT.NONE);
+				// Composite parent1 = new Composite(meshPlotParent, SWT.NONE);
+				// Composite parent2 = new Composite(meshPlotParent, SWT.NONE);
+				// parent0.setLayout(new FillLayout());
+				// parent1.setLayout(new FillLayout());
+				// parent2.setLayout(new FillLayout());
+				// plot.draw("cat0", "type0", parent0);
+				// plot.draw("cat1", "type1", parent1);
+				// plot.draw("cat2", "type2", parent2);
+				// Thread thread = new Thread() {
+				// @Override
+				// public void run() {
+				// try {
+				// Thread.sleep(4000);
+				// plot.draw("cat1", "type1", parent0);
+				// } catch (InterruptedException e) {
+				// e.printStackTrace();
+				// } catch (Exception e) {
+				// e.printStackTrace();
+				// }
+				// }
+				// };
+				// thread.start();
+				// // end of test code
+
+			} catch (Exception e) {
+				System.err.println("MOOSEFormEditor error: "
+						+ "Error creating VisIt plot.");
+				e.printStackTrace();
+			}
+		} else {
+			// Create an error message to show in the mesh view.
+			String errorMessage = "There was a problem connecting to "
+					+ "ICE's available visualization services.";
+			// To get the image/text side-by-side, use a 2-column GridLayout.
+			meshPlotParent.setLayout(new GridLayout(2, false));
+			// Create the label with the error icon.
+			Label iconLabel = toolkit.createLabel(meshPlotParent, "");
+			iconLabel.setImage(Display.getCurrent().getSystemImage(
+					SWT.ICON_ERROR));
+			iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
+					false, false));
+			// Create the label with the text.
+			Label msgLabel = toolkit.createLabel(meshPlotParent, errorMessage);
+			msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+					false, false));
+		}
+
+		// Set the client for the section according to SOP.
+		section.setClient(container);
+
+		return;
+	}
+
+	// END OF SECTION THAT SHOULD BE REMOVED...
 
 	/**
 	 * In addition to the default behavior, this method registers with the MOOSE
