@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -118,7 +120,7 @@ public class MOOSEModel extends Item {
 	 */
 	@XmlTransient
 	protected String meshFileName;
-	
+
 	/**
 	 * The "Mesh" block stored on the TreeComposite (if there is one). Used to
 	 * convert a mesh file into a VizResource by {@link #createMeshResource()}.
@@ -256,38 +258,32 @@ public class MOOSEModel extends Item {
 				+ "to this MOOSE Model.");
 		form.addComponent(resourceComponent);
 
+		/**********************************************/
+
+		// FIXME GET MOOSE APPS FROM HISTORY...
+
 		// Add the default dummy text to the list of available apps
 		mooseApps = new ArrayList<String>();
-		mooseApps.add("None");
+		// mooseApps.add("None");
 
 		// Get the list of MOOSE configuration files available to ICE, if
 		// possible, before creating the app Entry.
-		if (project != null && project.isAccessible()) {
-			// Get the MOOSE folder
-			IFolder mooseFolder = project.getFolder("MOOSE");
-			// Get the files from it if it exists
-			if (mooseFolder.exists()) {
-				try {
-					IResource[] resources = mooseFolder.members();
-					// Check the resources and retrieve the .yaml files
-					for (IResource resource : resources) {
-						if (resource.getType() == IResource.FILE
-								&& resource.getProjectRelativePath()
-										.lastSegment().contains(".yaml")) {
-							String[] splitName = resource.getName()
-									.split("\\.");
-							// Only add the app name, not the file extension.
-							// Use upper case for consistency with the MOOSE
-							// Launcher, also since the app names are acronyms.
-							mooseApps.add(splitName[0].toUpperCase());
-						}
-					}
-				} catch (CoreException e) {
-					// Complain
-					e.printStackTrace();
-				}
-			}
-		}
+		/*
+		 * if (project != null && project.isAccessible()) { // Get the MOOSE
+		 * folder IFolder mooseFolder = project.getFolder("MOOSE"); // Get the
+		 * files from it if it exists if (mooseFolder.exists()) { try {
+		 * IResource[] resources = mooseFolder.members(); // Check the resources
+		 * and retrieve the .yaml files for (IResource resource : resources) {
+		 * if (resource.getType() == IResource.FILE &&
+		 * resource.getProjectRelativePath() .lastSegment().contains(".yaml")) {
+		 * String[] splitName = resource.getName() .split("\\."); // Only add
+		 * the app name, not the file extension. // Use upper case for
+		 * consistency with the MOOSE // Launcher, also since the app names are
+		 * acronyms. mooseApps.add(splitName[0].toUpperCase()); } } } catch
+		 * (CoreException e) { // Complain e.printStackTrace(); } } }
+		 */
+
+		/**********************************************/
 
 		// Only load up the Entry if some MOOSE apps were discovered.
 		if (!mooseApps.isEmpty()) {
@@ -298,7 +294,9 @@ public class MOOSEModel extends Item {
 			mooseAppEntry = new Entry() {
 				protected void setup() {
 					allowedValues = mooseApps;
-					allowedValueType = AllowedValueType.Discrete;
+					allowedValueType = AllowedValueType.File;// AllowedValueType.Discrete;
+																// // FIXME SET
+																// TO FILE
 					defaultValue = loadedApp;
 				}
 			};
@@ -306,6 +304,8 @@ public class MOOSEModel extends Item {
 			mooseAppEntry = new Entry() {
 				protected void setup() {
 					defaultValue = "No MOOSE apps were found.";
+					allowedValues = mooseApps;
+					allowedValueType = AllowedValueType.File;
 				}
 			};
 		}
@@ -363,6 +363,7 @@ public class MOOSEModel extends Item {
 		return;
 	}
 
+
 	/**
 	 * This operation loads the contents of the TreeComposite from the MOOSE
 	 * data. It is called when a MOOSE-based application has been accepted and
@@ -400,19 +401,61 @@ public class MOOSEModel extends Item {
 						+ "generator to populate with necessary data.");
 			}
 
-			// Get the file. We must convert to lower case to match the YAML
-			// files.
-			IFile modelFile = mooseFolder.getFile(mooseExecutableName
+			// Create the URI from the user's application path
+			URI uri = URI.create(mooseExecutableName);
+			
+			// Create a File so we can easily get its file name
+			File execFile = new File(uri);
+
+			// Get the YAML and Syntax files file. 
+			IFile yamlFile = mooseFolder.getFile(execFile.getName()
 					.toLowerCase() + ".yaml");
+			IFile syntaxFile = mooseFolder.getFile(execFile.getName()
+					.toLowerCase() + ".syntax");
+
+			// Create the yaml and syntax exec strings
+			String[] yamlCmd = {
+					"/bin/sh",
+					"-c",
+					execFile.getAbsolutePath() + " --yaml &> "
+							+ yamlFile.getLocation().toOSString() };
+			String[] syntaxCmd = {
+					"/bin/sh",
+					"-c",
+					execFile.getAbsolutePath() + " --syntax &> "
+							+ syntaxFile.getLocation().toOSString() };
+
+			// Create the YAML and Syntax files
+			Process p1 = Runtime.getRuntime().exec(yamlCmd);
+			Process p2 = Runtime.getRuntime().exec(syntaxCmd);
+
+			// Wait til the process is done, it shouldnt take too long for these
+			// things
+			while (p1.isAlive() || p2.isAlive()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+			// Clean up the comments in the files, this is 
+			// implemented in MooseLauncher so I'll just use that for now
+			MOOSELauncher launcher = new MOOSELauncher(project);
+			launcher.createCleanMOOSEFile(yamlFile.getLocation().toOSString());
+			launcher.createCleanMOOSEFile(syntaxFile.getLocation().toOSString());
+			
+			// Refresh the space
+			refreshProjectSpace();
 
 			// Get the IReader instance
 			IReader reader = getReader();
 
 			// Load the tree if the file exists
-			if (modelFile.exists() && reader != null) {
+			if (yamlFile.exists() && syntaxFile.exists() && reader != null) {
 
 				// Read the file and get the returned Form
-				Form readerForm = reader.read(modelFile);
+				Form readerForm = reader.read(yamlFile);
 
 				// Get the TreeComposite from the read-in Form
 				tmpParentTree = (TreeComposite) readerForm
@@ -425,7 +468,7 @@ public class MOOSEModel extends Item {
 			} else {
 				// Complain
 				throw new IOException("MOOSEModel Exception: Executable file, "
-						+ mooseExecutableName + ".yaml" + ", not available!");
+						+ yamlFile.getName() + " or " + syntaxFile.getName() + ", not available!");
 			}
 		} else {
 			// Complain
@@ -455,7 +498,7 @@ public class MOOSEModel extends Item {
 		// Get the MOOSE file information, if available
 		mooseFileComponent = (DataComponent) preparedForm.getComponent(1);
 		if (mooseFileComponent != null) {
-			
+
 			// Get the entry that stores the currently-selected MOOSE app name
 			Entry mooseSpecFileEntry = mooseFileComponent
 					.retrieveEntry("MOOSE-Based Application");
@@ -466,9 +509,9 @@ public class MOOSEModel extends Item {
 
 				// Get the current value of the MOOSE app Entry and determine
 				String mooseSpecValue = mooseSpecFileEntry.getValue();
-				if (loadedApp == null ||
-						(!mooseSpecValue.equalsIgnoreCase("none") 
-							&& !loadedApp.equals(mooseSpecValue))) {
+				if (loadedApp == null
+						|| (!mooseSpecValue.equalsIgnoreCase("none") && !loadedApp
+								.equals(mooseSpecValue))) {
 
 					// Get the app name
 					loadedApp = mooseSpecFileEntry.getValue();
@@ -478,11 +521,10 @@ public class MOOSEModel extends Item {
 					TreeComposite inputTree = (TreeComposite) preparedForm
 							.getComponent(mooseTreeCompositeId).clone();
 
-					// Re-load the Form's tree based on the YAML spec
 					try {
 						loadTreeContents(loadedApp);
-					} catch (IOException | CoreException e) {
-						e.printStackTrace();
+					} catch (IOException | CoreException e1) {
+						e1.printStackTrace();
 					}
 
 					// Get the empty YAML TreeComposite
@@ -1268,7 +1310,7 @@ public class MOOSEModel extends Item {
 
 					// Convert the Entry to a "File" type Entry
 					if (meshEntry != null) {
-						convertMeshEntry(meshEntry);						
+						convertMeshEntry(meshEntry);
 					}
 				}
 			}
@@ -1384,14 +1426,14 @@ public class MOOSEModel extends Item {
 		if (meshBlock != null) {
 
 			// Try to find the Entry with the mesh filename
-			DataComponent meshDataComp = 
-					(DataComponent) meshBlock.getDataNodes().get(0);
+			DataComponent meshDataComp = (DataComponent) meshBlock
+					.getDataNodes().get(0);
 			Entry meshEntry = meshDataComp.retrieveEntry("file");
 			if (meshEntry != null) {
-				
+
 				// Convert the Mesh entry to a File Entry
 				convertMeshEntry(meshEntry);
-				
+
 				// Create an ICEResource from the entry
 				if (!meshEntry.getValue().isEmpty()) {
 					mesh = getResource(meshEntry);
@@ -1403,7 +1445,7 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
-	 * This method convert the mesh "file" Entry into a Entry with 
+	 * This method convert the mesh "file" Entry into a Entry with
 	 * AllowedValueType.File and registers the Form as a listener.
 	 * 
 	 * @param meshEntry
@@ -1515,21 +1557,21 @@ public class MOOSEModel extends Item {
 		Entry fileEntry = dataNode.retrieveEntry("file");
 
 		// Check if we're given a valid type name
-		if (typeEntry != null && typeEntry.getValue() 
-				!= null && !typeEntry.getValue().isEmpty()) {
+		if (typeEntry != null && typeEntry.getValue() != null
+				&& !typeEntry.getValue().isEmpty()) {
 			typeName = typeEntry.getValue();
 		}
-		
+
 		// Try setting the type
 		if (typeName != null && !typeName.isEmpty() && tree.setType(typeName)) {
-			
-		} else if (tree.getName().equals("Mesh") 
-				&& fileEntry != null && fileEntry.getValue() != null 
+
+		} else if (tree.getName().equals("Mesh") && fileEntry != null
+				&& fileEntry.getValue() != null
 				&& !fileEntry.getValue().isEmpty()) {
 			// Otherwise try setting the Mesh type "FileMesh", if appropriate
 			tree.setType("FileMesh");
 		}
-		
+
 		// Lastly, if this is the Mesh block, set a listener on its type
 		if (tree.getName().equals("Mesh")) {
 			tree.register(this);
@@ -1539,12 +1581,12 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
-	 * This method updates the ResourceComponet with a new VizResource if the 
-	 * Mesh block's "file" Entry has changed. It is also used to correctly 
-	 * display the "file" Entry as commented/uncommented depending on the Mesh 
+	 * This method updates the ResourceComponet with a new VizResource if the
+	 * Mesh block's "file" Entry has changed. It is also used to correctly
+	 * display the "file" Entry as commented/uncommented depending on the Mesh
 	 * block's currently set type. Lastly, it will listen to updates from the
-	 * Mesh's active data node in case a new "file" Entry is ever manually
-	 * added (in which case it will register the new Entry with the form).
+	 * Mesh's active data node in case a new "file" Entry is ever manually added
+	 * (in which case it will register the new Entry with the form).
 	 * 
 	 * @param component
 	 *            The component that triggered an update
@@ -1555,60 +1597,64 @@ public class MOOSEModel extends Item {
 		// If the mesh file name is different, update the ResourceComponent and
 		// the Mesh block type
 		if (component instanceof Entry) {
-			
+
 			Entry fileEntry = (Entry) component;
 			if (meshFileName == null || meshFileName.isEmpty()
 					|| !fileEntry.getValue().equals(meshFileName)) {
 				try {
 					// Update the mesh resource
 					updateMeshResource();
-					
-					// Also change the file type on the Mesh block to "FileEntry"
-					if (meshBlock == null ) {
+
+					// Also change the file type on the Mesh block to
+					// "FileEntry"
+					if (meshBlock == null) {
 						meshBlock = (AdaptiveTreeComposite) findMeshBlock();
 					}
-					DataComponent meshDataComp = 
-							(DataComponent) meshBlock.getActiveDataNode();
-					if (meshDataComp != null 
+					DataComponent meshDataComp = (DataComponent) meshBlock
+							.getActiveDataNode();
+					if (meshDataComp != null
 							&& meshDataComp.retrieveEntry("file") != null) {
-						String meshFileName = 
-								meshDataComp.retrieveEntry("file").getValue();
-						if (!meshFileName.isEmpty() 
-								&& ((AdaptiveTreeComposite) meshBlock).getType() == null) {
-							((AdaptiveTreeComposite) meshBlock).setType("FileMesh");
+						String meshFileName = meshDataComp
+								.retrieveEntry("file").getValue();
+						if (!meshFileName.isEmpty()
+								&& ((AdaptiveTreeComposite) meshBlock)
+										.getType() == null) {
+							((AdaptiveTreeComposite) meshBlock)
+									.setType("FileMesh");
 						}
 					}
-					
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			
-		// If the Mesh type has changed, evaluate if the "file" parameter should
-		// be commented/uncommented
-		} else if (component instanceof AdaptiveTreeComposite 
+
+			// If the Mesh type has changed, evaluate if the "file" parameter
+			// should
+			// be commented/uncommented
+		} else if (component instanceof AdaptiveTreeComposite
 				&& component.getName().equals("Mesh")) {
-			
-			AdaptiveTreeComposite meshBlock = (AdaptiveTreeComposite) component;	
+
+			AdaptiveTreeComposite meshBlock = (AdaptiveTreeComposite) component;
 			if (meshBlock.getActiveDataNode() != null) {
-				
+
 				// Get the "file" Entry/parameter
-				DataComponent dataComp = 
-						(DataComponent) meshBlock.getActiveDataNode();
+				DataComponent dataComp = (DataComponent) meshBlock
+						.getActiveDataNode();
 				Entry fileParam = dataComp.retrieveEntry("file");
-				
+
 				if (fileParam != null) {
-					
+
 					// Get the type and tag
 					String type = meshBlock.getType();
 					String fileTag = fileParam.getTag();
-				
+
 					// Set the tag and required flag correctly
 					if (!type.equals("FileMesh")
-							&& (fileTag.equalsIgnoreCase("true")) 
-								|| fileTag.equalsIgnoreCase("new_parameter")) {
+							&& (fileTag.equalsIgnoreCase("true"))
+							|| fileTag.equalsIgnoreCase("new_parameter")) {
 						// Comment out the "file" parameter
-						fileParam.setTag("false");	
+						fileParam.setTag("false");
 						fileParam.setRequired(false);
 					} else if (type.equals("FileMesh")
 							&& fileTag.equalsIgnoreCase("false")) {
@@ -1622,22 +1668,22 @@ public class MOOSEModel extends Item {
 					}
 				}
 			}
-		
-		// If a "file" Entry is added, make sure everything is hooked up
-		// correctly to the mesh
+
+			// If a "file" Entry is added, make sure everything is hooked up
+			// correctly to the mesh
 		} else if (component instanceof DataComponent) {
-			
+
 			DataComponent dataComp = (DataComponent) component;
 			if (dataComp.retrieveEntry("file") != null) {
-				
+
 				Entry fileEntry = dataComp.retrieveEntry("file");
 				if (!fileEntry.getValue().isEmpty()) {
-					
+
 					// Re-register the fileEntry in case this "file" parameter
 					// parameter was created after the tree was set up
 					fileEntry.unregister(this);
 					fileEntry.register(this);
-					
+
 					// Try updating the Mesh block so the file parameter will
 					// be set correctly depending on the current block type
 					if (meshBlock == null) {

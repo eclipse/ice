@@ -408,7 +408,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	private void createCleanMOOSEFile(String filePath) throws IOException,
+	public void createCleanMOOSEFile(String filePath) throws IOException,
 			CoreException {
 
 		// Local declarations
