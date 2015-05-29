@@ -210,13 +210,18 @@ public class ParaViewProxyFactoryRegistryTester {
 		registry.register(fakeExodusProxyFactory);
 		registry.register(fakeSiloProxyFactory);
 
-		// Check that all of their extensions return the correct factory.
+		// Check that all of their extensions return the correct factory,
+		// and that the query is case insensitive.
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
-			uri = createTestURI(extension);
+			uri = createTestURI(extension.toLowerCase());
+			assertSame(fakeExodusProxyFactory, registry.getFactory(uri));
+			uri = createTestURI(extension.toUpperCase());
 			assertSame(fakeExodusProxyFactory, registry.getFactory(uri));
 		}
 		for (String extension : fakeSiloProxyFactory.getExtensions()) {
-			uri = createTestURI(extension);
+			uri = createTestURI(extension.toLowerCase());
+			assertSame(fakeSiloProxyFactory, registry.getFactory(uri));
+			uri = createTestURI(extension.toUpperCase());
 			assertSame(fakeSiloProxyFactory, registry.getFactory(uri));
 		}
 

@@ -62,6 +62,9 @@ public class ParaViewProxyFactoryRegistry implements
 			// supported extension.
 			for (String extension : factory.getExtensions()) {
 				if (extension != null) {
+					// Convert it to lower case.
+					extension = extension.toLowerCase();
+
 					List<IParaViewProxyFactory> factories = factoryMap
 							.get(extension);
 
@@ -95,6 +98,9 @@ public class ParaViewProxyFactoryRegistry implements
 			// extension.
 			for (String extension : factory.getExtensions()) {
 				if (extension != null) {
+					// Convert it to lower case.
+					extension = extension.toLowerCase();
+
 					List<IParaViewProxyFactory> factories = factoryMap
 							.get(extension);
 					if (factories != null) {
@@ -121,11 +127,13 @@ public class ParaViewProxyFactoryRegistry implements
 		if (uri != null) {
 			String extension = null;
 
-			// If possible, determine the extension of the URI.
+			// If possible, determine the extension of the URI. Make it lower
+			// case, as case should not matter.
 			try {
 				File file = new File(uri);
 				String fileName = file.getName();
-				extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+				extension = fileName.substring(fileName.lastIndexOf(".") + 1)
+						.toLowerCase();
 			} catch (IllegalArgumentException | IndexOutOfBoundsException e) {
 				// Nothing to do.
 			}
