@@ -21,6 +21,9 @@ import org.eclipse.ice.viz.service.connections.ConnectionManager;
 import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactoryRegistry;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 
 import com.kitware.vtk.web.VtkWebClient;
@@ -214,4 +217,35 @@ public class ParaViewVizService extends AbstractVizService {
 		return plot;
 	}
 
+	/**
+	 * Sets the {@link IParaViewProxyFactory} registry. This registry should be
+	 * queried for a factory, which will then be used to create an
+	 * {@link IParaViewProxy} when performing operations on a supported file
+	 * type.
+	 * <p>
+	 * <b>Note:</b> This method should only be called by OSGi!
+	 * </p>
+	 * 
+	 * @param registry
+	 *            The new registry.
+	 */
+	protected void setProxyFactoryRegistry(
+			IParaViewProxyFactoryRegistry registry) {
+		// TODO
+	}
+
+	/**
+	 * Unsets the {@link IParaViewProxyFactory} registry if the argument
+	 * matches.
+	 * <p>
+	 * <b>Note:</b> This method should only be called by OSGi!
+	 * </p>
+	 * 
+	 * @param registry
+	 *            The old registry.
+	 */
+	protected void unsetProxyFactoryRegistry(
+			IParaViewProxyFactoryRegistry registry) {
+		// TODO
+	}
 }

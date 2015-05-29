@@ -87,6 +87,14 @@ public class ParaViewProxyFactoryRegistry implements
 				}
 			}
 		}
+
+		// TODO Send this to a logging system.
+		// Print out debug output.
+		if (registered) {
+			System.out.println("ParaViewProxyFactoryRegistry message: " + "\""
+					+ factory.getClass().getName() + "\" registered.");
+		}
+
 		return registered;
 	}
 
@@ -118,6 +126,14 @@ public class ParaViewProxyFactoryRegistry implements
 				}
 			}
 		}
+
+		// TODO Send this to a logging system.
+		// Print out debug output.
+		if (unregistered) {
+			System.out.println("ParaViewProxyFactoryRegistry message: " + "\""
+					+ factory.getClass().getName() + "\" unregistered.");
+		}
+
 		return unregistered;
 	}
 
