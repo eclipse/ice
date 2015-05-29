@@ -17,7 +17,7 @@ import java.net.URI;
 /**
  * Implementations of this interface provide a registry that maps supported
  * extensions for files to {@link IParaViewProxyFactory} instances. Client code
- * can request a factory by calling {@link #getFactory(URI)}.
+ * can request a factory by calling {@link #getProxyFactory(URI)}.
  * <p>
  * This interface is designed to be provided and referenced via OSGi.
  * </p>
@@ -40,7 +40,7 @@ public interface IParaViewProxyFactoryRegistry {
 	 *         (including the case where the factory has no supported
 	 *         extensions).
 	 */
-	boolean register(IParaViewProxyFactory factory);
+	boolean registerProxyFactory(IParaViewProxyFactory factory);
 
 	/**
 	 * Unregisters the specified proxy factory. Its extensions should no longer
@@ -56,7 +56,7 @@ public interface IParaViewProxyFactoryRegistry {
 	 *         (including the case where the factory has no supported
 	 *         extensions).
 	 */
-	boolean unregister(IParaViewProxyFactory factory);
+	boolean unregisterProxyFactory(IParaViewProxyFactory factory);
 
 	/**
 	 * Gets a factory for the provided file based on its extension.
@@ -67,5 +67,5 @@ public interface IParaViewProxyFactoryRegistry {
 	 * @return A factory capable of creating a proxy for the file, or
 	 *         {@code null} if a factory could not be created for the file.
 	 */
-	IParaViewProxyFactory getFactory(URI uri);
+	IParaViewProxyFactory getProxyFactory(URI uri);
 }

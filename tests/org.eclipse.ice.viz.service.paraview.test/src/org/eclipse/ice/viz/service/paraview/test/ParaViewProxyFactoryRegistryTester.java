@@ -109,21 +109,21 @@ public class ParaViewProxyFactoryRegistryTester {
 
 		// Registering new factories with supported extensions should return
 		// true.
-		assertTrue(registry.register(fakeExodusProxyFactory));
-		assertTrue(registry.register(fakeSiloProxyFactory));
+		assertTrue(registry.registerProxyFactory(fakeExodusProxyFactory));
+		assertTrue(registry.registerProxyFactory(fakeSiloProxyFactory));
 
 		// Registering the same factory again should still return true, as it
 		// becomes the preferred factory for its supported extensions.
-		assertTrue(registry.register(fakeExodusProxyFactory));
-		assertTrue(registry.register(fakeSiloProxyFactory));
+		assertTrue(registry.registerProxyFactory(fakeExodusProxyFactory));
+		assertTrue(registry.registerProxyFactory(fakeSiloProxyFactory));
 
 		// Registering a factory with no supported extensions should return
 		// false (because nothing was registered!).
-		assertFalse(registry.register(fakeEmptyProxyFactory));
+		assertFalse(registry.registerProxyFactory(fakeEmptyProxyFactory));
 
 		// Registering a null factory should return false (because nothing was
 		// registered!).
-		assertFalse(registry.register(nullFactory));
+		assertFalse(registry.registerProxyFactory(nullFactory));
 
 		return;
 	}
@@ -138,32 +138,32 @@ public class ParaViewProxyFactoryRegistryTester {
 		final IParaViewProxyFactory nullFactory = null;
 
 		// Unregistering a factory that's not registered should return false.
-		assertFalse(registry.unregister(fakeExodusProxyFactory));
-		assertFalse(registry.unregister(fakeSiloProxyFactory));
-		assertFalse(registry.unregister(fakeEmptyProxyFactory));
-		assertFalse(registry.unregister(nullFactory));
+		assertFalse(registry.unregisterProxyFactory(fakeExodusProxyFactory));
+		assertFalse(registry.unregisterProxyFactory(fakeSiloProxyFactory));
+		assertFalse(registry.unregisterProxyFactory(fakeEmptyProxyFactory));
+		assertFalse(registry.unregisterProxyFactory(nullFactory));
 
 		// Register the factories. Note that really only the Exodus and Silo
 		// factories will be registered.
-		registry.register(fakeExodusProxyFactory);
-		registry.register(fakeSiloProxyFactory);
-		registry.register(fakeEmptyProxyFactory);
-		registry.register(nullFactory);
+		registry.registerProxyFactory(fakeExodusProxyFactory);
+		registry.registerProxyFactory(fakeSiloProxyFactory);
+		registry.registerProxyFactory(fakeEmptyProxyFactory);
+		registry.registerProxyFactory(nullFactory);
 
 		// We should now be able to unregister the Exodus and Silo factories.
 		// Those requests will return true. The other two reqquests will return
 		// false because nothing was unregistered.
-		assertTrue(registry.unregister(fakeExodusProxyFactory));
-		assertTrue(registry.unregister(fakeSiloProxyFactory));
-		assertFalse(registry.unregister(fakeEmptyProxyFactory));
-		assertFalse(registry.unregister(nullFactory));
+		assertTrue(registry.unregisterProxyFactory(fakeExodusProxyFactory));
+		assertTrue(registry.unregisterProxyFactory(fakeSiloProxyFactory));
+		assertFalse(registry.unregisterProxyFactory(fakeEmptyProxyFactory));
+		assertFalse(registry.unregisterProxyFactory(nullFactory));
 
 		// Make sure everything was really unregistered. If so, then nothing
 		// will be unregistered, and all calls will return false.
-		assertFalse(registry.unregister(fakeExodusProxyFactory));
-		assertFalse(registry.unregister(fakeSiloProxyFactory));
-		assertFalse(registry.unregister(fakeEmptyProxyFactory));
-		assertFalse(registry.unregister(nullFactory));
+		assertFalse(registry.unregisterProxyFactory(fakeExodusProxyFactory));
+		assertFalse(registry.unregisterProxyFactory(fakeSiloProxyFactory));
+		assertFalse(registry.unregisterProxyFactory(fakeEmptyProxyFactory));
+		assertFalse(registry.unregisterProxyFactory(nullFactory));
 
 		return;
 	}
@@ -195,81 +195,84 @@ public class ParaViewProxyFactoryRegistryTester {
 		// Check this for all Exodus extensions.
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
 			uri = createTestURI(extension);
-			assertNull(registry.getFactory(uri));
+			assertNull(registry.getProxyFactory(uri));
 		}
 		// Check this for all Silo extensions.
 		for (String extension : fakeSiloProxyFactory.getExtensions()) {
 			uri = createTestURI(extension);
-			assertNull(registry.getFactory(uri));
+			assertNull(registry.getProxyFactory(uri));
 		}
 		// Check this for invalid URIs.
-		assertNull(registry.getFactory(createTestURI("bad")));
-		assertNull(registry.getFactory(nullURI));
+		assertNull(registry.getProxyFactory(createTestURI("bad")));
+		assertNull(registry.getProxyFactory(nullURI));
 
 		// Register the main fake Exodus and the single Silo factories.
-		registry.register(fakeExodusProxyFactory);
-		registry.register(fakeSiloProxyFactory);
+		registry.registerProxyFactory(fakeExodusProxyFactory);
+		registry.registerProxyFactory(fakeSiloProxyFactory);
 
 		// Check that all of their extensions return the correct factory,
 		// and that the query is case insensitive.
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
 			uri = createTestURI(extension.toLowerCase());
-			assertSame(fakeExodusProxyFactory, registry.getFactory(uri));
+			assertSame(fakeExodusProxyFactory, registry.getProxyFactory(uri));
 			uri = createTestURI(extension.toUpperCase());
-			assertSame(fakeExodusProxyFactory, registry.getFactory(uri));
+			assertSame(fakeExodusProxyFactory, registry.getProxyFactory(uri));
 		}
 		for (String extension : fakeSiloProxyFactory.getExtensions()) {
 			uri = createTestURI(extension.toLowerCase());
-			assertSame(fakeSiloProxyFactory, registry.getFactory(uri));
+			assertSame(fakeSiloProxyFactory, registry.getProxyFactory(uri));
 			uri = createTestURI(extension.toUpperCase());
-			assertSame(fakeSiloProxyFactory, registry.getFactory(uri));
+			assertSame(fakeSiloProxyFactory, registry.getProxyFactory(uri));
 		}
 
 		// Register the second fake Exodus factory. It should now be returned
 		// when the extension is "e", but all other Exodus extensions should
 		// still be the first factory.
-		registry.register(fakeExodusProxyFactory2);
+		registry.registerProxyFactory(fakeExodusProxyFactory2);
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
 			uri = createTestURI(extension);
 			if (!"e".equals(extension)) {
-				assertSame(fakeExodusProxyFactory, registry.getFactory(uri));
+				assertSame(fakeExodusProxyFactory,
+						registry.getProxyFactory(uri));
 			} else {
-				assertSame(fakeExodusProxyFactory2, registry.getFactory(uri));
+				assertSame(fakeExodusProxyFactory2,
+						registry.getProxyFactory(uri));
 			}
 		}
 
 		// Now re-register the main fake Exodus factory. It should now take
 		// precedence over the "e" extension.
-		registry.register(fakeExodusProxyFactory);
+		registry.registerProxyFactory(fakeExodusProxyFactory);
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
 			uri = createTestURI(extension);
-			assertSame(fakeExodusProxyFactory, registry.getFactory(uri));
+			assertSame(fakeExodusProxyFactory, registry.getProxyFactory(uri));
 		}
 
 		// Unregister the Silo factory. All factory requests for Silo extensions
 		// should return null.
-		registry.unregister(fakeSiloProxyFactory);
+		registry.unregisterProxyFactory(fakeSiloProxyFactory);
 		for (String extension : fakeSiloProxyFactory.getExtensions()) {
 			uri = createTestURI(extension);
-			assertNull(registry.getFactory(uri));
+			assertNull(registry.getProxyFactory(uri));
 		}
 
 		// Now unregister the main fake Exodus factory. Only the "e" extension
 		// will still be supported by the second fake Exodus factory.
-		registry.unregister(fakeExodusProxyFactory);
+		registry.unregisterProxyFactory(fakeExodusProxyFactory);
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
 			uri = createTestURI(extension);
 			if (!"e".equals(extension)) {
-				assertNull(registry.getFactory(uri));
+				assertNull(registry.getProxyFactory(uri));
 			} else {
-				assertSame(fakeExodusProxyFactory2, registry.getFactory(uri));
+				assertSame(fakeExodusProxyFactory2,
+						registry.getProxyFactory(uri));
 			}
 		}
 
 		// Now unregister the second fake Exodus factory. Requesting a factory
 		// for the extension "e" should return null.
-		registry.unregister(fakeExodusProxyFactory2);
-		assertNull(registry.getFactory(createTestURI("e")));
+		registry.unregisterProxyFactory(fakeExodusProxyFactory2);
+		assertNull(registry.getProxyFactory(createTestURI("e")));
 
 		return;
 	}

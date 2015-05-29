@@ -25,9 +25,9 @@ import java.util.Map;
  * <p>
  * This implementation provides an additional feature: If multiple factories
  * support the same extensions, then for each shared extension, the most
- * recently registered factory will be returned in {@link #getFactory(URI)}.
- * Furthermore, when that factory is unregistered, its supported extensions will
- * fall back to the previously registered factory for that extension.
+ * recently registered factory will be returned in {@link #getProxyFactory(URI)}
+ * . Furthermore, when that factory is unregistered, its supported extensions
+ * will fall back to the previously registered factory for that extension.
  * </p>
  * 
  * @author Jordan Deyton
@@ -45,6 +45,9 @@ public class ParaViewProxyFactoryRegistry implements
 
 	/**
 	 * The default constructor.
+	 * <p>
+	 * <b>Note:</b> This class should be instantiated by OSGi!
+	 * </p>
 	 */
 	public ParaViewProxyFactoryRegistry() {
 		// Initialize the map of factories.
@@ -55,7 +58,7 @@ public class ParaViewProxyFactoryRegistry implements
 	 * Implements a method from IParaViewProxyFactoryRegistry.
 	 */
 	@Override
-	public boolean register(IParaViewProxyFactory factory) {
+	public boolean registerProxyFactory(IParaViewProxyFactory factory) {
 		boolean registered = false;
 		if (factory != null) {
 			// Add the factory to the *end* of the list of factories for each
@@ -91,7 +94,7 @@ public class ParaViewProxyFactoryRegistry implements
 	 * Implements a method from IParaViewProxyFactoryRegistry.
 	 */
 	@Override
-	public boolean unregister(IParaViewProxyFactory factory) {
+	public boolean unregisterProxyFactory(IParaViewProxyFactory factory) {
 		boolean unregistered = false;
 		if (factory != null) {
 			// Remove the factory from the list of factories for each supported
@@ -122,7 +125,7 @@ public class ParaViewProxyFactoryRegistry implements
 	 * Implements a method from IParaViewProxyFactoryRegistry.
 	 */
 	@Override
-	public IParaViewProxyFactory getFactory(URI uri) {
+	public IParaViewProxyFactory getProxyFactory(URI uri) {
 		IParaViewProxyFactory factory = null;
 		if (uri != null) {
 			String extension = null;
