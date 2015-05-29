@@ -13,10 +13,8 @@
 package org.eclipse.ice.viz.service.paraview.proxy.exodus;
 
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
 
+import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyFactory;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 
@@ -38,12 +36,7 @@ import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
  * @author Jordan Deyton
  *
  */
-public class ExodusProxyFactory implements IParaViewProxyFactory {
-
-	/**
-	 * The set of extensions supported by this proxy factory.
-	 */
-	private final Set<String> extensions;
+public class ExodusProxyFactory extends AbstractParaViewProxyFactory {
 
 	/**
 	 * The default constructor.
@@ -52,8 +45,7 @@ public class ExodusProxyFactory implements IParaViewProxyFactory {
 	 * </p>
 	 */
 	public ExodusProxyFactory() {
-		// Create an populate the set of supported extensions.
-		extensions = new HashSet<String>();
+		// Populate the set of supported extensions.
 		extensions.add("e");
 		extensions.add("ex");
 		extensions.add("exo");
@@ -70,18 +62,15 @@ public class ExodusProxyFactory implements IParaViewProxyFactory {
 	 * Implements a method from IParaViewProxyFactory.
 	 */
 	@Override
-	public Set<String> getExtensions() {
-		// Return a lexicographically ordered set.
-		return new TreeSet<String>(extensions);
+	public String getName() {
+		return "Default Exodus Proxy Factory";
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyFactory.
+	 * Overrides a method from AbstractParaViewProxyFactory.
 	 */
 	@Override
-	public IParaViewProxy createProxy(URI file) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	protected IParaViewProxy createProxyImpl(URI uri) {
+		return new ExodusProxy();
 	}
-
 }
