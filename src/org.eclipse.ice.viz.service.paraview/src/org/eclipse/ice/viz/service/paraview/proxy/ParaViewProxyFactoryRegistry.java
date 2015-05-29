@@ -92,7 +92,7 @@ public class ParaViewProxyFactoryRegistry implements
 		// Print out debug output.
 		if (registered) {
 			System.out.println("ParaViewProxyFactoryRegistry message: " + "\""
-					+ factory.getClass().getName() + "\" registered.");
+					+ factory.getName() + "\" registered.");
 		}
 
 		return registered;
@@ -131,7 +131,7 @@ public class ParaViewProxyFactoryRegistry implements
 		// Print out debug output.
 		if (unregistered) {
 			System.out.println("ParaViewProxyFactoryRegistry message: " + "\""
-					+ factory.getClass().getName() + "\" unregistered.");
+					+ factory.getName() + "\" unregistered.");
 		}
 
 		return unregistered;

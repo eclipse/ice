@@ -29,6 +29,14 @@ import java.util.Set;
 public interface IParaViewProxyFactory {
 
 	/**
+	 * Gets a nice name for the factory. This is primarily intended for use when
+	 * exposing the factory to the developer.
+	 * 
+	 * @return A name for the factory. Should not be {@code null}.
+	 */
+	String getName();
+
+	/**
 	 * Gets the set of supported extensions. Note that duplicate extensions are
 	 * not to be listed. The extensions should not include the leading period.
 	 * 
@@ -42,13 +50,15 @@ public interface IParaViewProxyFactory {
 	 * Creates an {@link IParaViewProxy} for the specified file based on its
 	 * extension.
 	 * 
-	 * @param file
-	 *            The file for which a proxy will be created. If {@code null}, a
-	 *            proxy will not be returned.
+	 * @param uri
+	 *            The file for which a proxy will be created.
 	 * @return An proxy for the file, or {@code null} if the specified file is
 	 *         null or a proxy cannot be created.
+	 * @throws NullPointerException
+	 *             If the provided URI is null.
 	 * @throws IllegalArgumentException
 	 *             If the file's extension is not supported by this proxy.
 	 */
-	IParaViewProxy createProxy(URI file) throws IllegalArgumentException;
+	IParaViewProxy createProxy(URI uri) throws NullPointerException,
+			IllegalArgumentException;
 }

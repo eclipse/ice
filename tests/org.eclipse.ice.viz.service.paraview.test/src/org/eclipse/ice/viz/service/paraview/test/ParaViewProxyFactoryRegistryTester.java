@@ -299,6 +299,14 @@ public class ParaViewProxyFactoryRegistryTester {
 	private class FakeProxyFactory implements IParaViewProxyFactory {
 
 		/**
+		 * Returns {@code null}.
+		 */
+		@Override
+		public String getName() {
+			return null;
+		}
+
+		/**
 		 * Returns an empty hash set.
 		 */
 		@Override
