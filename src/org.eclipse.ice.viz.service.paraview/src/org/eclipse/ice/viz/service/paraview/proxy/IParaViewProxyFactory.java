@@ -32,7 +32,9 @@ public interface IParaViewProxyFactory {
 	 * Gets the set of supported extensions. Note that duplicate extensions are
 	 * not to be listed. The extensions should not include the leading period.
 	 * 
-	 * @return The set of supported extensions for this factory.
+	 * @return The set of supported extensions for this factory. This should
+	 *         never be {@code null}, and should not change throughout the
+	 *         factory's lifecycle.
 	 */
 	Set<String> getExtensions();
 

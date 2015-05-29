@@ -36,7 +36,9 @@ public interface IParaViewProxyFactoryRegistry {
 	 * @param factory
 	 *            The factory to register. If {@code null}, nothing is
 	 *            registered.
-	 * @return True if the provided factory was registered, false otherwise.
+	 * @return True if the provided factory was registered, false otherwise
+	 *         (including the case where the factory has no supported
+	 *         extensions).
 	 */
 	boolean register(IParaViewProxyFactory factory);
 
@@ -50,18 +52,20 @@ public interface IParaViewProxyFactoryRegistry {
 	 * @param factory
 	 *            The factory to unregister. If {@code null}, nothing is
 	 *            unregistered.
-	 * @return True if the provided factory was unregistered, false otherwise.
+	 * @return True if the provided factory was unregistered, false otherwise
+	 *         (including the case where the factory has no supported
+	 *         extensions).
 	 */
 	boolean unregister(IParaViewProxyFactory factory);
 
 	/**
 	 * Gets a factory for the provided file based on its extension.
 	 * 
-	 * @param file
+	 * @param uri
 	 *            The file for which a proxy will be created. If {@code null}, a
 	 *            factory will not be returned.
 	 * @return A factory capable of creating a proxy for the file, or
 	 *         {@code null} if a factory could not be created for the file.
 	 */
-	IParaViewProxyFactory getFactory(URI file);
+	IParaViewProxyFactory getFactory(URI uri);
 }
