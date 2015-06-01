@@ -48,7 +48,7 @@ public abstract class EntryListener implements IUpdateableListener {
 	}
 
 	/**
-	 * Redirects the update method to {@link #updateEntry(Entry)}.
+	 * Redirects the update method to {@link #updateEntry()}.
 	 */
 	public final void update(IUpdateable component) {
 		if (component == entry) {
@@ -57,11 +57,6 @@ public abstract class EntryListener implements IUpdateableListener {
 		}
 	}
 
-	public void updateEntry1() {
-		System.out.println("Entry \"" + entry.getName() + "\" updated manually.");
-		updateEntry();
-	}
-	
 	/**
 	 * This method is only called if the Entry that was specified in the
 	 * constructor is valid and has been updated.

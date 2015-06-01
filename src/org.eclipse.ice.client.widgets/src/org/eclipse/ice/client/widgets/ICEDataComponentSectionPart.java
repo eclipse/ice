@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -206,10 +205,12 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IUpdateableListener#update(Component component)
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
+	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
 	public void update(IUpdateable component) {
 
@@ -235,7 +236,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 
 		// Refresh the section client to draw any new Entries
 		sectionClient.redraw();
-		
+
 		// Reflow the managed form to correct for any part overlap
 		parentForm.reflow(true);
 

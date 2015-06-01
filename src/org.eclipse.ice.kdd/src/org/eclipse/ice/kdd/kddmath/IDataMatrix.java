@@ -167,10 +167,11 @@ public class IDataMatrix implements IAbstractMatrix<IData> {
 		return elements.get(nCols * rowIndex + colIndex);
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IAbstractMatrix#setElement(int rowIndex, int colIndex, Double value)
+	 * @see org.eclipse.ice.kdd.kddmath.IAbstractMatrix#setElement(int, int,
+	 * java.lang.Object)
 	 */
 	public boolean setElement(int rowIndex, int colIndex, IData value) {
 		// TODO Auto-generated method stub

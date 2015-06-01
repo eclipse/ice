@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -127,7 +126,7 @@ public class DataComponentComposite extends Composite implements
 		if (dataComp != null) {
 			dataComp.register(this);
 		}
-		
+
 		// Add a dispose listener which unregisters from the DataComponent
 		addDisposeListener(new DisposeListener() {
 			@Override
@@ -161,79 +160,80 @@ public class DataComponentComposite extends Composite implements
 	}
 
 	/**
-	 * This operation handles a re-draw of EntryComposites that have been 
+	 * This operation handles a re-draw of EntryComposites that have been
 	 * recently changed. This method attempts to avoid a complete redraw of all
 	 * EntryComposites and only re-draws those that have been recently changed.
 	 */
 	public void refresh() {
-		
+
 		// Local Declarations
 		List<Entry> entries = dataComp.retrieveAllEntries();
-		
+
 		// If there's an empty label set and it's not longer necessary, dispose
 		if (!entries.isEmpty() && emptyLabel != null) {
 			emptyLabel.dispose();
 			emptyLabel = null;
 		}
-		
-		// If a selection change triggered this refresh, make sure to update 
+
+		// If a selection change triggered this refresh, make sure to update
 		// any Entries on the dataComp that need their value(s) updating
 		for (int i = 0; i < entries.size(); i++) {
 			Entry entry = dataComp.retrieveAllEntries().get(i);
 			EntryComposite entryComp = entryMap.get(i);
-			if (entryComp != null && 
-					!entry.getValue().equals(entryComp.entry.getValue())) {
+			if (entryComp != null
+					&& !entry.getValue().equals(entryComp.entry.getValue())) {
 				entry.setValue(entryComp.entry.getValue());
 			}
 		}
-				
-		// Begin comparing the list of Entries to the EntryComposites in 
+
+		// Begin comparing the list of Entries to the EntryComposites in
 		// entryMap to determine what needs to be done
-		int maxIterations = entries.size() > entryMap.size() ? 
-				entries.size() : entryMap.size();
-				
+		int maxIterations = entries.size() > entryMap.size() ? entries.size()
+				: entryMap.size();
+
 		for (int i = 0; i < maxIterations; i++) {
 			Entry entry = (i < entries.size() ? entries.get(i) : null);
-			EntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i) : null);
-			String value = (entryComp != null ? 
-					entryComp.entry.getValue() : 
-						(entry != null ? entry.getValue() : ""));
-			
+			EntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i)
+					: null);
+			String value = (entryComp != null ? entryComp.entry.getValue()
+					: (entry != null ? entry.getValue() : ""));
+
 			// First, if the Entry isn't supposed to be displayed, dispose it
 			// and move on (she ain't worth it, man...)
 			if (entry == null || !entry.isReady()) {
 				disposeEntry(i);
 				continue;
-				
+
 			} else if (entryComp == null && entry.isReady()) {
-				
-	 			// If the EntryComposite hasn't been rendered yet, render it,
+
+				// If the EntryComposite hasn't been rendered yet, render it,
 				// and add it to the entryMap
 				renderEntry(entry, i);
 				entryComp = entryMap.get(i);
 				entryComp.setEntryValue(value);
 				entryComp.refresh();
-				
+
 			} else {
-			
-				// Iterate through the Entry.AllowedValues and compare to the 
+
+				// Iterate through the Entry.AllowedValues and compare to the
 				// values of the corresponding EntryComposite in the map
 				for (int j = 0; j < entry.getAllowedValues().size(); j++) {
 					String allowedValue = entry.getAllowedValues().get(j);
-					
-					// Re-render Entries only if they've had a new AllowedValue 
+
+					// Re-render Entries only if they've had a new AllowedValue
 					// added
-					if (!entryComp.entry.getAllowedValues().contains(allowedValue)) {
+					if (!entryComp.entry.getAllowedValues().contains(
+							allowedValue)) {
 						disposeEntry(i);
 						renderEntry(entry, i);
 						entryComp = entryMap.get(i);
 						entryComp.setEntryValue(value);
 						entryComp.refresh();
-					}			
+					}
 				}
 			}
 		}
-		
+
 		// Layout the DataComponentComposite. This can redraw stale widgets.
 		layout();
 
@@ -301,8 +301,8 @@ public class DataComponentComposite extends Composite implements
 	private void renderEntries() {
 
 		// Try to get the list of ready Entries from the DataComponent.
-		List<Entry> entries = (dataComp != null ? 
-				dataComp.retrieveAllEntries() : null);
+		List<Entry> entries = (dataComp != null ? dataComp.retrieveAllEntries()
+				: null);
 
 		// If the list is not null and not empty, try to render the Entries.
 		if (entries != null && !entries.isEmpty()) {
@@ -378,8 +378,8 @@ public class DataComponentComposite extends Composite implements
 	 * @param entry
 	 *            The Entry for which the Control should be created.
 	 * @param index
-	 * 			  The index in the entryMap of where the rendered EntryComposite
-	 * 			  will be put.
+	 *            The index in the entryMap of where the rendered EntryComposite
+	 *            will be put.
 	 */
 	private void renderEntry(Entry entry, int index) {
 
@@ -412,28 +412,27 @@ public class DataComponentComposite extends Composite implements
 				true, false));
 		// Set the Listener.
 		entryComposite.addListener(SWT.Selection, entryListener);
-		
+
 		// Add the EntryComposite to the Map
 		entryMap.put(index, entryComposite);
-		
-		// Lastly, reorder the EntryComposites on this DataComponentComposite 
+
+		// Lastly, reorder the EntryComposites on this DataComponentComposite
 		// to be in the correct order (according to their index in the entryMap)
-		
-		// Begin by getting a list of the EntryComposites as they appear in the 
+
+		// Begin by getting a list of the EntryComposites as they appear in the
 		// UI, and make a map indexing them based on their order.
 		List<Control> uiEntryComps = Arrays.asList(getChildren());
-		HashMap<Integer, EntryComposite> uiMap = 
-				new HashMap<Integer, EntryComposite>();
+		HashMap<Integer, EntryComposite> uiMap = new HashMap<Integer, EntryComposite>();
 		for (int i = 0; i < uiEntryComps.size(); i++) {
 			EntryComposite e = (EntryComposite) uiEntryComps.get(i);
-			if (e != null ) {
+			if (e != null) {
 				uiMap.put(i, e);
 			}
 		}
-		
+
 		// Go through the entryMap and compare the order to the uiMap order
 		for (int i = 0; i < entryMap.size(); i++) {
-			
+
 			// Get the Entries from the entryMap and UI and make sure they're
 			// valid
 			Entry mapEntry = null, uiEntry = null;
@@ -444,8 +443,8 @@ public class DataComponentComposite extends Composite implements
 			if (mapEntry == null || uiEntry == null) {
 				continue;
 			}
-			
-			// If the Entries don't match, find where in the UI the 
+
+			// If the Entries don't match, find where in the UI the
 			// corresponding EntryComposite really is
 			int uiPosition = 0;
 			if (!mapEntry.getName().equals(uiEntry.getName())) {
@@ -456,18 +455,18 @@ public class DataComponentComposite extends Composite implements
 						break;
 					}
 				}
-				
+
 				// Now determine where to move the UI EntryComposite
-				if (i-1 >= 0) {
+				if (i - 1 >= 0) {
 					// Try getting the EntryComposite above the proper location
-					EntryComposite entryAbove = uiMap.get(i-1);
+					EntryComposite entryAbove = uiMap.get(i - 1);
 					// Move the UI EntryComposite into its correct position
 					if (entryAbove != null) {
 						uiMap.get(uiPosition).moveBelow(entryAbove);
 					}
-				} else if (i+1 <= entryMap.size()) {
+				} else if (i + 1 <= entryMap.size()) {
 					// Try getting the EntryComposite below the proper location
-					EntryComposite entryBelow = uiMap.get(i+1);
+					EntryComposite entryBelow = uiMap.get(i + 1);
 					// Move the UI EntryComposite into its correct position
 					if (entryBelow != null) {
 						uiMap.get(uiPosition).moveAbove(entryBelow);
@@ -543,10 +542,12 @@ public class DataComponentComposite extends Composite implements
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IUpdateableListener#update(Component component)
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
+	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
 	public void update(IUpdateable component) {
 

@@ -181,7 +181,7 @@ public class SuiteLauncher extends JobLauncher {
 	 * This operation sets the list of executables from which clients can make a
 	 * choice.
 	 * 
-	 * @param executableList
+	 * @param executables
 	 *            The list of executables available to launch.
 	 */
 	public void addExecutables(ArrayList<String> executables) {

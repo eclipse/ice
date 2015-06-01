@@ -41,7 +41,7 @@ public interface IPlantCompositeListener {
 	 * 
 	 * @param composite
 	 *            The PlantComposite that has removed PlantComponents.
-	 * @param added
+	 * @param removed
 	 *            A list of the removed PlantComponents.
 	 */
 	public void removedComponents(PlantComposite composite,

@@ -12,19 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd;
 
-import org.eclipse.ice.analysistool.IAnalysisDocument;
-
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.eclipse.ice.analysistool.IAnalysisAsset;
+import org.eclipse.ice.analysistool.IAnalysisDocument;
 import org.eclipse.ice.analysistool.IDataProvider;
-
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
-
-import java.net.URI;
 
 /**
  * <p>
@@ -187,11 +183,10 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 		}
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#loadData(URI data)
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public boolean loadData(URI data) {
 
 		// Currently not accepting URI data
@@ -199,11 +194,10 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#loadData(IDataProvider data)
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public boolean loadData(IDataProvider data) {
 
 		// Make sure this is valid data
@@ -223,11 +217,10 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 		return true;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#loadReferenceData(URI data)
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public boolean loadReferenceData(URI data) {
 
 		// Currently not accepting URI data
@@ -235,11 +228,10 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#loadReferenceData(IDataProvider data)
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public boolean loadReferenceData(IDataProvider data) {
 
 		// Make sure this is valid data
@@ -256,38 +248,34 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 		return true;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#getData()
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public URI getData() {
 		return null;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#getAvailableAssets()
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public ArrayList<String> getAvailableAssets() {
 		return availableAssets;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#getSelectedAssets()
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public ArrayList<String> getSelectedAssets() {
 		return selectedAssets;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#setSelectedAssets(ArrayList<String> assets)
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public void setSelectedAssets(ArrayList<String> assets) {
 		// Make sure its a valid list of assets
 		if (assets != null && !assets.isEmpty()) {
@@ -298,11 +286,10 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#createSelectedAssets()
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public void createSelectedAssets() {
 
 		// We may have more than one set of data to use,
@@ -347,38 +334,34 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#getTotalSlices()
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public int getTotalSlices() {
 		return 0;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#getSliceIdentifier(int sliceNumber)
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public String getSliceIdentifier(int sliceNumber) {
 		return null;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#getAssetsAtSlice(int sliceNumber)
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public ArrayList<IAnalysisAsset> getAssetsAtSlice(int sliceNumber) {
 		return getAllAssets();
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#getAllAssets()
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public ArrayList<IAnalysisAsset> getAllAssets() {
 		if (createdAssets != null && !createdAssets.isEmpty()) {
 			return createdAssets;
@@ -387,11 +370,10 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 		}
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IAnalysisDocument#getReferenceData()
+	/*
+	 * Implements a method from IAnalysisDocument.
 	 */
+	@Override
 	public URI getReferenceData() {
 		return null;
 	}

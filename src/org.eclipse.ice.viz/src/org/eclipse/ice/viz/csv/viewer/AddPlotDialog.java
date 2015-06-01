@@ -100,7 +100,7 @@ public class AddPlotDialog extends Dialog {
 	/**
 	 * Returns the array of selections that the user chose.
 	 * 
-	 * @return
+	 * @return The selection of plot types. Multiple types may be selected.
 	 */
 	public String[] getSelections() {
 		return selections;

@@ -102,10 +102,6 @@ public class PlantControllerManager {
 	 * @param app
 	 *            The jME3 PlantAppState for which this class manages
 	 *            controllers (and views).
-	 * @param updateQueue
-	 *            The PlantAppState's thread-safe queue of actions. This is
-	 *            required for the managed controllers to synchronize their
-	 *            views with the jME3 application's simpleUpdate() thread.
 	 */
 	public PlantControllerManager(PlantAppState app) {
 

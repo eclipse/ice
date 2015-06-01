@@ -324,6 +324,7 @@ import org.eclipse.ptp.remote.core.exception.RemoteConnectionException;
  * of a command. This assumption is valid on Windows, Linux and Unix systems so
  * long as the Windows shell is Powershell.
  * <p>
+ * 
  * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class JobLaunchAction extends Action implements Runnable {
@@ -453,7 +454,7 @@ public class JobLaunchAction extends Action implements Runnable {
 		isLocal = new AtomicBoolean();
 		fileMap = new Hashtable<String, String>();
 		cancelled = new AtomicBoolean(false);
-		
+
 		// Get the maxFileSize from the system properties
 		String fileSize = System.getProperty("max_download_size");
 		if (fileSize != null) {
@@ -463,7 +464,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			// hardcoded value
 			maxFileSize = 52428800;
 		}
-		
+
 		return;
 	}
 
@@ -1311,10 +1312,10 @@ public class JobLaunchAction extends Action implements Runnable {
 		return status;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Action#execute(Dictionary<String,String> dictionary)
+	 * @see org.eclipse.ice.item.action.Action#execute(java.util.Dictionary)
 	 */
 	public FormStatus execute(Dictionary<String, String> dictionary) {
 

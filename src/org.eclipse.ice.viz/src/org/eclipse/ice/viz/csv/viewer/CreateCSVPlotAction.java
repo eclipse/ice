@@ -44,11 +44,13 @@ public class CreateCSVPlotAction extends Action {
 	/**
 	 * The constructor
 	 * 
-	 * @param parent
+	 * @param parentView
 	 *            The ViewPart to whom the object of this class belongs.
+	 * @param parentAction
+	 *            The AddFileAction to whom the object of this class belongs.
 	 */
 	public CreateCSVPlotAction(ViewPart parentView,
-			AddCSVPlotAction parentButton) {
+			AddCSVPlotAction parentAction) {
 
 		// Keep track of the viewer and parent Action containing this Action
 		viewer = parentView;

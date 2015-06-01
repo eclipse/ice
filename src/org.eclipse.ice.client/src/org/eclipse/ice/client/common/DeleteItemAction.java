@@ -56,8 +56,8 @@ public class DeleteItemAction extends Action implements ISelectionListener,
 	/**
 	 * Constructor
 	 * 
-	 * @param IWorkbenchWindow
-	 *            window - the window that should be used by the action
+	 * @param window
+	 *            The window that should be used by the action
 	 */
 	public DeleteItemAction(IWorkbenchWindow window) {
 
@@ -117,9 +117,6 @@ public class DeleteItemAction extends Action implements ISelectionListener,
 
 	/**
 	 * Empty method to override a change in the selection
-	 * 
-	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.
-	 *      IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// TODO Auto-generated method stub

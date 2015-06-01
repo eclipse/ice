@@ -34,7 +34,6 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
-import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.TableFormat;
@@ -101,7 +100,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 	 * the work performed by the default constructor to locate the database
 	 * files with values provided by the caller.
 	 * 
-	 * @param testXMLDatabase
+	 * @param testUserXMLDatabase
 	 *            The XML file that contains the materials.
 	 * @param testDefaultXMLDatabase
 	 *            The XML file that contains the materials that should be

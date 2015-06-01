@@ -12,11 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import java.util.ArrayList;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.xml.bind.JAXBException;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -142,7 +139,7 @@ public class Quad extends Polygon {
 	 * using a deep copy.
 	 * </p>
 	 * 
-	 * @param polygon
+	 * @param quad
 	 *            <p>
 	 *            The Object from which the values should be copied.
 	 *            </p>

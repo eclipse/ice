@@ -12,13 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,11 +21,14 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 /**
  * <p>
@@ -734,7 +730,7 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *            <p>
 	 *            The ID of the first vertex.
 	 *            </p>
-	 * @param second
+	 * @param secondId
 	 *            <p>
 	 *            The ID of the second vertex.
 	 *            </p>

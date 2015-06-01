@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
-
+import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.Hex;

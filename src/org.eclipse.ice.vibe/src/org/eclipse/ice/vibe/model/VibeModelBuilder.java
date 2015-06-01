@@ -18,33 +18,32 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <p>
- * This class builds and manages the VibeModel. It inherits its operations
- * from ItemBuilder.
- * </p>
+ * This class builds and manages the VibeModel. It inherits its operations from
+ * ItemBuilder.
  * 
  * @author Scott Forest Hull II, Andrew Bennett
  */
 public class VibeModelBuilder implements ItemBuilder {
-	/**
-	 * (non-Javadoc)
-	 * @see ItemBuilder#getItemName()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
+	@Override
 	public String getItemName() {
 		return "VIBE Model";
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * @see ItemBuilder#getItemType()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
+	@Override
 	public ItemType getItemType() {
 		return ItemType.Model;
 	}
 
-	/**
-	 * @see ItemBuilder#build(Interface projectSpace)
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 
 		// Create a model

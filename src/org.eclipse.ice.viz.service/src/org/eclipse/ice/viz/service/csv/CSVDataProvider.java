@@ -569,8 +569,10 @@ public class CSVDataProvider implements IDataProvider {
 	/**
 	 * Returns the integer time step at the given time
 	 * 
-	 * @param the
-	 *            time, or -1 if the time is invalid.
+	 * @param time
+	 *            The time whose timestep will be found.
+	 * @return The timestep for the time (its index in the data), or -1 if the
+	 *         time is invalid.
 	 */
 	@Override
 	public int getTimeStep(double time) {

@@ -54,7 +54,10 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  * This class is a FormPage that creates a page with table and metadata viewing
  * area for an ICE ResourceComponent.
  * 
- * @authors Jay Jay Billings, Taylor Patterson, Anna Wojtowicz, Jordan Deyton
+ * @author Jay Jay Billings
+ * @author Taylor Patterson
+ * @author Anna Wojtowicz
+ * @author Jordan Deyton
  */
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		IUpdateableListener {
@@ -427,7 +430,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * This operation sets the IVizServiceFactory that should be used to create
 	 * plots.
 	 * 
-	 * @param service
+	 * @param factory
 	 *            The service factory that should be used
 	 */
 	public void setVizService(IVizServiceFactory factory) {

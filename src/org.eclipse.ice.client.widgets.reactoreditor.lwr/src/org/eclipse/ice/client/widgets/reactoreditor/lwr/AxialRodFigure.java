@@ -22,6 +22,7 @@ import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.StackLayout;
+import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.MaterialBlock;
 import org.eclipse.ice.reactor.Ring;
@@ -44,6 +45,10 @@ public class AxialRodFigure extends RodFigure {
 	 */
 	private final Figure data;
 
+	/**
+	 * The default constructor. Responsible for creating a default, axial
+	 * (vertical slice) view of a rod.
+	 */
 	public AxialRodFigure() {
 		// Set up the default RodFigure first.
 		super();

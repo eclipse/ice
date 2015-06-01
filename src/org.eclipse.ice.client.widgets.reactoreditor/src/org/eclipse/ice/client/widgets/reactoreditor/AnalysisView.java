@@ -149,7 +149,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * Fills out the parent Composite with information and widgets related to
 	 * this particular IAnalysisView.
 	 * 
-	 * @param parent
+	 * @param container
 	 *            The Composite containing this IAnalysisView.
 	 */
 	public void createViewContent(Composite container) {

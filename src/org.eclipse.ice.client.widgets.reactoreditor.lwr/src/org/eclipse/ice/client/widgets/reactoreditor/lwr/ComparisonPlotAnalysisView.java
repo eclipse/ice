@@ -13,15 +13,16 @@
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
 import org.eclipse.ice.analysistool.IDataProvider;
-
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisDataReader;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-
+import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisView;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.reactor.GridLabelProvider;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRDataProvider;
+import org.eclipse.ice.reactor.pwr.FuelAssembly;
+import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 
 import java.net.URI;
 import java.util.ArrayList;

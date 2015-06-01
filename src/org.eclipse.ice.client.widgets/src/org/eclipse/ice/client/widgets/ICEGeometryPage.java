@@ -1,42 +1,32 @@
 /*******************************************************************************
-* Copyright (c) 2012, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import java.awt.Canvas;
-import java.awt.EventQueue;
-import java.awt.Frame;
-
-import static org.eclipse.ice.client.widgets.geometry.ShapeTreeView.*;
-import static org.eclipse.ice.client.widgets.geometry.TransformationView.*;
-
-import org.eclipse.ice.client.widgets.geometry.GeometryApplication;
 import org.eclipse.ice.client.widgets.geometry.GeometryCompositeFactory;
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeView;
 import org.eclipse.ice.client.widgets.geometry.TransformationView;
-import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * <p>
@@ -47,8 +37,7 @@ import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
  * 
  * @author Jay Jay Billings
  */
-public class ICEGeometryPage extends ICEFormPage implements
-		IUpdateableListener {
+public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener {
 	/**
 	 * <p>
 	 * The property that determines whether there is a need to Save.
@@ -183,10 +172,12 @@ public class ICEGeometryPage extends ICEFormPage implements
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IUpdateableListener#update(Component component)
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
+	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
 	public void update(IUpdateable component) {
 		dirty = true;

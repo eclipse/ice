@@ -70,9 +70,6 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 
 	/**
 	 * Create the tree viewer that shows the TreeComposite for the current Form
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 *      .Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {

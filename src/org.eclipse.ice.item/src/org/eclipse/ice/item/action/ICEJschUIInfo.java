@@ -12,17 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.item.action;
 
-import com.jcraft.jsch.UIKeyboardInteractive;
-import com.jcraft.jsch.UserInfo;
-
-import static org.eclipse.ice.item.action.LoginInfoForm.*;
-
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 
-import java.util.ArrayList;
+import com.jcraft.jsch.UIKeyboardInteractive;
+import com.jcraft.jsch.UserInfo;
 
 /**
  * <p>
@@ -93,11 +90,12 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	}
 
 	/**
-	 * (non-Javadoc)
+	 * Re-directs to
+	 * {@link #promptKeyboardInteractive(String, String, String, String[], boolean[])}
+	 * and has a different signature, although the functionality is the same.
 	 * 
-	 * @see UIKeyboardInteractive#promptKeyboardInteractive(String destination,
-	 *      String name, String instruction, ArrayList<String> prompt,
-	 *      boolean... echo)
+	 * @see #promptKeyboardInteractive(String, String, String, String[],
+	 *      boolean[])
 	 */
 	public ArrayList<String> promptKeyboardInteractive(String destination,
 			String name, String instruction, ArrayList<String> prompt,
@@ -118,10 +116,6 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	/**
 	 * This operation fakes out Jsch's keyboard interactive check and gives it
 	 * the stored password.
-	 * 
-	 * @see UIKeyboardInteractive#promptKeyboardInteractive(String destination,
-	 *      String name, String instruction, ArrayList<String> prompt,
-	 *      boolean... echo)
 	 */
 	public String[] promptKeyboardInteractive(String destination, String name,
 			String instruction, String[] prompt, boolean[] echo) {

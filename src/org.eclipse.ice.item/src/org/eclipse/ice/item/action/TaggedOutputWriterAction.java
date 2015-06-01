@@ -17,7 +17,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 
 import org.eclipse.ice.datastructures.form.FormStatus;
 
@@ -45,10 +44,10 @@ public class TaggedOutputWriterAction extends Action {
 		super();
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Action#execute(Dictionary<Object> dictionary)
+	 * @see org.eclipse.ice.item.action.Action#execute(java.util.Dictionary)
 	 */
 	public FormStatus execute(Dictionary<String, String> dictionary) {
 

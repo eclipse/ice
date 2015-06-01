@@ -239,7 +239,7 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 	 * Returns the material of the ring.
 	 * </p>
 	 * 
-	 * @return
+	 * @return A reference to the ring's material.
 	 */
 	public Material getMaterial() {
 

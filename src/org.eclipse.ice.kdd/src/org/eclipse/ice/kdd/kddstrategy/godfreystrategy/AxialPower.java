@@ -13,8 +13,6 @@
 package org.eclipse.ice.kdd.kddstrategy.godfreystrategy;
 
 import java.io.ByteArrayInputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,16 +92,13 @@ public class AxialPower extends GodfreySubStrategy {
 	private boolean calculateDiffs;
 
 	/**
-	 * <p>
-	 * The constructor, takes an instance of the PinPowerDifference substrategy
+	 * The constructor takes an instance of the PinPowerDifference substrategy
 	 * for use in calculating the axial power difference.
-	 * </p>
 	 * 
 	 * @param difference
 	 * @param pinPowers
 	 * @param refPinPowers
 	 * @param weights
-	 * @param props
 	 */
 	public AxialPower(PinPowerDifference difference,
 			HashMap<Integer, ArrayList<IDataMatrix>> pinPowers,

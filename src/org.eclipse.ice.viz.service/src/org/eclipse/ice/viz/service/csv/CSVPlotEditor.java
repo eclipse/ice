@@ -47,7 +47,10 @@ import org.eclipse.ui.part.EditorPart;
  * files. It is opened by the associated visualization views in
  * org.eclipse.ice.viz.
  * 
- * @authors Matthew Wang, Taylor Patterson, Anna Wojtowicz, Jordan Deyton
+ * @author Matthew Wang
+ * @author Taylor Patterson
+ * @author Anna Wojtowicz
+ * @author Jordan Deyton
  */
 public class CSVPlotEditor extends EditorPart {
 
@@ -83,32 +86,24 @@ public class CSVPlotEditor extends EditorPart {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.
-	 *      IProgressMonitor)
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void doSaveAs() {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite,
-	 *      org.eclipse.ui.IEditorInput)
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
@@ -121,20 +116,16 @@ public class CSVPlotEditor extends EditorPart {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#isDirty()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public boolean isDirty() {
 		return false;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
@@ -165,10 +156,8 @@ public class CSVPlotEditor extends EditorPart {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void setFocus() {

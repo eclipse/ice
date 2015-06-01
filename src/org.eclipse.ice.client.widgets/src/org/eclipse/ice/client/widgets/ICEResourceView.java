@@ -69,7 +69,10 @@ import ca.odell.glazedlists.swt.DefaultEventTableViewer;
  * This class is a ViewPart that creates a tree of text files and a tree of
  * image files collected as ICEResourceComponents.
  * 
- * @authors Jay Jay Billings, Taylor Patterson, Jordan Deyton, Anna Wojtowicz
+ * @author Jay Jay Billings
+ * @author Taylor Patterson
+ * @author Jordan Deyton
+ * @author Anna Wojtowicz
  */
 public class ICEResourceView extends PlayableViewPart implements
 		IUpdateableListener, IPartListener2, IDoubleClickListener {
@@ -92,14 +95,14 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * </p>
 	 */
 	private ResourceComponent resourceComponent;
-	
+
 	/**
-	 * The ICEResourcePage managed by this view. This changes based on the 
-	 * currently active ICEFormEditor. This page should also refer to the same 
+	 * The ICEResourcePage managed by this view. This changes based on the
+	 * currently active ICEFormEditor. This page should also refer to the same
 	 * ResourceComponent used by this view.
 	 */
 	private ICEResourcePage resourcePage;
-	
+
 	// -------------------------------------- //
 
 	/**
@@ -252,7 +255,8 @@ public class ICEResourceView extends PlayableViewPart implements
 			resourceComponent.unregister(this);
 
 			// Clear the related UI pieces.
-			if (resourceTreeViewer != null) {
+			if (resourceTreeViewer != null
+					&& !resourceTreeViewer.getControl().isDisposed()) {
 				textList.clear();
 				imageList.clear();
 				resourceTreeViewer.refresh();
@@ -366,7 +370,7 @@ public class ICEResourceView extends PlayableViewPart implements
 				for (IEditorReference e : editorRefs) {
 					// If it's an ICEFormEditor, set it as the active editor
 					if (e.getId().equals(ICEFormEditor.ID)) {
-						setActiveEditor((ICEFormEditor) e);
+						setActiveEditor((ICEFormEditor) e.getEditor(false));
 						break;
 					}
 				}
@@ -490,11 +494,11 @@ public class ICEResourceView extends PlayableViewPart implements
 	 */
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
-		
+
 		// Get the associated resource
 		ISelection selection = event.getSelection();
 		ICEResource selectedResource = getResourceFromSelection(selection);
-	
+
 		// If it's valid, try to display it on the ResourcePage
 		if (selectedResource != null) {
 			try {
@@ -503,10 +507,10 @@ public class ICEResourceView extends PlayableViewPart implements
 				e.printStackTrace();
 			}
 		}
-		
+
 		return;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -534,7 +538,8 @@ public class ICEResourceView extends PlayableViewPart implements
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					// Just do a blanket update - no need to check the component
-					if (resourceTreeViewer != null) {
+					if (resourceTreeViewer != null
+							&& !resourceTreeViewer.getControl().isDisposed()) {
 						System.out.println("ICEResourceView Message: "
 								+ "Updating resource table.");
 						sortTreeContent();
@@ -884,14 +889,6 @@ public class ICEResourceView extends PlayableViewPart implements
 			}
 		});
 
-		return;
-	}
-
-	/**
-	 * @see PlayableViewPart#removeSelection()
-	 */
-	public void removeSelection() {
-		// Not used at this time
 		return;
 	}
 

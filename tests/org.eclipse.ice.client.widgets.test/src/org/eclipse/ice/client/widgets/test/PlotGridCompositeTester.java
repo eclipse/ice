@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,15 +40,24 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	/**
 	 * The shared {@link PlotGridComposite} that will be tested.
 	 */
-	private PlotGridComposite composite;
+	private static PlotGridComposite composite;
+
+	/**
+	 * A non-static, non-shared {@link PlotGridComposite} for testing.
+	 */
+	private PlotGridComposite testComposite;
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#setupTests()
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeAllTests()
 	 */
 	@Override
-	protected void setupTests() {
+	public void beforeAllTests() {
+		super.beforeAllTests();
+
+		// Initialize static or otherwise shared resources here.
 
 		// Create the composite that will be tested.
 		getDisplay().syncExec(new Runnable() {
@@ -68,10 +73,37 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#cleanupTests()
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeEachTest()
 	 */
 	@Override
-	protected void cleanupTests() {
+	public void beforeEachTest() {
+		super.beforeEachTest();
+
+		// Initialize per-test resources here.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterEachTest()
+	 */
+	@Override
+	public void afterEachTest() {
+		// Dispose per-test resources here.
+
+		// Proceed with the default post-test cleanup.
+		super.afterEachTest();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterAllTests()
+	 */
+	@Override
+	public void afterAllTests() {
+		// Dispose static or otherwise shared resources here.
 
 		// Dispose the composite.
 		getDisplay().syncExec(new Runnable() {
@@ -82,7 +114,8 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		});
 		composite = null;
 
-		return;
+		// Proceed with the default post-tests cleanup.
+		super.afterAllTests();
 	}
 
 	/**
@@ -98,7 +131,16 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkToolBar() {
 
-		SWTBot bot = getBot();
+		// Create a new composite for testing.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				testComposite = new PlotGridComposite(getShell(), SWT.NONE);
+			}
+		});
+		PlotGridComposite composite = testComposite;
+
+		SWTBot bot = new SWTBot(composite);
 		SWTBotSpinner spinner;
 		SWTBotLabel label;
 		ToolBar toolBar;
@@ -117,7 +159,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		assertSame(children[0], getParent(label.widget));
 
 		// Check the order of the row spinner.
-		spinner = getRowSpinner();
+		spinner = bot.spinner(0);
 		assertSame(children[1], spinner.widget);
 		// Check the spinner's specifications.
 		assertEquals(1, spinner.getIncrement());
@@ -131,7 +173,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		assertSame(children[2], getParent(label.widget));
 
 		// Check the order of the row spinner.
-		spinner = getColumnSpinner();
+		spinner = bot.spinner(1);
 		assertSame(children[3], spinner.widget);
 		// Check the spinner's specifications.
 		assertEquals(1, spinner.getIncrement());
@@ -489,6 +531,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		try {
 			index = addPlot(plot);
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
@@ -932,119 +975,4 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	private SWTBotSpinner getColumnSpinner() {
 		return getBot().spinner(1);
 	}
-
-	/**
-	 * A simple {@link IPlot} implementation for testing the plot grid.
-	 * 
-	 * @author Jordan Deyton
-	 *
-	 */
-	private class FakePlot implements IPlot {
-
-		/**
-		 * The map of plot types. This will not be populated with anything by
-		 * default.
-		 */
-		public final Map<String, String[]> plotTypes = new HashMap<String, String[]>();
-
-		/**
-		 * A list of all child composites created when
-		 * {@link #draw(String, String, Composite)} is called.
-		 */
-		public final List<Composite> children = new ArrayList<Composite>();
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.IPlot#getPlotTypes()
-		 */
-		@Override
-		public Map<String, String[]> getPlotTypes() throws Exception {
-			return plotTypes;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.IPlot#draw(java.lang.String,
-		 * java.lang.String, org.eclipse.swt.widgets.Composite)
-		 */
-		@Override
-		public Composite draw(String category, String plotType, Composite parent)
-				throws Exception {
-			Composite child = new Composite(parent, SWT.NONE);
-			children.add(child);
-			child.setMenu(parent.getMenu());
-			return child;
-		}
-
-		/**
-		 * Gets the number of times that
-		 * {@link #draw(String, String, Composite)} was called.
-		 */
-		public int getDrawCount() {
-			return children.size();
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.IPlot#getNumberOfAxes()
-		 */
-		@Override
-		public int getNumberOfAxes() {
-			return 0;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.IPlot#getProperties()
-		 */
-		@Override
-		public Map<String, String> getProperties() {
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.IPlot#setProperties(java.util.Map)
-		 */
-		@Override
-		public void setProperties(Map<String, String> props) throws Exception {
-			// Do nothing.
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.IPlot#getDataSource()
-		 */
-		@Override
-		public URI getDataSource() {
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.IPlot#getSourceHost()
-		 */
-		@Override
-		public String getSourceHost() {
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.IPlot#isSourceRemote()
-		 */
-		@Override
-		public boolean isSourceRemote() {
-			return false;
-		}
-	}
-
 }

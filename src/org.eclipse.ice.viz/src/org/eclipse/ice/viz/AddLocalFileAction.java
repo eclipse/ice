@@ -44,16 +44,16 @@ public class AddLocalFileAction extends Action {
 	/**
 	 * The constructor
 	 * 
-	 * @param parent
+	 * @param parentView
 	 *            The ViewPart to whom the object of this class belongs.
 	 * @param parentAction
 	 *            The AddFileAction to whom the object of this class belongs.
 	 */
-	public AddLocalFileAction(ViewPart parentView, AddFileAction parentButton) {
+	public AddLocalFileAction(ViewPart parentView, AddFileAction parentAction) {
 
 		// Keep track of the viewer and parent Action containing this Action
 		viewer = parentView;
-		parentAction = parentButton;
+		this.parentAction = parentAction;
 
 		// Set the display text
 		setText("Add a local file");

@@ -11,20 +11,24 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.MultiPartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.junit.BeforeClass;
 
@@ -57,6 +61,13 @@ public abstract class AbstractWorkbenchTester extends
 		AbstractICEUITester<SWTWorkbenchBot> {
 
 	/**
+	 * The {@code SWTBot} for this test class instance. This bot is to aid in
+	 * performing UI tests that simulate user interaction with workbench-based
+	 * plug-ins.
+	 */
+	private static SWTWorkbenchBot bot;
+
+	/**
 	 * Tries to close the "Welcome" view if it is open. This only needs to be
 	 * done once, and nothing needs to be disposed afterward.
 	 */
@@ -77,11 +88,69 @@ public abstract class AbstractWorkbenchTester extends
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.test.AbstractICEUITester#createBot()
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#getBot()
 	 */
 	@Override
-	protected SWTWorkbenchBot createBot() {
-		return new SWTWorkbenchBot();
+	protected SWTWorkbenchBot getBot() {
+		return bot;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeAllTests()
+	 */
+	@Override
+	public void beforeAllTests() {
+		super.beforeAllTests();
+
+		// Initialize static or otherwise shared resources here.
+
+		// Set up the SWTBot for the workbench.
+		bot = new SWTWorkbenchBot();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.AbstractUITester#beforeEachTest()
+	 */
+	@Override
+	public void beforeEachTest() {
+		super.beforeEachTest();
+
+		// Initialize per-test resources here.
+		// Nothing to do yet.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterEachTest()
+	 */
+	@Override
+	public void afterEachTest() {
+		// Dispose per-test resources here.
+		// Nothing to do yet.
+
+		// Proceed with the default post-test cleanup.
+		super.afterEachTest();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.test.AbstractUITester#afterAllTests()
+	 */
+	@Override
+	public void afterAllTests() {
+		// Dispose static or otherwise shared resources here.
+		// Nothing to do yet.
+
+		// Proceed with the default post-tests cleanup.
+		super.afterAllTests();
 	}
 
 	/**
@@ -94,8 +163,9 @@ public abstract class AbstractWorkbenchTester extends
 	 *            The Eclipse editor's ID as defined in the plug-in extensions.
 	 * @return The opened editor, or {@code null} if it could not be opened.
 	 */
-	protected IEditorPart openEditor(final IEditorInput input, final String id) {
-		final AtomicReference<IEditorPart> editorRef = new AtomicReference<IEditorPart>();
+	protected IEditorReference openEditor(final IEditorInput input,
+			final String id) {
+		final AtomicReference<IEditorReference> editorRef = new AtomicReference<IEditorReference>();
 
 		// This must be done on the UI thread. Use syncExec so that this method
 		// will block until the editor can be opened.
@@ -109,9 +179,14 @@ public abstract class AbstractWorkbenchTester extends
 
 				// Try to open the editor in the workbench.
 				try {
-					IEditorPart editor = page.openEditor(input, id);
-					editorRef.set(editor);
-				} catch (PartInitException e) {
+					// IEditorPart editor = page.openEditor(input, id);
+					IEditorReference[] refs = page.openEditors(
+							new IEditorInput[] { input }, new String[] { id },
+							IWorkbenchPage.MATCH_NONE);
+					if (refs.length > 0) {
+						editorRef.set(refs[0]);
+					}
+				} catch (MultiPartInitException e) {
 					// Nothing to do.
 				}
 
@@ -129,7 +204,7 @@ public abstract class AbstractWorkbenchTester extends
 	 *            The form to open.
 	 * @return The opened editor, or {@code null} if it could not be opened.
 	 */
-	protected ICEFormEditor openICEFormEditor(Form form) {
+	protected IEditorReference openICEFormEditor(Form form) {
 		return openICEFormEditor(form, ICEFormEditor.ID);
 	}
 
@@ -142,7 +217,7 @@ public abstract class AbstractWorkbenchTester extends
 	 *            The Eclipse editor's ID as defined in the plug-in extensions.
 	 * @return The opened editor, or {@code null} if it could not be opened.
 	 */
-	protected ICEFormEditor openICEFormEditor(Form form, String id) {
+	protected IEditorReference openICEFormEditor(Form form, String id) {
 		return openICEFormEditor(new ICEFormInput(form), id);
 	}
 
@@ -153,7 +228,7 @@ public abstract class AbstractWorkbenchTester extends
 	 *            The ICE editor's input.
 	 * @return The opened editor, or {@code null} if it could not be opened.
 	 */
-	protected ICEFormEditor openICEFormEditor(ICEFormInput input) {
+	protected IEditorReference openICEFormEditor(ICEFormInput input) {
 		return openICEFormEditor(input, ICEFormEditor.ID);
 	}
 
@@ -166,8 +241,8 @@ public abstract class AbstractWorkbenchTester extends
 	 *            The Eclipse editor's ID as defined in the plug-in extensions.
 	 * @return The opened editor, or {@code null} if it could not be opened.
 	 */
-	protected ICEFormEditor openICEFormEditor(ICEFormInput input, String id) {
-		return (ICEFormEditor) openEditor(input, id);
+	protected IEditorReference openICEFormEditor(ICEFormInput input, String id) {
+		return openEditor(input, id);
 	}
 
 	/**
@@ -214,5 +289,53 @@ public abstract class AbstractWorkbenchTester extends
 	 */
 	protected void closeView(String name) {
 		getBot().viewByTitle(name).close();
+	}
+
+	/**
+	 * Creates an {@link ICEResource}. The file's existence or filename validity
+	 * is not checked, so use wisely.
+	 * 
+	 * @param file
+	 *            The file for which an {@code ICEResource} will be created.
+	 *            Must not be {@code null}.
+	 * @return A new {@code ICEResource}, or {@code null} if a new resource
+	 *         could not be created.
+	 */
+	protected ICEResource createICEResource(File file) {
+		ICEResource iceResource = null;
+		if (file != null) {
+			try {
+				iceResource = new ICEResource(file);
+			} catch (IOException e) {
+				fail("ICEResourcePageTester error: "
+						+ "Error while attempting to create ICE resource \""
+						+ file.getName() + "\".");
+			}
+		}
+		return iceResource;
+	}
+
+	/**
+	 * Creates an {@link VizResource}. The file's existence or filename validity
+	 * is not checked, so use wisely.
+	 * 
+	 * @param file
+	 *            The file for which a {@code VizResource} will be created. Must
+	 *            not be {@code null}.
+	 * @return A new {@code VizResource}, or {@code null} if a new resource
+	 *         could not be created.
+	 */
+	protected VizResource createVizResource(File file) {
+		VizResource vizResource = null;
+		if (file != null) {
+			try {
+				vizResource = new VizResource(file);
+			} catch (IOException e) {
+				fail("ICEResourcePageTester error: "
+						+ "Error while attempting to create viz resource \""
+						+ file.getName() + "\".");
+			}
+		}
+		return vizResource;
 	}
 }

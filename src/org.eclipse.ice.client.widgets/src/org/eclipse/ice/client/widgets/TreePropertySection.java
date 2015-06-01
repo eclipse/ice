@@ -285,8 +285,8 @@ public class TreePropertySection extends AbstractPropertySection implements
 
 	/**
 	 * This operation sets the current input displayed in the table of
-	 * properties. Specifically, it sets {@link #adaptiveTree} if the input is
-	 * an {@link AdaptiveTreeComposite}.
+	 * properties. It also sets {@link #isAdaptive} if the input is an
+	 * {@link AdaptiveTreeComposite}.
 	 */
 	@Override
 	public void setInput(IWorkbenchPart part, ISelection selection) {

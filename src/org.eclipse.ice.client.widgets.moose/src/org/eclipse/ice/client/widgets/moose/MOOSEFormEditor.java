@@ -57,7 +57,7 @@ import com.jme3.math.Vector3f;
 
 /**
  * This class extends the default {@link ICEFormEditor} to enable it to draw a
- * {@link PlantApplication}, a 3D view built on jME3 for viewing plant models.
+ * {@link PlantAppState}, a 3D view built on jME3 for viewing plant models.
  * 
  * @author Jordan H. Deyton
  * 

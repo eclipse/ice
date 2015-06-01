@@ -12,17 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import java.util.ArrayList;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 
 /**
  * <p>
@@ -130,11 +126,12 @@ public class BasicEntryContentProvider extends ICEObject implements
 		return this.allowedValues;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IEntryContentProvider#setAllowedValues(ArrayList<String>
-	 *      allowedValues)
+	 * @see
+	 * org.eclipse.ice.datastructures.form.IEntryContentProvider#setAllowedValues
+	 * (java.util.ArrayList)
 	 */
 	public void setAllowedValues(ArrayList<String> allowedValues) {
 		if (allowedValues != null) {

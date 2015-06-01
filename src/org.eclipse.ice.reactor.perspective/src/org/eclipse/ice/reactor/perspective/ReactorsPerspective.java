@@ -29,11 +29,8 @@ public class ReactorsPerspective implements IPerspectiveFactory {
 	 */
 	public static final String ID = "org.eclipse.ice.reactors.perspective.ReactorsPerspective";
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui
-	 *      .IPageLayout)
+	/*
+	 * Implements a method from IPerspectiveFactory.
 	 */
 	@Override
 	public void createInitialLayout(IPageLayout layout) {

@@ -22,6 +22,7 @@ import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.StackLayout;
+import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.MaterialBlock;
 import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;

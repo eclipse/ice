@@ -38,9 +38,9 @@ public class AnalysisWidgetRegistry implements IAnalysisWidgetRegistry {
 
 	/**
 	 * Adds an {@link IAnalysisWidgetFactory} to the registry. If the factory's
-	 * {@link IAnalysisWidgetFactory#getModelClass()} returns null, the factory
-	 * will not be added. If the method returns a pre-existing class already in
-	 * the registry, the old factory will be replaced with this one.
+	 * {@link IAnalysisWidgetFactory#getModelClasses()} returns null, the
+	 * factory will not be added. If the method returns a pre-existing class
+	 * already in the registry, the old factory will be replaced with this one.
 	 * 
 	 */
 	public void addAnalysisWidgetFactory(IAnalysisWidgetFactory factory) {

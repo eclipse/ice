@@ -6,6 +6,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ice.client.common.internal.ClientHolder;
+import org.eclipse.ice.client.common.wizards.ImportFileWizard;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;

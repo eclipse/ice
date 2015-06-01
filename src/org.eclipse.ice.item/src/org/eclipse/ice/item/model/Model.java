@@ -46,8 +46,8 @@ public class Model extends Item {
 	 * This operations sets the materials database service that should be used
 	 * by the Model.
 	 * 
-	 * @param materialDatabase
-	 *            The database
+	 * @param database
+	 *            The material database
 	 */
 	public void setMaterialsDatabase(IMaterialsDatabase database) {
 		System.out.println("Model Message: IMaterialsDatabase Registered!");

@@ -12,25 +12,23 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
+import org.eclipse.ice.datastructures.form.geometry.Transformation;
 
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.form.geometry.Transformation;
 
 /**
  * <p>
@@ -126,7 +124,7 @@ public class RenderShape implements IShape {
 		@Override
 		public void visit(PrimitiveShape primitiveShape) {
 
-			Mesh mesh = new Box(Vector3f.ZERO, 1.0f, 1.0f, 1.0f);
+			Mesh mesh = new Box(1.0f, 1.0f, 1.0f);
 			spatial = new Geometry(primitiveShape.getName(), mesh);
 		}
 
@@ -194,81 +192,73 @@ public class RenderShape implements IShape {
 		return alpha;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#setId(int id)
+	/*
+	 * Implements a method from Identifiable.
 	 */
+	@Override
 	public void setId(int id) {
 		// TODO Auto-generated method stub
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#getDescription()
+	/*
+	 * Implements a method from Identifiable.
 	 */
+	@Override
 	public String getDescription() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#getId()
+	/*
+	 * Implements a method from Identifiable.
 	 */
+	@Override
 	public int getId() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#setName(String name)
+	/*
+	 * Implements a method from Identifiable.
 	 */
+	@Override
 	public void setName(String name) {
 		// TODO Auto-generated method stub
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#getName()
+	/*
+	 * Implements a method from Identifiable.
 	 */
+	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#setDescription(String description)
+	/*
+	 * Implements a method from Identifiable.
 	 */
+	@Override
 	public void setDescription(String description) {
 		// TODO Auto-generated method stub
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#equals(Object otherObject)
+	/*
+	 * Implements a method from Identifiable.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#hashCode()
+	/*
+	 * Implements a method from Identifiable.
 	 */
+	@Override
 	public int hashCode() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -309,99 +299,100 @@ public class RenderShape implements IShape {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IUpdateable#update(String updatedKey, String newValue)
+	/*
+	 * Implements a method from IUpdateable.
 	 */
+	@Override
 	public void update(String updatedKey, String newValue) {
+		// Does nothing yet.
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Component#register(IUpdateableListener listener)
+	/*
+	 * Implements a method from Component.
 	 */
+	@Override
 	public void register(IUpdateableListener listener) {
 		// TODO Auto-generated method stub
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Component#accept(IComponentVisitor visitor)
+	/*
+	 * Implements a method from Component.
 	 */
+	@Override
 	public void accept(IComponentVisitor visitor) {
 		// TODO Auto-generated method stub
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShape#getTransformation()
+	/*
+	 * Implements a method from IShape.
 	 */
+	@Override
 	public Transformation getTransformation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShape#setTransformation(Transformation transformation)
+	/*
+	 * Implements a method from IShape.
 	 */
+	@Override
 	public boolean setTransformation(Transformation transformation) {
 		return shape.setTransformation(transformation);
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShape#getProperty(String key)
+	/*
+	 * Implements a method from IShape.
 	 */
+	@Override
 	public String getProperty(String key) {
 		return shape.getProperty(key);
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShape#setProperty(String key, String value)
+	/*
+	 * Implements a method from IShape.
 	 */
+	@Override
 	public boolean setProperty(String key, String value) {
 		return shape.setProperty(key, value);
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShape#removeProperty(String key)
+	/*
+	 * Implements a method from IShape.
 	 */
+	@Override
 	public boolean removeProperty(String key) {
 		return shape.removeProperty(key);
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShape#getParent()
+	/*
+	 * Implements a method from IShape.
 	 */
+	@Override
 	public IShape getParent() {
 		// TODO
 		return null;
 	}
 
+	/*
+	 * Implements a method from IShape.
+	 */
 	@Override
 	public void acceptShapeVisitor(IShapeVisitor visitor) {
 		shape.acceptShapeVisitor(visitor);
 	}
 
+	/*
+	 * Overrides a super class method.
+	 */
 	public Object clone() {
 		return null;
 	}
 
+	/*
+	 * Implements a method from IUpdateable.
+	 */
 	@Override
 	public void unregister(IUpdateableListener listener) {
 		// TODO Auto-generated method stub

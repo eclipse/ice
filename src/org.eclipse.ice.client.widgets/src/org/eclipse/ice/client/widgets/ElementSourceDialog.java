@@ -59,7 +59,7 @@ public class ElementSourceDialog<T> extends Dialog {
 	 * 
 	 * @param parentShell
 	 *            The shell in which the dialog should be drawn
-	 * @param source
+	 * @param elementSource
 	 *            The IElementSource that should be drawn
 	 */
 	public ElementSourceDialog(Shell parentShell,

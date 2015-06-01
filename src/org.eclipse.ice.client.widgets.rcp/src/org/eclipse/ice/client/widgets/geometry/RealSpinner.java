@@ -248,7 +248,7 @@ public class RealSpinner {
 	 * Adds a RealSpinnerListener to its listeners list to be notified of
 	 * changes to the value
 	 * 
-	 * @param listeners
+	 * @param listener
 	 *            The listener to notified of changes to the value
 	 */
 	public void listen(RealSpinnerListener listener) {

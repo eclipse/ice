@@ -12,15 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.bind.JAXBException;
 
 /**
  * <p>
@@ -143,23 +137,15 @@ public class Junction extends PlantComponent implements IJunction {
 	}
 
 	/**
-	 * <p>
 	 * Parameterized constructor.
-	 * </p>
 	 * 
-	 * @param inputs
-	 *            <p>
+	 * @param ins
 	 *            Inputs of this junction.
-	 *            </p>
-	 * @param outputs
-	 *            <p>
+	 * @param outs
 	 *            Outputs of this junction.
-	 *            </p>
-	 * @param connections
-	 *            <p>
+	 * @param conns
 	 *            A list of coupled input-output pairs representing the
 	 *            connections of the junction.
-	 *            </p>
 	 */
 	public Junction(ArrayList<PlantComponent> ins,
 			ArrayList<PlantComponent> outs, ArrayList<String> conns) {
@@ -198,7 +184,7 @@ public class Junction extends PlantComponent implements IJunction {
 	}
 
 	/**
-	 * @param inputs
+	 * @param ins
 	 *            the inputs to set
 	 */
 	public void setInputs(ArrayList<PlantComponent> ins) {
@@ -246,7 +232,7 @@ public class Junction extends PlantComponent implements IJunction {
 	}
 
 	/**
-	 * @param outputs
+	 * @param outs
 	 *            the outputs to set
 	 */
 	public void setOutputs(ArrayList<PlantComponent> outs) {

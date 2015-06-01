@@ -34,6 +34,7 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.GridLabelProvider;
 import org.eclipse.ice.reactor.LWRComponent;
+import org.eclipse.ice.reactor.pwr.PWRAssembly;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -526,7 +527,7 @@ public class CoreAnalysisView extends AnalysisView implements IGridListener {
 	 * Fills out the parent Composite with information and widgets related to
 	 * this particular IAnalysisView.
 	 * 
-	 * @param parent
+	 * @param container
 	 *            The Composite containing this IAnalysisView.
 	 */
 	@Override

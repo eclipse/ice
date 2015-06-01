@@ -41,8 +41,6 @@ public class ToolItemMenuListener implements Listener {
 	/**
 	 * The constructor for this custom Listener.
 	 * 
-	 * @param bar
-	 *            The ToolBar containing the ToolItem.
 	 * @param item
 	 *            The ToolItem receiving a drop-down Menu.
 	 * @param menu

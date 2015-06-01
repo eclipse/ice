@@ -12,34 +12,31 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.HObject;
 import ncsa.hdf.object.h5.H5CompoundDS;
 import ncsa.hdf.object.h5.H5Datatype;
-import ncsa.hdf.object.h5.H5Group;
 import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
+import org.eclipse.ice.io.hdf.IHdfReadable;
+import org.eclipse.ice.io.hdf.IHdfWriteable;
 
 /**
  * <p>
@@ -149,10 +146,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	private String timeStepNamePrefix = "TimeStep: ";
 
 	/**
-	 * <p>
 	 * The nullary Constructor.
-	 * </p>
-	 * 
 	 */
 	public LWRComponent() {
 
@@ -180,14 +174,10 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/**
-	 * <p>
 	 * A parameterized Constructor.
-	 * </p>
 	 * 
 	 * @param name
-	 *            <p>
 	 *            Name of this LWRComponent
-	 *            </p>
 	 */
 	public LWRComponent(String name) {
 		// Call this constructor
@@ -195,15 +185,11 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 		// Set name appropriately
 		this.setName(name);
-
 	}
 
 	/**
-	 * <p>
 	 * This operation notifies the listeners of the LWRComponent that its data
 	 * state has changed.
-	 * </p>
-	 * 
 	 */
 	protected void notifyListeners() {
 
@@ -372,10 +358,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#setId(int id)
+	/*
+	 * Implements method from Identifiable.
 	 */
 	public void setId(int id) {
 
@@ -389,30 +373,24 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#getDescription()
+	/*
+	 * Implements method from Identifiable.
 	 */
 	public String getDescription() {
 
 		return this.description;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#getId()
+	/*
+	 * Implements method from Identifiable.
 	 */
 	public int getId() {
 
 		return this.id;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#setName(String name)
+	/*
+	 * Implements method from Identifiable.
 	 */
 	public void setName(String name) {
 
@@ -428,20 +406,16 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#getName()
+	/*
+	 * Implements method from Identifiable.
 	 */
 	public String getName() {
 
 		return this.name;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#setDescription(String description)
+	/*
+	 * Implements method from Identifiable.
 	 */
 	public void setDescription(String description) {
 
@@ -457,11 +431,10 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#equals(Object otherObject)
+	/*
+	 * Overrides super class method.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local declarations
@@ -494,11 +467,10 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		return retVal;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#hashCode()
+	/*
+	 * Overrides super class method.
 	 */
+	@Override
 	public int hashCode() {
 		// Static hash at 31
 		int hash = 31;
@@ -519,10 +491,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		return hash;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IUpdateable#update(String updatedKey, String newValue)
+	/*
+	 * Implements method from IUpdateable.
 	 */
 	public void update(String updatedKey, String newValue) {
 
@@ -530,24 +500,19 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IUpdateable#register(IUpdateableListener listener)
+	/*
+	 * Implements method from IUpdateable.
 	 */
+	@Override
 	public void register(IUpdateableListener listener) {
-
 		// If the listener is not null, add it
 		if (listener != null) {
 			this.listeners.add(listener);
 		}
-
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Component#accept(IComponentVisitor visitor)
+	/*
+	 * Implements method from Component.
 	 */
 	public void accept(IComponentVisitor visitor) {
 
@@ -556,19 +521,15 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		}
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IReactorComponent#toString()
+	/*
+	 * Implements method from IReactorComponent.
 	 */
 	public String toString() {
 		return this.name;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getFeatureList()
+	/*
+	 * Implements method from IDataProvider.
 	 */
 	public ArrayList<String> getFeatureList() {
 
@@ -602,20 +563,16 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getNumberOfTimeSteps()
+	/*
+	 * Implements method from IDataProvider.
 	 */
 	public int getNumberOfTimeSteps() {
 
 		return this.dataTree.size();
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#setTime(double step)
+	/*
+	 * Implements method from IDataProvider.
 	 */
 	public void setTime(double step) {
 		if (step >= 0.0) {
@@ -625,10 +582,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getDataAtCurrentTime(String feature)
+	/*
+	 * Implements method from IDataProvider.
 	 */
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
 
@@ -654,10 +609,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getSourceInfo()
+	/*
+	 * Implements method from IDataProvider.
 	 */
 	public String getSourceInfo() {
 
@@ -665,10 +618,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getFeaturesAtCurrentTime()
+	/*
+	 * Implements method from IDataProvider.
 	 */
 	public ArrayList<String> getFeaturesAtCurrentTime() {
 
@@ -692,10 +643,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getTimes()
+	/*
+	 * Implements method from IDataProvider.
 	 */
 	public ArrayList<Double> getTimes() {
 
@@ -715,11 +664,10 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getTimeStep(double time)
+	/*
+	 * Implements method from IDataProvider.
 	 */
+	@Override
 	public int getTimeStep(double time) {
 
 		// Get the iterator
@@ -742,22 +690,20 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getTimeUnits()
+	/*
+	 * Implements method from IDataProvider.
 	 */
+	@Override
 	public String getTimeUnits() {
 
 		return this.timeUnit;
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IHdfWriteable#createGroup(H5File h5File, H5Group parentH5Group)
+	/*
+	 * Implements method from IHdfWriteable.
 	 */
+	@Override
 	public H5Group createGroup(H5File h5File, H5Group parentH5Group) {
 
 		// Create the group for this component
@@ -768,20 +714,18 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		return h5Group;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IHdfWriteable#getWriteableChildren()
+	/*
+	 * Implements method from IHdfWriteable.
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 		return null;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IHdfWriteable#writeAttributes(H5File h5File, H5Group h5Group)
+	/*
+	 * Implements method from IHdfWriteable.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 
 		boolean flag = true;
@@ -798,11 +742,10 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 		return flag;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IHdfWriteable#writeDatasets(H5File h5File, H5Group h5Group)
+	/*
+	 * Implements method from IHdfWriteable.
 	 */
+	@Override
 	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
 
 		// If these pieces are null, return
@@ -944,20 +887,18 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IHdfReadable#readChild(IHdfReadable iHdfReadable)
+	/*
+	 * Implements method from IHdfReadable.
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 		return true;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IHdfReadable#readAttributes(H5Group h5Group)
+	/*
+	 * Implements method from IHdfReadable.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local attributes (so we only call read ONCE)
@@ -984,11 +925,10 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IHdfReadable#readDatasets(H5Group h5Group)
+	/*
+	 * Implements method from IHdfReadable.
 	 */
+	@Override
 	public boolean readDatasets(H5Group h5Group) {
 
 		// Local Declarations
@@ -1239,6 +1179,9 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
+	/*
+	 * Implements method from IUpdateable.
+	 */
 	@Override
 	public void unregister(IUpdateableListener listener) {
 		// TODO Auto-generated method stub

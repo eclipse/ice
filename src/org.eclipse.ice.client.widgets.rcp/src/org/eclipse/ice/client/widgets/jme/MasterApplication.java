@@ -36,7 +36,7 @@ import com.jme3.system.awt.PaintMode;
  * Create an AppState (see {@link ViewAppState}).</li>
  * <li>
  * Attach the AppState to this MasterApplication. (see
- * {@link ViewAppState#start()}).</li>
+ * {@link ViewAppState#start(MasterApplication)}).</li>
  * <li>
  * Acquire an {@link EmbeddedView} via {@link #getEmbeddedView()}. This view can
  * be used to display the AppState's scene. (see

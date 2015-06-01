@@ -94,21 +94,11 @@ public class PropertySource implements IPropertySource {
 	}
 
 	/**
-	 * <p>
-	 * This function returns "Unknown value" for the one default property.
-	 * </p>
+	 * This function returns "Unknown value" for the one default property
 	 * 
 	 * @param id
-	 *            <p>
 	 *            The object to identify this property
-	 *            </p>
-	 * 
-	 * @return <p>
-	 *         The object value for the input property id
-	 *         </p>
-	 * 
-	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java
-	 *      .lang.Object)
+	 * @return The object value for the input property id
 	 */
 	@Override
 	public Object getPropertyValue(Object id) {
@@ -118,11 +108,12 @@ public class PropertySource implements IPropertySource {
 		return null;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang
-	 *      .Object)
+	 * @see
+	 * org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang
+	 * .Object)
 	 */
 	@Override
 	public boolean isPropertySet(Object id) {
@@ -130,11 +121,12 @@ public class PropertySource implements IPropertySource {
 		return false;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java
-	 *      .lang.Object)
+	 * @see
+	 * org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java
+	 * .lang.Object)
 	 */
 	@Override
 	public void resetPropertyValue(Object id) {
@@ -142,11 +134,12 @@ public class PropertySource implements IPropertySource {
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java
-	 *      .lang.Object, java.lang.Object)
+	 * @see
+	 * org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java
+	 * .lang.Object, java.lang.Object)
 	 */
 	@Override
 	public void setPropertyValue(Object id, Object value) {

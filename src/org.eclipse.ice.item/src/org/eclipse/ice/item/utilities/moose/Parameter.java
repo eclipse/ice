@@ -24,53 +24,53 @@ import org.eclipse.ice.datastructures.form.Entry;
  * from an ICE Entry to a MOOSE parameter is not a 1-1 mapping. It is only used
  * in ICE for writing input files, at the moment.
  * 
- * @author Jay Jay Billings, Anna Wojtowicz           
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class Parameter {
 	/**
 	 * The name of the parameter
 	 */
 	private String name = "";
-	
+
 	/**
 	 * The flag that indicates whether or not this parameter is required. True
 	 * if it is required, false if not.
 	 */
 	private boolean required;
-	
+
 	/**
 	 * The flag that indicates whether or not this parameter is enabled (ie. if
 	 * it is commented out or not). False if the parameter is commented out,
 	 * otherwise true.
 	 */
 	private boolean enabled;
-	
+
 	/**
 	 * The default value of the parameter.
 	 */
 	private String _default = "";
-	
+
 	/**
-	 * The C++ type of the parameter.   
+	 * The C++ type of the parameter.
 	 */
 	private String cpp_type = "";
-	
+
 	/**
 	 * The list of options of the parameter (if any). Not all parameters have
 	 * options.
 	 */
 	private ArrayList<String> options = null;
-	
+
 	/**
 	 * The name of the group to which the parameter belongs.
 	 */
 	private String group_name = "";
-	
+
 	/**
-	 * A description of the parameter.  
+	 * A description of the parameter.
 	 */
 	private String description = "";
-	
+
 	/**
 	 * A comment on the parameter.
 	 */
@@ -79,7 +79,7 @@ public class Parameter {
 	/**
 	 * This operation retrieves the name of the parameter.
 	 * 
-	 * @return The name           
+	 * @return The name
 	 */
 	public String getName() {
 		return name;
@@ -89,7 +89,7 @@ public class Parameter {
 	 * This operation indicates if the parameter is required. True if required,
 	 * false if not.
 	 * 
-	 * @return True if required, false if not           
+	 * @return True if required, false if not
 	 */
 	public boolean isRequired() {
 		return required;
@@ -98,21 +98,21 @@ public class Parameter {
 	/**
 	 * Returns if the parameter is enabled or not (ie. commented out).
 	 * 
-	 * @return	True if the parameter is enabled, false if it is commented out.
+	 * @return True if the parameter is enabled, false if it is commented out.
 	 */
 	public boolean isEnabled() {
 		return enabled;
 	}
-	
+
 	/**
 	 * This operation retrieves the default value of the parameter.
 	 * 
-	 * @return The default value          
+	 * @return The default value
 	 */
 	public String getDefault() {
 		return _default;
 	}
-	
+
 	/**
 	 * This method returns the parameter's comment, if it has one.
 	 * 
@@ -125,7 +125,7 @@ public class Parameter {
 	/**
 	 * This operation retrieves the C++ type of the parameter.
 	 * 
-	 * @return The type           
+	 * @return The type
 	 */
 	public String getCpp_type() {
 		return cpp_type;
@@ -134,16 +134,16 @@ public class Parameter {
 	/**
 	 * This operation retrieves the list of options (if any)
 	 * 
-	 * @return The list of options.          
+	 * @return The list of options.
 	 */
 	public ArrayList<String> getOptions() {
 		return options;
 	}
-	
+
 	/**
 	 * This operation retrieves the group name of the parameter.
 	 * 
-	 * @return The group name        
+	 * @return The group name
 	 */
 	public String getGroup_name() {
 		return group_name;
@@ -152,7 +152,7 @@ public class Parameter {
 	/**
 	 * This operation retrieves the description of the parameter.
 	 * 
-	 * @return The description           
+	 * @return The description
 	 */
 	public String getDescription() {
 		return description;
@@ -161,7 +161,8 @@ public class Parameter {
 	/**
 	 * This operation sets the name of the parameter.
 	 * 
-	 * @param paramName	The name           
+	 * @param paramName
+	 *            The name
 	 */
 	public void setName(String paramName) {
 		name = paramName;
@@ -172,19 +173,21 @@ public class Parameter {
 	 * This operation sets specifies whether or not the parameter is required.
 	 * True for required, false if not.
 	 * 
-	 * @param flag	True if required, false if not            
+	 * @param flag
+	 *            True if required, false if not
 	 */
 	public void setRequired(boolean flag) {
 		required = flag;
 		return;
 	}
-	
+
 	/**
-	 * This method sets if the parameter is currently enabled (ie. not
-	 * commented out).
+	 * This method sets if the parameter is currently enabled (ie. not commented
+	 * out).
 	 * 
-	 * @param flag	True if the parameter is enabled, false if it is commented
-	 * 				out.
+	 * @param flag
+	 *            True if the parameter is enabled, false if it is commented
+	 *            out.
 	 */
 	public void setEnabled(boolean flag) {
 		enabled = flag;
@@ -194,15 +197,17 @@ public class Parameter {
 	/**
 	 * This operation sets the default value of the parameter.
 	 * 
-	 * @param defaultValue	The default value          
+	 * @param defaultValue
+	 *            The default value
 	 */
 	public void setDefault(String defaultValue) {
 		_default = defaultValue;
 		return;
 	}
-	
+
 	/**
 	 * This method sets the parameter's comment.
+	 * 
 	 * @param comment
 	 */
 	public void setComment(String comment) {
@@ -213,40 +218,44 @@ public class Parameter {
 	/**
 	 * This operation sets the C++ type of the parameter.
 	 * 
-	 * @param type	The type          
+	 * @param type
+	 *            The type
 	 */
 	public void setCpp_type(String type) {
 		cpp_type = type;
 		return;
 	}
-	
+
 	/**
 	 * This operation sets options of the parameter (if any).
 	 * 
-	 * @param type	The type           
+	 * @param optionsStr
+	 *            A string of options, with each separated by any amount of
+	 *            whitespace.
 	 */
 	public void setOptions(String optionsStr) {
-		
+
 		// Initiate the ArrayList if it hasn't been already
 		if (options == null) {
 			options = new ArrayList<String>();
 		}
-		
+
 		// Break up the input string of options at each whitespace
 		String[] splitOptionsStr = optionsStr.split("\\s+");
-		
+
 		// Add them to the ArrayList
 		for (int i = 0; i < splitOptionsStr.length; i++) {
 			options.add(splitOptionsStr[i]);
 		}
-		
+
 		return;
 	}
 
 	/**
 	 * This operation sets the group name of the parameter.
 	 * 
-	 * @param gName		The group name           
+	 * @param gName
+	 *            The group name
 	 */
 	public void setGroup_name(String gName) {
 		group_name = gName;
@@ -256,7 +265,8 @@ public class Parameter {
 	/**
 	 * This operation sets the description of the parameter.
 	 * 
-	 * @param desc	The description          
+	 * @param desc
+	 *            The description
 	 */
 	public void setDescription(String desc) {
 		description = desc;
@@ -267,7 +277,7 @@ public class Parameter {
 	 * This operation returns this parameter as an ICE Entry with
 	 * AllowedValueType.Undefined.
 	 * 
-	 * @return The data components            
+	 * @return The data components
 	 */
 	public Entry toEntry() {
 
@@ -282,17 +292,18 @@ public class Parameter {
 			protected void setup() {
 				// If the type is discrete (MooseEnum) and the options list
 				// isn't empty
-				if ((("MooseEnum").equals(Parameter.this.cpp_type)
-						|| ("MultiMooseEnum").equals(Parameter.this.cpp_type))
-						&& options != null && !options.isEmpty()) {
+				if ((("MooseEnum").equals(Parameter.this.cpp_type) || ("MultiMooseEnum")
+						.equals(Parameter.this.cpp_type))
+						&& options != null
+						&& !options.isEmpty()) {
 					// Limit the type to discrete values
 					allowedValueType = AllowedValueType.Discrete;
 					// Set the allowed values
 					allowedValues = options;
 					// Set the default value, descri
 					String value = Parameter.this.getDefault();
-					defaultValue = (allowedValues.contains(value) ?  
-											value : allowedValues.get(0));
+					defaultValue = (allowedValues.contains(value) ? value
+							: allowedValues.get(0));
 				}
 				// If the value type is boolean
 				else if (("bool").equals(Parameter.this.cpp_type)) {
@@ -302,9 +313,9 @@ public class Parameter {
 					allowedValues.add("true");
 					allowedValues.add("false");
 					// Set the default value and description
-					defaultValue = (Parameter.this.getDefault().equals(0)) ? 
-							"false" : "true";
-				} 
+					defaultValue = (Parameter.this.getDefault().equals(0)) ? "false"
+							: "true";
+				}
 				// Otherwise, for all other parameters
 				else {
 					allowedValueType = AllowedValueType.Undefined;
@@ -318,7 +329,7 @@ public class Parameter {
 		entry.setComment(getComment());
 		entry.setRequired(required);
 		entry.setTag(enabled ? "true" : "false");
-		
+
 		return entry;
 	}
 
@@ -326,7 +337,7 @@ public class Parameter {
 	 * This operation writes the name and value of the parameter to a string as
 	 * "name = value" (minus the quotations of course).
 	 * 
-	 * @return The parameter as a string.           
+	 * @return The parameter as a string.
 	 */
 	public String toString() {
 		return name + " = " + _default;
@@ -343,7 +354,8 @@ public class Parameter {
 	 * the name, description and value (stored as default) are converted.
 	 * </p>
 	 * 
-	 * @param entry		The Entry to load into the Parameter.           
+	 * @param entry
+	 *            The Entry to load into the Parameter.
 	 */
 	public void fromEntry(Entry entry) {
 

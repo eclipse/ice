@@ -66,7 +66,7 @@ public class Cell {
 	 *            The index of the Cell in the Grid.
 	 * @param key
 	 *            The key associated with the Cell (usually "row:column").
-	 * @param selected
+	 * @param state
 	 *            Whether or not the Cell is selected.
 	 */
 	public Cell(int index, String key, State state) {

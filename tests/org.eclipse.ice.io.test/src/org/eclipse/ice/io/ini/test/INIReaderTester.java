@@ -35,7 +35,7 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.io.ini.INIReader;
+import org.eclipse.ice.io.ini.INIReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

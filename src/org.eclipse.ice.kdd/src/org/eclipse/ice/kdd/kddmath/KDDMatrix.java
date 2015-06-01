@@ -13,7 +13,6 @@
 package org.eclipse.ice.kdd.kddmath;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
@@ -680,7 +679,6 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * </p>
 	 * 
 	 * @param other
-	 * @return
 	 */
 	public void copy(KDDMatrix other) {
 		dataProvider = other.dataProvider;

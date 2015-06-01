@@ -81,7 +81,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 
 	/**
 	 * Creates the controls displayed in the section. It needs to at least
-	 * initialize {@link #nameText}, {@link #descText}, and {@link #idText}.
+	 * initialize {@link #nameText}, {@link #descText}, and {@link #idLabel}.
 	 */
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
@@ -153,7 +153,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 
 	/**
 	 * This should take an {@link IMeshPart} from the current selection and set
-	 * {@link #meshPart}.
+	 * it as the {@link #object} whose properties are exposed.
 	 */
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		super.setInput(part, selection);

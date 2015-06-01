@@ -44,7 +44,7 @@ public class VibeLauncher extends JobLauncher {
 	 * The execution command
 	 */
 	private String fullExecCMD;
-	
+
 	/**
 	 * The default CAEBAT home directory.
 	 */
@@ -56,7 +56,7 @@ public class VibeLauncher extends JobLauncher {
 	private String IPS_ROOT;
 
 	private IOService ioService;
-	
+
 	/**
 	 * A nullary constructor that delegates to the project constructor.
 	 */
@@ -77,7 +77,6 @@ public class VibeLauncher extends JobLauncher {
 	 */
 	public VibeLauncher(IProject project) {
 
-
 		// Call the JobLauncher constructor
 		super(project);
 
@@ -85,8 +84,8 @@ public class VibeLauncher extends JobLauncher {
 	}
 
 	/**
-	 * This operations sets up some VIBE-specific information for the
-	 * launcher, including the default project installation directory.
+	 * This operations sets up some VIBE-specific information for the launcher,
+	 * including the default project installation directory.
 	 */
 	protected void setupItemInfo() {
 
@@ -97,7 +96,7 @@ public class VibeLauncher extends JobLauncher {
 		// Set the name of the home directory
 		CAEBAT_ROOT = "/home/batsim/caebat";
 		IPS_ROOT = "$IPS_ROOT";
-		
+
 		// Set up the necessary io services if they aren't already done.
 		ioService = getIOService();
 		if (ioService == null) {
@@ -139,7 +138,7 @@ public class VibeLauncher extends JobLauncher {
 		setExecutable(getName(), getDescription(), this.fullExecCMD);
 		// Add localhost
 		addHost("localhost", "linux x86_64", CAEBAT_ROOT);
-		
+
 		// Add the input files types for the BatML files
 		// Setup entries
 		Entry entry = new Entry() {
@@ -159,11 +158,12 @@ public class VibeLauncher extends JobLauncher {
 		// Add the selector to the form && make it listen for changes
 		DataComponent fileComponent = (DataComponent) form.getComponent(1);
 		fileComponent.addEntry(entry);
-		fileComponent.retrieveEntry("Use custom key-value pair file?").register(this);
+		fileComponent.retrieveEntry("Use custom key-value pair file?")
+				.register(this);
 		form.removeComponent(1);
 		form.addComponent(fileComponent);
 		update(fileComponent.retrieveEntry("Use custom key-value pair file?"));
-		
+
 		return;
 	}
 
@@ -174,8 +174,8 @@ public class VibeLauncher extends JobLauncher {
 	 * correctly for the workstation.conf file.
 	 * </p>
 	 * 
-	 * @param the
-	 *            action name
+	 * @param actionName
+	 *            The name of the action.
 	 * 
 	 * @return The status of the action
 	 */
@@ -187,7 +187,8 @@ public class VibeLauncher extends JobLauncher {
 		IPSWriter writer = (IPSWriter) ioService.getWriter("IPSWriter");
 		DataComponent fileComponent = (DataComponent) form.getComponent(1);
 		Entry inputFileEntry = fileComponent.retrieveEntry("Input File");
-		Entry kvPairFileEntry = fileComponent.retrieveEntry("Use custom key-value pair file?");
+		Entry kvPairFileEntry = fileComponent
+				.retrieveEntry("Use custom key-value pair file?");
 		IFile inputFile = project.getFile(inputFileEntry.getValue());
 
 		// Get the Run ID that may be used to locate the simulation files
@@ -223,7 +224,8 @@ public class VibeLauncher extends JobLauncher {
 		} else if (dataDir.endsWith("${SIM_NAME}")) {
 			dataDir = dataDir.substring(0, dataDir.length() - 12);
 		} else if (dataDir.endsWith(caseName)) {
-			dataDir = dataDir.substring(0, dataDir.length() - (caseName.length()+1));
+			dataDir = dataDir.substring(0,
+					dataDir.length() - (caseName.length() + 1));
 		}
 
 		// Get the input file directory for the simulation
@@ -235,13 +237,14 @@ public class VibeLauncher extends JobLauncher {
 		}
 
 		// If we are supplying a new KV Pair file replace it in the input file
-		update(fileComponent.retrieveEntry("Use custom key-value pair file?"));		
+		update(fileComponent.retrieveEntry("Use custom key-value pair file?"));
 		String setKVPerms = "";
 		String backupKVFile = "";
 		String mvKVPairFile = "";
 		if (kvPairFileEntry.getValue() != "false") {
-			String kvFileName = fileComponent.retrieveEntry("Key-value pair file").getValue();
-			//writer.replace(inputFile, "input_keyvalue", kvFileName);
+			String kvFileName = fileComponent.retrieveEntry(
+					"Key-value pair file").getValue();
+			// writer.replace(inputFile, "input_keyvalue", kvFileName);
 			setKVPerms = "chmod 775 " + kvFileName + " && ";
 			backupKVFile = "mv input/input_keyvalue input/input_keyvalue.bak && ";
 			mvKVPairFile = "mv " + kvFileName + " input/input_keyvalue && ";
@@ -257,40 +260,42 @@ public class VibeLauncher extends JobLauncher {
 		String copyCase = "cp -r " + dataDir + "/" + caseName + "/* . && ";
 		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT\\ *=\\ *.*?"
 				+ "SIM_ROOT\\ =\\ '`pwd`'?g' ${inputFile} && ";
-		
+
 		// The main execution of the simulation.
 		String VIBEExec = "${installDir}ipsframework-code/install/bin/ips.py"
-				+ " -a --log=temp.log --platform=" + CAEBAT_ROOT + "/vibe/examples/config/batsim.conf"
+				+ " -a --log=temp.log --platform=" + CAEBAT_ROOT
+				+ "/vibe/examples/config/batsim.conf"
 				+ " --simulation=${inputFile}; ";
-		fullExecCMD = exportRoot + copyCase + setKVPerms + backupKVFile + mvKVPairFile
-				+ fixSIMROOT + VIBEExec;
+		fullExecCMD = exportRoot + copyCase + setKVPerms + backupKVFile
+				+ mvKVPairFile + fixSIMROOT + VIBEExec;
 
 		// Setup the executable information
 		setExecutable(getName(), getDescription(), this.fullExecCMD);
 
 		return super.process(actionName);
 
-
 	}
 
 	/**
-	 * Override of update so that the VibeLauncher can check if the user wants to select a 
-	 * custom KV Pair file.
+	 * Override of update so that the VibeLauncher can check if the user wants
+	 * to select a custom KV Pair file.
 	 */
 	public void update(IUpdateable component) {
 		refreshProjectSpace();
 		if (component instanceof Entry) {
-			// Determine whether the file selector needs to be added to or removed from the form
-			if (component.getName() == "Use custom key-value pair file?" 
+			// Determine whether the file selector needs to be added to or
+			// removed from the form
+			if (component.getName() == "Use custom key-value pair file?"
 					&& ((Entry) component).getValue() == "true") {
-				 addInputType("Key-value pair file", "keyValueFile",
-						 "Key-value pair with case parameters", ".dat");
-			} else if (component.getName() == "Use custom key-value pair file?" 
+				addInputType("Key-value pair file", "keyValueFile",
+						"Key-value pair with case parameters", ".dat");
+			} else if (component.getName() == "Use custom key-value pair file?"
 					&& ((Entry) component).getValue() == "false") {
-				DataComponent fileComponent = (DataComponent) form.getComponent(1);
+				DataComponent fileComponent = (DataComponent) form
+						.getComponent(1);
 				fileComponent.deleteEntry("Key-value pair file");
 			}
-		}	
+		}
 	}
 
 	/**

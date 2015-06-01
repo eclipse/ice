@@ -24,14 +24,14 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * 
  * <pre>
  * <code>
- * {@literal<plugin>}
- *    {@literal<}extension
- *          point="org.eclipse.core.runtime.preferences"{@literal>}
- *       {@literal<}initializer
- *             class="org.eclipse.ice.viz.service.VizPreferenceInitializer"{@literal>}
- *       {@literal</initializer>}
- *    {@literal</extension>}
- * {@literal</plugin>}
+ * {@literal <plugin>}
+ *    {@literal <}extension
+ *          point="org.eclipse.core.runtime.preferences"{@literal >}
+ *       {@literal <}initializer
+ *             class="org.eclipse.ice.viz.service.VizPreferenceInitializer"{@literal >}
+ *       {@literal </initializer>}
+ *    {@literal </extension>}
+ * {@literal </plugin>}
  * </code>
  * </pre>
  * 
