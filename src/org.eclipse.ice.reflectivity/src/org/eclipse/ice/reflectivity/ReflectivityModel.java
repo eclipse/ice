@@ -82,7 +82,7 @@ public class ReflectivityModel extends Model {
 			
 			// Calculate the reflectivity
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
-			calculator.getReflectivityProfile(slabs, numRough, deltaQ0, deltaQ1ByQ, wavelength, waveVector, getRQ4);
+			//calculator.getReflectivityProfile(slabs, numRough, deltaQ0, deltaQ1ByQ, wavelength, waveVector, getRQ4);
 			
 			// Write the files
 			
