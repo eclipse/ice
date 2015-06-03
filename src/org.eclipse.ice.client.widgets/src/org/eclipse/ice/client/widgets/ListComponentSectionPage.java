@@ -138,7 +138,9 @@ public class ListComponentSectionPage extends ICEFormPage {
 					true, 1, 1));
 
 			// Draw the table
-			configureTable();
+			//configureTable();
+			
+			ListComponentNattable table = new ListComponentNattable(sectionClient, list);
 
 			// Create the Add/Delete buttons
 			createAddDeleteButtons();
@@ -222,11 +224,16 @@ public class ListComponentSectionPage extends ICEFormPage {
 
 		return;
 	}
+	
+	
 
+ 
 	/**
 	 * This operation configures the NatTable used to render the ListComponent
 	 * on the screen.
 	 */
+	
+	/*
 	private void configureTable() {
 
 		// Create the data layer of the table
@@ -299,6 +306,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 
 		return;
 	}
+	 */
 
 	/**
 	 * This operation sets the ListComponent that should be used as input for
