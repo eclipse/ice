@@ -26,37 +26,47 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
  * written to YAML using SnakeYAML's Java Bean parser. It can also be converted
  * to a GetPot compatible string and loaded from a map and a TreeComposite.
  * 
- * @author Jay Jay Billings, Anna Wojtowicz         
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class Block {
-	
+
+	/**
+	 * A regular expression representing three possible newlines. These are:
+	 * <ul>
+	 * <li>Linux: {@code \n}</li>
+	 * <li>Mac: {code \r}</li>
+	 * <li>Windows: {code \r\n}</li>
+	 * </ul>
+	 */
+	private static final String newLineRegex = "\r?\n|\r";
+
 	/**
 	 * The name of the block.
 	 */
 	protected String name = "";
-	
+
 	/**
-	 * The type of the block.    
+	 * The type of the block.
 	 */
 	protected String type = "";
-	
+
 	/**
-	 * A description of the block. 
+	 * A description of the block.
 	 */
 	protected String description = "";
-	
+
 	/**
 	 * A comment on the block.
 	 */
 	protected String comment = "";
-	
+
 	/**
-	 * The parameters of the block.   
+	 * The parameters of the block.
 	 */
 	protected ArrayList<Parameter> parameters = new ArrayList<Parameter>();
-	
+
 	/**
-	 * The subblocks that belong to this block.  
+	 * The subblocks that belong to this block.
 	 */
 	protected ArrayList<Block> subblocks = new ArrayList<Block>();
 
@@ -64,7 +74,7 @@ public class Block {
 	 * The GetPot prefix for the name of the current, actual section.
 	 */
 	public static final String actualSectionPrefix = "./";
-	
+
 	/**
 	 * The GetPot prefix for the name of parent section.
 	 */
@@ -92,7 +102,7 @@ public class Block {
 	/**
 	 * This operation retrieves the type of the block.
 	 * 
-	 * @return The type         
+	 * @return The type
 	 */
 	public String getType() {
 		return type;
@@ -106,11 +116,11 @@ public class Block {
 	public String getComment() {
 		return comment;
 	}
-	
+
 	/**
 	 * This operation retrieves the description of the block.
 	 * 
-	 * @return The description         
+	 * @return The description
 	 */
 	public String getDescription() {
 		return description;
@@ -119,7 +129,7 @@ public class Block {
 	/**
 	 * This operation retrieves the parameters of the block.
 	 * 
-	 * @return The parameters.         
+	 * @return The parameters.
 	 */
 	public ArrayList<Parameter> getParameters() {
 		return parameters;
@@ -128,7 +138,7 @@ public class Block {
 	/**
 	 * This operation retrieves the subblocks of the block.
 	 * 
-	 * @return The blocks         
+	 * @return The blocks
 	 */
 	public ArrayList<Block> getSubblocks() {
 		return subblocks;
@@ -137,7 +147,8 @@ public class Block {
 	/**
 	 * This operation sets the parameters of the block.
 	 * 
-	 * @param params 	The parameters         
+	 * @param params
+	 *            The parameters
 	 */
 	public void setParameters(ArrayList<Parameter> params) {
 		parameters = params;
@@ -147,7 +158,8 @@ public class Block {
 	/**
 	 * This operation sets the name of the block.
 	 * 
-	 * @param blockName 	The name           
+	 * @param blockName
+	 *            The name
 	 */
 	public void setName(String blockName) {
 		name = blockName;
@@ -157,17 +169,19 @@ public class Block {
 	/**
 	 * This operation sets the description of the block.
 	 * 
-	 * @param desc 	The description
+	 * @param desc
+	 *            The description
 	 */
 	public void setDescription(String desc) {
 		description = desc;
 		return;
 	}
-	
+
 	/**
 	 * This operation sets the block's comment.
 	 * 
-	 * @param comm	The comment to set.
+	 * @param comm
+	 *            The comment to set.
 	 */
 	public void setComment(String comm) {
 		comment = comm;
@@ -177,7 +191,8 @@ public class Block {
 	/**
 	 * This operation sets the type of the block.
 	 * 
-	 * @param blockType 	The type
+	 * @param blockType
+	 *            The type
 	 */
 	public void setType(String blockType) {
 		type = blockType;
@@ -187,7 +202,8 @@ public class Block {
 	/**
 	 * This operation sets the subblocks of the block.
 	 * 
-	 * @param blocks 	The blocks           
+	 * @param blocks
+	 *            The blocks
 	 */
 	public void setSubblocks(ArrayList<Block> blocks) {
 		subblocks = blocks;
@@ -201,10 +217,10 @@ public class Block {
 	 * DataComponent is 1. Subblocks are configured as children of the tree
 	 * composite.
 	 * 
-	 * @return The tree composite.          
+	 * @return The tree composite.
 	 */
 	public TreeComposite toTreeComposite() {
-		
+
 		// Local Declarations
 		TreeComposite treeComp = new TreeComposite();
 		DataComponent dataComp = new DataComponent();
@@ -244,7 +260,8 @@ public class Block {
 	 * This operation loads the block from an untyped Map. It should only be
 	 * used with a Map created by SnakeYAML.
 	 * 
-	 * @param map 	The map.
+	 * @param map
+	 *            The map.
 	 */
 	public void loadFromMap(Map map) {
 
@@ -311,8 +328,8 @@ public class Block {
 				}
 				// Get the boolean required flag
 				if (singleParamMap.get("required") != null) {
-					boolean isRequired = 
-							(Boolean) singleParamMap.get("required");
+					boolean isRequired = (Boolean) singleParamMap
+							.get("required");
 					param.setRequired(isRequired);
 					param.setEnabled(isRequired);
 				}
@@ -351,26 +368,26 @@ public class Block {
 	 * commented out.
 	 * 
 	 * @param prefix
-	 *           	<p>
-	 *            	The prefix for the name of the block. This is most commonly
-	 *            	null or the actual section prefix (Block.actualSectionPrefix).
-	 *            	If the prefix is not equal to Block.actualSectionPrefix, it
-	 *            	will be replaced with an empty string.
-	 *            	</p>
-	 *            	<p>
-	 *            	The prefix is used in GetPot to note the relationship of a
-	 *            	section with its parent. In MOOSE it is either null or equal
-	 *            	to the actual prefix. In the latter case the section is always
-	 *            	closed by the parent section prefix
-	 *            	(Block.parentSectionPrefix). These are "./" and "../" for
-	 *           	 MOOSE, respectively and without the quotation marks.
-	 *            	</p>
+	 *            <p>
+	 *            The prefix for the name of the block. This is most commonly
+	 *            null or the actual section prefix (Block.actualSectionPrefix).
+	 *            If the prefix is not equal to Block.actualSectionPrefix, it
+	 *            will be replaced with an empty string.
+	 *            </p>
+	 *            <p>
+	 *            The prefix is used in GetPot to note the relationship of a
+	 *            section with its parent. In MOOSE it is either null or equal
+	 *            to the actual prefix. In the latter case the section is always
+	 *            closed by the parent section prefix
+	 *            (Block.parentSectionPrefix). These are "./" and "../" for
+	 *            MOOSE, respectively and without the quotation marks.
+	 *            </p>
 	 * @param writeInactiveBlocks
-	 * 			  	This flag determines if inactive blocks should still be
-	 * 				written out to the GetPot string, but commented out (with a
-	 * 				("#" in front). By default, all subblocks have this behavior 
-	 * 				set to true.
-	 * @return The GetPot representation of this Block.         
+	 *            This flag determines if inactive blocks should still be
+	 *            written out to the GetPot string, but commented out (with a
+	 *            ("#" in front). By default, all subblocks have this behavior
+	 *            set to true.
+	 * @return The GetPot representation of this Block.
 	 */
 	public String toGetPot(String prefix, boolean writeInactiveBlocks) {
 
@@ -384,55 +401,63 @@ public class Block {
 		String potString = "", commentString = "", whiteSpaceString = "";
 		boolean hasComment = false;
 
+		String newLine = System.lineSeparator();
+
 		// Fix the indentation
 		indent += (realPrefix.equals(actualSectionPrefix)) ? "  " : "";
 
-		// Only write the block if it is active! (or the inactive writing flag is true)
+		// Only write the block if it is active! (or the inactive writing flag
+		// is true)
 		if (active || writeInactiveBlocks) {
 
 			// Open the section
-			potString = (!active && writeInactiveBlocks) ? 
-					indent.substring(0, indent.length()-2) + "# [" + openingSection + "]" :
-					indent + "[" + openingSection + "]";
-			
+			potString = (!active && writeInactiveBlocks) ? indent.substring(0,
+					indent.length() - 2) + "# [" + openingSection + "]"
+					: indent + "[" + openingSection + "]";
+
 			// Check if this section block has a comment, if it does, append it
 			hasComment = !comment.isEmpty();
 			if (hasComment) {
 				// Remove newline characters from comment
-				commentString = comment.replaceAll("[\n\r]", "");
+				commentString = comment
+						.replaceAll("[" + newLineRegex + "]", "");
 				// Append the line
 				whiteSpaceString = makeWhiteSpaceString(potString);
-				potString += String.format("%s# %s\n", whiteSpaceString, commentString);
+				potString += String.format("%s# %s%n", whiteSpaceString,
+						commentString);
 			} else {
-				potString += "\n";
+				potString += newLine;
 			}
-			
+
 			// Add the parameters to the string
 			if (parameters != null) {
 				for (int i = 0; i < parameters.size(); i++) {
-					
+
 					// Get the parameter, determine if it has a comment
 					Parameter param = parameters.get(i);
 					hasComment = !param.getComment().isEmpty();
-					
+
 					// Always write out required parameters
 					if (param.isRequired()) {
-						
+
 						if (hasComment) {
 							// Remove newline characters from comment
-							commentString = param.getComment().
-									replaceAll("[\n\r]", "");
+							commentString = param.getComment().replaceAll(
+									"[" + newLineRegex + "]", "");
 							// Append the line
-							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
-							potString += (!active && writeInactiveBlocks) ?
-									String.format("%s# %s%s# %s\n",
-											indent, param.toString(), whiteSpaceString,commentString) :
-									String.format("%s  %s%s# %s\n",
-											indent, param.toString(), whiteSpaceString,commentString)	;
+							whiteSpaceString = makeWhiteSpaceString(indent
+									+ "  " + param.toString());
+							potString += (!active && writeInactiveBlocks) ? String
+									.format("%s# %s%s# %s%n", indent,
+											param.toString(), whiteSpaceString,
+											commentString) : String.format(
+									"%s  %s%s# %s%n", indent, param.toString(),
+									whiteSpaceString, commentString);
 						} else {
-							potString += (!active && writeInactiveBlocks) ?
-									indent + "# " + param.toString() + "\n" :
-									indent + "  " + param.toString() + "\n";
+							potString += (!active && writeInactiveBlocks) ? indent
+									+ "# " + param.toString() + newLine
+									: indent + "  " + param.toString()
+											+ newLine;
 						}
 					}
 					// If the parameter is not explicitly required, check if it
@@ -440,33 +465,38 @@ public class Block {
 					else if (param.isEnabled()) {
 						if (hasComment) {
 							// Remove newline characters from comment
-							commentString = param.getComment().
-									replaceAll("[\n\r]", "");
+							commentString = param.getComment().replaceAll(
+									"[" + newLineRegex + "]", "");
 							// Append the line
-							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
-							potString += (!active) ? 
-									String.format("%s# %s%s# %s\n",
-											indent, param.toString(), whiteSpaceString, commentString) :
-									String.format("%s  %s%s# %s\n",
-											indent, param.toString(), whiteSpaceString, commentString);
+							whiteSpaceString = makeWhiteSpaceString(indent
+									+ "  " + param.toString());
+							potString += (!active) ? String.format(
+									"%s# %s%s# %s%n", indent, param.toString(),
+									whiteSpaceString, commentString) : String
+									.format("%s  %s%s# %s%n", indent,
+											param.toString(), whiteSpaceString,
+											commentString);
 						} else {
-							potString += (!active) ?
-									indent + "# " + param.toString() + "\n" :
-									indent + "  " + param.toString() + "\n";
+							potString += (!active) ? indent + "# "
+									+ param.toString() + newLine : indent
+									+ "  " + param.toString() + newLine;
 						}
-					} 
+					}
 					// Otherwise, the parameter will be commented out
 					else {
 						if (hasComment) {
 							// Remove newline characters from comment
-							commentString = param.getComment().
-									replaceAll("[\n\r]", "");
+							commentString = param.getComment().replaceAll(
+									"[" + newLineRegex + "]", "");
 							// Append the line
-							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
-							potString += String.format("%s# %s%s# %s\n",
-									indent, param.toString(), whiteSpaceString, commentString);
+							whiteSpaceString = makeWhiteSpaceString(indent
+									+ "  " + param.toString());
+							potString += String.format("%s# %s%s# %s%n",
+									indent, param.toString(), whiteSpaceString,
+									commentString);
 						} else {
-							potString += indent + "# " + param.toString() + "\n";
+							potString += indent + "# " + param.toString()
+									+ newLine;
 						}
 					}
 				}
@@ -482,9 +512,12 @@ public class Block {
 			}
 
 			// Close the section
-			potString += (!active && writeInactiveBlocks) ? 
-					indent.substring(0, indent.length()-2) + "# [" + closingSection + "]\n":
-					indent + "[" + closingSection + "]\n";
+			potString += (!active && writeInactiveBlocks) ? indent.substring(0,
+					indent.length() - 2)
+					+ "# ["
+					+ closingSection
+					+ "]"
+					+ newLine : indent + "[" + closingSection + "]" + newLine;
 
 		}
 
@@ -493,31 +526,31 @@ public class Block {
 
 		return potString;
 	}
-	
+
 	/**
 	 * This method is the same as calling {@code toGetPot(prefix, false)}.
 	 * 
 	 * @param prefix
-	 * 	            <p>
-	 *            	The prefix for the name of the block. This is most commonly
-	 *            	null or the actual section prefix (Block.actualSectionPrefix).
-	 *            	If the prefix is not equal to Block.actualSectionPrefix, it
-	 *            	will be replaced with an empty string.
-	 *            	</p>
-	 *            	<p>
-	 *            	The prefix is used in GetPot to note the relationship of a
-	 *            	section with its parent. In MOOSE it is either null or equal
-	 *            	to the actual prefix. In the latter case the section is always
-	 *            	closed by the parent section prefix
-	 *            	(Block.parentSectionPrefix). These are "./" and "../" for
-	 *           	 MOOSE, respectively and without the quotation marks.
-	 *            	</p>
-	 * @return The GetPot representation of this Block. 
+	 *            <p>
+	 *            The prefix for the name of the block. This is most commonly
+	 *            null or the actual section prefix (Block.actualSectionPrefix).
+	 *            If the prefix is not equal to Block.actualSectionPrefix, it
+	 *            will be replaced with an empty string.
+	 *            </p>
+	 *            <p>
+	 *            The prefix is used in GetPot to note the relationship of a
+	 *            section with its parent. In MOOSE it is either null or equal
+	 *            to the actual prefix. In the latter case the section is always
+	 *            closed by the parent section prefix
+	 *            (Block.parentSectionPrefix). These are "./" and "../" for
+	 *            MOOSE, respectively and without the quotation marks.
+	 *            </p>
+	 * @return The GetPot representation of this Block.
 	 */
 	public String toGetPot(String prefix) {
 		return toGetPot(prefix, false);
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation converts the Block to a standard GetPot-compatible format
@@ -550,36 +583,37 @@ public class Block {
 	 * @param depthIndent
 	 *            The indentation of the block
 	 * @param writeInactiveBlocks
-	 * 			  This flag determines if inactive blocks should still be
-	 * 			  written out to the GetPot string, but commented out (with a
-	 * 			  "#" in front).
-	 * @return    The GetPot representation of this Block.         
+	 *            This flag determines if inactive blocks should still be
+	 *            written out to the GetPot string, but commented out (with a
+	 *            "#" in front).
+	 * @return The GetPot representation of this Block.
 	 */
-	public String toGetPot(String prefix, String depthIndent, 
+	public String toGetPot(String prefix, String depthIndent,
 			boolean writeInactiveBlocks) {
 
 		indent += depthIndent;
 		return toGetPot(prefix, writeInactiveBlocks);
-		
+
 	}
-	
+
 	/**
 	 * This is a utility method that will construct and return a String of
-	 * whitespaces, depending on the length of the current line. This is used
-	 * by the toGetPot() method when appending comments, to try to make comments
+	 * whitespaces, depending on the length of the current line. This is used by
+	 * the toGetPot() method when appending comments, to try to make comments
 	 * align in columns for neatness' sake.
 	 * 
-	 * @param getPotLine	Current line that the comment will be appended to
-	 * @return				A string of whitespace characters that will separate
-	 * 						the current line's text from its comment
+	 * @param getPotLine
+	 *            Current line that the comment will be appended to
+	 * @return A string of whitespace characters that will separate the current
+	 *         line's text from its comment
 	 */
 	private String makeWhiteSpaceString(String getPotLine) {
-	
+
 		String whiteSpaceString = "";
 		int whiteSpaceCount = 0, lineLength = 0;
-		
+
 		lineLength = getPotLine.length();
-		
+
 		if (lineLength < 30) {
 			whiteSpaceCount = 30 - lineLength;
 		} else if (lineLength < 45) {
@@ -589,11 +623,11 @@ public class Block {
 		} else {
 			whiteSpaceCount = 15;
 		}
-		
+
 		for (int i = 0; i < whiteSpaceCount; i++) {
 			whiteSpaceString += " ";
 		}
-		
+
 		return whiteSpaceString;
 	}
 
@@ -619,16 +653,16 @@ public class Block {
 		// Get the name of the block, set it as active
 		name = potLines.get(0).trim();
 		active = true;
-			
+
 		// Check if this block has a comment, separate it if it does
 		if (name.contains("#")) {
-			
+
 			// Determine if the whole line is commented out, or there's an
 			// in-line comment
 			int firstHash = name.indexOf("#");
 			int lastHash = name.lastIndexOf("#");
 			String blockComment = "";
-			
+
 			// If the whole line is commented out w/o an in-line comment
 			if (firstHash == 0 && firstHash == lastHash) {
 				// Set the name (without the hash), mark as inactive
@@ -639,7 +673,7 @@ public class Block {
 			else if (firstHash > 0 && firstHash == lastHash) {
 				// Split the name and comment up
 				blockComment = name.substring(firstHash + 1).trim();
-		
+
 				// Set the name and comment separately
 				comment = blockComment;
 				name = name.substring(0, firstHash).trim();
@@ -648,15 +682,15 @@ public class Block {
 			else {
 				// Split the name and comment up
 				blockComment = name.substring(lastHash + 1).trim();
-		
+
 				// Set the name and comment separately, set as inactive
 				comment = blockComment;
 				name = name.substring(firstHash + 1, lastHash).trim();
 				active = false;
 			}
-			
+
 		}
-		
+
 		// The name has to be checked to determine whether or not it is a
 		// subblock and the opening characters should be skipped.
 		name = (name.contains("./")) ? name.substring(3, name.length() - 1)
@@ -674,18 +708,18 @@ public class Block {
 		for (int i = 1; i < potLines.size(); i++) {
 			// Get the line and trim it
 			line = potLines.get(i).trim();
-			
+
 			// Reset the enabled flag if it's been used
 			parameterComment = "";
 			parameterEnabled = true;
-			
+
 			// Load the line as a parameter if it doesn't start with # or [ and
 			// contains =.
 			if (!line.startsWith("[") && line.contains("=")) {
 
 				// Split the line at the "="
 				String[] parameterPieces = line.split("=");
-				
+
 				// A basic 'name = value' parameter would have 2 elements in
 				// parameterPieces, but if for whatever reason there are more
 				// than 2 (a '=' in the comment), merge elements 1 to n together
@@ -696,29 +730,29 @@ public class Block {
 				}
 
 				// Check if this parameter has a comment
-				if (parameterPieces[0].contains("#") || 
-						(parameterPieces.length > 1 
-								&& parameterPieces[1].contains("#"))) {
-					
+				if (parameterPieces[0].contains("#")
+						|| (parameterPieces.length > 1 && parameterPieces[1]
+								.contains("#"))) {
+
 					// Check if the whole line is commented out
 					if (parameterPieces[0].startsWith("#")) {
-						parameterPieces[0] = 
-								parameterPieces[0].substring(1).trim();
+						parameterPieces[0] = parameterPieces[0].substring(1)
+								.trim();
 						parameterEnabled = false;
-						
+
 					}
-					
+
 					// Check if there's an inline comment as well
-					if (parameterPieces.length > 1 
+					if (parameterPieces.length > 1
 							&& parameterPieces[1].contains("#")) {
 						// Split the parameter value and comment up
 						int commentIndex = parameterPieces[1].lastIndexOf("#");
-						parameterComment = parameterPieces[1]
-								.substring(commentIndex + 1).trim();
-						
+						parameterComment = parameterPieces[1].substring(
+								commentIndex + 1).trim();
+
 						// Chop the comment off the parameter value
-						parameterPieces[1] = parameterPieces[1]
-								.substring(0, commentIndex).trim();
+						parameterPieces[1] = parameterPieces[1].substring(0,
+								commentIndex).trim();
 					}
 				}
 
@@ -773,7 +807,7 @@ public class Block {
 					// Update i to skip over the lines we just read
 					i += (numValueLines - 1);
 				}
-				
+
 				// Create the new parameter
 				Parameter tmpParam = new Parameter();
 				tmpParam.setName(parameterName);
@@ -865,7 +899,7 @@ public class Block {
 		// Create the array list from the string by splitting and converting to
 		// a List.
 		ArrayList<String> potLines = new ArrayList<String>(
-				Arrays.asList(getPotString.split("\n")));
+				Arrays.asList(getPotString.split(newLineRegex)));
 
 		// Delegate to the private version
 		fromGetPot(potLines);
@@ -894,7 +928,8 @@ public class Block {
 	 * from Entries and there is no 1-1 mapping between those entities.
 	 * </p>
 	 * 
-	 * @param comp	The TreeComposite that should be loaded.       
+	 * @param comp
+	 *            The TreeComposite that should be loaded.
 	 */
 	public void fromTreeComposite(TreeComposite comp) {
 
@@ -950,7 +985,7 @@ public class Block {
 	 * subclasses to create the proper instance of Block subclasses (e.g. -
 	 * YAMLBlock) during the recursive walking operations on Block.
 	 * 
-	 * @return 	The new Block, possibly of a subclass.          
+	 * @return The new Block, possibly of a subclass.
 	 */
 	protected Block getNewBlock() {
 		return new Block();
@@ -960,7 +995,7 @@ public class Block {
 	 * This operation indicates if the block is Active. True if Active, false if
 	 * not.
 	 * 
-	 * @return 	True if Active, false if not        
+	 * @return True if Active, false if not
 	 */
 	public boolean isActive() {
 		return active;
@@ -970,7 +1005,8 @@ public class Block {
 	 * This operation sets specifies whether or not the block is Active. True
 	 * for Active, false if not.
 	 * 
-	 * @param flag	True if Active, false if not          
+	 * @param flag
+	 *            True if Active, false if not
 	 */
 	public void setActive(boolean flag) {
 		active = flag;
