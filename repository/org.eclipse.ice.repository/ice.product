@@ -114,6 +114,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.analysistool" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.caebat.batml" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
@@ -140,6 +141,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.reactor.plant" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.sfr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactorAnalyzer" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reflectivity" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.sassena" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.vibe" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
