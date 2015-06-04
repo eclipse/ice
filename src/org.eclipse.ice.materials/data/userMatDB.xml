@@ -13,12 +13,28 @@
                 <value>2.75</value>
             </entry>
             <entry>
+                <key>Mu_inc (A^-1)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
                 <key>Inc xs</key>
                 <value>0.16</value>
             </entry>
             <entry>
+                <key>Thickness (A)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Material ID</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
                 <key>Dens (at/nm3)</key>
                 <value>51.0</value>
+            </entry>
+            <entry>
+                <key>Roughness (A)</key>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>M (amu)</key>
@@ -27,6 +43,10 @@
             <entry>
                 <key>Dens (g/cm3)</key>
                 <value>5.9</value>
+            </entry>
+            <entry>
+                <key>Scattering Length Density (A^-2)</key>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>Coh b</key>
