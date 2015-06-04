@@ -12,19 +12,19 @@
  *******************************************************************************/
 package org.eclipse.ice.client.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.junit.Test;
 import org.eclipse.ice.client.internal.ItemProcessor;
-import org.eclipse.ice.client.widgets.EclipseExtraInfoWidget;
-import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
-import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
-import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
-
 import org.eclipse.ice.core.iCore.ICore;
-
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
+import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.junit.Test;
 
 /**
  * This class is responsible for testing the ItemProcessor class.
@@ -115,13 +115,22 @@ public class ItemProcessorTester {
 
 		// Local Declarations
 		int itemId = -1;
-		FormStatus status = null;
 		FakeExtraInfoWidget infoWidget = new FakeExtraInfoWidget();
 		FakeStreamingTextWidget textWidget = new FakeStreamingTextWidget();
 		IFormWidget formWidget = new FakeFormWidget();
 		String actionName = "blend";
 		FakeCore core = new FakeCore();
 		Thread processThread = null;
+
+		// We don't want a rigid sleep time when we need to wait on the
+		// ItemProcessor to process a task, as the total time spent may vary
+		// wildly. Thus, we define a maximum sleep time of 5 seconds, and when
+		// waiting, we periodically check back every 50 ms until either the
+		// limit is reached or the condition we want to check has been
+		// satisfied.
+		final long sleepLimit = 5000;
+		final long sleepIncrement = 50;
+		long sleepTime;
 
 		// Put a dummy form on the widget
 		formWidget.setForm(new Form());
@@ -150,20 +159,25 @@ public class ItemProcessorTester {
 		// Process the Item with the ItemProcessor
 		processThread.start();
 
-		// Give the thread a little time to do its work
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			// Fail if an exception is caught
-			fail();
+		// The ItemProcessor should eventually notify the (Fake)Core that the
+		// action was processed. Give it some time to do its work, but proceed
+		// when the action is processed.
+		sleepTime = 0;
+		while (core.getLastProcessStatus() != FormStatus.Processed
+				&& sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
 		}
-
-		// Check the process status with the core to make sure the event was
-		// processed.
+		// Check that the action was processed.
 		assertEquals(FormStatus.Processed, core.getLastProcessStatus());
 
-		// Reset the FakeCore's Process state
+		// Stop the ItemProcessor's thread and reset the FakeCore.
+		// itemProcessor.cancelled();
 		core.reset();
 
 		// Reset the ItemProcessor. This time we are going to test the case
@@ -171,7 +185,7 @@ public class ItemProcessorTester {
 		// so that the FakeCore will return the proper return code,
 		// FormStatus.NeedsInfo.
 		actionName = "NeedsInfo";
-		itemProcessor = new ItemProcessor();
+		// itemProcessor = new ItemProcessor();
 
 		// Reset the thread
 		processThread = new Thread(itemProcessor);
@@ -192,22 +206,55 @@ public class ItemProcessorTester {
 		// Start the thread
 		processThread.start();
 
-		// Give the thread a little time to do its work
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			// Fail if an exception is caught
-			fail();
-		}
+		// 1 - The ItemProcessor notifies the Core to process the item for the
+		// action, which sets the status to NeedsInfo.
+		// 2 - The output file is fetched from the Core, and the
+		// StreamingTextWidget is updated.
+		// 3 - The InfoWidget is displayed.
+		// 4 - The StreamingTextWidget is updated.
+		// 5 - After the InfoWidget closes (which is immediately), the Core is
+		// notified to update the item.
 
-		// Check the process status to make sure the client made the call
+		// Give the thread a little time to do its work. The Item action is
+		// processed first, so wait until the status is NeedsInfo.
+		sleepTime = 0;
+		while (core.getLastProcessStatus() != FormStatus.NeedsInfo
+				&& sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
+		}
 		assertEquals(FormStatus.NeedsInfo, core.getLastProcessStatus());
 
-		// Make sure the widget was displayed
+		// Make sure the widget was displayed. This may also take some time.
+		sleepTime = 0;
+		while (!infoWidget.widgetDisplayed() && sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
+		}
 		assertTrue(infoWidget.widgetDisplayed());
 
-		// Make sure the Form was resubmitted to the core
+		// Make sure the Form was resubmitted to the core. This happens after
+		// the widget is displayed (and dismissed, which is immediate for the
+		// FakeInfoWidget). We need to give the ItemProcessor more time...
+		while (!core.itemUpdated() && sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
+		}
 		assertTrue(core.itemUpdated());
 
 		// Check that the label was set. It should be set before being
@@ -225,16 +272,18 @@ public class ItemProcessorTester {
 		processThread.start();
 		// ... and immediately cancel!
 		itemProcessor.cancelled();
-		// Give the thread a little time to do its work
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			// Fail if an exception is caught
-			fail();
-		}
 
-		// Check the process status to make sure the client made the call
+		// Check that the core was notified that the ItemProcessor was
+		// cancelled. Give the ItemProcessor some time to work...
+		while (!core.wasCancelled() && sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
+		}
 		assertTrue(core.wasCancelled());
 
 		return;
