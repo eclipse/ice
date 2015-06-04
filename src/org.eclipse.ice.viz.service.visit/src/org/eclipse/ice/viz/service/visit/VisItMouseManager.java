@@ -177,7 +177,6 @@ public class VisItMouseManager {
 				public void mouseScrolled(MouseEvent e) {
 					String direction = (e.count > 0) ? "in" : "out";
 					widget.zoom(direction);
-					System.out.println(direction);
 				}
 			};
 			Listener dummy = new Listener(){
