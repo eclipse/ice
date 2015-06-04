@@ -403,7 +403,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 					System.out.println("VizFileViewer message: "
 							+ "Removing the resource for file \""
 							+ resource.getPath().getPath() + "\".");
-					resources.remove(resource);
+					resourceComponent.removeResource(resource);
 				}
 			}
 
