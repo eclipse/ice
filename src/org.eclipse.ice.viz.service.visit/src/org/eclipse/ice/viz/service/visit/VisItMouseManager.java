@@ -14,6 +14,7 @@ package org.eclipse.ice.viz.service.visit;
 
 import gov.lbnl.visit.swt.VisItSwtWidget;
 
+import java.awt.Event;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,6 +28,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * This class is used for managing a daemon thread for processing mouse input.
@@ -175,8 +177,17 @@ public class VisItMouseManager {
 				public void mouseScrolled(MouseEvent e) {
 					String direction = (e.count > 0) ? "in" : "out";
 					widget.zoom(direction);
+					System.out.println(direction);
 				}
 			};
+			Listener dummy = new Listener(){
+				@Override
+				public void handleEvent(org.eclipse.swt.widgets.Event event) {
+					// TODO Auto-generated method stub
+					
+				}
+			};
+			widget.addListener(SWT.KeyDown, dummy);
 			widget.addMouseWheelListener(wheelListener);
 		}
 		// Create a MouseMoveListener to keep track of the mouse location when
