@@ -16,6 +16,7 @@ import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 import gov.lbnl.visit.swt.VisItSwtWidget;
 
+import java.awt.event.MouseAdapter;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -159,14 +160,8 @@ public class VisitEditor extends EditorPart {
 					vizWidget.zoom(direction);
 				}
 			});
-			Listener dummy = new Listener(){
-				@Override
-				public void handleEvent(org.eclipse.swt.widgets.Event event) {
-					// TODO Auto-generated method stub
-					
-				}
-			};
-			vizWidget.addListener(SWT.KeyDown, dummy);
+			
+
 			// Use mouse click to move the plot
 			vizWidget.addMouseMoveListener(new MouseMoveListener() {
 				@Override
@@ -189,6 +184,7 @@ public class VisitEditor extends EditorPart {
 
 				@Override
 				public void mouseDown(MouseEvent e) {
+					vizWidget.setFocus();
 					// Set the pressed flag
 					mousePressed = true;
 					// Start the mouseManager thread

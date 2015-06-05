@@ -23,6 +23,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
@@ -179,6 +181,8 @@ public class VisItMouseManager {
 					widget.zoom(direction);
 				}
 			};
+			// Dummy listener required to give widget proper focus for mouse wheel
+			// scrolling. 
 			Listener dummy = new Listener(){
 				@Override
 				public void handleEvent(org.eclipse.swt.widgets.Event event) {
@@ -188,6 +192,7 @@ public class VisItMouseManager {
 			};
 			widget.addListener(SWT.KeyDown, dummy);
 			widget.addMouseWheelListener(wheelListener);
+
 		}
 		// Create a MouseMoveListener to keep track of the mouse location when
 		// dragging.
