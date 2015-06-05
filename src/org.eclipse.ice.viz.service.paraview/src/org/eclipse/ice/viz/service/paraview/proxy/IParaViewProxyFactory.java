@@ -52,7 +52,7 @@ public interface IParaViewProxyFactory {
 	 * 
 	 * @param uri
 	 *            The file for which a proxy will be created.
-	 * @return An proxy for the file, or {@code null} if the specified file is
+	 * @return A proxy for the file, or {@code null} if the specified file is
 	 *         null or a proxy cannot be created.
 	 * @throws NullPointerException
 	 *             If the provided URI is null.
