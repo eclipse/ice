@@ -162,8 +162,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		super(pageName);
 
 		setTitle("Establish a connection to VisIt");
-		setDescription("Select a connection method and fill in the required "
-				+ "parameters.");
+		setDescription("Select a connection method and fill in the required " + "parameters.");
 
 		// Set the default values
 		dialogExitSelection = null;
@@ -187,11 +186,9 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 */
 	@Override
 	public void performHelp() {
-		MessageDialog.open(INFORMATION, getShell(), "Help",
-				"Use this dialog to establish a connection to VisIt. "
-						+ "You may launch VisIt on this machine or a "
-						+ "remote machine or connect to a VisIt session "
-						+ "that was previously launched.", SWT.NONE);
+		MessageDialog.open(INFORMATION, getShell(), "Help", "Use this dialog to establish a connection to VisIt. "
+				+ "You may launch VisIt on this machine or a " + "remote machine or connect to a VisIt session "
+				+ "that was previously launched.", SWT.NONE);
 		return;
 	}
 
@@ -204,26 +201,23 @@ public class LaunchVisitWizardPage extends WizardPage {
 	public void createControl(Composite parent) {
 
 		// Create the ScrolledComposite, setting its layout data
-		ScrolledComposite scrolledComposite = new ScrolledComposite(parent,
-				SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		scrolledComposite.setLayoutData(GridDataFactory.fillDefaults()
-				.grab(true, true).hint(SWT.DEFAULT, 200).create());
+		ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		scrolledComposite
+				.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200).create());
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
 
 		// Create a Composite that contains the rest of the WizardPage and sits
 		// on top of the ScrolledComposite
 		Composite container = new Composite(scrolledComposite, SWT.NULL);
-		container.setLayout(GridLayoutFactory.swtDefaults().numColumns(1)
-				.create());
+		container.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).create());
 
 		// Create the Launch Dialog contents
 		createContents(container);
 
 		// Set the ScrolledComposite content as the containing composite
 		scrolledComposite.setContent(container);
-		scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT,
-				SWT.DEFAULT));
+		scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 		// Set the parent as the control for the receiver.
 		setControl(parent);
@@ -268,14 +262,12 @@ public class LaunchVisitWizardPage extends WizardPage {
 		/*--- Remote Launch --*/
 		// Set up the radio to launch remotely
 		remoteRadio = new Button(parent, SWT.RADIO);
-		remoteRadio
-				.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+		remoteRadio.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 		remoteRadio.setText("Launch Visit remotely");
 
 		// Create the remote launch widget group
 		final Composite remoteComp = new Composite(parent, SWT.BORDER);
-		remoteComp
-				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+		remoteComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		remoteComp.setLayout(new GridLayout(1, false));
 
 		// Create the host composite
@@ -300,14 +292,12 @@ public class LaunchVisitWizardPage extends WizardPage {
 		/*-- Service Connect -*/
 		// Set up the radio to connect to a service
 		serviceRadio = new Button(parent, SWT.RADIO);
-		serviceRadio.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false,
-				false, 2, 1));
+		serviceRadio.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 2, 1));
 		serviceRadio.setText("Connect to VisIt");
 
 		// Create the connect to service widget group
 		final Composite serviceComp = new Composite(parent, SWT.BORDER);
-		serviceComp
-				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+		serviceComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		serviceComp.setLayout(new GridLayout(1, false));
 
 		// Create the host composite
@@ -315,13 +305,11 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 		// Create the port composite
 		Composite servicePortComp = new Composite(serviceComp, SWT.NONE);
-		servicePortComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				true));
+		servicePortComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		servicePortComp.setLayout(new GridLayout(2, false));
 		// Add a Label to identify the adjacent Text
 		Label servicePortLabel = new Label(servicePortComp, SWT.NONE);
-		servicePortLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-				false, false));
+		servicePortLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		servicePortLabel.setText("Port for connecting to VisIt:");
 		// Add a Text for the user to input the port number
 		servicePortText = new Text(servicePortComp, SWT.BORDER);
@@ -330,13 +318,11 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 		// Create the password composite
 		Composite servicePassComp = new Composite(serviceComp, SWT.NONE);
-		servicePassComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				true));
+		servicePassComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		servicePassComp.setLayout(new GridLayout(2, false));
 		// Add a label to identify the adjacent Text
 		Label servicePassLabel = new Label(servicePassComp, SWT.NONE);
-		servicePassLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-				false, false));
+		servicePassLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		servicePassLabel.setText("Password to connect to VisIt service:");
 		// Add a Text for the user to input the password
 		servicePassText = new Text(servicePassComp, SWT.PASSWORD | SWT.BORDER);
@@ -362,8 +348,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 				setTitle("Launch VisIt on this machine.");
 				setDescription("Enter the file system path to the VisIt "
 						+ "executable. Optionally, set a port number and "
-						+ "password to allow other users to connect to this "
-						+ "session.");
+						+ "password to allow other users to connect to this " + "session.");
 
 				// Enable the widgets in the local launch composite and the
 				// "Finish" button
@@ -387,8 +372,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 				setTitle("Launch VisIt on a remote machine.");
 				setDescription("Enter the host to run the VisIt session and the "
 						+ "file system path to the VisIt executable. Optionally,"
-						+ " set a port, password, or use an out-of-network "
-						+ "gateway.");
+						+ " set a port, password, or use an out-of-network " + "gateway.");
 
 				// Enable the widgets in the local launch composite and the
 				// "Finish" button
@@ -412,8 +396,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 				setTitle("Connect to a running VisIt client.");
 				setDescription("Enter the host running VisIt and the port "
 						+ "and password used for validating connections. "
-						+ "Optionally, use and out-of-network gateway to "
-						+ "access the host.");
+						+ "Optionally, use and out-of-network gateway to " + "access the host.");
 
 				// Enable the widgets in the local launch composite and the
 				// "Finish" button
@@ -467,8 +450,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		windowIdCombo.select(0);
 
 		// Create a map to record the created connections
-		Map<String, VisItSwtConnection> connectionMap = VisItSwtConnectionManager
-				.getConnMap();
+		Map<String, VisItSwtConnection> connectionMap = VisItSwtConnectionManager.getConnMap();
 
 		// Get the existing connection names and add them to the Combo
 		Set<String> keys = connectionMap.keySet();
@@ -491,8 +473,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 					windowIdCombo.setEnabled(true);
 
 					// Get the connection from the Combo.
-					VisItSwtConnection conn = VisItSwtConnectionManager
-							.getConnection(connectionCombo.getItem(index));
+					VisItSwtConnection conn = VisItSwtConnectionManager.getConnection(connectionCombo.getItem(index));
 					// Clear and repopulate the window selection Combo
 					windowIdCombo.removeAll();
 					windowIdCombo.add("New Window..");
@@ -645,8 +626,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		}
 		// If this is a Text that should be disabled based on check box, keep it
 		// that way.
-		else if (control instanceof Text
-				&& control.getParent() instanceof ICheckComposite
+		else if (control instanceof Text && control.getParent() instanceof ICheckComposite
 				&& !((ICheckComposite) control.getParent()).isSelected()) {
 			control.setEnabled(false);
 		}
@@ -669,8 +649,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 		// Get the IDs for the connection and the window
 		connectionId = connectionCombo.getText();
-		windowId = "New Window..".equals(windowIdCombo.getText()) ? "-1"
-				: windowIdCombo.getText();
+		windowId = "New Window..".equals(windowIdCombo.getText()) ? "-1" : windowIdCombo.getText();
 
 		// If this is a brand new connection, then assign the first window to
 		// this connection. Note: Combo#getSelectionIndex() returns -1 if no
@@ -681,8 +660,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 		// Force the user to set a connection name
 		if (index == 0) {
-			MessageDialog.openError(getShell(), "Invalid Key", "Please assign"
-					+ " a name to this connection.");
+			MessageDialog.openError(getShell(), "Invalid Key", "Please assign" + " a name to this connection.");
 			return false;
 		}
 
@@ -703,8 +681,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 				visItDir = localPathComp.getPathString();
 			} else {
 				// Display an error prompt to enter a path
-				MessageDialog.openError(getShell(), "Invalid Path",
-						"Please enter the path to a Visit executable.");
+				MessageDialog.openError(getShell(), "Invalid Path", "Please enter the path to a Visit executable.");
 				return false;
 			}
 			hostname = "localhost";
@@ -714,20 +691,18 @@ public class LaunchVisitWizardPage extends WizardPage {
 				port = localPortComp.getPortString();
 			} else {
 				// Display an error prompt to enter a port number
-				MessageDialog.openError(getShell(), "Invalid Port",
-						"Please enter the ID of an open port for the "
-								+ "Visit connection.");
+				MessageDialog.openError(getShell(), "Invalid Port", "Please enter the ID of an open port for the "
+						+ "Visit connection.");
 				return false;
 			}
 			// Check if the specified port is in use, then prompt an
 			// error if it is.
-			try (Socket test = new Socket("localhost", Integer.valueOf(port))){
-				MessageDialog.openError(getShell(),  "Port in use", 
-						"The specified port number is already in use. " +
-				"Please select a different port.");
+			try (Socket test = new Socket("localhost", Integer.valueOf(port))) {
+				MessageDialog.openError(getShell(), "Port in use", "The specified port number is already in use. "
+						+ "Please select a different port.");
 				return false;
 			} catch (IOException e) {
-			} 
+			}
 			password = localPasswordComp.getPassword();
 			use_tunneling = false;
 		}
@@ -741,8 +716,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 				hostname = remoteHostComp.getHostString();
 			} else {
 				// Display an error prompt to enter a path
-				MessageDialog.openError(getShell(), "Invalid Hostname",
-						"Please enter a valid hostname.");
+				MessageDialog.openError(getShell(), "Invalid Hostname", "Please enter a valid hostname.");
 				return false;
 			}
 			// Get the path or prompt an error if the user has left the field
@@ -751,8 +725,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 				visItDir = remotePathComp.getPathString();
 			} else {
 				// Display an error prompt to enter a path
-				MessageDialog.openError(getShell(), "Invalid Path",
-						"Please enter the path to a Visit executable.");
+				MessageDialog.openError(getShell(), "Invalid Path", "Please enter the path to a Visit executable.");
 				return false;
 			}
 			// Get the port number or prompt an error if the user has
@@ -761,22 +734,21 @@ public class LaunchVisitWizardPage extends WizardPage {
 				port = remotePortComp.getPortString();
 			} else {
 				// Display an error prompt to enter a port
-				MessageDialog.openError(getShell(), "Invalid Port",
-						"Please enter the ID of an open port for the "
-								+ "Visit connection.");
+				MessageDialog.openError(getShell(), "Invalid Port", "Please enter the ID of an open port for the "
+						+ "Visit connection.");
 				return false;
 			}
-			
+
+			//TODO add better check for duplicate open ports
 			// Check if the specified port is in use, then prompt an
 			// error if it is.
-			try (Socket test = new Socket("localhost", Integer.valueOf(port))){
-				MessageDialog.openError(getShell(),  "Port in use", 
-						"The specified port number is already in use. " +
-				"Please select a different port.");
+			/*try (Socket test = new Socket(hostname, Integer.valueOf(port))) {
+				MessageDialog.openError(getShell(), "Port in use", "The specified port number is already in use. "
+						+ "Please select a different port.");
 				return false;
 			} catch (IOException e) {
-			} 
-			
+			}*/
+
 			password = remotePasswordComp.getPassword();
 			use_tunneling = true;
 			gateway = remoteGatewayComp.getURLString();
@@ -792,8 +764,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 				hostname = serviceHostComp.getHostString();
 			} else {
 				// Display an error prompt to enter a path
-				MessageDialog.openError(getShell(), "Invalid Hostname",
-						"Please enter a valid hostname.");
+				MessageDialog.openError(getShell(), "Invalid Hostname", "Please enter a valid hostname.");
 				return false;
 			}
 			// Get the port number or prompt an error if the user has
@@ -802,20 +773,21 @@ public class LaunchVisitWizardPage extends WizardPage {
 				port = servicePortText.getText();
 			} else {
 				// Display an error prompt to enter a port
-				MessageDialog.openError(getShell(), "Invalid Port",
-						"Please enter the ID of an open port for the "
-								+ "Visit connection.");
+				MessageDialog.openError(getShell(), "Invalid Port", "Please enter the ID of an open port for the "
+						+ "Visit connection.");
 				return false;
 			}
-			
-			try (Socket test = new Socket("localhost", Integer.valueOf(port))){
-				MessageDialog.openError(getShell(),  "Port in use", 
-						"The specified port number is already in use. " +
-				"Please select a different port.");
-				return false;
-			} catch (IOException e) {
-			} 
-			
+
+			//TODO add better check for duplicate open ports
+			// try (Socket test = new Socket("localhost",
+			// Integer.valueOf(port))) {
+			// MessageDialog.openError(getShell(), "Port in use",
+			// "The specified port number is already in use. "
+			// + "Please select a different port.");
+			// return false;
+			// } catch (IOException e) {
+			// }
+
 			password = servicePassText.getText();
 			use_tunneling = false;
 			gateway = serviceGatewayComp.getURLString();
@@ -866,14 +838,12 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 			// Create a Label to identify the Text purpose
 			Label pathLabel = new Label(this, SWT.NONE);
-			pathLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-					false));
+			pathLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 			pathLabel.setText("Path to VisIt:");
 
 			// Create the Text to enter and display the path to VisIt
 			pathText = new Text(this, SWT.BORDER);
-			pathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-					true));
+			pathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 
 			// TODO Implement a remote system browser that doesn't rely on an
 			// existing VisIt connection. If this is for a remote connection,
@@ -885,18 +855,15 @@ public class LaunchVisitWizardPage extends WizardPage {
 			// Create the 'Browse' button to access a DirectoryDialog to define
 			// the path to VisIt
 			Button pathButton = new Button(this, SWT.PUSH);
-			pathButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-					false));
+			pathButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 			pathButton.setText("Browse");
-			pathButton.setToolTipText("Select the VisIt installation "
-					+ "directory");
+			pathButton.setToolTipText("Select the VisIt installation " + "directory");
 
 			// Add the listener to the Button
 			pathButton.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent event) {
 					// Open the file system exploration dialog
-					DirectoryDialog dialog = new DirectoryDialog(parent
-							.getShell(), SWT.OPEN);
+					DirectoryDialog dialog = new DirectoryDialog(parent.getShell(), SWT.OPEN);
 					String res = dialog.open();
 					if (res != null) {
 						pathText.setText(res);
@@ -980,8 +947,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 			// Create the check button to use or disallow setting the port
 			portButton = new Button(this, SWT.CHECK);
-			portButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-					false));
+			portButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 			portButton.setText("Set a port for connecting to VisIt:");
 
 			// Create the Text for inputting the port number
@@ -1039,8 +1005,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 	 * 
 	 * @author Taylor Patterson
 	 */
-	private class PasswordComposite extends Composite implements
-			ICheckComposite {
+	private class PasswordComposite extends Composite implements ICheckComposite {
 
 		/**
 		 * The Text to input a password String
@@ -1071,8 +1036,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 			// Create the check button
 			passButton = new Button(this, SWT.CHECK);
-			passButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-					false));
+			passButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 			passButton.setText("Set a password for connecting to VisIt:");
 
 			// Create the Text widget
@@ -1159,8 +1123,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 			// Add a Label to identify the adjacent Text
 			Label hostLabel = new Label(this, SWT.NONE);
-			hostLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-					false));
+			hostLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 			hostLabel.setText("Hostname:");
 
 			// Add the host Text
@@ -1223,8 +1186,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 			// Create the check button to allow/disallow using a gateway
 			gateButton = new Button(this, SWT.CHECK);
-			gateButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-					false));
+			gateButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 			gateButton.setText("Use an out-of-network gateway:");
 
 			// Create the Text for gateway URL input
