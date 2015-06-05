@@ -257,6 +257,11 @@ public class PinPowerDifferenceTester {
 					resultElements.add(resultData);
 				}
 			}
+			
+			// Close the readers.
+			reader.close();
+			refReader.close();
+			resultReader.close();
 
 		} catch (CoreException e) {
 			e.printStackTrace();

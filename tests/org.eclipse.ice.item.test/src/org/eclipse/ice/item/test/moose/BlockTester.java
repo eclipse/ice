@@ -45,7 +45,7 @@ public class BlockTester {
 		ArrayList<Parameter> paramList = new ArrayList<Parameter>();
 		Block block = new Block(), subBlock = new Block();
 		ArrayList<Block> blockList = new ArrayList<Block>();
-		
+
 		// Setup the block
 		block.setName(name);
 		block.setType(type);
@@ -108,7 +108,7 @@ public class BlockTester {
 		param1.setCpp_type("Test Param 1");
 		param1.setDescription("Test Param 1");
 		param1.setRequired(true);
-		
+
 		paramList.add(param1);
 		param2.setName("Test Param 2");
 		param2.setDefault("Test Param 2");
@@ -184,14 +184,19 @@ public class BlockTester {
 
 		// Create a GetPot string from the Block and check it
 		// System.out.println(block.toGetPot(null));
-		String testString = 
-				"[Snow]                        # Snow always mirrors\n" 
-				+ "  Test Param 1 = Test Param 1\n"
-				+ "# Test Param 2 = \n"
-				+ "  [./]\n" 
-				+ "    Test Param 3 = Test Param 3\n"
-				+ "  [../]\n" 
-				+ "[]\n";
+		String newLine = System.lineSeparator();
+		String testString = "[Snow]                        # Snow always mirrors"
+				+ newLine
+				+ "  Test Param 1 = Test Param 1"
+				+ newLine
+				+ "# Test Param 2 = "
+				+ newLine
+				+ "  [./]"
+				+ newLine
+				+ "    Test Param 3 = Test Param 3"
+				+ newLine
+				+ "  [../]"
+				+ newLine + "[]" + newLine;
 		// System.out.println(testString);
 		assertEquals(testString, block.toGetPot(null));
 		// Make sure that toString() works as described.

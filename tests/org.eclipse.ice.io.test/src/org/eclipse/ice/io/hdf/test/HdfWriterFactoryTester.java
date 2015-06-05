@@ -19,12 +19,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-
 import java.io.File;
 import java.net.URI;
 
+import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.object.Attribute;
 import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
@@ -33,42 +31,80 @@ import ncsa.hdf.object.h5.H5Datatype;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.eclipse.ice.io.hdf.HdfFileFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
- * <p>
  * This class tests the HdfWriterFactory class.
- * </p>
  * 
  * @author Eric J. Lingerfelt
  */
 public class HdfWriterFactoryTester {
-	/**
-	 * <p>
-	 * This operation conducts any required initialization for the tests.
-	 * </p>
-	 */
-	@BeforeClass
-	public static void beforeClass() {}
 
 	/**
-	 * <p>
+	 * The data file that will be used for testing purposes. This reference is
+	 * created before each test, and, if the file exists, is deleted after each
+	 * test.
+	 */
+	private File dataFile;
+	/**
+	 * The HDF5 file handle for the {@link #dataFile}. This is set to null
+	 * before each test. If it is left open, it is closed after each test.
+	 */
+	private H5File h5File;
+
+	/**
+	 * Initializes {@link #dataFile} and clears {@link #h5File}.
+	 */
+	@Before
+	public void beforeEachTest() {
+		// Create a reference to the test file.
+		String separator = System.getProperty("file.separator");
+		String testFileName = "hdfWriterFactoryFile.h5";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests";
+		dataFile = new File(userDir + separator + testFileName);
+
+		// Clear the HDF5 file reference.
+		h5File = null;
+	}
+
+	/**
+	 * If possible, closes {@link #h5File} and deletes {@link #dataFile}.
+	 */
+	@After
+	public void afterEachTest() {
+
+		// If necessary, close the HDF5 file. This closes any open streams.
+		if (h5File != null) {
+			try {
+				h5File.close();
+			} catch (HDF5Exception e) {
+				e.printStackTrace();
+			}
+			h5File = null;
+		}
+
+		// If possible, delete the test file.
+		if (dataFile.exists()) {
+			dataFile.delete();
+		}
+		dataFile = null;
+
+		return;
+	}
+
+	/**
 	 * This operation checks the createFloatDatatype, createH5Group, and
 	 * createIntegerH5Datatype operations.
-	 * </p>
 	 */
 	@Test
 	public void checkCreators() {
 		// Local declarations
-		String separator = System.getProperty("file.separator");
-		String testFileName = "hdfWriterFactoryFile1.h5";
-		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests";
-		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
-		H5File h5File;
 
 		// Create a bad H5File
 		h5File = HdfFileFactory.createH5File(null);
@@ -178,31 +214,17 @@ public class HdfWriterFactoryTester {
 		assertNotNull(floatDatatype);
 		assertEquals(floatDatatype.getDatatypeClass(), H5Datatype.CLASS_FLOAT);
 
-		// Close the file
-		HdfFileFactory.closeH5File(h5File);
-
-		// Delete file if exists
-		if (dataFile.exists()) {
-			dataFile.delete();
-		}
+		return;
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the writeDoubleAttribute, writeStringAttribute, and
 	 * writeIntegerAttribute operations.
-	 * </p>
 	 */
 	@Test
 	public void checkWriters() {
 		// Local declarations
-		String separator = System.getProperty("file.separator");
-		String testFileName = "hdfWriterFactoryFile2.h5";
-		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests";
-		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
-		H5File h5File;
 		boolean flag = true;
 		double number = 0.12345678912345;
 
@@ -335,9 +357,6 @@ public class HdfWriterFactoryTester {
 			fail();
 		}
 
-		// Delete the file
-		if (dataFile.exists()) {
-			dataFile.delete();
-		}
+		return;
 	}
 }

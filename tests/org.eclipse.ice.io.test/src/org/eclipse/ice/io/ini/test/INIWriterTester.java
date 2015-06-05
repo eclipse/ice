@@ -15,11 +15,8 @@ package org.eclipse.ice.io.ini.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -31,17 +28,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.ini.INIReader;
 import org.eclipse.ice.io.ini.INIWriter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests the methods of the INIWriter class.  
+ * Tests the methods of the INIWriter class.
  * 
  * @author Andrew Bennett
  *
@@ -73,7 +67,7 @@ public class INIWriterTester {
 			IPath projectPath = new Path(userDir + separator + ".project");
 			// Create the project description
 			IProjectDescription desc = ResourcesPlugin.getWorkspace()
-			                    .loadProjectDescription(projectPath);
+					.loadProjectDescription(projectPath);
 			// Get the project handle and create it
 			project = workspaceRoot.getProject(desc.getName());
 			// Get the project handle and create it
@@ -84,7 +78,7 @@ public class INIWriterTester {
 			}
 			// Open the project if it is not already open
 			if (project.exists() && !project.isOpen()) {
-			   project.open(new NullProgressMonitor());
+				project.open(new NullProgressMonitor());
 			}
 			// Refresh the workspace
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -99,18 +93,19 @@ public class INIWriterTester {
 
 		return;
 	}
-	
+
 	/**
 	 * Tests the IPSWriter
 	 */
 	@Test
 	public void checkINIWriter() {
-		
+
 		// Set up where to look
 		IProject project = projectSpace;
 		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.home") + separator + "ICETests" 
-				+ separator + "ioTesterWorkspace" + separator + "example_out.ini";
+		String filePath = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "ioTesterWorkspace" + separator
+				+ "example_out.ini";
 		IPath fileIPath = new Path(filePath);
 		IFile inputFile = project.getFile("example.ini");
 		IFile outputFile = project.getFile("example_out.ini");
@@ -122,26 +117,32 @@ public class INIWriterTester {
 				e.printStackTrace();
 			}
 		}
-		
+
 		// Create an IPSReader to test
 		INIReader reader = new INIReader();
 		INIWriter writer = new INIWriter();
 		assertNotNull(writer);
 		assertEquals(writer.getWriterType(), "INIWriter");
-		
+
 		// Try to read in invalid INI file
 		Form form = null;
 		writer.write(form, outputFile);
 		assertFalse(outputFile.exists());
-		
+
 		// Load the INI file and parse the contents into Components
 		form = reader.read(inputFile);
 		assertNotNull(form);
 		writer.write(form, outputFile);
-		
+
 		assertTrue(outputFile.exists());
 
-		
+		// Delete the output file.
+		try {
+			outputFile.delete(true, new NullProgressMonitor());
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
 		// Okay good job
 		return;
 	}
