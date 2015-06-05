@@ -82,8 +82,11 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 * The composite that will act as the client of the section where everything
 	 * is drawn.
 	 */
-	Composite sectionClient;
+	private Composite sectionClient;
 
+	private ListComponentNattable table;
+	
+	
 	/**
 	 * The Constructor
 	 * 
@@ -140,8 +143,8 @@ public class ListComponentSectionPage extends ICEFormPage {
 			// Draw the table
 			//configureTable();
 			
-			ListComponentNattable table = new ListComponentNattable(sectionClient, list);
-
+			table = new ListComponentNattable(sectionClient, list);
+			
 			// Create the Add/Delete buttons
 			createAddDeleteButtons();
 
@@ -221,6 +224,42 @@ public class ListComponentSectionPage extends ICEFormPage {
 		// from the list.
 		Button deleteMaterialButton = new Button(listButtonComposite, SWT.PUSH);
 		deleteMaterialButton.setText("Delete");
+		deleteMaterialButton.addSelectionListener(new SelectionListener(){
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				//System.out.println("delete pressed");
+				//currently testing to see if the delete button could work, deletes the last material added rather than
+				//the currently selected material. 
+				
+				//checks if list has something to delete
+				if(list.size()>0){
+					ListComponent selected = table.getSelectedObjects();
+					if(selected.size()>0){
+						//gets the last index in the list
+						int index = list.size()-1;
+						
+						//removes that material from the list
+						//lock the list before removing the selection
+						list.getReadWriteLock().writeLock().lock();
+						try {
+							for(Object o: selected){
+								list.remove(o);
+							}
+						} finally {
+							// Unlock it
+							list.getReadWriteLock().writeLock().unlock();
+						}	
+					}
+				}				
+			}
+			
+		});
 
 		return;
 	}

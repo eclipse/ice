@@ -1,6 +1,12 @@
 package org.eclipse.ice.client.widgets;
 
+import java.util.Iterator;
+
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.ConfigRegistry;
@@ -9,6 +15,7 @@ import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
 import org.eclipse.nebula.widgets.nattable.config.IEditableRule;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
+import org.eclipse.nebula.widgets.nattable.data.IRowDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
 import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.extension.glazedlists.GlazedListsEventLayer;
@@ -24,6 +31,7 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnLabelAccumulator;
+import org.eclipse.nebula.widgets.nattable.selection.RowSelectionProvider;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
@@ -51,6 +59,16 @@ public class ListComponentNattable {
 	 */
 	private ListComponent list;
 	
+	/**
+	 * Holds the selected list components. 
+	 */
+	private ListComponent selectedList;
+	
+	/**
+	 * The table to hold the list data.
+	 */
+	private NatTable table;
+	
 	
 	/**
 	 * Constructor, needs the parent Composite and the List for data
@@ -63,6 +81,7 @@ public class ListComponentNattable {
 	public ListComponentNattable(Composite parent, ListComponent listComponent){
 		sectionClient = parent;
 		list = listComponent;
+		selectedList = new ListComponent();
 		createTable();
 	}
 	
@@ -140,8 +159,36 @@ public class ListComponentNattable {
 		natTable.configure();
 		natTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
 				1));
+		
+		
+		table = natTable;
+		
+		
+		RowSelectionProvider selectionProvider = new RowSelectionProvider(selectionLayer, (IRowDataProvider)dataProvider, false);
+		
+		selectionProvider.addSelectionChangedListener(new ISelectionChangedListener(){
 
+			@Override
+			public void selectionChanged(SelectionChangedEvent e) {
+				
+				
+				IStructuredSelection selection = (IStructuredSelection) e.getSelection();
+				selectedList.clear();
+				Iterator it = selection.iterator();
+				while(it.hasNext()){
+					selectedList.add(it.next());
+				}
+			}
+		}
+		);
+		
 		return;
+	}
+	
+	
+	public ListComponent getSelectedObjects(){
+		return selectedList;
+		
 	}
 	
 	
