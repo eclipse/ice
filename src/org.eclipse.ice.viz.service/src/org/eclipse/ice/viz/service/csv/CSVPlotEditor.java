@@ -57,7 +57,7 @@ public class CSVPlotEditor extends EditorPart {
 	/**
 	 * The ID for this editor.
 	 */
-	public static final String ID = "org.eclipse.ice.viz.plotviewer.CSVPlotEditor";
+	public static final String ID = "org.eclipse.ice.viz.service.csv.CSVPlotEditor";
 
 	/**
 	 * The top level composite that holds the editor's contents.
