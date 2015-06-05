@@ -30,6 +30,7 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
@@ -158,6 +159,14 @@ public class VisitEditor extends EditorPart {
 					vizWidget.zoom(direction);
 				}
 			});
+			Listener dummy = new Listener(){
+				@Override
+				public void handleEvent(org.eclipse.swt.widgets.Event event) {
+					// TODO Auto-generated method stub
+					
+				}
+			};
+			vizWidget.addListener(SWT.KeyDown, dummy);
 			// Use mouse click to move the plot
 			vizWidget.addMouseMoveListener(new MouseMoveListener() {
 				@Override

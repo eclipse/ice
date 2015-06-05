@@ -12,9 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 
@@ -716,6 +719,15 @@ public class LaunchVisitWizardPage extends WizardPage {
 								+ "Visit connection.");
 				return false;
 			}
+			// Check if the specified port is in use, then prompt an
+			// error if it is.
+			try (Socket test = new Socket("localhost", Integer.valueOf(port))){
+				MessageDialog.openError(getShell(),  "Port in use", 
+						"The specified port number is already in use. " +
+				"Please select a different port.");
+				return false;
+			} catch (IOException e) {
+			} 
 			password = localPasswordComp.getPassword();
 			use_tunneling = false;
 		}
@@ -754,6 +766,17 @@ public class LaunchVisitWizardPage extends WizardPage {
 								+ "Visit connection.");
 				return false;
 			}
+			
+			// Check if the specified port is in use, then prompt an
+			// error if it is.
+			try (Socket test = new Socket("localhost", Integer.valueOf(port))){
+				MessageDialog.openError(getShell(),  "Port in use", 
+						"The specified port number is already in use. " +
+				"Please select a different port.");
+				return false;
+			} catch (IOException e) {
+			} 
+			
 			password = remotePasswordComp.getPassword();
 			use_tunneling = true;
 			gateway = remoteGatewayComp.getURLString();
@@ -784,6 +807,15 @@ public class LaunchVisitWizardPage extends WizardPage {
 								+ "Visit connection.");
 				return false;
 			}
+			
+			try (Socket test = new Socket("localhost", Integer.valueOf(port))){
+				MessageDialog.openError(getShell(),  "Port in use", 
+						"The specified port number is already in use. " +
+				"Please select a different port.");
+				return false;
+			} catch (IOException e) {
+			} 
+			
 			password = servicePassText.getText();
 			use_tunneling = false;
 			gateway = serviceGatewayComp.getURLString();
