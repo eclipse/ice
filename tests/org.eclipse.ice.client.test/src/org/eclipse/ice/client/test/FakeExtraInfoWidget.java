@@ -12,13 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.test;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
-
-import java.util.ArrayList;
-import org.eclipse.ice.datastructures.form.Form;
 
 /**
  * <p>
@@ -36,6 +34,12 @@ public class FakeExtraInfoWidget implements IExtraInfoWidget {
 	 * </p>
 	 */
 	private boolean displayed = false;
+
+	/**
+	 * A flag indicating whether the widget should report as being closed
+	 * successfully immediately after being displayed.
+	 */
+	public boolean closeImmediately = true;
 
 	/**
 	 * <p>
@@ -76,18 +80,15 @@ public class FakeExtraInfoWidget implements IExtraInfoWidget {
 
 		// Immediately notify the listeners that the widget was closed ok so
 		// that the test can proceed.
-		// Thread updateThread = new Thread(new Runnable() {
-		// public void run() {
-		if (listeners != null) {
-			for (IWidgetClosedListener i : listeners) {
-				i.closedOK();
+		if (closeImmediately) {
+			if (listeners != null) {
+				for (IWidgetClosedListener i : listeners) {
+					i.closedOK();
+				}
+			} else {
+				System.out.println("No listeners registered "
+						+ "with the FakeExtraInfoWidget!");
 			}
-		} else {
-			System.out.println("No listeners registered "
-					+ "with the FakeExtraInfoWidget!");
-			// }
-			// });
-			// updateThread.start();
 		}
 		return;
 

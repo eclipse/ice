@@ -138,9 +138,6 @@ public class ItemProcessorTester {
 		// Allocate the ItemProcessor
 		itemProcessor = new ItemProcessor();
 
-		// Setup the process thread
-		processThread = new Thread(itemProcessor);
-
 		// Create the Item
 		itemId = Integer.parseInt(core.createItem("Red"));
 
@@ -156,7 +153,8 @@ public class ItemProcessorTester {
 		// Check the Item id
 		assertTrue(itemId > 0);
 
-		// Process the Item with the ItemProcessor
+		// Start the ItemProcessor on a separate thread.
+		processThread = new Thread(itemProcessor);
 		processThread.start();
 
 		// The ItemProcessor should eventually notify the (Fake)Core that the
@@ -176,8 +174,7 @@ public class ItemProcessorTester {
 		// Check that the action was processed.
 		assertEquals(FormStatus.Processed, core.getLastProcessStatus());
 
-		// Stop the ItemProcessor's thread and reset the FakeCore.
-		// itemProcessor.cancelled();
+		// Reset the FakeCore.
 		core.reset();
 
 		// Reset the ItemProcessor. This time we are going to test the case
@@ -185,25 +182,15 @@ public class ItemProcessorTester {
 		// so that the FakeCore will return the proper return code,
 		// FormStatus.NeedsInfo.
 		actionName = "NeedsInfo";
-		// itemProcessor = new ItemProcessor();
-
-		// Reset the thread
-		processThread = new Thread(itemProcessor);
-
 		// Create the Item
 		itemId = Integer.parseInt(core.createItem("Red"));
 
-		// Set the ItemProcessor properties
-		itemProcessor.setActionName(actionName);
-		itemProcessor.setFormWidget(formWidget);
-		itemProcessor.setInfoWidget(infoWidget);
-		itemProcessor.setStreamingTextWidget(textWidget);
+		// Set the new ItemProcessor properties
 		itemProcessor.setActionName(actionName);
 		itemProcessor.setItemId(itemId);
-		itemProcessor.setCore(core);
-		itemProcessor.setPollTime(50);
 
-		// Start the thread
+		// Start the ItemProcessor on a new thread.
+		processThread = new Thread(itemProcessor);
 		processThread.start();
 
 		// 1 - The ItemProcessor notifies the Core to process the item for the
@@ -267,10 +254,14 @@ public class ItemProcessorTester {
 		// Check that the text was pushed to the streaming text widget
 		assertTrue(textWidget.textPushed());
 
-		// Start the thread...
-		processThread = new Thread(itemProcessor);
-		processThread.start();
-		// ... and immediately cancel!
+		// Because the FakeExtraInfoWidget closes immediately after being
+		// displayed, it's possible to get the ItemProcessor in an infinite loop
+		// where it posts the message to the widget, which closes and notifies
+		// the processor, which triggers the same sequence to repeat (the status
+		// is always NeedsInfo). Set the flag so the widget does NOT close
+		// immediately, then tell the ItemProcessor that the widget cancelled
+		// the process.
+		infoWidget.closeImmediately = false;
 		itemProcessor.cancelled();
 
 		// Check that the core was notified that the ItemProcessor was
