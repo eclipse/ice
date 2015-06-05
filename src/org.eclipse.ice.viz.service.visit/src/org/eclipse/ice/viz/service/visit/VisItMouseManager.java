@@ -185,9 +185,7 @@ public class VisItMouseManager {
 			// scrolling. 
 			Listener dummy = new Listener(){
 				@Override
-				public void handleEvent(org.eclipse.swt.widgets.Event event) {
-					// TODO Auto-generated method stub
-					
+				public void handleEvent(org.eclipse.swt.widgets.Event event) {					
 				}
 			};
 			widget.addListener(SWT.KeyDown, dummy);
