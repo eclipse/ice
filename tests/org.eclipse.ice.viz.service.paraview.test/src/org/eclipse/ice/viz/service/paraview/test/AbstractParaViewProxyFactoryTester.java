@@ -165,6 +165,8 @@ public class AbstractParaViewProxyFactoryTester {
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
+		// A proxy should not have been created.
+		assertNull(fakeProxyFactory.createdProxy.get());
 
 		return;
 	}

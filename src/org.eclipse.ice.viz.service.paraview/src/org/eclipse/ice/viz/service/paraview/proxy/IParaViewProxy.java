@@ -41,5 +41,5 @@ public interface IParaViewProxy {
 
 	int setProperties(Map<String, String> properties);
 
-	URI getFile();
+	URI getURI();
 }

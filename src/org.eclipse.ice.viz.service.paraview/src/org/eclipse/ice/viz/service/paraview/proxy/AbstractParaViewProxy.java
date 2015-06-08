@@ -85,7 +85,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public URI getFile() {
+	public URI getURI() {
 		// TODO Auto-generated method stub
 		return null;
 	}
