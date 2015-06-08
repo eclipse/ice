@@ -31,7 +31,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public boolean open(ParaViewConnectionAdapter connection) {
+	public boolean open(ParaViewConnectionAdapter connection)
+			throws NullPointerException {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -40,7 +41,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public Set<String> getFeatures() {
+	public URI getURI() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -49,7 +50,17 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public boolean setFeature(String feature) {
+	public Map<String, Set<String>> getFeatures() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public boolean setFeature(String category, String feature)
+			throws NullPointerException, IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -67,7 +78,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public boolean setProperty(String property, String value) {
+	public boolean setProperty(String property, String value)
+			throws NullPointerException, IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -76,18 +88,9 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public int setProperties(Map<String, String> properties) {
+	public int setProperties(Map<String, String> properties)
+			throws NullPointerException, IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public URI getURI() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

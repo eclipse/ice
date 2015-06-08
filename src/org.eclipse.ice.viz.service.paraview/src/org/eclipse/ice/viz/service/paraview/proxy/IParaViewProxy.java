@@ -29,17 +29,97 @@ import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapte
  */
 public interface IParaViewProxy {
 
-	boolean open(ParaViewConnectionAdapter connection);
+	/**
+	 * Opens the designated URI, if possible, using the specified ParaView
+	 * connection.
+	 * 
+	 * @param connection
+	 *            The connection to use when opening the URI. Should not be
+	 *            {@code null}.
+	 * @return True if the proxy could be opened using the connection, false
+	 *         otherwise.
+	 * @throws NullPointerException
+	 *             If the specified connection is {@code null}.
+	 */
+	boolean open(ParaViewConnectionAdapter connection)
+			throws NullPointerException;
 
-	Set<String> getFeatures();
+	/**
+	 * Gets the current URI associated with the proxy.
+	 * 
+	 * @return The URI pointing to the proxy's file.
+	 */
+	URI getURI();
 
-	boolean setFeature(String feature);
+	/**
+	 * Gets the "features" in the file that can be rendered. This may include
+	 * items such as cell or point arrays.
+	 * 
+	 * @return A map of features that can be rendered in ParaView. The map is
+	 *         keyed on "categories", while the values are sets of allowed
+	 *         features or "types".
+	 */
+	Map<String, Set<String>> getFeatures();
 
+	/**
+	 * Sets the current feature that is rendered via ParaView.
+	 * 
+	 * @param category
+	 *            The category for the feature. This should be one of the keys
+	 *            in the map returned by {@link #getFeatures()}.
+	 * @param feature
+	 *            The feature or "type" to be rendered. This should be in the
+	 *            set (from the feature map) associated with the category key.
+	 * @return True if the feature was changed, false otherwise.
+	 * @throws NullPointerException
+	 *             If either of the specified arguments are null.
+	 * @throws IllegalArgumentException
+	 *             If either the category is invalid or the feature is not valid
+	 *             for the category.
+	 */
+	boolean setFeature(String category, String feature)
+			throws NullPointerException, IllegalArgumentException;
+
+	/**
+	 * Gets the current properties for the proxy.
+	 * 
+	 * @return A map of properties that can be updated and may or may not affect
+	 *         the rendered view. The map is keyed on property names, and each
+	 *         value is a set of allowed values for that property.
+	 */
 	Map<String, Set<String>> getProperties();
 
-	boolean setProperty(String property, String value);
+	/**
+	 * Sets the specified property to the new value.
+	 * 
+	 * @param property
+	 *            The property to updated.
+	 * @param value
+	 *            The new value of the property.
+	 * @return True if the property was changed, false otherwise.
+	 * @throws NullPointerException
+	 *             If either of the specified arguments are null.
+	 * @throws IllegalArgumentException
+	 *             If either the property name is invalid or the value is not
+	 *             valid for the property.
+	 */
+	boolean setProperty(String property, String value)
+			throws NullPointerException, IllegalArgumentException;
 
-	int setProperties(Map<String, String> properties);
-
-	URI getURI();
+	/**
+	 * Updates the proxy's current properties to include all properties listed
+	 * in the specified map. This can be used for a bulk update of properties
+	 * that triggers only a single refresh of the rendered view.
+	 * 
+	 * @param properties
+	 *            The new properties to set.
+	 * @return The number of properties that were set.
+	 * @throws NullPointerException
+	 *             If the arguments are null or the map contains either null
+	 *             properties or values.
+	 * @throws IllegalArgumentException
+	 *             If the map contains invalid properties or values.
+	 */
+	int setProperties(Map<String, String> properties)
+			throws NullPointerException, IllegalArgumentException;
 }
