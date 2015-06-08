@@ -25,13 +25,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class tests the basic features provided by the
@@ -57,6 +61,7 @@ public class AbstractParaViewProxyTester {
 	 */
 	private URI testURI;
 
+	private FakeVtkWebClient fakeClient;
 	private ParaViewConnectionAdapter connection;
 
 	/**
@@ -84,14 +89,21 @@ public class AbstractParaViewProxyTester {
 				"beijing", "tokyo", "seoul", "new delhi" });
 		fakeProxy.properties.put("australia", new String[] { "canberra" });
 
+		// Set up the fake client.
+		fakeClient = new FakeVtkWebClient();
+
 		// Establish a valid ParaView connection that is connected.
-		// FIXME Will this work?
 		connection = new ParaViewConnectionAdapter() {
 			@Override
-			public ConnectionState getState() {
-				return ConnectionState.Connected;
+			protected VtkWebClient openConnection() {
+				// Point the connection to localhost.
+				setConnectionProperty("host", "localhost");
+				// Return the fake client.
+				fakeClient.connect("localhost");
+				return fakeClient;
 			}
 		};
+		connection.connect(true);
 
 		return;
 	}
@@ -141,11 +153,29 @@ public class AbstractParaViewProxyTester {
 	@Test
 	public void checkOpen() {
 
+		// Add a test response for creating a view. This is required when
+		// "opening" the proxy's file.
+		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
+			@Override
+			public JsonObject call() throws Exception {
+				JsonObject response = new JsonObject();
+				response.add("proxyId", new JsonPrimitive(0));
+				response.add("viewId", new JsonPrimitive(1));
+				response.add("repId", new JsonPrimitive(2));
+				return response;
+			}
+		});
+
 		final ParaViewConnectionAdapter nullConnection = null;
 
 		// Set a valid connection that is connected. An exception should not be
 		// thrown, and the return value should be true.
 		assertTrue(proxy.open(connection));
+
+		// Check that the ParaView IDs were set.
+		assertEquals(0, fakeProxy.getFileId());
+		assertEquals(1, fakeProxy.getViewId());
+		assertEquals(2, fakeProxy.getRepresentationId());
 
 		// Set the same valid, open connection again. It should just return
 		// true.
@@ -165,6 +195,10 @@ public class AbstractParaViewProxyTester {
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
 		}
+
+		// TODO Add a test that checks a URI for a different host.
+		// TODO Add a test that checks a URI for the same host but specified
+		// differently (e.g. FQDN vs IP address).
 
 		return;
 	}
@@ -707,6 +741,27 @@ public class AbstractParaViewProxyTester {
 				this.currentFeature = feature;
 			}
 			return changed;
+		}
+
+		/**
+		 * Exposes the parent class' operation.
+		 */
+		public int getFileId() {
+			return super.getFileId();
+		}
+
+		/**
+		 * Exposes the parent class' operation.
+		 */
+		public int getViewId() {
+			return super.getViewId();
+		}
+
+		/**
+		 * Exposes the parent class' operation.
+		 */
+		public int getRepresentationId() {
+			return super.getRepresentationId();
 		}
 	}
 }
