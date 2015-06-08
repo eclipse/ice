@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
+import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +42,11 @@ import org.eclipse.ice.materials.MaterialWritableTableFormat;
 public class ReflectivityModel extends Model {
 
 	/**
+	 * The process action name for calculating the reflectivity.
+	 */
+	private final String processActionName = "Calculate Reflectivity";
+
+	/**
 	 * The constructor.
 	 */
 	public ReflectivityModel() {
@@ -66,7 +72,26 @@ public class ReflectivityModel extends Model {
 	 */
 	@Override
 	public FormStatus process(String actionName) {
-		return super.process(actionName);
+		
+		// Local Declarations
+		FormStatus retVal;
+		
+		if (actionName.equals(processActionName)) {
+			
+			// Convert the material table to slabs
+			
+			// Calculate the reflectivity
+			ReflectivityCalculator calculator = new ReflectivityCalculator();
+			//calculator.getReflectivityProfile(slabs, numRough, deltaQ0, deltaQ1ByQ, wavelength, waveVector, getRQ4);
+			
+			// Write the files
+			
+			retVal = FormStatus.InfoError;
+		} else {
+			retVal = super.process(actionName);
+		}
+		
+		return retVal;
 	}
 
 	/*
@@ -77,8 +102,6 @@ public class ReflectivityModel extends Model {
 	@Override
 	protected void setupForm() {
 
-		// Create an empty stream for the output files
-
 		// FIXME! Simple data entered now for testing
 		String line1 = "#features,t, p_x, p_y\n";
 		String line2 = "#units,t,p_x,p_y\n";
@@ -87,16 +110,17 @@ public class ReflectivityModel extends Model {
 		String line5 = "3.0,9.0,27.0\n";
 		String allLines = line1 + line2 + line3 + line4 + line5;
 
+		// Create an empty stream for the output files
 		ByteArrayInputStream stream = new ByteArrayInputStream(
 				allLines.getBytes());
 
 		// Let the parent setup the Form
 		super.setupForm();
 
-		// Add a data component for the number of rough layers and the input file
-		
-		// FIXME!
-		
+		// FIXME! - Add a data component for the number of rough layers and the
+		// input
+		// file
+
 		// Configure a list of property names for the materials
 		ArrayList<String> names = new ArrayList<String>();
 		names.add("Material ID");
@@ -106,15 +130,20 @@ public class ReflectivityModel extends Model {
 		names.add("Mu_abs (A^-2)");
 		names.add("Mu_inc (A^-1)");
 		// Create the writable format to be used by the list
-		MaterialWritableTableFormat format = new MaterialWritableTableFormat(names);
-		
+		MaterialWritableTableFormat format = new MaterialWritableTableFormat(
+				names);
+
 		// Create the list that will contain all of the material information
 		ListComponent<Material> matList = new ListComponent<Material>();
 		matList.setId(1);
 		matList.setName("Reflectivity Input Data");
 		matList.setDescription("Reflectivity Input Data");
-		matList.add(new Material());
 		matList.setTableFormat(format);
+
+		// Create a default list of materials for now. This is TEMPORARY, I
+		// imagine.
+		fillMaterialList(matList);
+
 		// Make sure to put it in the form!
 		form.addComponent(matList);
 
@@ -170,7 +199,95 @@ public class ReflectivityModel extends Model {
 			}
 		}
 
+		// Put the action name in the form so that the reflectivity can be
+		// calculated.
+		allowedActions.add(0, processActionName);
+
 		return;
+	}
+
+	/**
+	 * This operation fills the material list with a default set of materials so
+	 * that the Item is immediately valid and can be processed.
+	 * 
+	 * @param matList
+	 *            the list of Materials that represents the system. One material
+	 *            per layer.
+	 */
+	private void fillMaterialList(ListComponent<Material> matList) {
+
+		// Local Declarations
+		Material material = null;
+
+		// Create the slabs that define the system, starting with air
+		Slab air = new Slab();
+		air.thickness = 200.0;
+		matList.add(convertSlabToMaterial(air, "Air", 1));
+
+		// NiOx
+		Slab niOx = new Slab();
+		niOx.scatteringLength = (0.00000686 + 0.00000715) / 2.0;
+		niOx.trueAbsLength = 2.27931868269305E-09;
+		niOx.incAbsLength = 4.74626235093697E-09;
+		niOx.thickness = 22.0;
+		niOx.interfaceWidth = 4.0 * 2.35;
+		matList.add(convertSlabToMaterial(niOx, "NiOx", 1));
+
+		// Ni
+		Slab ni = new Slab();
+		ni.scatteringLength = 9.31e-6;
+		ni.trueAbsLength = 2.27931868269305E-09;
+		ni.incAbsLength = 4.74626235093697E-09;
+		ni.thickness = 551.0;
+		ni.interfaceWidth = 4.3 * 2.35;
+		matList.add(convertSlabToMaterial(ni, "Ni", 1));
+
+		// SiNiOx
+		Slab siNiOx = new Slab();
+		siNiOx.scatteringLength = (0.00000554 + 0.00000585) / 2.0;
+		siNiOx.trueAbsLength = 2.27931868269305E-09;
+		siNiOx.incAbsLength = 4.74626235093697E-09;
+		siNiOx.thickness = 42.0;
+		siNiOx.interfaceWidth = 7.0 * 2.35;
+		matList.add(convertSlabToMaterial(siNiOx, "SiNiOx", 1));
+
+		// SiOx
+		Slab si = new Slab();
+		si.scatteringLength = 2.070e-6;
+		si.trueAbsLength = 4.74981478870069E-11;
+		si.incAbsLength = 1.99769988072137E-12;
+		si.thickness = 100.0;
+		si.interfaceWidth = 17.5;
+		matList.add(convertSlabToMaterial(si, "Si", 1));
+
+		return;
+	}
+
+	/**
+	 * This operation create a Material based on a Slab
+	 * 
+	 * @param slab
+	 *            the slab
+	 * @param name
+	 *            the name of the material
+	 * @param id
+	 *            the material id
+	 * @return the new material created from the slab
+	 */
+	private Material convertSlabToMaterial(Slab slab, String name, int id) {
+		// Just add each property of the slab to the list of properties of the
+		// material.
+		Material material = new Material();
+		material.setName(name);
+		material.setSize(1);
+		material.setProperty("Material ID", id);
+		material.setProperty("Thickness (A)", slab.thickness);
+		material.setProperty("Roughness (A)", slab.interfaceWidth);
+		material.setProperty("Scattering Length Density (A^-2)",
+				slab.scatteringLength);
+		material.setProperty("Mu_abs (A^-2)", slab.trueAbsLength);
+		material.setProperty("Mu_inc (A^-1)", slab.incAbsLength);
+		return material;
 	}
 
 	/*
@@ -206,12 +323,13 @@ public class ReflectivityModel extends Model {
 		IMaterialsDatabase database = getMaterialsDatabase();
 		if (database != null) {
 			// Grab the component
-			ListComponent<Material> matList = (ListComponent<Material>) form.getComponent(1);
+			ListComponent<Material> matList = (ListComponent<Material>) form
+					.getComponent(1);
 			// Set the database as an element source
 			matList.setElementSource(database);
 		}
 
 		return;
 	}
-	
+
 }

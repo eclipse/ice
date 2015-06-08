@@ -74,4 +74,4 @@
 \contentsline {section}{\numberline {4.6}Building your MOOSE App}{64}{section.4.6}
 \contentsline {section}{\numberline {4.7}Pushing Changes Back to GitHub}{64}{section.4.7}
 \contentsline {section}{\numberline {4.8}Executing Built MOOSE Application}{67}{section.4.8}
-\contentsline {chapter}{Online Resources}{68}{chapter*.51}
+\contentsline {chapter}{Online Resources}{68}{section*.52}
