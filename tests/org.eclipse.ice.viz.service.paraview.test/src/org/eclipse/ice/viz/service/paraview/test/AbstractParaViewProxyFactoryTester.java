@@ -22,7 +22,9 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,6 +32,8 @@ import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyFactory;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.junit.Test;
+
+import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class tests the basic features provided by the
@@ -254,6 +258,16 @@ public class AbstractParaViewProxyFactoryTester {
 		protected IParaViewProxy createProxyImpl(URI uri) {
 			// Create a proxy. What's in it doesn't matter for these tests.
 			IParaViewProxy proxy = new AbstractParaViewProxy(uri) {
+				@Override
+				protected Map<String, String[]> findFeatures(VtkWebClient client) {
+					return new HashMap<String, String[]>();
+				}
+
+				@Override
+				protected Map<String, String[]> findProperties(
+						VtkWebClient client) {
+					return new HashMap<String, String[]>();
+				}
 			};
 			createdProxy.set(proxy);
 			return proxy;

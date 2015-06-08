@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,6 +93,19 @@ public class AbstractParaViewProxyTester {
 
 		// Set up the fake client.
 		fakeClient = new FakeVtkWebClient();
+
+		// Add a test response for creating a view. This is required when
+		// "opening" the proxy's file.
+		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
+			@Override
+			public JsonObject call() throws Exception {
+				JsonObject response = new JsonObject();
+				response.add("proxyId", new JsonPrimitive(0));
+				response.add("viewId", new JsonPrimitive(1));
+				response.add("repId", new JsonPrimitive(2));
+				return response;
+			}
+		});
 
 		// Establish a valid ParaView connection that is connected.
 		connection = new ParaViewConnectionAdapter() {
@@ -158,14 +172,20 @@ public class AbstractParaViewProxyTester {
 		// Although the client returns nothing (and thus opening fails), the
 		// client and URI should pass initial checks, and the open
 		// implementation should be called.
-		assertFalse(proxy.open(connection));
+		assertTrue(proxy.open(connection));
 		assertTrue(fakeProxy.openImplCalled.getAndSet(false));
+		// The features and properties should have also been queried.
+		assertTrue(fakeProxy.findFeaturesCalled.getAndSet(false));
+		assertTrue(fakeProxy.findPropertiesCalled.getAndSet(false));
 
 		// Set a valid connection that is not connected. An exception should not
 		// be thrown, but the return value should be false.
 		connection = new ParaViewConnectionAdapter();
 		assertFalse(proxy.open(connection));
 		assertFalse(fakeProxy.openImplCalled.get());
+		// The features and properties should not have been queried.
+		assertFalse(fakeProxy.findFeaturesCalled.get());
+		assertFalse(fakeProxy.findPropertiesCalled.get());
 
 		// Trying to use a null connection should throw an NPE when opening.
 		try {
@@ -191,18 +211,6 @@ public class AbstractParaViewProxyTester {
 	 */
 	@Test
 	public void checkOpenImplementation() {
-		// Add a test response for creating a view. This is required when
-		// "opening" the proxy's file.
-		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
-			@Override
-			public JsonObject call() throws Exception {
-				JsonObject response = new JsonObject();
-				response.add("proxyId", new JsonPrimitive(0));
-				response.add("viewId", new JsonPrimitive(1));
-				response.add("repId", new JsonPrimitive(2));
-				return response;
-			}
-		});
 
 		// Initially, the file, view, and representation IDs should be -1.
 		assertEquals(-1, fakeProxy.getFileId());
@@ -280,6 +288,12 @@ public class AbstractParaViewProxyTester {
 
 		Set<String> categorySet;
 		Set<String> featureSet;
+
+		// Open the proxy. We don't care about its return value, it just must be
+		// opened before it finds features for the file.
+		proxy.open(connection);
+		// The features should have been re-built.
+		assertTrue(fakeProxy.findFeaturesCalled.getAndSet(false));
 
 		// Since we know the expected categories and features from the fake
 		// proxy's construction, we can just iterate over the maps and sets and
@@ -458,6 +472,12 @@ public class AbstractParaViewProxyTester {
 
 		Set<String> propertySet;
 		Set<String> propertyValueSet;
+
+		// Open the proxy. We don't care about its return value, it just must be
+		// opened before it finds properties for the file.
+		proxy.open(connection);
+		// The properties should have been re-built.
+		assertTrue(fakeProxy.findPropertiesCalled.getAndSet(false));
 
 		// Since we know the expected properties and values from the fake
 		// proxy's construction, we can just iterate over the maps and sets and
@@ -743,6 +763,14 @@ public class AbstractParaViewProxyTester {
 		return new File(filename).toURI();
 	}
 
+	/**
+	 * A fake proxy that extends {@link AbstractParaViewProxy} and exposes
+	 * certiain methods to ensure the abstract class re-directs method calls
+	 * when appropriate to its sub-classes.
+	 * 
+	 * @author Jordan Deyton
+	 *
+	 */
 	private class FakeParaViewProxy extends AbstractParaViewProxy {
 
 		/**
@@ -774,7 +802,18 @@ public class AbstractParaViewProxyTester {
 		 */
 		public final Map<String, String[]> properties;
 
+		/**
+		 * Whether or not {@link #openImpl(VtkWebClient, String)} was called.
+		 */
 		public final AtomicBoolean openImplCalled = new AtomicBoolean();
+		/**
+		 * Whether or not {@link #findFeatures(VtkWebClient)} was called.
+		 */
+		public final AtomicBoolean findFeaturesCalled = new AtomicBoolean();
+		/**
+		 * Whether or not {@link #findProperties(VtkWebClient)} was called.
+		 */
+		public final AtomicBoolean findPropertiesCalled = new AtomicBoolean();
 
 		/**
 		 * The default constructor. Used to access the parent class' hidden
@@ -830,9 +869,31 @@ public class AbstractParaViewProxyTester {
 			return super.getRepresentationId();
 		}
 
+		/**
+		 * Overrides the default behavior to additionally set
+		 * {@link #openImplCalled} to true when called.
+		 */
 		public boolean openImpl(VtkWebClient client, String fullPath) {
 			openImplCalled.set(true);
 			return super.openImpl(client, fullPath);
+		}
+
+		/*
+		 * Overrides a method from AbstractParaViewProxy.
+		 */
+		@Override
+		protected Map<String, String[]> findFeatures(VtkWebClient client) {
+			findFeaturesCalled.set(true);
+			return features;
+		}
+
+		/*
+		 * Overrides a method from AbstractParaViewProxy.
+		 */
+		@Override
+		protected Map<String, String[]> findProperties(VtkWebClient client) {
+			findPropertiesCalled.set(true);
+			return properties;
 		}
 	}
 }

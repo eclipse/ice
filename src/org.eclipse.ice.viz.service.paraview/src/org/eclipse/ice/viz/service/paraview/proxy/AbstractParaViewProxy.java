@@ -13,8 +13,12 @@
 package org.eclipse.ice.viz.service.paraview.proxy;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.viz.service.connections.ConnectionState;
@@ -40,6 +44,12 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	private final URI uri;
 
 	/**
+	 * The current connection used to open or manipulate the file specified by
+	 * the {@link #uri}.
+	 */
+	private ParaViewConnectionAdapter connection = null;
+
+	/**
 	 * The ParaView ID pointing to the file's proxy on the server.
 	 */
 	private int fileId = -1;
@@ -53,6 +63,32 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * the server.
 	 */
 	private int repId = -1;
+
+	/**
+	 * The map of features. The keys are categories, while the values are sets
+	 * of features for each category. Neither keys nor values should be
+	 * {@code null}.
+	 */
+	private final Map<String, Set<String>> featureMap;
+	/**
+	 * The map of properties. The keys are property names, while the values are
+	 * sets of allowed values for each property. Neither keys nor values should
+	 * be {@code null}.
+	 */
+	private final Map<String, Set<String>> propertyMap;
+
+	/**
+	 * The currently selected category.
+	 */
+	private String category;
+	/**
+	 * The currently selected feature.
+	 */
+	private String feature;
+	/**
+	 * All current values for all properties.
+	 */
+	private final Map<String, String> currentProperties;
 
 	/**
 	 * The default constructor. This should only be called by sub-class
@@ -73,6 +109,15 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		// Set the reference to the URI.
 		this.uri = uri;
 
+		// Initialize the maps of allowed features and properties.
+		featureMap = new HashMap<String, Set<String>>();
+		propertyMap = new HashMap<String, Set<String>>();
+
+		// Initialize the current feature and properties.
+		category = null;
+		feature = null;
+		currentProperties = new HashMap<String, String>();
+
 		return;
 	}
 
@@ -90,6 +135,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 
 		// Set the default return value.
 		boolean opened = false;
+
+		VtkWebClient client = connection.getConnection();
 
 		// Only attempt to open the file if the connection is established.
 		if (connection.getState() == ConnectionState.Connected) {
@@ -110,7 +157,45 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 
 			// If they match, attempt to open the file.
 			if (clientHost != null && clientHost.equals(fileHost)) {
-				opened = openImpl(connection.getConnection(), uri.getPath());
+				opened = openImpl(client, uri.getPath());
+			}
+		}
+
+		// If the connection was opened, re-build the maps of features and
+		// properties.
+		if (opened) {
+			Map<String, String[]> map;
+
+			// Re-build the map of features.
+			featureMap.clear();
+			map = findFeatures(client);
+			for (Entry<String, String[]> entry : map.entrySet()) {
+				String category = entry.getKey();
+				String[] features = entry.getValue();
+
+				// Load the array of features into a set.
+				Set<String> featureSet = new HashSet<String>();
+				for (String feature : features) {
+					featureSet.add(feature);
+				}
+				// Add the category and its set to the map.
+				featureMap.put(category, featureSet);
+			}
+
+			// Re-build the map of properties.
+			propertyMap.clear();
+			map = findProperties(client);
+			for (Entry<String, String[]> entry : map.entrySet()) {
+				String property = entry.getKey();
+				String[] values = entry.getValue();
+
+				// Load the array of property values into a set.
+				Set<String> valueSet = new HashSet<String>();
+				for (String value : values) {
+					valueSet.add(value);
+				}
+				// Add the property and its set to the map.
+				propertyMap.put(property, valueSet);
 			}
 		}
 
@@ -206,8 +291,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 */
 	@Override
 	public Set<String> getFeatureCategories() {
-		// TODO Auto-generated method stub
-		return null;
+		// Return an ordered copy of the set of feature categories.
+		return new TreeSet<String>(featureMap.keySet());
 	}
 
 	/*
@@ -216,8 +301,21 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	@Override
 	public Set<String> getFeatures(String category)
 			throws NullPointerException, IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+		// Check for a null argument.
+		if (category == null) {
+			throw new NullPointerException("ParaViewProxy error: "
+					+ "Cannot find features for a null category.");
+		}
+
+		// Try to get the features for the category from the map.
+		Set<String> featureSet = featureMap.get(category);
+		if (featureSet == null) {
+			throw new IllegalArgumentException("ParaViewProxy error: "
+					+ "Cannot find features for category \"" + category + "\".");
+		}
+
+		// Return an ordered copy of the set of allowed features.
+		return new TreeSet<String>(featureSet);
 	}
 
 	/*
@@ -235,8 +333,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 */
 	@Override
 	public Set<String> getProperties() {
-		// TODO Auto-generated method stub
-		return null;
+		// Return an ordered copy of the set of property names.
+		return new TreeSet<String>(propertyMap.keySet());
 	}
 
 	/*
@@ -245,8 +343,22 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	@Override
 	public Set<String> getPropertyValues(String property)
 			throws NullPointerException, IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+		// Check for a null argument.
+		if (property == null) {
+			throw new NullPointerException("ParaViewProxy error: "
+					+ "Cannot find allowed values for a null property.");
+		}
+
+		// Try to get the features for the category from the map.
+		Set<String> valueSet = propertyMap.get(property);
+		if (valueSet == null) {
+			throw new IllegalArgumentException("ParaViewProxy error: "
+					+ "Cannot find allowed values for property \"" + property
+					+ "\".");
+		}
+
+		// Return an ordered copy of the set of allowed values.
+		return new TreeSet<String>(valueSet);
 	}
 
 	/*
@@ -301,4 +413,93 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	protected int getRepresentationId() {
 		return repId;
 	}
+
+	/**
+	 * Finds the features in the file by querying the associated ParaView
+	 * connection.
+	 * <p>
+	 * The client should be both valid and connected when this method is called,
+	 * and the file will already be opened using the ParaView client.
+	 * </p>
+	 * 
+	 * @param client
+	 *            The client used by this proxy.
+	 * @return A map of features that can be rendered, keyed on their
+	 *         categories. If none can be found, then the returned list should
+	 *         be empty and <i>not</i> {@code null}.
+	 */
+	protected abstract Map<String, String[]> findFeatures(VtkWebClient client);
+
+	/**
+	 * Finds the properties in the file by querying the associated ParaView
+	 * connection.
+	 * <p>
+	 * The client should be both valid and connected when this method is called,
+	 * and the file will already be opened using the ParaView client.
+	 * </p>
+	 * 
+	 * @param client
+	 *            The client used by this proxy.
+	 * @return A map of properties that can be rendered, keyed on their names.
+	 *         If none can be found, then the returned list should be empty and
+	 *         <i>not</i> {@code null}.
+	 */
+	protected abstract Map<String, String[]> findProperties(VtkWebClient client);
+
+	/**
+	 * Sends the appropriate requests to the client to change the currently
+	 * rendered feature.
+	 * <p>
+	 * The client should be both valid and connected when this method is called,
+	 * and the file will already be opened using the ParaView client.
+	 * </p>
+	 * <p>
+	 * Furthermore, the category and feature should be both <i>new</i>
+	 * (different from the previous value) and <i>valid</i>.
+	 * </p>
+	 * 
+	 * @param category
+	 *            The category for the feature.
+	 * @param feature
+	 *            The new feature for the ParaView render.
+	 * @return True if the new category and feature could be set, false
+	 *         otherwise.
+	 */
+	protected boolean setFeatureImpl(VtkWebClient client, String category,
+			String feature) {
+		// TODO Make abstract.
+		return false;
+	}
+
+	/**
+	 * Sends the appropriate requests to the client to update any properties
+	 * that have been changed in its internal "proxies".
+	 * <p>
+	 * The client should be both valid and connected when this method is called,
+	 * and the file will already be opened using the ParaView client.
+	 * </p>
+	 * <p>
+	 * Furthermore, the property name and value should be both <i>new</i>
+	 * (different from the previous value) and <i>valid</i>.
+	 * </p>
+	 * 
+	 * @param property
+	 *            The property name.
+	 * @param value
+	 *            The new value for the property.
+	 * @return True if the new property value could be set, false otherwise.
+	 */
+	protected boolean setPropertyImpl(VtkWebClient client, String property,
+			String value) {
+		// TODO Make abstract.
+		return false;
+	}
+
+	/**
+	 * Notifies the ParaView client that the view should be refreshed.
+	 */
+	protected void refresh(VtkWebClient client) {
+		// TODO Either implement this or make it abstract.
+	}
+
 }

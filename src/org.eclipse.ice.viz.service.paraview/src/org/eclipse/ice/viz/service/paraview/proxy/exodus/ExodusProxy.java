@@ -13,8 +13,12 @@
 package org.eclipse.ice.viz.service.paraview.proxy.exodus;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
+
+import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * 
@@ -27,5 +31,24 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		super(uri);
 		// TODO Auto-generated constructor stub
 	}
-	// TODO
+
+	/*
+	 * Overrides a method from AbstractParaViewProxy.
+	 */
+	@Override
+	protected Map<String, String[]> findFeatures(VtkWebClient client) {
+		Map<String, String[]> featureMap = new HashMap<String, String[]>();
+		// TODO
+		return featureMap;
+	}
+
+	/*
+	 * Overrides a method from AbstractParaViewProxy.
+	 */
+	@Override
+	protected Map<String, String[]> findProperties(VtkWebClient client) {
+		Map<String, String[]> propertyMap = new HashMap<String, String[]>();
+		// TODO
+		return propertyMap;
+	}
 }
