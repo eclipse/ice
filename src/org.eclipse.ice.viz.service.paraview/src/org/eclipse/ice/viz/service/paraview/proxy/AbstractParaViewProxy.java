@@ -25,7 +25,7 @@ import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapte
  * @author Jordan Deyton
  *
  */
-public class AbstractParaViewProxy implements IParaViewProxy {
+public abstract class AbstractParaViewProxy implements IParaViewProxy {
 
 	private final URI uri;
 
@@ -100,7 +100,17 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public Map<String, Set<String>> getProperties() {
+	public Set<String> getProperties() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Set<String> getPropertyValues(String property)
+			throws NullPointerException, IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -124,4 +134,5 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 }

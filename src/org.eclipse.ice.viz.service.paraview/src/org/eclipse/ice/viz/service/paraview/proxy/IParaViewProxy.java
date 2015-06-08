@@ -87,7 +87,7 @@ public interface IParaViewProxy {
 	 *            set (from the feature map) associated with the category key.
 	 * @return True if the feature was changed, false otherwise.
 	 * @throws NullPointerException
-	 *             If either of the specified arguments are null.
+	 *             If either of the specified arguments are {@code null}.
 	 * @throws IllegalArgumentException
 	 *             If either the category is invalid or the feature is not valid
 	 *             for the category.
@@ -96,21 +96,36 @@ public interface IParaViewProxy {
 			throws NullPointerException, IllegalArgumentException;
 
 	/**
-	 * Gets the current properties for the proxy.
+	 * Gets the set of allowed properties for the proxy.
 	 * 
-	 * @return A map of properties that can be updated and may or may not affect
-	 *         the rendered view. The map is keyed on property names, and each
-	 *         value is a set of allowed values for that property.
+	 * @return A set of properties that can be updated and may or may not affect
+	 *         the rendered view.
 	 */
-	Map<String, Set<String>> getProperties();
+	Set<String> getProperties();
+
+	/**
+	 * Gets the set of allowed values for the specified property.
+	 * 
+	 * @param property
+	 *            The property whose allowed values will be returned.
+	 * @return A set containing all allowed values for the specified property.
+	 * @throws NullPointerException
+	 *             If the specified property is {@code null}.
+	 * @throws IllegalArgumentException
+	 *             If the specified property is an invalid property.
+	 */
+	Set<String> getPropertyValues(String property) throws NullPointerException,
+			IllegalArgumentException;
 
 	/**
 	 * Sets the specified property to the new value.
 	 * 
 	 * @param property
-	 *            The property to updated.
+	 *            The property to updated. Allowed values can be retrieved via
+	 *            {@link #getProperties()}.
 	 * @param value
-	 *            The new value of the property.
+	 *            The new value of the property. Allowed values can be retrieved
+	 *            via {@link #getPropertyValues(String)}.
 	 * @return True if the property was changed, false otherwise.
 	 * @throws NullPointerException
 	 *             If either of the specified arguments are null.
