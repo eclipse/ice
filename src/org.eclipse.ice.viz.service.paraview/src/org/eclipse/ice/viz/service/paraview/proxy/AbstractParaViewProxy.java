@@ -134,7 +134,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * @return True if the file at the specified path on the client machine
 	 *         could be opened, false otherwise.
 	 */
-	private boolean openImpl(VtkWebClient client, String fullPath) {
+	protected boolean openImpl(VtkWebClient client, String fullPath) {
 		boolean opened = false;
 
 		// The argument array must contain the full path to the file.
@@ -152,9 +152,14 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 				opened = true;
 				// Try to get the IDs from the response.
 				try {
-					fileId = response.get("proxyId").getAsInt();
-					viewId = response.get("viewId").getAsInt();
-					repId = response.get("repId").getAsInt();
+					int fileId = response.get("proxyId").getAsInt();
+					int viewId = response.get("viewId").getAsInt();
+					int repId = response.get("repId").getAsInt();
+
+					// Update the IDs if everything worked.
+					this.fileId = fileId;
+					this.viewId = viewId;
+					this.repId = repId;
 				} catch (NullPointerException | ClassCastException
 						| IllegalStateException e) {
 					System.err.println("ParaViewProxy error: "
@@ -268,7 +273,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Gets the ParaView ID pointing to the file's proxy on the server.
 	 * 
 	 * @return The ID for the server's file proxy (the main proxy for the file
-	 *         on the server, sometimes just called "the" proxy).
+	 *         on the server, sometimes just called "the" proxy). If unset, this
+	 *         returns {@code -1}.
 	 */
 	protected int getFileId() {
 		return fileId;
@@ -278,7 +284,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Gets the ParaView ID pointing to the file's associated render view proxy
 	 * on the server.
 	 * 
-	 * @return The ID for the server's view proxy.
+	 * @return The ID for the server's view proxy. If unset, this returns
+	 *         {@code -1}.
 	 */
 	protected int getViewId() {
 		return viewId;
@@ -288,7 +295,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Gets the ParaView ID pointing to the file's associated representation
 	 * proxy on the server.
 	 * 
-	 * @return The ID for the server's representation proxy.
+	 * @return The ID for the server's representation proxy. If unset, this
+	 *         returns {@code -1}.
 	 */
 	protected int getRepresentationId() {
 		return repId;

@@ -131,11 +131,21 @@ public class FakeVtkWebClient implements VtkWebClient {
 
 	/**
 	 * If the method is specified in {@link #responseMap}, then the associated
-	 * {@code Callable} is called.
+	 * {@code Callable} is called. Otherwise, a new {@code Callable} that
+	 * returns an empty {@link JsonObject} is constructed.
 	 */
 	@Override
 	public Future<JsonObject> call(String method, JsonArray args) {
-		return requestExecutor.submit(responseMap.get(method));
+		Callable<JsonObject> callable = responseMap.get(method);
+		if (callable == null) {
+			callable = new Callable<JsonObject>() {
+				@Override
+				public JsonObject call() throws Exception {
+					return new JsonObject();
+				}
+			};
+		}
+		return requestExecutor.submit(callable);
 	}
 
 	/**

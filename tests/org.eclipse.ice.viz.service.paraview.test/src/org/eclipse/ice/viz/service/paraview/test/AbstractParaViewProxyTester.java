@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
@@ -146,13 +147,50 @@ public class AbstractParaViewProxyTester {
 
 	/**
 	 * Checks that {@link AbstractParaViewProxy#open(ParaViewConnectionAdapter)}
-	 * either opens the proxy or throws exceptions when the arguments are
-	 * invalid. Also checks its return value is true when successful and false
-	 * otherwise.
+	 * throws exceptions when the arguments are invalid. Also checks that it
+	 * correctly calls the implemented open operation.
 	 */
 	@Test
 	public void checkOpen() {
 
+		final ParaViewConnectionAdapter nullConnection = null;
+
+		// Although the client returns nothing (and thus opening fails), the
+		// client and URI should pass initial checks, and the open
+		// implementation should be called.
+		assertFalse(proxy.open(connection));
+		assertTrue(fakeProxy.openImplCalled.getAndSet(false));
+
+		// Set a valid connection that is not connected. An exception should not
+		// be thrown, but the return value should be false.
+		connection = new ParaViewConnectionAdapter();
+		assertFalse(proxy.open(connection));
+		assertFalse(fakeProxy.openImplCalled.get());
+
+		// Trying to use a null connection should throw an NPE when opening.
+		try {
+			proxy.open(nullConnection);
+			fail("AbstractParaViewProxyTester error: "
+					+ "A NullPointerException was not thrown when opened with "
+					+ "a null connection.");
+		} catch (NullPointerException e) {
+			// Exception thrown as expected.
+		}
+		assertFalse(fakeProxy.openImplCalled.get());
+
+		// TODO Add a test that checks a URI for a different host.
+		// TODO Add a test that checks a URI for the same host but specified
+		// differently (e.g. FQDN vs IP address).
+
+		return;
+	}
+
+	/**
+	 * Checks that the abstract implementation for opening a ParaView file works
+	 * when it should and gracefully fails when the connection is bad.
+	 */
+	@Test
+	public void checkOpenImplementation() {
 		// Add a test response for creating a view. This is required when
 		// "opening" the proxy's file.
 		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
@@ -166,7 +204,10 @@ public class AbstractParaViewProxyTester {
 			}
 		});
 
-		final ParaViewConnectionAdapter nullConnection = null;
+		// Initially, the file, view, and representation IDs should be -1.
+		assertEquals(-1, fakeProxy.getFileId());
+		assertEquals(-1, fakeProxy.getViewId());
+		assertEquals(-1, fakeProxy.getRepresentationId());
 
 		// Set a valid connection that is connected. An exception should not be
 		// thrown, and the return value should be true.
@@ -181,24 +222,47 @@ public class AbstractParaViewProxyTester {
 		// true.
 		assertTrue(proxy.open(connection));
 
-		// Set a valid connection that is not connected. An exception should not
-		// be thrown, but the return value should be false.
-		connection = new ParaViewConnectionAdapter();
+		// Simulate a failed request (RPC returns a failure).
+		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
+			@Override
+			public JsonObject call() throws Exception {
+				JsonObject response = new JsonObject();
+				response.add("success", new JsonPrimitive(false));
+				response.add("error", new JsonPrimitive("Simulated error."));
+				return response;
+			}
+		});
+		// Opening should return false.
 		assertFalse(proxy.open(connection));
 
-		// Trying to use a null connection should throw an NPE when opening.
-		try {
-			proxy.open(nullConnection);
-			fail("AbstractParaViewProxyTester error: "
-					+ "A NullPointerException was not thrown when opened with "
-					+ "a null connection.");
-		} catch (NullPointerException e) {
-			// Exception thrown as expected.
-		}
+		// Simulate a failed request (RPC returns incomplete response).
+		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
+			@Override
+			public JsonObject call() throws Exception {
+				JsonObject response = new JsonObject();
+				response.add("proxyId", new JsonPrimitive(10));
+				response.add("viewId", new JsonPrimitive(11));
+				// repId is omitted... which is an error.
+				return response;
+			}
+		});
+		// Opening should return false.
+		assertFalse(proxy.open(connection));
 
-		// TODO Add a test that checks a URI for a different host.
-		// TODO Add a test that checks a URI for the same host but specified
-		// differently (e.g. FQDN vs IP address).
+		// Simulate a connection error.
+		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
+			@Override
+			public JsonObject call() throws Exception {
+				throw new InterruptedException();
+			}
+		});
+		// Opening should return false.
+		assertFalse(proxy.open(connection));
+
+		// The file, view, and representation IDs should remain unchanged.
+		assertEquals(0, fakeProxy.getFileId());
+		assertEquals(1, fakeProxy.getViewId());
+		assertEquals(2, fakeProxy.getRepresentationId());
 
 		return;
 	}
@@ -710,6 +774,8 @@ public class AbstractParaViewProxyTester {
 		 */
 		public final Map<String, String[]> properties;
 
+		public final AtomicBoolean openImplCalled = new AtomicBoolean();
+
 		/**
 		 * The default constructor. Used to access the parent class' hidden
 		 * constructor (after all, it is an abstract class).
@@ -762,6 +828,11 @@ public class AbstractParaViewProxyTester {
 		 */
 		public int getRepresentationId() {
 			return super.getRepresentationId();
+		}
+
+		public boolean openImpl(VtkWebClient client, String fullPath) {
+			openImplCalled.set(true);
+			return super.openImpl(client, fullPath);
 		}
 	}
 }
