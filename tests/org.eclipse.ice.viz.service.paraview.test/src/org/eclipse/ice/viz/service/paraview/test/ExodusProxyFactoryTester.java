@@ -98,6 +98,7 @@ public class ExodusProxyFactoryTester {
 
 		// Check that modifying the returned set does not affect the extensions.
 		proxyFactory.getExtensions().clear();
+		supportedExtensions = proxyFactory.getExtensions();
 		assertEquals(extensions.length, supportedExtensions.size());
 		for (String extension : extensions) {
 			assertTrue(supportedExtensions.contains(extension));

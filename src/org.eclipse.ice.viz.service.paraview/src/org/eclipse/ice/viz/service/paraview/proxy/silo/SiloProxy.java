@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.proxy.silo;
 
+import java.net.URI;
+
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 
 /**
@@ -20,5 +22,10 @@ import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
  *
  */
 public class SiloProxy extends AbstractParaViewProxy {
+
+	protected SiloProxy(URI uri) throws NullPointerException {
+		super(uri);
+		// TODO Auto-generated constructor stub
+	}
 	// TODO
 }

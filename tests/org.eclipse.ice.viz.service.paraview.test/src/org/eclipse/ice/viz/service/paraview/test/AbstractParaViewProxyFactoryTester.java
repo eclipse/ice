@@ -14,6 +14,7 @@ package org.eclipse.ice.viz.service.paraview.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -22,6 +23,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.net.URI;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
@@ -49,24 +51,42 @@ public class AbstractParaViewProxyFactoryTester {
 	 */
 	@Test
 	public void checkExtensions() {
+
+		Set<String> supportedExtensions;
+		String[] extensions = new String[] { "one", "two", "three" };
+
 		// The default AbstractParaViewProxyFactory should provide no
 		// extensions.
 		proxyFactory = new FakeParaViewProxyFactory();
-		assertNotNull(proxyFactory.getExtensions());
-		assertTrue(proxyFactory.getExtensions().isEmpty());
+		supportedExtensions = proxyFactory.getExtensions();
+		assertNotNull(supportedExtensions);
+		assertTrue(supportedExtensions.isEmpty());
 
 		// Adding to the protected set of extensions should cause the factory to
 		// return a lexicographically ordered set of extensions with no
 		// duplicates.
 		proxyFactory = new FakeParaViewProxyFactory("one", "two", "one",
 				"three");
-		assertNotNull(proxyFactory.getExtensions());
-		assertEquals(3, proxyFactory.getExtensions().size());
+		supportedExtensions = proxyFactory.getExtensions();
+		assertNotNull(supportedExtensions);
+		assertEquals(3, supportedExtensions.size());
 		// Check the order of the extensions. Should be alphabetical.
-		Iterator<String> iter = proxyFactory.getExtensions().iterator();
+		Iterator<String> iter = supportedExtensions.iterator();
 		assertEquals("one", iter.next());
 		assertEquals("three", iter.next());
 		assertEquals("two", iter.next());
+
+		// Check that a new, equivalent set is returned from each request.
+		assertNotSame(supportedExtensions, proxyFactory.getExtensions());
+		assertEquals(supportedExtensions, proxyFactory.getExtensions());
+
+		// Check that modifying the returned set does not affect the extensions.
+		proxyFactory.getExtensions().clear();
+		supportedExtensions = proxyFactory.getExtensions();
+		assertEquals(extensions.length, supportedExtensions.size());
+		for (String extension : extensions) {
+			assertTrue(supportedExtensions.contains(extension));
+		}
 
 		return;
 	}
@@ -233,8 +253,7 @@ public class AbstractParaViewProxyFactoryTester {
 		@Override
 		protected IParaViewProxy createProxyImpl(URI uri) {
 			// Create a proxy. What's in it doesn't matter for these tests.
-			IParaViewProxy proxy = new AbstractParaViewProxy() {
-
+			IParaViewProxy proxy = new AbstractParaViewProxy(uri) {
 			};
 			createdProxy.set(proxy);
 			return proxy;

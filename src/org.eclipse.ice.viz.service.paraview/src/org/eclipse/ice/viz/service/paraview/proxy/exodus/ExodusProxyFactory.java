@@ -71,6 +71,6 @@ public class ExodusProxyFactory extends AbstractParaViewProxyFactory {
 	 */
 	@Override
 	protected IParaViewProxy createProxyImpl(URI uri) {
-		return new ExodusProxy();
+		return new ExodusProxy(uri);
 	}
 }

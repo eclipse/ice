@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.proxy.exodus;
 
+import java.net.URI;
+
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 
 /**
@@ -20,5 +22,10 @@ import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
  *
  */
 public class ExodusProxy extends AbstractParaViewProxy {
+
+	protected ExodusProxy(URI uri) throws NullPointerException {
+		super(uri);
+		// TODO Auto-generated constructor stub
+	}
 	// TODO
 }

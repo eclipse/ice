@@ -57,6 +57,6 @@ public class SiloProxyFactory extends AbstractParaViewProxyFactory {
 	 */
 	@Override
 	protected IParaViewProxy createProxyImpl(URI uri) {
-		return new SiloProxy();
+		return new SiloProxy(uri);
 	}
 }

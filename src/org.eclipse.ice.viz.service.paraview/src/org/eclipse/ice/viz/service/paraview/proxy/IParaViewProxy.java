@@ -36,8 +36,8 @@ public interface IParaViewProxy {
 	 * @param connection
 	 *            The connection to use when opening the URI. Should not be
 	 *            {@code null}.
-	 * @return True if the proxy could be opened using the connection, false
-	 *         otherwise.
+	 * @return True if the proxy could be opened using the connection (also when
+	 *         it is already open), false otherwise.
 	 * @throws NullPointerException
 	 *             If the specified connection is {@code null}.
 	 */
@@ -52,14 +52,29 @@ public interface IParaViewProxy {
 	URI getURI();
 
 	/**
-	 * Gets the "features" in the file that can be rendered. This may include
-	 * items such as cell or point arrays.
+	 * Gets the categories of "features" in the file that can be rendered. This
+	 * may include categories such as "point arrays" or "cell arrays".
 	 * 
-	 * @return A map of features that can be rendered in ParaView. The map is
-	 *         keyed on "categories", while the values are sets of allowed
-	 *         features or "types".
+	 * @return A set of categories of "features" in the file.
 	 */
-	Map<String, Set<String>> getFeatures();
+	Set<String> getFeatureCategories();
+
+	/**
+	 * Gets the file's "features" that can be rendered for the specified
+	 * category.
+	 * 
+	 * @param category
+	 *            The category whose features will be returned. This should be a
+	 *            value retrieved from {@link #getFeatureCategories()}.
+	 * @return A set of features that can be rendered. This set may be unique to
+	 *         the specified category.
+	 * @throws NullPointerException
+	 *             If the specified category is {@code null}.
+	 * @throws IllegalArgumentException
+	 *             If the specified category is an invalid category.
+	 */
+	Set<String> getFeatures(String category) throws NullPointerException,
+			IllegalArgumentException;
 
 	/**
 	 * Sets the current feature that is rendered via ParaView.

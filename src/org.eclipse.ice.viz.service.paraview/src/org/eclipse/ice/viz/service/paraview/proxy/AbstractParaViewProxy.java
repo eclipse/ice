@@ -25,7 +25,29 @@ import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapte
  * @author Jordan Deyton
  *
  */
-public abstract class AbstractParaViewProxy implements IParaViewProxy {
+public class AbstractParaViewProxy implements IParaViewProxy {
+
+	private final URI uri;
+
+	/**
+	 * The default constructor. This should only be called by sub-class
+	 * constructors.
+	 * 
+	 * @param uri
+	 *            The URI for the ParaView-supported file.
+	 * @throws NullPointerException
+	 *             If the specified URI is null.
+	 */
+	protected AbstractParaViewProxy(URI uri) throws NullPointerException {
+		if (uri == null) {
+			throw new NullPointerException("ParaViewProxy error: "
+					+ "Cannot open a null URI.");
+		}
+
+		this.uri = uri;
+
+		return;
+	}
 
 	/*
 	 * Implements a method from IParaViewProxy.
@@ -42,6 +64,14 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 */
 	@Override
 	public URI getURI() {
+		return uri;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Set<String> getFeatureCategories() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -50,7 +80,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public Map<String, Set<String>> getFeatures() {
+	public Set<String> getFeatures(String category)
+			throws NullPointerException, IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return null;
 	}
