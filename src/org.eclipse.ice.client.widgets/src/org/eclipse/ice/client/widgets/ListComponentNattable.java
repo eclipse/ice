@@ -1,6 +1,7 @@
 package org.eclipse.ice.client.widgets;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -68,6 +69,11 @@ public class ListComponentNattable {
 	 * The table to hold the list data.
 	 */
 	private NatTable table;
+	
+	/**
+	 * Provides the information about the selection layer for the NatTable. Gets/Sets the selected rows for the table. 
+	 */
+	private RowSelectionProvider selectionProvider;
 	
 	
 	/**
@@ -164,7 +170,7 @@ public class ListComponentNattable {
 		table = natTable;
 		
 		
-		RowSelectionProvider selectionProvider = new RowSelectionProvider(selectionLayer, (IRowDataProvider)dataProvider, false);
+		selectionProvider = new RowSelectionProvider(selectionLayer, (IRowDataProvider)dataProvider, false);
 		
 		selectionProvider.addSelectionChangedListener(new ISelectionChangedListener(){
 
@@ -182,13 +188,26 @@ public class ListComponentNattable {
 		}
 		);
 		
+		
 		return;
 	}
 	
-	
+	/**
+	 * Gets the currently selected elements. 
+	 * @return
+	 */
 	public ListComponent getSelectedObjects(){
 		return selectedList;
 		
+	}
+	
+	/**
+	 * Sets the elements to be selected for this table. 
+	 * @param elements
+	 */
+	public void setSelection(ListComponent elements){
+		StructuredSelection newSelection = new StructuredSelection(elements);
+		selectionProvider.setSelection(newSelection);
 	}
 	
 	

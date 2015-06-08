@@ -157,7 +157,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 
 	/**
 	 * This operation creates the add and delete buttons that are used to add
-	 * layers to the table.
+	 * layers to the table. Also creates buttons for moving layers around. 
 	 */
 	private void createAddDeleteButtons() {
 
@@ -241,8 +241,6 @@ public class ListComponentSectionPage extends ICEFormPage {
 				if(list.size()>0){
 					ListComponent selected = table.getSelectedObjects();
 					if(selected.size()>0){
-						//gets the last index in the list
-						int index = list.size()-1;
 						
 						//removes that material from the list
 						//lock the list before removing the selection
@@ -257,6 +255,111 @@ public class ListComponentSectionPage extends ICEFormPage {
 						}	
 					}
 				}				
+			}
+			
+		});
+		
+		//Move up button, moves the selected rows up in the table. 
+		Button moveUpButton = new Button(listButtonComposite, SWT.PUSH);
+		moveUpButton.setText("^");
+		moveUpButton.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				//makes sure there is actually data in the list to manipulate 
+				if(list.size()>0){
+					//gets selected rows
+					ListComponent selected = table.getSelectedObjects();
+					//makes sure there are selected rows
+					if(selected.size()>0){
+						int numSelected = selected.size();
+						//makes sure that the user does not move the cell at position 0 to position -1 (past top of table)
+						if(!(selected.get(0).equals(list.get(0)))){
+							
+							list.getReadWriteLock().writeLock().lock();
+							
+							//gets the object in the list that will be overridden 
+							int index = 0;
+							Object toMove = list.get(0);
+							
+							//overrides the list entries to move the selected rows up by one row
+							for(int i=0; i<numSelected; i++){
+								index = list.indexOf(selected.get(i))-1;
+								toMove = list.get(index);
+								list.set(index, selected.get(i));
+								list.set(index+1, toMove);
+								
+							}
+							
+							//resets the overridden row to be at the end of the selected rows
+							list.set(index+1, toMove);
+							
+							//unlocks the list
+							list.getReadWriteLock().writeLock().unlock();
+							table.setSelection(selected);
+
+						}
+						
+					}
+				}
+			}
+			
+		});
+		
+		
+		
+		Button moveDownButton = new Button(listButtonComposite, SWT.PUSH);
+		moveDownButton.setText("v");
+		moveDownButton.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				//makes sure there is actually data in the list to manipulate 
+				if(list.size()>0){
+					//gets selected rows
+					ListComponent selected = table.getSelectedObjects();
+					//makes sure there are selected rows
+					if(selected.size()>0){
+						int numSelected = selected.size();
+						//makes sure that the user does not move the selected cell past the end of the table. 
+						if(!(selected.get(numSelected-1).equals(list.get(list.size()-1)))){
+							
+							list.getReadWriteLock().writeLock().lock();
+							
+							//gets the object in the list that will be overridden 
+							int index = 0;
+							Object toMove = list.get(0);
+							
+							//overrides the list entries to move the selected rows up by one row
+							for(int i=0; i<numSelected; i++){
+								index = list.indexOf(selected.get(i))+1;
+								toMove = list.get(index);
+								list.set(index, selected.get(i));
+								list.set(index-1, toMove);
+								
+							}
+							
+							//resets the overridden row to be at the end of the selected rows
+							list.set(index-1, toMove);
+							
+							//unlocks the list
+							list.getReadWriteLock().writeLock().unlock();
+							table.setSelection(selected);
+
+						}
+						
+					}
+				}
 			}
 			
 		});
