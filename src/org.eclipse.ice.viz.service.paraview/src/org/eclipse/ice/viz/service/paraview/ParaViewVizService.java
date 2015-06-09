@@ -54,6 +54,12 @@ public class ParaViewVizService extends AbstractVizService {
 	private final ConnectionManager<VtkWebClient> connections;
 
 	/**
+	 * The registry of factories used to get {@link IParaViewProxy}s for
+	 * manipulating and rendering files with ParaView.
+	 */
+	private IParaViewProxyFactoryRegistry proxyFactoryRegistry;
+
+	/**
 	 * The default constructor.
 	 * <p>
 	 * <b>Note:</b> Only OSGi should call this method!
@@ -83,17 +89,17 @@ public class ParaViewVizService extends AbstractVizService {
 			}
 		};
 
-		// Add supported ExodusII file format extensions.
-		supportedExtensions.add("ex");
-		supportedExtensions.add("e");
-		supportedExtensions.add("exo");
-		supportedExtensions.add("ex2");
-		supportedExtensions.add("exii");
-		supportedExtensions.add("gen");
-		supportedExtensions.add("exodus");
-		supportedExtensions.add("nemesis");
-		// Add supported Silo file format extensions.
-		supportedExtensions.add("silo");
+		// // Add supported ExodusII file format extensions.
+		// supportedExtensions.add("ex");
+		// supportedExtensions.add("e");
+		// supportedExtensions.add("exo");
+		// supportedExtensions.add("ex2");
+		// supportedExtensions.add("exii");
+		// supportedExtensions.add("gen");
+		// supportedExtensions.add("exodus");
+		// supportedExtensions.add("nemesis");
+		// // Add supported Silo file format extensions.
+		// supportedExtensions.add("silo");
 
 		return;
 	}
@@ -204,7 +210,10 @@ public class ParaViewVizService extends AbstractVizService {
 	 * .net.URI)
 	 */
 	@Override
-	public IPlot createPlot(URI file) throws Exception {
+	public IPlot createPlot(URI uri) throws Exception {
+		// Check the extension.
+		super.createPlot(uri);
+
 		ParaViewPlot plot = null;
 
 		// Create the plot.
@@ -212,7 +221,7 @@ public class ParaViewVizService extends AbstractVizService {
 		// Associate the plot with the connection.
 		connections.addClient(plot);
 		// Set the data source for the file.
-		plot.setDataSource(file);
+		plot.setDataSource(uri);
 
 		return plot;
 	}
@@ -229,9 +238,14 @@ public class ParaViewVizService extends AbstractVizService {
 	 * @param registry
 	 *            The new registry.
 	 */
-	protected void setProxyFactoryRegistry(
-			IParaViewProxyFactoryRegistry registry) {
-		// TODO
+	public void setProxyFactoryRegistry(IParaViewProxyFactoryRegistry registry) {
+		if (registry != null && registry != proxyFactoryRegistry) {
+			proxyFactoryRegistry = registry;
+			// Update the supported file types.
+			supportedExtensions.clear();
+			supportedExtensions.addAll(registry.getExtensions());
+		}
+		return;
 	}
 
 	/**
@@ -244,8 +258,12 @@ public class ParaViewVizService extends AbstractVizService {
 	 * @param registry
 	 *            The old registry.
 	 */
-	protected void unsetProxyFactoryRegistry(
-			IParaViewProxyFactoryRegistry registry) {
-		// TODO
+	public void unsetProxyFactoryRegistry(IParaViewProxyFactoryRegistry registry) {
+		if (registry == proxyFactoryRegistry) {
+			proxyFactoryRegistry = null;
+			// The file types are no longer supported.
+			supportedExtensions.clear();
+		}
+		return;
 	}
 }
