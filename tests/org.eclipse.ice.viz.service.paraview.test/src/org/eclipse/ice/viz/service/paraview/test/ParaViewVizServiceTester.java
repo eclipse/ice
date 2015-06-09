@@ -12,6 +12,8 @@
 package org.eclipse.ice.viz.service.paraview.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -22,7 +24,6 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.paraview.ParaViewVizService;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactoryRegistry;
-import org.eclipse.ice.viz.service.paraview.proxy.ParaViewProxyFactoryRegistry;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,11 +38,25 @@ public class ParaViewVizServiceTester {
 
 	// TODO Implement these tests.
 
+	/**
+	 * The viz service under test. Usually, this is the same as
+	 * {@link #fakeVizService}, but, of course, using this reference does not
+	 * expose protected methods.
+	 */
 	private ParaViewVizService vizService;
 
+	/**
+	 * The viz service usually under test. This is for convenience.
+	 */
+	private FakeParaViewVizService fakeVizService;
+
+	/**
+	 * Initializes {@link #vizService} and {@link #fakeVizService}.
+	 */
 	@Before
 	public void beforeEachTest() {
-		vizService = new ParaViewVizService();
+		fakeVizService = new FakeParaViewVizService();
+		vizService = fakeVizService;
 	}
 
 	/**
@@ -139,6 +154,8 @@ public class ParaViewVizServiceTester {
 			}
 		};
 
+		// Initially, the registry is null.
+		assertNull(fakeVizService.getProxyFactoryRegistry());
 		// Test all extensions. Currently, none of them are supported, as the
 		// registry has not been set.
 		for (String extension : supportedExtensions) {
@@ -155,7 +172,9 @@ public class ParaViewVizServiceTester {
 		}
 
 		// Set the proxy factory registry for the viz service.
-		vizService.setProxyFactoryRegistry(registry);
+		fakeVizService.setProxyFactoryRegistry(registry);
+		// Now the registry should not be null.
+		assertSame(registry, fakeVizService.getProxyFactoryRegistry());
 		// Test all (now supported) extensions.
 		for (String extension : supportedExtensions) {
 			try {
@@ -171,7 +190,9 @@ public class ParaViewVizServiceTester {
 		}
 
 		// Unset the registry from the viz service.
-		vizService.unsetProxyFactoryRegistry(registry);
+		fakeVizService.unsetProxyFactoryRegistry(registry);
+		// Again, the registry is null.
+		assertNull(fakeVizService.getProxyFactoryRegistry());
 		// Test all extensions. Currently, none of them are supported.
 		for (String extension : supportedExtensions) {
 			try {
@@ -202,5 +223,42 @@ public class ParaViewVizServiceTester {
 		String filename = (extension != null ? "kung_fury." + extension
 				: "future_cop");
 		return new File(filename).toURI();
+	}
+
+	/**
+	 * A sub-class of {@link ParaViewVizService} used only for testing purposes,
+	 * primarily to expose protected methods that may be used by other classes
+	 * in the package but are not intended for "public" consumption.
+	 * 
+	 * @author Jordan Deyton
+	 *
+	 */
+	private class FakeParaViewVizService extends ParaViewVizService {
+
+		/*
+		 * Exposes the super class' method.
+		 */
+		@Override
+		protected void setProxyFactoryRegistry(
+				IParaViewProxyFactoryRegistry registry) {
+			super.setProxyFactoryRegistry(registry);
+		}
+
+		/*
+		 * Exposes the super class' method.
+		 */
+		@Override
+		protected void unsetProxyFactoryRegistry(
+				IParaViewProxyFactoryRegistry registry) {
+			super.unsetProxyFactoryRegistry(registry);
+		}
+
+		/*
+		 * Exposes the super class' method.
+		 */
+		@Override
+		protected IParaViewProxyFactoryRegistry getProxyFactoryRegistry() {
+			return super.getProxyFactoryRegistry();
+		}
 	}
 }

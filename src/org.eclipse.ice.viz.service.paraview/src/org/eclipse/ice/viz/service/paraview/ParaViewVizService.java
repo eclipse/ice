@@ -144,7 +144,7 @@ public class ParaViewVizService extends AbstractVizService {
 	 */
 	@Override
 	public String getVersion() {
-		return "0.0";
+		return "";
 	}
 
 	/*
@@ -216,6 +216,13 @@ public class ParaViewVizService extends AbstractVizService {
 
 		ParaViewPlot plot = null;
 
+		// If the proxy factory registry is not set, throw an exception.
+		if (proxyFactoryRegistry == null) {
+			throw new Exception("ParaViewVizService error: "
+					+ "Cannot render files, as no ICE plugins provide "
+					+ " file type support for ParaView.");
+		}
+
 		// Create the plot.
 		plot = new ParaViewPlot(this);
 		// Associate the plot with the connection.
@@ -238,7 +245,8 @@ public class ParaViewVizService extends AbstractVizService {
 	 * @param registry
 	 *            The new registry.
 	 */
-	public void setProxyFactoryRegistry(IParaViewProxyFactoryRegistry registry) {
+	protected void setProxyFactoryRegistry(
+			IParaViewProxyFactoryRegistry registry) {
 		if (registry != null && registry != proxyFactoryRegistry) {
 			proxyFactoryRegistry = registry;
 			// Update the supported file types.
@@ -258,12 +266,23 @@ public class ParaViewVizService extends AbstractVizService {
 	 * @param registry
 	 *            The old registry.
 	 */
-	public void unsetProxyFactoryRegistry(IParaViewProxyFactoryRegistry registry) {
+	protected void unsetProxyFactoryRegistry(
+			IParaViewProxyFactoryRegistry registry) {
 		if (registry == proxyFactoryRegistry) {
 			proxyFactoryRegistry = null;
 			// The file types are no longer supported.
 			supportedExtensions.clear();
 		}
 		return;
+	}
+
+	/**
+	 * Gets the registry of factories used to get {@link IParaViewProxy}s for
+	 * manipulating and rendering files with ParaView.
+	 * 
+	 * @return The registry, or {@code null} if it was never set (via OSGi).
+	 */
+	protected IParaViewProxyFactoryRegistry getProxyFactoryRegistry() {
+		return proxyFactoryRegistry;
 	}
 }
