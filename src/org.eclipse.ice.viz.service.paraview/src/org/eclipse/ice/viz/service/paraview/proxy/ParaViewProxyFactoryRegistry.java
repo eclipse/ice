@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.proxy;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -151,11 +150,10 @@ public class ParaViewProxyFactoryRegistry implements
 			// If possible, determine the extension of the URI. Make it lower
 			// case, as case should not matter.
 			try {
-				File file = new File(uri);
-				String fileName = file.getName();
-				extension = fileName.substring(fileName.lastIndexOf(".") + 1)
+				String path = uri.getPath();
+				extension = path.substring(path.lastIndexOf(".") + 1)
 						.toLowerCase();
-			} catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+			} catch (IndexOutOfBoundsException e) {
 				// Nothing to do.
 			}
 

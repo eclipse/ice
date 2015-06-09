@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
@@ -197,16 +196,16 @@ public class ParaViewProxyFactoryRegistryTester {
 
 		// Check this for all Exodus extensions.
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
-			uri = createTestURI(extension);
+			uri = TestUtils.createTestURI(extension);
 			assertNull(registry.getProxyFactory(uri));
 		}
 		// Check this for all Silo extensions.
 		for (String extension : fakeSiloProxyFactory.getExtensions()) {
-			uri = createTestURI(extension);
+			uri = TestUtils.createTestURI(extension);
 			assertNull(registry.getProxyFactory(uri));
 		}
 		// Check this for invalid URIs.
-		assertNull(registry.getProxyFactory(createTestURI("bad")));
+		assertNull(registry.getProxyFactory(TestUtils.createTestURI("bad")));
 		assertNull(registry.getProxyFactory(nullURI));
 
 		// Register the main fake Exodus and the single Silo factories.
@@ -216,15 +215,15 @@ public class ParaViewProxyFactoryRegistryTester {
 		// Check that all of their extensions return the correct factory,
 		// and that the query is case insensitive.
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
-			uri = createTestURI(extension.toLowerCase());
+			uri = TestUtils.createTestURI(extension.toLowerCase());
 			assertSame(fakeExodusProxyFactory, registry.getProxyFactory(uri));
-			uri = createTestURI(extension.toUpperCase());
+			uri = TestUtils.createTestURI(extension.toUpperCase());
 			assertSame(fakeExodusProxyFactory, registry.getProxyFactory(uri));
 		}
 		for (String extension : fakeSiloProxyFactory.getExtensions()) {
-			uri = createTestURI(extension.toLowerCase());
+			uri = TestUtils.createTestURI(extension.toLowerCase());
 			assertSame(fakeSiloProxyFactory, registry.getProxyFactory(uri));
-			uri = createTestURI(extension.toUpperCase());
+			uri = TestUtils.createTestURI(extension.toUpperCase());
 			assertSame(fakeSiloProxyFactory, registry.getProxyFactory(uri));
 		}
 
@@ -233,7 +232,7 @@ public class ParaViewProxyFactoryRegistryTester {
 		// still be the first factory.
 		registry.registerProxyFactory(fakeExodusProxyFactory2);
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
-			uri = createTestURI(extension);
+			uri = TestUtils.createTestURI(extension);
 			if (!"e".equals(extension)) {
 				assertSame(fakeExodusProxyFactory,
 						registry.getProxyFactory(uri));
@@ -247,7 +246,7 @@ public class ParaViewProxyFactoryRegistryTester {
 		// precedence over the "e" extension.
 		registry.registerProxyFactory(fakeExodusProxyFactory);
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
-			uri = createTestURI(extension);
+			uri = TestUtils.createTestURI(extension);
 			assertSame(fakeExodusProxyFactory, registry.getProxyFactory(uri));
 		}
 
@@ -255,7 +254,7 @@ public class ParaViewProxyFactoryRegistryTester {
 		// should return null.
 		registry.unregisterProxyFactory(fakeSiloProxyFactory);
 		for (String extension : fakeSiloProxyFactory.getExtensions()) {
-			uri = createTestURI(extension);
+			uri = TestUtils.createTestURI(extension);
 			assertNull(registry.getProxyFactory(uri));
 		}
 
@@ -263,7 +262,7 @@ public class ParaViewProxyFactoryRegistryTester {
 		// will still be supported by the second fake Exodus factory.
 		registry.unregisterProxyFactory(fakeExodusProxyFactory);
 		for (String extension : fakeExodusProxyFactory.getExtensions()) {
-			uri = createTestURI(extension);
+			uri = TestUtils.createTestURI(extension);
 			if (!"e".equals(extension)) {
 				assertNull(registry.getProxyFactory(uri));
 			} else {
@@ -275,7 +274,7 @@ public class ParaViewProxyFactoryRegistryTester {
 		// Now unregister the second fake Exodus factory. Requesting a factory
 		// for the extension "e" should return null.
 		registry.unregisterProxyFactory(fakeExodusProxyFactory2);
-		assertNull(registry.getProxyFactory(createTestURI("e")));
+		assertNull(registry.getProxyFactory(TestUtils.createTestURI("e")));
 
 		return;
 	}
@@ -326,18 +325,6 @@ public class ParaViewProxyFactoryRegistryTester {
 		assertEquals(expectedExtensions, registry.getExtensions());
 
 		return;
-	}
-
-	/**
-	 * Creates a simple URI for the provided extension.
-	 * 
-	 * @param extension
-	 *            The extension for the test URI file. This file probably will
-	 *            not actually exist. Assumed to not be {@code null}.
-	 * @return A correctly formed URI with the provided extension.
-	 */
-	private URI createTestURI(String extension) {
-		return new File("kung_fury." + extension).toURI();
 	}
 
 	/**

@@ -83,5 +83,11 @@ public class ParaViewPlotTester {
 	@Test
 	public void checkSource() {
 		fail("Not implemented.");
+
+		// If the URI is null, a NullPointerException should be thrown.
+		// If an IParaViewProxyFactory cannot be found, an IllegalStateException
+		// should be thrown.
+		// If the URI is an invalid file (cannot be opened by the proxy), an
+		// IllegalArgumentException should be thrown
 	}
 }

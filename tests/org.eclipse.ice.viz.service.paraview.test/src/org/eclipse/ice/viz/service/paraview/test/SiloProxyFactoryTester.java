@@ -19,7 +19,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.net.URI;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -143,7 +142,7 @@ public class SiloProxyFactoryTester {
 
 		// Passing in an invalid URI should throw an exception because the
 		// extension is not supported.
-		uri = createTestURI("fail");
+		uri = TestUtils.createTestURI("fail");
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -156,7 +155,7 @@ public class SiloProxyFactoryTester {
 		assertNull(createdProxy.get());
 
 		// Files without extensions should not be supported.
-		uri = createTestURI(null);
+		uri = TestUtils.createTestURI(null);
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -172,7 +171,7 @@ public class SiloProxyFactoryTester {
 		// return the implementation's IParaViewProxy. The file's existence or
 		// validity is not checked (currently).
 		for (String extension : proxyFactory.getExtensions()) {
-			uri = createTestURI(extension);
+			uri = TestUtils.createTestURI(extension);
 			proxy = proxyFactory.createProxy(uri);
 			assertSame(createdProxy.getAndSet(null), proxy);
 			// Check the type of the proxy.
@@ -182,20 +181,5 @@ public class SiloProxyFactoryTester {
 		}
 
 		return;
-	}
-
-	/**
-	 * Creates a simple URI for the provided extension.
-	 * 
-	 * @param extension
-	 *            The extension for the test URI file. This file probably will
-	 *            not actually exist. If {@code null}, then the file will have
-	 *            no extension.
-	 * @return A correctly formed URI with the provided extension.
-	 */
-	private URI createTestURI(String extension) {
-		String filename = (extension != null ? "kung_fury." + extension
-				: "future_cop");
-		return new File(filename).toURI();
 	}
 }

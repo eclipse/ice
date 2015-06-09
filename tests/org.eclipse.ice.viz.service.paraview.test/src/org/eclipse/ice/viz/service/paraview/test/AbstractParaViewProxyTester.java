@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +64,15 @@ public class AbstractParaViewProxyTester {
 	 */
 	private URI testURI;
 
+	/**
+	 * A fake ParaView web client. This is the same one contained in
+	 * {@link #connection}.
+	 */
 	private FakeVtkWebClient fakeClient;
+
+	/**
+	 * The connection adapter that should be used by the proxy.
+	 */
 	private ParaViewConnectionAdapter connection;
 
 	/**
@@ -75,7 +82,7 @@ public class AbstractParaViewProxyTester {
 	public void beforeEachTest() {
 
 		// Initialize the proxy with a test URI.
-		testURI = createTestURI("go-go-gadget-extension");
+		testURI = TestUtils.createTestURI("go-go-gadget-extension");
 		fakeProxy = new FakeParaViewProxy(testURI);
 		proxy = fakeProxy;
 
@@ -801,21 +808,6 @@ public class AbstractParaViewProxyTester {
 		assertEquals(0, proxy.setProperties(newPropertiesCopy));
 
 		return;
-	}
-
-	/**
-	 * Creates a simple URI for the provided extension.
-	 * 
-	 * @param extension
-	 *            The extension for the test URI file. This file probably will
-	 *            not actually exist. If {@code null}, then the file will have
-	 *            no extension.
-	 * @return A correctly formed URI with the provided extension.
-	 */
-	private URI createTestURI(String extension) {
-		String filename = (extension != null ? "kung_fury." + extension
-				: "future_cop");
-		return new File(filename).toURI();
 	}
 
 	/**

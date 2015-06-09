@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.proxy;
 
-import java.io.File;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
@@ -71,11 +70,9 @@ public abstract class AbstractParaViewProxyFactory implements
 		// case, as case should not matter.
 		String extension = "";
 		try {
-			File file = new File(uri);
-			String fileName = file.getName();
-			extension = fileName.substring(fileName.lastIndexOf(".") + 1)
-					.toLowerCase();
-		} catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+			String path = uri.getPath();
+			extension = path.substring(path.lastIndexOf(".") + 1).toLowerCase();
+		} catch (IndexOutOfBoundsException e) {
 			// Nothing to do.
 		}
 

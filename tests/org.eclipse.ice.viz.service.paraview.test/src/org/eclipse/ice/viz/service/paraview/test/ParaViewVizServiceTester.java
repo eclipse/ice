@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
@@ -133,7 +132,8 @@ public class ParaViewVizServiceTester {
 		// Passing in an unsupported URI should throw an
 		// IllegalArgumentException.
 		try {
-			vizService.createPlot(createTestURI("this-is-a-bad-extension"));
+			vizService.createPlot(TestUtils
+					.createTestURI("this-is-a-bad-extension"));
 			fail("ParaViewVizServiceTester error: "
 					+ "No exception thrown for unsupported extension.");
 		} catch (IllegalArgumentException e) {
@@ -189,7 +189,7 @@ public class ParaViewVizServiceTester {
 		// registry has not been set.
 		for (String extension : supportedExtensions) {
 			try {
-				vizService.createPlot(createTestURI(extension));
+				vizService.createPlot(TestUtils.createTestURI(extension));
 				fail("ParaViewVizServiceTester error: "
 						+ "No exception thrown for unsupported extension.");
 			} catch (IllegalArgumentException e) {
@@ -207,7 +207,7 @@ public class ParaViewVizServiceTester {
 		// Test all (now supported) extensions.
 		for (String extension : supportedExtensions) {
 			try {
-				vizService.createPlot(createTestURI(extension));
+				vizService.createPlot(TestUtils.createTestURI(extension));
 			} catch (IllegalArgumentException e) {
 				fail("ParaViewVizServiceTester error: "
 						+ "Exception thrown for supported extension.");
@@ -225,7 +225,7 @@ public class ParaViewVizServiceTester {
 		// Test all extensions. Currently, none of them are supported.
 		for (String extension : supportedExtensions) {
 			try {
-				vizService.createPlot(createTestURI(extension));
+				vizService.createPlot(TestUtils.createTestURI(extension));
 				fail("ParaViewVizServiceTester error: "
 						+ "No exception thrown for unsupported extension.");
 			} catch (IllegalArgumentException e) {
@@ -237,21 +237,6 @@ public class ParaViewVizServiceTester {
 		}
 
 		return;
-	}
-
-	/**
-	 * Creates a simple URI for the provided extension.
-	 * 
-	 * @param extension
-	 *            The extension for the test URI file. This file probably will
-	 *            not actually exist. If {@code null}, then the file will have
-	 *            no extension.
-	 * @return A correctly formed URI with the provided extension.
-	 */
-	private URI createTestURI(String extension) {
-		String filename = (extension != null ? "kung_fury." + extension
-				: "future_cop");
-		return new File(filename).toURI();
 	}
 
 	/**

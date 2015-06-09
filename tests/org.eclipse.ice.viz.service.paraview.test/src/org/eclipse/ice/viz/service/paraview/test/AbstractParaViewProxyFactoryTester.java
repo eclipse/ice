@@ -20,7 +20,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -126,7 +125,7 @@ public class AbstractParaViewProxyFactoryTester {
 
 		// Passing in any URI should throw an exception because the extension is
 		// not supported.
-		uri = createTestURI("one");
+		uri = TestUtils.createTestURI("one");
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -156,7 +155,7 @@ public class AbstractParaViewProxyFactoryTester {
 
 		// Passing in an invalid URI should throw an exception because the
 		// extension is not supported.
-		uri = createTestURI("fail");
+		uri = TestUtils.createTestURI("fail");
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -171,16 +170,16 @@ public class AbstractParaViewProxyFactoryTester {
 		// Passing in a valid URI should call the implementation and should
 		// return the implementation's IParaViewProxy. The file's existence or
 		// validity is not checked.
-		proxy = proxyFactory.createProxy(createTestURI("one"));
+		proxy = proxyFactory.createProxy(TestUtils.createTestURI("one"));
 		assertSame(fakeProxyFactory.createdProxy.getAndSet(null), proxy);
-		proxy = proxyFactory.createProxy(createTestURI("two"));
+		proxy = proxyFactory.createProxy(TestUtils.createTestURI("two"));
 		assertSame(fakeProxyFactory.createdProxy.getAndSet(null), proxy);
-		proxy = proxyFactory.createProxy(createTestURI("three"));
+		proxy = proxyFactory.createProxy(TestUtils.createTestURI("three"));
 		assertSame(fakeProxyFactory.createdProxy.getAndSet(null), proxy);
 
 		// Files without extensions should not be supported, even though "null"
 		// is a "supported" extension.
-		uri = createTestURI(null);
+		uri = TestUtils.createTestURI(null);
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -193,21 +192,6 @@ public class AbstractParaViewProxyFactoryTester {
 		assertNull(fakeProxyFactory.createdProxy.get());
 
 		return;
-	}
-
-	/**
-	 * Creates a simple URI for the provided extension.
-	 * 
-	 * @param extension
-	 *            The extension for the test URI file. This file probably will
-	 *            not actually exist. If {@code null}, then the file will have
-	 *            no extension.
-	 * @return A correctly formed URI with the provided extension.
-	 */
-	private URI createTestURI(String extension) {
-		String filename = (extension != null ? "kung_fury." + extension
-				: "future_cop");
-		return new File(filename).toURI();
 	}
 
 	/**
