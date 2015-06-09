@@ -48,6 +48,8 @@ import com.kitware.vtk.web.VtkWebClient;
  */
 public class AbstractParaViewProxyTester {
 
+	// TODO Check that the initial category, feature, and properties are set.
+
 	/**
 	 * The proxy that will be tested.
 	 */
@@ -411,27 +413,27 @@ public class AbstractParaViewProxyTester {
 		categorySet = proxy.getFeatureCategories();
 		for (String category : categorySet) {
 			featureSet = proxy.getFeatures(category);
+			boolean firstFeature = true;
 			for (String feature : featureSet) {
-				// Unset the fake proxy's references to the current category and
-				// feature.
-				fakeProxy.currentCategory = null;
-				fakeProxy.currentFeature = null;
 
 				// If the client fails to render, then the category and feature
 				// will not be set, although setFeatureImpl(...) will be called.
 				fail.set(true);
 				assertFalse(proxy.setFeature(category, feature));
 				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
-				assertNotEquals(category, fakeProxy.currentCategory);
-				assertNotEquals(feature, fakeProxy.currentFeature);
+				if (firstFeature) {
+					assertNotEquals(category, fakeProxy.getCategory());
+					firstFeature = false;
+				}
+				assertNotEquals(feature, fakeProxy.getFeature());
 
 				// The first call should successfully set the feature.
 				// setFeatureImpl(...) will also be called.
 				fail.set(false);
 				assertTrue(proxy.setFeature(category, feature));
 				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
-				assertEquals(category, fakeProxy.currentCategory);
-				assertEquals(feature, fakeProxy.currentFeature);
+				assertEquals(category, fakeProxy.getCategory());
+				assertEquals(feature, fakeProxy.getFeature());
 
 				// The second call should return false, because the feature was
 				// already set. setFeatureImpl(...) should not be called.
@@ -608,14 +610,30 @@ public class AbstractParaViewProxyTester {
 		Set<String> propertySet;
 		Set<String> valueSet;
 
+		// Open the proxy. We don't care about its return value, it just must be
+		// opened before it finds properties for the file.
+		proxy.open(connection);
+
 		// Check that all valid properties/values can be set.
 		propertySet = proxy.getProperties();
 		for (String property : propertySet) {
 			valueSet = proxy.getPropertyValues(property);
 			for (String value : valueSet) {
+				// If the client fails to update the property, then the property
+				// value will not be set, although setPropertyImpl(...) will
+				// still be called.
+				fakeProxy.failToSetProperty = true;
+				assertFalse(proxy.setProperty(property, value));
+				assertTrue(fakeProxy.setPropertyImplCalled.getAndSet(false));
+				assertNotEquals(value, fakeProxy.getPropertyValue(property));
+
 				// The first call should successfully set the property.
+				// setPropertyImpl(...) will also be called.
+				fakeProxy.failToSetProperty = false;
 				assertTrue(proxy.setProperty(property, value));
-				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
+				assertTrue(fakeProxy.setPropertyImplCalled.getAndSet(false));
+				assertEquals(value, fakeProxy.getPropertyValue(property));
+
 				// The second call should return false, because the property was
 				// already set.
 				assertFalse(proxy.setProperty(property, value));
@@ -694,13 +712,17 @@ public class AbstractParaViewProxyTester {
 		final Map<String, String> newProperties = new HashMap<String, String>();
 		final Map<String, String> newPropertiesCopy;
 
+		// Open the proxy. We don't care about its return value, it just must be
+		// opened before it finds properties for the file.
+		proxy.open(connection);
+
 		// Add 3 properties where 2 of them are new values and one is old.
-		if ("djibouti".equals(fakeProxy.currentProperties.get("africa"))) {
+		if ("djibouti".equals(fakeProxy.getPropertyValue("africa"))) {
 			newProperties.put("africa", "abuja");
 		} else {
 			newProperties.put("africa", "djibouti");
 		}
-		if ("tokyo".equals(fakeProxy.currentProperties.get("asia"))) {
+		if ("tokyo".equals(fakeProxy.getPropertyValue("asia"))) {
 			newProperties.put("asia", "beijing");
 		} else {
 			newProperties.put("asia", "tokyo");
@@ -807,24 +829,6 @@ public class AbstractParaViewProxyTester {
 	private class FakeParaViewProxy extends AbstractParaViewProxy {
 
 		/**
-		 * The current category for the feature, or {@code null} if one is not
-		 * set. This will be changed only if the {@link AbstractParaViewProxy}
-		 * successfully changes the category/feature.
-		 */
-		public String currentCategory = null;
-		/**
-		 * The current feature, or {@code null} if one is not set. This will be
-		 * changed only if the {@link AbstractParaViewProxy} successfully
-		 * changes the category/feature.
-		 */
-		public String currentFeature = null;
-		/**
-		 * The current properties set for the proxy. This will be changed only
-		 * if {@link AbstractParaViewProxy} successfully updates a property.
-		 */
-		public final Map<String, String> currentProperties;
-
-		/**
 		 * A map of supported categories and features for the fake proxy. This
 		 * should be set at construction time.
 		 */
@@ -852,6 +856,18 @@ public class AbstractParaViewProxyTester {
 		 * was called.
 		 */
 		public final AtomicBoolean setFeatureImplCalled = new AtomicBoolean();
+		/**
+		 * Whether or not {@link #setPropertyImpl(VtkWebClient, String, String)}
+		 * was called.
+		 */
+		public final AtomicBoolean setPropertyImplCalled = new AtomicBoolean();
+
+		/**
+		 * If true, then {@link #setPropertyImpl(VtkWebClient, String, String)}
+		 * will "fail" and return false, otherwise it will "succeed" and return
+		 * true.
+		 */
+		public boolean failToSetProperty = false;
 
 		/**
 		 * The default constructor. Used to access the parent class' hidden
@@ -867,23 +883,6 @@ public class AbstractParaViewProxyTester {
 
 			features = new HashMap<String, String[]>();
 			properties = new HashMap<String, String[]>();
-
-			currentProperties = new HashMap<String, String>();
-		}
-
-		/**
-		 * Sets the current category and feature if the
-		 * {@link AbstractParaViewProxy} implementation returns true.
-		 */
-		@Override
-		public boolean setFeature(String category, String feature)
-				throws NullPointerException, IllegalArgumentException {
-			boolean changed = super.setFeature(category, feature);
-			if (changed) {
-				this.currentCategory = category;
-				this.currentFeature = feature;
-			}
-			return changed;
 		}
 
 		/**
@@ -905,6 +904,30 @@ public class AbstractParaViewProxyTester {
 		 */
 		public int getRepresentationId() {
 			return super.getRepresentationId();
+		}
+
+		/**
+		 * Exposes the parent class' operation.
+		 */
+		@Override
+		public String getCategory() {
+			return super.getCategory();
+		}
+
+		/**
+		 * Exposes the parent class' operation.
+		 */
+		@Override
+		public String getFeature() {
+			return super.getFeature();
+		}
+
+		/**
+		 * Exposes the parent class' operation.
+		 */
+		@Override
+		public String getPropertyValue(String property) {
+			return super.getPropertyValue(property);
 		}
 
 		/**
@@ -943,6 +966,17 @@ public class AbstractParaViewProxyTester {
 				String feature) {
 			setFeatureImplCalled.set(true);
 			return super.setFeatureImpl(client, category, feature);
+		}
+
+		/**
+		 * Sets {@link #setPropertyImplCalled} to true. Returns true if
+		 * {@link #failToSetProperty} is false, false otherwise.
+		 */
+		@Override
+		protected boolean setPropertyImpl(VtkWebClient client, String property,
+				String value) {
+			setPropertyImplCalled.set(true);
+			return !failToSetProperty;
 		}
 	}
 }

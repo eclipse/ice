@@ -268,6 +268,12 @@ public class AbstractParaViewProxyFactoryTester {
 						VtkWebClient client) {
 					return new HashMap<String, String[]>();
 				}
+
+				@Override
+				protected boolean setPropertyImpl(VtkWebClient client,
+						String property, String value) {
+					return false;
+				}
 			};
 			createdProxy.set(proxy);
 			return proxy;

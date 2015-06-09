@@ -404,8 +404,41 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	@Override
 	public boolean setProperty(String property, String value)
 			throws NullPointerException, IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return false;
+		// Check for null arguments.
+		if (property == null || value == null) {
+			throw new NullPointerException("ParaViewProxy error: "
+					+ "Null properties and values are not supported.");
+		}
+
+		boolean changed = false;
+
+		// Only proceed if the property's value changed.
+		if (!value.equals(currentProperties.get(property))) {
+			// Get the set of allowed values for the property.
+			Set<String> valueSet = propertyMap.get(property);
+			if (valueSet != null) {
+				// Make sure the value is valid for the property before
+				// attempting to update the client.
+				if (valueSet.contains(value)) {
+					// Only attempt to update the feature and category if the
+					// client is connected and can be successfully updated.
+					if (connection.getState() == ConnectionState.Connected
+							&& setPropertyImpl(connection.getConnection(),
+									property, value)) {
+						currentProperties.put(property, value);
+						changed = true;
+					}
+				} else {
+					throw new IllegalArgumentException("ParaViewProxy error: "
+							+ "Invalid property value \"" + value + "\".");
+				}
+			} else {
+				throw new IllegalArgumentException("ParaViewProxy error: "
+						+ "Invalid property \"" + property + "\".");
+			}
+		}
+
+		return changed;
 	}
 
 	/*
@@ -414,8 +447,42 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	@Override
 	public int setProperties(Map<String, String> properties)
 			throws NullPointerException, IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return 0;
+		// Check for null arguments.
+		if (properties == null) {
+			throw new NullPointerException("ParaViewProxy error: "
+					+ "Cannot get new property values from a null map.");
+		}
+
+		// Check the input for invalid properties and values.
+		Set<Entry<String, String>> entrySet = properties.entrySet();
+		for (Entry<String, String> entry : entrySet) {
+			String property = entry.getKey();
+			String value = entry.getValue();
+			// Check for null properties/values.
+			if (property == null || value == null) {
+				throw new NullPointerException("ParaViewProxy error: "
+						+ "Null properties and values are not supported.");
+			}
+			// Check for invalid properties/values.
+			Set<String> valueSet = propertyMap.get(property);
+			if (valueSet == null) {
+				throw new IllegalArgumentException("ParaViewProxy error: "
+						+ "Invalid property \"" + property + "\".");
+			} else if (!valueSet.contains(value)) {
+				throw new IllegalArgumentException("ParaViewProxy error: "
+						+ "Invalid property value \"" + value + "\".");
+			}
+		}
+
+		// If all properties and values are valid, try setting them all.
+		// Increment the count each time a property is changed.
+		int count = 0;
+		for (Entry<String, String> entry : entrySet) {
+			if (setProperty(entry.getKey(), entry.getValue())) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	/**
@@ -551,11 +618,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 *            The new value for the property.
 	 * @return True if the new property value could be set, false otherwise.
 	 */
-	protected boolean setPropertyImpl(VtkWebClient client, String property,
-			String value) {
-		// TODO Make abstract.
-		return false;
-	}
+	protected abstract boolean setPropertyImpl(VtkWebClient client,
+			String property, String value);
 
 	/**
 	 * Notifies the ParaView client that the view should be refreshed.
@@ -564,4 +628,34 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		// TODO Either implement this or make it abstract.
 	}
 
+	/**
+	 * Gets the selected category for the feature rendered by ParaView.
+	 * 
+	 * @return The currently selected category.
+	 */
+	protected String getCategory() {
+		return category;
+	}
+
+	/**
+	 * Gets the selected feature rendered by ParaView.
+	 * 
+	 * @return The currently selected feature.
+	 */
+	protected String getFeature() {
+		return feature;
+	}
+
+	/**
+	 * Gets the selected value for the property.
+	 * 
+	 * @param property
+	 *            The property whose value will be returned.
+	 * @return The current value for the property, or {@code null} if the
+	 *         property is not set or if the property is {@code null} or
+	 *         invalid.
+	 */
+	protected String getPropertyValue(String property) {
+		return currentProperties.get(property);
+	}
 }
