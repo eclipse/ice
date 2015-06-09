@@ -13,6 +13,7 @@
 package org.eclipse.ice.viz.service.paraview.proxy;
 
 import java.net.URI;
+import java.util.Set;
 
 /**
  * Implementations of this interface provide a registry that maps supported
@@ -68,4 +69,16 @@ public interface IParaViewProxyFactoryRegistry {
 	 *         {@code null} if a factory could not be created for the file.
 	 */
 	IParaViewProxyFactory getProxyFactory(URI uri);
+
+	/**
+	 * Gets the set of supported extensions for all registered proxy factories.
+	 * Note that duplicate extensions are not to be listed. The extensions
+	 * should not include the leading period.
+	 * 
+	 * @return The set of supported extensions for all proxy factories. This
+	 *         should never be {@code null}, and should not change throughout
+	 *         the registry's lifecycle, as factories will be registered via
+	 *         OSGi.
+	 */
+	Set<String> getExtensions();
 }

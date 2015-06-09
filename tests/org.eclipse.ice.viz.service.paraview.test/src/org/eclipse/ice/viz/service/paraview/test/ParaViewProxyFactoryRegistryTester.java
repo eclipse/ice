@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -21,6 +23,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
@@ -273,6 +276,54 @@ public class ParaViewProxyFactoryRegistryTester {
 		// for the extension "e" should return null.
 		registry.unregisterProxyFactory(fakeExodusProxyFactory2);
 		assertNull(registry.getProxyFactory(createTestURI("e")));
+
+		return;
+	}
+
+	/**
+	 * Checks that all extensions for all registered factories can be queried
+	 * from the registry.
+	 */
+	@Test
+	public void checkExtensions() {
+
+		// Create another fake Exodus proxy factory that registers only for the
+		// "e" extension.
+		final IParaViewProxyFactory fakeExodusProxyFactory2 = new FakeProxyFactory() {
+			@Override
+			public Set<String> getExtensions() {
+				Set<String> extensions = super.getExtensions();
+				extensions.add("e");
+				return extensions;
+			}
+		};
+
+		// Register the proxy factories.
+		registry.registerProxyFactory(fakeExodusProxyFactory);
+		registry.registerProxyFactory(fakeSiloProxyFactory);
+		registry.registerProxyFactory(fakeExodusProxyFactory2);
+
+		// The set of returned extensions should contain all Exodus and Silo
+		// extensions, regardless of the existence of shared extensions.
+		Set<String> expectedExtensions = new TreeSet<String>();
+		for (String extension : fakeExodusProxyFactory.getExtensions()) {
+			expectedExtensions.add(extension);
+		}
+		for (String extension : fakeSiloProxyFactory.getExtensions()) {
+			expectedExtensions.add(extension);
+		}
+
+		// The returned set should be ordered (usually via a TreeSet).
+		Set<String> supportedExtensions = registry.getExtensions();
+		assertEquals(expectedExtensions, supportedExtensions);
+
+		// The returned set should be a new, equivalent set each time.
+		assertNotSame(supportedExtensions, registry.getExtensions());
+		assertEquals(supportedExtensions, registry.getExtensions());
+
+		// Modifying the returned set should make no difference.
+		registry.getExtensions().clear();
+		assertEquals(expectedExtensions, registry.getExtensions());
 
 		return;
 	}

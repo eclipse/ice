@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This class provides the standard implementation of the
@@ -166,4 +168,11 @@ public class ParaViewProxyFactoryRegistry implements
 		return factory;
 	}
 
+	/*
+	 * Implements a method from IParaViewProxyFactoryRegistry.
+	 */
+	@Override
+	public Set<String> getExtensions() {
+		return new TreeSet<String>(factoryMap.keySet());
+	}
 }
