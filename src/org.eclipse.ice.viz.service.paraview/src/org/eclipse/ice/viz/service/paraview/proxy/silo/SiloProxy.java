@@ -51,4 +51,14 @@ public class SiloProxy extends AbstractParaViewProxy {
 		// TODO
 		return propertyMap;
 	}
+
+	/*
+	 * Overrides a method from AbstractParaViewProxy.
+	 */
+	@Override
+	protected boolean setPropertyImpl(VtkWebClient client, String property,
+			String value) {
+		// TODO
+		return false;
+	}
 }

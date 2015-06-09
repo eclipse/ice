@@ -12,11 +12,49 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.test;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 /**
  * 
  * @author Jordan Deyton
  *
  */
+@Ignore
 public class ExodusProxyTester {
 
+	// TODO Figure out how to implement these tests using an actual ParaView web
+	// client.
+
+	/**
+	 * Checks that the features can in fact be loaded from an Exodus file.
+	 */
+	@Test
+	public void checkFindFeatures() {
+
+	}
+
+	/**
+	 * Checks that the properties can in fact be loaded from an Exodus file.
+	 */
+	@Test
+	public void checkFindProperties() {
+
+	}
+
+	/**
+	 * Checks that the feature can be set for an Exodus file.
+	 */
+	@Test
+	public void checkSetFeatureImpl() {
+
+	}
+
+	/**
+	 * Checks that the properties can be set for an Exodus file.
+	 */
+	@Test
+	public void checkSetPropertyImpl() {
+
+	}
 }

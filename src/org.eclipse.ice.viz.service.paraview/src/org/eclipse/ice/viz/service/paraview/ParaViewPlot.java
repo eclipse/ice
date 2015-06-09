@@ -15,18 +15,15 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 import org.eclipse.swt.widgets.Composite;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.kitware.vtk.web.VtkWebClient;
 
 /**
@@ -45,11 +42,19 @@ import com.kitware.vtk.web.VtkWebClient;
 public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 
 	/**
-	 * The ID of a view that was created in order to read the file contents.
+	 * A reference to the viz service conveniently cast to its actual type.
 	 */
-	private int viewId = -1;
-	private int fileId = -1;
-	private int repId = -1;
+	private final ParaViewVizService vizService;
+
+	/**
+	 * The proxy associated with the current URI. It handles messages concerning
+	 * the file going to and from the remote ParaView server.
+	 * <p>
+	 * This should be re-created whenever the data source URI is set. If it
+	 * cannot be created, then the URI cannot be rendered via ParaView.
+	 * </p>
+	 */
+	private IParaViewProxy proxy;
 
 	/**
 	 * The default constructor.
@@ -59,6 +64,34 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	 */
 	public ParaViewPlot(ParaViewVizService vizService) {
 		super(vizService);
+
+		this.vizService = vizService;
+	}
+
+	/*
+	 * Overrides a method from ConnectionPlot.
+	 */
+	@Override
+	public void setDataSource(URI uri) throws NullPointerException,
+			IOException, IllegalArgumentException, Exception {
+
+		// Get an IParaViewProxy for the file. Throw an exception if a factory
+		// could not be found.
+		IParaViewProxyFactory factory;
+		factory = vizService.getProxyFactoryRegistry().getProxyFactory(uri);
+		if (factory == null) {
+			throw new IllegalStateException("ParaViewPlot error: "
+					+ "Could not find a proxy factory for the file \""
+					+ uri.getPath() + "\".");
+		}
+
+		// Attempt to create the IParaViewProxy. This will throw an exception if
+		// the URI is null or its extension is invalid.
+		proxy = factory.createProxy(uri);
+		// Attempt to open the file.
+		proxy.open(getParaViewConnectionAdapter());
+
+		super.setDataSource(uri);
 	}
 
 	/*
@@ -71,13 +104,8 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	@Override
 	protected PlotRender createPlotRender(Composite parent) {
 		// Reset the view IDs so that the same view is not used twice.
-		int viewId = this.viewId;
-		int fileId = this.fileId;
-		int repId = this.repId;
-		this.viewId = -1;
-		this.fileId = -1;
-		this.repId = -1;
-		return new ParaViewPlotRender(parent, this, viewId, fileId, repId);
+		// FIXME This method will need to be updated.
+		return new ParaViewPlotRender(parent, this, -1, -1, -1);
 	}
 
 	/*
@@ -86,89 +114,89 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	 * @see org.eclipse.ice.viz.service.MultiPlot#getPlotTypes(java.net.URI)
 	 */
 	@Override
-	protected Map<String, String[]> findPlotTypes(URI file) throws IOException,
+	protected Map<String, String[]> findPlotTypes(URI uri) throws IOException,
 			Exception {
+		// Throw an exception in case the proxy was not created.
+		if (proxy == null) {
+			throw new IllegalStateException("ParaViewPlot error: "
+					+ "A proxy was not created before finding the plot types.");
+		}
 
 		// Set up the default return value.
 		Map<String, String[]> plotTypes = new HashMap<String, String[]>();
 
-		ParaViewConnectionAdapter adapter = getParaViewConnectionAdapter();
-		VtkWebClient client = adapter.getConnection();
-
-		JsonArray args;
-		JsonObject object;
-
-		// Open the file. We *have* to create a new view to open the file. Use
-		// the custom server method, as the default ParaViewWeb method uses the
-		// currently active view.
-		args = new JsonArray();
-		args.add(new JsonPrimitive(adapter.findRelativePath(file.getPath())));
-		object = client.call("createView", args).get();
-		viewId = object.get("viewId").getAsInt();
-		fileId = object.get("proxyId").getAsInt();
-		repId = object.get("repId").getAsInt();
-
-		// Read the contents of the file to populate the map of plot types.
-		args = new JsonArray();
-		args.add(new JsonPrimitive(fileId));
-		object = client.call("pv.proxy.manager.get", args).get();
-		// Get the "ui" JSON array from the proxy's properties. This contains
-		// the names of all data sets that can be displayed in the plot.
-		JsonArray array = object.get("ui").getAsJsonArray();
-
-		System.out.println("=============================");
-		System.out.println("View ID: " + viewId);
-		object = getProxyObject(viewId);
-		printProxyObject(object);
-		System.out.println("=============================");
-
-		System.out.println("=============================");
-		System.out.println("File ID: " + fileId);
-		object = getProxyObject(fileId);
-		printProxyObject(object);
-		System.out.println("=============================");
-
-		System.out.println("=============================");
-		System.out.println("Representation ID: " + repId);
-		object = getProxyObject(repId);
-		printProxyObject(object);
-		System.out.println("=============================");
-
-		// Determine all plot categories and their types.
-		for (int i = 0; i < array.size(); i++) {
-			object = array.get(i).getAsJsonObject();
-
-			// Determine the plot category and its allowed types.
-			String name = object.get("name").getAsString();
-			// TODO Figure out how we should handle the meshes in the file.
-			// We do not want to set the mesh yet.
-			if (!"Mesh".equals(name)) {
-				JsonArray valueArray = object.get("values").getAsJsonArray();
-				String[] values = new String[valueArray.size()];
-				for (int j = 0; j < values.length; j++) {
-					values[j] = valueArray.get(j).getAsString();
-				}
-				// Store the plot category and types in the map.
-				plotTypes.put(name, values);
-			}
+		// Add all categories and features to the map.
+		for (String category : proxy.getFeatureCategories()) {
+			Set<String> features = proxy.getFeatures(category);
+			String[] types = new String[features.size()];
+			plotTypes.put(category, features.toArray(types));
 		}
 
+		// ParaViewConnectionAdapter adapter = getParaViewConnectionAdapter();
+		// VtkWebClient client = adapter.getConnection();
+		//
+		// JsonArray args;
+		// JsonObject object;
+		//
+		// // Open the file. We *have* to create a new view to open the file.
+		// Use
+		// // the custom server method, as the default ParaViewWeb method uses
+		// the
+		// // currently active view.
+		// args = new JsonArray();
+		// args.add(new
+		// JsonPrimitive(adapter.findRelativePath(file.getPath())));
+		// object = client.call("createView", args).get();
+		// viewId = object.get("viewId").getAsInt();
+		// fileId = object.get("proxyId").getAsInt();
+		// repId = object.get("repId").getAsInt();
+		//
+		// // Read the contents of the file to populate the map of plot types.
+		// args = new JsonArray();
+		// args.add(new JsonPrimitive(fileId));
+		// object = client.call("pv.proxy.manager.get", args).get();
+		// // Get the "ui" JSON array from the proxy's properties. This contains
+		// // the names of all data sets that can be displayed in the plot.
+		// JsonArray array = object.get("ui").getAsJsonArray();
+		//
+		// System.out.println("=============================");
+		// System.out.println("View ID: " + viewId);
+		// object = getProxyObject(viewId);
+		// printProxyObject(object);
+		// System.out.println("=============================");
+		//
+		// System.out.println("=============================");
+		// System.out.println("File ID: " + fileId);
+		// object = getProxyObject(fileId);
+		// printProxyObject(object);
+		// System.out.println("=============================");
+		//
+		// System.out.println("=============================");
+		// System.out.println("Representation ID: " + repId);
+		// object = getProxyObject(repId);
+		// printProxyObject(object);
+		// System.out.println("=============================");
+		//
+		// // Determine all plot categories and their types.
+		// for (int i = 0; i < array.size(); i++) {
+		// object = array.get(i).getAsJsonObject();
+		//
+		// // Determine the plot category and its allowed types.
+		// String name = object.get("name").getAsString();
+		// // TODO Figure out how we should handle the meshes in the file.
+		// // We do not want to set the mesh yet.
+		// if (!"Mesh".equals(name)) {
+		// JsonArray valueArray = object.get("values").getAsJsonArray();
+		// String[] values = new String[valueArray.size()];
+		// for (int j = 0; j < values.length; j++) {
+		// values[j] = valueArray.get(j).getAsString();
+		// }
+		// // Store the plot category and types in the map.
+		// plotTypes.put(name, values);
+		// }
+		// }
+
 		return plotTypes;
-	}
-
-	private JsonObject getProxyObject(int id) throws InterruptedException,
-			ExecutionException {
-		JsonArray args = new JsonArray();
-		args.add(new JsonPrimitive(id));
-		return getParaViewConnectionAdapter().getConnection()
-				.call("pv.proxy.manager.get", args).get();
-	}
-
-	private void printProxyObject(JsonObject object) {
-		Gson gs = new GsonBuilder().setPrettyPrinting().create();
-		// Gson gs = new
-		// GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-		System.out.println(gs.toJson(object));
 	}
 
 	/**
