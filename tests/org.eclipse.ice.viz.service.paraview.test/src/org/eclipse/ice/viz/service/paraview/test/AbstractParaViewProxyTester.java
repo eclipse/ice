@@ -14,6 +14,7 @@ package org.eclipse.ice.viz.service.paraview.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +31,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -385,6 +385,17 @@ public class AbstractParaViewProxyTester {
 	@Test
 	public void checkSetFeature() {
 
+		// If set to true, then the render request will "fail" by returning
+		// null. Otherwise, it will return an empty JsonObject.
+		final AtomicBoolean fail = new AtomicBoolean();
+		fakeClient.responseMap.put("pv.color.manager.color.by",
+				new Callable<JsonObject>() {
+					@Override
+					public JsonObject call() throws Exception {
+						return fail.get() ? null : new JsonObject();
+					}
+				});
+
 		final String nullString = null;
 		String validCategory;
 		String validFeature;
@@ -392,20 +403,40 @@ public class AbstractParaViewProxyTester {
 		Set<String> categorySet;
 		Set<String> featureSet;
 
+		// Open the proxy. We don't care about its return value, it just must be
+		// opened before it finds features for the file.
+		proxy.open(connection);
+
 		// Check that all valid categories/features can be set.
 		categorySet = proxy.getFeatureCategories();
 		for (String category : categorySet) {
 			featureSet = proxy.getFeatures(category);
 			for (String feature : featureSet) {
-				// The first call should successfully set the feature.
-				assertTrue(proxy.setFeature(category, feature));
-				// The second call should return false, because the feature was
-				// already set.
-				assertFalse(proxy.setFeature(category, feature));
+				// Unset the fake proxy's references to the current category and
+				// feature.
+				fakeProxy.currentCategory = null;
+				fakeProxy.currentFeature = null;
 
-				// The fake proxy's category and feature should have been set.
+				// If the client fails to render, then the category and feature
+				// will not be set, although setFeatureImpl(...) will be called.
+				fail.set(true);
+				assertFalse(proxy.setFeature(category, feature));
+				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
+				assertNotEquals(category, fakeProxy.currentCategory);
+				assertNotEquals(feature, fakeProxy.currentFeature);
+
+				// The first call should successfully set the feature.
+				// setFeatureImpl(...) will also be called.
+				fail.set(false);
+				assertTrue(proxy.setFeature(category, feature));
+				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
 				assertEquals(category, fakeProxy.currentCategory);
 				assertEquals(feature, fakeProxy.currentFeature);
+
+				// The second call should return false, because the feature was
+				// already set. setFeatureImpl(...) should not be called.
+				assertFalse(proxy.setFeature(category, feature));
+				assertFalse(fakeProxy.setFeatureImplCalled.get());
 			}
 		}
 
@@ -584,9 +615,11 @@ public class AbstractParaViewProxyTester {
 			for (String value : valueSet) {
 				// The first call should successfully set the property.
 				assertTrue(proxy.setProperty(property, value));
+				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
 				// The second call should return false, because the property was
 				// already set.
 				assertFalse(proxy.setProperty(property, value));
+				assertFalse(fakeProxy.setFeatureImplCalled.get());
 			}
 		}
 
@@ -814,6 +847,11 @@ public class AbstractParaViewProxyTester {
 		 * Whether or not {@link #findProperties(VtkWebClient)} was called.
 		 */
 		public final AtomicBoolean findPropertiesCalled = new AtomicBoolean();
+		/**
+		 * Whether or not {@link #setFeatureImpl(VtkWebClient, String, String)}
+		 * was called.
+		 */
+		public final AtomicBoolean setFeatureImplCalled = new AtomicBoolean();
 
 		/**
 		 * The default constructor. Used to access the parent class' hidden
@@ -894,6 +932,17 @@ public class AbstractParaViewProxyTester {
 		protected Map<String, String[]> findProperties(VtkWebClient client) {
 			findPropertiesCalled.set(true);
 			return properties;
+		}
+
+		/**
+		 * Overrides the default behavior to additionally set
+		 * {@link #setFeatureImplCalled} to true.
+		 */
+		@Override
+		protected boolean setFeatureImpl(VtkWebClient client, String category,
+				String feature) {
+			setFeatureImplCalled.set(true);
+			return super.setFeatureImpl(client, category, feature);
 		}
 	}
 }

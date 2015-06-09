@@ -164,6 +164,9 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		// If the connection was opened, re-build the maps of features and
 		// properties.
 		if (opened) {
+			// Update the reference to the current connection.
+			this.connection = connection;
+
 			Map<String, String[]> map;
 
 			// Re-build the map of features.
@@ -324,8 +327,42 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	@Override
 	public boolean setFeature(String category, String feature)
 			throws NullPointerException, IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return false;
+		// Check for null arguments.
+		if (category == null || feature == null) {
+			throw new NullPointerException("ParaViewProxy error: "
+					+ "Null categories and features are not supported.");
+		}
+
+		boolean changed = false;
+
+		// Only proceed if the feature and/or category changed.
+		if (!category.equals(this.category) || !feature.equals(this.feature)) {
+			// Get the set of features for the category.
+			Set<String> featureSet = featureMap.get(category);
+			if (featureSet != null) {
+				// Make sure the feature is valid for the category before
+				// updating the client.
+				if (featureSet.contains(feature)) {
+					// Only attempt to update the feature and category if the
+					// client is connected and can be successfully updated.
+					if (connection.getState() == ConnectionState.Connected
+							&& setFeatureImpl(connection.getConnection(),
+									category, feature)) {
+						this.category = category;
+						this.feature = feature;
+						changed = true;
+					}
+				} else {
+					throw new IllegalArgumentException("ParaViewProxy error: "
+							+ "Invalid feature \"" + feature + "\".");
+				}
+			} else {
+				throw new IllegalArgumentException("ParaViewProxy error: "
+						+ "Invalid category \"" + category + "\".");
+			}
+		}
+
+		return changed;
 	}
 
 	/*
@@ -467,8 +504,33 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 */
 	protected boolean setFeatureImpl(VtkWebClient client, String category,
 			String feature) {
-		// TODO Make abstract.
-		return false;
+		boolean updated = false;
+
+		// Set the "color by" to color based on the feature name.
+		JsonArray args = new JsonArray();
+
+		// Add the requisite arguments to the argument array.
+		args.add(new JsonPrimitive(Integer.toString(repId)));
+		args.add(new JsonPrimitive("ARRAY"));
+		args.add(new JsonPrimitive("POINTS"));
+		args.add(new JsonPrimitive(feature));
+		args.add(new JsonPrimitive("Magnitude"));
+		args.add(new JsonPrimitive(0));
+		args.add(new JsonPrimitive(true));
+
+		// Call the client.
+		try {
+			// The only way to tell if the client even received the message is
+			// if we get back an empty JsonObject. If null, then there was an
+			// error.
+			if (client.call("pv.color.manager.color.by", args).get() != null) {
+				updated = true;
+			}
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+
+		return updated;
 	}
 
 	/**
