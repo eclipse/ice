@@ -211,17 +211,10 @@ public class ParaViewVizService extends AbstractVizService {
 	 */
 	@Override
 	public IPlot createPlot(URI uri) throws Exception {
-		// Check the extension.
+		// Check the URI. It should be non-null and have a valid extension.
 		super.createPlot(uri);
 
 		ParaViewPlot plot = null;
-
-		// If the proxy factory registry is not set, throw an exception.
-		if (proxyFactoryRegistry == null) {
-			throw new Exception("ParaViewVizService error: "
-					+ "Cannot render files, as no ICE plugins provide "
-					+ " file type support for ParaView.");
-		}
 
 		// Create the plot.
 		plot = new ParaViewPlot(this);

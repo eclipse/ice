@@ -113,10 +113,39 @@ public class ParaViewVizServiceTester {
 	 * 
 	 * @see ParaViewVizService#createPlot(java.net.URI)
 	 */
-	@Ignore
 	@Test
 	public void checkPlot() {
-		fail("Not implemented.");
+
+		final URI nullURI = null;
+
+		// Passing in a null URI should throw an IllegalArgumentException.
+		try {
+			vizService.createPlot(nullURI);
+			fail("ParaViewVizServiceTester error: "
+					+ "No exception thrown for null URI.");
+		} catch (NullPointerException e) {
+			// Exception thrown as expected.
+		} catch (Exception e) {
+			fail("ParaViewVizServiceTester error: "
+					+ "Wrong exception type thrown for null URI.");
+		}
+
+		// Passing in an unsupported URI should throw an
+		// IllegalArgumentException.
+		try {
+			vizService.createPlot(createTestURI("this-is-a-bad-extension"));
+			fail("ParaViewVizServiceTester error: "
+					+ "No exception thrown for unsupported extension.");
+		} catch (IllegalArgumentException e) {
+			// Exception thrown as expected.
+		} catch (Exception e) {
+			fail("ParaViewVizServiceTester error: "
+					+ "Wrong exception type thrown for unsupported extension.");
+		}
+
+		// TODO Test successful plot creation.
+
+		return;
 	}
 
 	/**
