@@ -84,7 +84,7 @@ public class AbstractVizServiceTester {
 				service.createPlot(uri);
 				fail("AbstractVizService error: "
 						+ "No exception was thrown for invalid URI.");
-			} catch (IllegalArgumentException e) {
+			} catch (NullPointerException e) {
 				// An exception should be thrown for an invalid URI.
 			}
 

@@ -79,9 +79,14 @@ public abstract class AbstractVizService implements IVizService {
 	 * </p>
 	 */
 	@Override
-	public IPlot createPlot(URI file) throws Exception {
+	public IPlot createPlot(URI uri) throws Exception {
+		// Throw a NullPointerException if the file's URI is null.
+		if (uri == null) {
+			throw new NullPointerException("IPlot error: "
+					+ "Null URI is not allowed.");
+		}
 		// Throw an IllegalArgumentException if the file's URI is invalid.
-		if (!extensionSupported(file)) {
+		else if (!extensionSupported(uri)) {
 			throw new IllegalArgumentException("IPlot error: "
 					+ "Invalid URI or URI not specified.");
 		}
