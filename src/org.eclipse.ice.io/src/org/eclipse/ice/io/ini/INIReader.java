@@ -160,6 +160,7 @@ public class INIReader implements ITemplatedReader {
 					if (sectionComp.retrieveAllEntries().size() > 0) {
 						iniForm.addComponent(sectionComp);
 					}
+					reader.close();
 				} catch (CoreException e) {
 					e.printStackTrace();
 					return null;
@@ -249,6 +250,7 @@ public class INIReader implements ITemplatedReader {
 				if (sectionComp.retrieveAllEntries().size() > 0) {
 					templateForm.addComponent(sectionComp);
 				}
+				reader.close();
 			} catch (CoreException e) {
 				e.printStackTrace();
 				return null;
@@ -338,6 +340,7 @@ public class INIReader implements ITemplatedReader {
 						}
 					}
 				}
+				reader.close();
 			} catch (CoreException e) {
 				e.printStackTrace();
 				return null;

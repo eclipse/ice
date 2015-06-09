@@ -102,11 +102,6 @@ public class INIWriterTester {
 
 		// Set up where to look
 		IProject project = projectSpace;
-		String separator = System.getProperty("file.separator");
-		String filePath = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "ioTesterWorkspace" + separator
-				+ "example_out.ini";
-		IPath fileIPath = new Path(filePath);
 		IFile inputFile = project.getFile("example.ini");
 		IFile outputFile = project.getFile("example_out.ini");
 
