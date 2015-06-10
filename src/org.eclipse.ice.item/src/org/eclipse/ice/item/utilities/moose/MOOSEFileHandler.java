@@ -41,6 +41,8 @@ import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -838,16 +840,17 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		// Local declarations
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
+		System.out.println("READING: " + file.getName());
 		Form form = read(file);
 
-		TreeComposite tree = (TreeComposite) form
-				.getComponent(MOOSEModel.mooseTreeCompositeId);
+		
+		TreeComposite tree = (TreeComposite) form.getComponent(MOOSEModel.mooseTreeCompositeId);
 
 		// Make sure the tree is valid
 		if (tree == null || tree.getNumberOfChildren() < 1) {
 			return retEntries;
 		}
-
+		 
 		// Walk the tree and get all Entries that may represent a file
 		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
 				tree);
@@ -855,7 +858,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			TreeComposite child = iter.next();
 
 			// Make sure we have a valid DataComponent
-			if (child.getActiveDataNode() != null) {
+			if (child.getActiveDataNode() != null && child.isActive()) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
 				for (Entry e : data.retrieveAllEntries()) {
 
@@ -863,9 +866,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// parameter.
 					if (!"false".equals(e.getTag()) && e.getValue() != null
 							&& !e.getValue().isEmpty()
-							&& e.getName().toLowerCase().contains(regex)
-							&& !e.getName().toLowerCase().contains("profile")
-							&& !e.getName().toLowerCase().contains("file_base")) {
+							&& (e.getName() + " = " + e.getValue()).matches(regex)) {
 
 						// If this Entry does not have a very descriptive name
 						// we should reset its name to the block it belongs to

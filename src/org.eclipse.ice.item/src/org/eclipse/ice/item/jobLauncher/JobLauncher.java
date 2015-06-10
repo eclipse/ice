@@ -575,6 +575,7 @@ public class JobLauncher extends Item {
 			// Make sure if there are any additional input files, that they are
 			// all valid too
 			for (Entry entry : fileData.retrieveAllEntries()) {
+				System.out.println("Entry: " + entry.getName() + ", " + entry.getValue());
 				if (entry.getValue() == null || entry.getValue().isEmpty()) {
 					System.out.println("JobLauncher Error: All input file "
 							+ "entries must be set!");
@@ -1724,6 +1725,7 @@ public class JobLauncher extends Item {
 			if (entry.getName().equals("Input File") 
 					&& !entry.getValue().isEmpty()) {
 
+				
 				// Get the regex from the subclass
 				String regex = getFileDependenciesSearchString();
 				IFile file = project.getFile(entry.getValue());

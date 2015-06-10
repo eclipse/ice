@@ -270,16 +270,12 @@ public class MOOSEModel extends Item {
 				+ "to this MOOSE Model.");
 		form.addComponent(resourceComponent);
 
-		/**********************************************/
-
-		// FIXME GET MOOSE APPS FROM HISTORY...
-
 		// Add the default dummy text to the list of available apps
 		mooseApps = new ArrayList<String>();
 
+		// Get the Application preferences
 		IEclipsePreferences prefs = InstanceScope.INSTANCE
 				.getNode("org.eclipse.ice.item.moose");
-
 		try {
 			for (String key : prefs.keys()) {
 				String app = prefs.get(key, "");
@@ -291,27 +287,9 @@ public class MOOSEModel extends Item {
 			e1.printStackTrace();
 		}
 
-		// Get the list of MOOSE configuration files available to ICE, if
-		// possible, before creating the app Entry.
-		/*
-		 * if (project != null && project.isAccessible()) { // Get the MOOSE
-		 * folder IFolder mooseFolder = project.getFolder("MOOSE"); // Get the
-		 * files from it if it exists if (mooseFolder.exists()) { try {
-		 * IResource[] resources = mooseFolder.members(); // Check the resources
-		 * and retrieve the .yaml files for (IResource resource : resources) {
-		 * if (resource.getType() == IResource.FILE &&
-		 * resource.getProjectRelativePath() .lastSegment().contains(".yaml")) {
-		 * String[] splitName = resource.getName() .split("\\."); // Only add
-		 * the app name, not the file extension. // Use upper case for
-		 * consistency with the MOOSE // Launcher, also since the app names are
-		 * acronyms. mooseApps.add(splitName[0].toUpperCase()); } } } catch
-		 * (CoreException e) { // Complain e.printStackTrace(); } } }
-		 */
-
-		/**********************************************/
-
 		// Only load up the Entry if some MOOSE apps were discovered.
 		if (!mooseApps.isEmpty()) {
+			mooseApps.add(0, "Select Application");
 			// Set the default to "none", forcing the user to make a selection.
 			loadedApp = mooseApps.get(0);
 			// Create the MOOSE application Entry. Add all of the files if any
@@ -324,9 +302,11 @@ public class MOOSEModel extends Item {
 				}
 			};
 		} else {
+			mooseApps.add("Import Application");
+			loadedApp = mooseApps.get(0);
 			mooseAppEntry = new Entry() {
 				protected void setup() {
-					defaultValue = "No MOOSE apps were found.";
+					defaultValue = loadedApp;
 					allowedValues = mooseApps;
 					allowedValueType = AllowedValueType.File;
 				}
@@ -360,20 +340,20 @@ public class MOOSEModel extends Item {
 		mooseDataTree.setName("Input Data");
 		form.addComponent(mooseDataTree);
 
-		if (project != null) {
-			Thread thread = new Thread(new Runnable() {
-				public void run() {
-					if (!mooseApps.isEmpty()) {
-						try {
-							loadTreeContents(loadedApp);
-						} catch (IOException | CoreException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			});
-			thread.start();
-		}
+//		if (project != null) {
+//			Thread thread = new Thread(new Runnable() {
+//				public void run() {
+//					if (!mooseApps.isEmpty()) {
+//						try {
+//							loadTreeContents(loadedApp);
+//						} catch (IOException | CoreException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				}
+//			});
+//			thread.start();
+//		}
 		return;
 	}
 
@@ -472,16 +452,6 @@ public class MOOSEModel extends Item {
 				e1.printStackTrace();
 			}
 
-			// Wait til the process is done, it shouldnt take too long for these
-			// // things
-			// while (p1.isAlive() && p2.isAlive()) {
-			// try {
-			// Thread.sleep(100);
-			// } catch (InterruptedException e) {
-			// e.printStackTrace();
-			// }
-			// }
-
 			// Clean up the comments in the files
 			createCleanMOOSEFile(yamlFile.getLocation().toOSString());
 			createCleanMOOSEFile(syntaxFile.getLocation().toOSString());
@@ -548,6 +518,7 @@ public class MOOSEModel extends Item {
 			// Load the MOOSE-based application if it is different than the one
 			// currently loaded.
 			if (mooseSpecFileEntry != null) {
+				System.out.println("LOADED APP: " + loadedApp + " " + mooseSpecFileEntry.getValue());
 
 				// Get the current value of the MOOSE app Entry and determine
 				String mooseSpecValue = mooseSpecFileEntry.getValue();
@@ -574,6 +545,10 @@ public class MOOSEModel extends Item {
 							.getComponent(mooseTreeCompositeId);
 
 					// Merge the input tree into the YAML spec
+					
+					// FIXME POSSIBLE PROBLEM IN MERGING INPUT TREE INTO YAML TREE
+					// WHEN 
+					
 					mergeTrees(inputTree, yamlTree);
 
 					// Save this App as a Preference
@@ -586,7 +561,7 @@ public class MOOSEModel extends Item {
 					} catch (BackingStoreException | URISyntaxException e1) {
 						e1.printStackTrace();
 					}
-
+					
 				}
 
 				// Try to find a mesh file and append it as an ICEResource
@@ -600,11 +575,13 @@ public class MOOSEModel extends Item {
 				// Update the status
 				retStatus = FormStatus.ReadyToProcess;
 			}
-		}
+		} 
 
 		return retStatus;
 	}
 
+	private HashMap<String, TreeComposite> previousAppTrees;
+	
 	/**
 	 * This operation is responsible for loading a MOOSE input file into the
 	 * Form's TreeComposite (id=2). It expects the input to be in the MOOSE's
@@ -662,7 +639,7 @@ public class MOOSEModel extends Item {
 	 * @param yamlTree
 	 *            The TreeComposite loaded from the MOOSE YAML spec.
 	 */
-	private void mergeTrees(TreeComposite inputTree, TreeComposite yamlTree) {
+	protected void mergeTrees(TreeComposite inputTree, TreeComposite yamlTree) {
 
 		// Local declarations
 		TreeComposite child = null;
@@ -1363,7 +1340,7 @@ public class MOOSEModel extends Item {
 
 					// Convert the Entry to a "File" type Entry
 					if (meshEntry != null) {
-						convertMeshEntry(meshEntry);
+						convertToFileEntry(meshEntry);
 					}
 				}
 			}
@@ -1485,7 +1462,7 @@ public class MOOSEModel extends Item {
 			if (meshEntry != null) {
 
 				// Convert the Mesh entry to a File Entry
-				convertMeshEntry(meshEntry);
+				convertToFileEntry(meshEntry);
 
 				// Create an ICEResource from the entry
 				if (!meshEntry.getValue().isEmpty()) {
@@ -1504,7 +1481,7 @@ public class MOOSEModel extends Item {
 	 * @param meshEntry
 	 *            The "file" Entry on the Mesh TreeComposite
 	 */
-	private void convertMeshEntry(Entry meshEntry) {
+	protected void convertToFileEntry(Entry meshEntry) {
 
 		// If the "file" Entry isn't a File Entry, convert it, otherwise do
 		// nothing

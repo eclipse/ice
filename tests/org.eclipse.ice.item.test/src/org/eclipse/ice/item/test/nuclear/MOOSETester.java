@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -40,19 +41,21 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.item.nuclear.MOOSELauncher;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
+import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This class tests the MOOSEModel Item to make sure that it can correctly
- * create its Form and process a modified Form.
+ * This class tests the MooseItem to make sure that it can correctly create its
+ * Form and process a modified Form.
  * 
  * @author Jay Jay Billings
  */
-public class MOOSEModelTester {
+public class MOOSETester {
 
 	/**
 	 * The project space used to create the workspace for the tests.
@@ -75,15 +78,12 @@ public class MOOSEModelTester {
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
 		IProject project = null;
-		String projectName = "MOOSEModelTesterWorkspace";
+		String projectName = "MooseItemTesterWorkspace";
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
 				+ "ICETests" + separator + "itemData";
 		String yamlFile = userDir + separator + "bison.yaml";
 		String filePath = userDir + separator + "input_coarse10.i";
-
-		// Debug information
-		System.out.println("MOOSE Test Data File: " + filePath);
 
 		// Setup the project
 		try {
@@ -154,19 +154,19 @@ public class MOOSEModelTester {
 	}
 
 	/**
-	 * This operation checks the MOOSEModel and makes sure that it can properly
+	 * This operation checks the MooseItem and makes sure that it can properly
 	 * construct its Form.
 	 */
 	@Test
 	public void checkConstruction() {
 
 		// Create a MOOSEModel to test
-		MOOSEModel model = new MOOSEModel(projectSpace);
+		MOOSE model = new MOOSE(projectSpace);
 
 		// Check the form
 		Form form = model.getForm();
 		assertNotNull(form);
-		assertEquals(3, form.getComponents().size());
+		assertEquals(4, form.getComponents().size());
 
 		// Check the data component
 		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) instanceof DataComponent);
@@ -177,7 +177,8 @@ public class MOOSEModelTester {
 				.retrieveEntry("MOOSE-Based Application");
 		assertNotNull(mooseAppEntry);
 		assertEquals(1, mooseAppEntry.getId());
-		assertEquals("Import Application", mooseAppEntry.getDefaultValue());
+		assertEquals("Select Application",
+				mooseAppEntry.getDefaultValue());
 		assertEquals(mooseAppEntry.getDefaultValue(), mooseAppEntry.getValue());
 
 		// Check the output file Entry
@@ -198,6 +199,51 @@ public class MOOSEModelTester {
 	}
 
 	/**
+	 * 
+	 */
+	@Test
+	public void checkDynamicFileGeneration() {
+
+		// Create a MooseItem to test
+		MOOSE item = new MOOSE(projectSpace);
+		item.setIOService(service);
+
+		// FIXME REPLACE WITH PATH TO ICETESTS...
+		Entry appName = ((DataComponent) item.getForm().getComponent(1))
+				.retrieveEntry("MOOSE-Based Application");
+		appName.setValue("file:/Users/aqw/ICEFiles_prebuiltMoose/moose/test/moose_test-opt");
+
+		item.submitForm(item.getForm());
+
+		DataComponent filesComp = (DataComponent) item.getForm()
+				.getComponent(1);
+
+		TreeComposite tree = (TreeComposite) item.getForm().getComponent(2);
+		AdaptiveTreeComposite mesh = null;
+		for (int i = 0; i < tree.getNumberOfChildren(); i++) {
+			TreeComposite child = tree.getChildAtIndex(i);
+			// System.out.println("Child: " + child.getName());
+			if ("Mesh".equals(child.getName())) {
+				mesh = (AdaptiveTreeComposite) child;
+			}
+		}
+		mesh.setType("FileMesh");
+		mesh.setActive(true);
+		((DataComponent) mesh.getActiveDataNode()).retrieveEntry("file")
+				.setValue("mesh.e");
+
+		item.submitForm(item.getForm());
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		assertEquals(3, filesComp.retrieveAllEntries().size());
+
+	}
+
+	/**
 	 * This operation checks the MOOSEModel to make sure that it can correctly
 	 * process its Form and generate a MOOSE input file.
 	 */
@@ -205,16 +251,16 @@ public class MOOSEModelTester {
 	public void checkProcessing() {
 
 		// Local Declarations
-		String testFilename = "bison_test_file.inp";
+		String testFilename = "input_coarse10.i";
 
-		// Create a MOOSEModel to test
-		MOOSEModel model = new MOOSEModel(projectSpace);
+		// // Create a MOOSEModel to test
+		MOOSE moose = new MOOSE(projectSpace);
 
 		// Set the IOService on the model so we can write out
-		model.setIOService(service);
+		moose.setIOService(service);
 
 		// Check the form
-		Form form = model.getForm();
+		Form form = moose.getForm();
 		assertNotNull(form);
 
 		// Check the action list
@@ -222,19 +268,20 @@ public class MOOSEModelTester {
 		assertTrue(form.getActionList().contains("Write MOOSE File"));
 
 		// FIXME REPLACE WITH PATH TO ICETESTS...
-		Entry appName = ((DataComponent) form.getComponent(1)).retrieveEntry("MOOSE-Based Application");
-		appName.setValue("file:/Users/aqw/ICEFiles_prebuiltMoose/moose/test/moose_test-opt");
-		
+		Entry appName = ((DataComponent) form.getComponent(1))
+				.retrieveEntry("MOOSE-Based Application");
+		appName.setValue("file:/Users/aqw/projects/bison/bison-opt");
+
 		// Change the output file name to make sure that it is possible
-		Entry outputFileEntry = ((DataComponent) form.getComponent(1))
-				.retrieveEntry("Output File Name");
-		outputFileEntry.setValue(testFilename);
+//		Entry outputFileEntry = ((DataComponent) form.getComponent(1))
+//				.retrieveEntry("Output File Name");
+//		outputFileEntry.setValue(testFilename);
 
 		// Resubmit the form
-		assertEquals(FormStatus.ReadyToProcess, model.submitForm(form));
+		assertEquals(FormStatus.ReadyToProcess, moose.submitForm(form));
 
 		// Direct the model to write the output file
-		assertEquals(FormStatus.Processed, model.process("Write MOOSE File"));
+		assertEquals(FormStatus.Processed, moose.process("Write MOOSE File"));
 
 		// Check that the file exists
 		assertTrue(projectSpace.getFile(testFilename).exists());
@@ -253,7 +300,7 @@ public class MOOSEModelTester {
 		int numMooseBlocks = 20;
 
 		// Create a MOOSE Item
-		MOOSEModel mooseItem = new MOOSEModel(projectSpace);
+		MOOSE mooseItem = new MOOSE(projectSpace);
 
 		// Set the IO service on the item so we can read/load data in
 		mooseItem.setIOService(service);
@@ -366,6 +413,14 @@ public class MOOSEModelTester {
 		param = parameters.get(3);
 		assertEquals("max_rows", param.getName());
 		assertEquals("25", param.getValue());
+
+		// FIXME REPLACE WITH PATH TO ICETESTS...
+		Entry appName = ((DataComponent) mooseItem.getForm().getComponent(1))
+				.retrieveEntry("MOOSE-Based Application");
+		appName.setValue("file:/Users/aqw/ICEFiles_prebuiltMoose/moose/test/moose_test-opt");
+
+		assertTrue(mooseItem.submitForm(mooseItem.getForm()).equals(
+				FormStatus.ReadyToProcess));
 
 		return;
 	}

@@ -543,6 +543,8 @@ public class JobLaunchAction extends Action implements Runnable {
 				}
 				// Update the fixed file name
 				fixedFileName = shortInputName;
+				
+				System.out.println("FILES: " + key + " " + shortInputName);
 				// Put the file name in the map
 				fileMap.put(shortInputName, execDictionary.get(key));
 				// }

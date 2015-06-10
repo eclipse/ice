@@ -13,10 +13,13 @@
 package org.eclipse.ice.client.widgets;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
@@ -438,34 +441,69 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				public void widgetSelected(SelectionEvent e) {
 					// Get the Client
 					IClient client = ClientHolder.getClient();
+					
 					// Open up a file browser
 					FileDialog fileDialog = new FileDialog(getShell());
 					fileDialog.setText("Select a file to import into ICE");
 					String filePath = fileDialog.open();
+					
+					// FOR REMOTE FILES...
+//					IRemoteServices services = RemoteServices.getRemoteServices("org.eclipse.remote.JSch");
+//					IRemoteUIServices uiServices = RemoteUIServices.getRemoteUIServices(services);
+//					IRemoteUIFileManager manager = uiServices.getUIFileManager();
+//					manager.showConnections(true);
+//					String file = manager.browseFile(shell, "Select the remote files you would like to view in VisIt", ".", SWT.MULTI);
+//					
 					if (filePath != null) {
 						// Import the files
 						File importedFile = new File(filePath);
+						String extension = FilenameUtils
+								.getExtension(importedFile.getAbsolutePath());
 
 						// Check if this file is an executable
 						// If not, import it
-						if (!importedFile.canExecute()) {
+						if (!extension.isEmpty() && !extension.equals("exe")) {
 							client.importFile(importedFile.toURI());
-							// Set the entry's value to the new file
-							setEntryValue(importedFile.getName());
-						} else {
-							System.out.println(importedFile.getAbsolutePath()
-									+ " can be executed.");
 
+							// Create a new content provider with the new file
+							// in the allowed values list
 							IEntryContentProvider prov = new BasicEntryContentProvider();
 							ArrayList<String> valueList = entry
 									.getAllowedValues();
-							valueList.add(importedFile.toURI().toString());
+							if (!valueList.contains(importedFile.getName())) {
+								valueList.add(importedFile.getName());
+							}
 							prov.setAllowedValueType(AllowedValueType.File);
 
 							// Finish setting the allowed values and default
 							// value
 							prov.setAllowedValues(valueList);
 
+							// Set the new provider
+							entry.setContentProvider(prov);
+
+							// Set the entry's value to the new file
+							setEntryValue(importedFile.getName());
+						} else {
+							System.out.println(importedFile.getAbsolutePath()
+									+ " can be executed.");
+
+							// Create a new content provider with the new file
+							// in the allowed values list
+							IEntryContentProvider prov = new BasicEntryContentProvider();
+							ArrayList<String> valueList = entry
+									.getAllowedValues();
+							if (!valueList.contains(importedFile.toURI()
+									.toString())) {
+								valueList.add(importedFile.toURI().toString());
+							}
+							prov.setAllowedValueType(AllowedValueType.File);
+
+							// Finish setting the allowed values and default
+							// value
+							prov.setAllowedValues(valueList);
+
+							// Set the new provider
 							entry.setContentProvider(prov);
 
 							// If it is executable just add its absolute path
@@ -550,9 +588,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 								// Set the entry's value to the new file
 								setEntryValue(file.getName());
 							}
-							
+
 							notifyListeners(SWT.Selection, new Event());
-						} 
+						}
 					}
 				}
 			});
