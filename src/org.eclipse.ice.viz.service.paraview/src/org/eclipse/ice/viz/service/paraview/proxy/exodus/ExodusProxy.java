@@ -13,11 +13,10 @@
 package org.eclipse.ice.viz.service.paraview.proxy.exodus;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
@@ -42,9 +41,16 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	/*
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy#findFeatures
+	 * (com.kitware.vtk.web.VtkWebClient)
+	 */
 	@Override
-	protected Map<String, String[]> findFeatures(VtkWebClient client) {
-		Map<String, List<String>> featureMap = new HashMap<String, List<String>>();
+	protected Map<String, Set<String>> findFeatures(VtkWebClient client) {
+		Map<String, Set<String>> featureMap = new HashMap<String, Set<String>>();
 
 		// The structure of Exodus files looks like so:
 
@@ -82,9 +88,9 @@ public class ExodusProxy extends AbstractParaViewProxy {
 				// Get the category and feature name.
 				String category = object.get("location").getAsString();
 				String name = object.get("name").getAsString();
-				List<String> features = featureMap.get(category);
+				Set<String> features = featureMap.get(category);
 				if (features == null) {
-					features = new ArrayList<String>();
+					features = new HashSet<String>();
 					featureMap.put(category, features);
 				}
 				features.add(name);
@@ -99,22 +105,15 @@ public class ExodusProxy extends AbstractParaViewProxy {
 					+ "Error while reading file proxy information.");
 		}
 
-		// Convert the lists to arrays.
-		Map<String, String[]> foundFeatures = new HashMap<String, String[]>();
-		for (Entry<String, List<String>> entry : featureMap.entrySet()) {
-			String[] features = new String[entry.getValue().size()];
-			entry.getValue().toArray(features);
-			foundFeatures.put(entry.getKey(), features);
-		}
-		return foundFeatures;
+		return featureMap;
 	}
 
 	/*
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected Map<String, String[]> findProperties(VtkWebClient client) {
-		Map<String, String[]> propertyMap = new HashMap<String, String[]>();
+	protected Map<String, Set<String>> findProperties(VtkWebClient client) {
+		Map<String, Set<String>> propertyMap = new HashMap<String, Set<String>>();
 		// TODO
 		return propertyMap;
 	}

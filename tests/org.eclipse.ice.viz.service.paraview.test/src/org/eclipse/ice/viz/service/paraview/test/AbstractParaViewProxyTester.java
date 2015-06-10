@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -82,23 +83,25 @@ public class AbstractParaViewProxyTester {
 	public void beforeEachTest() {
 
 		// Initialize the proxy with a test URI.
-		testURI = TestUtils.createTestURI("go-go-gadget-extension");
+		testURI = TestUtils.createURI("go-go-gadget-extension");
 		fakeProxy = new FakeParaViewProxy(testURI);
 		proxy = fakeProxy;
 
 		// Add some features.
-		fakeProxy.features.put("europe", new String[] { "berlin", "madrid",
-				"paris", "london", "zagreb" });
-		fakeProxy.features.put("north america", new String[] { "ottawa",
-				"mexico city", "havanna", "san salvador" });
+		fakeProxy.features.put("europe",
+				createSet("berlin", "madrid", "paris", "london", "zagreb"));
+		fakeProxy.features.put("north america",
+				createSet("ottawa", "mexico city", "havanna", "san salvador"));
 		// Add some properties.
-		fakeProxy.properties.put("south america", new String[] { "bogota",
-				"brasilia", "caracas", "buenos aires" });
-		fakeProxy.properties.put("africa", new String[] { "johannesburg",
-				"cairo", "abuja", "djibouti" });
-		fakeProxy.properties.put("asia", new String[] { "ulaanbaatar",
-				"beijing", "tokyo", "seoul", "new delhi" });
-		fakeProxy.properties.put("australia", new String[] { "canberra" });
+		fakeProxy.properties.put("south america",
+				createSet("bogota", "brasilia", "caracas", "buenos aires"));
+		fakeProxy.properties.put("africa",
+				createSet("johannesburg", "cairo", "abuja", "djibouti"));
+		fakeProxy.properties.put(
+				"asia",
+				createSet("ulaanbaatar", "beijing", "tokyo", "seoul",
+						"new delhi"));
+		fakeProxy.properties.put("australia", createSet("canberra"));
 
 		// Set up the fake client.
 		fakeClient = new FakeVtkWebClient();
@@ -177,15 +180,64 @@ public class AbstractParaViewProxyTester {
 	public void checkOpen() {
 
 		final ParaViewConnectionAdapter nullConnection = null;
+		// Create a remote URI and remote connection for testing.
+		final ParaViewConnectionAdapter remoteConnection = new ParaViewConnectionAdapter() {
+			@Override
+			protected VtkWebClient openConnection() {
+				// Point the connection to localhost.
+				setConnectionProperty("host", "remoteHost");
+				// Return the fake client.
+				fakeClient.connect("remoteHost");
+				return fakeClient;
+			}
+		};
+		URI remoteURI = TestUtils.createURI("someExtension", "remoteHost");
+		remoteConnection.connect(true);
+		FakeParaViewProxy fakeRemoteProxy;
+		AbstractParaViewProxy remoteProxy;
 
-		// Although the client returns nothing (and thus opening fails), the
-		// client and URI should pass initial checks, and the open
-		// implementation should be called.
+		// ---- Can't open remote file with localhost, and vice versa ---- //
+		// Test a local connection with a local file. The connection *can* be
+		// set.
 		assertTrue(proxy.open(connection));
 		assertTrue(fakeProxy.openImplCalled.getAndSet(false));
 		// The features and properties should have also been queried.
 		assertTrue(fakeProxy.findFeaturesCalled.getAndSet(false));
 		assertTrue(fakeProxy.findPropertiesCalled.getAndSet(false));
+
+		// Test a remote connection with a local file. The connection *cannot*
+		// be set.
+		assertFalse(proxy.open(remoteConnection));
+		assertFalse(fakeProxy.openImplCalled.get());
+		assertFalse(fakeProxy.findFeaturesCalled.get());
+		assertFalse(fakeProxy.findPropertiesCalled.get());
+
+		// Test a local connection with a remote file. The connection *cannot*
+		// be set.
+		fakeRemoteProxy = new FakeParaViewProxy(remoteURI);
+		remoteProxy = fakeRemoteProxy;
+		assertFalse(remoteProxy.open(connection));
+		assertFalse(fakeRemoteProxy.openImplCalled.get());
+		assertFalse(fakeRemoteProxy.findFeaturesCalled.get());
+		assertFalse(fakeRemoteProxy.findPropertiesCalled.get());
+
+		// Test a remote connection with a remote file (same host). The
+		// connection *can* be set.
+		assertTrue(remoteProxy.open(remoteConnection));
+		assertTrue(fakeRemoteProxy.openImplCalled.getAndSet(false));
+		assertTrue(fakeRemoteProxy.findFeaturesCalled.getAndSet(false));
+		assertTrue(fakeRemoteProxy.findPropertiesCalled.getAndSet(false));
+
+		// Rest a remote connection with a remote file (different host). The
+		// connection *cannot* be set.
+		remoteURI = TestUtils.createURI("fails", "diffRemoteHost");
+		fakeRemoteProxy = new FakeParaViewProxy(remoteURI);
+		remoteProxy = fakeRemoteProxy;
+		assertFalse(remoteProxy.open(connection));
+		assertFalse(fakeRemoteProxy.openImplCalled.get());
+		assertFalse(fakeRemoteProxy.findFeaturesCalled.get());
+		assertFalse(fakeRemoteProxy.findPropertiesCalled.get());
+		// --------------------------------------------------------------- //
 
 		// Set a valid connection that is not connected. An exception should not
 		// be thrown, but the return value should be false.
@@ -206,10 +258,6 @@ public class AbstractParaViewProxyTester {
 			// Exception thrown as expected.
 		}
 		assertFalse(fakeProxy.openImplCalled.get());
-
-		// TODO Add a test that checks a URI for a different host.
-		// TODO Add a test that checks a URI for the same host but specified
-		// differently (e.g. FQDN vs IP address).
 
 		return;
 	}
@@ -314,17 +362,17 @@ public class AbstractParaViewProxyTester {
 		assertNotNull(categorySet);
 		assertEquals(fakeProxy.features.size(), categorySet.size());
 		// Now check each category's features against the expected features.
-		for (Entry<String, String[]> entry : fakeProxy.features.entrySet()) {
+		for (Entry<String, Set<String>> entry : fakeProxy.features.entrySet()) {
 			// Get the expected category and features.
 			String category = entry.getKey();
-			String[] features = entry.getValue();
+			Set<String> features = entry.getValue();
 
 			// Get the set of features for the category, then check its size and
 			// content.
 			assertTrue(categorySet.contains(category));
 			featureSet = proxy.getFeatures(category);
 			assertNotNull(featureSet);
-			assertEquals(features.length, featureSet.size());
+			assertEquals(features.size(), featureSet.size());
 			for (String feature : features) {
 				assertTrue(featureSet.contains(feature));
 			}
@@ -344,10 +392,10 @@ public class AbstractParaViewProxyTester {
 		// does not affect the proxy's underlying categories or features.
 		proxy.getFeatureCategories().clear();
 		categorySet = proxy.getFeatureCategories();
-		for (Entry<String, String[]> entry : fakeProxy.features.entrySet()) {
+		for (Entry<String, Set<String>> entry : fakeProxy.features.entrySet()) {
 			// Get the expected category and features.
 			String category = entry.getKey();
-			String[] features = entry.getValue();
+			Set<String> features = entry.getValue();
 
 			assertTrue(categorySet.contains(category));
 			// Try clearing the category's features.
@@ -355,7 +403,7 @@ public class AbstractParaViewProxyTester {
 			// The feature set for the category should not have changed.
 			featureSet = proxy.getFeatures(category);
 			assertNotNull(featureSet);
-			assertEquals(features.length, featureSet.size());
+			assertEquals(features.size(), featureSet.size());
 			for (String feature : features) {
 				assertTrue(featureSet.contains(feature));
 			}
@@ -529,17 +577,17 @@ public class AbstractParaViewProxyTester {
 		assertNotNull(propertySet);
 		assertEquals(fakeProxy.properties.size(), propertySet.size());
 		// Now check each property's values against the expected values.
-		for (Entry<String, String[]> entry : fakeProxy.properties.entrySet()) {
+		for (Entry<String, Set<String>> entry : fakeProxy.properties.entrySet()) {
 			// Get the expected property and values.
 			String property = entry.getKey();
-			String[] values = entry.getValue();
+			Set<String> values = entry.getValue();
 
 			// Get the set of values for the property, then check its size and
 			// content.
 			assertTrue(propertySet.contains(property));
 			propertyValueSet = proxy.getPropertyValues(property);
 			assertNotNull(propertyValueSet);
-			assertEquals(values.length, propertyValueSet.size());
+			assertEquals(values.size(), propertyValueSet.size());
 			for (String value : values) {
 				assertTrue(propertyValueSet.contains(value));
 			}
@@ -559,10 +607,10 @@ public class AbstractParaViewProxyTester {
 		// does not affect the proxy's underlying properties or values.
 		proxy.getProperties().clear();
 		propertySet = proxy.getProperties();
-		for (Entry<String, String[]> entry : fakeProxy.properties.entrySet()) {
+		for (Entry<String, Set<String>> entry : fakeProxy.properties.entrySet()) {
 			// Get the expected property and values.
 			String property = entry.getKey();
-			String[] values = entry.getValue();
+			Set<String> values = entry.getValue();
 
 			assertTrue(propertySet.contains(property));
 			// Try clearing the property's values.
@@ -570,7 +618,7 @@ public class AbstractParaViewProxyTester {
 			// The value set for the property should not have changed.
 			propertyValueSet = proxy.getPropertyValues(property);
 			assertNotNull(propertyValueSet);
-			assertEquals(values.length, propertyValueSet.size());
+			assertEquals(values.size(), propertyValueSet.size());
 			for (String value : values) {
 				assertTrue(propertyValueSet.contains(value));
 			}
@@ -811,6 +859,21 @@ public class AbstractParaViewProxyTester {
 	}
 
 	/**
+	 * Creates a set of strings, including null values.
+	 * 
+	 * @param elements
+	 *            The elements to add to the set.
+	 * @return A new set containing the specified elements.
+	 */
+	private Set<String> createSet(String... elements) {
+		Set<String> set = new HashSet<String>();
+		for (String element : elements) {
+			set.add(element);
+		}
+		return set;
+	}
+
+	/**
 	 * A fake proxy that extends {@link AbstractParaViewProxy} and exposes
 	 * certiain methods to ensure the abstract class re-directs method calls
 	 * when appropriate to its sub-classes.
@@ -824,12 +887,12 @@ public class AbstractParaViewProxyTester {
 		 * A map of supported categories and features for the fake proxy. This
 		 * should be set at construction time.
 		 */
-		public final Map<String, String[]> features;
+		public final Map<String, Set<String>> features;
 		/**
 		 * A map of supported properties and their allowed values for the fake
 		 * proxy. This should be set at construction time.
 		 */
-		public final Map<String, String[]> properties;
+		public final Map<String, Set<String>> properties;
 
 		/**
 		 * Whether or not {@link #openImpl(VtkWebClient, String)} was called.
@@ -873,8 +936,8 @@ public class AbstractParaViewProxyTester {
 		public FakeParaViewProxy(URI uri) throws NullPointerException {
 			super(uri);
 
-			features = new HashMap<String, String[]>();
-			properties = new HashMap<String, String[]>();
+			features = new HashMap<String, Set<String>>();
+			properties = new HashMap<String, Set<String>>();
 		}
 
 		/**
@@ -935,7 +998,7 @@ public class AbstractParaViewProxyTester {
 		 * Overrides a method from AbstractParaViewProxy.
 		 */
 		@Override
-		protected Map<String, String[]> findFeatures(VtkWebClient client) {
+		protected Map<String, Set<String>> findFeatures(VtkWebClient client) {
 			findFeaturesCalled.set(true);
 			return features;
 		}
@@ -944,7 +1007,7 @@ public class AbstractParaViewProxyTester {
 		 * Overrides a method from AbstractParaViewProxy.
 		 */
 		@Override
-		protected Map<String, String[]> findProperties(VtkWebClient client) {
+		protected Map<String, Set<String>> findProperties(VtkWebClient client) {
 			findPropertiesCalled.set(true);
 			return properties;
 		}

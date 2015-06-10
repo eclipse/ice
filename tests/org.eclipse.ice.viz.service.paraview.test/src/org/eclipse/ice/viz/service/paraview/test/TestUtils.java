@@ -27,14 +27,8 @@ import java.net.URL;
 public class TestUtils {
 
 	/**
-	 * Used by {@link #createTestURI(String)} to vary between remote and local
-	 * URIs.
-	 */
-	private static int count = 0;
-
-	/**
-	 * Creates a simple URI for the provided extension. The generated URI may be
-	 * either local or remote.
+	 * Creates a simple URI for the provided extension. The generated URI will
+	 * be local.
 	 * 
 	 * @param extension
 	 *            The extension for the test URI file. This file probably will
@@ -42,8 +36,8 @@ public class TestUtils {
 	 *            no extension.
 	 * @return A correctly formed URI with the provided extension.
 	 */
-	protected static URI createTestURI(String extension) {
-		return createTestURI(extension, count++ % 2 == 1);
+	protected static URI createURI(String extension) {
+		return createURI(extension, null);
 	}
 
 	/**
@@ -53,28 +47,27 @@ public class TestUtils {
 	 *            The extension for the test URI file. This file probably will
 	 *            not actually exist. If {@code null}, then the file will have
 	 *            no extension.
-	 * @param remote
-	 *            If true, then the generated URI will point to a remote file.
-	 *            Otherwise, it will point to a local file.
+	 * @param host
+	 *            The host for the file. If null, a local file URI will be
+	 *            created, otherwise the host name will be used.
 	 * @return A correctly formed URI with the provided extension.
 	 */
-	protected static URI createTestURI(String extension, boolean remote) {
+	protected static URI createURI(String extension, String host) {
 		String filename = (extension != null ? "kung_fury." + extension
 				: "future_cop");
 
 		URI uri = null;
-		if (remote) {
+		if (host == null) {
+			uri = new File(filename).toURI();
+		} else {
 			try {
-				uri = new URL("file", "foo.bar.com", 10, "/" + filename
-						+ extension).toURI();
+				uri = new URL("file", host, 10, "/" + filename).toURI();
 			} catch (MalformedURLException e) {
 				// This will never happen, because "file" is a valid protocol.
 			} catch (URISyntaxException e) {
 				// This will never happen unless the URL implementation is
 				// changed for the worse.
 			}
-		} else {
-			uri = new File(filename).toURI();
 		}
 		return uri;
 	}

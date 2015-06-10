@@ -125,7 +125,7 @@ public class AbstractParaViewProxyFactoryTester {
 
 		// Passing in any URI should throw an exception because the extension is
 		// not supported.
-		uri = TestUtils.createTestURI("one");
+		uri = TestUtils.createURI("one");
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -155,7 +155,7 @@ public class AbstractParaViewProxyFactoryTester {
 
 		// Passing in an invalid URI should throw an exception because the
 		// extension is not supported.
-		uri = TestUtils.createTestURI("fail");
+		uri = TestUtils.createURI("fail");
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -170,16 +170,19 @@ public class AbstractParaViewProxyFactoryTester {
 		// Passing in a valid URI should call the implementation and should
 		// return the implementation's IParaViewProxy. The file's existence or
 		// validity is not checked.
-		proxy = proxyFactory.createProxy(TestUtils.createTestURI("one"));
+		uri = TestUtils.createURI("one");
+		proxy = proxyFactory.createProxy(uri);
 		assertSame(fakeProxyFactory.createdProxy.getAndSet(null), proxy);
-		proxy = proxyFactory.createProxy(TestUtils.createTestURI("two"));
+		uri = TestUtils.createURI("two", "localhost");
+		proxy = proxyFactory.createProxy(uri);
 		assertSame(fakeProxyFactory.createdProxy.getAndSet(null), proxy);
-		proxy = proxyFactory.createProxy(TestUtils.createTestURI("three"));
+		uri = TestUtils.createURI("three", "foo.bar.com");
+		proxy = proxyFactory.createProxy(uri);
 		assertSame(fakeProxyFactory.createdProxy.getAndSet(null), proxy);
 
 		// Files without extensions should not be supported, even though "null"
 		// is a "supported" extension.
-		uri = TestUtils.createTestURI(null);
+		uri = TestUtils.createURI(null);
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -243,14 +246,15 @@ public class AbstractParaViewProxyFactoryTester {
 			// Create a proxy. What's in it doesn't matter for these tests.
 			IParaViewProxy proxy = new AbstractParaViewProxy(uri) {
 				@Override
-				protected Map<String, String[]> findFeatures(VtkWebClient client) {
-					return new HashMap<String, String[]>();
+				protected Map<String, Set<String>> findFeatures(
+						VtkWebClient client) {
+					return new HashMap<String, Set<String>>();
 				}
 
 				@Override
-				protected Map<String, String[]> findProperties(
+				protected Map<String, Set<String>> findProperties(
 						VtkWebClient client) {
-					return new HashMap<String, String[]>();
+					return new HashMap<String, Set<String>>();
 				}
 
 				@Override

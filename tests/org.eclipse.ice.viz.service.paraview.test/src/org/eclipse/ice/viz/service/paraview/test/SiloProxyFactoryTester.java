@@ -142,7 +142,7 @@ public class SiloProxyFactoryTester {
 
 		// Passing in an invalid URI should throw an exception because the
 		// extension is not supported.
-		uri = TestUtils.createTestURI("fail");
+		uri = TestUtils.createURI("fail");
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -155,7 +155,7 @@ public class SiloProxyFactoryTester {
 		assertNull(createdProxy.get());
 
 		// Files without extensions should not be supported.
-		uri = TestUtils.createTestURI(null);
+		uri = TestUtils.createURI(null);
 		try {
 			proxyFactory.createProxy(uri);
 			fail("AbstractParaViewProxyFactoryTester failure: "
@@ -171,7 +171,7 @@ public class SiloProxyFactoryTester {
 		// return the implementation's IParaViewProxy. The file's existence or
 		// validity is not checked (currently).
 		for (String extension : proxyFactory.getExtensions()) {
-			uri = TestUtils.createTestURI(extension);
+			uri = TestUtils.createURI(extension);
 			proxy = proxyFactory.createProxy(uri);
 			assertSame(createdProxy.getAndSet(null), proxy);
 			// Check the type of the proxy.

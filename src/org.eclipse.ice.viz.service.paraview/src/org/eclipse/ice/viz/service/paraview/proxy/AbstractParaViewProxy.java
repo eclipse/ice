@@ -14,7 +14,6 @@ package org.eclipse.ice.viz.service.paraview.proxy;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -167,39 +166,13 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 			// Update the reference to the current connection.
 			this.connection = connection;
 
-			Map<String, String[]> map;
-
 			// Re-build the map of features.
 			featureMap.clear();
-			map = findFeatures(client);
-			for (Entry<String, String[]> entry : map.entrySet()) {
-				String category = entry.getKey();
-				String[] features = entry.getValue();
-
-				// Load the array of features into a set.
-				Set<String> featureSet = new HashSet<String>();
-				for (String feature : features) {
-					featureSet.add(feature);
-				}
-				// Add the category and its set to the map.
-				featureMap.put(category, featureSet);
-			}
+			featureMap.putAll(findFeatures(client));
 
 			// Re-build the map of properties.
 			propertyMap.clear();
-			map = findProperties(client);
-			for (Entry<String, String[]> entry : map.entrySet()) {
-				String property = entry.getKey();
-				String[] values = entry.getValue();
-
-				// Load the array of property values into a set.
-				Set<String> valueSet = new HashSet<String>();
-				for (String value : values) {
-					valueSet.add(value);
-				}
-				// Add the property and its set to the map.
-				propertyMap.put(property, valueSet);
-			}
+			propertyMap.putAll(findProperties(client));
 		}
 
 		return opened;
@@ -532,7 +505,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 *         categories. If none can be found, then the returned list should
 	 *         be empty and <i>not</i> {@code null}.
 	 */
-	protected abstract Map<String, String[]> findFeatures(VtkWebClient client);
+	protected abstract Map<String, Set<String>> findFeatures(VtkWebClient client);
 
 	/**
 	 * Finds the properties in the file by querying the associated ParaView
@@ -548,7 +521,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 *         If none can be found, then the returned list should be empty and
 	 *         <i>not</i> {@code null}.
 	 */
-	protected abstract Map<String, String[]> findProperties(VtkWebClient client);
+	protected abstract Map<String, Set<String>> findProperties(VtkWebClient client);
 
 	/**
 	 * Sends the appropriate requests to the client to change the currently

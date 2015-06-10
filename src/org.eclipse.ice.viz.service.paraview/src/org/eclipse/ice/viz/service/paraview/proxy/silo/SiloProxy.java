@@ -15,6 +15,7 @@ package org.eclipse.ice.viz.service.paraview.proxy.silo;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 
@@ -36,8 +37,8 @@ public class SiloProxy extends AbstractParaViewProxy {
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected Map<String, String[]> findFeatures(VtkWebClient client) {
-		Map<String, String[]> featureMap = new HashMap<String, String[]>();
+	protected Map<String, Set<String>> findFeatures(VtkWebClient client) {
+		Map<String, Set<String>> featureMap = new HashMap<String, Set<String>>();
 		// TODO
 		return featureMap;
 	}
@@ -46,8 +47,8 @@ public class SiloProxy extends AbstractParaViewProxy {
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected Map<String, String[]> findProperties(VtkWebClient client) {
-		Map<String, String[]> propertyMap = new HashMap<String, String[]>();
+	protected Map<String, Set<String>> findProperties(VtkWebClient client) {
+		Map<String, Set<String>> propertyMap = new HashMap<String, Set<String>>();
 		// TODO
 		return propertyMap;
 	}

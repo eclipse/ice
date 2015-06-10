@@ -133,7 +133,7 @@ public class ParaViewVizServiceTester {
 		// IllegalArgumentException.
 		try {
 			vizService.createPlot(TestUtils
-					.createTestURI("this-is-a-bad-extension"));
+					.createURI("this-is-a-bad-extension"));
 			fail("ParaViewVizServiceTester error: "
 					+ "No exception thrown for unsupported extension.");
 		} catch (IllegalArgumentException e) {
@@ -189,7 +189,7 @@ public class ParaViewVizServiceTester {
 		// registry has not been set.
 		for (String extension : supportedExtensions) {
 			try {
-				vizService.createPlot(TestUtils.createTestURI(extension));
+				vizService.createPlot(TestUtils.createURI(extension));
 				fail("ParaViewVizServiceTester error: "
 						+ "No exception thrown for unsupported extension.");
 			} catch (IllegalArgumentException e) {
@@ -207,7 +207,7 @@ public class ParaViewVizServiceTester {
 		// Test all (now supported) extensions.
 		for (String extension : supportedExtensions) {
 			try {
-				vizService.createPlot(TestUtils.createTestURI(extension));
+				vizService.createPlot(TestUtils.createURI(extension));
 			} catch (IllegalArgumentException e) {
 				fail("ParaViewVizServiceTester error: "
 						+ "Exception thrown for supported extension.");
@@ -225,7 +225,7 @@ public class ParaViewVizServiceTester {
 		// Test all extensions. Currently, none of them are supported.
 		for (String extension : supportedExtensions) {
 			try {
-				vizService.createPlot(TestUtils.createTestURI(extension));
+				vizService.createPlot(TestUtils.createURI(extension));
 				fail("ParaViewVizServiceTester error: "
 						+ "No exception thrown for unsupported extension.");
 			} catch (IllegalArgumentException e) {
