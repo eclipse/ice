@@ -41,7 +41,7 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 * @return True if the connection is established upon returning, false
 	 *         otherwise.
 	 */
-	boolean connect();
+	public boolean connect();
 
 	/**
 	 * Connects to the associated connection if not already connected or
@@ -54,7 +54,7 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 * @return True if the connection is established upon returning, false
 	 *         otherwise.
 	 */
-	boolean connect(boolean block);
+	public boolean connect(boolean block);
 
 	/**
 	 * Disconnects the associated connection if not already disconnected.
@@ -65,7 +65,7 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 * 
 	 * @return True if the connection is closed upon returning, false otherwise.
 	 */
-	boolean disconnect();
+	public boolean disconnect();
 
 	/**
 	 * Disconnects the associated connection if not already disconnected.
@@ -76,14 +76,14 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 *            disconnection process will not block the calling thread.
 	 * @return True if the connection is closed upon returning, false otherwise.
 	 */
-	boolean disconnect(boolean block);
+	public boolean disconnect(boolean block);
 
 	/**
 	 * Gets the connection managed by this adapter.
 	 * 
 	 * @return The associated connection.
 	 */
-	T getConnection();
+	public T getConnection();
 
 	/**
 	 * Gets the connection property corresponding to the specified key.
@@ -93,7 +93,7 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 * @return The value of the connection property, or {@code null} if the key
 	 *         did not exist.
 	 */
-	String getConnectionProperty(String key);
+	public String getConnectionProperty(String key);
 
 	/**
 	 * Gets the key currently associated with this connection. The value is
@@ -101,14 +101,14 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 * 
 	 * @return The connection key.
 	 */
-	String getKey();
+	public String getKey();
 
 	/**
 	 * Gets the current state of the associated connection.
 	 * 
 	 * @return The current state of the associated connection.
 	 */
-	ConnectionState getState();
+	public ConnectionState getState();
 
 	/**
 	 * Sets the connection's required properties based on the provided list of
@@ -123,7 +123,7 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 * @return True if the new connection properties were valid and a change
 	 *         occurred, false otherwise.
 	 */
-	boolean setConnectionProperties(List<Entry> properties);
+	public boolean setConnectionProperties(List<Entry> properties);
 
 	/**
 	 * A convenience method to get the host for the connection. This will be
@@ -131,7 +131,7 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 * 
 	 * @return The hostname.
 	 */
-	String getHost();
+	public String getHost();
 
 	/**
 	 * A convenience method to get the port for the connection. This should be a
@@ -139,7 +139,7 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 * 
 	 * @return The port for the connection, or -1 if the port is not required.
 	 */
-	int getPort();
+	public int getPort();
 
 	/**
 	 * A convenience method to determine whether the associated connection is to
@@ -148,5 +148,5 @@ public interface IConnectionAdapter<T> extends IUpdateable {
 	 * @return True if the connection is remote, false otherwise (regardless of
 	 *         connection state).
 	 */
-	boolean isRemote();
+	public boolean isRemote();
 }

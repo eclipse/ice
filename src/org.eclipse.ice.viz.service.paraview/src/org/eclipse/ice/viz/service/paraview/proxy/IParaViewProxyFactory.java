@@ -34,7 +34,7 @@ public interface IParaViewProxyFactory {
 	 * 
 	 * @return A name for the factory. Should not be {@code null}.
 	 */
-	String getName();
+	public String getName();
 
 	/**
 	 * Gets the set of supported extensions. Note that duplicate extensions are
@@ -44,7 +44,7 @@ public interface IParaViewProxyFactory {
 	 *         never be {@code null}, and should not change throughout the
 	 *         factory's lifecycle.
 	 */
-	Set<String> getExtensions();
+	public Set<String> getExtensions();
 
 	/**
 	 * Creates an {@link IParaViewProxy} for the specified file based on its
@@ -59,6 +59,6 @@ public interface IParaViewProxyFactory {
 	 * @throws IllegalArgumentException
 	 *             If the file's extension is not supported by this proxy.
 	 */
-	IParaViewProxy createProxy(URI uri) throws NullPointerException,
+	public IParaViewProxy createProxy(URI uri) throws NullPointerException,
 			IllegalArgumentException;
 }

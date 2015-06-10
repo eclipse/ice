@@ -41,7 +41,7 @@ public interface IParaViewProxy {
 	 * @throws NullPointerException
 	 *             If the specified connection is {@code null}.
 	 */
-	boolean open(ParaViewConnectionAdapter connection)
+	public boolean open(ParaViewConnectionAdapter connection)
 			throws NullPointerException;
 
 	/**
@@ -49,7 +49,7 @@ public interface IParaViewProxy {
 	 * 
 	 * @return The URI pointing to the proxy's file.
 	 */
-	URI getURI();
+	public URI getURI();
 
 	/**
 	 * Gets the categories of "features" in the file that can be rendered. This
@@ -57,7 +57,7 @@ public interface IParaViewProxy {
 	 * 
 	 * @return A set of categories of "features" in the file.
 	 */
-	Set<String> getFeatureCategories();
+	public Set<String> getFeatureCategories();
 
 	/**
 	 * Gets the file's "features" that can be rendered for the specified
@@ -73,8 +73,8 @@ public interface IParaViewProxy {
 	 * @throws IllegalArgumentException
 	 *             If the specified category is an invalid category.
 	 */
-	Set<String> getFeatures(String category) throws NullPointerException,
-			IllegalArgumentException;
+	public Set<String> getFeatures(String category)
+			throws NullPointerException, IllegalArgumentException;
 
 	/**
 	 * Sets the current feature that is rendered via ParaView.
@@ -92,7 +92,7 @@ public interface IParaViewProxy {
 	 *             If either the category is invalid or the feature is not valid
 	 *             for the category.
 	 */
-	boolean setFeature(String category, String feature)
+	public boolean setFeature(String category, String feature)
 			throws NullPointerException, IllegalArgumentException;
 
 	/**
@@ -101,7 +101,7 @@ public interface IParaViewProxy {
 	 * @return A set of properties that can be updated and may or may not affect
 	 *         the rendered view.
 	 */
-	Set<String> getProperties();
+	public Set<String> getProperties();
 
 	/**
 	 * Gets the set of allowed values for the specified property.
@@ -114,8 +114,8 @@ public interface IParaViewProxy {
 	 * @throws IllegalArgumentException
 	 *             If the specified property is an invalid property.
 	 */
-	Set<String> getPropertyValues(String property) throws NullPointerException,
-			IllegalArgumentException;
+	public Set<String> getPropertyValues(String property)
+			throws NullPointerException, IllegalArgumentException;
 
 	/**
 	 * Sets the specified property to the new value.
@@ -133,7 +133,7 @@ public interface IParaViewProxy {
 	 *             If either the property name is invalid or the value is not
 	 *             valid for the property.
 	 */
-	boolean setProperty(String property, String value)
+	public boolean setProperty(String property, String value)
 			throws NullPointerException, IllegalArgumentException;
 
 	/**
@@ -150,8 +150,14 @@ public interface IParaViewProxy {
 	 * @throws IllegalArgumentException
 	 *             If the map contains invalid properties or values.
 	 */
-	int setProperties(Map<String, String> properties)
+	public int setProperties(Map<String, String> properties)
 			throws NullPointerException, IllegalArgumentException;
 
-	int getViewId();
+	/**
+	 * Gets the ID of the underlying view.
+	 * 
+	 * @return The ID of the underlying view, or {@code -1} if the proxy was not
+	 *         opened.
+	 */
+	public int getViewId();
 }

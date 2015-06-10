@@ -41,7 +41,7 @@ public interface IParaViewProxyFactoryRegistry {
 	 *         (including the case where the factory has no supported
 	 *         extensions).
 	 */
-	boolean registerProxyFactory(IParaViewProxyFactory factory);
+	public boolean registerProxyFactory(IParaViewProxyFactory factory);
 
 	/**
 	 * Unregisters the specified proxy factory. Its extensions should no longer
@@ -57,7 +57,7 @@ public interface IParaViewProxyFactoryRegistry {
 	 *         (including the case where the factory has no supported
 	 *         extensions).
 	 */
-	boolean unregisterProxyFactory(IParaViewProxyFactory factory);
+	public boolean unregisterProxyFactory(IParaViewProxyFactory factory);
 
 	/**
 	 * Gets a factory for the provided file based on its extension.
@@ -68,7 +68,7 @@ public interface IParaViewProxyFactoryRegistry {
 	 * @return A factory capable of creating a proxy for the file, or
 	 *         {@code null} if a factory could not be created for the file.
 	 */
-	IParaViewProxyFactory getProxyFactory(URI uri);
+	public IParaViewProxyFactory getProxyFactory(URI uri);
 
 	/**
 	 * Gets the set of supported extensions for all registered proxy factories.
@@ -80,5 +80,5 @@ public interface IParaViewProxyFactoryRegistry {
 	 *         the registry's lifecycle, as factories will be registered via
 	 *         OSGi.
 	 */
-	Set<String> getExtensions();
+	public Set<String> getExtensions();
 }
