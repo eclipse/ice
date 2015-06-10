@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactoryRegistry;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilderRegistry;
 
 import com.kitware.vtk.web.VtkWebClient;
 
@@ -29,7 +29,7 @@ import com.kitware.vtk.web.VtkWebClient;
  * <p>
  * <b>Note:</b> In practice, instances of this class should not be instantiated.
  * Rather, they should be obtained from the
- * {@link IParaViewProxyFactoryRegistry}.
+ * {@link IParaViewProxyBuilderRegistry}.
  * </p>
  * 
  * @author Jordan Deyton

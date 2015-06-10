@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * This provides a base class for implementing an {@link IParaViewProxyFactory}.
+ * This provides a base class for implementing an {@link IParaViewProxyBuilder}.
  * Sub-classes need only do the following:
  * <ol>
  * <li>In their constructor, add supported extensions to {@link #extensions}.</li>
@@ -28,11 +28,11 @@ import java.util.TreeSet;
  * @author Jordan Deyton
  *
  */
-public abstract class AbstractParaViewProxyFactory implements
-		IParaViewProxyFactory {
+public abstract class AbstractParaViewProxyBuilder implements
+		IParaViewProxyBuilder {
 
 	/**
-	 * The set of extensions supported by this proxy factory.
+	 * The set of extensions supported by this proxy builder.
 	 */
 	protected final Set<String> extensions;
 
@@ -40,13 +40,13 @@ public abstract class AbstractParaViewProxyFactory implements
 	 * The default constructor. Initializes an empty map of supported
 	 * {@link #extensions}.
 	 */
-	protected AbstractParaViewProxyFactory() {
+	protected AbstractParaViewProxyBuilder() {
 		// Create an populate the set of supported extensions.
 		extensions = new HashSet<String>();
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyFactory.
+	 * Implements a method from IParaViewProxyBuilder.
 	 */
 	@Override
 	public Set<String> getExtensions() {
@@ -55,14 +55,14 @@ public abstract class AbstractParaViewProxyFactory implements
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyFactory.
+	 * Implements a method from IParaViewProxyBuilder.
 	 */
 	@Override
 	public IParaViewProxy createProxy(URI uri) throws NullPointerException,
 			IllegalArgumentException {
 		// Throw an NPE for null URIs.
 		if (uri == null) {
-			throw new NullPointerException("ParaViewProxyFactory error: "
+			throw new NullPointerException("ParaViewProxyBuilder error: "
 					+ "The specified URI cannot be null.");
 		}
 
@@ -81,11 +81,11 @@ public abstract class AbstractParaViewProxyFactory implements
 		if (!extensions.contains(extension)) {
 			if (extension.isEmpty()) {
 				throw new IllegalArgumentException(
-						"ParaViewProxyFactory error: "
+						"ParaViewProxyBuilder error: "
 								+ "An extension for the specified URI could not be found.");
 			} else {
 				throw new IllegalArgumentException(
-						"ParaViewProxyFactory error: "
+						"ParaViewProxyBuilder error: "
 								+ "The specified extension \"" + extension
 								+ "\" is not supported.");
 			}

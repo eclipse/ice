@@ -4,5 +4,5 @@
    <service>
       <provide interface="org.eclipse.ice.viz.service.IVizService"/>
    </service>
-   <reference bind="setProxyFactoryRegistry" cardinality="1..1" interface="org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactoryRegistry" name="IParaViewProxyFactoryRegistry" policy="static"/>
+   <reference bind="setProxyBuilderRegistry" cardinality="1..1" interface="org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilderRegistry" name="IParaViewProxyBuilderRegistry" policy="static" unbind="unsetProxyBuilderRegistry"/>
 </scr:component>

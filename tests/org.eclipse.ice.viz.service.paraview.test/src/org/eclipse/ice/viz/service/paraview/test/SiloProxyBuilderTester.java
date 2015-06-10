@@ -24,63 +24,63 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.silo.SiloProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.silo.SiloProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.silo.SiloProxyBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This class tests the {@link SiloProxyFactory}'s implementation of
- * {@link IParaViewProxyFactory}.
+ * This class tests the {@link SiloProxyBuilder}'s implementation of
+ * {@link IParaViewProxyBuilder}.
  * 
  * @author Jordan Deyton
  *
  */
-public class SiloProxyFactoryTester {
+public class SiloProxyBuilderTester {
 
 	/**
-	 * The proxy factory that will be tested. This is re-initialized before each
+	 * The proxy builder that will be tested. This is re-initialized before each
 	 * test.
 	 */
-	private SiloProxyFactory proxyFactory;
+	private SiloProxyBuilder proxyBuilder;
 
 	/**
-	 * Sets up the {@link #proxyFactory} before each test.
+	 * Sets up the {@link #proxyBuilder} before each test.
 	 */
 	@Before
 	public void beforeEachTest() {
-		proxyFactory = new SiloProxyFactory();
+		proxyBuilder = new SiloProxyBuilder();
 	}
 
 	/**
-	 * Unsets the {@link #proxyFactory} after each test.
+	 * Unsets the {@link #proxyBuilder} after each test.
 	 */
 	@After
 	public void afterEachTest() {
-		proxyFactory = null;
+		proxyBuilder = null;
 	}
 
 	/**
-	 * Checks that the user/developer friendly name provided by the factory is
+	 * Checks that the user/developer friendly name provided by the builder is
 	 * correct.
 	 */
 	@Test
 	public void checkName() {
-		assertEquals("Default Silo Proxy Factory", proxyFactory.getName());
+		assertEquals("Default Silo Proxy Builder", proxyBuilder.getName());
 	}
 
 	/**
-	 * Checks that the proxy factory supports the correct Silo file extensions.
+	 * Checks that the proxy builder supports the correct Silo file extensions.
 	 */
 	@Test
 	public void checkExtensions() {
 		// Set up an array containing all supported extensions.
 		String[] extensions = new String[] { "silo" };
 
-		// Get the set of supported extensions from the proxy factory.
-		Set<String> supportedExtensions = proxyFactory.getExtensions();
+		// Get the set of supported extensions from the proxy builder.
+		Set<String> supportedExtensions = proxyBuilder.getExtensions();
 
 		// Check the contents of the set of supported extensions. It should
 		// match in size and have every value in the array.
@@ -90,12 +90,12 @@ public class SiloProxyFactoryTester {
 		}
 
 		// Check that a new, equivalent set is returned from each request.
-		assertNotSame(supportedExtensions, proxyFactory.getExtensions());
-		assertEquals(supportedExtensions, proxyFactory.getExtensions());
+		assertNotSame(supportedExtensions, proxyBuilder.getExtensions());
+		assertEquals(supportedExtensions, proxyBuilder.getExtensions());
 
 		// Check that modifying the returned set does not affect the extensions.
-		proxyFactory.getExtensions().clear();
-		supportedExtensions = proxyFactory.getExtensions();
+		proxyBuilder.getExtensions().clear();
+		supportedExtensions = proxyBuilder.getExtensions();
 		assertEquals(extensions.length, supportedExtensions.size());
 		for (String extension : extensions) {
 			assertTrue(supportedExtensions.contains(extension));
@@ -117,10 +117,10 @@ public class SiloProxyFactoryTester {
 		final URI nullURI = null;
 		final AtomicReference<IParaViewProxy> createdProxy = new AtomicReference<IParaViewProxy>();
 
-		// Re-create the proxy factory to set the reference to the created proxy
+		// Re-create the proxy builder to set the reference to the created proxy
 		// based on the createProxyImpl(URI) method inherited from
-		// AbstractParaViewProxyFactory.
-		proxyFactory = new SiloProxyFactory() {
+		// AbstractParaViewProxyBuilder.
+		proxyBuilder = new SiloProxyBuilder() {
 			@Override
 			protected IParaViewProxy createConcreteProxy(URI uri) {
 				IParaViewProxy proxy = super.createConcreteProxy(uri);
@@ -131,8 +131,8 @@ public class SiloProxyFactoryTester {
 
 		// Passing a null URI should throw an exception.
 		try {
-			proxyFactory.createProxy(nullURI);
-			fail("AbstractParaViewProxyFactoryTester failure: "
+			proxyBuilder.createProxy(nullURI);
+			fail("SiloProxyBuilder failure: "
 					+ "NullPointerException not thrown when URI is null.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
@@ -144,8 +144,8 @@ public class SiloProxyFactoryTester {
 		// extension is not supported.
 		uri = TestUtils.createURI("fail");
 		try {
-			proxyFactory.createProxy(uri);
-			fail("AbstractParaViewProxyFactoryTester failure: "
+			proxyBuilder.createProxy(uri);
+			fail("SiloProxyBuilder failure: "
 					+ "IllegalArgumentException not thrown when URI extension "
 					+ "is not supported.");
 		} catch (IllegalArgumentException e) {
@@ -157,8 +157,8 @@ public class SiloProxyFactoryTester {
 		// Files without extensions should not be supported.
 		uri = TestUtils.createURI(null);
 		try {
-			proxyFactory.createProxy(uri);
-			fail("AbstractParaViewProxyFactoryTester failure: "
+			proxyBuilder.createProxy(uri);
+			fail("SiloProxyBuilder failure: "
 					+ "IllegalArgumentException not thrown when URI has no "
 					+ "extension.");
 		} catch (IllegalArgumentException e) {
@@ -170,9 +170,9 @@ public class SiloProxyFactoryTester {
 		// Passing in a valid URI should call the implementation and should
 		// return the implementation's IParaViewProxy. The file's existence or
 		// validity is not checked (currently).
-		for (String extension : proxyFactory.getExtensions()) {
+		for (String extension : proxyBuilder.getExtensions()) {
 			uri = TestUtils.createURI(extension);
-			proxy = proxyFactory.createProxy(uri);
+			proxy = proxyBuilder.createProxy(uri);
 			assertSame(createdProxy.getAndSet(null), proxy);
 			// Check the type of the proxy.
 			assertTrue(proxy instanceof SiloProxy);

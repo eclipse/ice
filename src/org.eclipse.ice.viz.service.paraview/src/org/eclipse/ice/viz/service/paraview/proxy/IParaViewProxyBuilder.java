@@ -16,23 +16,23 @@ import java.net.URI;
 import java.util.Set;
 
 /**
- * This interface provides a factory from which {@link IParaViewProxy} instances
+ * This interface provides a builder from which {@link IParaViewProxy} instances
  * can be created for a set of supported extensions.
  * <p>
  * Instances of this class should register with the
- * {@link IParaViewProxyFactoryRegistry} via OSGi.
+ * {@link IParaViewProxyBuilderRegistry} via OSGi.
  * </p>
  * 
  * @author Jordan Deyton
  *
  */
-public interface IParaViewProxyFactory {
+public interface IParaViewProxyBuilder {
 
 	/**
-	 * Gets a nice name for the factory. This is primarily intended for use when
-	 * exposing the factory to the developer.
+	 * Gets a nice name for the builder. This is primarily intended for use when
+	 * exposing the builder to the developer.
 	 * 
-	 * @return A name for the factory. Should not be {@code null}.
+	 * @return A name for the builder. Should not be {@code null}.
 	 */
 	public String getName();
 
@@ -40,9 +40,9 @@ public interface IParaViewProxyFactory {
 	 * Gets the set of supported extensions. Note that duplicate extensions are
 	 * not to be listed. The extensions should not include the leading period.
 	 * 
-	 * @return The set of supported extensions for this factory. This should
+	 * @return The set of supported extensions for this builder. This should
 	 *         never be {@code null}, and should not change throughout the
-	 *         factory's lifecycle.
+	 *         builder's lifecycle.
 	 */
 	public Set<String> getExtensions();
 

@@ -17,8 +17,8 @@ import java.util.Set;
 
 /**
  * Implementations of this interface provide a registry that maps supported
- * extensions for files to {@link IParaViewProxyFactory} instances. Client code
- * can request a factory by calling {@link #getProxyFactory(URI)}.
+ * extensions for files to {@link IParaViewProxyBuilder} instances. Client code
+ * can request a builder by calling {@link #getProxyBuilder(URI)}.
  * <p>
  * This interface is designed to be provided and referenced via OSGi.
  * </p>
@@ -26,58 +26,58 @@ import java.util.Set;
  * @author Jordan Deyton
  *
  */
-public interface IParaViewProxyFactoryRegistry {
+public interface IParaViewProxyBuilderRegistry {
 
 	/**
-	 * Registers a new proxy factory using the factory's supported extensions.
+	 * Registers a new proxy builder using the builder's supported extensions.
 	 * <p>
 	 * This method will usually be called by OSGi.
 	 * </p>
 	 * 
-	 * @param factory
-	 *            The factory to register. If {@code null}, nothing is
+	 * @param builder
+	 *            The builder to register. If {@code null}, nothing is
 	 *            registered.
-	 * @return True if the provided factory was registered, false otherwise
-	 *         (including the case where the factory has no supported
+	 * @return True if the provided builder was registered, false otherwise
+	 *         (including the case where the builder has no supported
 	 *         extensions).
 	 */
-	public boolean registerProxyFactory(IParaViewProxyFactory factory);
+	public boolean registerProxyBuilder(IParaViewProxyBuilder builder);
 
 	/**
-	 * Unregisters the specified proxy factory. Its extensions should no longer
-	 * be supported if it is the only factory for said extensions.
+	 * Unregisters the specified proxy builder. Its extensions should no longer
+	 * be supported if it is the only builder for said extensions.
 	 * <p>
 	 * This method will usually be called by OSGi.
 	 * </p>
 	 * 
-	 * @param factory
-	 *            The factory to unregister. If {@code null}, nothing is
+	 * @param builder
+	 *            The builder to unregister. If {@code null}, nothing is
 	 *            unregistered.
-	 * @return True if the provided factory was unregistered, false otherwise
-	 *         (including the case where the factory has no supported
+	 * @return True if the provided builder was unregistered, false otherwise
+	 *         (including the case where the builder has no supported
 	 *         extensions).
 	 */
-	public boolean unregisterProxyFactory(IParaViewProxyFactory factory);
+	public boolean unregisterProxyBuilder(IParaViewProxyBuilder builder);
 
 	/**
-	 * Gets a factory for the provided file based on its extension.
+	 * Gets a builder for the provided file based on its extension.
 	 * 
 	 * @param uri
 	 *            The file for which a proxy will be created. If {@code null}, a
-	 *            factory will not be returned.
-	 * @return A factory capable of creating a proxy for the file, or
-	 *         {@code null} if a factory could not be created for the file.
+	 *            builder will not be returned.
+	 * @return A builder capable of creating a proxy for the file, or
+	 *         {@code null} if a builder could not be created for the file.
 	 */
-	public IParaViewProxyFactory getProxyFactory(URI uri);
+	public IParaViewProxyBuilder getProxyBuilder(URI uri);
 
 	/**
-	 * Gets the set of supported extensions for all registered proxy factories.
+	 * Gets the set of supported extensions for all registered proxy builders.
 	 * Note that duplicate extensions are not to be listed. The extensions
 	 * should not include the leading period.
 	 * 
-	 * @return The set of supported extensions for all proxy factories. This
+	 * @return The set of supported extensions for all proxy builders. This
 	 *         should never be {@code null}, and should not change throughout
-	 *         the registry's lifecycle, as factories will be registered via
+	 *         the registry's lifecycle, as builders will be registered via
 	 *         OSGi.
 	 */
 	public Set<String> getExtensions();

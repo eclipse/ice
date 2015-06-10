@@ -14,12 +14,12 @@ package org.eclipse.ice.viz.service.paraview.proxy.exodus;
 
 import java.net.URI;
 
-import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
 
 /**
- * This class provides an {@link IParaViewProxyFactory} for the Exodus format.
+ * This class provides an {@link IParaViewProxyBuilder} for the Exodus format.
  * As such, it is responsible for creating {@link IParaViewProxy} instances that
  * can support Exodus files. Support includes the file extensions:
  * <ul>
@@ -36,7 +36,7 @@ import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
  * @author Jordan Deyton
  *
  */
-public class ExodusProxyFactory extends AbstractParaViewProxyFactory {
+public class ExodusProxyBuilder extends AbstractParaViewProxyBuilder {
 
 	/**
 	 * The default constructor.
@@ -44,7 +44,7 @@ public class ExodusProxyFactory extends AbstractParaViewProxyFactory {
 	 * <b>Note:</b> This class should be instantiated by OSGi!
 	 * </p>
 	 */
-	public ExodusProxyFactory() {
+	public ExodusProxyBuilder() {
 		// Populate the set of supported extensions.
 		extensions.add("e");
 		extensions.add("ex");
@@ -59,15 +59,15 @@ public class ExodusProxyFactory extends AbstractParaViewProxyFactory {
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyFactory.
+	 * Implements a method from IParaViewProxyBuilder.
 	 */
 	@Override
 	public String getName() {
-		return "Default Exodus Proxy Factory";
+		return "Default Exodus Proxy Builder";
 	}
 
 	/*
-	 * Overrides a method from AbstractParaViewProxyFactory.
+	 * Overrides a method from AbstractParaViewProxyBuilder.
 	 */
 	@Override
 	protected IParaViewProxy createConcreteProxy(URI uri) {

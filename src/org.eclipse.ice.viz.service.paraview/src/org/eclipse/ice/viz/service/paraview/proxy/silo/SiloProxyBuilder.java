@@ -14,12 +14,12 @@ package org.eclipse.ice.viz.service.paraview.proxy.silo;
 
 import java.net.URI;
 
-import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
 
 /**
- * This class provides an {@link IParaViewProxyFactory} for the Exodus format.
+ * This class provides an {@link IParaViewProxyBuilder} for the Exodus format.
  * As such, it is responsible for creating {@link IParaViewProxy} instances that
  * can support Exodus files. Support includes the file extensions:
  * <ul>
@@ -29,7 +29,7 @@ import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
  * @author Jordan Deyton
  *
  */
-public class SiloProxyFactory extends AbstractParaViewProxyFactory {
+public class SiloProxyBuilder extends AbstractParaViewProxyBuilder {
 
 	/**
 	 * The default constructor.
@@ -37,7 +37,7 @@ public class SiloProxyFactory extends AbstractParaViewProxyFactory {
 	 * <b>Note:</b> This class should be instantiated by OSGi!
 	 * </p>
 	 */
-	public SiloProxyFactory() {
+	public SiloProxyBuilder() {
 		// Populate the set of supported extensions.
 		extensions.add("silo");
 
@@ -45,15 +45,15 @@ public class SiloProxyFactory extends AbstractParaViewProxyFactory {
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyFactory.
+	 * Implements a method from IParaViewProxyBuilder.
 	 */
 	@Override
 	public String getName() {
-		return "Default Silo Proxy Factory";
+		return "Default Silo Proxy Builder";
 	}
 
 	/*
-	 * Overrides a method from AbstractParaViewProxyFactory.
+	 * Overrides a method from AbstractParaViewProxyBuilder.
 	 */
 	@Override
 	protected IParaViewProxy createConcreteProxy(URI uri) {

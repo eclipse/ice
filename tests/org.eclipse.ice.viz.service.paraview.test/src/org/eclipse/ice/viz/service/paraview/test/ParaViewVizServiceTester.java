@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.paraview.ParaViewVizService;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactoryRegistry;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilderRegistry;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -149,11 +149,11 @@ public class ParaViewVizServiceTester {
 	}
 
 	/**
-	 * Checks that the {@link IParaViewProxyFactoryRegistry} can be set and
+	 * Checks that the {@link IParaViewProxyBuilderRegistry} can be set and
 	 * unset, and that the supported extensions are based on the set registry.
 	 */
 	@Test
-	public void checkProxyFactoryRegistry() {
+	public void checkProxyBuilderRegistry() {
 
 		// Create the set of supported extensions.
 		final Set<String> supportedExtensions = new HashSet<String>();
@@ -161,19 +161,19 @@ public class ParaViewVizServiceTester {
 		supportedExtensions.add("two");
 
 		// Create a fake registry that has a few supported extensions.
-		IParaViewProxyFactoryRegistry registry = new IParaViewProxyFactoryRegistry() {
+		IParaViewProxyBuilderRegistry registry = new IParaViewProxyBuilderRegistry() {
 			@Override
-			public boolean unregisterProxyFactory(IParaViewProxyFactory factory) {
+			public boolean unregisterProxyBuilder(IParaViewProxyBuilder builder) {
 				return false;
 			}
 
 			@Override
-			public boolean registerProxyFactory(IParaViewProxyFactory factory) {
+			public boolean registerProxyBuilder(IParaViewProxyBuilder builder) {
 				return false;
 			}
 
 			@Override
-			public IParaViewProxyFactory getProxyFactory(URI uri) {
+			public IParaViewProxyBuilder getProxyBuilder(URI uri) {
 				return null;
 			}
 
@@ -184,7 +184,7 @@ public class ParaViewVizServiceTester {
 		};
 
 		// Initially, the registry is null.
-		assertNull(fakeVizService.getProxyFactoryRegistry());
+		assertNull(fakeVizService.getProxyBuilderRegistry());
 		// Test all extensions. Currently, none of them are supported, as the
 		// registry has not been set.
 		for (String extension : supportedExtensions) {
@@ -200,10 +200,10 @@ public class ParaViewVizServiceTester {
 			}
 		}
 
-		// Set the proxy factory registry for the viz service.
-		fakeVizService.setProxyFactoryRegistry(registry);
+		// Set the proxy builder registry for the viz service.
+		fakeVizService.setProxyBuilderRegistry(registry);
 		// Now the registry should not be null.
-		assertSame(registry, fakeVizService.getProxyFactoryRegistry());
+		assertSame(registry, fakeVizService.getProxyBuilderRegistry());
 		// Test all (now supported) extensions.
 		for (String extension : supportedExtensions) {
 			try {
@@ -219,9 +219,9 @@ public class ParaViewVizServiceTester {
 		}
 
 		// Unset the registry from the viz service.
-		fakeVizService.unsetProxyFactoryRegistry(registry);
+		fakeVizService.unsetProxyBuilderRegistry(registry);
 		// Again, the registry is null.
-		assertNull(fakeVizService.getProxyFactoryRegistry());
+		assertNull(fakeVizService.getProxyBuilderRegistry());
 		// Test all extensions. Currently, none of them are supported.
 		for (String extension : supportedExtensions) {
 			try {
@@ -253,26 +253,26 @@ public class ParaViewVizServiceTester {
 		 * Exposes the super class' method.
 		 */
 		@Override
-		protected void setProxyFactoryRegistry(
-				IParaViewProxyFactoryRegistry registry) {
-			super.setProxyFactoryRegistry(registry);
+		protected void setProxyBuilderRegistry(
+				IParaViewProxyBuilderRegistry registry) {
+			super.setProxyBuilderRegistry(registry);
 		}
 
 		/*
 		 * Exposes the super class' method.
 		 */
 		@Override
-		protected void unsetProxyFactoryRegistry(
-				IParaViewProxyFactoryRegistry registry) {
-			super.unsetProxyFactoryRegistry(registry);
+		protected void unsetProxyBuilderRegistry(
+				IParaViewProxyBuilderRegistry registry) {
+			super.unsetProxyBuilderRegistry(registry);
 		}
 
 		/*
 		 * Exposes the super class' method.
 		 */
 		@Override
-		protected IParaViewProxyFactoryRegistry getProxyFactoryRegistry() {
-			return super.getProxyFactoryRegistry();
+		protected IParaViewProxyBuilderRegistry getProxyBuilderRegistry() {
+			return super.getProxyBuilderRegistry();
 		}
 	}
 }

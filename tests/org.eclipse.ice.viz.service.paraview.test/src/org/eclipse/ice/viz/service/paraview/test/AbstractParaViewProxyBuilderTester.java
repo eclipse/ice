@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.junit.Test;
 
@@ -36,17 +36,17 @@ import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class tests the basic features provided by the
- * {@link AbstractParaViewProxyFactory}.
+ * {@link AbstractParaViewProxyBuilder}.
  * 
  * @author Jordan Deyton
  *
  */
-public class AbstractParaViewProxyFactoryTester {
+public class AbstractParaViewProxyBuilderTester {
 
 	/**
-	 * The factory that will be tested in each test.
+	 * The builder that will be tested in each test.
 	 */
-	private AbstractParaViewProxyFactory proxyFactory;
+	private AbstractParaViewProxyBuilder proxyBuilder;
 
 	/**
 	 * Checks that the default set of extensions is empty and that the returned
@@ -58,19 +58,18 @@ public class AbstractParaViewProxyFactoryTester {
 		Set<String> supportedExtensions;
 		String[] extensions = new String[] { "one", "two", "three" };
 
-		// The default AbstractParaViewProxyFactory should provide no
-		// extensions.
-		proxyFactory = new FakeParaViewProxyFactory();
-		supportedExtensions = proxyFactory.getExtensions();
+		// The default builder should provide no extensions.
+		proxyBuilder = new FakeParaViewProxyBuilder();
+		supportedExtensions = proxyBuilder.getExtensions();
 		assertNotNull(supportedExtensions);
 		assertTrue(supportedExtensions.isEmpty());
 
-		// Adding to the protected set of extensions should cause the factory to
+		// Adding to the protected set of extensions should cause the builder to
 		// return a lexicographically ordered set of extensions with no
 		// duplicates.
-		proxyFactory = new FakeParaViewProxyFactory("one", "two", "one",
+		proxyBuilder = new FakeParaViewProxyBuilder("one", "two", "one",
 				"three");
-		supportedExtensions = proxyFactory.getExtensions();
+		supportedExtensions = proxyBuilder.getExtensions();
 		assertNotNull(supportedExtensions);
 		assertEquals(3, supportedExtensions.size());
 		// Check the order of the extensions. Should be alphabetical.
@@ -80,12 +79,12 @@ public class AbstractParaViewProxyFactoryTester {
 		assertEquals("two", iter.next());
 
 		// Check that a new, equivalent set is returned from each request.
-		assertNotSame(supportedExtensions, proxyFactory.getExtensions());
-		assertEquals(supportedExtensions, proxyFactory.getExtensions());
+		assertNotSame(supportedExtensions, proxyBuilder.getExtensions());
+		assertEquals(supportedExtensions, proxyBuilder.getExtensions());
 
 		// Check that modifying the returned set does not affect the extensions.
-		proxyFactory.getExtensions().clear();
-		supportedExtensions = proxyFactory.getExtensions();
+		proxyBuilder.getExtensions().clear();
+		supportedExtensions = proxyBuilder.getExtensions();
 		assertEquals(extensions.length, supportedExtensions.size());
 		for (String extension : extensions) {
 			assertTrue(supportedExtensions.contains(extension));
@@ -102,111 +101,111 @@ public class AbstractParaViewProxyFactoryTester {
 	@Test
 	public void checkProxy() {
 
-		FakeParaViewProxyFactory fakeProxyFactory;
+		FakeParaViewProxyBuilder fakeProxyBuilder;
 		IParaViewProxy proxy;
 		URI uri;
 		final URI nullURI = null;
 
-		// The default AbstractParaViewProxyFactory should not be able to
-		// validate any URI.
-		fakeProxyFactory = new FakeParaViewProxyFactory();
-		proxyFactory = fakeProxyFactory;
+		// The default builder should not be able to validate any URI, as it has
+		// no supported extensions.
+		fakeProxyBuilder = new FakeParaViewProxyBuilder();
+		proxyBuilder = fakeProxyBuilder;
 
 		// Passing a null URI should throw an exception.
 		try {
-			proxyFactory.createProxy(nullURI);
-			fail("AbstractParaViewProxyFactoryTester failure: "
+			proxyBuilder.createProxy(nullURI);
+			fail("AbstractParaViewProxyBuilderTester failure: "
 					+ "NullPointerException not thrown when URI is null.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
 		}
 		// A proxy should not have been created.
-		assertNull(fakeProxyFactory.createdProxy.get());
+		assertNull(fakeProxyBuilder.createdProxy.get());
 
 		// Passing in any URI should throw an exception because the extension is
 		// not supported.
 		uri = TestUtils.createURI("one");
 		try {
-			proxyFactory.createProxy(uri);
-			fail("AbstractParaViewProxyFactoryTester failure: "
+			proxyBuilder.createProxy(uri);
+			fail("AbstractParaViewProxyBuilderTester failure: "
 					+ "IllegalArgumentException not thrown when URI extension "
 					+ "is not supported.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
 		// A proxy should not have been created.
-		assertNull(fakeProxyFactory.createdProxy.get());
+		assertNull(fakeProxyBuilder.createdProxy.get());
 
-		// Now try an AbstractParaViewProxyFactory with some extensions.
-		fakeProxyFactory = new FakeParaViewProxyFactory("one", "two", "one",
+		// Now try a builder with some extensions.
+		fakeProxyBuilder = new FakeParaViewProxyBuilder("one", "two", "one",
 				null, "three");
-		proxyFactory = fakeProxyFactory;
+		proxyBuilder = fakeProxyBuilder;
 
 		// Passing a null URI should throw an exception.
 		try {
-			proxyFactory.createProxy(nullURI);
-			fail("AbstractParaViewProxyFactoryTester failure: "
+			proxyBuilder.createProxy(nullURI);
+			fail("AbstractParaViewProxyBuilderTester failure: "
 					+ "NullPointerException not thrown when URI is null.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
 		}
 		// A proxy should not have been created.
-		assertNull(fakeProxyFactory.createdProxy.get());
+		assertNull(fakeProxyBuilder.createdProxy.get());
 
 		// Passing in an invalid URI should throw an exception because the
 		// extension is not supported.
 		uri = TestUtils.createURI("fail");
 		try {
-			proxyFactory.createProxy(uri);
-			fail("AbstractParaViewProxyFactoryTester failure: "
+			proxyBuilder.createProxy(uri);
+			fail("AbstractParaViewProxyBuilderTester failure: "
 					+ "IllegalArgumentException not thrown when URI extension "
 					+ "is not supported.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
 		// A proxy should not have been created.
-		assertNull(fakeProxyFactory.createdProxy.get());
+		assertNull(fakeProxyBuilder.createdProxy.get());
 
 		// Passing in a valid URI should call the implementation and should
 		// return the implementation's IParaViewProxy. The file's existence or
 		// validity is not checked.
 		uri = TestUtils.createURI("one");
-		proxy = proxyFactory.createProxy(uri);
-		assertSame(fakeProxyFactory.createdProxy.getAndSet(null), proxy);
+		proxy = proxyBuilder.createProxy(uri);
+		assertSame(fakeProxyBuilder.createdProxy.getAndSet(null), proxy);
 		uri = TestUtils.createURI("two", "localhost");
-		proxy = proxyFactory.createProxy(uri);
-		assertSame(fakeProxyFactory.createdProxy.getAndSet(null), proxy);
+		proxy = proxyBuilder.createProxy(uri);
+		assertSame(fakeProxyBuilder.createdProxy.getAndSet(null), proxy);
 		uri = TestUtils.createURI("three", "foo.bar.com");
-		proxy = proxyFactory.createProxy(uri);
-		assertSame(fakeProxyFactory.createdProxy.getAndSet(null), proxy);
+		proxy = proxyBuilder.createProxy(uri);
+		assertSame(fakeProxyBuilder.createdProxy.getAndSet(null), proxy);
 
 		// Files without extensions should not be supported, even though "null"
 		// is a "supported" extension.
 		uri = TestUtils.createURI(null);
 		try {
-			proxyFactory.createProxy(uri);
-			fail("AbstractParaViewProxyFactoryTester failure: "
+			proxyBuilder.createProxy(uri);
+			fail("AbstractParaViewProxyBuilderTester failure: "
 					+ "IllegalArgumentException not thrown when URI has no "
 					+ "extension.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
 		// A proxy should not have been created.
-		assertNull(fakeProxyFactory.createdProxy.get());
+		assertNull(fakeProxyBuilder.createdProxy.get());
 
 		return;
 	}
 
 	/**
-	 * A fake {@link AbstractParaViewProxyFactory} used to test the set of
+	 * A fake {@link AbstractParaViewProxyBuilder} used to test the set of
 	 * supported extensions and the default
-	 * {@link AbstractParaViewProxyFactory#createProxy(URI)} implementation,
+	 * {@link AbstractParaViewProxyBuilder#createProxy(URI)} implementation,
 	 * which should re-direct to the sub-class' implementation.
 	 * 
 	 * @author Jordan Deyton
 	 *
 	 */
-	private class FakeParaViewProxyFactory extends AbstractParaViewProxyFactory {
+	private class FakeParaViewProxyBuilder extends AbstractParaViewProxyBuilder {
 
 		/**
 		 * The proxy that was created. If set to a non-null value, then
@@ -221,7 +220,7 @@ public class AbstractParaViewProxyFactoryTester {
 		 * @param extensions
 		 *            The supported extensions. May be any strings.
 		 */
-		public FakeParaViewProxyFactory(String... extensions) {
+		public FakeParaViewProxyBuilder(String... extensions) {
 			// Add all extensions.
 			for (String extension : extensions) {
 				super.extensions.add(extension);
@@ -235,7 +234,7 @@ public class AbstractParaViewProxyFactoryTester {
 		 */
 		@Override
 		public String getName() {
-			return "Fake ParaView Proxy Factory";
+			return "Fake ParaView Proxy Builder";
 		}
 
 		/**
