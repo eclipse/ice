@@ -208,11 +208,10 @@ public class MOOSELauncherTester {
 	@AfterClass
 	public static void afterTests() {
 
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		try {
-			// Close and delete the fake workspace created
+			// Close and delete the fake project space created
 			projectSpace.close(null);
-			workspaceRoot.delete(true, true, null);
+			projectSpace.delete(true, true, null);
 			
 			// Nullify the IO service
 			service = null;

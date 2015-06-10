@@ -231,6 +231,10 @@ public class AxialPowerTester {
 				}
 			}
 
+			// Close the readers.
+			reader.close();
+			refReader.close();
+			resultReader.close();
 		} catch (CoreException e) {
 			e.printStackTrace();
 			fail();
