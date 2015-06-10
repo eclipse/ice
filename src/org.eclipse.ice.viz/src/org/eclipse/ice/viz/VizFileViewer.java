@@ -391,10 +391,6 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 			if (selection instanceof IStructuredSelection) {
 				IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
-				// Get the resources from the ResourceComponent.
-				ArrayList<ICEResource> resources = resourceComponent
-						.getResources();
-
 				// Remove each ICEResource in the selection from the
 				// ResourceComponent.
 				for (Iterator<?> iter = structuredSelection.iterator(); iter
@@ -403,7 +399,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 					System.out.println("VizFileViewer message: "
 							+ "Removing the resource for file \""
 							+ resource.getPath().getPath() + "\".");
-					resources.remove(resource);
+					resourceComponent.remove(resource);
 				}
 			}
 
