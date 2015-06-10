@@ -124,8 +124,8 @@ public class ExodusProxyFactoryTester {
 		// AbstractParaViewProxyFactory.
 		proxyFactory = new ExodusProxyFactory() {
 			@Override
-			protected IParaViewProxy createProxyImpl(URI uri) {
-				IParaViewProxy proxy = super.createProxyImpl(uri);
+			protected IParaViewProxy createConcreteProxy(URI uri) {
+				IParaViewProxy proxy = super.createConcreteProxy(uri);
 				createdProxy.set(proxy);
 				return proxy;
 			}

@@ -122,7 +122,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected boolean setFeatureImpl(VtkWebClient client, String category,
+	protected boolean setFeatureOnClient(VtkWebClient client, String category,
 			String feature) {
 
 		boolean updated = false;
@@ -167,7 +167,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected boolean setPropertyImpl(VtkWebClient client, String property,
+	protected boolean setPropertyOnClient(VtkWebClient client, String property,
 			String value) {
 		// TODO
 		return false;

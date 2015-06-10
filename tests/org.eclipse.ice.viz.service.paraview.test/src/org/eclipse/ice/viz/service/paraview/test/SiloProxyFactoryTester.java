@@ -122,8 +122,8 @@ public class SiloProxyFactoryTester {
 		// AbstractParaViewProxyFactory.
 		proxyFactory = new SiloProxyFactory() {
 			@Override
-			protected IParaViewProxy createProxyImpl(URI uri) {
-				IParaViewProxy proxy = super.createProxyImpl(uri);
+			protected IParaViewProxy createConcreteProxy(URI uri) {
+				IParaViewProxy proxy = super.createConcreteProxy(uri);
 				createdProxy.set(proxy);
 				return proxy;
 			}

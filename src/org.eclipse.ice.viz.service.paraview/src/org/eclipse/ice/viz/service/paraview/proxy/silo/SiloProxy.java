@@ -57,9 +57,20 @@ public class SiloProxy extends AbstractParaViewProxy {
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected boolean setPropertyImpl(VtkWebClient client, String property,
+	protected boolean setFeatureOnClient(VtkWebClient client, String category,
+			String feature) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/*
+	 * Overrides a method from AbstractParaViewProxy.
+	 */
+	@Override
+	protected boolean setPropertyOnClient(VtkWebClient client, String property,
 			String value) {
 		// TODO
 		return false;
 	}
+
 }

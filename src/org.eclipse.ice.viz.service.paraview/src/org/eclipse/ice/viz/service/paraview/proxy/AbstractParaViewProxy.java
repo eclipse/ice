@@ -156,7 +156,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 
 			// If they match, attempt to open the file.
 			if (clientHost != null && clientHost.equals(fileHost)) {
-				opened = openImpl(client, uri.getPath());
+				opened = openProxyOnClient(client, uri.getPath());
 			}
 		}
 
@@ -195,7 +195,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * @return True if the file at the specified path on the client machine
 	 *         could be opened, false otherwise.
 	 */
-	protected boolean openImpl(VtkWebClient client, String fullPath) {
+	protected boolean openProxyOnClient(VtkWebClient client, String fullPath) {
 		boolean opened = false;
 
 		// The argument array must contain the full path to the file.
@@ -319,7 +319,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 					// Only attempt to update the feature and category if the
 					// client is connected and can be successfully updated.
 					if (connection.getState() == ConnectionState.Connected
-							&& setFeatureImpl(connection.getConnection(),
+							&& setFeatureOnClient(connection.getConnection(),
 									category, feature)) {
 						this.category = category;
 						this.feature = feature;
@@ -396,7 +396,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 					// Only attempt to update the feature and category if the
 					// client is connected and can be successfully updated.
 					if (connection.getState() == ConnectionState.Connected
-							&& setPropertyImpl(connection.getConnection(),
+							&& setPropertyOnClient(connection.getConnection(),
 									property, value)) {
 						currentProperties.put(property, value);
 						changed = true;
@@ -521,7 +521,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 *         If none can be found, then the returned list should be empty and
 	 *         <i>not</i> {@code null}.
 	 */
-	protected abstract Map<String, Set<String>> findProperties(VtkWebClient client);
+	protected abstract Map<String, Set<String>> findProperties(
+			VtkWebClient client);
 
 	/**
 	 * Sends the appropriate requests to the client to change the currently
@@ -542,36 +543,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * @return True if the new category and feature could be set, false
 	 *         otherwise.
 	 */
-	protected boolean setFeatureImpl(VtkWebClient client, String category,
-			String feature) {
-		boolean updated = false;
-
-		// Set the "color by" to color based on the feature name.
-		JsonArray args = new JsonArray();
-
-		// Add the requisite arguments to the argument array.
-		args.add(new JsonPrimitive(Integer.toString(repId)));
-		args.add(new JsonPrimitive("ARRAY"));
-		args.add(new JsonPrimitive("POINTS"));
-		args.add(new JsonPrimitive(feature));
-		args.add(new JsonPrimitive("Magnitude"));
-		args.add(new JsonPrimitive(0));
-		args.add(new JsonPrimitive(true));
-
-		// Call the client.
-		try {
-			// The only way to tell if the client even received the message is
-			// if we get back an empty JsonObject. If null, then there was an
-			// error.
-			if (client.call("pv.color.manager.color.by", args).get() != null) {
-				updated = true;
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-
-		return updated;
-	}
+	protected abstract boolean setFeatureOnClient(VtkWebClient client,
+			String category, String feature);
 
 	/**
 	 * Sends the appropriate requests to the client to update any properties
@@ -591,7 +564,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 *            The new value for the property.
 	 * @return True if the new property value could be set, false otherwise.
 	 */
-	protected abstract boolean setPropertyImpl(VtkWebClient client,
+	protected abstract boolean setPropertyOnClient(VtkWebClient client,
 			String property, String value);
 
 	/**

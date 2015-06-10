@@ -210,7 +210,7 @@ public class AbstractParaViewProxyFactoryTester {
 
 		/**
 		 * The proxy that was created. If set to a non-null value, then
-		 * {@link #createProxyImpl(URI)} was, in fact, called.
+		 * {@link #createConcreteProxy(URI)} was, in fact, called.
 		 */
 		public final AtomicReference<IParaViewProxy> createdProxy;
 
@@ -242,7 +242,7 @@ public class AbstractParaViewProxyFactoryTester {
 		 * Sets {@link #proxyCreated} to true when called. Returns {@code null}.
 		 */
 		@Override
-		protected IParaViewProxy createProxyImpl(URI uri) {
+		protected IParaViewProxy createConcreteProxy(URI uri) {
 			// Create a proxy. What's in it doesn't matter for these tests.
 			IParaViewProxy proxy = new AbstractParaViewProxy(uri) {
 				@Override
@@ -258,7 +258,13 @@ public class AbstractParaViewProxyFactoryTester {
 				}
 
 				@Override
-				protected boolean setPropertyImpl(VtkWebClient client,
+				protected boolean setFeatureOnClient(VtkWebClient client,
+						String category, String feature) {
+					return false;
+				}
+
+				@Override
+				protected boolean setPropertyOnClient(VtkWebClient client,
 						String property, String value) {
 					return false;
 				}

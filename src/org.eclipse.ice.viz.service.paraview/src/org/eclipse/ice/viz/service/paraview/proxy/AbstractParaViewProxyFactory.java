@@ -22,7 +22,7 @@ import java.util.TreeSet;
  * Sub-classes need only do the following:
  * <ol>
  * <li>In their constructor, add supported extensions to {@link #extensions}.</li>
- * <li>Implement {@link #createProxyImpl(URI)}.</li>
+ * <li>Implement {@link #createConcreteProxy(URI)}.</li>
  * </ol>
  * 
  * @author Jordan Deyton
@@ -92,7 +92,7 @@ public abstract class AbstractParaViewProxyFactory implements
 		}
 
 		// If no exception was thrown, call the sub-class' implementation.
-		return createProxyImpl(uri);
+		return createConcreteProxy(uri);
 	}
 
 	/**
@@ -106,5 +106,5 @@ public abstract class AbstractParaViewProxyFactory implements
 	 *         be created for any particular reason.
 	 * @see #createProxy(URI)
 	 */
-	protected abstract IParaViewProxy createProxyImpl(URI uri);
+	protected abstract IParaViewProxy createConcreteProxy(URI uri);
 }

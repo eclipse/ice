@@ -442,17 +442,6 @@ public class AbstractParaViewProxyTester {
 	@Test
 	public void checkSetFeature() {
 
-		// If set to true, then the render request will "fail" by returning
-		// null. Otherwise, it will return an empty JsonObject.
-		final AtomicBoolean fail = new AtomicBoolean();
-		fakeClient.responseMap.put("pv.color.manager.color.by",
-				new Callable<JsonObject>() {
-					@Override
-					public JsonObject call() throws Exception {
-						return fail.get() ? null : new JsonObject();
-					}
-				});
-
 		final String nullString = null;
 		String validCategory;
 		String validFeature;
@@ -473,7 +462,7 @@ public class AbstractParaViewProxyTester {
 
 				// If the client fails to render, then the category and feature
 				// will not be set, although setFeatureImpl(...) will be called.
-				fail.set(true);
+				fakeProxy.failToSetFeature = true;
 				assertFalse(proxy.setFeature(category, feature));
 				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
 				if (firstFeature) {
@@ -484,7 +473,7 @@ public class AbstractParaViewProxyTester {
 
 				// The first call should successfully set the feature.
 				// setFeatureImpl(...) will also be called.
-				fail.set(false);
+				fakeProxy.failToSetFeature = false;
 				assertTrue(proxy.setFeature(category, feature));
 				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
 				assertEquals(category, fakeProxy.getCategory());
@@ -895,7 +884,8 @@ public class AbstractParaViewProxyTester {
 		public final Map<String, Set<String>> properties;
 
 		/**
-		 * Whether or not {@link #openImpl(VtkWebClient, String)} was called.
+		 * Whether or not {@link #openProxyOnClient(VtkWebClient, String)} was
+		 * called.
 		 */
 		public final AtomicBoolean openImplCalled = new AtomicBoolean();
 		/**
@@ -907,20 +897,27 @@ public class AbstractParaViewProxyTester {
 		 */
 		public final AtomicBoolean findPropertiesCalled = new AtomicBoolean();
 		/**
-		 * Whether or not {@link #setFeatureImpl(VtkWebClient, String, String)}
-		 * was called.
+		 * Whether or not
+		 * {@link #setFeatureOnClient(VtkWebClient, String, String)} was called.
 		 */
 		public final AtomicBoolean setFeatureImplCalled = new AtomicBoolean();
 		/**
-		 * Whether or not {@link #setPropertyImpl(VtkWebClient, String, String)}
-		 * was called.
+		 * Whether or not
+		 * {@link #setPropertyOnClient(VtkWebClient, String, String)} was
+		 * called.
 		 */
 		public final AtomicBoolean setPropertyImplCalled = new AtomicBoolean();
 
 		/**
-		 * If true, then {@link #setPropertyImpl(VtkWebClient, String, String)}
-		 * will "fail" and return false, otherwise it will "succeed" and return
-		 * true.
+		 * If true, then
+		 * {@link #setFeatureOnClient(VtkWebClient, String, String)} will "fail"
+		 * and return false, otherwise it will "succeed" and return true.
+		 */
+		public boolean failToSetFeature = false;
+		/**
+		 * If true, then
+		 * {@link #setPropertyOnClient(VtkWebClient, String, String)} will
+		 * "fail" and return false, otherwise it will "succeed" and return true.
 		 */
 		public boolean failToSetProperty = false;
 
@@ -989,9 +986,9 @@ public class AbstractParaViewProxyTester {
 		 * Overrides the default behavior to additionally set
 		 * {@link #openImplCalled} to true when called.
 		 */
-		public boolean openImpl(VtkWebClient client, String fullPath) {
+		public boolean openProxyOnClient(VtkWebClient client, String fullPath) {
 			openImplCalled.set(true);
-			return super.openImpl(client, fullPath);
+			return super.openProxyOnClient(client, fullPath);
 		}
 
 		/*
@@ -1013,14 +1010,14 @@ public class AbstractParaViewProxyTester {
 		}
 
 		/**
-		 * Overrides the default behavior to additionally set
-		 * {@link #setFeatureImplCalled} to true.
+		 * Sets {@link #setFeatureImplCalled} to true. Returns true if
+		 * {@link #failToSetFeature} is false, false otherwise.
 		 */
 		@Override
-		protected boolean setFeatureImpl(VtkWebClient client, String category,
-				String feature) {
+		protected boolean setFeatureOnClient(VtkWebClient client,
+				String category, String feature) {
 			setFeatureImplCalled.set(true);
-			return super.setFeatureImpl(client, category, feature);
+			return !failToSetFeature;
 		}
 
 		/**
@@ -1028,8 +1025,8 @@ public class AbstractParaViewProxyTester {
 		 * {@link #failToSetProperty} is false, false otherwise.
 		 */
 		@Override
-		protected boolean setPropertyImpl(VtkWebClient client, String property,
-				String value) {
+		protected boolean setPropertyOnClient(VtkWebClient client,
+				String property, String value) {
 			setPropertyImplCalled.set(true);
 			return !failToSetProperty;
 		}
