@@ -11,17 +11,24 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import org.eclipse.ice.datastructures.ICEObject.IElementSource;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
 
 import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.swt.DefaultEventTableViewer;
+import ca.odell.glazedlists.gui.WritableTableFormat;
 
 /**
  * This class is a JFace Dialog for rendering IElementSources that are used by
@@ -29,7 +36,7 @@ import ca.odell.glazedlists.swt.DefaultEventTableViewer;
  * 
  * Only single selections are supported.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Kasper Gammeltoft
  *
  */
 public class ElementSourceDialog<T> extends Dialog {
@@ -40,9 +47,9 @@ public class ElementSourceDialog<T> extends Dialog {
 	private IElementSource<T> source;
 
 	/**
-	 * The SWT table that shows the list
+	 * The NatTable that shows the list
 	 */
-	private Table listTable;
+	private ListComponentNattable listTable;
 
 	/**
 	 * The selection made by the user or null if the dialog was closed.
@@ -75,22 +82,64 @@ public class ElementSourceDialog<T> extends Dialog {
 	 * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
 	 * .Composite)
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected Control createDialogArea(Composite parent) {
 
 		Composite comp = (Composite) super.createDialogArea(parent);
-
-		// Create the table to hold the ListComponent.
-		listTable = new Table(parent, SWT.FLAT);
+		comp.setLayout(new GridLayout(1, false));
+		comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		//Set the background to white (visible on the borders)
+		comp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+		
+		//Get the source's elements to convert to a ListComponent
 		elements = source.getElements();
-		DefaultEventTableViewer listTableViewer = new DefaultEventTableViewer(
-				elements, listTable, source.getTableFormat());
-		listTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
-				1));
+		
+		//Create the list component from source
+		ListComponent list = new ListComponent();
+		list.setTableFormat((WritableTableFormat) source.getTableFormat());
+		list.addAll(elements);
+		
+		//Sorts the list according to the material names
+		Collections.sort(list, new Comparator() {
+			public int compare(Object first, Object second) {
+				return ((Material)first).getName().compareTo(((Material)second).getName());
+			}
+		});
+		
+		//Create the Nattable from the Composite parent and the ListComponent list
+		//We do NOT want this table to be editable!
+		listTable = new ListComponentNattable(comp, list, false);
 
+		//Set the size of the shell, have the list fill the entire available area. 
+		int width = listTable.getPreferredWidth();
+		int height = listTable.getPreferredHeight();
+		comp.getShell().setSize(width*3/4, height);
+		
+		//forces the table to grab the extra area in the gridlayout. 
+		GridDataFactory.fillDefaults().grab(true,  true).applyTo(listTable.getTable());
+
+		//Selects the first component by default
+		ListComponent select = new ListComponent();
+		select.add(list.get(0));
+		listTable.setSelection(select);
+		
 		return comp;
 
 	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+	 */
+	@Override
+	protected void configureShell(Shell shell){
+		super.configureShell(shell);
+		shell.setText("Select Material");
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -100,8 +149,12 @@ public class ElementSourceDialog<T> extends Dialog {
 	@Override
 	protected void okPressed() {
 		// Set the selection if the OK button was pressed
+		/**
 		int index = listTable.getSelectionIndex();
 		selection = elements.get(index);
+		*/
+		//Sets the selection, will be the first selected object if there are multiple selections. 
+		selection = (T) listTable.getSelectedObjects().get(0);
 		super.okPressed();
 	}
 

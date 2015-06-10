@@ -45,6 +45,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -113,7 +114,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 		// Get the parent form and the toolkit
 		final ScrolledForm scrolledForm = managedForm.getForm();
 		final FormToolkit formToolkit = managedForm.getToolkit();
-
+		
 		// Set a GridLayout with a single column. Remove the default margins.
 		GridLayout layout = new GridLayout(1, true);
 		layout.marginWidth = 0;
@@ -125,6 +126,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 
 			// Get the parent
 			Composite parent = managedForm.getForm().getBody();
+			
 			shell = parent.getShell();
 			// Create the section and set its layout info
 			Section listSection = formToolkit.createSection(parent,
@@ -139,14 +141,20 @@ public class ListComponentSectionPage extends ICEFormPage {
 			sectionClient.setLayout(new GridLayout(2, false));
 			sectionClient.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 					true, 1, 1));
-
+			//parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+			//listSection.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+			sectionClient.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+			shell.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 			// Draw the table
 			//configureTable();
-			
-			table = new ListComponentNattable(sectionClient, list);
+			sectionClient.setBackgroundMode(SWT.INHERIT_FORCE);
+
+			table = new ListComponentNattable(sectionClient, list, true);
 			
 			// Create the Add/Delete buttons
 			createAddDeleteButtons();
+			
+			
 
 			// Set the section client.
 			listSection.setClient(sectionClient);
@@ -167,7 +175,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 		listButtonComposite.setLayout(new GridLayout(1, false));
 		listButtonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL,
 				false, true, 1, 1));
-
+		
 		// Create the add button to add a new element to the list.
 		Button addMaterialButton = new Button(listButtonComposite, SWT.PUSH);
 		addMaterialButton.setText("Add");
@@ -259,9 +267,9 @@ public class ListComponentSectionPage extends ICEFormPage {
 			
 		});
 		
-		//Move up button, moves the selected rows up in the table. 
+		//Move up button, moves the selected rows up one index.
 		Button moveUpButton = new Button(listButtonComposite, SWT.PUSH);
-		moveUpButton.setText("^");
+		moveUpButton.setText("ʌ");
 		moveUpButton.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -312,7 +320,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 		});
 		
 		
-		
+		//move down button, moves the currently selected rows down one index. 
 		Button moveDownButton = new Button(listButtonComposite, SWT.PUSH);
 		moveDownButton.setText("v");
 		moveDownButton.addSelectionListener(new SelectionListener() {
@@ -367,88 +375,6 @@ public class ListComponentSectionPage extends ICEFormPage {
 		return;
 	}
 	
-	
-
- 
-	/**
-	 * This operation configures the NatTable used to render the ListComponent
-	 * on the screen.
-	 */
-	
-	/*
-	private void configureTable() {
-
-		// Create the data layer of the table
-		IColumnPropertyAccessor accessor = new ListComponentColumnPropertyAccessor(
-				list);
-		IDataProvider dataProvider = new ListDataProvider(list, accessor);
-		DataLayer dataLayer = new DataLayer(dataProvider);
-		GlazedListsEventLayer eventLayer = new GlazedListsEventLayer(dataLayer,
-				list);
-
-		// Create the selection and viewport layers of the table
-		SelectionLayer selectionLayer = new SelectionLayer(eventLayer);
-		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
-
-		// Get the column names
-		String[] columnNames = new String[list.getColumnCount()];
-		for (int i = 0; i < list.getColumnCount(); i++) {
-			columnNames[i] = list.getColumnName(i);
-		}
-
-		// Create the column header layer (column names) of the table
-		IDataProvider columnHeaderDataProvider = new DefaultColumnHeaderDataProvider(
-				columnNames);
-		DataLayer columnHeaderDataLayer = new DefaultColumnHeaderDataLayer(
-				columnHeaderDataProvider);
-		ILayer columnHeaderLayer = new ColumnHeaderLayer(columnHeaderDataLayer,
-				viewportLayer, selectionLayer);
-		// Turn the column labels on by default
-		columnHeaderDataLayer
-				.setConfigLabelAccumulator(new ColumnLabelAccumulator());
-
-		// Create the row header layer (row names) of the table
-		IDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider(
-				dataProvider);
-		DataLayer rowHeaderDataLayer = new DefaultRowHeaderDataLayer(
-				rowHeaderDataProvider);
-		ILayer rowHeaderLayer = new RowHeaderLayer(rowHeaderDataLayer,
-				viewportLayer, selectionLayer);
-
-		// Create the corner layer of the table
-		IDataProvider cornerDataProvider = new DefaultCornerDataProvider(
-				columnHeaderDataProvider, rowHeaderDataProvider);
-		DataLayer cornerDataLayer = new DataLayer(cornerDataProvider);
-		ILayer cornerLayer = new CornerLayer(cornerDataLayer, rowHeaderLayer,
-				columnHeaderLayer);
-
-		// Create the grid layer and the table
-		GridLayer gridLayer = new GridLayer(viewportLayer, columnHeaderLayer,
-				rowHeaderLayer, cornerLayer);
-		NatTable natTable = new NatTable(sectionClient, gridLayer, false);
-		ConfigRegistry configRegistry = new ConfigRegistry();
-		natTable.setConfigRegistry(configRegistry);
-		// Set the default table style
-		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
-
-		// Make the table editable by updating the configuration rules
-		natTable.addConfiguration(new AbstractRegistryConfiguration() {
-			@Override
-			public void configureRegistry(IConfigRegistry configRegistry) {
-				configRegistry.registerConfigAttribute(
-						EditConfigAttributes.CELL_EDITABLE_RULE,
-						IEditableRule.ALWAYS_EDITABLE);
-			}
-		});
-
-		// Configure the table (lay it out)
-		natTable.configure();
-		natTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
-				1));
-
-		return;
-	}
-	 */
 
 	/**
 	 * This operation sets the ListComponent that should be used as input for

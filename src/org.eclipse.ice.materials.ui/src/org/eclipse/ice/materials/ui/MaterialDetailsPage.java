@@ -12,13 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import java.util.ArrayList;
+
+import org.eclipse.ice.client.widgets.ListComponentNattable;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.IMaterialsDatabase;
+import org.eclipse.ice.materials.SingleMaterialWritableTableFormat;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -26,13 +29,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+
+import ca.odell.glazedlists.gui.WritableTableFormat;
 
 /**
  * This class presents a Material as a table with properties.
@@ -56,12 +60,18 @@ public class MaterialDetailsPage implements IDetailsPage {
 	 * The Form that manages this details page
 	 */
 	IManagedForm managedForm;
+	
+	/**
+	 * The list component to hold the data for the NatTable
+	 */
+	ListComponent<String> list;
+	
 
 	/**
-	 * The table viewer that shows the material's properties.
+	 * The section client for the NatTable to draw on
 	 */
-	TableViewer tableViewer;
-
+	Composite sectionClient;
+	
 	/**
 	 * The constructor
 	 * 
@@ -174,14 +184,44 @@ public class MaterialDetailsPage implements IDetailsPage {
 		Object structuredSelection = ((IStructuredSelection) selection)
 				.getFirstElement();
 		if (structuredSelection instanceof Material) {
-			// Set the input to the properties
-			material = (Material) structuredSelection;
-			tableViewer.setInput(material.getProperties());
-			// Fix the column width
-			Table table = tableViewer.getTable();
-			for (TableColumn column : table.getColumns()) {
-				column.pack();
+			// Creates new table if this is the first selection of a material.
+			if(material==null){
+				material = (Material) structuredSelection;
+					
+				//Creates new listComponent for the table data.
+				list = new ListComponent<String>();
+
+				//Gets the property names or column names for the table.
+				ArrayList<String> propertyNames = new ArrayList<String>();
+				propertyNames.addAll(material.getProperties().keySet());
+				
+				//Creates new writable table format for the nattable
+				WritableTableFormat tableFormat = new SingleMaterialWritableTableFormat(material);
+				
+				//adds the tableformat to the list
+				list.setTableFormat(tableFormat);
+				
+				//adds the material
+				list.addAll(propertyNames);
+				
+				//makes the NatTable, with the list data and current sectionClient to draw on.
+				@SuppressWarnings("unused")
+				ListComponentNattable nattable = new ListComponentNattable(sectionClient, list, false);
 			}
+			
+			//updates the material.
+			material = (Material) structuredSelection;
+			list.clear();
+			//Gets the property names or column names for the table.
+			ArrayList<String> propertyNames = new ArrayList<String>();
+			propertyNames.addAll(material.getProperties().keySet());
+			
+			//adds the new properties to the list.
+			list.addAll(propertyNames);
+			
+			//changes the selected material
+			SingleMaterialWritableTableFormat format = (SingleMaterialWritableTableFormat)list.getTableFormat();
+			format.setMaterial(material);
 		}
 		return;
 	}
@@ -213,7 +253,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 
 		// Create the area in which the block will be rendered - the
 		// "section client"
-		Composite sectionClient = toolkit.createComposite(section);
+		sectionClient = toolkit.createComposite(section);
 		// Configure the layout to be greedy.
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
@@ -224,40 +264,35 @@ public class MaterialDetailsPage implements IDetailsPage {
 		sectionClient.setLayoutData(new GridData(GridData.FILL_BOTH));
 		// Finally tell the section about its client
 		section.setClient(sectionClient);
+		
+		//Sets the sectionClient color to overrule the table's background
+		sectionClient.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+		sectionClient.setBackgroundMode(SWT.INHERIT_FORCE);
+		
+		//checks if the material is null, if so do not create table (nothing to display)
+		if(material!=null){
+		
+			//Creates new listComponent for the table data.
+			list = new ListComponent<String>();
 
-		// Create a table viewer to display the materials properties
-		tableViewer = new TableViewer(sectionClient, SWT.BORDER | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION);
-
-		// Create the property name column
-		TableViewerColumn nameColumn = new TableViewerColumn(tableViewer,
-				SWT.CENTER);
-		nameColumn.getColumn().setText("Property");
-		nameColumn.getColumn().setToolTipText(
-				"The name of the material property");
-		nameColumn.setLabelProvider(new MaterialCellLabelProvider());
-		nameColumn.getColumn().pack();
-		// Create the property value column
-		TableViewerColumn valueColumn = new TableViewerColumn(tableViewer,
-				SWT.CENTER);
-		valueColumn.getColumn().setText("Value");
-		valueColumn.getColumn().setToolTipText(
-				"The value of the material property");
-		valueColumn.getColumn().pack();
-		valueColumn.setLabelProvider(new MaterialCellLabelProvider());
-		// Add the columns
-		String[] names = { "Property", "Value" };
-		tableViewer.setColumnProperties(names);
-
-		// Set the content provider and the layout information on the
-		// tableViewer
-		tableViewer.setContentProvider(new MaterialPropertyContentProvider());
-		Table table = tableViewer.getTable();
-		table.setLayout(new GridLayout(1, true));
-		table.setLayoutData(new GridData(GridData.FILL_BOTH));
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-
+			//Gets the property names or column names for the table.
+			ArrayList<String> propertyNames = new ArrayList<String>();
+			propertyNames.addAll(material.getProperties().keySet());
+			
+			//Creates new writable table format for the nattable
+			WritableTableFormat tableFormat = new SingleMaterialWritableTableFormat(material);
+			
+			//adds the tableformat to the list
+			list.setTableFormat(tableFormat);
+			
+			//adds the material
+			list.addAll(propertyNames);
+			
+			//makes the NatTable, with the list data and current sectionClient to draw on.
+			@SuppressWarnings("unused")
+			ListComponentNattable nattable = new ListComponentNattable(sectionClient, list, false);
+		}
+		
 		// Add a composite for holding the Add and Delete buttons for adding
 		// or removing properties
 		Composite buttonComposite = new Composite(sectionClient, SWT.NONE);
