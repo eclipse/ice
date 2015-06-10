@@ -18,19 +18,38 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactoryRegistry;
 
 import com.kitware.vtk.web.VtkWebClient;
 
 /**
+ * This class provides a concrete {@link IParaViewProxy} that supports loading
+ * and rendering Silo files.
+ * <p>
+ * <b>Note:</b> In practice, instances of this class should not be instantiated.
+ * Rather, they should be obtained from the
+ * {@link IParaViewProxyFactoryRegistry}.
+ * </p>
  * 
  * @author Jordan Deyton
  *
  */
 public class SiloProxy extends AbstractParaViewProxy {
 
+	/**
+	 * The default constructor. The associated Silo file's URI <i>must</i> be
+	 * specified.
+	 * 
+	 * @param uri
+	 *            The URI for the Silo file.
+	 * @throws NullPointerException
+	 *             If the specified URI is null.
+	 */
 	protected SiloProxy(URI uri) throws NullPointerException {
 		super(uri);
-		// TODO Auto-generated constructor stub
+
+		// Nothing to do yet.
 	}
 
 	/*

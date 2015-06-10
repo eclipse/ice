@@ -89,18 +89,6 @@ public class ParaViewVizService extends AbstractVizService {
 			}
 		};
 
-		// // Add supported ExodusII file format extensions.
-		// supportedExtensions.add("ex");
-		// supportedExtensions.add("e");
-		// supportedExtensions.add("exo");
-		// supportedExtensions.add("ex2");
-		// supportedExtensions.add("exii");
-		// supportedExtensions.add("gen");
-		// supportedExtensions.add("exodus");
-		// supportedExtensions.add("nemesis");
-		// // Add supported Silo file format extensions.
-		// supportedExtensions.add("silo");
-
 		return;
 	}
 

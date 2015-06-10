@@ -152,7 +152,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 			}
 
 			// TODO We need better validation of hostnames, local vs remote,
-			// FQDN vs IP, etc.
+			// FQDN vs IP, etc. For instance, there should be no difference
+			// between "localhost" and whatever the existing hostname is.
 
 			// If they match, attempt to open the file.
 			if (clientHost != null && clientHost.equals(fileHost)) {

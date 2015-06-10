@@ -96,7 +96,8 @@ public abstract class AbstractParaViewProxyFactory implements
 	}
 
 	/**
-	 * Creates a specialized proxy for the file.
+	 * Creates a specialized proxy for the file. When this method is called, the
+	 * URI's extension will have already been validated.
 	 * 
 	 * @param uri
 	 *            The uri that needs a new proxy. Implementations may assume

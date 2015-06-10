@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactoryRegistry;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -27,52 +29,62 @@ import com.google.gson.JsonPrimitive;
 import com.kitware.vtk.web.VtkWebClient;
 
 /**
+ * This class provides a concrete {@link IParaViewProxy} that supports loading
+ * and rendering Exodus files.
+ * <p>
+ * <b>Note:</b> In practice, instances of this class should not be instantiated.
+ * Rather, they should be obtained from the
+ * {@link IParaViewProxyFactoryRegistry}.
+ * </p>
  * 
  * @author Jordan Deyton
  *
  */
 public class ExodusProxy extends AbstractParaViewProxy {
 
+	/**
+	 * The default constructor. The associated Exodus file's URI <i>must</i> be
+	 * specified.
+	 * 
+	 * @param uri
+	 *            The URI for the Exodus file.
+	 * @throws NullPointerException
+	 *             If the specified URI is null.
+	 */
 	protected ExodusProxy(URI uri) throws NullPointerException {
 		super(uri);
-		// TODO Auto-generated constructor stub
+
+		// Nothing to do yet.
 	}
 
 	/*
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy#findFeatures
-	 * (com.kitware.vtk.web.VtkWebClient)
-	 */
 	@Override
 	protected Map<String, Set<String>> findFeatures(VtkWebClient client) {
 		Map<String, Set<String>> featureMap = new HashMap<String, Set<String>>();
 
-		// The structure of Exodus files looks like so:
-
-		// "data" > "arrays" appears to have a list of array names, each of
-		// which has a "location" key set to one of { POINTS, CELLS, FIELDS }.
-
-		// "ui" has a lot of elements... important ones listed here.
-		// "Element Variables", a list of variables that can be loaded
-		// "Face Variables", a list of variables that can be loaded
-		// "Edge Variables", a list of variables that can be loaded
-		// "Point Variables", a list of variables that can be loaded
-		// "Global Variables", a list of variables that can be loaded
+		/*
+		 * The structure of Exodus files looks like so:
+		 * 
+		 * "data" > "arrays" appears to have a list of array names, each of
+		 * which has a "location" key set to one of { POINTS, CELLS, FIELDS }.
+		 * 
+		 * "ui" has a lot of elements... important ones listed here.
+		 * "Element Variables", a list of variables that can be loaded
+		 * "Face Variables", a list of variables that can be loaded
+		 * "Edge Variables", a list of variables that can be loaded
+		 * "Point Variables", a list of variables that can be loaded
+		 * "Global Variables", a list of variables that can be loaded
+		 */
 
 		// TODO By default, it appears that all of the variables are loaded. It
 		// would probably be better to only load them when selected.
 
 		// Loop over the "data" > "arrays" JsonArray and get all point, cell,
 		// and field variables.
-
 		JsonObject object;
 		JsonArray array;
-
 		try {
 			// Query the client for the file proxy's information.
 			array = new JsonArray();
@@ -127,7 +139,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 
 		boolean updated = false;
 
-		// We can't draw FIELDS...
+		// Currently, we can only draw point or cell arrays.
 		if (category.equals("POINTS") || category.equals("CELLS")) {
 
 			// Set the "color by" to color based on the feature name.
@@ -145,10 +157,8 @@ public class ExodusProxy extends AbstractParaViewProxy {
 			// Call the client.
 			try {
 				// The only way to tell if the client even received the message
-				// is
-				// if we get back an empty JsonObject. If null, then there was
-				// an
-				// error.
+				// is if we get back an empty JsonObject. If null, then there
+				// was an error.
 				if (client.call("pv.color.manager.color.by", args).get() != null) {
 					updated = true;
 				}
@@ -159,8 +169,6 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		}
 
 		return updated;
-
-		// return super.setFeatureImpl(client, category, feature);
 	}
 
 	/*
