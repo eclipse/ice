@@ -87,9 +87,15 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 
 		// Attempt to create the IParaViewProxy. This will throw an exception if
 		// the URI is null or its extension is invalid.
-		proxy = factory.createProxy(uri);
+		IParaViewProxy proxy = factory.createProxy(uri);
 		// Attempt to open the file.
-		proxy.open(getParaViewConnectionAdapter());
+		if (proxy.open(getParaViewConnectionAdapter())) {
+			this.proxy = proxy;
+		} else {
+			throw new IllegalArgumentException("ParaViewPlot error: "
+					+ "Cannot open the file \"" + uri.getPath()
+					+ "\" using the existing connection.");
+		}
 
 		super.setDataSource(uri);
 	}
@@ -103,9 +109,7 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	 */
 	@Override
 	protected PlotRender createPlotRender(Composite parent) {
-		// Reset the view IDs so that the same view is not used twice.
-		// FIXME This method will need to be updated.
-		return new ParaViewPlotRender(parent, this, -1, -1, -1);
+		return new ParaViewProxyRender(parent, this);
 	}
 
 	/*
@@ -207,5 +211,20 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	 */
 	protected ParaViewConnectionAdapter getParaViewConnectionAdapter() {
 		return (ParaViewConnectionAdapter) getConnectionAdapter();
+	}
+
+	/**
+	 * Gets the proxy associated with the current URI. It handles messages
+	 * concerning the file going to and from the remote ParaView server.
+	 * <p>
+	 * This is re-created whenever the data source URI is changed. If it cannot
+	 * be created, then the URI cannot be rendered via ParaView.
+	 * </p>
+	 * 
+	 * @return The current proxy, or {@code null} if the current URI/connection
+	 *         cannot be used to create a proxy.
+	 */
+	protected IParaViewProxy getParaViewProxy() {
+		return proxy;
 	}
 }

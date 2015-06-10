@@ -124,7 +124,43 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	@Override
 	protected boolean setFeatureImpl(VtkWebClient client, String category,
 			String feature) {
-		return super.setFeatureImpl(client, category, feature);
+
+		boolean updated = false;
+
+		// We can't draw FIELDS...
+		if (category.equals("POINTS") || category.equals("CELLS")) {
+
+			// Set the "color by" to color based on the feature name.
+			JsonArray args = new JsonArray();
+
+			// Add the requisite arguments to the argument array.
+			args.add(new JsonPrimitive(Integer.toString(getRepresentationId())));
+			args.add(new JsonPrimitive("ARRAY"));
+			args.add(new JsonPrimitive(category));
+			args.add(new JsonPrimitive(feature));
+			args.add(new JsonPrimitive("Magnitude"));
+			args.add(new JsonPrimitive(0));
+			args.add(new JsonPrimitive(true));
+
+			// Call the client.
+			try {
+				// The only way to tell if the client even received the message
+				// is
+				// if we get back an empty JsonObject. If null, then there was
+				// an
+				// error.
+				if (client.call("pv.color.manager.color.by", args).get() != null) {
+					updated = true;
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		return updated;
+
+		// return super.setFeatureImpl(client, category, feature);
 	}
 
 	/*

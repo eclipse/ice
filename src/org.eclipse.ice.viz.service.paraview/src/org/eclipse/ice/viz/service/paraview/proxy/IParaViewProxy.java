@@ -152,4 +152,6 @@ public interface IParaViewProxy {
 	 */
 	int setProperties(Map<String, String> properties)
 			throws NullPointerException, IllegalArgumentException;
+
+	int getViewId();
 }

@@ -476,7 +476,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * @return The ID for the server's view proxy. If unset, this returns
 	 *         {@code -1}.
 	 */
-	protected int getViewId() {
+	public int getViewId() {
 		return viewId;
 	}
 
