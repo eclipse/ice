@@ -349,7 +349,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 							Object toMove = list.get(0);
 							
 							//overrides the list entries to move the selected rows up by one row
-							for(int i=0; i<numSelected; i++){
+							for(int i=numSelected-1; i>=0; i--){
 								index = list.indexOf(selected.get(i))+1;
 								toMove = list.get(index);
 								list.set(index, selected.get(i));
@@ -365,7 +365,6 @@ public class ListComponentSectionPage extends ICEFormPage {
 							table.setSelection(selected);
 
 						}
-						
 					}
 				}
 			}
