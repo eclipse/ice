@@ -58,23 +58,26 @@ public class MOOSE extends Item {
 	private MOOSEModel mooseModel;
 
 	/**
-	 * Reference to the MOOSELauncher used in executing a 
-	 * constructed MOOSE input file.  
+	 * Reference to the MOOSELauncher used in executing a constructed MOOSE
+	 * input file.
 	 */
 	@XmlElement()
 	private MOOSELauncher mooseLauncher;
 
 	/**
-	 * Reference to the Model's list of files. 
+	 * Reference to the Model's list of files.
 	 */
 	@XmlTransient()
 	private DataComponent modelFiles;
 
 	/**
-	 * Reference to the Model's input tree. 
+	 * Reference to the Model's input tree.
 	 */
 	@XmlTransient()
 	private TreeComposite modelTree;
+
+	@XmlTransient()
+	private ArrayList<TreeComposite> variables;
 
 	/**
 	 * Nullary constructor.
@@ -84,7 +87,7 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * The constructor. 
+	 * The constructor.
 	 * 
 	 * @param projectSpace
 	 */
@@ -109,6 +112,8 @@ public class MOOSE extends Item {
 
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
+
+		variables = new ArrayList<TreeComposite>();
 	}
 
 	/**
@@ -164,6 +169,7 @@ public class MOOSE extends Item {
 
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.Item#reviewEntries(org.eclipse.ice.datastructures.form.Form)
 	 */
 	@Override
@@ -179,8 +185,21 @@ public class MOOSE extends Item {
 			loadFileEntries();
 		}
 
+		// Register this Item as a listener to the Variables block
+		// this is so we can use the variables to populate things like
+		// kernel variable entries.
+		TreeComposite variablesTree = getTreeByName("Variables");
+
+		if (!registered) {
+			variablesTree.register(this);
+			modelTree.register(this);
+			registered = true;
+		}
+
 		return status;
 	}
+
+	private boolean registered = false;
 
 	/**
 	 * (non-Javadoc)
@@ -278,8 +297,8 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * This method just clears the Model Files DataComponent of its 
-	 * Entries so that we can populate it with new Entries. 
+	 * This method just clears the Model Files DataComponent of its Entries so
+	 * that we can populate it with new Entries.
 	 */
 	private void clearModelFiles() {
 
@@ -299,6 +318,7 @@ public class MOOSE extends Item {
 
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.Item#loadInput(java.lang.String)
 	 */
 	@Override
@@ -346,7 +366,10 @@ public class MOOSE extends Item {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.item.Item#update(org.eclipse.ice.datastructures.ICEObject.IUpdateable)
+	 * 
+	 * @see
+	 * org.eclipse.ice.item.Item#update(org.eclipse.ice.datastructures.ICEObject
+	 * .IUpdateable)
 	 */
 	@Override
 	public void update(IUpdateable updateable) {
@@ -373,12 +396,112 @@ public class MOOSE extends Item {
 
 			// WE SHOULD ALSO LISTEN TO THE VARIABLE BLOCK TO DETERMINE ALLOWED
 			// VALUES FOR THE KERNEL BLOCKS...
+		} else if (updateable instanceof TreeComposite) {
+			TreeComposite tree = (TreeComposite) updateable;
+
+			if (tree.getName().equals("Variables")
+					|| (tree.getParent() != null && tree.getParent().getName()
+							.equals("Variables"))) {
+				System.out.println("Variables " + tree.getName()
+						+ " was updated!");
+
+				// Check the case where the user has deleted a variable
+				if (tree.getName().equals("Variables")
+						&& tree.getNumberOfChildren() < variables.size()) {
+					variables.clear();
+				}
+
+				// Populate the list of variable nodes
+				for (int i = 0; i < tree.getNumberOfChildren(); i++) {
+					TreeComposite variable = tree.getChildAtIndex(i);
+					if (!variables.contains(variable)) {
+						variables.add(variable);
+						variable.register(this);
+					}
+				}
+
+				// Update all variable entries in the tree
+				// to only contain available variables.
+				updateAllVariableEntries();
+
+			} else {
+				BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+						tree);
+				while (iter.hasNext()) {
+					updateBlockVariableEntries(iter.next());
+				}
+			}
 		}
 	}
 
+	private void updateBlockVariableEntries(TreeComposite block) {
+		if (!block.getDataNodes().isEmpty()) {
+			DataComponent data = (DataComponent) block.getDataNodes().get(0);
+
+			if (data.contains("variable")) {
+				ArrayList<String> valueList = new ArrayList<String>();
+				Entry variableEntry = data.retrieveEntry("variable");
+				String currentValue = variableEntry.getValue();
+				for (TreeComposite var : variables) {
+					valueList.add(var.getName());
+				}
+
+				if (!valueList.contains(currentValue)
+						&& !currentValue.equals("Create a Variable")) {
+					valueList.add(currentValue);
+				}
+
+				// Create a new content provider with the new file
+				// in the allowed values list
+				IEntryContentProvider prov = new BasicEntryContentProvider();
+				prov.setAllowedValueType(AllowedValueType.Discrete);
+
+				if (valueList.isEmpty()) {
+					valueList.add("Create a Variable");
+				}
+
+				// Finish setting the allowed values and default
+				// value
+				prov.setAllowedValues(valueList);
+
+				// Set the new provider
+				variableEntry.setContentProvider(prov);
+
+				variableEntry.setValue(currentValue);
+
+				if (!valueList.contains(variableEntry.getValue())) {
+					variableEntry.setValue(valueList.get(0));
+				}
+			}
+
+		}
+	}
+
+	private void updateAllVariableEntries() {
+		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+				modelTree);
+		while (iter.hasNext()) {
+			TreeComposite child = iter.next();
+			updateBlockVariableEntries(child);
+		}
+		return;
+	}
+
+	private TreeComposite getTreeByName(String name) {
+
+		for (int i = 0; i < modelTree.getNumberOfChildren(); i++) {
+			TreeComposite child = modelTree.getChildAtIndex(i);
+			if (child.getName().equals(name)) {
+				return child;
+			}
+		}
+
+		return null;
+	}
+
 	/**
-	 * This method searches the Model input tree and locates all 
-	 * file Entries and loads them on the Model File DataComponent.
+	 * This method searches the Model input tree and locates all file Entries
+	 * and loads them on the Model File DataComponent.
 	 */
 	protected void loadFileEntries() {
 		// Walk the tree and get all Entries that may represent a file
@@ -453,7 +576,7 @@ public class MOOSE extends Item {
 				}
 			}
 		}
-		
+
 		return;
 	}
 
