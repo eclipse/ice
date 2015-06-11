@@ -46,9 +46,11 @@ public class MOOSETreeCheckStateManager implements ICheckStateProvider,
 			TreeViewer treeViewer = (TreeViewer) event.getSource();
 			TreeComposite node = (TreeComposite) event.getElement();
 
+			boolean checked = event.getChecked();
+
 			// If checked, all ancestor nodes should also be checked. This is
 			// done by setting their active flags.
-			if (event.getChecked()) {
+			if (checked) {
 				while (node != null) {
 					// If the state of the node changes, we need to tell the
 					// TreeViewer to refresh that element.
@@ -59,21 +61,24 @@ public class MOOSETreeCheckStateManager implements ICheckStateProvider,
 					node = node.getParent();
 				}
 			}
-			// If unchecked, all descendant nodes should also be unchecked. This
-			// is done by unsetting their active flags.
-			else {
-				// Get a breadth-first iterator so we can walk the tree.
-				Iterator<TreeComposite> iterator;
-				iterator = new BreadthFirstTreeCompositeIterator(node);
-				// Loop over and deactivate the children.
-				while (iterator.hasNext()) {
-					node = iterator.next();
-					// If the state of the node changes, we need to tell the
-					// TreeViewer to refresh that element.
-					if (node.isActive()) {
-						node.setActive(false);
-						treeViewer.update(node, null);
-					}
+
+			// Either way, all descendant nodes should have the same check state
+			// as the ancestor node when it changes.
+
+			// Get the root node (it may have changed due to the above loop).
+			node = (TreeComposite) event.getElement();
+
+			// Get a breadth-first iterator so we can walk the tree.
+			Iterator<TreeComposite> iterator;
+			iterator = new BreadthFirstTreeCompositeIterator(node);
+			// Loop over and deactivate the children.
+			while (iterator.hasNext()) {
+				node = iterator.next();
+				// If the state of the node changes, we need to tell the
+				// TreeViewer to refresh that element.
+				if (node.isActive() != checked) {
+					node.setActive(checked);
+					treeViewer.update(node, null);
 				}
 			}
 		}
