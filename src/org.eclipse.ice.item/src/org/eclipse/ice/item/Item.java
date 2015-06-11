@@ -785,8 +785,6 @@ public class Item implements IComponentVisitor, Identifiable,
 		boolean idsMatch = false, namesMatch = false, descMatch = false, itemIdsMatch = false;
 		Form actionForm = null;
 
-		System.out.println("SUBMITTING FORM");
-		
 		// Only accept the submission if the Item is enabled
 		if (!enabled) {
 			return FormStatus.Unacceptable;

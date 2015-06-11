@@ -544,7 +544,6 @@ public class JobLaunchAction extends Action implements Runnable {
 				// Update the fixed file name
 				fixedFileName = shortInputName;
 				
-				System.out.println("FILES: " + key + " " + shortInputName);
 				// Put the file name in the map
 				fileMap.put(shortInputName, execDictionary.get(key));
 				// }
@@ -717,12 +716,6 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// Local Declarations
 		FormStatus launchStatus;
-		// String separator = System.getProperty("file.separator");
-		// String userHome = System.getProperty("user.home");
-		// String localProjectDir = userHome + separator + "ICEFiles" +
-		// separator
-		// + "default";
-		// File workingDirectory = new File(execDictionary.get("workingDir"));
 
 		// Loop over the stages and launch them so long as the status marks them
 		// as processed. This needs to be done sequentially, so use a regular,
@@ -892,6 +885,12 @@ public class JobLaunchAction extends Action implements Runnable {
 			} catch (InterruptedException e) {
 				// Complain
 				e.printStackTrace();
+			}
+			
+			// If for some reason the job has failed, 
+			// it shouldn't be alive and we should break;
+			if (!job.isAlive()) {
+				break;
 			}
 		}
 		System.out

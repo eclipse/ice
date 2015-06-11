@@ -840,10 +840,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		// Local declarations
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
-		System.out.println("READING: " + file.getName());
 		Form form = read(file);
 
-		
 		TreeComposite tree = (TreeComposite) form.getComponent(MOOSEModel.mooseTreeCompositeId);
 
 		// Make sure the tree is valid

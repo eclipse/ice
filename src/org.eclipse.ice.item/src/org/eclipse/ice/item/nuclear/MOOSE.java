@@ -13,7 +13,6 @@
 package org.eclipse.ice.item.nuclear;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 
@@ -23,7 +22,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
@@ -138,6 +136,24 @@ public class MOOSE extends Item {
 		return;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#cancelProcess()
+	 */
+	@Override
+	public FormStatus cancelProcess() {
+
+		// Only cancel if the Item is actuallly processing
+		if (status.equals(FormStatus.Processing)) {
+			// Try to cancel the action
+			mooseLauncher.cancelProcess();
+			// Reset the state to "ready" since it was clearly able to process.
+			status = FormStatus.ReadyToProcess;
+		}
+
+		return status;
+	}
+	
 	/**
 	 * 
 	 * @param preparedForm
@@ -374,6 +390,9 @@ public class MOOSE extends Item {
 				}
 			}
 
+			
+			// WE SHOULD ALSO LISTEN TO THE VARIABLE BLOCK TO DETERMINE ALLOWED 
+			// VALUES FOR THE KERNEL BLOCKS...
 		}
 	}
 
@@ -430,12 +449,8 @@ public class MOOSE extends Item {
 						ArrayList<String> valueList = clonedEntry
 								.getAllowedValues();
 
-						System.out.println("NAME AND EXTENSION: " + extension
-								+ " " + clonedEntry.getName() + " "
-								+ clonedEntry.getValue());
 						for (String file : getProjectFileNames(extension)) {
 							if (!valueList.contains(file)) {
-								System.out.println("ADDING " + file);
 								valueList.add(file);
 							}
 						}

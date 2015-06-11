@@ -37,6 +37,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -222,12 +226,21 @@ public class JobLauncher extends Item {
 	private Dictionary<String, String> actionDataMap;
 
 	/**
-	 * The set of resources stored in the JobLauncher's working directory, and 
-	 * their last modification time. It may be different than what is returned by
-	 * IResource.getModificationTime(), which is exactly why we are tracking it.
+	 * The set of resources stored in the JobLauncher's working directory, and
+	 * their last modification time. It may be different than what is returned
+	 * by IResource.getModificationTime(), which is exactly why we are tracking
+	 * it.
 	 */
 	@XmlTransient()
 	private HashMap<IResource, Long> workingDirMemberModMap;
+
+	/**
+	 * Reference to the Eclipse Job that will wrap our 
+	 * JobLaunchAction to provide realtime progress reporting 
+	 * to the Eclipse status bar. 
+	 */
+	@XmlTransient()
+	private Job launchJob;
 
 	/**
 	 * This is a utility class used to describe a type of file by the
@@ -414,10 +427,10 @@ public class JobLauncher extends Item {
 					+ actionDataMap.get("stdOutFileName")
 					+ "\n\tStandard Error File = "
 					+ actionDataMap.get("stdErrFileName"));
-			
+
 			try {
 				// Add the output files to the resource component
-				addOutputFile(1, stdOutProjectFile, "Standard Output", 
+				addOutputFile(1, stdOutProjectFile, "Standard Output",
 						outputData);
 				addOutputFile(2, stdErrProjectFile, "Standard Error Output",
 						outputData);
@@ -449,8 +462,7 @@ public class JobLauncher extends Item {
 		// Local Declarations
 		int lastId;
 		long lastTimeStamp;
-		ResourceComponent resources = 
-				(ResourceComponent) form.getComponent(2);
+		ResourceComponent resources = (ResourceComponent) form.getComponent(2);
 		ArrayList<ICEResource> resourceList = resources.getResources();
 		ArrayList<String> resourceNames = new ArrayList<String>();
 		String fileName, workingDirName;
@@ -460,21 +472,20 @@ public class JobLauncher extends Item {
 		try {
 			// Refresh the project space
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			
+
 			// Get the list of members
 			String workingDirPath = getWorkingDirectory();
 			if (workingDirPath != null && !workingDirPath.isEmpty()) {
-				
+
 				// Get the working directory name
 				int lastDir = workingDirPath.lastIndexOf(separator);
-				workingDirName = workingDirPath.substring(lastDir + 1);	
-				
-				workingDir = 
-						project.getFolder("jobs" + separator + workingDirName);
-				
+				workingDirName = workingDirPath.substring(lastDir + 1);
+
+				workingDir = project.getFolder("jobs" + separator
+						+ workingDirName);
+
 			}
-			
-			
+
 			IResource[] latestMembers = workingDir.members();
 			// Get the names of the current resources
 			for (ICEResource namedResource : resourceList) {
@@ -490,8 +501,8 @@ public class JobLauncher extends Item {
 					System.out.println("JobLauncher Message: " + "Adding file "
 							+ currentResource.getName() + " to list.");
 					// Get the file as an ICEResource object
-					ICEResource resource = getResource(
-							currentResource.getLocation().toOSString());
+					ICEResource resource = getResource(currentResource
+							.getLocation().toOSString());
 					if (resource != null) {
 						// Set the name, ID, description
 						resource.setName(currentResource.getName());
@@ -514,8 +525,8 @@ public class JobLauncher extends Item {
 								+ "Adding file " + currentResource.getName()
 								+ " to list.");
 						// Get the file as an ICEResource
-						ICEResource resource = getResource(
-								currentResource.getLocation().toOSString());
+						ICEResource resource = getResource(currentResource
+								.getLocation().toOSString());
 						if (resource != null) {
 							// Set the name, ID, description
 							resource.setName(currentResource.getName());
@@ -561,7 +572,7 @@ public class JobLauncher extends Item {
 		Entry fileEntry = null, mpiEntry = null;
 		int numProcs = 1, numTBBThreads = 1;
 
-		// Get the project space directory 
+		// Get the project space directory
 		String projectSpace = project.getLocation().toOSString();
 
 		// Assign the data components
@@ -575,7 +586,6 @@ public class JobLauncher extends Item {
 			// Make sure if there are any additional input files, that they are
 			// all valid too
 			for (Entry entry : fileData.retrieveAllEntries()) {
-				System.out.println("Entry: " + entry.getName() + ", " + entry.getValue());
 				if (entry.getValue() == null || entry.getValue().isEmpty()) {
 					System.out.println("JobLauncher Error: All input file "
 							+ "entries must be set!");
@@ -702,15 +712,15 @@ public class JobLauncher extends Item {
 	 *            to the name of the Form.
 	 * @param outputComp
 	 *            The ResourceComponent that contains the data.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private void addOutputFile(int resourceId, IFile file, String resourceName,
 			ResourceComponent outputComp) throws IOException {
-	
+
 		// Get the file as an ICEResource (returns null if invalid filepath)
-		ICEResource outputResource = 
-				this.getResource(file.getLocation().toOSString());
-		
+		ICEResource outputResource = this.getResource(file.getLocation()
+				.toOSString());
+
 		// If the filepath corresponded to a valid resource, we add it to the
 		// ResourceComponent
 		if (outputResource != null) {
@@ -723,7 +733,7 @@ public class JobLauncher extends Item {
 			// Add the ICEResource to the Output component
 			outputComp.addResource(outputResource);
 		}
-		
+
 		return;
 	}
 
@@ -920,23 +930,83 @@ public class JobLauncher extends Item {
 				}
 				// Create the output files in the project space
 				createOutputFiles();
+				
 				// Launch the action
 				action = new JobLaunchAction();
-				localStatus = action.execute(actionDataMap);
+
+				// Create a new Eclipse Job for the JobLaunchAction
+				launchJob = new Job("Job Launch") {
+
+					@Override
+					protected IStatus run(IProgressMonitor monitor) {
+						final int ticks = 100;
+						monitor.beginTask(
+								"Executing the Job Launch Action...", ticks);
+						try {
+							// Execute the Action
+							status = action
+									.execute(actionDataMap);
+
+							// While its processing, keep the progress bar going
+							while (!status.equals(FormStatus.Processed) && !status.equals(FormStatus.InfoError)) {
+								monitor.subTask("Executing the Job");
+
+								// Check for Cancellation
+								if (monitor.isCanceled()) {
+									action.cancel();
+									status = FormStatus.ReadyToProcess;
+									return Status.CANCEL_STATUS;
+								}
+							}
+						} finally {
+							monitor.subTask("Job Launched Successfully.");
+							monitor.worked(100);
+							monitor.done();
+						}
+						return Status.OK_STATUS;
+					}
+				};
+				
+				// Schedule it for execution
+				launchJob.schedule();
+
+				// Set the status as processing, if it fails
+				// the Job will set the status correctly
+				status = FormStatus.Processing;
+				
+				// Invoke the output streaming thread
+				streamOutputData();
+				
+				// Return the new status
+				return status;
+				
 			} else {
 				localStatus = FormStatus.InfoError;
+				
+				status = localStatus;
+				
+				return status;
 			}
-			// Start the thread that fills the output file to stream to clients.
-			streamOutputData();
-
+			
 		}
 
-		// Set the status
-		status = localStatus;
+		return localStatus;
+	}
+	
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#cancelProcess()
+	 */
+	@Override
+	public FormStatus cancelProcess() {
+		status = super.cancelProcess();
+		if (status.equals(FormStatus.ReadyToProcess)) {
+			launchJob.cancel();
+		}
 		return status;
 	}
-
+	
 	/**
 	 * This operations grabs the information from the stdout and stderr files
 	 * and puts it into the output file for JobLauncher that is consumed by
@@ -1537,7 +1607,7 @@ public class JobLauncher extends Item {
 
 		return clone;
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation adds a new input file type to the JobLauncher.
@@ -1651,7 +1721,6 @@ public class JobLauncher extends Item {
 	 */
 	public void reloadProjectData() {
 
-
 		// Local Declarations
 		String name, desc;
 		boolean isFile = false;
@@ -1720,12 +1789,11 @@ public class JobLauncher extends Item {
 
 			// If this is an Entry, cast it
 			Entry entry = (Entry) component;
-			
+
 			// Verify this is the "Input File" Entry and it has a valid value
-			if (entry.getName().equals("Input File") 
+			if (entry.getName().equals("Input File")
 					&& !entry.getValue().isEmpty()) {
 
-				
 				// Get the regex from the subclass
 				String regex = getFileDependenciesSearchString();
 				IFile file = project.getFile(entry.getValue());
@@ -1746,8 +1814,10 @@ public class JobLauncher extends Item {
 	 * IReader to search the input file for all occurrences of the provided
 	 * regular expression, and return associate File Entries.
 	 * 
-	 * @param file the file to update
-	 * @param regex the regular expression that should be found in the file
+	 * @param file
+	 *            the file to update
+	 * @param regex
+	 *            the regular expression that should be found in the file
 	 */
 	protected void updateFileDependencies(IFile file, String regex) {
 
@@ -1780,7 +1850,7 @@ public class JobLauncher extends Item {
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
 
 		}
-		
+
 		return;
 	}
 
