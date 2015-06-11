@@ -39,6 +39,11 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 
 /**
+ * The MOOSE Item represents a unification of the MOOSEModel and MOOSELauncher.
+ * This Item essentially provides a Composite Item composed of the model and
+ * launcher, and as such brokers the data necessary for user input during an
+ * entire MOOSE workflow, ie input generation to launching and data
+ * visualization.
  * 
  * @author Alex McCaskey
  *
@@ -47,25 +52,26 @@ import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 public class MOOSE extends Item {
 
 	/**
-	 * 
+	 * Reference to the MOOSE Input Model for this MOOSE workflow.
 	 */
 	@XmlElement()
 	private MOOSEModel mooseModel;
 
 	/**
-	 * 
+	 * Reference to the MOOSELauncher used in executing a 
+	 * constructed MOOSE input file.  
 	 */
 	@XmlElement()
 	private MOOSELauncher mooseLauncher;
 
 	/**
-	 * 
+	 * Reference to the Model's list of files. 
 	 */
 	@XmlTransient()
 	private DataComponent modelFiles;
 
 	/**
-	 * 
+	 * Reference to the Model's input tree. 
 	 */
 	@XmlTransient()
 	private TreeComposite modelTree;
@@ -78,6 +84,7 @@ public class MOOSE extends Item {
 	}
 
 	/**
+	 * The constructor. 
 	 * 
 	 * @param projectSpace
 	 */
@@ -114,7 +121,7 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * Sets the information that identifies the Item.
+	 * Sets the information that identifies the MOOSE Item.
 	 */
 	protected void setupItemInfo() {
 
@@ -136,8 +143,9 @@ public class MOOSE extends Item {
 		return;
 	}
 
-	/*
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.Item#cancelProcess()
 	 */
 	@Override
@@ -153,12 +161,10 @@ public class MOOSE extends Item {
 
 		return status;
 	}
-	
+
 	/**
-	 * 
-	 * @param preparedForm
-	 *            The Form to review.
-	 * @return The Form's status.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#reviewEntries(org.eclipse.ice.datastructures.form.Form)
 	 */
 	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
@@ -272,7 +278,8 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * 
+	 * This method just clears the Model Files DataComponent of its 
+	 * Entries so that we can populate it with new Entries. 
 	 */
 	private void clearModelFiles() {
 
@@ -291,8 +298,8 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * 
-	 * @param input
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#loadInput(java.lang.String)
 	 */
 	@Override
 	public void loadInput(String input) {
@@ -332,42 +339,15 @@ public class MOOSE extends Item {
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
 
-		// Get the selected app
-//		final String app = modelFiles.retrieveEntry("MOOSE-Based Application")
-//				.getValue();
-
-	//	mooseModel.reviewEntries(form);
-		
-//		if (!app.isEmpty()) {
-//			Thread thread = new Thread(new Runnable() {
-//				public void run() {
-//					// Grab a clone of the old form's TreeComposite with
-//					// data
-//					// imported into it
-//					TreeComposite inputTree = (TreeComposite) modelTree.clone();
-//
-//					try {
-//						mooseModel.loadTreeContents(app);
-//					} catch (IOException | CoreException e1) {
-//						e1.printStackTrace();
-//					}
-//
-//					// Get the empty YAML TreeComposite
-//					TreeComposite yamlTree = (TreeComposite) form
-//							.getComponent(MOOSEModel.mooseTreeCompositeId);
-//
-//					// Merge the input tree into the YAML spec
-//					mooseModel.mergeTrees(inputTree, yamlTree);
-//
-					loadFileEntries();
-				//}
-//			});
-//			thread.start();
-//		}
+		loadFileEntries();
 
 		return;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#update(org.eclipse.ice.datastructures.ICEObject.IUpdateable)
+	 */
 	@Override
 	public void update(IUpdateable updateable) {
 
@@ -377,27 +357,28 @@ public class MOOSE extends Item {
 					.getComponent(3);
 
 			ArrayList<String> names = new ArrayList<String>();
-			
+
 			// Get a list of all our Resource Names:
 			for (ICEResource r : ourComp.getResources()) {
 				names.add(r.getName());
 			}
-			
+
 			for (ICEResource r : comp.getResources()) {
 				if (!names.contains(r.getName())) {
-					System.out.println("Adding Resource to Moose: " + r.getName());
+					System.out.println("Adding Resource to Moose: "
+							+ r.getName());
 					ourComp.add(r);
 				}
 			}
 
-			
-			// WE SHOULD ALSO LISTEN TO THE VARIABLE BLOCK TO DETERMINE ALLOWED 
+			// WE SHOULD ALSO LISTEN TO THE VARIABLE BLOCK TO DETERMINE ALLOWED
 			// VALUES FOR THE KERNEL BLOCKS...
 		}
 	}
 
 	/**
-	 * 
+	 * This method searches the Model input tree and locates all 
+	 * file Entries and loads them on the Model File DataComponent.
 	 */
 	protected void loadFileEntries() {
 		// Walk the tree and get all Entries that may represent a file
@@ -472,6 +453,8 @@ public class MOOSE extends Item {
 				}
 			}
 		}
+		
+		return;
 	}
 
 }
