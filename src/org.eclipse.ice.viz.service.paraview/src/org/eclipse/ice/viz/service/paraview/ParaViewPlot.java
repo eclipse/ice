@@ -78,8 +78,8 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 		// the URI is null or its extension is invalid.
 		IParaViewProxy proxy = vizService.getProxyFactory()
 				.createProxy(uri);
-		// Attempt to open the file.
-		if (proxy.open(getParaViewConnectionAdapter())) {
+		// Attempt to open the file. Wait until the process completes.
+		if (proxy.open(getParaViewConnectionAdapter()).get()) {
 			this.proxy = proxy;
 		} else {
 			throw new IllegalArgumentException("ParaViewPlot error: "

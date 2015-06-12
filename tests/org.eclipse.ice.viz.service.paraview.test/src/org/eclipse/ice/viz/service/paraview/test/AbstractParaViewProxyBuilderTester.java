@@ -27,12 +27,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.junit.Test;
-
-import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class tests the basic features provided by the
@@ -246,25 +245,14 @@ public class AbstractParaViewProxyBuilderTester {
 			IParaViewProxy proxy = new AbstractParaViewProxy(uri) {
 				@Override
 				protected Map<String, Set<String>> findFeatures(
-						VtkWebClient client) {
+						ParaViewConnectionAdapter connection) {
 					return new HashMap<String, Set<String>>();
 				}
 
 				@Override
-				protected Map<String, Set<String>> findProperties(
-						VtkWebClient client) {
-					return new HashMap<String, Set<String>>();
-				}
-
-				@Override
-				protected boolean setFeatureOnClient(VtkWebClient client,
-						String category, String feature) {
-					return false;
-				}
-
-				@Override
-				protected boolean setPropertyOnClient(VtkWebClient client,
-						String property, String value) {
+				protected boolean setFeatureOnClient(
+						ParaViewConnectionAdapter connection, String category,
+						String feature) {
 					return false;
 				}
 			};

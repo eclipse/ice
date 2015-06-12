@@ -21,16 +21,20 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +52,7 @@ import com.kitware.vtk.web.VtkWebClient;
  */
 public class AbstractParaViewProxyTester {
 
+	// TODO Revisit these tests...
 	// TODO Check that the initial category, feature, and properties are set.
 
 	/**
@@ -177,7 +182,7 @@ public class AbstractParaViewProxyTester {
 	 * correctly calls the implemented open operation.
 	 */
 	@Test
-	public void checkOpen() {
+	public void checkOpen() throws InterruptedException, ExecutionException {
 
 		final ParaViewConnectionAdapter nullConnection = null;
 		// Create a remote URI and remote connection for testing.
@@ -199,7 +204,7 @@ public class AbstractParaViewProxyTester {
 		// ---- Can't open remote file with localhost, and vice versa ---- //
 		// Test a local connection with a local file. The connection *can* be
 		// set.
-		assertTrue(proxy.open(connection));
+		assertTrue(proxy.open(connection).get());
 		assertTrue(fakeProxy.openImplCalled.getAndSet(false));
 		// The features and properties should have also been queried.
 		assertTrue(fakeProxy.findFeaturesCalled.getAndSet(false));
@@ -207,7 +212,7 @@ public class AbstractParaViewProxyTester {
 
 		// Test a remote connection with a local file. The connection *cannot*
 		// be set.
-		assertFalse(proxy.open(remoteConnection));
+		assertFalse(proxy.open(remoteConnection).get());
 		assertFalse(fakeProxy.openImplCalled.get());
 		assertFalse(fakeProxy.findFeaturesCalled.get());
 		assertFalse(fakeProxy.findPropertiesCalled.get());
@@ -216,14 +221,14 @@ public class AbstractParaViewProxyTester {
 		// be set.
 		fakeRemoteProxy = new FakeParaViewProxy(remoteURI);
 		remoteProxy = fakeRemoteProxy;
-		assertFalse(remoteProxy.open(connection));
+		assertFalse(remoteProxy.open(connection).get());
 		assertFalse(fakeRemoteProxy.openImplCalled.get());
 		assertFalse(fakeRemoteProxy.findFeaturesCalled.get());
 		assertFalse(fakeRemoteProxy.findPropertiesCalled.get());
 
 		// Test a remote connection with a remote file (same host). The
 		// connection *can* be set.
-		assertTrue(remoteProxy.open(remoteConnection));
+		assertTrue(remoteProxy.open(remoteConnection).get());
 		assertTrue(fakeRemoteProxy.openImplCalled.getAndSet(false));
 		assertTrue(fakeRemoteProxy.findFeaturesCalled.getAndSet(false));
 		assertTrue(fakeRemoteProxy.findPropertiesCalled.getAndSet(false));
@@ -233,7 +238,7 @@ public class AbstractParaViewProxyTester {
 		remoteURI = TestUtils.createURI("fails", "diffRemoteHost");
 		fakeRemoteProxy = new FakeParaViewProxy(remoteURI);
 		remoteProxy = fakeRemoteProxy;
-		assertFalse(remoteProxy.open(connection));
+		assertFalse(remoteProxy.open(connection).get());
 		assertFalse(fakeRemoteProxy.openImplCalled.get());
 		assertFalse(fakeRemoteProxy.findFeaturesCalled.get());
 		assertFalse(fakeRemoteProxy.findPropertiesCalled.get());
@@ -242,7 +247,7 @@ public class AbstractParaViewProxyTester {
 		// Set a valid connection that is not connected. An exception should not
 		// be thrown, but the return value should be false.
 		connection = new ParaViewConnectionAdapter();
-		assertFalse(proxy.open(connection));
+		assertFalse(proxy.open(connection).get());
 		assertFalse(fakeProxy.openImplCalled.get());
 		// The features and properties should not have been queried.
 		assertFalse(fakeProxy.findFeaturesCalled.get());
@@ -250,7 +255,7 @@ public class AbstractParaViewProxyTester {
 
 		// Trying to use a null connection should throw an NPE when opening.
 		try {
-			proxy.open(nullConnection);
+			proxy.open(nullConnection).get();
 			fail("AbstractParaViewProxyTester error: "
 					+ "A NullPointerException was not thrown when opened with "
 					+ "a null connection.");
@@ -267,7 +272,8 @@ public class AbstractParaViewProxyTester {
 	 * when it should and gracefully fails when the connection is bad.
 	 */
 	@Test
-	public void checkOpenImplementation() {
+	public void checkOpenImplementation() throws InterruptedException,
+			ExecutionException {
 
 		// Initially, the file, view, and representation IDs should be -1.
 		assertEquals(-1, fakeProxy.getFileId());
@@ -276,7 +282,7 @@ public class AbstractParaViewProxyTester {
 
 		// Set a valid connection that is connected. An exception should not be
 		// thrown, and the return value should be true.
-		assertTrue(proxy.open(connection));
+		assertTrue(proxy.open(connection).get());
 
 		// Check that the ParaView IDs were set.
 		assertEquals(0, fakeProxy.getFileId());
@@ -285,7 +291,7 @@ public class AbstractParaViewProxyTester {
 
 		// Set the same valid, open connection again. It should just return
 		// true.
-		assertTrue(proxy.open(connection));
+		assertTrue(proxy.open(connection).get());
 
 		// Simulate a failed request (RPC returns a failure).
 		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
@@ -298,7 +304,7 @@ public class AbstractParaViewProxyTester {
 			}
 		});
 		// Opening should return false.
-		assertFalse(proxy.open(connection));
+		assertFalse(proxy.open(connection).get());
 
 		// Simulate a failed request (RPC returns incomplete response).
 		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
@@ -312,7 +318,7 @@ public class AbstractParaViewProxyTester {
 			}
 		});
 		// Opening should return false.
-		assertFalse(proxy.open(connection));
+		assertFalse(proxy.open(connection).get());
 
 		// Simulate a connection error.
 		fakeClient.responseMap.put("createView", new Callable<JsonObject>() {
@@ -322,7 +328,7 @@ public class AbstractParaViewProxyTester {
 			}
 		});
 		// Opening should return false.
-		assertFalse(proxy.open(connection));
+		assertFalse(proxy.open(connection).get());
 
 		// The file, view, and representation IDs should remain unchanged.
 		assertEquals(0, fakeProxy.getFileId());
@@ -348,7 +354,13 @@ public class AbstractParaViewProxyTester {
 
 		// Open the proxy. We don't care about its return value, it just must be
 		// opened before it finds features for the file.
-		proxy.open(connection);
+		try {
+			proxy.open(connection).get();
+		} catch (NullPointerException | InterruptedException
+				| ExecutionException e1) {
+			e1.printStackTrace();
+			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
+		}
 		// The features should have been re-built.
 		assertTrue(fakeProxy.findFeaturesCalled.getAndSet(false));
 
@@ -440,7 +452,8 @@ public class AbstractParaViewProxyTester {
 	 * appropriate exceptions are thrown based on the supplied input.
 	 */
 	@Test
-	public void checkSetFeature() {
+	public void checkSetFeature() throws InterruptedException,
+			ExecutionException {
 
 		final String nullString = null;
 		String validCategory;
@@ -451,7 +464,13 @@ public class AbstractParaViewProxyTester {
 
 		// Open the proxy. We don't care about its return value, it just must be
 		// opened before it finds features for the file.
-		proxy.open(connection);
+		try {
+			proxy.open(connection).get();
+		} catch (NullPointerException | InterruptedException
+				| ExecutionException e1) {
+			e1.printStackTrace();
+			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
+		}
 
 		// Check that all valid categories/features can be set.
 		categorySet = proxy.getFeatureCategories();
@@ -463,7 +482,7 @@ public class AbstractParaViewProxyTester {
 				// If the client fails to render, then the category and feature
 				// will not be set, although setFeatureImpl(...) will be called.
 				fakeProxy.failToSetFeature = true;
-				assertFalse(proxy.setFeature(category, feature));
+				assertFalse(proxy.setFeature(category, feature).get());
 				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
 				if (firstFeature) {
 					assertNotEquals(category, fakeProxy.getCategory());
@@ -474,14 +493,14 @@ public class AbstractParaViewProxyTester {
 				// The first call should successfully set the feature.
 				// setFeatureImpl(...) will also be called.
 				fakeProxy.failToSetFeature = false;
-				assertTrue(proxy.setFeature(category, feature));
+				assertTrue(proxy.setFeature(category, feature).get());
 				assertTrue(fakeProxy.setFeatureImplCalled.getAndSet(false));
 				assertEquals(category, fakeProxy.getCategory());
 				assertEquals(feature, fakeProxy.getFeature());
 
 				// The second call should return false, because the feature was
 				// already set. setFeatureImpl(...) should not be called.
-				assertFalse(proxy.setFeature(category, feature));
+				assertFalse(proxy.setFeature(category, feature).get());
 				assertFalse(fakeProxy.setFeatureImplCalled.get());
 			}
 		}
@@ -547,12 +566,18 @@ public class AbstractParaViewProxyTester {
 
 		final String nullString = null;
 
-		Set<String> propertySet;
+		Map<String, String> propertySet;
 		Set<String> propertyValueSet;
 
 		// Open the proxy. We don't care about its return value, it just must be
 		// opened before it finds properties for the file.
-		proxy.open(connection);
+		try {
+			proxy.open(connection).get();
+		} catch (NullPointerException | InterruptedException
+				| ExecutionException e1) {
+			e1.printStackTrace();
+			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
+		}
 		// The properties should have been re-built.
 		assertTrue(fakeProxy.findPropertiesCalled.getAndSet(false));
 
@@ -573,8 +598,8 @@ public class AbstractParaViewProxyTester {
 
 			// Get the set of values for the property, then check its size and
 			// content.
-			assertTrue(propertySet.contains(property));
-			propertyValueSet = proxy.getPropertyValues(property);
+			assertTrue(propertySet.containsKey(property));
+			propertyValueSet = proxy.getPropertyAllowedValues(property);
 			assertNotNull(propertyValueSet);
 			assertEquals(values.size(), propertyValueSet.size());
 			for (String value : values) {
@@ -586,10 +611,12 @@ public class AbstractParaViewProxyTester {
 		// and each property's set of allowed values.
 		assertNotSame(propertySet, proxy.getProperties());
 		assertEquals(propertySet, proxy.getProperties());
-		for (String property : propertySet) {
-			propertyValueSet = proxy.getPropertyValues(property);
-			assertNotSame(propertyValueSet, proxy.getPropertyValues(property));
-			assertEquals(propertyValueSet, proxy.getPropertyValues(property));
+		for (String property : propertySet.keySet()) {
+			propertyValueSet = proxy.getPropertyAllowedValues(property);
+			assertNotSame(propertyValueSet,
+					proxy.getPropertyAllowedValues(property));
+			assertEquals(propertyValueSet,
+					proxy.getPropertyAllowedValues(property));
 		}
 
 		// Check that manipulating the returned set of properties or values
@@ -601,11 +628,11 @@ public class AbstractParaViewProxyTester {
 			String property = entry.getKey();
 			Set<String> values = entry.getValue();
 
-			assertTrue(propertySet.contains(property));
+			assertTrue(propertySet.containsKey(property));
 			// Try clearing the property's values.
-			proxy.getPropertyValues(property).clear();
+			proxy.getPropertyAllowedValues(property).clear();
 			// The value set for the property should not have changed.
-			propertyValueSet = proxy.getPropertyValues(property);
+			propertyValueSet = proxy.getPropertyAllowedValues(property);
 			assertNotNull(propertyValueSet);
 			assertEquals(values.size(), propertyValueSet.size());
 			for (String value : values) {
@@ -645,49 +672,57 @@ public class AbstractParaViewProxyTester {
 	 * appropriate exceptions are thrown based on the supplied input.
 	 */
 	@Test
-	public void checkSetProperty() {
+	public void checkSetProperty() throws InterruptedException,
+			ExecutionException {
 
 		final String nullString = null;
 		String validProperty;
 		String validValue;
 
-		Set<String> propertySet;
+		Map<String, String> propertySet;
 		Set<String> valueSet;
 
 		// Open the proxy. We don't care about its return value, it just must be
 		// opened before it finds properties for the file.
-		proxy.open(connection);
+		try {
+			proxy.open(connection).get();
+		} catch (NullPointerException | InterruptedException
+				| ExecutionException e1) {
+			e1.printStackTrace();
+			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
+		}
 
 		// Check that all valid properties/values can be set.
 		propertySet = proxy.getProperties();
-		for (String property : propertySet) {
-			valueSet = proxy.getPropertyValues(property);
+		for (String property : propertySet.keySet()) {
+			valueSet = proxy.getPropertyAllowedValues(property);
 			for (String value : valueSet) {
 				// If the client fails to update the property, then the property
 				// value will not be set, although setPropertyImpl(...) will
 				// still be called.
 				fakeProxy.failToSetProperty = true;
-				assertFalse(proxy.setProperty(property, value));
+				assertFalse(proxy.setProperty(property, value).get());
 				assertTrue(fakeProxy.setPropertyImplCalled.getAndSet(false));
-				assertNotEquals(value, fakeProxy.getPropertyValue(property));
+				assertNotEquals(value, fakeProxy.getProperty(property));
 
 				// The first call should successfully set the property.
 				// setPropertyImpl(...) will also be called.
 				fakeProxy.failToSetProperty = false;
-				assertTrue(proxy.setProperty(property, value));
+				assertTrue(proxy.setProperty(property, value).get());
 				assertTrue(fakeProxy.setPropertyImplCalled.getAndSet(false));
-				assertEquals(value, fakeProxy.getPropertyValue(property));
+				assertEquals(value, fakeProxy.getProperty(property));
 
 				// The second call should return false, because the property was
 				// already set.
-				assertFalse(proxy.setProperty(property, value));
+				assertFalse(proxy.setProperty(property, value).get());
 				assertFalse(fakeProxy.setFeatureImplCalled.get());
 			}
 		}
 
 		// Get the first valid property/value from the proxy.
-		validProperty = proxy.getProperties().iterator().next();
-		validValue = proxy.getPropertyValues(validProperty).iterator().next();
+		validProperty = proxy.getProperties().keySet().iterator().next();
+		validValue = proxy.getPropertyAllowedValues(validProperty).iterator()
+				.next();
 
 		// Trying to set the property value using a null property should throw
 		// an NPE.
@@ -758,15 +793,21 @@ public class AbstractParaViewProxyTester {
 
 		// Open the proxy. We don't care about its return value, it just must be
 		// opened before it finds properties for the file.
-		proxy.open(connection);
+		try {
+			proxy.open(connection).get();
+		} catch (NullPointerException | InterruptedException
+				| ExecutionException e1) {
+			e1.printStackTrace();
+			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
+		}
 
 		// Add 3 properties where 2 of them are new values and one is old.
-		if ("djibouti".equals(fakeProxy.getPropertyValue("africa"))) {
+		if ("djibouti".equals(fakeProxy.getProperty("africa"))) {
 			newProperties.put("africa", "abuja");
 		} else {
 			newProperties.put("africa", "djibouti");
 		}
-		if ("tokyo".equals(fakeProxy.getPropertyValue("asia"))) {
+		if ("tokyo".equals(fakeProxy.getProperty("asia"))) {
 			newProperties.put("asia", "beijing");
 		} else {
 			newProperties.put("asia", "tokyo");
@@ -774,8 +815,9 @@ public class AbstractParaViewProxyTester {
 		newProperties.put("australia", "canberra"); // The old value.
 
 		// Get the first valid property/value from the proxy.
-		validProperty = proxy.getProperties().iterator().next();
-		validValue = proxy.getPropertyValues(validProperty).iterator().next();
+		validProperty = proxy.getProperties().keySet().iterator().next();
+		validValue = proxy.getPropertyAllowedValues(validProperty).iterator()
+				.next();
 
 		// If any of the new property names are null, an NPE will be thrown.
 		newProperties.put(nullString, validValue);
@@ -975,27 +1017,21 @@ public class AbstractParaViewProxyTester {
 		}
 
 		/**
-		 * Exposes the parent class' operation.
-		 */
-		@Override
-		public String getPropertyValue(String property) {
-			return super.getPropertyValue(property);
-		}
-
-		/**
 		 * Overrides the default behavior to additionally set
 		 * {@link #openImplCalled} to true when called.
 		 */
-		public boolean openProxyOnClient(VtkWebClient client, String fullPath) {
+		public boolean openProxyOnClient(ParaViewConnectionAdapter connection,
+				String fullPath) {
 			openImplCalled.set(true);
-			return super.openProxyOnClient(client, fullPath);
+			return super.openProxyOnClient(connection, fullPath);
 		}
 
 		/*
 		 * Overrides a method from AbstractParaViewProxy.
 		 */
 		@Override
-		protected Map<String, Set<String>> findFeatures(VtkWebClient client) {
+		protected Map<String, Set<String>> findFeatures(
+				ParaViewConnectionAdapter connection) {
 			findFeaturesCalled.set(true);
 			return features;
 		}
@@ -1004,9 +1040,49 @@ public class AbstractParaViewProxyTester {
 		 * Overrides a method from AbstractParaViewProxy.
 		 */
 		@Override
-		protected Map<String, Set<String>> findProperties(VtkWebClient client) {
+		protected List<IProxyProperty> findProperties(
+				ParaViewConnectionAdapter connection) {
+			// Load the properties into the required list of properties.
+			List<IProxyProperty> propertyList = new ArrayList<IProxyProperty>();
+			for (Entry<String, Set<String>> e : properties.entrySet()) {
+				// Get the name and allowed values.
+				final String name = e.getKey();
+				final Set<String> allowedValues = e.getValue();
+				// Create the required property object to maintain the value.
+				IProxyProperty property = new IProxyProperty() {
+					@Override
+					public String getName() {
+						return name;
+					}
+
+					@Override
+					public String getValue() {
+						return null;
+					}
+
+					@Override
+					public Set<String> getAllowedValues() {
+						return allowedValues;
+					}
+
+					/**
+					 * Sets {@link #setPropertyImplCalled} to true. Returns true
+					 * if {@link #failToSetProperty} is false, false otherwise.
+					 */
+					@Override
+					public boolean setValue(String value)
+							throws NullPointerException,
+							IllegalArgumentException,
+							UnsupportedOperationException {
+						setPropertyImplCalled.set(true);
+						return !failToSetProperty;
+					}
+				};
+				propertyList.add(property);
+			}
+
 			findPropertiesCalled.set(true);
-			return properties;
+			return propertyList;
 		}
 
 		/**
@@ -1014,21 +1090,11 @@ public class AbstractParaViewProxyTester {
 		 * {@link #failToSetFeature} is false, false otherwise.
 		 */
 		@Override
-		protected boolean setFeatureOnClient(VtkWebClient client,
-				String category, String feature) {
+		protected boolean setFeatureOnClient(
+				ParaViewConnectionAdapter connection, String category,
+				String feature) {
 			setFeatureImplCalled.set(true);
 			return !failToSetFeature;
-		}
-
-		/**
-		 * Sets {@link #setPropertyImplCalled} to true. Returns true if
-		 * {@link #failToSetProperty} is false, false otherwise.
-		 */
-		@Override
-		protected boolean setPropertyOnClient(VtkWebClient client,
-				String property, String value) {
-			setPropertyImplCalled.set(true);
-			return !failToSetProperty;
 		}
 	}
 }

@@ -14,14 +14,15 @@ package org.eclipse.ice.viz.service.paraview.proxy.silo;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
-
-import com.kitware.vtk.web.VtkWebClient;
+import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
 
 /**
  * This class provides a concrete {@link IParaViewProxy} that supports loading
@@ -56,29 +57,26 @@ public class SiloProxy extends AbstractParaViewProxy {
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected Map<String, Set<String>> findFeatures(VtkWebClient client) {
+	protected Map<String, Set<String>> findFeatures(
+			ParaViewConnectionAdapter connection) {
+
+		// Initialize the map of categories and features. This map will be
+		// returned.
 		Map<String, Set<String>> featureMap = new HashMap<String, Set<String>>();
-		// TODO
+		
+		// TODO Find silo-specific features.
+
 		return featureMap;
 	}
 
 	/*
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
-	@Override
-	protected Map<String, Set<String>> findProperties(VtkWebClient client) {
-		Map<String, Set<String>> propertyMap = new HashMap<String, Set<String>>();
-		// TODO
-		return propertyMap;
-	}
 
-	/*
-	 * Overrides a method from AbstractParaViewProxy.
-	 */
 	@Override
-	protected boolean setFeatureOnClient(VtkWebClient client, String category,
-			String feature) {
-		// TODO Auto-generated method stub
+	protected boolean setFeatureOnClient(ParaViewConnectionAdapter connection,
+			String category, String feature) {
+		// TODO
 		return false;
 	}
 
@@ -86,10 +84,10 @@ public class SiloProxy extends AbstractParaViewProxy {
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected boolean setPropertyOnClient(VtkWebClient client, String property,
-			String value) {
-		// TODO
-		return false;
+	protected List<IProxyProperty> findProperties(
+			ParaViewConnectionAdapter connection) {
+		List<IProxyProperty> properties = super.findProperties(connection);
+		// TODO Add exodus-specific properties.
+		return properties;
 	}
-
 }

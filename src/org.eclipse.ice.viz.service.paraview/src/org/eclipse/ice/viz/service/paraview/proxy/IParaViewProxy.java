@@ -15,6 +15,7 @@ package org.eclipse.ice.viz.service.paraview.proxy;
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 
@@ -41,7 +42,7 @@ public interface IParaViewProxy {
 	 * @throws NullPointerException
 	 *             If the specified connection is {@code null}.
 	 */
-	public boolean open(ParaViewConnectionAdapter connection)
+	public Future<Boolean> open(ParaViewConnectionAdapter connection)
 			throws NullPointerException;
 
 	/**
@@ -92,7 +93,7 @@ public interface IParaViewProxy {
 	 *             If either the category is invalid or the feature is not valid
 	 *             for the category.
 	 */
-	public boolean setFeature(String category, String feature)
+	public Future<Boolean> setFeature(String category, String feature)
 			throws NullPointerException, IllegalArgumentException;
 
 	/**
@@ -101,12 +102,32 @@ public interface IParaViewProxy {
 	 * @return A set of properties that can be updated and may or may not affect
 	 *         the rendered view.
 	 */
-	public Set<String> getProperties();
+	/**
+	 * Gets the current properties for the proxy.
+	 * 
+	 * @return A map of the current properties for the proxy. The keys are
+	 *         property names, while the values are their current values.
+	 */
+	public Map<String, String> getProperties();
+
+	/**
+	 * Gets the current value for the proxy's specified property.
+	 * 
+	 * @param name
+	 *            The name of the property to retrieve.
+	 * @return The current value of the property.
+	 * @throws NullPointerException
+	 *             If the specified property name is {@code null}.
+	 * @throws IllegalArgumentException
+	 *             If the specified property is an invalid property.
+	 */
+	public String getProperty(String name) throws NullPointerException,
+			IllegalArgumentException;
 
 	/**
 	 * Gets the set of allowed values for the specified property.
 	 * 
-	 * @param property
+	 * @param name
 	 *            The property whose allowed values will be returned.
 	 * @return A set containing all allowed values for the specified property.
 	 * @throws NullPointerException
@@ -114,18 +135,18 @@ public interface IParaViewProxy {
 	 * @throws IllegalArgumentException
 	 *             If the specified property is an invalid property.
 	 */
-	public Set<String> getPropertyValues(String property)
+	public Set<String> getPropertyAllowedValues(String name)
 			throws NullPointerException, IllegalArgumentException;
 
 	/**
 	 * Sets the specified property to the new value.
 	 * 
-	 * @param property
+	 * @param name
 	 *            The property to updated. Allowed values can be retrieved via
 	 *            {@link #getProperties()}.
 	 * @param value
 	 *            The new value of the property. Allowed values can be retrieved
-	 *            via {@link #getPropertyValues(String)}.
+	 *            via {@link #getPropertyAllowedValues(String)}.
 	 * @return True if the property was changed, false otherwise.
 	 * @throws NullPointerException
 	 *             If either of the specified arguments are null.
@@ -133,25 +154,27 @@ public interface IParaViewProxy {
 	 *             If either the property name is invalid or the value is not
 	 *             valid for the property.
 	 */
-	public boolean setProperty(String property, String value)
+	public Future<Boolean> setProperty(String name, String value)
 			throws NullPointerException, IllegalArgumentException;
 
 	/**
 	 * Updates the proxy's current properties to include all properties listed
 	 * in the specified map. This can be used for a bulk update of properties
 	 * that triggers only a single refresh of the rendered view.
+	 * <p>
+	 * If a given property or value in the provided map is invalid, then the
+	 * property is skipped.
+	 * </p>
 	 * 
 	 * @param properties
 	 *            The new properties to set.
-	 * @return The number of properties that were set.
+	 * @return The number of properties that were <i>updated</i>. Properties
+	 *         whose values were already set do not count.
 	 * @throws NullPointerException
-	 *             If the arguments are null or the map contains either null
-	 *             properties or values.
-	 * @throws IllegalArgumentException
-	 *             If the map contains invalid properties or values.
+	 *             If the map is {@code null}.
 	 */
-	public int setProperties(Map<String, String> properties)
-			throws NullPointerException, IllegalArgumentException;
+	public Future<Integer> setProperties(Map<String, String> properties)
+			throws NullPointerException;
 
 	/**
 	 * Gets the ID of the underlying view.

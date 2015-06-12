@@ -15,13 +15,16 @@ package org.eclipse.ice.viz.service.paraview.proxy.exodus;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -57,13 +60,18 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		// Nothing to do yet.
 	}
 
+
 	/*
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected Map<String, Set<String>> findFeatures(VtkWebClient client) {
-		Map<String, Set<String>> featureMap = new HashMap<String, Set<String>>();
+	protected Map<String, Set<String>> findFeatures(
+			ParaViewConnectionAdapter connection) {
 
+		// Initialize the map of categories and features. This map will be
+		// returned.
+		Map<String, Set<String>> featureMap = new HashMap<String, Set<String>>();
+		
 		/*
 		 * The structure of Exodus files looks like so:
 		 * 
@@ -81,6 +89,8 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		// TODO By default, it appears that all of the variables are loaded. It
 		// would probably be better to only load them when selected.
 
+		VtkWebClient client = connection.getConnection();
+		
 		// Loop over the "data" > "arrays" JsonArray and get all point, cell,
 		// and field variables.
 		JsonObject object;
@@ -123,20 +133,13 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	/*
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
-	@Override
-	protected Map<String, Set<String>> findProperties(VtkWebClient client) {
-		Map<String, Set<String>> propertyMap = new HashMap<String, Set<String>>();
-		// TODO
-		return propertyMap;
-	}
 
-	/*
-	 * Overrides a method from AbstractParaViewProxy.
-	 */
 	@Override
-	protected boolean setFeatureOnClient(VtkWebClient client, String category,
-			String feature) {
-
+	protected boolean setFeatureOnClient(ParaViewConnectionAdapter connection,
+			String category, String feature) {
+		
+		VtkWebClient client = connection.getConnection();
+		
 		boolean updated = false;
 
 		// Currently, we can only draw point or cell arrays.
@@ -165,7 +168,6 @@ public class ExodusProxy extends AbstractParaViewProxy {
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
-
 		}
 
 		return updated;
@@ -175,9 +177,10 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected boolean setPropertyOnClient(VtkWebClient client, String property,
-			String value) {
-		// TODO
-		return false;
+	protected List<IProxyProperty> findProperties(
+			ParaViewConnectionAdapter connection) {
+		List<IProxyProperty> properties = super.findProperties(connection);
+		// TODO Add exodus-specific properties.
+		return properties;
 	}
 }

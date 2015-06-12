@@ -13,12 +13,19 @@
 package org.eclipse.ice.viz.service.paraview.proxy;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
@@ -71,10 +78,10 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	private final Map<String, Set<String>> featureMap;
 	/**
 	 * The map of properties. The keys are property names, while the values are
-	 * sets of allowed values for each property. Neither keys nor values should
-	 * be {@code null}.
+	 * property objects that manage the current property value as well as
+	 * syncing the property via the connection.
 	 */
-	private final Map<String, Set<String>> propertyMap;
+	private final Map<String, IProxyProperty> propertyMap;
 
 	/**
 	 * The currently selected category.
@@ -84,10 +91,11 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * The currently selected feature.
 	 */
 	private String feature;
+
 	/**
-	 * All current values for all properties.
+	 * The executor used to run operations on a separate thread.
 	 */
-	private final Map<String, String> currentProperties;
+	protected final ExecutorService requestExecutor;
 
 	/**
 	 * The default constructor. This should only be called by sub-class
@@ -110,12 +118,14 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 
 		// Initialize the maps of allowed features and properties.
 		featureMap = new HashMap<String, Set<String>>();
-		propertyMap = new HashMap<String, Set<String>>();
+		propertyMap = new HashMap<String, IProxyProperty>();
 
 		// Initialize the current feature and properties.
 		category = null;
 		feature = null;
-		currentProperties = new HashMap<String, String>();
+
+		// Initialize the executor used to run operations on another thread.
+		requestExecutor = Executors.newSingleThreadExecutor();
 
 		return;
 	}
@@ -124,7 +134,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public boolean open(ParaViewConnectionAdapter connection)
+	public Future<Boolean> open(ParaViewConnectionAdapter connection)
 			throws NullPointerException {
 		// Throw an exception if the argument is null.
 		if (connection == null) {
@@ -132,72 +142,355 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 					+ "Cannot open a proxy with a null connection.");
 		}
 
-		// Set the default return value.
-		boolean opened = false;
+		final ParaViewConnectionAdapter conn = connection;
 
-		VtkWebClient client = connection.getConnection();
+		// Create a new callable to open the connection. This will need to be
+		// run in a separate thread.
+		Callable<Boolean> operation = new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				// Set the default return value.
+				boolean opened = false;
 
-		// Only attempt to open the file if the connection is established.
-		if (connection.getState() == ConnectionState.Connected) {
-			// Validate that the connection server and the URI point to the same
-			// server.
+				// Only attempt to open the file if the connection is
+				// established.
+				if (conn.getState() == ConnectionState.Connected) {
+					// Validate that the connection server and the URI point to
+					// the same server.
 
-			// Get the connection host.
-			String clientHost = connection.getHost();
+					// Get the connection host.
+					String clientHost = conn.getHost();
 
-			// Get the URI host.
-			String fileHost = uri.getHost();
-			if (fileHost == null) {
-				fileHost = "localhost";
+					// Get the URI host.
+					String fileHost = uri.getHost();
+					if (fileHost == null) {
+						fileHost = "localhost";
+					}
+
+					// TODO We need better validation of hostnames, local vs
+					// remote, FQDN vs IP, etc. For instance, there should be no
+					// difference between "localhost" and whatever the existing
+					// hostname is.
+
+					// If they match, attempt to open the file.
+					if (clientHost != null && clientHost.equals(fileHost)) {
+						opened = openProxyOnClient(conn, uri.getPath());
+					}
+				}
+
+				// If the connection was opened, re-build the maps of features
+				// and properties.
+				if (opened) {
+					// Update the reference to the current connection.
+					AbstractParaViewProxy.this.connection = conn;
+
+					// TODO Do we want to allow null values for properties and
+					// features?
+
+					// Re-build the map of features.
+					featureMap.clear();
+					featureMap.putAll(findFeatures(conn));
+
+					// Re-build the map of properties.
+					propertyMap.clear();
+					for (IProxyProperty property : findProperties(conn)) {
+						// Get the name of the property if possible.
+						String name = (property != null ? property.getName()
+								: null);
+						// Load properties with names into the property map.
+						if (name != null) {
+							propertyMap.put(name, property);
+						}
+					}
+				}
+
+				return opened;
 			}
+		};
 
-			// TODO We need better validation of hostnames, local vs remote,
-			// FQDN vs IP, etc. For instance, there should be no difference
-			// between "localhost" and whatever the existing hostname is.
+		// Kick off the operation in a new thread. The caller may use the
+		// returned Future to wait on the operation to complete.
+		return requestExecutor.submit(operation);
+	}
 
-			// If they match, attempt to open the file.
-			if (clientHost != null && clientHost.equals(fileHost)) {
-				opened = openProxyOnClient(client, uri.getPath());
-			}
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public URI getURI() {
+		return uri;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Set<String> getFeatureCategories() {
+		// Return an ordered copy of the set of feature categories.
+		return new TreeSet<String>(featureMap.keySet());
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Set<String> getFeatures(String category)
+			throws NullPointerException, IllegalArgumentException {
+		// Check for a null argument.
+		if (category == null) {
+			throw new NullPointerException("ParaViewProxy error: "
+					+ "Cannot find features for a null category.");
 		}
 
-		// If the connection was opened, re-build the maps of features and
-		// properties.
-		if (opened) {
-			// Update the reference to the current connection.
-			this.connection = connection;
-
-			// Re-build the map of features.
-			featureMap.clear();
-			featureMap.putAll(findFeatures(client));
-
-			// Re-build the map of properties.
-			propertyMap.clear();
-			propertyMap.putAll(findProperties(client));
+		// Try to get the features for the category from the map.
+		Set<String> featureSet = featureMap.get(category);
+		if (featureSet == null) {
+			throw new IllegalArgumentException("ParaViewProxy error: "
+					+ "Cannot find features for category \"" + category + "\".");
 		}
 
-		return opened;
+		// Return an ordered copy of the set of allowed features.
+		return new TreeSet<String>(featureSet);
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Future<Boolean> setFeature(String category, String feature)
+			throws NullPointerException, IllegalArgumentException {
+		// Check for null arguments.
+		if (category == null || feature == null) {
+			throw new NullPointerException("ParaViewProxy error: "
+					+ "Null categories and features are not supported.");
+		}
+
+		final String newCategory = category;
+		final String newFeature = feature;
+
+		// Create a new callable to set the feature. This will need to be run in
+		// a separate thread.
+		Callable<Boolean> operation = new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				boolean changed = false;
+
+				String category = getCategory();
+				String feature = getFeature();
+
+				// Only proceed if the feature and/or category changed.
+				if (!newCategory.equals(category)
+						|| !newFeature.equals(feature)) {
+					// Get the set of features for the category.
+					Set<String> featureSet = featureMap.get(category);
+					if (featureSet != null) {
+						// Make sure the feature is valid for the category
+						// before updating the client.
+						if (featureSet.contains(feature)) {
+							// Only attempt to update the feature and category
+							// if the client is connected and can be
+							// successfully updated.
+							if (connection.getState() == ConnectionState.Connected
+									&& setFeatureOnClient(connection, category,
+											feature)) {
+								category = newCategory;
+								feature = newFeature;
+								changed = true;
+							}
+						} else {
+							throw new IllegalArgumentException(
+									"ParaViewProxy error: "
+											+ "Invalid feature \"" + feature
+											+ "\".");
+						}
+					} else {
+						throw new IllegalArgumentException(
+								"ParaViewProxy error: " + "Invalid category \""
+										+ category + "\".");
+					}
+				}
+
+				return changed;
+			}
+		};
+
+		// Kick off the operation in a new thread. The caller may use the
+		// returned Future to wait on the operation to complete.
+		return requestExecutor.submit(operation);
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Map<String, String> getProperties() {
+		// Load the property values from the IProxyPropertys into a new map,
+		// which will be returned.
+		Map<String, String> properties = new TreeMap<String, String>();
+		for (Entry<String, IProxyProperty> e : propertyMap.entrySet()) {
+			properties.put(e.getKey(), e.getValue().getValue());
+		}
+		return properties;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public String getProperty(String name) throws NullPointerException,
+			IllegalArgumentException {
+		// Return the current value of the property.
+		return getProxyProperty(name).getValue();
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Set<String> getPropertyAllowedValues(String name)
+			throws NullPointerException, IllegalArgumentException {
+		return getProxyProperty(name).getAllowedValues();
 	}
 
 	/**
-	 * Opens the file at the specified path using the ParaView web client. When
-	 * called, the full path is expected to be a path on the client's specified
-	 * host.
+	 * Gets the {@link IProxyProperty} from {@link #propertyMap}, throwing an
+	 * exception if the property is somehow invalid.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @return The property associated with the specified name.
+	 * @throws NullPointerException
+	 *             If the name is {@code null} and not in the map of properties.
+	 * @throws IllegalArgumentException
+	 *             If the name is an invalid property name not in the map of
+	 *             properties.
+	 */
+	private IProxyProperty getProxyProperty(String name)
+			throws NullPointerException, IllegalArgumentException {
+		IProxyProperty property = propertyMap.get(name);
+		if (property == null) {
+			if (name == null) {
+				throw new NullPointerException("ParaViewProxy error: "
+						+ "Null properties are not supported.");
+			} else {
+				throw new IllegalArgumentException("ParaViewProxy error: "
+						+ "The property \"" + name + "\" is invalid.");
+			}
+		}
+		return property;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Future<Boolean> setProperty(String name, String value)
+			throws NullPointerException, IllegalArgumentException {
+
+		final String newName = name;
+		final String newValue = value;
+
+		// Create a callable to perform the property update. This will need to
+		// connect with the host to update the ParaView proxy.
+		Callable<Boolean> operation = new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				// Get the property from the map. This handles error checking
+				// for the property name.
+				IProxyProperty property = getProxyProperty(newName);
+
+				// Attempt to set the value. This handles error checking for the
+				// property value.
+				return property.setValue(newValue);
+			}
+		};
+
+		// Kick off the operation in a new thread. The caller may use the
+		// returned Future to wait on the operation to complete.
+		return requestExecutor.submit(operation);
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Future<Integer> setProperties(Map<String, String> properties)
+			throws NullPointerException {
+
+		final Map<String, String> newProperties = properties;
+
+		// Create a callable to perform the property update. This will need to
+		// connect with the host to update the ParaView proxy.
+		Callable<Integer> operation = new Callable<Integer>() {
+			@Override
+			public Integer call() throws Exception {
+
+				int count = 0;
+
+				// Try to update all properties specified in the map.
+				for (Entry<String, String> entry : newProperties.entrySet()) {
+					String name = entry.getKey();
+					String value = entry.getValue();
+
+					try {
+						// Fetch the property first. This may throw an exception
+						// if the property is invalid.
+						IProxyProperty property = getProxyProperty(name);
+						// Attempt to set the value. This may throw an exception
+						// if the value is invalid or the property is read-only.
+						if (property.setValue(value)) {
+							// If the value changed, increment the count.
+							count++;
+						}
+					} catch (NullPointerException | IllegalArgumentException
+							| UnsupportedOperationException e) {
+						System.err.println(e.getMessage());
+					} catch (Exception e) {
+						System.err.println("ParaViewProxy warning: "
+								+ "Unexpected exception!");
+						System.err.println(e.getMessage());
+					}
+				}
+
+				// Return the number of changed properties.
+				return count;
+			}
+		};
+
+		// Kick off the operation in a new thread. The caller may use the
+		// returned Future to wait on the operation to complete.
+		return requestExecutor.submit(operation);
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public int getViewId() {
+		return viewId;
+	}
+
+	/**
+	 * Opens the file at the specified path using the ParaView connection. When
+	 * called, the full path is expected to be a path on the connection's host.
 	 * <p>
 	 * This method should set {@link #fileId}, {@link #viewId}, and
 	 * {@link #repId}.
 	 * </p>
 	 * 
-	 * @param client
-	 *            The connection client used to open the file.
+	 * @param connection
+	 *            The connection used to open the file.
 	 * @param fullPath
-	 *            The full path on the client machine to the file that will be
-	 *            opened.
-	 * @return True if the file at the specified path on the client machine
-	 *         could be opened, false otherwise.
+	 *            The full path on the connection's host machine to the file
+	 *            that will be opened.
+	 * @return True if the file at the specified path on the host machine could
+	 *         be opened, false otherwise.
 	 */
-	protected boolean openProxyOnClient(VtkWebClient client, String fullPath) {
+	protected boolean openProxyOnClient(ParaViewConnectionAdapter connection,
+			String fullPath) {
 		boolean opened = false;
+
+		VtkWebClient client = connection.getConnection();
 
 		// The argument array must contain the full path to the file.
 		JsonArray args = new JsonArray();
@@ -255,209 +548,71 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		return opened;
 	}
 
-	/*
-	 * Implements a method from IParaViewProxy.
+	/**
+	 * Finds the features in the file by querying the associated ParaView
+	 * connection.
+	 * <p>
+	 * The connection should be both valid and connected when this method is
+	 * called, and the file will already be opened using the ParaView
+	 * connection.
+	 * </p>
+	 * 
+	 * @param connection
+	 *            The connection used by this proxy.
+	 * @return A map of features that can be rendered, keyed on their
+	 *         categories. If none can be found, then the returned list should
+	 *         be empty and <i>not</i> {@code null}.
 	 */
-	@Override
-	public URI getURI() {
-		return uri;
+	protected abstract Map<String, Set<String>> findFeatures(
+			ParaViewConnectionAdapter connection);
+
+	/**
+	 * Finds the properties in the file by querying the associated ParaView
+	 * connection.
+	 * <p>
+	 * The connection should be both valid and connected when this method is
+	 * called, and the file will already be opened using the ParaView
+	 * connection.
+	 * </p>
+	 * 
+	 * @param connection
+	 *            The connection used by this proxy.
+	 * @return A map of properties that can be rendered, keyed on their names.
+	 *         If none can be found, then the returned list should be empty and
+	 *         <i>not</i> {@code null}.
+	 */
+	protected List<IProxyProperty> findProperties(
+			ParaViewConnectionAdapter connection) {
+		List<IProxyProperty> properties = new ArrayList<IProxyProperty>();
+		// TODO Add some default properties.
+		return properties;
 	}
 
-	/*
-	 * Implements a method from IParaViewProxy.
+	/**
+	 * Sends the appropriate requests over the connection to change the
+	 * currently rendered feature.
+	 * <p>
+	 * The connection should be both valid and connected when this method is
+	 * called, and the file will already be opened using the ParaView
+	 * connection.
+	 * </p>
+	 * <p>
+	 * Furthermore, the category and feature should be both <i>new</i>
+	 * (different from the previous value) and <i>valid</i>.
+	 * </p>
+	 * 
+	 * @param connection
+	 *            The connection used to open the proxy.
+	 * @param category
+	 *            The category for the feature.
+	 * @param feature
+	 *            The new feature for the ParaView render.
+	 * @return True if the new category and feature could be set, false
+	 *         otherwise.
 	 */
-	@Override
-	public Set<String> getFeatureCategories() {
-		// Return an ordered copy of the set of feature categories.
-		return new TreeSet<String>(featureMap.keySet());
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public Set<String> getFeatures(String category)
-			throws NullPointerException, IllegalArgumentException {
-		// Check for a null argument.
-		if (category == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Cannot find features for a null category.");
-		}
-
-		// Try to get the features for the category from the map.
-		Set<String> featureSet = featureMap.get(category);
-		if (featureSet == null) {
-			throw new IllegalArgumentException("ParaViewProxy error: "
-					+ "Cannot find features for category \"" + category + "\".");
-		}
-
-		// Return an ordered copy of the set of allowed features.
-		return new TreeSet<String>(featureSet);
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public boolean setFeature(String category, String feature)
-			throws NullPointerException, IllegalArgumentException {
-		// Check for null arguments.
-		if (category == null || feature == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Null categories and features are not supported.");
-		}
-
-		boolean changed = false;
-
-		// Only proceed if the feature and/or category changed.
-		if (!category.equals(this.category) || !feature.equals(this.feature)) {
-			// Get the set of features for the category.
-			Set<String> featureSet = featureMap.get(category);
-			if (featureSet != null) {
-				// Make sure the feature is valid for the category before
-				// updating the client.
-				if (featureSet.contains(feature)) {
-					// Only attempt to update the feature and category if the
-					// client is connected and can be successfully updated.
-					if (connection.getState() == ConnectionState.Connected
-							&& setFeatureOnClient(connection.getConnection(),
-									category, feature)) {
-						this.category = category;
-						this.feature = feature;
-						changed = true;
-					}
-				} else {
-					throw new IllegalArgumentException("ParaViewProxy error: "
-							+ "Invalid feature \"" + feature + "\".");
-				}
-			} else {
-				throw new IllegalArgumentException("ParaViewProxy error: "
-						+ "Invalid category \"" + category + "\".");
-			}
-		}
-
-		return changed;
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public Set<String> getProperties() {
-		// Return an ordered copy of the set of property names.
-		return new TreeSet<String>(propertyMap.keySet());
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public Set<String> getPropertyValues(String property)
-			throws NullPointerException, IllegalArgumentException {
-		// Check for a null argument.
-		if (property == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Cannot find allowed values for a null property.");
-		}
-
-		// Try to get the features for the category from the map.
-		Set<String> valueSet = propertyMap.get(property);
-		if (valueSet == null) {
-			throw new IllegalArgumentException("ParaViewProxy error: "
-					+ "Cannot find allowed values for property \"" + property
-					+ "\".");
-		}
-
-		// Return an ordered copy of the set of allowed values.
-		return new TreeSet<String>(valueSet);
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public boolean setProperty(String property, String value)
-			throws NullPointerException, IllegalArgumentException {
-		// Check for null arguments.
-		if (property == null || value == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Null properties and values are not supported.");
-		}
-
-		boolean changed = false;
-
-		// Only proceed if the property's value changed.
-		if (!value.equals(currentProperties.get(property))) {
-			// Get the set of allowed values for the property.
-			Set<String> valueSet = propertyMap.get(property);
-			if (valueSet != null) {
-				// Make sure the value is valid for the property before
-				// attempting to update the client.
-				if (valueSet.contains(value)) {
-					// Only attempt to update the feature and category if the
-					// client is connected and can be successfully updated.
-					if (connection.getState() == ConnectionState.Connected
-							&& setPropertyOnClient(connection.getConnection(),
-									property, value)) {
-						currentProperties.put(property, value);
-						changed = true;
-					}
-				} else {
-					throw new IllegalArgumentException("ParaViewProxy error: "
-							+ "Invalid property value \"" + value + "\".");
-				}
-			} else {
-				throw new IllegalArgumentException("ParaViewProxy error: "
-						+ "Invalid property \"" + property + "\".");
-			}
-		}
-
-		return changed;
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public int setProperties(Map<String, String> properties)
-			throws NullPointerException, IllegalArgumentException {
-		// Check for null arguments.
-		if (properties == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Cannot get new property values from a null map.");
-		}
-
-		// Check the input for invalid properties and values.
-		Set<Entry<String, String>> entrySet = properties.entrySet();
-		for (Entry<String, String> entry : entrySet) {
-			String property = entry.getKey();
-			String value = entry.getValue();
-			// Check for null properties/values.
-			if (property == null || value == null) {
-				throw new NullPointerException("ParaViewProxy error: "
-						+ "Null properties and values are not supported.");
-			}
-			// Check for invalid properties/values.
-			Set<String> valueSet = propertyMap.get(property);
-			if (valueSet == null) {
-				throw new IllegalArgumentException("ParaViewProxy error: "
-						+ "Invalid property \"" + property + "\".");
-			} else if (!valueSet.contains(value)) {
-				throw new IllegalArgumentException("ParaViewProxy error: "
-						+ "Invalid property value \"" + value + "\".");
-			}
-		}
-
-		// If all properties and values are valid, try setting them all.
-		// Increment the count each time a property is changed.
-		int count = 0;
-		for (Entry<String, String> entry : entrySet) {
-			if (setProperty(entry.getKey(), entry.getValue())) {
-				count++;
-			}
-		}
-		return count;
-	}
+	protected abstract boolean setFeatureOnClient(
+			ParaViewConnectionAdapter connection, String category,
+			String feature);
 
 	/**
 	 * Gets the ParaView ID pointing to the file's proxy on the server.
@@ -471,17 +626,6 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	}
 
 	/**
-	 * Gets the ParaView ID pointing to the file's associated render view proxy
-	 * on the server.
-	 * 
-	 * @return The ID for the server's view proxy. If unset, this returns
-	 *         {@code -1}.
-	 */
-	public int getViewId() {
-		return viewId;
-	}
-
-	/**
 	 * Gets the ParaView ID pointing to the file's associated representation
 	 * proxy on the server.
 	 * 
@@ -490,89 +634,6 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 */
 	protected int getRepresentationId() {
 		return repId;
-	}
-
-	/**
-	 * Finds the features in the file by querying the associated ParaView
-	 * connection.
-	 * <p>
-	 * The client should be both valid and connected when this method is called,
-	 * and the file will already be opened using the ParaView client.
-	 * </p>
-	 * 
-	 * @param client
-	 *            The client used by this proxy.
-	 * @return A map of features that can be rendered, keyed on their
-	 *         categories. If none can be found, then the returned list should
-	 *         be empty and <i>not</i> {@code null}.
-	 */
-	protected abstract Map<String, Set<String>> findFeatures(VtkWebClient client);
-
-	/**
-	 * Finds the properties in the file by querying the associated ParaView
-	 * connection.
-	 * <p>
-	 * The client should be both valid and connected when this method is called,
-	 * and the file will already be opened using the ParaView client.
-	 * </p>
-	 * 
-	 * @param client
-	 *            The client used by this proxy.
-	 * @return A map of properties that can be rendered, keyed on their names.
-	 *         If none can be found, then the returned list should be empty and
-	 *         <i>not</i> {@code null}.
-	 */
-	protected abstract Map<String, Set<String>> findProperties(
-			VtkWebClient client);
-
-	/**
-	 * Sends the appropriate requests to the client to change the currently
-	 * rendered feature.
-	 * <p>
-	 * The client should be both valid and connected when this method is called,
-	 * and the file will already be opened using the ParaView client.
-	 * </p>
-	 * <p>
-	 * Furthermore, the category and feature should be both <i>new</i>
-	 * (different from the previous value) and <i>valid</i>.
-	 * </p>
-	 * 
-	 * @param category
-	 *            The category for the feature.
-	 * @param feature
-	 *            The new feature for the ParaView render.
-	 * @return True if the new category and feature could be set, false
-	 *         otherwise.
-	 */
-	protected abstract boolean setFeatureOnClient(VtkWebClient client,
-			String category, String feature);
-
-	/**
-	 * Sends the appropriate requests to the client to update any properties
-	 * that have been changed in its internal "proxies".
-	 * <p>
-	 * The client should be both valid and connected when this method is called,
-	 * and the file will already be opened using the ParaView client.
-	 * </p>
-	 * <p>
-	 * Furthermore, the property name and value should be both <i>new</i>
-	 * (different from the previous value) and <i>valid</i>.
-	 * </p>
-	 * 
-	 * @param property
-	 *            The property name.
-	 * @param value
-	 *            The new value for the property.
-	 * @return True if the new property value could be set, false otherwise.
-	 */
-	protected abstract boolean setPropertyOnClient(VtkWebClient client,
-			String property, String value);
-
-	/**
-	 * Notifies the ParaView client that the view should be refreshed.
-	 */
-	protected void refresh(VtkWebClient client) {
-		// TODO Either implement this or make it abstract.
 	}
 
 	/**
@@ -593,16 +654,4 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		return feature;
 	}
 
-	/**
-	 * Gets the selected value for the property.
-	 * 
-	 * @param property
-	 *            The property whose value will be returned.
-	 * @return The current value for the property, or {@code null} if the
-	 *         property is not set or if the property is {@code null} or
-	 *         invalid.
-	 */
-	protected String getPropertyValue(String property) {
-		return currentProperties.get(property);
-	}
 }
