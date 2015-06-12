@@ -105,4 +105,9 @@ public class FakeCompositeItemBuilder implements ICompositeItemBuilder {
 		buildersSet = true;
 
 	}
+
+	@Override
+	public boolean isPublishable() {
+		return true;
+	}
 }

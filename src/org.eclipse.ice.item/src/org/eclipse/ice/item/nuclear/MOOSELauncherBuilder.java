@@ -60,4 +60,13 @@ public class MOOSELauncherBuilder implements ItemBuilder {
 		return new MOOSELauncher(project);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#isPublishable()
+	 */
+	@Override
+	public boolean isPublishable() {
+		return false;
+	}
+
 }

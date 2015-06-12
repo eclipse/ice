@@ -52,4 +52,9 @@ public class FakeModuleBuilder implements ItemBuilder {
 	public Item build(IProject projectSpace) {
 		return new FakeItem(projectSpace);
 	}
+
+	@Override
+	public boolean isPublishable() {
+		return true;
+	}
 }

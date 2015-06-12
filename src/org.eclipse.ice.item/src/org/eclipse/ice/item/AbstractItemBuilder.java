@@ -153,4 +153,13 @@ public class AbstractItemBuilder implements ItemBuilder {
 		this.type = type;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#isPublishable()
+	 */
+	@Override
+	public boolean isPublishable() {
+		return true;
+	}
+
 }

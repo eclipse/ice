@@ -430,7 +430,9 @@ public class ItemManager implements ItemListener {
 		// to new Strings since HashMap.keySet() returns the set of keys by
 		// reference and changes to that list would cause the map to change.
 		for (String j : this.itemBuilderList.keySet()) {
-			builders.add(new String(j));
+			if (itemBuilderList.get(j).isPublishable()) {
+				builders.add(new String(j));
+			}
 		}
 
 		// Check the size and determine whether or not null should be returned

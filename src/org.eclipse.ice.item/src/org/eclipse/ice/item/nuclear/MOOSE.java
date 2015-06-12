@@ -434,6 +434,12 @@ public class MOOSE extends Item {
 		}
 	}
 
+	/**
+	 * This method updates the given TreeComposite with the 
+	 * proper list of Variables if it has a 'variable' Entry. 
+	 * 
+	 * @param block
+	 */
 	private void updateBlockVariableEntries(TreeComposite block) {
 		if (!block.getDataNodes().isEmpty()) {
 			DataComponent data = (DataComponent) block.getDataNodes().get(0);
@@ -477,6 +483,11 @@ public class MOOSE extends Item {
 		}
 	}
 
+	/**
+	 * This method walks the tree and updates all Entries 
+	 * that have the name 'variable' with the proper list 
+	 * of available Variables. 
+	 */
 	private void updateAllVariableEntries() {
 		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
 				modelTree);
@@ -487,6 +498,13 @@ public class MOOSE extends Item {
 		return;
 	}
 
+	/**
+	 * This method finds the child TreeComposite of modelTree that has the 
+	 * given String name. 
+	 * 
+	 * @param name
+	 * @return
+	 */
 	private TreeComposite getTreeByName(String name) {
 
 		for (int i = 0; i < modelTree.getNumberOfChildren(); i++) {

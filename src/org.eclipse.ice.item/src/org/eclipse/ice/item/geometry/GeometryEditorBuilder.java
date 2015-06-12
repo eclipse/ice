@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.item.geometry;
 
-import static org.eclipse.ice.item.geometry.GeometryEditor.*;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
@@ -28,7 +27,7 @@ import org.eclipse.ice.item.ItemType;
  * 
  * @author Jay Jay Billings
  */
-public class GeometryEditorBuilder implements ItemBuilder {
+public class GeometryEditorBuilder extends AbstractItemBuilder {
 	/**
 	 * <p>
 	 * The name of the Geometry Editor.
@@ -45,29 +44,18 @@ public class GeometryEditorBuilder implements ItemBuilder {
 	public static final ItemType type = ItemType.Geometry;
 
 	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemName()
+	 * The Constructor
 	 */
-	public String getItemName() {
-		return name;
+	public GeometryEditorBuilder() {
+		setName(name);
+		setType(type);
 	}
-
-	/**
+	
+	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemType()
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
-	public ItemType getItemType() {
-		return type;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#build(IProject projectSpace)
-	 */
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 
 		// Local Declarations
 		Item item = null;
@@ -78,4 +66,5 @@ public class GeometryEditorBuilder implements ItemBuilder {
 
 		return item;
 	}
+
 }

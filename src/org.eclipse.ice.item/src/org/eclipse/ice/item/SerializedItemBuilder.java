@@ -234,4 +234,13 @@ public class SerializedItemBuilder implements ItemBuilder {
 
 		return copiedItem;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#isPublishable()
+	 */
+	@Override
+	public boolean isPublishable() {
+		return true;
+	}
 }

@@ -518,7 +518,6 @@ public class MOOSEModel extends Item {
 			// Load the MOOSE-based application if it is different than the one
 			// currently loaded.
 			if (mooseSpecFileEntry != null) {
-				System.out.println("LOADED APP: " + loadedApp + " " + mooseSpecFileEntry.getValue());
 
 				// Get the current value of the MOOSE app Entry and determine
 				String mooseSpecValue = mooseSpecFileEntry.getValue();
@@ -545,10 +544,6 @@ public class MOOSEModel extends Item {
 							.getComponent(mooseTreeCompositeId);
 
 					// Merge the input tree into the YAML spec
-					
-					// FIXME POSSIBLE PROBLEM IN MERGING INPUT TREE INTO YAML TREE
-					// WHEN 
-					
 					mergeTrees(inputTree, yamlTree);
 
 					// Save this App as a Preference
@@ -580,8 +575,6 @@ public class MOOSEModel extends Item {
 		return retStatus;
 	}
 
-	private HashMap<String, TreeComposite> previousAppTrees;
-	
 	/**
 	 * This operation is responsible for loading a MOOSE input file into the
 	 * Form's TreeComposite (id=2). It expects the input to be in the MOOSE's

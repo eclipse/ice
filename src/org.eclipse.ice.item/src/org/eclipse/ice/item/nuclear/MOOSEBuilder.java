@@ -18,6 +18,9 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**
+ * The MOOSEBuilder is an AbstractItemBuilder that constructs the MOOSE
+ * composite Item containing references to both the MOOSEModel and the
+ * MOOSELauncher.
  * 
  * @author Alex McCaskey
  *
@@ -31,14 +34,15 @@ public class MOOSEBuilder extends AbstractItemBuilder {
 		setName("MOOSE Workflow");
 		setType(ItemType.Simulation);
 	}
-	
+
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
 	@Override
 	public Item getInstance(IProject project) {
 		return new MOOSE(project);
 	}
-	
+
 }

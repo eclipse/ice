@@ -107,4 +107,9 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 			builders = itemBuilders;
 		}
 	}
+
+	@Override
+	public boolean isPublishable() {
+		return true;
+	}
 }
