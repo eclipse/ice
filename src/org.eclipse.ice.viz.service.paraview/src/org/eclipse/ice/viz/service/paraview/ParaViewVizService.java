@@ -23,7 +23,7 @@ import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilderRegistry;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 
 import com.kitware.vtk.web.VtkWebClient;
@@ -54,10 +54,10 @@ public class ParaViewVizService extends AbstractVizService {
 	private final ConnectionManager<VtkWebClient> connections;
 
 	/**
-	 * The registry of builders used to get {@link IParaViewProxy}s for
+	 * The factory of builders used to get {@link IParaViewProxy}s for
 	 * manipulating and rendering files with ParaView.
 	 */
-	private IParaViewProxyBuilderRegistry proxyBuilderRegistry;
+	private IParaViewProxyFactory proxyFactory;
 
 	/**
 	 * The default constructor.
@@ -215,42 +215,38 @@ public class ParaViewVizService extends AbstractVizService {
 	}
 
 	/**
-	 * Sets the {@link IParaViewProxyBuilder} registry. This registry should be
-	 * queried for a builder, which will then be used to create an
+	 * Sets the factory. This factory should be used to create an
 	 * {@link IParaViewProxy} when performing operations on a supported file
 	 * type.
 	 * <p>
 	 * <b>Note:</b> This method should only be called by OSGi!
 	 * </p>
 	 * 
-	 * @param registry
-	 *            The new registry.
+	 * @param factory
+	 *            The new factory.
 	 */
-	protected void setProxyBuilderRegistry(
-			IParaViewProxyBuilderRegistry registry) {
-		if (registry != null && registry != proxyBuilderRegistry) {
-			proxyBuilderRegistry = registry;
+	protected void setProxyFactory(IParaViewProxyFactory factory) {
+		if (factory != null && factory != proxyFactory) {
+			proxyFactory = factory;
 			// Update the supported file types.
 			supportedExtensions.clear();
-			supportedExtensions.addAll(registry.getExtensions());
+			supportedExtensions.addAll(factory.getExtensions());
 		}
 		return;
 	}
 
 	/**
-	 * Unsets the {@link IParaViewProxyBuilder} registry if the argument
-	 * matches.
+	 * Unsets the {@link IParaViewProxyBuilder} factory if the argument matches.
 	 * <p>
 	 * <b>Note:</b> This method should only be called by OSGi!
 	 * </p>
 	 * 
-	 * @param registry
-	 *            The old registry.
+	 * @param factory
+	 *            The old factory.
 	 */
-	protected void unsetProxyBuilderRegistry(
-			IParaViewProxyBuilderRegistry registry) {
-		if (registry == proxyBuilderRegistry) {
-			proxyBuilderRegistry = null;
+	protected void unsetProxyFactory(IParaViewProxyFactory factory) {
+		if (factory == proxyFactory) {
+			proxyFactory = null;
 			// The file types are no longer supported.
 			supportedExtensions.clear();
 		}
@@ -258,12 +254,12 @@ public class ParaViewVizService extends AbstractVizService {
 	}
 
 	/**
-	 * Gets the registry of builders used to get {@link IParaViewProxy}s for
+	 * Gets the factory of builders used to get {@link IParaViewProxy}s for
 	 * manipulating and rendering files with ParaView.
 	 * 
-	 * @return The registry, or {@code null} if it was never set (via OSGi).
+	 * @return The factory, or {@code null} if it was never set (via OSGi).
 	 */
-	protected IParaViewProxyBuilderRegistry getProxyBuilderRegistry() {
-		return proxyBuilderRegistry;
+	protected IParaViewProxyFactory getProxyFactory() {
+		return proxyFactory;
 	}
 }

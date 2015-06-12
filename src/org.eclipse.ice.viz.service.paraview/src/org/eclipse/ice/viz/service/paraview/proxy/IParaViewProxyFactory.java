@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.Set;
 
 /**
- * Implementations of this interface provide a registry that maps supported
+ * Implementations of this interface provide a factory that maps supported
  * extensions for files to {@link IParaViewProxyBuilder} instances. Client code
  * can request a builder by calling {@link #getProxyBuilder(URI)}.
  * <p>
@@ -26,7 +26,7 @@ import java.util.Set;
  * @author Jordan Deyton
  *
  */
-public interface IParaViewProxyBuilderRegistry {
+public interface IParaViewProxyFactory {
 
 	/**
 	 * Registers a new proxy builder using the builder's supported extensions.
@@ -60,15 +60,19 @@ public interface IParaViewProxyBuilderRegistry {
 	public boolean unregisterProxyBuilder(IParaViewProxyBuilder builder);
 
 	/**
-	 * Gets a builder for the provided file based on its extension.
+	 * Gets a proxy for the provided file based on its extension.
 	 * 
 	 * @param uri
-	 *            The file for which a proxy will be created. If {@code null}, a
-	 *            builder will not be returned.
-	 * @return A builder capable of creating a proxy for the file, or
-	 *         {@code null} if a builder could not be created for the file.
+	 *            The file for which a proxy will be created.
+	 * @return A proxy for the specified file. This proxy is used to interact
+	 *         with the file through a ParaView server.
+	 * @throws NullPointerException
+	 *             If the specified URI is null.
+	 * @throws IllegalArgumentException
+	 *             If the specified URI's extension is not supported.
 	 */
-	public IParaViewProxyBuilder getProxyBuilder(URI uri);
+	public IParaViewProxy createProxy(URI uri) throws NullPointerException,
+			IllegalArgumentException;
 
 	/**
 	 * Gets the set of supported extensions for all registered proxy builders.
@@ -77,8 +81,7 @@ public interface IParaViewProxyBuilderRegistry {
 	 * 
 	 * @return The set of supported extensions for all proxy builders. This
 	 *         should never be {@code null}, and should not change throughout
-	 *         the registry's lifecycle, as builders will be registered via
-	 *         OSGi.
+	 *         the factory's lifecycle, as builders will be registered via OSGi.
 	 */
 	public Set<String> getExtensions();
 }

@@ -15,36 +15,36 @@ package org.eclipse.ice.viz.service.paraview.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilderRegistry;
-import org.eclipse.ice.viz.service.paraview.proxy.ParaViewProxyBuilderRegistry;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.proxy.ParaViewProxyFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This class tests the {@link ParaViewProxyBuilderRegistry}'s implementation of
- * {@link IParaViewProxyBuilderRegistry}.
+ * This class tests the {@link ParaViewProxyFactory}'s implementation of
+ * {@link IParaViewProxyFactory}.
  * 
  * @author Jordan Deyton
  *
  */
-public class ParaViewProxyBuilderRegistryTester {
+public class ParaViewProxyFactoryTester {
 
 	/**
-	 * The registry for testing purposes. This will be re-created before each
+	 * The factory for testing purposes. This will be re-created before each
 	 * test.
 	 */
-	private IParaViewProxyBuilderRegistry registry;
+	private IParaViewProxyFactory factory;
 
 	/**
 	 * A builder that contains no supported extensions.
@@ -64,12 +64,12 @@ public class ParaViewProxyBuilderRegistryTester {
 	private FakeProxyBuilder fakeSiloProxyBuilder;
 
 	/**
-	 * Instantiates the {@link #registry} and the fake proxy builders.
+	 * Instantiates the {@link #factory} and the fake proxy builders.
 	 */
 	@Before
 	public void beforeEachTest() {
-		// Create a new registry.
-		registry = new ParaViewProxyBuilderRegistry();
+		// Create a new factory.
+		factory = new ParaViewProxyFactory();
 
 		// Create the fake proxy builders.
 		fakeEmptyProxyBuilder = new FakeProxyBuilder();
@@ -111,21 +111,21 @@ public class ParaViewProxyBuilderRegistryTester {
 
 		// Registering new builders with supported extensions should return
 		// true.
-		assertTrue(registry.registerProxyBuilder(fakeExodusProxyBuilder));
-		assertTrue(registry.registerProxyBuilder(fakeSiloProxyBuilder));
+		assertTrue(factory.registerProxyBuilder(fakeExodusProxyBuilder));
+		assertTrue(factory.registerProxyBuilder(fakeSiloProxyBuilder));
 
 		// Registering the same builder again should still return true, as it
 		// becomes the preferred builder for its supported extensions.
-		assertTrue(registry.registerProxyBuilder(fakeExodusProxyBuilder));
-		assertTrue(registry.registerProxyBuilder(fakeSiloProxyBuilder));
+		assertTrue(factory.registerProxyBuilder(fakeExodusProxyBuilder));
+		assertTrue(factory.registerProxyBuilder(fakeSiloProxyBuilder));
 
 		// Registering a builder with no supported extensions should return
 		// false (because nothing was registered!).
-		assertFalse(registry.registerProxyBuilder(fakeEmptyProxyBuilder));
+		assertFalse(factory.registerProxyBuilder(fakeEmptyProxyBuilder));
 
 		// Registering a null builder should return false (because nothing was
 		// registered!).
-		assertFalse(registry.registerProxyBuilder(nullBuilder));
+		assertFalse(factory.registerProxyBuilder(nullBuilder));
 
 		return;
 	}
@@ -140,49 +140,48 @@ public class ParaViewProxyBuilderRegistryTester {
 		final IParaViewProxyBuilder nullBuilder = null;
 
 		// Unregistering a builder that's not registered should return false.
-		assertFalse(registry.unregisterProxyBuilder(fakeExodusProxyBuilder));
-		assertFalse(registry.unregisterProxyBuilder(fakeSiloProxyBuilder));
-		assertFalse(registry.unregisterProxyBuilder(fakeEmptyProxyBuilder));
-		assertFalse(registry.unregisterProxyBuilder(nullBuilder));
+		assertFalse(factory.unregisterProxyBuilder(fakeExodusProxyBuilder));
+		assertFalse(factory.unregisterProxyBuilder(fakeSiloProxyBuilder));
+		assertFalse(factory.unregisterProxyBuilder(fakeEmptyProxyBuilder));
+		assertFalse(factory.unregisterProxyBuilder(nullBuilder));
 
 		// Register the builders. Note that really only the Exodus and Silo
 		// builders will be registered.
-		registry.registerProxyBuilder(fakeExodusProxyBuilder);
-		registry.registerProxyBuilder(fakeSiloProxyBuilder);
-		registry.registerProxyBuilder(fakeEmptyProxyBuilder);
-		registry.registerProxyBuilder(nullBuilder);
+		factory.registerProxyBuilder(fakeExodusProxyBuilder);
+		factory.registerProxyBuilder(fakeSiloProxyBuilder);
+		factory.registerProxyBuilder(fakeEmptyProxyBuilder);
+		factory.registerProxyBuilder(nullBuilder);
 
 		// We should now be able to unregister the Exodus and Silo builders.
 		// Those requests will return true. The other two reqquests will return
 		// false because nothing was unregistered.
-		assertTrue(registry.unregisterProxyBuilder(fakeExodusProxyBuilder));
-		assertTrue(registry.unregisterProxyBuilder(fakeSiloProxyBuilder));
-		assertFalse(registry.unregisterProxyBuilder(fakeEmptyProxyBuilder));
-		assertFalse(registry.unregisterProxyBuilder(nullBuilder));
+		assertTrue(factory.unregisterProxyBuilder(fakeExodusProxyBuilder));
+		assertTrue(factory.unregisterProxyBuilder(fakeSiloProxyBuilder));
+		assertFalse(factory.unregisterProxyBuilder(fakeEmptyProxyBuilder));
+		assertFalse(factory.unregisterProxyBuilder(nullBuilder));
 
 		// Make sure everything was really unregistered. If so, then nothing
 		// will be unregistered, and all calls will return false.
-		assertFalse(registry.unregisterProxyBuilder(fakeExodusProxyBuilder));
-		assertFalse(registry.unregisterProxyBuilder(fakeSiloProxyBuilder));
-		assertFalse(registry.unregisterProxyBuilder(fakeEmptyProxyBuilder));
-		assertFalse(registry.unregisterProxyBuilder(nullBuilder));
+		assertFalse(factory.unregisterProxyBuilder(fakeExodusProxyBuilder));
+		assertFalse(factory.unregisterProxyBuilder(fakeSiloProxyBuilder));
+		assertFalse(factory.unregisterProxyBuilder(fakeEmptyProxyBuilder));
+		assertFalse(factory.unregisterProxyBuilder(nullBuilder));
 
 		return;
 	}
 
 	/**
-	 * Checks that the correct builder is returned based on the registered
-	 * builders.
+	 * Checks that the correct builder is queried to create a proxy based on the
+	 * specified URI.
 	 */
 	@Test
-	public void checkGetBuilder() {
-
+	public void checkCreateProxy() {
 		URI uri;
 		final URI nullURI = null;
 
 		// Create another fake Exodus proxy builder that registers only for the
 		// "e" extension.
-		final IParaViewProxyBuilder fakeExodusProxyBuilder2 = new FakeProxyBuilder() {
+		final FakeProxyBuilder fakeExodusProxyBuilder2 = new FakeProxyBuilder() {
 			@Override
 			public Set<String> getExtensions() {
 				Set<String> extensions = super.getExtensions();
@@ -197,91 +196,142 @@ public class ParaViewProxyBuilderRegistryTester {
 		// Check this for all Exodus extensions.
 		for (String extension : fakeExodusProxyBuilder.getExtensions()) {
 			uri = TestUtils.createURI(extension);
-			assertNull(registry.getProxyBuilder(uri));
+			try {
+				factory.createProxy(uri);
+				fail("ParaViewProxyFactory error: "
+						+ "IllegalArgumentException not thrown for unsupported extension.");
+			} catch (IllegalArgumentException e) {
+				// Exception thrown as expected.
+			}
 		}
 		// Check this for all Silo extensions.
 		for (String extension : fakeSiloProxyBuilder.getExtensions()) {
 			uri = TestUtils.createURI(extension);
-			assertNull(registry.getProxyBuilder(uri));
+			try {
+				factory.createProxy(uri);
+				fail("ParaViewProxyFactory error: "
+						+ "IllegalArgumentException not thrown for unsupported extension.");
+			} catch (IllegalArgumentException e) {
+				// Exception thrown as expected.
+			}
 		}
-		// Check this for invalid URIs.
-		assertNull(registry.getProxyBuilder(TestUtils.createURI("bad")));
-		assertNull(registry.getProxyBuilder(nullURI));
+
+		// Check that a null URI throws an NPE.
+		try {
+			factory.createProxy(nullURI);
+			fail("ParaViewProxyFactory error: "
+					+ "NullPointerException not thrown for null URI.");
+		} catch (NullPointerException e) {
+			// Exception thrown as expected.
+		}
+
+		// Check another bad URI.
+		try {
+			factory.createProxy(TestUtils.createURI("bad"));
+			fail("ParaViewProxyFactory error: "
+					+ "IllegalArgumentException not thrown for unsupported extension.");
+		} catch (IllegalArgumentException e) {
+			// Exception thrown as expected.
+		}
 
 		// Register the main fake Exodus and the single Silo builders.
-		registry.registerProxyBuilder(fakeExodusProxyBuilder);
-		registry.registerProxyBuilder(fakeSiloProxyBuilder);
+		factory.registerProxyBuilder(fakeExodusProxyBuilder);
+		factory.registerProxyBuilder(fakeSiloProxyBuilder);
 
 		// Check that all of their extensions return the correct builder,
 		// and that the query is case insensitive.
 		for (String extension : fakeExodusProxyBuilder.getExtensions()) {
 			uri = TestUtils.createURI(extension.toLowerCase());
-			assertSame(fakeExodusProxyBuilder, registry.getProxyBuilder(uri));
+			factory.createProxy(uri);
+			assertTrue(fakeExodusProxyBuilder.createdProxy.getAndSet(false));
 			uri = TestUtils.createURI(extension.toUpperCase());
-			assertSame(fakeExodusProxyBuilder, registry.getProxyBuilder(uri));
+			factory.createProxy(uri);
+			assertTrue(fakeExodusProxyBuilder.createdProxy.getAndSet(false));
 		}
 		for (String extension : fakeSiloProxyBuilder.getExtensions()) {
 			uri = TestUtils.createURI(extension.toLowerCase());
-			assertSame(fakeSiloProxyBuilder, registry.getProxyBuilder(uri));
+			factory.createProxy(uri);
+			assertTrue(fakeSiloProxyBuilder.createdProxy.getAndSet(false));
 			uri = TestUtils.createURI(extension.toUpperCase());
-			assertSame(fakeSiloProxyBuilder, registry.getProxyBuilder(uri));
+			factory.createProxy(uri);
+			assertTrue(fakeSiloProxyBuilder.createdProxy.getAndSet(false));
 		}
 
 		// Register the second fake Exodus builder. It should now be returned
 		// when the extension is "e", but all other Exodus extensions should
 		// still be the first builder.
-		registry.registerProxyBuilder(fakeExodusProxyBuilder2);
+		factory.registerProxyBuilder(fakeExodusProxyBuilder2);
 		for (String extension : fakeExodusProxyBuilder.getExtensions()) {
 			uri = TestUtils.createURI(extension);
+			factory.createProxy(uri);
 			if (!"e".equals(extension)) {
-				assertSame(fakeExodusProxyBuilder,
-						registry.getProxyBuilder(uri));
+				assertTrue(fakeExodusProxyBuilder.createdProxy.getAndSet(false));
 			} else {
-				assertSame(fakeExodusProxyBuilder2,
-						registry.getProxyBuilder(uri));
+				assertTrue(fakeExodusProxyBuilder2.createdProxy
+						.getAndSet(false));
 			}
 		}
 
 		// Now re-register the main fake Exodus builder. It should now take
 		// precedence over the "e" extension.
-		registry.registerProxyBuilder(fakeExodusProxyBuilder);
+		factory.registerProxyBuilder(fakeExodusProxyBuilder);
 		for (String extension : fakeExodusProxyBuilder.getExtensions()) {
 			uri = TestUtils.createURI(extension);
-			assertSame(fakeExodusProxyBuilder, registry.getProxyBuilder(uri));
+			factory.createProxy(uri);
+			assertTrue(fakeExodusProxyBuilder.createdProxy.getAndSet(false));
 		}
 
 		// Unregister the Silo builder. All builder requests for Silo extensions
 		// should return null.
-		registry.unregisterProxyBuilder(fakeSiloProxyBuilder);
+		factory.unregisterProxyBuilder(fakeSiloProxyBuilder);
 		for (String extension : fakeSiloProxyBuilder.getExtensions()) {
 			uri = TestUtils.createURI(extension);
-			assertNull(registry.getProxyBuilder(uri));
+			try {
+				factory.createProxy(uri);
+				fail("ParaViewProxyFactory error: "
+						+ "IllegalArgumentException not thrown for unsupported extension.");
+			} catch (IllegalArgumentException e) {
+				// Exception thrown as expected.
+			}
 		}
 
 		// Now unregister the main fake Exodus builder. Only the "e" extension
 		// will still be supported by the second fake Exodus builder.
-		registry.unregisterProxyBuilder(fakeExodusProxyBuilder);
+		factory.unregisterProxyBuilder(fakeExodusProxyBuilder);
 		for (String extension : fakeExodusProxyBuilder.getExtensions()) {
 			uri = TestUtils.createURI(extension);
 			if (!"e".equals(extension)) {
-				assertNull(registry.getProxyBuilder(uri));
+				try {
+					factory.createProxy(uri);
+					fail("ParaViewProxyFactory error: "
+							+ "IllegalArgumentException not thrown for unsupported extension.");
+				} catch (IllegalArgumentException e) {
+					// Exception thrown as expected.
+				}
 			} else {
-				assertSame(fakeExodusProxyBuilder2,
-						registry.getProxyBuilder(uri));
+				factory.createProxy(uri);
+				assertTrue(fakeExodusProxyBuilder2.createdProxy
+						.getAndSet(false));
 			}
 		}
 
 		// Now unregister the second fake Exodus builder. Requesting a builder
 		// for the extension "e" should return null.
-		registry.unregisterProxyBuilder(fakeExodusProxyBuilder2);
-		assertNull(registry.getProxyBuilder(TestUtils.createURI("e")));
+		factory.unregisterProxyBuilder(fakeExodusProxyBuilder2);
+		try {
+			factory.createProxy(TestUtils.createURI("e"));
+			fail("ParaViewProxyFactory error: "
+					+ "IllegalArgumentException not thrown for unsupported extension.");
+		} catch (IllegalArgumentException e) {
+			// Exception thrown as expected.
+		}
 
 		return;
 	}
 
 	/**
 	 * Checks that all extensions for all registered builders can be queried
-	 * from the registry.
+	 * from the factory.
 	 */
 	@Test
 	public void checkExtensions() {
@@ -298,9 +348,9 @@ public class ParaViewProxyBuilderRegistryTester {
 		};
 
 		// Register the proxy builders.
-		registry.registerProxyBuilder(fakeExodusProxyBuilder);
-		registry.registerProxyBuilder(fakeSiloProxyBuilder);
-		registry.registerProxyBuilder(fakeExodusProxyBuilder2);
+		factory.registerProxyBuilder(fakeExodusProxyBuilder);
+		factory.registerProxyBuilder(fakeSiloProxyBuilder);
+		factory.registerProxyBuilder(fakeExodusProxyBuilder2);
 
 		// The set of returned extensions should contain all Exodus and Silo
 		// extensions, regardless of the existence of shared extensions.
@@ -313,16 +363,16 @@ public class ParaViewProxyBuilderRegistryTester {
 		}
 
 		// The returned set should be ordered (usually via a TreeSet).
-		Set<String> supportedExtensions = registry.getExtensions();
+		Set<String> supportedExtensions = factory.getExtensions();
 		assertEquals(expectedExtensions, supportedExtensions);
 
 		// The returned set should be a new, equivalent set each time.
-		assertNotSame(supportedExtensions, registry.getExtensions());
-		assertEquals(supportedExtensions, registry.getExtensions());
+		assertNotSame(supportedExtensions, factory.getExtensions());
+		assertEquals(supportedExtensions, factory.getExtensions());
 
 		// Modifying the returned set should make no difference.
-		registry.getExtensions().clear();
-		assertEquals(expectedExtensions, registry.getExtensions());
+		factory.getExtensions().clear();
+		assertEquals(expectedExtensions, factory.getExtensions());
 
 		return;
 	}
@@ -335,6 +385,11 @@ public class ParaViewProxyBuilderRegistryTester {
 	 *
 	 */
 	private class FakeProxyBuilder implements IParaViewProxyBuilder {
+
+		/**
+		 * If true, then {@link #createProxy(URI)} was called, false otherwise.
+		 */
+		public final AtomicBoolean createdProxy = new AtomicBoolean();
 
 		/**
 		 * Returns {@code null}.
@@ -357,7 +412,8 @@ public class ParaViewProxyBuilderRegistryTester {
 		 */
 		@Override
 		public IParaViewProxy createProxy(URI file)
-				throws IllegalArgumentException {
+				throws NullPointerException, IllegalArgumentException {
+			createdProxy.set(true);
 			return null;
 		}
 	}

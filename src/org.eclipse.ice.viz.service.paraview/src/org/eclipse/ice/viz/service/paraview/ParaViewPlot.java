@@ -21,7 +21,6 @@ import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
 import org.eclipse.swt.widgets.Composite;
 
 import com.kitware.vtk.web.VtkWebClient;
@@ -75,19 +74,10 @@ public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
 	public void setDataSource(URI uri) throws NullPointerException,
 			IOException, IllegalArgumentException, Exception {
 
-		// Get an IParaViewProxy for the file. Throw an exception if a builder
-		// could not be found.
-		IParaViewProxyBuilder builder;
-		builder = vizService.getProxyBuilderRegistry().getProxyBuilder(uri);
-		if (builder == null) {
-			throw new IllegalStateException("ParaViewPlot error: "
-					+ "Could not find a proxy builder for the file \""
-					+ uri.getPath() + "\".");
-		}
-
 		// Attempt to create the IParaViewProxy. This will throw an exception if
 		// the URI is null or its extension is invalid.
-		IParaViewProxy proxy = builder.createProxy(uri);
+		IParaViewProxy proxy = vizService.getProxyFactory()
+				.createProxy(uri);
 		// Attempt to open the file.
 		if (proxy.open(getParaViewConnectionAdapter())) {
 			this.proxy = proxy;

@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilderRegistry;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -34,7 +34,7 @@ import com.kitware.vtk.web.VtkWebClient;
  * <p>
  * <b>Note:</b> In practice, instances of this class should not be instantiated.
  * Rather, they should be obtained from the
- * {@link IParaViewProxyBuilderRegistry}.
+ * {@link IParaViewProxyFactory}.
  * </p>
  * 
  * @author Jordan Deyton

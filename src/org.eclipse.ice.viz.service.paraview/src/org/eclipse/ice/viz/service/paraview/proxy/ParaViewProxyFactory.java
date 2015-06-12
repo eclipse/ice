@@ -22,7 +22,7 @@ import java.util.TreeSet;
 
 /**
  * This class provides the standard implementation of the
- * {@link IParaViewProxyBuilderRegistry}.
+ * {@link IParaViewProxyFactory}.
  * <p>
  * This implementation provides an additional feature: If multiple builders
  * support the same extensions, then for each shared extension, the most
@@ -34,8 +34,7 @@ import java.util.TreeSet;
  * @author Jordan Deyton
  *
  */
-public class ParaViewProxyBuilderRegistry implements
-		IParaViewProxyBuilderRegistry {
+public class ParaViewProxyFactory implements IParaViewProxyFactory {
 
 	/**
 	 * The map of builders, keyed on supported extensions. We use a list for
@@ -50,13 +49,13 @@ public class ParaViewProxyBuilderRegistry implements
 	 * <b>Note:</b> This class should be instantiated by OSGi!
 	 * </p>
 	 */
-	public ParaViewProxyBuilderRegistry() {
+	public ParaViewProxyFactory() {
 		// Initialize the map of builders.
 		builderMap = new HashMap<String, List<IParaViewProxyBuilder>>();
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyBuilderRegistry.
+	 * Implements a method from IParaViewProxyFactory.
 	 */
 	@Override
 	public boolean registerProxyBuilder(IParaViewProxyBuilder builder) {
@@ -89,10 +88,9 @@ public class ParaViewProxyBuilderRegistry implements
 			}
 		}
 
-		// TODO Send this to a logging system.
 		// Print out debug output.
 		if (registered) {
-			System.out.println("ParaViewProxyBuilderRegistry message: " + "\""
+			System.out.println("ParaViewProxyFactory message: " + "\""
 					+ builder.getName() + "\" registered.");
 		}
 
@@ -100,7 +98,7 @@ public class ParaViewProxyBuilderRegistry implements
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyBuilderRegistry.
+	 * Implements a method from IParaViewProxyFactory.
 	 */
 	@Override
 	public boolean unregisterProxyBuilder(IParaViewProxyBuilder builder) {
@@ -128,10 +126,9 @@ public class ParaViewProxyBuilderRegistry implements
 			}
 		}
 
-		// TODO Send this to a logging system.
 		// Print out debug output.
 		if (unregistered) {
-			System.out.println("ParaViewProxyBuilderRegistry message: " + "\""
+			System.out.println("ParaViewProxyFactory message: " + "\""
 					+ builder.getName() + "\" unregistered.");
 		}
 
@@ -139,35 +136,43 @@ public class ParaViewProxyBuilderRegistry implements
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyBuilderRegistry.
+	 * Implements a method from IParaViewProxyFactory.
 	 */
 	@Override
-	public IParaViewProxyBuilder getProxyBuilder(URI uri) {
-		IParaViewProxyBuilder builder = null;
-		if (uri != null) {
-			String extension = null;
-
-			// If possible, determine the extension of the URI. Make it lower
-			// case, as case should not matter.
-			try {
-				String path = uri.getPath();
-				extension = path.substring(path.lastIndexOf(".") + 1)
-						.toLowerCase();
-			} catch (IndexOutOfBoundsException e) {
-				// Nothing to do.
-			}
-
-			// Get the last builder that was registered fo the extension.
-			List<IParaViewProxyBuilder> builders = builderMap.get(extension);
-			if (builders != null && !builders.isEmpty()) {
-				builder = builders.get(builders.size() - 1);
-			}
+	public IParaViewProxy createProxy(URI uri) throws NullPointerException,
+			IllegalArgumentException {
+		// Check for a null URI.
+		if (uri == null) {
+			throw new NullPointerException("ParaViewProxyFactory error: "
+					+ "Cannot create a proxy for a null file.");
 		}
-		return builder;
+
+		// If possible, determine the extension of the URI. Make it lower
+		// case, as case should not matter.
+		String extension = null;
+		try {
+			String path = uri.getPath();
+			extension = path.substring(path.lastIndexOf(".") + 1).toLowerCase();
+		} catch (IndexOutOfBoundsException e) {
+			// Nothing to do.
+		}
+
+		// Throw an exception if the extension is not supported.
+		if (!builderMap.containsKey(extension)) {
+			throw new IllegalArgumentException("ParaViewProxyFactory error: "
+					+ "The extension \"" + extension + "\" is not supported.");
+		}
+
+		// Get the most recently registered builder for the extension.
+		List<IParaViewProxyBuilder> builders = builderMap.get(extension);
+		IParaViewProxyBuilder builder = builders.get(builders.size() - 1);
+
+		// Return a new proxy created by the builder.
+		return builder.createProxy(uri);
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyBuilderRegistry.
+	 * Implements a method from IParaViewProxyFactory.
 	 */
 	@Override
 	public Set<String> getExtensions() {

@@ -20,7 +20,7 @@ import java.util.Set;
  * can be created for a set of supported extensions.
  * <p>
  * Instances of this class should register with the
- * {@link IParaViewProxyBuilderRegistry} via OSGi.
+ * {@link IParaViewProxyFactory} via OSGi.
  * </p>
  * 
  * @author Jordan Deyton
