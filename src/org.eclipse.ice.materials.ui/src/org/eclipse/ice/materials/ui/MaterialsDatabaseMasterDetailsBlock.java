@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.ui.workbench.IWorkbench;
 import org.eclipse.ice.datastructures.form.Material;
@@ -120,6 +122,8 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		treeViewer.setLabelProvider(new MaterialsDatabaseLabelProvider());
 
 		// Set the input and layout information on the treeViewer
+		List<Material> materials = materialsDatabase.getMaterials();
+		
 		treeViewer.setInput(materialsDatabase.getMaterials());
 		treeViewer.getTree().setLayout(new GridLayout(1, true));
 		
