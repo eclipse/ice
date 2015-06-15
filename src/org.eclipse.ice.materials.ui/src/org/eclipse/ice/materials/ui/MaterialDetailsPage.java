@@ -206,7 +206,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 				
 				//makes the NatTable, with the list data and current sectionClient to draw on.
 				@SuppressWarnings("unused")
-				ListComponentNattable nattable = new ListComponentNattable(sectionClient, list, false);
+				ListComponentNattable nattable = new ListComponentNattable(sectionClient, list, true);
 			}
 			
 			//updates the material.
@@ -290,7 +290,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 			
 			//makes the NatTable, with the list data and current sectionClient to draw on.
 			@SuppressWarnings("unused")
-			ListComponentNattable nattable = new ListComponentNattable(sectionClient, list, false);
+			ListComponentNattable nattable = new ListComponentNattable(sectionClient, list, true);
 		}
 		
 		// Add a composite for holding the Add and Delete buttons for adding

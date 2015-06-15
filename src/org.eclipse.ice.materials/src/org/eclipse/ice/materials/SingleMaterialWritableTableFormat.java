@@ -100,7 +100,15 @@ public class SingleMaterialWritableTableFormat implements WritableTableFormat<St
 	 */
 	@Override
 	public String setColumnValue(String property, Object newVal, int col) {
-		material.setProperty(property, (Double)newVal);
+		double val;
+		if(newVal instanceof String){
+			try{
+				val = Double.parseDouble((String)newVal);
+				material.setProperty(property, val);
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 	
