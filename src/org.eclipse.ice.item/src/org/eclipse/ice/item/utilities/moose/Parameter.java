@@ -346,6 +346,11 @@ public class Parameter {
 		entry.setRequired(required);
 		entry.setTag(enabled ? "true" : "false");
 
+		if ("type".equals(getName())) {
+			entry.setRequired(true);
+			entry.setTag("true");
+		}
+		
 		return entry;
 	}
 

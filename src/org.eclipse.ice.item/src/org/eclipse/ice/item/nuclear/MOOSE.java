@@ -37,6 +37,7 @@ import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIte
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
+import org.eclipse.ice.item.messaging.Message;
 
 /**
  * The MOOSE Item represents a unification of the MOOSEModel and MOOSELauncher.
@@ -217,6 +218,42 @@ public class MOOSE extends Item {
 		// Parse the action name
 		if ("Launch the Job".equals(actionName)) {
 
+			// Add the ICEUpdater tree block to Outputs
+			TreeComposite outputs = getTreeByName("Outputs");
+			boolean iNeedUpdater = true;
+			for (int i = 0; i < outputs.getNumberOfChildren(); i++) {
+				if ("ICEUpdater".equals(outputs.getChildAtIndex(i).getName())) {
+					iNeedUpdater = false;
+					break;
+				}
+			}
+
+			if (iNeedUpdater) {
+				for (int i = 0; i < outputs.getChildExemplars().size(); i++) {
+					if ("ICEUpdater".equals(outputs.getChildExemplars().get(i)
+							.getName())) {
+						System.out
+								.println("Creating an instance of ICEUpdater");
+						TreeComposite updater = (TreeComposite) outputs
+								.getChildExemplars().get(i).clone();
+						outputs.setNextChild(updater);
+
+						DataComponent data = (DataComponent) updater
+								.getDataNodes().get(0);
+						data.retrieveEntry("item_id").setValue(
+								String.valueOf(getId()));
+						data.retrieveEntry("url")
+								.setValue(
+										"http://localhost:"
+												+ System.getProperty("org.eclipse.equinox.http.jetty.http.port")
+												+ "/ice/update");
+						updater.setActive(true);
+						updater.setActiveDataNode(data);
+						break;
+					}
+				}
+			}
+
 			// Get a reference to the Launchers files component
 			DataComponent launcherFiles = (DataComponent) mooseLauncher
 					.getForm().getComponent(1);
@@ -226,12 +263,10 @@ public class MOOSE extends Item {
 					.getValue();
 
 			// Write the Moose file if it doesn't exist
-			// if (!project.getFile(fileName).exists()) {
 			retStatus = mooseModel.process("Write MOOSE File");
 			if (!retStatus.equals(FormStatus.Processed)) {
 				return retStatus;
 			}
-			// }
 
 			// Set the value of the input file to the user-specified
 			// file name
@@ -361,7 +396,39 @@ public class MOOSE extends Item {
 
 		loadFileEntries();
 
+		// Register this Item as a listener to the Variables block
+		// this is so we can use the variables to populate things like
+		// kernel variable entries.
+		TreeComposite variablesTree = getTreeByName("Variables");
+		update(variablesTree);
+		variablesTree.register(this);
+		modelTree.register(this);
+		registered = true;
+
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.item.Item#update(org.eclipse.ice.item.messaging.Message)
+	 */
+	@Override
+	public boolean update(Message message) {
+
+		super.update(message);
+
+		String type = message.getType();
+		String text = message.getMessage();
+
+		if ("FILE_CREATED".equals(type)) {
+
+		} else if ("MESSAGE_POSTED".equals(type)) {
+
+		}
+
+		return true;
 	}
 
 	/*
@@ -435,8 +502,8 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * This method updates the given TreeComposite with the 
-	 * proper list of Variables if it has a 'variable' Entry. 
+	 * This method updates the given TreeComposite with the proper list of
+	 * Variables if it has a 'variable' Entry.
 	 * 
 	 * @param block
 	 */
@@ -484,9 +551,8 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * This method walks the tree and updates all Entries 
-	 * that have the name 'variable' with the proper list 
-	 * of available Variables. 
+	 * This method walks the tree and updates all Entries that have the name
+	 * 'variable' with the proper list of available Variables.
 	 */
 	private void updateAllVariableEntries() {
 		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
@@ -499,8 +565,8 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * This method finds the child TreeComposite of modelTree that has the 
-	 * given String name. 
+	 * This method finds the child TreeComposite of modelTree that has the given
+	 * String name.
 	 * 
 	 * @param name
 	 * @return

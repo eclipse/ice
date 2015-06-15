@@ -777,6 +777,7 @@ public class ItemManager implements ItemListener {
 		boolean retVal = false;
 		int itemId = msg.getItemId();
 
+		System.out.println("Update Message Item Id is " + itemId);
 		// Push the message if possible
 		if (itemList.containsKey(itemId)) {
 			// Grab the Item
