@@ -15,9 +15,14 @@ package org.eclipse.ice.viz.service.paraview;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Frame;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
+import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -25,6 +30,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ToolBar;
 
 import com.kitware.vtk.web.VtkWebClient;
 import com.kitware.vtk.web.util.InteractiveRenderPanel;
@@ -57,6 +63,24 @@ public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
 	 * The embedded panel that is used to render the remote ParaView/VTK view.
 	 */
 	private InteractiveRenderPanel renderPanel;
+
+	/**
+	 * The {@code ToolBarManager} that will contain the plot actions that can
+	 * update the plot widget.
+	 */
+	private ToolBarManager toolBar;
+
+	/**
+	 * The {@code ActionTree} that can be used to update the plot category and
+	 * type.
+	 */
+	private ActionTree plotTypeTree;
+
+	/**
+	 * The {@code ActionTree} that can be used to update the available plot
+	 * properties.
+	 */
+	private ActionTree propertiesTree;
 
 	// ----------------------- //
 
@@ -109,6 +133,15 @@ public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
 		gridLayout.marginHeight = 0;
 		plotContainer.setLayout(gridLayout);
 
+		// Create a ToolBar.
+		ToolBarManager toolBarManager = new ToolBarManager();
+		this.toolBar = toolBarManager;
+		ToolBar toolBar = toolBarManager.createControl(plotContainer);
+		toolBar.setBackground(parent.getBackground());
+		toolBar.setFont(parent.getFont());
+		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		fillToolBar(toolBarManager, connection);
+
 		// Since the ParaView widget is built on AWT, we will need to use the
 		// SWT_AWT bridge below.
 
@@ -138,6 +171,9 @@ public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
 		renderPanel = new InteractiveRenderPanel(connection, proxy.getViewId(),
 				4, 80, 1);
 		frame.add(renderPanel, BorderLayout.CENTER);
+
+		// Update the ToolBar based on the current proxy.
+		refreshToolBar(toolBarManager);
 
 		// Return the overall container.
 		return plotContainer;
@@ -174,13 +210,18 @@ public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
 			renderPanel = new InteractiveRenderPanel(connection,
 					proxy.getViewId(), 4, 80, 1);
 			frame.add(renderPanel, BorderLayout.CENTER);
+
+			// Update the ToolBar based on the current proxy.
+			refreshToolBar(toolBar);
 		}
 
 		// Otherwise, we should be able to update the render panel.
 
 		// TODO We'll need to do more than this! We also should do anything if
 		// the value hasn't changed.
-		proxy.setFeature(getPlotCategory(), getPlotType());
+		Future<Boolean> task = proxy.setFeature(getPlotCategory(),
+				getPlotType());
+		refreshWidgetAfterTask(task);
 
 		return;
 	}
@@ -192,5 +233,113 @@ public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
 	protected void clearCache() {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * Fills the specified {@code ToolBar} with actions that can be used to
+	 * update the rendered plot.
+	 * <p>
+	 * <b>Note:</b> This method should only be called once, and should be called
+	 * at plot creation time.
+	 * </p>
+	 * 
+	 * @param toolBar
+	 *            The {@code ToolBarManager} that will be populated.
+	 */
+	private void fillToolBar(ToolBarManager toolBar,
+			final VtkWebClient connection) {
+
+		plotTypeTree = new ActionTree("Plot Types");
+		toolBar.add(plotTypeTree.getContributionItem());
+
+		// Add widgets to change the representation.
+		propertiesTree = new ActionTree("Properties");
+		toolBar.add(propertiesTree.getContributionItem());
+
+		// Refresh the ToolBar.
+		toolBar.update(true);
+
+		return;
+	}
+
+	/**
+	 * Refreshes (if necessary) the widgets in the {@code ToolBar}.
+	 * <p>
+	 * Specifically, this method updates both the {@link #plotTypeTree} and
+	 * {@link #representationTree}.
+	 * </p>
+	 * 
+	 * @param toolBar
+	 *            The {@code ToolBar} to update.
+	 */
+	private void refreshToolBar(ToolBarManager toolBar) {
+		// Create an ActionTree for the available plot categories and types.
+		// Selecting one of the leaf nodes should set the category and type for
+		// the associated plot.
+
+		ActionTree tree;
+
+		// Re-build the plot type tree with the proxy's categories and features.
+		plotTypeTree.removeAll();
+		for (final String category : proxy.getFeatureCategories()) {
+			tree = new ActionTree(category);
+			for (final String feature : proxy.getFeatures(category)) {
+				tree.add(new ActionTree(new Action(feature) {
+					@Override
+					public void run() {
+						Future<Boolean> task = proxy.setFeature(category,
+								feature);
+						refreshWidgetAfterTask(task);
+					}
+				}));
+			}
+			plotTypeTree.add(tree);
+		}
+
+		// Re-build the property tree with the proxy's properties and allowed
+		// values.
+		propertiesTree.removeAll();
+		for (final String property : proxy.getProperties().keySet()) {
+			tree = new ActionTree(property);
+			for (final String value : proxy.getPropertyAllowedValues(property)) {
+				tree.add(new ActionTree(new Action(value) {
+					@Override
+					public void run() {
+						Future<Boolean> task = proxy.setProperty(property,
+								value);
+						refreshWidgetAfterTask(task);
+					}
+				}));
+			}
+			propertiesTree.add(tree);
+		}
+
+		// Refresh the ToolBar.
+		toolBar.update(true);
+
+		return;
+	}
+
+	/**
+	 * Refreshes the {@link #renderPanel} after the task completes. Waiting is
+	 * performed on a separate thread.
+	 * 
+	 * @param task
+	 *            The task to wait on.
+	 */
+	private void refreshWidgetAfterTask(final Future<?> task) {
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					task.get();
+					renderPanel.dirty();
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		thread.setDaemon(true);
+		thread.start();
 	}
 }
