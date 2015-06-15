@@ -15,6 +15,7 @@ package org.eclipse.ice.viz.service.paraview.proxy;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -282,31 +283,31 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 				if (!newCategory.equals(category)
 						|| !newFeature.equals(feature)) {
 					// Get the set of features for the category.
-					Set<String> featureSet = featureMap.get(category);
+					Set<String> featureSet = featureMap.get(newCategory);
 					if (featureSet != null) {
 						// Make sure the feature is valid for the category
 						// before updating the client.
-						if (featureSet.contains(feature)) {
+						if (featureSet.contains(newFeature)) {
 							// Only attempt to update the feature and category
 							// if the client is connected and can be
 							// successfully updated.
 							if (connection.getState() == ConnectionState.Connected
-									&& setFeatureOnClient(connection, category,
-											feature)) {
-								category = newCategory;
-								feature = newFeature;
+									&& setFeatureOnClient(connection,
+											newCategory, newFeature)) {
+								AbstractParaViewProxy.this.category = newCategory;
+								AbstractParaViewProxy.this.feature = newFeature;
 								changed = true;
 							}
 						} else {
 							throw new IllegalArgumentException(
 									"ParaViewProxy error: "
-											+ "Invalid feature \"" + feature
+											+ "Invalid feature \"" + newFeature
 											+ "\".");
 						}
 					} else {
 						throw new IllegalArgumentException(
 								"ParaViewProxy error: " + "Invalid category \""
-										+ category + "\".");
+										+ newCategory + "\".");
 					}
 				}
 
@@ -584,7 +585,123 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	protected List<IProxyProperty> findProperties(
 			ParaViewConnectionAdapter connection) {
 		List<IProxyProperty> properties = new ArrayList<IProxyProperty>();
-		// TODO Add some default properties.
+
+		// Set up a property that sets the "pv.vcr.action", which can be used to
+		// update the timestep. This action takes a single argument, which must
+		// be one of "next", "prev", "first", and "last". It returns the current
+		// time.
+		properties.add(new AbstractProxyProperty("Timestep", this, connection) {
+			@Override
+			protected String findValue(ParaViewConnectionAdapter connection) {
+				// Always start on the first timestep.
+				return "first";
+			}
+
+			@Override
+			protected Set<String> findAllowedValues(
+					ParaViewConnectionAdapter connection) {
+				// Set up the four allowed values.
+				Set<String> allowedValues = new HashSet<String>();
+				allowedValues.add("first");
+				allowedValues.add("last");
+				allowedValues.add("next");
+				allowedValues.add("prev");
+				return allowedValues;
+			}
+
+			@Override
+			protected boolean setValueOnClient(String value,
+					ParaViewConnectionAdapter connection) {
+
+				VtkWebClient client = connection.getConnection();
+				boolean updated = false;
+
+				// Set up the arguments to pv.vcr.action, which takes a single
+				// string "action", which is one of "first", "last", "next",
+				// "prev".
+				JsonArray args = new JsonArray();
+				args.add(new JsonPrimitive(value));
+
+				// Send the request to the client.
+				try {
+					JsonObject response = client.call("pv.vcr.action", args)
+							.get();
+					System.out.println(response.toString());
+					updated = true;
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				}
+
+				return updated;
+			}
+		});
+
+		// Set up a property that can be used to set the representation type.
+		properties.add(new AbstractProxyProperty("Representation", this,
+				connection) {
+			@Override
+			protected String findValue(ParaViewConnectionAdapter connection) {
+				// TODO This can be found from the file.
+				return "Surface";
+			}
+
+			@Override
+			protected Set<String> findAllowedValues(
+					ParaViewConnectionAdapter connection) {
+				// TODO This can be found from the file.
+				Set<String> allowedValues = new HashSet<String>();
+				allowedValues.add("3D Glyphs");
+				allowedValues.add("Outline");
+				allowedValues.add("Points");
+				allowedValues.add("Surface");
+				allowedValues.add("Surface With Edges");
+				allowedValues.add("Volume");
+				allowedValues.add("Wireframe");
+				return allowedValues;
+			}
+
+			@Override
+			protected boolean setValueOnClient(String value,
+					ParaViewConnectionAdapter connection) {
+
+				VtkWebClient client = connection.getConnection();
+
+				boolean updated = false;
+
+				JsonArray args = new JsonArray();
+				JsonArray updatedProperties = new JsonArray();
+				JsonObject repProperty = new JsonObject();
+				repProperty.addProperty("id",
+						Integer.toString(getRepresentationId()));
+				repProperty.addProperty("name", "Representation");
+				repProperty.addProperty("value", value);
+				updatedProperties.add(repProperty);
+
+				// Update the properties that were configured.
+				args = new JsonArray();
+				args.add(updatedProperties);
+				JsonObject response;
+				try {
+					response = client.call("pv.proxy.manager.update", args)
+							.get();
+					if (!response.get("success").getAsBoolean()) {
+						System.out
+								.println("Failed to set the representation: ");
+						JsonArray array = response.get("errorList")
+								.getAsJsonArray();
+						for (int i = 0; i < array.size(); i++) {
+							System.out.println(array.get(i));
+						}
+					}
+					updated = true;
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				}
+
+				return updated;
+			}
+		});
+
 		return properties;
 	}
 
