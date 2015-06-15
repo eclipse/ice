@@ -37,6 +37,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -121,7 +122,13 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		// Set the input and layout information on the treeViewer
 		treeViewer.setInput(materialsDatabase.getMaterials());
 		treeViewer.getTree().setLayout(new GridLayout(1, true));
-		treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		//Sets the gridData to grab the availiable space, but to have only the treeview have the scrolling.
+		//This allows for the master tree to scroll without moving the details page out of the viewport. 
+		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		data.widthHint = sectionClient.getClientArea().width;
+		data.heightHint = sectionClient.getClientArea().height;
+		treeViewer.getTree().setLayoutData(data);
 
 		// Add a listener to notify the managed form when a selection is made so
 		// that its details can be presented.
