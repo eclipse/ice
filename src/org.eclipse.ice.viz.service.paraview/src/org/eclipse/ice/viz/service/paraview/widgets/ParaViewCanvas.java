@@ -17,8 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -69,13 +67,6 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 	 * The service used to start worker threads.
 	 */
 	private final ExecutorService executorService;
-	/**
-	 * This lock is used by {@link #refreshRunnable} to determine if the refresh
-	 * thread is currently running. In the unlikely--but possible--case that a
-	 * second refresh thread gets started, this prevents the refresh threads
-	 * from racing.
-	 */
-	private final Lock refreshLock = new ReentrantLock();
 	/**
 	 * If true, then the client needs to be queried and the Canvas updated. This
 	 * is used to see if the {@link #refreshRunnable} needs to be started or if
@@ -161,25 +152,16 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 
 	/**
 	 * Triggers a refresh of the Canvas. This method may be called from off the
-	 * UI thread.
+	 * UI thread. It does not block the calling thread.
 	 */
 	public void refresh() {
-
 		/**
 		 * Since requesting a new image from the proxy may be time consuming,
 		 * refreshing should trigger a separate thread that syncs with the UI
 		 * only when necessary.
 		 * 
 		 * Below, we use the "stale" flag to determine if we need to create a
-		 * new thread. The thread uses the "stale" flag in a while loop to
-		 * continue processing refresh events.
-		 * 
-		 * There is a possible race condition where an existing refresh thread
-		 * sets the "stale" flag to false. If this method is called immediately
-		 * elsewhere, then this code will launch a new refresh thread. Then two
-		 * refresh threads can potentially conflict. To get around this, we use
-		 * the "refreshLock" to ensure that only one thread will be doing actual
-		 * work at any given time.
+		 * new task.
 		 */
 
 		// Mark the stale flag. If it was unset, then we need to start a
@@ -189,59 +171,40 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 				@Override
 				public void run() {
 
-					// Before we start handling refresh events, we need to make
-					// sure another refresh thread is not running. This blocks
-					// until that thread finishes.
-					refreshLock.lock();
-					try {
+					// Keep processing refresh events while the view is stale.
+					if (stale.getAndSet(false)) {
 
-						// Keep processing refresh events while the view is
-						// stale.
-						while (stale.getAndSet(false)) {
+						// Get the current size of the Canvas.
+						final Point size = new Point(0, 0);
+						getDisplay().syncExec(new Runnable() {
+							@Override
+							public void run() {
+								if (!isDisposed()) {
+									Point canvasSize = getSize();
+									size.x = canvasSize.x;
+									size.y = canvasSize.y;
+								}
+							}
+						});
 
-							// Get the current size of the Canvas.
-							final Point size = new Point(0, 0);
-							getDisplay().syncExec(new Runnable() {
+						// Update the client and get the current render Image.
+						final Image newImage = refreshClient(client, viewId,
+								size.x, size.y);
+
+						// If a new Image could be retrieved, sync it with the
+						// UI thread. Note: We don't need to wait on the UI
+						// thread to handle this update.
+						if (newImage != null) {
+							getDisplay().asyncExec(new Runnable() {
 								@Override
 								public void run() {
 									if (!isDisposed()) {
-										Point canvasSize = getSize();
-										size.x = canvasSize.x;
-										size.y = canvasSize.y;
+										image.set(newImage);
+										redraw();
 									}
 								}
 							});
-
-							// TODO Remove the print messages.
-							// Request a new Image from the client.
-							System.out.println("Requesting image with size "
-									+ size.x + " " + size.y);
-							final Image newImage = refreshClient(client,
-									viewId, size.x, size.y);
-							System.out.println("Received image with size "
-									+ newImage.getBounds().width + " "
-									+ newImage.getBounds().height);
-
-							// If a new Image could be retrieved, sync it with
-							// the UI thread. Note: We don't need to wait on the
-							// UI thread to handle this update.
-							if (newImage != null) {
-								getDisplay().asyncExec(new Runnable() {
-									@Override
-									public void run() {
-										if (!isDisposed()) {
-											image.set(newImage);
-											redraw();
-										}
-									}
-								});
-							}
 						}
-
-					} finally {
-						// Notify any pending refresh thread that this thread
-						// has finished.
-						refreshLock.unlock();
 					}
 
 					return;
@@ -361,7 +324,7 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 				if (element != null && element.isJsonPrimitive()) {
 					try {
 						if (element.getAsBoolean()) {
-							stale.set(true);
+							refresh();
 						}
 					} catch (ClassCastException e) {
 						// Could not read the stale variable.
