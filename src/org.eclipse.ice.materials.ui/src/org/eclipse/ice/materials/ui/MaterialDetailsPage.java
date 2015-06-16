@@ -22,6 +22,8 @@ import org.eclipse.ice.materials.SingleMaterialWritableTableFormat;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -30,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
@@ -66,11 +69,22 @@ public class MaterialDetailsPage implements IDetailsPage {
 	 */
 	ListComponent<String> list;
 	
+	
+	/**
+	 * The table to display the material's properties
+	 */
+	ListComponentNattable natTable;
+	
 
 	/**
 	 * The section client for the NatTable to draw on
 	 */
 	Composite sectionClient;
+	
+	/**
+	 * The shell to use for opening the add property dialog
+	 */
+	Shell shell;
 	
 	/**
 	 * The constructor
@@ -184,9 +198,12 @@ public class MaterialDetailsPage implements IDetailsPage {
 		Object structuredSelection = ((IStructuredSelection) selection)
 				.getFirstElement();
 		if (structuredSelection instanceof Material) {
+			
+			//updates the material to the new selection
+			material = (Material) structuredSelection;
+			
 			// Creates new table if this is the first selection of a material.
-			if(material==null){
-				material = (Material) structuredSelection;
+			if(natTable==null){
 					
 				//Creates new listComponent for the table data.
 				list = new ListComponent<String>();
@@ -205,12 +222,9 @@ public class MaterialDetailsPage implements IDetailsPage {
 				list.addAll(propertyNames);
 				
 				//makes the NatTable, with the list data and current sectionClient to draw on.
-				@SuppressWarnings("unused")
-				ListComponentNattable nattable = new ListComponentNattable(sectionClient, list, true);
+				natTable = new ListComponentNattable(sectionClient, list, true);
 			}
 			
-			//updates the material.
-			material = (Material) structuredSelection;
 			list.clear();
 			//Gets the property names or column names for the table.
 			ArrayList<String> propertyNames = new ArrayList<String>();
@@ -235,7 +249,9 @@ public class MaterialDetailsPage implements IDetailsPage {
 	 */
 	@Override
 	public void createContents(Composite parent) {
-
+		//Get the shell for the add property dialog
+		shell = parent.getShell();
+		
 		// Set the layout for the parent
 		GridLayout parentGridLayout = new GridLayout(1, true);
 		parent.setLayout(parentGridLayout);
@@ -269,36 +285,16 @@ public class MaterialDetailsPage implements IDetailsPage {
 		sectionClient.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 		sectionClient.setBackgroundMode(SWT.INHERIT_FORCE);
 		
-		//checks if the material is null, if so do not create table (nothing to display)
-		if(material!=null){
-		
-			//Creates new listComponent for the table data.
-			list = new ListComponent<String>();
-
-			//Gets the property names or column names for the table.
-			ArrayList<String> propertyNames = new ArrayList<String>();
-			propertyNames.addAll(material.getProperties().keySet());
-			
-			//Creates new writable table format for the nattable
-			WritableTableFormat tableFormat = new SingleMaterialWritableTableFormat(material);
-			
-			//adds the tableformat to the list
-			list.setTableFormat(tableFormat);
-			
-			//adds the material
-			list.addAll(propertyNames);
-			
-			//makes the NatTable, with the list data and current sectionClient to draw on.
-			@SuppressWarnings("unused")
-			ListComponentNattable nattable = new ListComponentNattable(sectionClient, list, true);
-		}
-		
 		// Add a composite for holding the Add and Delete buttons for adding
 		// or removing properties
 		Composite buttonComposite = new Composite(sectionClient, SWT.NONE);
 		buttonComposite.setLayout(new GridLayout(1, false));
 		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false,
 				true, 1, 1));
+		
+		
+		/*
+		
 		// Create a listener that will throw up an error message since the Add
 		// and Delete operations are not yet supported. The error message is
 		// just a simple JFace message dialog that is opened when either button
@@ -320,18 +316,81 @@ public class MaterialDetailsPage implements IDetailsPage {
 				dialog.open();
 			}
 		};
+		
+		
+		*/
+		
 		// Create the Add button
 		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
 		addMaterialButton.setText("Add");
-		// Set the error listener for now until the delete operation is
+		addMaterialButton.addSelectionListener(new SelectionListener(){
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				//Opens the new dialog to create a property
+				AddPropertyDialog dialog = new AddPropertyDialog(shell);
+				if (dialog.open() == Window.OK) {
+					//Sets the new property
+					MaterialProperty newProperty = dialog.getSelection();
+					material.setProperty(newProperty.key, newProperty.value);
+
+					// Lock the list to avoid concurrent modifications
+					list.getReadWriteLock().writeLock().lock();
+					try {
+						//Adds the new property to the list so that it will update on screen for the user.
+						list.add(newProperty.key);
+					} finally {
+						// Unlock the list
+						list.getReadWriteLock().writeLock().unlock();
+					}
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {				
+			}
+			
+		});
+		
+		
+		// Set the error listener for now until the add operation is
 		// supported.
-		addMaterialButton.addSelectionListener(errorListener);
+		//addMaterialButton.addSelectionListener(errorListener);
 		// Create the Delete button
+		
+		//Create the delete button for removing material properties. 
 		Button deleteMaterialButton = new Button(buttonComposite, SWT.PUSH);
 		deleteMaterialButton.setText("Delete");
-		// Set the error listener for now until the delete operation is
-		// supported
-		deleteMaterialButton.addSelectionListener(errorListener);
+		deleteMaterialButton.addSelectionListener(new SelectionListener(){
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				//gets the selected property
+				String property = (String)natTable.getSelectedObjects().get(0);
+				
+				//Removes the property from the material.
+				material.removeProperty(property);
+				
+				//Finally, removes the property string from the list so that it will
+				//update on screen for the user. 
+				//Lock the list to avoid concurrent modifications
+				list.getReadWriteLock().writeLock().lock();
+				try{
+					//remove the property
+					list.remove(property);
+				} finally{
+					//unlock the list
+					list.getReadWriteLock().writeLock().unlock();
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				
+			}
+			
+		});
 
 		return;
 	}

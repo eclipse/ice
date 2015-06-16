@@ -141,8 +141,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 			sectionClient.setLayout(new GridLayout(2, false));
 			sectionClient.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 					true, 1, 1));
-			//parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-			//listSection.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+
 			sectionClient.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 			shell.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 			// Draw the table
@@ -269,7 +268,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 		
 		//Move up button, moves the selected rows up one index.
 		Button moveUpButton = new Button(listButtonComposite, SWT.PUSH);
-		moveUpButton.setText("ʌ");
+		moveUpButton.setText("^");
 		moveUpButton.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {

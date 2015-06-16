@@ -37,9 +37,8 @@ import ca.odell.glazedlists.gui.WritableTableFormat;
  * This class is a JFace Dialog for rendering IElementSources that are used by
  * ListComponents.
  * 
- * Only single selections are supported.
  * 
- * @author Jay Jay Billings, Kasper Gammeltoft
+ * @author Jay Jay Billings
  *
  */
 public class ElementSourceDialog<T> extends Dialog {
@@ -83,13 +82,13 @@ public class ElementSourceDialog<T> extends Dialog {
 		super(parentShell);
 		source = elementSource;
 		//Create the list component from source
-		list = new ListComponent();
-		list.setTableFormat((WritableTableFormat) source.getTableFormat());
+		list = new ListComponent<T>();
+		list.setTableFormat((WritableTableFormat<T>) source.getTableFormat());
 		elements = source.getElements();
 		list.addAll(elements);
 		
 		//Sorts the list according to the material names
-		Collections.sort(list, new Comparator() {
+		Collections.sort(list, new Comparator<T>() {
 			public int compare(Object first, Object second) {
 				return ((Material)first).getName().compareTo(((Material)second).getName());
 			}
@@ -118,7 +117,7 @@ public class ElementSourceDialog<T> extends Dialog {
 		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		
 		//Get a copy of the list to give to the NatTable so that we can keep a fresh copy to compare to. 
-		ListComponent copy = new ListComponent();
+		ListComponent<T> copy = new ListComponent<T>();
 		copy.setTableFormat(list.getTableFormat());
 		for(int i=0; i<list.size(); i++){
 			copy.add(list.get(i));
@@ -137,7 +136,7 @@ public class ElementSourceDialog<T> extends Dialog {
 		GridDataFactory.fillDefaults().grab(true,  true).applyTo(listTable.getTable());
 
 		//Selects the first component by default
-		ListComponent select = new ListComponent();
+		ListComponent<T> select = new ListComponent<T>();
 		select.add(list.get(0));
 		listTable.setSelection(select);
 		
@@ -181,14 +180,7 @@ public class ElementSourceDialog<T> extends Dialog {
 					//Unlock the list
 					listFromTable.getReadWriteLock().writeLock().unlock();
 				}
-
-				
-				//listTable.setList(newList);
-				
-				//listTable.getTable().refresh();
-				
 			}
-			
 		});
 		
 		return comp;
@@ -214,12 +206,8 @@ public class ElementSourceDialog<T> extends Dialog {
 	 */
 	@Override
 	protected void okPressed() {
-		// Set the selection if the OK button was pressed
-		/**
-		int index = listTable.getSelectionIndex();
-		selection = elements.get(index);
-		*/
-		//Sets the selection, will be the first selected object if there are multiple selections. 
+
+		//Sets the selection if OK is pressed, will be the first selected object if there are multiple selections. 
 		selection = (T) listTable.getSelectedObjects().get(0);
 		super.okPressed();
 	}
