@@ -18,20 +18,21 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class inherits from JobLauncher and sets the test executable to the "ls"
  * command. It is only used for testing and for setting this executable command
  * name. Everything else is handled by the JobLauncher.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class TestJobLauncher extends JobLauncher {
 
+	/**
+	 * True if the setupFormWithServices() operation was called, false otherwise.
+	 */
+	boolean setupAfterServices = false;
+	
 	/**
 	 * The Constructor
 	 * 
@@ -48,7 +49,6 @@ public class TestJobLauncher extends JobLauncher {
 	 */
 	@Override
 	protected void setupForm() {
-		// begin-user-code
 
 		// Setup the Form
 		super.setupForm();
@@ -60,7 +60,6 @@ public class TestJobLauncher extends JobLauncher {
 		addHost("notlocalhost", "linux", "/bin");
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -70,5 +69,25 @@ public class TestJobLauncher extends JobLauncher {
 	public IActionFactory getActionFactoryForTest() {
 		return getActionFactory();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
+	 */
+	public void setupFormWithServices() {
+		setupAfterServices = true;
+	}
 	
+	/**
+	 * This operation describes whether or not the setupFormWithServices
+	 * operation was called after the Item was constructed. It is used by the
+	 * tests to make sure that the AbstractItemBuilder builds the Item properly.
+	 * 
+	 * @return True if the setupFormWithServices operation was called, false
+	 *         otherwise.
+	 */
+	public boolean setupFormWithServicesWasCalled() {
+		return setupAfterServices;
+	}
+
 }

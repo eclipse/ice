@@ -34,31 +34,22 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the Vertex class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton, Taylor Patterson
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class VertexTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of the Vertex class and the
 	 * functionality inherited from ICEObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		/* ---- Test array input ---- */
 		// Initialize a vertex at (1,1,1)
@@ -119,22 +110,16 @@ public class VertexTester {
 		/* --------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations checks the getter and setter for the Vertex's location.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLocation() {
-		// begin-user-code
 
 		/* ---- Test location getter ---- */
 		// Create a vertex at the origin
@@ -180,23 +165,17 @@ public class VertexTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks Vertex to ensure that it can be correctly visited
 	 * by a realization of the IMeshPartVisitor interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		IMeshPart part = new Vertex();
 
@@ -217,23 +196,17 @@ public class VertexTester {
 		// -------------------------------------------------- //
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the Vertex to ensure that it can properly dispatch
 	 * notifications when it changes its state.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkNotification() {
-		// begin-user-code
 
 		// Create a vertex at the origin
 		float[] location = { 0f, 0f, 0f };
@@ -267,7 +240,6 @@ public class VertexTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
@@ -307,23 +279,17 @@ public class VertexTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Vertex to insure that its equals() and
 	 * hashCode() operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		Vertex object = new Vertex(10f, 14f, 12.1f);
@@ -354,23 +320,17 @@ public class VertexTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Vertex to ensure that its copy() and clone()
 	 * operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		Vertex object = new Vertex(10f, 14f, 12.1f);
@@ -405,6 +365,5 @@ public class VertexTester {
 
 		return;
 
-		// end-user-code
 	}
 }

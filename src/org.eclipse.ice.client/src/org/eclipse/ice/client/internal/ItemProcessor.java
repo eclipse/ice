@@ -29,7 +29,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for processing a Form for a specific Item. It
  * implements the Runnable interface and should be run on a separate thread from
@@ -52,134 +51,90 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * and if a streaming text widget is not set the ItemProcessor will not push the
  * output.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ItemProcessor implements IWidgetClosedListener, Runnable {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A reference to an IExtraInfoWidget that can be used to gather extra
 	 * information if the process request requires it.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IExtraInfoWidget infoWidget;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A reference to the FormWidget that rendered the Form.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IFormWidget formWidget;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the action that should be performed on the Item.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String actionName;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The id of the Item that should be processed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int itemId;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The ICore to which the ItemProcessor should direct its requests.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICore iceCore;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The period for which the ItemProcessor should poll the Core for updates
 	 * in units of milliseconds. The default value is 100 milliseconds, 0.1
 	 * seconds.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int pollTime = 100;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the
 	 * ItemProcessor was closed OK and is false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicBoolean widgetClosedOK;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the
 	 * ItemProcessor was cancelled and is false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicBoolean widgetCancelled;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The IStreamingTextWidget to which output streamed from the output file is
 	 * written.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IStreamingTextWidget streamingTextWidget;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ItemProcessor() {
-		// begin-user-code
 
 		// Set the default values
 		infoWidget = null;
@@ -195,303 +150,225 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 		widgetCancelled = new AtomicBoolean();
 		widgetCancelled.set(false);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the IExtraInfoWidget that is used by the
 	 * ItemProcessor. If it has not been previously set, this operation returns
 	 * null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The IExtraInfoWidget
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IExtraInfoWidget getInfoWidget() {
-		// begin-user-code
 		return infoWidget;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the IExtraInfoWidget that is used by the
 	 * ItemProcessor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param widget
 	 *            <p>
 	 *            The IExtraInfoWidget
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setInfoWidget(IExtraInfoWidget widget) {
-		// begin-user-code
 
 		infoWidget = widget;
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the IFormWidget that is updated by the ItemProcessor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param widget
 	 *            <p>
 	 *            The IFormWidget
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setFormWidget(IFormWidget widget) {
-		// begin-user-code
 
 		formWidget = widget;
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the IFormWidget that is updated by the
 	 * ItemProcessor. If it has not been previously set, this operation returns
 	 * null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The IFormWidget
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IFormWidget getFormWidget() {
-		// begin-user-code
 		return formWidget;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the IStreamingTextWidget that is updated by the
 	 * ItemProcessor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param widget
 	 *            <p>
 	 *            The IStreamingTextWidget
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setStreamingTextWidget(IStreamingTextWidget widget) {
-		// begin-user-code
 
 		// Set the widget
 		streamingTextWidget = widget;
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the IStreamingTextWidget that is updated by the
 	 * ItemProcessor. If it has not been previously set, this operation returns
 	 * null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The IStreamingTextWidget
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IStreamingTextWidget getStreamingTextWidget() {
-		// begin-user-code
 		return streamingTextWidget;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the name of the action that should be performed when
 	 * the Item is processed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
 	 *            The action name
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setActionName(String name) {
-		// begin-user-code
 
 		actionName = name;
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the name of the action that the ItemProcessor
 	 * will use to process the Item. If it has not been previously set, this
 	 * operation returns null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The name of the action
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getActionName() {
-		// begin-user-code
 
 		return actionName;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the id of the Item that the ItemProcessor will
 	 * process.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setItemId(int id) {
-		// begin-user-code
 
 		itemId = id;
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the id of the Item that the ItemProcessor will
 	 * process. If it has not been previously set, this operation returns -1.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The Item's id
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getItemId() {
-		// begin-user-code
 
 		return itemId;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the ICore to which the ItemProcessor directs its
 	 * requests.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param core
 	 *            <p>
 	 *            The ICore
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setCore(ICore core) {
-		// begin-user-code
 
 		iceCore = core;
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the ICore to which the ItemProcessor directs its
 	 * requests or returns null if it was not previously set.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The ICore
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICore getCore() {
-		// begin-user-code
 
 		return iceCore;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the poll time of the ItemProcessor. It checks to make
 	 * sure that the submitted poll time is positive, greater than zero and less
 	 * than 30,000 milliseconds (30 seconds). If the submitted time is invalid,
 	 * this operation sets it to the default polling time.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param milliseconds
 	 *            <p>
 	 *            The poll time in milliseconds. This value must be positive,
 	 *            greater than zero and less than 30,000.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPollTime(int milliseconds) {
-		// begin-user-code
 
 		// Check the poll time before setting it
 		if (milliseconds > 1 && milliseconds < 30001) {
@@ -501,41 +378,29 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 		}
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the current poll time. The units of the returned
 	 * value are milliseconds.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The current polling time in milliseconds.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getPollTime() {
-		// begin-user-code
 		return pollTime;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation launches the thread to process the Item.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void run() {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus status = FormStatus.InfoError;
@@ -606,6 +471,10 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					// be displayed
 					posted.set(true);
 				} else {
+					// FIXME This is a potential design flaw, as any attempt to
+					// cancel will be ignored if the widget is closed
+					// "successfully" before this thread makes it to this if
+					// condition.
 					// Otherwise if the widget has been posted, see if it has
 					// been closed ok.
 					if (widgetClosedOK.get()) {
@@ -684,40 +553,31 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IWidgetClosedListener#closedOK()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void closedOK() {
-		// begin-user-code
 
 		// Set the flag
 		widgetClosedOK.set(true);
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IWidgetClosedListener#cancelled()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void cancelled() {
-		// begin-user-code
 
 		// Set the flag
 		widgetCancelled.set(true);
 
 		return;
-		// end-user-code
 	}
 }

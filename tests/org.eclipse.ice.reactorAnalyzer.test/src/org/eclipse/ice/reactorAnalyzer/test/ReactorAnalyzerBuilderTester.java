@@ -29,54 +29,38 @@ import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzerBuilder;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ReactorAnalyzerBuilderTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The instance of the ReactorAnalyzerBuilder that will be tested.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ReactorAnalyzerBuilder reactorAnalyzerBuilder;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The fake implementation of IAnalysisTool that is used to trick the
 	 * ReactorAnalyzerBuilder into building without loading heavyweight
 	 * components.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeAnalysisTool fakeAnalysisTool;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks that the ReactorAnalyzerBuilder will create and
 	 * return a fully initialized ReactorAnalyzer if and only if an analysis
 	 * tools has been set. It also checks the name and type of the builder.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkBuilding() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -148,6 +132,5 @@ public class ReactorAnalyzerBuilderTester {
 
 		return;
 
-		// end-user-code
 	}
 }

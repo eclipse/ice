@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A PainfullySimpleEntry is used by the PainfullySimpleForm in place of a
  * regular Entry because it can be loaded from a string that takes a block of a
@@ -26,45 +25,31 @@ import java.util.ArrayList;
  * Painfully Simple Entry does not maintain any memory of the stream from which
  * it created itself.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PainfullySimpleEntry extends Entry {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This group name is used to determine to which DataComponent the
 	 * PainfullySimpleEntry should be added.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String group;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PainfullySimpleEntry() {
-		// begin-user-code
 		// Call the superclass' constructor
 		super();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation loads the Entry from a collection of strings each of which
 	 * should be an statement key-value pair (name=James T. Kirk) from a
@@ -77,19 +62,15 @@ public class PainfullySimpleEntry extends Entry {
 	 * invalid key is detected in the set. The message of the exception will
 	 * contain the invalid key-value pair.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param inputStrings
 	 *            <p>
 	 *            The set of PSF statements that pertain to this Entry.
 	 *            </p>
 	 * @throws IOException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void loadFromPSFBlock(ArrayList<String> inputStrings)
 			throws IOException {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> linesToRemove = new ArrayList<String>();
@@ -176,27 +157,20 @@ public class PainfullySimpleEntry extends Entry {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations returns the group name that was assigned to this
 	 * PainfullySimpleEntry in the PSF. This group name is used to determine to
 	 * which DataComponent the PainfullySimpleEntry should be added.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The group name
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getGroup() {
-		// begin-user-code
 		return group;
-		// end-user-code
 	}
 }

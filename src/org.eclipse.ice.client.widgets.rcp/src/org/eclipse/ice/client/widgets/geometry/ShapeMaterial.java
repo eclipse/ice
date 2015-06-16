@@ -20,46 +20,31 @@ import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Converts and stores an IShape's key/value properties list in format of JME3
  * data
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Andrew P. Belt
  */
 public class ShapeMaterial {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The selected state of the shape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean selected;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private float alpha;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current AssetManager
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AssetManager assetManager;
 
@@ -74,11 +59,9 @@ public class ShapeMaterial {
 	private Material highlightedMaterial;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes the instance with a given IShape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param assetManager
 	 *            <p>
@@ -88,11 +71,8 @@ public class ShapeMaterial {
 	 *            <p>
 	 *            The shape associated with this ShapeRenderProperties instance
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ShapeMaterial(AssetManager assetManager, IShape shape) {
-		// begin-user-code
 
 		// Set the assetManager used for this shape and material
 		this.assetManager = assetManager;
@@ -109,24 +89,18 @@ public class ShapeMaterial {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the material associated with the IShape properties
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The material to render the shape
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Material getMaterial() {
-		// begin-user-code
 
 		// There's no material if there is no assetManager!
 		if (assetManager == null) {
@@ -141,7 +115,6 @@ public class ShapeMaterial {
 		} else {
 			return highlightedMaterial;
 		}
-		// end-user-code
 	}
 
 	/**
@@ -174,22 +147,17 @@ public class ShapeMaterial {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Applies the properties of the given shape to the state of the
 	 * ShapeRenderProperties
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param shape
 	 *            <p>
 	 *            The shape to apply (either a child or its ancestors)
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void applyShape(IShape shape) {
-		// begin-user-code
 
 		// Extract the shape properties
 
@@ -214,7 +182,6 @@ public class ShapeMaterial {
 
 		// Scale alpha value with a constant factor
 
-		// end-user-code
 	}
 
 }

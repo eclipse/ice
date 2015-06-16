@@ -28,33 +28,24 @@ import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.base.SFRComposite;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the SFRComposite class.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class SFRCompositeTester {
 
 	// FIXME - Removed checkComponent()
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructor and default values of the SFRComposite class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		SFRComposite composite = new SFRComposite();
 
@@ -86,22 +77,16 @@ public class SFRCompositeTester {
 		assertEquals(0, composite.getNumberOfComponents());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the addition and removal of components from the SFRComposite.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkComponentAddRem() {
-		// begin-user-code
 
 		// Initialize a Composite for testing.
 		SFRComposite composite = new SFRComposite();
@@ -362,19 +347,15 @@ public class SFRCompositeTester {
 		/* ---------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		SFRComposite object = new SFRComposite();
@@ -423,19 +404,15 @@ public class SFRCompositeTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		SFRComposite object = new SFRComposite();
@@ -476,6 +453,5 @@ public class SFRCompositeTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

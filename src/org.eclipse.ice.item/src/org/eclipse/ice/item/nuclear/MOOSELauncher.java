@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,10 +27,11 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
@@ -38,8 +39,7 @@ import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
  * A SuiteLauncher Item for all MOOSE products (MARMOT, BISON, RELAP-7, RAVEN).
  * The MOOSE framework is developed by Idaho National Lab.
  * 
- * @author w5q
- * 
+ * @author Anna Wojtowicz
  */
 
 @XmlRootElement(name = "MOOSELauncher")
@@ -49,12 +49,30 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * The currently selected MOOSE application. Set by reviewEntries().
 	 */
 	private String execName = "";
+	
+	/**
+	 * The currently selected *.i input file.
+	 */
+	private String inputFileName = "";
 
 	/**
 	 * The name of the YAML/action syntax generator
 	 */
 	private static final String yamlSyntaxGenerator = "Generate YAML/action syntax";
 
+	/**
+	 * The name of the custom MOOSE executable.
+	 */
+	private static final String customExecName = "Custom executable name";
+	
+	/**
+	 * The DataComponent on the form that is used to store the list of
+	 * executable apps. This DataComponent contains two Entries: [0] The Entry 
+	 * containing BISON, MARMOT, RAVEN and RELAP-7, and [1] An Entry of type
+	 * Undefined in which the user can enter their own MOOSE app name.
+	 */
+	private DataComponent execDataComp;
+	
 	/**
 	 * Nullary constructor.
 	 */
@@ -89,13 +107,32 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		executables.add("RELAP-7");
 		executables.add("RAVEN");
 		executables.add("MOOSE_TEST");
+		executables.add(customExecName);
 		//executables.add(yamlSyntaxGenerator);
 
 		// Add the list to the suite
 		addExecutables(executables);
-
+		
 		// Setup the Form
 		super.setupForm();
+		
+		// Get a handle on the "executables" DataComponent
+		execDataComp = (DataComponent) form.getComponent(5);
+		// Register the launcher as a listener of the executables DataComponent
+		execDataComp.register(this);
+		
+		// Create an entry for a "custom" MOOSE executable
+		Entry customExecEntry = new Entry();
+		customExecEntry.setName(customExecName);
+		customExecEntry.setDescription("A custom MOOSE-based executable. Note "
+				+ "that this field is case-sensitive and should be entered as "
+				+ "it appears in the filesystem.");
+		customExecEntry.setId(2);
+		customExecEntry.setParent(execDataComp.retrieveAllEntries().get(0).getName());
+		customExecEntry.setReady(false);
+		
+		// Add it to the form
+		execDataComp.addEntry(customExecEntry);
 
 		// Grab the DataComponent responsible for managing Input Files
 		DataComponent inputFilesComp = (DataComponent) form.getComponent(1);
@@ -114,9 +151,9 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Enable TBB
 		enableTBB(1, 256, 1);
 
-		// Register this MooseLauncher as a listener of the
-		// Input File Entry. When it is set to something we can react
-		// with a search of related moose files.
+		// Register this MooseLauncher as a listener of the Input File Entry. 
+		// When it is set to something we can react with a search of related 
+		// moose files.
 		inputFilesComp.retrieveEntry("Input File").register(this);
 
 		// Go ahead and create the list of files related to the Input File
@@ -143,6 +180,15 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	@Override
 	protected String updateExecutablePath(String installDir, String executable) {
 
+		// Local declarations
+		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
+		String customExecValue = "";
+		if (execDataComp != null && customExecEntry != null 
+				&& customExecEntry.getValue() != null) {
+			customExecValue = 
+					execDataComp.retrieveEntry(customExecName).getValue();
+		}
+		
 		// A HashMap of MOOSE product executables that can be launched
 		HashMap<String, String> executableMap = new HashMap<String, String>();
 		executableMap.put("MARMOT", "marmot");
@@ -150,6 +196,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		executableMap.put("RELAP-7", "relap-7");
 		executableMap.put("RAVEN", "raven");
 		executableMap.put("MOOSE_TEST", "moose_test");
+		executableMap.put(customExecName, customExecValue);
 		executableMap.put(yamlSyntaxGenerator, yamlSyntaxGenerator);
 
 		// Create the command that will launch the MOOSE product
@@ -162,7 +209,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					+ "-opt -i ${inputFile} --no-color";
 		} else if (yamlSyntaxGenerator.equals(executable)) {
 			launchCommand =
-			// BISON files
+					// BISON files
 			"if [ -d ${installDir}bison ] "
 					+ "&& [ -f ${installDir}bison/bison-opt ]\n then\n"
 					+ "    ${installDir}bison/bison-opt --yaml > bison.yaml\n"
@@ -200,7 +247,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					+ "/" + executable + "-opt -i ${inputFile} --no-color";
 
 		} else {
-			// BISON, MARMOT and RELAP-7 following the same execution pattern
+			// BISON, MARMOT, RELAP-7 and (presumably) custom apps follow the 
+			// same execution pattern
 			launchCommand = "${installDir}" + executableMap.get(executable)
 					+ "/" + executableMap.get(executable)
 					+ "-opt -i ${inputFile} --no-color";
@@ -250,35 +298,29 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// If the super's status review was successful, keep going
 		if (!retStatus.equals(FormStatus.InfoError)) {
 
-			// Grab the DataComponent in the from that lists available
-			// executables
-			DataComponent execDataComp = (DataComponent) preparedForm
-					.getComponent(5);
-
 			if (execDataComp != null) {
 				// Grab the name of the current executable selected by the
 				// client
 				execName = execDataComp.retrieveAllEntries().get(0).getValue();
 			}
 
-			// Check the DataComponent is valid
+			// Check the DataComponent and app selection is valid
 			if ("Available Executables".equals(execDataComp.getName())) {
 
+				// Set this back to true in case it's been changed by the YAML/
+				// action syntax generator
 				setUploadInputFlag(true);
-
+				
 				if (yamlSyntaxGenerator.equals(execName)) {
-
 					// Disable input file appending (no input file to append)
 					setAppendInputFlag(false);
-
 					// Disable input file uploading
 					setUploadInputFlag(false);
 				}
-
+				
 				retStatus = FormStatus.ReadyToProcess;
-
+								
 			} else {
-
 				retStatus = FormStatus.InfoError;
 			}
 		}
@@ -468,16 +510,78 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	}
 
 	/**
-	 * 
+	 * This method provides a implementation of the IUpdateable interface that
+	 * listens for changes in objects that are registered with this MOOSE
+	 * Launcher. Primarily, it will toggle a "custom MOOSE executable" on and
+	 * off, in addition reducing the number of updates that are called on the
+	 * "Input File" Entry if it's value hasn't changed.
 	 */
 	@Override
+	public void update(IUpdateable component) {
+		
+		// If the component is a DataComponent, then toggle the custom MOOSE
+		// app entry on/off
+		if (component instanceof DataComponent) {
+			
+			// Grab the name of the current executable selected by the user
+			if (execDataComp != null) {
+				execName = execDataComp.retrieveAllEntries().get(0).getValue();
+			}
+			
+			Entry parentEntry = execDataComp.retrieveEntry("Executable");
+			Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
+			
+			if (execName.equals(customExecName) && !customExecEntry.isReady()) {
+				// Reveal the custom app Entry if it's currently hidden and 
+				// the user wants to enter a name
+				customExecEntry.update(parentEntry.getName(), "true");
+			} else if (!execName.equals(customExecName) && customExecEntry.isReady()) {
+				// Hide the custom app Entry if it's exposed and the user
+				// selected another app
+				customExecEntry.update(parentEntry.getName(), "false");
+			}
+		} else {
+			
+			if (component instanceof Entry) {
+
+				// Check if this is the Input File entry and has a valid value
+				Entry entry = (Entry) component;
+				if (entry.getName().equals("Input File") && !entry.getValue().isEmpty()) {
+					
+					// First, check if the file extension on the value is valid
+					if (!entry.getValue().contains(".i")) {
+						// Complain and exit
+						System.out.println("MOOSELauncher Message: Input files"
+								+ "must have a *.i extension!");
+						return;
+					}
+					
+					// Check if the input file name has changed
+					if (!entry.getValue().equals(inputFileName)) {
+						// Set the new reference value
+						inputFileName = entry.getValue();
+					} else {
+						// If the file name hasn't changed, just stop here
+						// (otherwise super.update will be called, which will
+						// redundantly re-search the whole file for dependencies
+						// and re-draw them)
+						return;
+					}
+				}
+			}
+			
+			super.update(component);
+		}
+		
+		return;		
+	}
+	
+	@Override
 	protected String getFileDependenciesSearchString() {
-		return "file"; // FIXME THIS SHOULD BE REPLACED WITH REG EXP
+		return "file";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.ice.item.Item#getIOType()
 	 */
 	@Override

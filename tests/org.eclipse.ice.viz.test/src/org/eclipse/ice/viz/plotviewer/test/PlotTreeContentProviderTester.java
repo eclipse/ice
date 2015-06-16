@@ -1,15 +1,18 @@
 package org.eclipse.ice.viz.plotviewer.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import org.eclipse.ice.viz.plotviewer.CSVDataProvider;
-import org.eclipse.ice.viz.plotviewer.PlotProvider;
-import org.eclipse.ice.viz.plotviewer.PlotTimeIdentifierMapping;
-import org.eclipse.ice.viz.plotviewer.PlotTreeContentProvider;
-import org.eclipse.ice.viz.plotviewer.SeriesProvider;
+import org.eclipse.ice.viz.csv.viewer.PlotTreeContentProvider;
+import org.eclipse.ice.viz.service.csv.CSVDataProvider;
+import org.eclipse.ice.viz.service.csv.PlotProvider;
+import org.eclipse.ice.viz.service.csv.PlotTimeIdentifierMapping;
+import org.eclipse.ice.viz.service.csv.SeriesProvider;
 import org.junit.Before;
 import org.junit.Test;
 

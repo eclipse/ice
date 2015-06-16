@@ -25,27 +25,19 @@ import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class implements ITextEditor interface to open a text editor using
  * elements of SWT/JFace and the Eclipse Rich Client Platform.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EclipseTextEditor implements ITextEditor {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The ICEResource managed by the EclipseTextEditor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICEResource iceResource;
 
@@ -53,41 +45,30 @@ public class EclipseTextEditor implements ITextEditor {
 	 * (non-Javadoc)
 	 * 
 	 * @see ITextEditor#setResource(ICEResource resource)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setResource(ICEResource resource) {
-		// begin-user-code
 
 		iceResource = resource;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ITextEditor#getResource()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEResource getResource() {
-		// begin-user-code
 
 		return iceResource;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ITextEditor#display()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void display() {
-		// begin-user-code
 
 		// Local Declarations
 		IFile[] files = ResourcesPlugin.getWorkspace().getRoot()
@@ -123,6 +104,5 @@ public class EclipseTextEditor implements ITextEditor {
 
 		}
 
-		// end-user-code
 	}
 }

@@ -30,18 +30,12 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
- * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Andrew P. Belt
  */
 public class ActionDuplicateShape extends Action {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ShapeTreeView view;
 
@@ -51,14 +45,10 @@ public class ActionDuplicateShape extends Action {
 	private ImageDescriptor imageDescriptor;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param view
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ActionDuplicateShape(ShapeTreeView view) {
-		// begin-user-code
 
 		this.view = view;
 
@@ -70,7 +60,6 @@ public class ActionDuplicateShape extends Action {
 		URL imagePath = BundleUtility.find(bundle, "icons/duplicate.gif");
 		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
-		// end-user-code
 	}
 
 	/**
@@ -84,13 +73,9 @@ public class ActionDuplicateShape extends Action {
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void run() {
-		// begin-user-code
 
 		GeometryComponent geometry = (GeometryComponent) view.treeViewer
 				.getInput();
@@ -173,6 +158,5 @@ public class ActionDuplicateShape extends Action {
 			}
 		}
 
-		// end-user-code
 	}
 }

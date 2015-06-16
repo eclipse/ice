@@ -31,7 +31,7 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 	 * The wizard page used to create the Material.
 	 */
 	private AddMaterialWizardPage page;
-	
+
 	/**
 	 * The workbench window used by the wizard.
 	 */
@@ -39,7 +39,7 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 
 	/**
 	 * A nullary constructor. This is used by the platform. <b>If called from an
-	 * {@link IHandler}, use {@link #NewItemWizard(IWorkbenchWindow)} </b>.
+	 * {@link IHandler}, use {@link #AddMaterialWizard(IWorkbenchWindow)} </b>.
 	 */
 	public AddMaterialWizard() {
 		super();
@@ -57,7 +57,7 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 		// Store a reference to the workbench window.
 		workbenchWindow = window;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -70,7 +70,7 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 		}
 		addPage(page);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

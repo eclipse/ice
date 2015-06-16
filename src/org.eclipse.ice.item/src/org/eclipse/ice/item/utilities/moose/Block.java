@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,107 +22,66 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class represents a MOOSE input block. This class is parsed from and
  * written to YAML using SnakeYAML's Java Bean parser. It can also be converted
  * to a GetPot compatible string and loaded from a map and a TreeComposite.
- * </p>
- * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class Block {
+
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * A regular expression representing three possible newlines. These are:
+	 * <ul>
+	 * <li>Linux: {@code \n}</li>
+	 * <li>Mac: {code \r}</li>
+	 * <li>Windows: {code \r\n}</li>
+	 * </ul>
+	 */
+	private static final String newLineRegex = "\r?\n|\r";
+
+	/**
 	 * The name of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String name = "";
+
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The type of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String type = "";
+
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * A description of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String description = "";
+
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * A comment on the block.
+	 */
+	protected String comment = "";
+
+	/**
 	 * The parameters of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The subblocks that belong to this block.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected ArrayList<Block> subblocks = new ArrayList<Block>();
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The GetPot prefix for the name of the current, actual section.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static final String actualSectionPrefix = "./";
+
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The GetPot prefix for the name of parent section.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static final String parentSectionPrefix = "../";
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * True if the Block should be considered active, false if not.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected boolean active = false;
 
@@ -132,225 +91,136 @@ public class Block {
 	protected String indent = "";
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the name of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The name
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The name
 	 */
 	public String getName() {
-		// begin-user-code
 		return name;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the type of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The type
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The type
 	 */
 	public String getType() {
-		// begin-user-code
 		return type;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation retrieves the description of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * This operation retrieves the block's comment.
 	 * 
-	 * @return <p>
-	 *         The description
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The block's comment.
+	 */
+	public String getComment() {
+		return comment;
+	}
+
+	/**
+	 * This operation retrieves the description of the block.
+	 * 
+	 * @return The description
 	 */
 	public String getDescription() {
-		// begin-user-code
 		return description;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the parameters of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The parameters.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The parameters.
 	 */
 	public ArrayList<Parameter> getParameters() {
-		// begin-user-code
 		return parameters;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the subblocks of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The blocks
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The blocks
 	 */
 	public ArrayList<Block> getSubblocks() {
-		// begin-user-code
 		return subblocks;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the parameters of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param params
-	 *            <p>
 	 *            The parameters
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setParameters(ArrayList<Parameter> params) {
-		// begin-user-code
 		parameters = params;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the name of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param blockName
-	 *            <p>
 	 *            The name
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setName(String blockName) {
-		// begin-user-code
 		name = blockName;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the description of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param desc
-	 *            <p>
 	 *            The description
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setDescription(String desc) {
-		// begin-user-code
 		description = desc;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * This operation sets the block's comment.
+	 * 
+	 * @param comm
+	 *            The comment to set.
+	 */
+	public void setComment(String comm) {
+		comment = comm;
+		return;
+	}
+
+	/**
 	 * This operation sets the type of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param blockType
-	 *            <p>
 	 *            The type
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setType(String blockType) {
-		// begin-user-code
 		type = blockType;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the subblocks of the block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param blocks
-	 *            <p>
 	 *            The blocks
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setSubblocks(ArrayList<Block> blocks) {
-		// begin-user-code
 		subblocks = blocks;
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operations returns an ICE TreeComposite for the Block. Any
 	 * parameters in the block are contained in a DataComponent as Entries
-	 * created by calling Parameter.toEntry() on each Parameter. The id of the
-	 * data component is 1. Subblocks are configured as children of the tree
+	 * created by calling Parameter.toEntry() on each Parameter. The ID of the
+	 * DataComponent is 1. Subblocks are configured as children of the tree
 	 * composite.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The tree composite.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The tree composite.
 	 */
 	public TreeComposite toTreeComposite() {
-		// begin-user-code
-		
+
 		// Local Declarations
 		TreeComposite treeComp = new TreeComposite();
 		DataComponent dataComp = new DataComponent();
@@ -384,26 +254,16 @@ public class Block {
 		}
 
 		return treeComp;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation loads the block from an untyped Map. It should only be
 	 * used with a Map created by SnakeYAML.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param map
-	 *            <p>
 	 *            The map.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void loadFromMap(Map map) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Parameter> parameters = new ArrayList<Parameter>();
@@ -445,6 +305,10 @@ public class Block {
 					param.setDescription((String) singleParamMap
 							.get("description"));
 				}
+				// comment
+				if (singleParamMap.get("comment") != null) {
+					param.setComment((String) singleParamMap.get("comment"));
+				}
 				// cpp_type
 				if (singleParamMap.get("cpp_type") != null) {
 					param.setCpp_type((String) singleParamMap.get("cpp_type"));
@@ -464,8 +328,8 @@ public class Block {
 				}
 				// Get the boolean required flag
 				if (singleParamMap.get("required") != null) {
-					boolean isRequired = 
-							(Boolean) singleParamMap.get("required");
+					boolean isRequired = (Boolean) singleParamMap
+							.get("required");
 					param.setRequired(isRequired);
 					param.setEnabled(isRequired);
 				}
@@ -490,12 +354,10 @@ public class Block {
 			setSubblocks(subblocks);
 		}
 
-		// end-user-code
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation converts the Block to a standard GetPot-compatible format
 	 * and returns it as a string. If the name of the Block starts with "/", the
 	 * prefix will be changed so that the name will not start with ".//" or
@@ -504,8 +366,6 @@ public class Block {
 	 * to output. Additionally, parameters that may not be required, but are
 	 * enabled, are also written out. All other parameters are written, but
 	 * commented out.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param prefix
 	 *            <p>
@@ -522,14 +382,14 @@ public class Block {
 	 *            (Block.parentSectionPrefix). These are "./" and "../" for
 	 *            MOOSE, respectively and without the quotation marks.
 	 *            </p>
-	 * @return <p>
-	 *         The GetPot representation of this Block.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param writeInactiveBlocks
+	 *            This flag determines if inactive blocks should still be
+	 *            written out to the GetPot string, but commented out (with a
+	 *            ("#" in front). By default, all subblocks have this behavior
+	 *            set to true.
+	 * @return The GetPot representation of this Block.
 	 */
-	public String toGetPot(String prefix) {
-		// begin-user-code
+	public String toGetPot(String prefix, boolean writeInactiveBlocks) {
 
 		// Local Declarations
 		String realPrefix = (prefix != null) ? prefix : "";
@@ -538,51 +398,66 @@ public class Block {
 				: name;
 		String closingSection = (realPrefix.equals(Block.actualSectionPrefix)) ? parentSectionPrefix
 				: "";
-		String potString = "", commentString = "", whiteSpaceString = "", hash = "";
+		String potString = "", commentString = "", whiteSpaceString = "";
 		boolean hasComment = false;
+
+		String newLine = System.lineSeparator();
 
 		// Fix the indentation
 		indent += (realPrefix.equals(actualSectionPrefix)) ? "  " : "";
 
-		// Only write the block if it is active!
-		if (isActive()) {
+		// Only write the block if it is active! (or the inactive writing flag
+		// is true)
+		if (active || writeInactiveBlocks) {
 
 			// Open the section
-			potString = indent + "[" + openingSection + "]";
-			
+			potString = (!active && writeInactiveBlocks) ? indent.substring(0,
+					indent.length() - 2) + "# [" + openingSection + "]"
+					: indent + "[" + openingSection + "]";
+
 			// Check if this section block has a comment, if it does, append it
-			hasComment = !description.isEmpty();
+			hasComment = !comment.isEmpty();
 			if (hasComment) {
 				// Remove newline characters from comment
-				commentString = description.replaceAll("[\n\r]", "");
+				commentString = comment
+						.replaceAll("[" + newLineRegex + "]", "");
 				// Append the line
 				whiteSpaceString = makeWhiteSpaceString(potString);
-				potString += String.format("%s# %s\n", whiteSpaceString, commentString);
+				potString += String.format("%s# %s%n", whiteSpaceString,
+						commentString);
 			} else {
-				potString += "\n";
+				potString += newLine;
 			}
-			
+
 			// Add the parameters to the string
 			if (parameters != null) {
 				for (int i = 0; i < parameters.size(); i++) {
-					
+
 					// Get the parameter, determine if it has a comment
 					Parameter param = parameters.get(i);
-					hasComment = !param.getDescription().isEmpty();
-					
+					hasComment = !param.getComment().isEmpty();
+
 					// Always write out required parameters
 					if (param.isRequired()) {
-						
+
 						if (hasComment) {
 							// Remove newline characters from comment
-							commentString = param.getDescription().
-									replaceAll("[\n\r]", "");
+							commentString = param.getComment().replaceAll(
+									"[" + newLineRegex + "]", "");
 							// Append the line
-							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
-							potString += String.format("%s  %s%s# %s\n",
-									indent, param.toString(), whiteSpaceString,commentString);
+							whiteSpaceString = makeWhiteSpaceString(indent
+									+ "  " + param.toString());
+							potString += (!active && writeInactiveBlocks) ? String
+									.format("%s# %s%s# %s%n", indent,
+											param.toString(), whiteSpaceString,
+											commentString) : String.format(
+									"%s  %s%s# %s%n", indent, param.toString(),
+									whiteSpaceString, commentString);
 						} else {
-							potString += indent + "  " + param.toString() + "\n";
+							potString += (!active && writeInactiveBlocks) ? indent
+									+ "# " + param.toString() + newLine
+									: indent + "  " + param.toString()
+											+ newLine;
 						}
 					}
 					// If the parameter is not explicitly required, check if it
@@ -590,27 +465,38 @@ public class Block {
 					else if (param.isEnabled()) {
 						if (hasComment) {
 							// Remove newline characters from comment
-							commentString = param.getDescription().
-									replaceAll("[\n\r]", "");
+							commentString = param.getComment().replaceAll(
+									"[" + newLineRegex + "]", "");
 							// Append the line
-							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
-							potString += String.format("%s  %s%s# %s\n",
-									indent, param.toString(), whiteSpaceString, commentString);
+							whiteSpaceString = makeWhiteSpaceString(indent
+									+ "  " + param.toString());
+							potString += (!active) ? String.format(
+									"%s# %s%s# %s%n", indent, param.toString(),
+									whiteSpaceString, commentString) : String
+									.format("%s  %s%s# %s%n", indent,
+											param.toString(), whiteSpaceString,
+											commentString);
 						} else {
-							potString += indent + "  " + param.toString() + "\n";
+							potString += (!active) ? indent + "# "
+									+ param.toString() + newLine : indent
+									+ "  " + param.toString() + newLine;
 						}
-					} 
+					}
+					// Otherwise, the parameter will be commented out
 					else {
 						if (hasComment) {
 							// Remove newline characters from comment
-							commentString = param.getDescription().
-									replaceAll("[\n\r]", "");
+							commentString = param.getComment().replaceAll(
+									"[" + newLineRegex + "]", "");
 							// Append the line
-							whiteSpaceString = makeWhiteSpaceString(indent + "  " + param.toString());
-							potString += String.format("%s# %s%s# %s\n",
-									indent, param.toString(), whiteSpaceString, commentString);
+							whiteSpaceString = makeWhiteSpaceString(indent
+									+ "  " + param.toString());
+							potString += String.format("%s# %s%s# %s%n",
+									indent, param.toString(), whiteSpaceString,
+									commentString);
 						} else {
-							potString += indent + "# " + param.toString() + "\n";
+							potString += indent + "# " + param.toString()
+									+ newLine;
 						}
 					}
 				}
@@ -621,12 +507,17 @@ public class Block {
 				for (int i = 0; i < subblocks.size(); i++) {
 					Block block = subblocks.get(i);
 					potString += block.toGetPot(Block.actualSectionPrefix,
-							indent);
+							indent, true);
 				}
 			}
 
 			// Close the section
-			potString += indent + "[" + closingSection + "]\n";
+			potString += (!active && writeInactiveBlocks) ? indent.substring(0,
+					indent.length() - 2)
+					+ "# ["
+					+ closingSection
+					+ "]"
+					+ newLine : indent + "[" + closingSection + "]" + newLine;
 
 		}
 
@@ -634,45 +525,33 @@ public class Block {
 		indent = "";
 
 		return potString;
-		// end-user-code
 	}
 
 	/**
-	 * This is a utility method that will construct and return a String of
-	 * whitespaces, depending on the length of the current line. This is used
-	 * by the toGetPot() method when appending comments, to try to make comments
-	 * align in columns for neatness' sake.
+	 * This method is the same as calling {@code toGetPot(prefix, false)}.
 	 * 
-	 * @param getPotLine	Current line that the comment will be appended to
-	 * @return				A string of whitespace characters that will separate
-	 * 						the current line's text from its comment
+	 * @param prefix
+	 *            <p>
+	 *            The prefix for the name of the block. This is most commonly
+	 *            null or the actual section prefix (Block.actualSectionPrefix).
+	 *            If the prefix is not equal to Block.actualSectionPrefix, it
+	 *            will be replaced with an empty string.
+	 *            </p>
+	 *            <p>
+	 *            The prefix is used in GetPot to note the relationship of a
+	 *            section with its parent. In MOOSE it is either null or equal
+	 *            to the actual prefix. In the latter case the section is always
+	 *            closed by the parent section prefix
+	 *            (Block.parentSectionPrefix). These are "./" and "../" for
+	 *            MOOSE, respectively and without the quotation marks.
+	 *            </p>
+	 * @return The GetPot representation of this Block.
 	 */
-	private String makeWhiteSpaceString(String getPotLine) {
-	
-		String whiteSpaceString = "";
-		int whiteSpaceCount = 0, lineLength = 0;
-		
-		lineLength = getPotLine.length();
-		
-		if (lineLength < 30) {
-			whiteSpaceCount = 30 - lineLength;
-		} else if (lineLength < 45) {
-			whiteSpaceCount = 45 - lineLength;
-		} else if (lineLength < 60) {
-			whiteSpaceCount = 60 - lineLength;
-		} else {
-			whiteSpaceCount = 15;
-		}
-		
-		for (int i = 0; i < whiteSpaceCount; i++) {
-			whiteSpaceString += " ";
-		}
-		
-		return whiteSpaceString;
+	public String toGetPot(String prefix) {
+		return toGetPot(prefix, false);
 	}
-	
+
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation converts the Block to a standard GetPot-compatible format
 	 * and returns it as a string. If the name of the Block starts with "/", the
@@ -685,7 +564,6 @@ public class Block {
 	 * This version is primarily used by the Block itself when dumping its
 	 * children.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param prefix
 	 *            <p>
@@ -704,19 +582,53 @@ public class Block {
 	 *            </p>
 	 * @param depthIndent
 	 *            The indentation of the block
-	 * @return <p>
-	 *         The GetPot representation of this Block.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @param writeInactiveBlocks
+	 *            This flag determines if inactive blocks should still be
+	 *            written out to the GetPot string, but commented out (with a
+	 *            "#" in front).
+	 * @return The GetPot representation of this Block.
 	 */
-	public String toGetPot(String prefix, String depthIndent) {
-		// begin-user-code
+	public String toGetPot(String prefix, String depthIndent,
+			boolean writeInactiveBlocks) {
 
 		indent += depthIndent;
+		return toGetPot(prefix, writeInactiveBlocks);
 
-		return toGetPot(prefix);
-		// end-user-code
+	}
+
+	/**
+	 * This is a utility method that will construct and return a String of
+	 * whitespaces, depending on the length of the current line. This is used by
+	 * the toGetPot() method when appending comments, to try to make comments
+	 * align in columns for neatness' sake.
+	 * 
+	 * @param getPotLine
+	 *            Current line that the comment will be appended to
+	 * @return A string of whitespace characters that will separate the current
+	 *         line's text from its comment
+	 */
+	private String makeWhiteSpaceString(String getPotLine) {
+
+		String whiteSpaceString = "";
+		int whiteSpaceCount = 0, lineLength = 0;
+
+		lineLength = getPotLine.length();
+
+		if (lineLength < 30) {
+			whiteSpaceCount = 30 - lineLength;
+		} else if (lineLength < 45) {
+			whiteSpaceCount = 45 - lineLength;
+		} else if (lineLength < 60) {
+			whiteSpaceCount = 60 - lineLength;
+		} else {
+			whiteSpaceCount = 15;
+		}
+
+		for (int i = 0; i < whiteSpaceCount; i++) {
+			whiteSpaceString += " ";
+		}
+
+		return whiteSpaceString;
 	}
 
 	/**
@@ -741,16 +653,16 @@ public class Block {
 		// Get the name of the block, set it as active
 		name = potLines.get(0).trim();
 		active = true;
-			
+
 		// Check if this block has a comment, separate it if it does
 		if (name.contains("#")) {
-			
+
 			// Determine if the whole line is commented out, or there's an
 			// in-line comment
 			int firstHash = name.indexOf("#");
 			int lastHash = name.lastIndexOf("#");
-			String comment = "";
-			
+			String blockComment = "";
+
 			// If the whole line is commented out w/o an in-line comment
 			if (firstHash == 0 && firstHash == lastHash) {
 				// Set the name (without the hash), mark as inactive
@@ -760,32 +672,32 @@ public class Block {
 			// If there's only an in-line comment
 			else if (firstHash > 0 && firstHash == lastHash) {
 				// Split the name and comment up
-				comment = name.substring(firstHash + 1).trim();
-		
+				blockComment = name.substring(firstHash + 1).trim();
+
 				// Set the name and comment separately
-				description = comment;
+				comment = blockComment;
 				name = name.substring(0, firstHash).trim();
 			}
 			// If the whole line is commented out with an in-line comment too
 			else {
 				// Split the name and comment up
-				comment = name.substring(lastHash + 1).trim();
-		
+				blockComment = name.substring(lastHash + 1).trim();
+
 				// Set the name and comment separately, set as inactive
-				description = comment;
+				comment = blockComment;
 				name = name.substring(firstHash + 1, lastHash).trim();
 				active = false;
 			}
-			
+
 		}
-		
-		
+
 		// The name has to be checked to determine whether or not it is a
 		// subblock and the opening characters should be skipped.
 		name = (name.contains("./")) ? name.substring(3, name.length() - 1)
 				: name.substring(1, name.length() - 1);
 
 		// What is this?! ~JJB 20140701 12:16
+		// I don't know, ask Alex! ~AW 20150224 17:52
 		boolean debug = false;
 		if ("Variables".equals(name)) {
 			debug = false;
@@ -796,18 +708,18 @@ public class Block {
 		for (int i = 1; i < potLines.size(); i++) {
 			// Get the line and trim it
 			line = potLines.get(i).trim();
-			
+
 			// Reset the enabled flag if it's been used
 			parameterComment = "";
 			parameterEnabled = true;
-			
+
 			// Load the line as a parameter if it doesn't start with # or [ and
 			// contains =.
 			if (!line.startsWith("[") && line.contains("=")) {
 
 				// Split the line at the "="
 				String[] parameterPieces = line.split("=");
-				
+
 				// A basic 'name = value' parameter would have 2 elements in
 				// parameterPieces, but if for whatever reason there are more
 				// than 2 (a '=' in the comment), merge elements 1 to n together
@@ -818,29 +730,29 @@ public class Block {
 				}
 
 				// Check if this parameter has a comment
-				if (parameterPieces[0].contains("#") || 
-						(parameterPieces.length > 1 
-								&& parameterPieces[1].contains("#"))) {
-					
+				if (parameterPieces[0].contains("#")
+						|| (parameterPieces.length > 1 && parameterPieces[1]
+								.contains("#"))) {
+
 					// Check if the whole line is commented out
 					if (parameterPieces[0].startsWith("#")) {
-						parameterPieces[0] = 
-								parameterPieces[0].substring(1).trim();
+						parameterPieces[0] = parameterPieces[0].substring(1)
+								.trim();
 						parameterEnabled = false;
-						
+
 					}
-					
+
 					// Check if there's an inline comment as well
-					if (parameterPieces.length > 1 
+					if (parameterPieces.length > 1
 							&& parameterPieces[1].contains("#")) {
 						// Split the parameter value and comment up
 						int commentIndex = parameterPieces[1].lastIndexOf("#");
-						parameterComment = parameterPieces[1]
-								.substring(commentIndex + 1).trim();
-						
+						parameterComment = parameterPieces[1].substring(
+								commentIndex + 1).trim();
+
 						// Chop the comment off the parameter value
-						parameterPieces[1] = parameterPieces[1]
-								.substring(0, commentIndex).trim();
+						parameterPieces[1] = parameterPieces[1].substring(0,
+								commentIndex).trim();
 					}
 				}
 
@@ -895,14 +807,13 @@ public class Block {
 					// Update i to skip over the lines we just read
 					i += (numValueLines - 1);
 				}
-				
+
 				// Create the new parameter
 				Parameter tmpParam = new Parameter();
 				tmpParam.setName(parameterName);
 				tmpParam.setDefault(parameterValue);
-				tmpParam.setDescription(parameterComment);
-				// Mark the parameter as required since it will be reused
-//				tmpParam.setRequired(true);
+				tmpParam.setComment(parameterComment);
+				// tmpParam.setRequired(true);
 				tmpParam.setEnabled(parameterEnabled);
 
 				if (debug) {
@@ -964,28 +875,31 @@ public class Block {
 	}
 
 	/**
+	 * <p>
 	 * This operation loads the Block based on the content of a
 	 * GetPot-compatible String.
-	 * 
+	 * </p>
+	 * <p>
 	 * GetPot data has much less information than YAML. The only things that
 	 * will be loaded are the name of the block, its parameters and its
 	 * subblocks.
-	 * 
+	 * </p>
+	 * <p>
 	 * This operation expects that it will be given a single, complete block
 	 * that starts with the name and ends with the closing characters. It will
 	 * not handle multiple blocks.
+	 * </p>
 	 * 
 	 * @param getPotString
 	 *            The string that contains the Block information in GetPot
 	 *            format.
 	 */
 	public void fromGetPot(String getPotString) {
-		// TODO Auto-generated method stub
 
 		// Create the array list from the string by splitting and converting to
 		// a List.
 		ArrayList<String> potLines = new ArrayList<String>(
-				Arrays.asList(getPotString.split("\n")));
+				Arrays.asList(getPotString.split(newLineRegex)));
 
 		// Delegate to the private version
 		fromGetPot(potLines);
@@ -1003,7 +917,6 @@ public class Block {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates a fully-initialized Block from a TreeComposite. It
 	 * expects the same format as that produced from toTreeComposite() and will
@@ -1014,17 +927,11 @@ public class Block {
 	 * to a MOOSE input file because it depends on the creation of Parameters
 	 * from Entries and there is no 1-1 mapping between those entities.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param comp
-	 *            <p>
 	 *            The TreeComposite that should be loaded.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void fromTreeComposite(TreeComposite comp) {
-		// begin-user-code
 
 		// Only load up if it is possible
 		if (comp != null) {
@@ -1071,70 +978,38 @@ public class Block {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation creates a new instance of Block. It can be overridden by
 	 * subclasses to create the proper instance of Block subclasses (e.g. -
 	 * YAMLBlock) during the recursive walking operations on Block.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The new Block, possibly of a subclass.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The new Block, possibly of a subclass.
 	 */
 	protected Block getNewBlock() {
-		// begin-user-code
 		return new Block();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation indicates if the block is Active. True if Active, false if
 	 * not.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         True if Active, false if not
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return True if Active, false if not
 	 */
 	public boolean isActive() {
-		// begin-user-code
 		return active;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets specifies whether or not the block is Active. True
 	 * for Active, false if not.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param flag
-	 *            <p>
 	 *            True if Active, false if not
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setActive(boolean flag) {
-		// begin-user-code
 		active = flag;
 		return;
-		// end-user-code
 	}
-
 }

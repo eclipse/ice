@@ -44,14 +44,10 @@ import org.junit.Test;
 public class PlantCompositeTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Boolean flag to mark if the PlantComponent was successfully visited.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean wasVisited = false;
 
@@ -62,7 +58,6 @@ public class PlantCompositeTester {
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Create a composite to test.
 		PlantComposite composite = new PlantComposite();
@@ -81,7 +76,6 @@ public class PlantCompositeTester {
 		assertTrue(composite.getPlantComponents().isEmpty());
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -89,7 +83,6 @@ public class PlantCompositeTester {
 	 */
 	@Test
 	public void checkCompositeImplementation() {
-		// begin-user-code
 
 		// Create a PlantComposite for testing.
 		PlantComposite composite = new PlantComposite();
@@ -164,7 +157,6 @@ public class PlantCompositeTester {
 		assertNull(composite.getPlantComponent(component.getId()));
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -173,7 +165,6 @@ public class PlantCompositeTester {
 	 */
 	@Test
 	public void checkCompositeListeners() {
-		// begin-user-code
 
 		// Create a PlantComposite for testing.
 		PlantComposite composite = new PlantComposite();
@@ -266,7 +257,6 @@ public class PlantCompositeTester {
 		listener.reset();
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -275,7 +265,6 @@ public class PlantCompositeTester {
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		PlantComposite object = new PlantComposite();
@@ -311,7 +300,6 @@ public class PlantCompositeTester {
 		assertFalse("starscream".equals(object));
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -319,7 +307,6 @@ public class PlantCompositeTester {
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		PlantComposite object = new PlantComposite();
@@ -356,7 +343,6 @@ public class PlantCompositeTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -365,16 +351,13 @@ public class PlantCompositeTester {
 	@Ignore
 	@Test
 	public void checkPersistence() {
-		// begin-user-code
 		fail("Not implemented");
 
 		return;
-		// end-user-code
 	}
 
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// Create a new component to visit.
 		PlantComposite component = new PlantComposite();
@@ -427,17 +410,14 @@ public class PlantCompositeTester {
 		assertTrue(component.equals(visitorPlantComponent));
 		
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 */
 	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 

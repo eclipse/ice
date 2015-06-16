@@ -12,7 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,43 +31,32 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.kdd.kddmath.IDataMatrix;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
-import org.eclipse.ice.kdd.kddstrategy.godfreystrategy.AxialPower;
 import org.eclipse.ice.kdd.kddstrategy.godfreystrategy.PinPowerDifference;
 import org.eclipse.ice.kdd.kddstrategy.godfreystrategy.RadialPower;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleData;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleDataProvider;
 import org.junit.Before;
 import org.junit.Test;
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class RadialPowerTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private RadialPower radialPower;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void beforeClass() {
-		// begin-user-code
 		ArrayList<IDataProvider> providers = getTestData();
 
 		// Partition the loaded data into HashMaps...
@@ -95,32 +85,22 @@ public class RadialPowerTester {
 		PinPowerDifference diff = new PinPowerDifference(loaded, ref, props);
 
 		radialPower = new RadialPower(diff, loaded, ref, weights);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkExecuteStrategy() {
-		// begin-user-code
 		assertTrue(radialPower.executeStrategy());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IDataProvider> getTestData() {
-		// begin-user-code
 		// Need some data....
 		IDataProvider provider = new SimpleDataProvider();
 		IDataProvider refProvider = new SimpleDataProvider();
@@ -249,6 +229,11 @@ public class RadialPowerTester {
 				}
 			}
 
+			// Close the readers.
+			reader.close();
+			refReader.close();
+			resultReader.close();
+
 		} catch (CoreException e) {
 			e.printStackTrace();
 			fail();
@@ -296,12 +281,10 @@ public class RadialPowerTester {
 		retProvs.add(resultProvider);
 
 		return retProvs;
-		// end-user-code
 	}
 
 	private HashMap<Integer, ArrayList<IDataMatrix>> partitionData(
 			ArrayList<IData> data) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<ArrayList<IData>> assemblyPartitions = new ArrayList<ArrayList<IData>>();
@@ -354,6 +337,5 @@ public class RadialPowerTester {
 		}
 
 		return result;
-		// end-user-code
 	}
 }

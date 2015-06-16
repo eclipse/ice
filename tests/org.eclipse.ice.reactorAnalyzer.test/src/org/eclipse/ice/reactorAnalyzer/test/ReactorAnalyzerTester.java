@@ -38,7 +38,6 @@ import org.junit.Test;
 import org.junit.BeforeClass;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ReactorAnalyzer.
  * </p>
@@ -53,91 +52,63 @@ import org.junit.BeforeClass;
  * the Item workflow, the tests in this class build on the results of the
  * previous tests.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ReactorAnalyzerTester {
 	// FIXME These tests need to be updated. However, the ReactorAnalyzer will
 	// be undergoing a LOT of changes soon.
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The instance of ReactorAnalyzer that will be tested.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static ReactorAnalyzer reactorAnalyzer;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The fake implementation of IAnalysisTool that is used to trick the
 	 * ReactorAnalyzer without loading heavyweight components.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static FakeAnalysisTool fakeAnalysisTool;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The fake implementation of IAnalysisDocument that is used to trick the
 	 * ReactorAnalyzer without loading heavyweight components.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static FakeAnalysisDocument fakeAnalysisDocument;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The fake implementation of IAnalysisAsset that is used to trick the
 	 * ReactorAnalyzer without loading heavyweight components.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static FakeAnalysisAsset fakeAnalysisAsset;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Eclipse Resources Project Space used for the tests.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static IProject projectSpace;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations sets up the workspace for an instantiates a
 	 * ReactorAnalyzer for testing.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void BeforeClass() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -183,23 +154,17 @@ public class ReactorAnalyzerTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the construction of the ReactorAnalyzer to ensure
 	 * that its Form was created according to the specification on the class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Make the ReactorAnalyzer
 		reactorAnalyzer = new ReactorAnalyzer(projectSpace);
@@ -263,11 +228,9 @@ public class ReactorAnalyzerTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation selects a data source on the Form, submits it and confirms
 	 * that the MasterDetailsComponent has been updated with selected asset
@@ -275,15 +238,11 @@ public class ReactorAnalyzerTester {
 	 * checks that ReactorAnalyzer.getStatus().equals(FormStatus.ReadyToProcess)
 	 * is true.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Ignore
 	@Test
 	public void checkDataSourceReview() {
-		// begin-user-code
 
 		// Make the ReactorAnalyzer
 		reactorAnalyzer = new ReactorAnalyzer(projectSpace);
@@ -303,7 +262,6 @@ public class ReactorAnalyzerTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	private Form configureAnalyzerForm() {
@@ -344,19 +302,14 @@ public class ReactorAnalyzerTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs the ReactorAnalyzer to create the selected assets.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Ignore
 	@Test
 	public void checkProcessing() {
-		// begin-user-code
 
 		// Make the ReactorAnalyzer
 		reactorAnalyzer = new ReactorAnalyzer(projectSpace);
@@ -428,42 +381,30 @@ public class ReactorAnalyzerTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the ReactorAnalyzer to update the
 	 * properties of an asset when its properties are changed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkProperties() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the ReactorAnalyzer to change data
 	 * sources when so directed by a client.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Ignore
 	@Test
 	public void checkResubmit() {
-		// begin-user-code
 
 		// Make the ReactorAnalyzer
 		reactorAnalyzer = new ReactorAnalyzer(projectSpace);
@@ -533,6 +474,5 @@ public class ReactorAnalyzerTester {
 
 		return;
 
-		// end-user-code
 	}
 }

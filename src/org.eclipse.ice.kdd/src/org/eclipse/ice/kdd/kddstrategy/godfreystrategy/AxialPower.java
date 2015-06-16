@@ -13,8 +13,6 @@
 package org.eclipse.ice.kdd.kddstrategy.godfreystrategy;
 
 import java.io.ByteArrayInputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,124 +26,84 @@ import org.eclipse.ice.kdd.kddmath.IDataMatrix;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * AxialPower is a subclass of GodfreySubStrategy that takes both the raw user
  * input nuclear reactor pin power data as well as the pin power difference and
  * produces the axial power data.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class AxialPower extends GodfreySubStrategy {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the pin power difference calculations.
 	 * </p>
 	 * 
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private PinPowerDifference differences;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the axial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private KDDMatrix axialPower;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the generated axial power for the pin power differences.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private KDDMatrix axialPowerDiff;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the average axial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double axialPowerAverage;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the average axial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double axialPowerDiffAverage;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the RMS average axial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double axialPowerRMS;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the RMS axial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double axialPowerDiffRMS;
 
 	private boolean calculateDiffs;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The constructor, takes an instance of the PinPowerDifference substrategy
+	 * The constructor takes an instance of the PinPowerDifference substrategy
 	 * for use in calculating the axial power difference.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param difference
 	 * @param pinPowers
 	 * @param refPinPowers
 	 * @param weights
-	 * @param props
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public AxialPower(PinPowerDifference difference,
 			HashMap<Integer, ArrayList<IDataMatrix>> pinPowers,
 			HashMap<Integer, ArrayList<IDataMatrix>> refPinPowers,
 			HashMap<Integer, ArrayList<KDDMatrix>> weights) {
-		// begin-user-code
 		super(pinPowers, refPinPowers, weights);
 
 		assetName = "Axial Power Godfrey Sub-Strategy";
@@ -157,24 +115,18 @@ public class AxialPower extends GodfreySubStrategy {
 			differences = difference;
 			calculateDiffs = true;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method allows subclasses to implement a unique clustering or anomaly
 	 * detection algorithm and produce a KDDAnalysisAsset for clients to display
 	 * and manipulate.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean executeStrategy() {
-		// begin-user-code
 		// Local Declarations
 		int nAxial = loadedPinPowers.get(0).size();
 		int nAssemblies = loadedPinPowers.size();
@@ -262,23 +214,17 @@ public class AxialPower extends GodfreySubStrategy {
 		}
 
 		return createAsset();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method is responsible for creating the URI describing the generated
 	 * data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean createAsset() {
-		// begin-user-code
 		ArrayList<String> fileContents = new ArrayList<String>();
 		String line = "", contents = "";
 		DecimalFormat formatter = new DecimalFormat("#.####");
@@ -356,108 +302,71 @@ public class AxialPower extends GodfreySubStrategy {
 		uri = file.getLocationURI();
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the axial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public KDDMatrix getAxialPower() {
-		// begin-user-code
 		return axialPower;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the axial power pin power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public KDDMatrix getAxialPowerDifference() {
-		// begin-user-code
 		return axialPowerDiff;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the average axial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getAxialPowerAverage() {
-		// begin-user-code
 		return axialPowerAverage;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the average axial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getAxialPowerDifferenceAverage() {
-		// begin-user-code
 		return axialPowerDiffAverage;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the RMS axial power.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getAxialPowerRMS() {
-		// begin-user-code
 		return axialPowerRMS;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the RMS axial power difference.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Double getAxialPowerDifferenceRMS() {
-		// begin-user-code
 		return axialPowerDiffRMS;
-		// end-user-code
 	}
 }

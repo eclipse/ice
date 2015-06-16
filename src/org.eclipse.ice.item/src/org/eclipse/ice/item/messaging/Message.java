@@ -51,14 +51,12 @@ public class Message {
 	 * The constructor.
 	 */
 	public Message() {
-		// begin-user-code
 
 		id = 0;
 		itemId = 0;
 		type = "";
 		message = "";
 
-		// end-user-code
 	}
 
 	/**
@@ -67,9 +65,7 @@ public class Message {
 	 * @return The id
 	 */
 	public int getId() {
-		// begin-user-code
 		return id;
-		// end-user-code
 	}
 
 	/**
@@ -79,9 +75,7 @@ public class Message {
 	 * @return The ItemId
 	 */
 	public int getItemId() {
-		// begin-user-code
 		return itemId;
-		// end-user-code
 	}
 
 	/**
@@ -90,9 +84,7 @@ public class Message {
 	 * @return The type
 	 */
 	public String getType() {
-		// begin-user-code
 		return type;
-		// end-user-code
 	}
 
 	/**
@@ -101,9 +93,7 @@ public class Message {
 	 * @return The content
 	 */
 	public String getMessage() {
-		// begin-user-code
 		return message;
-		// end-user-code
 	}
 
 	/**
@@ -112,10 +102,8 @@ public class Message {
 	 * @param id The id
 	 */
 	public void setId(int id) {
-		// begin-user-code
 		this.id = id;
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -125,10 +113,8 @@ public class Message {
 	 * @param itemId The ItemId
 	 */
 	public void setItemId(int itemId) {
-		// begin-user-code
 		this.itemId = itemId;
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -137,10 +123,8 @@ public class Message {
 	 * @param type The type
 	 */
 	public void setType(String type) {
-		// begin-user-code
 		this.type = type;
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -149,9 +133,7 @@ public class Message {
 	 * @param content The content
 	 */
 	public void setMessage(String content) {
-		// begin-user-code
 		message = content;
 		return;
-		// end-user-code
 	}
 }

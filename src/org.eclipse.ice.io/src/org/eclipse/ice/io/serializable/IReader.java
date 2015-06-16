@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.io.serializable;
 
-import java.net.URI;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
@@ -32,8 +31,8 @@ public interface IReader {
 	/**
 	 * Return a Form representation of the input file with given URI.
 	 * 
-	 * @param uri
-	 *            The URI of the file to be read.
+	 * @param file
+	 *            The file to be read.
 	 * @return A Form object containing the data read in from the file.
 	 */
 	public Form read(IFile file);
@@ -46,7 +45,7 @@ public interface IReader {
 	 * 
 	 * @param file
 	 *            The file to search
-	 * @param regexp
+	 * @param regex
 	 *            The regular expression to search.
 	 * @return A list of Entries representing occurrences of the given regular
 	 *         expression.

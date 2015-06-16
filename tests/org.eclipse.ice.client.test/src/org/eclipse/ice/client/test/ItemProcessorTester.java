@@ -1,56 +1,47 @@
 /*******************************************************************************
-* Copyright (c) 2012, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.junit.Test;
 import org.eclipse.ice.client.internal.ItemProcessor;
-import org.eclipse.ice.client.widgets.EclipseExtraInfoWidget;
-import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
-import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
-import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
-
 import org.eclipse.ice.core.iCore.ICore;
-
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
+import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.junit.Test;
 
-/** 
- * <!-- begin-UML-doc -->
- * <p>This class is responsible for testing the ItemProcessor class.</p>
- * <!-- end-UML-doc -->
+/**
+ * This class is responsible for testing the ItemProcessor class.
+ * 
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ItemProcessorTester {
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>The ItemProcessor to test.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/**
+	 * The ItemProcessor to test.
 	 */
 	private ItemProcessor itemProcessor;
 
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>This operation checks the accessor operations of the ItemProcessor class.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/**
+	 * This operation checks the accessor operations of the ItemProcessor class.
 	 */
 	@Test
 	public void checkAccessors() {
-		// begin-user-code
 
 		// Allocate the ItemProcessor
 		itemProcessor = new ItemProcessor();
@@ -111,22 +102,19 @@ public class ItemProcessorTester {
 		assertEquals(100, itemProcessor.getPollTime());
 
 		return;
-		// end-user-code
 	}
 
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>This operation checks the ItemProcessor to make sure that it can properly process an Item. It resets the polling time to 50ms and waits for 75ms on the thread to make sure that setting the polling time actually affects the thread.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/**
+	 * This operation checks the ItemProcessor to make sure that it can properly
+	 * process an Item. It resets the polling time to 50ms and waits for 75ms on
+	 * the thread to make sure that setting the polling time actually affects
+	 * the thread.
 	 */
 	@Test
 	public void checkProcessing() {
-		// begin-user-code
 
 		// Local Declarations
 		int itemId = -1;
-		FormStatus status = null;
 		FakeExtraInfoWidget infoWidget = new FakeExtraInfoWidget();
 		FakeStreamingTextWidget textWidget = new FakeStreamingTextWidget();
 		IFormWidget formWidget = new FakeFormWidget();
@@ -134,14 +122,21 @@ public class ItemProcessorTester {
 		FakeCore core = new FakeCore();
 		Thread processThread = null;
 
+		// We don't want a rigid sleep time when we need to wait on the
+		// ItemProcessor to process a task, as the total time spent may vary
+		// wildly. Thus, we define a maximum sleep time of 5 seconds, and when
+		// waiting, we periodically check back every 50 ms until either the
+		// limit is reached or the condition we want to check has been
+		// satisfied.
+		final long sleepLimit = 5000;
+		final long sleepIncrement = 50;
+		long sleepTime;
+
 		// Put a dummy form on the widget
 		formWidget.setForm(new Form());
-		
+
 		// Allocate the ItemProcessor
 		itemProcessor = new ItemProcessor();
-
-		// Setup the process thread
-		processThread = new Thread(itemProcessor);
 
 		// Create the Item
 		itemId = Integer.parseInt(core.createItem("Red"));
@@ -158,23 +153,28 @@ public class ItemProcessorTester {
 		// Check the Item id
 		assertTrue(itemId > 0);
 
-		// Process the Item with the ItemProcessor
+		// Start the ItemProcessor on a separate thread.
+		processThread = new Thread(itemProcessor);
 		processThread.start();
 
-		// Give the thread a little time to do its work
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			// Fail if an exception is caught
-			fail();
+		// The ItemProcessor should eventually notify the (Fake)Core that the
+		// action was processed. Give it some time to do its work, but proceed
+		// when the action is processed.
+		sleepTime = 0;
+		while (core.getLastProcessStatus() != FormStatus.Processed
+				&& sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
 		}
+		// Check that the action was processed.
+		assertEquals(FormStatus.Processed, core.getLastProcessStatus());
 
-		// Check the process status with the core to make sure the event was
-		// processed.
-		assertEquals(FormStatus.Processed, core.getLastProcessStatus());	
-		
-		// Reset the FakeCore's Process state
+		// Reset the FakeCore.
 		core.reset();
 
 		// Reset the ItemProcessor. This time we are going to test the case
@@ -182,46 +182,70 @@ public class ItemProcessorTester {
 		// so that the FakeCore will return the proper return code,
 		// FormStatus.NeedsInfo.
 		actionName = "NeedsInfo";
-		itemProcessor = new ItemProcessor();
-
-		// Reset the thread
-		processThread = new Thread(itemProcessor);
-
 		// Create the Item
 		itemId = Integer.parseInt(core.createItem("Red"));
 
-		// Set the ItemProcessor properties
-		itemProcessor.setActionName(actionName);
-		itemProcessor.setFormWidget(formWidget);
-		itemProcessor.setInfoWidget(infoWidget);
-		itemProcessor.setStreamingTextWidget(textWidget);
+		// Set the new ItemProcessor properties
 		itemProcessor.setActionName(actionName);
 		itemProcessor.setItemId(itemId);
-		itemProcessor.setCore(core);
-		itemProcessor.setPollTime(50);
 
-		// Start the thread
+		// Start the ItemProcessor on a new thread.
+		processThread = new Thread(itemProcessor);
 		processThread.start();
 
-		// Give the thread a little time to do its work
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			// Fail if an exception is caught
-			fail();
-		}
+		// 1 - The ItemProcessor notifies the Core to process the item for the
+		// action, which sets the status to NeedsInfo.
+		// 2 - The output file is fetched from the Core, and the
+		// StreamingTextWidget is updated.
+		// 3 - The InfoWidget is displayed.
+		// 4 - The StreamingTextWidget is updated.
+		// 5 - After the InfoWidget closes (which is immediately), the Core is
+		// notified to update the item.
 
-		// Check the process status to make sure the client made the call
+		// Give the thread a little time to do its work. The Item action is
+		// processed first, so wait until the status is NeedsInfo.
+		sleepTime = 0;
+		while (core.getLastProcessStatus() != FormStatus.NeedsInfo
+				&& sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
+		}
 		assertEquals(FormStatus.NeedsInfo, core.getLastProcessStatus());
 
-		// Make sure the widget was displayed
+		// Make sure the widget was displayed. This may also take some time.
+		sleepTime = 0;
+		while (!infoWidget.widgetDisplayed() && sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
+		}
 		assertTrue(infoWidget.widgetDisplayed());
 
-		// Make sure the Form was resubmitted to the core
+		// Make sure the Form was resubmitted to the core. This happens after
+		// the widget is displayed (and dismissed, which is immediate for the
+		// FakeInfoWidget). We need to give the ItemProcessor more time...
+		while (!core.itemUpdated() && sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
+		}
 		assertTrue(core.itemUpdated());
 
-		// Check that the label was set. It should be set before being displayed.
+		// Check that the label was set. It should be set before being
+		// displayed.
 		assertTrue(textWidget.labelSet());
 		// Check that the streaming text widget was displayed
 		assertTrue(textWidget.widgetDisplayed());
@@ -230,24 +254,29 @@ public class ItemProcessorTester {
 		// Check that the text was pushed to the streaming text widget
 		assertTrue(textWidget.textPushed());
 
-		// Start the thread...
-		processThread = new Thread(itemProcessor);
-		processThread.start();
-		// ... and immediately cancel!
+		// Because the FakeExtraInfoWidget closes immediately after being
+		// displayed, it's possible to get the ItemProcessor in an infinite loop
+		// where it posts the message to the widget, which closes and notifies
+		// the processor, which triggers the same sequence to repeat (the status
+		// is always NeedsInfo). Set the flag so the widget does NOT close
+		// immediately, then tell the ItemProcessor that the widget cancelled
+		// the process.
+		infoWidget.closeImmediately = false;
 		itemProcessor.cancelled();
-		// Give the thread a little time to do its work
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			// Fail if an exception is caught
-			fail();
-		}
 
-		// Check the process status to make sure the client made the call
+		// Check that the core was notified that the ItemProcessor was
+		// cancelled. Give the ItemProcessor some time to work...
+		while (!core.wasCancelled() && sleepTime < sleepLimit) {
+			sleepTime += sleepIncrement;
+			try {
+				Thread.sleep(sleepIncrement);
+			} catch (InterruptedException e) {
+				fail("ItemProcessorTester error: "
+						+ "Cannot sleep while waiting for ItemProcessor to respond.");
+			}
+		}
 		assertTrue(core.wasCancelled());
-		
+
 		return;
-		// end-user-code
 	}
 }

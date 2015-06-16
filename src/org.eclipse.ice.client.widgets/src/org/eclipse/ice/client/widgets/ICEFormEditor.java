@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ice.client.common.TreeCompositeViewer;
-import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -43,6 +41,7 @@ import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -68,18 +67,12 @@ import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * The ICEFormEditor is an Eclipse FormEditor subclass that renders and displays
  * a Form. It is also observable, as described by the IObservableWidget
  * interface, and it dispatches updates to IUpdateEventListeners and
  * IProcessEventListeners.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEFormEditor extends SharedHeaderFormEditor implements
 		IComponentVisitor, IObservableWidget, IUpdateableListener {
@@ -108,158 +101,71 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 */
 	protected HashMap<String, ArrayList<Component>> componentMap = new HashMap<String, ArrayList<Component>>();
 
-	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
 	private ICEFormInput ICEFormInput;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The form for this FormEditor retrieved from the ICEFormInput.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected Form iceDataForm;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The name of the action that should be performed when the Form is
 	 * processed.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String processName;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The SWT drop-down menu used in action processing.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected Combo processDropDown;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The SWT button used in action processing.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected Button goButton;
 
 	/**
-	 * <p>
 	 * The SWT button used to cancel a process request.
-	 * </p>
 	 */
 	protected Button cancelButton;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The list of IProcessEventListeners that have subscribed to the parent ICE
 	 * UIWidget of this Eclipse Editor.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IProcessEventListener> processListeners;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The list of IUpdateEventListeners that have subscribed to the parent ICE
 	 * UIWidget of this Eclipse Editor.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IUpdateEventListener> updateListeners;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The ISimpleResourceProvider that should be used to load ICEResources for
 	 * the user.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ISimpleResourceProvider resourceProvider;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The ICEOutputPage.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * The ICEResourcePage associated to this form editor.
 	 */
 	protected ICEResourcePage resourceComponentPage;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This class' ICEFormPage that displays the GeometryEditor powered by JME3.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected ICEGeometryPage geometryPage;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This class' ICEFormPage that displays the MeshEditor powered by JME3.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
-	// TODO Add to model if necessary.
 	protected ICEMeshPage meshPage;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Constructor
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEFormEditor() {
-		// begin-user-code
 
 		// Setup listener lists
 		updateListeners = new ArrayList<IUpdateEventListener>();
@@ -278,8 +184,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		componentMap.put("reactor", new ArrayList<Component>());
 		componentMap.put("emf", new ArrayList<Component>());
 		componentMap.put("list", new ArrayList<Component>());
-
-		// end-user-code
 	}
 
 	/**
@@ -296,18 +200,35 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	/**
+	 * This gets the current IVizServiceFactory component for use in the
+	 * FormEditor.
+	 * 
+	 * @return The {@link #vizFactory}.
+	 */
+	protected IVizServiceFactory getVizServiceFactory() {
+		return vizFactory;
+	}
+
+	/**
 	 * This operation changes the dirty state of the FormEditor.
 	 * 
 	 * @param value
 	 */
-	void setDirty(boolean value) {
-		// begin-user-code
+	public void setDirty(boolean value) {
 
 		// Set the dirty value and fire a property change
 		dirty = value;
 		firePropertyChange(PROP_DIRTY);
+		
+		// Push a message to the message manager
+		if (getHeaderForm() != null) {
+			final IMessageManager messageManager = getHeaderForm()
+					.getMessageManager();
+			messageManager.addMessage("statusUpdate", 
+					"There are unsaved changes on the form.", null,
+					IMessageProvider.WARNING);
+		}
 
-		// end-user-code
 	}
 
 	/**
@@ -325,27 +246,16 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation adds a Component to the map with the specified key. It is
 	 * called by the visit() operations.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
-	 *            <p>
 	 *            The Component to insert into the map of Components.
-	 *            </p>
 	 * @param tag
-	 *            <p>
 	 *            The tag that identifies the type of the Component, equal to
 	 *            one of "unspecified" or "output."
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void addComponentToMap(Component component, String tag) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Component> components = null;
@@ -359,25 +269,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation creates the ICEOutputPage that will show any output files
-	 * created by ICE.
-	 * </p>
-	 * <!-- end-UML-doc -->
+	 * This operation creates the ICEResourcePage that will show any output 
+	 * files created by ICE.
 	 * 
-	 * @return <p>
-	 *         The ICEOutputPage that should be rendered as part of the Form.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The ICEResourcePage that should be rendered as part of the Form.
 	 */
-	private ICEFormPage createResourceComponentPage() {
-		// begin-user-code
+	private ICEFormPage createResourcePage() {
 
 		// Local Declarations
 		ResourceComponent resourceComponent = null;
@@ -400,26 +300,25 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return resourceComponentPage;
-		// end-user-code
+	}
+	
+	/**
+	 * This method returns the ICEResourcePage that this ICEFormEditor manages.
+	 * 
+	 * @return	The ICEResourcePage.
+	 */
+	public ICEResourcePage getResourcePage() {
+		return this.resourceComponentPage;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation creates an ICEMasterDetailsPage which will show data in a
 	 * form consistent with the master-details pattern. It uses
 	 * MasterDetailsComponents from ICE.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The Form pages, one for each MasterDetailsComponent.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The Form pages, one for each MasterDetailsComponent.
 	 */
 	private ArrayList<ICEFormPage> createMasterDetailsComponentPages() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<ICEFormPage> masterDetailsPages = new ArrayList<ICEFormPage>();
@@ -446,27 +345,17 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return masterDetailsPages;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation posts a status message to the ICEFormEditor should be
 	 * displayed to the user or system viewing the widget. It is a simple
 	 * string.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param statusMessage
-	 *            <p>
-	 *            The status message.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * 				 The status message.
 	 */
 	public void updateStatus(String statusMessage) {
-		// begin-user-code
 
 		// Local Declarations
 		final String message = statusMessage;
@@ -484,23 +373,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			}
 		});
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * Creates a GeometryPage to display shapes powered with JME3. Also gives
 	 * the geometryComponent to provide data to display.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The GeometryPage created.
 	 */
 	private ICEFormPage createGeometryPage() {
-		// begin-user-code
 
 		// Local Declarations
 		GeometryComponent geometryComponent = new GeometryComponent();
@@ -523,24 +404,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return geometryPage;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * Creates a MeshPage to display 2D meshes powered with JME3. Also gives the
 	 * MeshComponent to provide data to display.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return	The MeshPage created.
 	 */
-	// TODO Add to model if necessary.
 	private ICEFormPage createMeshPage() {
-		// begin-user-code
 
 		// Local Declarations
 		MeshComponent meshComponent = new MeshComponent();
@@ -562,7 +434,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return meshPage;
-		// end-user-code
 	}
 
 	/**
@@ -610,7 +481,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// If there are some lists, render sections for them
 		if (lists.size() > 0) {
 			for (int i = 0; i < lists.size(); i++) {
-				ListComponent list = (ListComponent) lists.get(i);
+				ListComponent<?> list = (ListComponent<?>) lists.get(i);
 				// Make sure the list isn't null since that value can be put in
 				// a collection
 				if (list != null) {
@@ -628,18 +499,10 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the input on the TreeCompositeViewer to the
 	 * TreeComposite or set of TreeComposites in ICE.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void setTreeCompositeViewerInput() {
-		// begin-user-code
 
 		// Only go through the trouble if there is a TreeComposite to be had
 		List<Component> trees = componentMap.get("tree");
@@ -674,7 +537,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 					.getWorkbenchWindow().getActivePage()
 					.findView(getTreeCompositeViewerID());
 			// Set the tree as input to the tree view
-			treeView.setInput(tree);
+			treeView.setInput(tree, this);
 
 			// Register the FormEditor to receive updates from the TreeComposite
 			// and its children because they are being edited externally but
@@ -688,7 +551,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			tree.register(this);
 		}
 
-		// end-user-code
 	}
 
 	/**
@@ -713,22 +575,13 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation disables the ICEFormEditor. Disabled ICEFormEditors will
 	 * not make it possible for clients to process the Form.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param state
-	 *            <p>
 	 *            True if the editor is disabled, false if not.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disable(boolean state) {
-		// begin-user-code
 
 		// Local Declarations
 		final boolean buttonState = state;
@@ -741,28 +594,18 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			}
 		});
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation overrides the createHeaderContents operations from the
 	 * SharedHeaderFormEditor super class to create a common header across the
 	 * top of the Form pages.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param headerForm
-	 *            <p>
 	 *            The IManagedForm that manages the content in the common
 	 *            header.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void createHeaderContents(IManagedForm headerForm) {
-		// begin-user-code
 
 		// Get the Form that provides the common header and decorate it.
 		org.eclipse.ui.forms.widgets.Form form = headerForm.getForm().getForm();
@@ -872,24 +715,16 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		form.setText(iceDataForm.getName() + " " + iceDataForm.getId());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation creates a set of ICESectionPages using DataComponents,
 	 * TableComponents, and MatrixComponents. These pages are used in the
 	 * addPages() operation and rendered to the screen.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
-		// begin-user-code
 		// Local Declarations
 		ArrayList<ICEFormPage> sectionPages = new ArrayList<ICEFormPage>();
 		ArrayList<Component> comps = new ArrayList<Component>();
@@ -943,7 +778,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 				// Add the page to the list
 				sectionPages.add(tmpPage);
 			}
-			System.out.println(i + numCompsPerPage);
+
 			// Clean up the left over components by just adding them to
 			// their own page.
 			if (i != comps.size()) {
@@ -968,7 +803,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return sectionPages;
-		// end-user-code
 	}
 
 	/**
@@ -1027,7 +861,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @see org.eclipse.ui.ISaveablePart#doSave(IProgressMonitor monitor)
 	 */
 	public void doSave(IProgressMonitor monitor) {
-		// begin-user-code
 
 		// Set the dirty flag
 		setDirty(false);
@@ -1097,7 +930,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
@@ -1106,14 +938,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
 	public void doSaveAs() {
-		// begin-user-code
 
 		// Just save
 		doSave(null);
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
@@ -1122,20 +952,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
 	 */
 	public boolean isSaveAsAllowed() {
-		// begin-user-code
 		return false;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see FormEditor#addPages()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void addPages() {
-		// begin-user-code
 
 		// Local Declaration
 		ArrayList<ICEFormPage> formPages = new ArrayList<ICEFormPage>();
@@ -1196,7 +1021,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// Create the page for ResourceComponents. This one should always be
 		// last on the list!
 		if (!(componentMap.get("output").isEmpty())) {
-			formPages.add(createResourceComponentPage());
+			formPages.add(createResourcePage());
 		}
 
 		// Add the Pages
@@ -1210,150 +1035,113 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(DataComponent component) {
-		// begin-user-code
 
 		// Add the Component to the map of components
 		addComponentToMap(component, "data");
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(ResourceComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(ResourceComponent component) {
-		// begin-user-code
 
 		// Add the Component to the map of components
 		addComponentToMap(component, "output");
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TableComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TableComponent component) {
-		// begin-user-code
 
 		// Add the Component to the map of components
 		addComponentToMap(component, "table");
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MatrixComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MatrixComponent component) {
-		// begin-user-code
 
 		// Add the matrix component to the map of components
 		addComponentToMap(component, "matrix");
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IShape component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IShape component) {
-		// begin-user-code
 		addComponentToMap(component, "shape");
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(GeometryComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(GeometryComponent component) {
-		// begin-user-code
 
 		// Add the GeometryComponent to the map of components
 		addComponentToMap(component, "geometry");
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MasterDetailsComponent component) {
-		// begin-user-code
 
 		// Add the masterDetails component to the map of components
 		addComponentToMap(component, "masterDetails");
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TreeComposite component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TreeComposite component) {
-		// begin-user-code
 
 		// Add the tree to the map
 		addComponentToMap(component, "tree");
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IReactorComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IReactorComponent component) {
-		// begin-user-code
 
 		// Add the reactor to the map
 		addComponentToMap(component, "reactor");
 
-		// end-user-code
 	}
 
 	/**
@@ -1361,11 +1149,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IObservableWidget#registerUpdateListener(IUpdateEventListener
 	 *      listener)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerUpdateListener(IUpdateEventListener listener) {
-		// begin-user-code
 
 		// Add the listener so long as it is not null
 		if (listener != null) {
@@ -1373,7 +1158,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 		return;
 
-		// end-user-code
 	}
 
 	/**
@@ -1381,11 +1165,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IObservableWidget#registerProcessListener(IProcessEventListener
 	 *      listener)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerProcessListener(IProcessEventListener listener) {
-		// begin-user-code
 
 		// Add the listener so long as it is not null
 		if (listener != null) {
@@ -1393,7 +1174,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 		return;
 
-		// end-user-code
 	}
 
 	/**
@@ -1401,11 +1181,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IObservableWidget#registerResourceProvider(ISimpleResourceProvider
 	 *      provider)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerResourceProvider(ISimpleResourceProvider provider) {
-		// begin-user-code
 
 		// Add the provider so long as it is not null
 		if (provider != null && resourceComponentPage != null) {
@@ -1417,18 +1194,14 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IObservableWidget#notifyUpdateListeners()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void notifyUpdateListeners() {
-		// begin-user-code
 
 		// Notify the update listeners
 		for (IUpdateEventListener eventListener : updateListeners) {
@@ -1436,18 +1209,14 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IObservableWidget#notifyProcessListeners(String process)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void notifyProcessListeners(String process) {
-		// begin-user-code
 
 		// Make sure the process is not null
 		if (process != null) {
@@ -1458,18 +1227,14 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IObservableWidget#notifyCancelListeners(String process)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void notifyCancelListeners(String process) {
-		// begin-user-code
 
 		// Make sure the process is not null
 		if (process != null) {
@@ -1480,18 +1245,14 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IUpdateableListener#update(IUpdateable component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(IUpdateable component) {
-		// begin-user-code
 
 		System.out.println("ICEFormEditor Message: State changed to dirty.");
 
@@ -1503,7 +1264,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 			}
 		});
 
-		// end-user-code
 	}
 
 	/*
@@ -1516,12 +1276,10 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	@Override
 	public void visit(TimeDataComponent component) {
 
-		// begin-user-code
 
 		// Treat as a datacomponent
 		this.visit((DataComponent) component);
 
-		// end-user-code
 
 	}
 
@@ -1533,12 +1291,10 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * (org.eclipse.ice.datastructures.form.mesh.MeshComponent)
 	 */
 	public void visit(MeshComponent component) {
-		// begin-user-code
 
 		// Add the MeshComponent to the map of components
 		addComponentToMap(component, "mesh");
 
-		// end-user-code
 	}
 
 	/*
@@ -1568,7 +1324,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	@Override
-	public void visit(ListComponent component) {
+	public void visit(ListComponent<?> component) {
 		// Add the ListComponent to the map of components
 		addComponentToMap(component, "list");
 	}

@@ -29,7 +29,6 @@ import ncsa.hdf.object.h5.H5Group;
 import ncsa.hdf.object.h5.H5File;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is a utility class that provides labels on a 2D grid for rows and
  * columns. This class should be considered as a piece designed specifically for
@@ -40,48 +39,33 @@ import ncsa.hdf.object.h5.H5File;
  * The constructor takes a size that is N squared, and defaults to a positive
  * number if the size is non-positive or zero.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class GridLabelProvider extends LWRComponent {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An ArrayList of Strings of length size containing the label for each
 	 * column position from left to right.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private ArrayList<String> columnLabels;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An ArrayList of Strings of length size containing the label for each row
 	 * position from top to bottom.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private ArrayList<String> rowLabels;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The size for the row and column label ArrayLists.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private int size;
@@ -103,21 +87,16 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param size
 	 *            <p>
 	 *            The size for the row and column label ArrayLists.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GridLabelProvider(int size) {
-		// begin-user-code
 
 		// Setup LWRComponent info
 		this.name = "GridLabelProvider 1";
@@ -138,16 +117,13 @@ public class GridLabelProvider extends LWRComponent {
 		// Setup the HDF5LWRTagType to correct type
 		this.HDF5LWRTag = HDF5LWRTagType.GRID_LABEL_PROVIDER;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the column position from a label. Returns -1 if the label is not
 	 * found or if the label is null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param columnLabel
 	 *            <p>
@@ -156,27 +132,21 @@ public class GridLabelProvider extends LWRComponent {
 	 * @return <p>
 	 *         The column position.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getColumnFromLabel(String columnLabel) {
-		// begin-user-code
 		// If the column label is in there, or -1 if it does not exist
 		if (columnLabel != null) {
 			return this.columnLabels.indexOf(columnLabel);
 		}
 
 		return -1;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the row position from a label. Returns -1 if the label is not
 	 * found or if the label is null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param rowLabel
 	 *            <p>
@@ -185,11 +155,8 @@ public class GridLabelProvider extends LWRComponent {
 	 * @return <p>
 	 *         The row position.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getRowFromLabel(String rowLabel) {
-		// begin-user-code
 
 		// If the row label is in there, or -1 if it does not exist
 		if (rowLabel != null) {
@@ -198,15 +165,12 @@ public class GridLabelProvider extends LWRComponent {
 
 		return -1;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the label at position column.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param column
 	 *            <p>
@@ -215,11 +179,8 @@ public class GridLabelProvider extends LWRComponent {
 	 * @return <p>
 	 *         The label at the provided column position.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getLabelFromColumn(int column) {
-		// begin-user-code
 		// Return the column label or null if it does not exist
 		// Make sure its within the size
 		// Make sure the column labels also have stuff in the arraylist
@@ -229,15 +190,12 @@ public class GridLabelProvider extends LWRComponent {
 
 		// Return null if not bound correctly
 		return null;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the label at position row.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            <p>
@@ -246,11 +204,8 @@ public class GridLabelProvider extends LWRComponent {
 	 * @return <p>
 	 *         The label at the provided row position.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getLabelFromRow(int row) {
-		// begin-user-code
 
 		// Return the row label or null if it does not exist
 		// Make sure its within the size
@@ -262,25 +217,19 @@ public class GridLabelProvider extends LWRComponent {
 		// Return null if not bound correctly
 		return null;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the array of row labels ordered from top to bottom.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param rowLabels
 	 *            <p>
 	 *            The array of row labels ordered from top to bottom.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setRowLabels(ArrayList<String> rowLabels) {
-		// begin-user-code
 
 		// If the rowLabels passed are not null and equal in size, then add them
 		if (rowLabels != null && rowLabels.size() == this.size) {
@@ -290,25 +239,19 @@ public class GridLabelProvider extends LWRComponent {
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the array of column labels ordered from left to right.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param columnLabels
 	 *            <p>
 	 *            The array of column labels ordered from left to right.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setColumnLabels(ArrayList<String> columnLabels) {
-		// begin-user-code
 
 		// If the columnLabels passed are not null and equal in size, then add
 		// them
@@ -319,38 +262,29 @@ public class GridLabelProvider extends LWRComponent {
 			}
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the size for the row and column label ArrayLists.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The size for the row and column label ArrayLists.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getSize() {
-		// begin-user-code
 		return this.size;
 
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -359,11 +293,8 @@ public class GridLabelProvider extends LWRComponent {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		GridLabelProvider provider;
@@ -389,24 +320,18 @@ public class GridLabelProvider extends LWRComponent {
 		// Return the equality
 		return retVal;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declarations
 		int hash = super.hashCode();
@@ -419,25 +344,19 @@ public class GridLabelProvider extends LWRComponent {
 		// Return the hashCode
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(GridLabelProvider otherObject) {
-		// begin-user-code
 
 		// If object is null, return
 		if (otherObject == null) {
@@ -463,24 +382,18 @@ public class GridLabelProvider extends LWRComponent {
 
 		this.size = otherObject.size;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		GridLabelProvider provider = new GridLabelProvider(0);
@@ -491,20 +404,15 @@ public class GridLabelProvider extends LWRComponent {
 		// Return the newly instantiated object
 		return provider;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		// begin-user-code
 		boolean flag = true;
 
 		flag &= super.writeAttributes(h5File, h5Group);
@@ -512,20 +420,15 @@ public class GridLabelProvider extends LWRComponent {
 				size);
 
 		return flag;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
-		// begin-user-code
 		boolean flag = true;
 
 		// Return if the file or group is null
@@ -612,23 +515,17 @@ public class GridLabelProvider extends LWRComponent {
 		}
 
 		return flag;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides LWRComponent's readDatasets.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readDatasets(H5Group h5Group) {
-		// begin-user-code
 
 		// Call super
 		boolean flag = super.readDatasets(h5Group);
@@ -685,19 +582,14 @@ public class GridLabelProvider extends LWRComponent {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readAttributes(H5Group h5Group) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean flag = true;
@@ -721,6 +613,5 @@ public class GridLabelProvider extends LWRComponent {
 
 		return true;
 
-		// end-user-code
 	}
 }

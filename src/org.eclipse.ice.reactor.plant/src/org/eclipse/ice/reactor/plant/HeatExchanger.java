@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is the primary design of a countercurrent exchanger. It has two loops, a
  * primary and secondary loop, and therefore four in/outlets.
@@ -35,80 +34,56 @@ import javax.xml.bind.annotation.XmlRootElement;
  * It also contains a solid wall part which is between these two loops, acting
  * as a heat transfer medium.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "HeatExchanger")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class HeatExchanger extends GeometricalComponent {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The radius of the inner pipe.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	private double innerRadius;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Length of the heat exchanger.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	private double length;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Primary pipe of heat exchanger.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "PrimaryPipe")
 	private final Pipe primaryPipe;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The secondary pipe of the heat exchanger.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "SecondaryPipe")
 	private final Pipe secondaryPipe;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public HeatExchanger() {
-		// begin-user-code
 
 		// Call the superconstructor.
 		super();
@@ -127,28 +102,20 @@ public class HeatExchanger extends GeometricalComponent {
 		length = 1.0;
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * @return the innerRadius
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getInnerRadius() {
-		// begin-user-code
 		return innerRadius;
-		// end-user-code
 	}
 
 	/**
 	 * @param innerRadius
 	 *            the innerRadius to set
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setInnerRadius(double innerRadius) {
-		// begin-user-code
 
 		// The radius must be positive and must be different.
 		if (innerRadius > 0 && innerRadius != this.innerRadius) {
@@ -163,28 +130,20 @@ public class HeatExchanger extends GeometricalComponent {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * @return the length
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getLength() {
-		// begin-user-code
 		return length;
-		// end-user-code
 	}
 
 	/**
 	 * @param length
 	 *            the length to set
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setLength(double length) {
-		// begin-user-code
 
 		// The length must be positive and must be different.
 		if (length > 0 && length != this.length) {
@@ -198,48 +157,34 @@ public class HeatExchanger extends GeometricalComponent {
 			notifyListeners();
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * @return the primaryPipe
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Pipe getPrimaryPipe() {
-		// begin-user-code
 		return primaryPipe;
-		// end-user-code
 	}
 
 	/**
 	 * @return the secondaryPipe
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Pipe getSecondaryPipe() {
-		// begin-user-code
 		return secondaryPipe;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a list of the components (primary pipe, secondary pipe -- in that
 	 * order) contained in the heat exchanger.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         A list of the components contained, in the order: primary pipe,
 	 *         secondary pipe, wall.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<PlantComponent> getComponents() {
-		// begin-user-code
 
 		// Create the list
 		ArrayList<PlantComponent> list = new ArrayList<PlantComponent>();
@@ -250,15 +195,12 @@ public class HeatExchanger extends GeometricalComponent {
 		}
 
 		return list;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs an equality check between two Objects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -267,11 +209,8 @@ public class HeatExchanger extends GeometricalComponent {
 	 * @return <p>
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean retVal = false;
@@ -289,48 +228,36 @@ public class HeatExchanger extends GeometricalComponent {
 		}
 
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs a deep copy and returns a newly instantiated Object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		HeatExchanger clone = new HeatExchanger();
 		clone.copy(this);
 		return clone;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of otherObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The other object to copy the contents from.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(HeatExchanger otherObject) {
-		// begin-user-code
 
 		if (otherObject != null) {
 
@@ -346,24 +273,18 @@ public class HeatExchanger extends GeometricalComponent {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashCode of the Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		int hash = super.hashCode();
 		hash = 31 * hash + (int) innerRadius;
@@ -373,31 +294,24 @@ public class HeatExchanger extends GeometricalComponent {
 				+ ((secondaryPipe != null) ? secondaryPipe.hashCode() : 0);
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Accepts PlantComponentVisitors to reveal the type of a PlantComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The PlantComponent's visitor.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(IPlantComponentVisitor visitor) {
-		// begin-user-code
 
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 
-		// end-user-code
 	}
 
 	/**

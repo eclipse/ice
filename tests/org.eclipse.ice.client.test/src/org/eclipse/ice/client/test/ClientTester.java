@@ -29,100 +29,64 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * ClientTester checks the behavior and functionality of Client. It checks for
  * proper location setting and file system querying from Core.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ClientTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Client iCEClient;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeCore fakeCore;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A string for storing locations on the file system.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String location;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeUIWidgetFactory fakeUIWidgetFactory;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeFormWidget fakeFormWidget;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeErrorBoxWidget fakeErrorBoxWidget;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeTextEditor fakeTextEditor;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeExtraInfoWidget fakeExtraInfoWidget;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FakeStreamingTextWidget fakeStreamingTextWidget;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void BeforeClass() {
-		// begin-user-code
 
 		// Instantiate needed classes
 		this.fakeCore = new FakeCore();
@@ -135,23 +99,17 @@ public class ClientTester {
 
 		// Set the Location's Path
 		location = System.getProperty("user.home");
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Client by making sure that Items can be loaded
 	 * and displayed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemLoading() {
-		// begin-user-code
 
 		// Local Declarations
 		FakeFormWidget testFormWidget = null;
@@ -188,23 +146,17 @@ public class ClientTester {
 		}
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Client by making sure that errors can be
 	 * dispatched to the UI system to be displayed to the user.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkThrowingErrors() {
-		// begin-user-code
 
 		// Reset the Factory
 		this.fakeUIWidgetFactory.reset();
@@ -224,11 +176,9 @@ public class ClientTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Client by creating an Item. It makes sure that
 	 * the Client uses the UIWidgetFactory, uses a UIWidget and registers a
@@ -240,14 +190,10 @@ public class ClientTester {
 	 * list of available Item types as that in FakeCore: Red, Orange, Yellow,
 	 * Green.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemCreation() {
-		// begin-user-code
 
 		// Local Declarations
 		int itemId = -1;
@@ -320,25 +266,19 @@ public class ClientTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Client by insuring that Items and Forms can be
 	 * updated. It calls through the IUpdateWidgetListener interface. Review the
 	 * documentation on the FakeCore class to determine the proper Form ids to
 	 * use for the test.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemUpdates() {
-		// begin-user-code
 
 		// Local Declarations
 		Form testForm = new Form();
@@ -383,24 +323,18 @@ public class ClientTester {
 		assertTrue(fakeErrorBoxWidget.getErrorString().length() > 6);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the client to correctly handle calls
 	 * through the IProcessEventListener interface and by directly calling
 	 * IClient.processItem().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkItemProcessing() {
-		// begin-user-code
 
 		// Local Declarations
 		int itemId = -1;
@@ -525,24 +459,18 @@ public class ClientTester {
 		assertTrue(textWidget.textPushed());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the Client to load Resources when
 	 * signaled to do so by FormWidgets and other classes to which it may
 	 * subscribe.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkResourceLoading() {
-		// begin-user-code
 
 		// Post a resource load request to the Client
 		try {
@@ -561,23 +489,17 @@ public class ClientTester {
 		assertTrue(lastEditor.widgetDisplayed());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Client to make sure that if the connectToCore()
 	 * operation is called that the Client tries to load an ExtraInfoWidget.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRemoteConnection() {
-		// begin-user-code
 
 		// Make sure passing null for the hostname returns false
 		assertTrue(!iCEClient.connectToCore(null, 0));
@@ -602,23 +524,17 @@ public class ClientTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks that the client can import a file and that it calls
 	 * the Core to do so.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFileImport() {
-		// begin-user-code
 
 		// Create a file to import
 		File file = new File("file.test");
@@ -641,27 +557,20 @@ public class ClientTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * checkFS() checks that a valid file system representation is returned from
 	 * Core.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFS() {
-		// begin-user-code
 		// Assert that getFileSystem returns a valid ICEObject
 		assertNotNull(iCEClient.getFileSystem());
 		return;
-		// end-user-code
 	}
 
 }

@@ -23,27 +23,20 @@ import org.eclipse.ice.item.ItemType;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the CaebatModelBuilder.
  * </p>
- * <!-- end-UML-doc -->
  */
 public class BatMLModelBuilderTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the CaebatModelBuilder.getItemName().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetItemName() {
 
-		// begin-user-code
 
 		// Local declarations
 		BatMLModelBuilder batMLBuilder = new BatMLModelBuilder();
@@ -51,23 +44,19 @@ public class BatMLModelBuilderTester {
 		// Check the Item name
 		assertEquals("BatML Model", batMLBuilder.getItemName());
 
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the BatMLModelBuilder.build(). This should check
 	 * to see if a form is created, but it should not check the contents of that
 	 * form. That is checked in a lower level tester.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkBuild() {
 
-		// begin-user-code
 
 		// Local declarations
 		BatMLModelBuilder batMLBuilder = new BatMLModelBuilder();
@@ -83,21 +72,17 @@ public class BatMLModelBuilderTester {
 		// Just make sure the Form is created. Its contents will be checked later.
 		assertNotNull(batMLModel.getForm());
 		
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the CaebatModelBuilder.getItemType().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkGetItemType() {
 
-		// begin-user-code
 
 		// Local declarations
 		BatMLModelBuilder batMLBuilder = new BatMLModelBuilder();
@@ -105,7 +90,6 @@ public class BatMLModelBuilderTester {
 		// Check the Item name
 		assertEquals(ItemType.Model, batMLBuilder.getItemType());
 
-		// end-user-code
 
 	}
 }

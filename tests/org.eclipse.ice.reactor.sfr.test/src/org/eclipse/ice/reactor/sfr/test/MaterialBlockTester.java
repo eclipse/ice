@@ -24,30 +24,21 @@ import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the MaterialBlock class.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class MaterialBlockTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructors and default values for the MaterialBlock class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Create new MaterialBlock for testing
 		MaterialBlock block = new MaterialBlock();
@@ -58,22 +49,16 @@ public class MaterialBlockTester {
 		assertEquals(1, block.getId());
 		assertEquals(0.0, block.getVertPosition(), 0.0);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and setter for the vertPosition attribute.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVertPosition() {
-		// begin-user-code
 
 		// Initialize new material block
 		MaterialBlock block = new MaterialBlock();
@@ -86,22 +71,16 @@ public class MaterialBlockTester {
 		block.setVertPosition(42.0);
 		assertEquals(42.0, block.getVertPosition(), 0.0);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getters of rings in the MaterialBlock.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRing() {
-		// begin-user-code
 
 		// Initialize a material block for testing
 		MaterialBlock block = new MaterialBlock();
@@ -161,22 +140,16 @@ public class MaterialBlockTester {
 		assertEquals(ringOne, block.getRings().get(0));
 		assertEquals(ringTwo, block.getRings().get(1));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the addition and removal of Rings in the MaterialBlock.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkRingAddRem() {
-		// begin-user-code
 
 		// Initialize a material block for testing
 		MaterialBlock block = new MaterialBlock();
@@ -228,19 +201,15 @@ public class MaterialBlockTester {
 		// Remove ringTwo from block and check if ringRemoved flagged
 		ringRemoved = block.removeRing("Pot of petunias");
 		assertTrue(ringRemoved);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality operation of MaterialBlocks.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		/* --- Check equality between like material blocks ----------------- */
 
@@ -349,19 +318,15 @@ public class MaterialBlockTester {
 		assertFalse(block.hashCode() == unequalBlock.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations of MaterialBlocks.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		/* --- Testing the copy operation ---------------------------------- */
 
@@ -407,19 +372,15 @@ public class MaterialBlockTester {
 		assertTrue(blockClone.equals(block));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the compareTo method of MaterialBlocks.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkComparison() {
-		// begin-user-code
 
 		// Create a material block for testing
 		MaterialBlock blockOne = new MaterialBlock();
@@ -441,6 +402,5 @@ public class MaterialBlockTester {
 		// Check that blockOne and blockThree overlap
 		assertEquals(0, blockOne.compareTo(blockThree));
 
-		// end-user-code
 	}
 }

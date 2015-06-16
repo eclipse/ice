@@ -52,83 +52,56 @@ import org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncher;
 import org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncherBuilder;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the MultiLauncherBuilder and the
  * MultiLauncher classes. It realizes the IComponentVisitor interface so that it
  * can sort and examine the components from the MultiLauncher's Form.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MultiLauncherTester implements IComponentVisitor {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private MultiLauncherBuilder multiLauncherBuilder;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DataComponent dataComponent = null;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The MasterDetailsComponent from the MultiLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private MasterDetailsComponent masterDetailsComponent = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A reference to the project space.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static IProject projectSpace;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The ResourceComponent from the MultiLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ResourceComponent resourceComponent;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is called before the test to setup the project space.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void Before() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -164,11 +137,9 @@ public class MultiLauncherTester implements IComponentVisitor {
 			fail();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the MultiLauncherBuilder to make sure that it can
 	 * create a fully initialized MultiLauncher. It does this by registering
@@ -178,14 +149,10 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 * from the launcher and find information for each of the Items that it
 	 * registered with type ItemType.Simulation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Create the builder
 		int numBuilders = 4;
@@ -266,24 +233,18 @@ public class MultiLauncherTester implements IComponentVisitor {
 		// The ResourceComponent should have id = 2
 		assertEquals(2, resourceComponent.getId());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation modifies the Form retrieved from the MultiLauncher and
 	 * submits it back to the launcher to make sure that it can be submitted
 	 * successfully.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFormSubmission() {
-		// begin-user-code
 
 		// Create the builder
 		int numBuilders = 4;
@@ -327,137 +288,100 @@ public class MultiLauncherTester implements IComponentVisitor {
 		// Submit the Form and make sure it is accepted
 		assertEquals(FormStatus.ReadyToProcess, launcher.submitForm(form));
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(DataComponent component) {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(ResourceComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(ResourceComponent component) {
-		// begin-user-code
 
 		resourceComponent = component;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TableComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TableComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MatrixComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MatrixComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IShape component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IShape component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(GeometryComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(GeometryComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MasterDetailsComponent component) {
-		// begin-user-code
 
 		// Set the MasterDetailsComponent
 		masterDetailsComponent = component;
 		// Set its header component
 		dataComponent = masterDetailsComponent.getGlobalsComponent();
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TreeComposite component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TreeComposite component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IReactorComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IReactorComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	@Override

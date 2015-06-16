@@ -43,64 +43,48 @@ import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The JobLauncherFormTester is responsible for testing the JobLauncherForm. It
  * is primarily focused on testing the number and composition of the Components
  * in the JobLauncherForm. It realizes the IComponentVisitor interface to find
  * the Parallel Execution Data Component from the JobLauncherForm.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class JobLauncherFormTester implements IComponentVisitor {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The JobLauncherForm that is under test.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private JobLauncherForm jobLauncherForm;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A reference to store the threadingComponent used in the checkParallelism
 	 * test.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DataComponent threadingComponent = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Components of the JobLauncherForm to make sure
 	 * that they are correct in their number and configuration. It also checks
 	 * the list of input files and makes sure that it can be changed properly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkJobLauncherFormComponents() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> files = new ArrayList<String>();
@@ -135,23 +119,17 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		assertEquals(files, retFiles);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation makes sure that it is possible to enable and disable
 	 * support for OpenMP, TBB, and MPI in the JobLauncherForm.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkParallelism() {
-		// begin-user-code
 
 		// Local Declarations
 		Entry openMPEntry = null;
@@ -428,22 +406,16 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that checks the equals and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 		// Create JobLauncherForms to test
 		JobLauncherForm form = new JobLauncherForm();
 		JobLauncherForm equalForm = new JobLauncherForm();
@@ -498,7 +470,6 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		// Assert that hashcodes from unequal objects are different
 		assertTrue(form.hashCode() != unEqualForm.hashCode());
 
-		// end-user-code
 	}
 
 	/**
@@ -509,7 +480,6 @@ public class JobLauncherFormTester implements IComponentVisitor {
 	 */
 	@Test
 	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
-		// begin-user-code
 
 		/*
 		 * The following sets of operations will be used to test the
@@ -526,7 +496,8 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(JobLauncherForm.class);
-
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		
 		// Setup a JobLauncherForm
 		jobForm.setName("I AM NEW!");
 		jobForm.setDescription("Oh Somewhat NEW?!");
@@ -553,18 +524,13 @@ public class JobLauncherFormTester implements IComponentVisitor {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone routines on JobLauncherForm.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 		/*
 		 * The following sets of operations will be used to test the
 		 * "clone and copy" portion of JobLauncherForm.
@@ -603,23 +569,17 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		// Nothing has changed
 		assertTrue(jobForm.equals(copyForm));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the JobLauncherForm to ensure that it can manage
 	 * multiple input files.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkMultipleInputFiles() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> files1 = new ArrayList<String>(), files2 = null, files3 = null;
@@ -685,19 +645,15 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		assertEquals(files3.size(), retFiles.size());
 		assertEquals(files3, retFiles);
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 
 	public void visit(DataComponent component) {
-		// begin-user-code
 
 		// We only care about the "Parallel Exectuion" Data component in this
 		// test
@@ -705,119 +661,86 @@ public class JobLauncherFormTester implements IComponentVisitor {
 			threadingComponent = (DataComponent) component;
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(ResourceComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(ResourceComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TableComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TableComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MatrixComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MatrixComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IShape component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IShape component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(GeometryComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(GeometryComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MasterDetailsComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TreeComposite component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TreeComposite component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IReactorComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IReactorComponent component) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	@Override

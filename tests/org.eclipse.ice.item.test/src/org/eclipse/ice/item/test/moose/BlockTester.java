@@ -12,59 +12,45 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test.moose;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.utilities.moose.Block;
 import org.eclipse.ice.item.utilities.moose.Parameter;
+import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This operation checks the MOOSE Block class. The loadFromMap() operation is
  * checked by the MOOSEFileHandlerTester class because it requires integration
  * with SnakeYAML.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class BlockTester {
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the accessors for the Block class.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAccessors() {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "Snow", description = "Snow always mirrors";
-		String type = "std::string";
+		String comment = "Some comment", type = "std::string";
 		Parameter param1 = new Parameter(), param2 = new Parameter();
 		ArrayList<Parameter> paramList = new ArrayList<Parameter>();
 		Block block = new Block(), subBlock = new Block();
 		ArrayList<Block> blockList = new ArrayList<Block>();
-		
+
 		// Setup the block
 		block.setName(name);
 		block.setType(type);
 		block.setDescription(description);
+		block.setComment(comment);
 		param1.setName("Test Param 1");
 		param1.setDefault("Test Param 1");
 		param1.setCpp_type("Test Param 1");
@@ -84,6 +70,7 @@ public class BlockTester {
 		// Check the block
 		assertEquals(name, block.getName());
 		assertEquals(description, block.getDescription());
+		assertEquals(comment, block.getComment());
 		assertEquals(type, block.getType());
 		assertEquals(blockList.size(), block.getSubblocks().size());
 		assertEquals(true, block.isActive());
@@ -95,23 +82,14 @@ public class BlockTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the Block to write itself to an ICE
 	 * TreeComposite.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkToTreeComposite() {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "Snow", description = "Snow always mirrors";
@@ -130,7 +108,7 @@ public class BlockTester {
 		param1.setCpp_type("Test Param 1");
 		param1.setDescription("Test Param 1");
 		param1.setRequired(true);
-		
+
 		paramList.add(param1);
 		param2.setName("Test Param 2");
 		param2.setDefault("Test Param 2");
@@ -158,26 +136,17 @@ public class BlockTester {
 		assertEquals(blockList.size(), tree.getNumberOfChildren());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the block to write itself in a
 	 * GetPot compatible string.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkToGetPot() {
-		// begin-user-code
 
 		// Local Declarations
-		String name = "Snow", description = "Snow always mirrors";
+		String name = "Snow", comment = "Snow always mirrors";
 		String type = "std::string";
 		Parameter param1 = new Parameter(), param2 = new Parameter();
 		Parameter param3 = new Parameter();
@@ -189,7 +158,7 @@ public class BlockTester {
 		// Setup the block
 		block.setName(name);
 		block.setType(type);
-		block.setDescription(description);
+		block.setComment(comment);
 		param1.setName("Test Param 1");
 		param1.setDefault("Test Param 1");
 		param1.setCpp_type("Test Param 1");
@@ -215,14 +184,19 @@ public class BlockTester {
 
 		// Create a GetPot string from the Block and check it
 		// System.out.println(block.toGetPot(null));
-		String testString = 
-				"[Snow]                        # Snow always mirrors\n" 
-				+ "  Test Param 1 = Test Param 1\n"
-				+ "# Test Param 2 = \n"
-				+ "  [./]\n" 
-				+ "    Test Param 3 = Test Param 3\n"
-				+ "  [../]\n" 
-				+ "[]\n";
+		String newLine = System.lineSeparator();
+		String testString = "[Snow]                        # Snow always mirrors"
+				+ newLine
+				+ "  Test Param 1 = Test Param 1"
+				+ newLine
+				+ "# Test Param 2 = "
+				+ newLine
+				+ "  [./]"
+				+ newLine
+				+ "    Test Param 3 = Test Param 3"
+				+ newLine
+				+ "  [../]"
+				+ newLine + "[]" + newLine;
 		// System.out.println(testString);
 		assertEquals(testString, block.toGetPot(null));
 		// Make sure that toString() works as described.
@@ -230,7 +204,6 @@ public class BlockTester {
 		assertEquals(testString, block.toString());
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -315,19 +288,11 @@ public class BlockTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the Block to make sure that it can be loaded from a
 	 * TreeComposite.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFromTreeComposite() {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "Snow", description = "Snow always mirrors";
@@ -378,6 +343,5 @@ public class BlockTester {
 		// There's no need to check the children thoroughly. At least, not yet.
 
 		return;
-		// end-user-code
 	}
 }

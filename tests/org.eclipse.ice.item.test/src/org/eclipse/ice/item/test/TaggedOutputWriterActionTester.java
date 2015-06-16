@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -26,40 +27,28 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for checking that the TaggedOutputWriter action can
  * write a set of key-value pairs to an output file.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class TaggedOutputWriterActionTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TaggedOutputWriterAction taggedOutputWriterAction;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks that the TaggedOutputWriter action can write a set
 	 * of key-value pairs to an output file.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkWriting() {
-		// begin-user-code
 
 		// Local Declarations
 		Hashtable<String, String> testDictionary = new Hashtable<String, String>();
@@ -93,8 +82,10 @@ public class TaggedOutputWriterActionTester {
 
 		// Load the file and check it
 		Properties testFileProperties = new Properties();
+		InputStream in = null;
 		try {
-			testFileProperties.load(new FileInputStream(testFile));
+			in = new FileInputStream(testFile);
+			testFileProperties.load(in);
 		} catch (FileNotFoundException e) {
 			// Fail if it catches an exception
 			e.printStackTrace();
@@ -117,13 +108,18 @@ public class TaggedOutputWriterActionTester {
 		assertEquals(testFileProperties.get("Scotty"),
 				testDictionary.get("Scotty"));
 
-		// Get rid of the file if everything worked
+		// Get rid of the file if everything worked. We also must close the
+		// input stream first, otherwise the file may not be deleted.
+		try {
+			in.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		if (testFile.exists()) {
 			testFile.delete();
 		}
 
 		return;
 
-		// end-user-code
 	}
 }

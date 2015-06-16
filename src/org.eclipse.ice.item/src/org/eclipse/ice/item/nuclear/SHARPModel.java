@@ -52,21 +52,15 @@ import org.eclipse.core.runtime.CoreException;
  * </p>
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "SHARPModel")
 public class SHARPModel extends Item {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The process tag for writing the SHARP output file.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	protected static final String proteusProcessActionString = "Write PROTEUS File";
@@ -77,52 +71,38 @@ public class SHARPModel extends Item {
 	private int neutronicsComponentId = 1;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SHARPModel() {
-		// begin-user-code
 		this(null);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor with a project space in which files should be
 	 * manipulated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
 	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SHARPModel(IProject projectSpace) {
-		// begin-user-code
 
 		// Call super
 		super(projectSpace);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates the SHARP input file.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param actionName
 	 *            <p>
@@ -135,11 +115,8 @@ public class SHARPModel extends Item {
 	 *         run for any reason, including being asked to run actions that are
 	 *         not in the list of available actions.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus process(String actionName) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
@@ -214,11 +191,9 @@ public class SHARPModel extends Item {
 		} else {
 			return FormStatus.Unacceptable;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the Form for the SHARPModel. The Form contains a
 	 * DataComponent with id=1 that contains Entries for the names of the SHARP
@@ -229,13 +204,9 @@ public class SHARPModel extends Item {
 	 * The Entries in the DataComponent are named "SHARP-Based Application" with
 	 * id = 1 and "Output File Name" with id=2. The TreeComposite is empty.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		// Create the Form
 		form = new Form();
@@ -264,21 +235,15 @@ public class SHARPModel extends Item {
 		}
 
 		return;	
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to setup the name and description of the model.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupItemInfo() {
-		// begin-user-code
 
 		// Local Declarations
 		String desc = "This item builds models for "
@@ -296,7 +261,6 @@ public class SHARPModel extends Item {
 		allowedActions.add(proteusProcessActionString);
 
 		return;
-		// end-user-code
 	}
 
 }

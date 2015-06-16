@@ -14,8 +14,8 @@ package org.eclipse.ice.viz.service.test;
 import java.net.URI;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IVizService;
 
 /**
  * This is a fake IVizService that is used in testing. The only thing it really
@@ -95,6 +95,17 @@ public class FakeVizService implements IVizService {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#disconnect()
+	 */
+	@Override
+	public boolean disconnect() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
 	 * .net.URI)
@@ -107,7 +118,9 @@ public class FakeVizService implements IVizService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#hasConnectionProperties()
+	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
+	 * hasConnectionProperties()
 	 */
 	@Override
 	public boolean hasConnectionProperties() {

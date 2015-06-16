@@ -29,59 +29,41 @@ import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class FlowJunctionTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Boolean flag to mark if the PlantComponent was successfully visited.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean wasVisited = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the construction of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		FlowJunction junction = new FlowJunction();
 		assertNotNull(junction.getInputs());
 		assertNotNull(junction.getOutputs());
 		assertTrue(junction.getInputs().isEmpty());
 		assertTrue(junction.getOutputs().isEmpty());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the getting and setting of the component's attributes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkProperties() {
-		// begin-user-code
 		// Create some inputs and outputs
 		PlantComponent input1 = new Pipe();
 		input1.setName("input1");
@@ -112,22 +94,16 @@ public class FlowJunctionTester {
 		assertTrue(junction.getInputs().equals(inputs));
 		assertTrue(junction.getOutputs().equals(outputs));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the hashCode and equality methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 		// Create two equal FlowJunctions with
 		// nullary constructor
 		FlowJunction j = new FlowJunction();
@@ -155,22 +131,16 @@ public class FlowJunctionTester {
 		// Check inequality and symmetry
 		assertFalse(j.equals(equalJ));
 		assertFalse(equalJ.equals(j));
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the copy and clone methods of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 		// Create a FlowJunction to copy
 		FlowJunction junction = new FlowJunction();
 		junction.setName("Name");
@@ -222,38 +192,26 @@ public class FlowJunctionTester {
 		assertFalse(casted == junction);
 		assertTrue(casted.equals(junction));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks for persistence in the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkPersistence() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 		// Create a new component to visit.
 		FlowJunction component = new FlowJunction();
 
@@ -305,17 +263,14 @@ public class FlowJunctionTester {
 		assertTrue(component.equals(visitorPlantComponent));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @author w5q
+	 * @author Anna Wojtowicz
 	 */
 	private class FakeComponentVisitor extends SelectiveComponentVisitor {
 

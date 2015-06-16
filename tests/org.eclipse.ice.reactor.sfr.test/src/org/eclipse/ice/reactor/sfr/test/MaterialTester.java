@@ -22,30 +22,21 @@ import org.eclipse.ice.reactor.sfr.core.Material;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the Material class.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class MaterialTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructors and default values of the Material class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Initialize a Material for testing with nullary constructor
 		Material materialOne = new Material();
@@ -61,20 +52,16 @@ public class MaterialTester {
 		assertEquals("Material 1 Description", materialTwo.getDescription());
 		assertEquals(1, materialTwo.getId());
 
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality operation of Materials.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		/* --- Check equality between like materials ----------------------- */
 
@@ -132,19 +119,15 @@ public class MaterialTester {
 		assertFalse(material.hashCode() == unequalMaterial.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations of Materials.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		/* --- Testing the copy operation ---------------------------------- */
 
@@ -180,6 +163,5 @@ public class MaterialTester {
 		assertTrue(materialClone.equals(material));
 
 		return;
-		// end-user-code
 	}
 }

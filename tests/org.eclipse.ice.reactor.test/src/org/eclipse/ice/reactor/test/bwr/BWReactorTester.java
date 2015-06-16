@@ -23,30 +23,21 @@ import org.eclipse.ice.reactor.bwr.BWReactor;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A class that tests the BWReactor.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class BWReactorTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the constructor and it's default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 		// Local Declarations
 		BWReactor reactor;
 		String defaultName = "BWReactor 1";
@@ -81,22 +72,16 @@ public class BWReactorTester {
 		assertEquals(defaultId, reactor.getId());
 		assertEquals(type, reactor.getHDF5LWRTag());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks equals() and hashCode() operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		BWReactor object, equalObject, unEqualObject, transitiveObject;
@@ -157,22 +142,16 @@ public class BWReactorTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the copy and clone routines.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local declarations
 		BWReactor object;
@@ -202,6 +181,5 @@ public class BWReactorTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 }

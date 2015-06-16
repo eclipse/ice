@@ -42,30 +42,20 @@ import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class AxialPowerTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AxialPower axialPower;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void beforeClass() {
-		// begin-user-code
 		ArrayList<IDataProvider> providers = getTestData();
 
 		// Partition the loaded data into HashMaps...
@@ -94,35 +84,25 @@ public class AxialPowerTester {
 		PinPowerDifference diff = new PinPowerDifference(loaded, ref, props);
 
 		axialPower = new AxialPower(diff, loaded, ref, weights);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkExecuteStrategy() {
-		// begin-user-code
 		assertTrue(axialPower.executeStrategy());
 
 		assertEquals(1, axialPower.getAxialPower().numberOfRows());
 		assertEquals(1, axialPower.getAxialPowerDifference().numberOfRows());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<IDataProvider> getTestData() {
-		// begin-user-code
 		// Need some data....
 		IDataProvider provider = new SimpleDataProvider();
 		IDataProvider refProvider = new SimpleDataProvider();
@@ -251,6 +231,10 @@ public class AxialPowerTester {
 				}
 			}
 
+			// Close the readers.
+			reader.close();
+			refReader.close();
+			resultReader.close();
 		} catch (CoreException e) {
 			e.printStackTrace();
 			fail();
@@ -298,12 +282,10 @@ public class AxialPowerTester {
 		retProvs.add(resultProvider);
 
 		return retProvs;
-		// end-user-code
 	}
 
 	private HashMap<Integer, ArrayList<IDataMatrix>> partitionData(
 			ArrayList<IData> data) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<ArrayList<IData>> assemblyPartitions = new ArrayList<ArrayList<IData>>();
@@ -356,6 +338,5 @@ public class AxialPowerTester {
 		}
 
 		return result;
-		// end-user-code
 	}
 }

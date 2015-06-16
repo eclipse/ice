@@ -42,28 +42,20 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is a FormPage that creates a page with multiple sections for a set
  * of ICE DataComponents.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The list of Components managed by this page. It contains components of
 	 * multiple types and is not sorted.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<Component> components;
 
@@ -73,50 +65,36 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	private IManagedForm managedFormRef;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The list of DataComponents that is formed by visiting the Components
 	 * assigned to this page.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<DataComponent> dataComponents;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The list of TableComponents that is formed by visiting the Components
 	 * assigned to this page.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<TableComponent> tableComponents;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The list of MatrixComponents that is formed by visiting the Components
 	 * assigned to this page.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ArrayList<MatrixComponent> matrixComponents;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param editor
 	 *            <p>
@@ -130,11 +108,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 *            <p>
 	 *            The title of the page.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICESectionPage(FormEditor editor, String id, String title) {
-		// begin-user-code
 
 		// Call the super constructor
 		super(editor, id, title);
@@ -154,7 +129,6 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		matrixComponents = new ArrayList<MatrixComponent>();
 
 		return;
-		// end-user-code
 	}
 
 	/*
@@ -162,7 +136,6 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
-		// begin-user-code
 
 		// Get the parent form.
 		final ScrolledForm scrolledForm = managedForm.getForm();
@@ -184,26 +157,20 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		createMatrixComponentSections();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the Components that are managed by this page.
 	 * This operation should not be generally used, but for testing purposes
 	 * where there is a setter there must be a getter.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The set of Components managed by this page.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Component> getComponents() {
-		// begin-user-code
 
 		ArrayList<Component> compList = new ArrayList<Component>();
 
@@ -212,48 +179,36 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		compList.addAll(matrixComponents);
 
 		return components;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation adds a Component to the set of Components that are managed
 	 * by this page.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
 	 *            <p>
 	 *            A new Component for this page to manage
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addComponent(Component component) {
-		// begin-user-code
 		if (component != null) {
 			// Visit the components so that they can be sorted
 			component.accept(this);
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates ICEDataComponentSectionParts for each
 	 * DataComponent in the list of DataComponents and figures out exactly how
 	 * they should be arranged and span across the page based on their
 	 * properties.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createDataComponentSections() {
-		// begin-user-code
 
 		// Get the parent form and the ToolKit to create decorated Sections.
 		final ScrolledForm scrolledForm = managedFormRef.getForm();
@@ -311,24 +266,18 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates ICETableComponentSectionParts for each
 	 * TableComponent in the list of TableComponents and figures out exactly how
 	 * they should be arranged and span across the page based on their
 	 * properties.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createTableComponentSections() {
-		// begin-user-code
 
 		// Get the parent form and the ToolKit to create decorated Sections.
 		final ScrolledForm scrolledForm = managedFormRef.getForm();
@@ -363,24 +312,18 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates ICEMatrixComponentSectionParts for each
 	 * MatrixComponent in the list of MatrixComponents and figures out exactly
 	 * how they should be arranged and span across the page based on their
 	 * properties.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createMatrixComponentSections() {
-		// begin-user-code
 
 		// Get the parent form and the ToolKit to create decorated Sections.
 		final ScrolledForm scrolledForm = managedFormRef.getForm();
@@ -421,139 +364,102 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(DataComponent component) {
-		// begin-user-code
 
 		if (component != null) {
 			dataComponents.add(component);
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(ResourceComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(ResourceComponent component) {
-		// begin-user-code
 		// Nothing to do yet.
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TableComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TableComponent component) {
-		// begin-user-code
 
 		if (component != null) {
 			tableComponents.add(component);
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MatrixComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MatrixComponent component) {
-		// begin-user-code
 
 		if (component != null) {
 			matrixComponents.add(component);
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IShape component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IShape component) {
-		// begin-user-code
 		// Nothing to do yet.
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(GeometryComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(GeometryComponent component) {
-		// begin-user-code
 		// Nothing to do yet.
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(MasterDetailsComponent component) {
-		// begin-user-code
 		// Nothing to do yet.
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(TreeComposite component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(TreeComposite component) {
-		// begin-user-code
 		// Nothing to do yet.
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IComponentVisitor#visit(IReactorComponent component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(IReactorComponent component) {
-		// begin-user-code
 		// Nothing to do yet.
-		// end-user-code
 	}
 
 	/*
@@ -566,12 +472,10 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	@Override
 	public void visit(TimeDataComponent component) {
 
-		// begin-user-code
 
 		// Treat as a DataComponent
 		this.visit((DataComponent) component);
 
-		// end-user-code
 
 	}
 

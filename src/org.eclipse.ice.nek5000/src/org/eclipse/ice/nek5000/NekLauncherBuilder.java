@@ -18,7 +18,8 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * This classs constructs a Nek5000 Job Launcher.
+ * This class constructs a Nek5000 Job Launcher.
+ * 
  * @author Jay Jay Billings
  *
  */
@@ -28,30 +29,30 @@ public class NekLauncherBuilder implements ItemBuilder {
 	 * The name that should be used for the Item and this builder
 	 */
 	public static final String name = "Nek5000 Launcher";
-	
+
 	/**
 	 * The type of the Item
 	 */
 	public static final ItemType type = ItemType.Simulation;
-	
-	/** (non-Javadoc)
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemName()
+
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public String getItemName() {
 		return name;
 	}
 
-	/** (non-Javadoc)
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemType()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public ItemType getItemType() {
 		return type;
 	}
 
-	/** (non-Javadoc)
-	 * @see org.eclipse.ice.item.ItemBuilder#build()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public Item build(IProject project) {

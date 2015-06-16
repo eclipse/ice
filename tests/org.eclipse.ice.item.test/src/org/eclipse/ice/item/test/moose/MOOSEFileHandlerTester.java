@@ -28,31 +28,27 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class tests the MOOSEFileHandler.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MOOSEFileHandlerTester {
+
+	/*
+	 * FIXME Some of the tests here do byte comparisons between a reference file
+	 * and an output file. This will cause failures (due to line endings adding
+	 * or removing bytes) if the reference file was created on a different
+	 * operating system! So either the test methods need to be redesigned, or we
+	 * need to be extra careful about passing around the test data to developers
+	 * on other operating systems.
+	 */
+
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation makes sure that MOOSE data can be loaded a gold-standard
 	 * YAML file.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadingFromYAML() {
-		// begin-user-code
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -72,7 +68,6 @@ public class MOOSEFileHandlerTester {
 		try {
 			blocks = handler.loadYAML(shortFilePath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -95,7 +90,6 @@ public class MOOSEFileHandlerTester {
 		try {
 			blocks = handler.loadYAML(mediumFilePath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -114,7 +108,6 @@ public class MOOSEFileHandlerTester {
 		try {
 			blocks = handler.loadYAML(largeFilePath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -132,7 +125,6 @@ public class MOOSEFileHandlerTester {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
@@ -180,19 +172,11 @@ public class MOOSEFileHandlerTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation ensures that the MOOSEFileHandler can create a MOOSE input
 	 * file from a set of incoming TreeComposites.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkWritingInputFileFromTree() {
-		// begin-user-code
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -200,8 +184,9 @@ public class MOOSEFileHandlerTester {
 				+ "ICETests" + separator + "itemData";
 		String filePath = userDir + separator + "bison_short.yaml";
 		String inputFilePath = userDir + separator + "bison_short.input";
+		String outputFilePath = userDir + separator + "bison_short.output";
 		String refFilePath = userDir + separator + "bison_short.input.ref";
-		File inputFile = null;
+		File outputFile = null;
 		MOOSEFileHandler handler = new MOOSEFileHandler();
 		TreeComposite adaptivity = null, indicators = null;
 		TreeComposite analyticalIndicator = null, fluxJumpIndicator = null;
@@ -212,7 +197,6 @@ public class MOOSEFileHandlerTester {
 		try {
 			blocks = handler.loadYAML(filePath);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -236,26 +220,27 @@ public class MOOSEFileHandlerTester {
 		fluxJumpIndicator.setActive(true);
 
 		// Get and mark the enabled entries for the Adaptivity tree.
-		DataComponent adaptivityData = (DataComponent) adaptivity.getDataNodes().get(0);
+		DataComponent adaptivityData = (DataComponent) adaptivity
+				.getDataNodes().get(0);
 		adaptivity.setActiveDataNode(adaptivityData);
 		adaptivityData.retrieveEntry("initial_steps").setTag("true");
 		adaptivityData.retrieveEntry("marker").setTag("true");
 		adaptivityData.retrieveEntry("steps").setTag("true");
 
-		
 		// Get and set entries for the Indicators subblocks
-		DataComponent analyticalIndicatorsComponent = 
-				(DataComponent) analyticalIndicator.getDataNodes().get(0);
+		DataComponent analyticalIndicatorsComponent = (DataComponent) analyticalIndicator
+				.getDataNodes().get(0);
 		analyticalIndicatorsComponent.retrieveEntry("block").setTag("false");
 		analyticalIndicatorsComponent.retrieveEntry("type").setTag("true");
 		// "function" and "variable" are marked required by the YAML file
-		DataComponent fluxJumpIndicatorComponent = 
-				(DataComponent) fluxJumpIndicator.getDataNodes().get(0);
+		DataComponent fluxJumpIndicatorComponent = (DataComponent) fluxJumpIndicator
+				.getDataNodes().get(0);
 		fluxJumpIndicatorComponent.retrieveEntry("block").setTag("false");
-		fluxJumpIndicatorComponent.retrieveEntry("scale_by_flux_faces").setTag("false");
+		fluxJumpIndicatorComponent.retrieveEntry("scale_by_flux_faces").setTag(
+				"false");
 		fluxJumpIndicatorComponent.retrieveEntry("type").setTag("true");
 		// "property" and "variable" are marked required by the YAML file
-		
+
 		// Create a variable. Variable does not have any exemplars in this
 		// example, so we can just create a tree for this test.
 		variable = (TreeComposite) blocks.get(2);
@@ -278,9 +263,10 @@ public class MOOSEFileHandlerTester {
 		// Activate both nodes
 		function.setActive(true);
 		powerHistory.setActive(true);
-		
+
 		// Configure the power history tree's data
-		DataComponent powerData = (DataComponent) powerHistory.getDataNodes().get(0);
+		DataComponent powerData = (DataComponent) powerHistory.getDataNodes()
+				.get(0);
 		powerData.retrieveEntry("type").setTag("true");
 		powerData.retrieveEntry("scale_factor").setTag("true");
 		// Add a parameter for the data file
@@ -291,11 +277,11 @@ public class MOOSEFileHandlerTester {
 		powerData.addEntry(dataFileParam.toEntry());
 
 		// Dump the input file
-		handler.dumpInputFile(inputFilePath, blocks);
+		handler.dumpInputFile(outputFilePath, blocks);
 
-		// Check to see if the file exists
-		inputFile = new File(inputFilePath);
-		assertTrue(inputFile.exists());
+		// Check to see if the file(s) exists
+		outputFile = new File(outputFilePath);
+		assertTrue(outputFile.exists());
 
 		// Compare the input file to the reference file
 		int firstHash, lastHash;
@@ -307,11 +293,11 @@ public class MOOSEFileHandlerTester {
 			inputFileRAF.read(inputBytes);
 			// Convert to a string
 			String inputString = new String(inputBytes);
-			
-			// Chop off the comments at the end of each line. The parameter 
+
+			// Chop off the comments at the end of each line. The parameter
 			// descriptions from the YAML file are appended as comments via the
 			// process loading YAML through the MOOSEFileHandler. But this is
-			// an additional feature, and these comments aren't found in the 
+			// an additional feature, and these comments aren't found in the
 			// original reference file, so we must remove them for testing
 			String[] inputArray = inputString.split("\\n+");
 			inputString = "";
@@ -319,27 +305,29 @@ public class MOOSEFileHandlerTester {
 			for (String line : inputArray) {
 				hasComment = !(line.lastIndexOf(" # ") == -1);
 				if (hasComment) {
-					
+
 					// Figure out if it's the whole line commented out, or just
 					// an in-line comment (only remove the inline)
 					firstHash = line.trim().indexOf("#");
 					lastHash = line.trim().lastIndexOf("#");
-					
+
 					// If the whole line is commented out, and has no in-line
 					// comment
 					if (firstHash == 0 && firstHash == lastHash) {
 						// do nothing
 					} else {
-						// Lop off the in-line comment
+						// Lop off the in-line comment. Unfortunately we must
+						// do this, as loading up a YAML file adds descriptions
+						// as comments, so the files won't be exactly the same.
 						line = line.substring(0, line.lastIndexOf(" # "));
 						line = line.replaceAll("\\s+$", "");
 					}
-					
+
 					if (line.endsWith("=")) {
 						line += " ";
 					}
 				}
-				
+
 				inputString += line + "\n";
 			}
 
@@ -356,13 +344,13 @@ public class MOOSEFileHandlerTester {
 			// Close everything
 			inputFileRAF.close();
 			refFileRAF.close();
+			outputFile.deleteOnExit();
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**

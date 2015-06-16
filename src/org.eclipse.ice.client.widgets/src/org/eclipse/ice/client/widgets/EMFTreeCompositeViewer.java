@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.ice.client.common.TreeCompositeViewer;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -40,7 +39,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
  * This class extends {@link TreeCompositeViewer} to add a {@link Combo} for
  * selecting MOOSE tools.
  * 
- * @author Taylor Patterson, Jordan H. Deyton, w5q
+ * @author Taylor Patterson, Jordan H. Deyton, Anna Wojtowicz
  * 
  */
 public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
@@ -71,9 +70,6 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 
 	/**
 	 * Create the tree viewer that shows the TreeComposite for the current Form
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 *      .Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
@@ -224,7 +220,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 					+ "EMFFormEditor part activated.");
 
 			// Update the TreeViewer with the current TreeComposite.
-			setInput(inputTree);
+			setInput(inputTree, getFormEditor());
 		}
 
 		return;
@@ -239,7 +235,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 			System.out.println("EMFTreeCompositeViewer message: "
 					+ "EMFFormEditor part closed.");
 
-			setInput(new TreeComposite());
+			setInput(new TreeComposite(), null);
 
 			// If the active editor closed, reset the active editor reference.
 			if (partRef == activeEditorRef) {

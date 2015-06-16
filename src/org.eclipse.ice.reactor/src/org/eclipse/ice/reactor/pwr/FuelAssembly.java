@@ -32,7 +32,6 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
 import java.util.ArrayList;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The FuelAssembly class is a PWRAssembly populated with a collection of Tubes
  * positioned on a fixed grid. When the addTube() operation is used, if a Tube
@@ -45,51 +44,33 @@ import java.util.ArrayList;
  * StatePointData for Tubes should be stored by position and accessed by the
  * getTubeDataProviderAtLocation operation.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class FuelAssembly extends PWRAssembly {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The RodClusterAssembly associated with this FuelAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private RodClusterAssembly rodClusterAssembly;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A LWRComposite for Tubes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private LWRComposite tubeComposite;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private LWRGridManager tubeGridManager;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The GridLabelProvider for this FuelAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private GridLabelProvider gridLabelProvider;
 
@@ -98,21 +79,16 @@ public class FuelAssembly extends PWRAssembly {
 	private static final String GRID_LABEL_PROVIDER_NAME = "Grid Labels";
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param size
 	 *            <p>
 	 *            The size of either dimension of the location grid.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FuelAssembly(int size) {
-		// begin-user-code
 
 		// Call super constructor
 		super(size);
@@ -146,15 +122,12 @@ public class FuelAssembly extends PWRAssembly {
 		// Setup the LWRComponentType to correct type
 		this.HDF5LWRTag = HDF5LWRTagType.FUEL_ASSEMBLY;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -164,72 +137,54 @@ public class FuelAssembly extends PWRAssembly {
 	 *            <p>
 	 *            The size of either dimension of the location grid.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FuelAssembly(String name, int size) {
-		// begin-user-code
 
 		// Call this constructor
 		this(size);
 
 		// Setup name
 		this.setName(name);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the RodClusterAssembly associated with this FuelAssembly or null
 	 * if one has not been set.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The RodClusterAssembly associated with this FuelAssembly or null
 	 *         if one has not been set.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public RodClusterAssembly getRodClusterAssembly() {
-		// begin-user-code
 		return this.rodClusterAssembly;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the RodClusterAssembly associated with this FuelAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param rodClusterAssembly
 	 *            <p>
 	 *            The RodClusterAssembly associated with this FuelAssembly.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setRodClusterAssembly(RodClusterAssembly rodClusterAssembly) {
-		// begin-user-code
 
 		// RodClusterAssembly can be null
 		this.rodClusterAssembly = rodClusterAssembly;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds a Tube to the collection of Tubes. If a Tube with the same name
 	 * exists in the collection or if the passed tube is null, then the Tube
 	 * will not be added and a value of false will be returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param tube
 	 *            <p>
@@ -238,11 +193,8 @@ public class FuelAssembly extends PWRAssembly {
 	 * @return <p>
 	 *         True, if the Tube was added successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean addTube(Tube tube) {
-		// begin-user-code
 
 		// Add the component to the composite
 		this.tubeComposite.addComponent((Component) tube);
@@ -254,16 +206,13 @@ public class FuelAssembly extends PWRAssembly {
 
 		// The component was added to the composite, return true!
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes a Tube from the collection of Tubes. Returns false if the
 	 * tubeName does not exist or if the string passed is null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param tubeName
 	 *            <p>
@@ -272,11 +221,8 @@ public class FuelAssembly extends PWRAssembly {
 	 * @return <p>
 	 *         True, if the Tube was removed successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeTube(String tubeName) {
-		// begin-user-code
 
 		// If the name does not exist, return
 		if (this.tubeComposite.getComponent(tubeName) == null) {
@@ -302,16 +248,13 @@ public class FuelAssembly extends PWRAssembly {
 		// The component was deleted from the composite, return true!
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the Tube at the provided location. Returns true if the removal
 	 * was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            <p>
@@ -324,11 +267,8 @@ public class FuelAssembly extends PWRAssembly {
 	 * @return <p>
 	 *         True, if the Tube removal was successful.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeTubeFromLocation(int row, int column) {
-		// begin-user-code
 		// Local Declarations
 		GridLocation location = new GridLocation(row, column);
 
@@ -352,38 +292,29 @@ public class FuelAssembly extends PWRAssembly {
 		// Nothing was changed, return false
 		return false;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an ArrayList of names for each element of the collection of
 	 * Tubes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         An ArrayList of names for each element of the collection of
 	 *         Tubes.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getTubeNames() {
-		// begin-user-code
 		// Return the Component's names
 		return this.tubeComposite.getComponentNames();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the Tube corresponding to the provided name or null if the name
 	 * is not found.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -393,22 +324,16 @@ public class FuelAssembly extends PWRAssembly {
 	 *         The Tube corresponding to the provided name or null if the name
 	 *         is not found.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Tube getTubeByName(String name) {
-		// begin-user-code
 		return (Tube) this.tubeComposite.getComponent(name);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the Tube corresponding to the provided column and row or null if
 	 * one is not found at the provided location.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            <p>
@@ -422,11 +347,8 @@ public class FuelAssembly extends PWRAssembly {
 	 *         The Tube corresponding to the provided column and row or null if
 	 *         one is not found at the provided location.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Tube getTubeByLocation(int row, int column) {
-		// begin-user-code
 		String name = "";
 
 		// Get the component name
@@ -435,38 +357,29 @@ public class FuelAssembly extends PWRAssembly {
 
 		// Return the component by name
 		return (Tube) this.getTubeByName(name);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the number of Tubes in the collection of Tubes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The number of Tubes.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfTubes() {
-		// begin-user-code
 		// Return the number of components
 		return this.tubeComposite.getNumberOfComponents();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the location for the provided name. Overrides the location of
 	 * another component name as required. Returns true if this operation was
 	 * successful, false otherwise. Note it will return true if the same name is
 	 * overridden.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param tubeName
 	 *            <p>
@@ -483,11 +396,8 @@ public class FuelAssembly extends PWRAssembly {
 	 * @return <p>
 	 *         True, if the location of the LWRRod was set successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setTubeLocation(String tubeName, int row, int column) {
-		// begin-user-code
 
 		// Local declarations
 		GridLocation location = new GridLocation(row, column);
@@ -513,45 +423,33 @@ public class FuelAssembly extends PWRAssembly {
 		// Otherwise, name did not change
 		return false;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the GridLabelProvider for this FuelAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The GridLabelProvider for this FuelAssembly.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GridLabelProvider getGridLabelProvider() {
-		// begin-user-code
 
 		return this.gridLabelProvider;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the GridLabelProvider for this FuelAssembly. Can not be set to null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param gridLabelProvider
 	 *            <p>
 	 *            The GridLabelProvider for this FuelAssembly.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setGridLabelProvider(GridLabelProvider gridLabelProvider) {
-		// begin-user-code
 
 		// If the GridLabelProvider passed is not null and of the same size.
 		if (gridLabelProvider != null
@@ -559,17 +457,14 @@ public class FuelAssembly extends PWRAssembly {
 			this.gridLabelProvider = gridLabelProvider;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -578,11 +473,8 @@ public class FuelAssembly extends PWRAssembly {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		FuelAssembly assembly;
@@ -621,24 +513,18 @@ public class FuelAssembly extends PWRAssembly {
 
 		// Return retVal
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 		int hash = super.hashCode();
 
 		// Hash local values
@@ -651,25 +537,19 @@ public class FuelAssembly extends PWRAssembly {
 		// Return the hash
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(FuelAssembly otherObject) {
-		// begin-user-code
 
 		// If otherObject is null, return
 		if (otherObject == null) {
@@ -690,24 +570,18 @@ public class FuelAssembly extends PWRAssembly {
 		this.tubeGridManager = (LWRGridManager) otherObject.tubeGridManager
 				.clone();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		FuelAssembly assembly = new FuelAssembly(0);
@@ -718,18 +592,13 @@ public class FuelAssembly extends PWRAssembly {
 		// Return newly instantiated object
 		return assembly;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
-		// begin-user-code
 
 		// Get the children in super
 		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
@@ -746,25 +615,19 @@ public class FuelAssembly extends PWRAssembly {
 		children.add(this.tubeGridManager);
 
 		return children;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns an ArrayList of IHdfReadable child objects. If
 	 * this IHdfReadable has no IHdfReadable child objects, then null is
 	 * returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iHdfReadable
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
-		// begin-user-code
 
 		// If the child is null or not an instance of LWRComponent, then return
 		// false.
@@ -822,19 +685,14 @@ public class FuelAssembly extends PWRAssembly {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readAttributes(H5Group h5Group) {
-		// begin-user-code
 
 		boolean flag = super.readAttributes(h5Group);
 
@@ -847,16 +705,13 @@ public class FuelAssembly extends PWRAssembly {
 
 		return flag;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the data provider for specific group at location or null if it
 	 * does not exist.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            <p>
@@ -869,38 +724,28 @@ public class FuelAssembly extends PWRAssembly {
 	 * @return <p>
 	 *         the provider
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRDataProvider getTubeDataProviderAtLocation(int row, int column) {
-		// begin-user-code
 
 		// Pass through
 		return this.tubeGridManager.getDataProviderAtLocation(new GridLocation(
 				row, column));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation accepts an ILWRComponentVisitor that can be visit the
 	 * LWRComponent to ascertain its type and perform various type-specific
 	 * operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(ILWRComponentVisitor visitor) {
-		// begin-user-code
 		visitor.visit(this);
-		// end-user-code
 	}
 }

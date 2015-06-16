@@ -19,19 +19,14 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the functionality of AbstractShape
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class AbstractShapeTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks for the correct behavior of setting and getting a new key/value,
 	 * setting and getting an old key with a new value, and attempting to get a
@@ -40,14 +35,10 @@ public class AbstractShapeTester {
 	 * <p>
 	 * In the case of a nonexistent key, a blank string should be returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkProperties() {
-		// begin-user-code
 
 		TestShape testShape = new TestShape();
 
@@ -101,23 +92,17 @@ public class AbstractShapeTester {
 		assertFalse(testShape.setProperty("key2", null));
 		assertNull(testShape.getProperty("key2"));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the shape to ensure that it can be correctly
 	 * visited by a realization of the IComponent interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// Instantiate TestVisitor
 		TestVisitor testVisitor = new TestVisitor();
@@ -131,23 +116,17 @@ public class AbstractShapeTester {
 		// Check that testVisitor was visited
 		assertTrue(testVisitor.wasVisited());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the shape to ensure that it can properly dispatch
 	 * notifications when it receives an update that changes its state.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkNotifications() {
-		// begin-user-code
 		// Setup the listener
 		TestComponentListener testComponentListener = new TestComponentListener();
 
@@ -191,23 +170,17 @@ public class AbstractShapeTester {
 		assertTrue(testComponentListener.wasNotified());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the shape to ensure that its equals() and
 	 * hashcode() operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 		// Create Transformation to test
 		TestShape component = new TestShape();
 		TestShape equalComponent = new TestShape();
@@ -288,23 +261,17 @@ public class AbstractShapeTester {
 		assertFalse(component.equals(unequalPropertiesComponent));
 		assertFalse(component.hashCode() == unequalPropertiesComponent
 				.hashCode());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the shape to ensure that its copy() and clone()
 	 * operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 		TestShape cloneTestShape, copyTestShape;
 
 		// Set up ICEObject stuff for TestShape
@@ -341,23 +308,17 @@ public class AbstractShapeTester {
 		// Check equality of contents
 		assertTrue(copyTestShape.equals(testShape));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks whether the initial transformation matrix of a new shape matches
 	 * that of a new Matrix4x4
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetTransformation() {
-		// begin-user-code
 		TestShape testShape = new TestShape();
 
 		// Check that the transformation is instantiated to an identity matrix
@@ -373,6 +334,5 @@ public class AbstractShapeTester {
 		assertFalse(testShape.setTransformation(null));
 		assertEquals(transformation, testShape.getTransformation());
 
-		// end-user-code
 	}
 }

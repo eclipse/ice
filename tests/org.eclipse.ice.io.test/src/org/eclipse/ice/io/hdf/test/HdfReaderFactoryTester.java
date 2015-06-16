@@ -19,79 +19,94 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 
+import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.object.Attribute;
 import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.Group;
-import ncsa.hdf.object.HObject;
 import ncsa.hdf.object.h5.H5Datatype;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
-import ncsa.hdf.object.h5.H5ScalarDS;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.eclipse.ice.io.hdf.HdfFileFactory;
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class tests the HdfReaderFactory class.
- * </p>
- * <!-- end-UML-doc -->
  * 
- * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Eric J. Lingerfelt
  */
 public class HdfReaderFactoryTester {
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * This operation conducts any required initialization for the tests.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		// begin-user-code
 
-		// end-user-code
+	/**
+	 * The data file that will be used for testing purposes. This reference is
+	 * created before each test, and, if the file exists, is deleted after each
+	 * test.
+	 */
+	private File dataFile;
+	/**
+	 * The HDF5 file handle for the {@link #dataFile}. This is set to null
+	 * before each test. If it is left open, it is closed after each test.
+	 */
+	private H5File h5File;
+
+	/**
+	 * Initializes {@link #dataFile} and clears {@link #h5File}.
+	 */
+	@Before
+	public void beforeEachTest() {
+		// Create a reference to the test file.
+		String separator = System.getProperty("file.separator");
+		String testFileName = "hdfReaderFactoryFile.h5";
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests";
+		dataFile = new File(userDir + separator + testFileName);
+
+		// Clear the HDF5 file reference.
+		h5File = null;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * If possible, closes {@link #h5File} and deletes {@link #dataFile}.
+	 */
+	@After
+	public void afterEachTest() {
+
+		// If necessary, close the HDF5 file. This closes any open streams.
+		if (h5File != null) {
+			try {
+				h5File.close();
+			} catch (HDF5Exception e) {
+				e.printStackTrace();
+			}
+			h5File = null;
+		}
+
+		// If possible, delete the test file.
+		if (dataFile.exists()) {
+			dataFile.delete();
+		}
+		dataFile = null;
+
+		return;
+	}
+
+	/**
 	 * This operation checks the getChildH5Group, getChildH5Groups, and
 	 * getDataset operations.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetters() {
-		// begin-user-code
 
 		// Local declarations
-		String separator = System.getProperty("file.separator");
-		String testFileName = "hdfReaderFactoryFile1.h5";
-		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "ioData";
-		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
-		H5File h5File;
 		String subGroupName = "Bob";
 		H5Group subH5Group = null;
 		ArrayList<String> rows = new ArrayList<String>();
@@ -245,41 +260,22 @@ public class HdfReaderFactoryTester {
 			assertNull(HdfReaderFactory.getChildH5Group(subH5Group, 0));
 
 		} catch (Exception e) {
-			// Delete the dataFile
-			dataFile.delete();
 			e.printStackTrace();
 			fail();
 		}
 
-		// Delete file
-		dataFile.delete();
-
-		// end-user-code
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the readDoubleAttribute, readStringAttribute, and
 	 * readIntegerAttribute operations.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkReaders() {
-		// begin-user-code
 
 		// Local declarations
-		String separator = System.getProperty("file.separator");
-		String testFileName = "hdfReaderFactoryFile2.h5";
-		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "ioData";
-		File dataFile = new File(userDir + separator + testFileName);
 		URI uri = dataFile.toURI();
-		H5File h5File = null;
 		String integerName = "Integer1";
 		String doubleName = "Double1";
 		String stringName = "String1";
@@ -367,7 +363,6 @@ public class HdfReaderFactoryTester {
 			parentH5Group.writeMetadata(doubleAttribute);
 
 			// Add a String
-			long[] stringDims = { 1 };
 			String[] stringValues = new String[1];
 			stringValues[0] = stringValue;
 			// Create a byte array from values using the stringToByte method
@@ -459,16 +454,11 @@ public class HdfReaderFactoryTester {
 					HdfReaderFactory.getChildH5Members(parentH5Group).get(0)
 							.getName());
 
-			// Delete the file
-			dataFile.delete();
-
 		} catch (Exception e) {
 			// Fail out of the test, not supposed to happen
 			e.printStackTrace();
-			dataFile.delete(); // Delete the dataFile
 			fail();
 		}
-
-		// end-user-code
+		return;
 	}
 }

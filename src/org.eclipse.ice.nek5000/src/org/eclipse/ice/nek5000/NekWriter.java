@@ -52,7 +52,7 @@ import java.util.HashMap;
  * This class is responsible for writing the contents of a Component collection
  * into a file appropriate to be used as a Nek5000 .rea file.
  * 
- * @author w5q
+ * @author Anna Wojtowicz
  * 
  */
 public class NekWriter implements IComponentVisitor {

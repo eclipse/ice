@@ -20,32 +20,23 @@ import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Base class for RELAP7 components.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "PlantComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PlantComponent extends ICEObject implements IReactorComponent {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PlantComponent() {
-		// begin-user-code
 
 		// Set the name, ID and description.
 		this.objectName = "Plant Component 1";
@@ -53,59 +44,46 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 		this.objectDescription = "Plant-level reactor component";
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
 	 *            Name of the RELAP7 component.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PlantComponent(String name) {
-		// begin-user-code
 
 		// Call the nullary constructor and then set the name.
 		this();
 		this.setName(name);
 
 		return;
-		// end-user-code
 	}
 
 	// FIXME This documentation needs to be changed.
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Accepts IComponentVisitor visitors to reveal the type of a
 	 * PlantComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The PlantComponent's visitor.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(IComponentVisitor visitor) {
-		// begin-user-code
 
 		// Only accept valid visitors.
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -121,11 +99,9 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs an equality check between two Objects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -134,11 +110,8 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 * @return <p>
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -159,24 +132,18 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs a deep copy and returns a newly instantiated Object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		PlantComponent object = new PlantComponent();
@@ -186,25 +153,19 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of otherObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The other object to copy the contents from.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(PlantComponent otherObject) {
-		// begin-user-code
 
 		// Check the otherObject is valid.
 		if (otherObject == null) {
@@ -214,30 +175,23 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 		super.copy(otherObject);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashCode of the Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Call the super's hashCode.
 		int hash = super.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
@@ -250,14 +204,10 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 * @see <p>
 	 *      IReactorComponent#toString()
 	 *      </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String toString() {
-		// begin-user-code
 
 		return objectName;
 
-		// end-user-code
 	}
 }

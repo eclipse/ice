@@ -31,7 +31,6 @@ import ncsa.hdf.object.h5.H5Group;
 import java.util.ArrayList;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The PWRAssembly class contains a collection of LWRRods mapped to locations on
  * a grid. When the addLWRRod() operation is used, if a LWRRod with the same
@@ -46,52 +45,34 @@ import java.util.ArrayList;
  * StatePointData for LWRRods should be stored by position and accessed by the
  * getLWRRodDataProviderAtLocation operation.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class PWRAssembly extends LWRComposite {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The size of either dimension of this PWRAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected int size;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A LWRComposite for LWRRods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected LWRComposite lWRRodComposite;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected LWRGridManager lWRRodGridManager;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * ﻿The distance between centers of adjacent fuel rods in the fuel grid.
 	 * Must be greater than zero.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected double rodPitch;
 
@@ -100,21 +81,16 @@ public class PWRAssembly extends LWRComposite {
 	private static final String LWRROD_GRID_MANAGER_NAME = "LWRRod Grid";
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param size
 	 *            <p>
 	 *            The size of either dimension of this PWRAssembly.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PWRAssembly(int size) {
-		// begin-user-code
 		super();
 		// Setup default values - LWRComponent
 		this.name = "PWRAssembly";
@@ -149,15 +125,12 @@ public class PWRAssembly extends LWRComposite {
 		// Setup the LWRComponentType to the correct type
 		this.HDF5LWRTag = HDF5LWRTagType.PWRASSEMBLY;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -167,48 +140,36 @@ public class PWRAssembly extends LWRComposite {
 	 *            <p>
 	 *            The size of either dimension of this PWRAssembly.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PWRAssembly(String name, int size) {
-		// begin-user-code
 		// Call shorter constructor
 		this(size);
 
 		// Set name
 		this.setName(name);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the size of either dimension of this PWRAssembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The size of either dimension of this PWRAssembly.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getSize() {
-		// begin-user-code
 		return this.size;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds a LWRRod to the collection of LWRRods. If a LWRRod with the same
 	 * name exists in the collection or the passed parameter is null, then the
 	 * LWRRod will not be added and a value of false will be returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lWRRod
 	 *            <p>
@@ -217,11 +178,8 @@ public class PWRAssembly extends LWRComposite {
 	 * @return <p>
 	 *         True, if the LWRRod was added successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean addLWRRod(LWRRod lWRRod) {
-		// begin-user-code
 		// Add the component to the composite
 		this.lWRRodComposite.addComponent((Component) lWRRod);
 
@@ -233,16 +191,13 @@ public class PWRAssembly extends LWRComposite {
 		// The component was added to the composite, return true!
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes a LWRRod from the collection of LWRRods. The passed string can
 	 * not be null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lWRRodName
 	 *            <p>
@@ -252,11 +207,8 @@ public class PWRAssembly extends LWRComposite {
 	 * @return <p>
 	 *         True, if the LWRRod was removed successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeLWRRod(String lWRRodName) {
-		// begin-user-code
 		// If the name does not exist, return
 		if (this.lWRRodComposite.getComponent(lWRRodName) == null) {
 			return false;
@@ -280,39 +232,30 @@ public class PWRAssembly extends LWRComposite {
 
 		// The component was deleted from the composite, return true!
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an ArrayList of names for each element of the collection of
 	 * LWRRods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         An ArrayList of names for each element of the collection of
 	 *         LWRRods.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getLWRRodNames() {
-		// begin-user-code
 
 		// Return the Component's names
 		return this.lWRRodComposite.getComponentNames();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the LWRRod corresponding to the provided name or null if the name
 	 * is not found.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -322,23 +265,17 @@ public class PWRAssembly extends LWRComposite {
 	 *         The LWRRod corresponding to the provided name or null if the name
 	 *         is not found.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRRod getLWRRodByName(String name) {
-		// begin-user-code
 
 		return (LWRRod) this.lWRRodComposite.getComponent(name);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the LWRRod corresponding to the provided column and row or null
 	 * if one is not found at the provided location.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            <p>
@@ -352,11 +289,8 @@ public class PWRAssembly extends LWRComposite {
 	 *         The LWRRod corresponding to the provided column and row or null
 	 *         if one is not found at the provided location.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRRod getLWRRodByLocation(int row, int column) {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "";
@@ -368,40 +302,31 @@ public class PWRAssembly extends LWRComposite {
 		// Return the component
 		return (LWRRod) this.getLWRRodByName(name);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the number of LWRRods in the collection of LWRRods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The number of LWRRods in the collection of LWRRods.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfLWRRods() {
-		// begin-user-code
 
 		// Return the number of components
 		return this.lWRRodComposite.getNumberOfComponents();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the location for the provided name. Overrides the location of
 	 * another component name as required. Returns true if this operation was
 	 * successful, false otherwise. Note it will return true if the same name is
 	 * overridden.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param lWRRodName
 	 *            <p>
@@ -418,11 +343,8 @@ public class PWRAssembly extends LWRComposite {
 	 * @return <p>
 	 *         True, if the location of the LWRRod was set successfully.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setLWRRodLocation(String lWRRodName, int row, int column) {
-		// begin-user-code
 		// Local declarations
 		GridLocation location = new GridLocation(row, column);
 
@@ -446,16 +368,13 @@ public class PWRAssembly extends LWRComposite {
 		// Otherwise, name did not change
 		return false;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the LWRRod at the provided location. Returns true if the removal
 	 * was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            <p>
@@ -468,11 +387,8 @@ public class PWRAssembly extends LWRComposite {
 	 * @return <p>
 	 *         True, if the removal was successful.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeLWRRodFromLocation(int row, int column) {
-		// begin-user-code
 		// Local Declarations
 		GridLocation location = new GridLocation(row, column);
 
@@ -497,137 +413,104 @@ public class PWRAssembly extends LWRComposite {
 		// Nothing was changed, return false
 		return false;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the distance between centers of adjacent fuel rods.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The distance between centers of adjacent fuel rods in the fuel
 	 *         lattice.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getRodPitch() {
-		// begin-user-code
 
 		return this.rodPitch;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the distance between centers of adjacent fuel rods in the fuel
 	 * lattice. The rodPitch value must be greater than zero.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param rodPitch
 	 *            <p>
 	 *            The distance between centers of adjacent fuel rods in the fuel
 	 *            lattice.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setRodPitch(double rodPitch) {
-		// begin-user-code
 
 		// If the rod pitch is less than zero, do not set to new value.
 		if (rodPitch > 0) {
 			this.rodPitch = rodPitch;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides the LWRComposite's operation. This operation
 	 * does nothing and requires that the appropriate, more defined, associated
 	 * operation to be utilized on this class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
 	 *            <p>
 	 *            The component to be added.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addComponent(Component component) {
-		// begin-user-code
 
 		// Does nothing
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that overrides the LWRComposite's operation. This operation
 	 * does nothing and requires that the appropriate, more defined, associated
 	 * operation to be utilized on this class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param childId
 	 *            <p>
 	 *            The id of the LWRComponent to remove.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeComponent(int childId) {
-		// begin-user-code
 
 		// Does nothing
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that overrides the LWRComposite's operation. This operation
 	 * does nothing and requires that the appropriate, more defined, associated
 	 * operation to be utilized on this class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
 	 *            The name of the LWRComponent to remove.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeComponent(String name) {
-		// begin-user-code
 
 		// Does nothing
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -636,11 +519,8 @@ public class PWRAssembly extends LWRComposite {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		PWRAssembly assembly;
@@ -670,24 +550,18 @@ public class PWRAssembly extends LWRComposite {
 
 		// Return retVal
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declarations
 		int hash = super.hashCode();
@@ -701,25 +575,19 @@ public class PWRAssembly extends LWRComposite {
 		// Return the hash
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(PWRAssembly otherObject) {
-		// begin-user-code
 
 		// If the otherObject is null, return
 		if (otherObject == null) {
@@ -737,24 +605,18 @@ public class PWRAssembly extends LWRComposite {
 		this.lWRRodGridManager = (LWRGridManager) otherObject.lWRRodGridManager
 				.clone();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		PWRAssembly assembly = new PWRAssembly(0);
@@ -765,20 +627,15 @@ public class PWRAssembly extends LWRComposite {
 		// Return newly instantiated object
 		return assembly;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		// begin-user-code
 		boolean flag = true;
 
 		flag &= super.writeAttributes(h5File, h5Group);
@@ -788,18 +645,13 @@ public class PWRAssembly extends LWRComposite {
 				"rodPitch", rodPitch);
 
 		return flag;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
-		// begin-user-code
 
 		// Get the children in super
 		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
@@ -815,19 +667,14 @@ public class PWRAssembly extends LWRComposite {
 		children.add(this.lWRRodGridManager);
 
 		return children;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readAttributes(H5Group h5Group) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean flag = true;
@@ -855,16 +702,13 @@ public class PWRAssembly extends LWRComposite {
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the data provider for specific group at location or null if it
 	 * does not exist.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            <p>
@@ -877,34 +721,25 @@ public class PWRAssembly extends LWRComposite {
 	 * @return <p>
 	 *         the provider
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRDataProvider getLWRRodDataProviderAtLocation(int row, int column) {
-		// begin-user-code
 
 		return this.lWRRodGridManager
 				.getDataProviderAtLocation(new GridLocation(row, column));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns an ArrayList of IHdfReadable child objects. If
 	 * this IHdfReadable has no IHdfReadable child objects, then null is
 	 * returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iHdfReadable
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
-		// begin-user-code
 
 		// If the child is null or not an instance of LWRComponent, then return
 		// false.
@@ -943,7 +778,6 @@ public class PWRAssembly extends LWRComposite {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 }

@@ -16,7 +16,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 /**
- * @author bkj
+ * @author Jay Jay Billings
  *
  */
 public class MaterialsPerspective implements IPerspectiveFactory {
@@ -26,11 +26,8 @@ public class MaterialsPerspective implements IPerspectiveFactory {
 	 */
 	public static final String ID = "org.eclipse.ice.materials.perspectives.MaterialsPerspective";
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui
-	 *      .IPageLayout)
+	/*
+	 * Implements a method from IPerspectiveFactory.
 	 */
 	@Override
 	public void createInitialLayout(IPageLayout layout) {

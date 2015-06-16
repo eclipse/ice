@@ -16,6 +16,7 @@ import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 import gov.lbnl.visit.swt.VisItSwtWidget;
 
+import java.awt.event.MouseAdapter;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,6 +31,7 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
@@ -41,7 +43,8 @@ import org.eclipse.ui.part.EditorPart;
  * This is an editor for interacting with the VisIt SWT Widget. It is opened by
  * the associated visualization views in org.eclipse.ice.viz.
  * 
- * @authors Jay Jay Billings, Taylor Patterson
+ * @author Jay Jay Billings
+ * @author Taylor Patterson
  */
 public class VisitEditor extends EditorPart {
 
@@ -83,32 +86,24 @@ public class VisitEditor extends EditorPart {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.
-	 *      IProgressMonitor)
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void doSaveAs() {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite,
-	 *      org.eclipse.ui.IEditorInput)
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
@@ -121,20 +116,16 @@ public class VisitEditor extends EditorPart {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#isDirty()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public boolean isDirty() {
 		return false;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
@@ -144,9 +135,6 @@ public class VisitEditor extends EditorPart {
 	/**
 	 * This operation sets up the Composite that contains the VisIt canvas and
 	 * create the VisIt widget.
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 *      .Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
@@ -172,6 +160,8 @@ public class VisitEditor extends EditorPart {
 					vizWidget.zoom(direction);
 				}
 			});
+			
+
 			// Use mouse click to move the plot
 			vizWidget.addMouseMoveListener(new MouseMoveListener() {
 				@Override
@@ -194,6 +184,7 @@ public class VisitEditor extends EditorPart {
 
 				@Override
 				public void mouseDown(MouseEvent e) {
+					vizWidget.setFocus();
 					// Set the pressed flag
 					mousePressed = true;
 					// Start the mouseManager thread
@@ -271,10 +262,8 @@ public class VisitEditor extends EditorPart {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+	/*
+	 * Overrides a super class method.
 	 */
 	@Override
 	public void setFocus() {

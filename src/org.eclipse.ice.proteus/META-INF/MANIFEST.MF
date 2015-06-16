@@ -6,6 +6,7 @@ Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/*.xml
 Import-Package: org.eclipse.ice.datastructures.form,
+ org.eclipse.ice.io.ini,
  org.eclipse.ice.io.serializable,
  org.eclipse.ice.item.jobLauncher
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",

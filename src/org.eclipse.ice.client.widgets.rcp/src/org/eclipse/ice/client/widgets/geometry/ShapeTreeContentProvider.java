@@ -23,33 +23,24 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Provides IShape objects for a TreeViewer, given a parent IShape
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Andrew P. Belt
  */
 public class ShapeTreeContentProvider implements ITreeContentProvider,
 		IShapeVisitor {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Temporary variable for setting the return value of getChildren when the
 	 * visit() operation is called
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Object[] temporaryChildren = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the child shapes of the given parent shape, if any
 	 * </p>
@@ -57,7 +48,6 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * If a PrimitiveShape, an empty ComplexShape, or null is passed, this
 	 * operation returns an empty array of Objects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parentElement
 	 *            <p>
@@ -66,11 +56,8 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * @return <p>
 	 *         The child IShapes
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object[] getChildren(Object parentElement) {
-		// begin-user-code
 
 		// If the element is an IShape, call its accept() operation to
 		// trigger the visit() call
@@ -91,16 +78,13 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 			return null;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the child shape elements of a root GeometryComponent when the
 	 * input of the shape TreeViewer is set or reset
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param inputElement
 	 *            <p>
@@ -109,11 +93,8 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * @return <p>
 	 *         The child IShapes
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object[] getElements(Object inputElement) {
-		// begin-user-code
 
 		// If the element is a GeometryComponent, return its shapes
 		if (inputElement instanceof GeometryComponent) {
@@ -124,15 +105,12 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 			return null;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the parent of the element if it exists
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param element
 	 *            <p>
@@ -141,11 +119,8 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * @return <p>
 	 *         The parent IShape
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object getParent(Object element) {
-		// begin-user-code
 
 		// Return null if the element is not an IShape
 
@@ -157,11 +132,9 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		IShape shape = (IShape) element;
 		return shape.getParent();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns whether the given element has children
 	 * </p>
@@ -170,7 +143,6 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * whether the element has children, so the array of child objects is found
 	 * and counted.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param element
 	 *            <p>
@@ -179,11 +151,8 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * @return <p>
 	 *         Represents whether the element has children
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean hasChildren(Object element) {
-		// begin-user-code
 
 		// Get the children from the getChildren operation and return whether
 		// there are elements in the array
@@ -200,22 +169,17 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 			return false;
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IContentProvider#dispose()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void dispose() {
-		// begin-user-code
 
 		// We don't need to dispose of anything.
 
-		// end-user-code
 	}
 
 	/**
@@ -223,23 +187,19 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * 
 	 * @see IContentProvider#inputChanged(Viewer viewer, Object oldInput, Object
 	 *      newInput)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		// begin-user-code
 
 		// The state of this class does not depend on the input, so we do not
 		// need to change the state when the input of the TreeViewer changes.
 
-		// end-user-code
 	}
 
 	/**
 	 * The blank state item to display in the shape TreeViewer when a
 	 * ComplexShape has no children
 	 * 
-	 * @author abd
+	 * @author Andrew P. Belt
 	 * 
 	 */
 	public class BlankShape {
@@ -279,11 +239,8 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * (non-Javadoc)
 	 * 
 	 * @see IShapeVisitor#visit(ComplexShape complexShape)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(ComplexShape complexShape) {
-		// begin-user-code
 
 		// IShape is a ComplexShape, so put its children in the temporary
 		// children field
@@ -296,23 +253,18 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 			temporaryChildren = new Object[] { new BlankShape(complexShape) };
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IShapeVisitor#visit(PrimitiveShape primitiveShape)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void visit(PrimitiveShape primitiveShape) {
-		// begin-user-code
 
 		// IShape is a PrimitiveShape, so it has no children :(
 
 		temporaryChildren = new Object[0];
 
-		// end-user-code
 	}
 }

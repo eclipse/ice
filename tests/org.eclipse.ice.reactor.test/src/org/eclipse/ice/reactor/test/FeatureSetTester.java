@@ -23,30 +23,21 @@ import org.junit.Test;
 import org.eclipse.ice.analysistool.IData;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A class that tests the operations on FeatureSet.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class FeatureSetTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that checks the constructor and getName operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Local Declarations
 		FeatureSet featureSet;
@@ -66,23 +57,17 @@ public class FeatureSetTester {
 		featureSet = new FeatureSet(emptyFeature);
 		assertEquals(nullFeature, featureSet.getName()); // Set as null!
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that checks the getIData and addIData operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 
 	@Test
 	public void checkData() {
-		// begin-user-code
 
 		// Local Declarations
 		String feature1 = "Feature 1";
@@ -149,22 +134,16 @@ public class FeatureSetTester {
 		// Show the list can not be manipulated
 		assertEquals(0, set3.getIData().size());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that checks the equality operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Create an Object
 		FeatureSet object = new FeatureSet("Feature 1");
@@ -238,23 +217,17 @@ public class FeatureSetTester {
 		// Assert that hashcodes are different for unequal objects
 		assertFalse(object.hashCode() == unEqualObject.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that checks the operations on copying routines.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Create an Object
 		FeatureSet object = new FeatureSet("Feature 1");
@@ -283,6 +256,5 @@ public class FeatureSetTester {
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
 
-		// end-user-code
 	}
 }

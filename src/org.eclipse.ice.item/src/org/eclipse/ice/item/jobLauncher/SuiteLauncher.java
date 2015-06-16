@@ -30,7 +30,7 @@ import org.eclipse.core.resources.IProject;
  * different problem. This includes codes like SHARP, MOOSE and Nek5000.
  * 
  * The SuiteLauncher relies on several very simple overrides of operations on
- * the JobLauncher base class and provides very little little new capability. It
+ * the JobLauncher base class and provides very little new capability. It
  * provides all of the normal capabilities of a JobLauncher.
  * 
  * Like JobLauncher, the setupForm operation has to be called early by
@@ -181,7 +181,7 @@ public class SuiteLauncher extends JobLauncher {
 	 * This operation sets the list of executables from which clients can make a
 	 * choice.
 	 * 
-	 * @param executableList
+	 * @param executables
 	 *            The list of executables available to launch.
 	 */
 	public void addExecutables(ArrayList<String> executables) {
@@ -251,13 +251,11 @@ public class SuiteLauncher extends JobLauncher {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation reviews the Entries in the JobLauncherForm to make sure
 	 * that it can actually perform the launch and updates the executable if
 	 * needed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
 	 *            <p>
@@ -266,8 +264,6 @@ public class SuiteLauncher extends JobLauncher {
 	 * @return <p>
 	 *         The status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {

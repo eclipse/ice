@@ -151,7 +151,7 @@ public class PlantAnalysisView extends AnalysisView {
 	 * Fills out the parent Composite with information and widgets related to
 	 * this particular IAnalysisView.
 	 * 
-	 * @param parent
+	 * @param container
 	 *            The Composite containing this IAnalysisView.
 	 */
 	@Override

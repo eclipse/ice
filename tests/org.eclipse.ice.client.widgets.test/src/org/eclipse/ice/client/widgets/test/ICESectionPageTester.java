@@ -27,42 +27,29 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ICESectionPage.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICESectionPageTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The ICESectionPage that will be tested.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICESectionPage page;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Component accessor operations on ICESectionPage
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkComponents() {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent comp1 = new DataComponent(), comp2 = new DataComponent();
@@ -99,6 +86,5 @@ public class ICESectionPageTester {
 
 		return;
 
-		// end-user-code
 	}
 }

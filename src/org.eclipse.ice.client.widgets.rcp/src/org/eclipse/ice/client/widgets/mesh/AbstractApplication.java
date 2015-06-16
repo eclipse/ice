@@ -168,30 +168,23 @@ public abstract class AbstractApplication extends SimpleApplication {
 	 *            The AwtPanel that is used in lieu of an AWT Canvas.
 	 */
 	public final void setAwtPanel(AwtPanel panel) {
-		// begin-user-code
 		if (panel != null) {
 			renderPanel = panel;
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the method from the jME3 SimpleApplication to initialize the
 	 * scene, camera, etc. This is called automatically at the start of the jME3
 	 * application. <b>It is recommended that this method <i>not</i> be
 	 * overridden.</b>
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public void simpleInitApp() {
-		// begin-user-code
 
 		// Set up the materials used in the application. We should try to re-use
 		// materials as often as we can.
@@ -230,7 +223,6 @@ public abstract class AbstractApplication extends SimpleApplication {
 		initialized.set(true);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -245,53 +237,37 @@ public abstract class AbstractApplication extends SimpleApplication {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes the HUD by updating the guiNode.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected abstract void initHUD();
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes the different components of the scene, including the grid,
 	 * the player, physics, etc.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected abstract void initScene();
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes a chase camera that follows the player. The camera should be
 	 * locked to a top-down view.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected abstract void initCamera();
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes listeners and maps triggers to them for key presses, mouse
 	 * clicks, and mouse movement.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected abstract void initControls();
 
@@ -364,7 +340,7 @@ public abstract class AbstractApplication extends SimpleApplication {
 	/**
 	 * This operation sets the boolean to display or hide the heads-up display.
 	 * 
-	 * @param newVal
+	 * @param enabled
 	 *            The boolean value to indicate whether or not the HUD should be
 	 *            displayed.
 	 */
@@ -498,9 +474,8 @@ public abstract class AbstractApplication extends SimpleApplication {
 
 	/**
 	 * Gets a {@link CollisionResults} between a {@link Collidable} and a
-	 * {@link Ray}. Collidables like Spatials and Nodes (e.g.,
-	 * {@link #getGrid()} and {@link #getVertexSpatials()}) can be tested for
-	 * collisions with Rays (e.g., {@link #getCrosshairRay()} and
+	 * {@link Ray}. Collidables like Spatials and Nodes can be tested for
+	 * collisions with Rays (usually from {@link #getCrosshairRay()} and
 	 * {@link #getCursorRay()}.
 	 * 
 	 * @param collidable

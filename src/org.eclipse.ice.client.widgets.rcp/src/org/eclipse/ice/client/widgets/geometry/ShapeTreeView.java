@@ -33,41 +33,29 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Eclipse UI view containing a toolbar and TreeViewer to manipulate the
  * structure and elements in a Constructive Solid Geometry (CSG) tree
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Andrew P. Belt
  */
 public class ShapeTreeView extends ViewPart implements
 		ISelectionChangedListener {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The currently displayed GeometryComponent
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private GeometryComponent geometry;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The main TreeViewer occupying the entire space of the view
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	TreeViewer treeViewer;
 
@@ -89,21 +77,16 @@ public class ShapeTreeView extends ViewPart implements
 	private Action deleteShape;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Creates the SWT controls for this ShapeTreeView
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parent
 	 *            <p>
 	 *            The parent Composite
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void createPartControl(Composite parent) {
-		// begin-user-code
 
 		// Create the actions
 
@@ -125,22 +108,16 @@ public class ShapeTreeView extends ViewPart implements
 
 		treeViewer.addSelectionChangedListener(this);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Creates actions required for manipulating the ShapeTreeView and adds them
 	 * to the view's toolbar
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createActions() {
-		// begin-user-code
 
 		// Get the toolbar
 
@@ -199,18 +176,13 @@ public class ShapeTreeView extends ViewPart implements
 		toolbarManager.add(replicateShapes);
 		toolbarManager.add(deleteShape);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param geometry
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setGeometry(GeometryComponent geometry) {
-		// begin-user-code
 
 		this.geometry = geometry;
 
@@ -218,21 +190,16 @@ public class ShapeTreeView extends ViewPart implements
 
 		this.treeViewer.setInput(geometry);
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IWorkbenchPart#setFocus()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setFocus() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**

@@ -22,7 +22,6 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is a subclass of Form for MultiLaunchers that creates a
  * MasterDetailsComponent. It also creates a header for that
@@ -34,26 +33,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  * constructor that fills the Form. Instead, this class is checked as part of
  * the MultiLauncherTester.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "Form")
 class MultiLauncherForm extends Form {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public MultiLauncherForm() {
-		// begin-user-code
 
 		// Call the super constructor to set the details
 		super();
@@ -121,6 +112,5 @@ class MultiLauncherForm extends Form {
 		// Add the ResourceComponent
 		addComponent(outputData);
 
-		// end-user-code
 	}
 }

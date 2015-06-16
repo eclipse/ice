@@ -15,14 +15,14 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ice.client.common.PropertySource;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
 import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 /**
  * This class extends PropertySource to manage property data provided by entries
@@ -237,7 +237,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 	/**
 	 * The constructor
 	 * 
-	 * @param obj
+	 * @param part
 	 *            The object to be wrapped by PropertySource. For this subclass,
 	 *            this will be a Polygon, Edge, or Vertex.
 	 */

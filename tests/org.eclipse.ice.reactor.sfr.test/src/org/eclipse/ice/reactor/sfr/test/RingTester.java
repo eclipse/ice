@@ -23,30 +23,21 @@ import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the Ring class.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class RingTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructors and default values for the Ring class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		/*
 		 * Three constructors to test: Ring(); Ring(String name) Ring(String
@@ -106,23 +97,17 @@ public class RingTester {
 		assertEquals(2.55, ringThree.getInnerRadius(), 0.0);
 		assertEquals(4.039, ringThree.getOuterRadius(), 0.0);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the getters and setters for the height, innerRadius, outerRadius,
 	 * and material attributes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAttributes() {
-		// begin-user-code
 
 		// Create a nullary Ring for testing
 		Ring ring = new Ring();
@@ -158,23 +143,17 @@ public class RingTester {
 		assertEquals(13.9, ring.getOuterRadius(), 0.0);
 		assertEquals(material, ring.getMaterial());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the getters and setters for the height, innerRadius, outerRadius,
 	 * and material attributes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCompareTo() {
-		// begin-user-code
 
 		// Create "smaller" ring for testing
 		Ring smallRing = new Ring();
@@ -219,19 +198,15 @@ public class RingTester {
 		// Check that smallRing compared to totalOverlap returns 0 (overlap)
 		assertEquals(0, smallRing.compareTo(totalOverlap));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality operation of Rings.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		/* --- Check equality between like rings --------------------------- */
 
@@ -304,19 +279,15 @@ public class RingTester {
 		assertFalse(ring.hashCode() == unequalRing.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations of Rings.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		/* --- Testing the copy operation ---------------------------------- */
 
@@ -358,7 +329,6 @@ public class RingTester {
 		assertTrue(ringClone.equals(ring));
 
 		return;
-		// end-user-code
 	}
 
 }

@@ -24,7 +24,7 @@ import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 
 /**
- * This class is intended to contain {@link IReactorComponents} by implementing
+ * This class is intended to contain {@link IReactorComponent}s by implementing
  * the {@link Composite} interface. However, it associates child components by
  * associating them with an ID, which is not necessarily the same as the
  * component IDs.
@@ -210,22 +210,17 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 	// ------------------------------ //
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Compares the contents of objects and returns true if they are identical,
 	 * otherwise returns false.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object to compare against.
 	 * @return Returns true if the two objects are equal, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -246,23 +241,17 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hash of the object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based on super's hashCode.
 		int hash = super.hashCode();
@@ -271,24 +260,18 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 		hash += 31 * hash + reactorComponents.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Copies the contents of the object from another object. Components from
 	 * the other Composite are not deep copied.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The object to be copied from.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(ReactorComposite otherObject) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (otherObject == null) {
@@ -300,23 +283,17 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 		reactorComponents.putAll(otherObject.reactorComponents);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The newly instantiated cloned object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		ReactorComposite object = new ReactorComposite();
@@ -326,7 +303,6 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 }

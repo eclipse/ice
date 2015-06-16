@@ -17,7 +17,7 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
-import org.eclipse.ice.viz.plotviewer.CSVPlotViewer;
+import org.eclipse.ice.viz.csv.viewer.CSVPlotViewer;
 import org.eclipse.ice.viz.visit.VisitPlotViewer;
 
 import java.util.ArrayList;
@@ -48,7 +48,9 @@ import org.eclipse.ui.part.ViewPart;
  * Visualization Perspective to look at the files that are currently available
  * to use for creating plots.
  * 
- * @authors Jay Jay Billings, Taylor Patterson, Jordan H. Deyton
+ * @author Jay Jay Billings
+ * @author Taylor Patterson
+ * @author Jordan H. Deyton
  */
 public class VizFileViewer extends ViewPart implements IUpdateableListener,
 		ISelectionChangedListener {
@@ -117,8 +119,6 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 
 	/**
 	 * Does nothing yet.
-	 * 
-	 * @see WorkbenchPart#setFocus()
 	 */
 	public void setFocus() {
 		return;
@@ -207,9 +207,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 	 *         set.
 	 */
 	public ResourceComponent getResourceComponent() {
-		// begin-user-code
 		return resourceComponent;
-		// end-user-code
 	}
 
 	/**
@@ -315,11 +313,14 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 					if (resource.getChildrenResources() != null
 							&& !resource.getChildrenResources().isEmpty()) {
 						// Return all Child resources
-						return (Object[]) resource.getChildrenResources().toArray();
-						
-					} else if (resource.getFileSet() != null && resource.getFileSet().length != 0) {
-						// If we didn't have VizResourc children, then check that we 
-						// have file names to return 
+						return (Object[]) resource.getChildrenResources()
+								.toArray();
+
+					} else if (resource.getFileSet() != null
+							&& resource.getFileSet().length != 0) {
+						// If we didn't have VizResourc children, then check
+						// that we
+						// have file names to return
 						return (Object[]) resource.getFileSet();
 					}
 				}
@@ -390,10 +391,6 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 			if (selection instanceof IStructuredSelection) {
 				IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
-				// Get the resources from the ResourceComponent.
-				ArrayList<ICEResource> resources = resourceComponent
-						.getResources();
-
 				// Remove each ICEResource in the selection from the
 				// ResourceComponent.
 				for (Iterator<?> iter = structuredSelection.iterator(); iter
@@ -402,7 +399,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 					System.out.println("VizFileViewer message: "
 							+ "Removing the resource for file \""
 							+ resource.getPath().getPath() + "\".");
-					resources.remove(resource);
+					resourceComponent.remove(resource);
 				}
 			}
 

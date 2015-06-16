@@ -12,13 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,14 +21,16 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Composite container for Polygons along with any additional information
  * required to interpret the mesh data.<br>
@@ -48,119 +43,83 @@ import javax.xml.bind.annotation.XmlTransient;
  * All polygons are expected to have a unique ID among all other polygons. This
  * also holds for vertices and edges.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "MeshComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MeshComponent extends ICEObject implements Component, IMeshPart {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The map of Polygons contained in this MeshComponent, keyed on their IDs.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TreeMap<Integer, Polygon> polygons;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * All vertices managed by this MeshComponent. Keyed on their IDs.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private TreeMap<Integer, Vertex> vertices;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * All edges managed by this MeshComponent. Keyed on their IDs.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private TreeMap<Integer, Edge> edges;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * For each vertex, this contains an ordered set of the IDs of each polygon
 	 * containing the vertex.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private TreeMap<Integer, TreeSet<Integer>> vertexPolygons;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * For each edge, this contains an ordered set of the IDs of each polygon
 	 * containing the edge.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private TreeMap<Integer, TreeSet<Integer>> edgePolygons;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * For each vertex, this contains an ordered set of the IDs of each edge
 	 * connected to the vertex.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private TreeMap<Integer, TreeSet<Integer>> vertexEdges;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A flag signifying that the MeshComponent is currently undergoing a copy
 	 * operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient
 	private final AtomicBoolean copying;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default constructor for a MeshComponent. Initializes the list of
 	 * polygons and any associated bookkeeping structures.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public MeshComponent() {
-		// begin-user-code
 		super();
 
 		// Initialize the trees of shapes, vertices, and edges.
@@ -178,11 +137,9 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		copying = new AtomicBoolean(false);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds a polygon to the MeshComponent. The polygon is expected to have a
 	 * unique polygon ID. If the polygon can be added, a notification is sent to
@@ -190,17 +147,13 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * different references, then a new polygon is created with references to
 	 * the vertices and edges already known by this MeshComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param polygon
 	 *            <p>
 	 *            The new polygon to add to the existing list.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addPolygon(Polygon polygon) {
-		// begin-user-code
 
 		// We can't add null values, and we can't add a polygon with an ID
 		// that's already associated with another polygon.
@@ -359,27 +312,21 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes a polygon from the MeshComponent. This will also remove any
 	 * vertices and edges used only by this polygon. If a polygon was removed, a
 	 * notification is sent to listeners.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
 	 *            <p>
 	 *            The ID of the polygon to remove from the existing list.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removePolygon(int id) {
-		// begin-user-code
 
 		// Try to remove the polygon matching the ID.
 		Polygon polygon = polygons.remove(id);
@@ -435,28 +382,22 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes a list polygons from the MeshComponent. This will also remove any
 	 * vertices and edges used by these polygons. If a polygon was removed, a
 	 * notification is sent to listeners.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param ids
 	 *            <p>
 	 *            An ArrayList containing the IDs of the polygons to remove from
 	 *            the MeshComponent.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removePolygons(ArrayList<Integer> ids) {
-		// begin-user-code
 		// TODO Add to tests.
 
 		// Make sure the list is not null.
@@ -533,35 +474,26 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 			}
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets a list of all polygons stored in the MeshComponent ordered by their
 	 * IDs.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         A list of polygons contained in this MeshComponent.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Polygon> getPolygons() {
-		// begin-user-code
 		return new ArrayList<Polygon>(polygons.values());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets a Polygon instance corresponding to an ID.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
 	 *            <p>
@@ -571,49 +503,36 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *         The polygon referred to by the ID, or null if there is no polygon
 	 *         with the ID.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Polygon getPolygon(int id) {
-		// begin-user-code
 		return polygons.get(id);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the next available ID for polygons.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The greatest polygon ID (or zero) plus one.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNextPolygonId() {
 		return (!polygons.isEmpty() ? polygons.lastKey() + 1 : 1);
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the list of all polygons stored in the MeshComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param polygons
 	 *            <p>
 	 *            The list of polygons to replace the existing list of polygons
 	 *            in the MeshComponent.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPolygons(ArrayList<Polygon> polygons) {
-		// begin-user-code
 
 		// Add all shapes if the list is not null.
 		if (polygons != null) {
@@ -630,34 +549,25 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		// Notifying listeners is handled by addPolygon().
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets a list of all vertices associated with this MeshComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         All vertices managed by this MeshComponent.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Vertex> getVertices() {
-		// begin-user-code
 		return new ArrayList<Vertex>(vertices.values());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets a Vertex instance corresponding to an ID.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
 	 *            <p>
@@ -666,57 +576,41 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * @return <p>
 	 *         The vertex referred to by the ID, or null if the ID is invalid.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Vertex getVertex(int id) {
-		// begin-user-code
 		return vertices.get(id);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the next available ID for vertices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The greatest vertex ID (or zero) plus one.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNextVertexId() {
 		return (!vertices.isEmpty() ? vertices.lastKey() + 1 : 1);
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets a list of all edges associated with this MeshComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         All edges managed by this MeshComponent.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Edge> getEdges() {
-		// begin-user-code
 		return new ArrayList<Edge>(edges.values());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets an Edge instance corresponding to an ID.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
 	 *            <p>
@@ -725,38 +619,28 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * @return <p>
 	 *         The edge referred to by the ID, or null if the ID is invalid.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Edge getEdge(int id) {
-		// begin-user-code
 		return edges.get(id);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the next available ID for edges.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The greatest edge ID (or zero) plus one.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNextEdgeId() {
 		return (!edges.isEmpty() ? edges.lastKey() + 1 : 1);
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a list of Edges attached to the Vertex with the specified ID.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
 	 *            <p>
@@ -769,7 +653,6 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *         </p>
 	 */
 	public ArrayList<Edge> getEdgesFromVertex(int id) {
-		// begin-user-code
 		// TODO Add to tests.
 		ArrayList<Edge> edgeList = new ArrayList<Edge>();
 
@@ -780,15 +663,12 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 
 		return edgeList;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a list of Polygons containing the Vertex with the specified ID.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
 	 *            <p>
@@ -801,7 +681,6 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *         </p>
 	 */
 	public ArrayList<Polygon> getPolygonsFromVertex(int id) {
-		// begin-user-code
 		// TODO Add to tests.
 		ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
 
@@ -812,15 +691,12 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 
 		return polygonList;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a list of Polygons containing the Edge with the specified ID.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
 	 *            <p>
@@ -833,7 +709,6 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *         </p>
 	 */
 	public ArrayList<Polygon> getPolygonsFromEdge(int id) {
-		// begin-user-code
 		// TODO Add to tests.
 		ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
 
@@ -844,21 +719,18 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 
 		return polygonList;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an Edge that connects two specified vertices if one exists.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param firstId
 	 *            <p>
 	 *            The ID of the first vertex.
 	 *            </p>
-	 * @param second
+	 * @param secondId
 	 *            <p>
 	 *            The ID of the second vertex.
 	 *            </p>
@@ -867,11 +739,8 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *         An Edge instance that connects the first and second vertices, or
 	 *         null if no such edge exists.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Edge getEdgeFromVertices(int firstId, int secondId) {
-		// begin-user-code
 		// TODO Add to tests.
 		Edge edge = null;
 
@@ -892,16 +761,13 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 
 		return edge;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a list containing all Polygons in the MeshComponent whose
 	 * vertices are a subset of the supplied list of vertices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param vertices
 	 *            <p>
@@ -911,11 +777,8 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *         An ArrayList of all Polygons in the MeshComponent that are
 	 *         composed of some subset of the specified vertices.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Polygon> getPolygonsFromVertices(ArrayList<Vertex> vertices) {
-		// begin-user-code
 		// TODO Add to tests.
 		ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
 
@@ -961,24 +824,18 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 
 		return polygonList;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the MeshComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashcode of the ICEObject.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based on super's hashCode.
 		int hash = super.hashCode();
@@ -987,17 +844,14 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		hash += 31 * polygons.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this MeshComponent and
 	 * another MeshComponent. It returns true if the MeshComponents are equal
 	 * and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -1006,11 +860,8 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * @return <p>
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -1035,26 +886,20 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a MeshComponent into the current
 	 * object using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
 	 *            <p>
 	 *            The ICEObject from which the values should be copied
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(MeshComponent component) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (component != null) {
@@ -1090,24 +935,18 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the MeshComponent using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		MeshComponent object = new MeshComponent();
@@ -1117,41 +956,32 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Component#accept(IComponentVisitor visitor)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(IComponentVisitor visitor) {
-		// begin-user-code
 
 		// Call the visitor's visit(MeshComponent) method.
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method calls the {@link IMeshPartVisitor}'s visit method.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The {@link IMeshPartVisitor} that is visiting this
 	 *            {@link IMeshPart}.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void acceptMeshVisitor(IMeshPartVisitor visitor) {
 		if (visitor != null) {

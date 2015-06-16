@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
-import org.eclipse.ice.client.widgets.properties.ICellContentProvider;
-import org.eclipse.ice.client.widgets.properties.CellOwnerDrawLabelProvider;
+import org.eclipse.ice.client.common.properties.CellOwnerDrawLabelProvider;
+import org.eclipse.ice.client.common.properties.ICellContentProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;

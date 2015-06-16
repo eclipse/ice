@@ -22,42 +22,30 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the JobProfileBuilder. It checks to
  * make sure that JobProfileBuilder returns the correct Item name and Item type.
  * In also tries to build a new JobProfile and check it.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 
 public class JobProfileBuilderTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private JobProfileBuilder jobProfileBuilder;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Item type and Item name of the
 	 * JobProfileBuilder.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkJobProfileInformation() {
-		// begin-user-code
 
 		// create a JobProfileBuilder
 		jobProfileBuilder = new JobProfileBuilder();
@@ -66,23 +54,17 @@ public class JobProfileBuilderTester {
 		assertEquals(ItemType.Model, jobProfileBuilder.getItemType());
 		assertEquals("Job Profile", jobProfileBuilder.getItemName());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates a JobProfile and checks it to make sure it was
 	 * actually built properly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkJobProfile() {
-		// begin-user-code
 
 		// create a JobProfileBuilder
 		jobProfileBuilder = new JobProfileBuilder();
@@ -106,6 +88,5 @@ public class JobProfileBuilderTester {
 		// Make sure the JobProfile is returning the correct type.
 		assertEquals(ItemType.Model, jobProfile.getItemType());
 
-		// end-user-code
 	}
 }

@@ -18,30 +18,21 @@ import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A class that tests the HDF5LWRTagType's methods.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class HDF5LWRTagTypeTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the toString and toType operations on HDF5LWRTagType.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkTyping() {
-		// begin-user-code
 
 		// Local Declarations
 		HDF5LWRTagType type;
@@ -162,6 +153,5 @@ public class HDF5LWRTagTypeTester {
 		// Try to return a type that does not exist
 		assertEquals(type.toType("asdasd1"), null);
 
-		// end-user-code
 	}
 }

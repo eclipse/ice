@@ -41,50 +41,34 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import ncsa.hdf.hdf5lib.structs.H5O_info_t;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Class acts as an intermediary between the reactor and HDF5 data. This class
  * both reads HDF5 data into the SFReactor, and writes from the SFReactor into
  * HDF5 data.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class SFReactorIOHandler {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFReactorIOHandler() {
-		// begin-user-code
 
 		// Nothing to do here.
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * Reads data from an input HDF5 file into a SFReactor.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return A valid {@link SFReactor} if the file could be completely read,
+	 *         {@code null} if the file could not be opened.
 	 */
 	public SFReactor readHDF5(URI uri) {
-		// begin-user-code
 
 		// The SFReactor that will receive the data from the file.
 		SFReactor reactor = null;
@@ -515,22 +499,16 @@ public class SFReactorIOHandler {
 
 		// Return the loaded SFReactor.
 		return reactor;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Writes data from the input SFReactor into a HDF5 file.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param reactor
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void writeHDF5(URI uri, SFReactor reactor) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (uri == null || reactor == null) {
@@ -893,7 +871,6 @@ public class SFReactorIOHandler {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -1438,7 +1415,6 @@ public class SFReactorIOHandler {
 	 */
 	private void writeGridData(List<SFRComponent> providers, int groupId)
 			throws NullPointerException, HDF5Exception {
-		// begin-user-code
 
 		// Create a GridData Group.
 		int gridDataGroupId = createGroup(groupId, "GridData");
@@ -1466,7 +1442,6 @@ public class SFReactorIOHandler {
 		closeGroup(gridDataGroupId);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -1482,7 +1457,6 @@ public class SFReactorIOHandler {
 	 */
 	private void writeDataProvider(SFRComponent provider, int groupId)
 			throws NullPointerException, HDF5Exception {
-		// begin-user-code
 
 		// Get the times.
 		ArrayList<Double> times = provider.getTimes();
@@ -1593,7 +1567,6 @@ public class SFReactorIOHandler {
 		provider.setTime(currentTime);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -1609,7 +1582,6 @@ public class SFReactorIOHandler {
 	 */
 	private void readGridData(List<SFRComponent> providers, int groupId)
 			throws NullPointerException, HDF5Exception {
-		// begin-user-code
 
 		// Open the GridData Group.
 		int gridDataGroupId = openGroup(groupId, "GridData");
@@ -1637,7 +1609,6 @@ public class SFReactorIOHandler {
 		closeGroup(gridDataGroupId);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -1653,7 +1624,6 @@ public class SFReactorIOHandler {
 	 */
 	private void readDataProvider(SFRComponent provider, int groupId)
 			throws NullPointerException, HDF5Exception {
-		// begin-user-code
 		int status;
 
 		// Commonly-used constants.
@@ -1858,7 +1828,6 @@ public class SFReactorIOHandler {
 		/* -------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**

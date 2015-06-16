@@ -21,7 +21,6 @@ import org.eclipse.ice.reactor.sfr.core.AssemblyType;
 import java.util.ArrayList;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Class representing any assemblies in a SFR that contain pins. This includes
  * both fuel pins (core and blanket), in addition to control assemblies (primary
@@ -29,38 +28,26 @@ import java.util.ArrayList;
  * distinction between the pin assembly type is made using the pinType
  * attribute.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class PinAssembly extends SFRAssembly {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Shortest distance between centers of adjacent pins.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double pinPitch;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The PinType of the pin assembly; can be either core fuel, blanket fuel,
 	 * primary control or secondary control.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private PinType pinType;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The physical size of the inner duct within the assembly. Defined as the
 	 * distance from one outer duct surface to the outer surface parallel to it.
@@ -68,52 +55,36 @@ public class PinAssembly extends SFRAssembly {
 	 * PinAssembly type with inner ducts, this attribute will be 0 for all other
 	 * PinAssembly types.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double innerDuctFlatToFlat;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Thickness of the assembly's inner duct wall. Since control assemblies
 	 * (PrimaryControl, SecondaryControl) are the only PinAssembly type with
 	 * inner ducts, this attribute will be 0 for all other PinAssembly types.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double innerDuctThickness;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A GridManager used to manage the locations of pins within this assembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private GridDataManager pinManager;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor with the assembly size (number of pins)
 	 * specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param size
 	 *            The size (number of pins) of the assembly.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PinAssembly(int size) {
-		// begin-user-code
 
 		// Call the super constructor with some defaults.
 		super("SFR Pin Assembly 1", AssemblyType.Fuel, size);
@@ -138,16 +109,13 @@ public class PinAssembly extends SFRAssembly {
 		pinManager = new GridDataManager(getSize() * getSize());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor with the assembly size (number of pins), pin
 	 * type, and name specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            The name of the assembly.
@@ -155,11 +123,8 @@ public class PinAssembly extends SFRAssembly {
 	 *            The type of the pin.
 	 * @param size
 	 *            The size (number of pins) of the assembly.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PinAssembly(String name, PinType pinType, int size) {
-		// begin-user-code
 
 		// Call the basic constructor. Sets all defaults.
 		this(size);
@@ -203,165 +168,117 @@ public class PinAssembly extends SFRAssembly {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the pin pitch (shortest distance between a pin center to an adjacent
 	 * pin center).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param pinPitch
 	 *            The pin pitch.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPinPitch(double pinPitch) {
-		// begin-user-code
 
 		// Only set the pin pitch if it is 0 or greater.
 		if (pinPitch >= 0.0) {
 			this.pinPitch = pinPitch;
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the pin pitch (shortest distance between a pin center to an
 	 * adjacent pin center) as a double.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return Returns the pin pitch as a double.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getPinPitch() {
-		// begin-user-code
 		return pinPitch;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the inner duct's (outer) flat-to-flat distance.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param flatToFlat
 	 *            The inner duct's (outer) flat-to-flat distance.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setInnerDuctFlatToFlat(double flatToFlat) {
-		// begin-user-code
 
 		// Only set the flat-to-flat if it is 0 or greater.
 		if (flatToFlat >= 0.0) {
 			this.innerDuctFlatToFlat = flatToFlat;
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the inner duct's (outer) flat-to-flat distance.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The inner duct's (outer) flat-to-flat distance.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getInnerDuctFlatToFlat() {
-		// begin-user-code
 		return innerDuctFlatToFlat;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the inner duct's thickness.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param innerDuctThickness
 	 *            The inner duct's thickness.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setInnerDuctThickness(double innerDuctThickness) {
-		// begin-user-code
 
 		// Only set the thickness if it is 0 or greater.
 		if (innerDuctThickness >= 0.0) {
 			this.innerDuctThickness = innerDuctThickness;
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the inner duct's thickness.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The inner duct's thickness.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getInnerDuctThickness() {
-		// begin-user-code
 		return innerDuctThickness;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the pin type (primary control, secondary control, core fuel or
 	 * blanket fuel).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return Returns the pin type.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PinType getPinType() {
-		// begin-user-code
 		return pinType;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds the specified SFRPin to the assembly; returns true if the operation
 	 * was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param pin
 	 *            The pin to be added to the PinAssembly.
 	 * @return Returns true if the operation was successful, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean addPin(SFRPin pin) {
-		// begin-user-code
 
 		// By default, we did not succeed in adding the Component.
 		boolean success = false;
@@ -378,17 +295,14 @@ public class PinAssembly extends SFRAssembly {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds the pin with the specified name to the assembly in the specified
 	 * location. If the pin exists and the location is valid and is not occupied
 	 * by the same pin, this returns true.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            The name of the pin to set. The name must correspond to an
@@ -398,11 +312,8 @@ public class PinAssembly extends SFRAssembly {
 	 * @param column
 	 *            The column in which to put the pin.
 	 * @return Returns whether or not the pin location was successfully set.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean setPinLocation(String name, int row, int column) {
-		// begin-user-code
 
 		// By default, we did not succeed in adding the Component.
 		boolean success = false;
@@ -416,25 +327,19 @@ public class PinAssembly extends SFRAssembly {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the specified SFRPin from the assembly; returns true if the
 	 * operation was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            The name of the pin to be removed.
 	 * @return Returns true if the operation was successful, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removePin(String name) {
-		// begin-user-code
 
 		// By default, we did not succeed in removing the Component.
 		boolean success = false;
@@ -453,27 +358,21 @@ public class PinAssembly extends SFRAssembly {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the SFRPin from the specified location (x, y coordinates);
 	 * returns true if operation was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            The row in which the pin can be found.
 	 * @param column
 	 *            The column in which the pin can be found.
 	 * @return Returns true if the operation was successful, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removePinFromLocation(int row, int column) {
-		// begin-user-code
 
 		// By default, we did not succeed in removing the Component from the
 		// location.
@@ -488,53 +387,38 @@ public class PinAssembly extends SFRAssembly {
 		}
 
 		return success;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an ArrayList of SFRPin names in the assembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return An ArrayList of pin names contained in the assembly.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getPinNames() {
-		// begin-user-code
 		return getComponentNames();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the SFRPin by the specified name.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            The name of the pin being searched for.
 	 * @return Returns the pin corresponding to the name specified. Returns a
 	 *         null pin if no match was found.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRPin getPinByName(String name) {
-		// begin-user-code
 		return (SFRPin) getComponent(name);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the SFRPin at the specified location (x, y coordinates) in the
 	 * assembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            The row in which the pin is located.
@@ -542,11 +426,8 @@ public class PinAssembly extends SFRAssembly {
 	 *            The column in which the pin is located.
 	 * @return Returns the pin at the specified location. Returns a null pin if
 	 *         no match was found.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRPin getPinByLocation(int row, int column) {
-		// begin-user-code
 
 		// Initialize the default return value.
 		SFRPin pin = null;
@@ -563,26 +444,20 @@ public class PinAssembly extends SFRAssembly {
 		}
 
 		return pin;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an ArrayList of locations within the assembly that are occupied
 	 * by the pin matching the specified name.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            The name of the pin being searched for.
 	 * @return Returns an ArrayList of the locations the specified pin occupies.
 	 *         If no match was found, returns an empty ArrayList.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Integer> getPinLocations(String name) {
-		// begin-user-code
 
 		// We need to return a List of Integers representing pin locations.
 		ArrayList<Integer> locations;
@@ -598,34 +473,25 @@ public class PinAssembly extends SFRAssembly {
 		}
 
 		return locations;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the number of pins in the assembly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The number of pins in the assembly.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfPins() {
-		// begin-user-code
 		return getNumberOfComponents();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an IDataProvider for the location in the assembly. This is
 	 * distinct from the SFRPin, which, as an SFRComponent, is itself an
 	 * IDataProvider.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            The row in which the IDataProvider is located.
@@ -633,11 +499,8 @@ public class PinAssembly extends SFRAssembly {
 	 *            The column in which the IDataProvider is located.
 	 * @return Returns the IDataProvider at the specified location. Returns null
 	 *         if no match was found.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRComponent getDataProviderByLocation(int row, int column) {
-		// begin-user-code
 
 		// Initialize the default return value.
 		SFRComponent provider = null;
@@ -651,90 +514,66 @@ public class PinAssembly extends SFRAssembly {
 		}
 
 		return provider;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that overrides the SFRComposite's operation. This operation
 	 * does nothing and requires that the appropriate, more defined, associated
 	 * operation to be utilized on this class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param child
 	 *            The Component that should be added to the Composite.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public void addComponent(Component child) {
-		// begin-user-code
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that overrides the SFRComposite's operation. This operation
 	 * does nothing and requires that the appropriate, more defined, associated
 	 * operation to be utilized on this class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param childId
 	 *            The ID of the child Component to remove.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public void removeComponent(int childId) {
-		// begin-user-code
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An operation that overrides the SFRComposite's operation. This operation
 	 * does nothing and requires that the appropriate, more defined, associated
 	 * operation to be utilized on this class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            The name of the child Component to remove.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public void removeComponent(String name) {
-		// begin-user-code
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The object to be compared.
 	 * @return True if otherObject is equal. False otherwise.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -759,22 +598,16 @@ public class PinAssembly extends SFRAssembly {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hash of the object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based on super's hashCode.
 		int hash = super.hashCode();
@@ -785,23 +618,17 @@ public class PinAssembly extends SFRAssembly {
 		hash += 31 * pinManager.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object from another object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The object to be copied from.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(PinAssembly otherObject) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (otherObject == null) {
@@ -818,24 +645,18 @@ public class PinAssembly extends SFRAssembly {
 		pinManager.copy(otherObject.pinManager);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		PinAssembly object = new PinAssembly(getSize());
@@ -845,7 +666,6 @@ public class PinAssembly extends SFRAssembly {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
@@ -854,12 +674,10 @@ public class PinAssembly extends SFRAssembly {
 	 */
 	@Override
 	public void accept(ISFRComponentVisitor visitor) {
-		// begin-user-code
 
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 		return;
-		// end-user-code
 	}
 }

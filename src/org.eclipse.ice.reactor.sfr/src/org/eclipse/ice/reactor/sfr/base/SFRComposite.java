@@ -20,41 +20,30 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The SFRComposite class represents all reactor components that can store and
  * manage SFRComponents. This class implements the ICE Composite interface. This
  * class was designed as a "branch" within the Reactor package to hold
  * references to other SFRComponents.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class SFRComposite extends SFRComponent implements Composite {
 	/**
 	 * <!-- begin-UML-doc --> Hashtable of all SFRComponents contained in the
 	 * SFRComposite, keyed by name. <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Hashtable<String, SFRComponent> sFRComponents;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRComposite() {
-		// begin-user-code
 
 		// Call the super constructor.
 		super();
@@ -68,25 +57,19 @@ public class SFRComposite extends SFRComponent implements Composite {
 		sFRComponents = new Hashtable<String, SFRComponent>();
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the SFRComponent of the specified name
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            Name of the SFRComponent. Cannot be null.
 	 * @return The SFRComponent matching the specified name. Will return a null
 	 *         component if no match to name was found.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public SFRComponent getComponent(String name) {
-		// begin-user-code
 
 		// Initialize the default return value.
 		SFRComponent component = null;
@@ -97,24 +80,18 @@ public class SFRComposite extends SFRComponent implements Composite {
 		}
 		// Return the component.
 		return component;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns a string ArrayList of all SFRComponent names contained in the
 	 * SFRComposite.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return ArrayList of string names representing all SFRComponents in the
 	 *         SFRComposite.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getComponentNames() {
-		// begin-user-code
 
 		// Initialize the List of component names.
 		ArrayList<String> componentNames = new ArrayList<String>();
@@ -127,23 +104,17 @@ public class SFRComposite extends SFRComponent implements Composite {
 
 		// Return the names.
 		return componentNames;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the component with the specified name.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            Name of the SFRComponent to be removed.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeComponent(String name) {
-		// begin-user-code
 
 		// Hashtables do not accept null keys, so remove the component if name
 		// is not null. We do not need to check if the key is in the table.
@@ -151,22 +122,17 @@ public class SFRComposite extends SFRComponent implements Composite {
 			sFRComponents.remove(name);
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * <!-- begin-UML-doc --> Adds the specified Component to the SFRComposite.
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param child
 	 *            The child component to add to the SFRComposite. Cannot be
 	 *            null.
 	 * @see Composite#addComponent(Component child)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addComponent(Component child) {
-		// begin-user-code
 
 		// We only want to add the child if it is a non-null SFRComponent and a
 		// component with the same name is not in the Hashtable.
@@ -184,7 +150,6 @@ public class SFRComposite extends SFRComponent implements Composite {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -194,11 +159,8 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 * @param childId
 	 *            The ID of the component to the removed.
 	 * @see Composite#removeComponent(int childId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeComponent(int childId) {
-		// begin-user-code
 
 		// FIXME - Currently, it is possible to have multiple Components with
 		// the same ID in the Hashtable which is keyed on the components' names.
@@ -223,7 +185,6 @@ public class SFRComposite extends SFRComponent implements Composite {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -235,11 +196,8 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 * @return The SFRComponent matching the specified ID. If no match is found,
 	 *         returns a null SFRComponent.
 	 * @see Composite#getComponent(int childId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Component getComponent(int childId) {
-		// begin-user-code
 
 		// Declare the component for iteration in the loop below.
 		SFRComponent component;
@@ -261,7 +219,6 @@ public class SFRComposite extends SFRComponent implements Composite {
 
 		// If the code reaches this point, then no matching component was found.
 		return null;
-		// end-user-code
 	}
 
 	/**
@@ -270,15 +227,11 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 * 
 	 * @return The number of components in the composite.
 	 * @see Composite#getNumberOfComponents()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfComponents() {
-		// begin-user-code
 
 		// Return the size of the component table.
 		return sFRComponents.size();
-		// end-user-code
 	}
 
 	/**
@@ -288,11 +241,8 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 * @return An ArrayList of components contained in the composite. Returns an
 	 *         empty ArrayList if the composite was empty.
 	 * @see Composite#getComponents()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Component> getComponents() {
-		// begin-user-code
 
 		// Initialize the return value, an ArrayList of components.
 		ArrayList<Component> components = new ArrayList<Component>();
@@ -304,25 +254,19 @@ public class SFRComposite extends SFRComponent implements Composite {
 
 		// Return the ArrayList.
 		return components;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Compares the contents of objects and returns true if they are identical,
 	 * otherwise returns false.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object to compare against.
 	 * @return Returns true if the two objects are equal, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -343,22 +287,16 @@ public class SFRComposite extends SFRComponent implements Composite {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hash of the object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based on super's hashCode.
 		int hash = super.hashCode();
@@ -367,23 +305,17 @@ public class SFRComposite extends SFRComponent implements Composite {
 		hash += 31 * sFRComponents.hashCode();
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object from another object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The object to be copied from.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(SFRComposite otherObject) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (otherObject == null) {
@@ -397,22 +329,16 @@ public class SFRComposite extends SFRComponent implements Composite {
 		sFRComponents.putAll(otherObject.sFRComponents);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The newly instantiated cloned object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		SFRComposite object = new SFRComposite();
@@ -422,6 +348,5 @@ public class SFRComposite extends SFRComponent implements Composite {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 }

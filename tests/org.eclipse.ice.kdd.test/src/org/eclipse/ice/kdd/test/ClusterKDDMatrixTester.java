@@ -37,73 +37,48 @@ import org.eclipse.ice.kdd.test.fakeobjects.SimpleData;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleDataProvider;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is used to unit test the ClusterKDDMatrix. It initializes a set
  * data to cluster and verifies it was clustered correctly.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ClusterKDDMatrixTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ClusterKDDMatrix matrix;
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nRows;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int nCols;
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IDataProvider provider;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the IFolder containing test data files.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IFolder dataFolder;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Initializes the data to be clustered.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void beforeClass() {
-		// begin-user-code
 		// Initialize the number of rows and columns
 		nRows = 4;
 		nCols = 2;
@@ -173,6 +148,8 @@ public class ClusterKDDMatrixTester {
 				yValues.add(Double.parseDouble(y));
 			}
 
+			// Close the reader.
+			reader.close();
 		} catch (CoreException e) {
 			e.printStackTrace();
 			fail();
@@ -200,18 +177,13 @@ public class ClusterKDDMatrixTester {
 
 		matrix = new ClusterKDDMatrix(provider);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCluster() {
-		// begin-user-code
 		// Cluster the data into 2 clusters
 		// over 10 iterations
 		matrix.cluster(2, 10);
@@ -221,6 +193,5 @@ public class ClusterKDDMatrixTester {
 		assertEquals(1000, matrix.getNumberOfClusterElements(0));
 		assertEquals(1000, matrix.getNumberOfClusterElements(1));
 
-		// end-user-code
 	}
 }

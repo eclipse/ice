@@ -316,7 +316,7 @@ public class PipeController extends AbstractPlantController {
 	}
 
 	/**
-	 * Updates the {@link #view} depending on the changes in the {@link model}.
+	 * Updates the {@link #view} depending on the changes in the {@link #model}.
 	 */
 	public void update(IUpdateable component) {
 

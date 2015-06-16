@@ -20,34 +20,21 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.item.utilities.moose.Parameter;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This operation checks the MOOSE Parameter class.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ParameterTester {
+	
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the accessors for the Parameter class.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAccessors() {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "Clara", description = "Companion", defaultValue = "Oswin";
-		String group_name = "Oswald", cpp_type = "MooseEnum";
+		String comment = "Souffle Girl", group_name = "Oswald", cpp_type = "MooseEnum";
 		boolean required = true;
 		String options = "option1 option2 option3";
 		Parameter param = new Parameter();
@@ -57,6 +44,7 @@ public class ParameterTester {
 		param.setCpp_type(cpp_type);
 		param.setDefault(defaultValue);
 		param.setDescription(description);
+		param.setComment(comment);
 		param.setGroup_name(group_name);
 		param.setRequired(required);
 		param.setOptions(options);
@@ -64,6 +52,7 @@ public class ParameterTester {
 		// Check the parameter
 		assertEquals(name, param.getName());
 		assertEquals(description, param.getDescription());
+		assertEquals(comment, param.getComment());
 		assertEquals(group_name, param.getGroup_name());
 		assertEquals(required, param.isRequired());
 		assertEquals(cpp_type, param.getCpp_type());
@@ -75,27 +64,18 @@ public class ParameterTester {
 		assertEquals(false, param.isRequired());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the Parameter to write itself to a
 	 * ICE Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkToEntry() {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "Souffle Girl", description = "Companion", defaultValue = "option1";
-		String group_name = "Clara", cpp_type = "MooseEnum";
+		String group_name = "Clara", cpp_type = "MooseEnum", comment = "Some comment";
 		boolean required = true;
 		String options = "option1 option2 option3";
 		Parameter param = new Parameter();
@@ -105,6 +85,7 @@ public class ParameterTester {
 		param.setCpp_type(cpp_type);
 		param.setDefault(defaultValue);
 		param.setDescription(description);
+		param.setComment(comment);
 		param.setGroup_name(group_name);
 		param.setRequired(required);
 		param.setOptions(options);
@@ -115,6 +96,7 @@ public class ParameterTester {
 		// Check the Entry
 		assertEquals(name, entry.getName());
 		assertEquals(description, entry.getDescription());
+		assertEquals(comment, entry.getComment());
 		assertEquals(defaultValue, entry.getDefaultValue());
 		assertEquals(required, entry.isRequired());
 		assertEquals(entry.getValueType(), AllowedValueType.Discrete);
@@ -122,23 +104,14 @@ public class ParameterTester {
 										"[option1, option2, option3]");
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the parameter to write itself as a
 	 * string.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkToString() {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "Clara", description = "Companion", defaultValue = "Oswin";
@@ -158,7 +131,6 @@ public class ParameterTester {
 		assertEquals(name + " = " + defaultValue, param.toString());
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -183,23 +155,15 @@ public class ParameterTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the Parameter to make sure that it can be loaded
 	 * from an Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFromEntry() {
-		// begin-user-code
 
 		// Local Declarations
 		String name = "Amy", description = "Companion", defaultValue = "option2";
-		String group_name = "Pond", cpp_type = "MooseEnum";
+		String group_name = "Pond", cpp_type = "MooseEnum", comment = "Scottish";
 		boolean required = true;
 		String options = "option1 option2 option3";
 		Parameter param = new Parameter(), testParam = null;
@@ -210,6 +174,7 @@ public class ParameterTester {
 		param.setCpp_type(cpp_type);
 		param.setDefault(defaultValue);
 		param.setDescription(description);
+		param.setComment(comment);
 		param.setGroup_name(group_name);
 		param.setRequired(required);
 		param.setOptions(options);
@@ -226,11 +191,11 @@ public class ParameterTester {
 		// converted.
 		assertEquals(param.getName(), testParam.getName());
 		assertEquals(param.getDescription(), testParam.getDescription());
+		assertEquals(param.getComment(), testParam.getComment());
 		assertEquals(param.getDefault(), testParam.getDefault());
 		assertEquals(param.isRequired(), testParam.isRequired());
 		assertEquals(param.getOptions(), testParam.getOptions());
 
 		return;
-		// end-user-code
 	}
 }

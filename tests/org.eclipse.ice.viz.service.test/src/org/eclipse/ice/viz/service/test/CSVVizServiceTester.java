@@ -11,14 +11,23 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.csv.CSVPlot;
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.junit.Test;
 
@@ -67,7 +76,7 @@ public class CSVVizServiceTester {
 		// Make sure that the service says it doesn't need properties from the
 		// convenience method.
 		assertFalse(service.hasConnectionProperties());
-		
+
 		return;
 	}
 
@@ -83,19 +92,50 @@ public class CSVVizServiceTester {
 		// Make sure the properties are initially empty
 		IVizService service = new CSVVizService();
 
-		// Create a small CSV file for testing the plot
-		String separator = System.getProperty("file.separator");
+		// Create a URI pointing to the fib8.csv file for testing.
+		String s = System.getProperty("file.separator");
 		String home = System.getProperty("user.home");
-		File file = new File(home + separator + "ICETests");
+		File file = new File(home + s + "ICETests" + s + "CSVVizService" + s
+				+ "fib8.csv");
 
-		// Try to create a plot using the file... er... directory. It shouldn't
-		// matter for this test anyway. (At least not yet.)
+		// Try to create a plot using the file.
 		IPlot plot = service.createPlot(file.toURI());
 		assertNotNull(plot);
 		assertEquals(file.toURI(), plot.getDataSource());
 
-		// In the future this should somehow test that the plot was actually
-		// loaded.
+		// It should actually return a CSVPlot, although that *could* change in
+		// the future.
+		assertTrue(plot instanceof CSVPlot);
+
+		return;
+	}
+
+	/**
+	 * Checks that the VisItVizService supports the correct file extensions.
+	 */
+	@Test
+	public void checkExtensions() {
+		CSVVizService service = new CSVVizService();
+
+		List<String> extensions = new ArrayList<String>();
+		// Only CSV files are supported.
+		extensions.add("csv");
+
+		// Check that each extension is supported by creating a simple URI with
+		// its extension and calling extensionSupported(URI).
+		for (String extension : extensions) {
+			try {
+				// Check that the extension is supported.
+				URI uri = new URI("blah." + extension);
+				assertTrue("The extension \"" + extension
+						+ "\" is not supported.",
+						service.extensionSupported(uri));
+			} catch (URISyntaxException e) {
+				// This should never happen...
+				fail("CSVVizServiceTester error: " + "A test URI was invalid.");
+				e.printStackTrace();
+			}
+		}
 
 		return;
 	}

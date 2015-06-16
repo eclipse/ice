@@ -45,7 +45,7 @@ public class JunctionLinker extends PlantComponentLinker {
 	/**
 	 * The default constructor.
 	 * 
-	 * @param plantManager
+	 * @param plantBlockManager
 	 *            The PlantBlockManager that must link Entries with
 	 *            PlantComponent properties.
 	 */

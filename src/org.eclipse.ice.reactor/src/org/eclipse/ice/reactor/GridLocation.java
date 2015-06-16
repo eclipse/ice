@@ -15,7 +15,6 @@ package org.eclipse.ice.reactor;
 import java.lang.Comparable;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The GridLocation class represents a location on a Cartesian grid. This class
  * also stores an implementation of the IDataProvider, called LWRDataProvider.
@@ -51,54 +50,37 @@ import java.lang.Comparable;
  * Keep in mind, you can do both. However, the second method improves IO times
  * in magnitudes and is more optimal.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class GridLocation implements Comparable<GridLocation> {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The row position.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int row;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The column position.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int col;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The LWRDataProvider.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private LWRDataProvider lWRDataProvider;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param row
 	 *            <p>
@@ -108,11 +90,8 @@ public class GridLocation implements Comparable<GridLocation> {
 	 *            <p>
 	 *            The column position.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GridLocation(int row, int col) {
-		// begin-user-code
 
 		// Set default values
 		this.row = 1;
@@ -129,57 +108,42 @@ public class GridLocation implements Comparable<GridLocation> {
 		// Setup LWRDataProvider
 		this.lWRDataProvider = new LWRDataProvider();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the row position.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The row position.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getRow() {
-		// begin-user-code
 
 		return this.row;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the column position.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The column position.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getColumn() {
-		// begin-user-code
 
 		return this.col;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -188,11 +152,8 @@ public class GridLocation implements Comparable<GridLocation> {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		GridLocation location;
@@ -215,24 +176,18 @@ public class GridLocation implements Comparable<GridLocation> {
 		// Return the retVal
 		return retVal;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declarations
 		int hash = 31;
@@ -247,25 +202,19 @@ public class GridLocation implements Comparable<GridLocation> {
 		// Return the hashCode
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(GridLocation otherObject) {
-		// begin-user-code
 
 		// If the otherObject is null, return
 		if (otherObject == null) {
@@ -278,24 +227,18 @@ public class GridLocation implements Comparable<GridLocation> {
 		this.lWRDataProvider = (LWRDataProvider) otherObject.lWRDataProvider
 				.clone();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		GridLocation location = new GridLocation(0, 0);
@@ -306,62 +249,46 @@ public class GridLocation implements Comparable<GridLocation> {
 		// Return the newly instantiated object
 		return location;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the LWRDataProvider.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param dataProvider
 	 *            <p>
 	 *            The IDataProvider implementation.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setLWRDataProvider(LWRDataProvider dataProvider) {
-		// begin-user-code
 
 		if (dataProvider != null) {
 			this.lWRDataProvider = dataProvider;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the LWRDataProvider.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The IDataProvider implementation.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRDataProvider getLWRDataProvider() {
-		// begin-user-code
 
 		return this.lWRDataProvider;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Comparable#compareTo(Object arg0)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int compareTo(GridLocation location) {
-		// begin-user-code
 		// Local Declarations
 
 		// Return the difference of the row
@@ -372,7 +299,6 @@ public class GridLocation implements Comparable<GridLocation> {
 		// are equal, this should return 0.
 		return this.col - location.col;
 
-		// end-user-code
 	}
 
 }

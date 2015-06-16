@@ -35,32 +35,23 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the Edge class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class EdgeTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of the Edge class and the
 	 * functionality inherited from ICEObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		// The expected behavior is that if the supplied ArrayList of Vertices
 		// is invalid, then the edge's default vertices become an empty list and
@@ -237,23 +228,17 @@ public class EdgeTester {
 		/* ----------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that the length of the Edge is calculated properly from the Edge's
 	 * vertices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLength() {
-		// begin-user-code
 
 		// If the edge was correctly initialized, its length should be valid.
 		// If the edge was incorrectly initialized, its length should be -1.
@@ -335,23 +320,17 @@ public class EdgeTester {
 		/* ------------------------------------ */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks Edge to ensure that it can be correctly visited by
 	 * a realization of the IMeshPartVisitor interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		IMeshPart part = new Edge();
 
@@ -372,22 +351,16 @@ public class EdgeTester {
 		// -------------------------------------------------- //
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the ability of the Edge to update when a Vertex has been updated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUpdate() {
-		// begin-user-code
 
 		// TODO - If there is functionality added to the Edge that changes
 		// some property of the edge when one of its vertices is updated, this
@@ -462,26 +435,20 @@ public class EdgeTester {
 		assertTrue(Arrays.equals(location, edge.getStartLocation()));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the Edge to persist itself to XML
 	 * and to load itself from an XML input stream.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * @throws IOException 
 	 * @throws JAXBException 
 	 * @throws NullPointerException 
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
-		// begin-user-code
 
 		// We need vertices to supply to created edges.
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
@@ -519,23 +486,17 @@ public class EdgeTester {
 		assertTrue(edge.equals(loadedEdge));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Edge to insure that its equals() and hashCode()
 	 * operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// We need vertices to supply to created edges.
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
@@ -586,23 +547,17 @@ public class EdgeTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Edge to ensure that its copy() and clone()
 	 * operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// We need vertices to supply to created edges.
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
@@ -650,6 +605,5 @@ public class EdgeTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

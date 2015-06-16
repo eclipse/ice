@@ -18,7 +18,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * A container for the material ID and group number of every polygon, as defined
  * in the MESH DATA section of a Nek5000 reafile. Example:
@@ -29,65 +28,46 @@ import javax.xml.bind.annotation.XmlRootElement;
  * <p>
  * For this Polygon, materialId = "1R", groupNum = 0.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "PolygonProperties")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PolygonProperties {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Material ID of the polygon. Must be between 1-4 chars long.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	private String materialId;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Group number of the polygon. Must be no more than 5 digits.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	private int groupNum;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A nullary constructor that sets default values.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PolygonProperties() {
-		// begin-user-code
 		materialId = "nul1";
 		groupNum = 0;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default, parameterized constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param id
 	 *            <p>
@@ -97,11 +77,8 @@ public class PolygonProperties {
 	 *            <p>
 	 *            Group number of the polygon. Must be no more than 5 digits.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PolygonProperties(String id, int group) {
-		// begin-user-code
 
 		this();
 
@@ -112,55 +89,40 @@ public class PolygonProperties {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the material ID as a string.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The material ID of the polygon.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getMaterialId() {
-		// begin-user-code
 		return materialId;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the group number as an int.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The group number of the polygon.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getGroupNum() {
-		// begin-user-code
 		return groupNum;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this PolygonProperties
 	 * and another PolygonProperties. It returns true if they are equal and
 	 * false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -169,12 +131,9 @@ public class PolygonProperties {
 	 * @return <p>
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 * 
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -196,49 +155,37 @@ public class PolygonProperties {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the PolygonProperties.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Add local hashes.
 		int hash = materialId.hashCode();
 		hash = 31 * hash + groupNum;
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the PolygonProperties using a deep
 	 * copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		PolygonProperties object = new PolygonProperties();
@@ -248,26 +195,20 @@ public class PolygonProperties {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a PolygonProperties into the
 	 * current object using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param properties
 	 *            <p>
 	 *            The Object from which the values should be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(PolygonProperties properties) {
-		// begin-user-code
 
 		// Check the parameters.
 		if (properties == null) {
@@ -278,6 +219,5 @@ public class PolygonProperties {
 		groupNum = properties.groupNum;
 
 		return;
-		// end-user-code
 	}
 }

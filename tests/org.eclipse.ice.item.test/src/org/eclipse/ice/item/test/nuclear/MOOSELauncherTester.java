@@ -13,6 +13,7 @@
 package org.eclipse.ice.item.test.nuclear;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -29,7 +31,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.nuclear.MOOSELauncher;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
@@ -38,16 +42,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class tests the MOOSELauncher Item to make sure that it can correctly
  * create its Form and process a modified Form.
- * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MOOSELauncherTester {
 
@@ -61,22 +59,17 @@ public class MOOSELauncherTester {
 	 */
 	private static IOService service;
 
+	/**
+	 * A MOOSE Launcher used for testing.
+	 */
 	private static MOOSELauncher launcher;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets up the workspace. It copies the necessary MOOSE data
 	 * files into ${workspace}/MOOSE.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeTests() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -156,37 +149,57 @@ public class MOOSELauncherTester {
 		launcher.setIOService(service);
 
 		return;
-		// end-user-code
 	}
 
 	@Test
 	public void checkDynamicFileGeneration() {
+		
 		// Local Declarations
-
-		DataComponent fileDataComp = (DataComponent) launcher.getForm()
-				.getComponent(1);
-		assertTrue(fileDataComp.retrieveEntry("Input File").setValue(
-				"input_coarse10.i"));
+		DataComponent fileDataComp = 
+				(DataComponent) launcher.getForm().getComponent(1);
+		assertTrue(fileDataComp
+				.retrieveEntry("Input File").setValue("input_coarse10.i"));
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		assertEquals(4, fileDataComp.retrieveAllEntries().size());
 
 		// Now change the file name
-		assertTrue(fileDataComp.retrieveEntry("Input File").setValue(
-				"input_coarse10_filetest.i"));
+		assertTrue(fileDataComp
+				.retrieveEntry("Input File").setValue("input_coarse10_filetest.i"));
 
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		assertEquals(3, fileDataComp.retrieveAllEntries().size());
-
+	}
+	
+	@Test
+	public void checkCustomAppEntry() {
+		
+		// Local declarations
+		DataComponent execDataComp = 
+				(DataComponent) launcher.getForm().getComponent(5);
+		final String customExecName = "Custom executable name";
+		Entry standardExecEntry = execDataComp.retrieveEntry("Executable");
+		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
+		
+		// Verify the DataComponent that holds the executable Entries
+		assertEquals(execDataComp.retrieveAllEntries().size(), 2);
+		assertNotNull(standardExecEntry);
+		assertNotNull(customExecEntry);
+		
+		// Verify the standard Entry contains an option for a custom app
+		assertTrue(standardExecEntry.getAllowedValues().contains(customExecName));
+		
+		// Verify the custom app Entry's type
+		assertEquals(customExecEntry.getValueType(), AllowedValueType.Undefined);
+		
+		return;
 	}
 
 	/**
@@ -195,11 +208,10 @@ public class MOOSELauncherTester {
 	@AfterClass
 	public static void afterTests() {
 
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		try {
-			// Close and delete the fake workspace created
+			// Close and delete the fake project space created
 			projectSpace.close(null);
-			workspaceRoot.delete(true, true, null);
+			projectSpace.delete(true, true, null);
 			
 			// Nullify the IO service
 			service = null;

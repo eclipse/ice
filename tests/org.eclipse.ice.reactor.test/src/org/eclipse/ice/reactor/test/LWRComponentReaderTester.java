@@ -39,24 +39,16 @@ import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
- * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Eric J. Lingerfelt
  */
 public class LWRComponentReaderTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/**
@@ -458,14 +450,10 @@ public class LWRComponentReaderTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkReading() {
-		// begin-user-code
 
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
@@ -486,6 +474,5 @@ public class LWRComponentReaderTester {
 		// Check values here
 		assertTrue(createPWReactor().equals(reactor));
 
-		// end-user-code
 	}
 }

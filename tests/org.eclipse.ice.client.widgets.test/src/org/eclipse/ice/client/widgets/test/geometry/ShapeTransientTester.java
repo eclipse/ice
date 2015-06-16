@@ -22,30 +22,21 @@ import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Checks ShapeTransient
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Andrew P. Belt
  */
 public class ShapeTransientTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that ShapeTransient can correctly store a reference to an IShape
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkStorage() {
-		// begin-user-code
 
 		IShape sphere = new PrimitiveShape(ShapeType.Sphere);
 		ShapeTransient shapeTransient = new ShapeTransient(sphere);
@@ -59,6 +50,5 @@ public class ShapeTransientTester {
 		ShapeTransient shapeTransient2 = new ShapeTransient(null);
 		assertNull(shapeTransient2.getShape());
 
-		// end-user-code
 	}
 }

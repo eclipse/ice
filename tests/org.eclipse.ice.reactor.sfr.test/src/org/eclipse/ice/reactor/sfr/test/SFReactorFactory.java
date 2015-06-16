@@ -48,7 +48,6 @@ public class SFReactorFactory {
 			int assemblySize, int nAssemblies, int nAssemblyComponents,
 			int nAxialLevels, long seed, boolean randomData,
 			boolean randomLocations) {
-		// begin-user-code
 
 		// Check the sizes. If invalid, set the defaults.
 		if (reactorSize <= 0) {
@@ -361,7 +360,6 @@ public class SFReactorFactory {
 		}
 
 		return reactor;
-		// end-user-code
 	}
 
 	private void addDataToComponent(SFRComponent component,

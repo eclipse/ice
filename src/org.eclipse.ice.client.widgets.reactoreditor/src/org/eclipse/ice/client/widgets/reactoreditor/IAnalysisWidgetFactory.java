@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-
 import java.util.List;
 
 import org.eclipse.jface.wizard.IWizard;
@@ -47,10 +45,6 @@ public interface IAnalysisWidgetFactory {
 	 * @param viewName
 	 *            The name of the view. These should come from
 	 *            getAvailableViews().
-	 * @param parent
-	 *            The parent Composite of the new AVC.
-	 * @param parentATC
-	 *            The parent AnalysisToolComposite of the new AVC.
 	 * @param dataSource
 	 *            The data source, e.g., "Input" or "Reference", for the new
 	 *            AVC.

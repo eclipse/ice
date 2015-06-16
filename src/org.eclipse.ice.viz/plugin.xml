@@ -32,9 +32,9 @@
             name="VisIt Editor">
       </editor>
       <editor
-            class="org.eclipse.ice.viz.plotviewer.CSVPlotEditor"
+            class="org.eclipse.ice.viz.service.csv.CSVPlotEditor"
             default="false"
-            id="org.eclipse.ice.viz.plotviewer.CSVPlotEditor"
+            id="org.eclipse.ice.viz.service.csv.CSVPlotEditor"
             name="CSV Plot Editor">
       </editor>
    </extension>
@@ -51,7 +51,7 @@
          </view>
          <view
                allowMultiple="false"
-               class="org.eclipse.ice.viz.plotviewer.CSVPlotViewer"
+               class="org.eclipse.ice.viz.csv.viewer.CSVPlotViewer"
                fastViewWidthRatio="0.23f"
                id="org.eclipse.ice.viz.plotviewer.CSVPlotViewer"
                name="CSV Plot Viewer"
@@ -68,7 +68,7 @@
          <!-- CSV Data Table View -->
          <view
                allowMultiple="false"
-               class="org.eclipse.ice.viz.plotviewer.CSVDataTableViewer"
+               class="org.eclipse.ice.viz.csv.viewer.CSVDataTableViewer"
                fastViewWidthRatio="0.77f"
                id="org.eclipse.ice.viz.plotviewer.CSVDataTableViewer"
                name="CSV Data View"

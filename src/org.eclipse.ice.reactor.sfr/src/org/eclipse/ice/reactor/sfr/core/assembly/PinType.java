@@ -17,71 +17,53 @@ package org.eclipse.ice.reactor.sfr.core.assembly;
  * a PinAssembly. Currently, the PinType corresponds to an attribute of a
  * PinAssembly. <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public enum PinType {
 	/**
 	 * <!-- begin-UML-doc --> A primary control pin. <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	PrimaryControl("Primary Control", 0),
 	/**
 	 * <!-- begin-UML-doc --> A secondary (shutdown) control pin. <!--
 	 * end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	SecondaryControl("Secondary Control", 1),
 	/**
 	 * <!-- begin-UML-doc --> An inner core pin containing burnable fuel. <!--
 	 * end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	InnerFuel("Inner Fuel", 2),
 	/**
 	 * <!-- begin-UML-doc --> An outer core pin containing burnable fuel. <!--
 	 * end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	OuterFuel("Outer Fuel", 3),
 	/**
 	 * <!-- begin-UML-doc --> A shielding pin. <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	Shield("Shield", 4),
 	/**
 	 * <!-- begin-UML-doc --> A pin for conducting materials testing. <!--
 	 * end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	MaterialTest("Material Test", 5),
 	/**
 	 * <!-- begin-UML-doc --> A pin for conducting fuels testing. <!--
 	 * end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	FuelTest("Fuel Test", 6),
 	/**
 	 * <!-- begin-UML-doc --> A pin containing fertile blanket fuel. <!--
 	 * end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	BlanketFuel("Blanket Fuel", 7);
 
@@ -89,16 +71,12 @@ public enum PinType {
 	 * <!-- begin-UML-doc --> A user-friendly String for displaying an PinType
 	 * value. <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private final String name;
 	/**
 	 * <!-- begin-UML-doc --> An ID used to distinguish between enum values in
 	 * lieu of using their String names. <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private final int id;
 
@@ -110,11 +88,8 @@ public enum PinType {
 	 *            A string representation of the pin type.
 	 * @param id
 	 *            A unique ID for the pin type.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private PinType(String name, int id) {
-		// begin-user-code
 		// Set the user-friendly name String for this pin type.
 		this.name = name;
 
@@ -122,7 +97,6 @@ public enum PinType {
 		this.id = id;
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -131,14 +105,10 @@ public enum PinType {
 	 * end-UML-doc -->
 	 * 
 	 * @return Returns a string representation of the pin type.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public String toString() {
-		// begin-user-code
 		return name;
-		// end-user-code
 	}
 
 	/**
@@ -147,13 +117,9 @@ public enum PinType {
 	 * -->
 	 * 
 	 * @return The Integer ID for the enum value.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getId() {
-		// begin-user-code
 		return this.id;
-		// end-user-code
 	}
 
 	/**
@@ -165,11 +131,8 @@ public enum PinType {
 	 *            The integer ID to convert to a PinType value.
 	 * @return The PinType value for the provided ID, or PinType.CoreFuel if the
 	 *         ID is invalid.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static PinType valueOf(int id) {
-		// begin-user-code
 
 		// The default return value is InnerFuel.
 		PinType value = InnerFuel;
@@ -203,6 +166,5 @@ public enum PinType {
 
 		// Return the enum value.
 		return value;
-		// end-user-code
 	}
 }

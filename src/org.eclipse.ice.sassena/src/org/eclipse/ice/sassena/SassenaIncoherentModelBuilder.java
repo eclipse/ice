@@ -18,53 +18,36 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
- * This class builds the Sassena Incoherent Model Builder. It inherits its operations
- * from ItemBuilder.
- * </p>
- * <!-- end-UML-doc -->
+ * This class builds the Sassena Incoherent Model Builder. It inherits its
+ * operations from ItemBuilder.
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class SassenaIncoherentModelBuilder implements ItemBuilder {
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public String getItemName() {
 		return "Sassena Incoherent Model";
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemType()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public ItemType getItemType() {
 		return ItemType.Model;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#build(Interface projectSpace)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public Item build(IProject projectSpace) {
-		SassenaIncoherentModel sassena = new SassenaIncoherentModel(projectSpace);
+		SassenaIncoherentModel sassena = new SassenaIncoherentModel(
+				projectSpace);
 		sassena.setItemBuilderName(getItemName());
 		return sassena;
 	}

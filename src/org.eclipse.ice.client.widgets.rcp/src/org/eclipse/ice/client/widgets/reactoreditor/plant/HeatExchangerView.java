@@ -106,8 +106,7 @@ public class HeatExchangerView extends PipeView {
 	 * {@link AbstractPlantView#geometry}.
 	 * 
 	 * @param name
-	 *            The name of the AbstractView's node,
-	 *            {@link AbstractView#viewNode}.
+	 *            The name of the view's root node.
 	 * @param material
 	 *            The jME3 Material that should be used for the view's geometry.
 	 *            Must not be null.

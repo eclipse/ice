@@ -38,18 +38,20 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -84,9 +86,14 @@ public class VisitPlotViewer extends ViewPart implements
 	private final Map<Integer, Entry> entryMap;
 
 	/**
-	 * A List of all plotted Entries.
+	 * A List of all plot-able Entries.
 	 */
-	private final List<Entry> plottedEntries;
+	private final List<Entry> plotEntries;
+
+	/**
+	 * The current Entry that is plotted, or null if none is plotted.
+	 */
+	private Entry plottedEntry;
 
 	/**
 	 * A List containing the ICEResource for each of the currently plotted
@@ -155,7 +162,7 @@ public class VisitPlotViewer extends ViewPart implements
 		entryMap = new HashMap<Integer, Entry>();
 
 		// Initialize the lists for the selected plots.
-		plottedEntries = new ArrayList<Entry>();
+		plotEntries = new ArrayList<Entry>();
 		entryResources = new ArrayList<VizResource>();
 
 		// Initialize the Map of variable types to plot types
@@ -163,8 +170,8 @@ public class VisitPlotViewer extends ViewPart implements
 		varTypePlotTypeMap.put("Materials", new String[] { "Boundary",
 				"FilledBoundary" });
 		varTypePlotTypeMap.put("Meshes", new String[] { "Mesh" });
-		varTypePlotTypeMap.put("Scalars", new String[] { "Contour",
-				"Pseudocolor", "Volume" });
+		varTypePlotTypeMap.put("Scalars", new String[] { "Pseudocolor",
+				"Contour", "Volume" });
 		varTypePlotTypeMap.put("Vectors", new String[] { "Vector" });
 
 		return;
@@ -199,18 +206,11 @@ public class VisitPlotViewer extends ViewPart implements
 		plotTypeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false));
 		// Add the selection listener
-		plotTypeCombo.addSelectionListener(new SelectionListener() {
-
+		plotTypeCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selectedPlotType = plotTypeCombo.getText();
-				drawSelection();
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				selectedPlotType = plotTypeCombo.getText();
-				drawSelection();
+				drawSelection(new StructuredSelection(plottedEntry));
 			}
 		});
 
@@ -223,7 +223,7 @@ public class VisitPlotViewer extends ViewPart implements
 
 		// Initialize the TreeViewer.
 		plotTreeViewer = new TreeViewer(partComposite, SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER);
+				| SWT.V_SCROLL | SWT.BORDER | SWT.MULTI);
 		// The TreeViewer should grab all horizontal AND vertical space.
 		plotTreeViewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -251,25 +251,30 @@ public class VisitPlotViewer extends ViewPart implements
 	/**
 	 * Refreshes the content in the {@link #plotTreeViewer}.
 	 */
-	private void refreshPlotViewer() {
+	private void refreshPlotTreeViewer() {
 		// Sync with the display
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				// If possible, reset the plotTreeViewer's input.
-				if (plotTreeViewer != null) {
+		if (plotTreeViewer != null) {
+			final TreeViewer plotTreeViewer = this.plotTreeViewer;
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					if (plotTreeViewer != null) {
+						// Reset the input for the plotTreeViewer. The viewer
+						// just takes an array of Entry objects.
+						plotTreeViewer.setInput(plotEntries.toArray());
 
-					System.out.println("VisitPlotViewer message: "
-							+ "Refreshing TreeViewer.");
+						plotTreeViewer.refresh();
 
-					// Reset the input for the plotTreeViewer. The viewer just
-					// takes an array of Entry objects.
-					plotTreeViewer.setInput(plottedEntries.toArray());
-
-					plotTreeViewer.refresh();
-					plotTreeViewer.getTree().redraw();
+						// If possible, force a redraw of the TreeViewer's Tree.
+						Tree plotTree = plotTreeViewer.getTree();
+						if (plotTree != null && !plotTree.isDisposed()) {
+							plotTree.redraw();
+						}
+					}
+					return;
 				}
-			}
-		});
+			});
+		}
 
 		return;
 	}
@@ -345,9 +350,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 *         set.
 	 */
 	public ResourceComponent getResourceComponent() {
-		// begin-user-code
 		return resourceComponent;
-		// end-user-code
 	}
 
 	/**
@@ -362,7 +365,7 @@ public class VisitPlotViewer extends ViewPart implements
 		// Create a delete button and add it to the tool bar
 		deletePlotAction = new DeletePlotAction(this);
 		toolBarManager.add(deletePlotAction);
-		deletePlotAction.setEnabled(!plottedEntries.isEmpty());
+		deletePlotAction.setEnabled(!plotEntries.isEmpty());
 
 		// Create an add button and add it to the tool bar
 		addPlotAction = new AddVisitPlotAction(this);
@@ -494,7 +497,7 @@ public class VisitPlotViewer extends ViewPart implements
 				&& entry == entryMap.get(entry.getId())) {
 
 			// Add this entry to our bookkeeping.
-			plottedEntries.add(entry);
+			plotEntries.add(entry);
 			entryResources.add(resource);
 
 			// Mark the entry as being plotted.
@@ -504,7 +507,7 @@ public class VisitPlotViewer extends ViewPart implements
 					+ entry.getName() + "\".");
 
 			// Update the plotViewer.
-			refreshPlotViewer();
+			refreshPlotTreeViewer();
 		}
 
 		return;
@@ -522,8 +525,8 @@ public class VisitPlotViewer extends ViewPart implements
 		if (entry != null && "true".equals(entry.getValue())) {
 			// Get the index of the entry in the list of plotted entries.
 			int index = -1;
-			for (int i = 0; i < plottedEntries.size(); i++) {
-				if (entry == plottedEntries.get(i)) {
+			for (int i = 0; i < plotEntries.size(); i++) {
+				if (entry == plotEntries.get(i)) {
 					index = i;
 					break;
 				}
@@ -532,7 +535,7 @@ public class VisitPlotViewer extends ViewPart implements
 			if (index > -1) {
 				// Remove the resource and entry from our bookkeeping.
 				entryResources.remove(index);
-				plottedEntries.remove(index);
+				plotEntries.remove(index);
 
 				System.out.println("VisitPlotViewer message: Removing plot \""
 						+ entry.getName() + "\".");
@@ -540,20 +543,20 @@ public class VisitPlotViewer extends ViewPart implements
 				// Mark the plot as not plotted.
 				entry.setValue("false");
 
-				// FIXME - This definitely needs a better way to access the
-				// VisIt widget.
-				IEditorPart editorPart = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getActivePage()
-						.getActiveEditor();
-				VisitEditor editor = (VisitEditor) editorPart;
-				VisItSwtWidget widget = editor.getVizWidget();
-				widget.activate();
-
-				// Delete an existing plot
-				widget.getViewerMethods().deleteActivePlots();
-
 				// Update the plotViewer.
-				refreshPlotViewer();
+				refreshPlotTreeViewer();
+
+				// If the deleted plot was the plotted one, we need to clear the
+				// plot view.
+				if (entry == plottedEntry) {
+					// Unset the plotted Entry.
+					plottedEntry = null;
+
+					// Activate the VisIt widget so we can clear the plot.
+					VisItSwtWidget widget = getPlotWidget();
+					widget.activate();
+					widget.getViewerMethods().deleteActivePlots();
+				}
 			}
 		}
 		return;
@@ -571,8 +574,8 @@ public class VisitPlotViewer extends ViewPart implements
 		if (entry != null && "true".equals(entry.getValue())) {
 			// Get the index of the entry in the list of plotted entries.
 			int index = -1;
-			for (int i = 0; i < plottedEntries.size(); i++) {
-				if (entry == plottedEntries.get(i)) {
+			for (int i = 0; i < plotEntries.size(); i++) {
+				if (entry == plotEntries.get(i)) {
 					index = i;
 					break;
 				}
@@ -584,16 +587,12 @@ public class VisitPlotViewer extends ViewPart implements
 				System.out.println("VisitPlotViewer message: Drawing plot \""
 						+ entry.getName() + "\"." + entry.getParent());
 
-				// FIXME - This definitely needs a better way to access the
-				// VisIt widget.
-				IEditorPart editorPart = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getActivePage()
-						.getActiveEditor();
-				VisitEditor editor = (VisitEditor) editorPart;
-				VisItSwtWidget widget = editor.getVizWidget();
-				widget.activate();
+				// Store a reference to the plotted Entry.
+				plottedEntry = entry;
 
-				// Delete an existing plot
+				// Activate the VisIt widget so we can clear the plot.
+				VisItSwtWidget widget = getPlotWidget();
+				widget.activate();
 				widget.getViewerMethods().deleteActivePlots();
 
 				// Add the plot to the widget.
@@ -650,20 +649,15 @@ public class VisitPlotViewer extends ViewPart implements
 	/**
 	 * Draws all plots selected in {@link #plotTreeViewer}.
 	 */
-	public void drawSelection() {
-		// Get the selection from the plotTreeViewer. It should at least be
-		// an IStructuredSelection (a parent interface of TreeSelections).
-		ISelection selection = plotTreeViewer.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+	public void drawSelection(IStructuredSelection selection) {
+		if (selection != null && !selection.isEmpty()) {
 
 			// Create a List of entries to be plotted.
 			List<Entry> entries = new ArrayList<Entry>();
 
 			// Loop over the selected elements and add any Entry to the List
 			// of entries to be plotted.
-			for (Iterator<?> iter = structuredSelection.iterator(); iter
-					.hasNext();) {
+			for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
 				Object object = iter.next();
 				if (object instanceof Entry) {
 					entries.add((Entry) object);
@@ -676,7 +670,6 @@ public class VisitPlotViewer extends ViewPart implements
 				drawPlot(entry);
 			}
 		}
-
 		return;
 	}
 
@@ -702,7 +695,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * 
 	 * @param inResource
 	 *            The VizResource in the {@link VizFileViewer} to set this
-	 *            object's {@link resource} to.
+	 *            object's {@link #resource} to.
 	 */
 	public void setResource(VizResource inResource) {
 		// Reset the VizResource
@@ -730,9 +723,6 @@ public class VisitPlotViewer extends ViewPart implements
 		// Update the plot type selection Combo.
 		updatePlotTypeCombo();
 
-		// Draw the selection on single clicks
-		drawSelection();
-
 		// Enable the DeletePlotAction if possible.
 		ISelection selection = event.getSelection();
 		if (selection instanceof IStructuredSelection) {
@@ -754,13 +744,10 @@ public class VisitPlotViewer extends ViewPart implements
 	 *            The DoubleClickEvent that fired this method.
 	 */
 	public void doubleClick(DoubleClickEvent event) {
-
-		// FIXME Consider using double-clicks to draw in a new window. For now,
-		// just draw in the same window.
-		// Update the plot type selection Combo.
-		updatePlotTypeCombo();
-
-		drawSelection();
+		ISelection selection = event.getSelection();
+		if (selection instanceof IStructuredSelection) {
+			drawSelection((IStructuredSelection) selection);
+		}
 	}
 
 	// ----------------------------------------- //
@@ -802,4 +789,15 @@ public class VisitPlotViewer extends ViewPart implements
 		}
 	}
 
+	/**
+	 * Gets the widget used to render the plot.
+	 * 
+	 * @return The VisItSwtWidget in the Plot View/Editor.
+	 */
+	private VisItSwtWidget getPlotWidget() {
+		IEditorPart editorPart = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		VisitEditor editor = (VisitEditor) editorPart;
+		return editor.getVizWidget();
+	}
 }

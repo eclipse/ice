@@ -26,7 +26,6 @@ public class GridManagerTester {
 
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Some size values.
 		int defaultSize = Integer.MAX_VALUE;
@@ -101,12 +100,10 @@ public class GridManagerTester {
 		/* --------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	@Test
 	public void checkComponentAddRem() {
-		// begin-user-code
 
 		// Some size values.
 		int size = 42;
@@ -347,19 +344,15 @@ public class GridManagerTester {
 		/* --------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		int size = 257;
 
@@ -410,19 +403,15 @@ public class GridManagerTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		int size = 720;
 
@@ -466,6 +455,5 @@ public class GridManagerTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 }

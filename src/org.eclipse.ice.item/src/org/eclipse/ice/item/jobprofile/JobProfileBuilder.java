@@ -18,22 +18,15 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class JobProfileBuilder implements ItemBuilder {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A handle to the JobProfile created by the builder.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private JobProfile jobProfile;
 
@@ -41,39 +34,28 @@ public class JobProfileBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getItemName() {
-		// begin-user-code
 
 		return "Job Profile";
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#getItemType()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ItemType getItemType() {
-		// begin-user-code
 
 		return ItemType.Model;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Item build(IProject projectSpace) {
-		// begin-user-code
 		// Create a new job profile
 		JobProfile item = new JobProfile(projectSpace);
 		// Set the name for the builder
@@ -81,6 +63,5 @@ public class JobProfileBuilder implements ItemBuilder {
 		// Return the item
 		return item;
 
-		// end-user-code
 	}
 }

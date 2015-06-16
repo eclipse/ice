@@ -104,7 +104,7 @@ public class PlantMaterialFactory {
 	}
 
 	/**
-	 * Disposes of all materials for supported {@link PlantComponents} and
+	 * Disposes of all materials for supported {@link PlantComponent}s and
 	 * removes them from the associated <code>PlantAppState</code>.
 	 */
 	public void disposeMaterials() {

@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
@@ -83,6 +84,13 @@ public class YAMLTester {
 		Yaml yaml = new Yaml();
 		ArrayList data = (ArrayList) yaml.load(input);
 		Map dataMap = (Map) data.get(0);
+
+		// Close the input stream reading from the file.
+		try {
+			input.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		// Dump the file for review
 		// String output = yaml.dump(data);

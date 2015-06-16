@@ -27,31 +27,22 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the SFRPin class.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class SFRPinTester {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests constructors and default values for SFRPin class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// A pin to test.
 		SFRPin pin;
@@ -357,23 +348,17 @@ public class SFRPinTester {
 		/* --------------------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests getters and setters for the location, fillGas, cladding and
 	 * materialBlocks attributes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkAttributes() {
-		// begin-user-code
 
 		SFRPin pin = new SFRPin();
 
@@ -521,19 +506,15 @@ public class SFRPinTester {
 		/* ------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		SFRPin object = new SFRPin();
@@ -580,19 +561,15 @@ public class SFRPinTester {
 		assertFalse(object.hashCode() == unequalObject.hashCode());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Initialize objects for testing.
 		SFRPin object = new SFRPin();
@@ -632,7 +609,6 @@ public class SFRPinTester {
 		assertTrue(copy.equals(clone));
 
 		return;
-		// end-user-code
 	}
 
 }

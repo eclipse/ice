@@ -22,45 +22,32 @@ import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.Ring;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The IncoreInstrument class represents instruments (or detectors) that are
  * used for power distribution monitoring inside of a PWReactor. This class
  * contains a ring of data designed to be the "thimble" for material composition
  * on this class.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class IncoreInstrument extends LWRComponent {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * An empty thimble tube used a boundary between the detector and the
 	 * reactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Ring thimble;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The nullary Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IncoreInstrument() {
-		// begin-user-code
 		// set default values
 		this.setName("Instrument 1");
 		this.setDescription("Default Instrument");
@@ -70,15 +57,12 @@ public class IncoreInstrument extends LWRComponent {
 
 		this.HDF5LWRTag = HDF5LWRTagType.INCORE_INSTRUMENT;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -89,73 +73,53 @@ public class IncoreInstrument extends LWRComponent {
 	 *            An empty thimble tube used a boundary between the detector and
 	 *            the reactor.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public IncoreInstrument(String name, Ring thimble) {
-		// begin-user-code
 		// call nullary constructor
 		this();
 		this.setName(name);
 		this.setThimble(thimble);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets an empty thimble tube used a boundary between the detector and the
 	 * reactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param thimble
 	 *            <p>
 	 *            An empty thimble tube used a boundary between the detector and
 	 *            the reactor.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setThimble(Ring thimble) {
-		// begin-user-code
 		// if thimble is not Null set value
 		if (thimble != null) {
 			this.thimble = thimble;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an empty thimble tube used a boundary between the detector and
 	 * the reactor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         An empty thimble tube used a boundary between the detector and
 	 *         the reactor.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring getThimble() {
-		// begin-user-code
 		return this.thimble;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
-		// begin-user-code
 
 		// Get the children in super
 		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
@@ -171,25 +135,19 @@ public class IncoreInstrument extends LWRComponent {
 		children.add(this.thimble);
 
 		return children;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns an ArrayList of IHdfReadable child objects. If
 	 * this IHdfReadable has no IHdfReadable child objects, then null is
 	 * returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iHdfReadable
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
-		// begin-user-code
 
 		// If the child is null or not an instance of LWRComponent, then return
 		// false.
@@ -209,17 +167,14 @@ public class IncoreInstrument extends LWRComponent {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -228,11 +183,8 @@ public class IncoreInstrument extends LWRComponent {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 		IncoreInstrument instrument;
 		boolean retVal = false;
 
@@ -257,24 +209,18 @@ public class IncoreInstrument extends LWRComponent {
 		// Return retVal
 		return retVal;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declarations
 		int hash = super.hashCode();
@@ -285,25 +231,19 @@ public class IncoreInstrument extends LWRComponent {
 		// Return the hash
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(IncoreInstrument otherObject) {
-		// begin-user-code
 
 		// If null, return
 		if (otherObject == null) {
@@ -316,24 +256,18 @@ public class IncoreInstrument extends LWRComponent {
 		// Copy local contents
 		this.thimble = (Ring) otherObject.thimble.clone();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		IncoreInstrument instrument = new IncoreInstrument();
@@ -344,28 +278,21 @@ public class IncoreInstrument extends LWRComponent {
 		// Return newly instantiated object
 		return instrument;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation accepts an ILWRComponentVisitor that can be visit the
 	 * LWRComponent to ascertain its type and perform various type-specific
 	 * operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(ILWRComponentVisitor visitor) {
-		// begin-user-code
 		visitor.visit(this);
-		// end-user-code
 	}
 }

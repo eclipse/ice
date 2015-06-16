@@ -19,39 +19,30 @@ import org.eclipse.ice.kdd.kddmath.IDataMatrix;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The SubStrategyFactory is responsible for returning to the GodfreyStrategy
  * the correct user-specified GodfreySubStrategy.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class SubStrategyFactory {
 
 	private PinPowerDifference pinDiff;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method returns the requested GodfreySubStrategy by string name.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GodfreySubStrategy createSubStrategy(String name,
 			HashMap<Integer, ArrayList<IDataMatrix>> pinPowers,
 			HashMap<Integer, ArrayList<IDataMatrix>> refPinPowers,
 			HashMap<Integer, ArrayList<KDDMatrix>> weights,
 			HashMap<String, String> props) {
-		// begin-user-code
 		if ("Pin Power Difference".equals(name)) {
 			pinDiff = new PinPowerDifference(pinPowers, refPinPowers, props);
 			return pinDiff;
@@ -66,6 +57,5 @@ public class SubStrategyFactory {
 		} else {
 			return null;
 		}
-		// end-user-code
 	}
 }

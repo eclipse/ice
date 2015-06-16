@@ -32,58 +32,41 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ClusterKDDMatrix is a subclass of KDDMatrix that provides a cluster
  * method that produces a set of Clusters.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ClusterKDDMatrix extends KDDMatrix {
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DistanceMeasure distanceMeasure;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the set of clusters after KMeans clustering is performed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected ArrayList<Cluster> clusters;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor, takes a valid set of IData and constructs this matrix.
 	 * Initializes a EuclideanDistanceMeasure by default.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param data
 	 * @throws IllegalArgumentException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ClusterKDDMatrix(IDataProvider data) throws IllegalArgumentException {
-		// begin-user-code
 		super(data);
 		clusters = new ArrayList<Cluster>();
 		distanceMeasure = new EuclideanDistanceMeasure();
-		// end-user-code
 	}
 
 	public ClusterKDDMatrix(ArrayList<Double> elements, int nRows, int nCols) {
@@ -93,30 +76,23 @@ public class ClusterKDDMatrix extends KDDMatrix {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor, for injecting a realization of the DistanceMeasure
 	 * interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param data
 	 * @param measure
 	 * @throws IllegalArgumentException
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ClusterKDDMatrix(IDataProvider data, DistanceMeasure measure)
 			throws IllegalArgumentException {
-		// begin-user-code
 		super(data);
 		distanceMeasure = measure;
 		clusters = new ArrayList<Cluster>();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method performs a KMeans cluster algorithm on this matrix-structured
 	 * data set. It produces an ArrayList of Clusters, each holding a map of
@@ -125,15 +101,11 @@ public class ClusterKDDMatrix extends KDDMatrix {
 	 * N. It takes as argument the number of cluster centroids to produce, as
 	 * well as the number of iterations to use in refining the clusters.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param nClusters
 	 * @param nIterations
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void cluster(int nClusters, int nIterations) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<KDDMatrix> centroids = new ArrayList<KDDMatrix>();
@@ -215,115 +187,79 @@ public class ClusterKDDMatrix extends KDDMatrix {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the largest element in this matrix.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double getMaxMatrixElement() {
-		// begin-user-code
 		return Collections.max(elements);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the smallest element in this matrix
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Double getMinMatrixElement() {
-		// begin-user-code
 		return Collections.min(elements);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the number of Clusters.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfClusters() {
-		// begin-user-code
 		return clusters.size();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the cluster mean vectors.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<KDDMatrix> getClusterMeans() {
-		// begin-user-code
 		ArrayList<KDDMatrix> retMeans = new ArrayList<KDDMatrix>();
 		for (Cluster c : clusters) {
 			retMeans.add(c.getClusterMean(nCols));
 		}
 		return retMeans;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method allows this ClusterKDDMatrix to perform a multi-dimensional
 	 * scaling algorithm to put the clustered data in a form suitable for
 	 * visualization. It takes the number of dimensions to visualize the data
 	 * in, which can be one, two, or three.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param dimensions
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void scaleData(int dimensions) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Plot this data and return the URI to the corresponding plot.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public URI plot() {
-		// begin-user-code
 		// Currently we are just gonna write the data
 		// to file and let ICE plot it as it sees fit
 
@@ -395,65 +331,46 @@ public class ClusterKDDMatrix extends KDDMatrix {
 
 		// Return the URI.
 		return file.getLocationURI();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method indicates whether or not this matrix has been clustered.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean isClustered() {
-		// begin-user-code
 		return (!clusters.isEmpty());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the number of elements in the cluster indexed by the argument.
 	 * Returns -1 if invalid index.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param index
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumberOfClusterElements(int index) {
-		// begin-user-code
 		if (index >= clusters.size()) {
 			return -1;
 		}
 
 		return clusters.get(index).numberOfElements();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ClusterKDDMatrix() {
-		// begin-user-code
 		super();
 		clusters = new ArrayList<Cluster>();
 		distanceMeasure = new EuclideanDistanceMeasure();
-		// end-user-code
 	}
 
 	@Override

@@ -21,7 +21,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TableComponent;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The JobProfileForm is a subclass of Form that is specialized to work with the
  * JobProfile Item. It contains two Data Components ("Execution Information" and
@@ -492,25 +491,17 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  * <span style="color:#000000;font-family:"Courier New";">group=Data
  * Files</span>
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class JobProfileForm extends Form {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public JobProfileForm() {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent exeInfo = null;
@@ -878,6 +869,5 @@ public class JobProfileForm extends Form {
 		// Add rowTemplate to table
 		dataFiles.setRowTemplate(rowTemplate2);
 
-		// end-user-code
 	}
 }

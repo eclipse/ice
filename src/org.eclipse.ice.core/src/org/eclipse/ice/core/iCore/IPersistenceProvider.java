@@ -17,24 +17,18 @@ import java.util.ArrayList;
 import org.eclipse.ice.item.Item;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * An interface designed for item persistence within ICE.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public interface IPersistenceProvider {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Persists an item. Returns true if the operation was successful. False
 	 * otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param item
 	 *            <p>
@@ -43,18 +37,14 @@ public interface IPersistenceProvider {
 	 * @return <p>
 	 *         Returns true if the operation was successful. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean persistItem(Item item);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Loads the specified item keyed on the ID. Returns the item, or null if an
 	 * error was encountered.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param itemID
 	 *            <p>
@@ -63,18 +53,14 @@ public interface IPersistenceProvider {
 	 * @return <p>
 	 *         The returned item.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Item loadItem(int itemID);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deletes an item from the persistence provider. Returns true if the
 	 * operation was successful. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param item
 	 *            <p>
@@ -83,17 +69,13 @@ public interface IPersistenceProvider {
 	 * @return <p>
 	 *         True if successful. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean deleteItem(Item item);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Updates an item in the persistence unit.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param item
 	 *            <p>
@@ -102,23 +84,17 @@ public interface IPersistenceProvider {
 	 * @return <p>
 	 *         Returns true if successful. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean updateItem(Item item);
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns all the Items in the persistence piece.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The list of items.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Item> loadItems();
 }

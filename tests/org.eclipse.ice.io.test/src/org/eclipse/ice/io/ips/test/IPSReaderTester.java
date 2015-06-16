@@ -25,8 +25,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -35,16 +41,69 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.ips.IPSReader;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Tests the methods of the IPSReader class.  
  * 
- * @author bzq
+ * @author Andrew Bennett
  *
  */
 public class IPSReaderTester {
+	/**
+	 * The project space used to create the workspace for the tests.
+	 */
+	private static IProject projectSpace;
 
+	/**
+	 * 
+	 */
+	@BeforeClass
+	public static void beforeTests() {
+
+		// Local Declarations
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IProject project = null;
+		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "caebatTesterWorkspace";
+		// Enable Debugging
+		System.setProperty("DebugICE", "");
+
+		// Setup the project
+		try {
+			// Get the project handle
+			IPath projectPath = new Path(userDir + separator + ".project");
+			// Create the project description
+			IProjectDescription desc = ResourcesPlugin.getWorkspace()
+			                    .loadProjectDescription(projectPath);
+			// Get the project handle and create it
+			project = workspaceRoot.getProject(desc.getName());
+			// Get the project handle and create it
+			project = workspaceRoot.getProject(desc.getName());
+			// Create the project if it doesn't exist
+			if (!project.exists()) {
+				project.create(desc, new NullProgressMonitor());
+			}
+			// Open the project if it is not already open
+			if (project.exists() && !project.isOpen()) {
+			   project.open(new NullProgressMonitor());
+			}
+			// Refresh the workspace
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			// Catch exception for creating the project
+			e.printStackTrace();
+			fail();
+		}
+
+		// Set the global project reference.
+		projectSpace = project;
+
+		return;
+	}
+	
 	/**
 	 * Tests the IPSReader
 	 */
@@ -52,13 +111,14 @@ public class IPSReaderTester {
 	public void checkIPSReader() {
 		
 		// Set up where to look
+		IProject project = projectSpace;
 		String separator = System.getProperty("file.separator");
 		String filePath = System.getProperty("user.home") + separator + "ICETests" 
 				+ separator + "caebatTesterWorkspace" + separator 
 				+ "Caebat_Model" + separator + "example_ini.conf";
 		IPath fileIPath = new Path(filePath);
-		IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileIPath);
-		
+		IFile inputFile = project.getFile("Caebat_Model" + separator + "example_ini.conf");
+
 		// Create an IPSReader to test
 		IPSReader reader = new IPSReader();
 		assertNotNull(reader);

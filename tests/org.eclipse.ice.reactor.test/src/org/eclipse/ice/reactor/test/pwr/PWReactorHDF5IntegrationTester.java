@@ -26,36 +26,24 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
- * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Eric J. Lingerfelt
  */
 public class PWReactorHDF5IntegrationTester {
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@BeforeClass
 	public static void beforeClass() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHDF5Integration() {
-		// begin-user-code
 
 		PressurizedWaterReactor reactor = createPopulatedPWReactor();
 
@@ -73,18 +61,13 @@ public class PWReactorHDF5IntegrationTester {
 
 		assertTrue(reactor.equals(readReactor));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private PressurizedWaterReactor createPopulatedPWReactor() {
-		// begin-user-code
 
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(1);
 		reactor.setName("Test PWR");
@@ -172,7 +155,6 @@ public class PWReactorHDF5IntegrationTester {
 
 		}
 
-		// end-user-code
 	}
 
 	/**
@@ -194,14 +176,10 @@ public class PWReactorHDF5IntegrationTester {
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@AfterClass
 	public static void afterClass() {
-		// begin-user-code
 
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
@@ -212,6 +190,5 @@ public class PWReactorHDF5IntegrationTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 }

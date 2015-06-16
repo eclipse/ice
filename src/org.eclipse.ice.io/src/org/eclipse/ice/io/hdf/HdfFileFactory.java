@@ -20,26 +20,20 @@ import ncsa.hdf.object.FileFormat;
 import ncsa.hdf.object.h5.H5File;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The HDFFileFactory class contains static methods used to create, open, and
  * close HDF5 files.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Eric J. Lingerfelt
  */
 public class HdfFileFactory {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Creates, opens, and returns an H5File from the provided uri. If the uri
 	 * is null, the null is returned. If the FID of resulting h5File is -1, then
 	 * null is returned. If any Exception is thrown, then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param uri
 	 *            <p>
@@ -49,11 +43,8 @@ public class HdfFileFactory {
 	 *         An H5File that has been created and opened for read/write
 	 *         operations.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static H5File createH5File(URI uri) {
-		// begin-user-code
 
 		// If parameter is null, return null
 		if (uri == null) {
@@ -100,25 +91,19 @@ public class HdfFileFactory {
 
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Closes an h5File.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 *            <p>
 	 *            The H5File to close.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static void closeH5File(H5File h5File) {
-		// begin-user-code
 
 		try {
 
@@ -136,18 +121,15 @@ public class HdfFileFactory {
 			e.printStackTrace();
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Opens and returns an h5File from the provided URI. If the uri is null,
 	 * the null is returned. If the File for uri does not exist, then null is
 	 * returned. If the resulting h5File is null or does not exist, then null is
 	 * returned. If any Exception is thrown, then null is returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param uri
 	 *            <p>
@@ -156,11 +138,8 @@ public class HdfFileFactory {
 	 * @return <p>
 	 *         An H5File that has been opened for read/write operations.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public static H5File openH5File(URI uri) {
-		// begin-user-code
 
 		// If parameter is null or does not exist, return null
 		if (uri == null || !(new File(uri).exists())) {
@@ -208,6 +187,5 @@ public class HdfFileFactory {
 
 		}
 
-		// end-user-code
 	}
 }

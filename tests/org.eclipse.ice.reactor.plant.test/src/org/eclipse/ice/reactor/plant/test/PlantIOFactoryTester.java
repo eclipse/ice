@@ -122,7 +122,7 @@ public class PlantIOFactoryTester {
 		// -- Add a PlantComposite. -- //
 		PlantComposite plant = new PlantComposite();
 		plant.setName("King's Landing");
-		plant.setDescription("In King’s Landing, there are two sorts of people. The players and the pieces.");
+		plant.setDescription("In King's Landing, there are two sorts of people. The players and the pieces.");
 		objects.add(plant);
 
 		int id = 2;

@@ -25,7 +25,6 @@ import com.jme3.scene.Node;
 // TODO Synchronize this class with the model!
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class provides a basic controller for a component of a mesh.
  * </p>
@@ -38,23 +37,16 @@ import com.jme3.scene.Node;
  * loop, an AbstractMeshController puts itself into a queue in the
  * SimpleApplication.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public abstract class AbstractMeshController implements IUpdateableListener {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The part of the mesh managed by this controller. It needs to implement
 	 * IUpdateable (usually by extending ICEObject).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IUpdateable model;
 
@@ -79,42 +71,30 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 
 	// ---- Properties that should be reflected in the view. ---- //
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The current state of the view supported by the controller.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private StateType state;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The parent jME3 Node for the view associated with this controller.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Node parentNode;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The size or scale of the AbstractMeshView corresponding to this
 	 * AbstractMeshController.
 	 * <p>
-	 * <!-- end-UML-doc -->
 	 */
 	private float size;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The scale of the AbstractMeshView that is used to determine its location.
 	 * <p>
-	 * <!-- end-UML-doc -->
 	 */
 	private float scale;
 
@@ -155,16 +135,12 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 
 	// ---- Structures used for updating. ---- //
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * When the controller needs to update its view, it should append itself to
 	 * the queue. The containing SimpleApplication will call the controller's
 	 * syncView() method when it can perform the next update.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	// TODO Update the model. This was set to final!
 	protected final ConcurrentLinkedQueue<AbstractMeshController> updateQueue;
@@ -175,27 +151,23 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 */
 	private final AtomicBoolean synced = new AtomicBoolean(true);
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Because all updates to the view *must* be processed in the thread that
 	 * executes simpleUpdate() in the SimpleApplication, we need this disposal
 	 * flag to signify that the controller is being destroyed. The view will
 	 * need to be disposed in the syncView() method.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	protected final AtomicBoolean disposed;
 
 	// --------------------------------------- //
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default constructor. Requires a the model that the controller listens
 	 * to and a concurrent queue that the controller will publish to when it
 	 * needs to update its view.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param model
 	 *            <p>
@@ -207,12 +179,9 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 *            The queue used for updating views handled by this and other
 	 *            controllers.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public AbstractMeshController(IUpdateable model,
 			ConcurrentLinkedQueue<AbstractMeshController> queue) {
-		// begin-user-code
 
 		// We can only process the parameters if they are valid.
 		if (model != null && queue != null) {
@@ -251,7 +220,6 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -276,7 +244,6 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Synchronizes the view managed by the AbstractMeshController with its
 	 * associated model. This method should be implemented by subclasses to
@@ -285,10 +252,7 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 * {@link #setDirtyProperty(String)}. However, this method should still be
 	 * called by subclasses so that dirty properties are updated properly.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void syncView() {
 		// Marked the controller as synced. Any updates that occur during this
@@ -307,42 +271,31 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the current state of the Mesh object managed by the
 	 * AbstractMeshController.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The current state of the view supported by the controller.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public StateType getState() {
-		// begin-user-code
 		return state;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the current state of the Mesh object managed by the
 	 * AbstractMeshController.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param state
 	 *            <p>
 	 *            The new state of the view supported by the controller.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setState(StateType state) {
-		// begin-user-code
 
 		// Check the parameter. Do not accept null states, and do not do
 		// anything if the state hasn't changed.
@@ -354,48 +307,36 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the current parent jME3 Node for the view managed by this
 	 * AbstractMeshController.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The current parent jME3 Node for the view associated with this
 	 *         controller.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Node getParentNode() {
-		// begin-user-code
 		return parentNode;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the parent jME3 Node for the view managed by this
 	 * AbstractMeshController.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param node
 	 *            <p>
 	 *            The new parent jME3 Node for the view associated with this
 	 *            controller.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public final void setParentNode(Node node) {
-		// begin-user-code
 
 		// Check the parameter. Do not accept null states, and do not do
 		// anything if the parent node hasn't changed.
@@ -407,21 +348,15 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Disposes of the AbstractMeshController and its associated view.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void dispose() {
-		// begin-user-code
 
 		if (disposed.compareAndSet(false, true)) {
 			// Unregister from the model.
@@ -433,20 +368,15 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	// TODO Add to model.
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the current size of the mesh controller's view.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The size of the mesh controller's view.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public float getSize() {
 		return size;
@@ -454,16 +384,12 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 
 	// TODO Add to model.
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the current size of the mesh controller's view.
 	 * <p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param size
 	 *            The new size of the mesh controller's view.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setSize(float size) {
 		if (size > 0f) {
@@ -477,15 +403,11 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 
 	// TODO Add to model.
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the current scale of the mesh controller's view.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The scale of the mesh controller's view.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public float getScale() {
 		return scale;
@@ -497,16 +419,12 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 
 	// TODO Add to model.
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the current scale of the mesh controller's view.
 	 * <p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @param size
+	 * @param scale
 	 *            The new scale of the mesh controller's view.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setScale(float scale) {
 		if (scale > 0f) {
@@ -520,13 +438,11 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this
 	 * AbstractMeshController and another AbstractMeshController. It returns
 	 * true if the objects are equal and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -535,11 +451,8 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 * @return <p>
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -568,24 +481,18 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the AbstractMeshController.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashcode of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Static hash.
 		int hash = 11;
@@ -599,26 +506,20 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 		// The queue is not really managed by this controller.
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a AbstractMeshController into the
 	 * current object using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param controller
 	 *            <p>
 	 *            The object from which the values should be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(AbstractMeshController controller) {
-		// begin-user-code
 
 		// Check the parameter.
 		if (controller != null) {
@@ -642,41 +543,31 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the AbstractMeshController using a deep
 	 * copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public abstract Object clone();
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Implements the method from the IUpdateableListener interface. If this
 	 * method is called, the IUpdateable the controller has registered with has
 	 * been changed. This method adds the controller to the update queue to have
 	 * its view synced by the MeshApplication.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void update(IUpdateable component) {
-		// begin-user-code
 
 		// If the component matches the model managed by this controller, add
 		// the controller to the MeshApplication's updateQueue. This will
@@ -685,6 +576,5 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 			updateQueue.add(this);
 		}
 		return;
-		// end-user-code
 	}
 }

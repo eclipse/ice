@@ -25,9 +25,10 @@ import org.eclipse.ui.views.properties.IPropertySource;
 /**
  * This class provides the properties of an SFRComponent to be displayed in the
  * ICE Properties View. It displays all of the properties of an SFRComponent.<br>
- * <br>
- * Extensions to this class should override add their properties to
- * {@linkplain LWRComponentPropertySource#properties}.
+ * <p>
+ * Sub-classes should add their own properties via
+ * {@link #addProperty(SimpleProperty)}.
+ * </p>
  * 
  * @author Jordan H. Deyton
  * 
@@ -38,7 +39,7 @@ public class ReactorComponentPropertySource implements IPropertySource {
 	 * A Map of {@linkplain SimpleProperty} instances for the selected
 	 * component.
 	 */
-	protected Map<String, SimpleProperty> properties;
+	private final Map<String, SimpleProperty> properties;
 
 	/**
 	 * The default constructor.

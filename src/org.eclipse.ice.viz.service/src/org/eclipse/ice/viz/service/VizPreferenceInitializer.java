@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2015- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jordan Deyton
+ *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -13,14 +24,14 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * 
  * <pre>
  * <code>
- * {@literal<plugin>}
- *    {@literal<}extension
- *          point="org.eclipse.core.runtime.preferences"{@literal>}
- *       {@literal<}initializer
- *             class="org.eclipse.ice.viz.service.VizPreferenceInitializer"{@literal>}
- *       {@literal</initializer>}
- *    {@literal</extension>}
- * {@literal</plugin>}
+ * {@literal <plugin>}
+ *    {@literal <}extension
+ *          point="org.eclipse.core.runtime.preferences"{@literal >}
+ *       {@literal <}initializer
+ *             class="org.eclipse.ice.viz.service.VizPreferenceInitializer"{@literal >}
+ *       {@literal </initializer>}
+ *    {@literal </extension>}
+ * {@literal </plugin>}
  * </code>
  * </pre>
  * 
@@ -45,8 +56,10 @@ public class VizPreferenceInitializer extends AbstractVizPreferenceInitializer {
 		IPreferenceStore store = getPreferenceStore();
 
 		// Set all defaults for the visualization perspective.
-		// TODO
-		store.setDefault("BOOLEAN_VALUE", true);
+
+		// By default, the default connections should automatically be
+		// established on startup.
+		store.setDefault("autoConnectToDefaults", true);
 
 		return;
 	}

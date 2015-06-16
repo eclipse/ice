@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,20 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.item.action;
 
-import java.text.SimpleDateFormat;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-
-import org.eclipse.ice.datastructures.form.Form;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,7 +23,15 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -43,6 +39,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionManager;
@@ -54,8 +51,9 @@ import org.eclipse.remote.core.IRemoteServices;
 import org.eclipse.remote.core.RemoteServices;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
 
+import org.eclipse.ice.datastructures.form.Form;
+
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class launches a job, either locally or remotely. It is used for
  * launching simulations and other tasks in ICE. It uses ssh to connect to
@@ -306,11 +304,9 @@ import org.eclipse.remote.core.exception.RemoteConnectionException;
  * The JobLaunchAction adds the working directory to the map with the key
  * "workingDir".
  * 
- * <p>
  * The Action appends to the end of each output file listed in the map. It never
  * overwrites these files.
- * </p>
- * <p>
+ * 
  * Additional parameters may be specified in the dictionary and the
  * JobLaunchAction will replace them in the executable if required. For a key
  * "v" in the dictionary, each instance of the search string "${v}" in the
@@ -321,11 +317,9 @@ import org.eclipse.remote.core.exception.RemoteConnectionException;
  * properly name files will result in a failure. Capitalization does not matter.
  * The stdOutFile and stdErrFile are exceptions that are not transferred to
  * remote machines.
- * </p>
- * <p>
+ * 
  * The cancel() operation attempts to kill the process if it is still running.
- * </p>
- * <p>
+ * 
  * This class launches the job on a separate thread. An AtomicReference is used
  * for managing access to the Form information an the LoginInfoForm is used
  * simply as an internal reference to the current Form within an operation. It
@@ -333,26 +327,14 @@ import org.eclipse.remote.core.exception.RemoteConnectionException;
  * and that a semicolon at the end of the line is acceptable to denote the end
  * of a command. This assumption is valid on Windows, Linux and Unix systems so
  * long as the Windows shell is Powershell.
- * </p>
  * <p>
- * </p>
- * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class JobLaunchAction extends Action implements Runnable {
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The username with which to log into the remote system.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String username;
 
@@ -363,15 +345,8 @@ public class JobLaunchAction extends Action implements Runnable {
 	private String projectSpaceDir;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * An atomic boolean used to notify the thread that it should proceed with
 	 * the launch because the Form has been submitted.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicBoolean formSubmitted;
 
@@ -381,40 +356,19 @@ public class JobLaunchAction extends Action implements Runnable {
 	private AtomicBoolean cancelled;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * An AtomicReference that is used to synchronize the Form for multiple
 	 * thread access.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicReference<LoginInfoForm> formAtomic;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The ICEJschUIInfo class used to provide password information to Jsch.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICEJschUIInfo jschUIInfo;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * An AtomicBoolean that is true if the job is to be launched on the local
 	 * machine and false otherwise. It is set in execute().
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private AtomicBoolean isLocal;
 
@@ -489,52 +443,46 @@ public class JobLaunchAction extends Action implements Runnable {
 
 	/**
 	 * The maximum size limit of any file that will be downloaded from a remote
-	 * machine in bytes. It is 20MB by default.
+	 * machine, in bytes. The default size is 50 MB and is set as a VM argument
+	 * called "max_download_size", which can be edited by the user in the ICE
+	 * config file.
 	 */
-	private long maxFileSize = 20971520;
+	private long maxFileSize;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Constructor.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public JobLaunchAction() {
-		// begin-user-code
 
 		// Setup the local flags
 		isLocal = new AtomicBoolean();
 		fileMap = new Hashtable<String, String>();
 		cancelled = new AtomicBoolean(false);
 
+		// Get the maxFileSize from the system properties
+		String fileSize = System.getProperty("max_download_size");
+		if (fileSize != null) {
+			maxFileSize = Integer.parseInt(fileSize);
+		} else {
+			// If the system property is invalid for any reason, default to a
+			// hardcoded value
+			maxFileSize = 52428800;
+		}
+
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation fixes the name of the executable that will be launched. It
 	 * replaces ${inputFile}, ${installDir} and other keys from the dictionary
 	 * according to the specification. It also configures the commands to setup
 	 * the parallel execution environment if indicated by the number of
 	 * processors or threads.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The name of the executable with all variable references and
+	 * @return The name of the executable with all variable references and
 	 *         required string replacements fixed.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String fixExecutableName() {
-		// begin-user-code
 
 		// Local Declarations
 		int numProcs = Math.max(1,
@@ -664,71 +612,39 @@ public class JobLaunchAction extends Action implements Runnable {
 		}
 
 		return fixedExecutableName;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the username from the LoginInfoForm.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The username.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The username.
 	 */
 	private String getUsernameFromForm() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return null;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation creates a new SSH session for the given username.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param dictionary
-	 *            <p>
 	 *            The dictionary of values to be used to create the session.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createSession(Dictionary<String, String> dictionary) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation returns a buffered writer to the caller that will append
 	 * to file specified in the call.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param filename
-	 *            <p>
 	 *            The name of the file to which the BufferedWriter should
 	 *            append.
-	 *            </p>
-	 * @return <p>
-	 *         The BufferedWriter.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The BufferedWriter.
 	 */
 	private BufferedWriter getBufferedWriter(String filename) {
-		// begin-user-code
 
 		// Local Declarations
 		FileWriter writer = null;
@@ -747,30 +663,18 @@ public class JobLaunchAction extends Action implements Runnable {
 		} else {
 			return null;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the hostname to determine whether or not it is the
 	 * same as localhost.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param hostname
-	 *            <p>
 	 *            The hostname of the target platform on which the job will be
 	 *            launched.
-	 *            </p>
-	 * @return <p>
-	 *         True if the hostname is the same as localhost, false otherwise.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return True if the hostname is the same as localhost, false otherwise.
 	 */
 	private boolean isLocalhost(String hostname) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean retVal = false;
@@ -806,21 +710,12 @@ public class JobLaunchAction extends Action implements Runnable {
 				+ ((retVal) ? " " : " NOT ") + "localhost.");
 
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation launches the job on the local machine.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void launchLocally() {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus launchStatus;
@@ -856,7 +751,6 @@ public class JobLaunchAction extends Action implements Runnable {
 		status = FormStatus.Processed;
 
 		return;
-		// end-user-code
 	}
 
 	protected FormStatus launchStageLocally(String cmd, BufferedWriter stdOut,
@@ -1059,17 +953,9 @@ public class JobLaunchAction extends Action implements Runnable {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation launches the job on a remote machine.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void launchRemotely() {
-		// begin-user-code
 
 		IRemoteServices remoteServices = RemoteServices
 				.getRemoteServices("org.eclipse.remote.JSch");
@@ -1274,8 +1160,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			// Monitor the job
 			monitorJob();
 
-			// ----- Download the output if possible and if it wasn't cancelled
-			// -----
+			// - Download the output if possible and if it wasn't cancelled - //
 			// Check to see if the job should be cancelled.
 			if (!cancelled.get()) {
 				// Get download directory
@@ -1352,7 +1237,6 @@ public class JobLaunchAction extends Action implements Runnable {
 		connection.close();
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -1415,26 +1299,15 @@ public class JobLaunchAction extends Action implements Runnable {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation overrides Action.submitForm to add the Form to an Atomic
 	 * container instead of the default Form class variable.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param form
-	 *            <p>
 	 *            The form being submitted.
-	 *            </p>
-	 * @return <p>
-	 *         The status of the submission.
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The status of the submission.
 	 */
 	@Override
 	public FormStatus submitForm(Form form) {
-		// begin-user-code
 
 		// Check the Form to make sure it is valid
 		if (form != null && !formSubmitted.get()) {
@@ -1450,18 +1323,14 @@ public class JobLaunchAction extends Action implements Runnable {
 			status = FormStatus.InfoError;
 		}
 		return status;
-		// end-user-code
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Action#execute(Dictionary<String,String> dictionary)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @see org.eclipse.ice.item.action.Action#execute(java.util.Dictionary)
 	 */
 	public FormStatus execute(Dictionary<String, String> dictionary) {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent loginInfoComp;
@@ -1508,18 +1377,14 @@ public class JobLaunchAction extends Action implements Runnable {
 		processThread.start();
 
 		return status;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Action#cancel()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus cancel() {
-		// begin-user-code
 
 		// Throw the flag
 		cancelled.set(true);
@@ -1535,7 +1400,6 @@ public class JobLaunchAction extends Action implements Runnable {
 		}
 
 		return FormStatus.ReadyToProcess;
-		// end-user-code
 	}
 
 	private void setWorkingDirectoryName() {
@@ -1580,11 +1444,8 @@ public class JobLaunchAction extends Action implements Runnable {
 	 * (non-Javadoc)
 	 * 
 	 * @see Runnable#run()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void run() {
-		// begin-user-code
 
 		// Local Declarations
 		String executable = null, inputFile = null, hostname = null;
@@ -1665,7 +1526,6 @@ public class JobLaunchAction extends Action implements Runnable {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**

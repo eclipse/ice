@@ -1,15 +1,15 @@
 /*******************************************************************************
-* Copyright (c) 2012, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
@@ -30,19 +30,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-/** 
- * <!-- begin-UML-doc -->
- * <p>This class implements the IDetailsPage interface to provide a Details page for ICE DataComponents. The only way to provide the component handle for this class is through the constructor.</p>
- * <!-- end-UML-doc -->
+/**
+ * <p>
+ * This class implements the IDetailsPage interface to provide a Details page
+ * for ICE DataComponents. The only way to provide the component handle for this
+ * class is through the constructor.
+ * </p>
+ * 
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEDataComponentDetailsPage implements IDetailsPage {
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>The DataComponent whose data should be displayed.</p>
-	 * <!-- end-UML-doc -->
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/**
+	 * <p>
+	 * The DataComponent whose data should be displayed.
+	 * </p>
 	 */
 	private DataComponent component;
 
@@ -55,115 +56,113 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * The managed form for this page.
 	 */
 	private IManagedForm mform;
-	
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>The constructor. If the component is null, this class will be unable to render anything to the screen.</p>
-	 * <!-- end-UML-doc -->
-	 * @param dataComponent <p>The data component that this page will display.</p>
-	 * @param editor <p>The ICEFormEditor in which the pages will exist. This editor is marked as dirty when the page changes.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+
+	/**
+	 * <p>
+	 * The constructor. If the component is null, this class will be unable to
+	 * render anything to the screen.
+	 * </p>
+	 * 
+	 * @param dataComponent
+	 *            <p>
+	 *            The data component that this page will display.
+	 *            </p>
+	 * @param editor
+	 *            <p>
+	 *            The ICEFormEditor in which the pages will exist. This editor
+	 *            is marked as dirty when the page changes.
+	 *            </p>
 	 */
 	public ICEDataComponentDetailsPage(DataComponent dataComponent,
 			ICEFormEditor editor) {
-		// begin-user-code
 		formEditor = editor;
 		component = dataComponent;
-		// end-user-code
 	}
 
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <p>This operation returns the component that the page is rendering or null if it was not set in the constructor.</p>
-	 * <!-- end-UML-doc -->
-	 * @return <p>The DataComponent used in this provider or null if it was not set.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/**
+	 * <p>
+	 * This operation returns the component that the page is rendering or null
+	 * if it was not set in the constructor.
+	 * </p>
+	 * 
+	 * @return <p>
+	 *         The DataComponent used in this provider or null if it was not
+	 *         set.
+	 *         </p>
 	 */
 	public DataComponent getComponent() {
-		// begin-user-code
 		return component;
-		// end-user-code
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#initialize(IManagedForm form)
 	 */
 	public void initialize(IManagedForm form) {
-		// begin-user-code
 		this.mform = form;
-		// end-user-code
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#dispose()
 	 */
 	public void dispose() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#commit(boolean onSave)
 	 */
 	public void commit(boolean onSave) {
-		// begin-user-code
 
-		// end-user-code
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#setFormInput(Object input)
 	 */
 	public boolean setFormInput(Object input) {
-		// begin-user-code
 		return false;
-		// end-user-code
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#setFocus()
 	 */
 	public void setFocus() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IFormPart#refresh()
 	 */
 	public void refresh() {
-		// begin-user-code
 
-		// end-user-code
 	}
 
-	/** 
-	 * (non-Javadoc)
-	 * @see IPartSelectionListener#selectionChanged(IFormPart part, ISelection selection)
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/*
+	 * Implements a method from IPartSelectionListener.
 	 */
+	@Override
 	public void selectionChanged(IFormPart part, ISelection selection) {
-		// begin-user-code
 
-		// end-user-code
 	}
 
-	/** 
-	 * <!-- begin-UML-doc -->
-	 * <!-- end-UML-doc -->
-	 * @param parent <p>The parent composite in which this page should be drawn.</p>
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/**
+	 * @param parent
+	 *            <p>
+	 *            The parent composite in which this page should be drawn.
+	 *            </p>
 	 */
 	public void createContents(Composite parent) {
-		// begin-user-code
 
 		TableWrapLayout layout = new TableWrapLayout();
 		layout.topMargin = 5;
@@ -213,7 +212,6 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 		// Set the layout and then give the Section its client
 		section.setClient(client);
 
-		// end-user-code
 	}
 
 	@Override

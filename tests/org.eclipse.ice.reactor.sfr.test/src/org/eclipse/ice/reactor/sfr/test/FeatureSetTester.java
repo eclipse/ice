@@ -22,31 +22,22 @@ import org.eclipse.ice.reactor.sfr.base.SFRData;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the operations of the FeatureSet class.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class FeatureSetTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the constructors and default values of the FeatureSet container
 	 * class.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		FeatureSet featureSet;
 		String defaultFeature = null;
@@ -74,22 +65,16 @@ public class FeatureSetTester {
 		assertEquals(data, featureSet.getData());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the getter and addition of IData to a FeatureSet.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkData() {
-		// begin-user-code
 
 		// Some features.
 		String sameFeature = "Slartibartfast";
@@ -196,19 +181,15 @@ public class FeatureSetTester {
 		/* ------------------------------------------------- */
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the equality and hashCode operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Feature names to use.
 		String feature = "Deep Thought";
@@ -281,19 +262,15 @@ public class FeatureSetTester {
 		assertFalse("just a string".equals(object));
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Tests the copying and cloning operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Some feature names.
 		String feature = "Blart Versenwald III";
@@ -368,6 +345,5 @@ public class FeatureSetTester {
 		/* ----------------------- */
 
 		return;
-		// end-user-code
 	}
 }

@@ -1,6 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2015- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jordan Deyton
+ *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 
 /**
@@ -14,18 +26,18 @@ import org.eclipse.ui.IWorkbench;
  * 
  * <pre>
  * <code>
- * {@literal<plugin>}
- *    {@literal<extension}
+ * {@literal <plugin>}
+ *    {@literal <extension}
  *          id="org.eclipse.ice.viz.service.preferencePage"
  *          name="Visualization Preferences"
- *          point="org.eclipse.ui.preferencePages"{@literal>}
- *       {@literal<page}
+ *          point="org.eclipse.ui.preferencePages"{@literal >}
+ *       {@literal <page}
  *             class="org.eclipse.ice.viz.service.VizPreferencePage"
  *             id="org.eclipse.ice.viz.service.preferences"
- *             name="Visualization"{@literal>}
- *       {@literal</page>}
- *    {@literal</extension>}
- * {@literal</plugin>}
+ *             name="Visualization"{@literal >}
+ *       {@literal </page>}
+ *    {@literal </extension>}
+ * {@literal </plugin>}
  * </code>
  * </pre>
  * 
@@ -64,9 +76,27 @@ public class VizPreferencePage extends AbstractVizPreferencePage {
 	 */
 	@Override
 	protected void createFieldEditors() {
-		// TODO Add preferences...
-		addField(new BooleanFieldEditor("BOOLEAN_VALUE",
-				"&This statement is false", getFieldEditorParent()));
+		Composite parent = getFieldEditorParent();
+
+		// Add a field to automatically connect to the default viz service
+		// connections when they start.
+		addField(new BooleanFieldEditor(
+				"autoConnectToDefaults",
+				"Automatically establish default connections for vizualization services",
+				parent));
+
+		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractVizPreferencePage#getVizService()
+	 */
+	@Override
+	protected IVizService getVizService() {
+		return null;
 	}
 
 }

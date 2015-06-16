@@ -33,44 +33,31 @@ import org.eclipse.ice.item.geometry.GeometryEditorBuilder;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the GeometryEditorBuilder.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class GeometryEditorBuilderTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The instance of the GeometryEditorBuilder under test.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private GeometryEditorBuilder geometryEditorBuilder;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations checks the GeometryEditorBuilder to make sure that it
 	 * properly creates GeometryEditors. It also checks the name and the type of
 	 * the GeometryEditorBuilder and the GeometryEditor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkConstruction() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -133,6 +120,5 @@ public class GeometryEditorBuilderTester {
 
 		return;
 
-		// end-user-code
 	}
 }

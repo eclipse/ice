@@ -26,43 +26,31 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.junit.*;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is responsible for testing the ICEMatrixComponentSectionPart
  * class. It only tests the accessor operations for the MatrixComponent and the
  * update routine from IComponentListener.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEMatrixComponentSectionPartTester {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICEMatrixComponentSectionPart ICEMatrixComponentSectionPart;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ICESectionPart to make sure that it can store a
 	 * MatrixComponent. This operation also tests the update operation of
 	 * ICESectionPart by modifying a MatrixComponent and insuring that the
 	 * ICESectionPart gets the update.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkMatrixComponent() {
-		// begin-user-code
 		MatrixComponent matrixComponent = new MatrixComponent();
 		Display display;
 		FormToolkit formTk;
@@ -122,6 +110,5 @@ public class ICEMatrixComponentSectionPartTester {
 		// Clean up the Display
 		display.dispose();
 
-		// end-user-code
 	}
 }

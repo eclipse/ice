@@ -35,23 +35,26 @@ public class MeshEditorBuilder implements ItemBuilder {
 	 */
 	public static final ItemType type = ItemType.Mesh;
 
-	/**
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemName()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
+	@Override
 	public String getItemName() {
 		return name;
 	}
 
-	/**
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemType()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
+	@Override
 	public ItemType getItemType() {
 		return type;
 	}
 
-	/**
-	 * @see org.eclipse.ice.item.ItemBuilder#build()
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 
 		// Build the editor. The Mesh Editor sets its own name and ItemBuilder

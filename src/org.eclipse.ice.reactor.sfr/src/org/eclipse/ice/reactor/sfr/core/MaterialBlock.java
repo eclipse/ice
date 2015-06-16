@@ -21,57 +21,41 @@ import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The MaterialBlock class is a generalized class containing a set of concentric
  * and/or radial collection of Rings that constitute the circular structure(s)
  * of SFRPins (in the case of a fuel or control assemblies), and SFRRods (in the
  * case of reflector assemblies).
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class MaterialBlock extends SFRComponent implements
 		Comparable<MaterialBlock> {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The vertical position of the MaterialBlock from the bottom of the SFRPin
 	 * (z-displacement where z=0 at bottom).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double vertPosition;
 	/**
 	 * <!-- begin-UML-doc --> The collection of rings contained within each
 	 * MaterialBlock. A TreeSet structure is used so that rings are sorted in
 	 * ascending order of radii. Rings cannot overlap (physically impossible).
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TreeSet<Ring> rings;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public MaterialBlock() {
-		// begin-user-code
 
 		// Initialize a default name, description, and ID
 		setName("MaterialBlock 1");
@@ -84,70 +68,52 @@ public class MaterialBlock extends SFRComponent implements
 		// Create an empty TreeSet of rings
 		rings = new TreeSet<Ring>();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Set the vertical position (z-displacement) of the material block, where
 	 * z=0 at the bottom end of the structure.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param vertPosition
 	 *            The vertical position (z-displacement) of the material block.
 	 *            Must be non-negative.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setVertPosition(double vertPosition) {
-		// begin-user-code
 
 		// Vertical position (z-displacement) must be non-negative to set
 		if (vertPosition >= 0.0) {
 			this.vertPosition = vertPosition;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the vertical position (z-displacement) of the material block as a
 	 * double, where z=0 at the bottom end of the structure.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The vertical position (z-displacement) of the material block.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getVertPosition() {
-		// begin-user-code
 
 		// Return the vertical position (z-displacement)
 		return vertPosition;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Adds a ring object to the current collection of rings; returns true if
 	 * the operation was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param ring
 	 *            The ring to be added to the material block.
 	 * @return Returns true if the addition was successful, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean addRing(Ring ring) {
-		// begin-user-code
 
 		// Check if the ring is null first
 		if (ring == null) {
@@ -180,25 +146,19 @@ public class MaterialBlock extends SFRComponent implements
 		rings.add(ring);
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Removes the specified ring from the collection of rings; returns true if
 	 * the operation was successful.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            The name of the ring to be removed from the material block.
 	 * @return Returns true if the removal was successful, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean removeRing(String name) {
-		// begin-user-code
 
 		// Check that the ring name is valid; if not, return null
 		if (name == null) {
@@ -229,27 +189,21 @@ public class MaterialBlock extends SFRComponent implements
 		// anything so return false
 		return false;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the ring that contains the specified radius in between the
 	 * rings's inner and outer radii, otherwise returns null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param radius
 	 *            The radius which will be searched for in the collection of
 	 *            rings.
 	 * @return Returns the ring that contains the specified radius. Returns null
 	 *         if no ring was found.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring getRing(double radius) {
-		// begin-user-code
 
 		// Check that the ring radius is valid; if not, return null
 		if (radius < 0) {
@@ -280,26 +234,20 @@ public class MaterialBlock extends SFRComponent implements
 		// Otherwise no ring with the specified radius was found, return a null
 		return null;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the ring of the specified name if it exists, otherwise returns
 	 * null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            The name of the ring being searched for.
 	 * @return Returns the ring with the specified name. Returns null if no ring
 	 *         was found.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring getRing(String name) {
-		// begin-user-code
 
 		// Check that the ring name is valid; if not, return null
 		if (name == null) {
@@ -328,23 +276,17 @@ public class MaterialBlock extends SFRComponent implements
 		// Otherwise no ring with the specified name was found; return null
 		return null;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns an ArrayList of Rings contained in the material block, ordered by
 	 * ascending radii.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return Returns an ArrayList of rings contained in the material block.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Ring> getRings() {
-		// begin-user-code
 
 		// Initialize an ArrayList of Rings
 		ArrayList<Ring> list = new ArrayList<Ring>();
@@ -355,22 +297,16 @@ public class MaterialBlock extends SFRComponent implements
 		// Return the ArrayList
 		return list;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashcode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hashcode of the object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based upon superclass hash
 		int hash = super.hashCode();
@@ -381,24 +317,18 @@ public class MaterialBlock extends SFRComponent implements
 
 		// Return hash
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Compares the contents of objects and returns true if that are identical.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object being compared against.
 	 * @return Returns true if the both objects are equal, otherwise false.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Check if otherObject is invalid
 		if (otherObject != null && otherObject instanceof MaterialBlock) {
@@ -458,23 +388,17 @@ public class MaterialBlock extends SFRComponent implements
 		else {
 			return false;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object to copy the contents of.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(MaterialBlock otherObject) {
-		// begin-user-code
 
 		// Check if the material block is invalid
 		if (otherObject == null) {
@@ -488,22 +412,16 @@ public class MaterialBlock extends SFRComponent implements
 		rings = otherObject.rings;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The newly instantiated object.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Create a new material block
 		MaterialBlock block = new MaterialBlock();
@@ -514,20 +432,15 @@ public class MaterialBlock extends SFRComponent implements
 		// Return the new material block
 		return block;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Compares the vertical position of two MaterialBlocks.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return Returns -1 if this block is below that block, +1 if this block is
 	 *         above that block, and 0 otherwise (overlapping).
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public int compareTo(MaterialBlock block) {
@@ -552,13 +465,11 @@ public class MaterialBlock extends SFRComponent implements
 	 */
 	@Override
 	public void accept(ISFRComponentVisitor visitor) {
-		// begin-user-code
 
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 
 		return;
-		// end-user-code
 	}
 }

@@ -30,7 +30,6 @@ import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * FakeCore is a Core used during unit testing by ClientTester to break the
  * class dependency between IClient and ICore. It isolates Client for unit
@@ -56,72 +55,49 @@ import org.eclipse.ice.item.ItemBuilder;
  * the process() operation can be retrieved by calling
  * FakeCore.getLastProcessStatus().
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeCore implements ICore {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The status of the last call to the process() operation.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FormStatus lastProcessStatus;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This flag is true if updateItem() was called after processItem() returned
 	 * FormStatus.NeedsInfo and false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean updateItemCalled;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if an output file was retrieved, false if not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean outputFileRetrieved = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if a file was imported, false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean imported;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if the client attempted to cancel an Item process request, false
 	 * otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean cancelled = false;
 
@@ -139,38 +115,27 @@ public class FakeCore implements ICore {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the status of the last call to process().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The status of the last call to process().
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus getLastProcessStatus() {
-		// begin-user-code
 		return lastProcessStatus;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation resets the value of the last process status to
 	 * FormStatus.Info error so that the test can be sure that the event is
 	 * processed.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void reset() {
-		// begin-user-code
 
 		lastProcessStatus = FormStatus.InfoError;
 		updateItemCalled = false;
@@ -179,170 +144,121 @@ public class FakeCore implements ICore {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns true if updateItem() was called after a call to
 	 * process() that returned FormStatus.NeedsInfo.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         True if the Item was updated, false if not.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean itemUpdated() {
-		// begin-user-code
 		return updateItemCalled;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if an output file was retrieved, false if not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         True if a file was retrieved, false if not.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean outputFileRetrieved() {
-		// begin-user-code
 		return outputFileRetrieved;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns true if the FakeCore was asked to import a file.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean fileImported() {
-		// begin-user-code
 		return imported;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the true if the client previously tried to cancel
 	 * a process request.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The status of the last call to process().
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean wasCancelled() {
-		// begin-user-code
 
 		return cancelled;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#connect()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String connect() {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return "0";
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#disconnect(int uniqueClientId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disconnect(int uniqueClientId) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getFileSystem(int uniqueClientID)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Form getFileSystem(int uniqueClientID) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 		return new Form();
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#registerItem(ItemBuilder itemBuilder)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public void registerItem(ItemBuilder itemBuilder) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#registerCompositeItem(ICompositeItemBuilder builder)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void registerCompositeItem(ICompositeItemBuilder builder) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#unregisterItem(ItemBuilder itemBuilder)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public void unregisterItem(ItemBuilder itemBuilder) {
-		// begin-user-code
 		// TODO Auto-generated method stub
 
-		// end-user-code
 	}
 
 	@Override
@@ -359,15 +275,11 @@ public class FakeCore implements ICore {
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#deleteItem(String itemId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void deleteItem(String itemId) {
-		// begin-user-code
 
 		deleted = true;
 
-		// end-user-code
 	}
 
 	@Override
@@ -399,11 +311,8 @@ public class FakeCore implements ICore {
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getAvailableItemTypes()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEList<String> getAvailableItemTypes() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<String> types = new ArrayList<String>();
@@ -420,18 +329,14 @@ public class FakeCore implements ICore {
 
 		return retList;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#updateItem(Form form, int uniqueClientId)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus updateItem(Form form, int uniqueClientId) {
-		// begin-user-code
 
 		// Change the name
 		if (form.getId() == 8675309) {
@@ -454,7 +359,6 @@ public class FakeCore implements ICore {
 			return FormStatus.ReadyToProcess;
 		}
 
-		// end-user-code
 	}
 
 	@Override
@@ -486,11 +390,8 @@ public class FakeCore implements ICore {
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItemList()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<Identifiable> getItemList() {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Identifiable> items = new ArrayList<Identifiable>();
@@ -510,18 +411,14 @@ public class FakeCore implements ICore {
 			deleted = false;
 		}
 		return items;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#getItemOutputFile(int id)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public File getItemOutputFile(int id) {
-		// begin-user-code
 
 		// Local Declarations
 		File outputFile = null;
@@ -552,24 +449,19 @@ public class FakeCore implements ICore {
 		}
 
 		return outputFile;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see ICore#cancelItemProcess(int itemId, String actionName)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus cancelItemProcess(int itemId, String actionName) {
-		// begin-user-code
 
 		// Throw the flag and return it
 		cancelled = true;
 		return FormStatus.ReadyToProcess;
 
-		// end-user-code
 	}
 
 	/**
@@ -578,14 +470,12 @@ public class FakeCore implements ICore {
 	 * @see ICore#importFile(URI file)
 	 */
 	public void importFile(URI file) {
-		// begin-user-code
 		if (file != null) {
 			imported = true;
 		} else {
 			System.out.println("FakeCore Message: " + "Imported file is null!");
 		}
 		return;
-		// end-user-code
 	}
 
 	@Override

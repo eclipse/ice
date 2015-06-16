@@ -63,12 +63,10 @@ public class FakeItemBuilder extends AbstractItemBuilder {
 
 	@Override
 	protected Item getInstance(IProject projectSpace) {
-		// begin-user-code
 
 		Item item = new TestJobLauncher(projectSpace);
 		item.setName(getItemName());
 
 		return item;
-		// end-user-code
 	}
 }

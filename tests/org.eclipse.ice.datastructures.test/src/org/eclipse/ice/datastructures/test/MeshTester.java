@@ -24,30 +24,21 @@ import org.eclipse.ice.datastructures.form.mesh.Vertex;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Performs integration tests of the Mesh data structures.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class MeshTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation performs an integration test on the Mesh data structures.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkMesh() {
-		// begin-user-code
 
 		/*-
 		 *  This test does the following:
@@ -252,6 +243,5 @@ public class MeshTester {
 		/* ------------------------------ */
 
 		return;
-		// end-user-code
 	}
 }

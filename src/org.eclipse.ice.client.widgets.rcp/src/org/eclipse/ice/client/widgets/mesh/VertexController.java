@@ -21,40 +21,28 @@ import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class provides a controller for Vertex instances, and it creates a
  * VertexView for a Vertex. It also listens for changes to its Vertex, at which
  * point it updates its VertexView. It can also send updates to the Vertex model
  * based on user input.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class VertexController extends AbstractMeshController {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The VertexView managed by this controller.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private VertexView view;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Vertex managed by this controller.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Vertex model;
 
@@ -67,11 +55,9 @@ public class VertexController extends AbstractMeshController {
 	// ----------------------- //
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The default constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param vertex
 	 *            <p>
@@ -86,14 +72,11 @@ public class VertexController extends AbstractMeshController {
 	 *            <p>
 	 *            The jME3 Material that should be used for the vertex graphics.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	// TODO Update documentation in model. It has the jME3 material now!
 	public VertexController(Vertex vertex,
 			ConcurrentLinkedQueue<AbstractMeshController> queue,
 			Material material) {
-		// begin-user-code
 		super(vertex, queue);
 
 		// Store a reference to the model.
@@ -130,57 +113,42 @@ public class VertexController extends AbstractMeshController {
 		// -------------------------------------------------------- //
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets the current location from the model.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The current location of the Vertex.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Vector3f getLocation() {
-		// begin-user-code
 		float[] loc = model.getLocation();
 		return new Vector3f(loc[0], loc[1], loc[2]);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the current location in the model.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param location
 	 *            <p>
 	 *            The new location of the Vertex.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setLocation(Vector3f location) {
-		// begin-user-code
 		model.setLocation(location.x, location.y, location.z);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between this VertexController
 	 * and another VertexController. It returns true if the objects are equal
 	 * and false if they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -189,12 +157,9 @@ public class VertexController extends AbstractMeshController {
 	 * @return <p>
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -216,25 +181,19 @@ public class VertexController extends AbstractMeshController {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hash value of the VertexController.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashcode of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public int hashCode() {
-		// begin-user-code
 
 		// Static hash.
 		int hash = super.hashCode();
@@ -244,26 +203,20 @@ public class VertexController extends AbstractMeshController {
 		// The model is already handled by AbstractMeshController.
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation copies the contents of a VertexController into the current
 	 * object using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param controller
 	 *            <p>
 	 *            The object from which the values should be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(VertexController controller) {
-		// begin-user-code
 
 		// Check the parameter.
 		if (controller != null) {
@@ -289,25 +242,19 @@ public class VertexController extends AbstractMeshController {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns a clone of the VertexController using a deep copy.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The new clone.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Override
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		VertexController object = new VertexController((Vertex) model.clone(),
@@ -318,18 +265,14 @@ public class VertexController extends AbstractMeshController {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see AbstractMeshController#syncView()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void syncView() {
-		// begin-user-code
 		super.syncView();
 
 		// If necessary, dispose of the view.
@@ -338,7 +281,6 @@ public class VertexController extends AbstractMeshController {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**

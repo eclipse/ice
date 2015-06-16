@@ -23,30 +23,21 @@ import org.eclipse.ice.datastructures.form.geometry.ShapeType;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests ShapeTreeContentProvider handling of elements
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author abd
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Andrew P. Belt
  */
 public class ShapeTreeContentProviderTest {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the correctness of the getChildren operation
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetChildren() {
-		// begin-user-code
 
 		// Create all needed objects
 
@@ -98,22 +89,16 @@ public class ShapeTreeContentProviderTest {
 
 		assertNull(shapeProvider.getChildren(new Object()));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks the correctness of the hasChildren operation
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkHasChildren() {
-		// begin-user-code
 
 		// This test is similar to checkGetChildren, but it only checks the
 		// boolean values of hasChildren rather than checking the elements
@@ -153,23 +138,17 @@ public class ShapeTreeContentProviderTest {
 		assertFalse(shapeProvider.hasChildren(sphere1));
 		assertFalse(shapeProvider.hasChildren(cube1));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that ShapeTreeContentProvider can be created and initialized
 	 * properly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 
 		// Currently there is nothing to test immediately after being created,
 		// but we can still check whether it doesn't throw exceptions upon
@@ -179,22 +158,16 @@ public class ShapeTreeContentProviderTest {
 
 		shapeProvider.dispose();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks that the getElements operation works correctly
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkGetElements() {
-		// begin-user-code
 
 		// Create all needed objects
 
@@ -225,6 +198,5 @@ public class ShapeTreeContentProviderTest {
 		assertNull(shapeProvider.getElements(new Object()));
 		assertNull(shapeProvider.getElements(new Integer(3)));
 
-		// end-user-code
 	}
 }

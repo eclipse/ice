@@ -32,7 +32,8 @@ import com.jme3.scene.shape.Line;
  * <ol>
  * <li>A <code>MasterApplication</code> already exists and is initialized.</li>
  * <li>A new <code>ViewAppState</code> is initialized.</li>
- * <li>The <code>ViewAppState</code> is started (see {@link #start()}).</li>
+ * <li>The <code>ViewAppState</code> is started (see
+ * {@link #start(MasterApplication)}).</li>
  * <li>The view is embedded in a <code>Composite</code> (see
  * {@link #createComposite(Composite)}).</li>
  * <li>The embedded <code>Composite</code> is disposed.</li>

@@ -21,58 +21,41 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class represents a Teuchos parameter list. It is a simple data structure
  * that only holds data.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "ParameterList")
 public class ParameterList {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the parameter list.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	public String name;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of parameters that are managed by this parameter list.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Parameter")
 	public ArrayList<Parameter> parameters;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of parameter lists that are child of this parameter list.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "ParameterList")
 	public ArrayList<ParameterList> parameterLists;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations returns an ICE TreeComposite for the ParameterList. Any
 	 * parameters in the list are contained in a Data Component labeled
@@ -80,16 +63,12 @@ public class ParameterList {
 	 * Subordinate parameter lists are configured as children of the tree
 	 * composite.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The tree composite.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public TreeComposite toTreeComposite() {
-		// begin-user-code
 
 		// Local Declarations
 		TreeComposite treeComp = new TreeComposite();
@@ -128,28 +107,22 @@ public class ParameterList {
 		}
 
 		return treeComp;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations loads a ParameterList from an ICE TreeComposite. It is
 	 * the inverse operation of toTreeComposite(). It assumes that the
 	 * TreeComposite is of the same form as that created by toTreeComposite()
 	 * and will fail if not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param treeComp
 	 *            <p>
 	 *            The tree composite.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void fromTreeComposite(TreeComposite treeComp) {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent dataComp = null;
@@ -189,7 +162,6 @@ public class ParameterList {
 		}
 
 		return;
-		// end-user-code
 	}
 
 }

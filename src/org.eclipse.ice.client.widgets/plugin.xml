@@ -70,9 +70,9 @@
          </view>
          <view
                allowMultiple="false"
-               class="org.eclipse.ice.client.common.TreeCompositeViewer"
+               class="org.eclipse.ice.client.widgets.TreeCompositeViewer"
                fastViewWidthRatio="0.20"
-               id="org.eclipse.ice.client.common.TreeCompositeViewer"
+               id="org.eclipse.ice.client.widgets.TreeCompositeViewer"
                name="ICE Data Tree View"
                restorable="true">
          </view>
@@ -145,7 +145,7 @@
                visible="true">
          </view>
          <view
-               id="org.eclipse.ice.client.common.TreeCompositeViewer"
+               id="org.eclipse.ice.client.widgets.TreeCompositeViewer"
                ratio="0.25f"
                relationship="stack"
                relative="org.eclipse.ice.client.common.ItemViewer"
@@ -157,7 +157,7 @@
                minimized="false"
                ratio="0.25f"
                relationship="stack"
-               relative="org.eclipse.ice.client.common.TreeCompositeViewer"
+               relative="org.eclipse.ice.client.widgets.TreeCompositeViewer"
                visible="true">
          </view>
          <view
@@ -165,7 +165,7 @@
                id="org.eclipse.ice.client.widgets.geometry.ShapeTreeView"
                ratio="0.25f"
                relationship="stack"
-               relative="org.eclipse.ice.client.common.TreeCompositeViewer"
+               relative="org.eclipse.ice.client.widgets.TreeCompositeViewer"
                visible="true">
          </view>
           <view
@@ -193,12 +193,12 @@
    <!-- ItemViewer Actions -->
     <!-- TreeCompositeViewer Properties Extensions -->
     <extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
-      <propertyContributor contributorId="org.eclipse.ice.client.common.TreeCompositeViewer">
+      <propertyContributor contributorId="org.eclipse.ice.client.widgets.TreeCompositeViewer">
       	<propertyCategory category="TreeViewer"/>
       </propertyContributor>      
    </extension>
     <extension point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
-      <propertyTabs contributorId="org.eclipse.ice.client.common.TreeCompositeViewer">
+      <propertyTabs contributorId="org.eclipse.ice.client.widgets.TreeCompositeViewer">
          <propertyTab
             category="TreeViewer"
                id="TreeViewer.Data"
@@ -206,9 +206,9 @@
       </propertyTabs>
    </extension>
       <extension point="org.eclipse.ui.views.properties.tabbed.propertySections">
-      <propertySections contributorId="org.eclipse.ice.client.common.TreeCompositeViewer">
+      <propertySections contributorId="org.eclipse.ice.client.widgets.TreeCompositeViewer">
          <propertySection
-               class="org.eclipse.ice.client.widgets.properties.TreePropertySection"
+               class="org.eclipse.ice.clientwidgets.TreePropertySection"
                id="DataSection"
                tab="TreeViewer.Data">
             <input type="org.eclipse.ice.datastructures.form.TreeComposite"/>
@@ -241,7 +241,7 @@
     <propertySections
           contributorId="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer">
        <propertySection
-             class="org.eclipse.ice.client.widgets.properties.TreePropertySection"
+             class="org.eclipse.ice.clientwidgets.TreePropertySection"
              id="DataSection"
              tab="TreeViewer.Data">
           <input
@@ -394,7 +394,7 @@
     </category>
     <wizard
             name="Create Item Wizard"
-            class="org.eclipse.ice.client.widgets.wizards.NewItemWizard"
+            class="org.eclipse.ice.client.common.wizards.NewItemWizard"
             id="org.eclipse.ice.client.common.CreateItemWizard"
             category="org.eclipse.ice.wizards">
     </wizard>
@@ -410,14 +410,14 @@
     </category>
     <wizard
           category="org.eclipse.ice.wizards"
-          class="org.eclipse.ice.client.widgets.wizards.ImportFileWizard"
+          class="org.eclipse.ice.client.common.wizards.ImportFileWizard"
           icon="icons/importArrow.gif"
           id="org.eclipse.ice.client.widgets.wizards.ImportFile"
           name="Import existing files into the workspace">
     </wizard>
     <wizard
           category="org.eclipse.ice.wizards"
-          class="org.eclipse.ice.client.widgets.wizards.ImportItemWizard"
+          class="org.eclipse.ice.client.common.wizards.ImportItemWizard"
           icon="icons/itemImport.gif"
           id="org.eclipse.ice.client.widgets.wizards.ImportItem"
           name="Import existing files into an Item">

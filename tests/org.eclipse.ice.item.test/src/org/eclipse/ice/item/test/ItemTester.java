@@ -42,6 +42,7 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.io.serializable.IOService;
@@ -57,11 +58,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ItemTester is responsible for testing the Item class.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings, Anna Wojtowicz
  */
@@ -78,17 +77,13 @@ public class ItemTester implements ItemListener {
 	private boolean updated = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A string initialized to hold the entire contents of an Item in the
 	 * Painfully Simple Form format. It is used for testing across multiple
 	 * tests and is first converted to an InputStream. It contains two Entries
 	 * who have a third Entry as a parent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static String psfItemString;
 
@@ -177,14 +172,10 @@ public class ItemTester implements ItemListener {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up test Items for the Item tester.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Before
 	public void Before() {
@@ -194,21 +185,17 @@ public class ItemTester implements ItemListener {
 		item = new TestItem(null);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the Item class by creating an Item and checking that
 	 * all of the attributes are either set to the proper default values or to
 	 * the values specified in the constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void createItem() {
-		// begin-user-code
 
 		// Check the ID
 		assertEquals(15, item.getId());
@@ -248,43 +235,35 @@ public class ItemTester implements ItemListener {
 		// Check that it is the name from before
 		assertEquals("Item's Builder", loadedItem.getItemBuilderName());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the Item to see if its name can be changed properly.
 	 * It first sets the name and then checks the value returned by
 	 * Item.getName().
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkName() {
-		// begin-user-code
 
 		// Set the name
 		item.setName("Ozzy");
 		// Check the name
 		assertEquals("Ozzy", item.getName());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of Item to return a Form that is well
 	 * formed for a particular set of Entries. It creates an Item with an
 	 * overloaded Item.fillEntryList() method and checks the Form for these
 	 * Entries.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkForm() {
-		// begin-user-code
 
 		// Local Declarations
 		int i = 0;
@@ -312,21 +291,17 @@ public class ItemTester implements ItemListener {
 		// assertTrue(testForm.contains("Bobo the Drunken Clown"));
 		// assertFalse(testForm.contains("Kurt Russell"));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the Item class by insuring that Forms can be
 	 * properly submitted. It also checks that the status of the Item after the
 	 * Form is submitted is appropriate.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkSubmission() {
-		// begin-user-code
 
 		// Local Declarations
 		Form testForm = null;
@@ -371,23 +346,17 @@ public class ItemTester implements ItemListener {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Item to insure that its equals() operation
 	 * works.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Create DataComponents to test
 		Item item = new Item(null);
@@ -448,23 +417,17 @@ public class ItemTester implements ItemListener {
 		// Assert that hashcodes from unequal objects are different
 		assertTrue(item.hashCode() != unEqualItem.hashCode());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the Item to ensure that its copy() and clone()
 	 * operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		/*
 		 * The following sets of operations will be used to test the
@@ -510,7 +473,6 @@ public class ItemTester implements ItemListener {
 		assertEquals(item.getName(), copyItem.getName());
 		assertEquals(item.getStatus(), copyItem.getStatus());
 
-		// end-user-code
 	}
 
 	/**
@@ -524,7 +486,6 @@ public class ItemTester implements ItemListener {
 	@Test
 	public void checkXMLPersistence() throws NullPointerException,
 			JAXBException, IOException {
-		// begin-user-code
 		/*
 		 * The following sets of operations will be used to test the
 		 * "read and write" portion of the Item. It will demonstrate the
@@ -567,24 +528,18 @@ public class ItemTester implements ItemListener {
 		assertEquals(persistedItem.getName(), loadedItem.getName());
 		assertEquals(persistedItem.getStatus(), loadedItem.getStatus());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the SerializedItem using a Painfully Simple Form
 	 * (PSF) file. It checks the name and type of the Item and tries to create
 	 * and check a SerializedItem initialized from the PSF.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkLoadingFromPSF() {
-		// begin-user-code
 
 		// Local Declarations
 		ByteArrayInputStream stream = null;
@@ -637,11 +592,9 @@ public class ItemTester implements ItemListener {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the SerializedItem to make sure that it properly
 	 * reviews the Entries. It uses the psfItemString to create a SerializedItem
@@ -649,14 +602,10 @@ public class ItemTester implements ItemListener {
 	 * updating the SerializedItem results in the child Entries being marked as
 	 * ready.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEntryReviews() {
-		// begin-user-code
 
 		Form form = null;
 		DataComponent dataComp1 = null, dataComp2 = null;
@@ -707,7 +656,6 @@ public class ItemTester implements ItemListener {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
@@ -728,7 +676,6 @@ public class ItemTester implements ItemListener {
 	@Test
 	public void checkProcessing() throws NullPointerException, JAXBException,
 			IOException, CoreException {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -739,7 +686,8 @@ public class ItemTester implements ItemListener {
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(Item.class);
-
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		
 		// Setup the project
 		try {
 			// Get the project handle
@@ -774,6 +722,7 @@ public class ItemTester implements ItemListener {
 		IOService ioService = new IOService();
 		XMLPersistenceProvider xmlpp = new XMLPersistenceProvider(project);
 		xmlpp.addBuilder(new TestItemBuilder());
+		xmlpp.registerClassProvider(new ICEJAXBClassProvider());
 		xmlpp.start();
 		ioService.addWriter(xmlpp);
 		item.setIOService(ioService);
@@ -891,24 +840,18 @@ public class ItemTester implements ItemListener {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the project setup of the Item to ensure that
 	 * calling the constructor with an IProject and Item.setProject() setup the
 	 * project reference such that Item.hasProject() returns true.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkProjectSetup() {
-		// begin-user-code
 
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -986,25 +929,19 @@ public class ItemTester implements ItemListener {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the Item to accept subscribers and
 	 * notify them of changes by forcing an update using the TestItem. It also
 	 * checks the ability of the Item to receive updates from ICE subsystems,
 	 * remote ICE subsystems and external third-party processes.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUpdates() {
-		// begin-user-code
 
 		// Local Declarations
 		int id = 1, itemId = 2;
@@ -1032,7 +969,6 @@ public class ItemTester implements ItemListener {
 		assertTrue(fakeItem.wasUpdated());
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -1368,14 +1304,10 @@ public class ItemTester implements ItemListener {
 	 * (non-Javadoc)
 	 * 
 	 * @see ItemListener#reloadProjectData()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void reloadProjectData() {
-		// begin-user-code
 
 		updated = true;
 
-		// end-user-code
 	}
 }

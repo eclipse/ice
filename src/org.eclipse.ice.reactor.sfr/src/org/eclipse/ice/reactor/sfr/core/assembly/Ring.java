@@ -17,7 +17,6 @@ import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.Material;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ring class represents a single instance of a material at a particular
  * radial coordinate within a cylindrical location of a SFRPin or SFRod. The
@@ -25,71 +24,47 @@ import org.eclipse.ice.reactor.sfr.core.Material;
  * bottom of the MaterialBlock (or z-displacement) to help compensate for
  * varying types of materials throughout a vertical segment of a pin or rod.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class Ring extends SFRComponent implements Comparable<Ring> {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Material the ring is composed of.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private Material material;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Height of the ring within the material block (z=0 at the bottom of the
 	 * material block); must be equal to or greater than 0.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double height;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Inner radius of the ring, must equal to or greater than zero.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double innerRadius;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Outer radius of the ring; must be greater than zero.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private double outerRadius;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring() {
-		// begin-user-code
 
 		// Set the ring name, description and ID
 		setName("Ring 1");
@@ -103,23 +78,17 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 		outerRadius = 1.0;
 		material = new Material();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor with name specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            Name of the ring.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring(String name) {
-		// begin-user-code
 
 		// Call the nullary constructor
 		this();
@@ -127,16 +96,13 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 		// Set the passed name
 		setName(name);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor with name, material, ring height and outer
 	 * radius specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            Name of the ring.
@@ -148,12 +114,9 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 	 *            Inner radius of the ring. Must be non-negative.
 	 * @param outerRadius
 	 *            Outer radius of the ring. Must be non-negative.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring(String name, Material material, double height,
 			double innerRadius, double outerRadius) {
-		// begin-user-code
 
 		// Call the nullary constructor
 		this();
@@ -165,172 +128,123 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 		setInnerRadius(innerRadius);
 		setOuterRadius(outerRadius);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the ring height (z-displacement within the material block).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param height
 	 *            The height of the ring. Must be non-negative.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setHeight(double height) {
-		// begin-user-code
 
 		// If height is non-negative, set height
 		if (height >= 0.0) {
 			this.height = height;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the ring height (z-displacement within the material block) as a
 	 * double.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The height of the ring.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getHeight() {
-		// begin-user-code
 
 		return height;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the ring inner radius.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param innerRadius
 	 *            The inner radius of the ring. Must be non-negative.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setInnerRadius(double innerRadius) {
-		// begin-user-code
 
 		// If inner radius is non-negative
 		if (innerRadius >= 0.0) {
 			this.innerRadius = innerRadius;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the ring inner radius as a double.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The inner radius of the ring.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getInnerRadius() {
-		// begin-user-code
 
 		return innerRadius;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the ring outer radius.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param outerRadius
 	 *            The outer radius of the ring. Must be non-negative.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setOuterRadius(double outerRadius) {
-		// begin-user-code
 
 		// If outer radius is non-negative
 		if (outerRadius >= 0.0) {
 			this.outerRadius = outerRadius;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the ring's outer radius as a double.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The outer radius of the ring.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getOuterRadius() {
-		// begin-user-code
 
 		return this.outerRadius;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the ring material.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param material
 	 *            The material the ring is composed of. Cannot be null.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setMaterial(Material material) {
-		// begin-user-code
 
 		// If material is non-null
 		if (material != null) {
 			this.material = material;
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the material of the ring.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return A reference to the ring's material.
 	 */
 	public Material getMaterial() {
-		// begin-user-code
 
 		return material;
 
-		// end-user-code
 	}
 
 	/**
@@ -343,8 +257,6 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 	 *            The ring being compared to.
 	 * @return Returns -1 if this ring is inside that ring; +1 if this ring is
 	 *         outside that ring; 0 if the rings overlap.
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int compareTo(Ring ring) {
 
@@ -390,16 +302,13 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashcode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The hashcode of the object.
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Hash based upon superclass hash
 		int hash = super.hashCode();
@@ -412,22 +321,18 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 
 		// Return hash
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Compares the contents of objects and returns true if that are identical.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object being compared against.
 	 * @return Returns true if the both objects are equal, otherwise false.
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Check if otherObject is valid
 		if (otherObject != null && otherObject instanceof Ring) {
@@ -465,21 +370,17 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 			return false;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            The other object to copy the contents of.
 	 */
 	public void copy(Ring otherObject) {
-		// begin-user-code
 
 		// Check if otherObject in invalid
 		if (otherObject == null) {
@@ -495,20 +396,16 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 		material = otherObject.material;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return The newly instantiated object.
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Create a new ring
 		Ring ring = new Ring();
@@ -519,7 +416,6 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 		// Return the new ring
 		return ring;
 
-		// end-user-code
 	}
 
 	/**
@@ -528,13 +424,11 @@ public class Ring extends SFRComponent implements Comparable<Ring> {
 	 */
 	@Override
 	public void accept(ISFRComponentVisitor visitor) {
-		// begin-user-code
 
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 
 		return;
-		// end-user-code
 	}
 }

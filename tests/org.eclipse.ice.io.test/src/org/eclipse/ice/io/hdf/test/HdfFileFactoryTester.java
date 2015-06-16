@@ -28,15 +28,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class tests the HdfFileFactory class.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author els
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Eric J. Lingerfelt
  */
 public class HdfFileFactoryTester {
 
@@ -46,19 +42,13 @@ public class HdfFileFactoryTester {
 	File dataFile = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the openH5File, createH5File, and closeH5File
 	 * operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkFileOperations() {
-		// begin-user-code
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -67,7 +57,7 @@ public class HdfFileFactoryTester {
 		int fileHandle = -1;
 		int newFileHandle = -1;
 		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "ioData";
+				+ "ICETests";
 
 		// Creating a file:
 
@@ -146,6 +136,5 @@ public class HdfFileFactoryTester {
 			dataFile.delete();
 		}
 
-		// end-user-code
 	}
 }

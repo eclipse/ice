@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,9 @@ package org.eclipse.ice.viz.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
-import org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.csv.CSVVizService;
-import org.eclipse.ui.IWorkbench;
+import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * This class is the basic implementation of the IVizServiceFactory in ICE. It
@@ -35,6 +34,13 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	 * The map that stores all of the services.
 	 */
 	private Map<String, IVizService> serviceMap;
+
+	/**
+	 * A reference to the associated preference page's {@link IPreferenceStore}.
+	 * If this has been determined previously, then it should be returned in
+	 * {@link #getPreferenceStore()}.
+	 */
+	private IPreferenceStore preferenceStore = null;
 
 	/**
 	 * The constructor
@@ -63,9 +69,27 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	@Override
 	public void register(IVizService service) {
 		if (service != null) {
+			String name = service.getName();
+
 			// Put the service in service map so it can be retrieved later
-			serviceMap.put(service.getName(), service);
+			serviceMap.put(name, service);
+
+			System.out.println("VizServiceFactory message: " + "Viz service \""
+					+ name + "\" registered.");
+
+			// If the preference for automatically connecting to default viz
+			// service connections is set, establish default connections.
+			if (getPreferenceStore().getBoolean("autoConnectToDefaults")) {
+				if (service.connect()) {
+					System.out.println("VizServiceFactory message: "
+							+ "Viz service \"" + name + "\" connected.");
+				} else {
+					System.out.println("VizServiceFactory message: "
+							+ "Viz service \"" + name + "\" is connecting...");
+				}
+			}
 		}
+		return;
 	}
 
 	/*
@@ -79,7 +103,17 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	public void unregister(IVizService service) {
 		if (service != null) {
 			serviceMap.remove(service.getName());
+			// Try to disconnect the service.
+			if (service.disconnect()) {
+				System.out.println("VizServiceFactory message: "
+						+ service.getName() + "unregistered and disconnected.");
+			} else {
+				System.out.println("VizServiceFactory message: "
+						+ service.getName()
+						+ "unregistered and is currently disconnecting.");
+			}
 		}
+		return;
 	}
 
 	/*
@@ -127,8 +161,16 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		return get("ice-plot");
 	}
 
-	public void setWorkbench(IWorkbench workbench) {
-		
+	/**
+	 * Gets the {@link IPreferenceStore} for the associated preference page.
+	 * 
+	 * @return The {@code IPreferenceStore} whose defaults should be set.
+	 */
+	private IPreferenceStore getPreferenceStore() {
+		if (preferenceStore == null) {
+			// Get the PreferenceStore for the bundle.
+			preferenceStore = new CustomScopedPreferenceStore(getClass());
+		}
+		return preferenceStore;
 	}
-	
 }

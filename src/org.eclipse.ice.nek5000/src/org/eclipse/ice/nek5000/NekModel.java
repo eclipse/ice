@@ -206,22 +206,17 @@ public class NekModel extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation overrides Item.reviewEntries() to review the selected
 	 * example problem and load a different one, if required.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
 	 *            The Form to review
 	 * @return The status
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected FormStatus reviewEntries(Form preparedForm) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus retStatus = FormStatus.ReadyToProcess;
@@ -276,7 +271,6 @@ public class NekModel extends Item {
 		}
 		return retStatus;
 
-		// end-user-code
 	}
 
 	/**

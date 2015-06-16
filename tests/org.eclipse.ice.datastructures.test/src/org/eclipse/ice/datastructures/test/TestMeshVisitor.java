@@ -23,7 +23,6 @@ import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tool for testing whether an {@link IMeshPartVisitor} is visited by an
  * {@link IMeshPart}.
@@ -36,55 +35,40 @@ import org.eclipse.ice.datastructures.form.mesh.Vertex;
  * visited, only {@link #visit(Vertex)} should change the value of the flag
  * {@link #visited}.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jordan H. Deyton
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class TestMeshVisitor implements IMeshPartVisitor {
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This variable should be set to true if one of the visit operations was
 	 * called and false otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected boolean visited = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Gets whether or not the visitor successfully visited the correct
 	 * {@link IMeshPart}.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         True if the visitor successfully visited the correct IMeshPart,
 	 *         false otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean wasVisited() {
 		return visited;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Resets the {@link #visited} flag.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void reset() {
 		visited = false;

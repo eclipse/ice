@@ -25,86 +25,61 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Intermediate class for all geometrical components (i.e. components that have
  * position, direction, etc. in space; they generate a mesh)
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "GeometricalComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GeometricalComponent extends PlantComponent {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Origin (start) of the pipe. Array should contain 3 elements, representing
 	 * (x,y,z) coordinates.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Position")
 	protected double[] position;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Orientation vector of the pipe. Array should contain 3 elements,
 	 * representing (x,y,z) coordinates.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Orientation")
 	protected double[] orientation;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Rotation of the component (in degrees).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "Rotation")
 	protected double rotation;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Number of elements in the component.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "NumberElements")
 	protected int numElements;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GeometricalComponent() {
-		// begin-user-code
 
 		// Set the name, description and ID.
 		setName("Geometrical Component 1");
@@ -125,15 +100,12 @@ public class GeometricalComponent extends PlantComponent {
 		numElements = 1;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Parameterized constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param pos
 	 *            <p>
@@ -147,11 +119,8 @@ public class GeometricalComponent extends PlantComponent {
 	 *            <p>
 	 *            Rotation of the component (in degrees).
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GeometricalComponent(double[] pos, double[] orient, double rot) {
-		// begin-user-code
 
 		// Call the nullary constructor.
 		this();
@@ -162,28 +131,20 @@ public class GeometricalComponent extends PlantComponent {
 		setRotation(rot);
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * @return the position
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double[] getPosition() {
-		// begin-user-code
 		return position;
-		// end-user-code
 	}
 
 	/**
 	 * @param position
 	 *            the position to set
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setPosition(double[] position) {
-		// begin-user-code
 
 		// Check for a valid parameter (non-null 3D vector).
 		if (position != null && position.length == 3) {
@@ -206,28 +167,20 @@ public class GeometricalComponent extends PlantComponent {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * @return the orientation
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double[] getOrientation() {
-		// begin-user-code
 		return orientation;
-		// end-user-code
 	}
 
 	/**
 	 * @param orientation
 	 *            the orientation to set
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setOrientation(double[] orientation) {
-		// begin-user-code
 
 		// Check the parameter is valid (non-null 3D vector).
 		if (orientation != null && orientation.length == 3) {
@@ -250,28 +203,20 @@ public class GeometricalComponent extends PlantComponent {
 							+ "size.");
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * @return the rotation
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getRotation() {
-		// begin-user-code
 		return rotation;
-		// end-user-code
 	}
 
 	/**
 	 * @param rotation
 	 *            the rotation to set
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setRotation(double rotation) {
-		// begin-user-code
 
 		// If the rotation has changed, set it and notify listeners.
 		if (rotation != this.rotation) {
@@ -282,28 +227,20 @@ public class GeometricalComponent extends PlantComponent {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
 	 * @return the numElements
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getNumElements() {
-		// begin-user-code
 		return numElements;
-		// end-user-code
 	}
 
 	/**
 	 * @param numElements
 	 *            the numElements to set
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setNumElements(int numElements) {
-		// begin-user-code
 
 		// Check the number of elements is valid.
 		if (numElements >= 1) {
@@ -319,15 +256,12 @@ public class GeometricalComponent extends PlantComponent {
 					+ "The number of elements must positive.");
 		}
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs an equality check between two Objects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -336,11 +270,8 @@ public class GeometricalComponent extends PlantComponent {
 	 * @return <p>
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// By default, the objects are not equivalent.
 		boolean equals = false;
@@ -368,24 +299,18 @@ public class GeometricalComponent extends PlantComponent {
 		}
 
 		return equals;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs a deep copy and returns a newly instantiated Object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Initialize a new object.
 		GeometricalComponent object = new GeometricalComponent();
@@ -395,25 +320,19 @@ public class GeometricalComponent extends PlantComponent {
 
 		// Return the newly instantiated object.
 		return object;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of otherObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The other object to copy the contents from.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(GeometricalComponent otherObject) {
-		// begin-user-code
 
 		// Check the otherObject is valid.
 		if (otherObject == null) {
@@ -427,24 +346,18 @@ public class GeometricalComponent extends PlantComponent {
 		numElements = otherObject.numElements;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashCode of the Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Call the super's hashCode.
 		int hash = super.hashCode();
@@ -456,31 +369,24 @@ public class GeometricalComponent extends PlantComponent {
 		hash = 31 * hash + numElements;
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Accepts IPlantComponentVisitors to reveal the type of a PlantComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The PlantComponent's visitor.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(IPlantComponentVisitor visitor) {
-		// begin-user-code
 
 		// Only accept valid visitors.
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 		return;
-		// end-user-code
 	}
 }

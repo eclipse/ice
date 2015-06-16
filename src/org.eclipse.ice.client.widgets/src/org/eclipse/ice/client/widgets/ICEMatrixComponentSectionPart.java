@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
@@ -53,7 +52,6 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This class is a subclass of SectionPart from org.eclipse.ui.forms that
  * renders, updates and monitors an ICE MatrixComponent that is part of a
@@ -63,101 +61,74 @@ import org.eclipse.ui.forms.widgets.Section;
  * code for this class contains a private hashmap that is not represented in the
  * model because Jay can not figure out how to show a java.util.hashmap in RSA.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class ICEMatrixComponentSectionPart extends SectionPart implements
 		IUpdateableListener {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This attribute is a reference to an ICE MatrixComponent that stores the
 	 * data that should be displayed by this SectionPart. The MatrixComponent
 	 * will also update the ICESectionPart when its state changes (i.e. -
 	 * becomes "stale" in the Eclipse parlance).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected MatrixComponent matrixComponent;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The TableViewer that is used rendered by the SectionPart.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected TableViewer matrixViewer;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Eclipse Managed Form in which the SectionPart will be rendered.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected IManagedForm parentForm;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Composite in which the TableViewer is drawn.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected Composite sectionClient;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Class used to pass information for the rows in TableComponent to
 	 * TableViewer
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 */
 	private class RowWrapper {
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Holds an ArrayList of Entries in the TableComponent for TableViewer.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		private List<Double> list;
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		private int rowIndex;
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * The Constructor, injects the ArrayList of Entries at this row.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param list
 		 *            <p>
@@ -171,11 +142,9 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Return the ArrayList of Entries for this row.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		public List<Double> getRowWrapper() {
@@ -183,10 +152,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		public void add() {
@@ -194,10 +161,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		public void add(Double value) {
@@ -205,10 +170,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		public void remove() {
@@ -216,10 +179,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		public int getRowIndex() {
@@ -229,34 +190,28 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * ICECellLabelProvider is a subclass of CellLabelProvider that keeps track
 	 * of the current column index. This enables the correct display of tool
 	 * tips that correspond to cells in the table
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 */
 	private class ICECellLabelProvider extends CellLabelProvider {
 
 		//
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * The index of the table column this CellLabelProvider corresponds to.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 */
 		private int tableColumn;
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * The Constructor, used to inject the current column index
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param index
 		 *            <p>
@@ -273,13 +228,11 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Update is called whenever data is entered into the cell. Current
 		 * implementation simply sets the text as what's currently the value on
 		 * the Entry
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param cell
 		 *            <p>
@@ -294,12 +247,10 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Return the tool tip when a MouseHover event occurs. Current
 		 * implementation displays the proper Entry's description attribute.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param element
 		 *            <p>
@@ -313,11 +264,9 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Set the tool tip shift from the Mouse pointer.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param object
 		 * 
@@ -328,11 +277,9 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Set the time it should take to pop up the tool tip.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param object
 		 * 
@@ -343,11 +290,9 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Set the time the tool tip should stay displayed.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param object
 		 * 
@@ -359,23 +304,19 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * ICECellModifier is a realization of the ICellModifier interface that
 	 * enables the customization of how Cell's in a TableViewer can be modified,
 	 * and how the underlying JFace Viewer Model changes upon modification.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 */
 	private class ICECellModifier implements ICellModifier {
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Checks whether the given property of the given element can be
 		 * modified.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param object
 		 * 
@@ -386,11 +327,9 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Returns the value for the given property of the given element.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param object
 		 * 
@@ -412,11 +351,9 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 
 		/**
-		 * <!-- begin-UML-doc -->
 		 * <p>
 		 * Modifies the value for the given property of the given element.
 		 * </p>
-		 * <!-- end-UML-doc -->
 		 * 
 		 * @param object
 		 * 
@@ -473,11 +410,9 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param section
 	 *            <p>
@@ -492,12 +427,9 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 	 *            <p>
 	 *            The ManagedForm for the Section.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEMatrixComponentSectionPart(Section section,
 			FormEditor formEditor, IManagedForm managedForm) {
-		// begin-user-code
 		super(section);
 
 		// Set the ManagedForm
@@ -507,21 +439,15 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 			throw new RuntimeException(
 					"ManagedForm in ICEMatrixComponentSectionPart constructor cannot be null.");
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the TableViewer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupTableViewer() {
-		// begin-user-code
 		// Make sure the client is initialized
 		if (sectionClient == null) {
 			return;
@@ -630,26 +556,20 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		// Applies this instance of GridData to the table
 		matrixViewer.getTable().setLayoutData(tableViewerGridData);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the MatrixComponent that should be rendered, updated
 	 * and monitored by the ICESectionPart.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param matrix
 	 *            <p>
 	 *            The TableComponent that should be rendered by the SectionPart.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setMatrixComponent(MatrixComponent matrix) {
-		// begin-user-code
 		if (matrix == null) {
 			return;
 		}
@@ -658,42 +578,30 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		matrixComponent = matrix;
 		matrixComponent.register(this);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the MatrixComponent that is currently rendered,
 	 * updated and monitored by the ICESectionPart.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The TableComponent that is rendered by the SectionPart.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public MatrixComponent getMatrixComponent() {
-		// begin-user-code
 		return matrixComponent;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation reads the MatrixComponent assigned to this SectionPart and
 	 * renders the view of that data for the user.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void renderSection() {
-		// begin-user-code
 		// Get this SectionPart's reference to the
 		// underlying Section
 		Section section = getSection();
@@ -723,22 +631,16 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		section.setClient(sectionClient);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates the content provider that sets up the rows of the
 	 * TableViewer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void attachContentProvider() {
-		// begin-user-code
 		// Make sure we have a valid TableViewer
 		if (matrixViewer == null) {
 			return;
@@ -763,40 +665,32 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				return (RowWrapper[]) inputElement;
 			}
 		});
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation attaches the CellModifiers to the TableViewer so that
 	 * Cells may be edited.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void attachCellModifiers() {
-		// begin-user-code
 		// Make sure we have a valid TableViewer
 		if (matrixViewer == null) {
 			return;
 		}
 		// Set the TableViewer's Cell Modifier realization
 		matrixViewer.setCellModifier(new ICECellModifier());
-		// end-user-code
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IUpdateableListener#update(Component component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
+	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
 	public void update(IUpdateable component) {
-		// begin-user-code
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -944,22 +838,16 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 				}
 			}
 		});
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operations sets up the add and delete row buttons for the
 	 * TableViewer.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupButtons() {
-		// begin-user-code
 		if (sectionClient == null) {
 			return;
 		}
@@ -1599,6 +1487,5 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 			}
 		}
 
-		// end-user-code
 	}
 }

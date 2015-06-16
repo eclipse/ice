@@ -31,19 +31,14 @@ import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Tests the PrimitiveShape class
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PrimitiveShapeTester {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Checks setting and getting the ShapeType of a PrimitiveShape
 	 * </p>
@@ -54,14 +49,10 @@ public class PrimitiveShapeTester {
 	 * only allowed for new PrimitiveShapes, its final type should be the second
 	 * ShapeType.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkShapeType() {
-		// begin-user-code
 		// Create a new PrimitiveShape and verify that its ShapeType is None
 		PrimitiveShape primitiveShape = new PrimitiveShape();
 		assertEquals(ShapeType.None, primitiveShape.getType());
@@ -96,23 +87,17 @@ public class PrimitiveShapeTester {
 		primitiveShape.setType(ShapeType.Cube);
 		assertEquals(ShapeType.Sphere, primitiveShape.getType());
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the PrimitiveShape to ensure that it can be
 	 * correctly visited by a realization of the IShapeVisitor interface.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkVisitation() {
-		// begin-user-code
 
 		// Instantiate TestShapeVisitor
 		TestShapeVisitor visitor = new TestShapeVisitor();
@@ -124,41 +109,29 @@ public class PrimitiveShapeTester {
 		unknownShape.acceptShapeVisitor((IShapeVisitor) visitor);
 
 		assertEquals(1, visitor.getVisits());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the ability of the PrimitiveShape to update its
 	 * Entries.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkUpdate() {
-		// begin-user-code
 		// Not implemented
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the PrimitiveShape to insure that it can properly
 	 * dispatch notifications when it receives an update that changes its state.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkNotifications() {
-		// begin-user-code
 		// Setup the listener
 		TestComponentListener testComponentListener = new TestComponentListener();
 
@@ -213,7 +186,6 @@ public class PrimitiveShapeTester {
 		assertTrue(testComponentListener.wasNotified());
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -263,23 +235,17 @@ public class PrimitiveShapeTester {
 		// Check contents
 		assertTrue(loadPrimitiveShape.equals(primitiveShape));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the PrimitiveShape to ensure that its equals() and
 	 * hashcode() operations work.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 		// Create Transformation to test
 		PrimitiveShape component = new PrimitiveShape();
 		PrimitiveShape equalComponent = new PrimitiveShape();
@@ -366,23 +332,17 @@ public class PrimitiveShapeTester {
 		assertFalse(component.equals(unequalPropertiesComponent));
 		assertFalse(component.hashCode() == unequalPropertiesComponent
 				.hashCode());
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation tests the construction of the PrimitiveShape class and the
 	 * functionality inherited from ICEObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCreation() {
-		// begin-user-code
 		// Instantiate PrimitiveShape
 		PrimitiveShape primitiveShape = new PrimitiveShape();
 
@@ -415,23 +375,17 @@ public class PrimitiveShapeTester {
 
 		assertTrue(transformation.equals(primitiveShape.getTransformation()));
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation checks the PrimitiveShape to ensure that its copy() and
 	 * clone() operations work as specified.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 		PrimitiveShape clonePrimitiveShape, copyPrimitiveShape;
 
 		// Set up ICEObject stuff for PrimitiveShape
@@ -470,6 +424,5 @@ public class PrimitiveShapeTester {
 		// Check equality of contents
 		assertTrue(copyPrimitiveShape.equals(primitiveShape));
 
-		// end-user-code
 	}
 }

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -29,8 +28,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * This class is a subclass of SectionPart from org.eclipse.ui.forms that
  * renders, updates and monitors an ICE TableComponent that is part of an
  * ICEForm. The ICESectionPart takes place in the IManagedForm lifecycle and
@@ -38,49 +35,24 @@ import org.eclipse.ui.forms.widgets.Section;
  * been updated (i.e. - "gone stale" in the Eclipse parlance). The Java source
  * code for this class contains a private hashmap that is not represented in the
  * model because Jay can not figure out how to show a java.util.hashmap in RSA.
- * </p>
- * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class ICEDataComponentSectionPart extends SectionPart implements
 		IUpdateableListener {
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This attribute is a reference to an ICE DataComponent that stores the
 	 * data that should be displayed by this SectionPart. The DataComponent will
 	 * also update the ICESectionPart when its state changes (i.e. - becomes
 	 * "stale" in the Eclipse parlance).
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DataComponent dataComp;
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Eclipse Managed Form in which the SectionPart will be rendered.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IManagedForm parentForm;
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The FormEditor that is managing all of the Pages and SectionParts.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private ICEFormEditor editor;
 
@@ -95,31 +67,18 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 	private DataComponentComposite dataComposite = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Constructor
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param section
-	 *            <p>
 	 *            The new Section to be managed by the ICESectionPart.
-	 *            </p>
 	 * @param formEditor
-	 *            <p>
 	 *            The FormEditor that is managing all of the Pages and
 	 *            SectionParts.
-	 *            </p>
 	 * @param managedForm
-	 *            <p>
 	 *            The ManagedForm for the Section.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ICEDataComponentSectionPart(Section section,
 			ICEFormEditor formEditor, IManagedForm managedForm) {
-		// begin-user-code
 
 		// Call the parent constructor
 		super(section);
@@ -141,22 +100,13 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation reads the DataComponent assigned to this SectionPart and
 	 * renders the view of that data for the user.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void renderSection() {
-		// begin-user-code
 
 		// Local Declarations
 		final Section section = getSection();
@@ -209,26 +159,16 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 		section.setClient(sectionClient);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the DataComponent that should be rendered, updated
 	 * and monitored by the ICESectionPart.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param component
-	 *            <p>
 	 *            The DataComponent
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setDataComponent(DataComponent component) {
-		// begin-user-code
 
 		// If the Component is not null, store it and register for updates
 		if (component != null) {
@@ -238,42 +178,23 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 			dataComp.register(this);
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation retrieves the DataComponent that is currently rendered,
 	 * updated and monitored by the ICESectionPart.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
-	 *         The DataComponent
-	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @return The DataComponent
 	 */
 	public DataComponent getDataComponent() {
-		// begin-user-code
 		return dataComposite.getDataComponent();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the properties (text, tooltip, etc.) for the Section
 	 * based on the data from the ICE DataComponent.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setSectionProperties() {
-		// begin-user-code
 
 		// Local Declarations
 		Section section = getSection();
@@ -282,25 +203,22 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 		section.setDescription(dataComp.getDescription());
 		section.setText(dataComp.getName());
 
-		// end-user-code
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IUpdateableListener#update(Component component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
+	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
 	public void update(IUpdateable component) {
-		// begin-user-code
 
 		// Make sure the components are the same --- FIXME: Will require a
 		// DataComponent.equals() in the future!
 		if (component == dataComp) {
 			markStale();
 		}
-		// end-user-code
 	}
 
 	/**
@@ -318,6 +236,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 
 		// Refresh the section client to draw any new Entries
 		sectionClient.redraw();
+
 		// Reflow the managed form to correct for any part overlap
 		parentForm.reflow(true);
 

@@ -27,7 +27,6 @@ import org.eclipse.ice.kdd.kddmath.IDataMatrix;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * PinPowerDifference is a subclass of GodfreySubStrategy that takes the user
  * input nuclear reactor pin power data and produces the difference between it
@@ -36,70 +35,50 @@ import org.eclipse.ice.kdd.kddmath.KDDMatrix;
  * as well as the uncertainties in those differences. It also outputs the
  * maximum power difference by axial level.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PinPowerDifference extends GodfreySubStrategy {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the calculated pin power difference matrices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<Integer, ArrayList<KDDMatrix>> difference;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the uncertainties pin power difference matrices.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private HashMap<Integer, ArrayList<KDDMatrix>> uncertaintyDiff;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Reference to the type of difference this sub strategy should calculate.
 	 * This value can be Basic or Relative.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String differenceType;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor. It takes the difference type, which could be Basic or
 	 * Relative, and the loaded pin powers, reference pin powers, and the
 	 * symmetry dependent weights.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param pinPowers
 	 * @param refPinPowers
 	 * @param props
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public PinPowerDifference(
 			HashMap<Integer, ArrayList<IDataMatrix>> pinPowers,
 			HashMap<Integer, ArrayList<IDataMatrix>> refPinPowers,
 			HashMap<String, String> props) {
-		// begin-user-code
 		super(pinPowers, refPinPowers, null);
 		difference = new HashMap<Integer, ArrayList<KDDMatrix>>();
 		uncertaintyDiff = new HashMap<Integer, ArrayList<KDDMatrix>>();
@@ -116,24 +95,18 @@ public class PinPowerDifference extends GodfreySubStrategy {
 				|| !("Relative".equals(differenceType))) {
 			differenceType = "Basic";
 		}
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method allows subclasses to implement a unique clustering or anomaly
 	 * detection algorithm and produce a KDDAnalysisAsset for clients to display
 	 * and manipulate.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean executeStrategy() {
-		// begin-user-code
 
 		// Make sure we have valid data to work with
 		if (loadedPinPowers == null || refPinPowers == null) {
@@ -219,22 +192,16 @@ public class PinPowerDifference extends GodfreySubStrategy {
 
 		// Create this Asset
 		return createAsset();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method is for the creation of this IAnalysisAsset's URI.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private boolean createAsset() {
-		// begin-user-code
 		ArrayList<String> fileContents = new ArrayList<String>();
 		String line = "", contents = "";
 		DecimalFormat formatter = new DecimalFormat("#.####");
@@ -323,43 +290,30 @@ public class PinPowerDifference extends GodfreySubStrategy {
 		uri = file.getLocationURI();
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the pin power difference between the input data and the reference
 	 * data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public HashMap<Integer, ArrayList<KDDMatrix>> getPinPowerDifference() {
-		// begin-user-code
 		return difference;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Return the uncertainty difference between the input data and the
 	 * reference data.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public HashMap<Integer, ArrayList<KDDMatrix>> getUncertaintyDifference() {
-		// begin-user-code
 		return uncertaintyDiff;
-		// end-user-code
 	}
 
 }

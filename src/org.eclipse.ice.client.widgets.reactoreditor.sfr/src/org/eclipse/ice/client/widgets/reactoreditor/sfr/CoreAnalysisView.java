@@ -482,7 +482,7 @@ public class CoreAnalysisView extends AnalysisView implements IGridListener {
 	 * Fills out the parent Composite with information and widgets related to
 	 * this particular IAnalysisView.
 	 * 
-	 * @param parent
+	 * @param container
 	 *            The Composite containing this IAnalysisView.
 	 */
 	@Override

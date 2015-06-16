@@ -6,49 +6,31 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
- * This class builds the BatMLModel. It inherits its operations
- * from ItemBuilder.
- * </p>
- * <!-- end-UML-doc -->
+ * This class builds the BatMLModel. It inherits its operations from
+ * ItemBuilder.
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class BatMLModelBuilder implements ItemBuilder {
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemName()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public String getItemName() {
 		return "BatML Model";
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemType()
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public ItemType getItemType() {
 		return ItemType.Model;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#build(Interface projectSpace)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	/*
+	 * Implements a method from ItemBuilder.
 	 */
 	@Override
 	public Item build(IProject projectSpace) {

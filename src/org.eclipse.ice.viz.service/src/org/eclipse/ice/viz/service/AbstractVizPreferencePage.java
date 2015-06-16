@@ -1,12 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2015- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jordan Deyton
+ *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * This is the base class for visualization service preference pages added to
@@ -74,6 +84,17 @@ public abstract class AbstractVizPreferencePage extends
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 */
+	@Override
+	public void init(IWorkbench workbench) {
+		setDescription(getVizService().getName() + " Preferences");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
 	 */
 	protected IPreferenceStore doGetPreferenceStore() {
@@ -89,8 +110,11 @@ public abstract class AbstractVizPreferencePage extends
 		// for managing multiple PreferenceStores in the same bundle,
 		// AbstractVizPreferenceInitializer's getPreferenceStore() method may
 		// also need to be updated.
-		String id = FrameworkUtil.getBundle(getClass()).getSymbolicName();
-		return new ScopedPreferenceStore(InstanceScope.INSTANCE, id);
+		return new CustomScopedPreferenceStore(getClass());
 	}
 
+	/**
+	 * Gets the IVizService whose preferences are displayed here.
+	 */
+	protected abstract IVizService getVizService();
 }

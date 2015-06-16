@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2012, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.ice.client.widgets;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.ice.client.common.internal.ClientHolder;
@@ -23,6 +24,8 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -36,6 +39,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
@@ -49,11 +53,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IMessageManager;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * This is an subclass of SWT's Composite class made specifically to work with
  * ICE Entries.
@@ -67,90 +72,49 @@ import org.eclipse.ui.forms.IMessageManager;
  * The EntryComposite can post messages about its work with an Entry to a
  * IMessageManager if it is set by calling setMessageManager().
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author gqx
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Gregory M. Lyon, Anna Wojtowicz, Alex McCaskey
  */
 public class EntryComposite extends Composite implements IUpdateableListener {
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * A label that describes the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private Label label;
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * A text field that is used if the Entry type is unspecified.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private Text text;
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * A drop-down menu for the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	private Combo dropDown;
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * A set of buttons for the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	protected final List<Button> buttons;
-	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
-	 * The Entry that is displayed by the EntryComposite.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
-	 */
-	protected Entry entry;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
+	 * A label that describes the Entry.
+	 */
+	private Label label;
+
+	/**
+	 * A text field that is used if the Entry type is unspecified.
+	 */
+	private Text text;
+
+	/**
+	 * A drop-down menu for the Entry.
+	 */
+	private Combo dropDown;
+
+	/**
+	 * A set of buttons for the Entry.
+	 */
+	protected final List<Button> buttons;
+
+	/**
+	 * The Entry that is displayed by the EntryComposite.
+	 */
+	protected Entry entry;
+	
+	/**
+	 * The currently set value of the Entry.
+	 */
+	private String currentSelection;
+
+	/**
 	 * The message manager to which message about the success or failure of
 	 * manipulating the Entry should be posted.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private IMessageManager messageManager;
+
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The name of the message posted to the message manager.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private String messageName;
 
@@ -170,33 +134,25 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * file entries.
 	 */
 	private ControlListener resizeListener = null;
+	
+	/**
+	 * A ControlDecoration that can be added to the EntryComposite if desired.
+	 */
+	private ControlDecoration decoration = null;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * The Constructor
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param parent
-	 *            <p>
 	 *            The parent Composite.
-	 *            </p>
 	 * @param style
-	 *            <p>
 	 *            The style of the EntryComposite.
-	 *            </p>
 	 * @param refEntry
-	 *            <p>
 	 *            An Entry that should be used to create the widget, to update
 	 *            when changed by the user and to be updated from when changed
 	 *            internally by ICE.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public EntryComposite(Composite parent, int style, Entry refEntry) {
-		// begin-user-code
 
 		// Call the super constructor
 		super(parent, style);
@@ -242,11 +198,13 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			}
 		});
 
+		// Get a reference to the current Entry value
+		currentSelection = entry.getValue();
+		
 		// Render the entry
 		render();
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -259,13 +217,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * Creates a label for the EntryComposite.
 	 */
 	private void createLabel() {
-		// begin-user-code
 
 		// Create the Label
 		label = new Label(this, SWT.WRAP);
@@ -274,17 +228,12 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		label.setBackground(getBackground());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+	 * Creates a checkbox for the EntryComposite.
 	 */
 	private void createCheckbox() {
-		// begin-user-code
 
 		// Local Declarations
 		Button tmpButton = null;
@@ -318,7 +267,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						.getAllowedValues().get(0);
 				setEntryValue(value);
 				System.out.println("EntryComposite Message: Updated Entry "
-						+ entry.getName() + " with value=" + entry.getValue());
+						+ entry.getName() + " with value = " + entry.getValue());
 
 				return;
 			}
@@ -327,22 +276,12 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		// Add the button to the list
 		tmpButton.setBackground(getBackground());
 		buttons.add(tmpButton);
-
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation creates buttons on the Composite.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createButtons() {
-		// begin-user-code
 
 		// Local Declarations
 		Button tmpButton = null;
@@ -374,68 +313,66 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation creates a drop-down menu on the Composite.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createDropdown() {
-		// begin-user-code
 
-		// Create a drop-down menu
-		dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL
-				| SWT.H_SCROLL | SWT.READ_ONLY);
-		dropDown.setBackground(getBackground());
+		if (dropDown == null || dropDown.isDisposed()) {
+			// Create a drop-down menu
+			dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE
+					| SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+			dropDown.setBackground(getBackground());
 
-		// Determine the current value of the entry.
-		String currentValue = entry.getValue();
+			// Determine the current value of the entry.
+			String currentValue = entry.getValue();
 
-		// Add the allowed values to the dropdown menu. If the allowed value
-		// matches the current value, select it.
-		List<String> allowedValues = entry.getAllowedValues();
-		for (int i = 0; i < allowedValues.size(); i++) {
-			String allowedValue = allowedValues.get(i);
-			dropDown.add(allowedValue);
-			if (allowedValue.equals(currentValue)) {
-				dropDown.select(i);
+			// Add the allowed values to the dropdown menu. If the allowed value
+			// matches the current value, select it.
+			List<String> allowedValues = entry.getAllowedValues();
+			for (int i = 0; i < allowedValues.size(); i++) {
+				String allowedValue = allowedValues.get(i);
+				dropDown.add(allowedValue);
+				if (allowedValue.equals(currentValue)) {
+					dropDown.select(i);
+				}
+			}
+
+			// Add a selection listener
+			dropDown.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					// Set the value of the Entry
+					setEntryValue(((Combo) e.widget).getText());
+					// Notify any listeners that the selection has changed
+					notifyListeners(SWT.Selection, new Event());
+				}
+			});
+
+		} else {
+			// If the dropDown hasn't been disposed, check if a new AllowedValue
+			// has been added to the Entry
+			List<String> allowedValues = entry.getAllowedValues();
+			List<String> comboValues = Arrays.asList(dropDown.getItems());
+
+			for (int i = 0; i < allowedValues.size(); i++) {
+				String allowedValue = allowedValues.get(i);
+				// Add any new AllowedValues to the dropDown
+				if (!comboValues.contains(allowedValue)) {
+					dropDown.add(allowedValue);
+				}
 			}
 		}
 
-		// Add the listener
-		dropDown.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Notify any listeners that the selection has changed
-				notifyListeners(SWT.Selection, new Event());
-				// Set the value of the Entry
-				setEntryValue(dropDown.getItem(dropDown.getSelectionIndex()));
-			}
-		});
-
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation creates a textfield on the Composite.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createTextfield() {
-		// begin-user-code
 
 		// Create a textfield
 		if (!entry.isSecret()) {
@@ -474,7 +411,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		text.addListener(SWT.DefaultSelection, enterListener);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -484,52 +420,49 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 */
 	private void createBrowseButton() {
 
-		// Create a new button, set the text
-		Button browseButton = new Button(this, SWT.PUSH);
-		browseButton.setText("Browse...");
+		boolean redraw = buttons.isEmpty();
 
-		// Add an event listener that displays a Directory Dialog prompt
-		browseButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Notify any listeners that the selection has changed
-				notifyListeners(SWT.Selection, new Event());
-				// Get the Client
-				IClient client = ClientHolder.getClient();
+		if (redraw) {
+			// Create a new button, set the text
+			Button browseButton = new Button(this, SWT.PUSH);
+			browseButton.setText("Browse...");
 
-				// Create the dialog and get the files
-				FileDialog fileDialog = new FileDialog(getShell());
-				fileDialog.setText("Select a file to import into ICE");
-				String filePath = fileDialog.open();
-				if (filePath != null) {
-					// Import the files
-					File importedFile = new File(filePath);
-					client.importFile(importedFile.toURI());
-					setEntryValue(importedFile.getName());
+			// Add an event listener that displays a Directory Dialog prompt
+			browseButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					// Get the Client
+					IClient client = ClientHolder.getClient();
+					// Open up a file browser
+					FileDialog fileDialog = new FileDialog(getShell());
+					fileDialog.setText("Select a file to import into ICE");
+					String filePath = fileDialog.open();
+					if (filePath != null) {
+						// Import the files
+						File importedFile = new File(filePath);
+						client.importFile(importedFile.toURI());
+						// Set the entry's value to the new file
+						setEntryValue(importedFile.getName());
+					}
+					// Notify any listeners of the selection event
+					notifyListeners(SWT.Selection, new Event());
+					
+					return;
 				}
 
-				return;
-			}
-		});
+			});
 
-		// Add the browse button
-		buttons.add(browseButton);
+			// Add the browse button
+			buttons.add(browseButton);
+		}
 
 		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation renders the SWT widgets for the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void render() {
-		// begin-user-code
 
 		// Local Declarations
 		int numAllowedValues = 0, maxValueLength = 12, maxShortValues = 8;
@@ -680,7 +613,6 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		setLayout(layout);
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -715,19 +647,11 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation directs the EntryComposite to refresh its view of the
 	 * Entry. This should be called in the event that the Entry has changed on
 	 * the file system and the view needs to be updated.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void refresh() {
-		// begin-user-code
 
 		// Dispose of the old widgets
 		if (dropDown != null) {
@@ -756,7 +680,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					+ "This composite has been prematurely disposed!");
 			return;
 		}
-		
+
 		// Remove the resize listener.
 		if (resizeListener != null) {
 			removeControlListener(resizeListener);
@@ -765,54 +689,36 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 		// Re-render the Composite
 		render();
-
+		
 		// Re-draw the Composite
 		layout();
-		
+
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the Message Manager that should be used by the
 	 * EntryComposite to post messages about the Entry. If the Message Manager
 	 * is not set, the EntryComposite will not attempt to post messages.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param manager
-	 *            <p>
 	 *            The Message Manager that the EntryComposite should use.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setMessageManager(IMessageManager manager) {
-		// begin-user-code
 
 		// Set the messageManager
 		messageManager = manager;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation sets the value of the Entry and, if possible and
 	 * necessary, reports to the message manager.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param value
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setEntryValue(String value) {
-		// begin-user-code
 
 		// Set the value and post a message if necessary
 		if (!entry.setValue(value) && messageManager != null) {
@@ -835,6 +741,20 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					text.setFont(font);
 				}
 			}
+
+		} else if (value == null) {
+			
+			if (entry.getValueType().equals(AllowedValueType.Discrete)) {
+				// Set the Entry to the first AllowedValue if it's Discrete
+				if (!entry.getAllowedValues().isEmpty()) {
+					String allowedValue = entry.getAllowedValues().get(0);
+					entry.setValue(allowedValue);
+				}
+			} else {
+				// Otherwise, set the default value
+				entry.setValue(entry.getDefaultValue());
+			}
+
 		} else {
 			// Remove a posted message if necessary
 			if (messageManager != null) {
@@ -850,14 +770,10 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				Font font = new Font(getDisplay(), fontData);
 				text.setFont(font);
 			}
-
 		}
 
 		return;
-		// end-user-code
 	}
-
-	int hitCounter = 0;
 
 	/**
 	 * Listen for updates from the Entry and redraw if needed.
@@ -867,11 +783,78 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		if (component == entry) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					refresh();
+					if (!EntryComposite.this.isDisposed()) {
+						
+						// Refresh the EntryComposite
+						refresh();
+						
+						// Toggle the "unsaved changes" decoration if the entry
+						// value is different
+						if (!EntryComposite.this.entry.getValue()
+								.equals(currentSelection)) {
+							toggleSaveDecoration();
+						}
+						
+						// Update the reference to the Entry's value
+						currentSelection = EntryComposite.this.entry.getValue();
+						
+					} else {
+						entry.unregister(EntryComposite.this);
+					}
 				}
 			});
 		}
-		++hitCounter;
+		return;
+	}
+	
+	/**
+	 * This method is responsible for toggling a ControlDecoration on and off
+	 * on the EntryComposite. The decoration will toggle on if the editor is
+	 * dirty and the selection was recently changed (monitored by 
+	 * {@link EntryComposite#currentSelection}). Otherwise, it will
+	 * toggle off.
+	 */
+	public void toggleSaveDecoration() {
+		
+		if (decoration == null) {
+			// Create a new decoration and message
+			decoration = new ControlDecoration(this, SWT.TOP | SWT.LEFT);
+			final String saveMessage = "The form contains unsaved changes";
+			
+			// Set a description and image
+			decoration.setDescriptionText(saveMessage);
+			Image image = FieldDecorationRegistry.
+					  getDefault().
+					  getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).
+					  getImage();
+			decoration.setImage(image);
+					
+			// Set a listener to hide/show the decoration according to the
+			// editor's state and the current entry value
+			final IEditorPart editor = PlatformUI.getWorkbench()
+			        .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			editor.addPropertyListener(new IPropertyListener() {
+				@Override
+				public void propertyChanged(Object source, int propId) {
+					// Toggle the decoration on if the form is dirty and the
+					// value has changed
+					if (editor != null) {
+						if (editor.isDirty()
+								&& !EntryComposite.this.entry.getValue()
+									.equals(currentSelection)) {
+							// Show the decoration
+							EntryComposite.this.decoration.show();
+						} else if (!editor.isDirty()) {
+							// Hide the decoration
+							EntryComposite.this.decoration.hide();
+						}
+					}
+					
+					return;
+				}	
+			});
+		}
+		
 		return;
 	}
 }

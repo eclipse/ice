@@ -15,39 +15,27 @@ package org.eclipse.ice.reactor.plant;
 import java.io.InputStream;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * Joint for flow.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author w5q
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Anna Wojtowicz
  */
 public class FlowJunction extends Junction {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Nullary constructor (calls superconstructor).
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FlowJunction() {
-		// begin-user-code
 		super();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs an equality check between two Objects.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -56,11 +44,8 @@ public class FlowJunction extends Junction {
 	 * @return <p>
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 		// Ensure the incoming object is not null
 		if (otherObject == null) {
 			return false;
@@ -76,46 +61,34 @@ public class FlowJunction extends Junction {
 		// Verify Junction and ICEObject data are equal
 		// and the inputs and outputs are the same
 		return super.equals(otherObject);
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Performs a deep copy and returns a newly instantiated Object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 		FlowJunction temp = new FlowJunction();
 		temp.copy(this);
 		return temp;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of otherObject.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The other object to copy the contents from.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(FlowJunction otherObject) {
-		// begin-user-code
 		// Make sure other is not null
 		if (otherObject == null) {
 			return;
@@ -124,49 +97,36 @@ public class FlowJunction extends Junction {
 		super.copy(otherObject);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashCode of the Object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 		return super.hashCode();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Accepts PlantComponentVisitors to reveal the type of a PlantComponent.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The PlantComponent's visitor.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(IPlantComponentVisitor visitor) {
-		// begin-user-code
 		if (visitor != null) {
 			visitor.visit(this);
 		}
 
 		return;
-		// end-user-code
 	}
 }

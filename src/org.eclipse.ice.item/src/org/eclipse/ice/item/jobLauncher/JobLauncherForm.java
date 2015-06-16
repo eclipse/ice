@@ -25,7 +25,6 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The JobLauncherForm is a subclass of Form that is specialized to work with
  * the JobLauncher Item. It contains a DataComponents with Entries for any and
@@ -57,11 +56,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * to the Data Component by calling setInputFiles() with the name, description
  * and allowed files.
  * </p>
- * <!-- end-UML-doc -->
  * 
  * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 @XmlRootElement(name = "form")
 public class JobLauncherForm extends Form {
@@ -87,53 +83,36 @@ public class JobLauncherForm extends Form {
 	private boolean parallelComponentEnabled = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the OpenMP Entry.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static final String openMPEntryName = "Number of OpenMP Threads";
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the MPI Entry.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static final String mpiEntryName = "Number of MPI Processes";
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the OpenMP Entry.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private static final String TBBEntryName = "Number of TBB Threads";
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public JobLauncherForm() {
-		// begin-user-code
 
 		// Call the super constructor on Form
 		super();
@@ -164,11 +143,9 @@ public class JobLauncherForm extends Form {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation enables support for MPI that allows a client to set the
 	 * number of threads for the job. A value of zero or less than zero passed
@@ -177,7 +154,6 @@ public class JobLauncherForm extends Form {
 	 * or in between the maximum and minimum. If these conditions are not met,
 	 * it will not be enabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param minProcesses
 	 *            <p>
@@ -193,12 +169,9 @@ public class JobLauncherForm extends Form {
 	 *            <p>
 	 *            The default number of processes for MPI to use.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void enableMPI(int minProcesses, int maxProcesses,
 			int defaultProcesses) {
-		// begin-user-code
 
 		// Local Declarations - Check for negative or zero values
 		final int minProcessesFixed = Math.max(minProcesses, 1);
@@ -246,22 +219,16 @@ public class JobLauncherForm extends Form {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation disables support for MPI. The threading component will
 	 * only be disabled if other threading support is also disabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disableMPI() {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent parallelismComponent = null;
@@ -283,11 +250,9 @@ public class JobLauncherForm extends Form {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation enables support for OpenMP that allows a client to set the
 	 * number of threads for the job. A value of zero or less than zero passed
@@ -296,7 +261,6 @@ public class JobLauncherForm extends Form {
 	 * or in between the maximum and minimum. If these conditions are not met,
 	 * it will not be enabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param minThreads
 	 *            <p>
@@ -313,11 +277,8 @@ public class JobLauncherForm extends Form {
 	 *            The default number of threads that should be allowed for this
 	 *            job.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void enableOpenMP(int minThreads, int maxThreads, int defaultThreads) {
-		// begin-user-code
 
 		// Local Declarations - Check for negative or zero values
 		final int minThreadsFixed = Math.max(minThreads, 1);
@@ -364,22 +325,16 @@ public class JobLauncherForm extends Form {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation disables support for OpenMP. The threading component will
 	 * only be disabled if other threading support is also disabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disableOpenMP() {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent parallelismComponent = null;
@@ -402,11 +357,9 @@ public class JobLauncherForm extends Form {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation enables support for Intel's Thread Building Blocks that
 	 * allows a client to set the number of threads for the job. A value of zero
@@ -415,7 +368,6 @@ public class JobLauncherForm extends Form {
 	 * value must be equal to or in between the maximum and minimum. If these
 	 * conditions are not met, it will not be enabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param minThreads
 	 *            <p>
@@ -432,11 +384,8 @@ public class JobLauncherForm extends Form {
 	 *            The default number of threads that should be allowed for this
 	 *            job.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void enableTBB(int minThreads, int maxThreads, int defaultThreads) {
-		// begin-user-code
 		// Local Declarations - Check for negative or zero values
 		final int minThreadsFixed = Math.max(minThreads, 1);
 		final int maxThreadsFixed = Math.max(maxThreads, 1);
@@ -483,23 +432,17 @@ public class JobLauncherForm extends Form {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation disables support for Intel Thread Building Blocks. The
 	 * threading component will only be disabled if other threading support is
 	 * also disabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disableTBB() {
-		// begin-user-code
 		// Local Declarations
 		DataComponent parallelismComponent = null;
 
@@ -520,29 +463,21 @@ public class JobLauncherForm extends Form {
 
 		return;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets the input files that may be selected in the Form for
 	 * the input type with the specified name. Passing null for the name or file
 	 * list will not make any changes to the Form.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name	Name of the input file type.
 	 * @param desc	Description of the file type.
 	 * @param files	List of files available for the job.
-	 * @param isFileEntry	Flag to indicate if Entry created should be
-	 * 						considered a file entry (ie. have a browse button)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setInputFiles(String name, String desc, 
 			ArrayList<String> files) {
-		// begin-user-code
 
 		// Local Declarations
 		int oldId = 0;
@@ -593,7 +528,6 @@ public class JobLauncherForm extends Form {
 		}
 
 		return;
-		// end-user-code
 	}
 	
 //	/**
@@ -634,21 +568,16 @@ public class JobLauncherForm extends Form {
 	}
 	
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation creates the parallelism component for the Form and returns
 	 * it. It also adds it to the Form.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The parallelism component.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DataComponent createParallelismComponent() {
-		// begin-user-code
 
 		// Local Declarations
 		DataComponent parallelismComponent = new DataComponent();
@@ -684,45 +613,33 @@ public class JobLauncherForm extends Form {
 		parallelComponentEnabled = true;
 
 		return parallelismComponent;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation retrieves the parallelism component from the set and
 	 * returns it. If it is not already in the set of components for the Form
 	 * then it creates it.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The parallelism component.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private DataComponent getParallelismComponent() {
-		// begin-user-code
 
 		return (parallelComponentEnabled) ? (DataComponent) getComponent(parallelId)
 				: createParallelismComponent();
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation removes the parallelism component from the set of
 	 * components in the JobLauncherForm.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void removeParallelismComponent() {
-		// begin-user-code
 
 		// Remove the parallelism component
 		removeComponent(parallelId);
@@ -731,6 +648,5 @@ public class JobLauncherForm extends Form {
 		parallelComponentEnabled = false;
 
 		return;
-		// end-user-code
 	}
 }

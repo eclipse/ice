@@ -18,11 +18,8 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /** 
- * <!-- begin-UML-doc -->
  * <p>An ItemBuilder for building PROTEUS job launchers.</p>
- * <!-- end-UML-doc -->
  * @author Jay Jay Billings
- * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class PROTEUSLauncherBuilder implements ItemBuilder {
 	
@@ -39,38 +36,29 @@ public class PROTEUSLauncherBuilder implements ItemBuilder {
 	/** 
 	 * (non-Javadoc)
 	 * @see ItemBuilder#getItemName()
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getItemName() {
-		// begin-user-code
 		return name;
-		// end-user-code
 	}
 
 	/** 
 	 * (non-Javadoc)
 	 * @see ItemBuilder#getItemType()
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ItemType getItemType() {
-		// begin-user-code
 		return type;
-		// end-user-code
 	}
 
 	/** 
 	 * (non-Javadoc)
 	 * @see ItemBuilder#build(IProject projectSpace)
-	 * @generated "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Item build(IProject projectSpace) {
-		// begin-user-code
 		
 		PROTEUSLauncher launcher = new PROTEUSLauncher(projectSpace);
 		launcher.setName(name);
 		launcher.setItemBuilderName(name);
 		
 		return launcher;
-		// end-user-code
 	}
 }

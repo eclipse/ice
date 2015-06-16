@@ -29,7 +29,7 @@ public class AddReactorPartWizard extends Wizard {
 	/**
 	 * The constructor
 	 * 
-	 * @param selection
+	 * @param selectedElement
 	 */
 	public AddReactorPartWizard(Object selectedElement) {
 

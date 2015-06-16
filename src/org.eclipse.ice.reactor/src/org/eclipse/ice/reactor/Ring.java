@@ -24,7 +24,6 @@ import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The ring class represents a single instance of a material at a particular
  * radial coordinate within a cylindrical location on the rod. The height
@@ -32,72 +31,48 @@ import ncsa.hdf.object.h5.H5Group;
  * of the MaterialBlock (or Z coordinate displacement) to help compensate for
  * varying types of materials across a cylindrical segment of a rod.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class Ring extends LWRComponent implements Comparable<Ring> {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The height of this Ring, which must be greater than zero.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected double height;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The inner radius of this Ring, which must be greater than or equal to
 	 * zero and less than the outer radius.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected double innerRadius;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The outer radius of this Ring, which must be greater than the innerRadius
 	 * value and greater than 0.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected double outerRadius;
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Material for this Ring.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected Material material;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The nullary Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring() {
-		// begin-user-code
 
 		// Set default LWRComponent values
 		this.name = "Ring";
@@ -113,40 +88,31 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		// Setup the LWRComponentType to correct type
 		this.HDF5LWRTag = HDF5LWRTagType.RING;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
 	 *            The name of this Ring.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring(String name) {
-		// begin-user-code
 		// Call nullary constructor
 		this();
 
 		// Pass values to operations
 		this.setName(name);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -165,12 +131,9 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 *            The outer radius of this Ring, which must be greater than the
 	 *            innerRadius value.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring(String name, Material material, double height,
 			double outerRadius) {
-		// begin-user-code
 		// Call nullary constructor
 		this();
 
@@ -180,15 +143,12 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		this.setHeight(height);
 		this.setOuterRadius(outerRadius);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A parameterized Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -212,103 +172,76 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 *            The outer radius of this Ring, which must be greater than the
 	 *            innerRadius value.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Ring(String name, Material material, double height,
 			double innerRadius, double outerRadius) {
-		// begin-user-code
 		// Call lower level nullary constructor
 		this(name, material, height, outerRadius);
 
 		// Set other values
 		this.setInnerRadius(innerRadius);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the height of this Ring.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The height of this Ring.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getHeight() {
-		// begin-user-code
 		return this.height;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the height of this Ring, which must be greater than zero.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param height
 	 *            <p>
 	 *            The height of this Ring, which must be greater than zero.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setHeight(double height) {
-		// begin-user-code
 
 		// If the height is not less than zero, valid
 		if (height > 0.0) {
 			this.height = height;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the inner radius of this Ring.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The inner radius of this Ring.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getInnerRadius() {
-		// begin-user-code
 		return this.innerRadius;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the inner radius of this Ring, which must be greater than or equal
 	 * to zero and less than the outer radius.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param innerRadius
 	 *            <p>
 	 *            The inner radius of this Ring, which must be greater than or
 	 *            equal to zero.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setInnerRadius(double innerRadius) {
-		// begin-user-code
 
 		// If the inner Radius is greater than or equal to 0 AND it is less than
 		// current outer radius
@@ -316,48 +249,36 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 			this.innerRadius = innerRadius;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the outer radius for this Ring. Must be greater than 0 and the
 	 * inner radius.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The outer radius for this Ring
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public double getOuterRadius() {
-		// begin-user-code
 
 		return this.outerRadius;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the outer radius of this Ring, which must be greater than the
 	 * innerRadius value.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param outerRadius
 	 *            <p>
 	 *            The outer radius of this Ring, which must be greater than the
 	 *            innerRadius value.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setOuterRadius(double outerRadius) {
-		// begin-user-code
 
 		// If the outer Radius is greater than 0 AND it is greater than current
 		// inner radius
@@ -365,61 +286,46 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 			this.outerRadius = outerRadius;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the Material for this ring.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The Material for this Ring.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Material getMaterial() {
-		// begin-user-code
 		return this.material;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Sets the material. Can not set to null.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param material
 	 *            <p>
 	 *            The Material for this Ring.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setMaterial(Material material) {
-		// begin-user-code
 
 		// If the material is not null
 		if (material != null) {
 			this.material = material;
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -428,11 +334,8 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		Ring ring;
@@ -461,24 +364,18 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		// Return the retVal
 		return retVal;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declarations
 		int hash = 31;
@@ -495,25 +392,19 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		// Return the hash
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(Ring otherObject) {
-		// begin-user-code
 
 		// If the otherObject is null, return
 		if (otherObject == null) {
@@ -530,24 +421,18 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		// Deep copy Material
 		this.material = (Material) otherObject.material.clone();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		Ring ring = new Ring();
@@ -558,20 +443,15 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		// Return newly instantiated object
 		return ring;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		// begin-user-code
 		boolean flag = true;
 
 		flag &= super.writeAttributes(h5File, h5Group);
@@ -583,18 +463,13 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 				"outerRadius", outerRadius);
 
 		return flag;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
-		// begin-user-code
 
 		// Get the children in super
 		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
@@ -610,19 +485,14 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		children.add(this.material);
 
 		return children;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readAttributes(H5Group h5Group) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean flag = true;
@@ -648,25 +518,19 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		this.outerRadius = outerRadius.doubleValue();
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns an ArrayList of IHdfReadable child objects. If
 	 * this IHdfReadable has no IHdfReadable child objects, then null is
 	 * returned.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param iHdfReadable
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
-		// begin-user-code
 
 		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
 			return false;
@@ -684,40 +548,30 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		}
 
 		return true;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation accepts an ILWRComponentVisitor that can be visit the
 	 * LWRComponent to ascertain its type and perform various type-specific
 	 * operations.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param visitor
 	 *            <p>
 	 *            The visitor
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void accept(ILWRComponentVisitor visitor) {
-		// begin-user-code
 		visitor.visit(this);
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see Comparable#compareTo(Object arg0)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int compareTo(Ring ring) {
-		// begin-user-code
 		// Create some constants
 		final int BEFORE = -1;
 		final int EQUAL = 0;
@@ -738,6 +592,5 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		// Otherwise return equal which means in this context that the rings
 		// overlap
 		return EQUAL;
-		// end-user-code
 	}
 }

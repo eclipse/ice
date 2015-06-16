@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2012, 2014- UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,8 @@ import static org.junit.Assert.fail;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,34 +36,26 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 /**
- * <!-- begin-UML-doc -->
- * <p>
  * The EntryTester is responsible for testing the Entry class.
- * </p>
- * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class EntryTester {
+
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
+	 * An entry used for testing.
 	 */
 	private Entry entry;
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation tests the Entry by creating an Entry using the simple
 	 * constructor. It checks that the name and ID are set to proper values
 	 * while all remaining values are set to the defaults values for an Entry.
 	 * It also checks the ability of the Entry to report whether or not it is
 	 * secret.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void createSimpleEntry() {
-		// begin-user-code
 
 		// Local Declarations
 		String parentName = "Clark Griswald";
@@ -85,6 +77,8 @@ public class EntryTester {
 		assertEquals(0, entry.getAllowedValues().size());
 		// Check the default values
 		assertEquals("", entry.getDefaultValue());
+		// Check the comment
+		assertEquals("", entry.getComment());
 		// Check the readiness state
 		assertEquals(true, entry.isReady());
 		// Check the changed state
@@ -105,21 +99,15 @@ public class EntryTester {
 		assertFalse(entry.isRequired());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation tests the readyState attribute of the Entry by first
 	 * trying to set the readiness state using setReady() and then calling
 	 * isReady().
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkReadiness() {
-		// begin-user-code
 
 		// Local Declarations
 		String parentName = "Clark Griswald";
@@ -221,19 +209,16 @@ public class EntryTester {
 		assertTrue(!entry.isModified());
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation tries to set the value stored in the Entry.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkValue() {
-		// begin-user-code
+
+		boolean changed;
+		final String nullString = null;
 
 		// Create the test Entry, just use the default since the string
 		// doesn't need to be checked for validity.
@@ -302,8 +287,8 @@ public class EntryTester {
 		// the value is not accepted
 		assertEquals(false, entry.setValue("Overburdened."));
 		assertEquals(
-				"'Overburdened.' is an unacceptable value. The value must be one of true, or false.",
-				entry.getErrorMessage());
+				"'Overburdened.' is an unacceptable value. The value must "
+						+ "be one of true or false.", entry.getErrorMessage());
 		// Set value back to make sure the error is false
 		assertEquals(true, entry.setValue("true"));
 		// Check value to make sure no error is set.
@@ -334,9 +319,8 @@ public class EntryTester {
 		assertEquals(true, entry.isModified());
 		// Check an invalid Entry
 		assertEquals(false, entry.setValue("1.88"));
-		assertEquals(
-				"'1.88' is an unacceptable value. The value must be between 0.0 and 0.2.",
-				entry.getErrorMessage());
+		assertEquals("'1.88' is an unacceptable value. The value must be "
+				+ "between 0.0 and 0.2.", entry.getErrorMessage());
 
 		// Recreate the full entry, but this time with
 		// AllowedValueType.Continuous and integers
@@ -363,7 +347,6 @@ public class EntryTester {
 		assertEquals(true, entry.isModified());
 		// Check an invalid Entry
 		assertEquals(false, entry.setValue("3"));
-		// end-user-code
 
 		// Discrete test - error message catching - list of one size
 		entry = new Entry() {
@@ -377,24 +360,51 @@ public class EntryTester {
 			}
 		};
 		assertEquals(false, entry.setValue("false"));
-		assertEquals(
-				"'false' is an unacceptable value. The value must be one of true.",
-				entry.getErrorMessage());
+		assertEquals("'false' is an unacceptable value. The value must be "
+				+ "one of true.", entry.getErrorMessage());
+
+		// Try setting the Entry's value to null. This should not break the
+		// operation (via NPE) or the error message.
+		IEntryContentProvider contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Continuous);
+		ArrayList<String> allowedValues = new ArrayList<String>(2);
+		allowedValues.add("0.0");
+		allowedValues.add("1.0");
+		contentProvider.setAllowedValues(allowedValues);
+		entry = new Entry(contentProvider);
+		// Try setting the value to null, then check the error message.
+		changed = entry.setValue(nullString);
+		assertFalse(changed);
+		assertNotNull(entry.getErrorMessage());
+		assertEquals("'null' is an unacceptable value. The value must be "
+				+ "between 0.0 and 1.0.", entry.getErrorMessage());
+
+		// Try setting the Entry's value to null. This should not break the
+		// operation (via NPE) or the error message.
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Discrete);
+		allowedValues = new ArrayList<String>(2);
+		allowedValues.add("0.0");
+		allowedValues.add("1.0");
+		contentProvider.setAllowedValues(allowedValues);
+		entry = new Entry(contentProvider);
+		// Try setting the value to null, then check the error message.
+		changed = entry.setValue(nullString);
+		assertFalse(changed);
+		assertNotNull(entry.getErrorMessage());
+		assertEquals("'null' is an unacceptable value. The value must be "
+				+ "one of 0.0 or 1.0.", entry.getErrorMessage());
 
 		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the changed state of the Entry by first setting the
 	 * value of the Entry and then making sure that isModified() returns true.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkChanged() {
-		// begin-user-code
+
 		// Create the test Entry
 		entry = new Entry();
 		entry.setId(5);
@@ -406,20 +416,16 @@ public class EntryTester {
 		entry.setValue("Get stoned.");
 		// Make sure that the Entry's change state is true
 		assertEquals(true, entry.isModified());
-		// end-user-code
+
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the Entry class to insure that its copy operation
 	 * works.
-	 * </p>
-	 * <!-- end-UML-doc -->
 	 */
 	@Test
 	public void checkEquality() {
-		// begin-user-code
 
 		// Local Declarations
 		Entry copyOfEntry, otherEntry;
@@ -441,6 +447,7 @@ public class EntryTester {
 		entry.setName("Copy Test Entry");
 		entry.setDescription("Fluffy Bunny");
 		entry.setValue("8675309");
+		entry.setComment("Peanut butter and jelly");
 		entry.setParent(parentName);
 		entry.setTag("ChevyChase");
 		entry.setRequired(true);
@@ -461,6 +468,7 @@ public class EntryTester {
 		copyOfEntry.setName(entry.getName());
 		copyOfEntry.setDescription(entry.getDescription());
 		copyOfEntry.setValue(entry.getValue());
+		copyOfEntry.setComment(entry.getComment());
 		copyOfEntry.setParent(parentName);
 		copyOfEntry.setTag("ChevyChase");
 		copyOfEntry.setRequired(true);
@@ -480,23 +488,15 @@ public class EntryTester {
 		assertEquals(entry.hashCode() == copyOfEntry.hashCode(), false);
 		assertEquals(entry.hashCode() == otherEntry.hashCode(), false);
 
-		// end-user-code
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the Entry to ensure that its copy() and clone()
 	 * operations work as specified.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkCopying() {
-		// begin-user-code
 
 		// Local Declarations
 		String parentName = "Clark Griswold";
@@ -505,8 +505,6 @@ public class EntryTester {
 		 * The following sets of operations will be used to test the
 		 * "clone and copy" portion of Entry.
 		 */
-
-		// Test to show valid usage of copy
 
 		// Setup the base Entry
 		entry = new Entry() {
@@ -524,6 +522,7 @@ public class EntryTester {
 		entry.setName("Copy Test Entry");
 		entry.setDescription("Fluffy Bunny");
 		entry.setValue("8675309");
+		entry.setComment("Peanut butter and jelly");
 		entry.setParent(parentName);
 		entry.setTag("ChevyChase");
 		entry.setRequired(true);
@@ -549,34 +548,26 @@ public class EntryTester {
 		// Check contents - nothing has changed
 		assertTrue(entry.equals(entryCopy));
 
-		// end-user-code
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation checks the ability of the Entry to persist itself to XML
 	 * and to load itself from an XML input stream.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkXMLPersistence() {
-		// begin-user-code
+
 		/*
 		 * The following sets of operations will be used to test the
 		 * "read and write" portion of the Entry. It will demonstrate the
-		 * behavior of reading and writing from an
-		 * "XML (inputStream and outputStream)" file. It will use an annotated
-		 * Entry to demonstrate basic behavior.
+		 * behavior of reading and writing from an "XML (inputStream and
+		 * outputStream)" file. It will use an annotated Entry to demonstrate
+		 * basic behavior.
 		 */
 
 		// Local declarations
-		Entry entry, entry2;
-		String notAnXMLString = "A String not in XML";
+		Entry entry2;
 		String parentName = "Clark Griswald";
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
@@ -600,6 +591,7 @@ public class EntryTester {
 		};
 		myEntry.setId(1);
 		myEntry.setName("Simple Entry");
+		myEntry.setComment("Peanut butter and jelly");
 		myEntry.setParent(parentName);
 		myEntry.setTag("ChevyChase");
 
@@ -620,31 +612,25 @@ public class EntryTester {
 			entry2 = (Entry) xmlHandler.read(classList, inputStream);
 			System.out.println(entry2.getAllowedValues());
 
-			// Check contents - currently broken due to isReady() needs to return a
+			// Check contents - currently broken due to isReady() needs to
+			// return a
 			// class Boolean
-			// not an attribute s4h
+			// not an attribute Scott Forest Hull II
 			assertTrue(myEntry.equals(entry2));
 
 		} catch (NullPointerException | JAXBException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			fail();
 		}
-		// end-user-code
+
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * Checks the Entry(IEntryContentProvider) method.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void checkContentProviderConstructor() {
-		// begin-user-code
+
 		// Local Declarations
 		BasicEntryContentProvider contentProvider = new BasicEntryContentProvider();
 		ArrayList<String> goodValues = new ArrayList<String>();
@@ -696,8 +682,7 @@ public class EntryTester {
 		assertEquals(contentProvider.getDefaultValue(),
 				overriddenEntry.getDefaultValue());
 		assertEquals(contentProvider.getParent(), overriddenEntry.getParent());
-		assertEquals("", overriddenEntry.getValue()); // Resets the value to
-														// empty!
+		assertEquals("", overriddenEntry.getValue()); // Resets value to empty!
 
 		// Change contentProvider on the fly.
 		overriddenEntry = new Entry() {
@@ -726,8 +711,7 @@ public class EntryTester {
 		assertEquals(contentProvider.getDefaultValue(),
 				overriddenEntry.getDefaultValue());
 		assertEquals(contentProvider.getParent(), overriddenEntry.getParent());
-		assertEquals("", overriddenEntry.getValue()); // Resets the value to
-														// empty!
+		assertEquals("", overriddenEntry.getValue()); // Resets value to empty!
 
 		// Null check
 
@@ -743,26 +727,17 @@ public class EntryTester {
 		assertEquals(contentProvider.getDefaultValue(),
 				overriddenEntry.getDefaultValue());
 		assertEquals(contentProvider.getParent(), overriddenEntry.getParent());
-		assertEquals("", overriddenEntry.getValue()); // Resets the value to
-														// empty!
+		assertEquals("", overriddenEntry.getValue()); // Resets value to empty!
 
-		// end-user-code
+		return;
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
-	 * <p>
 	 * This operation tests the Entry to insure that it can properly dispatch
 	 * notifications when its value changes.
-	 * </p>
-	 * <!-- end-UML-doc -->
-	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@Test
 	public void checkNotifications() {
-		// begin-user-code
 
 		// Setup the listener
 		TestComponentListener testComponentListener = new TestComponentListener();
@@ -788,7 +763,5 @@ public class EntryTester {
 		// with the UI. ~JJB 20130224 16:49
 
 		return;
-		// end-user-code
 	}
-
 }

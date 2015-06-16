@@ -21,19 +21,14 @@ import org.eclipse.ice.kdd.kddstrategy.godfreystrategy.GodfreySubStrategy;
 import org.eclipse.ice.kdd.kddstrategy.godfreystrategy.SubStrategyFactory;
 
 /**
- * <!-- begin-UML-doc --> <!-- end-UML-doc -->
  * 
  * @author Alex McCaskey
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
  */
 public class FakeSubStrategyFactory extends SubStrategyFactory {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This method returns the requested GodfreySubStrategy by string name.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 * @param pinPowers
@@ -41,16 +36,12 @@ public class FakeSubStrategyFactory extends SubStrategyFactory {
 	 * @param weights
 	 * @param props
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public GodfreySubStrategy createSubStrategy(String name,
 			HashMap<Integer, ArrayList<IDataMatrix>> pinPowers,
 			HashMap<Integer, ArrayList<IDataMatrix>> refPowers,
 			HashMap<Integer, ArrayList<KDDMatrix>> weights,
 			HashMap<String, String> props) {
-		// begin-user-code
 		return new FakeSubStrategy(pinPowers, refPowers, weights, props);
-		// end-user-code
 	}
 }

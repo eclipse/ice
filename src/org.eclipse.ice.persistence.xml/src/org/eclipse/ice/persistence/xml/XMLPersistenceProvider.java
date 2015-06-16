@@ -14,10 +14,9 @@ package org.eclipse.ice.persistence.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -36,15 +35,15 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.core.iCore.IPersistenceProvider;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.Material;
 
 /**
  * This class implements the IPersistenceProvider interface using the native XML
@@ -148,6 +147,12 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	private Hashtable<Integer, String> itemIdMap = new Hashtable<Integer, String>();
 
 	/**
+	 * The list of IJAXBClassProviders to be used in the construction of the
+	 * JAXBContext.
+	 */
+	private List<IJAXBClassProvider> classProviders;
+
+	/**
 	 * The JAXBContext that is used to create (un)marshalling tools for the XML
 	 * files.
 	 */
@@ -157,6 +162,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * Empty default constructor. No work to do.
 	 */
 	public XMLPersistenceProvider() {
+		classProviders = new ArrayList<IJAXBClassProvider>();
 	}
 
 	/**
@@ -167,7 +173,27 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 *            The project space that should be used instead of the default.
 	 */
 	public XMLPersistenceProvider(IProject projectSpace) {
+		classProviders = new ArrayList<IJAXBClassProvider>();
 		project = projectSpace;
+	}
+
+	/**
+	 * This operation registers an IJAXBClassProvider with the persistence
+	 * provider.
+	 * 
+	 * @param provider
+	 *            The IJAXBClassProvider to be used in creation of the
+	 *            JAXBContext.
+	 */
+	public void registerClassProvider(IJAXBClassProvider provider) {
+		if (provider != null) {
+			System.out
+					.println("[XMLPersistenceProvider] Adding Class Provider "
+							+ provider.getProviderName());
+			classProviders.add(provider);
+		}
+
+		return;
 	}
 
 	/**
@@ -273,7 +299,14 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 		// be handled appropriately. For example, Material does not have a
 		// component so it will not get added to the class list when the Form is
 		// read from all of the Items above.
-		classList.add(Material.class);
+		// classList.add(Material.class);
+
+		// Now add all Classes provided by the registered
+		// IJAXBClassProviders.
+		for (IJAXBClassProvider provider : classProviders) {
+			classList.addAll(provider.getClasses());
+		}
+
 		// Create new JAXB class context and unmarshaller
 		context = JAXBContext.newInstance(classList.toArray(classArray));
 	}
@@ -580,8 +613,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * This operation persists the Item. It logs the persist order with the
 	 * queue and only returns false if an exception is thrown.
 	 * 
-	 * @param The
-	 *            Item to persist.
+	 * @param item
+	 *            The Item to persist.
 	 * @return true if the Item was queued for persistence, false if an
 	 *         exception was caught.
 	 */

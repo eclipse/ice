@@ -33,7 +33,6 @@ import org.eclipse.ice.io.hdf.*;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The LWRGridManager class manages LWRComponents and their GridLocations on a
  * Cartesian grid with an equal number of rows and columns. This class
@@ -45,42 +44,28 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
  * time instead of using LWRComponent's IDataProvider directly. Please see
  * GridLocation for more details on the usage of this delegation class.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author s4h
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Scott Forest Hull II
  */
 public class LWRGridManager extends LWRComponent implements IGridManager {
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private TreeMap<GridLocation, String> lWRComponents;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The size of the rows and columns.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private int size;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * A grid table suffix for reading the dataset.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected String hdf5GridTableSuffix = "'s Grid Table";
 	// Names for groups
@@ -91,11 +76,9 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	private String dataTableString = " dataTable";
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The Constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param size
 	 *            <p>
@@ -103,12 +86,9 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 *            </p>
 	 *            <p>
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 
 	public LWRGridManager(int size) {
-		// begin-user-code
 
 		// Setup LWRComponent Attributes
 		this.name = "LWRGridManager 1";
@@ -127,37 +107,28 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		// Setup the HDF5LWRTagType to correct type
 		this.HDF5LWRTag = HDF5LWRTagType.LWRGRIDMANAGER;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the maximum number of rows or columns.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         Returns the maximum number of rows or columns.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int getSize() {
-		// begin-user-code
 
 		return this.size;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
@@ -166,11 +137,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * @return <p>
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(Object otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		LWRGridManager manager;
@@ -221,24 +189,18 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 		// Return retVal
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declarations
 		int hash = super.hashCode();
@@ -250,25 +212,19 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		// Return the hash
 		return hash;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(LWRGridManager otherObject) {
-		// begin-user-code
 
 		// Local Declarations
 		Iterator<GridLocation> iter;
@@ -298,24 +254,18 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 					otherObject.lWRComponents.get(location));
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Local Declarations
 		LWRGridManager manager = new LWRGridManager(0);
@@ -326,25 +276,20 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		// Return the newly instantiated object
 		return manager;
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IGridManager#getComponentName(GridLocation location)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public String getComponentName(GridLocation location) {
-		// begin-user-code
 
 		// If the location is not null, return the component
 		if (location != null) {
 			return this.lWRComponents.get(location);
 		}
 		return null;
-		// end-user-code
 	}
 
 	/**
@@ -352,11 +297,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * 
 	 * @see IGridManager#addComponent(Component component, GridLocation
 	 *      location)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addComponent(Component component, GridLocation location) {
-		// begin-user-code
 
 		// If the passed args are not null and if the locations are valid, add
 		// to the grid
@@ -369,36 +311,28 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 			this.lWRComponents.put(location, component.getName());
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IGridManager#removeComponent(GridLocation location)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeComponent(GridLocation location) {
-		// begin-user-code
 
 		// If the location is not null, remove location
 		if (location != null) {
 			this.lWRComponents.remove(location);
 		}
 
-		// end-user-code
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see IGridManager#removeComponent(Component component)
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void removeComponent(Component component) {
-		// begin-user-code
 
 		// If the component is not null, remove the associated component
 		if (component != null) {
@@ -417,20 +351,15 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 		}
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		// begin-user-code
 		boolean flag = true;
 
 		flag &= super.writeAttributes(h5File, h5Group);
@@ -438,20 +367,15 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 				size);
 
 		return flag;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5File
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
-		// begin-user-code
 
 		boolean flag = true;
 
@@ -467,7 +391,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 			return true;
 		}
 		return this.writeFeatureSets(h5File, h5Group);
-		// end-user-code
 	}
 
 	//
@@ -484,7 +407,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 */
 	private boolean writeFeatureSets(H5File h5File, H5Group h5Group) {
 
-		// begin-user-code
 
 		// Return if the file or group is null
 		if (h5File == null || h5Group == null) {
@@ -636,7 +558,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
@@ -655,7 +576,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 */
 	private boolean writeTimeAtFeatureSet(H5Group dataH5Group, H5File h5File,
 			LWRDataProvider provider, ArrayList<String> unitsList) {
-		// begin-user-code
 
 		// Iterate over the dataTree and create timesteps for each key in
 		// the tree
@@ -771,24 +691,18 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		// Operation successful, return true
 		return true;
 
-		// end-user-code
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Overrides LWRComponent's readDatasets.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readDatasets(H5Group h5Group) {
-		// begin-user-code
 
 		// Call super
 		boolean flag = super.readDatasets(h5Group);
@@ -920,7 +834,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
@@ -938,7 +851,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 */
 	private boolean readTimeStepsAtFeature(LWRDataProvider provider,
 			ArrayList<H5Group> timeStepsMemberList, String[] arrayStrings) {
-		// begin-user-code
 
 		// Iterate over the time groups
 		for (int j = 0; j < timeStepsMemberList.size(); j++) {
@@ -1033,19 +945,14 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		// Operation successful. Return true
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param h5Group
 	 * @return
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean readAttributes(H5Group h5Group) {
-		// begin-user-code
 
 		// Local Declarations
 		boolean flag = true;
@@ -1068,16 +975,13 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 		return true;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the data provider at the grid location or null if it does not
 	 * exist.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param location
 	 *            <p>
@@ -1086,11 +990,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * @return <p>
 	 *         The provider at that location
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public LWRDataProvider getDataProviderAtLocation(GridLocation location) {
-		// begin-user-code
 
 		if (location == null) {
 			return null;
@@ -1109,16 +1010,13 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		// Not found!
 		return null;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * Returns the list of grid locations at the given name. If none are found,
 	 * returns an empty list.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -1127,11 +1025,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * @return <p>
 	 *         The locations
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<GridLocation> getGridLocationsAtName(String name) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<GridLocation> locations = new ArrayList<GridLocation>();
@@ -1152,7 +1047,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		// Return list
 		return locations;
 
-		// end-user-code
 	}
 
 }

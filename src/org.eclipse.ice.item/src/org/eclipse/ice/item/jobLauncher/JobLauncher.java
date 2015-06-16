@@ -19,25 +19,21 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -48,15 +44,12 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.action.JobLaunchAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
-import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 
 /**
- * <!-- begin-UML-doc -->
  * <p>
  * The JobLauncher class handles local and remote job launch of simulations and
  * other tasks. It implements process(), reviewEntries() and setupForm().
@@ -119,16 +112,12 @@ import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
  * information. The two additional input file types can be added to the job
  * launcher by calling the addInputType() operation.
  * </p>
- * <!-- end-UML-doc -->
  * 
- * @author Jay Jay Billings
- * @generated 
- *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
+ * @author Jay Jay Billings, Anna Wojtowicz
  */
 @XmlRootElement(name = "JobLauncher")
 public class JobLauncher extends Item {
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The name of the executable command that should be launched. This is
 	 * different than the proper name of the executable. For example, the name
@@ -136,54 +125,39 @@ public class JobLauncher extends Item {
 	 * name is vim. In order to use JPA on this object, there is a string limit
 	 * of 1000 characters.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	private String executableCommandName;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The table of hosts on which the job can be launched. The table's columns
 	 * are the hostname, the operating system and the installation directory of
 	 * the executable on that platform. In order to use JPA on this object,
 	 * there is a string limit of 1000 characters.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement(name = "TableComponent")
 	private TableComponent hostsTable;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if the job should be launched with MPI, false otherwise and by
 	 * default.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute()
 	private boolean mpiEnabled = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if the job should be launched OpenMP, false otherwise and by
 	 * default.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	private boolean openMPEnabled = false;
@@ -203,56 +177,40 @@ public class JobLauncher extends Item {
 	private boolean uploadInput;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The set of hosts available for the job. In order to use JPA on this
 	 * object, there is a string limit of 1000 characters.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement
 	private ArrayList<String> hosts;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The list of input files from which a client may select for the job.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlElement
 	private ArrayList<String> inputFiles;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * True if the job should be launched with Intel's Thread Building Blocks
 	 * (TBB), false otherwise and by default.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlAttribute
 	private boolean tbbEnabled = false;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The directory on the remote machine from which files should be
 	 * downloaded.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	@XmlTransient()
 	private String remoteDownloadDir;
@@ -264,12 +222,12 @@ public class JobLauncher extends Item {
 	private Dictionary<String, String> actionDataMap;
 
 	/**
-	 * The set of resources stored in the project and their last modification
-	 * time. It may be different than what is returned by
+	 * The set of resources stored in the JobLauncher's working directory, and 
+	 * their last modification time. It may be different than what is returned by
 	 * IResource.getModificationTime(), which is exactly why we are tracking it.
 	 */
 	@XmlTransient()
-	private HashMap<IResource, Long> projectMemberModMap;
+	private HashMap<IResource, Long> workingDirMemberModMap;
 
 	/**
 	 * This is a utility class used to describe a type of file by the
@@ -311,7 +269,6 @@ public class JobLauncher extends Item {
 	protected HashMap<String, FileType> inputFileNameMap;
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to set the executable name, description and
 	 * command name for the job that should be launched. It may contain one of
@@ -326,7 +283,6 @@ public class JobLauncher extends Item {
 	 * <p>
 	 * Set executable should only be called once.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param execName
 	 *            <p>
@@ -345,12 +301,9 @@ public class JobLauncher extends Item {
 	 *            example, the name of a popular Linux text editor is Vi
 	 *            Improved, but its executable command name is vim.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void setExecutable(String execName, String execDesc,
 			String execCommand) {
-		// begin-user-code
 
 		// Set the executable command name
 		executableCommandName = execCommand;
@@ -362,39 +315,31 @@ public class JobLauncher extends Item {
 		// Set the Form description
 		form.setDescription(execDesc);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor with a project space in which files should be
 	 * manipulated.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param projectSpace
 	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public JobLauncher(IProject projectSpace) {
-		// begin-user-code
 
 		// Call the Item constructor
 		super(projectSpace);
 
 		// Setup the resource list
-		projectMemberModMap = new HashMap<IResource, Long>();
+		workingDirMemberModMap = new HashMap<IResource, Long>();
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This is a private operation used by JobLauncher.process() to create the
 	 * standard output and standard error output files in the project directory.
@@ -402,13 +347,9 @@ public class JobLauncher extends Item {
 	 * called by JobLauncher.process() because it is solely a utility function
 	 * for code cleanliness.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private void createOutputFiles() {
-		// begin-user-code
 
 		// Local Declarations
 		ResourceComponent outputData = (ResourceComponent) form
@@ -473,28 +414,29 @@ public class JobLauncher extends Item {
 					+ actionDataMap.get("stdOutFileName")
 					+ "\n\tStandard Error File = "
 					+ actionDataMap.get("stdErrFileName"));
-			// Add the output files to the resource component
-			addOutputFile(1, stdOutProjectFile, "Standard Output", outputData);
-			addOutputFile(2, stdErrProjectFile, "Standard Error Output",
-					outputData);
+			
 			try {
+				// Add the output files to the resource component
+				addOutputFile(1, stdOutProjectFile, "Standard Output", 
+						outputData);
+				addOutputFile(2, stdErrProjectFile, "Standard Error Output",
+						outputData);
+
 				// Grab the current list of project members that are managed for
 				// this item.
 				IResource[] members = project.members();
 				for (int i = 0; i < members.length; i++) {
 					// Add the resource and its modification time stamp to the
 					// list.
-					projectMemberModMap.put(members[i],
+					workingDirMemberModMap.put(members[i],
 							members[i].getModificationStamp());
 				}
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
+			} catch (CoreException | IOException e) {
 				e.printStackTrace();
 			}
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -507,16 +449,33 @@ public class JobLauncher extends Item {
 		// Local Declarations
 		int lastId;
 		long lastTimeStamp;
-		ResourceComponent resources = (ResourceComponent) form.getComponent(2);
+		ResourceComponent resources = 
+				(ResourceComponent) form.getComponent(2);
 		ArrayList<ICEResource> resourceList = resources.getResources();
 		ArrayList<String> resourceNames = new ArrayList<String>();
-		String fileName;
+		String fileName, workingDirName;
+		IFolder workingDir = null;
+		String separator = System.getProperty("file.separator");
 
 		try {
 			// Refresh the project space
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			
 			// Get the list of members
-			IResource[] latestMembers = project.members();
+			String workingDirPath = getWorkingDirectory();
+			if (workingDirPath != null && !workingDirPath.isEmpty()) {
+				
+				// Get the working directory name
+				int lastDir = workingDirPath.lastIndexOf(separator);
+				workingDirName = workingDirPath.substring(lastDir + 1);	
+				
+				workingDir = 
+						project.getFolder("jobs" + separator + workingDirName);
+				
+			}
+			
+			
+			IResource[] latestMembers = workingDir.members();
 			// Get the names of the current resources
 			for (ICEResource namedResource : resourceList) {
 				resourceNames.add(namedResource.getPath().toASCIIString());
@@ -527,22 +486,24 @@ public class JobLauncher extends Item {
 			// Find the members that are new
 			for (int i = 0; i < latestMembers.length; i++) {
 				IResource currentResource = latestMembers[i];
-				if (!projectMemberModMap.keySet().contains(currentResource)) {
+				if (!workingDirMemberModMap.keySet().contains(currentResource)) {
 					System.out.println("JobLauncher Message: " + "Adding file "
 							+ currentResource.getName() + " to list.");
-					// Create a new resource for the member
-					ICEResource resource = new ICEResource();
-					resource.setName(currentResource.getName());
-					resource.setId(lastId + i + 1);
-					resource.setDescription(currentResource.getName()
-							+ " from " + getName() + " " + getId());
-					resource.setContents(new File(currentResource
-							.getLocationURI()));
-					// Add the resource
-					resources.addResource(resource);
+					// Get the file as an ICEResource object
+					ICEResource resource = getResource(
+							currentResource.getLocation().toOSString());
+					if (resource != null) {
+						// Set the name, ID, description
+						resource.setName(currentResource.getName());
+						resource.setId(lastId + i + 1);
+						resource.setDescription(currentResource.getName()
+								+ " from " + getName() + " " + getId());
+						// Add the resource to the ResourceComponent
+						resources.addResource(resource);
+					}
 				} else {
 					// If we already have the file, get it.
-					lastTimeStamp = projectMemberModMap.get(currentResource);
+					lastTimeStamp = workingDirMemberModMap.get(currentResource);
 					// Get its file full file name
 					fileName = currentResource.getLocationURI().toASCIIString();
 					// Check the time stamp to see if it was modified AND make
@@ -552,50 +513,44 @@ public class JobLauncher extends Item {
 						System.out.println("JobLauncher Message: "
 								+ "Adding file " + currentResource.getName()
 								+ " to list.");
-						// Create a new resource for the member
-						ICEResource resource = new ICEResource();
-						resource.setName(currentResource.getName());
-						resource.setId(lastId + i + 1);
-						resource.setDescription(currentResource.getName()
-								+ " from " + getName() + " " + getId());
-						resource.setContents(new File(currentResource
-								.getLocationURI()));
-						// Add the resource
-						resources.addResource(resource);
+						// Get the file as an ICEResource
+						ICEResource resource = getResource(
+								currentResource.getLocation().toOSString());
+						if (resource != null) {
+							// Set the name, ID, description
+							resource.setName(currentResource.getName());
+							resource.setId(lastId + i + 1);
+							resource.setDescription(currentResource.getName()
+									+ " from " + getName() + " " + getId());
+							// Add the resource to the ResourceComponent
+							resources.addResource(resource);
+						}
 					}
 				}
 			}
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullPointerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation fills the data dictionary for the JobLaunchAction based on
 	 * the contents of the Form.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The status of the operation. It will only equal
 	 *         FormStatus.ReadyToProcess or FormStatus.InfoError and should
 	 *         cause the calling operation to fail if the latter is returned.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	private FormStatus fillActionDataMap() {
-		// begin-user-code
 
 		// Local Declarations
 		String filename = null, hostname = null;
@@ -616,12 +571,20 @@ public class JobLauncher extends Item {
 		// Check the components and fail if they are null
 		if (fileData == null) {
 			return FormStatus.InfoError;
+		} else {
+			// Make sure if there are any additional input files, that they are
+			// all valid too
+			for (Entry entry : fileData.retrieveAllEntries()) {
+				if (entry.getValue() == null || entry.getValue().isEmpty()) {
+					System.out.println("JobLauncher Error: All input file "
+							+ "entries must be set!");
+					return FormStatus.InfoError;
+				}
+			}
 		}
 		// Allocate the map
 		actionDataMap = new Hashtable<String, String>();
 
-		// Get the input file's name
-		fileData = (DataComponent) form.getComponent(1);
 		// Write the file name for debug info
 		for (String entryName : inputFileNameMap.keySet()) {
 			fileEntry = fileData.retrieveEntry(entryName);
@@ -723,7 +686,6 @@ public class JobLauncher extends Item {
 		}
 
 		return FormStatus.ReadyToProcess;
-		// end-user-code
 	}
 
 	/**
@@ -739,28 +701,18 @@ public class JobLauncher extends Item {
 	 *            to the name of the Form.
 	 * @param outputComp
 	 *            The ResourceComponent that contains the data.
+	 * @throws IOException 
 	 */
 	private void addOutputFile(int resourceId, IFile file, String resourceName,
-			ResourceComponent outputComp) {
-
-		// Get the specified resource from the resource component
-		ICEResource outputResource = null;
-		for (ICEResource i : outputComp.getResources()) {
-			if (i.getId() == resourceId) {
-				outputResource = i;
-				break;
-			}
-		}
-		// Add the ICEResource for the file if it does not already exist
-		if (outputResource == null) {
-			// Create the resource
-			try {
-				outputResource = new ICEResource(new File(file.getLocation()
-						.toString()));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ResourceComponent outputComp) throws IOException {
+	
+		// Get the file as an ICEResource (returns null if invalid filepath)
+		ICEResource outputResource = 
+				this.getResource(file.getLocation().toOSString());
+		
+		// If the filepath corresponded to a valid resource, we add it to the
+		// ResourceComponent
+		if (outputResource != null) {
 			System.out.println("Resource location = "
 					+ file.getFullPath().toString());
 			// Set the properties
@@ -770,7 +722,7 @@ public class JobLauncher extends Item {
 			// Add the ICEResource to the Output component
 			outputComp.addResource(outputResource);
 		}
-
+		
 		return;
 	}
 
@@ -806,17 +758,12 @@ public class JobLauncher extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation sets up the JobLauncherForm.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setupForm() {
-		// begin-user-code
 
 		ArrayList<Entry> columnNames = new ArrayList<Entry>();
 		Entry entry1 = new Entry();
@@ -869,16 +816,13 @@ public class JobLauncher extends Item {
 				.retrieveEntry("Input File").register(this);
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation reviews the Entries in the JobLauncherForm to make sure
 	 * that it can actually perform the launch.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param preparedForm
 	 *            <p>
@@ -887,11 +831,8 @@ public class JobLauncher extends Item {
 	 * @return <p>
 	 *         The status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected FormStatus reviewEntries(Form preparedForm) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus status = FormStatus.InfoError;
@@ -925,35 +866,26 @@ public class JobLauncher extends Item {
 		}
 
 		return status;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public JobLauncher() {
-		// begin-user-code
 
 		// Just call the other constructor with a null argument
 		this(null);
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation performs the job launch if the action name is equal to
 	 * "Launch the Job"
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param actionName
 	 *            <p>
@@ -962,11 +894,8 @@ public class JobLauncher extends Item {
 	 * @return <p>
 	 *         The status.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public FormStatus process(String actionName) {
-		// begin-user-code
 
 		// Local Declarations
 		FormStatus localStatus = FormStatus.InfoError;
@@ -1005,7 +934,6 @@ public class JobLauncher extends Item {
 		status = localStatus;
 
 		return status;
-		// end-user-code
 	}
 
 	/**
@@ -1091,14 +1019,12 @@ public class JobLauncher extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation adds a host to the set of available hosts on which the
 	 * JobLauncher can launch the job. If a host is a duplicate, it is not
 	 * added. If the hostname is the same, but the other attributes are
 	 * different, this operation will overwrite an existing host.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param hostname
 	 *            <p>
@@ -1112,11 +1038,8 @@ public class JobLauncher extends Item {
 	 *            <p>
 	 *            The installation path of the executable on the host.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addHost(String hostname, String os, String execInstallPath) {
-		// begin-user-code
 
 		// Local Declarations
 		ArrayList<Entry> row = new ArrayList<Entry>();
@@ -1150,27 +1073,21 @@ public class JobLauncher extends Item {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation removes a host from the set of hosts on which the
 	 * JobLauncher can launch a job. If the host is not in the set, it does
 	 * nothing.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param hostname
 	 *            <p>
 	 *            The hostname to remove from the set of hosts.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void deleteHost(String hostname) {
-		// begin-user-code
 
 		if (hostname != null) {
 
@@ -1187,32 +1104,24 @@ public class JobLauncher extends Item {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hostnames of all the hosts available to this
 	 * JobLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The list of hostnames or null if there are not hosts configured.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public ArrayList<String> getAllHosts() {
-		// begin-user-code
 
 		return hosts;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs the JobLauncher to enable MPI support for this
 	 * task. It expects "mpirun" to be in the users' PATH on the remote machine.
@@ -1221,7 +1130,6 @@ public class JobLauncher extends Item {
 	 * and the default value must be equal to or in between the maximum and
 	 * minimum. If these conditions are not met, it will not be enabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param minProcesses
 	 *            <p>
@@ -1237,12 +1145,9 @@ public class JobLauncher extends Item {
 	 *            <p>
 	 *            The default number of processes for MPI to use.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void enableMPI(int minProcesses, int maxProcesses,
 			int defaultProcesses) {
-		// begin-user-code
 
 		// if form is not set, return
 		if (form == null) {
@@ -1265,21 +1170,15 @@ public class JobLauncher extends Item {
 		}
 		this.mpiEnabled = false;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation disables MPI support for the job.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disableMPI() {
-		// begin-user-code
 
 		// if form is not set, return
 		if (form == null) {
@@ -1291,11 +1190,9 @@ public class JobLauncher extends Item {
 		// Turn off feature
 		this.mpiEnabled = false;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation enables OpenMP support for the job so long as the
 	 * executable was compiled with OpenMP support. A value of zero or less than
@@ -1304,7 +1201,6 @@ public class JobLauncher extends Item {
 	 * be equal to or in between the maximum and minimum. If these conditions
 	 * are not met, it will not be enabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param minThreads
 	 *            <p>
@@ -1321,11 +1217,8 @@ public class JobLauncher extends Item {
 	 *            The default number of threads that should be allowed for this
 	 *            job.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void enableOpenMP(int minThreads, int maxThreads, int defaultThreads) {
-		// begin-user-code
 
 		// If form is not set, return
 		if (form != null) {
@@ -1348,21 +1241,15 @@ public class JobLauncher extends Item {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation disables OpenMP support for the job.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disableOpenMP() {
-		// begin-user-code
 		// if form is not set, return
 		if (form == null) {
 			return;
@@ -1373,11 +1260,9 @@ public class JobLauncher extends Item {
 		// Turn off feature
 		this.openMPEnabled = false;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation enables Intel Thread Building Block (TBB) support for the
 	 * job so long as the executable was compiled with Intel Thread Building
@@ -1387,7 +1272,6 @@ public class JobLauncher extends Item {
 	 * between the maximum and minimum. If these conditions are not met, it will
 	 * not be enabled.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param minThreads
 	 *            <p>
@@ -1404,11 +1288,8 @@ public class JobLauncher extends Item {
 	 *            The default number of threads that should be allowed for this
 	 *            job.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void enableTBB(int minThreads, int maxThreads, int defaultThreads) {
-		// begin-user-code
 
 		// If form is not se
 		if (form != null) {
@@ -1436,22 +1317,16 @@ public class JobLauncher extends Item {
 		}
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation disables Intel Thread Building Block (TBB) support for the
 	 * job.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void disableTBB() {
-		// begin-user-code
 		// if form is not set, return
 		if (form == null) {
 			return;
@@ -1462,17 +1337,14 @@ public class JobLauncher extends Item {
 		// Turn off feature
 		this.tbbEnabled = false;
 
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation is used to check equality between the JobLauncher and
 	 * another JobLauncher. It returns true if the Items are equal and false if
 	 * they are not.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param otherLauncher
 	 *            <p>
@@ -1481,11 +1353,8 @@ public class JobLauncher extends Item {
 	 * @return <p>
 	 *         True if the launchers are equal, false if not
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public boolean equals(JobLauncher otherLauncher) {
-		// begin-user-code
 
 		boolean retVal;
 		// Check if they are the same reference in memory
@@ -1547,24 +1416,18 @@ public class JobLauncher extends Item {
 		}
 
 		return retVal;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation returns the hashcode value of the JobLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         The hashcode
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public int hashCode() {
-		// begin-user-code
 
 		// Local Declaration
 		int hash = 9;
@@ -1620,22 +1483,17 @@ public class JobLauncher extends Item {
 		}
 
 		return hash;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc --> <!-- end-UML-doc -->
 	 * 
 	 * @param otherLauncher
 	 *            <p>
 	 *            This operation performs a deep copy of the attributes of
 	 *            another JobLauncher into the current JobLauncher.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void copy(JobLauncher otherLauncher) {
-		// begin-user-code
 
 		// Return if otherLauncher is null
 		if (otherLauncher == null) {
@@ -1659,39 +1517,30 @@ public class JobLauncher extends Item {
 		this.actionDataMap = otherLauncher.actionDataMap;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation provides a deep copy of the JobLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @return <p>
 	 *         A clone of the JobLauncher.
 	 *         </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public Object clone() {
-		// begin-user-code
 
 		// Create a new instance of JobLauncher and copy the contents
 		JobLauncher clone = new JobLauncher();
 		clone.copy(this);
 
 		return clone;
-		// end-user-code
 	}
 	
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation adds a new input file type to the JobLauncher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param name
 	 *            <p>
@@ -1720,18 +1569,9 @@ public class JobLauncher extends Item {
 	 *            from the project space for this input. If this parameter is
 	 *            null, then it will ignored.
 	 *            </p>
-	 * @param isFileEntry
-	 *            <p>
-	 *            Flags whether or not the Entry created should be handled as a
-	 *            file Entry. Flagging it as a file Entry will cause it to
-	 *            render on the Form with a browse button.
-	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void addInputType(String name, String varName, String description,
 			String fileExtension) {
-		// begin-user-code
 
 		// Don't send junk
 		if (name != null && description != null && varName != null) {
@@ -1754,51 +1594,7 @@ public class JobLauncher extends Item {
 		}
 
 		return;
-		// end-user-code
 	}
-
-	/**
-	 * This method is the same as {@link #addInputType}, except that is does not
-	 * take a boolean flag in the parameters. This method calls the other
-	 * {@link #addInputType} with the boolean isFileEntry flag as false.
-	 * 
-	 * @param name
-	 *            <p>
-	 *            The name of the input file type. ("Input" or
-	 *            "Host configuration" or "Materials information" for example)
-	 *            </p>
-	 * @param varName
-	 *            <p>
-	 *            The name that will be used to refer to this input file when it
-	 *            is referred to by a variable in, for example, the executable
-	 *            string that is used by the JobLauncher. This name must end
-	 *            with the word "file" and, by convention, it should not contain
-	 *            white space or special symbols. If it does not end with the
-	 *            word "file," the JobLauncher will attempt to add it.
-	 *            </p>
-	 *            <p>
-	 *            This parameter may not be null.
-	 *            </p>
-	 * @param description
-	 *            <p>
-	 *            A short description of the input file.
-	 *            </p>
-	 * @param fileExtension
-	 *            <p>
-	 *            The file type extension that should be used to filter files
-	 *            from the project space for this input. If this parameter is
-	 *            null, then it will ignored.
-	 *            </p>
-	 */
-	// public void addInputType(String name, String varName, String description,
-	// String fileExtension) {
-	//
-	// // Call the other method with the boolean flag as false
-	// addInputType(name, varName, description, fileExtension, false);
-	//
-	// return;
-	//
-	// }
 
 	/**
 	 * This method removes an input file type from the Job Launcher. If the file
@@ -1823,7 +1619,6 @@ public class JobLauncher extends Item {
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation will override the default download directory of the
 	 * JobLauncher and set a new directory on the remote machine from which data
@@ -1831,40 +1626,30 @@ public class JobLauncher extends Item {
 	 * should be used with caution. It is only available via subclassing
 	 * JobLauncher, not through the JobProfile Item.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
 	 * @param dir
 	 *            <p>
 	 *            The new directory from which content should be downloaded.
 	 *            </p>
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	protected void setRemoteDownloadDirectory(String dir) {
-		// begin-user-code
 
 		// Set the directory
 		remoteDownloadDir = dir;
 
 		return;
-		// end-user-code
 	}
 
 	/**
-	 * <!-- begin-UML-doc -->
 	 * <p>
 	 * This operation directs the JobLauncher to reload the data it used from
 	 * the project space. It reloads the lists of input files used by the
 	 * launcher.
 	 * </p>
-	 * <!-- end-UML-doc -->
 	 * 
-	 * @generated 
-	 *            "UML to Java (com.ibm.xtools.transform.uml2.java5.internal.UML2JavaTransform)"
 	 */
 	public void reloadProjectData() {
 
-		// begin-user-code
 
 		// Local Declarations
 		String name, desc;
@@ -1888,7 +1673,6 @@ public class JobLauncher extends Item {
 		ArrayList<String> hostnames = getAllHosts();
 
 		return;
-		// end-user-code
 	}
 
 	/**
@@ -1935,9 +1719,10 @@ public class JobLauncher extends Item {
 
 			// If this is an Entry, cast it
 			Entry entry = (Entry) component;
-			if (entry.getName().equals("Input File")) {
-				// The input file has changed, so let's make sure
-				// we are showing the correct related files
+			
+			// Verify this is the "Input File" Entry and it has a valid value
+			if (entry.getName().equals("Input File") 
+					&& !entry.getValue().isEmpty()) {
 
 				// Get the regex from the subclass
 				String regex = getFileDependenciesSearchString();
@@ -1964,7 +1749,7 @@ public class JobLauncher extends Item {
 	 */
 	protected void updateFileDependencies(IFile file, String regex) {
 
-		// Get the old file component and clear the old Entries
+		// Get the file DataComponent and Entry names
 		ArrayList<String> entryNames = new ArrayList<String>();
 		DataComponent fileComp = (DataComponent) form
 				.getComponent(JobLauncherForm.filesId);
@@ -1972,22 +1757,29 @@ public class JobLauncher extends Item {
 			entryNames.add(e.getName());
 		}
 
+		// Remove all old Entries from the Item
 		for (String s : entryNames) {
 			if (!"Input File".equals(s)) {
+				Entry entry = fileComp.retrieveEntry(s);
+				if (inputFileNameMap.containsKey(entry.getName())) {
+					inputFileNameMap.remove(entry.getName());
+				}
+				entryList.remove(entry);
 				fileComp.deleteEntry(s);
 			}
 		}
 
-		// Use the IReader to find all occurrances of the given Regular
-		// Expression
-		// For each of those add a new Input file Entry
-		for (Entry e : getReader().findAll(file, regex)) {
+		// Use the IReader to find all occurrences of the given Regular
+		// Expression for each of those add a new Input file Entry
+		ArrayList<Entry> entriesFound = getReader().findAll(file, regex);
+		for (Entry e : entriesFound) {
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
 					e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
 
 		}
-
+		
+		return;
 	}
 
 	/**

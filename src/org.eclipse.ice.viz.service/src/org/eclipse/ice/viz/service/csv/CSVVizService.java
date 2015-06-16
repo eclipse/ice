@@ -15,8 +15,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.viz.service.IPlot;
-import org.eclipse.ice.client.widgets.viz.service.IVizService;
+import org.eclipse.ice.viz.service.AbstractVizService;
+import org.eclipse.ice.viz.service.IPlot;
 
 /**
  * This class implements the IVizService interface to provide CSV plotting tools
@@ -29,23 +29,29 @@ import org.eclipse.ice.client.widgets.viz.service.IVizService;
  * @author Jay Jay Billings
  * 
  */
-public class CSVVizService implements IVizService {
+public class CSVVizService extends AbstractVizService {
+
+	/**
+	 * The default constructor.
+	 * <p>
+	 * <b>Note:</b> Only OSGi should call this method!
+	 * </p>
+	 */
+	public CSVVizService() {
+		// Add supported CSV extensions.
+		supportedExtensions.add("csv");
+	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getName()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return "ice-plot";
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getVersion()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public String getVersion() {
@@ -53,23 +59,17 @@ public class CSVVizService implements IVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * getConnectionProperties()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public Map<String, String> getConnectionProperties() {
-		// There are no connetion properties, but still an empty map is
+		// There are no connection properties, but still an empty map is
 		// required.
 		return new HashMap<String, String>();
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * setConnectionProperties(java.util.Map)
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public void setConnectionProperties(Map<String, String> props) {
@@ -77,9 +77,7 @@ public class CSVVizService implements IVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#connect()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public boolean connect() {
@@ -88,30 +86,34 @@ public class CSVVizService implements IVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
-	 * .net.URI)
+	 * Overrides a super class method. Tries to create a CSVPlot.
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
-		// Create and load the plot
+		// Call the super method to validate the URI's extension.
+		super.createPlot(file);
+
+		// Create the plot and load it
 		CSVPlot plot = new CSVPlot(file);
 		plot.load();
+
 		return plot;
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * hasConnectionProperties()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public boolean hasConnectionProperties() {
-		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/*
+	 * Implements a method from IVizService.
+	 */
+	@Override
+	public boolean disconnect() {
+		return true;
 	}
 
 }

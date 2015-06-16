@@ -110,7 +110,7 @@ public class GridEditorTools {
 	 *            The index of the octant. 0 starts in the top-right octant, and
 	 *            the indices circle counter-clockwise to the last octant in the
 	 *            bottom right just below the x-axis.
-	 * @returnA List of Points containing the (column, row) coordinates for all
+	 * @return A List of Points containing the (column, row) coordinates for all
 	 *          grid locations in the quadrant.
 	 */
 	public static List<Point> getOctant(int size, int octantIndex) {
