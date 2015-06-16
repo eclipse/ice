@@ -5,22 +5,22 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.connections.ConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.ice.viz.service.paraview.web.HttpParaViewWebClient;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.kitware.vtk.web.VtkWebClient;
-import com.kitware.vtk.web.VtkWebClientHttpImpl;
 
 /**
  * This class provides a {@link ConnectionAdapter} that wraps a
- * {@link VtkWebClient}. It handles connecting and disconnecting as well as
+ * {@link IParaViewWebClient}. It handles connecting and disconnecting as well as
  * updating the required connection properties.
  * 
  * @author Jordan Deyton
  *
  */
-public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
+public class ParaViewConnectionAdapter extends ConnectionAdapter<IParaViewWebClient> {
 
 	// TODO Theoretically, one connection adapter could support multiple views.
 	// These will need to be managed somewhere.
@@ -37,16 +37,16 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 	 * ()
 	 */
 	@Override
-	protected VtkWebClient openConnection() {
+	protected IParaViewWebClient openConnection() {
 
 		// Set the default return value.
-		VtkWebClient client = null;
+		IParaViewWebClient client = null;
 
-		// Try to create and connect to a VtkWebClient.
+		// Try to create and connect to a ParaView web client.
 		boolean connected = false;
 		try {
-			// Create an HTTP implementation of the VtkWebClient.
-			client = new VtkWebClientHttpImpl();
+			// Create an HTTP implementation of the ParaView web client..
+			client = new HttpParaViewWebClient();
 			// Get the host and port from the connection properties.
 			String host = getConnectionProperty("host");
 			String port = getConnectionProperty("port");
@@ -76,11 +76,11 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 	 * (java.lang.Object)
 	 */
 	@Override
-	protected boolean closeConnection(VtkWebClient connection) {
+	protected boolean closeConnection(IParaViewWebClient connection) {
 		boolean closed = false;
 		// To close the connection, we need only tell it to close.
 		if (connection != null) {
-			connection.close();
+			connection.disconnect();
 			closed = true;
 		}
 		return closed;
@@ -128,7 +128,7 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 
 		// TODO Move responsibility for this to the python code.
 
-		VtkWebClient client = getConnection();
+		IParaViewWebClient client = getConnection();
 		JsonArray args = new JsonArray();
 		JsonObject object;
 

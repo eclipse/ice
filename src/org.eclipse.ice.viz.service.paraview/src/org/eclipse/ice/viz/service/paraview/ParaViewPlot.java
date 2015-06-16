@@ -21,9 +21,8 @@ import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.swt.widgets.Composite;
-
-import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class is responsible for embedding ParaView-supported graphics inside
@@ -38,7 +37,7 @@ import com.kitware.vtk.web.VtkWebClient;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPlot extends ConnectionPlot<VtkWebClient> {
+public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 	/**
 	 * A reference to the viz service conveniently cast to its actual type.

@@ -25,11 +25,11 @@ import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class provides a concrete {@link IParaViewProxy} that supports loading
@@ -89,7 +89,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		// TODO By default, it appears that all of the variables are loaded. It
 		// would probably be better to only load them when selected.
 
-		VtkWebClient client = connection.getConnection();
+		IParaViewWebClient client = connection.getConnection();
 		
 		// Loop over the "data" > "arrays" JsonArray and get all point, cell,
 		// and field variables.
@@ -138,7 +138,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	protected boolean setFeatureOnClient(ParaViewConnectionAdapter connection,
 			String category, String feature) {
 		
-		VtkWebClient client = connection.getConnection();
+		IParaViewWebClient client = connection.getConnection();
 		
 		boolean updated = false;
 

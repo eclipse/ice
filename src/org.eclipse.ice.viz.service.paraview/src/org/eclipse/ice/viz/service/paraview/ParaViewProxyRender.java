@@ -21,6 +21,8 @@ import java.util.concurrent.Future;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.ice.viz.service.paraview.web.util.InteractiveRenderPanel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
@@ -32,16 +34,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 
-import com.kitware.vtk.web.VtkWebClient;
-import com.kitware.vtk.web.util.InteractiveRenderPanel;
-
 /**
  * TODO Documentation
  * 
  * @author Jordan Deyton
  *
  */
-public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
+public class ParaViewProxyRender extends ConnectionPlotRender<IParaViewWebClient> {
 
 	// TODO If the data source (i.e. IParaViewProxy) is changed, then a new
 	// render panel will need to be created and pointed to that proxy's view ID.
@@ -60,7 +59,7 @@ public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
 
 	// ---- UI Components ---- //
 	/**
-	 * The embedded panel that is used to render the remote ParaView/VTK view.
+	 * The embedded panel that is used to render the remote ParaView view.
 	 */
 	private InteractiveRenderPanel renderPanel;
 
@@ -112,7 +111,7 @@ public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
 	 */
 	@Override
 	protected Composite createPlotComposite(Composite parent, int style,
-			VtkWebClient connection) throws Exception {
+			IParaViewWebClient connection) throws Exception {
 
 		// Get the current proxy used to open the rendered ParaView file.
 		IParaViewProxy proxy = plot.getParaViewProxy();
@@ -184,7 +183,7 @@ public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
 	 */
 	@Override
 	protected void updatePlotComposite(Composite plotComposite,
-			VtkWebClient connection) throws Exception {
+			IParaViewWebClient connection) throws Exception {
 
 		// Get the current proxy used to open the rendered ParaView file.
 		IParaViewProxy proxy = plot.getParaViewProxy();
@@ -247,7 +246,7 @@ public class ParaViewProxyRender extends ConnectionPlotRender<VtkWebClient> {
 	 *            The {@code ToolBarManager} that will be populated.
 	 */
 	private void fillToolBar(ToolBarManager toolBar,
-			final VtkWebClient connection) {
+			final IParaViewWebClient connection) {
 
 		plotTypeTree = new ActionTree("Plot Types");
 		toolBar.add(plotTypeTree.getContributionItem());

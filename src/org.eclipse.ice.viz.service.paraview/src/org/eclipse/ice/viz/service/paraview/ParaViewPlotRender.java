@@ -11,6 +11,8 @@ import java.util.Set;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.ice.viz.service.paraview.web.util.InteractiveRenderPanel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
@@ -25,17 +27,15 @@ import org.eclipse.swt.widgets.ToolBar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.kitware.vtk.web.VtkWebClient;
-import com.kitware.vtk.web.util.InteractiveRenderPanel;
 
-public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
+public class ParaViewPlotRender extends ConnectionPlotRender<IParaViewWebClient> {
 
 	// TODO Use a thread to throttle the resize events.
 
 	/**
 	 * The associated plot's connection adapter.
 	 */
-	private final IConnectionAdapter<VtkWebClient> adapter;
+	private final IConnectionAdapter<IParaViewWebClient> adapter;
 
 	/**
 	 * The {@code ToolBarManager} that will contain the plot actions that can
@@ -208,7 +208,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 			// Create a LinkedHashSet so the order from ParaView is preserved.
 			representations = new LinkedHashSet<String>();
 
-			VtkWebClient connection = adapter.getConnection();
+			IParaViewWebClient connection = adapter.getConnection();
 			JsonArray args;
 			JsonObject object;
 
@@ -281,7 +281,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 */
 	@Override
 	protected Composite createPlotComposite(Composite parent, int style,
-			VtkWebClient connection) throws Exception {
+			IParaViewWebClient connection) throws Exception {
 
 		// Create a new view on the ParaView server if one does not already
 		// exist. We will need the corresponding view, file proxy, and
@@ -368,7 +368,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 */
 	@Override
 	protected void updatePlotComposite(Composite plotComposite,
-			VtkWebClient connection) throws Exception {
+			IParaViewWebClient connection) throws Exception {
 
 		// Note: When checking the current settings for the rendering, we have
 		// to validate them after fetching them, as it is possible to enter an
@@ -453,7 +453,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 *            The {@code ToolBarManager} that will be populated.
 	 */
 	private void fillToolBar(ToolBarManager toolBar,
-			final VtkWebClient connection) {
+			final IParaViewWebClient connection) {
 
 		plotTypeTree = new ActionTree("Plot Types");
 		toolBar.add(plotTypeTree.getContributionItem());
@@ -595,7 +595,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 *             If the connection is invalid or the command could not be
 	 *             completed.
 	 */
-	private void refreshWidget(boolean render, VtkWebClient connection)
+	private void refreshWidget(boolean render, IParaViewWebClient connection)
 			throws Exception {
 		JsonArray args = new JsonArray();
 		args.add(new JsonPrimitive(viewId));
@@ -626,7 +626,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 *             completed.
 	 */
 	private void refreshPlotType(String plotCategory, String plotType,
-			VtkWebClient connection) throws Exception {
+			IParaViewWebClient connection) throws Exception {
 
 		JsonArray args = new JsonArray();
 		JsonObject object;
@@ -733,7 +733,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 	 *             completed.
 	 */
 	private void refreshRepresentation(String representation,
-			VtkWebClient connection) throws Exception {
+			IParaViewWebClient connection) throws Exception {
 
 		JsonArray args = new JsonArray();
 

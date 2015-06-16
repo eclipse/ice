@@ -35,13 +35,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class tests the basic features provided by the
@@ -74,7 +75,7 @@ public class AbstractParaViewProxyTester {
 	 * A fake ParaView web client. This is the same one contained in
 	 * {@link #connection}.
 	 */
-	private FakeVtkWebClient fakeClient;
+	private FakeParaViewWebClient fakeClient;
 
 	/**
 	 * The connection adapter that should be used by the proxy.
@@ -109,7 +110,7 @@ public class AbstractParaViewProxyTester {
 		fakeProxy.properties.put("australia", createSet("canberra"));
 
 		// Set up the fake client.
-		fakeClient = new FakeVtkWebClient();
+		fakeClient = new FakeParaViewWebClient();
 
 		// Add a test response for creating a view. This is required when
 		// "opening" the proxy's file.
@@ -127,7 +128,7 @@ public class AbstractParaViewProxyTester {
 		// Establish a valid ParaView connection that is connected.
 		connection = new ParaViewConnectionAdapter() {
 			@Override
-			protected VtkWebClient openConnection() {
+			protected IParaViewWebClient openConnection() {
 				// Point the connection to localhost.
 				setConnectionProperty("host", "localhost");
 				// Return the fake client.
@@ -188,7 +189,7 @@ public class AbstractParaViewProxyTester {
 		// Create a remote URI and remote connection for testing.
 		final ParaViewConnectionAdapter remoteConnection = new ParaViewConnectionAdapter() {
 			@Override
-			protected VtkWebClient openConnection() {
+			protected IParaViewWebClient openConnection() {
 				// Point the connection to localhost.
 				setConnectionProperty("host", "remoteHost");
 				// Return the fake client.
@@ -926,39 +927,39 @@ public class AbstractParaViewProxyTester {
 		public final Map<String, Set<String>> properties;
 
 		/**
-		 * Whether or not {@link #openProxyOnClient(VtkWebClient, String)} was
+		 * Whether or not {@link #openProxyOnClient(IParaViewWebClient, String)} was
 		 * called.
 		 */
 		public final AtomicBoolean openImplCalled = new AtomicBoolean();
 		/**
-		 * Whether or not {@link #findFeatures(VtkWebClient)} was called.
+		 * Whether or not {@link #findFeatures(IParaViewWebClient)} was called.
 		 */
 		public final AtomicBoolean findFeaturesCalled = new AtomicBoolean();
 		/**
-		 * Whether or not {@link #findProperties(VtkWebClient)} was called.
+		 * Whether or not {@link #findProperties(IParaViewWebClient)} was called.
 		 */
 		public final AtomicBoolean findPropertiesCalled = new AtomicBoolean();
 		/**
 		 * Whether or not
-		 * {@link #setFeatureOnClient(VtkWebClient, String, String)} was called.
+		 * {@link #setFeatureOnClient(IParaViewWebClient, String, String)} was called.
 		 */
 		public final AtomicBoolean setFeatureImplCalled = new AtomicBoolean();
 		/**
 		 * Whether or not
-		 * {@link #setPropertyOnClient(VtkWebClient, String, String)} was
+		 * {@link #setPropertyOnClient(IParaViewWebClient, String, String)} was
 		 * called.
 		 */
 		public final AtomicBoolean setPropertyImplCalled = new AtomicBoolean();
 
 		/**
 		 * If true, then
-		 * {@link #setFeatureOnClient(VtkWebClient, String, String)} will "fail"
+		 * {@link #setFeatureOnClient(IParaViewWebClient, String, String)} will "fail"
 		 * and return false, otherwise it will "succeed" and return true.
 		 */
 		public boolean failToSetFeature = false;
 		/**
 		 * If true, then
-		 * {@link #setPropertyOnClient(VtkWebClient, String, String)} will
+		 * {@link #setPropertyOnClient(IParaViewWebClient, String, String)} will
 		 * "fail" and return false, otherwise it will "succeed" and return true.
 		 */
 		public boolean failToSetProperty = false;

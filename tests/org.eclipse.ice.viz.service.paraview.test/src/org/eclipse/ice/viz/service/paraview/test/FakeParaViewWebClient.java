@@ -24,13 +24,14 @@ import java.util.concurrent.Future;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.kitware.vtk.web.VtkWebClient;
 
 /**
- * This class provides a fake {@link VtkWebClient} for testing purposes only. It
+ * This class provides a fake {@link IParaViewWebClient} for testing purposes only. It
  * does not actually establish a connection. To imitate a working connection,
  * the {@link #responseMap} should be updated to include supported action names
  * mapped to {@code Callable}s that return {@link JsonObject}s with the desired
@@ -39,7 +40,7 @@ import com.kitware.vtk.web.VtkWebClient;
  * @author Jordan Deyton
  *
  */
-public class FakeVtkWebClient implements VtkWebClient {
+public class FakeParaViewWebClient implements IParaViewWebClient {
 
 	/**
 	 * A map of responses to RPC methods. This is used to produce a test
@@ -56,7 +57,7 @@ public class FakeVtkWebClient implements VtkWebClient {
 	 * The default constructor. {@link #responseMap} is initialized, but left
 	 * empty.
 	 */
-	public FakeVtkWebClient() {
+	public FakeParaViewWebClient() {
 		requestExecutor = Executors.newSingleThreadExecutor();
 
 		responseMap = new HashMap<String, Callable<JsonObject>>();
@@ -152,8 +153,9 @@ public class FakeVtkWebClient implements VtkWebClient {
 	 * Does nothing.
 	 */
 	@Override
-	public void close() {
+	public Future<Boolean> disconnect() {
 		// Nothing to do.
+		return null;
 	}
 
 }

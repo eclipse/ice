@@ -24,9 +24,8 @@ import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapte
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
-
-import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class is responsible for providing a service to connect to (or launch)
@@ -51,7 +50,7 @@ public class ParaViewVizService extends AbstractVizService {
 	/**
 	 * The manager for all of the ParaView connections.
 	 */
-	private final ConnectionManager<VtkWebClient> connections;
+	private final ConnectionManager<IParaViewWebClient> connections;
 
 	/**
 	 * The factory of builders used to get {@link IParaViewProxy}s for
@@ -71,7 +70,7 @@ public class ParaViewVizService extends AbstractVizService {
 		instance = this;
 
 		// Set up the connection manager.
-		connections = new ConnectionManager<VtkWebClient>() {
+		connections = new ConnectionManager<IParaViewWebClient>() {
 			@Override
 			protected CustomScopedPreferenceStore getPreferenceStore() {
 				return (CustomScopedPreferenceStore) ParaViewVizService.this
@@ -84,7 +83,7 @@ public class ParaViewVizService extends AbstractVizService {
 			}
 
 			@Override
-			protected IConnectionAdapter<VtkWebClient> createConnectionAdapter() {
+			protected IConnectionAdapter<IParaViewWebClient> createConnectionAdapter() {
 				return new ParaViewConnectionAdapter();
 			}
 		};

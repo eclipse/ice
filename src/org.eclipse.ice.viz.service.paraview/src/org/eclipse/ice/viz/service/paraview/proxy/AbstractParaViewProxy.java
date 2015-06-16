@@ -30,11 +30,11 @@ import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.kitware.vtk.web.VtkWebClient;
 
 /**
  * This class provides a basic implementation of {@link IParaViewProxy} and
@@ -491,7 +491,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 			String fullPath) {
 		boolean opened = false;
 
-		VtkWebClient client = connection.getConnection();
+		IParaViewWebClient client = connection.getConnection();
 
 		// The argument array must contain the full path to the file.
 		JsonArray args = new JsonArray();
@@ -613,7 +613,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 			protected boolean setValueOnClient(String value,
 					ParaViewConnectionAdapter connection) {
 
-				VtkWebClient client = connection.getConnection();
+				IParaViewWebClient client = connection.getConnection();
 				boolean updated = false;
 
 				// Set up the arguments to pv.vcr.action, which takes a single
@@ -664,7 +664,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 			protected boolean setValueOnClient(String value,
 					ParaViewConnectionAdapter connection) {
 
-				VtkWebClient client = connection.getConnection();
+				IParaViewWebClient client = connection.getConnection();
 
 				boolean updated = false;
 
