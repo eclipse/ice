@@ -38,6 +38,7 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
+import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 
 /**
  * The MOOSE Item represents a unification of the MOOSEModel and MOOSELauncher.
@@ -77,9 +78,6 @@ public class MOOSE extends Item {
 	@XmlTransient()
 	private TreeComposite modelTree;
 
-	@XmlTransient()
-	private ArrayList<TreeComposite> variables;
-
 	/**
 	 * Nullary constructor.
 	 */
@@ -114,7 +112,6 @@ public class MOOSE extends Item {
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
 
-		variables = new ArrayList<TreeComposite>();
 	}
 
 	/**
@@ -399,36 +396,12 @@ public class MOOSE extends Item {
 		// Register this Item as a listener to the Variables block
 		// this is so we can use the variables to populate things like
 		// kernel variable entries.
-		TreeComposite variablesTree = getTreeByName("Variables");
-		update(variablesTree);
-		variablesTree.register(this);
+		getTreeByName("Variables").register(this);
+		getTreeByName("AuxVariables").register(this);
 		modelTree.register(this);
 		registered = true;
 
 		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.item.Item#update(org.eclipse.ice.item.messaging.Message)
-	 */
-	@Override
-	public boolean update(Message message) {
-
-		super.update(message);
-
-		String type = message.getType();
-		String text = message.getMessage();
-
-		if ("FILE_CREATED".equals(type)) {
-
-		} else if ("MESSAGE_POSTED".equals(type)) {
-
-		}
-
-		return true;
 	}
 
 	/*
@@ -461,107 +434,21 @@ public class MOOSE extends Item {
 				}
 			}
 
-			// WE SHOULD ALSO LISTEN TO THE VARIABLE BLOCK TO DETERMINE ALLOWED
-			// VALUES FOR THE KERNEL BLOCKS...
 		} else if (updateable instanceof TreeComposite) {
+			// If this is a tree composite we should reset our variables
 			TreeComposite tree = (TreeComposite) updateable;
+			Thread varThread = new Thread(new Runnable() {
 
-			if (tree.getName().equals("Variables")
-					|| (tree.getParent() != null && tree.getParent().getName()
-							.equals("Variables"))) {
-				System.out.println("Variables " + tree.getName()
-						+ " was updated!");
-
-				// Check the case where the user has deleted a variable
-				if (tree.getName().equals("Variables")
-						&& tree.getNumberOfChildren() < variables.size()) {
-					variables.clear();
+				@Override
+				public void run() {
+					new MOOSEFileHandler().setupVariables(modelTree);
+					new MOOSEFileHandler().setupAuxVariables(modelTree);
 				}
-
-				// Populate the list of variable nodes
-				for (int i = 0; i < tree.getNumberOfChildren(); i++) {
-					TreeComposite variable = tree.getChildAtIndex(i);
-					if (!variables.contains(variable)) {
-						variables.add(variable);
-						variable.register(this);
-					}
-				}
-
-				// Update all variable entries in the tree
-				// to only contain available variables.
-				updateAllVariableEntries();
-
-			} else {
-				BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-						tree);
-				while (iter.hasNext()) {
-					updateBlockVariableEntries(iter.next());
-				}
-			}
-		}
-	}
-
-	/**
-	 * This method updates the given TreeComposite with the proper list of
-	 * Variables if it has a 'variable' Entry.
-	 * 
-	 * @param block
-	 */
-	private void updateBlockVariableEntries(TreeComposite block) {
-		if (!block.getDataNodes().isEmpty()) {
-			DataComponent data = (DataComponent) block.getDataNodes().get(0);
-
-			if (data.contains("variable")) {
-				ArrayList<String> valueList = new ArrayList<String>();
-				Entry variableEntry = data.retrieveEntry("variable");
-				String currentValue = variableEntry.getValue();
-				for (TreeComposite var : variables) {
-					valueList.add(var.getName());
-				}
-
-				if (!valueList.contains(currentValue)
-						&& !currentValue.equals("Create a Variable")) {
-					valueList.add(currentValue);
-				}
-
-				// Create a new content provider with the new file
-				// in the allowed values list
-				IEntryContentProvider prov = new BasicEntryContentProvider();
-				prov.setAllowedValueType(AllowedValueType.Discrete);
-
-				if (valueList.isEmpty()) {
-					valueList.add("Create a Variable");
-				}
-
-				// Finish setting the allowed values and default
-				// value
-				prov.setAllowedValues(valueList);
-
-				// Set the new provider
-				variableEntry.setContentProvider(prov);
-
-				variableEntry.setValue(currentValue);
-
-				if (!valueList.contains(variableEntry.getValue())) {
-					variableEntry.setValue(valueList.get(0));
-				}
-			}
+				
+			});
+			varThread.start();
 
 		}
-	}
-
-	/**
-	 * This method walks the tree and updates all Entries that have the name
-	 * 'variable' with the proper list of available Variables.
-	 */
-	private void updateAllVariableEntries() {
-		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-				modelTree);
-		while (iter.hasNext()) {
-			TreeComposite child = iter.next();
-			updateBlockVariableEntries(child);
-		}
-		return;
 	}
 
 	/**
@@ -664,4 +551,26 @@ public class MOOSE extends Item {
 		return;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.item.Item#update(org.eclipse.ice.item.messaging.Message)
+	 */
+	@Override
+	public boolean update(Message message) {
+
+		super.update(message);
+
+		String type = message.getType();
+		String text = message.getMessage();
+
+		if ("FILE_CREATED".equals(type)) {
+
+		} else if ("MESSAGE_POSTED".equals(type)) {
+
+		}
+
+		return true;
+	}
 }

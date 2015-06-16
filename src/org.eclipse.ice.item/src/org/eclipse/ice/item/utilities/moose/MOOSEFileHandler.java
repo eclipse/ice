@@ -30,9 +30,12 @@ import java.util.Stack;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.datastructures.ICEObject.Component;
@@ -802,6 +805,12 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					if (!fileExt.toLowerCase().equals("yaml")) {
 						// Set the active data nodes
 						setActiveDataNodes(rootNode);
+
+						// Set the variable entries in the tree to
+						// be discrete based on the available Variables and
+						// AuxVariables
+						setupVariables(rootNode);
+						setupAuxVariables(rootNode);
 					}
 
 					// Set the Identifiable data on the TreeComposite
@@ -826,6 +835,121 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/**
+	 * This method converts the non-AuxVariable 'variable' Entries in the tree
+	 * to contain only the discrete list of available Variable sub-blocks.
+	 * 
+	 * @param tree
+	 *            The root node of the Moose tree
+	 */
+	public void setupVariables(TreeComposite tree) {
+
+		// Local Declarations
+		TreeComposite variables = null;
+		ArrayList<String> vars = new ArrayList<String>();
+		IEntryContentProvider provider = new BasicEntryContentProvider();
+		provider.setAllowedValueType(AllowedValueType.Discrete);
+
+		// Grab the Variables Block
+		for (int i = 0; i < tree.getNumberOfChildren(); i++) {
+			if ("Variables".equals(tree.getChildAtIndex(i).getName())) {
+				variables = tree.getChildAtIndex(i);
+				break;
+			}
+		}
+
+		// Add the names of the variables to the vars list
+		for (int i = 0; i < variables.getNumberOfChildren(); i++) {
+			vars.add(variables.getChildAtIndex(i).getName());
+		}
+
+		// Set the allowed values as the list of available vars
+		provider.setAllowedValues(vars);
+
+		// Walk the tree and search for non-AuxVariable 'variable' Entries
+		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+				tree);
+		while (iter.hasNext()) {
+			TreeComposite block = iter.next();
+
+			// Check that this node has data
+			if (!block.getDataNodes().isEmpty()) {
+				DataComponent data = (DataComponent) block.getDataNodes()
+						.get(0);
+
+				// Only operate if this data component is valid, has a variable
+				// Entry, and is not an AuxVariable
+				if (data != null && data.contains("variable")
+						&& !block.getParent().getName().contains("Aux")) {
+					Entry variableEntry = data.retrieveEntry("variable");
+					String currentValue = variableEntry.getValue();
+					data.retrieveEntry("variable").setContentProvider(provider);
+					variableEntry.setValue(currentValue);
+				}
+
+			}
+		}
+
+	}
+
+	/**
+	 * This method converts the AuxVariable 'variable' Entries in the tree to
+	 * contain only the discrete list of available AuxVariable sub-blocks.
+	 * 
+	 * @param tree
+	 *            The root node of the Moose tree
+	 */
+	public void setupAuxVariables(TreeComposite tree) {
+
+		// Local Declarations
+		TreeComposite auxVariablesBlock = null;
+		ArrayList<String> auxVars = new ArrayList<String>();
+		IEntryContentProvider provider = new BasicEntryContentProvider();
+		provider.setAllowedValueType(AllowedValueType.Discrete);
+
+		// Grab the Variables Block
+		for (int i = 0; i < tree.getNumberOfChildren(); i++) {
+			if ("AuxVariables".equals(tree.getChildAtIndex(i).getName())) {
+				auxVariablesBlock = tree.getChildAtIndex(i);
+				break;
+			}
+		}
+
+		// Add the names of the variables to the vars list
+		for (int i = 0; i < auxVariablesBlock.getNumberOfChildren(); i++) {
+			auxVars.add(auxVariablesBlock.getChildAtIndex(i).getName());
+		}
+
+		// Set the allowed values as the list of available vars
+		provider.setAllowedValues(auxVars);
+
+		// Walk the tree and search for non-AuxVariable 'variable' Entries
+		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+				tree);
+		while (iter.hasNext()) {
+			TreeComposite block = iter.next();
+
+			// Check that this node has data
+			if (!block.getDataNodes().isEmpty()) {
+				DataComponent data = (DataComponent) block.getDataNodes()
+						.get(0);
+
+				// Only operate if this data component is valid, has a variable
+				// Entry, and is not an AuxVariable
+				if (data != null && data.contains("variable")
+						&& block.getParent().getName().contains("AuxKernels")) {
+					Entry variableEntry = data.retrieveEntry("variable");
+					String currentValue = variableEntry.getValue();
+					data.retrieveEntry("variable").setContentProvider(provider);
+					variableEntry.setValue(currentValue);
+				}
+
+			}
+		}
+
+		return;
+	}
+
+	/**
 	 * This realization of IReader.findAll() reads a Form in from the given file
 	 * reference and walks the corresponding TreeComposite for occurrences of
 	 * the given regular expression.
@@ -842,13 +966,14 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
 		Form form = read(file);
 
-		TreeComposite tree = (TreeComposite) form.getComponent(MOOSEModel.mooseTreeCompositeId);
+		TreeComposite tree = (TreeComposite) form
+				.getComponent(MOOSEModel.mooseTreeCompositeId);
 
 		// Make sure the tree is valid
 		if (tree == null || tree.getNumberOfChildren() < 1) {
 			return retEntries;
 		}
-		 
+
 		// Walk the tree and get all Entries that may represent a file
 		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
 				tree);
@@ -862,9 +987,11 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
-					if (!"false".equals(e.getTag()) && e.getValue() != null
+					if (!"false".equals(e.getTag())
+							&& e.getValue() != null
 							&& !e.getValue().isEmpty()
-							&& (e.getName() + " = " + e.getValue()).matches(regex)) {
+							&& (e.getName() + " = " + e.getValue())
+									.matches(regex)) {
 
 						// If this Entry does not have a very descriptive name
 						// we should reset its name to the block it belongs to

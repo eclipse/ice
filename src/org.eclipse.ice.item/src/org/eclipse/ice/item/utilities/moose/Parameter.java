@@ -315,23 +315,7 @@ public class Parameter {
 					// Set the default value and description
 					defaultValue = (Parameter.this.getDefault().equals(0)) ? "false"
 							: "true";
-				} else if ("VariableName".equals(Parameter.this.cpp_type)
-						|| "NonlinearVariableName"
-								.equals(Parameter.this.cpp_type)) {
-					// Limit the type to discrete values
-					allowedValueType = AllowedValueType.Discrete;
-					if (!Parameter.this._default.isEmpty()) {
-						allowedValues.add(Parameter.this._default);
-					} else {
-						// Set the allowed values
-						allowedValues.add("Create a Variable");
-					}
-
-					// Set the default value, descri
-					defaultValue = allowedValues.get(0);
-					
-					setValue(defaultValue);
-				}
+				} 
 				// Otherwise, for all other parameters
 				else {
 					allowedValueType = AllowedValueType.Undefined;
@@ -350,7 +334,7 @@ public class Parameter {
 			entry.setRequired(true);
 			entry.setTag("true");
 		}
-		
+
 		return entry;
 	}
 

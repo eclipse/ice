@@ -696,13 +696,6 @@ public class Block {
 		name = (name.contains("./")) ? name.substring(3, name.length() - 1)
 				: name.substring(1, name.length() - 1);
 
-		// What is this?! ~JJB 20140701 12:16
-		// I don't know, ask Alex! ~AW 20150224 17:52
-		boolean debug = false;
-		if ("Variables".equals(name)) {
-			debug = false;
-		}
-
 		boolean parameterEnabled = true;
 		// Loop over the remaining lines and load the parameters and sub blocks.
 		for (int i = 1; i < potLines.size(); i++) {
@@ -816,10 +809,6 @@ public class Block {
 				// tmpParam.setRequired(true);
 				tmpParam.setEnabled(parameterEnabled);
 
-				if (debug) {
-					System.out.println("[Block] Adding Parameter "
-							+ tmpParam.getName());
-				}
 				// Load it into the list
 				parameters.add(tmpParam);
 
@@ -827,9 +816,6 @@ public class Block {
 				// Increment the subblock counter so that we can correctly count
 				// through the blocks. We have to count them so that we know
 				// when to break out of the loop because blocks can be nested.
-				if (debug) {
-					System.out.println("[Block] SubBlock is " + i + " " + line);
-				}
 				++subBlockCounter;
 				// Count over the rest of the lines of the block until the
 				// correct number of nested blocks is read.
@@ -837,10 +823,6 @@ public class Block {
 					// Go to the next line and read it
 					++subBlockLineId;
 					subBlockLine = potLines.get(i + subBlockLineId).trim();
-					if (debug) {
-						System.out.println("[Block] " + subBlockLine + " "
-								+ subBlockLineId + " " + subBlockCounter);
-					}
 					// Note that another block has been encountered if the [
 					// character is found.
 					if (subBlockLine.contains("[./")) {
@@ -849,10 +831,7 @@ public class Block {
 						--subBlockCounter;
 					}
 				}
-				if (debug) {
-					System.out.println("[Block] Indices: " + i + " "
-							+ subBlockLineId + " " + potLines.size());
-				}
+
 				// Create the array list of lines for the sub block
 				ArrayList<String> subBlockLines = new ArrayList<String>(
 						potLines.subList(i, i + subBlockLineId));
