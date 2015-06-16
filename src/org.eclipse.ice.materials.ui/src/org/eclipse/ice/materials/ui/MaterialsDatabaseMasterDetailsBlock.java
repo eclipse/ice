@@ -12,10 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.ui.workbench.IWorkbench;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,12 +30,15 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.DetailsPart;
@@ -58,9 +65,19 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 	IMaterialsDatabase materialsDatabase;
 
 	/**
+	 * The list that holds the materials database information.
+	 */
+	List<Material> materials;
+	
+	/**
 	 * The managed form for the block.
 	 */
 	IManagedForm mForm;
+	
+	/**
+	 * The tree viewer for displaying the materials
+	 */
+	TreeViewer treeViewer;
 
 	/**
 	 * The constructor
@@ -115,16 +132,77 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		// the managed form to publish events.
 		final SectionPart sectionPart = new SectionPart(section);
 		mForm.addPart(sectionPart);
+		
+		// Create a composite to hold the tree viewer and the filter text
+		Composite treeComp = new Composite(sectionClient, SWT.NONE);
+		treeComp.setLayout(new GridLayout(1, false));
+		treeComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		//Add filter to the Dialog to filter the table results
+		final Text filter = new Text(treeComp, SWT.BORDER | SWT.SEARCH);
+		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 
 		// Create the tree viewer that shows the contents of the database
-		TreeViewer treeViewer = new TreeViewer(sectionClient);
+		treeViewer = new TreeViewer(treeComp);
 		treeViewer.setContentProvider(new MaterialsDatabaseContentProvider());
 		treeViewer.setLabelProvider(new MaterialsDatabaseLabelProvider());
 
-		// Set the input and layout information on the treeViewer
-		List<Material> materials = materialsDatabase.getMaterials();
+		//Create a sorted final list from the database for pulling the database information
+		materials = materialsDatabase.getMaterials();
+		//Sorts the list according to the material names
+				Collections.sort(materials, new Comparator<Material>() {
+					public int compare(Material first, Material second) {
+						return (first.getName().compareTo(second.getName()));
+					}
+				});
+				
+		//Create a copy of the master list for the table to display.
+		List<Material> editableCopy = new ArrayList<Material>();
+		for(int i=0; i<materials.size(); i++){
+			editableCopy.add(materials.get(i));
+		}
+				
+		//Set the treeviewer input
+		treeViewer.setInput(editableCopy);
 		
-		treeViewer.setInput(materialsDatabase.getMaterials());
+		
+		//Add a modify listener to filter the table as the user types in the filter.
+		filter.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				List<Material> listFromTree = (List<Material>)treeViewer.getInput();
+				//Get the filter text
+				String filterText = filter.getText().toLowerCase();
+					
+				//Iterate over the list and pick the items to keep from the filter text.
+				int numRemoved = 0;
+				for(int i=0; i<materials.size(); i++){
+					
+					Material mat = materials.get(i);
+					//Finally, if the material fits the filter, make sure it is in the list. Otherwise, 
+					//take it out of the list. 
+					if(mat.getName().toLowerCase().startsWith(filterText)){
+						//make sure material is in list
+						if(!listFromTree.contains(mat)){
+							listFromTree.add(i-numRemoved, mat);
+						}
+						
+					} else {
+						
+						//remove materials that do not fit the search criteria.
+						if(listFromTree.contains(mat)){
+							listFromTree.remove(mat);
+						}
+						numRemoved++;
+					}
+				}
+				//Refresh the tree viwer so that it is repainted
+				treeViewer.refresh();
+			}
+		});
+		
+		
 		treeViewer.getTree().setLayout(new GridLayout(1, true));
 		
 		//Sets the gridData to grab the availiable space, but to have only the treeview have the scrolling.
