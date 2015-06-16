@@ -21,9 +21,13 @@ import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.SingleMaterialWritableTableFormat;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.selection.RowSelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -223,6 +227,15 @@ public class MaterialDetailsPage implements IDetailsPage {
 				
 				//makes the NatTable, with the list data and current sectionClient to draw on.
 				natTable = new ListComponentNattable(sectionClient, list, true);
+				RowSelectionProvider<Material> selectionProvider = natTable.getSelectionProvider();
+				selectionProvider.addSelectionChangedListener(new ISelectionChangedListener(){
+
+					@Override
+					public void selectionChanged(SelectionChangedEvent arg0) {
+						database.updateMaterial(material);
+					}
+
+				});
 			}
 			
 			list.clear();
@@ -292,34 +305,6 @@ public class MaterialDetailsPage implements IDetailsPage {
 		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false,
 				true, 1, 1));
 		
-		
-		/*
-		
-		// Create a listener that will throw up an error message since the Add
-		// and Delete operations are not yet supported. The error message is
-		// just a simple JFace message dialog that is opened when either button
-		// is pressed.
-		String title = "Operation Unsupported";
-		String msg = "Adding and deleting properties"
-				+ " is not yet supported.";
-		String[] labels = { "OK" };
-		final MessageDialog dialog = new MessageDialog(parent.getShell(),
-				title, null, msg, MessageDialog.ERROR, labels, 0);
-		SelectionListener errorListener = new SelectionListener() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				dialog.open();
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				dialog.open();
-			}
-		};
-		
-		
-		*/
-		
 		// Create the Add button
 		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
 		addMaterialButton.setText("Add");
@@ -333,6 +318,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 					//Sets the new property
 					MaterialProperty newProperty = dialog.getSelection();
 					material.setProperty(newProperty.key, newProperty.value);
+					database.updateMaterial(material);
 
 					// Lock the list to avoid concurrent modifications
 					list.getReadWriteLock().writeLock().lock();
@@ -371,6 +357,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 				
 				//Removes the property from the material.
 				material.removeProperty(property);
+				database.updateMaterial(material);
 				
 				//Finally, removes the property string from the list so that it will
 				//update on screen for the user. 

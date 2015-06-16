@@ -197,7 +197,7 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 						numRemoved++;
 					}
 				}
-				//Refresh the tree viwer so that it is repainted
+				//Refresh the tree viewer so that it is repainted
 				treeViewer.refresh();
 			}
 		});
@@ -205,7 +205,7 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		
 		treeViewer.getTree().setLayout(new GridLayout(1, true));
 		
-		//Sets the gridData to grab the availiable space, but to have only the treeview have the scrolling.
+		//Sets the gridData to grab the available space, but to have only the treeview have the scrolling.
 		//This allows for the master tree to scroll without moving the details page out of the viewport. 
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		data.widthHint = sectionClient.getClientArea().width;

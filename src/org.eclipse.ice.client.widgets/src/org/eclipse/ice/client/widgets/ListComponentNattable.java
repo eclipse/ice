@@ -261,6 +261,15 @@ public class ListComponentNattable {
 	}
 	
 	/**
+	 * Gets the row selection provider so that another class could potentially listen
+	 * for selection events in the table. 
+	 * @return
+	 */
+	public RowSelectionProvider getSelectionProvider(){
+		return selectionProvider;
+	}
+	
+	/**
 	 * Gets the SWT.COLOR of the current background for the table. By default is a light gray
 	 * @return Color The background color. 
 	 */
