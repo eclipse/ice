@@ -17,6 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -70,13 +72,30 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 
 	/**
 	 * A runnable that can be used to update the Canvas. It queries the
-	 * {@link #client} based on the current refresh {@link #event} and triggers
-	 * a UI update to the rendered {@link #image} from the client.
+	 * {@link #client}, updates the {@link #image}, and triggers a UI update
+	 * based on the new image.
+	 * <p>
+	 * To avoid multiple running threads (which may conflict since each event
+	 * needs to be synced with the UI), we use {@link #stale} to determine
+	 * whether the runnable needs to be executed along with {@link #refreshLock}
+	 * to prevent the newer thread from starting its real work until after the
+	 * running thread completes.
+	 * </p>
 	 */
 	private final Runnable refreshRunnable;
 
 	/**
-	 * If true, then the client needs to be queried and the Canvas updated.
+	 * This lock is used by {@link #refreshRunnable} to determine if the refresh
+	 * thread is currently running. In the unlikely--but possible--case that a
+	 * second refresh thread gets started, this prevents the refresh threads
+	 * from racing.
+	 */
+	private final Lock refreshLock = new ReentrantLock();
+
+	/**
+	 * If true, then the client needs to be queried and the Canvas updated. This
+	 * is used to see if the {@link #refreshRunnable} needs to be started or if
+	 * it should process another refresh event.
 	 */
 	private final AtomicBoolean stale = new AtomicBoolean();
 
@@ -100,39 +119,53 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 		refreshRunnable = new Runnable() {
 			@Override
 			public void run() {
-				// Continue as long as the view is stale.
-				while (stale.getAndSet(false)) {
 
-					// Get the current size of the Canvas.
-					final Point size = new Point(0, 0);
-					getDisplay().syncExec(new Runnable() {
-						@Override
-						public void run() {
-							if (!isDisposed()) {
-								Point canvasSize = getSize();
-								size.x = canvasSize.x;
-								size.y = canvasSize.y;
-							}
-						}
-					});
+				// Before we start handling refresh events, we need to make sure
+				// another refresh thread is not running. This blocks until that
+				// thread finishes.
+				refreshLock.lock();
+				try {
 
-					// Request a new Image from the client.
-					final Image newImage = refreshClient(client, viewId,
-							size.x, size.y);
-					// If a new Image could be retrieved, sync it with the UI
-					// thread. Note: We don't need to wait on the UI thread to
-					// handle this update.
-					if (newImage != null) {
-						getDisplay().asyncExec(new Runnable() {
+					// Continue as long as the view is stale.
+					while (stale.getAndSet(false)) {
+
+						// Get the current size of the Canvas.
+						final Point size = new Point(0, 0);
+						getDisplay().syncExec(new Runnable() {
 							@Override
 							public void run() {
 								if (!isDisposed()) {
-									image.set(newImage);
-									redraw();
+									Point canvasSize = getSize();
+									size.x = canvasSize.x;
+									size.y = canvasSize.y;
 								}
 							}
 						});
+
+						// Request a new Image from the client.
+						final Image newImage = refreshClient(client, viewId,
+								size.x, size.y);
+
+						// If a new Image could be retrieved, sync it with the
+						// UI thread. Note: We don't need to wait on the UI
+						// thread to handle this update.
+						if (newImage != null) {
+							getDisplay().asyncExec(new Runnable() {
+								@Override
+								public void run() {
+									if (!isDisposed()) {
+										image.set(newImage);
+										redraw();
+									}
+								}
+							});
+						}
 					}
+
+				} finally {
+					// Notify any pending refresh thread that this thread has
+					// finished.
+					refreshLock.unlock();
 				}
 
 				return;
