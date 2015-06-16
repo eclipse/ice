@@ -45,6 +45,14 @@ public class SingleMaterialWritableTableFormat implements WritableTableFormat<St
 	public void setMaterial(Material material){
 		this.material = material;
 	}
+	
+	/**
+	 * Gets the material that this table format is currently using.
+	 * @return
+	 */
+	public Material getMaterial(){
+		return material;
+	}
 
 	/**
 	 * Returns the total number of columns, just 2 in this case as the material only has properties and values.
@@ -100,15 +108,21 @@ public class SingleMaterialWritableTableFormat implements WritableTableFormat<St
 	 */
 	@Override
 	public String setColumnValue(String property, Object newVal, int col) {
-		double val;
+		double val = material.getProperty(property);
 		if(newVal instanceof String){
 			try{
 				val = Double.parseDouble((String)newVal);
-				material.setProperty(property, val);
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		} else {
+			try{
+				val = (Double)newVal;
 			} catch(Exception e){
 				e.printStackTrace();
 			}
 		}
+		material.setProperty(property, val);
 		return null;
 	}
 	
