@@ -172,12 +172,12 @@
             id="org.eclipse.ice.client.widgets.moose.commands.MOOSEAction"
             name="Default MOOSE DropDown Action">
       </command>
-      <command
+     <!-- <command
             defaultHandler="org.eclipse.ice.client.widgets.moose.actions.GenerateYAMLHandler"
             description="Generates YAML and Action Syntax files"
             id="org.eclipse.ice.client.widgets.moose.commands.GenerateYAML"
             name="Generate MOOSE YAML and Action Syntax">
-      </command>
+      </command>-->
       <command
             defaultHandler="org.eclipse.ice.client.widgets.moose.actions.ForkStorkHandler"
             description="Forks the Stork"
@@ -227,14 +227,14 @@
       <menuContribution
             allPopups="false"
             locationURI="menu:org.eclipse.ice.client.widgets.moose.commands.MOOSEAction.toolItem">
-         <command
+         <!--<command
                commandId="org.eclipse.ice.client.widgets.moose.commands.GenerateYAML"
                icon="icons/file_obj.gif"
                id="org.eclipse.ice.client.widgets.moose.commands.GenerateYAML.menuItem"
                label="Generate YAML and Action Syntax"
                style="push"
                tooltip="Generates MOOSE YAML and Action Syntax files">
-         </command>
+         </command>-->
          <command
                commandId="org.eclipse.ice.client.widgets.moose.commands.ForkStork"
                id="org.eclipse.ice.client.widgets.moose.commands.ForkStork.menuItem"
