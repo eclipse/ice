@@ -8,3 +8,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.client.common,
  org.eclipse.ice.client.widgets,
  org.junit
+Bundle-Vendor: Oak Ridge National Laboratory

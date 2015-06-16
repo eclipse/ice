@@ -25,3 +25,4 @@ Require-Bundle: org.eclipse.draw2d;bundle-version="3.9.0",
  org.eclipse.nebula.visualization.widgets;bundle-version="1.0.0",
  org.eclipse.nebula.visualization.xygraph;bundle-version="1.0.0"
 Bundle-ClassPath: .
+Bundle-Vendor: Oak Ridge National Laboratory

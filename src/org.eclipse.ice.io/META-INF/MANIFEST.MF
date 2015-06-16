@@ -17,3 +17,4 @@ Export-Package: org.eclipse.ice.io.csv,
  org.eclipse.ice.io.ini,
  org.eclipse.ice.io.ips,
  org.eclipse.ice.io.serializable
+Bundle-Vendor: Oak Ridge National Laboratory

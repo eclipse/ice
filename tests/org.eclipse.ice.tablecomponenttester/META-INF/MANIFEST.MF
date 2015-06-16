@@ -16,3 +16,4 @@ Import-Package: org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.resource,
  org.eclipse.ice.item,
  org.eclipse.ice.reactor
+Bundle-Vendor: Oak Ridge National Laboratory

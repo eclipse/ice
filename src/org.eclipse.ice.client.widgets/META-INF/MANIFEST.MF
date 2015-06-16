@@ -32,3 +32,4 @@ Import-Package: com.jme3.app,
 Export-Package: org.eclipse.ice.client.widgets
 Service-Component: OSGI-INF/eclipseWidgetsComponent.xml, OSGI-INF/commonComponent.xml,
  OSGI-INF/formEditorVizService.xml
+Bundle-Vendor: Oak Ridge National Laboratory

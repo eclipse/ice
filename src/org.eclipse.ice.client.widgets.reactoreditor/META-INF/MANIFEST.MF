@@ -28,3 +28,4 @@ Require-Bundle: org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
 Export-Package: org.eclipse.ice.client.widgets.reactoreditor,
  org.eclipse.ice.client.widgets.reactoreditor.properties
 Bundle-ClassPath: .
+Bundle-Vendor: Oak Ridge National Laboratory
