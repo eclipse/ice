@@ -56,59 +56,62 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * 
  * @author Jay Jay Billings, Kasper Gammeltoft
- *
+ * 
  */
 public class ListComponentNattable {
-	
-	/**	
+
+	/**
 	 * The Composite will act as a parent where the Nattable will be drawn.
 	 * 
 	 */
 	private Composite sectionClient;
-	
+
 	/**
 	 * The ListComponent is the data input for the Nattable to use.
 	 * 
 	 */
 	private ListComponent list;
-	
+
 	/**
-	 * Holds the selected list components. 
+	 * Holds the selected list components.
 	 */
 	private ListComponent selectedList;
-	
+
 	/**
 	 * The table to hold the list data.
 	 */
 	private NatTable table;
-	
+
 	/**
-	 * Provides the information about the selection layer for the NatTable. Gets/Sets the selected rows for the table. 
+	 * Provides the information about the selection layer for the NatTable.
+	 * Gets/Sets the selected rows for the table.
 	 */
 	private RowSelectionProvider selectionProvider;
-	
-	
+
 	/**
-	 * If the NatTable is editable or not (from the user's side). If false, the user will only be able to select table
-	 * cells, if true then the user will be able to change the table's values.   
+	 * If the NatTable is editable or not (from the user's side). If false, the
+	 * user will only be able to select table cells, if true then the user will
+	 * be able to change the table's values.
 	 */
 	private boolean canEdit;
-	
+
 	private boolean percentResize;
-	
+
 	/**
-	 * Constructor, needs the parent Composite and the List for data. This has the column percent resizing for the table
-	 * automatically turned on. You must use the constructor with that explicit variable if you do not want column width
-	 * resizing to fit the parent Composite. 
+	 * Constructor, needs the parent Composite and the List for data. This has
+	 * the column percent resizing for the table automatically turned on. You
+	 * must use the constructor with that explicit variable if you do not want
+	 * column width resizing to fit the parent Composite.
 	 * 
 	 * @param parent
-	 * 				The Composite to be used as a parent Shell or View.
+	 *            The Composite to be used as a parent Shell or View.
 	 * @param listComponent
-	 * 				The ListComponent to be used as list data for the Nattable
+	 *            The ListComponent to be used as list data for the Nattable
 	 * @param editable
-	 * 				A boolean representing if the table is editable by the user
+	 *            A boolean representing if the table is editable by the user
 	 */
-	public ListComponentNattable(Composite parent, ListComponent listComponent, boolean editable){
+	public ListComponentNattable(Composite parent, ListComponent listComponent,
+			boolean editable) {
 		sectionClient = parent;
 		list = listComponent;
 		selectedList = new ListComponent();
@@ -116,21 +119,23 @@ public class ListComponentNattable {
 		percentResize = true;
 		createTable();
 	}
-	
+
 	/**
 	 * Constructor, needs the parent Composite and the List for data
 	 * 
 	 * @param parent
-	 * 				The Composite to be used as a parent Shell or View.
+	 *            The Composite to be used as a parent Shell or View.
 	 * @param listComponent
-	 * 				The ListComponent to be used as list data for the Nattable
+	 *            The ListComponent to be used as list data for the Nattable
 	 * @param editable
-	 * 				A boolean representing if the table is editable by the user
+	 *            A boolean representing if the table is editable by the user
 	 * @param sizeForParent
-	 * 				A boolean representing if the table should take the size of its parent or maintain its preferred size 
-	 * and have scroll bars or unfilled space instead. Only effects column width. 
+	 *            A boolean representing if the table should take the size of
+	 *            its parent or maintain its preferred size and have scroll bars
+	 *            or unfilled space instead. Only effects column width.
 	 */
-	public ListComponentNattable(Composite parent, ListComponent listComponent, boolean editable, boolean sizeForParent){
+	public ListComponentNattable(Composite parent, ListComponent listComponent,
+			boolean editable, boolean sizeForParent) {
 		sectionClient = parent;
 		list = listComponent;
 		selectedList = new ListComponent();
@@ -138,8 +143,7 @@ public class ListComponentNattable {
 		percentResize = sizeForParent;
 		createTable();
 	}
-	
-	
+
 	/**
 	 * This operation configures the NatTable used to render the ListComponent
 	 * on the screen.
@@ -154,10 +158,10 @@ public class ListComponentNattable {
 		GlazedListsEventLayer eventLayer = new GlazedListsEventLayer(dataLayer,
 				list);
 
-		//If the table's columns should autoresize their widths to fill the parent Composite. 
+		// If the table's columns should autoresize their widths to fill the
+		// parent Composite.
 		dataLayer.setColumnPercentageSizing(percentResize);
 
-		
 		// Create the selection and viewport layers of the table
 		SelectionLayer selectionLayer = new SelectionLayer(eventLayer);
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
@@ -178,11 +182,11 @@ public class ListComponentNattable {
 		// Turn the column labels on by default
 		columnHeaderDataLayer
 				.setConfigLabelAccumulator(new ColumnLabelAccumulator());
-		
+
 		// Create the row header layer (row names) of the table
 		IDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider(
 				dataProvider);
-		
+
 		DataLayer rowHeaderDataLayer = new DefaultRowHeaderDataLayer(
 				rowHeaderDataProvider);
 		ILayer rowHeaderLayer = new RowHeaderLayer(rowHeaderDataLayer,
@@ -203,140 +207,131 @@ public class ListComponentNattable {
 		natTable.setConfigRegistry(configRegistry);
 		// Set the default table style
 		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
-		
+
 		// Make the table editable by updating the configuration rules
 		natTable.addConfiguration(new AbstractRegistryConfiguration() {
 			@Override
 			public void configureRegistry(IConfigRegistry configRegistry) {
-				//only allow editing if the user can edit.
-				if(canEdit){
-				configRegistry.registerConfigAttribute(
-						EditConfigAttributes.CELL_EDITABLE_RULE,
-						IEditableRule.ALWAYS_EDITABLE);
+				// only allow editing if the user can edit.
+				if (canEdit) {
+					configRegistry.registerConfigAttribute(
+							EditConfigAttributes.CELL_EDITABLE_RULE,
+							IEditableRule.ALWAYS_EDITABLE);
 				} else {
-				configRegistry.registerConfigAttribute(
-						EditConfigAttributes.CELL_EDITABLE_RULE, 
-						IEditableRule.NEVER_EDITABLE);
-				}				
+					configRegistry.registerConfigAttribute(
+							EditConfigAttributes.CELL_EDITABLE_RULE,
+							IEditableRule.NEVER_EDITABLE);
+				}
 			}
-		});	
-		
+		});
+
 		// Configure the table (lay it out)
 		natTable.configure();
 		natTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
 				1));
-		
-		table = natTable;
-		
-		//Create a new selectionProvider to listen to selection events. 
-		selectionProvider = new RowSelectionProvider(selectionLayer, (IRowDataProvider)dataProvider, false);
-		//Add the listener
-		selectionProvider.addSelectionChangedListener(new ISelectionChangedListener(){
 
-			@Override
-			public void selectionChanged(SelectionChangedEvent e) {
-				
-				//Get the selection and add the selected objects to a ListComponent for reference. 
-				IStructuredSelection selection = (IStructuredSelection) e.getSelection();
-				selectedList.clear();
-				Iterator it = selection.iterator();
-				while(it.hasNext()){
-					selectedList.add(it.next());
-				}
-			}
-		}
-		);
-		
-		
+		// Setting table instance variable
+		table = natTable;
+
+		// Create a new selectionProvider to listen to selection events.
+		selectionProvider = new RowSelectionProvider(selectionLayer,
+				(IRowDataProvider) dataProvider, false);
+		// Add the listener
+		selectionProvider
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+
+					@Override
+					public void selectionChanged(SelectionChangedEvent e) {
+
+						// Get the selection and add the selected objects to a
+						// ListComponent for reference.
+						IStructuredSelection selection = (IStructuredSelection) e
+								.getSelection();
+						selectedList.clear();
+						Iterator it = selection.iterator();
+						while (it.hasNext()) {
+							selectedList.add(it.next());
+						}
+					}
+				});
+
 		return;
 	}
-	
+
 	/**
-	 * Gets the currently selected elements. 
+	 * Gets the currently selected elements.
+	 * 
 	 * @return
 	 */
-	public ListComponent getSelectedObjects(){
+	public ListComponent getSelectedObjects() {
 		return selectedList;
-		
+
 	}
-	
+
 	/**
-	 * Gets the row selection provider so that another class could potentially listen
-	 * for selection events in the table. 
+	 * Gets the row selection provider so that another class could potentially
+	 * listen for selection events in the table.
+	 * 
 	 * @return
 	 */
-	public RowSelectionProvider getSelectionProvider(){
+	public RowSelectionProvider getSelectionProvider() {
 		return selectionProvider;
 	}
-	
+
 	/**
-	 * Gets the SWT.COLOR of the current background for the table. By default is a light gray
-	 * @return Color The background color. 
+	 * Gets the SWT.COLOR of the current background for the table. By default is
+	 * a light gray
+	 * 
+	 * @return Color The background color.
 	 */
-	public Color getBackground(){
+	public Color getBackground() {
 		return table.getBackground();
 	}
-	
+
 	/**
-	 * Sets the elements to be selected for this table. 
+	 * Sets the elements to be selected for this table.
+	 * 
 	 * @param elements
 	 */
-	public void setSelection(ListComponent elements){
+	public void setSelection(ListComponent elements) {
 		StructuredSelection newSelection = new StructuredSelection(elements);
 		selectionProvider.setSelection(newSelection);
 	}
-	
+
 	/**
 	 * Gets the preferred width of the table.
+	 * 
 	 * @return int The preferred width
 	 */
-	public int getPreferredWidth(){		
+	public int getPreferredWidth() {
 		return table.getPreferredWidth();
 	}
-	
+
 	/**
-	 * Gets the preferred height of the table. 
+	 * Gets the preferred height of the table.
+	 * 
 	 * @return int The preferred height
 	 */
-	public int getPreferredHeight(){
+	public int getPreferredHeight() {
 		return table.getPreferredHeight();
 	}
-	
-	
-	/**
-	 * Sets a new list to be used for the table data.
-	 * @param listComponent
-	 * 				A ListComponent object for the Nattable's data.
-	 */
-	public void setList(ListComponent listComponent){
-		list = listComponent;
-	}
-	
-	
+
 	/**
 	 * Gets the ListComponent that this Nattable uses for data.
+	 * 
 	 * @return
 	 */
-	public ListComponent getList(){
+	public ListComponent getList() {
 		return list;
 	}
-	
-	
-	/**
-	 * Sets a new parent Composite used to draw the Nattable
-	 * @param parent
-	 * 			A Composite object
-	 */
-	public void setComposite(Composite parent){
-		sectionClient = parent;
-	}
-	
+
 	/**
 	 * Gets the NatTable
+	 * 
 	 * @return
 	 */
-	public NatTable getTable(){
+	public NatTable getTable() {
 		return table;
 	}
-	
+
 }

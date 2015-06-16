@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
@@ -38,8 +38,8 @@ import ca.odell.glazedlists.gui.WritableTableFormat;
  * ListComponents.
  * 
  * 
- * @author Jay Jay Billings
- *
+ * @author Jay Jay Billings, Kasper Gammeltoft
+ * 
  */
 public class ElementSourceDialog<T> extends Dialog {
 
@@ -47,8 +47,7 @@ public class ElementSourceDialog<T> extends Dialog {
 	 * The source that should be drawn
 	 */
 	private IElementSource<T> source;
-	
-	
+
 	/**
 	 * The list of the data for the table to display
 	 */
@@ -81,16 +80,17 @@ public class ElementSourceDialog<T> extends Dialog {
 			IElementSource<T> elementSource) {
 		super(parentShell);
 		source = elementSource;
-		//Create the list component from source
+		// Create the list component from source
 		list = new ListComponent<T>();
 		list.setTableFormat((WritableTableFormat<T>) source.getTableFormat());
 		elements = source.getElements();
 		list.addAll(elements);
-		
-		//Sorts the list according to the material names
+
+		// Sorts the list according to the material names
 		Collections.sort(list, new Comparator<T>() {
 			public int compare(Object first, Object second) {
-				return ((Material)first).getName().compareTo(((Material)second).getName());
+				return ((Material) first).getName().compareTo(
+						((Material) second).getName());
 			}
 		});
 	}
@@ -104,100 +104,110 @@ public class ElementSourceDialog<T> extends Dialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-
+		
+		// Create the composite from the parent
 		Composite comp = (Composite) super.createDialogArea(parent);
 		comp.setLayout(new GridLayout(1, false));
 		comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		//Set the background to white (visible on the borders)
+
+		// Set the background to white (visible on the borders)
 		comp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		
-		//Add filter to the Dialog to filter the table results
+
+		// Add filter to the Dialog to filter the table results
 		final Text filter = new Text(comp, SWT.BORDER | SWT.SEARCH);
 		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		
-		//Get a copy of the list to give to the NatTable so that we can keep a fresh copy to compare to. 
+
+		// Get a copy of the list to give to the NatTable so that we can keep a
+		// fresh copy to compare to.
 		ListComponent<T> copy = new ListComponent<T>();
 		copy.setTableFormat(list.getTableFormat());
-		for(int i=0; i<list.size(); i++){
+		for (int i = 0; i < list.size(); i++) {
 			copy.add(list.get(i));
 		}
-		
-		//Create the Nattable from the Composite parent and the ListComponent list
-		//We do NOT want this table to be editable!
+
+		// Create the Nattable from the Composite parent and the ListComponent
+		// list
+		// We do NOT want this table to be editable!
 		listTable = new ListComponentNattable(comp, copy, false);
 
-		//Set the size of the shell, have the list fill the entire available area. 
+		// Set the size of the shell, have the list fill the entire available
+		// area.
 		int width = listTable.getPreferredWidth();
 		int height = listTable.getPreferredHeight();
-		comp.getShell().setSize(width*3/4, height);
-		
-		//forces the table to grab the extra area in the gridlayout. 
-		GridDataFactory.fillDefaults().grab(true,  true).applyTo(listTable.getTable());
+		comp.getShell().setSize(width * 3 / 4, height);
 
-		//Selects the first component by default
+		// Forces the table to grab the extra area in the gridlayout.
+		GridDataFactory.fillDefaults().grab(true, true)
+				.applyTo(listTable.getTable());
+
+		// Selects the first component by default
 		ListComponent<T> select = new ListComponent<T>();
 		select.add(list.get(0));
 		listTable.setSelection(select);
-		
-		//Add a modify listener to filter the table as the user types in the filter.
+
+		// Add a modify listener to filter the table as the user types in the
+		// filter.
 		filter.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent arg0) {
 				ListComponent listFromTable = listTable.getList();
-				//Get the filter text
+				// Get the filter text
 				String filterText = filter.getText().toLowerCase();
-					
-				//Iterate over the list and pick the items to keep from the filter text.
+
+				// Iterate over the list and pick the items to keep from the
+				// filter text.
 				int numRemoved = 0;
-				for(int i=0; i<list.size(); i++){
-					
-					//Lock the list to protect thread issues.
+				for (int i = 0; i < list.size(); i++) {
+
+					// Lock the list to protect thread issues.
 					listFromTable.getReadWriteLock().writeLock().lock();
-					//If the list contains materials, get the material
-					if(list.get(i) instanceof Material){
+					// If the list contains materials, get the material
+					if (list.get(i) instanceof Material) {
 						Material mat = (Material) list.get(i);
-						//Finally, if the material fits the filter, make sure it is in the list. Otherwise, 
-						//take it out of the list. 
-						if(mat.getName().toLowerCase().startsWith(filterText)){
-							
-							//make sure material is in list
-							if(!listFromTable.contains(mat)){
-								listFromTable.add(i-numRemoved, mat);
+						// Finally, if the material fits the filter, make sure
+						// it is in the list. Otherwise,
+						// take it out of the list.
+						if (mat.getName().toLowerCase().startsWith(filterText)) {
+
+							// Make sure material is in list
+							if (!listFromTable.contains(mat)) {
+								listFromTable.add(i - numRemoved, mat);
 							}
-							
+
 						} else {
-							
-							//remove materials that do not fit the search criteria.
-							if(listFromTable.contains(mat)){
+
+							// Remove materials that do not fit the search
+							// criteria.
+							if (listFromTable.contains(mat)) {
 								listFromTable.remove(mat);
 							}
 							numRemoved++;
 						}
 					}
-					
-					//Unlock the list
+
+					// Unlock the list
 					listFromTable.getReadWriteLock().writeLock().unlock();
 				}
 			}
 		});
-		
+
 		return comp;
 
 	}
-	
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+	 * 
+	 * @see
+	 * org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets
+	 * .Shell)
 	 */
 	@Override
-	protected void configureShell(Shell shell){
+	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText("Select Material");
 	}
-	
 
 	/*
 	 * (non-Javadoc)
@@ -207,7 +217,8 @@ public class ElementSourceDialog<T> extends Dialog {
 	@Override
 	protected void okPressed() {
 
-		//Sets the selection if OK is pressed, will be the first selected object if there are multiple selections. 
+		// Sets the selection if OK is pressed, will be the first selected
+		// object if there are multiple selections.
 		selection = (T) listTable.getSelectedObjects().get(0);
 		super.okPressed();
 	}

@@ -68,12 +68,12 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 	 * The list that holds the materials database information.
 	 */
 	List<Material> materials;
-	
+
 	/**
 	 * The managed form for the block.
 	 */
 	IManagedForm mForm;
-	
+
 	/**
 	 * The tree viewer for displaying the materials
 	 */
@@ -132,13 +132,14 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		// the managed form to publish events.
 		final SectionPart sectionPart = new SectionPart(section);
 		mForm.addPart(sectionPart);
-		
+
 		// Create a composite to hold the tree viewer and the filter text
 		Composite treeComp = new Composite(sectionClient, SWT.NONE);
 		treeComp.setLayout(new GridLayout(1, false));
-		treeComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		//Add filter to the Dialog to filter the table results
+		treeComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+				1));
+
+		// Add filter to the Dialog to filter the table results
 		final Text filter = new Text(treeComp, SWT.BORDER | SWT.SEARCH);
 		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 
@@ -147,66 +148,72 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		treeViewer.setContentProvider(new MaterialsDatabaseContentProvider());
 		treeViewer.setLabelProvider(new MaterialsDatabaseLabelProvider());
 
-		//Create a sorted final list from the database for pulling the database information
+		// Create a sorted final list from the database for pulling the database
+		// information
 		materials = materialsDatabase.getMaterials();
-		//Sorts the list according to the material names
-				Collections.sort(materials, new Comparator<Material>() {
-					public int compare(Material first, Material second) {
-						return (first.getName().compareTo(second.getName()));
-					}
-				});
-				
-		//Create a copy of the master list for the table to display.
+		// Sorts the list according to the material names
+		Collections.sort(materials, new Comparator<Material>() {
+			public int compare(Material first, Material second) {
+				return (first.getName().compareTo(second.getName()));
+			}
+		});
+
+		// Create a copy of the master list for the table to display.
 		List<Material> editableCopy = new ArrayList<Material>();
-		for(int i=0; i<materials.size(); i++){
+		for (int i = 0; i < materials.size(); i++) {
 			editableCopy.add(materials.get(i));
 		}
-				
-		//Set the treeviewer input
+
+		// Set the treeviewer input
 		treeViewer.setInput(editableCopy);
-		
-		
-		//Add a modify listener to filter the table as the user types in the filter.
+
+		// Add a modify listener to filter the table as the user types in the
+		// filter.
 		filter.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				List<Material> listFromTree = (List<Material>)treeViewer.getInput();
-				//Get the filter text
+				List<Material> listFromTree = (List<Material>) treeViewer
+						.getInput();
+				// Get the filter text
 				String filterText = filter.getText().toLowerCase();
-					
-				//Iterate over the list and pick the items to keep from the filter text.
+
+				// Iterate over the list and pick the items to keep from the
+				// filter text.
 				int numRemoved = 0;
-				for(int i=0; i<materials.size(); i++){
-					
+				for (int i = 0; i < materials.size(); i++) {
+
 					Material mat = materials.get(i);
-					//Finally, if the material fits the filter, make sure it is in the list. Otherwise, 
-					//take it out of the list. 
-					if(mat.getName().toLowerCase().startsWith(filterText)){
-						//make sure material is in list
-						if(!listFromTree.contains(mat)){
-							listFromTree.add(i-numRemoved, mat);
+					// Finally, if the material fits the filter, make sure it is
+					// in the list. Otherwise,
+					// take it out of the list.
+					if (mat.getName().toLowerCase().startsWith(filterText)) {
+						// make sure material is in list
+						if (!listFromTree.contains(mat)) {
+							listFromTree.add(i - numRemoved, mat);
 						}
-						
+
 					} else {
-						
-						//remove materials that do not fit the search criteria.
-						if(listFromTree.contains(mat)){
+
+						// remove materials that do not fit the search criteria.
+						if (listFromTree.contains(mat)) {
 							listFromTree.remove(mat);
 						}
 						numRemoved++;
 					}
 				}
-				//Refresh the tree viewer so that it is repainted
+				// Refresh the tree viewer so that it is repainted
 				treeViewer.refresh();
 			}
 		});
-		
-		
+
+		// Lay out the list
 		treeViewer.getTree().setLayout(new GridLayout(1, true));
-		
-		//Sets the gridData to grab the available space, but to have only the treeview have the scrolling.
-		//This allows for the master tree to scroll without moving the details page out of the viewport. 
+
+		// Sets the gridData to grab the available space, but to have only the
+		// treeview have the scrolling.
+		// This allows for the master tree to scroll without moving the details
+		// page out of the viewport.
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		data.widthHint = sectionClient.getClientArea().width;
 		data.heightHint = sectionClient.getClientArea().height;
@@ -231,11 +238,14 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		// Create the Add button
 		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
 		addMaterialButton.setText("Add");
-		// Create a wizard dialog to hold the AddMaterialWizard that will be used to create new materials.
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		// Create a wizard dialog to hold the AddMaterialWizard that will be
+		// used to create new materials.
+		IWorkbenchWindow window = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow();
 		AddMaterialWizard addMaterialWizard = new AddMaterialWizard(window);
 		addMaterialWizard.setWindowTitle("Create a new material");
-		final WizardDialog addMaterialDialog = new WizardDialog(window.getShell(), addMaterialWizard);
+		final WizardDialog addMaterialDialog = new WizardDialog(
+				window.getShell(), addMaterialWizard);
 		// Add a listener to the add button to open the Add Material Wizard
 		addMaterialButton.addSelectionListener(new SelectionListener() {
 			@Override
@@ -244,12 +254,12 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 				addMaterialDialog.create();
 				addMaterialDialog.open();
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// Just pop open the dialog
 				addMaterialDialog.create();
-				addMaterialDialog.open();				
+				addMaterialDialog.open();
 			}
 		});
 

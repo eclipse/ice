@@ -33,34 +33,54 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.junit.Test;
 
 /**
- * Tests the ListComponentNattable class and its methods. 
- * @author k6g
- *
+ * Tests the ListComponentNattable class and its methods.
+ * 
+ * 
+ * @author Kasper Gammeltoft
+ * 
  */
 public class ListComponentNattableTest {
-	
-	
+
+	/**
+	 * The ListComponent to provide data to the ListComponentNattable
+	 */
 	private static ListComponent list;
+
+	/**
+	 * The Shell that contains the composits for the table
+	 */
 	private static Shell shell;
+
+	/**
+	 * The ListComponentNattable to test
+	 */
 	private static ListComponentNattable table;
+
+	/**
+	 * The SectionClient where the NatTable will be rendered.
+	 */
 	private static Composite sectionClient;
+
+	/**
+	 * Test materials
+	 */
 	private static Material mat1;
 	private static Material mat2;
 	private static Material mat3;
 
-
 	/**
-	 * This operation makes sure the Nattable is created correctly with the list data. 
+	 * This operation makes sure the Nattable is created correctly with the list
+	 * data.
 	 */
 	@Test
 	public void testListComponentNattable() {
-		
+
 		Display display;
 		FormToolkit formToolkit;
 		ManagedForm eclipseTestForm;
 
 		// Setup the display, form toolkit and test form. The display must be
-		// retrieve from the Eclipse PlatformUI if it is running or created
+		// retrieved from the Eclipse PlatformUI if it is running or created
 		// separately if not.
 		if (!PlatformUI.isWorkbenchRunning()) {
 			display = new Display();
@@ -68,12 +88,11 @@ public class ListComponentNattableTest {
 			display = PlatformUI.getWorkbench().getDisplay();
 		}
 		eclipseTestForm = new ManagedForm(new Shell(display));
-		
+
 		formToolkit = new FormToolkit(display);
-		
-		
+
 		final ScrolledForm scrolledForm = eclipseTestForm.getForm();
-		
+
 		// Set a GridLayout with a single column. Remove the default margins.
 		GridLayout layout = new GridLayout(1, true);
 		layout.marginWidth = 0;
@@ -84,74 +103,77 @@ public class ListComponentNattableTest {
 
 		// Get the parent
 		Composite parent = eclipseTestForm.getForm().getBody();
-		
+
 		shell = parent.getShell();
 		// Create the section and set its layout info
 		Section listSection = formToolkit.createSection(parent,
 				Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
 						| Section.EXPANDED | Section.COMPACT);
 		listSection.setLayout(new GridLayout(1, false));
-		listSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true, 1, 1));
+		listSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
+				1, 1));
 		// Create the section client, which is the client area of the
 		// section that will actually render data.
 		sectionClient = new Composite(listSection, SWT.FLAT);
 		sectionClient.setLayout(new GridLayout(2, false));
 		sectionClient.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true, 1, 1));
-		//parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		//listSection.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		sectionClient.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		shell.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+		// parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+		// listSection.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+		sectionClient.setBackground(Display.getCurrent().getSystemColor(
+				SWT.COLOR_WHITE));
+		shell.setBackground(Display.getCurrent()
+				.getSystemColor(SWT.COLOR_WHITE));
 
-	//create some test materials to put into the table- to provide some sort of data
+		// create some test materials to put into the table- to provide some
+		// sort of data
 		Material material = new Material();
 		material.setName("Mat1");
 		material.setProperty("A", 1.0);
 		material.setProperty("B", 2.0);
 		mat1 = material;
-		
+
 		Material material2 = new Material();
 		material2.setName("Mat2");
 		material2.setProperty("A", 5.2);
 		material2.setProperty("B", 4.1);
 		mat2 = material2;
-		
+
 		mat3 = new Material();
 		mat3.setName("Mat3");
 		mat3.setProperty("A", 2.4);
 		mat3.setProperty("B", .394);
-		
-		
+
 		ArrayList<String> colNames = new ArrayList<String>();
 		colNames.addAll(material.getProperties().keySet());
-		
-		MaterialWritableTableFormat tableFormat = new MaterialWritableTableFormat(colNames);
 
-		//Instantiate the ListComponent to test the Nattable with 
+		// Set the format of the table, it is tested for holding materials
+		MaterialWritableTableFormat tableFormat = new MaterialWritableTableFormat(
+				colNames);
+
+		// Instantiate the ListComponent to test the Nattable with
 		list = new ListComponent();
 		list.setTableFormat(tableFormat);
 		list.add(material);
 		list.add(material2);
-		
-		//creates the new Nattable for testing
+
+		// creates the new Nattable for testing
 		table = new ListComponentNattable(sectionClient, list, false);
-		
-		//assertions for testing
-		///////////////////////////////////////////////////////////////////////////////////////
-		
+
+		// assertions for testing
 		assertNotNull(table);
-		
+
 		assertEquals(table.getList().getColumnCount(), 3);
-		
+
 		table.getList().clear();
 		assertFalse(table.getList().contains(mat1));
-		
+
 		table.getList().add(mat2);
 		table.getList().add(mat3);
-		
-		assertEquals(table.getList().getColumnValue(mat2, 1), mat2.getProperty("A"));
-		
+
+		assertEquals(table.getList().getColumnValue(mat2, 1),
+				mat2.getProperty("A"));
+
 	}
 
 	@Test
@@ -161,35 +183,7 @@ public class ListComponentNattableTest {
 		table.setSelection(setList);
 		ListComponent selected = table.getSelectedObjects();
 		assertEquals(selected.get(0), mat2);
-		
-	}
-	/*
-	@Test
-	public void testGetBackground() {
-		assertEquals(table.getBackground(), Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-	}
-	*/
 
-	
-	/*
-	@Test
-	public void testSetList() {
-		fail("Not yet implemented");
 	}
-	*/
-	
-	/*
-	@Test
-	public void testGetList() {
-		assertEquals(this.list, table.getList());
-	}
-	 */
-
-	/*
-	@Test
-	public void testSetComposite() {
-		fail("Not yet implemented");
-	}
-	*/
 
 }
