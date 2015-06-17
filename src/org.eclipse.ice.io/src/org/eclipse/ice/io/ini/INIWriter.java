@@ -39,17 +39,6 @@ import org.eclipse.ice.io.serializable.IWriter;
 public class INIWriter implements IWriter {
 
 	/**
-	 * The character to use as a comment symbol
-	 */
-	private String comment;
-
-	/**
-	 * A string that can be used if there is an unusual prefix before
-	 * assignments within sections
-	 */
-	private String sectionIndent = "";
-
-	/**
 	 * Regex to match the section headers
 	 */
 	private String sectionPrefix = "[";
@@ -100,10 +89,8 @@ public class INIWriter implements IWriter {
 				PipedInputStream in = new PipedInputStream(8196);
 				PipedOutputStream out = new PipedOutputStream(in);
 				DataComponent dataComp;
-				String tableContents, compName, currIndent;
-				Boolean inSection;
+				String tableContents, compName;
 				String newLine = System.getProperty("line.separator");
-				ArrayList<Entry> row;
 				byte[] byteArray;
 
 				// Make sure that we have a file to write to before proceeding
@@ -119,15 +106,13 @@ public class INIWriter implements IWriter {
 					compName = dataComp.getName();
 
 					// If the section had a name start by adding that
-					// Otherwise, just leave it blank
 					// Then set the indentation required accordingly
 					if (compName != "Default Section") {
 						tableContents = sectionPrefix + compName
 								+ sectionPostfix + newLine;
-						currIndent = sectionIndent;
 					} else {
+						// Otherwise, just leave it blank						
 						tableContents = "";
-						currIndent = "";
 					}
 
 					// Now go through the rows and add each variable
@@ -146,6 +131,7 @@ public class INIWriter implements IWriter {
 				// Close the stream and set the file contents
 				out.close();
 				file.setContents(in, true, false, new NullProgressMonitor());
+				in.close();
 			} catch (FileNotFoundException e) {
 				System.out.println("INIWriter Message: Could not find "
 						+ file.getName() + " for writing.");
@@ -157,13 +143,6 @@ public class INIWriter implements IWriter {
 						+ file.getName() + " due to an ICE Core error.");
 			}
 		}
-	}
-
-	/**
-	 * Change the string used to indent on sections
-	 */
-	public void setSectionIndentation(String indent) {
-		sectionIndent = indent;
 	}
 
 	/**
