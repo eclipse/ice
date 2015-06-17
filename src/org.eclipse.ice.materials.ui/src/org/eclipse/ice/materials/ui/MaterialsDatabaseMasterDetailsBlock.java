@@ -15,6 +15,7 @@ package org.eclipse.ice.materials.ui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
@@ -24,9 +25,11 @@ import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -177,8 +180,8 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 				// Checks to see if this is a search for a specific
 				// isotope or a element (in which case all isotopes should be
 				// shown through the filter).
-				boolean useElementName = (filterText.length() > 0 && Character
-						.isDigit(filterText.charAt(0)));
+				boolean useElementName = !((filterText.length() > 0) && (Character
+						.isDigit(filterText.charAt(0))));
 
 				// Iterate over the list and pick the items to keep from the
 				// filter text.
@@ -247,28 +250,37 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		// Create the Add button
 		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
 		addMaterialButton.setText("Add");
-		// Create a wizard dialog to hold the AddMaterialWizard that will be
-		// used to create new materials.
-		IWorkbenchWindow window = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow();
-		AddMaterialWizard addMaterialWizard = new AddMaterialWizard(window);
-		addMaterialWizard.setWindowTitle("Create a new material");
-		final WizardDialog addMaterialDialog = new WizardDialog(
-				window.getShell(), addMaterialWizard);
+		
 		// Add a listener to the add button to open the Add Material Wizard
 		addMaterialButton.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// Just pop open the dialog
-				addMaterialDialog.create();
-				addMaterialDialog.open();
+				// Create a wizard dialog to hold the AddMaterialWizard that will be
+				// used to create new materials.
+				IWorkbenchWindow window = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow();
+				AddMaterialWizard addMaterialWizard = new AddMaterialWizard(window);
+				addMaterialWizard.setWindowTitle("Create a new material");
+				WizardDialog addMaterialDialog = new WizardDialog(
+						window.getShell(), addMaterialWizard);
+				
+				// Get the new material to add
+				if(addMaterialDialog.open() == Window.OK){
+					Material newMaterial = addMaterialWizard.getMaterial();
+					materialsDatabase.addMaterial(newMaterial);
+					materials.add(newMaterial);
+					List<Material> listFromTree = (List<Material>) treeViewer
+							.getInput();
+					listFromTree.add(newMaterial);
+					Collections.sort(listFromTree);
+					treeViewer.refresh();
+				}
+				
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// Just pop open the dialog
-				addMaterialDialog.create();
-				addMaterialDialog.open();
+				// Nothing TODO
 			}
 		});
 
@@ -280,7 +292,7 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		// a simple JFace message dialog that is opened when either button
 		// is pressed.
 		String title = "Confirm Deletion";
-		String msg = "Are you sure you want to delete this material?";
+		String msg = "Are you sure you want to delete this material(s)?";
 		String[] labels = { "OK", "Cancel" };
 		final MessageDialog deletionDialog = new MessageDialog(
 				parent.getShell(), title, null, msg, MessageDialog.WARNING,
@@ -289,13 +301,37 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int index = deletionDialog.open();
-				// Do the deletion - NOT YET IMPLEMENTED!
+				// If the user presses OK
+				if (index == 0) {
+					// Get the currently selected materials
+					IStructuredSelection selection = (IStructuredSelection) treeViewer
+							.getSelection();
+					Iterator it = selection.iterator();
+
+					// Get the model from the treeViewer
+					List<Material> listFromTree = (List<Material>) treeViewer
+							.getInput();
+
+					// Remove each selected material
+					while (it.hasNext()) {
+						Material toDelete = (Material) it.next();
+						// Remove the material from the user's database
+						materialsDatabase.deleteMaterial(toDelete);
+						// Remove from the master materials list
+						materials.remove(toDelete);
+						// Remove the material from the tree viewer
+						listFromTree.remove(toDelete);
+					}
+
+					// Update the treeViwer so that it repaints and shows the
+					// changes on screen.
+					treeViewer.refresh();
+				}
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				int index = deletionDialog.open();
-				// Do the deletion - NOT YET IMPLEMENTED!
+				// nothing TODO
 			}
 		};
 		deleteMaterialButton.addSelectionListener(deletionListener);
@@ -321,7 +357,28 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int index = restoreDialog.open();
-				// Do the restore - NOT YET IMPLEMENTED!
+				if (index == 0) {
+					materialsDatabase.restoreDefaults();
+					// Create a sorted final list from the database for pulling
+					// the database information
+					materials = materialsDatabase.getMaterials();
+					// Sorts the list according to the material compareTo
+					// operator
+					Collections.sort(materials);
+
+					// Get the model from the treeViewer
+					List<Material> listFromTree = (List<Material>) treeViewer
+							.getInput();
+					// Refresh the list from the reset materials database
+					listFromTree.clear();
+					for (int i = 0; i < materials.size(); i++) {
+						listFromTree.add(materials.get(i));
+					}
+
+					// Update the treeViwer so that it repaints and shows the
+					// changes on screen.
+					treeViewer.refresh();
+				}
 			}
 
 			@Override

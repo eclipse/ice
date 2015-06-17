@@ -11,10 +11,15 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import java.util.List;
+
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Table;
@@ -75,6 +80,50 @@ public class AddMaterialWizardPage extends WizardPage {
 		super(pageName, title, titleImage);
 	}
 
+	/**
+	 * Returns if the material page's necessary fields are complete.
+	 * 
+	 * @return Returns true if the name field and the density field have valid
+	 *         values.
+	 */
+	@Override
+	public boolean isPageComplete() {
+		boolean hasName = nameText.getText().length() > 0;
+		boolean density;
+		try {
+			Double d = Double.parseDouble(densityText.getText());
+			density = true;
+		} catch (Exception e) {
+			density = false;
+		}
+		return hasName && density;
+	}
+
+	/**
+	 * Gets the material created by the fields on this page.
+	 * 
+	 * @return A new material with the set name, density and stoichiometry
+	 *         denoted on the page.
+	 */
+	public Material getMaterial() {
+		// Creates the new material
+		Material material = new Material();
+		// Set the name
+		material.setName(nameText.getText());
+		// Set the density
+		material.setProperty("Dens (g/cm3)",
+				Double.parseDouble(densityText.getText()));
+
+		/**
+		 * // Set the material's components from the stoichiometery
+		 * List<Material> components = (List<Material>) this.stoichiometryTable
+		 * .getData(); // See if there are components to add
+		 * if(!components.isEmpty()){ for (Material m : components) {
+		 * material.addComponent(m); } }
+		 */
+		return material;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -121,7 +170,7 @@ public class AddMaterialWizardPage extends WizardPage {
 				SWT.NONE);
 		densityComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				false, 1, 1));
-		densityComposite.setLayout(new GridLayout(2, false));
+		densityComposite.setLayout(new GridLayout(3, false));
 
 		Label densityLabel = new Label(densityComposite, SWT.NONE);
 		densityLabel.setText("Density:");
@@ -129,6 +178,24 @@ public class AddMaterialWizardPage extends WizardPage {
 		densityText = new Text(densityComposite, SWT.BORDER);
 		densityText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
+
+		Label densityUnitsLabel = new Label(densityComposite, SWT.NONE);
+		densityUnitsLabel.setText("g/cm3");
+
+		// Add a modify listener to update the buttons in the wizard if the text
+		// fields change.
+		ModifyListener listener = new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				getWizard().getContainer().updateButtons();
+			}
+
+		};
+
+		// Add the listener
+		nameText.addModifyListener(listener);
+		densityText.addModifyListener(listener);
 
 		Composite stoichiometryComposite = new Composite(container, SWT.NONE);
 		stoichiometryComposite.setLayout(new GridLayout(2, false));

@@ -12,6 +12,7 @@
 package org.eclipse.ice.materials.ui;
 
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -23,7 +24,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  * materials database.
  * 
  * @author Jay Jay Billings
- *
+ * 
  */
 public class AddMaterialWizard extends Wizard implements INewWizard {
 
@@ -31,6 +32,11 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 	 * The wizard page used to create the Material.
 	 */
 	private AddMaterialWizardPage page;
+
+	/**
+	 * The material that was constructed from the wizard
+	 */
+	private Material materialFromPage;
 
 	/**
 	 * The workbench window used by the wizard.
@@ -56,6 +62,10 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 		this();
 		// Store a reference to the workbench window.
 		workbenchWindow = window;
+
+		// Turn off extra buttons we do not need
+		this.setForcePreviousAndNextButtons(false);
+		this.setHelpAvailable(false);
 	}
 
 	/*
@@ -82,6 +92,25 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 		workbenchWindow = workbench.getActiveWorkbenchWindow();
 	}
 
+	/**
+	 * Gets the material created by this wizard
+	 * 
+	 * @return The new material to add to the database
+	 */
+	public Material getMaterial() {
+		return materialFromPage;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
+	 */
+	@Override
+	public boolean canFinish() {
+		return page.isPageComplete();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -89,8 +118,15 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
+		boolean finished;
+
+		if (canFinish()) {
+			finished = true;
+			materialFromPage = page.getMaterial();
+		} else {
+			finished = false;
+		}
+		return finished;
 	}
 
 }
