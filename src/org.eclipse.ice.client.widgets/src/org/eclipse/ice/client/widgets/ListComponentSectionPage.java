@@ -367,7 +367,6 @@ public class ListComponentSectionPage extends ICEFormPage {
 							// Unlocks the list
 							list.getReadWriteLock().writeLock().unlock();
 							table.setSelection(selected);
-
 						}
 					}
 				}
@@ -389,9 +388,6 @@ public class ListComponentSectionPage extends ICEFormPage {
 	public void setList(ListComponent list) {
 		this.list = list;
 		this.source = list.getElementSource();
-		ListComponent tableList = this.table.getList();
-		tableList.clear();
-		tableList.addAll(list);
 	}
 
 }

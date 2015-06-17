@@ -86,13 +86,16 @@ public class ElementSourceDialog<T> extends Dialog {
 		elements = source.getElements();
 		list.addAll(elements);
 
-		// Sorts the list according to the material names
-		Collections.sort(list, new Comparator<T>() {
-			public int compare(Object first, Object second) {
-				return ((Material) first).getName().compareTo(
-						((Material) second).getName());
-			}
-		});
+		// Sorts the list according to the item's comparator, if it is
+		// available
+		if (!list.isEmpty() && list.get(0) instanceof Comparable) {
+			Collections.sort(list, new Comparator<T>() {
+				public int compare(Object first, Object second) {
+					return ((Comparable) first).compareTo((Comparable) second);
+				}
+			});
+		}
+
 	}
 
 	/*
@@ -104,7 +107,7 @@ public class ElementSourceDialog<T> extends Dialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		
+
 		// Create the composite from the parent
 		Composite comp = (Composite) super.createDialogArea(parent);
 		comp.setLayout(new GridLayout(1, false));
@@ -155,6 +158,12 @@ public class ElementSourceDialog<T> extends Dialog {
 				// Get the filter text
 				String filterText = filter.getText().toLowerCase();
 
+				// Checks to see if this is a search for a specific
+				// isotope or a element (in which case all isotopes should be
+				// shown through the filter).
+				boolean useElementName = (filterText.length() > 0 && Character
+						.isDigit(filterText.charAt(0)));
+
 				// Iterate over the list and pick the items to keep from the
 				// filter text.
 				int numRemoved = 0;
@@ -168,13 +177,25 @@ public class ElementSourceDialog<T> extends Dialog {
 						// Finally, if the material fits the filter, make sure
 						// it is in the list. Otherwise,
 						// take it out of the list.
-						if (mat.getName().toLowerCase().startsWith(filterText)) {
+
+						// Get whether to compare entire name or just elemental
+						// name.
+						String matName = "";
+						if (useElementName) {
+							matName = mat.getElementalName();
+						} else {
+							matName = mat.getName();
+						}
+
+						// If the material meets the criteria
+						if (matName.toLowerCase().startsWith(filterText)) {
 
 							// Make sure material is in list
 							if (!listFromTable.contains(mat)) {
 								listFromTable.add(i - numRemoved, mat);
 							}
 
+							// If the material does not meet the criteria
 						} else {
 
 							// Remove materials that do not fit the search
@@ -184,6 +205,7 @@ public class ElementSourceDialog<T> extends Dialog {
 							}
 							numRemoved++;
 						}
+
 					}
 
 					// Unlock the list

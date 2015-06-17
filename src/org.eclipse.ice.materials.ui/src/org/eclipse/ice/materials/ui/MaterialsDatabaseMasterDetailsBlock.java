@@ -151,12 +151,8 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		// Create a sorted final list from the database for pulling the database
 		// information
 		materials = materialsDatabase.getMaterials();
-		// Sorts the list according to the material names
-		Collections.sort(materials, new Comparator<Material>() {
-			public int compare(Material first, Material second) {
-				return (first.getName().compareTo(second.getName()));
-			}
-		});
+		// Sorts the list according to the material compareTo operator
+		Collections.sort(materials);
 
 		// Create a copy of the master list for the table to display.
 		List<Material> editableCopy = new ArrayList<Material>();
@@ -178,16 +174,29 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 				// Get the filter text
 				String filterText = filter.getText().toLowerCase();
 
+				// Checks to see if this is a search for a specific
+				// isotope or a element (in which case all isotopes should be
+				// shown through the filter).
+				boolean useElementName = (filterText.length() > 0 && Character
+						.isDigit(filterText.charAt(0)));
+
 				// Iterate over the list and pick the items to keep from the
 				// filter text.
 				int numRemoved = 0;
 				for (int i = 0; i < materials.size(); i++) {
 
 					Material mat = materials.get(i);
+
+					String matName = "";
+					if (useElementName) {
+						matName = mat.getElementalName();
+					} else {
+						matName = mat.getName();
+					}
 					// Finally, if the material fits the filter, make sure it is
 					// in the list. Otherwise,
 					// take it out of the list.
-					if (mat.getName().toLowerCase().startsWith(filterText)) {
+					if (matName.toLowerCase().startsWith(filterText)) {
 						// make sure material is in list
 						if (!listFromTree.contains(mat)) {
 							listFromTree.add(i - numRemoved, mat);
