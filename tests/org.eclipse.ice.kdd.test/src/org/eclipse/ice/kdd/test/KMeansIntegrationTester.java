@@ -220,6 +220,9 @@ public class KMeansIntegrationTester {
 				yValues.add(Double.parseDouble(y));
 			}
 
+			// Close the reader.
+			reader.close();
+			
 		} catch (CoreException e) {
 			e.printStackTrace();
 			fail();

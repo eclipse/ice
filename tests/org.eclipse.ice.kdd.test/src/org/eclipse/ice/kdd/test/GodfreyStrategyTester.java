@@ -289,6 +289,10 @@ public class GodfreyStrategyTester {
 				}
 			}
 
+			// Close the readers.
+			reader.close();
+			refReader.close();
+			
 		} catch (CoreException e) {
 			e.printStackTrace();
 			fail();

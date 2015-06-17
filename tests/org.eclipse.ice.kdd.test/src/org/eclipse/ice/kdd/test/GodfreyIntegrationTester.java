@@ -246,6 +246,10 @@ public class GodfreyIntegrationTester {
 					refElements.add(refData);
 				}
 			}
+			
+			// Close the readers.
+			reader.close();
+			refReader.close();
 
 		} catch (CoreException e) {
 			e.printStackTrace();

@@ -114,13 +114,6 @@ public class AddMaterialWizardPage extends WizardPage {
 		material.setProperty("Dens (g/cm3)",
 				Double.parseDouble(densityText.getText()));
 
-		/**
-		 * // Set the material's components from the stoichiometery
-		 * List<Material> components = (List<Material>) this.stoichiometryTable
-		 * .getData(); // See if there are components to add
-		 * if(!components.isEmpty()){ for (Material m : components) {
-		 * material.addComponent(m); } }
-		 */
 		return material;
 	}
 

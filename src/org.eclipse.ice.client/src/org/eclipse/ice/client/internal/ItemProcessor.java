@@ -471,6 +471,10 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					// be displayed
 					posted.set(true);
 				} else {
+					// FIXME This is a potential design flaw, as any attempt to
+					// cancel will be ignored if the widget is closed
+					// "successfully" before this thread makes it to this if
+					// condition.
 					// Otherwise if the widget has been posted, see if it has
 					// been closed ok.
 					if (widgetClosedOK.get()) {

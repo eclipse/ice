@@ -148,6 +148,8 @@ public class ClusterKDDMatrixTester {
 				yValues.add(Double.parseDouble(y));
 			}
 
+			// Close the reader.
+			reader.close();
 		} catch (CoreException e) {
 			e.printStackTrace();
 			fail();
