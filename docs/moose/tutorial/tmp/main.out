@@ -1,28 +1,18 @@
-\BOOKMARK [0][-]{chapter.1}{Using MOOSE with ICE}{}% 1
-\BOOKMARK [1][-]{section.1.1}{Introduction}{chapter.1}% 2
-\BOOKMARK [2][-]{subsection.1.1.1}{Installation and Configuration}{section.1.1}% 3
-\BOOKMARK [2][-]{subsection.1.1.2}{Prerequisites}{section.1.1}% 4
-\BOOKMARK [1][-]{section.1.2}{MOOSE Perspective}{chapter.1}% 5
-\BOOKMARK [2][-]{subsection.1.2.1}{Generating YAML and Action Syntax Files}{section.1.2}% 6
-\BOOKMARK [2][-]{subsection.1.2.2}{Creating Input}{section.1.2}% 7
-\BOOKMARK [2][-]{subsection.1.2.3}{Launching a MOOSE Job}{section.1.2}% 8
-\BOOKMARK [0][-]{chapter.2}{Embedded Visualizations in ICE}{}% 9
-\BOOKMARK [1][-]{section.2.1}{Introduction}{chapter.2}% 10
-\BOOKMARK [1][-]{section.2.2}{Resources and Resource Pages}{chapter.2}% 11
-\BOOKMARK [1][-]{section.2.3}{Visualization Services}{chapter.2}% 12
-\BOOKMARK [0][-]{chapter.3}{Visualizing Output in ICE}{}% 13
-\BOOKMARK [1][-]{section.3.1}{Installation and Configuration}{chapter.3}% 14
-\BOOKMARK [2][-]{subsection.3.1.1}{Prerequisites}{section.3.1}% 15
-\BOOKMARK [2][-]{subsection.3.1.2}{Visualization Perspective}{section.3.1}% 16
-\BOOKMARK [1][-]{section.3.2}{Visualizing Output}{chapter.3}% 17
-\BOOKMARK [2][-]{subsection.3.2.1}{VisIt}{section.3.2}% 18
-\BOOKMARK [0][-]{chapter.4}{Developing MOOSE Applications with ICE}{}% 19
-\BOOKMARK [1][-]{section.4.1}{Introduction}{chapter.4}% 20
-\BOOKMARK [1][-]{section.4.2}{Cloning MOOSE}{chapter.4}% 21
-\BOOKMARK [1][-]{section.4.3}{Building MOOSE}{chapter.4}% 22
-\BOOKMARK [1][-]{section.4.4}{Forking the Stork}{chapter.4}% 23
-\BOOKMARK [1][-]{section.4.5}{Adding a New Kernel}{chapter.4}% 24
-\BOOKMARK [1][-]{section.4.6}{Building your MOOSE App}{chapter.4}% 25
-\BOOKMARK [1][-]{section.4.7}{Pushing Changes Back to GitHub}{chapter.4}% 26
-\BOOKMARK [1][-]{section.4.8}{Executing Built MOOSE Application}{chapter.4}% 27
-\BOOKMARK [0][-]{chapter*.51}{Online Resources}{}% 28
+\BOOKMARK [0][-]{chapter.1}{Using MOOSE with ICE}{}
+\BOOKMARK [1][-]{section.1.1}{Introduction}{chapter.1}
+\BOOKMARK [2][-]{subsection.1.1.1}{Installation and Configuration}{section.1.1}
+\BOOKMARK [2][-]{subsection.1.1.2}{Prerequisites}{section.1.1}
+\BOOKMARK [1][-]{section.1.2}{MOOSE Perspective}{chapter.1}
+\BOOKMARK [2][-]{subsection.1.2.1}{Generating YAML and Action Syntax Files}{section.1.2}
+\BOOKMARK [2][-]{subsection.1.2.2}{Creating Input}{section.1.2}
+\BOOKMARK [2][-]{subsection.1.2.3}{Launching a MOOSE Job}{section.1.2}
+\BOOKMARK [0][-]{chapter.2}{Embedded Visualizations in ICE}{}
+\BOOKMARK [1][-]{section.2.1}{Introduction}{chapter.2}
+\BOOKMARK [1][-]{section.2.2}{Resources and Resource Pages}{chapter.2}
+\BOOKMARK [1][-]{section.2.3}{Visualization Services}{chapter.2}
+\BOOKMARK [0][-]{chapter.3}{Visualizing Output in ICE}{}
+\BOOKMARK [1][-]{section.3.1}{Installation and Configuration}{chapter.3}
+\BOOKMARK [2][-]{subsection.3.1.1}{Prerequisites}{section.3.1}
+\BOOKMARK [2][-]{subsection.3.1.2}{Visualization Perspective}{section.3.1}
+\BOOKMARK [1][-]{section.3.2}{Visualizing Output}{chapter.3}
+\BOOKMARK [2][-]{subsection.3.2.1}{VisIt}{section.3.2}
