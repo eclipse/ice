@@ -12,13 +12,22 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import java.util.ArrayList;
+
+import org.eclipse.ice.client.widgets.ListComponentNattable;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.IMaterialsDatabase;
+import org.eclipse.ice.materials.SingleMaterialWritableTableFormat;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
+import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.selection.RowSelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -26,19 +35,21 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import ca.odell.glazedlists.gui.WritableTableFormat;
+
 /**
  * This class presents a Material as a table with properties.
  * 
  * @author Jay Jay Billings
- *
+ * 
  */
 public class MaterialDetailsPage implements IDetailsPage {
 
@@ -58,9 +69,24 @@ public class MaterialDetailsPage implements IDetailsPage {
 	IManagedForm managedForm;
 
 	/**
-	 * The table viewer that shows the material's properties.
+	 * The list component that holds the property keys for the NatTable.
 	 */
-	TableViewer tableViewer;
+	ListComponent<String> list;
+
+	/**
+	 * The table to display the material's properties
+	 */
+	ListComponentNattable natTable;
+
+	/**
+	 * The section client for the NatTable to draw on
+	 */
+	Composite sectionClient;
+
+	/**
+	 * The shell to use for opening the add property dialog
+	 */
+	Shell shell;
 
 	/**
 	 * The constructor
@@ -174,13 +200,61 @@ public class MaterialDetailsPage implements IDetailsPage {
 		Object structuredSelection = ((IStructuredSelection) selection)
 				.getFirstElement();
 		if (structuredSelection instanceof Material) {
-			// Set the input to the properties
+
+			// Updates the material to the new selection
 			material = (Material) structuredSelection;
-			tableViewer.setInput(material.getProperties());
-			// Fix the column width
-			Table table = tableViewer.getTable();
-			for (TableColumn column : table.getColumns()) {
-				column.pack();
+
+			// Creates new table if this is the first selection of a material.
+			if (natTable == null) {
+
+				// Creates new listComponent for the table data.
+				list = new ListComponent<String>();
+
+				// Gets the property names or column names for the table.
+				ArrayList<String> propertyNames = new ArrayList<String>();
+				propertyNames.addAll(material.getProperties().keySet());
+
+				// Creates new writable table format for the nattable
+				WritableTableFormat tableFormat = new SingleMaterialWritableTableFormat(
+						material);
+
+				// Adds the tableformat to the list
+				list.setTableFormat(tableFormat);
+
+				// Adds the material
+				list.addAll(propertyNames);
+
+				// Makes the NatTable, with the list data and current
+				// sectionClient to draw on.
+				natTable = new ListComponentNattable(sectionClient, list, true);
+				RowSelectionProvider<Material> selectionProvider = natTable
+						.getSelectionProvider();
+				selectionProvider
+						.addSelectionChangedListener(new ISelectionChangedListener() {
+
+							@Override
+							public void selectionChanged(
+									SelectionChangedEvent arg0) {
+								database.updateMaterial(material);
+							}
+
+						});
+			} else {
+
+				// Clears out any existing entries in the list
+				list.clear();
+				// Gets the property names or column names for the table.
+				ArrayList<String> propertyNames = new ArrayList<String>();
+				propertyNames.addAll(material.getProperties().keySet());
+
+				// Adds the new properties to the list.
+				list.addAll(propertyNames);
+
+				// Changes the selected material
+				SingleMaterialWritableTableFormat format = (SingleMaterialWritableTableFormat) list
+						.getTableFormat();
+				format.setMaterial(material);
+
 			}
 		}
 		return;
@@ -195,6 +269,8 @@ public class MaterialDetailsPage implements IDetailsPage {
 	 */
 	@Override
 	public void createContents(Composite parent) {
+		// Get the shell for the add property dialog
+		shell = parent.getShell();
 
 		// Set the layout for the parent
 		GridLayout parentGridLayout = new GridLayout(1, true);
@@ -213,7 +289,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 
 		// Create the area in which the block will be rendered - the
 		// "section client"
-		Composite sectionClient = toolkit.createComposite(section);
+		sectionClient = toolkit.createComposite(section);
 		// Configure the layout to be greedy.
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
@@ -225,38 +301,10 @@ public class MaterialDetailsPage implements IDetailsPage {
 		// Finally tell the section about its client
 		section.setClient(sectionClient);
 
-		// Create a table viewer to display the materials properties
-		tableViewer = new TableViewer(sectionClient, SWT.BORDER | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION);
-
-		// Create the property name column
-		TableViewerColumn nameColumn = new TableViewerColumn(tableViewer,
-				SWT.CENTER);
-		nameColumn.getColumn().setText("Property");
-		nameColumn.getColumn().setToolTipText(
-				"The name of the material property");
-		nameColumn.setLabelProvider(new MaterialCellLabelProvider());
-		nameColumn.getColumn().pack();
-		// Create the property value column
-		TableViewerColumn valueColumn = new TableViewerColumn(tableViewer,
-				SWT.CENTER);
-		valueColumn.getColumn().setText("Value");
-		valueColumn.getColumn().setToolTipText(
-				"The value of the material property");
-		valueColumn.getColumn().pack();
-		valueColumn.setLabelProvider(new MaterialCellLabelProvider());
-		// Add the columns
-		String[] names = { "Property", "Value" };
-		tableViewer.setColumnProperties(names);
-
-		// Set the content provider and the layout information on the
-		// tableViewer
-		tableViewer.setContentProvider(new MaterialPropertyContentProvider());
-		Table table = tableViewer.getTable();
-		table.setLayout(new GridLayout(1, true));
-		table.setLayoutData(new GridData(GridData.FILL_BOTH));
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
+		// Sets the sectionClient color to overrule the table's background
+		sectionClient.setBackground(Display.getCurrent().getSystemColor(
+				SWT.COLOR_WHITE));
+		sectionClient.setBackgroundMode(SWT.INHERIT_FORCE);
 
 		// Add a composite for holding the Add and Delete buttons for adding
 		// or removing properties
@@ -264,39 +312,76 @@ public class MaterialDetailsPage implements IDetailsPage {
 		buttonComposite.setLayout(new GridLayout(1, false));
 		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false,
 				true, 1, 1));
-		// Create a listener that will throw up an error message since the Add
-		// and Delete operations are not yet supported. The error message is
-		// just a simple JFace message dialog that is opened when either button
-		// is pressed.
-		String title = "Operation Unsupported";
-		String msg = "Adding and deleting properties"
-				+ " is not yet supported.";
-		String[] labels = { "OK" };
-		final MessageDialog dialog = new MessageDialog(parent.getShell(),
-				title, null, msg, MessageDialog.ERROR, labels, 0);
-		SelectionListener errorListener = new SelectionListener() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				dialog.open();
-			}
 
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				dialog.open();
-			}
-		};
 		// Create the Add button
 		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
 		addMaterialButton.setText("Add");
-		// Set the error listener for now until the delete operation is
-		// supported.
-		addMaterialButton.addSelectionListener(errorListener);
-		// Create the Delete button
+		addMaterialButton.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				// Opens the new dialog to create a property
+				AddPropertyDialog dialog = new AddPropertyDialog(shell);
+				if (dialog.open() == Window.OK) {
+					// Sets the new property
+					MaterialProperty newProperty = dialog.getSelection();
+					material.setProperty(newProperty.key, newProperty.value);
+					database.updateMaterial(material);
+
+					// Lock the list to avoid concurrent modifications
+					list.getReadWriteLock().writeLock().lock();
+					try {
+						// Adds the new property to the list so that it will
+						// update on screen for the user.
+						list.add(newProperty.key);
+					} finally {
+						// Unlock the list
+						list.getReadWriteLock().writeLock().unlock();
+					}
+				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+			}
+
+		});
+
+		// Create the delete button for removing material properties.
 		Button deleteMaterialButton = new Button(buttonComposite, SWT.PUSH);
 		deleteMaterialButton.setText("Delete");
-		// Set the error listener for now until the delete operation is
-		// supported
-		deleteMaterialButton.addSelectionListener(errorListener);
+		deleteMaterialButton.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+
+				// gets the selected property
+				String property = (String) natTable.getSelectedObjects().get(0);
+
+				// Removes the property from the material.
+				material.removeProperty(property);
+				database.updateMaterial(material);
+
+				// Finally, removes the property string from the list so that it
+				// will
+				// update on screen for the user.
+				// Lock the list to avoid concurrent modifications
+				list.getReadWriteLock().writeLock().lock();
+				try {
+					// remove the property
+					list.remove(property);
+				} finally {
+					// unlock the list
+					list.getReadWriteLock().writeLock().unlock();
+				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+
+			}
+
+		});
 
 		return;
 	}
