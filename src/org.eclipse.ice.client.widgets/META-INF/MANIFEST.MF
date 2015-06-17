@@ -42,5 +42,5 @@ Import-Package: com.jme3.app,
  org.eclipse.ui.views.properties.tabbed,
  org.osgi.framework;version="1.6.0"
 Export-Package: org.eclipse.ice.client.widgets
-Service-Component: OSGI-INF/eclipseWidgetsComponent.xml, OSGI-INF/commonComponent.xml,
+Service-Component: OSGI-INF/eclipseWidgetsComponent.xml,
  OSGI-INF/formEditorVizService.xml
