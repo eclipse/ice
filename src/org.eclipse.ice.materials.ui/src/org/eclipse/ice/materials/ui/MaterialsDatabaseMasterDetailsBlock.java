@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.ui.workbench.IWorkbench;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -70,7 +71,7 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 	/**
 	 * The list that holds the materials database information.
 	 */
-	List<Material> materials;
+	ListComponent<Material> materials;
 
 	/**
 	 * The managed form for the block.
@@ -153,12 +154,14 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 
 		// Create a sorted final list from the database for pulling the database
 		// information
-		materials = materialsDatabase.getMaterials();
+		materials = new ListComponent<Material>();
+		materials.addAll(materialsDatabase.getMaterials());
+
 		// Sorts the list according to the material compareTo operator
 		Collections.sort(materials);
 
 		// Create a copy of the master list for the table to display.
-		List<Material> editableCopy = new ArrayList<Material>();
+		List<Object> editableCopy = new ArrayList<Object>();
 		for (int i = 0; i < materials.size(); i++) {
 			editableCopy.add(materials.get(i));
 		}
@@ -188,7 +191,7 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 				int numRemoved = 0;
 				for (int i = 0; i < materials.size(); i++) {
 
-					Material mat = materials.get(i);
+					Material mat = (Material) materials.get(i);
 
 					String matName = "";
 					if (useElementName) {
@@ -197,8 +200,7 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 						matName = mat.getName();
 					}
 					// Finally, if the material fits the filter, make sure it is
-					// in the list. Otherwise,
-					// take it out of the list.
+					// in the list. Otherwise, take it out of the list.
 					if (matName.toLowerCase().startsWith(filterText)) {
 						// make sure material is in list
 						if (!listFromTree.contains(mat)) {
@@ -223,9 +225,8 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		treeViewer.getTree().setLayout(new GridLayout(1, true));
 
 		// Sets the gridData to grab the available space, but to have only the
-		// treeview have the scrolling.
-		// This allows for the master tree to scroll without moving the details
-		// page out of the viewport.
+		// treeview have the scrolling. This allows for the master tree to
+		// scroll without moving the details page out of the viewport.
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		data.widthHint = sectionClient.getClientArea().width;
 		data.heightHint = sectionClient.getClientArea().height;
@@ -250,32 +251,41 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		// Create the Add button
 		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
 		addMaterialButton.setText("Add");
-		
+
 		// Add a listener to the add button to open the Add Material Wizard
 		addMaterialButton.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// Create a wizard dialog to hold the AddMaterialWizard that will be
+				// Create a wizard dialog to hold the AddMaterialWizard that
+				// will be
 				// used to create new materials.
 				IWorkbenchWindow window = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow();
-				AddMaterialWizard addMaterialWizard = new AddMaterialWizard(window, materialsDatabase);
+				AddMaterialWizard addMaterialWizard = new AddMaterialWizard(
+						window, materialsDatabase);
 				addMaterialWizard.setWindowTitle("Create a new material");
-				WizardDialog addMaterialDialog = new WizardDialog(
-						window.getShell(), addMaterialWizard);
-				
+				WizardDialog addMaterialDialog = new WizardDialog(window
+						.getShell(), addMaterialWizard);
+
 				// Get the new material to add
-				if(addMaterialDialog.open() == Window.OK){
+				if (addMaterialDialog.open() == Window.OK) {
 					Material newMaterial = addMaterialWizard.getMaterial();
 					materialsDatabase.addMaterial(newMaterial);
-					materials.add(newMaterial);
+					materials.getReadWriteLock().writeLock().lock();
+					try{
+						materials.add(newMaterial);
+						Collections.sort(materials);
+					} finally{
+						materials.getReadWriteLock().writeLock().unlock();
+					}
+					
 					List<Material> listFromTree = (List<Material>) treeViewer
 							.getInput();
 					listFromTree.add(newMaterial);
 					Collections.sort(listFromTree);
 					treeViewer.refresh();
 				}
-				
+
 			}
 
 			@Override
@@ -317,8 +327,14 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 						Material toDelete = (Material) it.next();
 						// Remove the material from the user's database
 						materialsDatabase.deleteMaterial(toDelete);
-						// Remove from the master materials list
-						materials.remove(toDelete);
+
+						materials.getReadWriteLock().writeLock().lock();
+						try {
+							// Remove from the master materials list
+							materials.remove(toDelete);
+						} finally {
+							materials.getReadWriteLock().writeLock().unlock();
+						}
 						// Remove the material from the tree viewer
 						listFromTree.remove(toDelete);
 					}
@@ -361,14 +377,20 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 					materialsDatabase.restoreDefaults();
 					// Create a sorted final list from the database for pulling
 					// the database information
-					materials = materialsDatabase.getMaterials();
-					// Sorts the list according to the material compareTo
-					// operator
-					Collections.sort(materials);
+					List newList = materialsDatabase.getMaterials();
+					materials.getReadWriteLock().writeLock().lock();
+					try {
+						materials.clear();
+						materials.addAll(newList);
+						// Sorts the list according to the material compareTo
+						// operator
+						Collections.sort(materials);
+					} finally {
+						materials.getReadWriteLock().writeLock().unlock();
+					}
 
 					// Get the model from the treeViewer
-					List<Material> listFromTree = (List<Material>) treeViewer
-							.getInput();
+					List listFromTree = (List<Object>) treeViewer.getInput();
 					// Refresh the list from the reset materials database
 					listFromTree.clear();
 					for (int i = 0; i < materials.size(); i++) {
@@ -401,8 +423,10 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 	 */
 	@Override
 	protected void registerPages(DetailsPart detailsPart) {
-		detailsPart.registerPage(Material.class, new MaterialDetailsPage(
-				materialsDatabase));
+		MaterialDetailsPage detailsPage = new MaterialDetailsPage(materialsDatabase);
+		MaterialDetailsPage stackDetailsPage = new MaterialDetailsPage(materialsDatabase);
+		detailsPart.registerPage(Material.class, detailsPage);
+		detailsPart.registerPage(MaterialStack.class, stackDetailsPage);
 
 	}
 
