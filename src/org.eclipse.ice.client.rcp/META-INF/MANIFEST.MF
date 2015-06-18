@@ -36,6 +36,7 @@ Import-Package: com.sun.jersey.api.client,
  org.eclipse.swt.layout,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
+ org.eclipse.ui.internal.ide.application,
  org.osgi.framework;version="1.5.0",
  org.osgi.util.tracker;version="1.5.0"
 Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
