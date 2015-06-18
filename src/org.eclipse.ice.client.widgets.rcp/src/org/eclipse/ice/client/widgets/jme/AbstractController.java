@@ -6,9 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or 
+ *      initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.jme;
 
@@ -67,6 +67,7 @@ public abstract class AbstractController implements IUpdateableListener {
 	 * The current parent node for the {@link #view}.
 	 */
 	private Node parentNode;
+
 	// ----------------------- //
 
 	/**
