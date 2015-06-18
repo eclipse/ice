@@ -39,15 +39,19 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.Form;
+
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ptp.remote.core.IRemoteConnection;
-import org.eclipse.ptp.remote.core.IRemoteFileManager;
-import org.eclipse.ptp.remote.core.IRemoteProcess;
-import org.eclipse.ptp.remote.core.IRemoteProcessBuilder;
-import org.eclipse.ptp.remote.core.IRemoteServices;
-import org.eclipse.ptp.remote.core.RemoteServices;
-import org.eclipse.ptp.remote.core.exception.RemoteConnectionException;
+import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteConnectionManager;
+import org.eclipse.remote.core.IRemoteConnectionWorkingCopy;
+import org.eclipse.remote.core.IRemoteFileManager;
+import org.eclipse.remote.core.IRemoteProcess;
+import org.eclipse.remote.core.IRemoteProcessBuilder;
+import org.eclipse.remote.core.IRemoteServices;
+import org.eclipse.remote.core.RemoteServices;
+import org.eclipse.remote.core.exception.RemoteConnectionException;
+
+import org.eclipse.ice.datastructures.form.Form;
 
 /**
  * <p>
@@ -954,8 +958,10 @@ public class JobLaunchAction extends Action implements Runnable {
 	protected void launchRemotely() {
 
 		IRemoteServices remoteServices = RemoteServices
-				.getRemoteServices("org.eclipse.ptp.remote.RemoteTools");
+				.getRemoteServices("org.eclipse.remote.JSch");
 		IRemoteConnection connection = null;
+		IRemoteConnectionWorkingCopy workingCopy = null;
+		IRemoteConnectionManager connectionManager = null;
 		String remoteDownloadDirectory = execDictionary
 				.get("downloadDirectory");
 		String separator = System.getProperty("file.separator");
@@ -963,8 +969,15 @@ public class JobLaunchAction extends Action implements Runnable {
 		Date currentDate = new Date();
 		SimpleDateFormat shortDate = new SimpleDateFormat("yyyyMMddhhmmss");
 		String homeDir = System.getProperty("user.home");
+		String hostname = execDictionary.get("hostname");
 		String localDirectoryPath = "";
 
+		if (remoteServices == null) {
+			System.err.println("JobLaunchAction Error: Could not retrieve a valid IRemoteServices object. Remote Launch failed.");
+			status = FormStatus.InfoError;
+			return;
+		}
+		
 		// Create a local directory where created files can be downloaded
 		// from the remote host
 		localDirectoryPath = projectSpaceDir + separator + "jobs" + separator
@@ -984,20 +997,15 @@ public class JobLaunchAction extends Action implements Runnable {
 				localStorageDir);
 		String launchCMDFileName = "";
 
-		// Search for existing connections and make a new one
-		if (remoteServices.canCreateConnections()) {
-			try {
-				// Get a new connection
-				connection = remoteServices.getConnectionManager()
-						.newConnection(execDictionary.get("hostname"));
-			} catch (RemoteConnectionException e) {
-				// Print diagnostic information and fail
-				e.printStackTrace();
-				status = FormStatus.InfoError;
-				return;
-			}
+		connectionManager = remoteServices.getConnectionManager();
+		try {
+			workingCopy = connectionManager.newConnection(hostname + "_" + shortDate.format(currentDate));
+		} catch (RemoteConnectionException e) {
+			e.printStackTrace();
+			status = FormStatus.InfoError;
+			return;
 		}
-
+		
 		// Block until the Form is submitted
 		while (!formSubmitted.get()) {
 			try {
@@ -1020,14 +1028,19 @@ public class JobLaunchAction extends Action implements Runnable {
 		}
 
 		// Set the hostname of the connection
-		connection.setAddress(execDictionary.get("hostname"));
+		//connection.setAddress(execDictionary.get("hostname"));
 		// Get the username and password from the login component
 		DataComponent credentials = (DataComponent) formAtomic.get()
 				.getComponent(1);
-		connection.setUsername(credentials.retrieveAllEntries().get(0)
+		
+		workingCopy.setAddress(hostname);
+		workingCopy.setUsername(credentials.retrieveAllEntries().get(0)
 				.getValue());
-		connection.setPassword(credentials.retrieveAllEntries().get(1)
+		workingCopy.setPassword(credentials.retrieveAllEntries().get(1)
 				.getValue());
+		
+		connection = workingCopy.save();
+		
 		// Try to open the connection and fail if it will not open
 		try {
 			connection.open(null);
@@ -1044,8 +1057,8 @@ public class JobLaunchAction extends Action implements Runnable {
 			System.out.println("JobLaunchAction Message:"
 					+ " PTP connection established.");
 			// Get the remote file manager
-			IRemoteFileManager fileManager = remoteServices
-					.getFileManager(connection);
+			IRemoteFileManager fileManager = connection
+					.getFileManager();
 			// Get the working directory
 			IFileStore fileStore = fileManager.getResource(connection
 					.getWorkingDirectory());
@@ -1117,8 +1130,8 @@ public class JobLaunchAction extends Action implements Runnable {
 				launchCMD = "qsub" + launchCMDFileName;
 			}
 			// Create the process builder for the remote job
-			IRemoteProcessBuilder processBuilder = remoteServices
-					.getProcessBuilder(connection, "sh", launchCMD);
+			IRemoteProcessBuilder processBuilder = connection
+					.getProcessBuilder("sh", launchCMD);
 			// Do not redirect the streams
 			processBuilder.redirectErrorStream(false);
 			try {
