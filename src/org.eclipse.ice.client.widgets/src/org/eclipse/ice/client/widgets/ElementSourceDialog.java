@@ -161,8 +161,8 @@ public class ElementSourceDialog<T> extends Dialog {
 				// Checks to see if this is a search for a specific
 				// isotope or a element (in which case all isotopes should be
 				// shown through the filter).
-				boolean useElementName = (filterText.length() > 0 && Character
-						.isDigit(filterText.charAt(0)));
+				boolean useElementName = !((filterText.length() > 0) && (Character
+						.isDigit(filterText.charAt(0))));
 
 				// Iterate over the list and pick the items to keep from the
 				// filter text.

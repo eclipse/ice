@@ -2,7 +2,6 @@
 <ICEList>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ga</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -40,7 +39,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>188Os</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -78,7 +76,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>137Ba</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -116,7 +113,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>22Ne</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -154,7 +150,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>184Os</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -192,7 +187,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Fe</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -230,7 +224,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>29Si</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -268,7 +261,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>26Mg</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -306,7 +298,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>3He</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -344,7 +335,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>130Te</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -382,7 +372,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Eu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -420,7 +409,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>85Rb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -458,7 +446,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>160Gd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -496,7 +483,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Er</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -534,7 +520,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>86Kr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -572,7 +557,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>109Ag</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -610,7 +594,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>46Ti</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -648,7 +631,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>76Ge</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -686,7 +668,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Dy</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -724,7 +705,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>78Se</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -762,7 +742,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>72Ge</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -800,7 +779,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>168Er</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -838,7 +816,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>238Pu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -876,7 +853,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>74Se</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -914,7 +890,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>139La</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -952,7 +927,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>164Er</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -990,7 +964,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>94Zr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1028,7 +1001,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>198Pt</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1066,7 +1038,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>157Gd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1104,7 +1075,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>6Li</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1142,7 +1112,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>90Zr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1180,7 +1149,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Cu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1218,7 +1186,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>123Te</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1256,7 +1223,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Cs</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1294,7 +1260,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>194Pt</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1332,7 +1297,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Cr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1370,7 +1334,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>164Dy</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1408,7 +1371,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>64Ni</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1446,7 +1408,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Co</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1484,7 +1445,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>66Zn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1522,7 +1482,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>96Mo</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1560,7 +1519,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Cl</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1598,7 +1556,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>178Hf</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1636,7 +1593,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>190Pt</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1674,7 +1630,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>160Dy</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1712,7 +1667,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>60Ni</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1750,7 +1704,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ce</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1788,7 +1741,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>206Pb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1826,7 +1778,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Cd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1864,7 +1815,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>92Mo</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1902,7 +1852,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>187Re</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1940,7 +1889,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ca</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -1978,7 +1926,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>174Hf</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2016,7 +1963,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>38Ar</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2054,7 +2000,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>69Ga</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2092,7 +2037,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>111Cd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2130,7 +2074,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Br</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2168,7 +2111,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>123Sb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2206,7 +2148,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Bi</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2244,7 +2185,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>145Nd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2282,7 +2222,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>190Os</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2320,7 +2259,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Be</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2358,7 +2296,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>153Eu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2396,7 +2333,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ba</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2434,7 +2370,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Zr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2472,7 +2407,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Zn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2510,7 +2444,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>199Hg</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2548,7 +2481,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Au</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2586,7 +2518,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>As</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2624,7 +2555,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>148Sm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2662,7 +2592,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ar</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2700,7 +2629,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>106Pd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2738,7 +2666,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>136Ce</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2776,7 +2703,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Am</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2814,7 +2740,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Al</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2852,7 +2777,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>144Sm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2890,7 +2814,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ag</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2932,7 +2855,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>102Pd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -2970,7 +2892,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>205Tl</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3008,7 +2929,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>88Sr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3046,7 +2966,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>18O</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3084,7 +3003,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>171Yb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3122,7 +3040,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>108Cd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3160,7 +3077,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>84Sr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3198,7 +3114,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>116Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3236,7 +3151,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>112Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3274,7 +3188,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>187Os</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3312,7 +3225,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>48Ca</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3350,7 +3262,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>136Ba</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3388,7 +3299,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Yb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3426,7 +3336,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>21Ne</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3464,7 +3373,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>80Se</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3502,7 +3410,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>17O</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3540,7 +3447,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>170Er</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3578,7 +3484,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>44Ca</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3616,7 +3521,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>132Ba</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3654,7 +3558,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>240Pu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3692,7 +3595,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>40Ca</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3730,7 +3632,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>28Si</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3768,7 +3669,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>25Mg</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3806,7 +3706,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>58Fe</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3844,7 +3743,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>246Cm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3882,7 +3780,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Xe</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3920,7 +3817,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>168Yb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3958,7 +3854,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>54Fe</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -3996,7 +3891,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>16O</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4034,7 +3928,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>49Ti</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4072,7 +3965,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>65Cu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4110,7 +4002,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>186W</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4148,7 +4039,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>180Hf</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4186,7 +4076,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>77Se</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4224,7 +4113,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>37Cl</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4262,7 +4150,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>167Er</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4300,7 +4187,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>40Ar</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4338,7 +4224,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>71Ga</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4376,7 +4261,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>15N</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4414,7 +4298,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>138La</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4452,7 +4335,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>126Te</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4490,7 +4372,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>156Gd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4528,7 +4409,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>122Te</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4566,7 +4446,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>154Sm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4604,7 +4483,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>152Gd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4642,7 +4520,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>163Dy</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4680,7 +4557,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>142Ce</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4718,7 +4594,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>14N</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4756,7 +4631,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>95Mo</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4794,7 +4668,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>150Sm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4832,7 +4705,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>177Hf</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4870,7 +4742,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>184W</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4908,7 +4779,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>113In</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4946,7 +4816,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>114Cd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -4984,7 +4853,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>54Cr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5022,7 +4890,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>122Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5060,7 +4927,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>110Cd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5098,7 +4964,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>50Cr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5136,7 +5001,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>148Nd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5174,7 +5038,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>144Nd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5212,7 +5075,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>183W</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5250,7 +5112,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>13C</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5288,7 +5149,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Tm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5326,7 +5186,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Tl</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5364,7 +5223,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ti</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5402,7 +5260,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Th</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5440,7 +5297,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Te</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5478,7 +5334,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Tc</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5516,7 +5371,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Tb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5554,7 +5408,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>147Sm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5592,7 +5445,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ta</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5630,7 +5482,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>105Pd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5668,7 +5519,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>30Si</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5706,7 +5556,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>156Dy</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5744,7 +5593,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>176Lu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5782,7 +5630,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>174Yb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5820,7 +5667,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>119Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5858,7 +5704,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>87Sr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5896,7 +5741,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>182W</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5934,7 +5778,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Sr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -5972,7 +5815,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>170Yb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6010,7 +5852,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>12C</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6048,7 +5889,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6086,7 +5926,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>51V</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6124,7 +5963,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Sm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6162,7 +6000,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>115Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6200,7 +6037,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Si</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6238,7 +6074,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Se</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6276,7 +6111,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>79Br</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6314,7 +6148,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Sc</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6352,7 +6185,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Sb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6390,7 +6222,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>186Os</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6428,7 +6259,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>135Ba</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6466,7 +6296,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>20Ne</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6504,7 +6333,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ru</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6542,7 +6370,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>43Ca</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6580,7 +6407,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>11B</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6618,7 +6444,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>50V</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6656,7 +6481,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Rh</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6694,7 +6518,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>24Mg</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6732,7 +6555,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>87Rb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6770,7 +6592,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Re</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6808,7 +6629,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>57Fe</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6846,7 +6666,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Rb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6884,7 +6703,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ra</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6922,7 +6740,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>48Ti</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6960,7 +6777,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>180W</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -6998,7 +6814,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>107Ag</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7036,7 +6851,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>10B</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7074,7 +6888,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>74Ge</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7112,7 +6925,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>76Se</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7150,7 +6962,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>70Ge</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7188,7 +6999,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>181Ta</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7226,7 +7036,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>166Er</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7264,7 +7073,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Pt</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7302,7 +7110,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Pr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7340,7 +7147,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>162Er</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7378,7 +7184,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>150Nd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7416,7 +7221,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>96Zr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7454,7 +7258,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Pm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7492,7 +7295,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>92Zr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7530,7 +7332,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>125Te</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7568,7 +7369,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Pd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7606,7 +7406,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>196Pt</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7644,7 +7443,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>155Gd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7682,7 +7480,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Pb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7720,7 +7517,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Pa</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7758,7 +7554,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>68Zn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7796,7 +7591,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>98Mo</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7834,7 +7628,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>192Pt</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7872,7 +7665,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>162Dy</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7910,7 +7702,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>62Ni</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7948,7 +7739,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>208Pb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -7986,7 +7776,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>64Zn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8024,7 +7813,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>94Mo</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8062,7 +7850,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Os</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8100,7 +7887,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>176Hf</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8138,7 +7924,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>204Pb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8176,7 +7961,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>185Re</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8214,7 +7998,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>113Cd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8252,7 +8035,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>53Cr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8290,7 +8072,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>36Ar</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8328,7 +8109,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>238U</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8366,7 +8146,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>192Os</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8404,7 +8183,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>121Sb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8442,7 +8220,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>81Br</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8480,7 +8257,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>39K</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8518,7 +8294,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Np</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8556,7 +8331,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>143Nd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8593,8 +8367,90 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>H20</name>
+        <properties>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>1.0</value>
+            </entry>
+        </properties>
+        <Material>
+            <name>H</name>
+            <properties>
+                <entry>
+                    <key>Inc xs</key>
+                    <value>80.26</value>
+                </entry>
+                <entry>
+                    <key>mmabs/l (Å-2)</key>
+                    <value>1.1E15</value>
+                </entry>
+                <entry>
+                    <key>M (amu)</key>
+                    <value>1.0079</value>
+                </entry>
+                <entry>
+                    <key>Coh b</key>
+                    <value>-3.739</value>
+                </entry>
+                <entry>
+                    <key>Dens (g/cm3)</key>
+                    <value>0.0</value>
+                </entry>
+                <entry>
+                    <key>Abs xs</key>
+                    <value>0.3326</value>
+                </entry>
+                <entry>
+                    <key>Dens (at/nm3)</key>
+                    <value>0.05</value>
+                </entry>
+                <entry>
+                    <key>mminc (Å-1)</key>
+                    <value>4.79E17</value>
+                </entry>
+            </properties>
+        </Material>
+        <Material>
+            <name>O</name>
+            <properties>
+                <entry>
+                    <key>Inc xs</key>
+                    <value>8.0E-4</value>
+                </entry>
+                <entry>
+                    <key>mmabs/l (Å-2)</key>
+                    <value>3.98E10</value>
+                </entry>
+                <entry>
+                    <key>M (amu)</key>
+                    <value>15.9994</value>
+                </entry>
+                <entry>
+                    <key>Coh b</key>
+                    <value>5.803</value>
+                </entry>
+                <entry>
+                    <key>Dens (g/cm3)</key>
+                    <value>0.0</value>
+                </entry>
+                <entry>
+                    <key>Abs xs</key>
+                    <value>1.9E-4</value>
+                </entry>
+                <entry>
+                    <key>Dens (at/nm3)</key>
+                    <value>0.05</value>
+                </entry>
+                <entry>
+                    <key>mminc (Å-1)</key>
+                    <value>3.01E11</value>
+                </entry>
+            </properties>
+        </Material>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>151Eu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8632,7 +8488,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ni</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8670,7 +8525,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ne</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8708,7 +8562,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Nd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8746,7 +8599,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Nb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8784,7 +8636,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Na</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8822,7 +8673,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>108Pd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8860,7 +8710,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>138Ce</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8898,7 +8747,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>175Lu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8936,7 +8784,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>104Pd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -8974,7 +8821,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>173Yb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9012,7 +8858,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Mo</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9050,7 +8895,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Mn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9088,7 +8932,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>203Tl</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9126,7 +8969,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>86Sr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9164,7 +9006,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>118Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9202,7 +9043,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>106Cd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9240,7 +9080,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Mg</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9278,7 +9117,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>50Ti</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9316,7 +9154,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>114Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9354,7 +9191,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>189Os</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9392,7 +9228,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>138Ba</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9430,7 +9265,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>41K</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9468,7 +9302,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>82Se</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9506,7 +9339,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Lu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9544,7 +9376,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>46Ca</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9582,7 +9413,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>134Ba</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9620,7 +9450,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>242Pu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9658,7 +9487,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>42Ca</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9696,7 +9524,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Li</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9734,7 +9561,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>130Ba</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9772,7 +9598,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>235U</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9810,7 +9635,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>248Cm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9848,7 +9672,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>La</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9886,7 +9709,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>4He</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9924,7 +9746,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>36S</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -9962,7 +9783,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>40K</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10000,7 +9820,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>56Fe</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10038,7 +9857,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>244Cm</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10076,7 +9894,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Kr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10114,7 +9931,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>70Zn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10152,7 +9968,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>47Ti</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10190,7 +10005,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>63Cu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10228,7 +10042,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>234U</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10266,7 +10079,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>3H</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10304,7 +10116,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>73Ge</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10342,7 +10153,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>100Mo</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10380,7 +10190,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>239Pu</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10418,7 +10227,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>35Cl</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10456,7 +10264,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>180Ta</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10494,7 +10301,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>128Te</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10532,7 +10338,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>7Li</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10570,7 +10375,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>158Gd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10608,7 +10412,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>233U</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10646,7 +10449,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Y</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10684,7 +10486,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>2H</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10722,7 +10523,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>91Zr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10760,7 +10560,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>W</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10798,7 +10597,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>V</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10836,7 +10634,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>124Te</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10874,7 +10671,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>U</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10911,46 +10707,7 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>34S</name>
-        <size>1</size>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>2.24E13</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>34.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>3.48</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>0.227</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mminc (Å-1)</key>
-                <value>0.0</value>
-            </entry>
-        </properties>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>195Pt</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10987,8 +10744,7 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>154Gd</name>
-        <size>1</size>
+        <name>34S</name>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -10996,15 +10752,15 @@
             </entry>
             <entry>
                 <key>mmabs/l (Å-2)</key>
-                <value>1.85E15</value>
+                <value>2.24E13</value>
             </entry>
             <entry>
                 <key>M (amu)</key>
-                <value>154.0</value>
+                <value>34.0</value>
             </entry>
             <entry>
                 <key>Coh b</key>
-                <value>10.0</value>
+                <value>3.48</value>
             </entry>
             <entry>
                 <key>Dens (g/cm3)</key>
@@ -11012,7 +10768,7 @@
             </entry>
             <entry>
                 <key>Abs xs</key>
-                <value>85.0</value>
+                <value>0.227</value>
             </entry>
             <entry>
                 <key>Dens (at/nm3)</key>
@@ -11026,7 +10782,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>S</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11063,8 +10818,44 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>154Gd</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Å-2)</key>
+                <value>1.85E15</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>154.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>10.0</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>85.0</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>mminc (Å-1)</key>
+                <value>0.0</value>
+            </entry>
+        </properties>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>P</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11101,46 +10892,7 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>67Zn</name>
-        <size>1</size>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.28</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>3.4E14</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>67.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>7.56</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>6.8</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mminc (Å-1)</key>
-                <value>2.52E13</value>
-            </entry>
-        </properties>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>O</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11177,24 +10929,23 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>N</name>
-        <size>1</size>
+        <name>67Zn</name>
         <properties>
             <entry>
                 <key>Inc xs</key>
-                <value>0.5</value>
+                <value>0.28</value>
             </entry>
             <entry>
                 <key>mmabs/l (Å-2)</key>
-                <value>4.54E14</value>
+                <value>3.4E14</value>
             </entry>
             <entry>
                 <key>M (amu)</key>
-                <value>14.0067</value>
+                <value>67.0</value>
             </entry>
             <entry>
                 <key>Coh b</key>
-                <value>9.36</value>
+                <value>7.56</value>
             </entry>
             <entry>
                 <key>Dens (g/cm3)</key>
@@ -11202,21 +10953,20 @@
             </entry>
             <entry>
                 <key>Abs xs</key>
-                <value>1.9</value>
+                <value>6.8</value>
             </entry>
             <entry>
                 <key>Dens (at/nm3)</key>
-                <value>0.05</value>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>mminc (Å-1)</key>
-                <value>2.15E14</value>
+                <value>2.52E13</value>
             </entry>
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>97Mo</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11253,8 +11003,44 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>N</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.5</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Å-2)</key>
+                <value>4.54E14</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>14.0067</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>9.36</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>1.9</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.05</value>
+            </entry>
+            <entry>
+                <key>mminc (Å-1)</key>
+                <value>2.15E14</value>
+            </entry>
+        </properties>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>120Te</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11291,46 +11077,7 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>152Sm</name>
-        <size>1</size>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>4.54E15</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>152.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>-5.0</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>206.0</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mminc (Å-1)</key>
-                <value>0.0</value>
-            </entry>
-        </properties>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ir</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11367,46 +11114,44 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>K</name>
-        <size>1</size>
+        <name>152Sm</name>
         <properties>
             <entry>
                 <key>Inc xs</key>
-                <value>0.27</value>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>mmabs/l (Å-2)</key>
-                <value>1.8E14</value>
+                <value>4.54E15</value>
             </entry>
             <entry>
                 <key>M (amu)</key>
-                <value>39.0963</value>
+                <value>152.0</value>
             </entry>
             <entry>
                 <key>Coh b</key>
-                <value>3.67</value>
+                <value>-5.0</value>
             </entry>
             <entry>
                 <key>Dens (g/cm3)</key>
-                <value>0.86</value>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>Abs xs</key>
-                <value>2.1</value>
+                <value>206.0</value>
             </entry>
             <entry>
                 <key>Dens (at/nm3)</key>
-                <value>13.25</value>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>mminc (Å-1)</key>
-                <value>4.16E13</value>
+                <value>0.0</value>
             </entry>
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>179Hf</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11443,46 +11188,44 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>161Dy</name>
-        <size>1</size>
+        <name>K</name>
         <properties>
             <entry>
                 <key>Inc xs</key>
-                <value>3.0</value>
+                <value>0.27</value>
             </entry>
             <entry>
                 <key>mmabs/l (Å-2)</key>
-                <value>1.25E16</value>
+                <value>1.8E14</value>
             </entry>
             <entry>
                 <key>M (amu)</key>
-                <value>161.0</value>
+                <value>39.0963</value>
             </entry>
             <entry>
                 <key>Coh b</key>
-                <value>10.3</value>
+                <value>3.67</value>
             </entry>
             <entry>
                 <key>Dens (g/cm3)</key>
-                <value>0.0</value>
+                <value>0.86</value>
             </entry>
             <entry>
                 <key>Abs xs</key>
-                <value>600.0</value>
+                <value>2.1</value>
             </entry>
             <entry>
                 <key>Dens (at/nm3)</key>
-                <value>0.0</value>
+                <value>13.25</value>
             </entry>
             <entry>
                 <key>mminc (Å-1)</key>
-                <value>1.12E14</value>
+                <value>4.16E13</value>
             </entry>
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>110Pd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11519,24 +11262,23 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>140Ce</name>
-        <size>1</size>
+        <name>161Dy</name>
         <properties>
             <entry>
                 <key>Inc xs</key>
-                <value>0.0</value>
+                <value>3.0</value>
             </entry>
             <entry>
                 <key>mmabs/l (Å-2)</key>
-                <value>1.36E13</value>
+                <value>1.25E16</value>
             </entry>
             <entry>
                 <key>M (amu)</key>
-                <value>140.0</value>
+                <value>161.0</value>
             </entry>
             <entry>
                 <key>Coh b</key>
-                <value>4.84</value>
+                <value>10.3</value>
             </entry>
             <entry>
                 <key>Dens (g/cm3)</key>
@@ -11544,7 +11286,7 @@
             </entry>
             <entry>
                 <key>Abs xs</key>
-                <value>0.57</value>
+                <value>600.0</value>
             </entry>
             <entry>
                 <key>Dens (at/nm3)</key>
@@ -11552,13 +11294,12 @@
             </entry>
             <entry>
                 <key>mminc (Å-1)</key>
-                <value>0.0</value>
+                <value>1.12E14</value>
             </entry>
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>I</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11595,24 +11336,23 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>61Ni</name>
-        <size>1</size>
+        <name>140Ce</name>
         <properties>
             <entry>
                 <key>Inc xs</key>
-                <value>1.9</value>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>mmabs/l (Å-2)</key>
-                <value>1.37E14</value>
+                <value>1.36E13</value>
             </entry>
             <entry>
                 <key>M (amu)</key>
-                <value>61.0</value>
+                <value>140.0</value>
             </entry>
             <entry>
                 <key>Coh b</key>
-                <value>7.6</value>
+                <value>4.84</value>
             </entry>
             <entry>
                 <key>Dens (g/cm3)</key>
@@ -11620,7 +11360,7 @@
             </entry>
             <entry>
                 <key>Abs xs</key>
-                <value>2.5</value>
+                <value>0.57</value>
             </entry>
             <entry>
                 <key>Dens (at/nm3)</key>
@@ -11628,51 +11368,12 @@
             </entry>
             <entry>
                 <key>mminc (Å-1)</key>
-                <value>1.88E14</value>
-            </entry>
-        </properties>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>In</name>
-        <size>1</size>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.54</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>5.65E15</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>114.82</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>4.065</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>7.3</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>193.8</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm3)</key>
-                <value>38.29</value>
-            </entry>
-            <entry>
-                <key>mminc (Å-1)</key>
-                <value>2.83E13</value>
+                <value>0.0</value>
             </entry>
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>H</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11709,8 +11410,81 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>In</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.54</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Å-2)</key>
+                <value>5.65E15</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>114.82</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>4.065</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>7.3</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>193.8</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>38.29</value>
+            </entry>
+            <entry>
+                <key>mminc (Å-1)</key>
+                <value>2.83E13</value>
+            </entry>
+        </properties>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>61Ni</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>1.9</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Å-2)</key>
+                <value>1.37E14</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>61.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>7.6</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>2.5</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>mminc (Å-1)</key>
+                <value>1.88E14</value>
+            </entry>
+        </properties>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>207Pb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11747,46 +11521,7 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>115In</name>
-        <size>1</size>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.55</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>5.88E15</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>115.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>4.01</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>202.0</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mminc (Å-1)</key>
-                <value>2.88E13</value>
-            </entry>
-        </properties>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>F</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11823,8 +11558,44 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>115In</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.55</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Å-2)</key>
+                <value>5.88E15</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>115.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>4.01</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>202.0</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>mminc (Å-1)</key>
+                <value>2.88E13</value>
+            </entry>
+        </properties>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>116Cd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11862,7 +11633,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>C</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11900,7 +11670,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>B</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11938,7 +11707,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>124Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -11976,7 +11744,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>112Cd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12014,7 +11781,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>1H</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12052,7 +11818,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>52Cr</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12090,7 +11855,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>120Sn</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12128,7 +11892,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>33S</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12166,7 +11929,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>146Nd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12204,7 +11966,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ho</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12241,46 +12002,7 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>142Nd</name>
-        <size>1</size>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>4.41E14</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>142.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>7.7</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>18.7</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mminc (Å-1)</key>
-                <value>0.0</value>
-            </entry>
-        </properties>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Hg</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12317,8 +12039,44 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>142Nd</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Å-2)</key>
+                <value>4.41E14</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>142.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>7.7</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>18.7</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>mminc (Å-1)</key>
+                <value>0.0</value>
+            </entry>
+        </properties>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Hf</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12356,7 +12114,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>He</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12393,46 +12150,7 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>149Sm</name>
-        <size>1</size>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>137.0</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>9.46E17</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>149.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>-19.2</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>42080.0</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mminc (Å-1)</key>
-                <value>5.54E15</value>
-            </entry>
-        </properties>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>32S</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12469,8 +12187,44 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>149Sm</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>137.0</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Å-2)</key>
+                <value>9.46E17</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>149.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>-19.2</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>42080.0</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>mminc (Å-1)</key>
+                <value>5.54E15</value>
+            </entry>
+        </properties>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>158Dy</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12508,7 +12262,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>58Ni</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12546,7 +12299,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>196Hg</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12584,7 +12336,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>176Yb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12622,7 +12373,6 @@
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>172Yb</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12659,46 +12409,7 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>117Sn</name>
-        <size>1</size>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.3</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Å-2)</key>
-                <value>6.58E13</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>117.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>6.48</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>2.3</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>mminc (Å-1)</key>
-                <value>1.54E13</value>
-            </entry>
-        </properties>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ge</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>
@@ -12735,8 +12446,44 @@
         </properties>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>117Sn</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.3</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Å-2)</key>
+                <value>6.58E13</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>117.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>6.48</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>2.3</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>mminc (Å-1)</key>
+                <value>1.54E13</value>
+            </entry>
+        </properties>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Gd</name>
-        <size>1</size>
         <properties>
             <entry>
                 <key>Inc xs</key>

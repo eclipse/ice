@@ -259,7 +259,7 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 				// used to create new materials.
 				IWorkbenchWindow window = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow();
-				AddMaterialWizard addMaterialWizard = new AddMaterialWizard(window);
+				AddMaterialWizard addMaterialWizard = new AddMaterialWizard(window, materialsDatabase);
 				addMaterialWizard.setWindowTitle("Create a new material");
 				WizardDialog addMaterialDialog = new WizardDialog(
 						window.getShell(), addMaterialWizard);

@@ -13,6 +13,7 @@ package org.eclipse.ice.materials.ui;
 
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -42,6 +43,11 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 	 * The workbench window used by the wizard.
 	 */
 	private IWorkbenchWindow workbenchWindow;
+	
+	/**
+	 * The database used to build the new material
+	 */
+	private IMaterialsDatabase database;
 
 	/**
 	 * A nullary constructor. This is used by the platform. <b>If called from an
@@ -49,6 +55,7 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 	 */
 	public AddMaterialWizard() {
 		super();
+		
 	}
 
 	/**
@@ -58,11 +65,11 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 	 * @param window
 	 *            The workbench window.
 	 */
-	public AddMaterialWizard(IWorkbenchWindow window) {
+	public AddMaterialWizard(IWorkbenchWindow window, IMaterialsDatabase database) {
 		this();
 		// Store a reference to the workbench window.
 		workbenchWindow = window;
-
+		this.database = database;
 		// Turn off extra buttons we do not need
 		this.setForcePreviousAndNextButtons(false);
 		this.setHelpAvailable(false);
@@ -77,6 +84,7 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 	public void addPages() {
 		if (page == null) {
 			page = new AddMaterialWizardPage("Create a New Material");
+			page.setSource(database);
 		}
 		addPage(page);
 	}
