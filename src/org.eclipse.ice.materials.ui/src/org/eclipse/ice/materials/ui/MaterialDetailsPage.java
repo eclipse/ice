@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import org.eclipse.ice.client.widgets.ListComponentNattable;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.SingleMaterialWritableTableFormat;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -199,14 +200,22 @@ public class MaterialDetailsPage implements IDetailsPage {
 		// Grab the selection
 		Object structuredSelection = ((IStructuredSelection) selection)
 				.getFirstElement();
-		if (structuredSelection instanceof Material) {
 
-			// Updates the material to the new selection
-			material = (Material) structuredSelection;
+		// Make sure that the selection can be handled by this details page
+		if (structuredSelection instanceof Material
+				|| structuredSelection instanceof MaterialStack) {
 
-			// Creates new table if this is the first selection of a material.
+			if (structuredSelection instanceof Material) {
+				material = (Material) structuredSelection;
+			} else {
+				material = ((MaterialStack) structuredSelection).getMaterial();
+			}
+
+			// Creates new table if the selections change from one form to
+			// another.
 			if (natTable == null) {
 
+				System.out.println("Making table");
 				// Creates new listComponent for the table data.
 				list = new ListComponent<String>();
 
@@ -241,6 +250,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 						});
 			} else {
 
+				System.out.println("Not making table");
 				// Clears out any existing entries in the list
 				list.clear();
 				// Gets the property names or column names for the table.
@@ -269,9 +279,10 @@ public class MaterialDetailsPage implements IDetailsPage {
 	 */
 	@Override
 	public void createContents(Composite parent) {
+		// Make sure that we are not re-creating our contents!
 		// Get the shell for the add property dialog
 		shell = parent.getShell();
-
+		System.out.println("Creating contents");
 		// Set the layout for the parent
 		GridLayout parentGridLayout = new GridLayout(1, true);
 		parent.setLayout(parentGridLayout);
@@ -301,6 +312,10 @@ public class MaterialDetailsPage implements IDetailsPage {
 		// Finally tell the section about its client
 		section.setClient(sectionClient);
 
+		if(natTable!=null){
+			natTable.getTable().setParent(sectionClient);
+			natTable.getTable().refresh();
+		}
 		// Sets the sectionClient color to overrule the table's background
 		sectionClient.setBackground(Display.getCurrent().getSystemColor(
 				SWT.COLOR_WHITE));
@@ -310,8 +325,8 @@ public class MaterialDetailsPage implements IDetailsPage {
 		// or removing properties
 		Composite buttonComposite = new Composite(sectionClient, SWT.NONE);
 		buttonComposite.setLayout(new GridLayout(1, false));
-		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false,
-				true, 1, 1));
+		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL,
+				false, true, 1, 1));
 
 		// Create the Add button
 		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
@@ -356,13 +371,15 @@ public class MaterialDetailsPage implements IDetailsPage {
 			public void widgetSelected(SelectionEvent arg0) {
 
 				// gets the selected property
-				String property = (String) natTable.getSelectedObjects().get(0);
+				String property = (String) natTable.getSelectedObjects()
+						.get(0);
 
 				// Removes the property from the material.
 				material.removeProperty(property);
 				database.updateMaterial(material);
 
-				// Finally, removes the property string from the list so that it
+				// Finally, removes the property string from the list so
+				// that it
 				// will
 				// update on screen for the user.
 				// Lock the list to avoid concurrent modifications
@@ -385,5 +402,6 @@ public class MaterialDetailsPage implements IDetailsPage {
 
 		return;
 	}
+
 
 }

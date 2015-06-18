@@ -18,7 +18,7 @@ import org.eclipse.ice.client.widgets.ListComponentNattable;
 import org.eclipse.ice.datastructures.ICEObject.IElementSource;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.materials.MaterialStack;
+import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.MaterialStackWritableTableFormat;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
@@ -156,16 +156,15 @@ public class AddMaterialWizardPage extends WizardPage {
 
 		// Add the stoichiometric components as components of the new material.
 		for (MaterialStack stack : list) {
-			Material m = stack.getMaterial();
-			matList.add(m);
-			material.addComponent(m);
+			material.addComponent(stack);
 		}
 		
 		// Following John Ankner's code ported from Visual Basic
 		int molMass = 0;
 		
 		for(MaterialStack stack: list){
-			//molMass+=stack.getAmount()*(stack.getMaterial().getProperty(key))
+			molMass+=stack.getAmount()*(stack.getMaterial().getProperty(Material.ATOMIC_MASS));
+			
 		}
 		
 		return material;
