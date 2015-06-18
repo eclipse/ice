@@ -75,7 +75,7 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 	 * Returns the dirty status of the Page.
 	 * </p>
 	 * 
-	 * @return
+	 * @return True if the page is dirty (needs to be saved), false otherwise.
 	 */
 	public boolean isDirty() {
 		return dirty;
@@ -90,10 +90,10 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 
 	/**
 	 * <p>
-	 * Returns the geometryComponent.
+	 * Returns the GeometryComponent.
 	 * </p>
 	 * 
-	 * @return
+	 * @return The GeometryComponent represented by the page.
 	 */
 	public GeometryComponent getGeometry() {
 		return geometryComp;

@@ -101,7 +101,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * The Entry that is displayed by the EntryComposite.
 	 */
 	protected Entry entry;
-	
+
 	/**
 	 * The currently set value of the Entry.
 	 */
@@ -134,7 +134,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * file entries.
 	 */
 	private ControlListener resizeListener = null;
-	
+
 	/**
 	 * A ControlDecoration that can be added to the EntryComposite if desired.
 	 */
@@ -200,7 +200,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 		// Get a reference to the current Entry value
 		currentSelection = entry.getValue();
-		
+
 		// Render the entry
 		render();
 
@@ -208,9 +208,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	}
 
 	/**
-	 * Returns the entry stored on this composite
+	 * Returns the entry stored on this Composite
 	 * 
-	 * @return
+	 * @return The Entry rendered by this Composite.
 	 */
 	public Entry getEntry() {
 		return entry;
@@ -446,7 +446,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					}
 					// Notify any listeners of the selection event
 					notifyListeners(SWT.Selection, new Event());
-					
+
 					return;
 				}
 
@@ -689,7 +689,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 		// Re-render the Composite
 		render();
-		
+
 		// Re-draw the Composite
 		layout();
 
@@ -743,7 +743,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			}
 
 		} else if (value == null) {
-			
+
 			if (entry.getValueType().equals(AllowedValueType.Discrete)) {
 				// Set the Entry to the first AllowedValue if it's Discrete
 				if (!entry.getAllowedValues().isEmpty()) {
@@ -784,20 +784,20 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					if (!EntryComposite.this.isDisposed()) {
-						
+
 						// Refresh the EntryComposite
 						refresh();
-						
+
 						// Toggle the "unsaved changes" decoration if the entry
 						// value is different
-						if (!EntryComposite.this.entry.getValue()
-								.equals(currentSelection)) {
+						if (!EntryComposite.this.entry.getValue().equals(
+								currentSelection)) {
 							toggleSaveDecoration();
 						}
-						
+
 						// Update the reference to the Entry's value
 						currentSelection = EntryComposite.this.entry.getValue();
-						
+
 					} else {
 						entry.unregister(EntryComposite.this);
 					}
@@ -806,33 +806,32 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		}
 		return;
 	}
-	
+
 	/**
-	 * This method is responsible for toggling a ControlDecoration on and off
-	 * on the EntryComposite. The decoration will toggle on if the editor is
-	 * dirty and the selection was recently changed (monitored by 
-	 * {@link EntryComposite#currentSelection}). Otherwise, it will
-	 * toggle off.
+	 * This method is responsible for toggling a ControlDecoration on and off on
+	 * the EntryComposite. The decoration will toggle on if the editor is dirty
+	 * and the selection was recently changed (monitored by
+	 * {@link EntryComposite#currentSelection}). Otherwise, it will toggle off.
 	 */
 	public void toggleSaveDecoration() {
-		
+
 		if (decoration == null) {
 			// Create a new decoration and message
 			decoration = new ControlDecoration(this, SWT.TOP | SWT.LEFT);
 			final String saveMessage = "The form contains unsaved changes";
-			
+
 			// Set a description and image
 			decoration.setDescriptionText(saveMessage);
-			Image image = FieldDecorationRegistry.
-					  getDefault().
-					  getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).
-					  getImage();
+			Image image = FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
+					.getImage();
 			decoration.setImage(image);
-					
+
 			// Set a listener to hide/show the decoration according to the
 			// editor's state and the current entry value
 			final IEditorPart editor = PlatformUI.getWorkbench()
-			        .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+					.getActiveWorkbenchWindow().getActivePage()
+					.getActiveEditor();
 			editor.addPropertyListener(new IPropertyListener() {
 				@Override
 				public void propertyChanged(Object source, int propId) {
@@ -841,7 +840,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					if (editor != null) {
 						if (editor.isDirty()
 								&& !EntryComposite.this.entry.getValue()
-									.equals(currentSelection)) {
+										.equals(currentSelection)) {
 							// Show the decoration
 							EntryComposite.this.decoration.show();
 						} else if (!editor.isDirty()) {
@@ -849,12 +848,12 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 							EntryComposite.this.decoration.hide();
 						}
 					}
-					
+
 					return;
-				}	
+				}
 			});
 		}
-		
+
 		return;
 	}
 }

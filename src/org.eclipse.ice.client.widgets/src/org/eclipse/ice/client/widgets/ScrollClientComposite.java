@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
+ *    
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import org.eclipse.swt.events.ControlAdapter;
@@ -306,7 +317,8 @@ public class ScrollClientComposite extends Composite {
 	 * Computes the available width for this {@code Composite} based on layout
 	 * padding and the client area of the {@link #scrolledAncestor}.
 	 * 
-	 * @return
+	 * @return The available width (in pixels) based on layout padding and the
+	 *         client area of the scrolled ancestor
 	 */
 	private int getAvailableWidth() {
 		return scrolledAncestor.getClientArea().width - totalPadLeft

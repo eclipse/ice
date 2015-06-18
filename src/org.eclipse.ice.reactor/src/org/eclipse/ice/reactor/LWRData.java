@@ -306,7 +306,7 @@ public class LWRData implements IData {
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
 	 * 
-	 * @return
+	 * @return A new clone of this object.
 	 */
 	public Object clone() {
 

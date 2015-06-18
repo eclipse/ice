@@ -219,12 +219,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// Set the dirty value and fire a property change
 		dirty = value;
 		firePropertyChange(PROP_DIRTY);
-		
+
 		// Push a message to the message manager
 		if (getHeaderForm() != null) {
 			final IMessageManager messageManager = getHeaderForm()
 					.getMessageManager();
-			messageManager.addMessage("statusUpdate", 
+			messageManager.addMessage("statusUpdate",
 					"There are unsaved changes on the form.", null,
 					IMessageProvider.WARNING);
 		}
@@ -272,7 +272,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	/**
-	 * This operation creates the ICEResourcePage that will show any output 
+	 * This operation creates the ICEResourcePage that will show any output
 	 * files created by ICE.
 	 * 
 	 * @return The ICEResourcePage that should be rendered as part of the Form.
@@ -301,11 +301,11 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		return resourceComponentPage;
 	}
-	
+
 	/**
 	 * This method returns the ICEResourcePage that this ICEFormEditor manages.
 	 * 
-	 * @return	The ICEResourcePage.
+	 * @return The ICEResourcePage.
 	 */
 	public ICEResourcePage getResourcePage() {
 		return this.resourceComponentPage;
@@ -353,7 +353,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * string.
 	 * 
 	 * @param statusMessage
-	 * 				 The status message.
+	 *            The status message.
 	 */
 	public void updateStatus(String statusMessage) {
 
@@ -410,7 +410,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * Creates a MeshPage to display 2D meshes powered with JME3. Also gives the
 	 * MeshComponent to provide data to display.
 	 * 
-	 * @return	The MeshPage created.
+	 * @return The MeshPage created.
 	 */
 	private ICEFormPage createMeshPage() {
 
@@ -722,7 +722,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * TableComponents, and MatrixComponents. These pages are used in the
 	 * addPages() operation and rendered to the screen.
 	 * 
-	 * @return
+	 * @return The list of created pages. May be empty, and should never be
+	 *         {@code null}.
 	 */
 	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
 		// Local Declarations
@@ -1276,10 +1277,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	@Override
 	public void visit(TimeDataComponent component) {
 
-
 		// Treat as a datacomponent
 		this.visit((DataComponent) component);
-
 
 	}
 

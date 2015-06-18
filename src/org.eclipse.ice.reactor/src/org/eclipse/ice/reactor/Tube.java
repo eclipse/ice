@@ -321,11 +321,8 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
@@ -337,10 +334,8 @@ public class Tube extends Ring {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean readAttributes(H5Group h5Group) {
 

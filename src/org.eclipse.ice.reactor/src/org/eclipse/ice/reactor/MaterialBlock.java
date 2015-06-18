@@ -439,7 +439,9 @@ public class MaterialBlock extends LWRComponent implements
 	 * </p>
 	 * 
 	 * @param iHdfReadable
-	 * @return
+	 *            The child that will be read.
+	 * @return True if the child could be read and added to this block, false
+	 *         otherwise.
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
@@ -461,14 +463,8 @@ public class MaterialBlock extends LWRComponent implements
 		return true;
 	}
 
-	/**
-	 * <p>
-	 * writes the hdf5 attributes.
-	 * </p>
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
@@ -480,13 +476,8 @@ public class MaterialBlock extends LWRComponent implements
 		return flag;
 	}
 
-	/**
-	 * <p>
-	 * Reads the hdf5 attributes.
-	 * </p>
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean readAttributes(H5Group h5Group) {
 
@@ -542,7 +533,6 @@ public class MaterialBlock extends LWRComponent implements
 	@Override
 	public int compareTo(MaterialBlock arg0) {
 
-
 		if (this.pos < arg0.pos) {
 			return -1;
 		} else if (this.pos > arg0.pos) {
@@ -550,7 +540,6 @@ public class MaterialBlock extends LWRComponent implements
 		} else {
 			return 0;
 		}
-
 
 	}
 }
