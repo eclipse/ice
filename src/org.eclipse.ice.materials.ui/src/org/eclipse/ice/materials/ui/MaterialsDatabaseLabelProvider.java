@@ -13,7 +13,7 @@
 package org.eclipse.ice.materials.ui;
 
 import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.materials.MaterialStack;
+import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**
