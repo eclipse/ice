@@ -227,7 +227,7 @@ public class CSVPlotEditor extends EditorPart {
 			// Set the contents
 			lws.setContents(intensityGraph);
 
-			intensityGraph.setDataArray(seriesProvider.getYData());
+			intensityGraph.setDataArray(seriesProvider.getCSVMatrixYData());
 
 			// Add controls for setting the min and max values
 			Composite minMaxComp = new Composite(vizComposite, SWT.NONE);
@@ -306,10 +306,10 @@ public class CSVPlotEditor extends EditorPart {
 			final CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(
 					false);
 			// Sets the size of the buffer
-			traceDataProvider.setBufferSize(series.getXData().length);
+			traceDataProvider.setBufferSize(series.getCSVMatrixXData().length);
 			// Set the data to be plotted
-			traceDataProvider.setCurrentXDataArray(series.getXData());
-			traceDataProvider.setCurrentYDataArray(series.getYData());
+			traceDataProvider.setCurrentXDataArray(series.getCSVMatrixXData());
+			traceDataProvider.setCurrentYDataArray(series.getCSVMatrixYData());
 
 			// Creates a new trace with the name, axis,and provider to plot
 			Trace trace = new Trace(series.getSeriesTitle(),

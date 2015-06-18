@@ -38,10 +38,12 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
@@ -85,8 +87,8 @@ public class MOOSE extends Item {
 	private TreeComposite modelTree;
 
 	/**
-	 * Reference to teh mapping between created Postprocessor
-	 * VizResources and their names. 
+	 * Reference to teh mapping between created Postprocessor VizResources and
+	 * their names.
 	 */
 	@XmlTransient()
 	private HashMap<String, ICEResource> postProcessorResources;
@@ -96,6 +98,8 @@ public class MOOSE extends Item {
 	 */
 	public MOOSE() {
 		this(null);
+		mooseModel = new MOOSEModel(null);
+		mooseLauncher = new MOOSELauncher(null);
 	}
 
 	/**
@@ -209,6 +213,27 @@ public class MOOSE extends Item {
 			registered = true;
 		}
 
+		/*
+		// Get a reference to the Launchers files component
+		DataComponent launcherFiles = (DataComponent) mooseLauncher
+				.getForm().getComponent(1);
+
+		// Grab the file name the user has specified for the input file
+		String fileName = modelFiles.retrieveEntry("Output File Name")
+				.getValue();
+
+		// Write the Moose file if it doesn't exist
+		status = mooseModel.process("Write MOOSE File");
+		if (!status.equals(FormStatus.Processed)) {
+			return status;
+		}
+
+		// Set the value of the input file to the user-specified
+		// file name
+		launcherFiles.retrieveEntry("Input File").setValue(fileName);
+
+		// Update the MooseLauncher's set of input files...
+		mooseLauncher.update(launcherFiles.retrieveEntry("Input File"));*/
 		return status;
 	}
 
@@ -673,6 +698,137 @@ public class MOOSE extends Item {
 		}
 
 		return true;
+	}
+
+	/**
+	 * <p>
+	 * This operation is used to check equality between the MOOSE Item and
+	 * another MOOSE Item. It returns true if the Items are equal and false if
+	 * they are not.
+	 * </p>
+	 * 
+	 * @param otherMoose
+	 *            <p>
+	 *            The MOOSE Item that should be checked for equality.
+	 *            </p>
+	 * @return <p>
+	 *         True if the launchers are equal, false if not
+	 *         </p>
+	 */
+	public boolean equals(MOOSE otherMoose) {
+
+		boolean retVal;
+		// Check if they are the same reference in memory
+		if (this == otherMoose) {
+			return true;
+		}
+
+		// Check that the object is not null, and that it is an Item
+		// Check that these objects have the same ICEObject data
+		if (otherMoose == null || !(otherMoose instanceof Item)
+				|| !super.equals(otherMoose)) {
+			return false;
+		}
+
+		// Check data
+		retVal = (this.allowedActions.equals(otherMoose.allowedActions))
+				&& (this.form.equals(otherMoose.form))
+				&& (this.itemType == otherMoose.itemType)
+				&& (this.status.equals(otherMoose.status));
+
+		// Check project
+		if (this.project != null && otherMoose.project != null
+				&& (!(this.project.equals(otherMoose.project)))) {
+			return false;
+
+		}
+
+		// Check project - set to null
+
+		if (this.project == null && otherMoose.project != null
+				|| this.project != null && otherMoose.project == null) {
+			return false;
+		}
+
+		if (!mooseModel.equals(otherMoose.mooseModel)
+				&& !mooseLauncher.equals(otherMoose.mooseLauncher)) {
+			return false;
+		}
+
+		return retVal;
+	}
+
+	/**
+	 * <p>
+	 * This operation returns the hashcode value of the MooseItem.
+	 * </p>
+	 * 
+	 * @return <p>
+	 *         The hashcode
+	 *         </p>
+	 */
+	public int hashCode() {
+
+		// Local Declaration
+		int hash = 9;
+		// Compute hash code from Item data
+		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + mooseModel.hashCode();
+		hash = 31 * hash + mooseLauncher.hashCode();
+
+		return hash;
+	}
+
+	/**
+	 * 
+	 * @param otherMoose
+	 *            <p>
+	 *            This operation performs a deep copy of the attributes of
+	 *            another MOOSE Item into the current MOOSE Item.
+	 *            </p>
+	 */
+	public void copy(MOOSE otherMoose) {
+
+		// Return if otherMoose is null
+		if (otherMoose == null) {
+			return;
+		}
+
+		// Copy contents into super and current object
+		super.copy((Item) otherMoose);
+
+		// Clone contents correctly
+		form = new Form();
+		mooseModel = new MOOSEModel(project);
+		mooseLauncher = new MOOSELauncher(project);
+		form.copy(otherMoose.form);
+
+		mooseModel.copy(otherMoose.mooseModel);
+		mooseLauncher.copy(otherMoose.mooseLauncher);
+		// Add the model files component
+		modelFiles = (DataComponent) form.getComponent(1);
+		// Get a handle to the model input tree
+		modelTree = (TreeComposite) form.getComponent(2);
+		
+		return;
+	}
+
+	/**
+	 * <p>
+	 * This operation provides a deep copy of the MOOSE Item.
+	 * </p>
+	 * 
+	 * @return <p>
+	 *         A clone of the Moose Item.
+	 *         </p>
+	 */
+	public Object clone() {
+
+		// Create a new instance of JobLauncher and copy the contents
+		MOOSE clone = new MOOSE();
+		clone.copy(this);
+
+		return clone;
 	}
 
 }

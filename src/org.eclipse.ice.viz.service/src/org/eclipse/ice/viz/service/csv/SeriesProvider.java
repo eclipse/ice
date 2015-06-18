@@ -28,25 +28,25 @@ public class SeriesProvider {
 	 * The data provider that this series will pull from
 	 */
 	private RealMatrix csvData;
-	
+
 	/**
 	 * The dataProvider's time for this series
 	 */
 	private double timeForDataProvider;
-	
+
 	/**
 	 * The minimum value in this data set
 	 */
 	private double max;
-	
+
 	/**
-	 * The maximum value in this data set. 
+	 * The maximum value in this data set.
 	 */
 	private double min;
-	
+
 	/**
-	 * The map from string feature/variable names to 
-	 * their corresponding column index in the CSV Matrix.
+	 * The map from string feature/variable names to their corresponding column
+	 * index in the CSV Matrix.
 	 */
 	private HashMap<String, Integer> featureMap;
 
@@ -54,21 +54,23 @@ public class SeriesProvider {
 	 * The title of the series
 	 */
 	private String seriesTitle;
-	
+
 	/**
 	 * The feature of the xData
 	 */
 	private String xDataFeature;
-	
+
 	/**
 	 * The feature of the yData
 	 */
 	private String yDataFeature;
-	
+
 	/**
 	 * The series type (Scatter, Bar, Line, etc.)
 	 */
 	private String seriesType;
+
+	private CSVDataProvider dataProvider;
 
 	/**
 	 * Default constructor
@@ -102,7 +104,7 @@ public class SeriesProvider {
 	 * @param max
 	 */
 	public void setDataMax(double max) {
-		this.max = max;
+		dataProvider.setDataMax(max);
 	}
 
 	/**
@@ -111,7 +113,7 @@ public class SeriesProvider {
 	 * @param min
 	 */
 	public void setDataMin(double min) {
-		this.min = min;
+		dataProvider.setDataMin(min);
 	}
 
 	/**
@@ -172,12 +174,24 @@ public class SeriesProvider {
 		return this.seriesTitle;
 	}
 
+	public double[] getXData() {
+		dataProvider.setTime(timeForDataProvider);
+		// Return the data
+		return dataProvider.getPositionAtCurrentTime(xDataFeature);
+	}
+
+	public double[] getYData() {
+		dataProvider.setTime(timeForDataProvider);
+		// Return the data
+		return dataProvider.getPositionAtCurrentTime(yDataFeature);
+	}
+
 	/**
 	 * Accessor for the xData
 	 * 
 	 * @return
 	 */
-	public double[] getXData() {
+	public double[] getCSVMatrixXData() {
 		return csvData.getColumn(featureMap.get(xDataFeature));
 	}
 
@@ -186,7 +200,7 @@ public class SeriesProvider {
 	 * 
 	 * @return
 	 */
-	public double[] getYData() {
+	public double[] getCSVMatrixYData() {
 		return csvData.getColumn(featureMap.get(yDataFeature));
 	}
 
@@ -223,7 +237,7 @@ public class SeriesProvider {
 	 * @return
 	 */
 	public double getDataMin() {
-		return min;
+		return dataProvider.getDataMin();
 	}
 
 	/**
@@ -232,34 +246,44 @@ public class SeriesProvider {
 	 * @return
 	 */
 	public double getDataMax() {
-		return max;
+		return dataProvider.getDataMax();
 	}
 
 	/**
 	 * Accessor for the data width
 	 * 
 	 * @return
-	 *
-	publc int getDataWidth() {
-		return this.dataProviderForSeries.getDataWidth();
+	 */
+	public int getDataWidth() {
+		return this.dataProvider.getDataWidth();
 	}
 
 	/**
 	 * Accessor for the data height
 	 * 
 	 * @return
-	 *
+	 */
 	public int getDataHeight() {
-		return this.dataProviderForSeries.getDataHeight();
+		return this.dataProvider.getDataHeight();
 	}
-*/
+
 	/**
-	 * Set the Matrix of data loaded from the CSV file 
+	 * Set the Matrix of data loaded from the CSV file
+	 * 
 	 * @param csv
 	 * @param featureToIndexMap
 	 */
-	public void setCSVData(RealMatrix csv, HashMap<String, Integer> featureToIndexMap) {
+	public void setCSVData(RealMatrix csv,
+			HashMap<String, Integer> featureToIndexMap) {
 		csvData = csv;
 		featureMap = featureToIndexMap;
+	}
+
+	public void setDataProvider(CSVDataProvider newDataProvider) {
+		dataProvider = newDataProvider;
+	}
+
+	public Object getDataProvider() {
+		return dataProvider;
 	}
 }
