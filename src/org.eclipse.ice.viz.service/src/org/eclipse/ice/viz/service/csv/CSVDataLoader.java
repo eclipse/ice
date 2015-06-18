@@ -317,7 +317,7 @@ public class CSVDataLoader {
 								Double.parseDouble(dataLines[i]));
 					} else {
 						throw new Exception("CSV file in an unexpected format, "
-								+ "data must be a (m x n) matrix");
+								+ "data must be a (m x n) matrix " + features.size() + " " + dataLines.length + "\n" + csvInputFile.getAbsolutePath());
 					}
 					/**
 					 * Set the units if the units exist

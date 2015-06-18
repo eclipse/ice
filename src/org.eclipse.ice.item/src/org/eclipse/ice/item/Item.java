@@ -1951,13 +1951,13 @@ public class Item implements IComponentVisitor, Identifiable,
 	public boolean update(Message msg) {
 
 		// Dump the text to stdout if we are in debugging mode.
-		//if (debuggingEnabled) {
+		if (debuggingEnabled) {
 			System.out.println("Item Message: Received update message!");
 			System.out.println("Item Message: Id = " + msg.getId());
 			System.out.println("Item Message: Item Id = " + msg.getItemId());
 			System.out.println("Item Message: Content = " + msg.getMessage());
 			System.out.println("Item Message: Type = " + msg.getType());
-		//}
+		}
 
 		// Just return true for now until the logging functionality can be moved
 		// from JobLauncher to Item.

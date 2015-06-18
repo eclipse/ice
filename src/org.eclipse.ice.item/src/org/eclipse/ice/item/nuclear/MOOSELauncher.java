@@ -452,6 +452,10 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		return;
 	}
 
+	public String getJobLaunchDirectory() {
+		return getWorkingDirectory();
+	}
+	
 	@Override
 	protected String getFileDependenciesSearchString() {
 		String re1="((?:[a-z][a-z0-9_]*))";

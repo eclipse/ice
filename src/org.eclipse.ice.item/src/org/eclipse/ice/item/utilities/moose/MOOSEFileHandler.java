@@ -906,7 +906,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		IEntryContentProvider provider = new BasicEntryContentProvider();
 		provider.setAllowedValueType(AllowedValueType.Discrete);
 
-		// Grab the Variables Block
+		// Grab the AuxVariables Block
 		for (int i = 0; i < tree.getNumberOfChildren(); i++) {
 			if ("AuxVariables".equals(tree.getChildAtIndex(i).getName())) {
 				auxVariablesBlock = tree.getChildAtIndex(i);
@@ -914,38 +914,43 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			}
 		}
 
-		// Add the names of the variables to the vars list
-		for (int i = 0; i < auxVariablesBlock.getNumberOfChildren(); i++) {
-			auxVars.add(auxVariablesBlock.getChildAtIndex(i).getName());
-		}
+		if (auxVariablesBlock != null) {
+			// Add the names of the variables to the vars list
+			for (int i = 0; i < auxVariablesBlock.getNumberOfChildren(); i++) {
+				auxVars.add(auxVariablesBlock.getChildAtIndex(i).getName());
+			}
 
-		// Set the allowed values as the list of available vars
-		provider.setAllowedValues(auxVars);
+			// Set the allowed values as the list of available vars
+			provider.setAllowedValues(auxVars);
 
-		// Walk the tree and search for non-AuxVariable 'variable' Entries
-		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-				tree);
-		while (iter.hasNext()) {
-			TreeComposite block = iter.next();
+			// Walk the tree and search for non-AuxVariable 'variable' Entries
+			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+					tree);
+			while (iter.hasNext()) {
+				TreeComposite block = iter.next();
 
-			// Check that this node has data
-			if (!block.getDataNodes().isEmpty()) {
-				DataComponent data = (DataComponent) block.getDataNodes()
-						.get(0);
+				// Check that this node has data
+				if (!block.getDataNodes().isEmpty()) {
+					DataComponent data = (DataComponent) block.getDataNodes()
+							.get(0);
 
-				// Only operate if this data component is valid, has a variable
-				// Entry, and is not an AuxVariable
-				if (data != null && data.contains("variable")
-						&& block.getParent().getName().contains("AuxKernels")) {
-					Entry variableEntry = data.retrieveEntry("variable");
-					String currentValue = variableEntry.getValue();
-					data.retrieveEntry("variable").setContentProvider(provider);
-					variableEntry.setValue(currentValue);
+					// Only operate if this data component is valid, has a
+					// variable
+					// Entry, and is not an AuxVariable
+					if (data != null
+							&& data.contains("variable")
+							&& block.getParent().getName()
+									.contains("AuxKernels")) {
+						Entry variableEntry = data.retrieveEntry("variable");
+						String currentValue = variableEntry.getValue();
+						data.retrieveEntry("variable").setContentProvider(
+								provider);
+						variableEntry.setValue(currentValue);
+					}
+
 				}
-
 			}
 		}
-
 		return;
 	}
 

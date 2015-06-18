@@ -13,8 +13,14 @@
 package org.eclipse.ice.item.nuclear;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -79,6 +85,13 @@ public class MOOSE extends Item {
 	private TreeComposite modelTree;
 
 	/**
+	 * Reference to teh mapping between created Postprocessor
+	 * VizResources and their names. 
+	 */
+	@XmlTransient()
+	private HashMap<String, ICEResource> postProcessorResources;
+
+	/**
 	 * Nullary constructor.
 	 */
 	public MOOSE() {
@@ -112,6 +125,8 @@ public class MOOSE extends Item {
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
 
+		// Initialize the postProcessor Mapping
+		postProcessorResources = new HashMap<String, ICEResource>();
 	}
 
 	/**
@@ -217,36 +232,60 @@ public class MOOSE extends Item {
 
 			// Add the ICEUpdater tree block to Outputs
 			TreeComposite outputs = getTreeByName("Outputs");
-			boolean iNeedUpdater = true;
-			for (int i = 0; i < outputs.getNumberOfChildren(); i++) {
-				if ("ICEUpdater".equals(outputs.getChildAtIndex(i).getName())) {
-					iNeedUpdater = false;
-					break;
-				}
-			}
+			TreeComposite postProcessors = getTreeByName("Postprocessors");
 
-			if (iNeedUpdater) {
-				for (int i = 0; i < outputs.getChildExemplars().size(); i++) {
-					if ("ICEUpdater".equals(outputs.getChildExemplars().get(i)
+			// First check to see if we have any post processors to
+			// watch for.
+			if (postProcessors.isActive()
+					&& postProcessors.getNumberOfChildren() > 0) {
+
+				// If we do, we should add an ICEUpdater
+				boolean iNeedUpdater = true;
+
+				// If we already have one, then we shouldn't add another one
+				for (int i = 0; i < outputs.getNumberOfChildren(); i++) {
+					if ("ICEUpdater".equals(outputs.getChildAtIndex(i)
 							.getName())) {
-						System.out
-								.println("Creating an instance of ICEUpdater");
-						TreeComposite updater = (TreeComposite) outputs
-								.getChildExemplars().get(i).clone();
-						outputs.setNextChild(updater);
 
-						DataComponent data = (DataComponent) updater
+						// But if the current one is not configured correctly
+						// then we should add a new one, Here we make sure the
+						// Item Id is correct...
+						TreeComposite iceUpdater = outputs.getChildAtIndex(i);
+						DataComponent data = (DataComponent) iceUpdater
 								.getDataNodes().get(0);
-						data.retrieveEntry("item_id").setValue(
-								String.valueOf(getId()));
-						data.retrieveEntry("url")
-								.setValue(
-										"http://localhost:"
-												+ System.getProperty("org.eclipse.equinox.http.jetty.http.port")
-												+ "/ice/update");
-						updater.setActive(true);
-						updater.setActiveDataNode(data);
+						Entry itemIdEntry = data.retrieveEntry("item_id");
+						if (Integer.valueOf(itemIdEntry.getValue()) != getId()) {
+							itemIdEntry.setValue(String.valueOf(getId()));
+						}
+
+						// Now we have a valid ICEUpdater, so we don't need
+						// to create a new one.
+						iNeedUpdater = false;
 						break;
+					}
+				}
+
+				if (iNeedUpdater) {
+					for (int i = 0; i < outputs.getChildExemplars().size(); i++) {
+						if ("ICEUpdater".equals(outputs.getChildExemplars()
+								.get(i).getName())) {
+							TreeComposite updater = (TreeComposite) outputs
+									.getChildExemplars().get(i).clone();
+							outputs.setNextChild(updater);
+
+							DataComponent data = (DataComponent) updater
+									.getDataNodes().get(0);
+							data.retrieveEntry("item_id").setValue(
+									String.valueOf(getId()));
+							data.retrieveEntry("url")
+									.setValue(
+											"http://localhost:"
+													+ System.getProperty("org.eclipse.equinox.http.jetty.http.port")
+													+ "/ice/update");
+							updater.setActive(true);
+							updater.setActiveDataNode(data);
+							break;
+						}
 					}
 				}
 			}
@@ -397,7 +436,10 @@ public class MOOSE extends Item {
 		// this is so we can use the variables to populate things like
 		// kernel variable entries.
 		getTreeByName("Variables").register(this);
-		getTreeByName("AuxVariables").register(this);
+		TreeComposite aux = getTreeByName("AuxVariables");
+		if (aux != null) {
+			aux.register(this);
+		}
 		modelTree.register(this);
 		registered = true;
 
@@ -436,7 +478,6 @@ public class MOOSE extends Item {
 
 		} else if (updateable instanceof TreeComposite) {
 			// If this is a tree composite we should reset our variables
-			TreeComposite tree = (TreeComposite) updateable;
 			Thread varThread = new Thread(new Runnable() {
 
 				@Override
@@ -444,7 +485,7 @@ public class MOOSE extends Item {
 					new MOOSEFileHandler().setupVariables(modelTree);
 					new MOOSEFileHandler().setupAuxVariables(modelTree);
 				}
-				
+
 			});
 			varThread.start();
 
@@ -560,17 +601,78 @@ public class MOOSE extends Item {
 	@Override
 	public boolean update(Message message) {
 
-		super.update(message);
-
+		// Get the message type and string text
 		String type = message.getType();
 		String text = message.getMessage();
 
-		if ("FILE_CREATED".equals(type)) {
+		// Parse the message type
+		if ("MESSAGE_POSTED".equals(type)) {
 
-		} else if ("MESSAGE_POSTED".equals(type)) {
+			// If its a message posted, we expect it to
+			// be of the format pp_name:time:value
+			String[] data = text.split(":");
+			String name = data[0];
+			Double time = Double.valueOf(data[1]);
+			Double value = Double.valueOf(data[2]);
 
+			// We need the jobLaunch directory to create new VizResources
+			String directory = mooseLauncher.getJobLaunchDirectory();
+
+			// Get a reference to the VizResource file we are going
+			// to create and populate
+			File dataFile = new File(directory
+					+ System.getProperty("file.separator") + name + ".csv");
+
+			// Get a reference to the ResourceComponent
+			ResourceComponent comp = (ResourceComponent) form.getComponent(3);
+
+			try {
+
+				if (!dataFile.exists()) {
+					// If the file hasn't been created yet, we need to create
+					// it and start filling it with post processor data
+					dataFile.createNewFile();
+
+					// Write the new incoming data
+					PrintWriter printWriter = new PrintWriter(
+							new FileOutputStream(dataFile, true));
+					printWriter.write("Time, " + name + "\n");
+					printWriter.write(time + ", " + value + "\n");
+					printWriter.close();
+
+					// Create the VizResource, and add it to the
+					// ResourceComponent
+					ICEResource resource = getResource(dataFile
+							.getAbsolutePath());
+					comp.add(resource);
+
+					// Remember the name of the resource for next time
+					postProcessorResources.put(name, resource);
+
+				} else {
+
+					// Write the data to the existing resource
+					PrintWriter printWriter = new PrintWriter(
+							new FileOutputStream(dataFile, true));
+					printWriter.write(time + ", " + value + "\n");
+
+					// Update the ICEResource
+					ICEResource r = postProcessorResources.get(name);
+
+					// Here we are faking a VizResource notification
+					// by setting the name with its current name
+					r.setName(r.getName());
+
+					// Close the writer
+					printWriter.close();
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return true;
 	}
+
 }

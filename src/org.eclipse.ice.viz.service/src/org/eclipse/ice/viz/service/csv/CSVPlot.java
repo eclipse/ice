@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.math.linear.MatrixUtils;
+import org.apache.commons.math.linear.RealMatrix;
 import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -38,10 +45,20 @@ import org.eclipse.swt.widgets.Menu;
  * In addition to the IPlot operations it provides the load() operation that
  * should be called after construction.
  * 
- * @author Jay Jay Billings, Anna Wojtowicz
+ * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  *
  */
 public class CSVPlot implements IPlot {
+
+	/**
+	 * Reference to the read-in matrix of CSV data.
+	 */
+	private RealMatrix csvData;
+
+	/**
+	 * Reference to the mapping between Feature strings and matrix indices.
+	 */
+	private HashMap<String, Integer> featureToIndexMap;
 
 	/**
 	 * The source of the data for this plot
@@ -87,6 +104,8 @@ public class CSVPlot implements IPlot {
 
 		// Create the map of drawn plots.
 		drawnPlots = new HashMap<Composite, DrawnPlot>();
+
+		featureToIndexMap = new HashMap<String, Integer>();
 
 		return;
 	}
@@ -134,48 +153,91 @@ public class CSVPlot implements IPlot {
 	 */
 	private void load(File file) {
 
-		// Load the file using the CSV utilities.
-		CSVDataLoader dataLoader = new CSVDataLoader();
+		// Configure the list
+		ListComponent<String[]> lines = new ListComponent<String[]>();
+		lines.setName(file.getName());
+		lines.setDescription(file.getName());
+
 		try {
-			baseProvider = dataLoader.load(file);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
-		// Set the source so the title (and other properties) are set correctly.
-		baseProvider.setSource(source.toString());
-
-		// Get the variables from the base IDataProvider.
-		List<String> variables = baseProvider.getFeatureList();
-		int nVariables = variables.size();
-
-		// Create a list to hold all available series. Each combination of
-		// feature names (except for feature vs. itself) should be an allowed
-		// series. Populate the list with the series names, which should be
-		// "y-variable vs. x-variable".
-		List<String> plotTypes = new ArrayList<String>(nVariables * nVariables);
-		for (int y = 0; y < nVariables; y++) {
-			String variableY = variables.get(y);
-			for (int x = 0; x < nVariables; x++) {
-				if (y != x) {
-					String type = variableY + " vs. " + variables.get(x);
-					plotTypes.add(type);
+			// Grab the contents of the file
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				// Skip lines that pure comments
+				if (!line.startsWith("#")) {
+					// Clip the line if it has a comment symbol in it to be
+					// everything before the symbol
+					if (line.contains("#")) {
+						int index = line.indexOf("#");
+						line = line.substring(0, index);
+					}
+					// Clean up any crap on the line
+					String[] lineArray = line.trim().split(",");
+					String[] trimmedLine = new String[lineArray.length];
+					// And clean up any crap on each split piece
+					for (int i = 0; i < lineArray.length; i++) {
+						trimmedLine[i] = lineArray[i].trim();
+					}
+					// Put the lines in the list
+					lines.add(trimmedLine);
 				}
 			}
 
-			// Mark the variable as independent. The order in which they are
-			// marked independent does not really matter, since all are
-			// "independent" in the end.
-			baseProvider.setFeatureAsIndependentVariable(variableY);
+			reader.close();
+
+		} catch (IOException e) {
+			// Complain
+			e.printStackTrace();
 		}
 
-		// Put the types in the map of types. Line, scatter, and bar plots can
-		// be created for any of the plot types, so we can re-use the same
-		// string array.
-		String[] plotTypesArray = plotTypes.toArray(new String[] {});
-		types.put("Line", plotTypesArray);
-		types.put("Scatter", plotTypesArray);
-		types.put("Bar", plotTypesArray);
+		if (!lines.isEmpty()) {
+
+			// Assume that the first line has information about the data
+			String[] variables = lines.remove(0);
+			int nVariables = variables.length;
+
+			for (int i = 0; i < nVariables; i++) {
+				featureToIndexMap.put(variables[i], new Integer(i));
+			}
+
+			// Create an empty matrix of data
+			csvData = MatrixUtils.createRealMatrix(lines.size(),
+					lines.get(0).length);
+
+			// Load the data as doubles
+			for (int i = 0; i < lines.size(); i++) {
+				double[] values = (double[]) ConvertUtils.convert(lines.get(i),
+						Double.TYPE);
+				csvData.setRow(i, values);
+			}
+
+			// Create a list to hold all available series. Each combination of
+			// feature names (except for feature vs. itself) should be an
+			// allowed
+			// series. Populate the list with the series names, which should be
+			// "y-variable vs. x-variable".
+			List<String> plotTypes = new ArrayList<String>(nVariables
+					* nVariables);
+			for (int y = 0; y < nVariables; y++) {
+				String variableY = variables[y];
+				for (int x = 0; x < nVariables; x++) {
+					if (y != x) {
+						String type = variableY + " vs. " + variables[x];
+						plotTypes.add(type);
+					}
+				}
+			}
+
+			// Put the types in the map of types. Line, scatter, and bar plots
+			// can
+			// be created for any of the plot types, so we can re-use the same
+			// string array.
+			String[] plotTypesArray = plotTypes.toArray(new String[] {});
+			types.put("Line", plotTypesArray);
+			types.put("Scatter", plotTypesArray);
+			types.put("Bar", plotTypesArray);
+
+		}
 
 		return;
 	}
@@ -246,6 +308,9 @@ public class CSVPlot implements IPlot {
 		return retVal;
 	}
 
+	private String currentCategory;
+	private String currentPlotType;
+
 	/**
 	 * @see org.eclipse.ice.viz.service.IPlot#draw(java.lang.String,
 	 *      java.lang.String, org.eclipse.swt.widgets.Composite)
@@ -269,7 +334,7 @@ public class CSVPlot implements IPlot {
 			}
 		}
 
-		if (baseProvider != null && typeValid && parent != null
+		if (/* baseProvider != null && */typeValid && parent != null
 				&& !parent.isDisposed()) {
 
 			// Get the drawn plot associated with the parent Composite, creating
@@ -290,9 +355,9 @@ public class CSVPlot implements IPlot {
 			}
 
 			// Reset the plot time to the initial time.
-			double plotTime = baseProvider.getTimes().get(0);
+			// double plotTime = 0.0;// baseProvider.getTimes().get(0);
 			// FIXME Won't this affect all of the drawn plots?
-			baseProvider.setTime(plotTime);
+			// baseProvider.setTime(plotTime);
 
 			// Remove all previous plots.
 			drawnPlot.clear();
@@ -305,6 +370,10 @@ public class CSVPlot implements IPlot {
 
 			// We need to return the Composite used to render the CSV plot.
 			child = drawnPlot.editor.getPlotCanvas();
+
+			currentCategory = category;
+			currentPlotType = plotType;
+
 		} else {
 			// Complain that the plot is invalid
 			throw new Exception("Invalid plot: category = " + category
@@ -331,10 +400,7 @@ public class CSVPlot implements IPlot {
 		 * The editor in which the CSV plot is rendered.
 		 */
 		public final CSVPlotEditor editor;
-		/**
-		 * The data provider containing the loaded CSV data.
-		 */
-		public final CSVDataProvider dataProvider;
+
 		/**
 		 * The provider responsible for maintaining the plot configuration.
 		 */
@@ -369,14 +435,13 @@ public class CSVPlot implements IPlot {
 		public DrawnPlot(Composite parent) throws Exception {
 			// Create the editor and all required providers.
 			editor = new CSVPlotEditor();
-			dataProvider = baseProvider;
 			plotProvider = new PlotProvider();
 
 			// Set the plot title based on the file name.
-			int lastSeparator = dataProvider.getSourceInfo().lastIndexOf("/");
-			String plotTitle = (lastSeparator > -1 ? dataProvider
-					.getSourceInfo().substring(lastSeparator + 1)
-					: dataProvider.getSourceInfo());
+			int lastSeparator = source.getPath().lastIndexOf("/");
+
+			String plotTitle = (lastSeparator > -1 ? source.getPath()
+					.substring(lastSeparator + 1) : source.getPath());
 			// Set the title for the new plot provider
 			plotProvider.setPlotTitle(plotTitle);
 
@@ -471,9 +536,7 @@ public class CSVPlot implements IPlot {
 		 */
 		public void addSeries(String category, String type) {
 			// Reset the plot time to the initial time.
-			double plotTime = dataProvider.getTimes().get(0);
-			// FIXME Won't this affect all of the drawn plots?
-			dataProvider.setTime(plotTime);
+			double plotTime = 0.0;// dataProvider.getTimes().get(0);
 
 			// Get the axes to plot
 			String[] axes = type.split(" ");
@@ -484,7 +547,7 @@ public class CSVPlot implements IPlot {
 			String seriesTitle = yAxis + " vs. " + xAxis + " at " + plotTime;
 			// Create a new series provider
 			final SeriesProvider seriesProvider = new SeriesProvider();
-			seriesProvider.setDataProvider(dataProvider);
+			seriesProvider.setCSVData(csvData, featureToIndexMap);
 			seriesProvider.setTimeForDataProvider(plotTime);
 			seriesProvider.setSeriesTitle(seriesTitle);
 			seriesProvider.setXDataFeature(xAxis);
@@ -518,7 +581,7 @@ public class CSVPlot implements IPlot {
 		public void removeSeries(SeriesProvider series) {
 			ActionTree tree = seriesMap.remove(series);
 			if (tree != null) {
-				double plotTime = dataProvider.getTimes().get(0);
+				double plotTime = 0.0;// dataProvider.getTimes().get(0);
 				removeSeriesTree.remove(tree);
 				plotProvider.removeSeries(plotTime, series);
 			}
@@ -529,7 +592,7 @@ public class CSVPlot implements IPlot {
 		 * Clears all series from the drawn plot.
 		 */
 		public void clear() {
-			double plotTime = dataProvider.getTimes().get(0);
+			double plotTime = 0.0;// dataProvider.getTimes().get(0);
 			for (Entry<SeriesProvider, ActionTree> e : seriesMap.entrySet()) {
 				plotProvider.removeSeries(plotTime, e.getKey());
 			}
@@ -551,6 +614,30 @@ public class CSVPlot implements IPlot {
 		 */
 		public void dispose() {
 			// Nothing to do yet.
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IPlot#redraw()
+	 */
+	@Override
+	public void redraw() {
+		// Start off by reloading this IPlot's representative data set.
+		load();
+		
+		// Then loop over all drawn plots and re-execute the draw method. 
+		for (final Composite comp : drawnPlots.keySet()) {
+			comp.getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					try {
+						draw(currentCategory, currentPlotType, comp);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+
 		}
 	}
 

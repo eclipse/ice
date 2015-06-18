@@ -58,6 +58,8 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  * @author Taylor Patterson
  * @author Anna Wojtowicz
  * @author Jordan Deyton
+ * @author Alex McCaskey
+ * 
  */
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		IUpdateableListener {
@@ -393,7 +395,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				} catch (Exception e) {
 					// Instead of printing the stack trace, print the error
 					// message. This means the plot could not be created.
-					System.err.println(e.getMessage());
+					System.err.println("Create Plot failed: " + e.getMessage());
 				}
 			}
 		}
@@ -500,6 +502,11 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// to sync the ResourceComponent.
 			if (component != null) {
 				resourceComponent.register(this);
+				for (ICEResource resource : resourceComponent.getResources()) {
+					if (resource instanceof VizResource) {
+						resource.register(this);
+					}
+				}
 				update(resourceComponent);
 			}
 		}
@@ -559,9 +566,24 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 					// If there is no plot already, try to create one.
 					if (plot == null) {
 						plot = createPlot((VizResource) resource);
+						// Register with the Resource so that if it
+						// changes we can know and operate accordingly
+						resource.register(this);
 					}
 				}
 			}
+		} else if (component != null && component instanceof VizResource) {
+			final VizResource resource = (VizResource) component;
+			plots.get(getPlotKey(resource)).redraw();
+			if (pageComposite != null) {
+				pageComposite.getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						pageComposite.layout();
+						activateEditor();
+					}
+				});
+			}
+
 		}
 
 		return;
