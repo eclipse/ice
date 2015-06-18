@@ -445,11 +445,8 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
@@ -465,9 +462,8 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
@@ -487,10 +483,8 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		return children;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean readAttributes(H5Group h5Group) {
 
@@ -528,7 +522,9 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 * </p>
 	 * 
 	 * @param iHdfReadable
-	 * @return
+	 *            The child that will be read.
+	 * @return True if the child material could be read and added to this ring,
+	 *         false otherwise.
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
 

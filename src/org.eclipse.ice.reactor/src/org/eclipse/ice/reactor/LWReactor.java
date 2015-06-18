@@ -131,24 +131,20 @@ public class LWReactor extends LWRComposite {
 
 	/**
 	 * <p>
-	 * Returns the size.
+	 * Returns the size (usually the diameter) of the reactor.
 	 * </p>
 	 * 
-	 * @return
+	 * @return The size.
 	 */
 	public int getSize() {
 
 		return this.size;
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-
 
 		boolean flag = true;
 
@@ -268,10 +264,8 @@ public class LWReactor extends LWRComposite {
 
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean readAttributes(H5Group h5Group) {
 

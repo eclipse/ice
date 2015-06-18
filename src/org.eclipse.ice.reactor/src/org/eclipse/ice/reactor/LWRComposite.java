@@ -269,8 +269,9 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/**
+	 * Gets the children of this instance that can be written to the HDF format.
 	 * 
-	 * @return
+	 * @return A list containing the writable children.
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
@@ -298,7 +299,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 * </p>
 	 * 
 	 * @param iHdfReadable
-	 * @return
+	 *            The HDF child of this instance.
+	 * @return True if the child could be read and added, false otherwise.
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
 

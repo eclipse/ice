@@ -247,7 +247,7 @@ public class LWRRod extends LWRComponent {
 	 * Returns the clad object of this LWRRod object, if set or null.
 	 * </p>
 	 * 
-	 * @return
+	 * @return The rod's clad, which is a Ring, or {@code null} if not set.
 	 */
 	public Ring getClad() {
 		return this.clad;
@@ -385,11 +385,8 @@ public class LWRRod extends LWRComponent {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
@@ -401,9 +398,8 @@ public class LWRRod extends LWRComponent {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
@@ -433,7 +429,9 @@ public class LWRRod extends LWRComponent {
 	 * </p>
 	 * 
 	 * @param iHdfReadable
-	 * @return
+	 *            The child that will be read.
+	 * @return True if the child can be read and added to this instance, false
+	 *         otherwise.
 	 */
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
@@ -469,10 +467,8 @@ public class LWRRod extends LWRComponent {
 		return true;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	public boolean readAttributes(H5Group h5Group) {
 
