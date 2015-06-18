@@ -279,7 +279,6 @@ public class ReflectivityModel extends Model {
 		// material.
 		Material material = new Material();
 		material.setName(name);
-		material.setSize(1);
 		material.setProperty("Material ID", id);
 		material.setProperty("Thickness (A)", slab.thickness);
 		material.setProperty("Roughness (A)", slab.interfaceWidth);

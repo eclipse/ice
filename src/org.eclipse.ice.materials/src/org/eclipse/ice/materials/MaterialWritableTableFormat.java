@@ -133,8 +133,12 @@ public class MaterialWritableTableFormat implements
 			int column) {
 		// Set the property if it is not the name
 		if (column != 0) {
+			try{
 			baseObject.setProperty(properties.get(column),
 					Double.valueOf(editedValue.toString()));
+			} catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		// Just return the material
 		return baseObject;

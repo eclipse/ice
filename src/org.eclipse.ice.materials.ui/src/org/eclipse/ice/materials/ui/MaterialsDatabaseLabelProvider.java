@@ -13,6 +13,7 @@
 package org.eclipse.ice.materials.ui;
 
 import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.ice.materials.MaterialStack;
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**
@@ -29,11 +30,20 @@ public class MaterialsDatabaseLabelProvider extends LabelProvider {
 	 */
 	@Override
 	public String getText(Object element) {
+		String label = "";
+		// If the element is a material, just return the name of that material
 		if (element instanceof Material) {
-			return ((Material) element).getName();
+			label = ((Material) element).getName();
+			
+		// If the element is a material stack, return the material along with the amount in the stack in the form MaterialName (amount)
+		} else if (element instanceof MaterialStack) {
+			label = ((MaterialStack) element).getMaterial().getName();
+			label += (" ("+Integer.toString(((MaterialStack) element).getAmount())+")");
+		// Otherwise the element should not be contained in the table 
 		} else {
-			return "Wrong type detected!";
+			label = "Wrong type detected!";
 		}
+		return label;
 	}
 
 }
