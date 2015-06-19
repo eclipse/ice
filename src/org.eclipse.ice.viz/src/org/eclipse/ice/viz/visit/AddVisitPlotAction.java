@@ -14,13 +14,6 @@ package org.eclipse.ice.viz.visit;
 
 import gov.lbnl.visit.swt.VisItSwtWidget;
 
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.resource.VizResource;
-import org.eclipse.ice.viz.PlotEntryContentProvider;
-import org.eclipse.ice.viz.VizFileViewer;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +22,12 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.datastructures.resource.VizResource;
+import org.eclipse.ice.viz.PlotEntryContentProvider;
+import org.eclipse.ice.viz.VizFileViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -177,15 +176,18 @@ public class AddVisitPlotAction extends Action {
 			}
 
 			ITreeContentProvider contentProvider = new ITreeContentProvider() {
+				@Override
 				public void dispose() {
 					// Do nothing.
 				}
 
+				@Override
 				public void inputChanged(Viewer viewer, Object oldInput,
 						Object newInput) {
 					// Do nothing.
 				}
 
+				@Override
 				public Object[] getElements(Object inputElement) {
 					Object[] elements;
 
@@ -199,6 +201,7 @@ public class AddVisitPlotAction extends Action {
 					return elements;
 				}
 
+				@Override
 				public Object[] getChildren(Object parentElement) {
 					Object[] children;
 
@@ -214,6 +217,7 @@ public class AddVisitPlotAction extends Action {
 					return children;
 				}
 
+				@Override
 				public Object getParent(Object element) {
 					Object parent = null;
 
@@ -226,6 +230,7 @@ public class AddVisitPlotAction extends Action {
 					return parent;
 				}
 
+				@Override
 				public boolean hasChildren(Object element) {
 					boolean hasChildren = false;
 
@@ -288,6 +293,7 @@ public class AddVisitPlotAction extends Action {
 			// in the dialog. It should populate the map of values with the
 			// current selection.
 			ICheckStateListener listener = new ICheckStateListener() {
+				@Override
 				public void checkStateChanged(CheckStateChangedEvent event) {
 					// Get the element whose check state has changed.
 					Object element = event.getElement();

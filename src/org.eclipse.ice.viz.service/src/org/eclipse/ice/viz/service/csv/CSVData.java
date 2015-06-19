@@ -90,6 +90,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * Method to check if the current object is equal to the object passed in
 	 */
+	@Override
 	public boolean equals(Object otherCSVData) {
 
 		// Check if they are the same references in memory
@@ -146,6 +147,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * Compute and return the hash code for instances of this object
 	 */
+	@Override
 	public int hashCode() {
 
 		// Call ICEObject#hashCode()
@@ -201,6 +203,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * This operation creates a deep copy of the CSVData object and returns it
 	 */
+	@Override
 	public CSVData clone() throws NullPointerException {
 
 		// Instantiate the newCSVData object
@@ -285,6 +288,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * Get the position
 	 */
+	@Override
 	public ArrayList<Double> getPosition() {
 		return position;
 	}
@@ -292,6 +296,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * Get the value
 	 */
+	@Override
 	public double getValue() {
 		return value;
 	}
@@ -299,6 +304,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * Get the uncertainty
 	 */
+	@Override
 	public double getUncertainty() {
 		return uncertainty;
 	}
@@ -306,6 +312,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * Gett the units
 	 */
+	@Override
 	public String getUnits() {
 		return units;
 	}
@@ -313,6 +320,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * Get the feature
 	 */
+	@Override
 	public String getFeature() {
 		return feature;
 	}
@@ -320,6 +328,7 @@ public class CSVData extends ICEObject implements IData {
 	/**
 	 * toString function to print out the data of the object
 	 */
+	@Override
 	public String toString() {
 		String outputString = "";
 		outputString += "Position: " + this.position.toString() + "\n";
