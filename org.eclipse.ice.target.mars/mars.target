@@ -1,7 +1,106 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="mars" sequenceNumber="70">
+<?pde version="3.8"?><target name="mars" sequenceNumber="118">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.ecf.presence.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.sdk.feature.group" version="4.5.0.v20150528-0808"/>
+<unit id="org.eclipse.platform.feature.group" version="4.5.0.v20150528-0700"/>
+<unit id="org.eclipse.ecf.discovery.zookeeper.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ecf.remoteservice.rest.synd.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.tcf.te.tcf.feature.feature.group" version="1.3.1.201504300712"/>
+<unit id="org.eclipse.epp.package.common.feature.feature.group" version="4.5.0.20150603-1639"/>
+<unit id="org.eclipse.ecf.server.generic.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ecf.datashare.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.wst.web_ui.feature.feature.group" version="3.7.0.v201505261810"/>
+<unit id="org.eclipse.tm.terminal.connector.telnet.feature.feature.group" version="4.0.0.201506040610"/>
+<unit id="org.eclipse.rse.core.feature.group" version="3.7.0.201505221634"/>
+<unit id="org.eclipse.epp.package.rcp.feature.feature.group" version="4.5.0.20150603-1707"/>
+<unit id="org.eclipse.ecf.eventadmin.source.feature.feature.group" version="2.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ecf.remoteservice.rosgi.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.tm.terminal.control.feature.feature.group" version="4.0.0.201506040610"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.tm.terminal.view.rse.feature.feature.group" version="4.0.0.201506040610"/>
+<unit id="org.eclipse.ecf.provider.generic.datashare.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.rse.ftp.feature.group" version="3.7.0.201505221634"/>
+<unit id="org.eclipse.cdt.feature.group" version="8.7.0.201506020305"/>
+<unit id="org.eclipse.ptp.gem.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.equinox.compendium.sdk.feature.group" version="3.11.0.v20150430-1834"/>
+<unit id="org.eclipse.equinox.weaving.sdk.feature.group" version="1.1.100.v20150430-1834"/>
+<unit id="org.eclipse.epp.package.automotive.feature.feature.group" version="4.5.0.20150603-1639"/>
+<unit id="org.eclipse.tm.terminal.feature.feature.group" version="4.0.0.201506040610"/>
+<unit id="org.eclipse.wst.xsl.feature.feature.group" version="1.3.401.v201409111855"/>
+<unit id="org.eclipse.ecf.filetransfer.source.feature.feature.group" version="3.10.0.v20150512-1727"/>
+<unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.2.0.v20150519-1816"/>
+<unit id="org.eclipse.tm.terminal.view.feature.feature.group" version="4.0.0.201506040610"/>
+<unit id="org.eclipse.ptp.pldt.fortran.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.ptp.pldt.upc.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.remote.console.feature.group" version="1.0.0.201506011407"/>
+<unit id="org.eclipse.ecf.discovery.jmdns.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ptp.etfw.feedback.perfsuite.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.ptp.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.ecf.remoteservice.servlet.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ecf.filetransfer.ssl.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ecf.remoteservice.source.feature.feature.group" version="2.1.0.v20150512-1727"/>
+<unit id="org.eclipse.tm.terminal.connector.local.feature.feature.group" version="4.0.0.201506040610"/>
+<unit id="org.eclipse.equinox.p2.extras.feature.feature.group" version="1.2.100.v20150527-1706"/>
+<unit id="org.eclipse.ecf.docshare.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ptp.pldt.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.ptp.rdt.sync.cdt.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.ecf.provider.generic.remoteservice.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.rse.ssh.feature.group" version="3.7.0.201505221634"/>
+<unit id="org.eclipse.ptp.rm.jaxb.contrib.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.rse.local.feature.group" version="3.7.0.201505221634"/>
+<unit id="org.eclipse.ecf.sharedobject.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.tm.terminal.connector.ssh.feature.feature.group" version="4.0.0.201506040610"/>
+<unit id="org.eclipse.ptp.etfw.tau.fortran.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.ecf.core.source.feature.group" version="3.10.0.v20150512-1727"/>
+<unit id="org.eclipse.ecf.discovery.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.mylyn.github.feature.feature.group" version="4.0.0.201506020755-rc3"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.source.feature.feature.group" version="3.10.0.v20150512-1727"/>
+<unit id="org.eclipse.ptp.rdt.sync.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.rse.telnet.feature.group" version="3.7.0.201505221634"/>
+<unit id="org.eclipse.ecf.remoteservice.soap.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.tcf.te.feature.feature.group" version="1.3.1.201505121124"/>
+<unit id="org.eclipse.tcf.feature.feature.group" version="1.3.1.201505261946"/>
+<unit id="org.eclipse.ecf.discovery.dnssd.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ptp.etfw.tau.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.rcp.feature.group" version="4.5.0.v20150528-0700"/>
+<unit id="org.eclipse.ecf.discovery.slp.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ecf.provider.generic.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.tcf.cdt.feature.feature.group" version="1.3.1.201505051438"/>
+<unit id="org.eclipse.ecf.remoteservice.rest.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ptp.fortran.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.ecf.core.source.feature.feature.group" version="1.1.0.v20150512-1727"/>
+<unit id="org.eclipse.rcp.sdk.id" version="4.5.0.I20150528-0700"/>
+<unit id="org.eclipse.ptp.remote.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.rse.dstore.feature.group" version="3.7.0.201505221634"/>
+<unit id="org.eclipse.ptp.debug.sdm.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.ecf.remoteservice.sdk.source.feature.feature.group" version="3.10.0.v20150512-1727"/>
+<unit id="org.eclipse.tcf.core.feature.feature.group" version="1.3.0.201505202039"/>
+<unit id="org.eclipse.rse.feature.group" version="3.7.0.201505221634"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.200.v20150527-1151"/>
+<unit id="org.eclipse.tm.terminal.connector.remote.feature.feature.group" version="4.0.0.201506040610"/>
+<unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.11.0.v20150521-1310"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.0.v20150601-0402"/>
+<unit id="org.eclipse.platform.sdk" version="4.5.0.I20150528-0700"/>
+<unit id="org.eclipse.ptp.remote.terminal.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.tcf.te.tcf.core.feature.feature.group" version="1.3.1.201506040229"/>
+<unit id="org.eclipse.ptp.etfw.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.rse.useractions.feature.group" version="3.7.0.201505221634"/>
+<unit id="org.eclipse.ptp.core.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.m2e.feature.feature.group" version="1.6.0.20150526-2032"/>
+<unit id="org.eclipse.tcf.rse.feature.feature.group" version="1.3.0.201505261946"/>
+<unit id="org.eclipse.tm.terminal.connector.serial.feature.feature.group" version="4.0.0.201506040610"/>
+<unit id="org.eclipse.ecf.console.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ptp.rdt.sync.fortran.feature.group" version="9.0.0.201506011519"/>
+<unit id="org.eclipse.remote.feature.group" version="2.0.0.201506011407"/>
+<unit id="org.eclipse.ecf.osgi.services.source.feature.feature.group" version="2.0.1.v20150512-1727"/>
+<unit id="org.eclipse.ecf.core.ssl.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.ecf.xmpp.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
+<unit id="org.eclipse.equinox.serverside.sdk.feature.group" version="3.11.0.v20150527-1706"/>
+<repository location="http://download.eclipse.org/releases/mars"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="ca.odell.glazedlists" version="1.9.0.v201303080712"/>
 <unit id="com.sun.jersey" version="1.17.0.v20130314-2020"/>
 <unit id="javax.ws.rs" version="1.1.1.v20130318-1750"/>
@@ -10,7 +109,11 @@
 <unit id="com.google.gson" version="2.2.4.v201311231704"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.nebula.feature.feature.group" version="1.0.0.201409040043"/>
+<repository location="http://download.eclipse.org/technology/nebula/archives/Q32014/release"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.log4j.source" version="1.2.15.v201012070815"/>
 <unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.3.0.201506081302"/>
 <unit id="org.hamcrest.core" version="1.3.0.v201303031735"/>
@@ -26,7 +129,7 @@
 <unit id="org.hamcrest.core.source" version="1.3.0.v201303031735"/>
 <repository location="http://download.eclipse.org/technology/swtbot/releases/latest"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.nebula.widgets.nattable.extension.poi.feature.feature.group" version="1.3.0.201503261201"/>
 <unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature.feature.group" version="1.3.0.201503261201"/>
 <unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.source.feature.feature.group" version="1.3.0.201503261201"/>
@@ -34,28 +137,6 @@
 <unit id="org.eclipse.nebula.widgets.nattable.extension.poi.source.feature.feature.group" version="1.3.0.201503261201"/>
 <unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="1.3.0.201503261201"/>
 <repository location="http://download.eclipse.org/nattable/releases/1.3.0/repository"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.nebula.feature.feature.group" version="1.0.0.201409040043"/>
-<repository location="http://download.eclipse.org/technology/nebula/archives/Q32014/release"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.ptp.etfw.feedback.perfsuite.feature.group" version="9.0.0.201506011519"/>
-<unit id="org.eclipse.ptp.fortran.feature.group" version="9.0.0.201506011519"/>
-<unit id="org.eclipse.ptp.feature.group" version="9.0.0.201506011519"/>
-<unit id="org.eclipse.mylyn.github.feature.feature.group" version="4.0.0.201506020755-rc3"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.0.v20150601-0402"/>
-<unit id="org.eclipse.ptp.debug.sdm.feature.group" version="9.0.0.201506011519"/>
-<unit id="org.eclipse.tm.terminal.feature.feature.group" version="4.0.0.201506040610"/>
-<unit id="org.eclipse.tm.terminal.view.rse.feature.feature.group" version="4.0.0.201506040610"/>
-<unit id="org.eclipse.wst.xsl.feature.feature.group" version="1.3.401.v201409111855"/>
-<unit id="org.eclipse.wst.web_ui.feature.feature.group" version="3.7.0.v201505261810"/>
-<unit id="org.eclipse.ptp.etfw.tau.feature.group" version="9.0.0.201506011519"/>
-<unit id="org.eclipse.ptp.pldt.upc.feature.group" version="9.0.0.201506011519"/>
-<unit id="org.eclipse.ptp.gem.feature.group" version="9.0.0.201506011519"/>
-<unit id="org.eclipse.ptp.rm.jaxb.contrib.feature.group" version="9.0.0.201506011519"/>
-<unit id="org.eclipse.tm.terminal.connector.remote.feature.feature.group" version="4.0.0.201506040610"/>
-<repository location="http://download.eclipse.org/releases/mars"/>
 </location>
 </locations>
 </target>
