@@ -13,10 +13,6 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +24,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 
 /**
  * <p>
@@ -618,6 +618,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	/**
 	 * @see IUpdateable#update(String updatedKey, String newValue)
 	 */
+	@Override
 	public void update(String updatedKey, String newValue) {
 
 		// Local Declarations
@@ -682,6 +683,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 *            The Entry that should be checked for equality.
 	 * @return True if the Entries are equal, false if not
 	 */
+	@Override
 	public boolean equals(Object otherEntry) {
 
 		// Local Declarations
@@ -722,6 +724,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * 
 	 * @return The hashcode
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -810,6 +813,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * 
 	 * @return A clone of the Entry.
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new instance of entry and copy the contents

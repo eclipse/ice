@@ -12,13 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPartFactory;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalGridEditPart;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.IGridListener;
-
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartFactory;
 
 /**
  * This class connects GEF EditParts to the GridEditor's model so that the

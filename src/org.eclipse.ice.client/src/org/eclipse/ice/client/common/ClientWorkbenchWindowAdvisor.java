@@ -29,11 +29,13 @@ public class ClientWorkbenchWindowAdvisor extends
 		super(configurer);
 	}
 
+	@Override
 	public ActionBarAdvisor createActionBarAdvisor(
 			IActionBarConfigurer configurer) {
 		return new ClientActionBarAdvisor(configurer);
 	}
 
+	@Override
 	public void preWindowOpen() {
 		// Get Display width and height
 		Rectangle bounds = PlatformUI.getWorkbench().getDisplay().getBounds();
@@ -64,6 +66,7 @@ public class ClientWorkbenchWindowAdvisor extends
 		return;
 	}
 
+	@Override
 	public void postWindowOpen() {
 
 	}

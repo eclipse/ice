@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +33,10 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.analysistool.IAnalysisAsset;
+import org.eclipse.ice.analysistool.IAnalysisDocument;
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.kdd.KDDAnalysisTool;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
 import org.eclipse.ice.kdd.kddstrategy.kmeansclustering.RawKMeansBuilder;
@@ -37,10 +45,6 @@ import org.eclipse.ice.kdd.test.fakeobjects.SimpleData;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleDataProvider;
 import org.junit.Before;
 import org.junit.Test;
-import org.eclipse.ice.analysistool.IAnalysisAsset;
-import org.eclipse.ice.analysistool.IAnalysisDocument;
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * <p>

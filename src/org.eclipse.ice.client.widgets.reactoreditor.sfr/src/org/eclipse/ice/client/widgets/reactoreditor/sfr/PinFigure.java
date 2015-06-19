@@ -12,14 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.client.widgets.reactoreditor.Circle;
-import org.eclipse.ice.client.widgets.reactoreditor.ColorScale;
-import org.eclipse.ice.client.widgets.reactoreditor.ColorScalePalette;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalCellFigure;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +25,13 @@ import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.PolygonShape;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.client.widgets.reactoreditor.Circle;
+import org.eclipse.ice.client.widgets.reactoreditor.ColorScale;
+import org.eclipse.ice.client.widgets.reactoreditor.ColorScalePalette;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalCellFigure;
 import org.eclipse.ice.reactor.sfr.base.ISFRComponentVisitor;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.Material;
@@ -730,14 +729,17 @@ public class PinFigure extends HexagonalCellFigure implements
 	 */
 	protected MouseListener getRingClickListener(final Ring ring) {
 		return new MouseListener() {
+			@Override
 			public void mouseDoubleClicked(MouseEvent arg0) {
 				return;
 			}
 
+			@Override
 			public void mousePressed(MouseEvent arg0) {
 				return;
 			}
 
+			@Override
 			public void mouseReleased(MouseEvent arg0) {
 				for (PinAnalysisView listener : listeners) {
 					listener.clickRing(ring);
@@ -750,6 +752,7 @@ public class PinFigure extends HexagonalCellFigure implements
 	/**
 	 * This function needs to draw a radial view of a pin.
 	 */
+	@Override
 	public void visit(SFRPin pin) {
 		int j = 0;
 
@@ -805,34 +808,42 @@ public class PinFigure extends HexagonalCellFigure implements
 		return;
 	}
 
+	@Override
 	public void visit(SFReactor sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(SFRAssembly sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(PinAssembly sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(ReflectorAssembly sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(SFRRod sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(MaterialBlock sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(Material sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(Ring sfrComp) {
 		return;
 	}
@@ -874,38 +885,47 @@ public class PinFigure extends HexagonalCellFigure implements
 			radius = tmp;
 		}
 
+		@Override
 		public void visit(SFReactor sfrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(SFRAssembly sfrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(PinAssembly sfrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(ReflectorAssembly sfrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(SFRPin pin) {
 			tmp = pin.getCladding().getOuterRadius();
 		}
 
+		@Override
 		public void visit(SFRRod rod) {
 			tmp = rod.getReflector().getOuterRadius();
 		}
 
+		@Override
 		public void visit(MaterialBlock sfrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(Material sfrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(Ring ring) {
 			tmp = ring.getOuterRadius();
 		}

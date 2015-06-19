@@ -45,6 +45,7 @@ public class MOOSEFormWidgetBuilder implements IFormWidgetBuilder {
 	 * @see org.eclipse.ice.client.widgets.IFormWidgetBuilder#getTargetFormName
 	 * ()
 	 */
+	@Override
 	public String getTargetFormName() {
 		return name;
 	}
@@ -54,6 +55,7 @@ public class MOOSEFormWidgetBuilder implements IFormWidgetBuilder {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.IFormWidgetBuilder#build()
 	 */
+	@Override
 	public IFormWidget build() {
 		return new MOOSEEclipseFormWidget(vizServiceFactory);
 	}

@@ -63,6 +63,7 @@ public class CompositeStrategy extends KDDStrategy {
 	 * 
 	 * @see KDDStrategy#executeStrategy()
 	 */
+	@Override
 	public boolean executeStrategy() {
 		for (KDDStrategy strategy : strategies) {
 			if (!strategy.executeStrategy()) {

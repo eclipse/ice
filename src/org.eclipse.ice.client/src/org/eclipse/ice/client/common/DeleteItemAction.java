@@ -118,6 +118,7 @@ public class DeleteItemAction extends Action implements ISelectionListener,
 	/**
 	 * Empty method to override a change in the selection
 	 */
+	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// TODO Auto-generated method stub
 

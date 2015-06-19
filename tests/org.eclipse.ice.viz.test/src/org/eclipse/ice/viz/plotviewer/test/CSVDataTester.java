@@ -12,17 +12,19 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.plotviewer.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.viz.service.csv.CSVData;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.Before;
 import org.junit.rules.ExpectedException;
-
-import java.util.ArrayList;
 
 /**
  * This class is responsible for testing the CSVData to make sure that it is

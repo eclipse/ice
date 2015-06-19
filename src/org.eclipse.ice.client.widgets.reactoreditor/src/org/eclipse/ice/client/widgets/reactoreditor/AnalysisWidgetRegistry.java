@@ -43,6 +43,7 @@ public class AnalysisWidgetRegistry implements IAnalysisWidgetRegistry {
 	 * already in the registry, the old factory will be replaced with this one.
 	 * 
 	 */
+	@Override
 	public void addAnalysisWidgetFactory(IAnalysisWidgetFactory factory) {
 		System.out
 				.println("AnalysisWidgetRegistry message: Adding an IAnalysisWidgetFactory.");
@@ -64,6 +65,7 @@ public class AnalysisWidgetRegistry implements IAnalysisWidgetRegistry {
 	 * @see org.eclipse.ice.client.widgets.reactoreditor.prototype.
 	 * IAnalysisWidgetRegistry#getAnalysisWidgetFactory(java.lang.Class)
 	 */
+	@Override
 	public IAnalysisWidgetFactory getAnalysisWidgetFactory(Class<?> key) {
 		if (key != null) {
 			System.out

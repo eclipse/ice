@@ -24,6 +24,7 @@ public class EuclideanDistanceMeasure implements DistanceMeasure {
 	 * 
 	 * @see DistanceMeasure#getDistance(KDDMatrix vector1, KDDMatrix vector2)
 	 */
+	@Override
 	public Double getDistance(KDDMatrix vector1, KDDMatrix vector2) {
 
 		if (vector1.numberOfRows() != vector2.numberOfRows()) {

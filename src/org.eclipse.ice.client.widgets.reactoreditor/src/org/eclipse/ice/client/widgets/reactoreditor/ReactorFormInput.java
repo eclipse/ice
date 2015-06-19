@@ -13,7 +13,6 @@
 package org.eclipse.ice.client.widgets.reactoreditor;
 
 import org.eclipse.ice.client.widgets.ICEFormInput;
-
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.resource.ICEResource;

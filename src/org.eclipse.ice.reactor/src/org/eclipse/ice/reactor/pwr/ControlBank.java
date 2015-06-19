@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.pwr;
 
+import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
+
 import org.eclipse.ice.io.hdf.HdfReaderFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWRComponent;
-
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
 
 /**
  * <p>
@@ -171,6 +171,7 @@ public class ControlBank extends LWRComponent {
 	 * @param h5Group
 	 * @return
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -198,6 +199,7 @@ public class ControlBank extends LWRComponent {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -234,6 +236,7 @@ public class ControlBank extends LWRComponent {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -281,6 +284,7 @@ public class ControlBank extends LWRComponent {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -299,6 +303,7 @@ public class ControlBank extends LWRComponent {
 	 * @param h5Group
 	 * @return
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations
@@ -339,6 +344,7 @@ public class ControlBank extends LWRComponent {
 	 *            The visitor
 	 *            </p>
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

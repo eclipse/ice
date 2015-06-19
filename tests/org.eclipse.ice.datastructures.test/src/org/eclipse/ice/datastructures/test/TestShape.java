@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.test;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
+import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 
 /**
@@ -32,6 +34,7 @@ public class TestShape extends AbstractShape {
 	 *         The new cloned object
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new instance of TestShape
@@ -50,6 +53,7 @@ public class TestShape extends AbstractShape {
 	 * 
 	 * @see IUpdateable#update(String updatedKey, String newValue)
 	 */
+	@Override
 	public void update(String updatedKey, String newValue) {
 		// Not implemented
 	}
@@ -59,6 +63,7 @@ public class TestShape extends AbstractShape {
 	 * 
 	 * @see IShape#acceptShapeVisitor(IShapeVisitor visitor)
 	 */
+	@Override
 	public void acceptShapeVisitor(IShapeVisitor visitor) {
 		// TODO Auto-generated method stub
 

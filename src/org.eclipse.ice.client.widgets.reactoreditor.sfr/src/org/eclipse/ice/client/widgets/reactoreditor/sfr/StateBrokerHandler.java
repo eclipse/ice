@@ -14,6 +14,10 @@ package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
+import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
+import org.eclipse.ice.client.widgets.reactoreditor.StateBroker;
 import org.eclipse.ice.reactor.sfr.base.ISFRComponentVisitor;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.AssemblyType;
@@ -26,11 +30,6 @@ import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRAssembly;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
-
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
-import org.eclipse.ice.client.widgets.reactoreditor.StateBroker;
 
 /**
  * This class provides keys for use in a {@link StateBroker}. It is tailored
@@ -105,30 +104,39 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 			return value;
 		}
 
+		@Override
 		public void visit(SFReactor sfrComp) {
 		}
 
+		@Override
 		public void visit(SFRAssembly sfrComp) {
 		}
 
+		@Override
 		public void visit(PinAssembly sfrComp) {
 		}
 
+		@Override
 		public void visit(ReflectorAssembly sfrComp) {
 		}
 
+		@Override
 		public void visit(SFRPin sfrComp) {
 		}
 
+		@Override
 		public void visit(SFRRod sfrComp) {
 		}
 
+		@Override
 		public void visit(MaterialBlock sfrComp) {
 		}
 
+		@Override
 		public void visit(Material sfrComp) {
 		}
 
+		@Override
 		public void visit(Ring sfrComp) {
 		}
 	}
@@ -150,6 +158,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * @see org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler
 	 * #setDataSource (org.eclipse.ice.client.widgets.reactoreditor.DataSource)
 	 */
+	@Override
 	public void setDataSource(DataSource dataSource) {
 		if (dataSource != null) {
 			this.dataSource = dataSource;
@@ -160,6 +169,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * This method returns keys only for SFRComponents, specifically reactors,
 	 * assemblies, and pins/rods.
 	 */
+	@Override
 	public String getKey(Object object) {
 		String key = null;
 
@@ -168,26 +178,32 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 
 		// Create a visitor to generate a key for supported SFRComponents.
 		BaseVisitor keyVisitor = new BaseVisitor() {
+			@Override
 			public void visit(SFReactor sfrComp) {
 				value = "SFReactor";
 			}
 
+			@Override
 			public void visit(SFRAssembly sfrComp) {
 				value = "sfr" + sfrComp.getAssemblyType().toString();
 			}
 
+			@Override
 			public void visit(PinAssembly sfrComp) {
 				visit((SFRAssembly) sfrComp);
 			}
 
+			@Override
 			public void visit(ReflectorAssembly sfrComp) {
 				visit((SFRAssembly) sfrComp);
 			}
 
+			@Override
 			public void visit(SFRPin sfrComp) {
 				value = "pin";
 			}
 
+			@Override
 			public void visit(SFRRod sfrComp) {
 				value = "pin";
 			}
@@ -203,6 +219,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * and rods/pins (or any component implemented in this class' visit
 	 * operations).
 	 */
+	@Override
 	public boolean addValue(Object value, Object parent, StateBroker broker) {
 
 		added = false;
@@ -332,11 +349,13 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	// ---- Implements ISFRComponentVisitor ---- //
 	// These visit operations need to call one of the basic operations that adds
 	// supported Objects to the StateBroker.
+	@Override
 	public void visit(SFReactor sfrComp) {
 		// TODO Update this when plant components can contain SFReactors.
 		addReactor(sfrComp);
 	}
 
+	@Override
 	public void visit(SFRAssembly sfrComp) {
 		// If the row and column are set, we can just add a new
 		// SFRComponentInfo.
@@ -370,14 +389,17 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 		return;
 	}
 
+	@Override
 	public void visit(PinAssembly sfrComp) {
 		visit((SFRAssembly) sfrComp);
 	}
 
+	@Override
 	public void visit(ReflectorAssembly sfrComp) {
 		visit((SFRAssembly) sfrComp);
 	}
 
+	@Override
 	public void visit(SFRPin sfrComp) {
 		// If the row and column are set, we can just add a new
 		// SFRComponentInfo.
@@ -411,19 +433,23 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 		return;
 	}
 
+	@Override
 	public void visit(SFRRod sfrComp) {
 		// TODO Currently, rods can only be found in ReflectorAssemblies. We do
 		// not actually display ReflectorAssemblies.
 	}
 
+	@Override
 	public void visit(MaterialBlock sfrComp) {
 		// Nothing to do.
 	}
 
+	@Override
 	public void visit(Material sfrComp) {
 		// Nothing to do.
 	}
 
+	@Override
 	public void visit(Ring sfrComp) {
 		// Nothing to do.
 	}

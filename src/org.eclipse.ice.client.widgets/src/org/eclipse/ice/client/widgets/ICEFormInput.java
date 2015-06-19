@@ -12,11 +12,10 @@
 *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
-
-import org.eclipse.ice.datastructures.form.Form;
 
 /** 
  * <p>This class is a wrapper around the Form class in ICE that realizes the appropriate Eclipse interface and can be used by Eclipse Forms.</p>
@@ -59,6 +58,7 @@ public class ICEFormInput implements IEditorInput {
 	 * (non-Javadoc)
 	 * @see IEditorInput#exists()
 	 */
+	@Override
 	public boolean exists() {
 		// TODO Auto-generated method stub
 		return false;

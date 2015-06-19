@@ -14,11 +14,9 @@ package org.eclipse.ice.caebat.batml.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.caebat.batml.BatMLModel;
 import org.eclipse.ice.caebat.batml.BatMLModelBuilder;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.item.ItemType;
 import org.junit.Test;
 

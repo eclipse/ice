@@ -129,6 +129,7 @@ public class NewItemWizardPage extends WizardPage {
 			itemListViewer.getControl().setLayoutData(data);
 			// Add the label provider for the list viewer
 			itemListViewer.setLabelProvider(new LabelProvider() {
+				@Override
 				public String getText(Object element) {
 					return (String) element;
 				}
@@ -136,15 +137,18 @@ public class NewItemWizardPage extends WizardPage {
 			// Add the content provider for the list viewer
 			itemListViewer.setContentProvider(new IStructuredContentProvider() {
 
+				@Override
 				public void inputChanged(Viewer viewer, Object oldInput,
 						Object newInput) {
 					// Nothing to do
 				}
 
+				@Override
 				public void dispose() {
 					// Nothing to do
 				}
 
+				@Override
 				public Object[] getElements(Object inputElement) {
 					return ((List<?>) inputElement).toArray();
 				}
@@ -152,6 +156,7 @@ public class NewItemWizardPage extends WizardPage {
 			// Create the selection listener
 			itemListViewer
 					.addSelectionChangedListener(new ISelectionChangedListener() {
+						@Override
 						public void selectionChanged(SelectionChangedEvent event) {
 							// Get and store the selection
 							String selection = (String) ((IStructuredSelection) event
@@ -172,6 +177,7 @@ public class NewItemWizardPage extends WizardPage {
 			// already selected, then a double-click can advance or finish the
 			// wizard.
 			itemListViewer.addDoubleClickListener(new IDoubleClickListener() {
+				@Override
 				public void doubleClick(DoubleClickEvent event) {
 
 					// If the page is complete, we can try to finish the wizard.

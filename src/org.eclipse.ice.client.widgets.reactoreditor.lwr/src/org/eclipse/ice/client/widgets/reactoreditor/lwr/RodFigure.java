@@ -24,6 +24,13 @@ import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.StackLayout;
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.client.widgets.reactoreditor.Circle;
+import org.eclipse.ice.client.widgets.reactoreditor.ColorScale;
+import org.eclipse.ice.client.widgets.reactoreditor.ColorScalePalette;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.CellFigure;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRDataProvider;
@@ -38,14 +45,6 @@ import org.eclipse.ice.reactor.pwr.IncoreInstrument;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 import org.eclipse.swt.graphics.Color;
-
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.client.widgets.reactoreditor.Circle;
-import org.eclipse.ice.client.widgets.reactoreditor.ColorScale;
-import org.eclipse.ice.client.widgets.reactoreditor.ColorScalePalette;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.CellFigure;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 
 /**
  * This class extends {@link CellFigure} to provide a radial view of an
@@ -720,14 +719,17 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 	 */
 	protected MouseListener getRingClickListener(final Ring ring) {
 		return new MouseListener() {
+			@Override
 			public void mouseDoubleClicked(MouseEvent arg0) {
 				return;
 			}
 
+			@Override
 			public void mousePressed(MouseEvent arg0) {
 				return;
 			}
 
+			@Override
 			public void mouseReleased(MouseEvent arg0) {
 				for (RodAnalysisView listener : listeners) {
 					listener.clickRing(ring);
@@ -742,6 +744,7 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 	/**
 	 * This function needs to draw a radial view of an LWR rod.
 	 */
+	@Override
 	public void visit(LWRRod rod) {
 		int j = 0;
 
@@ -810,6 +813,7 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 	/**
 	 * This function needs to draw a radial view of a tube.
 	 */
+	@Override
 	public void visit(Tube tube) {
 		// Draw the tube's geometry (an empty circle/annulus).
 
@@ -828,30 +832,37 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 	}
 
 	// Unused visit operations.
+	@Override
 	public void visit(PressurizedWaterReactor lwrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(BWReactor lwrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(FuelAssembly lwrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(RodClusterAssembly lwrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(ControlBank lwrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(IncoreInstrument lwrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(Ring lwrComp) {
 		return;
 	}
@@ -896,6 +907,7 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 		/**
 		 * This function needs to draw a radial view of an LWR rod.
 		 */
+		@Override
 		public void visit(LWRRod rod) {
 			tmp = rod.getClad().getOuterRadius();
 		}
@@ -903,34 +915,42 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 		/**
 		 * This function needs to draw a radial view of a tube.
 		 */
+		@Override
 		public void visit(Tube tube) {
 			tmp = tube.getOuterRadius();
 		}
 
+		@Override
 		public void visit(PressurizedWaterReactor lwrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(BWReactor lwrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(FuelAssembly lwrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(RodClusterAssembly lwrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(ControlBank lwrComp) {
 			return;
 		}
 
+		@Override
 		public void visit(IncoreInstrument instrument) {
 			tmp = instrument.getThimble().getOuterRadius();
 		}
 
+		@Override
 		public void visit(Ring ring) {
 			tmp = ring.getOuterRadius();
 		}

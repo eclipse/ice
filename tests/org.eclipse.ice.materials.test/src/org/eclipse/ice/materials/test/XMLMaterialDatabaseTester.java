@@ -12,7 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +32,6 @@ import org.eclipse.ice.materials.MaterialWritableTableFormat;
 import org.eclipse.ice.materials.XMLMaterialsDatabase;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ca.odell.glazedlists.gui.TableFormat;

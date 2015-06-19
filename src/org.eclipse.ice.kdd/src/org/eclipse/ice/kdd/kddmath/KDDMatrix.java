@@ -237,6 +237,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * @param colIndex
 	 * @return
 	 */
+	@Override
 	public Double getElement(int rowIndex, int colIndex) {
 		// Check that the indices are valid
 		if (rowIndex < 0 || colIndex < 0) {
@@ -261,6 +262,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public boolean setElement(int rowIndex, int colIndex, Double value) {
 		// Return if value is null
 		if (value == null) {
@@ -290,6 +292,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * 
 	 * @return
 	 */
+	@Override
 	public int numberOfRows() {
 		return nRows;
 	}
@@ -301,6 +304,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * 
 	 * @return
 	 */
+	@Override
 	public int numberOfColumns() {
 		return nCols;
 	}
@@ -311,6 +315,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * </p>
 	 * 
 	 */
+	@Override
 	public void transpose() {
 
 		// Save the old number of columns and rows
@@ -434,6 +439,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean deleteRow() {
 		// Remove for the number of columns
 		for (int i = 0; i < nCols; i++) {
@@ -452,6 +458,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean deleteColumn() {
 		// Remove for the number of rows
 		for (int i = 0; i < nRows; i++) {
@@ -643,6 +650,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 *         The hashcode
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		
 		// Local Declarations

@@ -62,6 +62,7 @@ public class ReactorComponentPropertySourceTester {
 		 * Does nothing. Required to satisfy implementation of
 		 * IReactorComponent.
 		 */
+		@Override
 		public void accept(IComponentVisitor visitor) {
 			// Nothing to do here.
 		}

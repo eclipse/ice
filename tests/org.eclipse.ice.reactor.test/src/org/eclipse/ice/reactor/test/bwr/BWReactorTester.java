@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.ice.reactor.HDF5LWRTagType;
-import org.eclipse.ice.reactor.LWReactor;
 import org.eclipse.ice.reactor.bwr.BWReactor;
 import org.junit.Test;
 

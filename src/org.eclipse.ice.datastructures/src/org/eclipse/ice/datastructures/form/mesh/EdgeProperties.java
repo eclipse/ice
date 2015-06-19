@@ -13,6 +13,7 @@
 package org.eclipse.ice.datastructures.form.mesh;
 
 import java.util.ArrayList;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -245,6 +246,7 @@ public class EdgeProperties {
 	 * 
 	 * @return The hash of the Object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -268,6 +270,7 @@ public class EdgeProperties {
 	 *            The other Object that should be compared with this one.
 	 * @return True if the Objects are equal, false otherwise.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -340,6 +343,7 @@ public class EdgeProperties {
 	 * 
 	 * @return The new clone.
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

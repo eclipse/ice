@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import java.util.List;
-
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
+
+import java.util.List;
 
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;

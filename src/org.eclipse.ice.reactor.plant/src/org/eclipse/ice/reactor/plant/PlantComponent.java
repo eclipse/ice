@@ -15,9 +15,10 @@ package org.eclipse.ice.reactor.plant;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 
 /**
  * <p>
@@ -77,6 +78,7 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 *            The PlantComponent's visitor.
 	 *            </p>
 	 */
+	@Override
 	public void accept(IComponentVisitor visitor) {
 
 		// Only accept valid visitors.
@@ -111,6 +113,7 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -143,6 +146,7 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.
@@ -186,6 +190,7 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Call the super's hashCode.
@@ -205,6 +210,7 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 *      IReactorComponent#toString()
 	 *      </p>
 	 */
+	@Override
 	public String toString() {
 
 		return objectName;

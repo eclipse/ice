@@ -12,17 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -30,6 +22,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 
 /**
  * <p>
@@ -278,6 +274,7 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 	/**
 	 * Updates the Edge if the Vertex's ID matches one of its stored Vertices.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// Check for null.
@@ -326,6 +323,7 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 	 *         The hash of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -358,6 +356,7 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -428,6 +427,7 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.
@@ -470,6 +470,7 @@ public class Edge extends ICEObject implements IUpdateableListener, IMeshPart {
 	 *            {@link IMeshPart}.
 	 *            </p>
 	 */
+	@Override
 	public void acceptMeshVisitor(IMeshPartVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);

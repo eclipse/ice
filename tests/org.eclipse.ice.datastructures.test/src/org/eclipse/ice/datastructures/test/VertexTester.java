@@ -18,11 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,6 +26,9 @@ import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
+import org.eclipse.ice.datastructures.form.mesh.Vertex;
 import org.junit.Test;
 
 /**

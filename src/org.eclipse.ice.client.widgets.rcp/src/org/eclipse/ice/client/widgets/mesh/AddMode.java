@@ -234,6 +234,7 @@ public class AddMode extends MeshAppStateMode {
 	/**
 	 * Registers additional controls for adding mesh elements.
 	 */
+	@Override
 	public void registerControls() {
 		super.registerControls();
 
@@ -260,6 +261,7 @@ public class AddMode extends MeshAppStateMode {
 	/**
 	 * Unregisters the additional controls for adding mesh elements.
 	 */
+	@Override
 	public void unregisterControls() {
 		// Unregister all controls from the InputManager.
 		acceptAction.unregisterFromInput();
@@ -526,6 +528,7 @@ public class AddMode extends MeshAppStateMode {
 	 * This method updates all controllers for temporary spatials to account for
 	 * any changes in zoom.
 	 */
+	@Override
 	public void zoomChanged(float distance) {
 		// Update the vertex controllers.
 		float vertexSize = appState.getVertexSize();

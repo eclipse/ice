@@ -12,15 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.base;
 
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +20,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 
 /**
  * <p >
@@ -200,6 +200,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * 
 	 * @return The name of the SFRComponent.
 	 */
+	@Override
 	public String getName() {
 
 		// Return the name.
@@ -214,6 +215,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return The description of the SFRComponent.
 	 * @see Identifiable#getDescription()
 	 */
+	@Override
 	public String getDescription() {
 
 		// Return the description.
@@ -228,6 +230,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @see Identifiable#getId()
 	 * @return The ID of the SFRComponent.
 	 */
+	@Override
 	public int getId() {
 
 		// Return the ID.
@@ -264,6 +267,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return The source information of the SFRComponent.
 	 * @see IDataProvider#getSourceInfo()
 	 */
+	@Override
 	public String getSourceInfo() {
 
 		// Return the source information String.
@@ -402,6 +406,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            The ID of the SFRComponent. Must be non-negative.
 	 * @see Identifiable#setId(int id)
 	 */
+	@Override
 	public void setId(int id) {
 
 		// Only allow non-negative IDs.
@@ -424,6 +429,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            string.
 	 * @see Identifiable#setName(String name)
 	 */
+	@Override
 	public void setName(String name) {
 
 		// Only allow names that are not null and not empty.
@@ -446,6 +452,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            or null.
 	 * @see Identifiable#setDescription(String description)
 	 */
+	@Override
 	public void setDescription(String description) {
 
 		// Only allow descriptions that are not null.
@@ -470,6 +477,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return Returns true if the two objects are equal, otherwise false.
 	 * @see Identifiable#equals(Object otherObject)
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -507,6 +515,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return The hash of the object.
 	 * @see Identifiable#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 
 		// Static hash at 31.
@@ -531,6 +540,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * 
 	 * @return The newly instantiated copied object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.
@@ -602,6 +612,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            The updated value of the key.
 	 * @see IUpdateable#update(String updatedKey, String newValue)
 	 */
+	@Override
 	public void update(String updatedKey, String newValue) {
 
 		// Nothing is required for this method.
@@ -620,6 +631,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            Component's state changes.
 	 * @see IUpdateable#register(IUpdateableListener listener)
 	 */
+	@Override
 	public void register(IUpdateableListener listener) {
 
 		// Only register listeners that are not null.
@@ -638,6 +650,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            The SFRComponent's visitor.
 	 * @see Component#accept(IComponentVisitor visitor)
 	 */
+	@Override
 	public void accept(IComponentVisitor visitor) {
 
 		// Only accept valid visitors.
@@ -670,6 +683,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return The name of the SFRComponent as a string.
 	 * @see IReactorComponent#toString()
 	 */
+	@Override
 	public String toString() {
 
 		// Return the component's name.
@@ -685,6 +699,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *         dataTree.
 	 * @see IDataProvider#getFeatureList()
 	 */
+	@Override
 	public ArrayList<String> getFeatureList() {
 
 		// Initialize the list of feature names.
@@ -714,6 +729,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return Returns the total time steps in the dataTree.
 	 * @see IDataProvider#getNumberOfTimeSteps()
 	 */
+	@Override
 	public int getNumberOfTimeSteps() {
 
 		// Return the size of the data tree ( which is keyed on time values).
@@ -727,6 +743,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *            The new time to set.
 	 * @see IDataProvider#setTime(double step)
 	 */
+	@Override
 	public void setTime(double newTime) {
 
 		// We only allow non-negative times
@@ -751,6 +768,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *         current time.
 	 * @see IDataProvider#getDataAtCurrentTime(String feature)
 	 */
+	@Override
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
 
 		// Don't process anything if the parameter is invalid.
@@ -784,6 +802,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *         dataTree, at the current time.
 	 * @see IDataProvider#getFeaturesAtCurrentTime()
 	 */
+	@Override
 	public ArrayList<String> getFeaturesAtCurrentTime() {
 
 		// Initialize the list of features to return.
@@ -808,6 +827,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return An ArrayList of doubles representing all times in the dataTree.
 	 * @see IDataProvider#getTimes()
 	 */
+	@Override
 	public ArrayList<Double> getTimes() {
 
 		// Initialize the list of times.
@@ -832,6 +852,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 *         found, returns -1.
 	 * @see IDataProvider#getTimeStep(double time)
 	 */
+	@Override
 	public int getTimeStep(double time) {
 
 		// Initialize an iterator over the data tree's keys and a counter.
@@ -860,6 +881,7 @@ public class SFRComponent implements IReactorComponent, IDataProvider {
 	 * @return The time units.
 	 * @see IDataProvider#getTimeUnits()
 	 */
+	@Override
 	public String getTimeUnits() {
 
 		// Return the time units String.

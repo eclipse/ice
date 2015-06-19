@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.bwr;
 
-import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWReactor;
 
@@ -40,6 +39,7 @@ public class BWReactor extends LWReactor {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// No attributes to compare. Call super
@@ -56,6 +56,7 @@ public class BWReactor extends LWReactor {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// No attributes to compare. Call super
@@ -89,6 +90,7 @@ public class BWReactor extends LWReactor {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -135,6 +137,7 @@ public class BWReactor extends LWReactor {
 	 *            The visitor
 	 *            </p>
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

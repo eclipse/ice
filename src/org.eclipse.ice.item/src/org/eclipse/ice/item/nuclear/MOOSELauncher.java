@@ -27,12 +27,12 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
 /**
@@ -260,6 +260,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	/**
 	 * Sets the information that identifies the Item.
 	 */
+	@Override
 	protected void setupItemInfo() {
 
 		// Local declarations

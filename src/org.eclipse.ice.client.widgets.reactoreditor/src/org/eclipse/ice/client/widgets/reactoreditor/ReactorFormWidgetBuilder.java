@@ -47,6 +47,7 @@ public class ReactorFormWidgetBuilder implements IFormWidgetBuilder {
 	 * @see org.eclipse.ice.client.widgets.IFormWidgetBuilder#getTargetFormName
 	 * ()
 	 */
+	@Override
 	public String getTargetFormName() {
 		return name;
 	}
@@ -56,6 +57,7 @@ public class ReactorFormWidgetBuilder implements IFormWidgetBuilder {
 	 * 
 	 * @return The FormWidget for the Reactor Editor.
 	 */
+	@Override
 	public IFormWidget build() {
 
 		ReactorEclipseFormWidget widget = null;

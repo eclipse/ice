@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz;
 
-import java.io.File;
-import java.io.IOException;
-
 import gov.lbnl.visit.swt.VisItRemoteFileDialog;
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.visit.VisitEditor;
@@ -67,6 +67,7 @@ public class AddRemoteFileAction extends Action {
 	/**
 	 * The function called whenever the Action is selected from the drop-down.
 	 */
+	@Override
 	public void run() {
 
 		// Set the parent's default Action

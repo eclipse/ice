@@ -51,6 +51,7 @@ public class GeometricalComponentLinker extends PlantComponentLinker {
 	 * linkComponents(org.eclipse.ice.reactor.plant.PlantComponent,
 	 * org.eclipse.ice.datastructures.form.DataComponent)
 	 */
+	@Override
 	public List<EntryListener> linkComponents(PlantComponent plantComp,
 			final DataComponent dataComp) {
 
@@ -73,6 +74,7 @@ public class GeometricalComponentLinker extends PlantComponentLinker {
 					// links the entry's value with the plant component.
 					if (entry != null) {
 						listeners.add(new EntryListener(entry) {
+							@Override
 							public void updateEntry() {
 								// Parse the double array value and set the
 								// position of the component.
@@ -90,6 +92,7 @@ public class GeometricalComponentLinker extends PlantComponentLinker {
 					// links the entry's value with the plant component.
 					if (entry != null) {
 						listeners.add(new EntryListener(entry) {
+							@Override
 							public void updateEntry() {
 								// Parse the double array value and set the
 								// orientation of the component.
@@ -107,6 +110,7 @@ public class GeometricalComponentLinker extends PlantComponentLinker {
 					// links the entry's value with the plant component.
 					if (entry != null) {
 						listeners.add(new EntryListener(entry) {
+							@Override
 							public void updateEntry() {
 								// Parse the double value and set the rotation
 								// of the component.
@@ -124,6 +128,7 @@ public class GeometricalComponentLinker extends PlantComponentLinker {
 					// links the entry's value with the plant component.
 					if (entry != null) {
 						listeners.add(new EntryListener(entry) {
+							@Override
 							public void updateEntry() {
 								// Parse the integer value and set the number of
 								// elements in the component.

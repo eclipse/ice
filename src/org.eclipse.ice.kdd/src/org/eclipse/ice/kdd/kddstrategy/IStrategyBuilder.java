@@ -13,6 +13,7 @@
 package org.eclipse.ice.kdd.kddstrategy;
 
 import java.util.ArrayList;
+
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 

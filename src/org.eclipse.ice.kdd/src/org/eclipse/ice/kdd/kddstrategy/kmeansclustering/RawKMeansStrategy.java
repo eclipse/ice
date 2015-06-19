@@ -14,17 +14,10 @@ package org.eclipse.ice.kdd.kddstrategy.kmeansclustering;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.analysistool.AnalysisAssetType;
-
-import java.util.Properties;
-
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
-
-import java.net.URI;
-
-import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * <p>

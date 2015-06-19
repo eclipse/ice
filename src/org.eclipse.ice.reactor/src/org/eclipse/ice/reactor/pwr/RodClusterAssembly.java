@@ -78,6 +78,7 @@ public class RodClusterAssembly extends PWRAssembly {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Call super, since no attributes here
@@ -95,6 +96,7 @@ public class RodClusterAssembly extends PWRAssembly {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Call super, since no attributes here
@@ -128,6 +130,7 @@ public class RodClusterAssembly extends PWRAssembly {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -153,6 +156,7 @@ public class RodClusterAssembly extends PWRAssembly {
 	 *            The visitor
 	 *            </p>
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

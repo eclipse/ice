@@ -14,9 +14,9 @@ package org.eclipse.ice.datastructures.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
 import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
-
 import org.junit.Ignore;
 import org.junit.Test;
 

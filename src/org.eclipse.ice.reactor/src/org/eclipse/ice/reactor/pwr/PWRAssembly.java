@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.pwr;
 
+import java.util.ArrayList;
+
+import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.io.hdf.HdfReaderFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.io.hdf.IHdfReadable;
@@ -23,12 +29,6 @@ import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWRRod;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import java.util.ArrayList;
 
 /**
  * <p>
@@ -464,6 +464,7 @@ public class PWRAssembly extends LWRComposite {
 	 *            The component to be added.
 	 *            </p>
 	 */
+	@Override
 	public void addComponent(Component component) {
 
 		// Does nothing
@@ -481,6 +482,7 @@ public class PWRAssembly extends LWRComposite {
 	 *            The id of the LWRComponent to remove.
 	 *            </p>
 	 */
+	@Override
 	public void removeComponent(int childId) {
 
 		// Does nothing
@@ -499,6 +501,7 @@ public class PWRAssembly extends LWRComposite {
 	 *            The name of the LWRComponent to remove.
 	 *            </p>
 	 */
+	@Override
 	public void removeComponent(String name) {
 
 		// Does nothing
@@ -520,6 +523,7 @@ public class PWRAssembly extends LWRComposite {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -561,6 +565,7 @@ public class PWRAssembly extends LWRComposite {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -616,6 +621,7 @@ public class PWRAssembly extends LWRComposite {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -635,6 +641,7 @@ public class PWRAssembly extends LWRComposite {
 	 * @param h5Group
 	 * @return
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -651,6 +658,7 @@ public class PWRAssembly extends LWRComposite {
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
 		// Get the children in super
@@ -674,6 +682,7 @@ public class PWRAssembly extends LWRComposite {
 	 * @param h5Group
 	 * @return
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations
@@ -739,6 +748,7 @@ public class PWRAssembly extends LWRComposite {
 	 * @param iHdfReadable
 	 * @return
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
 		// If the child is null or not an instance of LWRComponent, then return

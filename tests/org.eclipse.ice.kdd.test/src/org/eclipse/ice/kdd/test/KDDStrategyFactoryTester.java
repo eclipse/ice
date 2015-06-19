@@ -12,11 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
@@ -24,8 +27,6 @@ import org.eclipse.ice.kdd.test.fakeobjects.FakeStrategyBuilder;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleDataProvider;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * <p>

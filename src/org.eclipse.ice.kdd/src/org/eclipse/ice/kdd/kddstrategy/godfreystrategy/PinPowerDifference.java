@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy.godfreystrategy;
 
-import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.io.ByteArrayInputStream;
-import java.net.URI;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -106,6 +105,7 @@ public class PinPowerDifference extends GodfreySubStrategy {
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean executeStrategy() {
 
 		// Make sure we have valid data to work with
