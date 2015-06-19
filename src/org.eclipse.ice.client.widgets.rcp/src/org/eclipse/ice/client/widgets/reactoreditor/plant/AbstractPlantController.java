@@ -97,6 +97,7 @@ public abstract class AbstractPlantController extends AbstractController {
 			// view's render state.
 			if (!disposed.get()) {
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						view.setWireFrame(wireFrame);
 						return true;
@@ -125,6 +126,7 @@ public abstract class AbstractPlantController extends AbstractController {
 			// view's render state.
 			if (!disposed.get()) {
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						view.setBaseColor(baseColor);
 						return true;

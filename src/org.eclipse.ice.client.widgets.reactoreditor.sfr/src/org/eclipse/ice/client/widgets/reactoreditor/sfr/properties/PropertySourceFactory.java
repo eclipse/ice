@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets.reactoreditor.sfr.properties;
 
 import org.eclipse.ice.client.widgets.reactoreditor.properties.ReactorComponentPropertySource;
 import org.eclipse.ice.client.widgets.reactoreditor.properties.SimpleProperty;
-
 import org.eclipse.ice.reactor.sfr.base.ISFRComponentVisitor;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.Material;
@@ -65,6 +64,7 @@ public class PropertySourceFactory implements ISFRComponentVisitor {
 	/* ---- Implements ISFRComponentVisitor. ---- */
 	// These visit operations should set the propertySource variable
 	// appropriately in order to expose properties for the visted SFRComponent.
+	@Override
 	public void visit(SFReactor reactor) {
 
 		// Add dimension properties.
@@ -82,10 +82,12 @@ public class PropertySourceFactory implements ISFRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(SFRAssembly sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(PinAssembly assembly) {
 
 		// Add dimension properties.
@@ -115,10 +117,12 @@ public class PropertySourceFactory implements ISFRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(ReflectorAssembly sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(SFRPin pin) {
 
 		// Add fill gas properties.
@@ -145,18 +149,22 @@ public class PropertySourceFactory implements ISFRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(SFRRod sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(MaterialBlock sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(Material sfrComp) {
 		return;
 	}
 
+	@Override
 	public void visit(Ring ring) {
 
 		// Add dimension properties.

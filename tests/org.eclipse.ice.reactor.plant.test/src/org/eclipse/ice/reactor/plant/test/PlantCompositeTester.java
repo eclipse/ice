@@ -513,12 +513,14 @@ public class PlantCompositeTester {
 			return removed;
 		}
 
+		@Override
 		public void addedComponents(PlantComposite composite,
 				List<PlantComponent> components) {
 			added = components;
 			notified.set(true);
 		}
 
+		@Override
 		public void removedComponents(PlantComposite composite,
 				List<PlantComponent> components) {
 			removed = components;

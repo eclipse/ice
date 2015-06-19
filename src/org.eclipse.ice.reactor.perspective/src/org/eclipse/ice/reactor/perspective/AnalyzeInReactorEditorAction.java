@@ -12,13 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.perspective;
 
-import org.eclipse.ice.client.widgets.reactoreditor.ReactorFormWidgetBuilder;
-import org.eclipse.ice.iclient.IClient;
-
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.client.widgets.reactoreditor.ReactorFormWidgetBuilder;
+import org.eclipse.ice.iclient.IClient;
 import org.eclipse.ice.reactor.perspective.internal.ReactorClientHolder;
 import org.eclipse.ice.reactor.perspective.internal.ReactorEditorRegistry;
 import org.eclipse.jface.action.Action;
@@ -127,6 +126,7 @@ public class AnalyzeInReactorEditorAction extends Action {
 			 */
 			private Menu contextMenu = null;
 
+			@Override
 			public void dispose() {
 
 				// Dispose of the dropdown menu if possible.
@@ -151,6 +151,7 @@ public class AnalyzeInReactorEditorAction extends Action {
 				return;
 			}
 
+			@Override
 			public Menu getMenu(Control parent) {
 				// Refresh the menu of actions.
 				updateMenuManager();
@@ -166,6 +167,7 @@ public class AnalyzeInReactorEditorAction extends Action {
 				return dropdownMenu;
 			}
 
+			@Override
 			public Menu getMenu(Menu parent) {
 				// Refresh the menu of actions.
 				updateMenuManager();

@@ -12,12 +12,21 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.TreeSet;
+
+import ncsa.hdf.object.Attribute;
+import ncsa.hdf.object.Datatype;
+import ncsa.hdf.object.Group;
+import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
 
 import org.eclipse.ice.io.hdf.HdfFileFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
@@ -28,17 +37,8 @@ import org.eclipse.ice.reactor.Material;
 import org.eclipse.ice.reactor.MaterialBlock;
 import org.eclipse.ice.reactor.MaterialType;
 import org.eclipse.ice.reactor.Ring;
-
-import ncsa.hdf.object.Attribute;
-import ncsa.hdf.object.Dataset;
-import ncsa.hdf.object.Datatype;
-import ncsa.hdf.object.Group;
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

@@ -16,11 +16,11 @@ import java.util.ArrayList;
 
 import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
-import ncsa.hdf.object.h5.H5Group;
 import ncsa.hdf.object.Attribute;
 import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.HObject;
+import ncsa.hdf.object.h5.H5Group;
 
 /**
  * <p>

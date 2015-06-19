@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.base;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.Composite;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.Composite;
 
 /**
  * <p>
@@ -132,6 +132,7 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 *            null.
 	 * @see Composite#addComponent(Component child)
 	 */
+	@Override
 	public void addComponent(Component child) {
 
 		// We only want to add the child if it is a non-null SFRComponent and a
@@ -160,6 +161,7 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 *            The ID of the component to the removed.
 	 * @see Composite#removeComponent(int childId)
 	 */
+	@Override
 	public void removeComponent(int childId) {
 
 		// FIXME - Currently, it is possible to have multiple Components with
@@ -197,6 +199,7 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 *         returns a null SFRComponent.
 	 * @see Composite#getComponent(int childId)
 	 */
+	@Override
 	public Component getComponent(int childId) {
 
 		// Declare the component for iteration in the loop below.
@@ -228,6 +231,7 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 * @return The number of components in the composite.
 	 * @see Composite#getNumberOfComponents()
 	 */
+	@Override
 	public int getNumberOfComponents() {
 
 		// Return the size of the component table.
@@ -242,6 +246,7 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 *         empty ArrayList if the composite was empty.
 	 * @see Composite#getComponents()
 	 */
+	@Override
 	public ArrayList<Component> getComponents() {
 
 		// Initialize the return value, an ArrayList of components.
@@ -266,6 +271,7 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 *            The other object to compare against.
 	 * @return Returns true if the two objects are equal, otherwise false.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -296,6 +302,7 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 * 
 	 * @return The hash of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -338,6 +345,7 @@ public class SFRComposite extends SFRComponent implements Composite {
 	 * 
 	 * @return The newly instantiated cloned object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

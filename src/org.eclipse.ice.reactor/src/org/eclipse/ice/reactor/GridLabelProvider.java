@@ -291,6 +291,7 @@ public class GridLabelProvider extends LWRComponent {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -328,6 +329,7 @@ public class GridLabelProvider extends LWRComponent {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -390,6 +392,7 @@ public class GridLabelProvider extends LWRComponent {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -406,6 +409,7 @@ public class GridLabelProvider extends LWRComponent {
 	/*
 	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -419,6 +423,7 @@ public class GridLabelProvider extends LWRComponent {
 	/*
 	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -511,6 +516,7 @@ public class GridLabelProvider extends LWRComponent {
 	/*
 	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readDatasets(H5Group h5Group) {
 
 		// Call super
@@ -573,6 +579,7 @@ public class GridLabelProvider extends LWRComponent {
 	/*
 	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations

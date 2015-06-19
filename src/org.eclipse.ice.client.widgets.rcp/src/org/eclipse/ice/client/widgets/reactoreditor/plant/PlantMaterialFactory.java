@@ -66,18 +66,22 @@ public class PlantMaterialFactory {
 		if (component != null) {
 
 			component.accept(new PlantControllerVisitor() {
+				@Override
 				public void visit(Junction plantComp) {
 					wrapper.key = "Junction";
 				}
 
+				@Override
 				public void visit(Reactor plantComp) {
 					wrapper.key = "Reactor";
 				}
 
+				@Override
 				public void visit(HeatExchanger plantComp) {
 					wrapper.key = "HeatExchanger";
 				}
 
+				@Override
 				public void visit(Pipe plantComp) {
 					wrapper.key = "Pipe";
 				}

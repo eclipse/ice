@@ -70,6 +70,7 @@ public class NextAction extends Action {
 	 * The function called whenever the button is clicked.
 	 * </p>
 	 */
+	@Override
 	public void run() {
 		if (viewer.isPlayable()) {
 			viewer.setToNextResource();

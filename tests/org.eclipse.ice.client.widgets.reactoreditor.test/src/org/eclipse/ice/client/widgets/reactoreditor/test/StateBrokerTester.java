@@ -13,9 +13,9 @@
 package org.eclipse.ice.client.widgets.reactoreditor.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,6 @@ import java.util.List;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.IStateListener;
 import org.eclipse.ice.client.widgets.reactoreditor.StateBroker;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -443,19 +442,23 @@ public class StateBrokerTester {
 		}
 
 		/* ---- Implements IStateListener. ---- */
+		@Override
 		public void update(String key, Object value) {
 			this.value = value;
 			this.updates++;
 		}
 
+		@Override
 		public void setBroker(StateBroker broker) {
 			// Unnecessary method: the broker is in the constructor.
 		}
 
+		@Override
 		public void registerKeys() {
 			value = this.broker.register(key, this);
 		}
 
+		@Override
 		public void unregisterKeys() {
 			broker.unregister(key, this);
 		}

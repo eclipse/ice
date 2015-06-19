@@ -12,10 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.io.serializable;
 
-import java.net.URI;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.Form;
 
 /**

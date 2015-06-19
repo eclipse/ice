@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -59,6 +58,7 @@ public class PolynomialEdge extends Edge {
 	 *         The hash of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -79,6 +79,7 @@ public class PolynomialEdge extends Edge {
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// TODO Auto-generated method stub
 		return false;
@@ -109,6 +110,7 @@ public class PolynomialEdge extends Edge {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		// TODO Auto-generated method stub
 		return null;

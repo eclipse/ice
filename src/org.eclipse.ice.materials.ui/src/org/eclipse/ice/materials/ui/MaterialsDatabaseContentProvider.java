@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This is a content provider that reads an IMaterialsDatabase and lists the

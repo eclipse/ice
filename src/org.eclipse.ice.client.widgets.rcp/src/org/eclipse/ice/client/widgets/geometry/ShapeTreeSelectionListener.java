@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -86,6 +85,7 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 	 * @see ISelectionChangedListener#selectionChanged(SelectionChangedEvent
 	 *      event)
 	 */
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 
 		// Get the TransformationView if it is open

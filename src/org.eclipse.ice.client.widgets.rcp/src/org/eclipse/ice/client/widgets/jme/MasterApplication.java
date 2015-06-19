@@ -30,8 +30,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
 import com.jme3.font.BitmapFont;
 import com.jme3.system.AppSettings;
-import com.jme3.system.Natives;
 import com.jme3.system.JmeSystem;
+import com.jme3.system.Natives;
 import com.jme3.system.awt.AwtPanel;
 import com.jme3.system.awt.AwtPanelsContext;
 import com.jme3.system.awt.PaintMode;
@@ -137,6 +137,7 @@ public class MasterApplication extends SimpleApplication {
 		// Create the FocusListener responsible for setting the
 		// AwtPanelsContext's input source.
 		focusListener = new FocusListener() {
+			@Override
 			public void focusGained(FocusEvent e) {
 				// If one of the AwtPanels gained focus, set it as the
 				// AwtPanelsContext input source (otherwise the context will get
@@ -149,6 +150,7 @@ public class MasterApplication extends SimpleApplication {
 				return;
 			}
 
+			@Override
 			public void focusLost(FocusEvent e) {
 				/*
 				 * There is a feature of the AwtPanelsContext's AwtMouseInput
@@ -217,6 +219,7 @@ public class MasterApplication extends SimpleApplication {
 		// Start the canvas in an AWT thread. This starts the renderer thread
 		// (and the associated audio and timer thread).
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				application.startCanvas();
 			}
@@ -238,6 +241,7 @@ public class MasterApplication extends SimpleApplication {
 	 * Disposes all resources directly managed by the
 	 * <code>MasterApplication</code>.
 	 */
+	@Override
 	public void stop() {
 		super.stop();
 

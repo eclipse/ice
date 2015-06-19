@@ -12,12 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.reactor.LWRComponent;
-import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRData;
 import org.junit.Test;
 

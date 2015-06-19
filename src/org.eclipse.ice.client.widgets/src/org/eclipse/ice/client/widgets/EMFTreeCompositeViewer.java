@@ -92,6 +92,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 		MenuManager menuManager = new MenuManager();
 		menuManager.setRemoveAllWhenShown(true);
 		menuManager.addMenuListener(new IMenuListener() {
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 				EMFTreeCompositeViewer.this.fillContextMenu(manager);
 			}
@@ -113,6 +114,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	 * @param menuManager
 	 *            The IMenuManager instance for the context menu to be populated
 	 */
+	@Override
 	protected void fillContextMenu(IMenuManager menuManager) {
 
 		ISelection iSelection = treeViewer.getSelection();
@@ -147,6 +149,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 						// validator does not allow empty strings, long strings,
 						// or most special characters.
 						IInputValidator validator = new IInputValidator() {
+							@Override
 							public String isValid(String newText) {
 								// error is the error message. If null by the
 								// end of the method, then newText is accepted.
@@ -213,6 +216,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 		return;
 	}
 
+	@Override
 	public void partActivated(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -229,6 +233,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	/**
 	 * Clear the tree viewer when a FormEditor is closed.
 	 */
+	@Override
 	public void partClosed(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -255,6 +260,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	 * This function is called whenever a workbench part is brought to the top.
 	 * If that part is a EMFFormEditor, keep track of it as the active editor.
 	 */
+	@Override
 	public void partBroughtToTop(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -268,6 +274,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 		return;
 	}
 
+	@Override
 	public void partDeactivated(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -283,6 +290,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 		return;
 	}
 
+	@Override
 	public void partOpened(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -293,6 +301,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 		return;
 	}
 
+	@Override
 	public void partHidden(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -303,6 +312,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 		return;
 	}
 
+	@Override
 	public void partVisible(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -313,6 +323,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 		return;
 	}
 
+	@Override
 	public void partInputChanged(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {

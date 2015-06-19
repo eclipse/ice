@@ -57,6 +57,7 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 	 * @param visitor
 	 *            The visitor.
 	 */
+	@Override
 	public void accept(IComponentVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);
@@ -87,6 +88,7 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 	 * @param child
 	 *            The Component to add.
 	 */
+	@Override
 	public void addComponent(Component child) {
 
 		// If the child is not null, visit it with a visitor that adds
@@ -150,6 +152,7 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 	 * Removes the IReactorComponent in this Composite that is associated with
 	 * the specified ID.
 	 */
+	@Override
 	public void removeComponent(int childId) {
 		// Remove the component associated with the ID and notify listeners if
 		// it was removed.
@@ -162,6 +165,7 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 	 * Gets the IReactorComponent in this Composite that is associated with the
 	 * specified ID.
 	 */
+	@Override
 	public Component getComponent(int childId) {
 		return reactorComponents.get(childId);
 	}
@@ -184,6 +188,7 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 	 * 
 	 * @return The number of IReactorComponents stored in this Composite.
 	 */
+	@Override
 	public int getNumberOfComponents() {
 		return reactorComponents.size();
 	}
@@ -193,6 +198,7 @@ public class ReactorComposite extends ICEObject implements IReactorComponent,
 	 * 
 	 * @return The list of Components stored in this Composite.
 	 */
+	@Override
 	public ArrayList<Component> getComponents() {
 		return new ArrayList<Component>(reactorComponents.values());
 	}

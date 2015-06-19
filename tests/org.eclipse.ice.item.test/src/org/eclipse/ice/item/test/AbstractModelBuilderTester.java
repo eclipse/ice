@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.ice.item.IActionFactory;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.model.AbstractModelBuilder;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.junit.Test;

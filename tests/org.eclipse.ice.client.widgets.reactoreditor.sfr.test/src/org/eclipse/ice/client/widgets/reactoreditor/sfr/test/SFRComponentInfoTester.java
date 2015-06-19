@@ -16,9 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.widgets.reactoreditor.sfr.SFRComponentInfo;
-
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.junit.Test;
 

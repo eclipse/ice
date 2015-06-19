@@ -15,9 +15,9 @@ package org.eclipse.ice.io.hdf;
 import ncsa.hdf.object.Attribute;
 import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
+import ncsa.hdf.object.h5.H5Datatype;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
-import ncsa.hdf.object.h5.H5Datatype;
 
 /**
  * <p>

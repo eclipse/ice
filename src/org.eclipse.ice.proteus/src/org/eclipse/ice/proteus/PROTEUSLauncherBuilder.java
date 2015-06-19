@@ -37,6 +37,7 @@ public class PROTEUSLauncherBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * @see ItemBuilder#getItemName()
 	 */
+	@Override
 	public String getItemName() {
 		return name;
 	}
@@ -45,6 +46,7 @@ public class PROTEUSLauncherBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * @see ItemBuilder#getItemType()
 	 */
+	@Override
 	public ItemType getItemType() {
 		return type;
 	}
@@ -53,6 +55,7 @@ public class PROTEUSLauncherBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 		
 		PROTEUSLauncher launcher = new PROTEUSLauncher(projectSpace);

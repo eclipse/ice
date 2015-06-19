@@ -94,6 +94,7 @@ public class ClientActionBarAdvisor extends ActionBarAdvisor {
 	/**
 	 * This operation overrides makeActions to setup actions for ICE.
 	 */
+	@Override
 	protected void makeActions(IWorkbenchWindow window) {
 
 		// Create an Exit application action
@@ -134,6 +135,7 @@ public class ClientActionBarAdvisor extends ActionBarAdvisor {
 	/**
 	 * This operation overrides fillMenuBar to fill the menu bar for ICE.
 	 */
+	@Override
 	protected void fillMenuBar(IMenuManager menuBar) {
 
 		// Create a MenuManager for a File Menu Item and a Window Menu Item
@@ -182,6 +184,7 @@ public class ClientActionBarAdvisor extends ActionBarAdvisor {
 	 * @param coolBar
 	 *            - A manager for the CoolBar.
 	 */
+	@Override
 	public void fillCoolBar(ICoolBarManager coolBar) {
 
 		// Local Declarations

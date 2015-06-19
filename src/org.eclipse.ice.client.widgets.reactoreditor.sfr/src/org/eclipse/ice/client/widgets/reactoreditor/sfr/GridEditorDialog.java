@@ -12,18 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.CellEditPart;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.CircularGridEditPartFactory;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
-
 import java.util.BitSet;
 
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.SimpleRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.CellEditPart;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.CircularGridEditPartFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;

@@ -12,14 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.grid.test;
 
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.CellEditPart;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.CircularGridEditPartFactory;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditPartFactory;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalGridEditPartFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +22,13 @@ import org.eclipse.gef.EditPartFactory;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.SimpleRootEditPart;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.CellEditPart;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.CircularGridEditPartFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditPartFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalGridEditPartFactory;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -52,6 +51,7 @@ import org.osgi.framework.FrameworkUtil;
 public class GridViewerLauncher extends Thread {
 	private volatile boolean active = true;
 
+	@Override
 	public void run() {
 		// Create a display
 		Display display = new Display();

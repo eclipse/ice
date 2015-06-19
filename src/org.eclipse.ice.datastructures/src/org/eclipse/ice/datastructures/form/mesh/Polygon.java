@@ -12,27 +12,23 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
+
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
+import org.eclipse.ice.datastructures.form.geometry.IShape;
+import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 
 /**
  * <p>
@@ -469,6 +465,7 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 *         The hash of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -498,6 +495,7 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -625,6 +623,7 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.
@@ -642,6 +641,7 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 * 
 	 * @see IShape#acceptShapeVisitor(IShapeVisitor visitor)
 	 */
+	@Override
 	public void acceptShapeVisitor(IShapeVisitor visitor) {
 
 		// Nothing to do here. We are currently only extending AbstractShape for
@@ -661,6 +661,7 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 *            BoundaryCondition.
 	 *            </p>
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// TODO Currently, this code has been disabled. We still need to decide
@@ -688,6 +689,7 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 	 *            {@link IMeshPart}.
 	 *            </p>
 	 */
+	@Override
 	public void acceptMeshVisitor(IMeshPartVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);

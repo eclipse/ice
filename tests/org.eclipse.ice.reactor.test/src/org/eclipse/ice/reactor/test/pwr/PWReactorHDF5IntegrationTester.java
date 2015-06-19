@@ -12,17 +12,26 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test.pwr;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 
-import org.eclipse.ice.reactor.*;
-import org.eclipse.ice.reactor.pwr.*;
+import org.eclipse.ice.reactor.AssemblyType;
+import org.eclipse.ice.reactor.LWRComponentReader;
+import org.eclipse.ice.reactor.LWRComponentWriter;
+import org.eclipse.ice.reactor.LWRData;
+import org.eclipse.ice.reactor.LWRRod;
+import org.eclipse.ice.reactor.Material;
+import org.eclipse.ice.reactor.MaterialType;
+import org.eclipse.ice.reactor.Ring;
+import org.eclipse.ice.reactor.pwr.FuelAssembly;
+import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

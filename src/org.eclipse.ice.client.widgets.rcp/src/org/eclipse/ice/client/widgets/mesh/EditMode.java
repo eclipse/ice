@@ -329,6 +329,7 @@ public class EditMode extends MeshAppStateMode implements
 	/**
 	 * Registers additional controls for editing mesh elements.
 	 */
+	@Override
 	public void registerControls() {
 		super.registerControls();
 
@@ -356,6 +357,7 @@ public class EditMode extends MeshAppStateMode implements
 	/**
 	 * Unregisters the additional controls for adding mesh elements.
 	 */
+	@Override
 	public void unregisterControls() {
 		// Unregister the controls from the InputManager.
 		shiftAction.unregisterFromInput();
@@ -474,6 +476,7 @@ public class EditMode extends MeshAppStateMode implements
 			// false.
 			clickTimer = new Timer(true);
 			clickTimer.schedule(new TimerTask() {
+				@Override
 				public void run() {
 					click.set(false);
 				}
@@ -652,6 +655,7 @@ public class EditMode extends MeshAppStateMode implements
 	 * This method updates all controllers for temporary spatials to account for
 	 * any changes in zoom.
 	 */
+	@Override
 	public void zoomChanged(float distance) {
 		// Get the sizes of vertices and edges.
 		float vertexSize = appState.getVertexSize();

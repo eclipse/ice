@@ -147,6 +147,7 @@ public class DataComponentComposite extends Composite implements
 		// in case it is being used by JFace, which doesn't always post standard
 		// SWT events.
 		Listener enterListener = new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				// Notify the EntryComposites that the selection was made
 				for (EntryComposite entryComp : entryMap.values()) {
@@ -272,6 +273,7 @@ public class DataComponentComposite extends Composite implements
 			// Since the DataComponent is new, we can re-render the Entries. We
 			// must do this on the Eclipse UI thread.
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					// Dispose the old EntryComposites.
 					disposeEntries();
@@ -549,11 +551,13 @@ public class DataComponentComposite extends Composite implements
 	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
 	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// When the DataComponent has updated, refresh on the Eclipse UI thread.
 		if (component == dataComp) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (!DataComponentComposite.this.isDisposed()) {
 						refresh();

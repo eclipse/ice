@@ -15,10 +15,10 @@ package org.eclipse.ice.client.widgets.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Test;
 import org.eclipse.ice.client.widgets.EMFSectionPage;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
+import org.junit.Test;
 
 /**
  * <p>

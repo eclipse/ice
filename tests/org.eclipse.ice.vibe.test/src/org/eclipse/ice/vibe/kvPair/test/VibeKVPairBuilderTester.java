@@ -28,8 +28,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.vibe.kvPair.VibeKVPair;
 import org.eclipse.ice.vibe.kvPair.VibeKVPairBuilder;
-import org.eclipse.ice.vibe.launcher.VibeLauncher;
-import org.eclipse.ice.vibe.launcher.VibeLauncherBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

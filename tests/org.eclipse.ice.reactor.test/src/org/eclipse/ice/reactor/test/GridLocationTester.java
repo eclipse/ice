@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.ice.reactor.GridLocation;
 import org.eclipse.ice.reactor.LWRDataProvider;

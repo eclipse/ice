@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URI;
@@ -23,11 +27,24 @@ import ncsa.hdf.object.FileFormat;
 import ncsa.hdf.object.Group;
 import ncsa.hdf.object.h5.H5File;
 
+import org.eclipse.ice.io.hdf.HdfFileFactory;
+import org.eclipse.ice.reactor.AssemblyType;
+import org.eclipse.ice.reactor.LWRComponentWriter;
+import org.eclipse.ice.reactor.LWRData;
+import org.eclipse.ice.reactor.LWRRod;
+import org.eclipse.ice.reactor.Material;
+import org.eclipse.ice.reactor.MaterialBlock;
+import org.eclipse.ice.reactor.MaterialType;
+import org.eclipse.ice.reactor.Ring;
+import org.eclipse.ice.reactor.Tube;
+import org.eclipse.ice.reactor.TubeType;
+import org.eclipse.ice.reactor.pwr.ControlBank;
+import org.eclipse.ice.reactor.pwr.FuelAssembly;
+import org.eclipse.ice.reactor.pwr.IncoreInstrument;
+import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
+import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.reactor.*;
-import org.eclipse.ice.reactor.pwr.*;
 
 /**
  * 

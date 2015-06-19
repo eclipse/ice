@@ -835,6 +835,7 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *         The hashcode of the ICEObject.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -861,6 +862,7 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -946,6 +948,7 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *         The new clone
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.
@@ -963,6 +966,7 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 * 
 	 * @see Component#accept(IComponentVisitor visitor)
 	 */
+	@Override
 	public void accept(IComponentVisitor visitor) {
 
 		// Call the visitor's visit(MeshComponent) method.
@@ -983,6 +987,7 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	 *            {@link IMeshPart}.
 	 *            </p>
 	 */
+	@Override
 	public void acceptMeshVisitor(IMeshPartVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);

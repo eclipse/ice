@@ -154,6 +154,7 @@ public class Custom2DShape extends AbstractShape {
 	 *         The hash of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Get initial hash code
@@ -183,6 +184,7 @@ public class Custom2DShape extends AbstractShape {
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		boolean equal = false;
@@ -249,6 +251,7 @@ public class Custom2DShape extends AbstractShape {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new Custom2DShape

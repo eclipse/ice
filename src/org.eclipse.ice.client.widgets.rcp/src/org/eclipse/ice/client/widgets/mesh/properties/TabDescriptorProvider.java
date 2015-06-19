@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.ice.client.widgets.mesh.properties.BoundaryConditionSection.Type;
 import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
@@ -23,11 +27,6 @@ import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
 import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -77,6 +76,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 	 * IMeshParts.
 	 */
 	private final IFilter filter = new IFilter() {
+		@Override
 		public boolean select(Object toTest) {
 			return (toTest instanceof MeshSelection);
 		}
@@ -129,10 +129,12 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 	}
 
 	// ---- Implements IMeshPartVisitor ---- //
+	@Override
 	public void visit(MeshComponent mesh) {
 		// Do nothing.
 	}
 
+	@Override
 	public void visit(Polygon polygon) {
 
 		// IDs used for the tabs.
@@ -150,14 +152,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 		final String polygonTabLabel = polygon.getName() + " "
 				+ polygon.getId();
 		AbstractTabDescriptor polygonTab = new AbstractTabDescriptor() {
+			@Override
 			public String getCategory() {
 				return CATEGORY;
 			}
 
+			@Override
 			public String getId() {
 				return polygonTabId;
 			}
 
+			@Override
 			public String getLabel() {
 				return polygonTabLabel;
 			}
@@ -170,14 +175,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 
 		// Create a SectionDescriptor for the edge's general info section.
 		sectionDescriptors.add(new AbstractSectionDescriptor() {
+			@Override
 			public String getTargetTab() {
 				return polygonTabId;
 			}
 
+			@Override
 			public ISection getSectionClass() {
 				return new GeneralInfoSection();
 			}
 
+			@Override
 			public String getId() {
 				return polygonTabId + ".general";
 			}
@@ -206,14 +214,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 
 			// Create a tab descriptor for the edge.
 			tabDescriptor = new AbstractTabDescriptor() {
+				@Override
 				public String getCategory() {
 					return CATEGORY;
 				}
 
+				@Override
 				public String getId() {
 					return tabId;
 				}
 
+				@Override
 				public String getLabel() {
 					return tabLabel;
 				}
@@ -234,14 +245,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 			// Create a section for the edge's general information.
 			final int fi = i;
 			sectionDescriptors.add(new AbstractSectionDescriptor() {
+				@Override
 				public String getTargetTab() {
 					return tabId;
 				}
 
+				@Override
 				public ISection getSectionClass() {
 					return new EdgeInfoSection(fi);
 				}
 
+				@Override
 				public String getId() {
 					return tabId + ".general";
 				}
@@ -253,14 +267,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 			});
 			// Create a section for the edge's fluid boundary condition.
 			sectionDescriptors.add(new AbstractSectionDescriptor() {
+				@Override
 				public String getTargetTab() {
 					return tabId;
 				}
 
+				@Override
 				public ISection getSectionClass() {
 					return new BoundaryConditionSection(Type.Fluid, 0, fi);
 				}
 
+				@Override
 				public String getId() {
 					return tabId + ".fluid";
 				}
@@ -272,14 +289,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 			});
 			// Create a section for the edge's thermal boundary condition.
 			sectionDescriptors.add(new AbstractSectionDescriptor() {
+				@Override
 				public String getTargetTab() {
 					return tabId;
 				}
 
+				@Override
 				public ISection getSectionClass() {
 					return new BoundaryConditionSection(Type.Thermal, 0, fi);
 				}
 
+				@Override
 				public String getId() {
 					return tabId + ".thermal";
 				}
@@ -309,14 +329,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 
 			// Create a tab descriptor for the edge.
 			tabDescriptor = new AbstractTabDescriptor() {
+				@Override
 				public String getCategory() {
 					return CATEGORY;
 				}
 
+				@Override
 				public String getId() {
 					return tabId;
 				}
 
+				@Override
 				public String getLabel() {
 					return tabLabel;
 				}
@@ -337,14 +360,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 			// Create a section for the vertex's general information.
 			final int fi = i;
 			sectionDescriptors.add(new AbstractSectionDescriptor() {
+				@Override
 				public String getTargetTab() {
 					return tabId;
 				}
 
+				@Override
 				public ISection getSectionClass() {
 					return new VertexInfoSection(fi);
 				}
 
+				@Override
 				public String getId() {
 					return tabId + ".general";
 				}
@@ -356,14 +382,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 			});
 			// Create a section for the vertex's location.
 			sectionDescriptors.add(new AbstractSectionDescriptor() {
+				@Override
 				public String getTargetTab() {
 					return tabId;
 				}
 
+				@Override
 				public ISection getSectionClass() {
 					return new VertexSection(fi);
 				}
 
+				@Override
 				public String getId() {
 					return tabId + ".location";
 				}
@@ -381,16 +410,19 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 		return;
 	}
 
+	@Override
 	public void visit(Quad quad) {
 		// Re-direct to the standard polygon operation for now.
 		visit((Polygon) quad);
 	}
 
+	@Override
 	public void visit(Hex hex) {
 		// Re-direct to the standard polygon operation for now.
 		visit((Polygon) hex);
 	}
 
+	@Override
 	public void visit(Edge edge) {
 
 		// The IDs of the tabs that will be created.
@@ -407,14 +439,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 		// Create a tab for the edge.
 		final String edgeTabLabel = edge.getName() + " " + edge.getId();
 		AbstractTabDescriptor edgeTab = new AbstractTabDescriptor() {
+			@Override
 			public String getCategory() {
 				return CATEGORY;
 			}
 
+			@Override
 			public String getId() {
 				return edgeTabId;
 			}
 
+			@Override
 			public String getLabel() {
 				return edgeTabLabel;
 			}
@@ -425,14 +460,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 		sectionDescriptors = new ArrayList<ISectionDescriptor>();
 		// Create a SectionDescriptor for the edge's general info section.
 		sectionDescriptors.add(new AbstractSectionDescriptor() {
+			@Override
 			public String getTargetTab() {
 				return edgeTabId;
 			}
 
+			@Override
 			public ISection getSectionClass() {
 				return new GeneralInfoSection();
 			}
 
+			@Override
 			public String getId() {
 				return edgeTabId + ".general";
 			}
@@ -459,14 +497,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 
 			// Create a tab descriptor for the edge.
 			tabDescriptor = new AbstractTabDescriptor() {
+				@Override
 				public String getCategory() {
 					return CATEGORY;
 				}
 
+				@Override
 				public String getId() {
 					return tabId;
 				}
 
+				@Override
 				public String getLabel() {
 					return tabLabel;
 				}
@@ -487,14 +528,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 			// Create a section for the vertex's general information.
 			final int fi = i;
 			sectionDescriptors.add(new AbstractSectionDescriptor() {
+				@Override
 				public String getTargetTab() {
 					return tabId;
 				}
 
+				@Override
 				public ISection getSectionClass() {
 					return new VertexInfoSection(fi);
 				}
 
+				@Override
 				public String getId() {
 					return tabId + ".general";
 				}
@@ -506,14 +550,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 			});
 			// Create a section for the vertex's location.
 			sectionDescriptors.add(new AbstractSectionDescriptor() {
+				@Override
 				public String getTargetTab() {
 					return tabId;
 				}
 
+				@Override
 				public ISection getSectionClass() {
 					return new VertexSection(fi);
 				}
 
+				@Override
 				public String getId() {
 					return tabId + ".location";
 				}
@@ -541,14 +588,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 
 			// Create a tab descriptor for the boundary conditions.
 			tabDescriptor = new AbstractTabDescriptor() {
+				@Override
 				public String getCategory() {
 					return CATEGORY;
 				}
 
+				@Override
 				public String getId() {
 					return tabId;
 				}
 
+				@Override
 				public String getLabel() {
 					return tabLabel;
 				}
@@ -570,14 +620,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 
 			// Create a section for the fluid boundary condition.
 			sectionDescriptors.add(new AbstractSectionDescriptor() {
+				@Override
 				public String getTargetTab() {
 					return tabId;
 				}
 
+				@Override
 				public ISection getSectionClass() {
 					return new BoundaryConditionSection(Type.Fluid, 0, fi);
 				}
 
+				@Override
 				public String getId() {
 					return tabId + ".fluid";
 				}
@@ -589,14 +642,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 			});
 			// Create a section for the thermal boundary condition.
 			sectionDescriptors.add(new AbstractSectionDescriptor() {
+				@Override
 				public String getTargetTab() {
 					return tabId;
 				}
 
+				@Override
 				public ISection getSectionClass() {
 					return new BoundaryConditionSection(Type.Thermal, 0, fi);
 				}
 
+				@Override
 				public String getId() {
 					return tabId + ".thermal";
 				}
@@ -615,29 +671,35 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 		return;
 	}
 
+	@Override
 	public void visit(BezierEdge edge) {
 		// Re-direct to the standard edge operation for now.
 		visit((Edge) edge);
 	}
 
+	@Override
 	public void visit(PolynomialEdge edge) {
 		// Re-direct to the standard edge operation for now.
 		visit((Edge) edge);
 	}
 
+	@Override
 	public void visit(Vertex vertex) {
 
 		// Create a TabDescriptor for the Vertex. We only need one tab!
 		final String tabLabel = vertex.getName() + " " + vertex.getId();
 		AbstractTabDescriptor vertexTab = new AbstractTabDescriptor() {
+			@Override
 			public String getCategory() {
 				return CATEGORY;
 			}
 
+			@Override
 			public String getId() {
 				return "vertex";
 			}
 
+			@Override
 			public String getLabel() {
 				return tabLabel;
 			}
@@ -647,14 +709,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 
 		// Create a SectionDescriptor for the vertex's general info section.
 		AbstractSectionDescriptor generalSection = new AbstractSectionDescriptor() {
+			@Override
 			public String getTargetTab() {
 				return "vertex";
 			}
 
+			@Override
 			public ISection getSectionClass() {
 				return new GeneralInfoSection();
 			}
 
+			@Override
 			public String getId() {
 				return "vertex.general";
 			}
@@ -667,14 +732,17 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 
 		// Create a SectionDescriptor for the vertex's location section.
 		AbstractSectionDescriptor locationSection = new AbstractSectionDescriptor() {
+			@Override
 			public String getTargetTab() {
 				return "vertex";
 			}
 
+			@Override
 			public ISection getSectionClass() {
 				return new VertexSection();
 			}
 
+			@Override
 			public String getId() {
 				return "vertex.location";
 			}
@@ -700,6 +768,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider,
 		return;
 	}
 
+	@Override
 	public void visit(Object object) {
 		// Do nothing.
 	}

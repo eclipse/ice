@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 import org.eclipse.ice.kdd.kddstrategy.kmeansclustering.EuclideanDistanceMeasure;

@@ -15,7 +15,6 @@ package org.eclipse.ice.reactor.sfr.core.assembly;
 import org.eclipse.ice.reactor.sfr.base.ISFRComponentVisitor;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.Material;
-import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 
 /**
  * <p>
@@ -114,6 +113,7 @@ public class SFRRod extends SFRComponent {
 	 * 
 	 * @return The hashcode of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based upon superclass hash
@@ -135,6 +135,7 @@ public class SFRRod extends SFRComponent {
 	 *            The other object being compared against.
 	 * @return Returns true if the both objects are equal, otherwise false.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Check if otherObject is invalid
@@ -201,6 +202,7 @@ public class SFRRod extends SFRComponent {
 	 * 
 	 * @return The newly instantiated object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new SFRRod

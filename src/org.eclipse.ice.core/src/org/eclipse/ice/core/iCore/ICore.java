@@ -12,27 +12,23 @@
  *******************************************************************************/
 package org.eclipse.ice.core.iCore;
 
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.ICEObject.ICEList;
-
-import java.util.ArrayList;
-
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
-import org.eclipse.ice.item.ICompositeItemBuilder;
-import org.eclipse.ice.item.ItemBuilder;
-
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEList;
+import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.item.ICompositeItemBuilder;
+import org.eclipse.ice.item.ItemBuilder;
 
 /**
  * ICore is an interface that is realized by Core and used by clients that

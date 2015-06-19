@@ -12,8 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.base;
 
-import org.eclipse.ice.analysistool.IData;
 import java.util.ArrayList;
+
+import org.eclipse.ice.analysistool.IData;
 
 /**
  * <p>
@@ -201,6 +202,7 @@ public class SFRData implements IData {
 	 *         coordinates.
 	 * @see IData#getPosition()
 	 */
+	@Override
 	public ArrayList<Double> getPosition() {
 		return position;
 	}
@@ -212,6 +214,7 @@ public class SFRData implements IData {
 	 * @return The value of the SFRData
 	 * @see IData#getValue()
 	 */
+	@Override
 	public double getValue() {
 		return value;
 	}
@@ -223,6 +226,7 @@ public class SFRData implements IData {
 	 * @return The uncertainty of the SFRData.
 	 * @see IData#getUncertainty()
 	 */
+	@Override
 	public double getUncertainty() {
 		return uncertainty;
 	}
@@ -234,6 +238,7 @@ public class SFRData implements IData {
 	 * @return The units of the SFRData.
 	 * @see IData#getUnits()
 	 */
+	@Override
 	public String getUnits() {
 		return units;
 	}
@@ -245,6 +250,7 @@ public class SFRData implements IData {
 	 * @return The feature of the SFRData.
 	 * @see IData#getFeature()
 	 */
+	@Override
 	public String getFeature() {
 		return feature;
 	}
@@ -260,6 +266,7 @@ public class SFRData implements IData {
 	 *            The object to be compared.
 	 * @return True if otherObject is equal. False otherwise.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -292,6 +299,7 @@ public class SFRData implements IData {
 	 * 
 	 * @return The hash of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Static hash at 31.
@@ -342,6 +350,7 @@ public class SFRData implements IData {
 	 * 
 	 * @return The newly instantiated copied object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

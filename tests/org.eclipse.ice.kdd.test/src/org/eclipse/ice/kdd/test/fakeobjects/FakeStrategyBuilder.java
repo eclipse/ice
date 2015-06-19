@@ -14,11 +14,10 @@ package org.eclipse.ice.kdd.test.fakeobjects;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
-
-import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * 
@@ -30,6 +29,7 @@ public class FakeStrategyBuilder implements IStrategyBuilder {
 	 * 
 	 * @see IStrategyBuilder#build(ArrayList<IDataProvider> data)
 	 */
+	@Override
 	public KDDStrategy build(ArrayList<IDataProvider> data) {
 		return new FakeStrategy();
 	}
@@ -39,6 +39,7 @@ public class FakeStrategyBuilder implements IStrategyBuilder {
 	 * 
 	 * @see IStrategyBuilder#getStrategyName()
 	 */
+	@Override
 	public String getStrategyName() {
 		return "Fake Strategy";
 	}
@@ -48,6 +49,7 @@ public class FakeStrategyBuilder implements IStrategyBuilder {
 	 * 
 	 * @see IStrategyBuilder#isAvailable(ArrayList<IDataProvider> dataToCheck)
 	 */
+	@Override
 	public boolean isAvailable(ArrayList<IDataProvider> dataToCheck) {
 		return true;
 	}

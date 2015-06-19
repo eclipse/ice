@@ -145,6 +145,7 @@ public class AbstractSWTTester extends AbstractICEUITester<SWTBot> {
 
 		// Close and unset the shell. This must be done on the UI thread.
 		getDisplay().syncExec(new Runnable() {
+			@Override
 			public void run() {
 				shell.close();
 			}

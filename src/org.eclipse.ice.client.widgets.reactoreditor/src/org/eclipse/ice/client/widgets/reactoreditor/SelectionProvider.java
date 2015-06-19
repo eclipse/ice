@@ -61,6 +61,7 @@ public class SelectionProvider implements ISelectionProvider {
 	 * Implements addSelectionChangedListener for ISelectionProvider. Adds an
 	 * ISelectionChangedListener to listen for SelectionChangedEvents.
 	 */
+	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		// Add the listener if it is valid.
 		if (listener != null) {
@@ -74,6 +75,7 @@ public class SelectionProvider implements ISelectionProvider {
 	 * ISelection, which, in this implementation, should always be a
 	 * StructuredSelection.
 	 */
+	@Override
 	public ISelection getSelection() {
 		// Return the current selection (may be null).
 		return selection;
@@ -83,6 +85,7 @@ public class SelectionProvider implements ISelectionProvider {
 	 * Implements removeSelectionChangedListener for ISelectionProvider. Removes
 	 * the listener from the List of listeners.
 	 */
+	@Override
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
 		// Remove the listener if it is valid.
@@ -96,6 +99,7 @@ public class SelectionProvider implements ISelectionProvider {
 	 * Implements setSelection for ISelectionProvider. Sets the current
 	 * ISelection, which should be a StructuredSelection.
 	 */
+	@Override
 	public void setSelection(ISelection selection) {
 
 		// Check the parameter.
