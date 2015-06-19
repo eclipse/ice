@@ -15,6 +15,7 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 import visit.java.client.ViewerMethods;
 
@@ -121,7 +122,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * java.lang.Object)
 	 */
 	@Override
-	protected Composite createPlotComposite(Composite parent, int style,
+	protected Composite createPlotComposite(final Composite parent, int style,
 			VisItSwtConnection connection) throws Exception {
 
 		// Create a new window on the VisIt server if one does not already
@@ -166,6 +167,13 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 			@Override
 			public void menuShown(MenuEvent e) {
+				// Rebuild the menu.
+				Menu menu = (Menu) e.widget;
+				if (parent.getMenu() == null) {
+					for (MenuItem item : menu.getItems()) {
+						item.dispose();
+					}
+				}
 				repTree.getContributionItem().fill((Menu) e.widget, -1);
 			}
 		});

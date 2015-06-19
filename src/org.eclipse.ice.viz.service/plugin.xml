@@ -17,4 +17,89 @@
             class="org.eclipse.ice.viz.service.VizPreferenceInitializer">
       </initializer>
    </extension>
+   
+		
+   		
+   		
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.ice.viz.service.PlotEditor"
+            default="false"
+            id="org.eclipse.ice.viz.service.PlotEditor"
+            name="PlotEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.ice.viz.service.OpenHandler"
+            id="org.eclipse.ice.viz.service.open"
+            name="Test">
+      </command>
+   </extension>
+
+  <!-- <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.ice.viz.service.OpenHandler"
+            commandId="org.eclipse.ice.viz.service.open">
+      </handler>
+   </extension> -->   
+   
+<!--   <extension
+   		point="org.eclipse.ui.menus">
+   		<menuContribution
+   			locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
+   			<command
+   				commandId="org.eclipse.ice.viz.service.open"
+   				id="org.eclipse.ice.viz.service.openContribution"
+   				mnemonic="o">
+
+   			</command>
+   			  <visibleWhen>
+				           <with variable="activeMenuSelection">
+				            <iterate
+				                 ifEmpty="false">
+				             <adapt type="org.eclipse.core.resources.IResource">
+				             </adapt>
+				            </iterate>
+				           </with>
+         			</visibleWhen>
+   		</menuContribution>
+   	</extension> -->
+
+ <!-- <extension
+          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+          <propertyContributor contributorId="org.eclipse.ice.viz.service.PlotEditorPropertyContributor">
+              <propertyCategory category="Plot Editor">
+              </propertyCategory>
+          </propertyContributor>
+      </extension>
+      
+      <extension
+          point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+          <propertyTabs contributorId="org.eclipse.ice.viz.service.PlotEditorPropertyContributor">
+              <propertyTab label="Main" category="Plot Editor"
+                  id="ploteditor.main.tab">
+              </propertyTab>
+          </propertyTabs>
+      </extension>
+      
+      <extension
+          point="org.eclipse.ui.views.properties.tabbed.propertySections">
+          <propertySections contributorId="org.eclipse.ice.viz.service.PlotEditor.PropertyContributor">
+              <propertySection tab="ploteditor.main.tab"           
+               class="org.eclipse.graphiti.examples.tutorial.property
+                     .PlotPropertiesSection"
+ 
+               id="ploteditor.main.tab.properties">
+              </propertySection>
+          </propertySections>
+      </extension> -->
+   		
+   
+                <!-- filter="org.eclipse.graphiti.examples.tutorial.property
+                      .MyTutorialEClassFilter" -->
+   
 </plugin>
