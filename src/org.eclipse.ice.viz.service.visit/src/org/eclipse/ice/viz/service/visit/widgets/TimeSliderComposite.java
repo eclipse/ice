@@ -15,12 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.TypedListener;
 
 /**
  * 
@@ -73,6 +76,59 @@ public class TimeSliderComposite extends Composite {
 
 	public double getTime() {
 		return times.isEmpty() ? 0.0 : times.get(timestep);
+	}
+
+	/**
+	 * 
+	 * @param listener
+	 * 
+	 * @exception IllegalArgumentException
+	 *                <ul>
+	 *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 *                </ul>
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public void addSelectionListener(SelectionListener listener) {
+		// Check that this widget can be accessed. Also check the listener is
+		// not null.
+		checkWidget();
+		if (listener == null) {
+			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
+		}
+
+		// TODO
+	}
+
+	/**
+	 * 
+	 * @param listener
+	 * 
+	 * @exception IllegalArgumentException
+	 *                <ul>
+	 *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 *                </ul>
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public void removeSelectionListener(SelectionListener listener) {
+		// Check that this widget can be accessed. Also check the listener is
+		// not null.
+		checkWidget();
+		if (listener == null) {
+			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
+		}
+
 	}
 
 }
