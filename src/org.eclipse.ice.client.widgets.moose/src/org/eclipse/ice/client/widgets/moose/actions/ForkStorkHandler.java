@@ -53,7 +53,11 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -89,20 +93,10 @@ public class ForkStorkHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 		// Local Declarations
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		Shell shell = HandlerUtil.getActiveWorkbenchWindow(event).getShell();
-		String sep = System.getProperty("file.separator"), appName = "", gitHubUser = "", password = "", remoteURI = "";
-		ArrayList<String> cmdList = new ArrayList<String>();
-		ProcessBuilder jobBuilder = null;
-		String os = System.getProperty("os.name");
-
-		// Set the pyton command
-		cmdList.add("/bin/bash");
-		cmdList.add("-c");
-		cmdList.add("python make_new_application.py");
 
 		// Create a new ForkStorkWizard and Dialog
-		ForkStorkWizard wizard = new ForkStorkWizard();
+		final ForkStorkWizard wizard = new ForkStorkWizard();
 		WizardDialog dialog = new WizardDialog(shell, wizard);
 
 		// Open the dialog
@@ -110,195 +104,265 @@ public class ForkStorkHandler extends AbstractHandler {
 			return null;
 		}
 
-		// Get the User Input Data
-		appName = wizard.getMooseAppName();
-		gitHubUser = wizard.getGitUsername();
-		password = wizard.getGitPassword();
-
-		// Construct the Remote URI for the repo
-		remoteURI = "https://github.com/" + gitHubUser + "/" + appName;
 
 		// Create a File reference to the repo in the Eclipse workspace
-		File workspaceFile = new File(ResourcesPlugin.getWorkspace().getRoot()
-				.getLocation().toOSString()
-				+ sep + appName);
+		final Job job = new Job("Forking the MOOSE Stork!") {
 
-		// Create a EGit-GitHub RepositoryService and Id to
-		// connect and create our Fork
-		RepositoryService service = new RepositoryService();
-		RepositoryId id = new RepositoryId("idaholab", "stork");
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				monitor.beginTask(
+						"Attempting to Fork the Stork with supplied credentials",
+						100);
 
-		// Set the user's GitHub credentials
-		service.getClient().setCredentials(gitHubUser, password);
+				// Local Declarations
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+				ArrayList<String> cmdList = new ArrayList<String>();
+				ProcessBuilder jobBuilder = null;
+				String os = System.getProperty("os.name");
+				String sep = System.getProperty("file.separator");
+				
+				// Get the user specified data
+				String appName = wizard.getMooseAppName();
+				String gitHubUser = wizard.getGitUsername();
+				String password = wizard.getGitPassword();
+				
+				// Construct the Remote URI for the repo
+				String remoteURI = "https://github.com/" + gitHubUser + "/"
+						+ appName;
+				
+				// Create the workspace file 		
+				File workspaceFile = new File(ResourcesPlugin.getWorkspace()
+						.getRoot().getLocation().toOSString()
+						+ sep + appName);
+				
+				// Set the pyton command
+				cmdList.add("/bin/bash");
+				cmdList.add("-c");
+				cmdList.add("python make_new_application.py");
 
-		// Fork the Repository!!!
-		try {
-			// Fork and get the repo
-			Repository repo = service.forkRepository(id);
+				// Create a EGit-GitHub RepositoryService and Id to
+				// connect and create our Fork
+				RepositoryService service = new RepositoryService();
+				RepositoryId id = new RepositoryId("idaholab", "stork");
 
-			// Reset the project name to the provided app name
-			Map<String, Object> fields = new HashMap<String, Object>();
-			fields.put("name", appName);
+				// Set the user's GitHub credentials
+				service.getClient().setCredentials(gitHubUser, password);
+				monitor.subTask("Connecting to GitHub...");
+				monitor.worked(20);
 
-			// Edit the name
-			service.editRepository(repo, fields);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+				// Fork the Repository!!!
+				try {
+					// Fork and get the repo
+					Repository repo = service.forkRepository(id);
 
-		// Now that it is all set on the GitHub end,
-		// Let's pull it down into our workspace
-		try {
-			Git result = Git.cloneRepository().setURI(remoteURI)
-					.setDirectory(workspaceFile).call();
-		} catch (InvalidRemoteException e1) {
-			e1.printStackTrace();
-		} catch (TransportException e1) {
-			e1.printStackTrace();
-		} catch (GitAPIException e1) {
-			e1.printStackTrace();
-		}
+					// Reset the project name to the provided app name
+					Map<String, Object> fields = new HashMap<String, Object>();
+					fields.put("name", appName);
 
-		// We can only run the python script on Linux or Mac
-		// And Moose devs only use Linux or Macs to build their apps
-		if (os.contains("Linux") || os.contains("Mac")) {
-			// Create the ProcessBuilder and change to the project dir
-			jobBuilder = new ProcessBuilder(cmdList);
-			jobBuilder.directory(new File(workspaceFile.getAbsolutePath()));
-
-			// Do not direct the error to stdout. Catch it separately.
-			jobBuilder.redirectErrorStream(false);
-			try {
-				// Execute the python script!
-				jobBuilder.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		/*------------ The rest is about importing the C++ project correctly ---------*/
-
-		// Get the project and project description handles
-		IProject project = workspace.getRoot().getProject(appName);
-		IProjectDescription description = workspace
-				.newProjectDescription(appName);
-
-		try {
-			// Create the CDT Project
-			CCorePlugin.getDefault().createCDTProject(description, project,
-					new NullProgressMonitor());
-
-			// Add the CPP nature
-			CCProjectNature.addCCNature(project, new NullProgressMonitor());
-
-			// Set up build information
-			ICProjectDescriptionManager pdMgr = CoreModel.getDefault()
-					.getProjectDescriptionManager();
-			ICProjectDescription projDesc = pdMgr.createProjectDescription(
-					project, false);
-			ManagedBuildInfo info = ManagedBuildManager
-					.createBuildInfo(project);
-			ManagedProject mProj = new ManagedProject(projDesc);
-			info.setManagedProject(mProj);
-
-			// Grab the correct toolchain
-			// FIXME this should be better...
-			IToolChain toolChain = null;
-			for (IToolChain tool : ManagedBuildManager.getRealToolChains()) {
-				if (os.contains("Mac") && tool.getName().contains("Mac")
-						&& tool.getName().contains("GCC")) {
-					toolChain = tool;
-					break;
-				} else if (os.contains("Linux")
-						&& tool.getName().contains("Linux")
-						&& tool.getName().contains("GCC")) {
-					toolChain = tool;
-					break;
-				} else if (os.contains("Windows")
-						&& tool.getName().contains("Cygwin")) {
-					toolChain = tool;
-					break;
-				} else {
-					toolChain = null;
+					// Edit the name
+					service.editRepository(repo, fields);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					String errorMessage = "ICE failed in forking the new stork.";
+					return new Status(
+							Status.ERROR,
+							"org.eclipse.ice.client.widgets.moose",
+							1, errorMessage, null);
 				}
-			}
 
-			// Set up the Build configuratino
-			CfgHolder cfgHolder = new CfgHolder(toolChain, null);
-			String s = toolChain == null ? "0" : toolChain.getId(); //$NON-NLS-1$
-			IConfiguration config = new Configuration(
-					mProj,
-					(org.eclipse.cdt.managedbuilder.internal.core.ToolChain) toolChain,
-					ManagedBuildManager.calculateChildId(s, null), cfgHolder
-							.getName());
-			IBuilder builder = config.getEditableBuilder();
-			builder.setManagedBuildOn(false);
-			CConfigurationData data = config.getConfigurationData();
-			projDesc.createConfiguration(
-					ManagedBuildManager.CFG_DATA_PROVIDER_ID, data);
-			pdMgr.setProjectDescription(project, projDesc);
+				monitor.subTask("Stork Forked, cloning to local machine...");
+				monitor.worked(40);
 
-			// Now create a default Make Target for the Moose user to use to
-			// build the new app
-			IProject cProject = projDesc.getProject();
-			IMakeTargetManager manager = MakeCorePlugin.getDefault()
-					.getTargetManager();
-			String[] ids = manager.getTargetBuilders(cProject);
-			IMakeTarget target = manager.createTarget(cProject, "make all",
-					ids[0]);
-			target.setStopOnError(false);
-			target.setRunAllBuilders(false);
-			target.setUseDefaultBuildCmd(false);
-			target.setBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND, "make");
-			target.setBuildAttribute(IMakeTarget.BUILD_LOCATION, cProject
-					.getLocation().toOSString());
-			target.setBuildAttribute(IMakeTarget.BUILD_ARGUMENTS, "");
-			target.setBuildAttribute(IMakeTarget.BUILD_TARGET, "all");
-			manager.addTarget(cProject, target);
+				// Now that it is all set on the GitHub end,
+				// Let's pull it down into our workspace
+				try {
+					Git result = Git.cloneRepository().setURI(remoteURI)
+							.setDirectory(workspaceFile).call();
+				} catch (GitAPIException e1) {
+					e1.printStackTrace();
+					String errorMessage = "ICE failed in cloning the new application.";
+					return new Status(
+							Status.ERROR,
+							"org.eclipse.ice.client.widgets.moose",
+							1, errorMessage, null);
+				} 
+				
 
-			// Set the include and src folders as actual CDT source folders
-			ICProjectDescription cDescription = CoreModel.getDefault()
-					.getProjectDescriptionManager()
-					.createProjectDescription(cProject, false);
-			ICConfigurationDescription cConfigDescription = cDescription
-					.createConfiguration(
-							ManagedBuildManager.CFG_DATA_PROVIDER_ID,
-							config.getConfigurationData());
-			cDescription.setActiveConfiguration(cConfigDescription);
-			cConfigDescription.setSourceEntries(null);
-			IFolder srcFolder = cProject.getFolder("src");
-			IFolder includeFolder = cProject.getFolder("include");
-			ICSourceEntry srcFolderEntry = new CSourceEntry(srcFolder, null,
-					ICSettingEntry.RESOLVED);
-			ICSourceEntry includeFolderEntry = new CSourceEntry(includeFolder,
-					null, ICSettingEntry.RESOLVED);
-			cConfigDescription.setSourceEntries(new ICSourceEntry[] {
-					srcFolderEntry, includeFolderEntry });
+				monitor.subTask("Executing make_new_application.py...");
+				monitor.worked(60);
+				
+				// We can only run the python script on Linux or Mac
+				// And Moose devs only use Linux or Macs to build their apps
+				if (os.contains("Linux") || os.contains("Mac")) {
+					// Create the ProcessBuilder and change to the project dir
+					jobBuilder = new ProcessBuilder(cmdList);
+					jobBuilder.directory(new File(workspaceFile
+							.getAbsolutePath()));
 
-			// Add the Moose include paths
-			ICProjectDescription projectDescription = CoreModel.getDefault()
-					.getProjectDescription(cProject, true);
-			ICConfigurationDescription configDecriptions[] = projectDescription
-					.getConfigurations();
-			for (ICConfigurationDescription configDescription : configDecriptions) {
-				ICFolderDescription projectRoot = configDescription
-						.getRootFolderDescription();
-				ICLanguageSetting[] settings = projectRoot
-						.getLanguageSettings();
-				for (ICLanguageSetting setting : settings) {
-					List<ICLanguageSettingEntry> includes = getIncludePaths();
-					includes.addAll(setting
-							.getSettingEntriesList(ICSettingEntry.INCLUDE_PATH));
-					setting.setSettingEntries(ICSettingEntry.INCLUDE_PATH,
-							includes);
+					// Do not direct the error to stdout. Catch it separately.
+					jobBuilder.redirectErrorStream(false);
+					try {
+						// Execute the python script!
+						jobBuilder.start();
+					} catch (IOException e) {
+						e.printStackTrace();
+						String errorMessage = "ICE could not execute the make_new_application python script.";
+						return new Status(
+								Status.ERROR,
+								"org.eclipse.ice.client.widgets.moose",
+								1, errorMessage, null);
+					}
 				}
-			}
-			CoreModel.getDefault().setProjectDescription(cProject,
-					projectDescription);
 
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
+				/*------------ The rest is about importing the C++ project correctly ---------*/
+
+				// Get the project and project description handles
+				IProject project = workspace.getRoot().getProject(appName);
+				IProjectDescription description = workspace
+						.newProjectDescription(appName);
+
+
+				monitor.subTask("Converting application to CDT C++ Project...");
+				monitor.worked(80); 
+				
+				try {
+					// Create the CDT Project
+					CCorePlugin.getDefault().createCDTProject(description,
+							project, new NullProgressMonitor());
+
+					// Add the CPP nature
+					CCProjectNature.addCCNature(project,
+							new NullProgressMonitor());
+
+					// Set up build information
+					ICProjectDescriptionManager pdMgr = CoreModel.getDefault()
+							.getProjectDescriptionManager();
+					ICProjectDescription projDesc = pdMgr
+							.createProjectDescription(project, false);
+					ManagedBuildInfo info = ManagedBuildManager
+							.createBuildInfo(project);
+					ManagedProject mProj = new ManagedProject(projDesc);
+					info.setManagedProject(mProj);
+
+					// Grab the correct toolchain
+					// FIXME this should be better...
+					IToolChain toolChain = null;
+					for (IToolChain tool : ManagedBuildManager
+							.getRealToolChains()) {
+						if (os.contains("Mac")
+								&& tool.getName().contains("Mac")
+								&& tool.getName().contains("GCC")) {
+							toolChain = tool;
+							break;
+						} else if (os.contains("Linux")
+								&& tool.getName().contains("Linux")
+								&& tool.getName().contains("GCC")) {
+							toolChain = tool;
+							break;
+						} else if (os.contains("Windows")
+								&& tool.getName().contains("Cygwin")) {
+							toolChain = tool;
+							break;
+						} else {
+							toolChain = null;
+						}
+					}
+
+					// Set up the Build configuratino
+					CfgHolder cfgHolder = new CfgHolder(toolChain, null);
+					String s = toolChain == null ? "0" : toolChain.getId(); //$NON-NLS-1$
+					IConfiguration config = new Configuration(
+							mProj,
+							(org.eclipse.cdt.managedbuilder.internal.core.ToolChain) toolChain,
+							ManagedBuildManager.calculateChildId(s, null),
+							cfgHolder.getName());
+					IBuilder builder = config.getEditableBuilder();
+					builder.setManagedBuildOn(false);
+					CConfigurationData data = config.getConfigurationData();
+					projDesc.createConfiguration(
+							ManagedBuildManager.CFG_DATA_PROVIDER_ID, data);
+					pdMgr.setProjectDescription(project, projDesc);
+
+					// Now create a default Make Target for the Moose user to
+					// use to
+					// build the new app
+					IProject cProject = projDesc.getProject();
+					IMakeTargetManager manager = MakeCorePlugin.getDefault()
+							.getTargetManager();
+					String[] ids = manager.getTargetBuilders(cProject);
+					IMakeTarget target = manager.createTarget(cProject,
+							"make all", ids[0]);
+					target.setStopOnError(false);
+					target.setRunAllBuilders(false);
+					target.setUseDefaultBuildCmd(false);
+					target.setBuildAttribute(
+							IMakeCommonBuildInfo.BUILD_COMMAND, "make");
+					target.setBuildAttribute(IMakeTarget.BUILD_LOCATION,
+							cProject.getLocation().toOSString());
+					target.setBuildAttribute(IMakeTarget.BUILD_ARGUMENTS, "");
+					target.setBuildAttribute(IMakeTarget.BUILD_TARGET, "all");
+					manager.addTarget(cProject, target);
+
+					// Set the include and src folders as actual CDT source
+					// folders
+					ICProjectDescription cDescription = CoreModel.getDefault()
+							.getProjectDescriptionManager()
+							.createProjectDescription(cProject, false);
+					ICConfigurationDescription cConfigDescription = cDescription
+							.createConfiguration(
+									ManagedBuildManager.CFG_DATA_PROVIDER_ID,
+									config.getConfigurationData());
+					cDescription.setActiveConfiguration(cConfigDescription);
+					cConfigDescription.setSourceEntries(null);
+					IFolder srcFolder = cProject.getFolder("src");
+					IFolder includeFolder = cProject.getFolder("include");
+					ICSourceEntry srcFolderEntry = new CSourceEntry(srcFolder,
+							null, ICSettingEntry.RESOLVED);
+					ICSourceEntry includeFolderEntry = new CSourceEntry(
+							includeFolder, null, ICSettingEntry.RESOLVED);
+					cConfigDescription.setSourceEntries(new ICSourceEntry[] {
+							srcFolderEntry, includeFolderEntry });
+
+					// Add the Moose include paths
+					ICProjectDescription projectDescription = CoreModel
+							.getDefault().getProjectDescription(cProject, true);
+					ICConfigurationDescription configDecriptions[] = projectDescription
+							.getConfigurations();
+					for (ICConfigurationDescription configDescription : configDecriptions) {
+						ICFolderDescription projectRoot = configDescription
+								.getRootFolderDescription();
+						ICLanguageSetting[] settings = projectRoot
+								.getLanguageSettings();
+						for (ICLanguageSetting setting : settings) {
+							List<ICLanguageSettingEntry> includes = getIncludePaths();
+							includes.addAll(setting
+									.getSettingEntriesList(ICSettingEntry.INCLUDE_PATH));
+							setting.setSettingEntries(
+									ICSettingEntry.INCLUDE_PATH, includes);
+						}
+					}
+					CoreModel.getDefault().setProjectDescription(cProject,
+							projectDescription);
+
+				} catch (CoreException e) {
+					e.printStackTrace();
+					String errorMessage = "ICE could not import the new MOOSE application as a C++ project.";
+					return new Status(
+							Status.ERROR,
+							"org.eclipse.ice.client.widgets.moose",
+							1, errorMessage, null);
+				}
+
+
+				monitor.subTask("Importing into ICE.");
+				monitor.worked(100);
+				monitor.done();
+				return Status.OK_STATUS;
+			}
+
+		};
+
+		job.schedule();
 
 		// FIXME SHOULD WE CHECK IF MOOSE IS IN THE WORKSPACE
 		// AND CLONE IT IF ITS NOT

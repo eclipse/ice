@@ -862,6 +862,10 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			vars.add(variables.getChildAtIndex(i).getName());
 		}
 
+		if (vars.isEmpty()) {
+			vars.add("Create a Variable");
+		}
+		
 		// Set the allowed values as the list of available vars
 		provider.setAllowedValues(vars);
 
@@ -878,12 +882,17 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 				// Only operate if this data component is valid, has a variable
 				// Entry, and is not an AuxVariable
-				if (data != null && data.contains("variable")
+				if (data != null && data.contains("variable") 
 						&& !block.getParent().getName().contains("Aux")) {
+					
 					Entry variableEntry = data.retrieveEntry("variable");
 					String currentValue = variableEntry.getValue();
 					data.retrieveEntry("variable").setContentProvider(provider);
-					variableEntry.setValue(currentValue);
+					if (vars.contains(currentValue)) {
+						variableEntry.setValue(currentValue);
+					} else {
+						variableEntry.setValue(vars.get(0));
+					}
 				}
 
 			}
