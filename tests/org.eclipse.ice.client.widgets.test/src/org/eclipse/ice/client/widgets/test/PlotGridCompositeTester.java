@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.client.widgets.PlotGridComposite;
+import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;

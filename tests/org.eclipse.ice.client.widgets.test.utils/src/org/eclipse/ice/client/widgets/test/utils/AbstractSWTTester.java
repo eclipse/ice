@@ -9,7 +9,7 @@
  *   Jordan Deyton - Initial API and implementation and/or initial documentation 
  *   
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.test;
+package org.eclipse.ice.client.widgets.test.utils;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
