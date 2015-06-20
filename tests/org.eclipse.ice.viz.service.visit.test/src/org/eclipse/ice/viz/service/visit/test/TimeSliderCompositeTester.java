@@ -29,8 +29,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotArrowButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotScale;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotSpinner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Test;
 
@@ -43,9 +43,6 @@ import org.junit.Test;
  *
  */
 public class TimeSliderCompositeTester extends AbstractSWTTester {
-
-	// TODO Update the spinner tests... We can't use spinners (no way to hide
-	// its own text widget) and must use buttons instead.
 
 	/**
 	 * The time widget that will be tested. This gets initialized before and
@@ -328,6 +325,11 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkWidgetsEnabled() {
 
+		SWTBotScale scale = getTimeScale();
+		SWTBotArrowButton nextButton = getTimeSpinnerNext();
+		SWTBotArrowButton prevButton = getTimeSpinnerPrev();
+		SWTBotText text = getTimeText();
+
 		final List<Double> goodTimes = new ArrayList<Double>();
 		goodTimes.add(1.0);
 		goodTimes.add(2.0);
@@ -348,7 +350,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		// None of them should be enabled. Also, the text widget should say N/A.
 		SWTBot testBot = new SWTBot(testWidget.get());
 		assertNotEnabled(testBot.scale());
-		assertNotEnabled(testBot.spinner());
+		assertNotEnabled(testBot.arrowButton(0));
+		assertNotEnabled(testBot.arrowButton(1));
 		assertNotEnabled(testBot.text());
 		assertEquals(NO_TIMES, testBot.text().getText());
 
@@ -362,9 +365,10 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		// Initially, the test time widget's sub-widgets are enabled because the
 		// times have been set.
-		assertEnabled(getTimeScale());
-		assertEnabled(getTimeSpinner());
-		assertEnabled(getTimeText());
+		assertEnabled(scale);
+		assertEnabled(nextButton);
+		assertNotEnabled(prevButton); // First timestep... prev is disabled.
+		assertEnabled(text);
 
 		// Setting the times to something with 1 value should disable them.
 		getDisplay().syncExec(new Runnable() {
@@ -373,11 +377,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				timeComposite.setTimes(badTimes);
 			}
 		});
-		assertNotEnabled(getTimeScale());
-		assertNotEnabled(getTimeSpinner());
-		assertNotEnabled(getTimeText());
+		assertNotEnabled(scale);
+		assertNotEnabled(nextButton);
+		assertNotEnabled(prevButton);
+		assertNotEnabled(text);
 		// The text widget's text should be set to the current value.
-		assertEquals(badTimes.get(0).toString(), getTimeText().getText());
+		assertEquals(badTimes.get(0).toString(), text.getText());
 
 		// Setting the times to something with 2 values should enable them.
 		getDisplay().syncExec(new Runnable() {
@@ -386,9 +391,19 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				timeComposite.setTimes(goodTimes);
 			}
 		});
-		assertEnabled(getTimeScale());
-		assertEnabled(getTimeSpinner());
-		assertEnabled(getTimeText());
+		assertEnabled(scale);
+		assertEnabled(nextButton);
+		assertNotEnabled(prevButton); // First timestep... prev is disabled.
+		assertEnabled(text);
+
+		// Setting it to the last timestep should disable the "next" button.
+		nextButton.click();
+		assertNotEnabled(nextButton);
+		assertEnabled(prevButton);
+		// Setting it to the first timestep should disable the "prev" button.
+		prevButton.click();
+		assertEnabled(nextButton);
+		assertNotEnabled(prevButton);
 
 		// Setting the times to something with 0 values should also disable
 		// them.
@@ -399,11 +414,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				timeComposite.setTimes(badTimes);
 			}
 		});
-		assertNotEnabled(getTimeScale());
-		assertNotEnabled(getTimeSpinner());
-		assertNotEnabled(getTimeText());
+		assertNotEnabled(scale);
+		assertNotEnabled(nextButton);
+		assertNotEnabled(prevButton);
+		assertNotEnabled(text);
 		// The text widget's text should be set to N/A.
-		assertEquals(NO_TIMES, testBot.text().getText());
+		assertEquals(NO_TIMES, text.getText());
 
 		// Restore the times.
 		getDisplay().syncExec(new Runnable() {
@@ -503,7 +519,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	public void checkSelectionListenersBySpinner() {
 
 		// Get the specific widget that will be used to set the time.
-		SWTBotSpinner widget = getTimeSpinner();
+		SWTBotArrowButton nextButton = getTimeSpinnerNext();
+		SWTBotArrowButton prevButton = getTimeSpinnerPrev();
 
 		// Register the second fake listener.
 		getDisplay().syncExec(new Runnable() {
@@ -515,7 +532,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		// They should both be notified when the widget is used to change the
 		// values.
-		widget.setSelection(widget.getSelection() + widget.getIncrement());
+		nextButton.click();
 		assertTrue(fakeListener1.wasNotified());
 		assertTrue(fakeListener2.wasNotified());
 
@@ -529,7 +546,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		// It should not be notified when the widget changes, but the other
 		// should still be notified.
-		widget.setSelection(widget.getSelection() - widget.getIncrement());
+		prevButton.click();
 		assertFalse(fakeListener2.wasNotified()); // Test this one first!
 		assertTrue(fakeListener1.wasNotified());
 
@@ -760,12 +777,22 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
-	 * Gets the SWTBot-wrapped spinner widget for the time steps.
+	 * Gets the SWTBot-wrapped button widget that jumps to the next timestep.
 	 * 
-	 * @return The wrapped spinner widget.
+	 * @return The wrapped next button.
 	 */
-	private SWTBotSpinner getTimeSpinner() {
-		return getBot().spinner();
+	private SWTBotArrowButton getTimeSpinnerNext() {
+		return getBot().arrowButton(0);
+	}
+
+	/**
+	 * Gets the SWTBot-wrapped button widget that jumps to the previous
+	 * timestep.
+	 * 
+	 * @return The wrapped previous button.
+	 */
+	private SWTBotArrowButton getTimeSpinnerPrev() {
+		return getBot().arrowButton(1);
 	}
 
 	/**

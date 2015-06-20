@@ -27,9 +27,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Scale;
-import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.TypedListener;
 
 /**
  * 
@@ -40,8 +38,8 @@ public class TimeSliderComposite extends Composite {
 
 	private final Scale scale;
 	private final Text spinnerText;
-	private final Button spinnerUp;
-	private final Button spinnerDown;
+	private final Button spinnerNext;
+	private final Button spinnerPrev;
 
 	private int timestep;
 	private final List<Double> times;
@@ -78,12 +76,15 @@ public class TimeSliderComposite extends Composite {
 		// spinner.setMinimum(0);
 		// spinner.setIncrement(1);
 
-		spinnerUp = new Button(spinnerComposite, SWT.ARROW | SWT.UP);
-		spinnerUp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-
-		spinnerDown = new Button(spinnerComposite, SWT.ARROW | SWT.DOWN);
-		spinnerDown
+		spinnerNext = new Button(spinnerComposite, SWT.ARROW | SWT.UP);
+		spinnerNext
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+		spinnerNext.setToolTipText("Next Timestep");
+
+		spinnerPrev = new Button(spinnerComposite, SWT.ARROW | SWT.DOWN);
+		spinnerPrev
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+		spinnerPrev.setToolTipText("Previous Timestep");
 
 		scale.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -91,32 +92,32 @@ public class TimeSliderComposite extends Composite {
 				timestep = scale.getSelection();
 				spinnerText.setText(times.get(timestep).toString());
 
-				spinnerUp.setEnabled(timestep != times.size() - 1);
-				spinnerDown.setEnabled(timestep != 0);
+				spinnerNext.setEnabled(timestep != times.size() - 1);
+				spinnerPrev.setEnabled(timestep != 0);
 			}
 		});
-		spinnerUp.addSelectionListener(new SelectionAdapter() {
+		spinnerNext.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				timestep++;
 				scale.setSelection(timestep);
 				spinnerText.setText(times.get(timestep).toString());
 				if (timestep == times.size() - 1) {
-					spinnerUp.setEnabled(false);
+					spinnerNext.setEnabled(false);
 				}
-				spinnerDown.setEnabled(true);
+				spinnerPrev.setEnabled(true);
 			}
 		});
-		spinnerDown.addSelectionListener(new SelectionAdapter() {
+		spinnerPrev.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				timestep--;
 				scale.setSelection(timestep);
 				spinnerText.setText(times.get(timestep).toString());
 				if (timestep == 0) {
-					spinnerDown.setEnabled(false);
+					spinnerPrev.setEnabled(false);
 				}
-				spinnerUp.setEnabled(true);
+				spinnerNext.setEnabled(true);
 			}
 		});
 		spinnerText.addSelectionListener(new SelectionAdapter() {
@@ -148,8 +149,8 @@ public class TimeSliderComposite extends Composite {
 		// Enable/disable the widgets.
 		boolean enabled = size > 1;
 		scale.setEnabled(enabled);
-		spinnerUp.setEnabled(enabled);
-		spinnerDown.setEnabled(false);
+		spinnerNext.setEnabled(enabled);
+		spinnerPrev.setEnabled(false);
 		spinnerText.setEnabled(enabled);
 
 		return;
