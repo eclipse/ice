@@ -57,6 +57,7 @@ public class FileSimulation extends JobLauncher {
 	 * 
 	 * @see Item#setupForm()
 	 */
+	@Override
 	protected void setupForm() {
 
 		String cmd = "file ${inputFile} "

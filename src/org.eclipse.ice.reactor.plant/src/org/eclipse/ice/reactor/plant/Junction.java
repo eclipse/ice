@@ -61,6 +61,7 @@ public class Junction extends PlantComponent implements IJunction {
 	 * This visitor adds supported PlantComponents to {@link #inputs}.
 	 */
 	private final Visitor addInputVisitor = new Visitor() {
+		@Override
 		public void visit(Pipe plantComp) {
 			boolean found = false;
 
@@ -74,6 +75,7 @@ public class Junction extends PlantComponent implements IJunction {
 			}
 		}
 
+		@Override
 		public void visit(HeatExchanger plantComp) {
 			boolean found = false;
 
@@ -91,6 +93,7 @@ public class Junction extends PlantComponent implements IJunction {
 	 * This visitor adds supported PlantComponents to {@link #outputs}.
 	 */
 	private final Visitor addOutputVisitor = new Visitor() {
+		@Override
 		public void visit(Pipe plantComp) {
 			boolean found = false;
 
@@ -104,6 +107,7 @@ public class Junction extends PlantComponent implements IJunction {
 			}
 		}
 
+		@Override
 		public void visit(HeatExchanger plantComp) {
 			boolean found = false;
 
@@ -179,6 +183,7 @@ public class Junction extends PlantComponent implements IJunction {
 	/**
 	 * @return the inputs
 	 */
+	@Override
 	public ArrayList<PlantComponent> getInputs() {
 		return new ArrayList<PlantComponent>(inputs);
 	}
@@ -227,6 +232,7 @@ public class Junction extends PlantComponent implements IJunction {
 	/**
 	 * @return the outputs
 	 */
+	@Override
 	public ArrayList<PlantComponent> getOutputs() {
 		return new ArrayList<PlantComponent>(outputs);
 	}
@@ -301,6 +307,7 @@ public class Junction extends PlantComponent implements IJunction {
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, assume the objects are not equivalent.
@@ -332,6 +339,7 @@ public class Junction extends PlantComponent implements IJunction {
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		Junction temp = new Junction();
 		temp.copy(this);
@@ -388,6 +396,7 @@ public class Junction extends PlantComponent implements IJunction {
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		int hash = super.hashCode();
 		hash = 31 * hash + inputs.hashCode();
@@ -405,6 +414,7 @@ public class Junction extends PlantComponent implements IJunction {
 	 *            The PlantComponent's visitor.
 	 *            </p>
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);
@@ -413,6 +423,7 @@ public class Junction extends PlantComponent implements IJunction {
 	}
 
 	// ---- Implements IJunction ---- //
+	@Override
 	public void registerJunctionListener(IJunctionListener listener) {
 
 		if (listener != null) {
@@ -432,6 +443,7 @@ public class Junction extends PlantComponent implements IJunction {
 		return;
 	}
 
+	@Override
 	public void unregisterJunctionListener(IJunctionListener listener) {
 
 		boolean found = false;
@@ -449,6 +461,7 @@ public class Junction extends PlantComponent implements IJunction {
 		return;
 	}
 
+	@Override
 	public void notifyJunctionListeners(final List<PlantComponent> components,
 			final boolean added) {
 
@@ -475,6 +488,7 @@ public class Junction extends PlantComponent implements IJunction {
 		return;
 	}
 
+	@Override
 	public boolean isInput(PlantComponent component) {
 
 		boolean found = false;
@@ -487,6 +501,7 @@ public class Junction extends PlantComponent implements IJunction {
 		return found;
 	}
 
+	@Override
 	public void addInput(PlantComponent input) {
 
 		if (input != null) {
@@ -510,6 +525,7 @@ public class Junction extends PlantComponent implements IJunction {
 		return;
 	}
 
+	@Override
 	public void removeInput(PlantComponent input) {
 
 		if (input != null) {
@@ -539,6 +555,7 @@ public class Junction extends PlantComponent implements IJunction {
 		return;
 	}
 
+	@Override
 	public void addOutput(PlantComponent output) {
 
 		if (output != null) {
@@ -562,6 +579,7 @@ public class Junction extends PlantComponent implements IJunction {
 		return;
 	}
 
+	@Override
 	public void removeOutput(PlantComponent output) {
 
 		if (output != null) {
@@ -605,106 +623,138 @@ public class Junction extends PlantComponent implements IJunction {
 
 		// When a Pipe is added, the Junction should simply store it as a
 		// PlantComponent.
+		@Override
 		public abstract void visit(Pipe plantComp);
 
 		// When a HeatExchanger is added, the Junction should store it as a
 		// PlantComponent. If connecting to its primary pipe, then the
 		// HeatExchanger's primary pipe should be added directly. This method
 		// assumes the HeatExchanger's secondary pipe will be used.
+		@Override
 		public abstract void visit(HeatExchanger plantComp);
 
 		// Redirect to the Pipe behavior.
+		@Override
 		public void visit(CoreChannel plantComp) {
 			visit((Pipe) plantComp);
 		}
 
+		@Override
 		public void visit(Subchannel plantComp) {
 			visit((Pipe) plantComp);
 		}
 
+		@Override
 		public void visit(PipeWithHeatStructure plantComp) {
 			visit((Pipe) plantComp);
 		}
 
 		// Unused visit operations.
+		@Override
 		public void visit(PlantComposite plantComp) {
 		}
 
+		@Override
 		public void visit(GeometricalComponent plantComp) {
 		}
 
+		@Override
 		public void visit(Junction plantComp) {
 		}
 
+		@Override
 		public void visit(Reactor plantComp) {
 		}
 
+		@Override
 		public void visit(PointKinetics plantComp) {
 		}
 
+		@Override
 		public void visit(Branch plantComp) {
 		}
 
+		@Override
 		public void visit(SubchannelBranch plantComp) {
 		}
 
+		@Override
 		public void visit(VolumeBranch plantComp) {
 		}
 
+		@Override
 		public void visit(FlowJunction plantComp) {
 		}
 
+		@Override
 		public void visit(WetWell plantComp) {
 		}
 
+		@Override
 		public void visit(Boundary plantComp) {
 		}
 
+		@Override
 		public void visit(OneInOneOutJunction plantComp) {
 		}
 
+		@Override
 		public void visit(Turbine plantComp) {
 		}
 
+		@Override
 		public void visit(IdealPump plantComp) {
 		}
 
+		@Override
 		public void visit(Pump plantComp) {
 		}
 
+		@Override
 		public void visit(Valve plantComp) {
 		}
 
+		@Override
 		public void visit(PipeToPipeJunction plantComp) {
 		}
 
+		@Override
 		public void visit(Inlet plantComp) {
 		}
 
+		@Override
 		public void visit(MassFlowInlet plantComp) {
 		}
 
+		@Override
 		public void visit(SpecifiedDensityAndVelocityInlet plantComp) {
 		}
 
+		@Override
 		public void visit(Outlet plantComp) {
 		}
 
+		@Override
 		public void visit(SolidWall plantComp) {
 		}
 
+		@Override
 		public void visit(TDM plantComp) {
 		}
 
+		@Override
 		public void visit(TimeDependentJunction plantComp) {
 		}
 
+		@Override
 		public void visit(TimeDependentVolume plantComp) {
 		}
 
+		@Override
 		public void visit(DownComer plantComp) {
 		}
 
+		@Override
 		public void visit(SeparatorDryer plantComp) {
 		}
 	};

@@ -13,7 +13,6 @@
 package org.eclipse.ice.datastructures.form;
 
 import java.util.ArrayList;
-import java.io.InputStream;
 
 /**
  * <p>
@@ -108,9 +107,9 @@ public interface IEntryContentProvider {
 	 * 
 	 * @param otherProvider
 	 *            <p>
-	 *            The return value.
+	 *            The other provider to compare against.
 	 *            </p>
-	 * @return
+	 * @return True if equivalent, false otherwise.
 	 */
 	public boolean equals(IEntryContentProvider otherProvider);
 
@@ -123,6 +122,7 @@ public interface IEntryContentProvider {
 	 *         The returned value.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode();
 
 	/**

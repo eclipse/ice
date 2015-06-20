@@ -98,6 +98,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 *         The hash.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		int hashCode = 0;
 
@@ -120,6 +121,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#getAllowedValues()
 	 */
+	@Override
 	@XmlElement(name = "AllowedValues")
 	public ArrayList<String> getAllowedValues() {
 
@@ -133,6 +135,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * org.eclipse.ice.datastructures.form.IEntryContentProvider#setAllowedValues
 	 * (java.util.ArrayList)
 	 */
+	@Override
 	public void setAllowedValues(ArrayList<String> allowedValues) {
 		if (allowedValues != null) {
 			this.allowedValues = allowedValues;
@@ -144,6 +147,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#getDefaultValue()
 	 */
+	@Override
 	@XmlAttribute(name = "DefaultValue")
 	public String getDefaultValue() {
 		return this.defaultValue;
@@ -154,6 +158,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#getAllowedValueType()
 	 */
+	@Override
 	@XmlElement(name = "AllowedValueType")
 	public AllowedValueType getAllowedValueType() {
 		return this.allowedValueType;
@@ -165,6 +170,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * @see IEntryContentProvider#setAllowedValueType(AllowedValueType
 	 *      allowedValueType)
 	 */
+	@Override
 	public void setAllowedValueType(AllowedValueType allowedValueType) {
 		if (allowedValueType != null) {
 			this.allowedValueType = allowedValueType;
@@ -176,6 +182,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#setParent(String parentName)
 	 */
+	@Override
 	public void setParent(String parentName) {
 		if (parentName != null) {
 			parent = parentName;
@@ -187,6 +194,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#getParent()
 	 */
+	@Override
 	@XmlAttribute(name = "Parent")
 	public String getParent() {
 		return parent;
@@ -197,6 +205,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#equals(IEntryContentProvider otherProvider)
 	 */
+	@Override
 	public boolean equals(IEntryContentProvider otherProvider) {
 
 		// Local Declarations
@@ -274,6 +283,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 *         A clone of the BasicEntryContentProvider.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new instance of the object, copy contents, and return it
@@ -289,6 +299,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#getTag()
 	 */
+	@Override
 	@XmlAttribute(name = "Tag")
 	public String getTag() {
 		return tag;
@@ -299,6 +310,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#setTag(String tagValue)
 	 */
+	@Override
 	public void setTag(String tagValue) {
 		tag = tagValue;
 
@@ -309,6 +321,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 	 * 
 	 * @see IEntryContentProvider#setDefaultValue(String defaultValue)
 	 */
+	@Override
 	public void setDefaultValue(String defaultValue) {
 		if (defaultValue != null) {
 			this.defaultValue = defaultValue;

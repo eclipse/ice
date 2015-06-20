@@ -137,6 +137,7 @@ public class HeatExchangerController extends PipeController {
 
 		// Sync the view's mesh and geometry.
 		renderQueue.enqueue(new Callable<Boolean>() {
+			@Override
 			public Boolean call() {
 				view.refreshSecondaryMesh(input);
 				return true;
@@ -147,6 +148,7 @@ public class HeatExchangerController extends PipeController {
 	/**
 	 * Updates the {@link #view} depending on the changes in the {@link #model}.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 		if (component == model) {
 			super.update(model.getPrimaryPipe());

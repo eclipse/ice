@@ -88,6 +88,7 @@ public class Reactor extends PlantComponent {
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// Ensure the incoming object is not null
 		if (otherObject == null) {
@@ -119,6 +120,7 @@ public class Reactor extends PlantComponent {
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		Reactor temp = new Reactor();
 		temp.copy(this);
@@ -158,6 +160,7 @@ public class Reactor extends PlantComponent {
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		int hash = super.hashCode();
 		hash = 31 * hash + coreChannels.hashCode();
@@ -174,6 +177,7 @@ public class Reactor extends PlantComponent {
 	 *            The PlantComponent's visitor.
 	 *            </p>
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);

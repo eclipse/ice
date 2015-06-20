@@ -12,15 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactorAnalyzer;
 
-import static org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer.*;
-
 import java.util.ArrayList;
 
 import org.eclipse.ice.analysistool.IAnalysisTool;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**

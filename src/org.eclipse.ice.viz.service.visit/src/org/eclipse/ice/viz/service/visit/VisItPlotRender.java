@@ -1,20 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
+ *    
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
-
-import java.util.List;
 
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
-import gov.lbnl.visit.swt.widgets.TimeSliderWidget;
+
+import java.util.List;
 
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.visit.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 
@@ -65,6 +77,8 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * </p>
 	 */
 	private String plotType;
+
+	private TimeSliderComposite timeSlider;
 
 	/**
 	 * The plot {@code Composite} that renders the files through the VisIt
@@ -130,8 +144,12 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// exist. We will need the corresponding connection and a window ID. If
 		// the window ID is -1, a new one is created.
 
+		Composite container = new Composite(parent, style);
+		container.setLayout(new GridLayout(1, false));
+
 		// Create the canvas.
-		canvas = new VisItSwtWidget(parent, style | SWT.DOUBLE_BUFFERED);
+		canvas = new VisItSwtWidget(container, SWT.DOUBLE_BUFFERED);
+		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		int windowWidth = Integer.parseInt(adapter
 				.getConnectionProperty("windowWidth"));
 		int windowHeight = Integer.parseInt(adapter
@@ -174,7 +192,11 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 		canvas.setMenu(menu);
 
-		return canvas;
+		timeSlider = new TimeSliderComposite(container, SWT.NONE);
+		timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		timeSlider.setBackground(parent.getBackground());
+
+		return container;
 	}
 
 	/*
@@ -188,7 +210,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 			VisItSwtConnection connection) throws Exception {
 
 		// Check the input arguments. The canvas should be the plot Composite.
-		if (plotComposite != canvas) {
+		if (plotComposite != canvas.getParent()) {
 			throw new Exception("VisItPlot error: "
 					+ "The canvas was not created properly.");
 		}

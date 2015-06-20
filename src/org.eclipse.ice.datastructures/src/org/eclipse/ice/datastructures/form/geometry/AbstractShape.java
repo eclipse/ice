@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.geometry;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -23,6 +20,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 /**
@@ -110,6 +109,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *         The transformation matrix applied to this node in the CSG tree
 	 *         </p>
 	 */
+	@Override
 	public Transformation getTransformation() {
 		return this.transformation;
 	}
@@ -131,6 +131,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *         otherwise
 	 *         </p>
 	 */
+	@Override
 	public boolean setTransformation(Transformation transformation) {
 
 		// Fail if null and return false
@@ -164,6 +165,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *         The value associated with the property key
 	 *         </p>
 	 */
+	@Override
 	public String getProperty(String key) {
 
 		if (key == null || "".equals(key)) {
@@ -208,6 +210,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *         True if the property setting is valid, false otherwise
 	 *         </p>
 	 */
+	@Override
 	public boolean setProperty(String key, String value) {
 
 		// Validate parameters
@@ -252,6 +255,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *         True if the value was found and removed, false otherwise
 	 *         </p>
 	 */
+	@Override
 	public boolean removeProperty(String key) {
 		// Validate parameters
 
@@ -282,6 +286,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *         The hashcode of the object
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		// Get initial hash code
 		int hash = super.hashCode();
@@ -310,6 +315,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Check if a similar reference
@@ -394,6 +400,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *            The visitor querying the type of the object
 	 *            </p>
 	 */
+	@Override
 	public void accept(IComponentVisitor visitor) {
 
 		// Call the visitor's visit operation
@@ -433,6 +440,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *         The parent of the shape
 	 *         </p>
 	 */
+	@Override
 	public IShape getParent() {
 		return parent;
 	}

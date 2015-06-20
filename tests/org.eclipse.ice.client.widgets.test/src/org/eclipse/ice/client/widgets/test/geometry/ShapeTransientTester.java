@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test.geometry;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTransient;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
+import org.junit.Test;
 
 /**
  * <p>

@@ -85,6 +85,7 @@ public class Quad extends Polygon {
 	 *         The hash of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -110,6 +111,7 @@ public class Quad extends Polygon {
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -170,6 +172,7 @@ public class Quad extends Polygon {
 	 *            The Object from which the values should be copied.
 	 *            </p>
 	 */
+	@Override
 	public void copy(Polygon polygon) {
 
 		// Check the parameters.
@@ -194,6 +197,7 @@ public class Quad extends Polygon {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

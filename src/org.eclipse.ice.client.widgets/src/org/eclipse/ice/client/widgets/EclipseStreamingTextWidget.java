@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import java.io.IOException;
-
+import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -24,8 +23,6 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
-
-import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 
 /**
  * 
@@ -60,6 +57,7 @@ public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 	 * 
 	 * @see IStreamingTextWidget#setLabel(String label)
 	 */
+	@Override
 	public void setLabel(String label) {
 
 		// Set the label
@@ -73,6 +71,7 @@ public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 	 * 
 	 * @see IStreamingTextWidget#postText(String sText)
 	 */
+	@Override
 	public void postText(final String sText) {
 
 		// Must sync with the display thread
@@ -94,6 +93,7 @@ public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 	 * 
 	 * @see IStreamingTextWidget#display()
 	 */
+	@Override
 	public void display() {
 
 		// Must sync with the display thread

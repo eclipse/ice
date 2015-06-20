@@ -15,6 +15,7 @@ package org.eclipse.ice.client.widgets.mesh.properties;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.Hex;
@@ -25,8 +26,6 @@ import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
 import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -118,6 +117,7 @@ public class VertexSection extends AbstractPropertySection {
 
 		// Create the listener for the x coordinate's Text field.
 		xListener = new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				float[] location = vertex.getLocation();
 				// Try to parse the number and set it as the vertex's x
@@ -139,6 +139,7 @@ public class VertexSection extends AbstractPropertySection {
 
 		// Create the listener for the y coordinate's Text field.
 		yListener = new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				float[] location = vertex.getLocation();
 				// Try to parse the number and set it as the vertex's x
@@ -254,10 +255,12 @@ public class VertexSection extends AbstractPropertySection {
 			// instance whose properties are being exposed based on the type of
 			// IMeshPart passed in through the selection.
 			IMeshPartVisitor visitor = new IMeshPartVisitor() {
+				@Override
 				public void visit(MeshComponent mesh) {
 					// Do nothing.
 				}
 
+				@Override
 				public void visit(Polygon polygon) {
 					// Get the vertex from the polygon.
 					ArrayList<Vertex> vertices = polygon.getVertices();
@@ -266,16 +269,19 @@ public class VertexSection extends AbstractPropertySection {
 					}
 				}
 
+				@Override
 				public void visit(Quad quad) {
 					// Re-direct to the standard polygon operation for now.
 					visit((Polygon) quad);
 				}
 
+				@Override
 				public void visit(Hex hex) {
 					// Re-direct to the standard polygon operation for now.
 					visit((Polygon) hex);
 				}
 
+				@Override
 				public void visit(Edge edge) {
 					// Get the vertex ID from the edge, then use the ID to get
 					// the vertex from the mesh.
@@ -286,20 +292,24 @@ public class VertexSection extends AbstractPropertySection {
 					}
 				}
 
+				@Override
 				public void visit(BezierEdge edge) {
 					// Re-direct to the standard edge operation for now.
 					visit((Edge) edge);
 				}
 
+				@Override
 				public void visit(PolynomialEdge edge) {
 					// Re-direct to the standard edge operation for now.
 					visit((Edge) edge);
 				}
 
+				@Override
 				public void visit(Vertex vertex) {
 					VertexSection.this.vertex = vertex;
 				}
 
+				@Override
 				public void visit(Object object) {
 					// Do nothing.
 				}

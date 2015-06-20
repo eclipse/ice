@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.junit.Test;
-import org.yaml.snakeyaml.*;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * This class tests the SnakeYAML parser to make sure that it is integrated into

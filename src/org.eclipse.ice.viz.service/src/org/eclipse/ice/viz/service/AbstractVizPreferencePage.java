@@ -97,6 +97,7 @@ public abstract class AbstractVizPreferencePage extends
 	 * 
 	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
 	 */
+	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
 		// This method is used to get the page's preference store. This method
 		// will be called by the super class only when the store is unset and

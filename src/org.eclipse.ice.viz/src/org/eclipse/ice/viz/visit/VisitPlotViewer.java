@@ -186,6 +186,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * 
 	 * @see ViewPart#createPartControl(Composite)
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 
 		// Create the tool bar buttons for the view
@@ -244,6 +245,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * 
 	 * @see WorkbenchPart#setFocus()
 	 */
+	@Override
 	public void setFocus() {
 		return;
 	}
@@ -293,6 +295,7 @@ public class VisitPlotViewer extends ViewPart implements
 				.println("VisitPlotViewer Message: Incoming resource update.");
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// If possible, reset the plotTreeViewer's input.
 				if (plotTreeViewer != null) {
@@ -397,26 +400,31 @@ public class VisitPlotViewer extends ViewPart implements
 		// should produce elements in the TreeViewer.
 		inputTreeViewer.setContentProvider(new ITreeContentProvider() {
 
+			@Override
 			public void inputChanged(Viewer viewer, Object oldInput,
 					Object newInput) {
 				return;
 			}
 
+			@Override
 			public void dispose() {
 				// No image descriptors or non-textual resources to dispose.
 				return;
 			}
 
+			@Override
 			public boolean hasChildren(Object element) {
 				// Currently, we do not have nested elements in the tree.
 				return false;
 			}
 
+			@Override
 			public Object getParent(Object element) {
 				// Currently, we do not have nested elements in the tree.
 				return null;
 			}
 
+			@Override
 			public Object[] getElements(Object inputElement) {
 				Object[] elements;
 				if (inputElement instanceof Object[]) {
@@ -428,6 +436,7 @@ public class VisitPlotViewer extends ViewPart implements
 				return elements;
 			}
 
+			@Override
 			public Object[] getChildren(Object parentElement) {
 				// Currently, we do not have nested elements in the tree.
 				return null;
@@ -615,6 +624,7 @@ public class VisitPlotViewer extends ViewPart implements
 	/**
 	 * Removes all plots selected in {@link #plotTreeViewer}.
 	 */
+	@Override
 	public void removeSelection() {
 		// Make sure the viewer's controls have been created.
 		if (plotTreeViewer != null) {
@@ -718,6 +728,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * @param event
 	 *            The SelectionChangedEvent that fired this method.
 	 */
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 
 		// Update the plot type selection Combo.
@@ -743,6 +754,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * @param event
 	 *            The DoubleClickEvent that fired this method.
 	 */
+	@Override
 	public void doubleClick(DoubleClickEvent event) {
 		ISelection selection = event.getSelection();
 		if (selection instanceof IStructuredSelection) {

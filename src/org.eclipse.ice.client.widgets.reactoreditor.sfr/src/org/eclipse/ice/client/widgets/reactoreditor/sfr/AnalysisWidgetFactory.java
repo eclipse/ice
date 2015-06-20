@@ -12,17 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
-import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisView;
-import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetFactory;
-import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
+import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisView;
+import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
 import org.eclipse.ice.reactor.sfr.core.SFReactor;
 import org.eclipse.ice.reactor.sfr.core.assembly.PinAssembly;
 import org.eclipse.ice.reactor.sfr.core.assembly.ReflectorAssembly;
@@ -88,21 +87,25 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 		// can create that particular view.
 		viewFactoryMap = new HashMap<String, IViewFactory>(viewCount);
 		viewFactoryMap.put(CoreAnalysisView.name, new IViewFactory() {
+			@Override
 			public IAnalysisView createView(DataSource dataSource) {
 				return new CoreAnalysisView(dataSource);
 			}
 		});
 		viewFactoryMap.put(PinAssemblyAnalysisView.name, new IViewFactory() {
+			@Override
 			public IAnalysisView createView(DataSource dataSource) {
 				return new PinAssemblyAnalysisView(dataSource);
 			}
 		});
 		viewFactoryMap.put(PinAnalysisView.name, new IViewFactory() {
+			@Override
 			public IAnalysisView createView(DataSource dataSource) {
 				return new PinAnalysisView(dataSource);
 			}
 		});
 		viewFactoryMap.put(PlotAnalysisView.name, new IViewFactory() {
+			@Override
 			public IAnalysisView createView(DataSource dataSource) {
 				return new PlotAnalysisView(dataSource);
 			}
@@ -112,12 +115,14 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 	}
 
 	/* ---- Implements IAnalysisWidgetFactory. ---- */
+	@Override
 	public List<String> getAvailableViews(DataSource dataSource) {
 		// We don't want the main package to modify our original list, so make
 		// the returned list unmodifiable.
 		return Collections.unmodifiableList(viewNames);
 	}
 
+	@Override
 	public IAnalysisView createView(String viewName, DataSource dataSource) {
 		IAnalysisView view = null;
 
@@ -129,6 +134,7 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 		return view;
 	}
 
+	@Override
 	public List<Class<?>> getModelClasses() {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(SFReactor.class);
@@ -140,6 +146,7 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 		return classes;
 	}
 
+	@Override
 	public IStateBrokerHandler createStateBrokerHandler() {
 		return new StateBrokerHandler();
 	}

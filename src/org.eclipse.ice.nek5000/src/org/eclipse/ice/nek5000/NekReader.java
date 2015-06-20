@@ -1518,6 +1518,7 @@ public class NekReader {
 		// If entry's value can only be T/F
 		if (isDiscrete) {
 			entry = new Entry() {
+				@Override
 				protected void setup() {
 
 					// Set up the allowed discrete values
@@ -1539,6 +1540,7 @@ public class NekReader {
 
 		else {
 			entry = new Entry() {
+				@Override
 				protected void setup() {
 					this.setName("Nek5000 Default Entry");
 					this.tag = "";

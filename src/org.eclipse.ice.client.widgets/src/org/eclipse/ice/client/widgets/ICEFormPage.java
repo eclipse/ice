@@ -12,9 +12,9 @@
 *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.FormPage;
 
 /** 
  * <p>The ICEFormPage class is the base class for all FormPages in ICE.</p>

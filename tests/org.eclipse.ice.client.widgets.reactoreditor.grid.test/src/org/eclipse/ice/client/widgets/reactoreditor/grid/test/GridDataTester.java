@@ -13,9 +13,9 @@
 package org.eclipse.ice.client.widgets.reactoreditor.grid.test;
 
 import static org.junit.Assert.assertEquals;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.GridData;
 
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.GridData;
 import org.junit.Test;
 
 public class GridDataTester {

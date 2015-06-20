@@ -163,6 +163,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local declarations
@@ -198,6 +199,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Get the super's hashCode
@@ -255,6 +257,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -269,9 +272,11 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/**
+	 * Gets the children of this instance that can be written to the HDF format.
 	 * 
-	 * @return
+	 * @return A list containing the writable children.
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
 		// Get the children in super
@@ -298,8 +303,10 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 * </p>
 	 * 
 	 * @param iHdfReadable
-	 * @return
+	 *            The HDF child of this instance.
+	 * @return True if the child could be read and added, false otherwise.
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
 		// If the child is null or not an instance of LWRComponent, then return
@@ -326,6 +333,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 * 
 	 * @see Composite#addComponent(Component child)
 	 */
+	@Override
 	public void addComponent(Component child) {
 
 		// If the child is null or if the name is already in the table, return
@@ -344,6 +352,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 * 
 	 * @see Composite#removeComponent(int childId)
 	 */
+	@Override
 	public void removeComponent(int childId) {
 		// Local declarations
 		Component component = null;
@@ -373,6 +382,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 * 
 	 * @see Composite#getComponent(int childId)
 	 */
+	@Override
 	public Component getComponent(int childId) {
 		// Local declarations
 		Component component = null;
@@ -405,6 +415,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 * 
 	 * @see Composite#getNumberOfComponents()
 	 */
+	@Override
 	public int getNumberOfComponents() {
 
 		// Return the size
@@ -416,6 +427,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 	 * 
 	 * @see Composite#getComponents()
 	 */
+	@Override
 	public ArrayList<Component> getComponents() {
 		// Local Declarations
 		ArrayList<Component> components = new ArrayList<Component>();

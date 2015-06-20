@@ -12,17 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.geometry;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 
 /**
  * <p>
@@ -155,6 +150,7 @@ public class PrimitiveShape extends AbstractShape {
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Check if a similar reference
@@ -216,6 +212,7 @@ public class PrimitiveShape extends AbstractShape {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new PrimitiveShape
@@ -237,6 +234,7 @@ public class PrimitiveShape extends AbstractShape {
 	 *         The hashcode of the ICEObject.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		// Get initial hash code
 		int hash = super.hashCode();
@@ -262,6 +260,7 @@ public class PrimitiveShape extends AbstractShape {
 	 * 
 	 * @see IUpdateable#update(String updatedKey, String newValue)
 	 */
+	@Override
 	public void update(String updatedKey, String newValue) {
 		// Not implemented
 	}
@@ -271,6 +270,7 @@ public class PrimitiveShape extends AbstractShape {
 	 * 
 	 * @see IShape#acceptShapeVisitor(IShapeVisitor visitor)
 	 */
+	@Override
 	public void acceptShapeVisitor(IShapeVisitor visitor) {
 
 		// Only visit if it is not null

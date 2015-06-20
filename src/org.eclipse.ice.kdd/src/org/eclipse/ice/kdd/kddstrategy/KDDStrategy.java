@@ -130,6 +130,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 *         The name
 	 *         </p>
 	 */
+	@Override
 	public String getName() {
 		return assetName;
 	}
@@ -143,6 +144,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 *         The type of the asset
 	 *         </p>
 	 */
+	@Override
 	public AnalysisAssetType getType() {
 		return AnalysisAssetType.TABLE;
 	}
@@ -161,6 +163,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 *         The value or null if the key does not exist.
 	 *         </p>
 	 */
+	@Override
 	public String getProperty(String key) {
 		if (properties != null) {
 			return properties.get(key);
@@ -189,6 +192,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 *         True if the key is in the list, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean setProperty(String key, String value) {
 		// Make sure the properties attribute is valid
 		if (properties != null && !properties.isEmpty()) {
@@ -234,6 +238,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * </p>
 	 * 
 	 */
+	@Override
 	public void resetProperties() {
 		properties.clear();
 	}
@@ -248,6 +253,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 *         The properties of this asset or null if no properties exist.
 	 *         </p>
 	 */
+	@Override
 	public Properties getProperties() {
 		// Create a new Properties object to return
 		Properties retProps = new Properties();
@@ -266,6 +272,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<Entry> getPropertiesAsEntryList() {
 		ArrayList<Entry> retList = new ArrayList<Entry>();
 		Entry temp;
@@ -291,6 +298,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 *         The URI
 	 *         </p>
 	 */
+	@Override
 	public URI getURI() {
 		return uri;
 	}

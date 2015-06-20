@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor;
 
+import java.util.ArrayList;
+
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
@@ -35,9 +37,6 @@ import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
 import org.eclipse.ice.reactorAnalyzer.ReactorComposite;
-
-import java.util.ArrayList;
-
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.ui.PlatformUI;
@@ -319,6 +318,7 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 	 * This is activated by the {@link IReactorComponent}s in
 	 * {@link #reactorComposite} and by {@link #resourceComponent}.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// Note that this is called by the reactor composite AND the resource
@@ -340,54 +340,66 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 	// important to displaying reactor information in the AnalysisToolComposite,
 	// and, if necessary, register with them.
 
+	@Override
 	public void visit(DataComponent component) {
 		// Add the data component to the list
 		dataComponents.add(component);
 	}
 
+	@Override
 	public void visit(ResourceComponent component) {
 		// Set the resource component and register with it.
 		resourceComponent = component;
 		resourceComponent.register(this);
 	}
 
+	@Override
 	public void visit(TableComponent component) {
 		// Nothing to do
 	}
 
+	@Override
 	public void visit(MatrixComponent component) {
 		// Nothing to do
 	}
 
+	@Override
 	public void visit(IShape component) {
 		// Nothing to do
 	}
 
+	@Override
 	public void visit(GeometryComponent component) {
 		// Nothing to do
 	}
 
+	@Override
 	public void visit(MasterDetailsComponent component) {
 		// Nothing to do
 	}
 
+	@Override
 	public void visit(TreeComposite component) {
 		// Nothing to do
 	}
 
+	@Override
 	public void visit(IReactorComponent component) {
 		// Nothing to do
 	}
 
+	@Override
 	public void visit(TimeDataComponent component) {
 		// Nothing to do
 	}
 
+	@Override
 	public void visit(MeshComponent component) {
 		// Nothing to do
 	}
 
 
+	@Override
 	public void visit(AdaptiveTreeComposite component) {
 		// Nothing to do
 

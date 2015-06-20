@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor;
 
+import java.util.ArrayList;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.client.widgets.ICEMasterDetailsPage;
@@ -23,10 +26,6 @@ import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
 import org.eclipse.ice.reactorAnalyzer.ReactorComposite;
-
-import java.util.ArrayList;
-
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;

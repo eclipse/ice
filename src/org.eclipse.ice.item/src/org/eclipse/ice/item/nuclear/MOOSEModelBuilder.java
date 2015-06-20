@@ -40,6 +40,7 @@ public class MOOSEModelBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemName()
 	 */
+	@Override
 	public String getItemName() {
 		return name;
 	}
@@ -49,6 +50,7 @@ public class MOOSEModelBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemType()
 	 */
+	@Override
 	public ItemType getItemType() {
 		return type;
 	}
@@ -58,6 +60,7 @@ public class MOOSEModelBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 
 		MOOSEModel mooseModel = new MOOSEModel(projectSpace);

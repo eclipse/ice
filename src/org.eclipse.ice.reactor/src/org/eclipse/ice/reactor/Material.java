@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
  * <p>
@@ -153,6 +154,7 @@ public class Material extends LWRComponent {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -190,6 +192,7 @@ public class Material extends LWRComponent {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -235,6 +238,7 @@ public class Material extends LWRComponent {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		// Local Delcarations
 		Material material = new Material();
@@ -247,12 +251,10 @@ public class Material extends LWRComponent {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -263,11 +265,10 @@ public class Material extends LWRComponent {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations

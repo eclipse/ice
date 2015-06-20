@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
+ *   
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh;
 
 import org.eclipse.ice.client.widgets.jme.InputControl;
@@ -145,11 +156,13 @@ public abstract class MeshAppStateMode extends SimpleAppState implements
 	 * right mouse clicks controls.
 	 * </p>
 	 */
+	@Override
 	public void registerControls() {
 		InputManager input = appState.getApplication().getInputManager();
 		mouseClickAction.registerWithInput(input);
 	}
 
+	@Override
 	public void disableAppState() {
 
 		// If possible, unregister from the MeshAppState's chase camera.
@@ -171,6 +184,7 @@ public abstract class MeshAppStateMode extends SimpleAppState implements
 	 * and right mouse clicks controls.
 	 * </p>
 	 */
+	@Override
 	public void unregisterControls() {
 		mouseClickAction.unregisterFromInput();
 	}

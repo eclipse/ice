@@ -14,7 +14,6 @@ package org.eclipse.ice.sassena.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.sassena.SassenaCoherentModel;

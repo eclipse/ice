@@ -69,6 +69,7 @@ public class EdgeView extends AbstractMeshView {
 	 * @param size
 	 *            The new radius of the vertex view's sphere.
 	 */
+	@Override
 	public void setSize(float size) {
 		line.setLineWidth(size);
 	}
@@ -88,6 +89,7 @@ public class EdgeView extends AbstractMeshView {
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// TODO Auto-generated method stub
 		return false;
@@ -102,6 +104,7 @@ public class EdgeView extends AbstractMeshView {
 	 *         The hashcode of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -132,6 +135,7 @@ public class EdgeView extends AbstractMeshView {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		// TODO Auto-generated method stub
 		return null;

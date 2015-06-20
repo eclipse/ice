@@ -50,70 +50,85 @@ public class AnalysisWidgetRegistryTester {
 
 	/* ---- Fake factories for the above classes. ---- */
 	private IAnalysisWidgetFactory fakeBolognaFactory = new IAnalysisWidgetFactory() {
+		@Override
 		public List<String> getAvailableViews(DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public IAnalysisView createView(String viewName, DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public List<Class<?>> getModelClasses() {
 			List<Class<?>> classes = new ArrayList<Class<?>>(1);
 			classes.add(Bologna.class);
 			return classes;
 		}
 
+		@Override
 		public IStateBrokerHandler createStateBrokerHandler() {
 			return null;
 		}
 
+		@Override
 		public IWizard createWizard(Object selection) {
 			return null;
 		}
 	};
 	private IAnalysisWidgetFactory fakeHamAndSpamFactory = new IAnalysisWidgetFactory() {
+		@Override
 		public List<String> getAvailableViews(DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public IAnalysisView createView(String viewName, DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public List<Class<?>> getModelClasses() {
 			List<Class<?>> classes = new ArrayList<Class<?>>(1);
 			classes.add(HamAndSpam.class);
 			return classes;
 		}
 
+		@Override
 		public IStateBrokerHandler createStateBrokerHandler() {
 			return null;
 		}
 
+		@Override
 		public IWizard createWizard(Object selection) {
 			return null;
 		}
 	};
 	private IAnalysisWidgetFactory fakeGreenEggsFactory = new IAnalysisWidgetFactory() {
+		@Override
 		public List<String> getAvailableViews(DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public IAnalysisView createView(String viewName, DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public List<Class<?>> getModelClasses() {
 			List<Class<?>> classes = new ArrayList<Class<?>>(1);
 			classes.add(GreenEggs.class);
 			return classes;
 		}
 
+		@Override
 		public IStateBrokerHandler createStateBrokerHandler() {
 			return null;
 		}
 
+		@Override
 		public IWizard createWizard(Object selection) {
 			return null;
 		}
@@ -122,24 +137,29 @@ public class AnalysisWidgetRegistryTester {
 
 	/* ---- This factory tries to use the Bologna class (again). ---- */
 	private IAnalysisWidgetFactory fakeImitationBolognaFactory = new IAnalysisWidgetFactory() {
+		@Override
 		public List<String> getAvailableViews(DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public IAnalysisView createView(String viewName, DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public List<Class<?>> getModelClasses() {
 			List<Class<?>> classes = new ArrayList<Class<?>>(1);
 			classes.add(Bologna.class);
 			return classes;
 		}
 
+		@Override
 		public IStateBrokerHandler createStateBrokerHandler() {
 			return null;
 		}
 
+		@Override
 		public IWizard createWizard(Object selection) {
 			return null;
 		}
@@ -148,22 +168,27 @@ public class AnalysisWidgetRegistryTester {
 
 	/* ---- This factory does not return a valid class. ---- */
 	private IAnalysisWidgetFactory fakeBrokenFactory = new IAnalysisWidgetFactory() {
+		@Override
 		public List<String> getAvailableViews(DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public IAnalysisView createView(String viewName, DataSource dataSource) {
 			return null;
 		}
 
+		@Override
 		public List<Class<?>> getModelClasses() {
 			return null;
 		}
 
+		@Override
 		public IStateBrokerHandler createStateBrokerHandler() {
 			return null;
 		}
 
+		@Override
 		public IWizard createWizard(Object selection) {
 			return null;
 		}

@@ -12,40 +12,29 @@
  *******************************************************************************/
 package org.eclipse.ice.client.internal;
 
-import org.eclipse.ice.iclient.IClient;
-import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
-import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
-import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
-import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
-import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
-import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
-import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
-
-import static org.eclipse.ice.client.internal.ItemProcessor.*;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.core.iCore.ICore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.eclipse.ice.iclient.uiwidgets.IErrorBox;
-import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
-
-import java.util.Hashtable;
-
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
-
-import java.net.URI;
-
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.iclient.IClient;
+import org.eclipse.ice.iclient.uiwidgets.IErrorBox;
+import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
+import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
+import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
+import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
+import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
+import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
+import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
+import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
 
 /**
  * <p>
@@ -216,6 +205,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#setCoreService(ICore core)
 	 */
+	@Override
 	public void setCoreService(ICore core) {
 		System.out.println("IClient Message: Core service set.");
 		this.iCore = core;
@@ -226,6 +216,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#createItem(String itemType)
 	 */
+	@Override
 	public int createItem(String itemType) {
 
 		// Local Declarations
@@ -251,6 +242,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#setUIWidgetFactory(IWidgetFactory widgetFactory)
 	 */
+	@Override
 	public void setUIWidgetFactory(IWidgetFactory widgetFactory) {
 
 		iWidgetFactory = widgetFactory;
@@ -269,6 +261,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#loadItem(int itemId)
 	 */
+	@Override
 	public void loadItem(int itemId) {
 
 		// Local Declarations
@@ -319,6 +312,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#throwSimpleError(String error)
 	 */
+	@Override
 	public void throwSimpleError(String error) {
 
 		// Local Declarations
@@ -340,6 +334,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#getAvailableItemTypes()
 	 */
+	@Override
 	public ArrayList<String> getAvailableItemTypes() {
 
 		// Local Declarations
@@ -356,6 +351,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#processItem(int itemId, String actionName)
 	 */
+	@Override
 	public void processItem(int itemId, String actionName) {
 
 		// Local Declarations
@@ -391,6 +387,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#connectToCore(String hostname, int port)
 	 */
+	@Override
 	public boolean connectToCore(String hostname, int port) {
 
 		// Local Declarations
@@ -423,6 +420,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#getItems()
 	 */
+	@Override
 	public ArrayList<Identifiable> getItems() {
 		return iCore.getItemList();
 	}
@@ -432,6 +430,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#deleteItem(int id)
 	 */
+	@Override
 	public void deleteItem(int id) {
 
 		// Forward the call
@@ -444,6 +443,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#importFile(URI file)
 	 */
+	@Override
 	public void importFile(URI file) {
 
 		// Just forward the call
@@ -457,6 +457,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IUpdateEventListener#formUpdated(Form form)
 	 */
+	@Override
 	public void formUpdated(Form form) {
 
 		// Local Declarations
@@ -503,6 +504,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IProcessEventListener#processSelected(Form form, String process)
 	 */
+	@Override
 	public void processSelected(Form form, String process) {
 
 		// Forward the request to process the form on to the Core. The
@@ -518,6 +520,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IProcessEventListener#cancelRequested(Form form, String process)
 	 */
+	@Override
 	public void cancelRequested(Form form, String process) {
 
 		// Forward the request to the core so that it can try to shut the
@@ -532,6 +535,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see ISimpleResourceProvider#loadResource(ICEResource resource)
 	 */
+	@Override
 	public void loadResource(ICEResource resource) {
 
 		// Make sure the ICEResource is not null
@@ -553,6 +557,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IWidgetClosedListener#closedOK()
 	 */
+	@Override
 	public void closedOK() {
 
 		widgetClosedOK.set(true);
@@ -564,6 +569,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IWidgetClosedListener#cancelled()
 	 */
+	@Override
 	public void cancelled() {
 
 		widgetCancelled.set(true);
@@ -575,6 +581,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * 
 	 * @see IClient#getFileSystem()
 	 */
+	@Override
 	public Object getFileSystem() {
 		// TODO Auto-generated method stub
 		return iCore.getFileSystem(1);

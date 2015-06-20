@@ -13,7 +13,6 @@
 package org.eclipse.ice.datastructures.form.mesh;
 
 import java.util.ArrayList;
-import java.io.InputStream;
 
 /**
  * <p>
@@ -64,6 +63,7 @@ public class Hex extends Polygon {
 	 *         The hash of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -83,6 +83,7 @@ public class Hex extends Polygon {
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// TODO Auto-generated method stub
 		return false;
@@ -113,6 +114,7 @@ public class Hex extends Polygon {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		// TODO Auto-generated method stub
 		return null;

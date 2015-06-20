@@ -538,6 +538,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * they are added to the queue and those operations are processed on this
 	 * thread.
 	 */
+	@Override
 	public void run() {
 
 		// While the provider is set to run, just process tasks from the
@@ -618,6 +619,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * @return true if the Item was queued for persistence, false if an
 	 *         exception was caught.
 	 */
+	@Override
 	public boolean persistItem(Item item) {
 		// Submit the job
 		return submitTask(item, "persist", null, null);
@@ -631,6 +633,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 *            id of the Item to load.
 	 * @return The loaded Item or null if it could not be loaded.
 	 */
+	@Override
 	public Item loadItem(int itemID) {
 
 		// Local Declarations
@@ -670,6 +673,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * @return true if the Item was queued for deletion, false if an exception
 	 *         was caught.
 	 */
+	@Override
 	public boolean deleteItem(Item item) {
 		// Submit the job
 		return submitTask(item, "delete", null, null);
@@ -687,6 +691,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * @return true if the Item was queued for an update, false if an exception
 	 *         was caught.
 	 */
+	@Override
 	public boolean updateItem(Item item) {
 		// Submit the job
 		return submitTask(item, "persist", null, null);
@@ -698,6 +703,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * @return A list of all of the Items that this persistence provider was
 	 *         able to load from the project space.
 	 */
+	@Override
 	public ArrayList<Item> loadItems() {
 
 		// Local Declarations

@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.base;
 
-import org.eclipse.ice.analysistool.IData;
-
 import java.util.ArrayList;
+
+import org.eclipse.ice.analysistool.IData;
 
 /**
  * <p>
@@ -179,6 +179,7 @@ public class FeatureSet {
 	 * 
 	 * @return The hash of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Static hash at 31.
@@ -225,6 +226,7 @@ public class FeatureSet {
 	 * 
 	 * @return The newly instantiated cloned object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

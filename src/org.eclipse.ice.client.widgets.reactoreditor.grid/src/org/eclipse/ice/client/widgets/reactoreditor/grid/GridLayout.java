@@ -150,6 +150,7 @@ public class GridLayout extends AbstractHintLayout {
 	 * org.eclipse.draw2d.LayoutManager#getConstraint(org.eclipse.draw2d.IFigure
 	 * )
 	 */
+	@Override
 	public GridData getConstraint(IFigure child) {
 		return constraints.get(child);
 	}
@@ -160,6 +161,7 @@ public class GridLayout extends AbstractHintLayout {
 	 * 
 	 * @see LayoutManager#setConstraint(IFigure, Object)
 	 */
+	@Override
 	public void setConstraint(IFigure figure, Object newConstraint) {
 		// super needs to perform whatever it does with the constraint.
 		super.setConstraint(figure, newConstraint);

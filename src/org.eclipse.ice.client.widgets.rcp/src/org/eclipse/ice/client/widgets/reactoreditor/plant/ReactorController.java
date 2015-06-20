@@ -170,6 +170,7 @@ public class ReactorController extends AbstractPlantController implements
 	 * It also updates the view based on changes to pipes contained in this
 	 * reactor.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// If the updated component is the reactor, then pipes may have been
@@ -218,6 +219,7 @@ public class ReactorController extends AbstractPlantController implements
 			// thread yet.
 			if (!removedIds.isEmpty() || !addedPipes.isEmpty()) {
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						// Remove all old pipes from the view.
 						view.removePipes(removedIds);
@@ -268,6 +270,7 @@ public class ReactorController extends AbstractPlantController implements
 				// Update the view with the pipe's current bounds synchronized
 				// with the simple update thread.
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						boxes.add(controller.getBounds());
 						view.putPipes(ids, boxes);
@@ -290,6 +293,7 @@ public class ReactorController extends AbstractPlantController implements
 	 * org.eclipse.ice
 	 * .client.eclipse.widgets.reactoreditor.plant.AbstractPlantController)
 	 */
+	@Override
 	public void addedController(PlantComponent component,
 			AbstractPlantController controller) {
 		
@@ -312,6 +316,7 @@ public class ReactorController extends AbstractPlantController implements
 				// Update the view with the pipe's current bounds synchronized
 				// with the simple update thread.
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						boxes.add(pipeController.getBounds());
 						view.putPipes(ids, boxes);
@@ -331,6 +336,7 @@ public class ReactorController extends AbstractPlantController implements
 	 * IPlantControllerManagerListener
 	 * #removedController(org.eclipse.ice.reactor.plant.PlantComponent)
 	 */
+	@Override
 	public void removedController(PlantComponent component) {
 
 		if (component != null) {
@@ -346,6 +352,7 @@ public class ReactorController extends AbstractPlantController implements
 
 				// Remove the pipe from the view.
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						view.removePipes(ids);
 						return true;

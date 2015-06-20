@@ -12,23 +12,24 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test.pwr;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 
 import ncsa.hdf.object.Attribute;
-import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.Group;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.io.hdf.HdfFileFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.reactor.GridLabelProvider;
@@ -41,9 +42,10 @@ import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.Tube;
 import org.eclipse.ice.reactor.pwr.FuelAssembly;
-import org.eclipse.ice.reactor.pwr.PWRAssembly;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
-import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * <p>

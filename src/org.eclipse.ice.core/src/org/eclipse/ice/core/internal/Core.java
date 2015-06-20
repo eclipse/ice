@@ -12,18 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.core.internal;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
-import org.eclipse.ice.core.iCore.ICore;
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
-import org.eclipse.ice.core.internal.itemmanager.ItemManager;
-
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.ICEObject.ICEList;
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,31 +19,20 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-
-import org.eclipse.ice.item.ICompositeItemBuilder;
-import org.eclipse.ice.item.ItemBuilder;
-import org.eclipse.ice.item.SerializedItemBuilder;
-import org.eclipse.ice.item.messaging.Message;
-
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
-
-import org.osgi.framework.Bundle;
-import org.osgi.service.http.HttpService;
-
-import javax.servlet.ServletException;
-
-import org.osgi.service.http.NamespaceException;
-import org.osgi.service.component.ComponentContext;
-
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.servlet.ServletException;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -63,7 +40,22 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.osgi.service.http.*;
+import org.eclipse.ice.core.iCore.ICore;
+import org.eclipse.ice.core.iCore.IPersistenceProvider;
+import org.eclipse.ice.core.internal.itemmanager.ItemManager;
+import org.eclipse.ice.datastructures.ICEObject.ICEList;
+import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.item.ICompositeItemBuilder;
+import org.eclipse.ice.item.ItemBuilder;
+import org.eclipse.ice.item.SerializedItemBuilder;
+import org.eclipse.ice.item.messaging.Message;
+import org.osgi.framework.Bundle;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.http.HttpContext;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -226,6 +218,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#getFileSystem(int uniqueClientID)
 	 */
+	@Override
 	public Form getFileSystem(int uniqueClientID) {
 		return new Form();
 	}
@@ -235,6 +228,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#registerItem(ItemBuilder itemBuilder)
 	 */
+	@Override
 	public void registerItem(ItemBuilder itemBuilder) {
 
 		// Register the builder with the ItemManager so long as it is not null
@@ -252,6 +246,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#registerCompositeItem(ICompositeItemBuilder builder)
 	 */
+	@Override
 	public void registerCompositeItem(ICompositeItemBuilder builder) {
 
 		// Register the builder with the ItemManager so long as it is not null
@@ -269,6 +264,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#unregisterItem(ItemBuilder itemBuilder)
 	 */
+	@Override
 	public void unregisterItem(ItemBuilder itemBuilder) {
 	}
 
@@ -277,6 +273,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#createItem(String itemType)
 	 */
+	@Override
 	public String createItem(String itemType) {
 
 		// Local Declarations
@@ -298,6 +295,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#deleteItem(String itemId)
 	 */
+	@Override
 	public void deleteItem(String itemId) {
 
 		// Forward the call to the ItemManager if the String is OK
@@ -312,6 +310,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#getItemStatus(Integer id)
 	 */
+	@Override
 	public FormStatus getItemStatus(Integer id) {
 		return itemManager.getItemStatus(id);
 	}
@@ -321,6 +320,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#getItem(int itemId)
 	 */
+	@Override
 	public Form getItem(int itemId) {
 		return itemManager.retrieveItem(itemId);
 	}
@@ -330,6 +330,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#getAvailableItemTypes()
 	 */
+	@Override
 	public ICEList<String> getAvailableItemTypes() {
 
 		// Local Declarations
@@ -350,6 +351,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#updateItem(Form form, int uniqueClientId)
 	 */
+	@Override
 	public FormStatus updateItem(Form form, int uniqueClientId) {
 
 		// Local Declarations
@@ -369,6 +371,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#processItem(int itemId, String actionName, int uniqueClientId)
 	 */
+	@Override
 	public FormStatus processItem(int itemId, String actionName,
 			int uniqueClientId) {
 
@@ -389,6 +392,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#getItemList()
 	 */
+	@Override
 	public ArrayList<Identifiable> getItemList() {
 		return itemManager.retrieveItemList();
 	}
@@ -398,6 +402,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#getItemOutputFile(int id)
 	 */
+	@Override
 	public File getItemOutputFile(int id) {
 		return itemManager.getOutputFile(id);
 	}
@@ -407,6 +412,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#cancelItemProcess(int itemId, String actionName)
 	 */
+	@Override
 	public FormStatus cancelItemProcess(int itemId, String actionName) {
 		return itemManager.cancelItemProcess(itemId, actionName);
 	}
@@ -416,6 +422,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#importFile(URI file)
 	 */
+	@Override
 	public void importFile(URI file) {
 		// Local Declarations
 		IProject project = projectTable.get("defaultUser");
@@ -635,6 +642,7 @@ public class Core extends Application implements ICore {
 	 * @return The set of "singletons" - in this case just the running instance
 	 *         of the Core.
 	 */
+	@Override
 	public Set<Object> getSingletons() {
 		// Create a set that just points to this class as the servlet
 		Set<Object> result = new HashSet<Object>();
@@ -721,6 +729,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#connect()
 	 */
+	@Override
 	public String connect() {
 		return "1";
 	}
@@ -730,6 +739,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#disconnect(int uniqueClientId)
 	 */
+	@Override
 	public void disconnect(int uniqueClientId) {
 	}
 
@@ -738,6 +748,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#importFileAsItem(URI file, String itemType)
 	 */
+	@Override
 	public String importFileAsItem(URI file, String itemType) {
 
 		// Local Declarations
@@ -821,6 +832,7 @@ public class Core extends Application implements ICore {
 	 * 
 	 * @see ICore#postUpdateMessage(String message)
 	 */
+	@Override
 	public String postUpdateMessage(String message) {
 
 		// Lock the operation

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import java.lang.Comparable;
 
 /**
  * <p>
@@ -153,6 +152,7 @@ public class GridLocation implements Comparable<GridLocation> {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -187,6 +187,7 @@ public class GridLocation implements Comparable<GridLocation> {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -238,6 +239,7 @@ public class GridLocation implements Comparable<GridLocation> {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -288,6 +290,7 @@ public class GridLocation implements Comparable<GridLocation> {
 	 * 
 	 * @see Comparable#compareTo(Object arg0)
 	 */
+	@Override
 	public int compareTo(GridLocation location) {
 		// Local Declarations
 

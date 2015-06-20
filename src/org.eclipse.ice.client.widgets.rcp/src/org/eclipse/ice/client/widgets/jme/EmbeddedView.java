@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or 
+ *      initial documentation
+ *   
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets.jme;
 
 import java.awt.BorderLayout;
@@ -320,6 +332,7 @@ public class EmbeddedView implements SceneProcessor {
 
 			// The below operations must be performed on the render thread.
 			app.enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 
 					// Attach the scene root to the main ViewPort.
@@ -379,6 +392,7 @@ public class EmbeddedView implements SceneProcessor {
 
 			// The below operations must be performed on the render thread.
 			app.enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 					// Detach the scene root from the main ViewPort.
 					viewPort.detachScene(client.getSceneRoot(view));

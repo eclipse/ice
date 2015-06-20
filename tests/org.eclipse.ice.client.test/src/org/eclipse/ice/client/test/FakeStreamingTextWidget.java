@@ -49,6 +49,7 @@ public class FakeStreamingTextWidget implements IStreamingTextWidget {
 	/** 
 	 * <p>This operation implements display() as a simple pass through that makes whether or not the method was called. Nothing is drawn on the screen.</p>
 	 */
+	@Override
 	public void display() {
 
 		displayed = true;
@@ -75,6 +76,7 @@ public class FakeStreamingTextWidget implements IStreamingTextWidget {
 	 * (non-Javadoc)
 	 * @see IStreamingTextWidget#setLabel(String label)
 	 */
+	@Override
 	public void setLabel(String label) {
 
 		System.out.println("FakeStreamingWidget Message: " + label);
@@ -87,6 +89,7 @@ public class FakeStreamingTextWidget implements IStreamingTextWidget {
 	 * (non-Javadoc)
 	 * @see IStreamingTextWidget#postText(String sText)
 	 */
+	@Override
 	public void postText(String sText) {
 
 		// Write to stdout

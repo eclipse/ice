@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
+import java.util.ArrayList;
+
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
-
-import java.util.ArrayList;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -86,6 +85,7 @@ public class ShapeTreeView extends ViewPart implements
 	 *            The parent Composite
 	 *            </p>
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 
 		// Create the actions
@@ -197,6 +197,7 @@ public class ShapeTreeView extends ViewPart implements
 	 * 
 	 * @see IWorkbenchPart#setFocus()
 	 */
+	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
 

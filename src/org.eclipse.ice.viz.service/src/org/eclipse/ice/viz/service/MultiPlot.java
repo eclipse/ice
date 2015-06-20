@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
+ *    Jay Jay Billings (UT-Battelle, LLC.) - moved IPlot
+ *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
 import java.io.IOException;
@@ -136,6 +147,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
 	 */
+	@Override
 	public Map<String, String[]> getPlotTypes() throws Exception {
 		// If necessary, re-build the cache of plot types.
 		if (plotTypes == null) {
@@ -152,6 +164,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
 	 */
+	@Override
 	public int getNumberOfAxes() {
 		return 0;
 	}
@@ -193,6 +206,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getSourceHost()
 	 */
+	@Override
 	public String getSourceHost() {
 		return source.getHost();
 	}

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Alex McCaskey (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
+ *    
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose.actions;
 
 import java.io.ByteArrayInputStream;
@@ -14,13 +25,13 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.jface.dialogs.IInputValidator;
 
 /**
  * The NewKernelHandler subclasses AbstractHandler to provide an execute implementation 
@@ -66,6 +77,7 @@ public class NewKernelHandler extends AbstractHandler {
 		InputDialog dialog = new InputDialog(HandlerUtil
 				.getActiveWorkbenchWindow(event).getShell(), "",
 				"Enter the name of the new Kernel", "", new IInputValidator() {
+					@Override
 					public String isValid(String newText) {
 						return newText.equals("") ? "Please insert a valid class name"
 								: null;

@@ -14,39 +14,30 @@ package org.eclipse.ice.io.ips;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 
 /**

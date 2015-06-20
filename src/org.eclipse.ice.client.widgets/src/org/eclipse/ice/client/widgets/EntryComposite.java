@@ -216,9 +216,9 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	}
 
 	/**
-	 * Returns the entry stored on this composite
+	 * Returns the entry stored on this Composite
 	 * 
-	 * @return
+	 * @return The Entry rendered by this Composite.
 	 */
 	public Entry getEntry() {
 		return entry;
@@ -408,6 +408,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		// in case it is being used by JFace, which doesn't always post standard
 		// SWT events.
 		Listener enterListener = new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				// Notify any listeners that the selection has changed
 				notifyListeners(SWT.Selection, new Event());
@@ -941,10 +942,12 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	/**
 	 * Listen for updates from the Entry and redraw if needed.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 		// When the Entry has updated, refresh on the Eclipse UI thread.
 		if (component == entry) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (!EntryComposite.this.isDisposed()) {
 

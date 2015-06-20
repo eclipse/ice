@@ -12,21 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.core.internal.itemmanager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-import org.eclipse.ice.datastructures.form.FormStatus;
-
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
-
 import org.eclipse.core.resources.IProject;
-
-import java.net.URI;
-import java.io.File;
-
-import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
@@ -794,6 +789,7 @@ public class ItemManager implements ItemListener {
 	 * 
 	 * @see ItemListener#reloadProjectData()
 	 */
+	@Override
 	public void reloadProjectData() {
 
 		// Not threaded for now, but should it be? ~JJB 20130912 17:06

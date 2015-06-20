@@ -19,12 +19,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,6 +27,11 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.junit.Test;
 
 /**

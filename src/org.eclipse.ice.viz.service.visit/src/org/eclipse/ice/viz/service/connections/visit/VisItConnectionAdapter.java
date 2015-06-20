@@ -14,29 +14,16 @@ package org.eclipse.ice.viz.service.connections.visit;
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.connections.ConnectionAdapter;
-import org.eclipse.ice.viz.service.connections.ConnectionState;
-import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * This class provides a {@link ConnectionAdapter} that wraps a

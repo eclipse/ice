@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
-
-import java.lang.Comparable;
 import java.util.ArrayList;
 
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
+import org.eclipse.ice.io.hdf.IHdfReadable;
+import org.eclipse.ice.io.hdf.IHdfWriteable;
 
 /**
  * <p>
@@ -335,6 +334,7 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -375,6 +375,7 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -432,6 +433,7 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -445,12 +447,10 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -465,10 +465,10 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
 		// Get the children in super
@@ -487,11 +487,10 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 		return children;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations
@@ -528,8 +527,11 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 * </p>
 	 * 
 	 * @param iHdfReadable
-	 * @return
+	 *            The child that will be read.
+	 * @return True if the child material could be read and added to this ring,
+	 *         false otherwise.
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
 		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
@@ -562,6 +564,7 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 *            The visitor
 	 *            </p>
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}
@@ -571,6 +574,7 @@ public class Ring extends LWRComponent implements Comparable<Ring> {
 	 * 
 	 * @see Comparable#compareTo(Object arg0)
 	 */
+	@Override
 	public int compareTo(Ring ring) {
 		// Create some constants
 		final int BEFORE = -1;

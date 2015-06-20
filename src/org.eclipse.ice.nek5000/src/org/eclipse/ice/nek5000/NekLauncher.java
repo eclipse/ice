@@ -187,6 +187,7 @@ public class NekLauncher extends SuiteLauncher {
 	/**
 	 * This operation sets the information that identifies this Item.
 	 */
+	@Override
 	protected void setupItemInfo() {
 
 		// Local declarations

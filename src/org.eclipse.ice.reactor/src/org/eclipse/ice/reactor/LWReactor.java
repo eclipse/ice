@@ -14,12 +14,12 @@ package org.eclipse.ice.reactor;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
  * <p>
@@ -87,6 +87,7 @@ public class LWReactor extends LWRComposite {
 	 *            The Component to be added.
 	 *            </p>
 	 */
+	@Override
 	public void addComponent(Component component) {
 
 		// Does nothing
@@ -105,6 +106,7 @@ public class LWReactor extends LWRComposite {
 	 *            The id of the Component to remove.
 	 *            </p>
 	 */
+	@Override
 	public void removeComponent(int childId) {
 
 		// Does nothing
@@ -123,6 +125,7 @@ public class LWReactor extends LWRComposite {
 	 *            The name of the Component to remove.
 	 *            </p>
 	 */
+	@Override
 	public void removeComponent(String name) {
 
 		// Does nothing
@@ -131,24 +134,21 @@ public class LWReactor extends LWRComposite {
 
 	/**
 	 * <p>
-	 * Returns the size.
+	 * Returns the size (usually the diameter) of the reactor.
 	 * </p>
 	 * 
-	 * @return
+	 * @return The size.
 	 */
 	public int getSize() {
 
 		return this.size;
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-
 
 		boolean flag = true;
 
@@ -174,6 +174,7 @@ public class LWReactor extends LWRComposite {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -209,6 +210,7 @@ public class LWReactor extends LWRComposite {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -255,6 +257,7 @@ public class LWReactor extends LWRComposite {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -268,11 +271,10 @@ public class LWReactor extends LWRComposite {
 
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations

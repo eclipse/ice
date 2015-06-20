@@ -87,6 +87,7 @@ public class VibeLauncher extends JobLauncher {
 	 * This operations sets up some VIBE-specific information for the launcher,
 	 * including the default project installation directory.
 	 */
+	@Override
 	protected void setupItemInfo() {
 
 		// Set the name and description of the Item
@@ -119,6 +120,7 @@ public class VibeLauncher extends JobLauncher {
 	 * super.setupForm() prior to setting up the executable and hostnames.
 	 * </p>
 	 */
+	@Override
 	public void setupForm() {
 		String copyCase = "cp -r ${installDir}vibe/examples/case6/* .;";
 		String fixSIMROOT = "sed -i.bak 's?SIM_ROOT=.*?"
@@ -142,6 +144,7 @@ public class VibeLauncher extends JobLauncher {
 		// Add the input files types for the BatML files
 		// Setup entries
 		Entry entry = new Entry() {
+			@Override
 			protected void setup() {
 				this.setName("Use custom key-value pair file?");
 				this.tag = "MODE";
@@ -179,6 +182,7 @@ public class VibeLauncher extends JobLauncher {
 	 * 
 	 * @return The status of the action
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 
 		// Local Declarations
@@ -280,6 +284,7 @@ public class VibeLauncher extends JobLauncher {
 	 * Override of update so that the VibeLauncher can check if the user wants
 	 * to select a custom KV Pair file.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 		refreshProjectSpace();
 		if (component instanceof Entry) {

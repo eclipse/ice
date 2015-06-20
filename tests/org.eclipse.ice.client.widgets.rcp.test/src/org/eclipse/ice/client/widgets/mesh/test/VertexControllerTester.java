@@ -12,22 +12,18 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh.test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.eclipse.ice.client.widgets.mesh.AbstractMeshController;
-import org.eclipse.ice.client.widgets.mesh.StateType;
-import org.eclipse.ice.client.widgets.mesh.VertexController;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
-
-import com.jme3.material.Material;
-import com.jme3.math.Vector3f;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.eclipse.ice.client.widgets.mesh.AbstractMeshController;
+import org.eclipse.ice.client.widgets.mesh.VertexController;
+import org.eclipse.ice.datastructures.form.mesh.Vertex;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.jme3.material.Material;
 
 /**
  * <p>

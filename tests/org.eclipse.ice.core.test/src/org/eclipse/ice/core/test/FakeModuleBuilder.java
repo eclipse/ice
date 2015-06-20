@@ -31,6 +31,7 @@ public class FakeModuleBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemName()
 	 */
+	@Override
 	public String getItemName() {
 		return new String("John Williams");
 	}
@@ -40,6 +41,7 @@ public class FakeModuleBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemType()
 	 */
+	@Override
 	public ItemType getItemType() {
 		return ItemType.Module;
 	}
@@ -49,6 +51,7 @@ public class FakeModuleBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 		return new FakeItem(projectSpace);
 	}

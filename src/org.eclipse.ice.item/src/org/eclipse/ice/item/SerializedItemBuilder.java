@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.item;
 
-import static org.eclipse.ice.item.Item.*;
-
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.item.jobLauncher.JobLauncher;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,9 +23,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.UnmarshalException;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
  * <p>
@@ -206,6 +202,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemName()
 	 */
+	@Override
 	public String getItemName() {
 		return name;
 	}
@@ -215,6 +212,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemType()
 	 */
+	@Override
 	public ItemType getItemType() {
 		return type;
 	}
@@ -224,6 +222,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 
 		// Local Declarations

@@ -52,6 +52,7 @@ public class FakeGeometryBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemName()
 	 */
+	@Override
 	public String getItemName() {
 		return new String("Inigo Montoya");
 	}
@@ -61,6 +62,7 @@ public class FakeGeometryBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemType()
 	 */
+	@Override
 	public ItemType getItemType() {
 		return ItemType.Geometry;
 	}
@@ -70,6 +72,7 @@ public class FakeGeometryBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 		lastFakeItem = new FakeItem(projectSpace);
 		return lastFakeItem;

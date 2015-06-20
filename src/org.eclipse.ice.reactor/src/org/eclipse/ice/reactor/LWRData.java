@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.analysistool.IData;
-
 import java.util.ArrayList;
+
+import org.eclipse.ice.analysistool.IData;
 
 /**
  * <p>
@@ -216,6 +216,7 @@ public class LWRData implements IData {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -254,6 +255,7 @@ public class LWRData implements IData {
 	 *         The hash.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -306,8 +308,9 @@ public class LWRData implements IData {
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
 	 * 
-	 * @return
+	 * @return A new clone of this object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -326,6 +329,7 @@ public class LWRData implements IData {
 	 * 
 	 * @see IData#getPosition()
 	 */
+	@Override
 	public ArrayList<Double> getPosition() {
 
 		return this.position;
@@ -336,6 +340,7 @@ public class LWRData implements IData {
 	 * 
 	 * @see IData#getValue()
 	 */
+	@Override
 	public double getValue() {
 
 		return this.value;
@@ -346,6 +351,7 @@ public class LWRData implements IData {
 	 * 
 	 * @see IData#getUncertainty()
 	 */
+	@Override
 	public double getUncertainty() {
 
 		return this.uncertainty;
@@ -356,6 +362,7 @@ public class LWRData implements IData {
 	 * 
 	 * @see IData#getUnits()
 	 */
+	@Override
 	public String getUnits() {
 
 		return this.units;
@@ -366,6 +373,7 @@ public class LWRData implements IData {
 	 * 
 	 * @see IData#getFeature()
 	 */
+	@Override
 	public String getFeature() {
 
 		return this.feature;

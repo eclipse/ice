@@ -219,12 +219,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// Set the dirty value and fire a property change
 		dirty = value;
 		firePropertyChange(PROP_DIRTY);
-		
+
 		// Push a message to the message manager
 		if (getHeaderForm() != null) {
 			final IMessageManager messageManager = getHeaderForm()
 					.getMessageManager();
-			messageManager.addMessage("statusUpdate", 
+			messageManager.addMessage("statusUpdate",
 					"There are unsaved changes on the form.", null,
 					IMessageProvider.WARNING);
 		}
@@ -272,7 +272,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	}
 
 	/**
-	 * This operation creates the ICEResourcePage that will show any output 
+	 * This operation creates the ICEResourcePage that will show any output
 	 * files created by ICE.
 	 * 
 	 * @return The ICEResourcePage that should be rendered as part of the Form.
@@ -301,11 +301,11 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		return resourceComponentPage;
 	}
-	
+
 	/**
 	 * This method returns the ICEResourcePage that this ICEFormEditor manages.
 	 * 
-	 * @return	The ICEResourcePage.
+	 * @return The ICEResourcePage.
 	 */
 	public ICEResourcePage getResourcePage() {
 		return this.resourceComponentPage;
@@ -353,7 +353,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * string.
 	 * 
 	 * @param statusMessage
-	 * 				 The status message.
+	 *            The status message.
 	 */
 	public void updateStatus(String statusMessage) {
 
@@ -362,6 +362,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// Post the message to the update manager
 				if (getHeaderForm() != null) {
@@ -410,7 +411,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * Creates a MeshPage to display 2D meshes powered with JME3. Also gives the
 	 * MeshComponent to provide data to display.
 	 * 
-	 * @return	The MeshPage created.
+	 * @return The MeshPage created.
 	 */
 	private ICEFormPage createMeshPage() {
 
@@ -588,6 +589,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// Disable processing. Enabled = !disabled
 				goButton.setEnabled(!buttonState);
@@ -605,6 +607,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 *            The IManagedForm that manages the content in the common
 	 *            header.
 	 */
+	@Override
 	protected void createHeaderContents(IManagedForm headerForm) {
 
 		// Get the Form that provides the common header and decorate it.
@@ -722,7 +725,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * TableComponents, and MatrixComponents. These pages are used in the
 	 * addPages() operation and rendered to the screen.
 	 * 
-	 * @return
+	 * @return The list of created pages. May be empty, and should never be
+	 *         {@code null}.
 	 */
 	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
 		// Local Declarations
@@ -860,6 +864,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see org.eclipse.ui.ISaveablePart#doSave(IProgressMonitor monitor)
 	 */
+	@Override
 	public void doSave(IProgressMonitor monitor) {
 
 		// Set the dirty flag
@@ -937,6 +942,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
+	@Override
 	public void doSaveAs() {
 
 		// Just save
@@ -951,6 +957,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
 	 */
+	@Override
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
@@ -960,6 +967,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see FormEditor#addPages()
 	 */
+	@Override
 	protected void addPages() {
 
 		// Local Declaration
@@ -1042,6 +1050,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
 	 */
+	@Override
 	public void visit(DataComponent component) {
 
 		// Add the Component to the map of components
@@ -1055,6 +1064,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IComponentVisitor#visit(ResourceComponent component)
 	 */
+	@Override
 	public void visit(ResourceComponent component) {
 
 		// Add the Component to the map of components
@@ -1068,6 +1078,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IComponentVisitor#visit(TableComponent component)
 	 */
+	@Override
 	public void visit(TableComponent component) {
 
 		// Add the Component to the map of components
@@ -1080,6 +1091,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IComponentVisitor#visit(MatrixComponent component)
 	 */
+	@Override
 	public void visit(MatrixComponent component) {
 
 		// Add the matrix component to the map of components
@@ -1092,6 +1104,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IComponentVisitor#visit(IShape component)
 	 */
+	@Override
 	public void visit(IShape component) {
 		addComponentToMap(component, "shape");
 	}
@@ -1101,6 +1114,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IComponentVisitor#visit(GeometryComponent component)
 	 */
+	@Override
 	public void visit(GeometryComponent component) {
 
 		// Add the GeometryComponent to the map of components
@@ -1113,6 +1127,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
 	 */
+	@Override
 	public void visit(MasterDetailsComponent component) {
 
 		// Add the masterDetails component to the map of components
@@ -1125,6 +1140,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IComponentVisitor#visit(TreeComposite component)
 	 */
+	@Override
 	public void visit(TreeComposite component) {
 
 		// Add the tree to the map
@@ -1137,6 +1153,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IComponentVisitor#visit(IReactorComponent component)
 	 */
+	@Override
 	public void visit(IReactorComponent component) {
 
 		// Add the reactor to the map
@@ -1150,6 +1167,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @see IObservableWidget#registerUpdateListener(IUpdateEventListener
 	 *      listener)
 	 */
+	@Override
 	public void registerUpdateListener(IUpdateEventListener listener) {
 
 		// Add the listener so long as it is not null
@@ -1166,6 +1184,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @see IObservableWidget#registerProcessListener(IProcessEventListener
 	 *      listener)
 	 */
+	@Override
 	public void registerProcessListener(IProcessEventListener listener) {
 
 		// Add the listener so long as it is not null
@@ -1182,6 +1201,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @see IObservableWidget#registerResourceProvider(ISimpleResourceProvider
 	 *      provider)
 	 */
+	@Override
 	public void registerResourceProvider(ISimpleResourceProvider provider) {
 
 		// Add the provider so long as it is not null
@@ -1201,6 +1221,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IObservableWidget#notifyUpdateListeners()
 	 */
+	@Override
 	public void notifyUpdateListeners() {
 
 		// Notify the update listeners
@@ -1216,6 +1237,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IObservableWidget#notifyProcessListeners(String process)
 	 */
+	@Override
 	public void notifyProcessListeners(String process) {
 
 		// Make sure the process is not null
@@ -1234,6 +1256,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IObservableWidget#notifyCancelListeners(String process)
 	 */
+	@Override
 	public void notifyCancelListeners(String process) {
 
 		// Make sure the process is not null
@@ -1252,12 +1275,14 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * 
 	 * @see IUpdateableListener#update(IUpdateable component)
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		System.out.println("ICEFormEditor Message: State changed to dirty.");
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// Just set the dirty bit (wow that reads naughty...) ;)
 				setDirty(true);
@@ -1276,10 +1301,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	@Override
 	public void visit(TimeDataComponent component) {
 
-
 		// Treat as a datacomponent
 		this.visit((DataComponent) component);
-
 
 	}
 
@@ -1290,6 +1313,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
 	 * (org.eclipse.ice.datastructures.form.mesh.MeshComponent)
 	 */
+	@Override
 	public void visit(MeshComponent component) {
 
 		// Add the MeshComponent to the map of components

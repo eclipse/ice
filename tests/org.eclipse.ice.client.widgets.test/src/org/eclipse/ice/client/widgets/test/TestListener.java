@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
-import org.eclipse.ice.datastructures.form.Form;
 
 /**
  * <p>
@@ -106,6 +106,7 @@ public class TestListener implements IProcessEventListener,
 	 * 
 	 * @see IProcessEventListener#processSelected(Form form, String process)
 	 */
+	@Override
 	public void processSelected(Form form, String process) {
 
 		// Set the process flag
@@ -118,6 +119,7 @@ public class TestListener implements IProcessEventListener,
 	 * 
 	 * @see IUpdateEventListener#formUpdated(Form form)
 	 */
+	@Override
 	public void formUpdated(Form form) {
 
 		// Set the update flag
