@@ -61,12 +61,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.RepositoryService;
+import org.eclipse.ice.client.widgets.moose.nature.MooseNature;
 import org.eclipse.ice.client.widgets.moose.wizards.ForkStorkWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -104,7 +103,6 @@ public class ForkStorkHandler extends AbstractHandler {
 			return null;
 		}
 
-
 		// Create a File reference to the repo in the Eclipse workspace
 		final Job job = new Job("Forking the MOOSE Stork!") {
 
@@ -120,21 +118,21 @@ public class ForkStorkHandler extends AbstractHandler {
 				ProcessBuilder jobBuilder = null;
 				String os = System.getProperty("os.name");
 				String sep = System.getProperty("file.separator");
-				
+
 				// Get the user specified data
 				String appName = wizard.getMooseAppName();
 				String gitHubUser = wizard.getGitUsername();
 				String password = wizard.getGitPassword();
-				
+
 				// Construct the Remote URI for the repo
 				String remoteURI = "https://github.com/" + gitHubUser + "/"
 						+ appName;
-				
-				// Create the workspace file 		
+
+				// Create the workspace file
 				File workspaceFile = new File(ResourcesPlugin.getWorkspace()
 						.getRoot().getLocation().toOSString()
 						+ sep + appName);
-				
+
 				// Set the pyton command
 				cmdList.add("/bin/bash");
 				cmdList.add("-c");
@@ -164,10 +162,9 @@ public class ForkStorkHandler extends AbstractHandler {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 					String errorMessage = "ICE failed in forking the new stork.";
-					return new Status(
-							Status.ERROR,
-							"org.eclipse.ice.client.widgets.moose",
-							1, errorMessage, null);
+					return new Status(Status.ERROR,
+							"org.eclipse.ice.client.widgets.moose", 1,
+							errorMessage, null);
 				}
 
 				monitor.subTask("Stork Forked, cloning to local machine...");
@@ -181,16 +178,14 @@ public class ForkStorkHandler extends AbstractHandler {
 				} catch (GitAPIException e1) {
 					e1.printStackTrace();
 					String errorMessage = "ICE failed in cloning the new application.";
-					return new Status(
-							Status.ERROR,
-							"org.eclipse.ice.client.widgets.moose",
-							1, errorMessage, null);
-				} 
-				
+					return new Status(Status.ERROR,
+							"org.eclipse.ice.client.widgets.moose", 1,
+							errorMessage, null);
+				}
 
 				monitor.subTask("Executing make_new_application.py...");
 				monitor.worked(60);
-				
+
 				// We can only run the python script on Linux or Mac
 				// And Moose devs only use Linux or Macs to build their apps
 				if (os.contains("Linux") || os.contains("Mac")) {
@@ -207,10 +202,9 @@ public class ForkStorkHandler extends AbstractHandler {
 					} catch (IOException e) {
 						e.printStackTrace();
 						String errorMessage = "ICE could not execute the make_new_application python script.";
-						return new Status(
-								Status.ERROR,
-								"org.eclipse.ice.client.widgets.moose",
-								1, errorMessage, null);
+						return new Status(Status.ERROR,
+								"org.eclipse.ice.client.widgets.moose", 1,
+								errorMessage, null);
 					}
 				}
 
@@ -221,10 +215,9 @@ public class ForkStorkHandler extends AbstractHandler {
 				IProjectDescription description = workspace
 						.newProjectDescription(appName);
 
-
 				monitor.subTask("Converting application to CDT C++ Project...");
-				monitor.worked(80); 
-				
+				monitor.worked(80);
+
 				try {
 					// Create the CDT Project
 					CCorePlugin.getDefault().createCDTProject(description,
@@ -344,15 +337,23 @@ public class ForkStorkHandler extends AbstractHandler {
 					CoreModel.getDefault().setProjectDescription(cProject,
 							projectDescription);
 
+					// Add a MOOSE Project Nature
+					IProjectDescription desc = project.getDescription();
+					String[] prevNatures = desc.getNatureIds();
+					String[] newNatures = new String[prevNatures.length + 1];
+					System.arraycopy(prevNatures, 0, newNatures, 0,
+							prevNatures.length);
+					newNatures[prevNatures.length] = MooseNature.NATURE_ID;
+					desc.setNatureIds(newNatures);
+					project.setDescription(desc, new NullProgressMonitor());
+
 				} catch (CoreException e) {
 					e.printStackTrace();
 					String errorMessage = "ICE could not import the new MOOSE application as a C++ project.";
-					return new Status(
-							Status.ERROR,
-							"org.eclipse.ice.client.widgets.moose",
-							1, errorMessage, null);
+					return new Status(Status.ERROR,
+							"org.eclipse.ice.client.widgets.moose", 1,
+							errorMessage, null);
 				}
-
 
 				monitor.subTask("Importing into ICE.");
 				monitor.worked(100);
