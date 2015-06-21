@@ -567,6 +567,9 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkSelectionListenersByText() {
 
+		// TODO Make sure this works on Linux... because we have to add in CRLF
+		// when typing the text to simulate user input!
+
 		// Get the first and last time.
 		Double firstTime = testTimes.get(0);
 		Double lastTime = testTimes.get(testTimes.size() - 1);
@@ -584,7 +587,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		// They should both be notified when the widget is used to change the
 		// values.
-		widget.setText(lastTime.toString());
+		widget.selectAll();
+		widget.typeText(lastTime.toString() + SWT.CR + SWT.LF);
 		assertTrue(fakeListener1.wasNotified());
 		assertTrue(fakeListener2.wasNotified());
 
@@ -598,7 +602,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		// It should not be notified when the widget changes, but the other
 		// should still be notified.
-		widget.setText(firstTime.toString());
+		widget.selectAll();
+		widget.typeText(firstTime.toString() + SWT.CR + SWT.LF);
 		assertFalse(fakeListener2.wasNotified()); // Test this one first!
 		assertTrue(fakeListener1.wasNotified());
 
@@ -619,7 +624,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		List<String> invalidTimes = new ArrayList<String>();
 		invalidTimes.add("");
 		invalidTimes.add("infinite improbability");
-		invalidTimes.add("737");
+		invalidTimes.add("    ");
 
 		// Get the initial time.
 		final AtomicReference<Double> time = new AtomicReference<Double>();
