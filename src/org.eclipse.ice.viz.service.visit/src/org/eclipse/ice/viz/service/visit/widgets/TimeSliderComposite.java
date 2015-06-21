@@ -36,6 +36,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class TimeSliderComposite extends Composite {
 
+	// TODO Hook up the Text widget.
+	// TODO Documentation.
+
 	private final Scale scale;
 	private final Text spinnerText;
 	private final Button spinnerNext;
@@ -46,11 +49,15 @@ public class TimeSliderComposite extends Composite {
 
 	private static final String NO_TIMES = "N/A";
 
+	private final List<SelectionListener> listeners;
+
 	public TimeSliderComposite(Composite parent, int style) {
 		super(parent, style);
 
 		timestep = -1;
 		times = new ArrayList<Double>();
+
+		listeners = new ArrayList<SelectionListener>();
 
 		setLayout(new GridLayout(2, false));
 
@@ -59,6 +66,7 @@ public class TimeSliderComposite extends Composite {
 		scale.setBackground(getBackground());
 		scale.setMinimum(0);
 		scale.setIncrement(1);
+		scale.setMaximum(0);
 
 		Composite spinnerComposite = new Composite(this, SWT.NONE);
 		spinnerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
@@ -69,12 +77,6 @@ public class TimeSliderComposite extends Composite {
 		spinnerText = new Text(spinnerComposite, SWT.SINGLE | SWT.BORDER);
 		spinnerText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 2));
-
-		// spinner = new Spinner(spinnerComposite, SWT.NONE); // FIXME
-		// spinner.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-		// spinner.setBackground(getBackground());
-		// spinner.setMinimum(0);
-		// spinner.setIncrement(1);
 
 		spinnerNext = new Button(spinnerComposite, SWT.ARROW | SWT.UP);
 		spinnerNext
@@ -90,68 +92,52 @@ public class TimeSliderComposite extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				timestep = scale.getSelection();
-				spinnerText.setText(times.get(timestep).toString());
-
-				spinnerNext.setEnabled(timestep != times.size() - 1);
-				spinnerPrev.setEnabled(timestep != 0);
+				syncWidgets();
+				notifyListeners(e);
 			}
 		});
 		spinnerNext.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				timestep++;
-				scale.setSelection(timestep);
-				spinnerText.setText(times.get(timestep).toString());
-				if (timestep == times.size() - 1) {
-					spinnerNext.setEnabled(false);
-				}
-				spinnerPrev.setEnabled(true);
+				syncWidgets();
+				notifyListeners(e);
 			}
 		});
 		spinnerPrev.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				timestep--;
-				scale.setSelection(timestep);
-				spinnerText.setText(times.get(timestep).toString());
-				if (timestep == 0) {
-					spinnerPrev.setEnabled(false);
-				}
-				spinnerNext.setEnabled(true);
+				syncWidgets();
+				notifyListeners(e);
 			}
 		});
 		spinnerText.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO
+				// TODO Determine the timestep.
+				syncWidgets();
+				notifyListeners(e);
 			}
 		});
 
-		refreshWidgets();
+		syncWidgets();
 
 		return;
 	}
 
-	private void refreshWidgets() {
+	private void syncWidgets() {
 
 		int size = times.size();
+		boolean widgetsEnabled = size > 1;
 
-		if (size > 0) {
-			scale.setSelection(0);
-			scale.setMaximum(size - 1);
-			spinnerText.setText(times.get(0).toString());
-		} else {
-			scale.setSelection(0);
-			scale.setMaximum(0);
-			spinnerText.setText(NO_TIMES);
-		}
+		scale.setEnabled(widgetsEnabled);
+		spinnerText.setEnabled(widgetsEnabled);
+		spinnerNext.setEnabled(widgetsEnabled & timestep < size - 1);
+		spinnerPrev.setEnabled(widgetsEnabled & timestep > 0);
 
-		// Enable/disable the widgets.
-		boolean enabled = size > 1;
-		scale.setEnabled(enabled);
-		spinnerNext.setEnabled(enabled);
-		spinnerPrev.setEnabled(false);
-		spinnerText.setEnabled(enabled);
+		scale.setSelection(widgetsEnabled ? timestep : 0);
+		spinnerText.setText(size > 0 ? Double.toString(getTime()) : NO_TIMES);
 
 		return;
 	}
@@ -185,9 +171,11 @@ public class TimeSliderComposite extends Composite {
 		this.times.addAll(orderedTimes);
 
 		// Reset the timestep.
-		timestep = times.size() > 0 ? 0 : -1;
+		int size = this.times.size();
+		timestep = size > 0 ? 0 : -1;
+		scale.setMaximum(size - 1);
 
-		refreshWidgets();
+		syncWidgets();
 
 		return;
 	}
@@ -250,7 +238,7 @@ public class TimeSliderComposite extends Composite {
 			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
 		}
 
-		// TODO
+		listeners.add(listener);
 	}
 
 	/**
@@ -276,7 +264,14 @@ public class TimeSliderComposite extends Composite {
 		if (listener == null) {
 			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
 		}
+		listeners.remove(listener);
+	}
 
+	private void notifyListeners(SelectionEvent e) {
+		e.data = getTime();
+		for (SelectionListener listener : listeners) {
+			listener.widgetSelected(e);
+		}
 	}
 
 }

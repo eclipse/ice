@@ -210,6 +210,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		// Get the time scale widget.
 		SWTBotScale widget = getTimeScale();
+		SWTBotScale scale = getTimeScale();
 
 		// Check that the list of times sent to the widget was not modified.
 		assertEquals("TimeSliderComposite failure: The collection passed into "
@@ -229,6 +230,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		// should be the lowest value.
 		assertEquals(0, timestep.get());
 		assertEquals(orderedTimes.first(), time.get(), epsilon);
+
+		// Check the scale's min, max, and increment. Each timestep should have
+		// a tick on the scale.
+		assertEquals(0, scale.getMinimum());
+		assertEquals(orderedTimes.size() - 1, scale.getMaximum());
+		assertEquals(1, scale.getIncrement());
 
 		// Set the time widget to the last time.
 		widget.setValue(orderedTimes.size() - 1);
