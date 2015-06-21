@@ -192,9 +192,11 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 		canvas.setMenu(menu);
 
-		timeSlider = new TimeSliderComposite(container, SWT.NONE);
-		timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		timeSlider.setBackground(parent.getBackground());
+		// TODO Add this back in when it's functional.
+		// timeSlider = new TimeSliderComposite(container, SWT.NONE);
+		// timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+		// false));
+		// timeSlider.setBackground(parent.getBackground());
 
 		return container;
 	}
