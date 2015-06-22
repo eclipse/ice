@@ -49,6 +49,17 @@ public class ReflectivityModel extends Model {
 	private final String processActionName = "Calculate Reflectivity";
 
 	/**
+	 * Identification number for the component that contains the parameters.
+	 */
+	public static final int paramsCompId = 1;
+
+	/**
+	 * Identification number for the list component that contains all of the
+	 * materials.
+	 */
+	public static final int matListId = 2;
+
+	/**
 	 * The constructor.
 	 */
 	public ReflectivityModel() {
@@ -85,6 +96,24 @@ public class ReflectivityModel extends Model {
 			// Get the roughness parameter, dQ, dQ/Q and the wavelength
 
 			// Get and load the wave vector and related information
+
+			ListComponent<Material> matList = (ListComponent<Material>) form
+					.getComponent(2);
+			ArrayList<Slab> slabs = new ArrayList<Slab>();
+
+			// Create the slabs from the materials
+			for (Material mat : matList) {
+				Slab slab = new Slab();
+				slab.thickness = mat.getProperty("Thickness (A)");
+				slab.interfaceWidth = mat.getProperty("Roughness (A)");
+				slab.scatteringLength = mat
+						.getProperty(Material.SCAT_LENGTH_DENSITY);
+				slab.trueAbsLength = mat
+						.getProperty(Material.MASS_ABS_COHERENT);
+				slab.incAbsLength = mat
+						.getProperty(Material.MASS_ABS_INCOHERENT);
+				slabs.add(slab);
+			}
 
 			// Calculate the reflectivity
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
@@ -136,7 +165,8 @@ public class ReflectivityModel extends Model {
 		Entry fileEntry = new Entry() {
 			@Override
 			protected void setup() {
-				// Only set the allowed value type for this. No other work required.
+				// Only set the allowed value type for this. No other work
+				// required.
 				allowedValueType = AllowedValueType.File;
 				return;
 			}
@@ -145,21 +175,21 @@ public class ReflectivityModel extends Model {
 		fileEntry.setName("Wave Vector (Q) file");
 		fileEntry.setDescription("Wave vector information for this problem.");
 		paramComponent.addEntry(fileEntry);
-		
+
 		// Add an entry for the number of layers
-//		Entry numLayersEntry = new Entry() {
-//			@Override
-//			p
-//		}
+		// Entry numLayersEntry = new Entry() {
+		// @Override
+		// p
+		// }
 
 		// Configure a list of property names for the materials
 		ArrayList<String> names = new ArrayList<String>();
 		names.add("Material ID");
 		names.add("Thickness (A)");
 		names.add("Roughness (A)");
-		names.add("Scattering Length Density (A^-2)");
-		names.add("Mu_abs (A^-2)");
-		names.add("Mu_inc (A^-1)");
+		names.add(Material.SCAT_LENGTH_DENSITY);
+		names.add(Material.MASS_ABS_COHERENT);
+		names.add(Material.MASS_ABS_INCOHERENT);
 		// Create the writable format to be used by the list
 		MaterialWritableTableFormat format = new MaterialWritableTableFormat(
 				names);
@@ -313,10 +343,10 @@ public class ReflectivityModel extends Model {
 		material.setProperty("Material ID", id);
 		material.setProperty("Thickness (A)", slab.thickness);
 		material.setProperty("Roughness (A)", slab.interfaceWidth);
-		material.setProperty("Scattering Length Density (A^-2)",
+		material.setProperty(Material.SCAT_LENGTH_DENSITY,
 				slab.scatteringLength);
-		material.setProperty("Mu_abs (A^-2)", slab.trueAbsLength);
-		material.setProperty("Mu_inc (A^-1)", slab.incAbsLength);
+		material.setProperty(Material.MASS_ABS_COHERENT, slab.trueAbsLength);
+		material.setProperty(Material.MASS_ABS_INCOHERENT, slab.incAbsLength);
 		return material;
 	}
 
