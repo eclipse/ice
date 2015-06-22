@@ -135,6 +135,15 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		fakeListener1.wasNotified.set(false);
 		fakeListener2.wasNotified.set(false);
 
+		// Unregister the second fake listener in case one of the listener tests
+		// failed.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.removeSelectionListener(fakeListener2);
+			}
+		});
+
 		return;
 	}
 
@@ -567,8 +576,18 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkSelectionListenersByText() {
 
-		// TODO Make sure this works on Linux... because we have to add in CRLF
-		// when typing the text to simulate user input!
+		/*
+		 * IMPORTANT NOTE ABOUT THIS TEST!
+		 * 
+		 * Simulating input into a Text widget with SWTBot is tricky.
+		 * widget.setText(String) does not notify listeners, so you must use
+		 * widget.selectAll() [highlights all the text] and
+		 * widget.typeText(String) [replaces the text].
+		 * 
+		 * However, this can be finicky and fail if you are touching the
+		 * keyboard or the mouse, so try running this test again when you are
+		 * not actively using your computer's input. :)
+		 */
 
 		// Get the first and last time.
 		Double firstTime = testTimes.get(0);
