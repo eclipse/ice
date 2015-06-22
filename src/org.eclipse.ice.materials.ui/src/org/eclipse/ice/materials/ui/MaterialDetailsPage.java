@@ -222,6 +222,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 				// Gets the property names or column names for the table.
 				ArrayList<String> propertyNames = new ArrayList<String>();
 				propertyNames.addAll(material.getProperties().keySet());
+				propertyNames.sort(String.CASE_INSENSITIVE_ORDER);
 
 				// Creates new writable table format for the nattable
 				WritableTableFormat tableFormat = new SingleMaterialWritableTableFormat(
@@ -269,9 +270,11 @@ public class MaterialDetailsPage implements IDetailsPage {
 				// Gets the property names or column names for the table.
 				ArrayList<String> propertyNames = new ArrayList<String>();
 				propertyNames.addAll(material.getProperties().keySet());
-
+				propertyNames.sort(String.CASE_INSENSITIVE_ORDER);
+				
 				// Adds the new properties to the list.
 				list.addAll(propertyNames);
+				
 
 				// Changes the selected material
 				SingleMaterialWritableTableFormat format = (SingleMaterialWritableTableFormat) list
