@@ -117,6 +117,11 @@ public class MaterialStackWritableTableFormat implements
 	 * @param newValue
 	 *            The new value for the amount in the material stack. Should
 	 *            accept int, double, and String values.
+	 * @param column
+	 * 			The column to be changed. Because there is only one column value
+	 * that can be changed, this method only accepts values greater than zero and 
+	 * assumes to change the value column. If 0 is given, no action is taken and the
+	 * MaterialStack is not changed. 
 	 */
 	@Override
 	public MaterialStack setColumnValue(MaterialStack stack, Object newValue,

@@ -7,11 +7,9 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
-
-import java.util.List;
 
 import org.eclipse.ice.client.widgets.ElementSourceDialog;
 import org.eclipse.ice.client.widgets.ListComponentNattable;
@@ -19,6 +17,7 @@ import org.eclipse.ice.datastructures.ICEObject.IElementSource;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.MaterialStack;
+import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.MaterialStackWritableTableFormat;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
@@ -31,8 +30,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -44,7 +41,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * It was developed using the SWT WindowBuilder.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Kasper Gammeltoft
  * 
  */
 public class AddMaterialWizardPage extends WizardPage {
@@ -138,7 +135,8 @@ public class AddMaterialWizardPage extends WizardPage {
 	}
 
 	/**
-	 * Gets the material created by the fields on this page.
+	 * Gets the material created by the fields on this page. Calculates the new
+	 * variables for the material from its stoichiometric information.
 	 * 
 	 * @return A new material with the set name, density and stoichiometry
 	 *         denoted on the page.
@@ -149,24 +147,18 @@ public class AddMaterialWizardPage extends WizardPage {
 		// Set the name
 		material.setName(nameText.getText());
 		// Set the density
-		material.setProperty("Dens (g/cm3)",
-				Double.parseDouble(densityText.getText()));
-		
-		ListComponent<Material> matList = new ListComponent();
+		double density = Double.parseDouble(densityText.getText());
+		material.setProperty(Material.DENSITY, density);
 
 		// Add the stoichiometric components as components of the new material.
 		for (MaterialStack stack : list) {
 			material.addComponent(stack);
 		}
-		
-		// Following John Ankner's code ported from Visual Basic
-		int molMass = 0;
-		
-		for(MaterialStack stack: list){
-			molMass+=stack.getAmount()*(stack.getMaterial().getProperty(Material.ATOMIC_MASS));
-			
-		}
-		
+
+		// Updates the material properties for the new material.
+		material.updateProperties();
+
+		// Just return the new material. 
 		return material;
 	}
 
@@ -294,6 +286,16 @@ public class AddMaterialWizardPage extends WizardPage {
 				if (dialog.open() == Window.OK) {
 					// Add the material
 					Material matToAdd = (Material) dialog.getSelection();
+					// Get the right material reference from the database
+					IMaterialsDatabase database = (IMaterialsDatabase)source;
+					for(Material mat : database.getMaterials()){
+						if(matToAdd.equals(mat)){
+							matToAdd = mat;
+							break;
+						}
+					}
+					
+					// Add the new material stack
 					list.add(new MaterialStack(matToAdd, 1));
 				}
 			}
@@ -309,24 +311,25 @@ public class AddMaterialWizardPage extends WizardPage {
 		Button deleteMaterialButton = new Button(stoichiometryButtonComposite,
 				SWT.PUSH);
 		deleteMaterialButton.setText("Delete");
-		deleteMaterialButton.addSelectionListener(new SelectionListener(){
+		deleteMaterialButton.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				ListComponent<MaterialStack> selected = stoichiometryTable.getSelectedObjects();
-				if(selected.size()>0){
+				ListComponent<MaterialStack> selected = stoichiometryTable
+						.getSelectedObjects();
+				if (selected.size() > 0) {
 					// Remove all selected materials from the list
-					for(MaterialStack stack : selected){
+					for (MaterialStack stack : selected) {
 						list.remove(stack);
 					}
 				}
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-				
+
 			}
-			
+
 		});
 
 		// Set the control to the base container

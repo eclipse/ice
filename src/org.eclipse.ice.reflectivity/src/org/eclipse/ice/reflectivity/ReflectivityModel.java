@@ -126,9 +126,9 @@ public class ReflectivityModel extends Model {
 		names.add("Material ID");
 		names.add("Thickness (A)");
 		names.add("Roughness (A)");
-		names.add("Scattering Length Density (A^-2)");
-		names.add("Mu_abs (A^-2)");
-		names.add("Mu_inc (A^-1)");
+		names.add(Material.SCAT_LENGTH_DENSITY);
+		names.add(Material.MASS_ABS_COHERENT);
+		names.add(Material.MASS_ABS_INCOHERENT);
 		// Create the writable format to be used by the list
 		MaterialWritableTableFormat format = new MaterialWritableTableFormat(
 				names);
@@ -282,10 +282,10 @@ public class ReflectivityModel extends Model {
 		material.setProperty("Material ID", id);
 		material.setProperty("Thickness (A)", slab.thickness);
 		material.setProperty("Roughness (A)", slab.interfaceWidth);
-		material.setProperty("Scattering Length Density (A^-2)",
+		material.setProperty(Material.SCAT_LENGTH_DENSITY,
 				slab.scatteringLength);
-		material.setProperty("Mu_abs (A^-2)", slab.trueAbsLength);
-		material.setProperty("Mu_inc (A^-1)", slab.incAbsLength);
+		material.setProperty(Material.MASS_ABS_COHERENT, slab.trueAbsLength);
+		material.setProperty(Material.MASS_ABS_INCOHERENT, slab.incAbsLength);
 		return material;
 	}
 
