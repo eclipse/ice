@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Frame;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -22,13 +19,11 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
-import org.eclipse.ice.viz.service.paraview.web.util.InteractiveRenderPanel;
+import org.eclipse.ice.viz.service.paraview.widgets.ParaViewCanvas;
+import org.eclipse.ice.viz.service.paraview.widgets.ParaViewMouseAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -40,7 +35,8 @@ import org.eclipse.swt.widgets.ToolBar;
  * @author Jordan Deyton
  *
  */
-public class ParaViewProxyRender extends ConnectionPlotRender<IParaViewWebClient> {
+public class ParaViewProxyRender extends
+		ConnectionPlotRender<IParaViewWebClient> {
 
 	// TODO If the data source (i.e. IParaViewProxy) is changed, then a new
 	// render panel will need to be created and pointed to that proxy's view ID.
@@ -52,16 +48,21 @@ public class ParaViewProxyRender extends ConnectionPlotRender<IParaViewWebClient
 
 	/**
 	 * The current proxy rendered by this class. The lifecycle of the
-	 * {@link #renderPanel} is dependent on this proxy as it is tied to the
-	 * proxy's underlying view ID.
+	 * {@link #canvas} is dependent on this proxy as it is tied to the proxy's
+	 * underlying view ID.
 	 */
 	private IParaViewProxy proxy;
 
 	// ---- UI Components ---- //
 	/**
-	 * The embedded panel that is used to render the remote ParaView view.
+	 * The canvas that is used to render the remote ParaView view.
 	 */
-	private InteractiveRenderPanel renderPanel;
+	private ParaViewCanvas canvas;
+	/**
+	 * The mouse event listener that triggers updates (movement, scrolling,
+	 * dragging, etc.) for the {@link #canvas}.
+	 */
+	private ParaViewMouseAdapter canvasMouseListener;
 
 	/**
 	 * The {@code ToolBarManager} that will contain the plot actions that can
@@ -121,7 +122,6 @@ public class ParaViewProxyRender extends ConnectionPlotRender<IParaViewWebClient
 			throw new Exception("The file could not be opened and rendered.");
 		}
 
-		// ---- Create a container for the render panel. ---- //
 		// Create the overall container.
 		Composite plotContainer = new Composite(parent, style);
 		plotContainer.setBackground(parent.getBackground());
@@ -141,35 +141,19 @@ public class ParaViewProxyRender extends ConnectionPlotRender<IParaViewWebClient
 		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		fillToolBar(toolBarManager, connection);
 
-		// Since the ParaView widget is built on AWT, we will need to use the
-		// SWT_AWT bridge below.
-
-		// Create the Composite that will contain the embedded ParaView widget.
-		Composite composite = new Composite(plotContainer, SWT.EMBEDDED
-				| SWT.DOUBLE_BUFFERED);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		// Create the AWT Frame to contain the ParaView widget.
-		Frame frame = SWT_AWT.new_Frame(composite);
-		frame.setLayout(new BorderLayout());
-
-		// When the Composite is resized, the ParaView widget will need to be
-		// refreshed.
-		composite.addControlListener(new ControlAdapter() {
-			@Override
-			public void controlResized(ControlEvent e) {
-				if (renderPanel != null) {
-					renderPanel.dirty();
-				}
-			}
-		});
-		// -------------------------------------------------- //
-
-		// Create the render panel.
+		// Create the ParaView Canvas.
 		this.proxy = proxy;
-		renderPanel = new InteractiveRenderPanel(connection, proxy.getViewId(),
-				4, 80, 1);
-		frame.add(renderPanel, BorderLayout.CENTER);
+		canvas = new ParaViewCanvas(plotContainer, SWT.NONE);
+		canvas.setBackground(parent.getBackground());
+		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		canvas.setClient(connection);
+		canvas.setViewId(proxy.getViewId());
+		canvas.refresh();
+
+		// Add mouse controls to the canvas.
+		canvasMouseListener = new ParaViewMouseAdapter(connection,
+				proxy.getViewId(), canvas);
+		canvasMouseListener.setCanvas(canvas);
 
 		// Update the ToolBar based on the current proxy.
 		refreshToolBar(toolBarManager);
@@ -196,20 +180,15 @@ public class ParaViewProxyRender extends ConnectionPlotRender<IParaViewWebClient
 		// If the proxy is changed, we need to re-create the render panel. This
 		// is because the render panel is linked to a specific view ID.
 		if (proxy != this.proxy) {
-			// Get the parent Frame from the render panel.
-			Container frame = renderPanel.getParent();
-
-			// Remove the previous render panel.
-			frame.remove(renderPanel);
-
 			// Update the reference to the proxy.
 			this.proxy = proxy;
 
-			// Create a new render panel.
-			renderPanel = new InteractiveRenderPanel(connection,
-					proxy.getViewId(), 4, 80, 1);
-			frame.add(renderPanel, BorderLayout.CENTER);
-
+			// Reset the Canvas' client and view ID.
+			canvas.setClient(connection);
+			canvas.setViewId(proxy.getViewId());
+			canvas.refresh();
+			canvasMouseListener.setViewId(proxy.getViewId());
+			
 			// Update the ToolBar based on the current proxy.
 			refreshToolBar(toolBar);
 		}
@@ -320,7 +299,7 @@ public class ParaViewProxyRender extends ConnectionPlotRender<IParaViewWebClient
 	}
 
 	/**
-	 * Refreshes the {@link #renderPanel} after the task completes. Waiting is
+	 * Refreshes the {@link #canvas} after the task completes. Waiting is
 	 * performed on a separate thread.
 	 * 
 	 * @param task
@@ -332,7 +311,7 @@ public class ParaViewProxyRender extends ConnectionPlotRender<IParaViewWebClient
 			public void run() {
 				try {
 					task.get();
-					renderPanel.dirty();
+					canvas.refresh();
 				} catch (InterruptedException | ExecutionException e) {
 					e.printStackTrace();
 				}
@@ -340,5 +319,6 @@ public class ParaViewProxyRender extends ConnectionPlotRender<IParaViewWebClient
 		});
 		thread.setDaemon(true);
 		thread.start();
+		return;
 	}
 }
