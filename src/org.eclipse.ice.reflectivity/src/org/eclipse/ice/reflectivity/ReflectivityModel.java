@@ -158,7 +158,7 @@ public class ReflectivityModel extends Model {
 		DataComponent paramComponent = new DataComponent();
 		paramComponent.setDescription("Files and Parameters for calculation");
 		paramComponent.setName("Parameters and Files");
-		paramComponent.setId(1);
+		paramComponent.setId(paramsCompId);
 		form.addComponent(paramComponent);
 
 		// Add a file entry for the wave vector file
@@ -177,10 +177,22 @@ public class ReflectivityModel extends Model {
 		paramComponent.addEntry(fileEntry);
 
 		// Add an entry for the number of layers
-		// Entry numLayersEntry = new Entry() {
-		// @Override
-		// p
-		// }
+		Entry numLayersEntry = new Entry() {
+			@Override
+			protected void setup() {
+				// The number of layers should never be less than one and I
+				// imagine that 100 is a good upper limit.
+				allowedValueType = AllowedValueType.Continuous;
+				allowedValues.add("1");
+				allowedValues.add("100");
+				return;
+			}
+		};
+		numLayersEntry.setId(2);
+		numLayersEntry.setName("Roughness");
+		numLayersEntry.setDescription("Number of layers of "
+				+ "roughness per material layer.");
+		paramComponent.addEntry(numLayersEntry);
 
 		// Configure a list of property names for the materials
 		ArrayList<String> names = new ArrayList<String>();
@@ -196,7 +208,7 @@ public class ReflectivityModel extends Model {
 
 		// Create the list that will contain all of the material information
 		ListComponent<Material> matList = new ListComponent<Material>();
-		matList.setId(2);
+		matList.setId(matListId);
 		matList.setName("Reflectivity Input Data");
 		matList.setDescription("Reflectivity Input Data");
 		matList.setTableFormat(format);
@@ -384,7 +396,7 @@ public class ReflectivityModel extends Model {
 		if (database != null) {
 			// Grab the component
 			ListComponent<Material> matList = (ListComponent<Material>) form
-					.getComponent(1);
+					.getComponent(matListId);
 			// Set the database as an element source
 			matList.setElementSource(database);
 		}
