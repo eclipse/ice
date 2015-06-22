@@ -22,6 +22,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -71,25 +74,30 @@ public class ReflectivityModel extends Model {
 	 */
 	@Override
 	public FormStatus process(String actionName) {
-		
+
 		// Local Declarations
 		FormStatus retVal;
-		
+
 		if (actionName.equals(processActionName)) {
-			
+
 			// Convert the material table to slabs
-			
+
+			// Get the roughness parameter, dQ, dQ/Q and the wavelength
+
+			// Get and load the wave vector and related information
+
 			// Calculate the reflectivity
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
-			//calculator.getReflectivityProfile(slabs, numRough, deltaQ0, deltaQ1ByQ, wavelength, waveVector, getRQ4);
-			
+			// calculator.getReflectivityProfile(slabs, numRough, deltaQ0,
+			// deltaQ1ByQ, wavelength, waveVector, getRQ4);
+
 			// Write the files
-			
+
 			retVal = FormStatus.InfoError;
 		} else {
 			retVal = super.process(actionName);
 		}
-		
+
 		return retVal;
 	}
 
@@ -117,8 +125,32 @@ public class ReflectivityModel extends Model {
 		super.setupForm();
 
 		// FIXME! - Add a data component for the number of rough layers and the
-		// input
-		// file
+		// input file
+		DataComponent paramComponent = new DataComponent();
+		paramComponent.setDescription("Files and Parameters for calculation");
+		paramComponent.setName("Parameters and Files");
+		paramComponent.setId(1);
+		form.addComponent(paramComponent);
+
+		// Add a file entry for the wave vector file
+		Entry fileEntry = new Entry() {
+			@Override
+			protected void setup() {
+				// Only set the allowed value type for this. No other work required.
+				allowedValueType = AllowedValueType.File;
+				return;
+			}
+		};
+		fileEntry.setId(1);
+		fileEntry.setName("Wave Vector (Q) file");
+		fileEntry.setDescription("Wave vector information for this problem.");
+		paramComponent.addEntry(fileEntry);
+		
+		// Add an entry for the number of layers
+//		Entry numLayersEntry = new Entry() {
+//			@Override
+//			p
+//		}
 
 		// Configure a list of property names for the materials
 		ArrayList<String> names = new ArrayList<String>();
@@ -134,7 +166,7 @@ public class ReflectivityModel extends Model {
 
 		// Create the list that will contain all of the material information
 		ListComponent<Material> matList = new ListComponent<Material>();
-		matList.setId(1);
+		matList.setId(2);
 		matList.setName("Reflectivity Input Data");
 		matList.setDescription("Reflectivity Input Data");
 		matList.setTableFormat(format);

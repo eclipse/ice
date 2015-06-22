@@ -501,7 +501,7 @@ public class JobLauncherForm extends Form {
 		Entry fileEntry = new Entry() {
 			// Setup the filenames
 			@Override
-			public void setup() {
+			protected void setup() {
 				// The input file should be one of the files in the "inputFiles"
 				// array.
 				this.allowedValues = finalFiles;
