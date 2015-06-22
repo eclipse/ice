@@ -12,8 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.net.URL;
+import java.util.ArrayList;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -29,6 +35,8 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.jface.action.Action;
@@ -38,6 +46,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -46,6 +56,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -79,6 +90,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * Builder.
 	 */
 	private Entry appsEntry;
+
+	private DataComponent postProcessors;
 
 	// ---- Plant Page variables ---- //
 	/**
@@ -122,9 +135,163 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			DataComponent dataComp = (DataComponent) form
 					.getComponent(MOOSEModel.fileDataComponentId);
 			appsEntry = dataComp.retrieveEntry("MOOSE-Based Application");
+			postProcessors = (DataComponent) form.getComponent(MOOSE.ppDataId);
 		}
 
 		return;
+	}
+
+	/*
+	 * This method is overridden to provide an additional SelectionAdapter to
+	 * the Go button that automatically displays requested Postprocessors.
+	 * 
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.ICEFormEditor#createHeaderContents(org
+	 * .eclipse.ui.forms.IManagedForm)
+	 */
+	@Override
+	protected void createHeaderContents(IManagedForm headerForm) {
+
+		// Do the regular create Header Contents
+		super.createHeaderContents(headerForm);
+
+		// Add another SelectionAdapter that kicks off a new
+		// thread to handle automatically showing specified
+		// Postprocessors.
+		goButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				if ("Launch the Job".equals(processName)) {
+					Thread ppThread = new Thread(new Runnable() {
+						public void run() {
+
+							// Local Declarations
+							ArrayList<ICEResource> resourceList = new ArrayList<ICEResource>();
+							ArrayList<String> enabledPPs = new ArrayList<String>();
+							ResourceComponent resources;
+
+							// / Loop over the Postprocessors and add their
+							// names
+							// to the String list if they are enabled by the
+							// user
+							for (Entry postProcessor : postProcessors
+									.retrieveAllEntries()) {
+								if ("yes".equals(postProcessor.getValue())) {
+									enabledPPs.add(postProcessor.getName());
+								}
+							}
+
+							// If we have enabled Postprocessors, then let's
+							// display
+							// them now that the user has selected Go
+							if (!enabledPPs.isEmpty()) {
+
+								// Kick off a little event loop that loads up a
+								// list of the Resources corresponding to the
+								// enabled
+								// Postprocessors.
+								while (resourceList.size() != enabledPPs.size()) {
+
+									// Grab the ResourceComponent
+									resources = resourceComponentPage
+											.getResourceComponent();
+
+									// Sleep a little bit
+									try {
+										Thread.sleep(500);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+
+									// Loop over the ICEResources and add them
+									// to the list if they correspond to enabled
+									// Postprocessors and have valid data
+									for (ICEResource r : resources
+											.getResources()) {
+										if (enabledPPs.contains(FilenameUtils
+												.removeExtension(r.getName()))
+												&& hasValidPostprocessorData(r)) {
+											resourceList.add(r);
+										}
+									}
+								}
+
+								// Now that we have the total list of
+								// ICEResources
+								// let's show the Output FormPage, which should
+								// be index 1,
+								// and then show the ICEResource on the
+								// ICEResourcePage.
+								for (final ICEResource r : resourceList) {
+
+									// Kick off on UI thread
+									PlatformUI.getWorkbench().getDisplay()
+											.asyncExec(new Runnable() {
+												public void run() {
+													try {
+														MOOSEFormEditor.this
+																.setActivePage(1);
+
+														resourceComponentPage
+																.showResource(r);
+													} catch (PartInitException e) {
+														e.printStackTrace();
+													}
+												}
+
+											});
+
+								}
+							}
+						}
+					});
+
+					// Start that thread.
+					ppThread.start();
+				}
+
+			}
+		});
+		
+		return;
+	}
+
+	/**
+	 * This private method is used to decide whether or not the given
+	 * ICEResource contains valid Postprocessor data to plot. Basically, for now
+	 * it naively checks that there is more than one line in the file, because
+	 * if there was 1 or less, then we would have no data or just the feature
+	 * line describing the data.
+	 * 
+	 * @param r
+	 * @return validData Whether or not there is valid data in the resource
+	 */
+	private boolean hasValidPostprocessorData(ICEResource r) {
+		
+		// Simply count the number of lines in the resource file
+		try {
+			LineNumberReader reader = new LineNumberReader(new FileReader(r
+					.getPath().getPath()));
+			int cnt = 0;
+			String lineRead = "";
+			while ((lineRead = reader.readLine()) != null) {
+			}
+
+			cnt = reader.getLineNumber();
+			reader.close();
+
+			if (cnt <= 1) {
+				return false;
+			} else {
+				return true;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	/**

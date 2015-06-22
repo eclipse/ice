@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.ice.client.widgets.moose;singleton:=true
 Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.jme3.math,
+ org.apache.commons.io;version="2.0.1",
  org.eclipse.cdt.core,
  org.eclipse.cdt.core.model,
  org.eclipse.cdt.core.model.util,

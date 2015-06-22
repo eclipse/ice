@@ -256,7 +256,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 *            The resource to render. Assumed not to be {@code null}.
 	 * @throws PartInitException
 	 */
-	void showResource(ICEResource resource) throws PartInitException {
+	public void showResource(ICEResource resource) throws PartInitException {
 
 		// TODO This method has several return statements, making it a little
 		// hard to read. It should be updated and simplified.

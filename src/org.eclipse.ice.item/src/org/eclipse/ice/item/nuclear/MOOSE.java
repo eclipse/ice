@@ -80,6 +80,9 @@ public class MOOSE extends Item {
 	@XmlTransient()
 	private DataComponent modelFiles;
 
+	@XmlTransient()
+	private DataComponent postProcessorsData;
+
 	/**
 	 * Reference to the Model's input tree.
 	 */
@@ -92,6 +95,12 @@ public class MOOSE extends Item {
 	 */
 	@XmlTransient()
 	private HashMap<String, ICEResource> postProcessorResources;
+
+	/**
+	 * Reference to the id of the DataComponent containign the Postprocessors 
+	 * the user would like to automatically display.
+	 */
+	public static final int ppDataId = 10;
 
 	/**
 	 * Nullary constructor.
@@ -131,6 +140,20 @@ public class MOOSE extends Item {
 
 		// Initialize the postProcessor Mapping
 		postProcessorResources = new HashMap<String, ICEResource>();
+
+		// Create the Postprocessors DataComponent
+		postProcessorsData = new DataComponent();
+		postProcessorsData.setName("Show Postprocessors?");
+		postProcessorsData
+				.setDescription("Enable the Postprocessors you would like to monitor in real time.");
+		postProcessorsData.setId(MOOSE.ppDataId);
+		form.addComponent(postProcessorsData);
+
+		TreeComposite ppTree;
+		if ((ppTree = getTreeByName("Postprocessors")) != null) {
+			setupPostprocessorData(ppTree);
+		}
+
 	}
 
 	/**
@@ -213,27 +236,11 @@ public class MOOSE extends Item {
 			registered = true;
 		}
 
-		/*
-		// Get a reference to the Launchers files component
-		DataComponent launcherFiles = (DataComponent) mooseLauncher
-				.getForm().getComponent(1);
-
-		// Grab the file name the user has specified for the input file
-		String fileName = modelFiles.retrieveEntry("Output File Name")
-				.getValue();
-
-		// Write the Moose file if it doesn't exist
-		status = mooseModel.process("Write MOOSE File");
-		if (!status.equals(FormStatus.Processed)) {
-			return status;
+		TreeComposite ppTree;
+		if ((ppTree = getTreeByName("Postprocessors")) != null) {
+			setupPostprocessorData(ppTree);
 		}
 
-		// Set the value of the input file to the user-specified
-		// file name
-		launcherFiles.retrieveEntry("Input File").setValue(fileName);
-
-		// Update the MooseLauncher's set of input files...
-		mooseLauncher.update(launcherFiles.retrieveEntry("Input File"));*/
 		return status;
 	}
 
@@ -452,6 +459,20 @@ public class MOOSE extends Item {
 
 		}
 
+		// Set up the postProcessorData DataComponent to contain 
+		// a list of Boolean Discrete Entries for each Postprocessor
+		postProcessorsData = new DataComponent();
+		postProcessorsData.setName("Show Postprocessors?");
+		postProcessorsData
+				.setDescription("Enable the Postprocessors you would like to monitor in real time.");
+		postProcessorsData.setId(MOOSE.ppDataId);
+		form.addComponent(postProcessorsData);
+
+		TreeComposite ppTree;
+		if ((ppTree = getTreeByName("Postprocessors")) != null) {
+			setupPostprocessorData(ppTree);
+		}
+		
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
 
@@ -699,6 +720,31 @@ public class MOOSE extends Item {
 
 		return true;
 	}
+	
+	/**
+	 * This private method takes the Postprocessor tree node 
+	 * and populates the postProcessorData DataComponent. 
+	 * 
+	 * @param ppTree
+	 */
+	private void setupPostprocessorData(TreeComposite ppTree) {
+		postProcessorsData.clearEntries();
+		for (int i = 0; i < ppTree.getNumberOfChildren(); i++) {
+			Entry ppEntry = new Entry() {
+				@Override
+				public void setup() {
+					allowedValueType = AllowedValueType.Discrete;
+					allowedValues.add("yes");
+					allowedValues.add("no");
+					defaultValue = "no";
+				}
+			};
+			ppEntry.setName(ppTree.getChildAtIndex(i).getName());
+			ppEntry.setDescription("Select whether this Postprocessor should be displayed in real-time.");
+			ppEntry.setId(i);
+			postProcessorsData.addEntry(ppEntry);
+		}
+	}
 
 	/**
 	 * <p>
@@ -809,7 +855,7 @@ public class MOOSE extends Item {
 		modelFiles = (DataComponent) form.getComponent(1);
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
-		
+
 		return;
 	}
 
