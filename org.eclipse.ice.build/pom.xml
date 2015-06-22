@@ -308,6 +308,7 @@
 		<module>../tests/org.eclipse.ice.client.widgets.reactoreditor.sfr.test</module>
 		<module>../src/org.eclipse.ice.client.widgets.rcp</module>
 		<module>../tests/org.eclipse.ice.client.widgets.test</module>
+		<module>../tests/org.eclipse.ice.client.widgets.test.utils</module>
 		<module>../tests/org.eclipse.ice.client.widgets.rcp.test</module>
 		<module>../src/org.eclipse.ice.client.rcp</module>
 		<module>../src/org.eclipse.ice.datastructures</module>
