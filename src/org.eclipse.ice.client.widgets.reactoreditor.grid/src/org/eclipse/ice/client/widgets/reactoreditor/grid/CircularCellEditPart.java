@@ -12,9 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.grid;
 
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 
 /**
  * This class provides the Controller for a {@link Cell}. In particular, it is

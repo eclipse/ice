@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.perspective;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.ice.datastructures.ICEObject.Composite;
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.io.hdf.HdfIOFactory;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWRComponent;
@@ -35,13 +41,6 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRAssembly;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
 import org.eclipse.ice.reactorAnalyzer.ReactorReaderFactory;
-import org.eclipse.ice.datastructures.ICEObject.Composite;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.resource.ICEResource;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -113,6 +112,7 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 		 * Gets the parent object for the IReactorComponent. It may be an
 		 * LWRComponent or an SFRComponent.
 		 */
+		@Override
 		public Object getParent(IReactorComponent component) {
 			parent = null;
 
@@ -127,46 +127,55 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 		}
 
 		// ---- Implements ILWRComponentVisitor ---- //
+		@Override
 		public void visit(PressurizedWaterReactor lwrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(BWReactor lwrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(FuelAssembly lwrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(RodClusterAssembly lwrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(LWRRod lwrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(ControlBank lwrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(IncoreInstrument lwrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(Tube lwrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(Ring lwrComp) {
 			// TODO Auto-generated method stub
 
@@ -175,46 +184,55 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 		// ----------------------------------------- //
 
 		// ---- Implements ISFRComponentVisitor ---- //
+		@Override
 		public void visit(SFReactor sfrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(SFRAssembly sfrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(PinAssembly sfrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(ReflectorAssembly sfrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(SFRPin sfrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(SFRRod sfrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(MaterialBlock sfrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(Material sfrComp) {
 			// TODO Auto-generated method stub
 
 		}
 
+		@Override
 		public void visit(org.eclipse.ice.reactor.sfr.core.assembly.Ring sfrComp) {
 			// TODO Auto-generated method stub
 
@@ -239,6 +257,7 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 		 * Gets the child objects for the IReactorComponent. If there are no
 		 * children, the array will be empty.
 		 */
+		@Override
 		public Object[] getChildren(IReactorComponent component) {
 
 			children = null;
@@ -267,38 +286,47 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 		}
 
 		// ---- Implements ILWRComponentVisitor ---- //
+		@Override
 		public void visit(PressurizedWaterReactor lwrComp) {
 			children = lwrComp.getComponents().toArray();
 		}
 
+		@Override
 		public void visit(BWReactor lwrComp) {
 			children = lwrComp.getComponents().toArray();
 		}
 
+		@Override
 		public void visit(FuelAssembly lwrComp) {
 			children = lwrComp.getComponents().toArray();
 		}
 
+		@Override
 		public void visit(RodClusterAssembly lwrComp) {
 			children = lwrComp.getComponents().toArray();
 		}
 
+		@Override
 		public void visit(LWRRod lwrComp) {
 			// Nothing to do... yet.
 		}
 
+		@Override
 		public void visit(ControlBank lwrComp) {
 			// Nothing to do... yet.
 		}
 
+		@Override
 		public void visit(IncoreInstrument lwrComp) {
 			// Nothing to do... yet.
 		}
 
+		@Override
 		public void visit(Tube lwrComp) {
 			// Nothing to do... yet.
 		}
 
+		@Override
 		public void visit(Ring lwrComp) {
 			// Nothing to do... yet.
 		}
@@ -306,48 +334,59 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 		// ----------------------------------------- //
 
 		// ---- Implements ISFRComponentVisitor ---- //
+		@Override
 		public void visit(SFReactor sfrComp) {
 			children = sfrComp.getComponents().toArray();
 		}
 
+		@Override
 		public void visit(SFRAssembly sfrComp) {
 			children = sfrComp.getComponents().toArray();
 		}
 
+		@Override
 		public void visit(PinAssembly sfrComp) {
 			children = sfrComp.getComponents().toArray();
 		}
 
+		@Override
 		public void visit(ReflectorAssembly sfrComp) {
 			children = sfrComp.getComponents().toArray();
 		}
 
+		@Override
 		public void visit(SFRPin sfrComp) {
 			// Nothing to do... yet.
 		}
 
+		@Override
 		public void visit(SFRRod sfrComp) {
 			// Nothing to do... yet.
 		}
 
+		@Override
 		public void visit(MaterialBlock sfrComp) {
 			// Nothing to do... yet.
 		}
 
+		@Override
 		public void visit(Material sfrComp) {
 			// Nothing to do... yet.
 		}
 
+		@Override
 		public void visit(org.eclipse.ice.reactor.sfr.core.assembly.Ring sfrComp) {
 			// Nothing to do... yet.
 		}
 		// ----------------------------------------- //
 	};
 
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		return;
 	}
 
+	@Override
 	public void dispose() {
 		return;
 	}
@@ -357,6 +396,7 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 	 * otherwise. ICEResources and some IReactorComponents (plants, reactors,
 	 * and assemblies) should have children.
 	 */
+	@Override
 	public boolean hasChildren(Object element) {
 
 		boolean hasChildren = false;
@@ -373,6 +413,7 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 	 * Returns the parent object so that this element's node can be expanded.
 	 * For instance, an assembly's parent might be a reactor core.
 	 */
+	@Override
 	public Object getParent(Object element) {
 
 		Object parent = null;
@@ -388,6 +429,7 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 	 * Gets an array of elements to display for the given input. The input to
 	 * this tree should be a list of {@link ICEResource}s.
 	 */
+	@Override
 	public Object[] getElements(Object inputElement) {
 
 		// Local Declaration
@@ -409,6 +451,7 @@ public class ReactorTreeContentProvider implements ITreeContentProvider {
 	 * IReactorComponents, and some IReactorComponents will have other
 	 * IReactorComponents as children (e.g., assemblies have pins).
 	 */
+	@Override
 	public Object[] getChildren(Object parentElement) {
 
 		Object[] children;

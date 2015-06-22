@@ -15,6 +15,7 @@ package org.eclipse.ice.datastructures.test;
 import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.Hex;
+import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
 import org.eclipse.ice.datastructures.form.mesh.IMeshPartVisitor;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.mesh.Polygon;
@@ -74,38 +75,47 @@ public class TestMeshVisitor implements IMeshPartVisitor {
 		visited = false;
 	}
 
+	@Override
 	public void visit(MeshComponent mesh) {
 		// Do nothing by default.
 	}
 
+	@Override
 	public void visit(Polygon polygon) {
 		// Do nothing by default.
 	}
 
+	@Override
 	public void visit(Quad quad) {
 		// Do nothing by default.
 	}
 
+	@Override
 	public void visit(Hex hex) {
 		// Do nothing by default.
 	}
 
+	@Override
 	public void visit(Edge edge) {
 		// Do nothing by default.
 	}
 
+	@Override
 	public void visit(BezierEdge edge) {
 		// Do nothing by default.
 	}
 
+	@Override
 	public void visit(PolynomialEdge edge) {
 		// Do nothing by default.
 	}
 
+	@Override
 	public void visit(Vertex vertex) {
 		// Do nothing by default.
 	}
 
+	@Override
 	public void visit(Object object) {
 		// Do nothing by default.
 	}

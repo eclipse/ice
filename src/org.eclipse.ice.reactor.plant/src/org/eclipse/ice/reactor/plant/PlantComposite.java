@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.Composite;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.Composite;
 
 /**
  * A PlantComposite is a container for {@link PlantComponent}s. Duplicate
@@ -63,6 +63,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * Regular {@link Component}s cannot be added to this {@link Composite}. Use
 	 * {@link #addPlantComponent(PlantComponent)}.
 	 */
+	@Override
 	public void addComponent(Component child) {
 		// Regular components cannot be added.
 	}
@@ -101,6 +102,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	/**
 	 * Removes the {@link PlantComponent} with the specified ID.
 	 */
+	@Override
 	public void removeComponent(int childId) {
 
 		// Try to remove the component with the ID.
@@ -124,6 +126,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * Gets the Component with the specified ID. To avoid having to cast the
 	 * return value, use {@link #getPlantComponent(int)}.
 	 */
+	@Override
 	public Component getComponent(int childId) {
 		return components.get(childId);
 	}
@@ -143,6 +146,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	/**
 	 * Gets the number of {@link PlantComponent}s stored in this PlantComposite.
 	 */
+	@Override
 	public int getNumberOfComponents() {
 		return components.size();
 	}
@@ -151,6 +155,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * Gets a list of the Components stored in this PlantComposite. To avoid
 	 * having to cast the return values, use {@link #getPlantComponents()}.
 	 */
+	@Override
 	public ArrayList<Component> getComponents() {
 		return new ArrayList<Component>(components.values());
 	}
@@ -262,6 +267,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * org.eclipse.ice.reactor.plant.PlantComponent#accept(org.eclipse.ice.reactor
 	 * .plant.IPlantComponentVisitor)
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);
@@ -274,6 +280,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * @see
 	 * org.eclipse.ice.reactor.plant.PlantComponent#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, assume the objects are not equivalent.
@@ -300,6 +307,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * 
 	 * @see org.eclipse.ice.reactor.plant.PlantComponent#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		int hash = super.hashCode();
 		hash = 31 * hash + components.hashCode();
@@ -311,6 +319,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 * 
 	 * @see org.eclipse.ice.reactor.plant.PlantComponent#clone()
 	 */
+	@Override
 	public Object clone() {
 		PlantComposite clone = new PlantComposite();
 		clone.copy(this);

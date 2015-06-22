@@ -12,12 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.eclipse.ice.client.widgets.ExtraInfoDialog;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.junit.Test;
 
 /**
  * <p>

@@ -73,6 +73,7 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 	 * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
 	 * .viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
 		// TODO Review the logic here...
@@ -92,6 +93,7 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 	 * This operation returns the parent of a given TreeComposite or a Component
 	 * that is a child data node of a TreeComposite.
 	 */
+	@Override
 	public Object getParent(Object element) {
 
 		Object parent = null;
@@ -130,6 +132,7 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 	 * specified index.
 	 * </p>
 	 */
+	@Override
 	public void updateElement(Object parent, int index) {
 
 		// Make sure the parent element is a TreeComposite and cast it if so.
@@ -174,6 +177,7 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 	 * This method needs to call {@link TreeViewer#setChildCount(Object, int)}
 	 * if the current child count for the specified element changes.
 	 */
+	@Override
 	public void updateChildCount(Object element, int currentChildCount) {
 
 		// By default, elements should have no children.
@@ -198,6 +202,7 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 	 * 
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
 		// Nothing to dispose yet.
 	}

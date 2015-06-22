@@ -143,6 +143,7 @@ public class VisitEditorInput implements IEditorInput {
 	 *            The other object to compare this to
 	 * @return True if this object equals the input: false otherwise.
 	 */
+	@Override
 	public boolean equals(Object otherInput) {
 
 		// Just return if the references area equal
@@ -163,6 +164,7 @@ public class VisitEditorInput implements IEditorInput {
 	/**
 	 * Compute and return the hash code for instances of this object
 	 */
+	@Override
 	public int hashCode() {
 
 		// Call Object#hashCode()

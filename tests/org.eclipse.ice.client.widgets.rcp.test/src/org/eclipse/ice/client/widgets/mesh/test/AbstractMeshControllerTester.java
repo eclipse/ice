@@ -16,13 +16,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import org.eclipse.ice.client.widgets.mesh.AbstractMeshController;
-import org.eclipse.ice.client.widgets.mesh.StateType;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.ice.client.widgets.mesh.AbstractMeshController;
+import org.eclipse.ice.client.widgets.mesh.StateType;
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.junit.Test;
 
 import com.jme3.scene.Node;

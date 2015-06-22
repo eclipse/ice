@@ -12,12 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test.moose;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import org.junit.Test;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.item.utilities.moose.Parameter;
+import org.junit.Test;
 
 /**
  * This operation checks the MOOSE Parameter class.

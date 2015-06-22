@@ -12,11 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.item.utilities.trilinos;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.Entry;
 
 /**
  * <p>
@@ -92,6 +93,7 @@ public class Parameter {
 
 		// Create the Entry
 		Entry entry = new Entry() {
+			@Override
 			protected void setup() {
 				// Set the details
 				allowedValueType = Parameter.this.allowedType;

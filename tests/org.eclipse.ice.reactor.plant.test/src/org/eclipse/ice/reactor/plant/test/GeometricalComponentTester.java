@@ -519,6 +519,7 @@ public class GeometricalComponentTester {
 			return notified.getAndSet(false);
 		}
 
+		@Override
 		public void update(IUpdateable component) {
 			notified.set(true);
 		}

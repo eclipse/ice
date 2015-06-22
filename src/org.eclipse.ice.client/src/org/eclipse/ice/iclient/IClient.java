@@ -12,12 +12,12 @@
 *******************************************************************************/
 package org.eclipse.ice.iclient;
 
-import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
-import org.eclipse.ice.core.iCore.ICore;
-import java.util.ArrayList;
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import java.net.URI;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import java.util.ArrayList;
+
+import org.eclipse.ice.core.iCore.ICore;
+import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
 
 /** 
  * <p>IClient is an interface that must be realized by clients of ICE. It describes the possible interactions between the Eclipse User and ICE.</p>

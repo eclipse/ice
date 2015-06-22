@@ -42,6 +42,7 @@ import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -52,7 +53,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.swt.layout.GridData;
 
 /**
  * This is a FormPage that can render ListComponents into pages usable by the
@@ -111,6 +111,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 * org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui
 	 * .forms.IManagedForm)
 	 */
+	@Override
 	protected void createFormContent(IManagedForm managedForm) {
 
 		// Get the parent form and the toolkit

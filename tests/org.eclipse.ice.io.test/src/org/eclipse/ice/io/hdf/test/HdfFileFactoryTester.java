@@ -12,19 +12,18 @@
  *******************************************************************************/
 package org.eclipse.ice.io.hdf.test;
 
-import static org.junit.Assert.*;
-
-import org.eclipse.ice.io.hdf.HdfFileFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.IOException;
 
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.eclipse.ice.io.hdf.HdfFileFactory;
 import org.junit.Test;
 
 /**

@@ -12,17 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.CircularCellEditPart;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.IGridListener;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.requests.SelectionRequest;
 import org.eclipse.gef.tools.SelectEditPartTracker;
+import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.CircularCellEditPart;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.IGridListener;
 import org.eclipse.ice.reactor.LWRComponent;
 
 /**

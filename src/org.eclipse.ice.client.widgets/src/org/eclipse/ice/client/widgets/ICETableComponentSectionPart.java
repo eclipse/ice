@@ -353,6 +353,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		// Set an expansion listener in order to control the
 		// sectionPart's visibility to the user.
 		section.addExpansionListener(new ExpansionAdapter() {
+			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
 				parentForm.reflow(true);
 			}
@@ -777,6 +778,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 	 * 
 	 * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
 	 */
+	@Override
 	public void refresh() {
 		super.refresh();
 
@@ -791,6 +793,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
 	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// Updating the view since the underlying data has changed

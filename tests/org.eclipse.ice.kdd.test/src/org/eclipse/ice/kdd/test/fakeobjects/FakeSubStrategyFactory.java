@@ -37,6 +37,7 @@ public class FakeSubStrategyFactory extends SubStrategyFactory {
 	 * @param props
 	 * @return
 	 */
+	@Override
 	public GodfreySubStrategy createSubStrategy(String name,
 			HashMap<Integer, ArrayList<IDataMatrix>> pinPowers,
 			HashMap<Integer, ArrayList<IDataMatrix>> refPowers,

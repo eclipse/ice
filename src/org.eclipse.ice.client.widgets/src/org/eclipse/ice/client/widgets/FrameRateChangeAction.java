@@ -118,6 +118,7 @@ public class FrameRateChangeAction extends Action {
 	 * The function called whenever the item is selected from the drop-down.
 	 * </p>
 	 */
+	@Override
 	public void run() {
 		// Stop if currently running
 		if (parentButton.isInPlayState()) {
@@ -128,6 +129,7 @@ public class FrameRateChangeAction extends Action {
 		if (this.isCustom) {
 			// Present a dialog box to enter/select the frame rate
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					Shell shell = PlatformUI.getWorkbench()
 							.getActiveWorkbenchWindow().getShell();

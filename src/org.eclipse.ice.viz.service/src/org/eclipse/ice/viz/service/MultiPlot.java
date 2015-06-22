@@ -147,6 +147,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
 	 */
+	@Override
 	public Map<String, String[]> getPlotTypes() throws Exception {
 		// If necessary, re-build the cache of plot types.
 		if (plotTypes == null) {
@@ -163,6 +164,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
 	 */
+	@Override
 	public int getNumberOfAxes() {
 		return 0;
 	}
@@ -204,6 +206,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getSourceHost()
 	 */
+	@Override
 	public String getSourceHost() {
 		return source.getHost();
 	}

@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.test;
 
+import java.util.ArrayList;
+
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
-import org.eclipse.ice.datastructures.form.Form;
-import java.util.ArrayList;
 
 /**
  * <p>
@@ -116,6 +118,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * </p>
 	 * 
 	 */
+	@Override
 	public void display() {
 
 		this.displayed = true;
@@ -149,6 +152,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * @see IObservableWidget#registerProcessListener(IProcessEventListener
 	 *      listener)
 	 */
+	@Override
 	public void registerProcessListener(IProcessEventListener listener) {
 
 		// Store the listener
@@ -167,6 +171,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * @see IObservableWidget#registerResourceProvider(ISimpleResourceProvider
 	 *      provider)
 	 */
+	@Override
 	public void registerResourceProvider(ISimpleResourceProvider provider) {
 		// TODO Auto-generated method stub
 
@@ -177,6 +182,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * 
 	 * @see IObservableWidget#notifyUpdateListeners()
 	 */
+	@Override
 	public void notifyUpdateListeners() {
 
 		for (IUpdateEventListener i : updateListeners) {
@@ -191,6 +197,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * 
 	 * @see IObservableWidget#notifyProcessListeners(String process)
 	 */
+	@Override
 	public void notifyProcessListeners(String process) {
 
 		for (IUpdateEventListener i : updateListeners) {
@@ -205,6 +212,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * 
 	 * @see IObservableWidget#notifyCancelListeners(String process)
 	 */
+	@Override
 	public void notifyCancelListeners(String process) {
 		// TODO Auto-generated method stub
 
@@ -215,6 +223,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * 
 	 * @see IFormWidget#setForm(Form form)
 	 */
+	@Override
 	public void setForm(Form form) {
 
 		widgetForm = form;
@@ -228,6 +237,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * 
 	 * @see IFormWidget#getForm()
 	 */
+	@Override
 	public Form getForm() {
 		return widgetForm;
 	}
@@ -237,6 +247,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * 
 	 * @see IFormWidget#updateStatus(String statusMessage)
 	 */
+	@Override
 	public void updateStatus(String statusMessage) {
 		// TODO Auto-generated method stub
 
@@ -247,6 +258,7 @@ public class FakeFormWidget implements IFormWidget {
 	 * 
 	 * @see IFormWidget#disable(boolean state)
 	 */
+	@Override
 	public void disable(boolean state) {
 		// TODO Auto-generated method stub
 

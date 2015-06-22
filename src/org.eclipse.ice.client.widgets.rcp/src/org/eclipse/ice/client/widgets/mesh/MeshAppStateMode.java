@@ -156,11 +156,13 @@ public abstract class MeshAppStateMode extends SimpleAppState implements
 	 * right mouse clicks controls.
 	 * </p>
 	 */
+	@Override
 	public void registerControls() {
 		InputManager input = appState.getApplication().getInputManager();
 		mouseClickAction.registerWithInput(input);
 	}
 
+	@Override
 	public void disableAppState() {
 
 		// If possible, unregister from the MeshAppState's chase camera.
@@ -182,6 +184,7 @@ public abstract class MeshAppStateMode extends SimpleAppState implements
 	 * and right mouse clicks controls.
 	 * </p>
 	 */
+	@Override
 	public void unregisterControls() {
 		mouseClickAction.unregisterFromInput();
 	}

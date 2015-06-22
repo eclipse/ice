@@ -15,11 +15,12 @@ package org.eclipse.ice.reactor;
 import java.net.URI;
 import java.util.ArrayList;
 
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.IHdfWriter;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.io.hdf.HdfFileFactory;
 import org.eclipse.ice.io.hdf.IHdfWriteable;
+import org.eclipse.ice.io.hdf.IHdfWriter;
 
 /**
  * <p>
@@ -40,6 +41,7 @@ public class LWRComponentWriter implements IHdfWriter {
 	 * 
 	 * @see IHdfWriter#write(IHdfWriteable iHdfWriteable, URI uri)
 	 */
+	@Override
 	public boolean write(IHdfWriteable iHdfWriteable, URI uri) {
 
 

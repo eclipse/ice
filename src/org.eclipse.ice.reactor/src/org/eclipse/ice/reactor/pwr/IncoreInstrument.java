@@ -119,6 +119,7 @@ public class IncoreInstrument extends LWRComponent {
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
 		// Get the children in super
@@ -147,6 +148,7 @@ public class IncoreInstrument extends LWRComponent {
 	 * @param iHdfReadable
 	 * @return
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
 		// If the child is null or not an instance of LWRComponent, then return
@@ -184,6 +186,7 @@ public class IncoreInstrument extends LWRComponent {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		IncoreInstrument instrument;
 		boolean retVal = false;
@@ -220,6 +223,7 @@ public class IncoreInstrument extends LWRComponent {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -267,6 +271,7 @@ public class IncoreInstrument extends LWRComponent {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -292,6 +297,7 @@ public class IncoreInstrument extends LWRComponent {
 	 *            The visitor
 	 *            </p>
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

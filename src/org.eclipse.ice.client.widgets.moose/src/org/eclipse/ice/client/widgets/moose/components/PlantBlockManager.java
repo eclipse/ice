@@ -201,6 +201,7 @@ public class PlantBlockManager implements IUpdateableListener {
 	 * {@link #tree} updates. It looks for new and removed components and adds
 	 * or removes them from the {@link #plant} as necessary.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// Update the plant and meta data based on the current children of the
@@ -358,116 +359,144 @@ public class PlantBlockManager implements IUpdateableListener {
 			// plant component.
 			IPlantComponentVisitor visitor = new SelectivePlantComponentVisitor() {
 				// ---- Base classes ---- //
+				@Override
 				public void visit(Pipe plantComp) {
 					linker.add(pipeLinker);
 				}
 
+				@Override
 				public void visit(HeatExchanger plantComp) {
 					linker.add(heatExchangerLinker);
 				}
 
+				@Override
 				public void visit(Junction plantComp) {
 					linker.add(junctionLinker);
 				}
 
 				// ---- Pipe sub-classes ---- //
+				@Override
 				public void visit(CoreChannel plantComp) {
 					visit((Pipe) plantComp);
 				}
 
+				@Override
 				public void visit(Subchannel plantComp) {
 					visit((Pipe) plantComp);
 				}
 
+				@Override
 				public void visit(PipeWithHeatStructure plantComp) {
 					visit((Pipe) plantComp);
 				}
 
 				// ---- Junction sub-classes ---- //
+				@Override
 				public void visit(Branch plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(SubchannelBranch plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(VolumeBranch plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(FlowJunction plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(WetWell plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(Boundary plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(OneInOneOutJunction plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(Turbine plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(IdealPump plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(Pump plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(Valve plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(PipeToPipeJunction plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(Inlet plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(MassFlowInlet plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(SpecifiedDensityAndVelocityInlet plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(Outlet plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(SolidWall plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(TDM plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(TimeDependentJunction plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(TimeDependentVolume plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(DownComer plantComp) {
 					visit((Junction) plantComp);
 				}
 
+				@Override
 				public void visit(SeparatorDryer plantComp) {
 					visit((Junction) plantComp);
 				}
@@ -550,6 +579,7 @@ public class PlantBlockManager implements IUpdateableListener {
 		private final ArrayList<CoreChannel> coreChannels = new ArrayList<CoreChannel>();
 		private final List<Reactor> reactors = new ArrayList<Reactor>();
 
+		@Override
 		public void addPlantComponent(PlantComponent component) {
 			if (component != null
 					&& getPlantComponent(component.getId()) == null) {
@@ -591,6 +621,7 @@ public class PlantBlockManager implements IUpdateableListener {
 			return;
 		}
 
+		@Override
 		public void removeComponent(int childId) {
 			PlantComponent component = getPlantComponent(childId);
 			if (component != null) {

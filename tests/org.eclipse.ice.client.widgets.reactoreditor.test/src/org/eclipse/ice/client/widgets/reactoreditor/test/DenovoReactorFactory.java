@@ -15,12 +15,10 @@ package org.eclipse.ice.client.widgets.reactoreditor.test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
 import org.eclipse.ice.reactor.AssemblyType;
-import org.eclipse.ice.reactor.LWRComponentWriter;
 import org.eclipse.ice.reactor.LWRData;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRRod;

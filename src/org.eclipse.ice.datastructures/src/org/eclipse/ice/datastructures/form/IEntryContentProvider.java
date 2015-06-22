@@ -122,6 +122,7 @@ public interface IEntryContentProvider {
 	 *         The returned value.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode();
 
 	/**

@@ -12,15 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy.godfreystrategy;
 
-import java.util.HashMap;
-import java.net.URI;
-
-import org.eclipse.ice.analysistool.AnalysisAssetType;
-
-import java.util.Properties;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddmath.IDataMatrix;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;

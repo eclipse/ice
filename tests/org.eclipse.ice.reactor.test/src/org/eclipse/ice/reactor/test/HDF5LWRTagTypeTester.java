@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.junit.Test;

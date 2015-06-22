@@ -124,6 +124,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 	/**
 	 * Empty implementation of getMimeType.
 	 */
+	@Override
 	public String getMimeType(String name) {
 		return null;
 	}
@@ -131,6 +132,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 	/**
 	 * Get a resource by name
 	 */
+	@Override
 	public URL getResource(String name) {
 		try {
 			return new URL(resourceBase, name);
@@ -145,6 +147,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 	 * handle the actual credentials.
 	 * 
 	 */
+	@Override
 	public boolean handleSecurity(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
@@ -225,6 +228,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 				new CallbackHandler() {
 					// Provide a callback handler to check the user name and
 					// password
+					@Override
 					public void handle(Callback[] callbacks)
 							throws IOException, UnsupportedCallbackException {
 						for (int i = 0; i < callbacks.length; i++) {

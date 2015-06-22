@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import org.apache.commons.math.MathException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -26,14 +28,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.csv.CSVReader;
+import org.eclipse.ice.reflectivity.ReflectivityCalculator;
 import org.eclipse.ice.reflectivity.ReflectivityProfile;
 import org.eclipse.ice.reflectivity.ScatteringDensityProfile;
-import org.eclipse.ice.reflectivity.ReflectivityCalculator;
 import org.eclipse.ice.reflectivity.Slab;
 import org.eclipse.ice.reflectivity.Tile;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.apache.commons.math.MathException;
 
 /**
  * This class tests {@link org.eclipse.ice.reflectivity.ReflectivityCalculator}.

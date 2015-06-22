@@ -12,10 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
-import org.eclipse.ice.reactor.LWRComponent;
-
 import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.client.widgets.reactoreditor.lwr.LWRComponentInfo;
+import org.eclipse.ice.reactor.LWRComponent;
 
 /**
  * This class acts as a wrapper for LWRComponents in the LWR model. Because the

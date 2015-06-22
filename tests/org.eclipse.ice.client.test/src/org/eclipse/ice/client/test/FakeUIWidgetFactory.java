@@ -14,8 +14,8 @@ package org.eclipse.ice.client.test;
 
 import org.eclipse.ice.iclient.uiwidgets.IErrorBox;
 import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
-import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
 
@@ -152,6 +152,7 @@ public class FakeUIWidgetFactory implements IWidgetFactory {
 	 * (non-Javadoc)
 	 * @see IWidgetFactory#getTextEditor()
 	 */
+	@Override
 	public ITextEditor getTextEditor() {
 
 		// Set the state variable and last widget
@@ -165,6 +166,7 @@ public class FakeUIWidgetFactory implements IWidgetFactory {
 	 * (non-Javadoc)
 	 * @see IWidgetFactory#getExtraInfoWidget()
 	 */
+	@Override
 	public IExtraInfoWidget getExtraInfoWidget() {
 
 		// Set the state variable and last widget
@@ -178,6 +180,7 @@ public class FakeUIWidgetFactory implements IWidgetFactory {
 	 * (non-Javadoc)
 	 * @see IWidgetFactory#getStreamingTextWidget()
 	 */
+	@Override
 	public IStreamingTextWidget getStreamingTextWidget() {
 
 		// Set the state variable and last widget

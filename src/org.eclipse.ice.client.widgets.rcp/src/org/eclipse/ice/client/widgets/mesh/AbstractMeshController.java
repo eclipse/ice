@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 
 import com.jme3.scene.Node;
 
@@ -452,6 +452,7 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -492,6 +493,7 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 *         The hashcode of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Static hash.
@@ -555,6 +557,7 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public abstract Object clone();
 
 	/**
@@ -567,6 +570,7 @@ public abstract class AbstractMeshController implements IUpdateableListener {
 	 * 
 	 * @param component
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// If the component matches the model managed by this controller, add

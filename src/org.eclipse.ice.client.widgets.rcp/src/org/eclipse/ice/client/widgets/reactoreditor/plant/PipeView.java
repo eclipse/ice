@@ -15,7 +15,6 @@ package org.eclipse.ice.client.widgets.reactoreditor.plant;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.eclipse.ice.client.widgets.jme.AbstractView;
 import org.eclipse.ice.reactor.plant.Pipe;
 
 import com.jme3.material.Material;

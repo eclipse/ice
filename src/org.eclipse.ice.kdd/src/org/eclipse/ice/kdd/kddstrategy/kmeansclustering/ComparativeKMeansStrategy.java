@@ -70,6 +70,7 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 	 * 
 	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getName()
 	 */
+	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
 		return null;
@@ -80,6 +81,7 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 	 * 
 	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getType()
 	 */
+	@Override
 	public AnalysisAssetType getType() {
 		// TODO Auto-generated method stub
 		return null;
@@ -91,6 +93,7 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 	 * @see
 	 * org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getProperty(java.lang.String)
 	 */
+	@Override
 	public String getProperty(String key) {
 		// TODO Auto-generated method stub
 		return null;
@@ -103,6 +106,7 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 	 * org.eclipse.ice.kdd.kddstrategy.KDDStrategy#setProperty(java.lang.String,
 	 * java.lang.String)
 	 */
+	@Override
 	public boolean setProperty(String key, String value) {
 		// TODO Auto-generated method stub
 		return false;
@@ -113,6 +117,7 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 	 * 
 	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#resetProperties()
 	 */
+	@Override
 	public void resetProperties() {
 		// TODO Auto-generated method stub
 
@@ -123,6 +128,7 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 	 * 
 	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getProperties()
 	 */
+	@Override
 	public Properties getProperties() {
 		// TODO Auto-generated method stub
 		return null;
@@ -134,6 +140,7 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 	 * @see
 	 * org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getPropertiesAsEntryList()
 	 */
+	@Override
 	public ArrayList<Entry> getPropertiesAsEntryList() {
 		// TODO Auto-generated method stub
 		return null;
@@ -144,6 +151,7 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 	 * 
 	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#getURI()
 	 */
+	@Override
 	public URI getURI() {
 		// TODO Auto-generated method stub
 		return null;
@@ -154,6 +162,7 @@ public class ComparativeKMeansStrategy extends KDDStrategy {
 	 * 
 	 * @see org.eclipse.ice.kdd.kddstrategy.KDDStrategy#executeStrategy()
 	 */
+	@Override
 	public boolean executeStrategy() {
 		// TODO Auto-generated method stub
 		return false;

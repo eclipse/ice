@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import java.io.InputStream;
 
 /**
  * <p>
@@ -46,6 +45,7 @@ public class MassFlowInlet extends Boundary {
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		return super.equals(otherObject);
 	}
@@ -59,6 +59,7 @@ public class MassFlowInlet extends Boundary {
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		MassFlowInlet temp = new MassFlowInlet();
 		temp.copy(this);
@@ -88,6 +89,7 @@ public class MassFlowInlet extends Boundary {
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
@@ -102,6 +104,7 @@ public class MassFlowInlet extends Boundary {
 	 *            The PlantComponent's visitor.
 	 *            </p>
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);

@@ -74,6 +74,7 @@ public class TestJobLauncher extends JobLauncher {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
 	 */
+	@Override
 	public void setupFormWithServices() {
 		setupAfterServices = true;
 	}

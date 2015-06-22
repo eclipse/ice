@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.grid;
 
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
-
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 

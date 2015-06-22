@@ -66,6 +66,7 @@ public class VertexView extends AbstractMeshView {
 	 * @param size
 	 *            The new radius of the vertex view's sphere.
 	 */
+	@Override
 	public void setSize(float size) {
 		((Sphere) geometry.getMesh()).updateGeometry(30, 30, size);
 	}
@@ -85,6 +86,7 @@ public class VertexView extends AbstractMeshView {
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		return super.equals(otherObject);
 	}
@@ -98,6 +100,7 @@ public class VertexView extends AbstractMeshView {
 	 *         The hashcode of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
@@ -125,6 +128,7 @@ public class VertexView extends AbstractMeshView {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		return null;
 	}

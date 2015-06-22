@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.ice.datastructures.form.Form;
+import org.junit.Test;
 
 /**
  * <p>

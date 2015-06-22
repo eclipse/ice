@@ -12,11 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.InvalidParameterException;
-import javax.xml.bind.JAXBException;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -167,6 +164,7 @@ public class Pipe extends GeometricalComponent {
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -201,6 +199,7 @@ public class Pipe extends GeometricalComponent {
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.
@@ -246,6 +245,7 @@ public class Pipe extends GeometricalComponent {
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Call the super's hashCode.
@@ -268,6 +268,7 @@ public class Pipe extends GeometricalComponent {
 	 *            The PlantComponent's visitor.
 	 *            </p>
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 
 		// Only accept valid visitors.

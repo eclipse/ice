@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets.geometry;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
@@ -39,6 +38,7 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 	 *         The icon associated with the given IShape element
 	 *         </p>
 	 */
+	@Override
 	public Image getImage(Object element) {
 
 		// Don't display an image beside the shape
@@ -60,6 +60,7 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 	 *         The name associated with the element's ICEObject properties
 	 *         </p>
 	 */
+	@Override
 	public String getText(Object element) {
 
 		// Check that the element is an ICEObject and is not null

@@ -12,23 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy.kmeansclustering;
 
+import java.io.ByteArrayInputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.eclipse.ice.analysistool.IDataProvider;
-
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URI;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 
 /**

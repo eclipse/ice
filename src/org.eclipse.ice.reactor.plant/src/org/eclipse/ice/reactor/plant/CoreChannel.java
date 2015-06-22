@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import java.io.InputStream;
 
 /** 
  * <p>Simulates the fluid flow associated with a solid heat structure part.</p>
@@ -41,6 +40,7 @@ public class CoreChannel extends Pipe {
 	 * @param otherObject <p>The other Object to compare against.</p>
 	 * @return <p>Returns true if the two objects are equal, otherwise false.</p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Super's equality check takes care of this.
@@ -52,6 +52,7 @@ public class CoreChannel extends Pipe {
 	 * <p>Performs a deep copy and returns a newly instantiated Object.</p>
 	 * @return <p>The newly instantiated Object.</p>
 	 */
+	@Override
 	public Object clone() {
 		
 		// Initialize a new object.
@@ -78,6 +79,7 @@ public class CoreChannel extends Pipe {
 	 * <p>Returns the hashCode of the object.</p>
 	 * @return <p>The hashCode of the Object.</p>
 	 */
+	@Override
 	public int hashCode() {
 
 		return super.hashCode();
@@ -88,6 +90,7 @@ public class CoreChannel extends Pipe {
 	 * <p>Accepts PlantComponentVisitors to reveal the type of a PlantComponent.</p>
 	 * @param visitor <p>The PlantComponent's visitor.</p>
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 		
 		// Only accept valid visitors.

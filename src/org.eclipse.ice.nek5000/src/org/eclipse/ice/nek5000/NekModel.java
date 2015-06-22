@@ -12,16 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.nek5000;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemType;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,6 +24,15 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.ItemType;
 
 /**
  * This class extends the Item to create a modeler for Nek5000 input files. It
@@ -177,6 +176,7 @@ public class NekModel extends Item {
 		if (files != null && !(files.isEmpty())) {
 			// Setup the Entry with the list of files
 			filesEntry = new Entry() {
+				@Override
 				protected void setup() {
 					allowedValues.addAll(files);
 					allowedValueType = AllowedValueType.Discrete;
@@ -186,6 +186,7 @@ public class NekModel extends Item {
 			// Setup the Entry with only value to describe that there are no
 			// examples.
 			filesEntry = new Entry() {
+				@Override
 				protected void setup() {
 					allowedValues.add(noFilesValue);
 					allowedValueType = AllowedValueType.Discrete;
@@ -216,6 +217,7 @@ public class NekModel extends Item {
 	 * @return The status
 	 * 
 	 */
+	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
 
 		// Local Declarations
@@ -386,6 +388,7 @@ public class NekModel extends Item {
 	/**
 	 * This operation sets the information that identifies this Item.
 	 */
+	@Override
 	protected void setupItemInfo() {
 
 		// Local declarations
@@ -415,6 +418,7 @@ public class NekModel extends Item {
 	/**
 	 * This operation sets up the Form that contains the Nek5000 information.
 	 */
+	@Override
 	protected void setupForm() {
 
 		// Create the Form
@@ -471,6 +475,7 @@ public class NekModel extends Item {
 	/**
 	 * This operation writes the Nek5000 file to disk.
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 
 		// Local Declarations

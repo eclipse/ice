@@ -12,15 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd;
 
-import org.eclipse.ice.analysistool.IAnalysisTool;
-import static org.eclipse.ice.kdd.KDDAnalysisDocument.*;
-import org.eclipse.ice.analysistool.IAnalysisDocument;
-
 import java.net.URI;
 
-import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
-
+import org.eclipse.ice.analysistool.IAnalysisDocument;
+import org.eclipse.ice.analysistool.IAnalysisTool;
 import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
 
 /**
  * <p>
@@ -117,6 +114,7 @@ public class KDDAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#close()
 	 */
+	@Override
 	public Boolean close() {
 		return false;
 	}
@@ -126,6 +124,7 @@ public class KDDAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#createDocument(URI data)
 	 */
+	@Override
 	public IAnalysisDocument createDocument(URI data) {
 		// TODO Auto-generated method stub
 		return null;
@@ -136,6 +135,7 @@ public class KDDAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#getName()
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -145,6 +145,7 @@ public class KDDAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#getVersion()
 	 */
+	@Override
 	public String getVersion() {
 		return version;
 	}
@@ -154,6 +155,7 @@ public class KDDAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#isReady()
 	 */
+	@Override
 	public boolean isReady() {
 		return ready;
 	}
@@ -163,6 +165,7 @@ public class KDDAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#createDocument(IDataProvider data)
 	 */
+	@Override
 	public IAnalysisDocument createDocument(IDataProvider data) {
 
 		// Create an IAnalysisDocument reference

@@ -347,6 +347,7 @@ public abstract class AbstractApplication extends SimpleApplication {
 	public void setDisplayHUD(final boolean enabled) {
 		if (displayHUD.compareAndSet(!enabled, enabled)) {
 			enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 					if (enabled) {
 						guiNode.attachChild(HUD);
@@ -387,6 +388,7 @@ public abstract class AbstractApplication extends SimpleApplication {
 	public void setDisplayAxes(final boolean enabled) {
 		if (displayAxes.compareAndSet(!enabled, enabled)) {
 			enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 					if (enabled) {
 						rootNode.attachChild(axes);

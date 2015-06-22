@@ -12,19 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.mesh;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 
 /**
  * <p>
@@ -206,6 +202,7 @@ public class Vertex extends ICEObject implements IMeshPart {
 	 *         The hash of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Get initial hash code
@@ -234,6 +231,7 @@ public class Vertex extends ICEObject implements IMeshPart {
 	 *         True if the Objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		boolean equal = false;
@@ -294,6 +292,7 @@ public class Vertex extends ICEObject implements IMeshPart {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new Vertex
@@ -335,6 +334,7 @@ public class Vertex extends ICEObject implements IMeshPart {
 	 *            {@link IMeshPart}.
 	 *            </p>
 	 */
+	@Override
 	public void acceptMeshVisitor(IMeshPartVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);

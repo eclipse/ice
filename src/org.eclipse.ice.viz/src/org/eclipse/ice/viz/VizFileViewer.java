@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -19,10 +22,6 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.csv.viewer.CSVPlotViewer;
 import org.eclipse.ice.viz.visit.VisitPlotViewer;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -97,6 +96,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 	 * @param parent
 	 *            The parent Composite that will contain this VizFileViewer.
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 
 		// Create the tool bar buttons for the view.
@@ -120,6 +120,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 	/**
 	 * Does nothing yet.
 	 */
+	@Override
 	public void setFocus() {
 		return;
 	}
@@ -138,6 +139,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 
 		// Sync with the display.
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// If possible, reset the fileTreeViewer's input.
 				if (fileTreeViewer != null) {
@@ -441,6 +443,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 	 * @param event
 	 *            The SelectionChangedEvent that fired this method.
 	 */
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 
 		// Get the selection

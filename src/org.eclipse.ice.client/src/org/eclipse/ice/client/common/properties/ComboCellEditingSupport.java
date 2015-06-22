@@ -100,6 +100,7 @@ public class ComboCellEditingSupport extends TextCellEditingSupport {
 	 * of the default <code>TextCellEditor</code> when the
 	 * {@link #contentProvider} requires a <code>Combo</code>.
 	 */
+	@Override
 	protected CellEditor getCellEditor(Object element) {
 
 		// If all else fails, we should return null.

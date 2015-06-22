@@ -12,9 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.item.action;
 
+import java.util.Dictionary;
+
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import java.util.Dictionary;
 
 /**
  * The Action class performs actions, such as launching a job or script, for

@@ -12,25 +12,19 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.pwr;
 
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
+import org.eclipse.ice.io.hdf.IHdfReadable;
 import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.GridLabelProvider;
@@ -272,6 +266,7 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *         The number of fuel assemblies across the core.
 	 *         </p>
 	 */
+	@Override
 	public int getSize() {
 
 		return this.size;
@@ -358,6 +353,7 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @param h5Group
 	 * @return
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		boolean flag = super.readAttributes(h5Group);
@@ -407,6 +403,7 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @param h5Group
 	 * @return
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 
 		boolean flag = true;
@@ -433,6 +430,7 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// Local Declarations
 		PressurizedWaterReactor reactor;
@@ -464,6 +462,7 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
 		// Get the children in super
@@ -495,6 +494,7 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * @param iHdfReadable
 	 * @return
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
 		// If the child is null or not an instance of LWRComponent, then return
@@ -600,6 +600,7 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -694,6 +695,7 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -719,6 +721,7 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            The visitor
 	 *            </p>
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

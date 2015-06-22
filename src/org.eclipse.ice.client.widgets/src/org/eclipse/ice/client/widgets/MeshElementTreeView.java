@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.util.ArrayList;
+
 import org.eclipse.ice.client.widgets.mesh.properties.MeshSelection;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -22,9 +24,6 @@ import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-
-import java.util.ArrayList;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -328,6 +327,7 @@ public class MeshElementTreeView extends ViewPart implements
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() { // Just do a blanket update - no need to check
 								// the component
 				if (elementTreeViewer != null) {
@@ -526,10 +526,12 @@ public class MeshElementTreeView extends ViewPart implements
 	}
 
 	// ---- These methods are required for tabbed properties. ---- //
+	@Override
 	public String getContributorId() {
 		return getSite().getId();
 	}
 
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IPropertySheetPage.class) {
 			return new TabbedPropertySheetPage(this);

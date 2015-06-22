@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
@@ -82,16 +82,19 @@ public class EdgeController extends AbstractMeshController {
 
 		// ---- Set up the property handlers to sync the view. ---- //
 		properties.put(stateId, new PropertyHandler() {
+			@Override
 			public void syncView() {
 				view.setColor(getState().getColor());
 			}
 		});
 		properties.put(parentNodeId, new PropertyHandler() {
+			@Override
 			public void syncView() {
 				view.setParentNode(getParentNode());
 			}
 		});
 		properties.put(sizeId, new PropertyHandler() {
+			@Override
 			public void syncView() {
 				view.setSize(getSize());
 			}
@@ -99,6 +102,7 @@ public class EdgeController extends AbstractMeshController {
 		// The scale and location properties both affect the location of the
 		// vertex view.
 		PropertyHandler locationHandler = new PropertyHandler() {
+			@Override
 			public void syncView() {
 				float[] start = model.getStartLocation();
 				float[] end = model.getEndLocation();
@@ -131,6 +135,7 @@ public class EdgeController extends AbstractMeshController {
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// TODO Auto-generated method stub
 		return false;
@@ -145,6 +150,7 @@ public class EdgeController extends AbstractMeshController {
 	 *         The hashcode of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -161,6 +167,7 @@ public class EdgeController extends AbstractMeshController {
 	 *            The object from which the values should be copied.
 	 *            </p>
 	 */
+	@Override
 	public void copy(AbstractMeshController controller) {
 		// TODO Auto-generated method stub
 
@@ -175,6 +182,7 @@ public class EdgeController extends AbstractMeshController {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.
@@ -193,6 +201,7 @@ public class EdgeController extends AbstractMeshController {
 	 * 
 	 * @see AbstractMeshController#syncView()
 	 */
+	@Override
 	public void syncView() {
 		super.syncView();
 
