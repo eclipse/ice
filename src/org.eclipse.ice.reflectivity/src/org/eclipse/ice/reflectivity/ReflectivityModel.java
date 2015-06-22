@@ -78,9 +78,26 @@ public class ReflectivityModel extends Model {
 		if (actionName.equals(processActionName)) {
 			
 			// Convert the material table to slabs
+			ListComponent<Material> matList = (ListComponent<Material>) form
+					.getComponent(1);
+			ArrayList<Slab> slabs = new ArrayList<Slab>();
+			
+			// Create the slabs from the materials
+			for(Material mat: matList){
+				Slab slab = new Slab();
+				slab.thickness = mat.getProperty("Thickness (A)");
+				slab.interfaceWidth = mat.getProperty("Roughness (A)");
+				slab.scatteringLength = mat.getProperty(Material.SCAT_LENGTH_DENSITY);
+				slab.trueAbsLength = mat.getProperty(Material.MASS_ABS_COHERENT);
+				slab.incAbsLength = mat.getProperty(Material.MASS_ABS_INCOHERENT);
+				slabs.add(slab);
+			}
+			
 			
 			// Calculate the reflectivity
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
+			
+			//int numRough = calculator.
 			//calculator.getReflectivityProfile(slabs, numRough, deltaQ0, deltaQ1ByQ, wavelength, waveVector, getRQ4);
 			
 			// Write the files
@@ -125,9 +142,9 @@ public class ReflectivityModel extends Model {
 		names.add("Material ID");
 		names.add("Thickness (A)");
 		names.add("Roughness (A)");
-		names.add("Scattering Length Density (A^-2)");
-		names.add("Mu_abs (A^-2)");
-		names.add("Mu_inc (A^-1)");
+		names.add(Material.SCAT_LENGTH_DENSITY);
+		names.add(Material.MASS_ABS_COHERENT);
+		names.add(Material.MASS_ABS_INCOHERENT);
 		// Create the writable format to be used by the list
 		MaterialWritableTableFormat format = new MaterialWritableTableFormat(
 				names);
@@ -281,10 +298,10 @@ public class ReflectivityModel extends Model {
 		material.setProperty("Material ID", id);
 		material.setProperty("Thickness (A)", slab.thickness);
 		material.setProperty("Roughness (A)", slab.interfaceWidth);
-		material.setProperty("Scattering Length Density (A^-2)",
+		material.setProperty(Material.SCAT_LENGTH_DENSITY,
 				slab.scatteringLength);
-		material.setProperty("Mu_abs (A^-2)", slab.trueAbsLength);
-		material.setProperty("Mu_inc (A^-1)", slab.incAbsLength);
+		material.setProperty(Material.MASS_ABS_COHERENT, slab.trueAbsLength);
+		material.setProperty(Material.MASS_ABS_INCOHERENT, slab.incAbsLength);
 		return material;
 	}
 

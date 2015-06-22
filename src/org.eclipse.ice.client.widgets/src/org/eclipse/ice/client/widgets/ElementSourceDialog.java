@@ -241,7 +241,7 @@ public class ElementSourceDialog<T> extends Dialog {
 
 		// Sets the selection if OK is pressed, will be the first selected
 		// object if there are multiple selections.
-		selection = (T) listTable.getSelectedObjects().get(0);
+		selection = ((T) listTable.getSelectedObjects().get(0));
 		super.okPressed();
 	}
 
