@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
-import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,9 +78,26 @@ public class ReflectivityModel extends Model {
 		if (actionName.equals(processActionName)) {
 			
 			// Convert the material table to slabs
+			ListComponent<Material> matList = (ListComponent<Material>) form
+					.getComponent(1);
+			ArrayList<Slab> slabs = new ArrayList<Slab>();
+			
+			// Create the slabs from the materials
+			for(Material mat: matList){
+				Slab slab = new Slab();
+				slab.thickness = mat.getProperty("Thickness (A)");
+				slab.interfaceWidth = mat.getProperty("Roughness (A)");
+				slab.scatteringLength = mat.getProperty(Material.SCAT_LENGTH_DENSITY);
+				slab.trueAbsLength = mat.getProperty(Material.MASS_ABS_COHERENT);
+				slab.incAbsLength = mat.getProperty(Material.MASS_ABS_INCOHERENT);
+				slabs.add(slab);
+			}
+			
 			
 			// Calculate the reflectivity
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
+			
+			//int numRough = calculator.
 			//calculator.getReflectivityProfile(slabs, numRough, deltaQ0, deltaQ1ByQ, wavelength, waveVector, getRQ4);
 			
 			// Write the files

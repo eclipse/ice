@@ -8,7 +8,7 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
@@ -50,7 +50,7 @@ import ca.odell.glazedlists.gui.WritableTableFormat;
 /**
  * This class presents a Material as a table with properties.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Kasper Gammeltoft
  * 
  */
 public class MaterialDetailsPage implements IDetailsPage {
