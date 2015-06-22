@@ -179,7 +179,8 @@ public class BinarySearchTree {
 
 		int index = this.index;
 
-		if (d < value) {
+		int comparison = Double.compare(d, value);
+		if (comparison < 0) {
 			if (left != null) {
 				index = left.findNearestIndex(d, this, lesser);
 			} else if (lesser != null
@@ -187,7 +188,7 @@ public class BinarySearchTree {
 							Math.abs(lesser.value - d)) >= 0) {
 				index = lesser.index;
 			}
-		} else if (value < d) {
+		} else if (comparison > 0) {
 			if (right != null) {
 				index = right.findNearestIndex(d, greater, this);
 			} else if (greater != null
