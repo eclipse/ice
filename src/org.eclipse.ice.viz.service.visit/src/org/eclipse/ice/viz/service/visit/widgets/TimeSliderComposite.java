@@ -19,6 +19,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -108,7 +109,6 @@ public class TimeSliderComposite extends Composite {
 
 		// Create the scale widget.
 		scale = new Scale(this, SWT.HORIZONTAL);
-		scale.setBackground(getBackground());
 		scale.setMinimum(0);
 		scale.setIncrement(1);
 		scale.setToolTipText("Traverses the timesteps");
@@ -120,7 +120,6 @@ public class TimeSliderComposite extends Composite {
 
 		// Create a Composite to contain the spinner buttons.
 		Composite buttonComposite = new Composite(this, SWT.NONE);
-		buttonComposite.setBackground(getBackground());
 		// Create the two spinner buttons.
 		spinnerNext = new Button(buttonComposite, SWT.ARROW | SWT.UP);
 		spinnerNext.setToolTipText("Next Timestep");
@@ -204,6 +203,22 @@ public class TimeSliderComposite extends Composite {
 
 		// Refresh the widgets. This will enable/disable them as necessary.
 		syncWidgets();
+
+		return;
+	}
+
+	/*
+	 * Overrides a method from Control.
+	 */
+	@Override
+	public void setBackground(Color color) {
+		super.setBackground(color);
+
+		// Update the background colors for all child widgets.
+		scale.setBackground(color);
+		spinnerNext.getParent().setBackground(color);
+		spinnerNext.setBackground(color);
+		spinnerPrev.setBackground(color);
 
 		return;
 	}

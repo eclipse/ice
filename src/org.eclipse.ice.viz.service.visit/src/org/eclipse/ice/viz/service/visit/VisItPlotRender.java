@@ -170,11 +170,13 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// the window ID is -1, a new one is created.
 
 		Composite container = new Composite(parent, style);
+		container.setBackground(parent.getBackground());
 		container.setLayout(new GridLayout(1, false));
 
 		// Create the canvas.
 		canvas = new VisItSwtWidget(container, SWT.DOUBLE_BUFFERED);
 		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		canvas.setBackground(parent.getBackground());
 		int windowWidth = Integer.parseInt(adapter
 				.getConnectionProperty("windowWidth"));
 		int windowHeight = Integer.parseInt(adapter
@@ -200,7 +202,6 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 			// and types in case it's not already available.
 		}
 
-		// FIXME There may be a better way to do this...
 		// When the Menu is about to be shown, add the representation options to
 		// it.
 		menu.addMenuListener(new MenuListener() {
@@ -225,10 +226,6 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		timeSlider.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				System.err.println("VisItPlotRender message: "
-						+ "Timestep changed to " + timeSlider.getTime()
-						+ "(timestep: " + timeSlider.getTimestep() + ").");
-
 				// Record the current timestep from the TimeSliderComposite.
 				widgetTimestep.set(timeSlider.getTimestep());
 
