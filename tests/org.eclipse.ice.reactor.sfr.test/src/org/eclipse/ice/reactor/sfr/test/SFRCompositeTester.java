@@ -22,10 +22,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.base.SFRComposite;
+import org.junit.Test;
 
 /**
  * <p>

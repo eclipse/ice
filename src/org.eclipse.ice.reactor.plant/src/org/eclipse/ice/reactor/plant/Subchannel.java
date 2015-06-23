@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import java.io.InputStream;
 import java.security.InvalidParameterException;
 
 /**
@@ -185,6 +184,7 @@ public class Subchannel extends Pipe {
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -220,6 +220,7 @@ public class Subchannel extends Pipe {
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.
@@ -266,6 +267,7 @@ public class Subchannel extends Pipe {
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Call the super's hashCode.
@@ -289,6 +291,7 @@ public class Subchannel extends Pipe {
 	 *            The PlantComponent's visitor.
 	 *            </p>
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 
 		// Only accept valid visitors.

@@ -12,16 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
-import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-
 import org.eclipse.ice.client.widgets.reactoreditor.IWizardProvider;
-
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWRComponent;
@@ -34,6 +25,13 @@ import org.eclipse.ice.reactor.pwr.FuelAssembly;
 import org.eclipse.ice.reactor.pwr.IncoreInstrument;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
+import org.eclipse.jface.wizard.IWizard;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Taylor Patterson

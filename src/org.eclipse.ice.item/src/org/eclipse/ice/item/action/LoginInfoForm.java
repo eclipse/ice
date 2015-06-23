@@ -12,14 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.item.action;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
 
 /**
  * <p>
@@ -70,6 +66,7 @@ public class LoginInfoForm extends Form {
 		username = new Entry() {
 
 			// Setup the filenames
+			@Override
 			public void setup() {
 
 				// Set the default values
@@ -87,10 +84,12 @@ public class LoginInfoForm extends Form {
 		password = new Entry() {
 
 			// Simple pass through for updates
+			@Override
 			public void update(String key, String value) {
 			}
 
 			// Setup the filenames
+			@Override
 			public void setup() {
 
 				// Set the default values

@@ -26,9 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -91,6 +89,7 @@ public class VibeModel extends Item {
 	 * This operation overrides the Item.setupForm() operation.
 	 * </p>
 	 */
+	@Override
 	public void setupForm() {
 		// Create a fresh form to start with
 		form = new Form();
@@ -107,6 +106,7 @@ public class VibeModel extends Item {
 	 * This operation overrides the Item.setupItemInfo() operation.
 	 * </p>
 	 */
+	@Override
 	protected void setupItemInfo() {
 		// Setup Item information
 		setName("VIBE Model");
@@ -140,6 +140,7 @@ public class VibeModel extends Item {
 	 * 
 	 * @return the status of the form
 	 */
+	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 		Component dataComp = null;
@@ -162,6 +163,7 @@ public class VibeModel extends Item {
 	 * Still utilizes Item's process functionality for all other calls.
 	 * </p>
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 		FormStatus retStatus;
 
@@ -215,6 +217,7 @@ public class VibeModel extends Item {
 	 * @param name
 	 *            The path name of the example file name to load.
 	 */
+	@Override
 	public void loadInput(String name) {
 		// If nothing is specified, load case 6 from inside the plugin
 		IFile inputFile = null;

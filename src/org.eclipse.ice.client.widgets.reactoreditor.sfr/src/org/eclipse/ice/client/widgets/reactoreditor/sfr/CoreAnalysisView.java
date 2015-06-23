@@ -12,16 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
-import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
-import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorTools;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.IGridListener;
-import org.eclipse.ice.client.widgets.reactoreditor.sfr.properties.PropertySourceFactory;
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -32,6 +22,15 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
+import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorTools;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.IGridListener;
+import org.eclipse.ice.client.widgets.reactoreditor.sfr.properties.PropertySourceFactory;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.AssemblyType;
 import org.eclipse.ice.reactor.sfr.core.SFReactor;
@@ -424,6 +423,7 @@ public class CoreAnalysisView extends AnalysisView implements IGridListener {
 	 * Sends an update to {@link AnalysisView#broker broker} when a cell has
 	 * been selected.
 	 */
+	@Override
 	public void selectCell(int index) {
 
 		// Get the row and column from the cell's index.
@@ -450,6 +450,7 @@ public class CoreAnalysisView extends AnalysisView implements IGridListener {
 	 * Sends an update to {@link AnalysisView#selectionProvider
 	 * selectionProvider} when a cell has been clicked.
 	 */
+	@Override
 	public void clickCell(int index) {
 
 		// Get the row and column from the cell's index.

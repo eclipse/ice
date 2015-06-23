@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
-import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisView;
-import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetFactory;
-import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
+import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisView;
+import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.Tube;
 import org.eclipse.ice.reactor.bwr.BWReactor;
@@ -93,26 +92,31 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 		// can create that particular view.
 		viewFactoryMap = new HashMap<String, IViewFactory>(viewCount);
 		viewFactoryMap.put(PlantAnalysisView.name, new IViewFactory() {
+			@Override
 			public IAnalysisView createView(DataSource dataSource) {
 				return new PlantAnalysisView(dataSource);
 			}
 		});
 		viewFactoryMap.put(CoreAnalysisView.name, new IViewFactory() {
+			@Override
 			public IAnalysisView createView(DataSource dataSource) {
 				return new CoreAnalysisView(dataSource);
 			}
 		});
 		viewFactoryMap.put(AssemblyAnalysisView.name, new IViewFactory() {
+			@Override
 			public IAnalysisView createView(DataSource dataSource) {
 				return new AssemblyAnalysisView(dataSource);
 			}
 		});
 		viewFactoryMap.put(RodAnalysisView.name, new IViewFactory() {
+			@Override
 			public IAnalysisView createView(DataSource dataSource) {
 				return new RodAnalysisView(dataSource);
 			}
 		});
 		viewFactoryMap.put(PlotAnalysisView.name, new IViewFactory() {
+			@Override
 			public IAnalysisView createView(DataSource dataSource) {
 				IAnalysisView view = null;
 				if (dataSource == DataSource.Comparison) {
@@ -129,6 +133,7 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 	}
 
 	/* ---- Implements IAnalysisWidgetFactory. ---- */
+	@Override
 	public List<String> getAvailableViews(DataSource dataSource) {
 		// We don't want the main package to modify our original list, so make
 		// the returned list unmodifiable.
@@ -139,6 +144,7 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 		}
 	}
 
+	@Override
 	public IAnalysisView createView(String viewName, DataSource dataSource) {
 		IAnalysisView view = null;
 
@@ -150,6 +156,7 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 		return view;
 	}
 
+	@Override
 	public List<Class<?>> getModelClasses() {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(PressurizedWaterReactor.class);
@@ -164,10 +171,12 @@ public class AnalysisWidgetFactory implements IAnalysisWidgetFactory {
 		return classes;
 	}
 
+	@Override
 	public IStateBrokerHandler createStateBrokerHandler() {
 		return new StateBrokerHandler();
 	}
 
+	@Override
 	public IWizard createWizard(Object selection) {
 		// Use a WizardProvider to create the wizard
 		WizardProvider provider = new WizardProvider();

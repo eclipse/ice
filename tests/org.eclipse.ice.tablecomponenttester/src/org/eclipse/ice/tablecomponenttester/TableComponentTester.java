@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -38,12 +37,12 @@ import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.*;
+import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
-
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComponentReader;
+import org.osgi.framework.Bundle;
 
 @XmlRootElement(name = "TableComponentTester")
 public class TableComponentTester extends Item {
@@ -56,6 +55,7 @@ public class TableComponentTester extends Item {
 		super(project);
 	}
 
+	@Override
 	public void setupForm() {
 
 		// Local Declarations
@@ -85,6 +85,7 @@ public class TableComponentTester extends Item {
 		// Create Entries
 
 		entry1 = new Entry() {
+			@Override
 			protected void setup() {
 				this.allowedValues = new ArrayList<String>();
 				this.allowedValues.add("0");
@@ -96,6 +97,7 @@ public class TableComponentTester extends Item {
 		entry1.setName("Generic 1");
 
 		entry2 = new Entry() {
+			@Override
 			protected void setup() {
 				this.allowedValues = new ArrayList<String>();
 				this.allowedValues.add("Check");
@@ -107,6 +109,7 @@ public class TableComponentTester extends Item {
 		entry2.setName("Generic 2");
 
 		entry3 = new Entry() {
+			@Override
 			protected void setup() {
 				this.allowedValues = new ArrayList<String>();
 				this.defaultValue = "Text";
@@ -116,6 +119,7 @@ public class TableComponentTester extends Item {
 		entry3.setName("Generic 3");
 
 		entry4 = new Entry() {
+			@Override
 			protected void setup() {
 				this.allowedValues = new ArrayList<String>();
 				this.allowedValues.add("0");

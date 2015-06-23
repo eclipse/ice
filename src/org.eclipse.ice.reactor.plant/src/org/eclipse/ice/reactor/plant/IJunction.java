@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 
 /**
  * <p>

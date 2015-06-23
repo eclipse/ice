@@ -201,6 +201,7 @@ public enum HDF5LWRTagType {
 	 *         The name of the enumerated value.
 	 *         </p>
 	 */
+	@Override
 	public String toString() {
 
 		return name;

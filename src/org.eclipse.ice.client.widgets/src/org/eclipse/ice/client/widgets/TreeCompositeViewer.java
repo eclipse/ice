@@ -172,6 +172,7 @@ public class TreeCompositeViewer extends ViewPart implements
 		MenuManager menuManager = new MenuManager();
 		menuManager.setRemoveAllWhenShown(true);
 		menuManager.addMenuListener(new IMenuListener() {
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 				TreeCompositeViewer.this.fillContextMenu(manager);
 			}
@@ -270,6 +271,7 @@ public class TreeCompositeViewer extends ViewPart implements
 			 */
 			private Menu contextMenu = null;
 
+			@Override
 			public void dispose() {
 
 				// Dispose of the dropdown menu if possible.
@@ -294,6 +296,7 @@ public class TreeCompositeViewer extends ViewPart implements
 				return;
 			}
 
+			@Override
 			public Menu getMenu(Control parent) {
 				// Refresh the menu of actions.
 				updateMenuManager();
@@ -309,6 +312,7 @@ public class TreeCompositeViewer extends ViewPart implements
 				return dropdownMenu;
 			}
 
+			@Override
 			public Menu getMenu(Menu parent) {
 				// Refresh the menu of actions.
 				updateMenuManager();
@@ -480,6 +484,7 @@ public class TreeCompositeViewer extends ViewPart implements
 	 * This operation creates an adapter that allows this viewer to publish
 	 * information in the properties view.
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		// If the requested adapter is a property page, send in the one for the
 		// TreeComposite.
@@ -572,6 +577,7 @@ public class TreeCompositeViewer extends ViewPart implements
 	 *            The component (a TreeComposite or Component) that has been
 	 *            updated.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// Only proceed if the component is one of the TreeComposites with
@@ -582,6 +588,7 @@ public class TreeCompositeViewer extends ViewPart implements
 			// UI thread.
 			final Object element = component;
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					// To be used when a particular TreeComposite has added or
 					// removed children.
@@ -599,6 +606,7 @@ public class TreeCompositeViewer extends ViewPart implements
 	/**
 	 * This operation returns the contributor id of this view.
 	 */
+	@Override
 	public String getContributorId() {
 		return getSite().getId();
 	}

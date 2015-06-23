@@ -12,19 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
-import static org.eclipse.ice.client.widgets.EclipseErrorBoxWidget.*;
-import static org.eclipse.ice.client.widgets.EclipseFormWidget.*;
-import static org.eclipse.ice.client.widgets.EclipseTextEditor.*;
-import static org.eclipse.ice.client.widgets.EclipseExtraInfoWidget.*;
-import static org.eclipse.ice.client.widgets.EclipseStreamingTextWidget.*;
 import java.util.HashMap;
-import java.util.ArrayList;
-import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+
 import org.eclipse.ice.iclient.uiwidgets.IErrorBox;
-import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
+import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
+import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
+import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
 
 /**
  * <p>
@@ -83,6 +78,7 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	 * 
 	 * @see IWidgetFactory#getFormWidget(String formName)
 	 */
+	@Override
 	public IFormWidget getFormWidget(String formName) {
 
 		// Local Declarations
@@ -103,6 +99,7 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	 * 
 	 * @see IWidgetFactory#getErrorBox()
 	 */
+	@Override
 	public IErrorBox getErrorBox() {
 		return new EclipseErrorBoxWidget();
 	}
@@ -112,6 +109,7 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	 * 
 	 * @see IWidgetFactory#getTextEditor()
 	 */
+	@Override
 	public ITextEditor getTextEditor() {
 		return new EclipseTextEditor();
 	}
@@ -121,6 +119,7 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	 * 
 	 * @see IWidgetFactory#getExtraInfoWidget()
 	 */
+	@Override
 	public IExtraInfoWidget getExtraInfoWidget() {
 		return new EclipseExtraInfoWidget();
 	}
@@ -130,6 +129,7 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	 * 
 	 * @see IWidgetFactory#getStreamingTextWidget()
 	 */
+	@Override
 	public IStreamingTextWidget getStreamingTextWidget() {
 		return new EclipseStreamingTextWidget();
 	}

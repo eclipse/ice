@@ -14,14 +14,12 @@ package org.eclipse.ice.client.widgets.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import org.eclipse.ice.client.widgets.EclipseFormWidget;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.datastructures.form.Form;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * <p>

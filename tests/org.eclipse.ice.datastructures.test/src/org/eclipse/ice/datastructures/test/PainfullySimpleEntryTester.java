@@ -12,19 +12,20 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleEntry;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleEntry;
 
 /**
  * <p>

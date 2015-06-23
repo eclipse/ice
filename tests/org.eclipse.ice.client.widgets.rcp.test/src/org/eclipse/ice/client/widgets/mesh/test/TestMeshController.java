@@ -65,6 +65,7 @@ public class TestMeshController extends AbstractMeshController {
 	/** 
 	 * <p>Implements the syncView method of AbstractMeshController to mark a flag when the view is synced.</p>
 	 */
+	@Override
 	public void syncView() {
 		
 		// Update the wasSynced flag.
@@ -91,6 +92,7 @@ public class TestMeshController extends AbstractMeshController {
 	/** 
 	 * <p>Implements the clone method of AbstractMeshController.</p>
 	 */
+	@Override
 	public Object clone() {
 		// Initialize a new object.
 		TestMeshController object = new TestMeshController((IUpdateable) model.clone(), updateQueue);

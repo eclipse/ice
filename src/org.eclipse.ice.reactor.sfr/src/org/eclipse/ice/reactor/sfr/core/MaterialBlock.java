@@ -306,6 +306,7 @@ public class MaterialBlock extends SFRComponent implements
 	 * 
 	 * @return The hashcode of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based upon superclass hash
@@ -328,6 +329,7 @@ public class MaterialBlock extends SFRComponent implements
 	 *            The other object being compared against.
 	 * @return Returns true if the both objects are equal, otherwise false.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Check if otherObject is invalid
@@ -421,6 +423,7 @@ public class MaterialBlock extends SFRComponent implements
 	 * 
 	 * @return The newly instantiated object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new material block

@@ -13,12 +13,14 @@
 package org.eclipse.ice.item.utilities.trilinos;
 
 import java.util.ArrayList;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.TreeComposite;
 
 /**
  * <p>

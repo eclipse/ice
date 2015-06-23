@@ -1370,6 +1370,7 @@ public class MeshAppState extends ViewAppState implements
 			// camera has zoomed and the atomic integer that represents the
 			// current zoom when the chaseCam zooms.
 			chaseCam.addCameraListener(new ICameraListener() {
+				@Override
 				public void zoomChanged(float distance) {
 					boolean updateVertices = false;
 					boolean updateEdges = false;
@@ -1474,6 +1475,7 @@ public class MeshAppState extends ViewAppState implements
 	 * org.eclipse.ice.client.widgets.jme.ViewAppState#disposeViewCamera(org
 	 * .eclipse.ice.client.widgets.jme.EmbeddedView)
 	 */
+	@Override
 	public void disposeViewCamera(EmbeddedView view) {
 
 		if (view != null && view == getEmbeddedView()) {

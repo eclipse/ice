@@ -361,6 +361,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from Identifiable.
 	 */
+	@Override
 	public void setId(int id) {
 
 		// If the id is less 0, then do not set it
@@ -376,6 +377,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from Identifiable.
 	 */
+	@Override
 	public String getDescription() {
 
 		return this.description;
@@ -384,6 +386,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from Identifiable.
 	 */
+	@Override
 	public int getId() {
 
 		return this.id;
@@ -392,6 +395,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from Identifiable.
 	 */
+	@Override
 	public void setName(String name) {
 
 		// If the name is not null, and if you trim it, it is not the emptry
@@ -409,6 +413,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from Identifiable.
 	 */
+	@Override
 	public String getName() {
 
 		return this.name;
@@ -417,6 +422,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from Identifiable.
 	 */
+	@Override
 	public void setDescription(String description) {
 
 		// If the name is not null, and if you trim it, it is not the emptry
@@ -494,6 +500,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from IUpdateable.
 	 */
+	@Override
 	public void update(String updatedKey, String newValue) {
 
 		// This does nothing at this time
@@ -514,6 +521,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from Component.
 	 */
+	@Override
 	public void accept(IComponentVisitor visitor) {
 
 		if (visitor != null) {
@@ -524,6 +532,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from IReactorComponent.
 	 */
+	@Override
 	public String toString() {
 		return this.name;
 	}
@@ -531,6 +540,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from IDataProvider.
 	 */
+	@Override
 	public ArrayList<String> getFeatureList() {
 
 		// Local Declarations
@@ -566,6 +576,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from IDataProvider.
 	 */
+	@Override
 	public int getNumberOfTimeSteps() {
 
 		return this.dataTree.size();
@@ -574,6 +585,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from IDataProvider.
 	 */
+	@Override
 	public void setTime(double step) {
 		if (step >= 0.0) {
 			this.time = step;
@@ -585,6 +597,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from IDataProvider.
 	 */
+	@Override
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
 
 		// If feature is null, return
@@ -612,6 +625,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from IDataProvider.
 	 */
+	@Override
 	public String getSourceInfo() {
 
 		return this.sourceInfo;
@@ -621,6 +635,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from IDataProvider.
 	 */
+	@Override
 	public ArrayList<String> getFeaturesAtCurrentTime() {
 
 		// Local Declarations
@@ -646,6 +661,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	/*
 	 * Implements method from IDataProvider.
 	 */
+	@Override
 	public ArrayList<Double> getTimes() {
 
 		// Local Declarations
@@ -1131,6 +1147,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations

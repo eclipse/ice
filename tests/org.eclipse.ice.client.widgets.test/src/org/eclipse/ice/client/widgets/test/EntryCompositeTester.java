@@ -12,6 +12,7 @@
 package org.eclipse.ice.client.widgets.test;
 
 import org.eclipse.ice.client.widgets.EntryComposite;
+import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.SWT;
 import org.junit.Test;

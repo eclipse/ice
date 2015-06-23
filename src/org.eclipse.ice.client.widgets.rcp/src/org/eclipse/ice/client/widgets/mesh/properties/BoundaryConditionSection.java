@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
 import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
 import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
@@ -24,10 +27,6 @@ import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
 import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -155,6 +154,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 
 		// Initialize the SelectionListener for typeCombo.
 		typeListener = new SelectionListener() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// Convert the String from typeCombo to a BoundaryConditionType.
 				String typeString = typeCombo.getText();
@@ -171,6 +171,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 				}
 			}
 
+			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
@@ -179,6 +180,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 		// Initialize the ModifyListener to set the values of the
 		// BoundaryCondition.
 		modifyListener = new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				if (condition != null) {
 					// Create an ArrayList of the appropriate size.
@@ -200,6 +202,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 		// Initialize the VerifyListener to validate the input in the value Text
 		// fields.
 		verifyListener = new VerifyListener() {
+			@Override
 			public void verifyText(VerifyEvent e) {
 				// Get the character. If it's not a digit and the current text
 				// is not a valid float, then cancel the action.
@@ -379,10 +382,12 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 				// of
 				// IMeshPart passed in through the selection.
 				IMeshPartVisitor visitor = new IMeshPartVisitor() {
+					@Override
 					public void visit(MeshComponent mesh) {
 						// Do nothing.
 					}
 
+					@Override
 					public void visit(Polygon polygon) {
 						// First, get the corresponding edge ID.
 						ArrayList<Edge> edges = polygon.getEdges();
@@ -406,16 +411,19 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 						return;
 					}
 
+					@Override
 					public void visit(Quad quad) {
 						// Re-direct to the standard polygon operation for now.
 						visit((Polygon) quad);
 					}
 
+					@Override
 					public void visit(Hex hex) {
 						// Re-direct to the standard polygon operation for now.
 						visit((Polygon) hex);
 					}
 
+					@Override
 					public void visit(Edge edge) {
 						// Get the ID of the edge.
 						int edgeId = edge.getId();
@@ -442,20 +450,24 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 						}
 					}
 
+					@Override
 					public void visit(BezierEdge edge) {
 						// Re-direct to the standard edge operation for now.
 						visit((Edge) edge);
 					}
 
+					@Override
 					public void visit(PolynomialEdge edge) {
 						// Re-direct to the standard edge operation for now.
 						visit((Edge) edge);
 					}
 
+					@Override
 					public void visit(Vertex vertex) {
 						// Do nothing.
 					}
 
+					@Override
 					public void visit(Object object) {
 						// Do nothing.
 					}

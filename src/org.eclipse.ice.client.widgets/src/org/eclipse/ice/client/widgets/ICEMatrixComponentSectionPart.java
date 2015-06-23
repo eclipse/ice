@@ -622,6 +622,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 
 		// Add an ExpansionListener to this Section
 		section.addExpansionListener(new ExpansionAdapter() {
+			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
 				parentForm.reflow(true);
 			}
@@ -690,6 +691,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
 	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
+	@Override
 	public void update(IUpdateable component) {
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override

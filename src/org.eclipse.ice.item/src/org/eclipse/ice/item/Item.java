@@ -615,6 +615,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see Identifiable#setId(int id)
 	 */
+	@Override
 	public void setId(int id) {
 
 		if (id >= 0) {
@@ -634,6 +635,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see Identifiable#getDescription()
 	 */
+	@Override
 	@XmlAttribute()
 	public String getDescription() {
 		return itemDescription;
@@ -644,6 +646,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see Identifiable#getId()
 	 */
+	@Override
 	@XmlAttribute()
 	public int getId() {
 		return uniqueId;
@@ -654,6 +657,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see Identifiable#setName(String name)
 	 */
+	@Override
 	public void setName(String name) {
 
 		if (name != null) {
@@ -667,6 +671,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see Identifiable#getName()
 	 */
+	@Override
 	@XmlAttribute
 	public String getName() {
 		return itemName;
@@ -677,6 +682,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see Identifiable#setDescription(String description)
 	 */
+	@Override
 	public void setDescription(String description) {
 
 		if (description != null) {
@@ -690,6 +696,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see Identifiable#equals(Object otherObject)
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -1187,6 +1194,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @return The hashcode
 	 */
+	@Override
 	public int hashCode() {
 		// Local Declaration
 		int hash = 9;
@@ -1254,6 +1262,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @return A clone of the Item.
 	 */
+	@Override
 	public Object clone() {
 		// Create a new instance, copy contents, and return it
 
@@ -2070,6 +2079,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
 	 */
+	@Override
 	public void visit(DataComponent component) {
 
 		// Add the Component to the map of components
@@ -2084,6 +2094,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(ResourceComponent component)
 	 */
+	@Override
 	public void visit(ResourceComponent component) {
 		// TODO Auto-generated method stub
 
@@ -2094,6 +2105,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(TableComponent component)
 	 */
+	@Override
 	public void visit(TableComponent component) {
 
 		// Add the Component to the map of components
@@ -2108,6 +2120,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(MatrixComponent component)
 	 */
+	@Override
 	public void visit(MatrixComponent component) {
 		// TODO Auto-generated method stub
 
@@ -2118,6 +2131,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(IShape component)
 	 */
+	@Override
 	public void visit(IShape component) {
 		// TODO Auto-generated method stub
 
@@ -2128,6 +2142,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(GeometryComponent component)
 	 */
+	@Override
 	public void visit(GeometryComponent component) {
 		// TODO Auto-generated method stub
 
@@ -2138,6 +2153,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
 	 */
+	@Override
 	public void visit(MasterDetailsComponent component) {
 		// TODO Auto-generated method stub
 
@@ -2148,6 +2164,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(TreeComposite component)
 	 */
+	@Override
 	public void visit(TreeComposite component) {
 		// TODO Auto-generated method stub
 
@@ -2158,6 +2175,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(IReactorComponent component)
 	 */
+	@Override
 	public void visit(IReactorComponent component) {
 		// TODO Auto-generated method stub
 
@@ -2176,6 +2194,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * 
 	 * @see IComponentVisitor#visit(MeshComponent component)
 	 */
+	@Override
 	public void visit(MeshComponent component) {
 		// TODO Auto-generated method stub
 

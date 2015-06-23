@@ -22,16 +22,11 @@ import java.io.File;
 import java.net.URI;
 
 import ncsa.hdf.object.Attribute;
-import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.Group;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.eclipse.ice.io.hdf.HdfFileFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
@@ -39,6 +34,9 @@ import org.eclipse.ice.reactor.Material;
 import org.eclipse.ice.reactor.MaterialType;
 import org.eclipse.ice.reactor.Tube;
 import org.eclipse.ice.reactor.TubeType;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * <p>

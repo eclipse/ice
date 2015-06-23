@@ -15,8 +15,6 @@ package org.eclipse.ice.materials.ui;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;

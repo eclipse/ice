@@ -48,6 +48,7 @@ public class SimpleLogin implements LoginModule {
 	/**
 	 * This operation aborts the login attempt
 	 */
+	@Override
 	public boolean abort() throws LoginException {
 		return true;
 	}
@@ -55,6 +56,7 @@ public class SimpleLogin implements LoginModule {
 	/**
 	 * This operation commits the new principle to the subject.
 	 */
+	@Override
 	public boolean commit() throws LoginException {
 		subject.getPrincipals().add(user);
 		return true;
@@ -73,6 +75,7 @@ public class SimpleLogin implements LoginModule {
 		return new Principal() {
 
 			// Check the equality of this principal
+			@Override
 			public boolean equals(Object obj) {
 				if (!(obj instanceof Principal)) {
 					return false;
@@ -81,16 +84,19 @@ public class SimpleLogin implements LoginModule {
 			}
 
 			// Get the name of the principal from the Callback
+			@Override
 			public String getName() {
 				return ((NameCallback) callbacks[0]).getName();
 			}
 
 			// Get a hashcode for the principal
+			@Override
 			public int hashCode() {
 				return getName().hashCode();
 			}
 
 			// Serialize this principal as a string
+			@Override
 			public String toString() {
 				return getName().toString();
 			}
@@ -101,6 +107,7 @@ public class SimpleLogin implements LoginModule {
 	 * Initialize this LoginModule by setting the subject and the call-back
 	 * handler.
 	 */
+	@Override
 	public void initialize(Subject subject, final CallbackHandler handler,
 			Map arg2, Map arg3) {
 		this.handler = handler;
@@ -112,6 +119,7 @@ public class SimpleLogin implements LoginModule {
 	 * 
 	 * @return True if the user has valid credentials, false otherwise.
 	 */
+	@Override
 	public boolean login() throws LoginException {
 
 		// The user name and password, hardwired for now
@@ -150,6 +158,7 @@ public class SimpleLogin implements LoginModule {
 	 * 
 	 * @return True if the user is logged out successfully, false otherwise
 	 */
+	@Override
 	public boolean logout() throws LoginException {
 		return true;
 	}

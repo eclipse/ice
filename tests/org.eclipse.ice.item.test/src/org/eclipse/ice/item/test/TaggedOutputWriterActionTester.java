@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,9 +24,9 @@ import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import org.junit.Test;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
+import org.junit.Test;
 
 /**
  * <p>

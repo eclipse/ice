@@ -16,13 +16,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-
-import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
-import org.eclipse.ice.datastructures.resource.ICEResource;
 
 /**
  * <p>
@@ -46,6 +45,7 @@ public class EclipseTextEditor implements ITextEditor {
 	 * 
 	 * @see ITextEditor#setResource(ICEResource resource)
 	 */
+	@Override
 	public void setResource(ICEResource resource) {
 
 		iceResource = resource;
@@ -57,6 +57,7 @@ public class EclipseTextEditor implements ITextEditor {
 	 * 
 	 * @see ITextEditor#getResource()
 	 */
+	@Override
 	public ICEResource getResource() {
 
 		return iceResource;
@@ -68,6 +69,7 @@ public class EclipseTextEditor implements ITextEditor {
 	 * 
 	 * @see ITextEditor#display()
 	 */
+	@Override
 	public void display() {
 
 		// Local Declarations

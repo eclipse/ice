@@ -68,6 +68,7 @@ public class PipeLinker extends GeometricalComponentLinker {
 					// links the entry's value with the plant component.
 					if (entry != null) {
 						listeners.add(new EntryListener(entry) {
+							@Override
 							public void updateEntry() {
 								// Parse the double value and set the length
 								// of the pipe.
@@ -85,6 +86,7 @@ public class PipeLinker extends GeometricalComponentLinker {
 					// links the entry's value with the plant component.
 					if (entry != null) {
 						listeners.add(new EntryListener(entry) {
+							@Override
 							public void updateEntry() {
 								// Parse the double value and set the radius
 								// of the pipe.

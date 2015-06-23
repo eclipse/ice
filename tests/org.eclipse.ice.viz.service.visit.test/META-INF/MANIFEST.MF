@@ -5,5 +5,8 @@ Bundle-SymbolicName: org.eclipse.ice.viz.service.visit.test
 Bundle-Version: 2.0.0
 Fragment-Host: org.eclipse.ice.viz.service.visit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.junit
-Import-Package: org.eclipse.ice.viz.service.visit
+Require-Bundle: org.junit,
+ org.eclipse.swtbot.eclipse.core;bundle-version="2.2.1",
+ org.eclipse.swtbot.go;bundle-version="2.2.1"
+Import-Package: org.eclipse.ice.client.widgets.test.utils,
+ org.eclipse.ice.viz.service.visit

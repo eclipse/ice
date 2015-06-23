@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.core.test;
 
-import java.net.URI;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -169,6 +167,7 @@ public class FakeItem extends Item {
 	 * 
 	 * @see Item#setupForm()
 	 */
+	@Override
 	protected void setupForm() {
 
 		form = new Form();
@@ -187,6 +186,7 @@ public class FakeItem extends Item {
 	 * 
 	 * @see Item#reviewEntries(Form preparedForm)
 	 */
+	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
 
 		status = FormStatus.InfoError;

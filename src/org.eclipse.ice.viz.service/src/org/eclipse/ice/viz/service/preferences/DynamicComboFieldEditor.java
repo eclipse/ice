@@ -302,6 +302,7 @@ public class DynamicComboFieldEditor extends FieldEditor {
 			// Add a listener to trigger FieldEditor events when the Combo's
 			// value changes.
 			combo.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent evt) {
 					// Update the current value.
 					value = combo.getSelectionIndex();

@@ -12,11 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.test;
 
-import static org.junit.Assert.*;
-import org.eclipse.ice.analysistool.IData;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.reactor.sfr.base.FeatureSet;
 import org.eclipse.ice.reactor.sfr.base.SFRData;
 import org.junit.Test;

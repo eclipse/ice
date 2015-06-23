@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.csv.viewer;
 
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.ice.client.widgets.NextAction;
 import org.eclipse.ice.client.widgets.PlayAction;
 import org.eclipse.ice.client.widgets.PlayableViewPart;
@@ -25,13 +31,6 @@ import org.eclipse.ice.viz.IDeletePlotActionViewPart;
 import org.eclipse.ice.viz.VizFileViewer;
 import org.eclipse.ice.viz.service.csv.CSVPlotEditor;
 import org.eclipse.ice.viz.service.csv.PlotProvider;
-
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -144,6 +143,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	 * 
 	 * @see ViewPart#createPartControl(Composite)
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 
 		// Create the tool bar buttons for the view
@@ -168,6 +168,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	 * 
 	 * @see WorkbenchPart#setFocus()
 	 */
+	@Override
 	public void setFocus() {
 		return;
 	}
@@ -182,6 +183,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	public void setToNextResource() {
 
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// Get the currently selected resource in the view. (Or the
 				// first selected resource if multiple resources are
@@ -214,6 +216,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	public void setToPreviousResource() {
 
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// Get the currently selected resource in the view. (Or the
 				// first selected resource if multiple resources are
@@ -245,6 +248,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	private void refreshPlotViewer() {
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// If possible, reset the plotTreeViewer's input.
 				if (plotTreeViewer != null) {
@@ -278,6 +282,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 		System.out.println("CSVPlotViewer Message: Incoming resource update.");
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// If possible, reset the plotTreeViewer's input.
 				if (plotTreeViewer != null) {
@@ -505,6 +510,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	/**
 	 * Removes all plots selected in {@link #plotTreeViewer}.
 	 */
+	@Override
 	public void removeSelection() {
 		// Make sure the viewer's controls have been created.
 		if (plotTreeViewer != null) {
@@ -615,6 +621,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	 * @param event
 	 *            The SelectionChangedEvent that fired this method.
 	 */
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 
 		// Get the selection from the TreeViewer and see if it's empty.
@@ -635,33 +642,33 @@ public class CSVPlotViewer extends PlayableViewPart implements
 				boolean newEditor = false;
 				if (editorInput == null) {
 					editorInput = new IEditorInput() {
+						@Override
 						public Object getAdapter(Class adapter) {
-							// TODO Auto-generated method stub
 							return null;
 						}
 
+						@Override
 						public String getToolTipText() {
-							// TODO Auto-generated method stub
 							return null;
 						}
 
+						@Override
 						public IPersistableElement getPersistable() {
-							// TODO Auto-generated method stub
 							return null;
 						}
 
+						@Override
 						public String getName() {
-							// TODO Auto-generated method stub
 							return null;
 						}
 
+						@Override
 						public ImageDescriptor getImageDescriptor() {
-							// TODO Auto-generated method stub
 							return null;
 						}
 
+						@Override
 						public boolean exists() {
-							// TODO Auto-generated method stub
 							return false;
 						}
 					};

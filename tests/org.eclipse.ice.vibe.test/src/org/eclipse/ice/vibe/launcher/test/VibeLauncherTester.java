@@ -12,9 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.vibe.launcher.test;
 
-import static org.junit.Assert.*;
-
-import org.eclipse.ice.vibe.launcher.VibeLauncher;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.vibe.launcher.VibeLauncher;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

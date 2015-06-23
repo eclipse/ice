@@ -71,6 +71,7 @@ public class GeometryComponent extends ICEObject implements Component,
 	 *            The new ICEObject ID
 	 *            </p>
 	 */
+	@Override
 	public void setName(String name) {
 
 		// Call ICEObject::setName
@@ -92,6 +93,7 @@ public class GeometryComponent extends ICEObject implements Component,
 	 *            The new ICEObject ID
 	 *            </p>
 	 */
+	@Override
 	public void setId(int id) {
 
 		// Call ICEObject::setId
@@ -220,6 +222,7 @@ public class GeometryComponent extends ICEObject implements Component,
 	 *         The hashcode of the ICEObject.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Start with the ICEObject's hashcode
@@ -249,6 +252,7 @@ public class GeometryComponent extends ICEObject implements Component,
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Check if a similar reference
@@ -328,6 +332,7 @@ public class GeometryComponent extends ICEObject implements Component,
 	 *         The new clone
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Instantiate GeometryComponent
@@ -346,6 +351,7 @@ public class GeometryComponent extends ICEObject implements Component,
 	 * </p>
 	 * 
 	 */
+	@Override
 	protected void notifyListeners() {
 
 		final GeometryComponent geometryComponent = this;
@@ -377,6 +383,7 @@ public class GeometryComponent extends ICEObject implements Component,
 	 * 
 	 * @see IUpdateable#update(String updatedKey, String newValue)
 	 */
+	@Override
 	public void update(String updatedKey, String newValue) {
 		// Not implemented
 	}
@@ -386,6 +393,7 @@ public class GeometryComponent extends ICEObject implements Component,
 	 * 
 	 * @see Component#register(IUpdateableListener listener)
 	 */
+	@Override
 	public void register(IUpdateableListener listener) {
 
 		// Fail silently if listener is null
@@ -403,6 +411,7 @@ public class GeometryComponent extends ICEObject implements Component,
 	 * 
 	 * @see Component#accept(IComponentVisitor visitor)
 	 */
+	@Override
 	public void accept(IComponentVisitor visitor) {
 
 		// Call the visitor's visit operation

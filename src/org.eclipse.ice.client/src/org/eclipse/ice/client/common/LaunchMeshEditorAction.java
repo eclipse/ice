@@ -12,14 +12,13 @@
 *******************************************************************************/
 package org.eclipse.ice.client.common;
 
-import org.eclipse.ice.client.common.internal.ClientHolder;
-import org.eclipse.ice.iclient.IClient;
-
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.client.common.internal.ClientHolder;
+import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
@@ -88,6 +87,7 @@ public class LaunchMeshEditorAction extends Action implements IWorkbenchAction {
 	 * Implements IWorkbenchAction's only method. Currently, there is nothing to
 	 * do here.
 	 */
+	@Override
 	public void dispose() {
 		// Nothing to do.
 	}

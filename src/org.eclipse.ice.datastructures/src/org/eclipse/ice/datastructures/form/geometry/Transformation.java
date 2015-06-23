@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.geometry;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
-import javax.xml.bind.JAXBException;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 
 /**
  * <p>
@@ -336,6 +334,7 @@ public class Transformation extends ICEObject {
 	 *         The hashcode of the ICEObject.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declaration
@@ -370,6 +369,7 @@ public class Transformation extends ICEObject {
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Check if they are the same reference in memory
@@ -436,6 +436,7 @@ public class Transformation extends ICEObject {
 	 *         The new clone
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new Transformation and copy the current object's data

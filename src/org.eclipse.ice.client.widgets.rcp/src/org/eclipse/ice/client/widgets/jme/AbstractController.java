@@ -137,6 +137,7 @@ public abstract class AbstractController implements IUpdateableListener {
 			// view to the new parent.
 			if (!disposed.get()) {
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						view.setParentNode(parentNode);
 						return true;
@@ -163,6 +164,7 @@ public abstract class AbstractController implements IUpdateableListener {
 
 			// Add a new update action to remove the view.
 			renderQueue.enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 					view.dispose();
 					return true;
@@ -176,6 +178,7 @@ public abstract class AbstractController implements IUpdateableListener {
 	/**
 	 * Updates the controller and/or view if the {@link #model} has changed.
 	 */
+	@Override
 	public abstract void update(IUpdateable component);
 
 }

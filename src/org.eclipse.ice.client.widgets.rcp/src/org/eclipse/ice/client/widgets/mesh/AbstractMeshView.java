@@ -135,6 +135,7 @@ public abstract class AbstractMeshView {
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		return super.equals(otherObject);
 	}
@@ -148,6 +149,7 @@ public abstract class AbstractMeshView {
 	 *         The hashcode of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
@@ -175,6 +177,7 @@ public abstract class AbstractMeshView {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		return null;
 	}

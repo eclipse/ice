@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
  * <p>
@@ -229,6 +230,7 @@ public class Tube extends Ring {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -263,6 +265,7 @@ public class Tube extends Ring {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Get hash from super
@@ -309,6 +312,7 @@ public class Tube extends Ring {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		// Local Declarations
 		Tube tube = new Tube();
@@ -324,6 +328,7 @@ public class Tube extends Ring {
 	/*
 	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -337,6 +342,7 @@ public class Tube extends Ring {
 	/*
 	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations
@@ -373,6 +379,7 @@ public class Tube extends Ring {
 	 *            The visitor
 	 *            </p>
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

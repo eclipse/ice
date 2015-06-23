@@ -15,16 +15,16 @@ package org.eclipse.ice.io.hdf.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import org.eclipse.ice.io.hdf.HdfIOFactory;
-import org.eclipse.ice.io.hdf.HdfIORegistry;
-import org.eclipse.ice.io.hdf.IHdfIOFactory;
-import org.eclipse.ice.io.hdf.IHdfIORegistry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.io.hdf.HdfIOFactory;
+import org.eclipse.ice.io.hdf.HdfIORegistry;
+import org.eclipse.ice.io.hdf.IHdfIOFactory;
+import org.eclipse.ice.io.hdf.IHdfIORegistry;
 import org.junit.Test;
 
 /**
@@ -72,10 +72,12 @@ public class HdfIORegistryTester {
 			supportedMap.put(SupportedTwo.class, "tag2");
 		}
 
+		@Override
 		public List<Class<?>> getSupportedClasses() {
 			return new ArrayList<Class<?>>(tagMap.values());
 		}
 
+		@Override
 		public String getTag(Class<?> supportedClass) {
 			return supportedMap.get(supportedClass);
 		}

@@ -19,7 +19,6 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.item.jobprofile.JobProfileForm;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

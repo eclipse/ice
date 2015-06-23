@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor;
 
-import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.TreePath;
-
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.TreePath;
 
 /**
  * This factory is used to help construct {@link ReactorFormInput} for a

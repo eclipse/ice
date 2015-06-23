@@ -17,7 +17,6 @@ import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
-
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -57,6 +56,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 *         The child IShapes
 	 *         </p>
 	 */
+	@Override
 	public Object[] getChildren(Object parentElement) {
 
 		// If the element is an IShape, call its accept() operation to
@@ -94,6 +94,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 *         The child IShapes
 	 *         </p>
 	 */
+	@Override
 	public Object[] getElements(Object inputElement) {
 
 		// If the element is a GeometryComponent, return its shapes
@@ -120,6 +121,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 *         The parent IShape
 	 *         </p>
 	 */
+	@Override
 	public Object getParent(Object element) {
 
 		// Return null if the element is not an IShape
@@ -152,6 +154,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 *         Represents whether the element has children
 	 *         </p>
 	 */
+	@Override
 	public boolean hasChildren(Object element) {
 
 		// Get the children from the getChildren operation and return whether
@@ -176,6 +179,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * 
 	 * @see IContentProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
 
 		// We don't need to dispose of anything.
@@ -188,6 +192,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * @see IContentProvider#inputChanged(Viewer viewer, Object oldInput, Object
 	 *      newInput)
 	 */
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
 		// The state of this class does not depend on the input, so we do not
@@ -240,6 +245,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * 
 	 * @see IShapeVisitor#visit(ComplexShape complexShape)
 	 */
+	@Override
 	public void visit(ComplexShape complexShape) {
 
 		// IShape is a ComplexShape, so put its children in the temporary
@@ -260,6 +266,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 * 
 	 * @see IShapeVisitor#visit(PrimitiveShape primitiveShape)
 	 */
+	@Override
 	public void visit(PrimitiveShape primitiveShape) {
 
 		// IShape is a PrimitiveShape, so it has no children :(

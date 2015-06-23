@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
+import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
-import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.layout.FillLayout;
