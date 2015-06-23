@@ -11,7 +11,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -32,14 +37,150 @@ import java.util.concurrent.Future;
  */
 public abstract class VizConnection<T> implements IVizConnection<T> {
 
-	// TODO Implement the methods.
+	/**
+	 * The current connection widget. This is only set when {@link #connect()}
+	 * or {@link #disconnect()} is called, and should be the return value from
+	 * the sub-class implementation of {@link #connectToWidget()}.
+	 */
+	private T widget;
+	/**
+	 * The current connection state. This is only ever set when the
+	 * {@link #connect()} or {@link #disconnect()} operations are called.
+	 */
+	private ConnectionState state;
+	/**
+	 * An informative status message to go along with the current connection
+	 * {@link #state}.
+	 */
+	private String statusMessage;
+
+	/**
+	 * The map of properties, keyed on their [user-friendly] property names.
+	 */
+	private final Map<String, String> properties;
+	/**
+	 * A map of handlers for validating and setting properties.
+	 */
+	protected final Map<String, IPropertyHandler> propertyHandlers;
+
+	/**
+	 * The set of connection listeners. These need to be notified--using
+	 * {@link #notifyListeners(ConnectionState, String)}--whenever the
+	 * connection state changes.
+	 */
+	private final Set<IVizConnectionListener<T>> listeners;
+
+	/**
+	 * The minimum allowed port (inclusive).
+	 */
+	private static final int MIN_PORT = 0;
+	/**
+	 * The maximum allowed port (inclusive).
+	 */
+	private static final int MAX_PORT = 65535;
+
+	/**
+	 * The default constructor. Initializes the connection to the default
+	 * values.
+	 */
+	public VizConnection() {
+
+		// All connections start off disconnected.
+		widget = null;
+		state = ConnectionState.Disconnected;
+		statusMessage = "The connection has not been configured.";
+
+		// Initialize the property map.
+		properties = new HashMap<String, String>();
+
+		// Initialize the map of property handlers/setters.
+		propertyHandlers = new HashMap<String, IPropertyHandler>();
+
+		// Add setters for the default properties. These should just redirect to
+		// the implemented setters in this class.
+
+		// The name property should only accept non-empty strings. Values should
+		// be trimmed.
+		propertyHandlers.put("Name", new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				String newValue = null;
+				if (value != null) {
+					newValue = value.trim();
+				}
+				return newValue != null && !newValue.isEmpty() ? newValue
+						: null;
+			}
+		});
+		// The description property should only accept non-null strings. Values
+		// should be trimmed.
+		propertyHandlers.put("Description", new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				return value != null ? value.trim() : null;
+			}
+		});
+		// The name property should only accept non-empty strings. Values should
+		// be trimmed.
+		propertyHandlers.put("Host", new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				// Only accept non-empty strings. Also, trim the input value.
+				String newValue = null;
+				if (value != null) {
+					newValue = value.trim();
+				}
+				return newValue != null && !newValue.isEmpty() ? newValue
+						: null;
+			}
+		});
+		// The port property should only accept integers lying in the valid port
+		// range defined by the global min and max ports.
+		propertyHandlers.put("Port", new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				String newValue = null;
+				try {
+					int port = Integer.parseInt(value);
+					if (port >= MIN_PORT && port <= MAX_PORT) {
+						newValue = Integer.toString(port);
+					}
+				} catch (NumberFormatException e) {
+					// The new value is invalid.
+				}
+
+				return newValue;
+			}
+		});
+		// The description property should only accept non-null strings. Values
+		// should be trimmed.
+		propertyHandlers.put("Path", new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				// Accept non-null strings. Also, trim the input value.
+				return value != null ? value.trim() : null;
+			}
+		});
+
+		// Load the default properties.
+		setName("Connection1");
+		setDescription("");
+		setHost("localhost");
+		setPort(50000);
+		setPath("");
+
+		// Initialize the set of connection listeners.
+		listeners = new HashSet<IVizConnectionListener<T>>();
+
+		return;
+	}
 
 	/*
 	 * Implements a method from IVizConnection.
 	 */
 	@Override
 	public ConnectionState getState() {
-		return null;
+		return state;
 	}
 
 	/*
@@ -47,7 +188,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public String getStatusMessage() {
-		return null;
+		return statusMessage;
 	}
 
 	/*
@@ -55,7 +196,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public T getWidget() {
-		return null;
+		return widget;
 	}
 
 	/*
@@ -63,7 +204,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public String getName() {
-		return null;
+		return properties.get("Name");
 	}
 
 	/*
@@ -71,7 +212,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public String getDescription() {
-		return null;
+		return properties.get("Description");
 	}
 
 	/*
@@ -79,7 +220,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public String getHost() {
-		return null;
+		return properties.get("Host");
 	}
 
 	/*
@@ -87,7 +228,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public int getPort() {
-		return 0;
+		return Integer.parseInt(properties.get("Port"));
 	}
 
 	/*
@@ -95,7 +236,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public String getPath() {
-		return null;
+		return properties.get("Path");
 	}
 
 	/*
@@ -103,7 +244,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public Map<String, String> getProperties() {
-		return null;
+		return new HashMap<String, String>(properties);
 	}
 
 	/*
@@ -111,7 +252,11 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public boolean addListener(IVizConnectionListener<T> listener) {
-		return false;
+		boolean added = false;
+		if (listener != null) {
+			added = listeners.add(listener);
+		}
+		return added;
 	}
 
 	/*
@@ -119,7 +264,11 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	@Override
 	public boolean removeListener(IVizConnectionListener<T> listener) {
-		return false;
+		boolean removed = false;
+		if (listener != null) {
+			removed = listeners.remove(listener);
+		}
+		return removed;
 	}
 
 	/**
@@ -130,14 +279,10 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 *         fail), use the future's {@code get()} method.
 	 */
 	public Future<ConnectionState> connect() {
+		// TODO
 		return null;
 	}
 
-	/**
-	 * 
-	 * @return True if the widget is connected at the end of the operation,
-	 *         false otherwise.
-	 */
 	/**
 	 * Attempts to establish the connection to the connection widget. This
 	 * method will be called from a separate worker thread.
@@ -156,6 +301,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 *         fail), use the future's {@code get()} method.
 	 */
 	public Future<ConnectionState> disconnect() {
+		// TODO
 		return null;
 	}
 
@@ -180,7 +326,31 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 *            The message to send to the listeners.
 	 */
 	private void notifyListeners(ConnectionState state, String message) {
+		if (!listeners.isEmpty()) {
 
+			// Get final references to the arguments required to notify a given
+			// connection listener.
+			final IVizConnection<T> connRef = this;
+			final ConnectionState stateRef = state;
+			final String msgRef = message;
+
+			// Open up a set of threads and notify each listener by submitting
+			// tasks to the thread execution service.
+			ExecutorService executorService = Executors.newCachedThreadPool();
+			for (final IVizConnectionListener<T> listener : listeners) {
+				executorService.submit(new Runnable() {
+					@Override
+					public void run() {
+						listener.connectionStateChanged(connRef, stateRef,
+								msgRef);
+					}
+				});
+			}
+			// Tell the service to close after all submitted tasks have been
+			// completed.
+			executorService.shutdown();
+		}
+		return;
 	}
 
 	/**
@@ -190,12 +360,38 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * @param name
 	 *            The name of the property to update.
 	 * @param value
-	 *            The new value of the property.
+	 *            The new value of the property. If {@code null}, the property
+	 *            will be removed.
 	 * @return True if the property specified by the name was updated to a new
 	 *         value, false otherwise.
 	 */
 	public boolean setProperty(String name, String value) {
-		return false;
+		boolean changed = false;
+
+		// If a handler is not available, then assume the new value is valid.
+		boolean canChange = true;
+		String newValue = value;
+
+		// Validate the value through any available handler.
+		IPropertyHandler handler = propertyHandlers.get(name);
+		if (handler != null) {
+			newValue = handler.validateValue(value);
+			canChange = (newValue != null);
+		}
+
+		if (canChange) {
+			// If the value is not null, update the property in the map.
+			if (value != null) {
+				String oldValue = properties.put(name, value);
+				changed = (oldValue == null || !oldValue.equals(value));
+			}
+			// Otherwise, if the value is null, remove it from the map.
+			else {
+				changed = (properties.remove(name) != null);
+			}
+		}
+
+		return changed;
 	}
 
 	/**
@@ -207,7 +403,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * @return True if the name was changed, false otherwise.
 	 */
 	public boolean setName(String name) {
-		return false;
+		return setProperty("Name", name);
 	}
 
 	/**
@@ -219,7 +415,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * @return True if the description was changed, false otherwise.
 	 */
 	public boolean setDescription(String description) {
-		return false;
+		return setProperty("Description", description);
 	}
 
 	/**
@@ -231,7 +427,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * @return True if the host was changed, false otherwise.
 	 */
 	public boolean setHost(String host) {
-		return false;
+		return setProperty("Host", host);
 	}
 
 	/**
@@ -243,7 +439,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * @return True if the port was changed, false otherwise.
 	 */
 	public boolean setPort(int port) {
-		return false;
+		return setProperty("Port", Integer.toString(port));
 	}
 
 	/**
@@ -255,7 +451,24 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * @return True if the path was changed, false otherwise.
 	 */
 	public boolean setPath(String path) {
-		return false;
+		return setProperty("Path", path);
 	}
 
+	/**
+	 * A simple interface that handles setting a single property.
+	 * 
+	 * @author Jordan
+	 *
+	 */
+	protected interface IPropertyHandler {
+
+		/**
+		 * Validates the specified value for the associated property.
+		 * 
+		 * @param value
+		 *            The value to check.
+		 * @return True if the value is allowed, false otherwise.
+		 */
+		public String validateValue(String value);
+	}
 }

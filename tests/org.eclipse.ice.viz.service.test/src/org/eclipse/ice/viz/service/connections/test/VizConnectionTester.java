@@ -135,7 +135,7 @@ public class VizConnectionTester {
 		assertEquals("Connection1", connection.getName());
 		assertEquals("", connection.getDescription());
 		assertEquals("localhost", connection.getHost());
-		assertEquals("50000", connection.getPort());
+		assertEquals(50000, connection.getPort());
 		assertEquals("", connection.getPath());
 
 		// Check the property map.
@@ -149,6 +149,30 @@ public class VizConnectionTester {
 		assertEquals("localhost", properties.get("Host"));
 		assertEquals("50000", properties.get("Port"));
 		assertEquals("", properties.get("Path"));
+
+		return;
+	}
+
+	/**
+	 * Checks that the property map cannot be modified from outside the class.
+	 */
+	@Test
+	public void checkProperties() {
+
+		// Get a reference to the connection properties. It should not be empty.
+		Map<String, String> properties = connection.getProperties();
+		assertNotNull(properties);
+		assertFalse(properties.isEmpty());
+
+		// Subsequent requests should return a new map.
+		assertFalse(properties == connection.getProperties());
+		assertFalse(properties == connection.getProperties());
+
+		// Clearing the returned map should have no effect on the connection's
+		// properties.
+		properties.clear();
+		assertNotNull(connection.getProperties());
+		assertFalse(connection.getProperties().isEmpty());
 
 		return;
 	}
@@ -205,7 +229,6 @@ public class VizConnectionTester {
 		name = connection.getName();
 		assertFalse(connection.setName(name));
 		assertFalse(connection.setProperty(propertyName, name));
-		// The name should be unchanged.
 		assertEquals(name, connection.getName());
 
 		// Trying to set to a new, valid name should succeed.
@@ -223,14 +246,12 @@ public class VizConnectionTester {
 		// Trying to set an invalid (null) name should fail.
 		assertFalse(connection.setName(nullString));
 		assertFalse(connection.setProperty(propertyName, nullString));
-		// The name should be unchanged.
 		assertEquals(name, connection.getName());
 		assertEquals(name, connection.getProperties().get(propertyName));
 
 		// Trying to set an invalid (non-null) name should fail.
 		assertFalse(connection.setName(emptyString));
 		assertFalse(connection.setProperty(propertyName, emptyString));
-		// The name should be unchanged.
 		assertEquals(name, connection.getName());
 		assertEquals(name, connection.getProperties().get(propertyName));
 
@@ -252,8 +273,7 @@ public class VizConnectionTester {
 		desc = connection.getDescription();
 		assertFalse(connection.setDescription(desc));
 		assertFalse(connection.setProperty(propertyName, desc));
-		// The name should be unchanged.
-		assertEquals(desc, connection.getName());
+		assertEquals(desc, connection.getDescription());
 
 		// Trying to set to a new, valid desc should succeed.
 		desc = "derp1";
@@ -293,7 +313,6 @@ public class VizConnectionTester {
 		host = connection.getHost();
 		assertFalse(connection.setHost(host));
 		assertFalse(connection.setProperty(propertyName, host));
-		// The name should be unchanged.
 		assertEquals(host, connection.getHost());
 
 		// Trying to set to a new, valid host should succeed.
@@ -311,14 +330,12 @@ public class VizConnectionTester {
 		// Trying to set an invalid (null) host should fail.
 		assertFalse(connection.setHost(nullString));
 		assertFalse(connection.setProperty(propertyName, nullString));
-		// The name should be unchanged.
 		assertEquals(host, connection.getHost());
 		assertEquals(host, connection.getProperties().get(propertyName));
 
 		// Trying to set an invalid (non-null) host should fail.
 		assertFalse(connection.setHost(emptyString));
 		assertFalse(connection.setProperty(propertyName, emptyString));
-		// The name should be unchanged.
 		assertEquals(host, connection.getHost());
 		assertEquals(host, connection.getProperties().get(propertyName));
 
@@ -363,24 +380,24 @@ public class VizConnectionTester {
 		// Trying to set an invalid (null) port should fail.
 		assertFalse(connection.setProperty(propertyName, nullString));
 		assertEquals(port, connection.getPort());
-		assertEquals(port, connection.getProperties().get(propertyName));
+		assertEquals(portString, connection.getProperties().get(propertyName));
 
 		// Trying to set an invalid (non-null) port should fail.
 		assertFalse(connection.setProperty(propertyName, emptyString));
 		assertEquals(port, connection.getPort());
-		assertEquals(port, connection.getProperties().get(propertyName));
+		assertEquals(portString, connection.getProperties().get(propertyName));
 
 		// Trying to set to a port that is too low.
 		assertFalse(connection.setPort(-1));
 		assertFalse(connection.setProperty(propertyName, "-1"));
 		assertEquals(port, connection.getPort());
-		assertEquals(port, connection.getProperties().get(propertyName));
+		assertEquals(portString, connection.getProperties().get(propertyName));
 
 		// Trying to set to a port that is too high.
 		assertFalse(connection.setPort(65536));
 		assertFalse(connection.setProperty(propertyName, "65536"));
 		assertEquals(port, connection.getPort());
-		assertEquals(port, connection.getProperties().get(propertyName));
+		assertEquals(portString, connection.getProperties().get(propertyName));
 
 		return;
 	}
@@ -400,8 +417,7 @@ public class VizConnectionTester {
 		path = connection.getPath();
 		assertFalse(connection.setPath(path));
 		assertFalse(connection.setProperty(propertyName, path));
-		// The name should be unchanged.
-		assertEquals(path, connection.getName());
+		assertEquals(path, connection.getPath());
 
 		// Trying to set to a new, valid desc should succeed.
 		path = "derp1";
@@ -418,7 +434,6 @@ public class VizConnectionTester {
 		// Trying to set an invalid (null) desc should fail.
 		assertFalse(connection.setPath(nullString));
 		assertFalse(connection.setProperty(propertyName, nullString));
-		// The name should be unchanged.
 		assertEquals(path, connection.getPath());
 		assertEquals(path, connection.getProperties().get(propertyName));
 
