@@ -158,7 +158,35 @@ public class VizConnectionTester {
 	 */
 	@Test
 	public void checkSetProperty() {
-		fail("Not implemented");
+
+		String propertyName = "property";
+		String value = null;
+
+		final String nullString = null;
+
+		// Initially, the propery's "value" should be null, because it is not
+		// set.
+		assertNull(connection.getProperties().get(propertyName));
+
+		// Setting the initial property value should return false if the value
+		// is null.
+		assertFalse(connection.setProperty(propertyName, value));
+		assertNull(connection.getProperties().get(propertyName));
+
+		// Setting it to a new value should return true.
+		value = "derp";
+		assertTrue(connection.setProperty(propertyName, value));
+		assertEquals(value, connection.getProperties().get(propertyName));
+
+		// Setting it to the same value should return false.
+		assertFalse(connection.setProperty(propertyName, value));
+		assertEquals(value, connection.getProperties().get(propertyName));
+
+		// Unsetting it should return true.
+		assertTrue(connection.setProperty(propertyName, nullString));
+		assertNull(connection.getProperties().get(propertyName));
+
+		return;
 	}
 
 	/**
@@ -166,7 +194,47 @@ public class VizConnectionTester {
 	 */
 	@Test
 	public void checkSetName() {
-		fail("Not implemented");
+
+		String propertyName = "Name";
+		String name = null;
+
+		final String emptyString = "";
+		final String nullString = null;
+
+		// Trying to set to the existing name shouldn't succeed.
+		name = connection.getName();
+		assertFalse(connection.setName(name));
+		assertFalse(connection.setProperty(propertyName, name));
+		// The name should be unchanged.
+		assertEquals(name, connection.getName());
+
+		// Trying to set to a new, valid name should succeed.
+		name = "derp1";
+		assertTrue(connection.setName(name));
+		assertEquals(name, connection.getName());
+		assertEquals(name, connection.getProperties().get(propertyName));
+
+		// Try the property-based setter, too.
+		name = "derp2";
+		assertTrue(connection.setProperty(propertyName, name));
+		assertEquals(name, connection.getName());
+		assertEquals(name, connection.getProperties().get(propertyName));
+
+		// Trying to set an invalid (null) name should fail.
+		assertFalse(connection.setName(nullString));
+		assertFalse(connection.setProperty(propertyName, nullString));
+		// The name should be unchanged.
+		assertEquals(name, connection.getName());
+		assertEquals(name, connection.getProperties().get(propertyName));
+
+		// Trying to set an invalid (non-null) name should fail.
+		assertFalse(connection.setName(emptyString));
+		assertFalse(connection.setProperty(propertyName, emptyString));
+		// The name should be unchanged.
+		assertEquals(name, connection.getName());
+		assertEquals(name, connection.getProperties().get(propertyName));
+
+		return;
 	}
 
 	/**
@@ -174,7 +242,39 @@ public class VizConnectionTester {
 	 */
 	@Test
 	public void checkSetDescription() {
-		fail("Not implemented");
+
+		String propertyName = "Description";
+		String desc = null;
+
+		final String nullString = null;
+
+		// Trying to set to the existing desc shouldn't succeed.
+		desc = connection.getDescription();
+		assertFalse(connection.setDescription(desc));
+		assertFalse(connection.setProperty(propertyName, desc));
+		// The name should be unchanged.
+		assertEquals(desc, connection.getName());
+
+		// Trying to set to a new, valid desc should succeed.
+		desc = "derp1";
+		assertTrue(connection.setDescription(desc));
+		assertEquals(desc, connection.getDescription());
+		assertEquals(desc, connection.getProperties().get(propertyName));
+
+		// Try the property-based setter, too.
+		desc = "derp2";
+		assertTrue(connection.setProperty(propertyName, desc));
+		assertEquals(desc, connection.getDescription());
+		assertEquals(desc, connection.getProperties().get(propertyName));
+
+		// Trying to set an invalid (null) desc should fail.
+		assertFalse(connection.setDescription(nullString));
+		assertFalse(connection.setProperty(propertyName, nullString));
+		// The name should be unchanged.
+		assertEquals(desc, connection.getDescription());
+		assertEquals(desc, connection.getProperties().get(propertyName));
+
+		return;
 	}
 
 	/**
@@ -182,7 +282,47 @@ public class VizConnectionTester {
 	 */
 	@Test
 	public void checkSetHost() {
-		fail("Not implemented");
+
+		String propertyName = "Host";
+		String host = null;
+
+		final String emptyString = "";
+		final String nullString = null;
+
+		// Trying to set to the existing host shouldn't succeed.
+		host = connection.getHost();
+		assertFalse(connection.setHost(host));
+		assertFalse(connection.setProperty(propertyName, host));
+		// The name should be unchanged.
+		assertEquals(host, connection.getHost());
+
+		// Trying to set to a new, valid host should succeed.
+		host = "derp1";
+		assertTrue(connection.setHost(host));
+		assertEquals(host, connection.getHost());
+		assertEquals(host, connection.getProperties().get(propertyName));
+
+		// Try the property-based setter, too.
+		host = "derp2";
+		assertTrue(connection.setProperty(propertyName, host));
+		assertEquals(host, connection.getHost());
+		assertEquals(host, connection.getProperties().get(propertyName));
+
+		// Trying to set an invalid (null) host should fail.
+		assertFalse(connection.setHost(nullString));
+		assertFalse(connection.setProperty(propertyName, nullString));
+		// The name should be unchanged.
+		assertEquals(host, connection.getHost());
+		assertEquals(host, connection.getProperties().get(propertyName));
+
+		// Trying to set an invalid (non-null) host should fail.
+		assertFalse(connection.setHost(emptyString));
+		assertFalse(connection.setProperty(propertyName, emptyString));
+		// The name should be unchanged.
+		assertEquals(host, connection.getHost());
+		assertEquals(host, connection.getProperties().get(propertyName));
+
+		return;
 	}
 
 	/**
@@ -190,7 +330,59 @@ public class VizConnectionTester {
 	 */
 	@Test
 	public void checkSetPort() {
-		fail("Not implemented");
+
+		String propertyName = "Port";
+		int port = 0;
+		String portString = null;
+
+		final String emptyString = "";
+		final String nullString = null;
+
+		// Trying to set to the existing port shouldn't succeed.
+		port = connection.getPort();
+		portString = Integer.toString(port);
+		assertFalse(connection.setPort(port));
+		assertFalse(connection.setProperty(propertyName, portString));
+		assertEquals(port, connection.getPort());
+		assertEquals(portString, connection.getProperties().get(propertyName));
+
+		// Trying to set to a new, valid port should succeed.
+		port = 60000;
+		portString = Integer.toString(port);
+		assertTrue(connection.setPort(port));
+		assertEquals(port, connection.getPort());
+		assertEquals(portString, connection.getProperties().get(propertyName));
+
+		// Try the property-based setter, too.
+		port = 60001;
+		portString = Integer.toString(port);
+		assertTrue(connection.setProperty(propertyName, portString));
+		assertEquals(port, connection.getPort());
+		assertEquals(portString, connection.getProperties().get(propertyName));
+
+		// Trying to set an invalid (null) port should fail.
+		assertFalse(connection.setProperty(propertyName, nullString));
+		assertEquals(port, connection.getPort());
+		assertEquals(port, connection.getProperties().get(propertyName));
+
+		// Trying to set an invalid (non-null) port should fail.
+		assertFalse(connection.setProperty(propertyName, emptyString));
+		assertEquals(port, connection.getPort());
+		assertEquals(port, connection.getProperties().get(propertyName));
+
+		// Trying to set to a port that is too low.
+		assertFalse(connection.setPort(-1));
+		assertFalse(connection.setProperty(propertyName, "-1"));
+		assertEquals(port, connection.getPort());
+		assertEquals(port, connection.getProperties().get(propertyName));
+
+		// Trying to set to a port that is too high.
+		assertFalse(connection.setPort(65536));
+		assertFalse(connection.setProperty(propertyName, "65536"));
+		assertEquals(port, connection.getPort());
+		assertEquals(port, connection.getProperties().get(propertyName));
+
+		return;
 	}
 
 	/**
@@ -198,7 +390,39 @@ public class VizConnectionTester {
 	 */
 	@Test
 	public void checkSetPath() {
-		fail("Not implemented");
+
+		String propertyName = "Path";
+		String path = null;
+
+		final String nullString = null;
+
+		// Trying to set to the existing desc shouldn't succeed.
+		path = connection.getPath();
+		assertFalse(connection.setPath(path));
+		assertFalse(connection.setProperty(propertyName, path));
+		// The name should be unchanged.
+		assertEquals(path, connection.getName());
+
+		// Trying to set to a new, valid desc should succeed.
+		path = "derp1";
+		assertTrue(connection.setPath(path));
+		assertEquals(path, connection.getPath());
+		assertEquals(path, connection.getProperties().get(propertyName));
+
+		// Try the property-based setter, too.
+		path = "derp2";
+		assertTrue(connection.setProperty(propertyName, path));
+		assertEquals(path, connection.getPath());
+		assertEquals(path, connection.getProperties().get(propertyName));
+
+		// Trying to set an invalid (null) desc should fail.
+		assertFalse(connection.setPath(nullString));
+		assertFalse(connection.setProperty(propertyName, nullString));
+		// The name should be unchanged.
+		assertEquals(path, connection.getPath());
+		assertEquals(path, connection.getProperties().get(propertyName));
+
+		return;
 	}
 
 	/**
@@ -215,6 +439,8 @@ public class VizConnectionTester {
 			state = connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The state should be "failed" and the widget should still be null.
 		assertEquals(ConnectionState.Failed, state);
@@ -226,6 +452,8 @@ public class VizConnectionTester {
 			state = connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The state should be "connected" and the widget should be set.
 		assertEquals(ConnectionState.Connected, state);
@@ -237,6 +465,8 @@ public class VizConnectionTester {
 			state = connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The state should *still* be "connected" and the widget should be set.
 		assertEquals(ConnectionState.Connected, state);
@@ -259,6 +489,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check that the client's implementation was called and that the
 		// connection's widget was set to null.
@@ -271,6 +503,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check that the client's implementation was called and that the
 		// connection's widget was set to the returned widget.
@@ -284,6 +518,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check that the client's implementation was *not* called and that the
 		// connection's widget is the same as the returned widget.
@@ -308,6 +544,8 @@ public class VizConnectionTester {
 			state = connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// The state returned should be "disconnected" and the widget should
 		// still be unset.
@@ -319,6 +557,8 @@ public class VizConnectionTester {
 			state = connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The state should be "connected".
 		assertEquals(ConnectionState.Connected, state);
@@ -329,6 +569,8 @@ public class VizConnectionTester {
 			state = connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// The state returned should be "failed", and the widget should remain
 		// the same.
@@ -342,6 +584,8 @@ public class VizConnectionTester {
 			state = connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// The state returned should be "disconnected", and the widget should be
 		// unset.
@@ -354,6 +598,8 @@ public class VizConnectionTester {
 			state = connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// The state returned should be "disconnected" and the widget should
 		// still be unset.
@@ -375,6 +621,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Check that the client's implementation was *not* called and that the
 		// connection's widget is still null.
@@ -386,6 +634,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The connection's widget should not be null.
 		assertNotNull(connection.getWidget());
@@ -396,6 +646,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Check that the client's implementation was called but the connection
 		// widget was not unset (for diagnostic purposes).
@@ -409,6 +661,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Check that the client's implementation was called and the connection
 		// widget was unset.
@@ -421,6 +675,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Check that the client's implementation was *not* called and that the
 		// connection's widget is still null.
@@ -442,6 +698,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Only the first listener will be notified.
 		assertFalse(fakeListener2.wasNotified());
@@ -457,6 +715,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Both listeners should be notified.
 		assertTrue(fakeListener1.wasNotified());
@@ -474,6 +734,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Only the first listener will be notified.
 		assertFalse(fakeListener2.wasNotified());
@@ -502,6 +764,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check the "connecting" status update.
 		assertTrue(fakeListener1.wasNotified());
@@ -556,6 +820,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check the "connecting" status update.
 		assertTrue(fakeListener1.wasNotified());
@@ -610,6 +876,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 
 		// ---- Ignore the Connecting and Connected notifications. ---- //
@@ -638,6 +906,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 
 		// Check the "disconnected" status update.
@@ -673,6 +943,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 
 		// ---- Ignore the Connecting and Connected notifications. ---- //
@@ -704,6 +976,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 
 		// Check the "failed" status update.
@@ -856,6 +1130,8 @@ public class VizConnectionTester {
 					time += threshold;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+					fail("VizConnection error: "
+							+ "Failure while waiting on listener notification.");
 				}
 			}
 			return notified;
