@@ -13,7 +13,11 @@ package org.eclipse.ice.viz.service.connections.test;
 
 import static org.junit.Assert.fail;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.ice.viz.service.connections.IVizConnectionListener;
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,12 +32,40 @@ import org.junit.Test;
 public class VizConnectionTester {
 
 	/**
+	 * The main connection that will be tested in each test method.
+	 */
+	private VizConnection<FakeClient> connection;
+	/**
+	 * The main test {@link #connection} conveniently cast as its original type.
+	 */
+	private FakeVizConnection fakeConnection;
+
+	/**
+	 * A fake listener. This will already be added to the {@link #connection} at
+	 * the start of each test.
+	 */
+	private FakeVizConnectionListener fakeListener1;
+	/**
+	 * A fake listener. This will <i>not</i> have been added to the
+	 * {@link #connection}.
+	 */
+	private FakeVizConnectionListener fakeListener2;
+
+	/**
 	 * Initializes the viz connection that is tested as well as any other class
 	 * variables frequently used to test the connection.
 	 */
 	@Before
 	public void beforeEachTest() {
-		// TODO
+
+		// Set up the test connection.
+		fakeConnection = new FakeVizConnection();
+		connection = fakeConnection;
+
+		// Add only the first listener.
+		connection.addListener(fakeListener1);
+
+		return;
 	}
 
 	/**
@@ -131,5 +163,198 @@ public class VizConnectionTester {
 	@Test
 	public void checkDisconnectFromWidget() {
 		fail("Not implemented");
+	}
+
+	/**
+	 * This class provides a fake client of some sort as a type .
+	 * 
+	 * @author Jordan
+	 *
+	 */
+	private class FakeClient {
+
+	}
+
+	/**
+	 * A fake viz connection for testing the {@link VizConnection}'s base
+	 * implementation.
+	 * 
+	 * @author Jordan
+	 *
+	 */
+	private class FakeVizConnection extends VizConnection<FakeClient> {
+
+		/**
+		 * If true, then {@link #connectToWidget(FakeClient)} and
+		 * {@link #disconnectFromWidget(FakeClient)} will return false as if
+		 * they failed to connect/disconnect.
+		 */
+		public boolean failOperation = false;
+
+		/**
+		 * Whether the sub-class' implementation for connecting to the actual
+		 * client was called.
+		 */
+		private final AtomicBoolean connectToWidgetCalled = new AtomicBoolean();
+
+		/**
+		 * Whether the sub-class' implementation for disconnecting from the
+		 * actual client was called.
+		 */
+		private final AtomicBoolean disconnectFromWidgetCalled = new AtomicBoolean();
+
+		/**
+		 * Sets {@link #connectToWidgetCalled} to {@code true} and returns
+		 * {@link #failOperation}.
+		 */
+		@Override
+		protected boolean connectToWidget(FakeClient widget) {
+			connectToWidgetCalled.set(true);
+			return !failOperation;
+		}
+
+		/**
+		 * Sets {@link #disconnectFromWidgetCalled} to {@code true} and returns
+		 * {@link #failOperation}.
+		 */
+		@Override
+		protected boolean disconnectFromWidget(FakeClient widget) {
+			disconnectFromWidgetCalled.set(true);
+			return !failOperation;
+		}
+
+		/**
+		 * Gets whether the sub-class' implementation of
+		 * {@link #connectToWidget(FakeClient)} was called.
+		 * 
+		 * @return True if the sub-class implementation was called, false
+		 *         otherwise.
+		 */
+		public boolean connectToWidgetCalled() {
+			return connectToWidgetCalled.getAndSet(false);
+		}
+
+		/**
+		 * Gets whether the sub-class' implementation of
+		 * {@link #disconnectFromWidget(FakeClient)} was called.
+		 * 
+		 * @return True if the sub-class implementation was called, false
+		 *         otherwise.
+		 */
+		public boolean disconnectFromWidgetCalled() {
+			return disconnectFromWidgetCalled.getAndSet(false);
+		}
+	}
+
+	/**
+	 * A fake viz connection listener for testing the listener methods provided
+	 * by {@link VizConnection}.
+	 * 
+	 * @author Jordan
+	 *
+	 */
+	private class FakeVizConnectionListener implements
+			IVizConnectionListener<FakeClient> {
+
+		/**
+		 * True if the client's
+		 * {@link #connectionStateChanged(IVizConnection, ConnectionState, String)}
+		 * method was notified, false otherwise.
+		 */
+		private final AtomicBoolean wasNotified = new AtomicBoolean();
+
+		/**
+		 * The connection posted to the listener method.
+		 */
+		private IVizConnection<FakeClient> connection;
+		/**
+		 * The state posted to the listener method.
+		 */
+		private ConnectionState state;
+		/**
+		 * The message posted to the listener method.
+		 */
+		private String message;
+
+		/*
+		 * Implements a method from IVizConnectionListener.
+		 */
+		@Override
+		public void connectionStateChanged(
+				IVizConnection<FakeClient> connection, ConnectionState state,
+				String message) {
+			this.connection = connection;
+			this.state = state;
+			this.message = message;
+			wasNotified.set(true);
+		}
+
+		/**
+		 * Determines if the listener was notified of a connection state change
+		 * since the last call to this method.
+		 * <p>
+		 * This will wait for a certain amount of time until either the flag is
+		 * true or a timeout occurs.
+		 * </p>
+		 * 
+		 * @return True if the listener was notified, false otherwise.
+		 */
+		public boolean wasNotified() {
+			boolean notified;
+
+			long threshold = 3000; // The timeout.
+			long interval = 50; // The time between checks.
+			long time = 0; // The time spent asleep.
+			while (!(notified = wasNotified.getAndSet(false))
+					&& time < threshold) {
+				try {
+					Thread.sleep(interval);
+					time += threshold;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			return notified;
+		}
+
+		/**
+		 * Gets and resets (to {@code null}) the connection posted to the
+		 * client.
+		 */
+		public IVizConnection<FakeClient> getConnection() {
+			IVizConnection<FakeClient> retVal = connection;
+			connection = null;
+			return retVal;
+		}
+
+		/**
+		 * Gets and resets (to {@code null}) the connection state posted to the
+		 * client.
+		 */
+		public ConnectionState getState() {
+			ConnectionState retVal = state;
+			state = null;
+			return retVal;
+		}
+
+		/**
+		 * Gets and resets (to {@code null}) the message posted to the client.
+		 */
+		public String getMessage() {
+			String retVal = message;
+			message = null;
+			return retVal;
+		}
+
+		/**
+		 * Resets the listener's properties to appear as if it has not been
+		 * notified.
+		 */
+		public void reset() {
+			wasNotified.set(false);
+			connection = null;
+			state = null;
+			message = null;
+		}
 	}
 }
