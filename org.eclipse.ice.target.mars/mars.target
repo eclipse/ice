@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="mars" sequenceNumber="118">
+<?pde version="3.8"?><target name="mars" sequenceNumber="119">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.ecf.presence.source.feature.feature.group" version="1.0.0.v20150512-1727"/>
@@ -137,6 +137,10 @@
 <unit id="org.eclipse.nebula.widgets.nattable.extension.poi.source.feature.feature.group" version="1.3.0.201503261201"/>
 <unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="1.3.0.201503261201"/>
 <repository location="http://download.eclipse.org/nattable/releases/1.3.0/repository"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.commons.math" version="2.1.0.v201105210652"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository"/>
 </location>
 </locations>
 </target>
