@@ -9,8 +9,11 @@
  *   Jordan Deyton - Initial API and implementation and/or initial documentation 
  *   
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.test;
+package org.eclipse.ice.client.widgets.test.utils;
 
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -154,5 +157,33 @@ public class AbstractSWTTester extends AbstractICEUITester<SWTBot> {
 
 		// Proceed with the default post-tests cleanup.
 		super.afterAllTests();
+	}
+
+	/**
+	 * This can be used to verify an exception that is thrown on the UI thread.
+	 * 
+	 * @param runnable
+	 *            The runnable that would normally be sent to
+	 *            {@link Display#syncExec(Runnable)}.
+	 * @return The first {@link SWTException} that was thrown, or {@code null}
+	 *         if one was not thrown.
+	 */
+	protected SWTException catchSWTException(final Runnable runnable) {
+		// Use an AtomicReference to catch the exception.
+		final AtomicReference<SWTException> exceptionRef;
+		exceptionRef = new AtomicReference<SWTException>();
+		// Run the runnable synchronously, but try to catch the SWTException.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					runnable.run();
+				} catch (SWTException e) {
+					exceptionRef.set(e);
+				}
+			}
+		});
+		// Return any SWTException that was thrown from the specified runnable.
+		return exceptionRef.get();
 	}
 }
