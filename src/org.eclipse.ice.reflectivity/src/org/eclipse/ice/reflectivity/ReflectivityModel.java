@@ -8,7 +8,7 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
@@ -25,10 +25,12 @@ import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.VizResource;
+import org.eclipse.ice.io.csv.CSVReader;
 import org.eclipse.ice.item.model.Model;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.MaterialWritableTableFormat;
@@ -38,7 +40,7 @@ import org.eclipse.ice.materials.MaterialWritableTableFormat;
  * layered on top of each other. It... <add more after you figure out the
  * calculations>
  * 
- * @author Jay Jay Billings, Alex McCaskey
+ * @author Jay Jay Billings, Alex McCaskey, Kasper Gammeltoft
  */
 @XmlRootElement(name = "ReflectivityModel")
 public class ReflectivityModel extends Model {
@@ -47,6 +49,41 @@ public class ReflectivityModel extends Model {
 	 * The process action name for calculating the reflectivity.
 	 */
 	private final String processActionName = "Calculate Reflectivity";
+
+	/**
+	 * The name for the wave vector entry.
+	 */
+	private static final String WaveEntryName = "Wave Vector (Q) file";
+
+	/**
+	 * The roughness entry name.
+	 */
+	private static final String RoughnessEntryName = "Roughness";
+
+	/**
+	 * The delta q0 entry name.
+	 */
+	private static final String deltaQ0EntryName = "deltaQ0";
+
+	/**
+	 * The delta q1 by q entry name.
+	 */
+	private static final String deltaQ1ByQEntryName = "deltaQ1ByQ";
+
+	/**
+	 * The wave length entry name.
+	 */
+	private static final String WaveLengthEntryName = "Wave Length";
+
+	/**
+	 * The output file for reflectivity data.
+	 */
+	private IFile reflectivityFile;
+
+	/**
+	 * the output file for the scattering density profile data
+	 */
+	private IFile scatteringFile;
 
 	/**
 	 * Identification number for the component that contains the parameters.
@@ -91,14 +128,9 @@ public class ReflectivityModel extends Model {
 
 		if (actionName.equals(processActionName)) {
 
-			// Convert the material table to slabs
-
-			// Get the roughness parameter, dQ, dQ/Q and the wavelength
-
-			// Get and load the wave vector and related information
-
+			// Get the material list from the form.
 			ListComponent<Material> matList = (ListComponent<Material>) form
-					.getComponent(2);
+					.getComponent(matListId);
 			ArrayList<Slab> slabs = new ArrayList<Slab>();
 
 			// Create the slabs from the materials
@@ -115,12 +147,58 @@ public class ReflectivityModel extends Model {
 				slabs.add(slab);
 			}
 
+			// Get the roughness from the form.
+			int numRough = Integer.parseInt(((DataComponent) form
+					.getComponent(paramsCompId)).retrieveEntry(
+					RoughnessEntryName).getValue());
+
+			// Get the deltaQ0 from the form.
+			double deltaQ0 = Double.parseDouble(((DataComponent) form
+					.getComponent(paramsCompId))
+					.retrieveEntry(deltaQ0EntryName).getValue());
+
+			// Get the deltaQ0 from the form.
+			double deltaQ1ByQ = Double.parseDouble(((DataComponent) form
+					.getComponent(paramsCompId)).retrieveEntry(
+					deltaQ1ByQEntryName).getValue());
+
+			// Get the wave length from the form.
+			double wavelength = Double.parseDouble(((DataComponent) form
+					.getComponent(paramsCompId)).retrieveEntry(
+					WaveLengthEntryName).getValue());
+
+			// Get the wave vector from the file picker in the paramters
+			// component.
+			double[] waveVector;
+			String fileName = ((DataComponent) form.getComponent(paramsCompId))
+					.retrieveEntry(WaveEntryName).getValue();
+
+			// Get the file that should have been pulled into the local project.
+			IFile waveInput = project.getFile(fileName);
+
+			// Get the reader and read in the values.
+			Form form = new CSVReader().read(waveInput);
+			ListComponent<String[]> waveData = (ListComponent<String[]>) form
+					.getComponent(1);
+
+			// Pull the data from the form into an array.
+			waveVector = new double[waveData.size()];
+			for (int i = 0; i < waveData.size(); i++) {
+				String[] dataLine = waveData.get(i);
+				double dataEntry = Double.parseDouble(dataLine[0]);
+				waveVector[i] = dataEntry;
+			}
+
 			// Calculate the reflectivity
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
-			// calculator.getReflectivityProfile(slabs, numRough, deltaQ0,
-			// deltaQ1ByQ, wavelength, waveVector, getRQ4);
+			ReflectivityProfile profile = calculator.getReflectivityProfile(
+					slabs.toArray(new Slab[slabs.size()]), numRough, deltaQ0,
+					deltaQ1ByQ, wavelength, waveVector, true);
 
-			// Write the files
+			// Write the files.
+			double[] reflectivity = profile.reflectivity;
+			double[] scatDensity = profile.scatteringDensity;
+			double[] depth = profile.depth;
 
 			retVal = FormStatus.InfoError;
 		} else {
@@ -142,8 +220,8 @@ public class ReflectivityModel extends Model {
 		String line1 = "#features,t, p_x, p_y\n";
 		String line2 = "#units,t,p_x,p_y\n";
 		String line3 = "1.0,1.0,1.0\n";
-		String line4 = "2.0,4.0,8.0\n";
-		String line5 = "3.0,9.0,27.0\n";
+		String line4 = "2.0,4.0,4.0\n";
+		String line5 = "3.0,9.0,9.0\n";
 		String allLines = line1 + line2 + line3 + line4 + line5;
 
 		// Create an empty stream for the output files
@@ -172,7 +250,7 @@ public class ReflectivityModel extends Model {
 			}
 		};
 		fileEntry.setId(1);
-		fileEntry.setName("Wave Vector (Q) file");
+		fileEntry.setName(WaveEntryName);
 		fileEntry.setDescription("Wave vector information for this problem.");
 		paramComponent.addEntry(fileEntry);
 
@@ -189,10 +267,57 @@ public class ReflectivityModel extends Model {
 			}
 		};
 		numLayersEntry.setId(2);
-		numLayersEntry.setName("Roughness");
+		numLayersEntry.setName(RoughnessEntryName);
 		numLayersEntry.setDescription("Number of layers of "
 				+ "roughness per material layer.");
 		paramComponent.addEntry(numLayersEntry);
+
+		// Add an entry for the deltaQ0
+		Entry deltaQ0Entry = new Entry() {
+			@Override
+			protected void setup() {
+				allowedValueType = AllowedValueType.Continuous;
+				allowedValues.add(".00001");
+				allowedValues.add("5.0");
+				return;
+			}
+		};
+		deltaQ0Entry.setId(3);
+		deltaQ0Entry.setName(deltaQ0EntryName);
+		deltaQ0Entry
+				.setDescription("The incident angle of the neutron stream.");
+		paramComponent.addEntry(deltaQ0Entry);
+
+		// Add an entry for the deltaQ1ByQ
+		Entry deltaQ1Entry = new Entry() {
+			@Override
+			protected void setup() {
+				allowedValueType = AllowedValueType.Continuous;
+				allowedValues.add(".00001");
+				allowedValues.add("5.0");
+				return;
+			}
+		};
+		deltaQ1Entry.setId(4);
+		deltaQ1Entry.setName(deltaQ1ByQEntryName);
+		deltaQ1Entry
+				.setDescription("The angle of refraction on the neutron stream.");
+		paramComponent.addEntry(deltaQ1Entry);
+
+		// Add an entry for the wavelength
+		Entry waveEntry = new Entry() {
+			@Override
+			protected void setup() {
+				allowedValueType = AllowedValueType.Continuous;
+				allowedValues.add(".000001");
+				allowedValues.add("1000");
+				return;
+			}
+		};
+		waveEntry.setId(5);
+		waveEntry.setName(WaveLengthEntryName);
+		waveEntry.setDescription("The wavelength of the neutron stream.");
+		paramComponent.addEntry(waveEntry);
 
 		// Configure a list of property names for the materials
 		ArrayList<String> names = new ArrayList<String>();
@@ -224,9 +349,9 @@ public class ReflectivityModel extends Model {
 			// FIXME! ID is always 1 at this point!
 			String basename = "reflectivityModel_" + getId() + "_";
 			// Create the output file for the reflectivity data
-			IFile reflectivityFile = project.getFile(basename + "rfd.csv");
+			reflectivityFile = project.getFile(basename + "rfd.csv");
 			// Create the output file for the scattering density data
-			IFile scatteringFile = project.getFile(basename + "scdens.csv");
+			scatteringFile = project.getFile(basename + "scdens.csv");
 			try {
 				// Reflectivity first
 				if (reflectivityFile.exists()) {
