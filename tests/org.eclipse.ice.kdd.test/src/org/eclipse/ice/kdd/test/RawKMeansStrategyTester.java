@@ -12,20 +12,21 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.kdd.kddstrategy.kmeansclustering.RawKMeansStrategy;
 import org.eclipse.ice.kdd.test.fakeobjects.FakeClusterKDDMatrix;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleData;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleDataProvider;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * <p>

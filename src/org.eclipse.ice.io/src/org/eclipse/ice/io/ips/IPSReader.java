@@ -13,9 +13,7 @@
 package org.eclipse.ice.io.ips;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -205,6 +203,7 @@ public class IPSReader implements IReader {
 	 * 
 	 * @return the type of reader
 	 */
+	@Override
 	public String getReaderType() {
 		return "IPSReader";
 	}
@@ -731,6 +730,7 @@ public class IPSReader implements IReader {
 	 */
 	private Entry makeIPSEntry() {
 		Entry entry = new Entry() {
+			@Override
 			protected void setup() {
 				this.setName("IPS Default Entry");
 				this.tag = "";

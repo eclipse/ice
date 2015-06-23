@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.plotviewer.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 

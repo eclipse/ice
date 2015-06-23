@@ -17,8 +17,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import org.eclipse.ice.client.widgets.reactoreditor.SelectionProvider;
 
+import org.eclipse.ice.client.widgets.reactoreditor.SelectionProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -79,6 +79,7 @@ public class SelectionProviderTester {
 
 		// Set a selection.
 		selection = new ISelection() {
+			@Override
 			public boolean isEmpty() {
 				return false;
 			}
@@ -108,6 +109,7 @@ public class SelectionProviderTester {
 
 		// Set a selection.
 		selection = new ISelection() {
+			@Override
 			public boolean isEmpty() {
 				return false;
 			}
@@ -155,6 +157,7 @@ public class SelectionProviderTester {
 		}
 
 		/* ---- Implements ISelectionChangedListener. ---- */
+		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 
 			// Make sure the selection event isn't null!

@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.IElementSource;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.reflectivity.ReflectivityModel;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ca.odell.glazedlists.EventList;

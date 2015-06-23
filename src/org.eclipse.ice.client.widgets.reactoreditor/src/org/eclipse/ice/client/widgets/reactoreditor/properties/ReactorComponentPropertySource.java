@@ -12,13 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.properties;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 
@@ -55,40 +54,51 @@ public class ReactorComponentPropertySource implements IPropertySource {
 				// Give the properties something to signify that the component
 				// is
 				// invalid.
+				@Override
 				public String getName() {
 					return "Invalid reactor component!";
 				}
 
+				@Override
 				public String getDescription() {
 					return "This is an invalid reactor component!";
 				}
 
+				@Override
 				public int getId() {
 					return 1;
 				}
 
+				@Override
 				public void accept(IComponentVisitor visitor) {
 				}
 
+				@Override
 				public void update(String updatedKey, String newValue) {
 				}
 
+				@Override
 				public void register(IUpdateableListener listener) {
 				}
 
+				@Override
 				public void unregister(IUpdateableListener listener) {
 				}
 
+				@Override
 				public void setId(int id) {
 				}
 
+				@Override
 				public void setName(String name) {
 				}
 
+				@Override
 				public void setDescription(String description) {
 				}
 
 				// This is required to avoid a CloneNotSupported exception.
+				@Override
 				public Object clone() {
 					return null;
 				}
@@ -136,6 +146,7 @@ public class ReactorComponentPropertySource implements IPropertySource {
 	/**
 	 * Returns null. Properties for IReactorComponents are currently read-only!
 	 */
+	@Override
 	public Object getEditableValue() {
 		// Read-only!
 		return null;
@@ -144,6 +155,7 @@ public class ReactorComponentPropertySource implements IPropertySource {
 	/**
 	 * Returns the IPropertyDescriptors for IReactorComponents.
 	 */
+	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		// Create a new Array.
 		IPropertyDescriptor[] descriptors = new IPropertyDescriptor[properties
@@ -162,6 +174,7 @@ public class ReactorComponentPropertySource implements IPropertySource {
 	 * Returns the value for a particular IReactorComponent property or null if
 	 * it is an invalid property.
 	 */
+	@Override
 	public Object getPropertyValue(Object id) {
 
 		// Set the default return value.
@@ -178,6 +191,7 @@ public class ReactorComponentPropertySource implements IPropertySource {
 	/**
 	 * Returns false. Properties for IReactorComponents are currently read-only!
 	 */
+	@Override
 	public boolean isPropertySet(Object id) {
 		// Read-only!
 		return false;
@@ -186,6 +200,7 @@ public class ReactorComponentPropertySource implements IPropertySource {
 	/**
 	 * Does nothing. Properties for IReactorComponents are currently read-only!
 	 */
+	@Override
 	public void resetPropertyValue(Object id) {
 		// Read-only!
 		return;
@@ -194,6 +209,7 @@ public class ReactorComponentPropertySource implements IPropertySource {
 	/**
 	 * Does nothing. Properties for IReactorComponents are currently read-only!
 	 */
+	@Override
 	public void setPropertyValue(Object id, Object value) {
 		// Read-only!
 		return;

@@ -17,34 +17,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.io.serializable.IOService;
-import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemType;
-import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
-import org.eclipse.ice.proteus.PROTEUSModel;
-import org.eclipse.ice.proteus.PROTEUSModelBuilder;
-
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -54,6 +35,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.ItemType;
+import org.eclipse.ice.proteus.PROTEUSModel;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

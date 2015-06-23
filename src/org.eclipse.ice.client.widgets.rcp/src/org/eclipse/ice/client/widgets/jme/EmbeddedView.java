@@ -332,6 +332,7 @@ public class EmbeddedView implements SceneProcessor {
 
 			// The below operations must be performed on the render thread.
 			app.enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 
 					// Attach the scene root to the main ViewPort.
@@ -391,6 +392,7 @@ public class EmbeddedView implements SceneProcessor {
 
 			// The below operations must be performed on the render thread.
 			app.enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 					// Detach the scene root from the main ViewPort.
 					viewPort.detachScene(client.getSceneRoot(view));

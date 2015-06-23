@@ -78,6 +78,7 @@ public class GridManager implements IGridManager {
 	 *            The index of the location in the grid being managed.
 	 * @return A Component name or <code>null</code> if no name is found.
 	 */
+	@Override
 	public String getComponentName(int location) {
 
 		String name = null;
@@ -97,6 +98,7 @@ public class GridManager implements IGridManager {
 	 * @return A List of location indexes or an empty List if the Component is
 	 *         invalid.
 	 */
+	@Override
 	public List<Integer> getComponentLocations(String name) {
 
 		List<Integer> locations = new ArrayList<Integer>();
@@ -126,6 +128,7 @@ public class GridManager implements IGridManager {
 	 *            The location index in which to put the Component.
 	 * @return True if the component was added to the location, false otherwise.
 	 */
+	@Override
 	public boolean addComponent(String name, int location) {
 
 		// By default, we did not succeed in adding the Component.
@@ -180,6 +183,7 @@ public class GridManager implements IGridManager {
 	 * @return True if a component was successfully removed from the location,
 	 *         false otherwise.
 	 */
+	@Override
 	public boolean removeComponent(int location) {
 
 		// By default, we did not succeed in removing the Component location.
@@ -219,6 +223,7 @@ public class GridManager implements IGridManager {
 	 * @return True if the component was successfully removed from the
 	 *         IGridManager. False otherwise.
 	 */
+	@Override
 	public boolean removeComponent(String name) {
 
 		// By default, we did not succeed in removing the Component.
@@ -249,6 +254,7 @@ public class GridManager implements IGridManager {
 	 *            The object to compare against.
 	 * @return True if otherObject is equal. False otherwise.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -280,6 +286,7 @@ public class GridManager implements IGridManager {
 	 * 
 	 * @return The hash of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Static hash at 31.
@@ -327,6 +334,7 @@ public class GridManager implements IGridManager {
 	 * 
 	 * @return The newly instantiated cloned object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new GridManager.

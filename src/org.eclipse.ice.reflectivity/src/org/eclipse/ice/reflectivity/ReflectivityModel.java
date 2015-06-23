@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
-import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;

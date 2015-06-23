@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
-import org.eclipse.swt.dnd.DropTargetListener;
-import org.eclipse.swt.dnd.DropTargetEffect;
-import org.eclipse.swt.dnd.DropTargetEvent;
 
 /**
  * <p>

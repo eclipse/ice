@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.test.fakeobjects;
 
+import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.kdd.kddstrategy.kmeansclustering.Cluster;
 import org.eclipse.ice.kdd.kddstrategy.kmeansclustering.ClusterKDDMatrix;
-
-import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * <p>
@@ -45,6 +44,7 @@ public class FakeClusterKDDMatrix extends ClusterKDDMatrix {
 	 * @param nIterations
 	 * @return
 	 */
+	@Override
 	public void cluster(int nCentroids, int nIterations) {
 		clusters.clear();
 		// We just need to return the correct number of Clusters

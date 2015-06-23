@@ -26,12 +26,14 @@ public class Activator implements BundleActivator {
 
 	private GridViewerLauncher launcher;
 
+	@Override
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Starting test thread.");
 		launcher = new GridViewerLauncher();
 		launcher.start();
 	}
 
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		System.out.println("Stopping test thread.");
 		launcher.stopThread();

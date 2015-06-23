@@ -16,7 +16,6 @@ import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.requests.SelectionRequest;
 import org.eclipse.gef.tools.SelectEditPartTracker;
-
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalCellEditPart;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.IGridListener;

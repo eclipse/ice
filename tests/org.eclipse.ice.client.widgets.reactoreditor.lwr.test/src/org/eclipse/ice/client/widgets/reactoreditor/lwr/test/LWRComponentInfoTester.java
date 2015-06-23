@@ -16,9 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.widgets.reactoreditor.lwr.LWRComponentInfo;
-
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.junit.Test;

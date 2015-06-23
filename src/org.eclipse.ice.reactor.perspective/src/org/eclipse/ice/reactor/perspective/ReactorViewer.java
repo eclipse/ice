@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.perspective;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.reactor.perspective.internal.ReactorEditorRegistry;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -143,6 +142,7 @@ public class ReactorViewer extends ViewPart implements
 		MenuManager menuManager = new MenuManager();
 		menuManager.setRemoveAllWhenShown(true);
 		menuManager.addMenuListener(new IMenuListener() {
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 				fillContextMenu(manager);
 			}
@@ -205,6 +205,7 @@ public class ReactorViewer extends ViewPart implements
 
 		// Sync with the display.
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// If possible, reset the reactorTreeViewer's input.
 				if (reactorTreeViewer != null) {

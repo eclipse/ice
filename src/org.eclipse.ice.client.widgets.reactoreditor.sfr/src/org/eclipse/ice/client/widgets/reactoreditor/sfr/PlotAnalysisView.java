@@ -12,6 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
+import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.common.ActionTree;
@@ -21,25 +29,16 @@ import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
-
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
-import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
-import org.eclipse.nebula.visualization.xygraph.figures.Trace;
-import org.eclipse.nebula.visualization.xygraph.figures.Trace.PointStyle;
-import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
-import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.AssemblyType;
 import org.eclipse.ice.reactor.sfr.core.assembly.PinAssembly;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
+import org.eclipse.nebula.visualization.xygraph.figures.Trace;
+import org.eclipse.nebula.visualization.xygraph.figures.Trace.PointStyle;
+import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
@@ -624,6 +623,7 @@ public class PlotAnalysisView extends AnalysisView {
 	 * 
 	 * @return The IAnalysisView's name.
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -634,6 +634,7 @@ public class PlotAnalysisView extends AnalysisView {
 	 * 
 	 * @return The IAnalysisView's description.
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}

@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.base;
 
-import org.eclipse.ice.analysistool.IData;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -23,6 +21,13 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.TreeSet;
 
+import ncsa.hdf.hdf5lib.H5;
+import ncsa.hdf.hdf5lib.HDF5Constants;
+import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
+import ncsa.hdf.hdf5lib.structs.H5O_info_t;
+
+import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.reactor.sfr.core.AssemblyType;
 import org.eclipse.ice.reactor.sfr.core.Material;
 import org.eclipse.ice.reactor.sfr.core.MaterialBlock;
@@ -33,12 +38,6 @@ import org.eclipse.ice.reactor.sfr.core.assembly.ReflectorAssembly;
 import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
-
-import ncsa.hdf.hdf5lib.H5;
-import ncsa.hdf.hdf5lib.HDF5Constants;
-import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
-import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
-import ncsa.hdf.hdf5lib.structs.H5O_info_t;
 
 /**
  * <p>

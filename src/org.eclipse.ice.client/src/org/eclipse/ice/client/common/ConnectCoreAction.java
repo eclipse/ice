@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.client.common;
 
-import org.eclipse.ice.client.common.internal.ClientHolder;
-
 import java.net.URL;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;

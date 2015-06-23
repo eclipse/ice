@@ -629,11 +629,13 @@ public class JunctionTester {
 			return removed;
 		}
 
+		@Override
 		public void addedPipes(IJunction junction, List<PlantComponent> pipes) {
 			added = pipes;
 			notified.set(true);
 		}
 
+		@Override
 		public void removedPipes(IJunction junction, List<PlantComponent> pipes) {
 			removed = pipes;
 			notified.set(true);

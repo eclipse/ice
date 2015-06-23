@@ -355,6 +355,7 @@ public class VisitPythonDialog extends TitleAreaDialog {
 						.getAsStringVector("stringArgs");
 
 				Display.getDefault().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						for (int i = 0; i < vec.size(); ++i) {
 							console.append(vec.get(i) + "\n");

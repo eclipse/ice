@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.jobprofile.JobProfile;
 import org.eclipse.ice.item.jobprofile.JobProfileBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

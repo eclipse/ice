@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ice.client.widgets.ICEDataComponentDetailsPage;
 import org.eclipse.ice.client.widgets.ICEDetailsPageProvider;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
@@ -19,9 +21,6 @@ import org.eclipse.ice.client.widgets.ICEMasterDetailsPage;
 import org.eclipse.ice.client.widgets.ICEScrolledPropertiesBlock;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 /**

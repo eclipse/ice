@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz;
 
+import java.util.ArrayList;
+
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-
-import java.util.ArrayList;
 
 /**
  * This class provides an IEntryContentProvider for plots, which are stored as
@@ -52,6 +52,7 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 	 * 
 	 * @return The list of Strings of allowed values
 	 */
+	@Override
 	public ArrayList<String> getAllowedValues() {
 		ArrayList<String> values = new ArrayList<String>(2);
 		values.add("false");
@@ -59,6 +60,7 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 		return values;
 	}
 
+	@Override
 	public void setAllowedValues(ArrayList<String> allowedValues) {
 		// Does nothing.
 	}
@@ -67,6 +69,7 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 	 * This operation retrieves the default String for the value of instances of
 	 * the Entry class.
 	 */
+	@Override
 	public String getDefaultValue() {
 		return "false";
 	}
@@ -75,18 +78,22 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 	 * This operation retrieves the description of the types of values that are
 	 * stored in an instance of the Entry class.
 	 */
+	@Override
 	public AllowedValueType getAllowedValueType() {
 		return AllowedValueType.Discrete;
 	}
 
+	@Override
 	public void setAllowedValueType(AllowedValueType type) {
 		// Does nothing.
 	}
 
+	@Override
 	public void setParent(String parentName) {
 		// Does nothing.
 	}
 
+	@Override
 	public String getParent() {
 		return parent;
 	}
@@ -98,6 +105,7 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 	 * @param otherProvider
 	 *            The IEntryContentProvider to check if this is equal to.
 	 */
+	@Override
 	public boolean equals(IEntryContentProvider otherProvider) {
 		boolean equal = false;
 
@@ -113,6 +121,7 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 	/**
 	 * Compute and return the hash code for instances of this object
 	 */
+	@Override
 	public int hashCode() {
 
 		// Call Object#hashCode()
@@ -125,14 +134,17 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 		return hash;
 	}
 
+	@Override
 	public String getTag() {
 		return null;
 	}
 
+	@Override
 	public void setTag(String tagValue) {
 		// Does nothing.
 	}
 
+	@Override
 	public void setDefaultValue(String defaultValue) {
 		// Does nothing.
 	}
@@ -140,6 +152,7 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 	/**
 	 * Returns a clone of this PlotEntryContentProvider.
 	 */
+	@Override
 	public Object clone() {
 		return new PlotEntryContentProvider(parent);
 	}

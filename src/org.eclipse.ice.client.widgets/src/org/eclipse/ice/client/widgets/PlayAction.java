@@ -146,6 +146,7 @@ public class PlayAction extends Action implements IMenuCreator {
 	 * The function called whenever the button is clicked.
 	 * </p>
 	 */
+	@Override
 	public void run() {
 
 		// Check that the button is in a clickable state

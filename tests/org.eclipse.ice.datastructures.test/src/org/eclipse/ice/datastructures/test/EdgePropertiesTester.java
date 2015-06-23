@@ -14,14 +14,7 @@ package org.eclipse.ice.datastructures.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
-import org.eclipse.ice.datastructures.form.mesh.EdgeProperties;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,6 +23,10 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
+import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
+import org.eclipse.ice.datastructures.form.mesh.EdgeProperties;
 import org.junit.Test;
 
 /**

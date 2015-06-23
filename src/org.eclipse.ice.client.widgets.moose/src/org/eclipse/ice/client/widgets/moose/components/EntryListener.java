@@ -50,6 +50,7 @@ public abstract class EntryListener implements IUpdateableListener {
 	/**
 	 * Redirects the update method to {@link #updateEntry()}.
 	 */
+	@Override
 	public final void update(IUpdateable component) {
 		if (component == entry) {
 			System.out.println("Entry \"" + entry.getName() + "\" updated.");

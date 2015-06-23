@@ -273,6 +273,7 @@ public class SFRPin extends SFRComponent {
 	 * 
 	 * @return The hashcode of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -295,6 +296,7 @@ public class SFRPin extends SFRComponent {
 	 *            The other object being compared against.
 	 * @return Returns true if the both objects are equal, otherwise false.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -365,6 +367,7 @@ public class SFRPin extends SFRComponent {
 	 * 
 	 * @return The newly instantiated object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

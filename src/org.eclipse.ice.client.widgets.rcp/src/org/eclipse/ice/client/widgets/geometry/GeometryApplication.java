@@ -12,7 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Vector;
+
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
@@ -24,19 +27,11 @@ import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Vector;
-
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapText;
 import com.jme3.input.FlyByCamera;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;

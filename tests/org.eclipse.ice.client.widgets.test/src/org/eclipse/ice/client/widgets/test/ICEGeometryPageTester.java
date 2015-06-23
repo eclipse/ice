@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEGeometryPage;
-import org.eclipse.ice.datastructures.form.geometry.*;
-
-import static org.junit.Assert.*;
-
+import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.junit.Test;
 
 /**

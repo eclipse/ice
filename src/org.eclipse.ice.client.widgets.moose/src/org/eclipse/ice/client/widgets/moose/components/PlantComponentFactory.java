@@ -66,121 +66,145 @@ public class PlantComponentFactory {
 		creatorMap = new HashMap<String, IComponentCreator>();
 
 		creatorMap.put("Pipe", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new Pipe();
 			}
 		});
 		creatorMap.put("HeatExchanger", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new HeatExchanger();
 			}
 		});
 		creatorMap.put("Reactor", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new Reactor();
 			}
 		});
 		creatorMap.put("Branch", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new Branch();
 			}
 		});
 		creatorMap.put("CoreChannel", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new CoreChannel();
 			}
 		});
 		creatorMap.put("Subchannel", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new Subchannel();
 			}
 		});
 		creatorMap.put("PipeWithHeatStructure", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new PipeWithHeatStructure();
 			}
 		});
 		creatorMap.put("Valve", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new Valve();
 			}
 		});
 		creatorMap.put("Pump", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new Pump();
 			}
 		});
 		creatorMap.put("FlowJunction", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new FlowJunction();
 			}
 		});
 		creatorMap.put("SubchannelBranch", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new SubchannelBranch();
 			}
 		});
 		creatorMap.put("IdealPump", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new IdealPump();
 			}
 		});
 		creatorMap.put("VolumeBranch", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new VolumeBranch();
 			}
 		});
 		creatorMap.put("DownComer", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new DownComer();
 			}
 		});
 		creatorMap.put("WetWell", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new WetWell();
 			}
 		});
 		creatorMap.put("Turbine", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new Turbine();
 			}
 		});
 		creatorMap.put("PointKinetics", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new PointKinetics();
 			}
 		});
 		creatorMap.put("Outlet", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new Outlet();
 			}
 		});
 		creatorMap.put("Inlet", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new Inlet();
 			}
 		});
 		creatorMap.put("SeparatorDryer", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new SeparatorDryer();
 			}
 		});
 		creatorMap.put("TDM", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new TDM();
 			}
 		});
 		creatorMap.put("SolidWall", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new SolidWall();
 			}
 		});
 		creatorMap.put("TimeDependentJunction", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new TimeDependentJunction();
 			}
 		});
 		creatorMap.put("TimeDependentVolume", new IComponentCreator() {
+			@Override
 			public PlantComponent createComponent() {
 				return new TimeDependentVolume();
 			}

@@ -35,6 +35,7 @@ public class JobProfileBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemName()
 	 */
+	@Override
 	public String getItemName() {
 
 		return "Job Profile";
@@ -45,6 +46,7 @@ public class JobProfileBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemType()
 	 */
+	@Override
 	public ItemType getItemType() {
 
 		return ItemType.Model;
@@ -55,6 +57,7 @@ public class JobProfileBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 		// Create a new job profile
 		JobProfile item = new JobProfile(projectSpace);

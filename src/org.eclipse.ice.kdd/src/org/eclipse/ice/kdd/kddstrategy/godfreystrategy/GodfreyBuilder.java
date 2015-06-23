@@ -12,13 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy.godfreystrategy;
 
-import static org.eclipse.ice.kdd.kddstrategy.godfreystrategy.GodfreyStrategy.*;
-
 import java.util.ArrayList;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
-
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
@@ -77,6 +74,7 @@ public class GodfreyBuilder implements IStrategyBuilder {
 	 * @param data
 	 * @return
 	 */
+	@Override
 	public KDDStrategy build(ArrayList<IDataProvider> data) {
 
 		// Create a reference to create and return
@@ -101,6 +99,7 @@ public class GodfreyBuilder implements IStrategyBuilder {
 	 * 
 	 * @return
 	 */
+	@Override
 	public String getStrategyName() {
 		return "Godfrey Fuel Pin Powers Strategy";
 	}
@@ -118,6 +117,7 @@ public class GodfreyBuilder implements IStrategyBuilder {
 	 * @param dataToCheck
 	 * @return
 	 */
+	@Override
 	public boolean isAvailable(ArrayList<IDataProvider> dataToCheck) {
 
 		isAvailable = false;
@@ -228,6 +228,7 @@ public class GodfreyBuilder implements IStrategyBuilder {
 	 * 
 	 * @see IStrategyBuilder#getStrategyPropertiesAsEntries()
 	 */
+	@Override
 	public ArrayList<Entry> getStrategyPropertiesAsEntries() {
 		GodfreyStrategy temp = new GodfreyStrategy();
 		return temp.getPropertiesAsEntryList();

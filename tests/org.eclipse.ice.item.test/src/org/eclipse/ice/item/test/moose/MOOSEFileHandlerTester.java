@@ -12,19 +12,22 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test.moose;
 
-import static org.junit.Assert.*;
-
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
-import org.eclipse.ice.item.utilities.moose.Parameter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
+import org.eclipse.ice.item.utilities.moose.Parameter;
 import org.junit.Test;
 
 /**

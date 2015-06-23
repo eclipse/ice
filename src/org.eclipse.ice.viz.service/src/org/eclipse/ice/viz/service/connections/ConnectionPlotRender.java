@@ -154,6 +154,7 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 * <b>Note:</b> Sub-classes should <i>not</i> override this method.
 	 * </p>
 	 */
+	@Override
 	protected Composite createPlotComposite(Composite parent, int style)
 			throws Exception {
 
@@ -259,6 +260,7 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 * <b>Note:</b> Sub-classes should <i>not</i> override this method.
 	 * </p>
 	 */
+	@Override
 	protected void updatePlotComposite(Composite plotComposite)
 			throws Exception {
 

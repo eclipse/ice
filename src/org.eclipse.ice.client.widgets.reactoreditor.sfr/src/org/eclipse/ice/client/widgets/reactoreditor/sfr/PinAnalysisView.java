@@ -12,20 +12,18 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.client.common.ActionTree;
-
-import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
-import org.eclipse.ice.client.widgets.reactoreditor.Circle;
-import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-import org.eclipse.ice.client.widgets.reactoreditor.sfr.PinFigure.DisplayType;
-import org.eclipse.ice.client.widgets.reactoreditor.sfr.properties.PropertySourceFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
+import org.eclipse.ice.client.widgets.reactoreditor.Circle;
+import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
+import org.eclipse.ice.client.widgets.reactoreditor.sfr.PinFigure.DisplayType;
+import org.eclipse.ice.client.widgets.reactoreditor.sfr.properties.PropertySourceFactory;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
@@ -557,6 +555,7 @@ public class PinAnalysisView extends AnalysisView {
 	 * 
 	 * @return The IAnalysisView's name.
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -567,6 +566,7 @@ public class PinAnalysisView extends AnalysisView {
 	 * 
 	 * @return The IAnalysisView's description.
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}

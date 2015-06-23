@@ -12,11 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.pwr;
 
-import org.eclipse.ice.io.hdf.IHdfReadable;
+import java.util.ArrayList;
 
-import ncsa.hdf.object.HObject;
 import ncsa.hdf.object.h5.H5Group;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.io.hdf.IHdfReadable;
 import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.reactor.GridLabelProvider;
 import org.eclipse.ice.reactor.GridLocation;
@@ -27,9 +28,6 @@ import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.Tube;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-
-import java.util.ArrayList;
 
 /**
  * <p>
@@ -474,6 +472,7 @@ public class FuelAssembly extends PWRAssembly {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -524,6 +523,7 @@ public class FuelAssembly extends PWRAssembly {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		int hash = super.hashCode();
 
@@ -581,6 +581,7 @@ public class FuelAssembly extends PWRAssembly {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -598,6 +599,7 @@ public class FuelAssembly extends PWRAssembly {
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
 		// Get the children in super
@@ -627,6 +629,7 @@ public class FuelAssembly extends PWRAssembly {
 	 * @param iHdfReadable
 	 * @return
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
 		// If the child is null or not an instance of LWRComponent, then return
@@ -692,6 +695,7 @@ public class FuelAssembly extends PWRAssembly {
 	 * @param h5Group
 	 * @return
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		boolean flag = super.readAttributes(h5Group);
@@ -745,6 +749,7 @@ public class FuelAssembly extends PWRAssembly {
 	 *            The visitor
 	 *            </p>
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

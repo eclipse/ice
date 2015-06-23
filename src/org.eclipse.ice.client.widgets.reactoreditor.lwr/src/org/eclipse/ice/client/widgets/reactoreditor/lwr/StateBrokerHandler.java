@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
+import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
+import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
+import org.eclipse.ice.client.widgets.reactoreditor.StateBroker;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWRComponent;
@@ -60,11 +64,6 @@ import org.eclipse.ice.reactor.pwr.IncoreInstrument;
 import org.eclipse.ice.reactor.pwr.PWRAssembly;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
-
-import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-import org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler;
-import org.eclipse.ice.client.widgets.reactoreditor.StateBroker;
 
 /**
  * This class provides keys for use in a {@link StateBroker}. It is tailored
@@ -143,151 +142,192 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 			return value;
 		}
 
+		@Override
 		public void visit(PressurizedWaterReactor lwrComp) {
 		}
 
+		@Override
 		public void visit(BWReactor lwrComp) {
 		}
 
+		@Override
 		public void visit(FuelAssembly lwrComp) {
 		}
 
+		@Override
 		public void visit(RodClusterAssembly lwrComp) {
 		}
 
+		@Override
 		public void visit(LWRRod lwrComp) {
 		}
 
+		@Override
 		public void visit(ControlBank lwrComp) {
 		}
 
+		@Override
 		public void visit(IncoreInstrument lwrComp) {
 		}
 
+		@Override
 		public void visit(Tube lwrComp) {
 		}
 
+		@Override
 		public void visit(Ring lwrComp) {
 		}
 
+		@Override
 		public void visit(PlantComposite plantComp) {
 		}
 
+		@Override
 		public void visit(GeometricalComponent plantComp) {
 		}
 
+		@Override
 		public void visit(Junction plantComp) {
 		}
 
+		@Override
 		public void visit(Reactor plantComp) {
 		}
 
+		@Override
 		public void visit(PointKinetics plantComp) {
 		}
 
+		@Override
 		public void visit(HeatExchanger plantComp) {
 		}
 
+		@Override
 		public void visit(Pipe plantComp) {
 		}
 
 		// ---- Sub-classes are redirected to their base classes. ---- //
+		@Override
 		public void visit(CoreChannel plantComp) {
 			visit((Pipe) plantComp);
 		}
 
+		@Override
 		public void visit(Subchannel plantComp) {
 			visit((Pipe) plantComp);
 		}
 
+		@Override
 		public void visit(PipeWithHeatStructure plantComp) {
 			visit((Pipe) plantComp);
 		}
 
+		@Override
 		public void visit(Branch plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(SubchannelBranch plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(VolumeBranch plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(FlowJunction plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(WetWell plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(Boundary plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(OneInOneOutJunction plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(Turbine plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(IdealPump plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(Pump plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(Valve plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(PipeToPipeJunction plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(Inlet plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(MassFlowInlet plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(SpecifiedDensityAndVelocityInlet plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(Outlet plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(SolidWall plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(TDM plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(TimeDependentJunction plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(TimeDependentVolume plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(DownComer plantComp) {
 			visit((Junction) plantComp);
 		}
 
+		@Override
 		public void visit(SeparatorDryer plantComp) {
 			visit((Junction) plantComp);
 		}
@@ -310,6 +350,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * @see org.eclipse.ice.client.widgets.reactoreditor.IStateBrokerHandler
 	 * #setDataSource (org.eclipse.ice.client.widgets.reactoreditor.DataSource)
 	 */
+	@Override
 	public void setDataSource(DataSource dataSource) {
 		if (dataSource != null) {
 			this.dataSource = dataSource;
@@ -320,6 +361,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * This method returns keys only for LWRComponents, specifically reactors,
 	 * assemblies, and rods/tubes.
 	 */
+	@Override
 	public String getKey(Object object) {
 		String key = null;
 
@@ -328,62 +370,77 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 
 		// Create a visitor to generate a key from the object.
 		BaseVisitor keyVisitor = new BaseVisitor() {
+			@Override
 			public void visit(PressurizedWaterReactor lwrComp) {
 				value = "PWReactor";
 			}
 
+			@Override
 			public void visit(BWReactor lwrComp) {
 				// Nothing to do.
 			}
 
+			@Override
 			public void visit(FuelAssembly lwrComp) {
 				value = "lwr" + AssemblyType.Fuel.toString();
 			}
 
+			@Override
 			public void visit(RodClusterAssembly lwrComp) {
 				value = "lwr" + AssemblyType.RodCluster.toString();
 			}
 
+			@Override
 			public void visit(LWRRod lwrComp) {
 				value = "rod";
 			}
 
+			@Override
 			public void visit(ControlBank lwrComp) {
 				value = "lwr" + AssemblyType.ControlBank.toString();
 			}
 
+			@Override
 			public void visit(IncoreInstrument lwrComp) {
 				value = "lwr" + AssemblyType.IncoreInstrument.toString();
 			}
 
+			@Override
 			public void visit(Tube lwrComp) {
 				value = "rod";
 			}
 
+			@Override
 			public void visit(PlantComposite plantComp) {
 				value = "plant";
 			}
 
+			@Override
 			public void visit(GeometricalComponent plantComp) {
 				value = "plantComponent";
 			}
 
+			@Override
 			public void visit(Junction plantComp) {
 				value = "plantComponent";
 			}
 
+			@Override
 			public void visit(Reactor plantComp) {
 				value = "plantComponent";
 			}
 
+			@Override
 			public void visit(PointKinetics plantComp) {
 				value = "plantComponent";
 			}
 
+			@Override
 			public void visit(HeatExchanger plantComp) {
 				value = "plantComponent";
 			}
 
+			@Override
 			public void visit(Pipe plantComp) {
 				value = "plantComponent";
 			}
@@ -399,6 +456,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * and rods/tubes (or any component implemented in this class' visit
 	 * operations).
 	 */
+	@Override
 	public boolean addValue(Object value, Object parent, StateBroker broker) {
 
 		added = false;
@@ -699,6 +757,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	/**
 	 * Adds the reactor directly to the broker as is.
 	 */
+	@Override
 	public void visit(PressurizedWaterReactor lwrComp) {
 		// TODO Update this when plant components can contain PWRs.
 		addReactor(lwrComp);
@@ -707,6 +766,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	/**
 	 * BWReactors are not currently supported.
 	 */
+	@Override
 	public void visit(BWReactor lwrComp) {
 		// Nothing to do.
 	}
@@ -759,6 +819,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * Wraps the assembly in an {@link LWRComponentInfo}. No data provider is
 	 * necessary.
 	 */
+	@Override
 	public void visit(FuelAssembly lwrComp) {
 		visit((PWRAssembly) lwrComp);
 	}
@@ -767,6 +828,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * Wraps the assembly in an {@link LWRComponentInfo}. No data provider is
 	 * necessary.
 	 */
+	@Override
 	public void visit(RodClusterAssembly lwrComp) {
 		visit((PWRAssembly) lwrComp);
 	}
@@ -775,6 +837,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * Wraps the rod in an {@link LWRComponentInfo}. The appropriate data
 	 * provider should be added.
 	 */
+	@Override
 	public void visit(LWRRod lwrComp) {
 		// If the row and column are set, we can just add a new
 		// LWRComponentInfo.
@@ -817,6 +880,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * Wraps the assembly in an {@link LWRComponentInfo}. No data provider is
 	 * necessary.
 	 */
+	@Override
 	public void visit(ControlBank lwrComp) {
 		// TODO
 	}
@@ -825,6 +889,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * Wraps the assembly in an {@link LWRComponentInfo}. No data provider is
 	 * necessary.
 	 */
+	@Override
 	public void visit(IncoreInstrument lwrComp) {
 		// TODO
 	}
@@ -833,6 +898,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	 * Wraps the tube in an {@link LWRComponentInfo}. The appropriate data
 	 * provider should be added.
 	 */
+	@Override
 	public void visit(Tube lwrComp) {
 		// If the row and column are set, we can just add a new
 		// LWRComponentInfo.
@@ -870,6 +936,7 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	/**
 	 * Rings are not currently supported. Does nothing.
 	 */
+	@Override
 	public void visit(Ring lwrComp) {
 		// Nothing to do.
 	}
@@ -877,130 +944,162 @@ public class StateBrokerHandler implements IStateBrokerHandler,
 	// ----------------------------------------- //
 
 	// ---- Implements IPlantComponentVisitor ---- //
+	@Override
 	public void visit(PlantComposite plantComp) {
 		addPlant(plantComp);
 	}
 
+	@Override
 	public void visit(GeometricalComponent plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Junction plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Reactor plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(PointKinetics plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(HeatExchanger plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Pipe plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(CoreChannel plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Subchannel plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(PipeWithHeatStructure plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Branch plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(SubchannelBranch plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(VolumeBranch plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(FlowJunction plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(WetWell plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Boundary plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(OneInOneOutJunction plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Turbine plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(IdealPump plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Pump plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Valve plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(PipeToPipeJunction plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Inlet plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(MassFlowInlet plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(SpecifiedDensityAndVelocityInlet plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(Outlet plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(SolidWall plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(TDM plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(TimeDependentJunction plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(TimeDependentVolume plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(DownComer plantComp) {
 		addPlantComponent(plantComp);
 	}
 
+	@Override
 	public void visit(SeparatorDryer plantComp) {
 		addPlantComponent(plantComp);
 	}

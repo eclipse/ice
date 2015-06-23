@@ -14,23 +14,15 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ListDialog;
-import org.eclipse.ui.forms.MasterDetailsBlock;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.ui.forms.IDetailsPageProvider;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -39,7 +31,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.forms.DetailsPart;
+import org.eclipse.ui.forms.IDetailsPageProvider;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.MasterDetailsBlock;
+import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -189,6 +189,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	 *            The parent Composite.
 	 *            </p>
 	 */
+	@Override
 	protected void createMasterPart(IManagedForm managedForm, Composite parent) {
 
 		FormToolkit toolkit = managedForm.getToolkit();
@@ -227,6 +228,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		this.viewer = viewer;
 		final IManagedForm finalManagedForm = managedForm;
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				finalManagedForm.fireSelectionChanged(spart,
 						event.getSelection());
@@ -246,6 +248,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		button.addSelectionListener(new SelectionListener() {
 
 			// What to do when the add button is clicked
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				// Local Declarations
 				ArrayList<String> ids = masterDetailsComponent
@@ -303,6 +306,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 
 			}
 
+			@Override
 			public void widgetDefaultSelected(SelectionEvent event) {
 			}
 		});
@@ -314,6 +318,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		Button button2 = toolkit.createButton(client, "Delete", SWT.PUSH);
 		button2.addSelectionListener(new SelectionListener() {
 
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 
 				int id = viewer.getTable().getSelectionIndex();
@@ -326,6 +331,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 
 			}
 
+			@Override
 			public void widgetDefaultSelected(SelectionEvent event) {
 			}
 		});
@@ -351,6 +357,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	 * 
 	 * @param detailsPart
 	 */
+	@Override
 	protected void registerPages(DetailsPart detailsPart) {
 
 		detailsPart.setPageProvider(detailsPageProvider);
@@ -367,10 +374,12 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	 *            The parent Form
 	 *            </p>
 	 */
+	@Override
 	protected void createToolBarActions(IManagedForm managedForm) {
 		final ScrolledForm form = managedForm.getForm();
 		Action haction = new Action("Horizontal Orientation",
 				Action.AS_RADIO_BUTTON) {
+			@Override
 			public void run() {
 				sashForm.setOrientation(SWT.HORIZONTAL);
 				form.reflow(true);
@@ -380,6 +389,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		haction.setToolTipText("Set Details to the Right of Masters");
 		Action vaction = new Action("Vertical Orientation",
 				Action.AS_RADIO_BUTTON) {
+			@Override
 			public void run() {
 				sashForm.setOrientation(SWT.VERTICAL);
 				form.reflow(true);

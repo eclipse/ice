@@ -77,6 +77,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * 
 	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#connect()
 	 */
+	@Override
 	public boolean connect() {
 		return connect(false);
 	}
@@ -96,6 +97,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * @return True if the connection is established upon returning, false
 	 *         otherwise.
 	 */
+	@Override
 	public boolean connect(boolean block) {
 		boolean connected = false;
 
@@ -176,6 +178,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * @see
 	 * org.eclipse.ice.viz.service.connections.IConnectionAdapter#disconnect()
 	 */
+	@Override
 	public boolean disconnect() {
 		return disconnect(false);
 	}
@@ -194,6 +197,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 *            disconnection process will not block the calling thread.
 	 * @return True if the connection is closed upon returning, false otherwise.
 	 */
+	@Override
 	public boolean disconnect(boolean block) {
 		boolean connected = false;
 
@@ -324,6 +328,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * org.eclipse.ice.viz.service.connections.IConnectionAdapter#getConnection
 	 * ()
 	 */
+	@Override
 	public T getConnection() {
 		return connection;
 	}
@@ -334,6 +339,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#
 	 * getConnectionProperty(java.lang.String)
 	 */
+	@Override
 	public String getConnectionProperty(String key) {
 		return connectionProperties.get(key);
 	}
@@ -343,6 +349,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * 
 	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#getKey()
 	 */
+	@Override
 	public String getKey() {
 		return getName();
 	}
@@ -353,6 +360,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * @see
 	 * org.eclipse.ice.viz.service.connections.IConnectionAdapter#getState()
 	 */
+	@Override
 	public ConnectionState getState() {
 		return state;
 	}
@@ -363,6 +371,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#
 	 * setConnectionProperties(java.util.List)
 	 */
+	@Override
 	public abstract boolean setConnectionProperties(List<Entry> properties);
 
 	/*
@@ -370,6 +379,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * 
 	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#getHost()
 	 */
+	@Override
 	public String getHost() {
 		return getConnectionProperty("host");
 	}
@@ -379,6 +389,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * 
 	 * @see org.eclipse.ice.viz.service.connections.IConnectionAdapter#getPort()
 	 */
+	@Override
 	public int getPort() {
 		String port = getConnectionProperty("port");
 		return (port != null ? Integer.parseInt(port) : -1);
@@ -390,6 +401,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * @see
 	 * org.eclipse.ice.viz.service.connections.IConnectionAdapter#isRemote()
 	 */
+	@Override
 	public boolean isRemote() {
 		return !("localhost".equals(getHost()));
 	}
@@ -408,6 +420,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * org.eclipse.ice.datastructures.ICEObject.ICEObject#register(org.eclipse
 	 * .ice.datastructures.ICEObject.IUpdateableListener)
 	 */
+	@Override
 	public void register(IUpdateableListener listener) {
 		// Don't allow double registration.
 		if (!listeners.contains(listener)) {
@@ -419,6 +432,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * Does nothing. The ID should be set as a connection property via
 	 * {@link #setConnectionProperties(List)}.
 	 */
+	@Override
 	public void setId(int id) {
 		return;
 	}
@@ -427,6 +441,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * Does nothing. The name (or key) should be set as a connection property
 	 * via {@link #setConnectionProperties(List)}.
 	 */
+	@Override
 	public void setName(String name) {
 		return;
 	}
@@ -435,6 +450,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * Does nothing. The description should be set as a connection property via
 	 * {@link #setConnectionProperties(List)}.
 	 */
+	@Override
 	public void setDescription(String description) {
 		return;
 	}

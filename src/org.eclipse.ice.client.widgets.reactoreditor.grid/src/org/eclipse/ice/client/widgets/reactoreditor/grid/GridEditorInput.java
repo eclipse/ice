@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.grid;
 
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;

@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
@@ -20,11 +24,6 @@ import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -184,6 +183,7 @@ public class ActionAddShape extends Action {
 	 * </p>
 	 * 
 	 */
+	@Override
 	public void run() {
 
 		// Get the selection

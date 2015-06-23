@@ -19,7 +19,6 @@ import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -75,6 +74,7 @@ public class ActionDuplicateShape extends Action {
 	/**
 	 * 
 	 */
+	@Override
 	public void run() {
 
 		GeometryComponent geometry = (GeometryComponent) view.treeViewer

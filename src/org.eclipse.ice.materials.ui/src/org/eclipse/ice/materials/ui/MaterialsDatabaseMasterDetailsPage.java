@@ -13,18 +13,12 @@
 package org.eclipse.ice.materials.ui;
 
 import org.eclipse.ice.materials.IMaterialsDatabase;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * This page is responsible for rendering the contents of the Materials Database
@@ -67,6 +61,7 @@ public class MaterialsDatabaseMasterDetailsPage extends FormPage {
 	 * @param managedForm
 	 *            the ManagedForm that is responsible for rendering this page
 	 */
+	@Override
 	protected void createFormContent(IManagedForm managedForm) {
 
 		Composite parent = managedForm.getForm().getBody();

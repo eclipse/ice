@@ -27,6 +27,7 @@ public class VibeLauncherBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * @see ItemBuilder#getItemName()
 	 */
+	@Override
 	public String getItemName() {
 		return "VIBE Launcher";		
 	}
@@ -35,6 +36,7 @@ public class VibeLauncherBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * @see ItemBuilder#getItemType()
 	 */
+	@Override
 	public ItemType getItemType() {
 		return ItemType.Simulation;
 	}
@@ -43,6 +45,7 @@ public class VibeLauncherBuilder implements ItemBuilder {
 	 * (non-Javadoc)
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 		//Create a new item
 		Item item = new VibeLauncher(projectSpace);
