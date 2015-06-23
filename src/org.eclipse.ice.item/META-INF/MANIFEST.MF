@@ -18,7 +18,6 @@ Import-Package: com.jcraft.jsch;version="0.1.41",
  org.eclipse.ice.materials,
  org.eclipse.remote.core,
  org.eclipse.remote.core.exception,
- org.eclipse.remote.core.launch,
  org.eclipse.remote.internal.jsch.core,
  org.yaml.snakeyaml
 Export-Package: org.eclipse.ice.item,

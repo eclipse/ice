@@ -32,9 +32,9 @@
                      <artifacts>
                         <artifact>
                            <!-- note: the file name must be ${classifier}.target -->
-                           <file>luna.target</file>
+                           <file>mars.target</file>
                            <type>target</type>
-                           <classifier>luna</classifier>
+                           <classifier>mars</classifier>
                         </artifact>
                      </artifacts>
                   </configuration>
