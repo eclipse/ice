@@ -17,10 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -38,12 +36,10 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
@@ -97,7 +93,15 @@ public class MOOSE extends Item {
 	private HashMap<String, ICEResource> postProcessorResources;
 
 	/**
-	 * Reference to the id of the DataComponent containign the Postprocessors 
+	 * This map keeps track of File Entries in the modelFiles DataComponent 
+	 * and their corresponding parent TreeComposites so that we can 
+	 * keep them in sync.
+	 */
+	@XmlTransient()
+	private HashMap<String, TreeComposite> fileEntryTreeMapping;
+
+	/**
+	 * Reference to the id of the DataComponent containign the Postprocessors
 	 * the user would like to automatically display.
 	 */
 	public static final int ppDataId = 10;
@@ -109,6 +113,8 @@ public class MOOSE extends Item {
 		this(null);
 		mooseModel = new MOOSEModel(null);
 		mooseLauncher = new MOOSELauncher(null);
+		fileEntryTreeMapping = new HashMap<String, TreeComposite>();
+		postProcessorResources = new HashMap<String, ICEResource>();
 	}
 
 	/**
@@ -137,6 +143,8 @@ public class MOOSE extends Item {
 
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
+
+		fileEntryTreeMapping = new HashMap<String, TreeComposite>();
 
 		// Initialize the postProcessor Mapping
 		postProcessorResources = new HashMap<String, ICEResource>();
@@ -459,7 +467,7 @@ public class MOOSE extends Item {
 
 		}
 
-		// Set up the postProcessorData DataComponent to contain 
+		// Set up the postProcessorData DataComponent to contain
 		// a list of Boolean Discrete Entries for each Postprocessor
 		postProcessorsData = new DataComponent();
 		postProcessorsData.setName("Show Postprocessors?");
@@ -472,7 +480,7 @@ public class MOOSE extends Item {
 		if ((ppTree = getTreeByName("Postprocessors")) != null) {
 			setupPostprocessorData(ppTree);
 		}
-		
+
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
 
@@ -535,6 +543,39 @@ public class MOOSE extends Item {
 			});
 			varThread.start();
 
+		} else if (updateable instanceof Entry) {
+
+			// If we get here, then we have a file Entry that
+			// has been changed on the modelFiles component
+			// and we need to sync up the tree with it.
+			Entry entry = (Entry) updateable;
+
+			// Grab the DataComponent
+			if (fileEntryTreeMapping.containsKey(entry.getName())) {
+				DataComponent data = (DataComponent) fileEntryTreeMapping
+						.get(entry.getName()).getDataNodes().get(0);
+
+				// If not null, loop over the Entries til we find 
+				// the file Entry.
+				if (data != null) {
+					for (Entry e : data.retrieveAllEntries()) {
+
+						// If the Entry's tag is "false" it is a commented out
+						// parameter.
+						if (!"false".equals(e.getTag())
+								&& e.getValue() != null
+								&& !e.getValue().isEmpty()
+								&& (e.getName() + " = " + e.getValue())
+										.matches(mooseLauncher
+												.getFileDependenciesSearchString())) {
+							
+							// Set the value of the tree's file entry. 
+							e.setValue(entry.getValue());
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -628,6 +669,10 @@ public class MOOSE extends Item {
 						// Set the value
 						clonedEntry.setValue(e.getValue());
 
+						fileEntryTreeMapping.put(clonedEntry.getName(), child);
+
+						clonedEntry.register(this);
+
 						// Add it to the list of model files.
 						modelFiles.addEntry(clonedEntry);
 					}
@@ -720,10 +765,10 @@ public class MOOSE extends Item {
 
 		return true;
 	}
-	
+
 	/**
-	 * This private method takes the Postprocessor tree node 
-	 * and populates the postProcessorData DataComponent. 
+	 * This private method takes the Postprocessor tree node and populates the
+	 * postProcessorData DataComponent.
 	 * 
 	 * @param ppTree
 	 */
