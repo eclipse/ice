@@ -134,15 +134,18 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/**
-	 * Attempts to establish the connection to the connection widget. This
-	 * method will be called from a separate worker thread.
 	 * 
-	 * @param widget
-	 *            The widget used for the connection.
 	 * @return True if the widget is connected at the end of the operation,
 	 *         false otherwise.
 	 */
-	protected abstract boolean connectToWidget(T widget);
+	/**
+	 * Attempts to establish the connection to the connection widget. This
+	 * method will be called from a separate worker thread.
+	 * 
+	 * @return The new connection widget, or {@code null} if the connection
+	 *         widget could not be created and connected.
+	 */
+	protected abstract T connectToWidget();
 
 	/**
 	 * Attempts to disconnect from the connection widget on a separate worker
