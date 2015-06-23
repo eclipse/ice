@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.IMaterialsDatabase;
@@ -64,7 +63,7 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 	/**
 	 * The list that holds the materials database information.
 	 */
-	ListComponent<Material> materials;
+	ArrayList<Material> materials;
 
 	/**
 	 * The managed form for the block.
@@ -147,14 +146,14 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 
 		// Create a sorted final list from the database for pulling the database
 		// information
-		materials = new ListComponent<Material>();
+		materials = new ArrayList<Material>();
 		materials.addAll(materialsDatabase.getMaterials());
 
 		// Sorts the list according to the material compareTo operator
 		Collections.sort(materials);
 
 		// Create a copy of the master list for the table to display.
-		List<Object> editableCopy = new ArrayList<Object>();
+		ArrayList<Object> editableCopy = new ArrayList<Object>();
 		for (int i = 0; i < materials.size(); i++) {
 			editableCopy.add(materials.get(i));
 		}
@@ -263,16 +262,22 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 				// Get the new material to add
 				if (addMaterialDialog.open() == Window.OK) {
 					Material newMaterial = addMaterialWizard.getMaterial();
-					materialsDatabase.addMaterial(newMaterial);
-					materials.getReadWriteLock().writeLock().lock();
+
+					
+					//materials.getReadWriteLock().writeLock().lock();
 					try{
 						materials.add(newMaterial);
 						Collections.sort(materials);
-					} finally{
-						materials.getReadWriteLock().writeLock().unlock();
+					} catch(Exception ex){
+						ex.printStackTrace();
+						//materials.getReadWriteLock().writeLock().unlock();
 					}
 					
-					List<Material> listFromTree = (List<Material>) treeViewer
+					// Add to database
+					materialsDatabase.addMaterial(newMaterial);
+					
+					// Add to tree's list
+					ArrayList<Material> listFromTree = (ArrayList<Material>) treeViewer
 							.getInput();
 					listFromTree.add(newMaterial);
 					Collections.sort(listFromTree);
@@ -321,12 +326,13 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 						// Remove the material from the user's database
 						materialsDatabase.deleteMaterial(toDelete);
 
-						materials.getReadWriteLock().writeLock().lock();
+						//materials.getReadWriteLock().writeLock().lock();
 						try {
 							// Remove from the master materials list
 							materials.remove(toDelete);
-						} finally {
-							materials.getReadWriteLock().writeLock().unlock();
+						} catch(Exception ex) {
+							ex.printStackTrace();
+							//materials.getReadWriteLock().writeLock().unlock();
 						}
 						// Remove the material from the tree viewer
 						listFromTree.remove(toDelete);
@@ -371,15 +377,16 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 					// Create a sorted final list from the database for pulling
 					// the database information
 					List newList = materialsDatabase.getMaterials();
-					materials.getReadWriteLock().writeLock().lock();
+					//materials.getReadWriteLock().writeLock().lock();
 					try {
 						materials.clear();
 						materials.addAll(newList);
 						// Sorts the list according to the material compareTo
 						// operator
 						Collections.sort(materials);
-					} finally {
-						materials.getReadWriteLock().writeLock().unlock();
+					} catch(Exception ex) {
+						ex.printStackTrace();
+						//materials.getReadWriteLock().writeLock().unlock();
 					}
 
 					// Get the model from the treeViewer

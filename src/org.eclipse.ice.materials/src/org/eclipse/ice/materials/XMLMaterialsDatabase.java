@@ -28,6 +28,7 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
@@ -251,9 +252,9 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 		// Create the JAXB context to manipulate the files
 		try {
 			jaxbContext = JAXBContext
-					.newInstance(ICEList.class, Material.class);
+					.newInstance(ICEList.class, Material.class, MaterialStack.class);
 		} catch (JAXBException e) {
-			// Complain
+			// Complain to the logger service
 			if (logger != null) {
 				logger.log(LogService.LOG_ERROR, "Unable to initialize JAXB!",
 						e);
@@ -273,9 +274,8 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 			fileToLoad = defaultDatabase;
 		}
 
-		// Load it up
+		// Load it up and throw some info in the log
 		loadDatabase(fileToLoad);
-
 		if (logger != null) {
 			logger.log(LogService.LOG_INFO, "Started!");
 		}
@@ -357,9 +357,9 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 	 */
 	@Override
 	public TableFormat<Material> getTableFormat() {
-		
+
 		MaterialWritableTableFormat format = null;
-		
+
 		// Build and return a table format if there are materials in the
 		// database
 		if (!materialsMap.isEmpty()) {

@@ -8,11 +8,13 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.ice.client.widgets.ListComponentNattable;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
@@ -49,7 +51,7 @@ import ca.odell.glazedlists.gui.WritableTableFormat;
 /**
  * This class presents a Material as a table with properties.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Kasper Gammeltoft
  * 
  */
 public class MaterialDetailsPage implements IDetailsPage {
@@ -215,13 +217,13 @@ public class MaterialDetailsPage implements IDetailsPage {
 			// another.
 			if (natTable == null) {
 
-				System.out.println("Making table");
 				// Creates new listComponent for the table data.
 				list = new ListComponent<String>();
 
 				// Gets the property names or column names for the table.
 				ArrayList<String> propertyNames = new ArrayList<String>();
 				propertyNames.addAll(material.getProperties().keySet());
+				Collections.sort(propertyNames);
 
 				// Creates new writable table format for the nattable
 				WritableTableFormat tableFormat = new SingleMaterialWritableTableFormat(
@@ -238,27 +240,42 @@ public class MaterialDetailsPage implements IDetailsPage {
 				natTable = new ListComponentNattable(sectionClient, list, true);
 				RowSelectionProvider<Material> selectionProvider = natTable
 						.getSelectionProvider();
+
+				// Listen to selection events in the properties table and update
+				// the materials as necessary.
 				selectionProvider
 						.addSelectionChangedListener(new ISelectionChangedListener() {
 
 							@Override
 							public void selectionChanged(
 									SelectionChangedEvent arg0) {
-								database.updateMaterial(material);
+								List<Material> toUpdate = new ArrayList<Material>();
+								toUpdate.add(material);
+								for (Material mat : database.getMaterials()) {
+									if (material.isComponent(mat)) {
+										mat.updateProperties();
+										toUpdate.add(mat);
+									}
+								}
+
+								for (Material mat : toUpdate) {
+									database.updateMaterial(mat);
+								}
 							}
 
 						});
 			} else {
 
-				System.out.println("Not making table");
 				// Clears out any existing entries in the list
 				list.clear();
 				// Gets the property names or column names for the table.
 				ArrayList<String> propertyNames = new ArrayList<String>();
 				propertyNames.addAll(material.getProperties().keySet());
-
+				Collections.sort(propertyNames);
+				
 				// Adds the new properties to the list.
 				list.addAll(propertyNames);
+				
 
 				// Changes the selected material
 				SingleMaterialWritableTableFormat format = (SingleMaterialWritableTableFormat) list
@@ -282,7 +299,6 @@ public class MaterialDetailsPage implements IDetailsPage {
 		// Make sure that we are not re-creating our contents!
 		// Get the shell for the add property dialog
 		shell = parent.getShell();
-		System.out.println("Creating contents");
 		// Set the layout for the parent
 		GridLayout parentGridLayout = new GridLayout(1, true);
 		parent.setLayout(parentGridLayout);
@@ -312,7 +328,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 		// Finally tell the section about its client
 		section.setClient(sectionClient);
 
-		if(natTable!=null){
+		if (natTable != null) {
 			natTable.getTable().setParent(sectionClient);
 			natTable.getTable().refresh();
 		}
@@ -325,8 +341,8 @@ public class MaterialDetailsPage implements IDetailsPage {
 		// or removing properties
 		Composite buttonComposite = new Composite(sectionClient, SWT.NONE);
 		buttonComposite.setLayout(new GridLayout(1, false));
-		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL,
-				false, true, 1, 1));
+		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false,
+				true, 1, 1));
 
 		// Create the Add button
 		Button addMaterialButton = new Button(buttonComposite, SWT.PUSH);
@@ -371,8 +387,7 @@ public class MaterialDetailsPage implements IDetailsPage {
 			public void widgetSelected(SelectionEvent arg0) {
 
 				// gets the selected property
-				String property = (String) natTable.getSelectedObjects()
-						.get(0);
+				String property = (String) natTable.getSelectedObjects().get(0);
 
 				// Removes the property from the material.
 				material.removeProperty(property);
@@ -402,6 +417,5 @@ public class MaterialDetailsPage implements IDetailsPage {
 
 		return;
 	}
-
 
 }
