@@ -15,9 +15,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This abstract class provides a base implementation for the core functionality
@@ -78,6 +84,18 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * The maximum allowed port (inclusive).
 	 */
 	private static final int MAX_PORT = 65535;
+
+	/**
+	 * A lock for controlling access to the {@link #state} and
+	 * {@link #executorService} when multiple connect calls happen at roughly
+	 * the same time.
+	 */
+	private final Lock connectionLock;
+	/**
+	 * A single thread executor service specifically for connect and disconnect
+	 * operations.
+	 */
+	private ExecutorService executorService;
 
 	/**
 	 * The default constructor. Initializes the connection to the default
@@ -171,6 +189,9 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 
 		// Initialize the set of connection listeners.
 		listeners = new HashSet<IVizConnectionListener<T>>();
+
+		// Create the lock for accessing certain connection thread variables.
+		connectionLock = new ReentrantLock(true);
 
 		return;
 	}
@@ -279,8 +300,154 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 *         fail), use the future's {@code get()} method.
 	 */
 	public Future<ConnectionState> connect() {
-		// TODO
-		return null;
+
+		Future<ConnectionState> retVal;
+
+		// Based on the current state of the connection, we need to either start
+		// connecting, wait on the current connection attempt, or just
+		// immediately return (because it's already connected).
+		connectionLock.lock();
+		try {
+			// If already connected, we don't need the executor service.
+			if (state == ConnectionState.Connected) {
+				retVal = createInstantFuture(state);
+			}
+			// If already connecting, we should submit a task to the existing
+			// executor service.
+			else if (state == ConnectionState.Connecting) {
+				retVal = hookIntoConnectThread();
+			}
+			// If not connected, we should submit a task to a new executor
+			// service (the old one should have been closed and unset).
+			else {
+				retVal = startConnectThread();
+			}
+		} finally {
+			connectionLock.unlock();
+		}
+
+		return retVal;
+	}
+
+	/**
+	 * Returns a Future whose state is as specified and can be evaluated
+	 * <i>immediately</i>.
+	 * 
+	 * @param state
+	 *            The state that will be returned from the future's get methods.
+	 * @return The "instant" future.
+	 */
+	private Future<ConnectionState> createInstantFuture(ConnectionState state) {
+		final ConnectionState stateRef = state;
+		return new Future<ConnectionState>() {
+			@Override
+			public boolean cancel(boolean mayInterruptIfRunning) {
+				return false;
+			}
+
+			@Override
+			public boolean isCancelled() {
+				return false;
+			}
+
+			@Override
+			public boolean isDone() {
+				return true;
+			}
+
+			@Override
+			public ConnectionState get() throws InterruptedException,
+					ExecutionException {
+				return stateRef;
+			}
+
+			@Override
+			public ConnectionState get(long timeout, TimeUnit unit)
+					throws InterruptedException, ExecutionException,
+					TimeoutException {
+				return stateRef;
+			}
+		};
+	}
+
+	/**
+	 * Queues a connection task in the {@link #executorService}. This task will
+	 * attempt to connect to the client. After completion, the service will be
+	 * shut down.
+	 * 
+	 * @return The future task after which the connection will either be
+	 *         connected or failed.
+	 */
+	private Future<ConnectionState> startConnectThread() {
+		executorService = Executors.newSingleThreadExecutor();
+		return executorService.submit(new Callable<ConnectionState>() {
+			@Override
+			public ConnectionState call() throws Exception {
+
+				// Update the state.
+				ConnectionState threadState = ConnectionState.Connecting;
+				statusMessage = "The connection is being established.";
+
+				// Updating the state variable must be done with
+				// the lock.
+				connectionLock.lock();
+				try {
+					state = threadState;
+				} finally {
+					connectionLock.unlock();
+				}
+
+				// Notify the listeners.
+				notifyListeners(threadState, statusMessage);
+
+				// Try to open the connection.
+				widget = connectToWidget();
+
+				// Whether successful or not, update the state.
+				if (widget != null) {
+					threadState = ConnectionState.Connected;
+					statusMessage = "The connection is established.";
+				} else {
+					threadState = ConnectionState.Failed;
+					statusMessage = "The connection failed to connect.";
+				}
+
+				// Updating the state variable must be done with
+				// the lock.
+				connectionLock.lock();
+				try {
+					state = threadState;
+					// Close the executor service.
+					executorService.shutdown();
+					executorService = null;
+				} finally {
+					connectionLock.unlock();
+				}
+
+				// Notify the listeners.
+				notifyListeners(threadState, statusMessage);
+
+				return state;
+			}
+		});
+	}
+
+	/**
+	 * Hooks into the existing connection task started by calling
+	 * {@link #startConnectThread()} by submitting a new task to the
+	 * {@link #executorService}. The submitted task simply returns the current
+	 * connection state.
+	 * 
+	 * @return The future task after which the connection will either be
+	 *         connected or failed.
+	 */
+	private Future<ConnectionState> hookIntoConnectThread() {
+		return executorService.submit(new Callable<ConnectionState>() {
+			@Override
+			public ConnectionState call() throws Exception {
+				return state;
+			}
+		});
 	}
 
 	/**

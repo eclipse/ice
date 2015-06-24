@@ -796,7 +796,7 @@ public class VizConnectionTester {
 		}
 
 		// If the second notification wasn't received yet, wait for it.
-		if (size != 0) {
+		if (size == 0) {
 			assertTrue(fakeListener1.wasNotified());
 		}
 
@@ -852,7 +852,7 @@ public class VizConnectionTester {
 		}
 
 		// If the second notification wasn't received yet, wait for it.
-		if (size != 0) {
+		if (size == 0) {
 			assertTrue(fakeListener1.wasNotified());
 		}
 
