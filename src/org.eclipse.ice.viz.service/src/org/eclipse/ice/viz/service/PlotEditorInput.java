@@ -83,7 +83,6 @@ public class PlotEditorInput implements IEditorInput {
 	 */
 	@Override
 	public IPersistableElement getPersistable() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -94,7 +93,6 @@ public class PlotEditorInput implements IEditorInput {
 	 */
 	@Override
 	public String getToolTipText() {
-		// TODO Auto-generated method stub
 		return data.getDataSource().toString();
 	}
 

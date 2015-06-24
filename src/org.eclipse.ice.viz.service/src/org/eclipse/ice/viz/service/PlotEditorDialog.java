@@ -33,7 +33,7 @@ public class PlotEditorDialog extends Dialog {
 	 * 
 	 * @param parentShell
 	 */
-	protected PlotEditorDialog(Shell parentShell) {
+	public PlotEditorDialog(Shell parentShell) {
 		super(parentShell);
 	}
 
@@ -69,7 +69,7 @@ public class PlotEditorDialog extends Dialog {
 	 *            box.
 	 * @return Returns the dialog window's composite.
 	 */
-	protected Control createDialogArea(Composite parent,
+	public Composite createDialogArea(Composite parent,
 			String[] serviceNamesArray) {
 		// Set up the window.
 		Composite container = (Composite) super.createDialogArea(parent);

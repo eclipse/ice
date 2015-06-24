@@ -67,7 +67,7 @@ public class CoreConnectDialog extends Dialog {
 		portLabel.setText("Port: ");
 
 		// Create a new text box to input port
-		portField = new Text(comp, SWT.SINGLE | SWT.SINGLE);
+		portField = new Text(comp, SWT.SINGLE);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		portField.setLayoutData(data);
 

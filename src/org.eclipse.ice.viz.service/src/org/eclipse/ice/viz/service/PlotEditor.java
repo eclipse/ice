@@ -159,8 +159,7 @@ public class PlotEditor extends EditorPart {
 		final URI filepath = plot.getURI();
 
 		// Get the VizServiceFactory and all Viz Services
-		VizServiceFactoryHolder factoryHolder = new VizServiceFactoryHolder();
-		final BasicVizServiceFactory factory = (BasicVizServiceFactory) factoryHolder
+		final IVizServiceFactory factory = (BasicVizServiceFactory) VizServiceFactoryHolder
 				.getFactory();
 
 		// An array of all registered service names.
@@ -209,7 +208,8 @@ public class PlotEditor extends EditorPart {
 							Display.getCurrent().getActiveShell(),
 							"Visualization Failed",
 							"All visualization services failed to render a plot. \n"
-									+ "If you are using an external rendering program, make sure it is connected to ICE.",
+									+ "If you are using an external rendering program, "
+									+ "make sure it is connected to ICE.",
 							status);
 			return;
 		}
@@ -236,13 +236,13 @@ public class PlotEditor extends EditorPart {
 		// If more than one service is applicable, create a dialog window to
 		// prompt the user for which is to be used. Else, use the single
 		// available service.
-		if (numServices > 1) {
+		if (numServices == 1) {
+			selectedService = inputArray.get(0);
+		} else {
 			PlotEditorDialog dialog = new PlotEditorDialog(PlatformUI
 					.getWorkbench().getActiveWorkbenchWindow().getShell());
 			dialog.createDialogArea(new Shell(), serviceNamesArray);
 			selectedService = inputArray.get(dialog.getSelection());
-		} else {
-			selectedService = inputArray.get(0);
 		}
 
 		// Reference to this editor instance
@@ -275,7 +275,7 @@ public class PlotEditor extends EditorPart {
 					}
 				}
 
-				// Plot types available form the selected service
+				// Plot types available from the selected service
 				final Map<String, String[]> selectedServiceTypes = selectedServiceTypesTemp;
 
 				// The plot categories available from the selected service.
@@ -318,7 +318,7 @@ public class PlotEditor extends EditorPart {
 								"Plot Categories");
 						menuTree.add(categoriesTree);
 
-						// Add all categories and plot types to mene
+						// Add all categories and plot types to menu
 						for (final String category : selectedCategorySet) {
 
 							// Third level menu for plot type selection within a

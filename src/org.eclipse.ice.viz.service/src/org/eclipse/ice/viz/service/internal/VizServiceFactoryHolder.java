@@ -27,7 +27,7 @@ public class VizServiceFactoryHolder {
 	 * Remove the held VizServiceFactory.
 	 * 
 	 */
-	public static void unsetVizServiceFactory() {
+	public static void unsetVizServiceFactory(IVizServiceFactory input) {
 		factory = null;
 		return;
 	}

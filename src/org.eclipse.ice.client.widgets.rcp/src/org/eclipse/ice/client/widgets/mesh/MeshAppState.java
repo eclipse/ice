@@ -1375,7 +1375,7 @@ public class MeshAppState extends ViewAppState implements
 						vSize = vertexSize;
 						vertexSize = (distance < 10f ? 0.0159f * distance + 0.0413f
 								: 0.2f);
-						if (vSize != vertexSize) {
+						if (Math.abs(vSize - vertexSize) > 0.001f) {
 							updateVertices = true;
 							vSize = vertexSize;
 						}
@@ -1385,7 +1385,7 @@ public class MeshAppState extends ViewAppState implements
 						// changed.
 						eSize = edgeSize;
 						edgeSize = (distance < 10f ? 0.1f * distance + 4f : 5f);
-						if (eSize != edgeSize) {
+						if (Math.abs(eSize - edgeSize) > 0.001f) {
 							updateEdges = true;
 							eSize = edgeSize;
 						}
