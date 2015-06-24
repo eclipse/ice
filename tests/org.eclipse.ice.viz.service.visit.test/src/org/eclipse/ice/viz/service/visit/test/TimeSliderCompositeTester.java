@@ -13,10 +13,13 @@ package org.eclipse.ice.viz.service.visit.test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,6 +33,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotArrowButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotScale;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Test;
@@ -56,6 +60,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * the {@link #timeComposite}.
 	 */
 	private static List<Double> testTimes;
+
+	/**
+	 * A list of the complete test times, ordered, and without nulls or
+	 * duplicates.
+	 */
+	private static SortedSet<Double> orderedTimes;
 
 	/**
 	 * The expected size of {@link #testTimes}.
@@ -101,6 +111,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		testTimes.add(0.0);
 		testTimes.add(1337.1337);
 		testTimesSize = testTimes.size();
+
+		// Create an ordered set of the times, and remove nulls. We expect the
+		// time widget to effectively traverse across this set.
+		Set<Double> hashedTimes = new HashSet<Double>(testTimes);
+		hashedTimes.remove(null);
+		orderedTimes = new TreeSet<Double>(hashedTimes);
 
 		// Create the two fake listeners.
 		fakeListener1 = new FakeListener();
@@ -204,12 +220,6 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 */
 	@Test
 	public void checkSetTimeSteps() {
-
-		// Create an ordered set of the times, and remove nulls. We expect the
-		// time widget to effectively traverse across this set.
-		Set<Double> hashedTimes = new HashSet<Double>(testTimes);
-		hashedTimes.remove(null);
-		SortedSet<Double> orderedTimes = new TreeSet<Double>(hashedTimes);
 
 		final AtomicInteger timestep = new AtomicInteger();
 		final AtomicReference<Double> time = new AtomicReference<Double>();
@@ -344,6 +354,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		SWTBotScale scale = getTimeScale();
 		SWTBotArrowButton nextButton = getTimeSpinnerNext();
 		SWTBotArrowButton prevButton = getTimeSpinnerPrev();
+		SWTBotButton playButton = getPlayPauseButton();
 		SWTBotText text = getTimeText();
 
 		final List<Double> goodTimes = new ArrayList<Double>();
@@ -368,6 +379,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(testBot.scale());
 		assertNotEnabled(testBot.arrowButton(0));
 		assertNotEnabled(testBot.arrowButton(1));
+		assertNotEnabled(testBot.button());
 		assertNotEnabled(testBot.text());
 		assertEquals(NO_TIMES, testBot.text().getText());
 
@@ -384,6 +396,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertEnabled(scale);
 		assertEnabled(nextButton);
 		assertNotEnabled(prevButton); // First timestep... prev is disabled.
+		assertEnabled(playButton);
 		assertEnabled(text);
 
 		// Setting the times to something with 1 value should disable them.
@@ -396,6 +409,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(scale);
 		assertNotEnabled(nextButton);
 		assertNotEnabled(prevButton);
+		assertNotEnabled(playButton);
 		assertNotEnabled(text);
 		// The text widget's text should be set to the current value.
 		assertEquals(badTimes.get(0).toString(), text.getText());
@@ -410,6 +424,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertEnabled(scale);
 		assertEnabled(nextButton);
 		assertNotEnabled(prevButton); // First timestep... prev is disabled.
+		assertEnabled(playButton);
 		assertEnabled(text);
 
 		// Setting it to the last timestep should disable the "next" button.
@@ -433,6 +448,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(scale);
 		assertNotEnabled(nextButton);
 		assertNotEnabled(prevButton);
+		assertNotEnabled(playButton);
 		assertNotEnabled(text);
 		// The text widget's text should be set to N/A.
 		assertEquals(NO_TIMES, text.getText());
@@ -565,6 +581,129 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		prevButton.click();
 		assertFalse(fakeListener2.wasNotified()); // Test this one first!
 		assertTrue(fakeListener1.wasNotified());
+
+		return;
+	}
+
+	/**
+	 * Checks that listeners are periodically updated when the play button is
+	 * clicked, and that notifications stop when the same (pause) button is
+	 * clicked.
+	 */
+	@Test
+	public void checkSelectionListenersByPlayButton() {
+
+		// Get the specific widget that will be used to set the time.
+		SWTBotButton widget = getPlayPauseButton();
+
+		// Set the time to the last timestep. This will ensure the play action
+		// hits the last timestep, then loops back around to the first.
+		getTimeScale().setValue(orderedTimes.size() - 2);
+
+		// Add a new test listener.
+		final FakeListener listener = new FakeListener();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.addSelectionListener(listener);
+			}
+		});
+
+		// Play for two seconds, then pause. Use a buffer of a half second in
+		// case the SWTBot click beats the display thread scheduling.
+		widget.click();
+		try {
+			Thread.sleep(2500);
+		} catch (InterruptedException e) {
+			fail("TimeSliderCompositeTester error: "
+					+ "Thread interrupted while testing play button.");
+		}
+		widget.click();
+
+		// The listener should have been notified twice: two timesteps were
+		// traversed while playing.
+		assertTrue(listener.wasNotified(2));
+
+		// Check the notification count and the times sent with each
+		// notification.
+		Queue<Double> times = listener.notificationTimes;
+		assertEquals(2, times.size());
+		assertEquals(orderedTimes.last(), times.poll(), epsilon);
+		assertEquals(orderedTimes.first(), times.poll(), epsilon);
+
+		// Remove the test listener.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.removeSelectionListener(listener);
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * Checks that, when any of the time widgets are updated, the active play
+	 * action is cancelled.
+	 */
+	@Test
+	public void checkPauseOnNewSelection() {
+
+		SWTBotButton playButton = getPlayPauseButton();
+
+		SWTBotText text = getTimeText();
+		String firstTime = text.getText();
+
+		// Add a new test listener.
+		final FakeListener listener = new FakeListener();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.addSelectionListener(listener);
+			}
+		});
+
+		// Pause by clicking the play button. No notification sent.
+		playButton.click();
+		playButton.click();
+		// Pause by clicking the time scale. 1 notification.
+		playButton.click();
+		getTimeScale().setValue(1);
+		// Pause by typing text. 1 notification.
+		playButton.click();
+		text.selectAll();
+		text.typeText(firstTime + SWT.CR + SWT.LF);
+		// Pause by clicking the next button. 1 notification.
+		playButton.click();
+		getTimeSpinnerNext().click();
+		// Pause by clicking the previous button. 1 notification.
+		playButton.click();
+		getTimeSpinnerPrev().click();
+
+		// In the above test, the listener should have only been notified 4
+		// times (when the other widgets, not including the play button, were
+		// clicked).
+		assertTrue(listener.wasNotified(4));
+		// The times sent should also alternate between the second and first
+		// timesteps, because each subsequent call undoes the previous one.
+		Iterator<Double> iter = orderedTimes.iterator();
+		double first = iter.next();
+		double second = iter.next();
+		assertEquals(second, listener.notificationTimes.poll());
+		assertEquals(first, listener.notificationTimes.poll());
+		assertEquals(second, listener.notificationTimes.poll());
+		assertEquals(first, listener.notificationTimes.poll());
+
+		// The listener should not be notified again.
+		assertFalse(listener.wasNotified(5));
+
+		// Remove the test listener.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.removeSelectionListener(listener);
+			}
+		});
 
 		return;
 	}
@@ -799,6 +938,15 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
+	 * Gets the SWTBot-wrapped scale widget for the play/pause button.
+	 * 
+	 * @return The wrapped play button.
+	 */
+	private SWTBotButton getPlayPauseButton() {
+		return getBot().button();
+	}
+
+	/**
 	 * Gets the SWTBot-wrapped scale widget for the time steps.
 	 * 
 	 * @return The wrapped scale widget.
@@ -847,6 +995,18 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	private class FakeListener extends SelectionAdapter {
 
 		/**
+		 * This can be used to count how many notifications have been sent to
+		 * this listener.
+		 */
+		private final AtomicInteger notificationCount = new AtomicInteger();
+
+		/**
+		 * This can be used to determine what time was sent at each
+		 * notification.
+		 */
+		private final Queue<Double> notificationTimes = new ConcurrentLinkedQueue<Double>();
+
+		/**
 		 * This flag is set by {@link #widgetSelected(SelectionEvent)}.
 		 */
 		private final AtomicBoolean wasNotified = new AtomicBoolean();
@@ -861,6 +1021,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		 */
 		@Override
 		public void widgetSelected(SelectionEvent e) {
+			notificationTimes.add((Double) e.data);
+			notificationCount.incrementAndGet();
 			wasNotified.set(true);
 		}
 
@@ -889,6 +1051,30 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				notified = wasNotified.getAndSet(false);
 			}
 			return notified;
+		}
+
+		/**
+		 * Waits up to {@link #THRESHOLD} milliseconds before returning whether
+		 * or not the notification count is greater than or equal to the desired
+		 * count. This will return sooner if the notification count is satisfied
+		 * sooner!
+		 * 
+		 * @param count
+		 *            The number of notifications to wait on.
+		 * @return True if the notification count is at least the specified
+		 *         count, false otherwise.
+		 */
+		private boolean wasNotified(int count) {
+			long interval = 50;
+			for (long sleepTime = 0; sleepTime < THRESHOLD
+					&& notificationCount.get() < count; sleepTime += interval) {
+				try {
+					Thread.sleep(interval);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+			return notificationCount.get() >= count;
 		}
 	}
 }

@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Text;
 
@@ -67,6 +68,18 @@ public class TimeSliderComposite extends Composite {
 	 * fine-grained control.
 	 */
 	private final Button spinnerPrev;
+	/**
+	 * Starts or pauses playback of the timesteps.
+	 */
+	private final Button playButton;
+
+	/**
+	 * The playback interval or framerate is 1 second.
+	 */
+	private static final int playbackInterval = 1;
+	private boolean play = false;
+	private Runnable playbackRunnable;
+	private SelectionEvent playButtonEvent;
 
 	/**
 	 * The current timestep, or -1 if there are no times available.
@@ -126,7 +139,11 @@ public class TimeSliderComposite extends Composite {
 		spinnerPrev = new Button(buttonComposite, SWT.ARROW | SWT.DOWN);
 		spinnerPrev.setToolTipText("Previous Timestep");
 
-		// Layout the widgetes. The scale should take up all horizontal space on
+		playButton = new Button(this, SWT.NONE);
+		playButton.setText("Play");
+		playButton.setToolTipText("Play/Pause");
+
+		// Layout the widgets. The scale should take up all horizontal space on
 		// the left. The text widget should grab whatever space remains, while
 		// the two buttons, one above the other, take up just the space they
 		// require.
@@ -141,6 +158,7 @@ public class TimeSliderComposite extends Composite {
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 		spinnerPrev
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+		playButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
 		// Add selection listeners to each of the widgets. These listeners
 		// should trigger an update to the timestep and notify listeners if
@@ -148,6 +166,9 @@ public class TimeSliderComposite extends Composite {
 		scale.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// Disable playback.
+				setPlayback(false, e);
+
 				// Get the timestep from the scale widget.
 				if (setTimestep(scale.getSelection())) {
 					notifyListeners(e);
@@ -157,6 +178,9 @@ public class TimeSliderComposite extends Composite {
 		spinnerNext.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// Disable playback.
+				setPlayback(false, e);
+
 				// Increment the timestep.
 				if (setTimestep(timestep + 1)) {
 					notifyListeners(e);
@@ -166,6 +190,9 @@ public class TimeSliderComposite extends Composite {
 		spinnerPrev.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// Disable playback.
+				setPlayback(false, e);
+
 				// Decrement teh timestep.
 				if (setTimestep(timestep - 1)) {
 					notifyListeners(e);
@@ -180,6 +207,9 @@ public class TimeSliderComposite extends Composite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// Disable playback.
+				setPlayback(false, e);
+
 				// Try to find the value from the text widget's new text.
 				try {
 					double value = Double.parseDouble(spinnerText.getText());
@@ -198,6 +228,12 @@ public class TimeSliderComposite extends Composite {
 				}
 
 				return;
+			}
+		});
+		playButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setPlayback(!play, e);
 			}
 		});
 
@@ -259,7 +295,7 @@ public class TimeSliderComposite extends Composite {
 	private void syncWidgets() {
 
 		// The widgets should only be enabled if there is more than 1 timestep.
-		int size = times != null ? times.size() : 0;
+		final int size = times != null ? times.size() : 0;
 		boolean widgetsEnabled = size > 1;
 
 		// Refresh the scale widget's max value.
@@ -270,10 +306,22 @@ public class TimeSliderComposite extends Composite {
 		spinnerText.setEnabled(widgetsEnabled);
 		spinnerNext.setEnabled(widgetsEnabled & timestep < size - 1);
 		spinnerPrev.setEnabled(widgetsEnabled & timestep > 0);
+		playButton.setEnabled(widgetsEnabled);
 
 		// Update the selections on the widgets.
 		scale.setSelection(0);
 		spinnerText.setText(size > 0 ? Double.toString(getTime()) : NO_TIMES);
+
+		final Display display = getDisplay();
+		final int interval = playbackInterval * 1000;
+		playbackRunnable = new Runnable() {
+			@Override
+			public void run() {
+				display.timerExec(interval, this);
+				setTimestep((timestep + 1) % size);
+				notifyListeners(playButtonEvent);
+			}
+		};
 
 		return;
 	}
@@ -430,4 +478,27 @@ public class TimeSliderComposite extends Composite {
 		}
 	}
 
+	private void setPlayback(boolean play, SelectionEvent e) {
+		if (play != this.play) {
+			this.play = play;
+
+			// Set the default text and time. This is equivalent to the initial,
+			// paused state.
+			String text = "Play";
+			int time = -1;
+
+			// If necessary, update the text and execution time to the playback
+			// interval (in milliseconds). This is equivalent to the play state.
+			if (play) {
+				text = "Pause";
+				time = playbackInterval * 1000;
+				playButtonEvent = e;
+			}
+
+			// Schedule the timestep increment task and update the text.
+			getDisplay().timerExec(time, playbackRunnable);
+			playButton.setText(text);
+		}
+		return;
+	}
 }
