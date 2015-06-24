@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Robert Smith
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.test;
 
 import static org.junit.Assert.*;
@@ -16,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarDropDownButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
 import java.io.File;
 
@@ -95,10 +107,10 @@ public class PlotEditorTester {
 		bot.menu("Window").menu("Show View").menu("Project Explorer").click();
 
 		// Open the fib8.csv file in the plot editor.
-		bot.tree().getTreeItem("CSVVizService").expand();
-		bot.tree().getTreeItem("CSVVizService").getNode("fib8.csv").select();
-		bot.tree().getTreeItem("CSVVizService").getNode("fib8.csv")
-				.doubleClick();
+		SWTBotTreeItem node = bot.tree().getTreeItem("CSVVizService");
+		node.expand();
+		node.getNode("fib8.csv").select();
+		node.getNode("fib8.csv").doubleClick();
 
 		// Test the plot category selection menu
 		SWTBotToolbarDropDownButton button = bot.activeEditor().bot()
@@ -111,6 +123,7 @@ public class PlotEditorTester {
 			button.pressShortcut(KeyStroke.getInstance("ESC"));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
+			fail();
 		}
 
 		// Test the editor closing menu option.

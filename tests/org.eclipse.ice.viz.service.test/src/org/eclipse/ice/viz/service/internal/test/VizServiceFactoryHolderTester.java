@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Robert Smith
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.internal.test;
 
 import static org.junit.Assert.*;
@@ -25,18 +36,16 @@ public class VizServiceFactoryHolderTester {
 		IVizService service = new FakeVizService(serviceName);
 		factory.register(service);
 
-		VizServiceFactoryHolder holder = new VizServiceFactoryHolder();
-
 		// Test that the factory has been registered
-		holder.setVizServiceFactory(factory);
-		assertNotNull(holder.getFactory());
+		VizServiceFactoryHolder.setVizServiceFactory(factory);
+		assertNotNull(VizServiceFactoryHolder.getFactory());
 
 		// Test that the factory in the holder is the same factory registered.
-		assertEquals("TestService", holder.getFactory().getServiceNames()[0]);
+		assertEquals("TestService", VizServiceFactoryHolder.getFactory().getServiceNames()[0]);
 
 		// Test that the holder is empty after removing the factory.
-		holder.unsetVizServiceFactory();
-		assertNull(holder.getFactory());
+		VizServiceFactoryHolder.unsetVizServiceFactory(factory);
+		assertNull(VizServiceFactoryHolder.getFactory());
 
 	}
 

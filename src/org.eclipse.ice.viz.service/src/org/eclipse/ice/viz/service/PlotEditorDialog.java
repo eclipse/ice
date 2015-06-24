@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings
+ *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -26,7 +37,7 @@ import org.eclipse.swt.widgets.Shell;
 public class PlotEditorDialog extends Dialog {
 	// The index of the visualization service selected by the user in the combo
 	// box.
-	int selectedServiceIndex;
+	private int selectedServiceIndex;
 
 	/**
 	 * Default constructor.
@@ -72,13 +83,23 @@ public class PlotEditorDialog extends Dialog {
 	public Composite createDialogArea(Composite parent,
 			String[] serviceNamesArray) {
 		// Set up the window.
+		//Container to be returned, create by superclass's constructor
 		Composite container = (Composite) super.createDialogArea(parent);
+		
+		//The current display
 		Display display = Display.getCurrent();
+		
+		//The current shell
 		final Shell shell = container.getShell();
+		
+		//The combo box containing the visualization service names
 		final Combo combo = new Combo(shell, SWT.NONE);
-
+		
+		//Name window and give it a grid layout
 		shell.setText("Open a Visualization File");
 		shell.setLayout(new GridLayout());
+		
+		//Populate the combo box and give it a default message
 		combo.setItems(serviceNamesArray);
 		combo.setText("Select a visualization service.");
 
@@ -89,7 +110,11 @@ public class PlotEditorDialog extends Dialog {
 				selectedServiceIndex = combo.getSelectionIndex();
 			}
 		});
-		combo.setLayoutData(new GridData(SWT.CENTER));
+		
+		//Set the size of the combo box
+		combo.setLayoutData(new GridData(300, 100, false, false));
+		
+		//Create the Ok button
 		Button button = new Button(shell, SWT.PUSH);
 		button.setText("Ok");
 
@@ -100,6 +125,8 @@ public class PlotEditorDialog extends Dialog {
 				shell.close();
 			}
 		});
+		
+		//Set the ok button's size
 		button.setLayoutData(new GridData(SWT.CENTER));
 		shell.setDefaultButton(button);
 		shell.setSize(200, 100);

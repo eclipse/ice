@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Robert Smith
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.internal;
 
 import org.eclipse.ice.viz.service.IVizServiceFactory;
@@ -10,6 +21,7 @@ import org.eclipse.ice.viz.service.IVizServiceFactory;
  */
 
 public class VizServiceFactoryHolder {
+	//The VizServiceFactory held by the VizServiceFactory
 	private static IVizServiceFactory factory;
 
 	/**
@@ -24,11 +36,14 @@ public class VizServiceFactoryHolder {
 	}
 
 	/**
-	 * Remove the held VizServiceFactory.
+	 * Remove the given VizServiceFactory if it is held by the VizServiceFactoryHolder.
 	 * 
+	 * @input A VizServiceFactory to remove. 
 	 */
 	public static void unsetVizServiceFactory(IVizServiceFactory input) {
+		if(input == factory){
 		factory = null;
+		}
 		return;
 	}
 

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings
+ *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
 import java.net.URI;
@@ -28,14 +39,16 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**
- * This class implements a plot editor. It can make use of any VizService
- * registered to the BasicVizServiceFactory.
+ * This class implements a plot editor. It takes as input a FileInput containing
+ * a file of visualization data. It can make use of any VizService registered to
+ * the BasicVizServiceFactory to create the plot. It can prompt the user in case
+ * there are multiple applicable services for the file. The UI contains options
+ * to redraw the plot using the IPlot's provided list of categories and plot
+ * types. The IPlot's provided context menu is also available to the user.
  * 
  * @author Robert Smith
  *
@@ -51,7 +64,6 @@ public class PlotEditor extends EditorPart {
 	 * The FileEditorInput containing the plot the editor contains.
 	 */
 	private FileEditorInput plot;
-	private ManagedForm form;
 
 	/**
 	 * Default constructor.
@@ -124,37 +136,7 @@ public class PlotEditor extends EditorPart {
 	@Override
 	public void createPartControl(final Composite parent) {
 		setPartName("Plot Editor");
-		form = new ManagedForm(parent);
-		createFormContent(form);
-		return;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-	 */
-	@Override
-	public void setFocus() {
-	}
-
-	/*
-	 * 
-	 */
-	IEditorPart openEditor(IEditorInput input, String editorId) {
-		return this;
-	}
-
-	/**
-	 * Opens a plot editor window. All visualization services are taken from the
-	 * BasicVizServiceFactory. If one can render the given file extension, it is
-	 * used. If multiple services can render the file type, the user is queried
-	 * as to which to use.
-	 * 
-	 * @param managedForm
-	 */
-	private void createFormContent(final IManagedForm managedForm) {
+		// form = new ManagedForm(parent);
 		plot = (FileEditorInput) getEditorInput();
 		final URI filepath = plot.getURI();
 
@@ -218,7 +200,8 @@ public class PlotEditor extends EditorPart {
 		int numServices = serviceNames.size();
 
 		// Set up the editor window.
-		final Composite body = form.getForm().getBody();
+		final Composite body = parent;// this. new
+										// Composite();//form.getForm().getBody();
 		GridLayout grid = new GridLayout();
 		grid.marginHeight = 0;
 		grid.marginWidth = 0;
@@ -252,152 +235,203 @@ public class PlotEditor extends EditorPart {
 		Job drawPlot = new Job("Plot Editor Loading and Rendering") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				// Temporary holder for plot types available from the selected
-				// service
-				Map<String, String[]> selectedServiceTypesTemp = null;
-				try {
-					selectedServiceTypesTemp = selectedService.getPlot()
-							.getPlotTypes();
-				} catch (Exception e2) {
-					System.out.println("Error reading plot types.");
-				}
-
-				// While loading is not yet complete, wait and periodically
-				// attempt to read the plot types again.
-				while (selectedServiceTypesTemp == null
-						|| selectedServiceTypesTemp.isEmpty()) {
-					try {
-						Thread.sleep(500);
-						selectedServiceTypesTemp = selectedService.getPlot()
-								.getPlotTypes();
-					} catch (Exception e1) {
-						System.out.println("Error reading plot types.");
-					}
-				}
-
-				// Plot types available from the selected service
-				final Map<String, String[]> selectedServiceTypes = selectedServiceTypesTemp;
-
-				// The plot categories available from the selected service.
-				final Set<String> selectedCategorySet = selectedServiceTypes
-						.keySet();
-
-				// An array containing the plot categories available from the
-				// selected service
-				String[] selectedCategoryArray = selectedCategorySet
-						.toArray(new String[selectedCategorySet.size()]);
-
-				// The category to use for drawing the plot initially
-				final String selectedCategory = selectedCategoryArray[0];
-
-				// The plot type to use for drawing the plot initially.
-				final String selectedPlotType = selectedServiceTypes
-						.get(selectedCategory)[0];
-
-				// Toolbar for the editor window
-				final ToolBarManager barManager = new ToolBarManager();
-
-				// Thread for creating the editor UI
-				body.getDisplay().asyncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						// Finish setting up the editor window
-						ToolBar bar = barManager.createControl(body);
-						final Composite plotComposite = new Composite(body,
-								SWT.NONE);
-
-						// Menu manager for toolbar
-						MenuManager menu = new MenuManager("Menu");
-
-						// Top level menu
-						ActionTree menuTree = new ActionTree("Menu");
-
-						// Second level menu for plot category selection
-						ActionTree categoriesTree = new ActionTree(
-								"Plot Categories");
-						menuTree.add(categoriesTree);
-
-						// Add all categories and plot types to menu
-						for (final String category : selectedCategorySet) {
-
-							// Third level menu for plot type selection within a
-							// specific category
-							ActionTree plotTree = new ActionTree(category);
-							categoriesTree.add(plotTree);
-
-							for (final String type : selectedServiceTypes
-									.get(category)) {
-
-								// A menu item to redraw the plot with the
-								// selected category and plot type
-								Action tempAction = new Action(type) {
-									@Override
-									public void run() {
-										try {
-											selectedService.getPlot().draw(
-													category, type,
-													plotComposite);
-										} catch (Exception e) {
-											System.out
-													.println("Error while drawing plot.");
-										}
-									}
-
-								};
-								plotTree.add(new ActionTree(tempAction));
-
-							}
-
-						}
-
-						// An action to close the current editor window
-						Action close = new Action("Close") {
-							@Override
-							public void run() {
-								thisEditor.getEditorSite().getPage()
-										.closeEditor(thisEditor, false);
-							}
-						};
-
-						// Add close action directly under menu
-						menuTree.add(new ActionTree(close));
-
-						// Update menu
-						categoriesTree.getContributionItem().fill(
-								menu.getMenu(), -1);
-						menu.updateAll(true);
-						barManager.add(menuTree.getContributionItem());
-
-						bar.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-								true, false));
-						managedForm.getToolkit().adapt(bar);
-						barManager.update(true);
-
-						plotComposite.setBackground(body.getBackground());
-						plotComposite.setLayoutData(new GridData(SWT.FILL,
-								SWT.FILL, true, true));
-						plotComposite.setLayout(new FillLayout());
-
-						// Draw the plot.
-						try {
-							selectedService.getPlot().draw(selectedCategory,
-									selectedPlotType, plotComposite);
-						} catch (Exception e) {
-							System.out.println("Error drawing plot.");
-						}
-
-						body.layout();
-
-					}
-				});
+				setUpEditor(body, selectedService, thisEditor);
 				return Status.OK_STATUS;
 			}
 
 		};
 
 		drawPlot.schedule();
+		return;
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+	 */
+	@Override
+	public void setFocus() {
+	}
+
+	/**
+	 * Checks that the plot has finished loading and prepares variables for use
+	 * in UI creation. Intended to be called on a non-UI thread.
+	 * 
+	 * @param body
+	 *            Composite in which the PlotEditor will be drawn
+	 * @param selectedService
+	 *            The service to be used in drawing the plot
+	 * @param thisEditor
+	 *            A reference to the Editor calling the function
+	 */
+	public void setUpEditor(final Composite body,
+			final PlotEditorInput selectedService, final IEditorPart thisEditor) {
+		// Temporary holder for plot types available from the selected
+		// service
+		Map<String, String[]> selectedServiceTypesTemp = null;
+		try {
+			selectedServiceTypesTemp = selectedService.getPlot().getPlotTypes();
+		} catch (Exception e2) {
+			System.out.println("Error reading plot types.");
+		}
+
+		// While loading is not yet complete, wait and periodically
+		// attempt to read the plot types again.
+		while (selectedServiceTypesTemp == null
+				|| selectedServiceTypesTemp.isEmpty()) {
+			try {
+				Thread.sleep(500);
+				selectedServiceTypesTemp = selectedService.getPlot()
+						.getPlotTypes();
+			} catch (Exception e1) {
+				System.out.println("Error reading plot types.");
+			}
+		}
+
+		// Plot types available from the selected service
+		final Map<String, String[]> selectedServiceTypes = selectedServiceTypesTemp;
+
+		// The plot categories available from the selected service.
+		final Set<String> selectedCategorySet = selectedServiceTypes.keySet();
+
+		// An array containing the plot categories available from the
+		// selected service
+		String[] selectedCategoryArray = selectedCategorySet
+				.toArray(new String[selectedCategorySet.size()]);
+
+		// The category to use for drawing the plot initially
+		final String selectedCategory = selectedCategoryArray[0];
+
+		// The plot type to use for drawing the plot initially.
+		final String selectedPlotType = selectedServiceTypes
+				.get(selectedCategory)[0];
+
+		// Toolbar for the editor window
+		final ToolBarManager barManager = new ToolBarManager();
+
+		// Thread for creating the editor UI
+		body.getDisplay().asyncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				createUI(barManager, body, selectedCategorySet,
+						selectedServiceTypes, selectedService, thisEditor,
+						selectedCategory, selectedPlotType);
+
+			}
+		});
+	}
+
+	/**
+	 * Creates the UI for the PlotEditor and calls the visualization service to
+	 * draw the opened plot.
+	 * 
+	 * @param barManager
+	 *            Manager for the editor's toolbar
+	 * @param body
+	 *            The composite in which the editor will be drawn
+	 * @param selectedCategorySet
+	 *            The set of possible categories for the plot in the selected
+	 *            service
+	 * @param selectedServiceTypes
+	 *            A map associating possible categories with the types of plot
+	 *            available within that category
+	 * @param selectedService
+	 *            A PlotEditorInput containing the IPlot created with the
+	 *            selected visualization service
+	 * @param thisEditor
+	 *            A reference to the editor being created.
+	 * @param selectedCategory
+	 *            The category of the initial plot to draw
+	 * @param selectedPlotType
+	 *            The type of the initial plot to draw
+	 */
+	private void createUI(ToolBarManager barManager, Composite body,
+			Set<String> selectedCategorySet,
+			Map<String, String[]> selectedServiceTypes,
+			final PlotEditorInput selectedService,
+			final IEditorPart thisEditor, final String selectedCategory,
+			final String selectedPlotType) {
+		// Finish setting up the editor window
+		ToolBar bar = barManager.createControl(body);
+		final Composite plotComposite = new Composite(body, SWT.NONE);
+
+		// Menu manager for toolbar
+		MenuManager menu = new MenuManager("Menu");
+
+		// Top level menu
+		ActionTree menuTree = new ActionTree("Menu");
+
+		// Second level menu for plot category selection
+		ActionTree categoriesTree = new ActionTree("Plot Categories");
+		menuTree.add(categoriesTree);
+
+		// Add all categories and plot types to menu
+		for (final String category : selectedCategorySet) {
+
+			// Third level menu for plot type selection within a
+			// specific category
+			ActionTree plotTree = new ActionTree(category);
+			categoriesTree.add(plotTree);
+
+			for (final String type : selectedServiceTypes.get(category)) {
+
+				// A menu item to redraw the plot with the
+				// selected category and plot type
+				Action tempAction = new Action(type) {
+					@Override
+					public void run() {
+						try {
+							selectedService.getPlot().draw(category, type,
+									plotComposite);
+						} catch (Exception e) {
+							System.out.println("Error while drawing plot.");
+						}
+					}
+
+				};
+				plotTree.add(new ActionTree(tempAction));
+
+			}
+
+		}
+
+		// An action to close the current editor window
+		Action close = new Action("Close") {
+			@Override
+			public void run() {
+				thisEditor.getEditorSite().getPage()
+						.closeEditor(thisEditor, false);
+			}
+		};
+
+		// Add close action directly under menu
+		menuTree.add(new ActionTree(close));
+
+		// Update menu
+		categoriesTree.getContributionItem().fill(menu.getMenu(), -1);
+		menu.updateAll(true);
+		barManager.add(menuTree.getContributionItem());
+
+		bar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		// managedForm.getToolkit().adapt(bar);
+		barManager.update(true);
+
+		plotComposite.setBackground(body.getBackground());
+		plotComposite
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		plotComposite.setLayout(new FillLayout());
+
+		// Draw the plot.
+		try {
+			selectedService.getPlot().draw(selectedCategory, selectedPlotType,
+					plotComposite);
+		} catch (Exception e) {
+			System.out.println("Error drawing plot.");
+		}
+
+		body.layout();
+	}
 }
