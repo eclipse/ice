@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -29,6 +31,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.io.csv.CSVReader;
 import org.eclipse.ice.item.model.Model;
@@ -76,16 +79,6 @@ public class ReflectivityModel extends Model {
 	private static final String WaveLengthEntryName = "Wave Length";
 
 	/**
-	 * The output file for reflectivity data.
-	 */
-	private IFile reflectivityFile;
-
-	/**
-	 * the output file for the scattering density profile data
-	 */
-	private IFile scatteringFile;
-
-	/**
 	 * Identification number for the component that contains the parameters.
 	 */
 	public static final int paramsCompId = 1;
@@ -95,6 +88,12 @@ public class ReflectivityModel extends Model {
 	 * materials.
 	 */
 	public static final int matListId = 2;
+
+	/**
+	 * Identification number for the resource component that contains the output
+	 * files.
+	 */
+	public static final int resourceCompId = 3;
 
 	/**
 	 * The constructor.
@@ -123,8 +122,9 @@ public class ReflectivityModel extends Model {
 	@Override
 	public FormStatus process(String actionName) {
 
-		// Local Declarations
-		FormStatus retVal;
+		// Local Declarations. Return this value to display the process status
+		// on the form.
+		FormStatus retVal = null;
 
 		if (actionName.equals(processActionName)) {
 
@@ -177,8 +177,8 @@ public class ReflectivityModel extends Model {
 			IFile waveInput = project.getFile(fileName);
 
 			// Get the reader and read in the values.
-			Form form = new CSVReader().read(waveInput);
-			ListComponent<String[]> waveData = (ListComponent<String[]>) form
+			Form waveForm = new CSVReader().read(waveInput);
+			ListComponent<String[]> waveData = (ListComponent<String[]>) waveForm
 					.getComponent(1);
 
 			// Pull the data from the form into an array.
@@ -189,22 +189,73 @@ public class ReflectivityModel extends Model {
 				waveVector[i] = dataEntry;
 			}
 
-			// Calculate the reflectivity
+			// Calculate the reflectivity - FIXME! Add RQ4 parameter
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
 			ReflectivityProfile profile = calculator.getReflectivityProfile(
 					slabs.toArray(new Slab[slabs.size()]), numRough, deltaQ0,
-					deltaQ1ByQ, wavelength, waveVector, true);
+					deltaQ1ByQ, wavelength, waveVector, false);
 
-			// Write the files.
+			// Get the data from the profile
 			double[] reflectivity = profile.reflectivity;
 			double[] scatDensity = profile.scatteringDensity;
 			double[] depth = profile.depth;
 
-			retVal = FormStatus.InfoError;
+			// Create the csv data for the reflectivity file
+			String reflectData = "#features, p_x, p_y\n#units,p_x,p_y\n";
+			for (int i = 0; i < reflectivity.length; i++) {
+				reflectData += Double.toString(reflectivity[i]) + ","
+						+ Double.toString(waveVector[i]) + "\n";
+			}
+
+			// Create the stream
+			ByteArrayInputStream reflectStream = new ByteArrayInputStream(
+					reflectData.getBytes());
+
+			// Create the data for the scattering density profile
+			String scatData = "#features, p_x, p_y\n#units,p_x,p_y\n";
+			for (int i = 0; i < depth.length; i++) {
+				scatData += Double.toString(scatDensity[i]) + ","
+						+ Double.toString(depth[i]) + "\n";
+			}
+
+			ResourceComponent resComp = (ResourceComponent) form
+					.getComponent(resourceCompId);
+
+			// Create the stream
+			ByteArrayInputStream scatStream = new ByteArrayInputStream(
+					scatData.getBytes());
+
+			// Write the data to the files.
+			try {
+				// First the reflectivity file
+				VizResource reflectSource = (VizResource)resComp.get(0);
+				IFile reflectivityFile = project.getFile(reflectSource.getContents().getName());
+				reflectivityFile.setContents(new BufferedInputStream(
+						reflectStream), true, false, null);
+
+				// Then the scattering density file
+				VizResource scatSource = (VizResource)resComp.get(1);
+				IFile scatteringFile = project.getFile(scatSource.getContents().getName());
+				scatteringFile.setContents(new BufferedInputStream(scatStream),
+						true, false, null);
+
+				// Catch exceptions, should return an error.
+			} catch (CoreException | NullPointerException e) {
+				e.printStackTrace();
+				retVal = FormStatus.InfoError;
+			}
+
+			// Return processed if the value has not already beens set.
+			if (retVal == null) {
+				retVal = FormStatus.Processed;
+			}
+
+			// Some other process action.
 		} else {
 			retVal = super.process(actionName);
 		}
 
+		// Finally return retVal.
 		return retVal;
 	}
 
@@ -217,11 +268,11 @@ public class ReflectivityModel extends Model {
 	protected void setupForm() {
 
 		// FIXME! Simple data entered now for testing
-		String line1 = "#features,t, p_x, p_y\n";
-		String line2 = "#units,t,p_x,p_y\n";
-		String line3 = "1.0,1.0,1.0\n";
-		String line4 = "2.0,4.0,4.0\n";
-		String line5 = "3.0,9.0,9.0\n";
+		String line1 = "#features, p_x, p_y\n";
+		String line2 = "#units,p_x,p_y\n";
+		String line3 = "1.0,1.0\n";
+		String line4 = "2.0,4.0\n";
+		String line5 = "3.0,9.0\n";
 		String allLines = line1 + line2 + line3 + line4 + line5;
 
 		// Create an empty stream for the output files
@@ -345,13 +396,20 @@ public class ReflectivityModel extends Model {
 		// Make sure to put it in the form!
 		form.addComponent(matList);
 
+		// Create a component to hold the output
+		ResourceComponent resources = new ResourceComponent();
+		resources.setName("Results");
+		resources.setDescription("Results and Output");
+		resources.setId(resourceCompId);
+		form.addComponent(resources);
+
 		if (project != null) {
 			// FIXME! ID is always 1 at this point!
 			String basename = "reflectivityModel_" + getId() + "_";
 			// Create the output file for the reflectivity data
-			reflectivityFile = project.getFile(basename + "rfd.csv");
+			IFile reflectivityFile = project.getFile(basename + "rfd.csv");
 			// Create the output file for the scattering density data
-			scatteringFile = project.getFile(basename + "scdens.csv");
+			IFile scatteringFile = project.getFile(basename + "scdens.csv");
 			try {
 				// Reflectivity first
 				if (reflectivityFile.exists()) {
@@ -380,15 +438,9 @@ public class ReflectivityModel extends Model {
 				scatDensitySource.setId(2);
 				scatDensitySource.setDescription("Data from Stattering "
 						+ "Density calculation");
-
-				// Create a component to hold the output
-				ResourceComponent resources = new ResourceComponent();
-				resources.setName("Results");
-				resources.setDescription("Results and Output");
-				resources.setId(2);
+				
 				resources.addResource(reflectivitySource);
 				resources.addResource(scatDensitySource);
-				form.addComponent(resources);
 			} catch (CoreException | IOException e) {
 				// Complain
 				System.err.println("ReflectivityModel Error: "
