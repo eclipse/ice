@@ -468,8 +468,102 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 *         fail), use the future's {@code get()} method.
 	 */
 	public Future<ConnectionState> disconnect() {
-		// TODO
-		return null;
+
+		Future<ConnectionState> retVal;
+
+		// Based on the current state of the connection, we need to either start
+		// disconnecting or just immediately return (because it's already
+		// disconnected).
+		connectionLock.lock();
+		try {
+			// If already disconnected, we don't need the executor service.
+			if (state == ConnectionState.Disconnected) {
+				retVal = createInstantFuture(state);
+			}
+			// If the connection has failed previously and has no widget, then
+			// we can return immediately, too.
+			else if (state == ConnectionState.Failed && widget == null) {
+				retVal = createInstantFuture(state);
+			}
+			// Otherwise, if we haven't already, we need to start disconnecting.
+			else {
+				retVal = startDisconnectThread();
+			}
+		} finally {
+			connectionLock.unlock();
+		}
+
+		return retVal;
+	}
+
+	/**
+	 * Queues a disconnect task in the {@link #executorService}. This task will
+	 * attempt to disconnect from the client. After completion, the service will
+	 * be shut down.
+	 * 
+	 * @return The future task after which the connection will either be
+	 *         connected or failed.
+	 */
+	private Future<ConnectionState> startDisconnectThread() {
+		// If necessary, create the executor service.
+		if (executorService == null) {
+			executorService = Executors.newSingleThreadExecutor();
+		}
+		return executorService.submit(new Callable<ConnectionState>() {
+			@Override
+			public ConnectionState call() throws Exception {
+				ConnectionState threadState;
+				T connectionWidget;
+
+				// Get the current connection state and connection widget.
+				connectionLock.lock();
+				try {
+					threadState = state;
+					connectionWidget = widget;
+				} finally {
+					connectionLock.unlock();
+				}
+
+				// If a previous task hasn't successfully disconnected, then try
+				// to disconnect.
+				if (threadState != ConnectionState.Disconnected
+						&& connectionWidget != null) {
+
+					// Try to disconnect.
+					boolean success = disconnectFromWidget(connectionWidget);
+
+					// Update the state and perhaps the connection widget
+					// depending on the success of the disconnect operation.
+					connectionLock.lock();
+					try {
+						if (success) {
+							state = ConnectionState.Disconnected;
+							statusMessage = "The connection is closed.";
+
+							// Unset the widget.
+							widget = null;
+
+							// Close the executor service.
+							executorService.shutdown();
+							executorService = null;
+						} else {
+							state = ConnectionState.Failed;
+							statusMessage = "The connection failed while disconnecting.";
+						}
+						threadState = state;
+					} finally {
+						connectionLock.unlock();
+					}
+
+					// Notify listeners if the connection disconnected or failed
+					// to disconnect.
+					notifyListeners(threadState, statusMessage);
+				}
+
+				// Return the current state of the connection.
+				return state;
+			}
+		});
 	}
 
 	/**

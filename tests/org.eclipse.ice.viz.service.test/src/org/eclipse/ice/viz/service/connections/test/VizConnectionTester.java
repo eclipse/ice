@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -879,7 +880,6 @@ public class VizConnectionTester {
 	@Test
 	public void checkNotificationsForSuccessfulDisconnect() {
 
-		int size;
 		fakeConnection.failOperation = false;
 
 		// With a successful disconnect, we expect the following state changes:
@@ -896,17 +896,7 @@ public class VizConnectionTester {
 		}
 
 		// ---- Ignore the Connecting and Connected notifications. ---- //
-		assertTrue(fakeListener1.wasNotified());
-		notificationLock.lock();
-		try {
-			size = notificationQueue.size();
-		} finally {
-			notificationLock.unlock();
-		}
-		// If the second notification wasn't received yet, wait for it.
-		if (size != 6) {
-			assertTrue(fakeListener1.wasNotified());
-		}
+		assertTrue(fakeListener1.wasNotified(2));
 		notificationLock.lock();
 		try {
 			assertEquals(6, notificationQueue.size());
@@ -914,6 +904,8 @@ public class VizConnectionTester {
 		} finally {
 			notificationLock.unlock();
 		}
+		// Reset the notified flag.
+		fakeListener1.wasNotified.set(false);
 		// ------------------------------------------------------------ //
 
 		// Disconnect.
@@ -924,6 +916,9 @@ public class VizConnectionTester {
 			fail("VizConnection error: "
 					+ "Failure while performing disconnect operation.");
 		}
+
+		// Wait for the listener to be notified.
+		assertTrue(fakeListener1.wasNotified());
 
 		// Check the "disconnected" status update.
 		notificationLock.lock();
@@ -946,7 +941,6 @@ public class VizConnectionTester {
 	@Test
 	public void checkNotificationsForFailedDisconnect() {
 
-		int size;
 		fakeConnection.failOperation = false;
 
 		// With a failed disconnect, we expect the following state changes:
@@ -963,17 +957,7 @@ public class VizConnectionTester {
 		}
 
 		// ---- Ignore the Connecting and Connected notifications. ---- //
-		assertTrue(fakeListener1.wasNotified());
-		notificationLock.lock();
-		try {
-			size = notificationQueue.size();
-		} finally {
-			notificationLock.unlock();
-		}
-		// If the second notification wasn't received yet, wait for it.
-		if (size != 6) {
-			assertTrue(fakeListener1.wasNotified());
-		}
+		assertTrue(fakeListener1.wasNotified(2));
 		notificationLock.lock();
 		try {
 			assertEquals(6, notificationQueue.size());
@@ -981,6 +965,8 @@ public class VizConnectionTester {
 		} finally {
 			notificationLock.unlock();
 		}
+		// Reset the notified flag.
+		fakeListener1.wasNotified.set(false);
 		// ------------------------------------------------------------ //
 
 		// Set the disconnect operation to fail.
@@ -994,6 +980,9 @@ public class VizConnectionTester {
 			fail("VizConnection error: "
 					+ "Failure while performing disconnect operation.");
 		}
+
+		// Wait for the listener to be notified.
+		assertTrue(fakeListener1.wasNotified());
 
 		// Check the "failed" status update.
 		notificationLock.lock();
@@ -1112,6 +1101,13 @@ public class VizConnectionTester {
 		 */
 		private final AtomicBoolean wasNotified = new AtomicBoolean();
 
+		/**
+		 * The number of times that
+		 * {@link #connectionStateChanged(IVizConnection, ConnectionState, String)}
+		 * was called.
+		 */
+		private final AtomicInteger notifyCount = new AtomicInteger();
+
 		/*
 		 * Implements a method from IVizConnectionListener.
 		 */
@@ -1119,6 +1115,7 @@ public class VizConnectionTester {
 		public void connectionStateChanged(
 				IVizConnection<FakeClient> connection, ConnectionState state,
 				String message) {
+			notifyCount.incrementAndGet();
 			wasNotified.set(true);
 		}
 
@@ -1150,6 +1147,38 @@ public class VizConnectionTester {
 				}
 			}
 			return notified;
+		}
+
+		/**
+		 * Determines if the listener was notified of a connection state change
+		 * a certain number of times.
+		 * <p>
+		 * This will wait for a certain amount of time until either the count is
+		 * reached or a timeout occurs.
+		 * </p>
+		 * 
+		 * @param expectedCount
+		 *            The number of times the listener is expected to be
+		 *            updated.
+		 * @return True if the listener was updated the expected number of
+		 *         times, false otherwise.
+		 */
+		public boolean wasNotified(int expectedCount) {
+
+			long threshold = 3000; // The timeout.
+			long interval = 50; // The time between checks.
+			long time = 0; // The time spent asleep.
+			while (notifyCount.get() < expectedCount && time < threshold) {
+				try {
+					Thread.sleep(interval);
+					time += threshold;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					fail("VizConnection error: "
+							+ "Failure while waiting on listener notification.");
+				}
+			}
+			return notifyCount.get() >= expectedCount;
 		}
 	}
 }
