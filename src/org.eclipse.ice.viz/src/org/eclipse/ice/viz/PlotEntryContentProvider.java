@@ -106,7 +106,7 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 	 *            The IEntryContentProvider to check if this is equal to.
 	 */
 	@Override
-	public boolean equals(IEntryContentProvider otherProvider) {
+	public boolean equals(Object otherProvider) {
 		boolean equal = false;
 
 		if (otherProvider != null
