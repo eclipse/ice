@@ -79,6 +79,11 @@ public class ReflectivityModel extends Model {
 	private static final String WaveLengthEntryName = "Wave Length";
 
 	/**
+	 * The qr4 entry name.
+	 */
+	private static final String QR4EntryName = "QR4";
+
+	/**
 	 * Identification number for the component that contains the parameters.
 	 */
 	public static final int paramsCompId = 1;
@@ -167,6 +172,11 @@ public class ReflectivityModel extends Model {
 					.getComponent(paramsCompId)).retrieveEntry(
 					WaveLengthEntryName).getValue());
 
+			// Get the qr4 parameter
+			String qr4Val = ((DataComponent) form.getComponent(paramsCompId))
+					.retrieveEntry(QR4EntryName).getValue();
+			boolean qr4 = qr4Val.equalsIgnoreCase("true");
+
 			// Get the wave vector from the file picker in the paramters
 			// component.
 			double[] waveVector;
@@ -193,7 +203,7 @@ public class ReflectivityModel extends Model {
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
 			ReflectivityProfile profile = calculator.getReflectivityProfile(
 					slabs.toArray(new Slab[slabs.size()]), numRough, deltaQ0,
-					deltaQ1ByQ, wavelength, waveVector, false);
+					deltaQ1ByQ, wavelength, waveVector, qr4);
 
 			// Get the data from the profile
 			double[] reflectivity = profile.reflectivity;
@@ -228,14 +238,16 @@ public class ReflectivityModel extends Model {
 			// Write the data to the files.
 			try {
 				// First the reflectivity file
-				VizResource reflectSource = (VizResource)resComp.get(0);
-				IFile reflectivityFile = project.getFile(reflectSource.getContents().getName());
+				VizResource reflectSource = (VizResource) resComp.get(0);
+				IFile reflectivityFile = project.getFile(reflectSource
+						.getContents().getName());
 				reflectivityFile.setContents(new BufferedInputStream(
 						reflectStream), true, false, null);
 
 				// Then the scattering density file
-				VizResource scatSource = (VizResource)resComp.get(1);
-				IFile scatteringFile = project.getFile(scatSource.getContents().getName());
+				VizResource scatSource = (VizResource) resComp.get(1);
+				IFile scatteringFile = project.getFile(scatSource.getContents()
+						.getName());
 				scatteringFile.setContents(new BufferedInputStream(scatStream),
 						true, false, null);
 
@@ -370,6 +382,21 @@ public class ReflectivityModel extends Model {
 		waveEntry.setDescription("The wavelength of the neutron stream.");
 		paramComponent.addEntry(waveEntry);
 
+		// Add an entry for the qr4 boolean
+		Entry qr4 = new Entry() {
+			@Override
+			protected void setup() {
+				allowedValueType = AllowedValueType.Discrete;
+				allowedValues.add("True");
+				allowedValues.add("False");
+				return;
+			}
+		};
+		qr4.setId(6);
+		qr4.setName(QR4EntryName);
+		qr4.setDescription("Whether to use QR4.");
+		paramComponent.addEntry(qr4);
+
 		// Configure a list of property names for the materials
 		ArrayList<String> names = new ArrayList<String>();
 		names.add("Material ID");
@@ -412,16 +439,15 @@ public class ReflectivityModel extends Model {
 			IFile scatteringFile = project.getFile(basename + "scdens.csv");
 			try {
 				// Reflectivity first
-				if (reflectivityFile.exists()) {
-					reflectivityFile.delete(true, null);
+				if (!reflectivityFile.exists()) {
+					reflectivityFile.create(stream, true, null);
+					stream.reset();
 				}
-				reflectivityFile.create(stream, true, null);
+
 				// Then the scattering file
-				if (scatteringFile.exists()) {
-					scatteringFile.delete(true, null);
+				if (!scatteringFile.exists()) {
+					scatteringFile.create(stream, true, null);
 				}
-				stream.reset();
-				scatteringFile.create(stream, true, null);
 
 				// Create the VizResource to hold the reflectivity data
 				VizResource reflectivitySource = new VizResource(
@@ -438,7 +464,7 @@ public class ReflectivityModel extends Model {
 				scatDensitySource.setId(2);
 				scatDensitySource.setDescription("Data from Stattering "
 						+ "Density calculation");
-				
+
 				resources.addResource(reflectivitySource);
 				resources.addResource(scatDensitySource);
 			} catch (CoreException | IOException e) {
@@ -567,13 +593,30 @@ public class ReflectivityModel extends Model {
 	@Override
 	public void setupFormWithServices() {
 
+		// Grab the component
+		ListComponent<Material> matList = (ListComponent<Material>) form
+				.getComponent(matListId);
+
+		// Configure a list of property names for the materials
+		ArrayList<String> names = new ArrayList<String>();
+		names.add("Material ID");
+		names.add("Thickness (A)");
+		names.add("Roughness (A)");
+		names.add(Material.SCAT_LENGTH_DENSITY);
+		names.add(Material.MASS_ABS_COHERENT);
+		names.add(Material.MASS_ABS_INCOHERENT);
+		// Create the writable format to be used by the list
+		MaterialWritableTableFormat format = new MaterialWritableTableFormat(
+				names);
+
+		// Set the table format
+		matList.setTableFormat(format);
+		
+
 		// If the materials database is available, register it as the element
 		// provider for the list component of materials on the Form.
 		IMaterialsDatabase database = getMaterialsDatabase();
 		if (database != null) {
-			// Grab the component
-			ListComponent<Material> matList = (ListComponent<Material>) form
-					.getComponent(matListId);
 			// Set the database as an element source
 			matList.setElementSource(database);
 		}
