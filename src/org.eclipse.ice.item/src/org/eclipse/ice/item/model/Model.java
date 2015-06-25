@@ -64,5 +64,17 @@ public class Model extends Item {
 	protected IMaterialsDatabase getMaterialsDatabase() {
 		return materialsDatabase;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#copy(org.eclipse.ice.item.Item)
+	 */
+	@Override
+	public void copy(Item item){
+		super.copy(item);
+		System.out.println("copys");
+		setupFormWithServices();
+		
+	}
 
 }
