@@ -64,17 +64,21 @@ public class Model extends Item {
 	protected IMaterialsDatabase getMaterialsDatabase() {
 		return materialsDatabase;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.Item#copy(org.eclipse.ice.item.Item)
 	 */
 	@Override
-	public void copy(Item item){
+	public void copy(Item item) {
 		super.copy(item);
-		System.out.println("copys");
+		// Call setup Form with services to allow any databases that are used by
+		// various systems to be properly accessed and registered. For example,
+		// some models may need to do this because they use the material
+		// database in a ListComponent.
 		setupFormWithServices();
-		
+
 	}
 
 }
