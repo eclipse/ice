@@ -324,10 +324,8 @@ public class LWRData implements IData {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IData#getPosition()
+	/*
+	 * Implements a method from IData.
 	 */
 	@Override
 	public ArrayList<Double> getPosition() {
@@ -335,10 +333,8 @@ public class LWRData implements IData {
 		return this.position;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IData#getValue()
+	/*
+	 * Implements a method from IData.
 	 */
 	@Override
 	public double getValue() {
@@ -346,10 +342,8 @@ public class LWRData implements IData {
 		return this.value;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IData#getUncertainty()
+	/*
+	 * Implements a method from IData.
 	 */
 	@Override
 	public double getUncertainty() {
@@ -357,10 +351,8 @@ public class LWRData implements IData {
 		return this.uncertainty;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IData#getUnits()
+	/*
+	 * Implements a method from IData.
 	 */
 	@Override
 	public String getUnits() {
@@ -368,10 +360,8 @@ public class LWRData implements IData {
 		return this.units;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IData#getFeature()
+	/*
+	 * Implements a method from IData.
 	 */
 	@Override
 	public String getFeature() {

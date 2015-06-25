@@ -221,9 +221,10 @@ public class JobLauncher extends Item {
 	private Dictionary<String, String> actionDataMap;
 
 	/**
-	 * The set of resources stored in the JobLauncher's working directory, and 
-	 * their last modification time. It may be different than what is returned by
-	 * IResource.getModificationTime(), which is exactly why we are tracking it.
+	 * The set of resources stored in the JobLauncher's working directory, and
+	 * their last modification time. It may be different than what is returned
+	 * by IResource.getModificationTime(), which is exactly why we are tracking
+	 * it.
 	 */
 	@XmlTransient()
 	private HashMap<IResource, Long> workingDirMemberModMap;
@@ -413,10 +414,10 @@ public class JobLauncher extends Item {
 					+ actionDataMap.get("stdOutFileName")
 					+ "\n\tStandard Error File = "
 					+ actionDataMap.get("stdErrFileName"));
-			
+
 			try {
 				// Add the output files to the resource component
-				addOutputFile(1, stdOutProjectFile, "Standard Output", 
+				addOutputFile(1, stdOutProjectFile, "Standard Output",
 						outputData);
 				addOutputFile(2, stdErrProjectFile, "Standard Error Output",
 						outputData);
@@ -448,8 +449,7 @@ public class JobLauncher extends Item {
 		// Local Declarations
 		int lastId;
 		long lastTimeStamp;
-		ResourceComponent resources = 
-				(ResourceComponent) form.getComponent(2);
+		ResourceComponent resources = (ResourceComponent) form.getComponent(2);
 		ArrayList<ICEResource> resourceList = resources.getResources();
 		ArrayList<String> resourceNames = new ArrayList<String>();
 		String fileName, workingDirName;
@@ -459,21 +459,20 @@ public class JobLauncher extends Item {
 		try {
 			// Refresh the project space
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			
+
 			// Get the list of members
 			String workingDirPath = getWorkingDirectory();
 			if (workingDirPath != null && !workingDirPath.isEmpty()) {
-				
+
 				// Get the working directory name
 				int lastDir = workingDirPath.lastIndexOf(separator);
-				workingDirName = workingDirPath.substring(lastDir + 1);	
-				
-				workingDir = 
-						project.getFolder("jobs" + separator + workingDirName);
-				
+				workingDirName = workingDirPath.substring(lastDir + 1);
+
+				workingDir = project.getFolder("jobs" + separator
+						+ workingDirName);
+
 			}
-			
-			
+
 			IResource[] latestMembers = workingDir.members();
 			// Get the names of the current resources
 			for (ICEResource namedResource : resourceList) {
@@ -489,8 +488,8 @@ public class JobLauncher extends Item {
 					System.out.println("JobLauncher Message: " + "Adding file "
 							+ currentResource.getName() + " to list.");
 					// Get the file as an ICEResource object
-					ICEResource resource = getResource(
-							currentResource.getLocation().toOSString());
+					ICEResource resource = getResource(currentResource
+							.getLocation().toOSString());
 					if (resource != null) {
 						// Set the name, ID, description
 						resource.setName(currentResource.getName());
@@ -513,8 +512,8 @@ public class JobLauncher extends Item {
 								+ "Adding file " + currentResource.getName()
 								+ " to list.");
 						// Get the file as an ICEResource
-						ICEResource resource = getResource(
-								currentResource.getLocation().toOSString());
+						ICEResource resource = getResource(currentResource
+								.getLocation().toOSString());
 						if (resource != null) {
 							// Set the name, ID, description
 							resource.setName(currentResource.getName());
@@ -560,7 +559,7 @@ public class JobLauncher extends Item {
 		Entry fileEntry = null, mpiEntry = null;
 		int numProcs = 1, numTBBThreads = 1;
 
-		// Get the project space directory 
+		// Get the project space directory
 		String projectSpace = project.getLocation().toOSString();
 
 		// Assign the data components
@@ -700,15 +699,15 @@ public class JobLauncher extends Item {
 	 *            to the name of the Form.
 	 * @param outputComp
 	 *            The ResourceComponent that contains the data.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private void addOutputFile(int resourceId, IFile file, String resourceName,
 			ResourceComponent outputComp) throws IOException {
-	
+
 		// Get the file as an ICEResource (returns null if invalid filepath)
-		ICEResource outputResource = 
-				this.getResource(file.getLocation().toOSString());
-		
+		ICEResource outputResource = this.getResource(file.getLocation()
+				.toOSString());
+
 		// If the filepath corresponded to a valid resource, we add it to the
 		// ResourceComponent
 		if (outputResource != null) {
@@ -721,7 +720,7 @@ public class JobLauncher extends Item {
 			// Add the ICEResource to the Output component
 			outputComp.addResource(outputResource);
 		}
-		
+
 		return;
 	}
 
@@ -1540,7 +1539,7 @@ public class JobLauncher extends Item {
 
 		return clone;
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation adds a new input file type to the JobLauncher.
@@ -1655,7 +1654,6 @@ public class JobLauncher extends Item {
 	@Override
 	public void reloadProjectData() {
 
-
 		// Local Declarations
 		String name, desc;
 		boolean isFile = false;
@@ -1724,9 +1722,9 @@ public class JobLauncher extends Item {
 
 			// If this is an Entry, cast it
 			Entry entry = (Entry) component;
-			
+
 			// Verify this is the "Input File" Entry and it has a valid value
-			if (entry.getName().equals("Input File") 
+			if (entry.getName().equals("Input File")
 					&& !entry.getValue().isEmpty()) {
 
 				// Get the regex from the subclass
@@ -1749,8 +1747,10 @@ public class JobLauncher extends Item {
 	 * IReader to search the input file for all occurrences of the provided
 	 * regular expression, and return associate File Entries.
 	 * 
-	 * @param file the file to update
-	 * @param regex the regular expression that should be found in the file
+	 * @param file
+	 *            the file to update
+	 * @param regex
+	 *            the regular expression that should be found in the file
 	 */
 	protected void updateFileDependencies(IFile file, String regex) {
 
@@ -1783,7 +1783,7 @@ public class JobLauncher extends Item {
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
 
 		}
-		
+
 		return;
 	}
 
@@ -1792,7 +1792,7 @@ public class JobLauncher extends Item {
 	 * should search for when updating the File Entries representing the file
 	 * dependencies in the main input file.
 	 * 
-	 * @return
+	 * @return A regular expression to search for in the main input file.
 	 */
 	protected String getFileDependenciesSearchString() {
 		return null;

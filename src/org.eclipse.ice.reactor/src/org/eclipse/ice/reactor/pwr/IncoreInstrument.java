@@ -115,9 +115,8 @@ public class IncoreInstrument extends LWRComponent {
 		return this.thimble;
 	}
 
-	/**
-	 * 
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -138,15 +137,8 @@ public class IncoreInstrument extends LWRComponent {
 		return children;
 	}
 
-	/**
-	 * <p>
-	 * This operation returns an ArrayList of IHdfReadable child objects. If
-	 * this IHdfReadable has no IHdfReadable child objects, then null is
-	 * returned.
-	 * </p>
-	 * 
-	 * @param iHdfReadable
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -171,20 +163,8 @@ public class IncoreInstrument extends LWRComponent {
 		return true;
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -214,14 +194,8 @@ public class IncoreInstrument extends LWRComponent {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public int hashCode() {
@@ -262,14 +236,8 @@ public class IncoreInstrument extends LWRComponent {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public Object clone() {
@@ -285,17 +253,8 @@ public class IncoreInstrument extends LWRComponent {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation accepts an ILWRComponentVisitor that can be visit the
-	 * LWRComponent to ascertain its type and perform various type-specific
-	 * operations.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            <p>
-	 *            The visitor
-	 *            </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {
