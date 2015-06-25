@@ -1357,7 +1357,7 @@ public class JobLauncher extends Item {
 	 *         True if the launchers are equal, false if not
 	 *         </p>
 	 */
-	public boolean equals(JobLauncher otherLauncher) {
+	public boolean equals(Object otherLauncher) {
 
 		boolean retVal;
 		// Check if they are the same reference in memory
@@ -1373,48 +1373,47 @@ public class JobLauncher extends Item {
 		}
 
 		// Check data
-		retVal = (this.allowedActions.equals(otherLauncher.allowedActions))
-				&& (this.form.equals(otherLauncher.form))
-				&& (this.itemType == otherLauncher.itemType)
-				&& (this.status.equals(otherLauncher.status))
-				&& (this.mpiEnabled == otherLauncher.mpiEnabled)
-				&& (this.openMPEnabled == otherLauncher.openMPEnabled)
-				&& (this.tbbEnabled == otherLauncher.tbbEnabled)
-				&& (this.hostsTable.equals(otherLauncher.hostsTable))
-				&& (this.hosts.equals(otherLauncher.hosts));
+		JobLauncher launcher = (JobLauncher) otherLauncher;
+		retVal = (this.allowedActions.equals(launcher.allowedActions))
+				&& (this.form.equals(launcher.form))
+				&& (this.itemType == launcher.itemType)
+				&& (this.status.equals(launcher.status))
+				&& (this.mpiEnabled == launcher.mpiEnabled)
+				&& (this.openMPEnabled == launcher.openMPEnabled)
+				&& (this.tbbEnabled == launcher.tbbEnabled)
+				&& (this.hostsTable.equals(launcher.hostsTable))
+				&& (this.hosts.equals(launcher.hosts));
 
 		// Check the remote download directory if it has been configure
 		if (remoteDownloadDir != null) {
 			retVal &= (this.remoteDownloadDir
-					.equals(otherLauncher.remoteDownloadDir));
+					.equals(launcher.remoteDownloadDir));
 		}
 
 		// Check project
-		if (this.project != null && otherLauncher.project != null
-				&& (!(this.project.equals(otherLauncher.project)))) {
+		if (this.project != null && launcher.project != null
+				&& (!(this.project.equals(launcher.project)))) {
 			return false;
-
 		}
 
 		// Check project - set to null
-
-		if (this.project == null && otherLauncher.project != null
-				|| this.project != null && otherLauncher.project == null) {
+		if (this.project == null && launcher.project != null
+				|| this.project != null && launcher.project == null) {
 			return false;
 		}
 
 		// Check executable command name
 		if (this.executableCommandName != null
-				&& otherLauncher.executableCommandName != null
+				&& launcher.executableCommandName != null
 				&& !(this.executableCommandName
-						.equals(otherLauncher.executableCommandName))) {
+						.equals(launcher.executableCommandName))) {
 			return false;
 
 		}
 
 		// Check dictionary
-		if (this.actionDataMap != null && otherLauncher.actionDataMap != null
-				&& (!(this.actionDataMap.equals(otherLauncher.actionDataMap)))) {
+		if (this.actionDataMap != null && launcher.actionDataMap != null
+				&& (!(this.actionDataMap.equals(launcher.actionDataMap)))) {
 			return false;
 		}
 

@@ -54,7 +54,7 @@ public class ReflectivityModelTester implements IMaterialsDatabase {
 
 		// Make sure we have a form and some components
 		assertNotNull(model.getForm());
-		assertEquals(3, model.getForm().getComponents().size());
+		assertEquals(2, model.getForm().getComponents().size());
 
 		// Get the table component
 		list = (ListComponent<Material>) model.getForm().getComponent(ReflectivityModel.matListId);
@@ -67,10 +67,6 @@ public class ReflectivityModelTester implements IMaterialsDatabase {
 		// setupFormWithServices() worked.
 		assertNotNull(list.getElementSource());
 		assertEquals(list.getElementSource(),this);
-		
-		// Make sure the other components in the form are not null.
-		assertNotNull(model.getForm().getComponent(ReflectivityModel.paramsCompId));
-		assertNotNull(model.getForm().getComponent(ReflectivityModel.resourceCompId));
 
 		return;
 	}
