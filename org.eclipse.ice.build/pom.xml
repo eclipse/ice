@@ -11,7 +11,7 @@
 
 	<!-- Custom properties -->
 	<properties>
-		<tycho-version>0.18.1</tycho-version>
+		<tycho-version>0.23.0</tycho-version>
 		<pom-filename>${basedir}/pom.xml</pom-filename>
 	</properties>
 
