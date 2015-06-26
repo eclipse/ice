@@ -12,11 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.widgets;
 
-import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -30,6 +31,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Text;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This class provides a widget with three separate means of selecting times
@@ -198,7 +201,7 @@ public class TimeSliderComposite extends Composite {
 
 		// Load the button image as necessary.
 		if (nextImage == null) {
-			nextImage = loadImage("/nav_forward.gif");
+			nextImage = loadImage("nav_forward.gif");
 		}
 
 		// Set the initial tool tip and image.
@@ -230,10 +233,10 @@ public class TimeSliderComposite extends Composite {
 
 		// Load the play and pause button images as necessary.
 		if (playImage == null) {
-			playImage = loadImage("/nav_go.gif");
+			playImage = loadImage("nav_go.gif");
 		}
 		if (pauseImage == null) {
-			pauseImage = loadImage("/suspend_co.gif");
+			pauseImage = loadImage("suspend_co.gif");
 		}
 
 		// Set the initial tool tip and image.
@@ -270,7 +273,7 @@ public class TimeSliderComposite extends Composite {
 
 		// Load the button image as necessary.
 		if (prevImage == null) {
-			prevImage = loadImage("/nav_backward.gif");
+			prevImage = loadImage("nav_backward.gif");
 		}
 
 		// Set the initial tool tip and image.
@@ -376,8 +379,9 @@ public class TimeSliderComposite extends Composite {
 	 *         loaded.
 	 */
 	private Image loadImage(String name) {
-		InputStream in = TimeSliderComposite.class.getResourceAsStream(name);
-		return new Image(getDisplay(), in);
+		Bundle bundle = FrameworkUtil.getBundle(TimeSliderComposite.class);
+		URL url = bundle.getEntry("icons/" + name);
+		return ImageDescriptor.createFromURL(url).createImage();
 	}
 
 	/*
