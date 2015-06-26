@@ -12,14 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.util.ArrayList;
+
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
+import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import java.util.ArrayList;
-import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 
 /**
  * <p>
@@ -78,10 +79,12 @@ public class EclipseExtraInfoWidget implements IExtraInfoWidget {
 	 * 
 	 * @see IExtraInfoWidget#display()
 	 */
+	@Override
 	public void display() {
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 
 				// Local declarations
@@ -112,6 +115,7 @@ public class EclipseExtraInfoWidget implements IExtraInfoWidget {
 	 * 
 	 * @see IExtraInfoWidget#setForm(Form form)
 	 */
+	@Override
 	public void setForm(Form form) {
 
 		// Set the Form
@@ -126,6 +130,7 @@ public class EclipseExtraInfoWidget implements IExtraInfoWidget {
 	 * 
 	 * @see IExtraInfoWidget#getForm()
 	 */
+	@Override
 	public Form getForm() {
 		return iceForm;
 	}
@@ -135,6 +140,7 @@ public class EclipseExtraInfoWidget implements IExtraInfoWidget {
 	 * 
 	 * @see IExtraInfoWidget#setCloseListener(IWidgetClosedListener listener)
 	 */
+	@Override
 	public void setCloseListener(IWidgetClosedListener listener) {
 
 		// Add the listener if it is not null

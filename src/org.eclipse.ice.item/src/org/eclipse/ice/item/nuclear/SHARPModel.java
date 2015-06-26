@@ -22,20 +22,17 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 
 /**
  * <p>
@@ -116,6 +113,7 @@ public class SHARPModel extends Item {
 	 *         not in the list of available actions.
 	 *         </p>
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 
 		// Local Declarations
@@ -206,6 +204,7 @@ public class SHARPModel extends Item {
 	 * </p>
 	 * 
 	 */
+	@Override
 	protected void setupForm() {
 
 		// Create the Form
@@ -243,6 +242,7 @@ public class SHARPModel extends Item {
 	 * </p>
 	 * 
 	 */
+	@Override
 	protected void setupItemInfo() {
 
 		// Local Declarations

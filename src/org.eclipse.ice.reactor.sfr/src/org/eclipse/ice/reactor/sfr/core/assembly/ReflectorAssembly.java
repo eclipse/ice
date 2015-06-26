@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.core.assembly;
 
+import java.util.ArrayList;
+
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.reactor.sfr.base.GridDataManager;
 import org.eclipse.ice.reactor.sfr.base.ISFRComponentVisitor;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.AssemblyType;
-
-import java.util.ArrayList;
 
 /**
  * <p>
@@ -460,6 +460,7 @@ public class ReflectorAssembly extends SFRAssembly {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -507,6 +508,7 @@ public class ReflectorAssembly extends SFRAssembly {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

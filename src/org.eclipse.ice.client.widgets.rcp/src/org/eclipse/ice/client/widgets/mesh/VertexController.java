@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
@@ -87,16 +87,19 @@ public class VertexController extends AbstractMeshController {
 
 		// ---- Set up the property handlers to sync the view. ---- //
 		properties.put(stateId, new PropertyHandler() {
+			@Override
 			public void syncView() {
 				view.setColor(getState().getColor());
 			}
 		});
 		properties.put(parentNodeId, new PropertyHandler() {
+			@Override
 			public void syncView() {
 				view.setParentNode(getParentNode());
 			}
 		});
 		properties.put(sizeId, new PropertyHandler() {
+			@Override
 			public void syncView() {
 				view.setSize(getSize());
 			}
@@ -104,6 +107,7 @@ public class VertexController extends AbstractMeshController {
 		// The scale and location properties both affect the location of the
 		// vertex view.
 		PropertyHandler locationHandler = new PropertyHandler() {
+			@Override
 			public void syncView() {
 				view.setLocation(getLocation().multLocal(getInverseScale()));
 			}
@@ -272,6 +276,7 @@ public class VertexController extends AbstractMeshController {
 	 * 
 	 * @see AbstractMeshController#syncView()
 	 */
+	@Override
 	public void syncView() {
 		super.syncView();
 

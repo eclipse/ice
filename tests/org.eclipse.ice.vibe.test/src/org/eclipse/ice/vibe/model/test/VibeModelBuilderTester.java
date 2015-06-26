@@ -14,15 +14,7 @@ package org.eclipse.ice.vibe.model.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.vibe.model.VibeModel;
 import org.eclipse.ice.vibe.model.VibeModelBuilder;

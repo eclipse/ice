@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
+import gov.lbnl.visit.swt.VisItSwtConnectionManager;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import gov.lbnl.visit.swt.VisItSwtConnection;
-import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -343,6 +343,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		// composite. If the remote launch or connect to service composites have
 		// been enabled, they will be disabled.
 		localRadio.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				// Change the help text at the top of the dialog
 				setTitle("Launch VisIt on this machine.");
@@ -367,6 +368,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		// composite. If the local launch or connect to service composites have
 		// been enabled, they will be disabled.
 		remoteRadio.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				// Change the help text at the top of the dialog
 				setTitle("Launch VisIt on a remote machine.");
@@ -391,6 +393,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 		// connect to service composite. If the local or remote launch
 		// composites have been enabled, they will be disabled.
 		serviceRadio.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				// Change the help text at the top of the dialog
 				setTitle("Connect to a running VisIt client.");
@@ -861,6 +864,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 			// Add the listener to the Button
 			pathButton.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent event) {
 					// Open the file system exploration dialog
 					DirectoryDialog dialog = new DirectoryDialog(parent.getShell(), SWT.OPEN);
@@ -959,6 +963,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 			// Add a listener for the check button to enable/disable the
 			// adjacent Text based on the button selection
 			portButton.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent event) {
 					if (portButton.getSelection()) {
 						portText.setEnabled(true);
@@ -1047,6 +1052,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 			// Add the listener for the button to allow/disallow the use of a
 			// password
 			passButton.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent event) {
 					if (passButton.getSelection()) {
 						passText.setEnabled(true);
@@ -1204,6 +1210,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 			// Add a listener to enable/disable the Text widgets based on the
 			// check selection
 			gateButton.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent event) {
 					if (gateButton.getSelection()) {
 						urlText.setEnabled(true);

@@ -204,6 +204,7 @@ public class SFRAssembly extends SFRComposite {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -253,6 +254,7 @@ public class SFRAssembly extends SFRComposite {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

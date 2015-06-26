@@ -43,6 +43,7 @@ public class CoreConnectDialog extends Dialog {
 	}
 
 	// Constructs the SWT GUI
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		// Create a composite to position widgets
 		Composite comp = (Composite) super.createDialogArea(parent);
@@ -75,6 +76,7 @@ public class CoreConnectDialog extends Dialog {
 	}
 
 	// Create buttons on the button bar, other than the default OK and Cancel
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
 		// Create Reset All button that resets text boxes to empty
@@ -83,6 +85,7 @@ public class CoreConnectDialog extends Dialog {
 
 	// Called when button is pressed. Performs action corresponding to
 	// specific button
+	@Override
 	protected void buttonPressed(int buttonId) {
 		// If button is Reset All, set the text box text to "" (empty)
 		if (buttonId == RESET_ID) {

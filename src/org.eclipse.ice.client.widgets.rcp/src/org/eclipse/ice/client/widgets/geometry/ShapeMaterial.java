@@ -16,8 +16,6 @@ import org.eclipse.ice.datastructures.form.geometry.IShape;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState.BlendMode;
-import com.jme3.math.ColorRGBA;
 
 /**
  * <p>

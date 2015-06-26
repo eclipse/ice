@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.csv.viewer;
 
-import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.viz.VizFileViewer;
 import java.net.URL;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.viz.VizFileViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;

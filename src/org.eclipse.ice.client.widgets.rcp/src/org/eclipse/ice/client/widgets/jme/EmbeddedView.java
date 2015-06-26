@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or 
+ *      initial documentation
+ *   
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets.jme;
 
 import java.awt.BorderLayout;
@@ -40,31 +52,26 @@ import com.jme3.util.BufferUtils;
  * in the associated jME {@link Application}.
  * <p>
  * Each embedded view comes with the necessary jME components to be rendered in
- * a AWT <code>Frame</code> (which may be embedded within an SWT
- * <code>Composite</code>), although these components are largely hidden from
- * the client <code>AppState</code>
+ * a AWT {@code Frame} (which may be embedded within an SWT {@code Composite}),
+ * although these components are largely hidden from the client {@code AppState}
+ * </p>
  * <ul>
- * <li>An {@link AwtPanel} used to render a scene within an AWT
- * <code>Frame</code></li>
+ * <li>An {@link AwtPanel} used to render a scene within an AWT {@code Frame}</li>
  * <li>A {@link ViewPort} that can be attached to the root of a scene graph.</li>
  * <li>A master {@link Camera} associated with the ViewPort.</li>
  * </ul>
- * </p>
  * <p>
- * To use an <code>EmbeddedView</code>, you must do the following:
+ * To use an {@code EmbeddedView}, you must do the following:
+ * </p>
  * <ol>
- * <li>Instantiate an <code>EmbeddedView</code>.</li>
- * <li>Create an AWT <code>Frame</code> and call
- * {@link #addToEmbeddedFrame(Frame)}.</li>
- * <li>Register an {@link IEmbeddedViewClient} with the
- * <code>EmbeddedView</code> by calling
- * {@link #registerViewClient(IEmbeddedViewClient)}.</li>
+ * <li>Instantiate an {@code EmbeddedView}.</li>
+ * <li>Create an AWT {@code Frame} and call {@link #addToEmbeddedFrame(Frame)}.</li>
+ * <li>Register an {@link IEmbeddedViewClient} with the {@code EmbeddedView} by
+ * calling {@link #registerViewClient(IEmbeddedViewClient)}.</li>
  * </ol>
- * </p>
  * <p>
- * <b>Note:</b> For each <code>EmbeddedView</code>, there can be only one
- * embedded <code>Frame</code> and one registered
- * <code>IEmbeddedViewClient</code> at a time.
+ * <b>Note:</b> For each {@code EmbeddedView}, there can be only one embedded
+ * {@code Frame} and one registered {@code IEmbeddedViewClient} at a time.
  * </p>
  * 
  * @author Jordan
@@ -74,33 +81,31 @@ public class EmbeddedView implements SceneProcessor {
 
 	// ---- Constant properties ---- //
 	/**
-	 * An ID associated with this <code>EmbeddedView</code>. This should be
-	 * unique per <code>EmbeddedView</code> within an {@link Application}.
+	 * An ID associated with this {@code EmbeddedView}. This should be unique
+	 * per {@code EmbeddedView} within an {@link Application}.
 	 */
 	private final int id;
 	/**
-	 * The <code>AwtPanel</code> used to render a jME scene in an AWT
-	 * <code>Frame</code>.
+	 * The {@code AwtPanel} used to render a jME scene in an AWT {@code Frame}.
 	 */
 	private final AwtPanel renderPanel;
 	/**
-	 * The <code>ViewPort</code> associated with this view. Each
-	 * <code>ViewPort</code> can be associated with at least one scene graph,
-	 * although in our case we use at most one attached scene at a time.
+	 * The {@code ViewPort} associated with this view. Each {@code ViewPort} can
+	 * be associated with at least one scene graph, although in our case we use
+	 * at most one attached scene at a time.
 	 */
 	private final ViewPort viewPort;
 	/**
-	 * The <code>ViewPort</code> associated with the scene's GUI or HUD
-	 * {@link Node}.
+	 * The {@code ViewPort} associated with the scene's GUI or HUD {@link Node}.
 	 */
 	private final ViewPort guiViewPort;
 	/**
-	 * A <code>Camera</code> associated with the scene graph's root {@link Node}
-	 * and {@link #viewPort}.
+	 * A {@code Camera} associated with the scene graph's root {@link Node} and
+	 * {@link #viewPort}.
 	 */
 	private final Camera camRenderer;
 	/**
-	 * The <code>Application</code> that is responsible for rendering this view.
+	 * The {@code Application} that is responsible for rendering this view.
 	 */
 	private final Application app;
 
@@ -135,7 +140,7 @@ public class EmbeddedView implements SceneProcessor {
 
 	// ---- Client-dependent properties ---- //
 	/**
-	 * The current client that is using this <code>EmbeddedView</code>. Only one
+	 * The current client that is using this {@code EmbeddedView}. Only one
 	 * client can be used at a time.
 	 */
 	private IEmbeddedViewClient client;
@@ -144,17 +149,16 @@ public class EmbeddedView implements SceneProcessor {
 	 */
 	private Object cam;
 	/**
-	 * The GUI or HUD <code>Node</code> for this particular view. This is stored
-	 * here because the HUD's coordinates must be changed when the
+	 * The GUI or HUD {@code Node} for this particular view. This is stored here
+	 * because the HUD's coordinates must be changed when the
 	 * {@link #renderPanel}'s size changes.
 	 */
 	private Node HUD;
 
 	/**
-	 * The current AWT <code>Frame</code> used to render the
-	 * <code>EmbeddedView</code>. This is an <code>AtomicReference</code>
-	 * because the {@link #resizeThread} uses it to determine if the view is
-	 * currently embedded.
+	 * The current AWT {@code Frame} used to render the {@code EmbeddedView}.
+	 * This is an <code>AtomicReference</code> because the {@link #resizeThread}
+	 * uses it to determine if the view is currently embedded.
 	 */
 	private final AtomicReference<Frame> embeddedFrame;
 
@@ -198,7 +202,7 @@ public class EmbeddedView implements SceneProcessor {
 	 * application!</b>
 	 * 
 	 * @param app
-	 *            The <code>Application</code> responsible for rendering scene
+	 *            The {@code Application} responsible for rendering scene
 	 *            graphs.
 	 * @param id
 	 *            The unique ID of this view.
@@ -302,8 +306,8 @@ public class EmbeddedView implements SceneProcessor {
 
 	/**
 	 * Registers or configures an {@link IEmbeddedViewClient} for this
-	 * <code>EmbeddedView</code>. Each <code>EmbeddedView</code> can be
-	 * registered with one client at a time.
+	 * {@code EmbeddedView}. Each {@code EmbeddedView} can be registered with
+	 * one client at a time.
 	 * 
 	 * @param newClient
 	 *            The client that will be using this view.
@@ -320,6 +324,7 @@ public class EmbeddedView implements SceneProcessor {
 
 			// The below operations must be performed on the render thread.
 			app.enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 
 					// Attach the scene root to the main ViewPort.
@@ -353,8 +358,8 @@ public class EmbeddedView implements SceneProcessor {
 	}
 
 	/**
-	 * Unregisters an {@link IEmbeddedViewClient} from this
-	 * <code>EmbeddedView</code>.
+	 * Unregisters an {@link IEmbeddedViewClient} from this {@code EmbeddedView}
+	 * .
 	 * 
 	 * @param oldClient
 	 *            The client that will no longer be using this view.
@@ -379,6 +384,7 @@ public class EmbeddedView implements SceneProcessor {
 
 			// The below operations must be performed on the render thread.
 			app.enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 					// Detach the scene root from the main ViewPort.
 					viewPort.detachScene(client.getSceneRoot(view));
@@ -404,16 +410,15 @@ public class EmbeddedView implements SceneProcessor {
 	}
 
 	/**
-	 * Adds this view to an AWT <code>Frame</code> to be rendered in an AWT- or
-	 * SWT-based program. <b>Note:</b> A single <code>EmbeddedView</code> cannot
-	 * be added to multiple <code>Frame</code>s at this time.
+	 * Adds this view to an AWT {@code Frame} to be rendered in an AWT- or
+	 * SWT-based program. <b>Note:</b> A single {@code EmbeddedView} cannot be
+	 * added to multiple {@code Frame}s at this time.
 	 * 
 	 * @param embeddedFrame
-	 *            The AWT <code>Frame</code> in which to render this jME-based
-	 *            view. If null or if the embedded <code>Frame</code> is already
-	 *            configured, this operation does nothing. <b>The
-	 *            <code>Frame</code> is expected to have a default
-	 *            {@link BorderLayout}</b>
+	 *            The AWT {@code Frame} in which to render this jME-based view.
+	 *            If null or if the embedded {@code Frame} is already
+	 *            configured, this operation does nothing. <b>The {@code Frame}
+	 *            is expected to have a default {@link BorderLayout}</b>
 	 */
 	public void addToEmbeddedFrame(Frame embeddedFrame) {
 
@@ -452,10 +457,9 @@ public class EmbeddedView implements SceneProcessor {
 	}
 
 	/**
-	 * Removes this view from its current AWT <code>Frame</code>. After this
-	 * operation, the view can be added to a different <code>Frame</code>. If a
-	 * <code>Frame</code> is not already configured, this operation does
-	 * nothing.
+	 * Removes this view from its current AWT {@code Frame}. After this
+	 * operation, the view can be added to a different {@code Frame}. If a
+	 * {@code Frame} is not already configured, this operation does nothing.
 	 */
 	public void removeFromEmbeddedFrame() {
 
@@ -479,7 +483,7 @@ public class EmbeddedView implements SceneProcessor {
 	}
 
 	/**
-	 * Disposes any resources associated with the <code>EmbeddedView</code>.
+	 * Disposes any resources associated with the {@code EmbeddedView}.
 	 */
 	public void dispose() {
 		// TODO At the moment, the only thing we can do to "dispose" each
@@ -490,7 +494,7 @@ public class EmbeddedView implements SceneProcessor {
 
 	// ---- Getters and Setters ---- //
 	/**
-	 * Gets the unique ID associated with this <code>EmbeddedView</code>.
+	 * Gets the unique ID associated with this {@code EmbeddedView}.
 	 * 
 	 * @return The view's String ID.
 	 */
@@ -499,7 +503,7 @@ public class EmbeddedView implements SceneProcessor {
 	}
 
 	/**
-	 * Gets the <code>Camera</code> associated with the scene graph's root
+	 * Gets the {@code Camera} associated with the scene graph's root
 	 * {@link Node} and {@link #viewPort}. This is useful for initializing
 	 * custom cameras for a particular scene graph.
 	 * 
@@ -511,8 +515,8 @@ public class EmbeddedView implements SceneProcessor {
 
 	/**
 	 * Gets the interactive camera currently associated with this
-	 * <code>EmbeddedView</code>. This is the component that is registered with
-	 * the {@link InputManager} for the rendering {@link Application}.
+	 * {@code EmbeddedView}. This is the component that is registered with the
+	 * {@link InputManager} for the rendering {@link Application}.
 	 * 
 	 * @return The current interactive camera.
 	 */
@@ -521,10 +525,10 @@ public class EmbeddedView implements SceneProcessor {
 	}
 
 	/**
-	 * Gets the GUI/HUD <code>Node</code> currently associated with this
-	 * <code>EmbeddedView</code>.
+	 * Gets the GUI/HUD {@code Node} currently associated with this
+	 * {@code EmbeddedView}.
 	 * 
-	 * @return The current HUD <code>Node</code>.
+	 * @return The current HUD {@code Node}.
 	 */
 	public Node getHUD() {
 		return HUD;
@@ -534,8 +538,8 @@ public class EmbeddedView implements SceneProcessor {
 
 	/**
 	 * This operation is used to clean up any resources in case a programmer was
-	 * lazy or uninformed and forgot to clean up the <code>EmbeddedView</code>
-	 * before releasing it for re-use.
+	 * lazy or uninformed and forgot to clean up the {@code EmbeddedView} before
+	 * releasing it for re-use.
 	 */
 	protected void cleanupView() {
 
@@ -564,22 +568,22 @@ public class EmbeddedView implements SceneProcessor {
 	}
 
 	/**
-	 * Gets the {@link AwtPanel} used to render this <code>EmbeddedView</code>.
+	 * Gets the {@link AwtPanel} used to render this {@code EmbeddedView}.
 	 * 
-	 * @return The <code>AwtPanel</code> used to render a jME scene in an AWT
-	 *         <code>Frame</code>.
+	 * @return The {@code AwtPanel} used to render a jME scene in an AWT
+	 *         {@code Frame}.
 	 */
 	protected AwtPanel getRenderPanel() {
 		return renderPanel;
 	}
 
 	/**
-	 * Creates a <code>Thread</code> that loops while the {@link #renderPanel}
-	 * is embedded inside the {@link #embeddedFrame} and handles all of the
-	 * panel's resize events written to {@link #resizeEvent}. It pauses for a
-	 * period before processing each resize event and does not process the next
-	 * one until the render thread responds that the previous notification has
-	 * been processed. The resize events are sent to the client.
+	 * Creates a {@code Thread} that loops while the {@link #renderPanel} is
+	 * embedded inside the {@link #embeddedFrame} and handles all of the panel's
+	 * resize events written to {@link #resizeEvent}. It pauses for a period
+	 * before processing each resize event and does not process the next one
+	 * until the render thread responds that the previous notification has been
+	 * processed. The resize events are sent to the client.
 	 * 
 	 * @return A new thread that throttles the resize events received by
 	 *         {@link #componentListener}.

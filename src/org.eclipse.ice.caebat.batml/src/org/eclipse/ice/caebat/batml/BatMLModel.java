@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Alex McCaskey (UT-Battelle, LLC.) - initial API and implementation and/or 
+ *      initial documentation
+ *    Jay Jay Billings (UT-Battelle, LLC.) - fixed class author tag
+ *    Jordan Deyton (UT-Battelle, LLC.) - UML doc cleanup
+ *******************************************************************************/
 package org.eclipse.ice.caebat.batml;
 
 import java.io.File;
@@ -90,6 +103,7 @@ public class BatMLModel extends Item {
 	 * 
 	 * 
 	 */
+	@Override
 	protected void setupForm() {
 
 		// Create the Form
@@ -152,6 +166,7 @@ public class BatMLModel extends Item {
 	 * </p>
 	 * 
 	 */
+	@Override
 	protected void setupItemInfo() {
 
 		// Local Declarations
@@ -177,6 +192,7 @@ public class BatMLModel extends Item {
 	 *            The form prepared for review.
 	 * @return The Form's status if the review was successful or not.
 	 */
+	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
 		return super.reviewEntries(preparedForm);
 	}

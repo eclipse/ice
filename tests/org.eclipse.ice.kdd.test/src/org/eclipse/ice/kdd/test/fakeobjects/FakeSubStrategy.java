@@ -35,6 +35,7 @@ public class FakeSubStrategy extends GodfreySubStrategy {
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean executeStrategy() {
 		try {
 			uri = new URI("temp.txt");

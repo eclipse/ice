@@ -26,24 +26,22 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.eclipse.core.resources.IFile;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
-
-import java.util.Map;
-
-import javax.naming.OperationNotSupportedException;
-
 import org.yaml.snakeyaml.Yaml;
 
 /**

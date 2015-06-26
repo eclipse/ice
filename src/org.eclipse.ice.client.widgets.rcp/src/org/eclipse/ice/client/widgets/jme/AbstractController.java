@@ -6,9 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or 
+ *      initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.jme;
 
@@ -67,6 +67,7 @@ public abstract class AbstractController implements IUpdateableListener {
 	 * The current parent node for the {@link #view}.
 	 */
 	private Node parentNode;
+
 	// ----------------------- //
 
 	/**
@@ -136,6 +137,7 @@ public abstract class AbstractController implements IUpdateableListener {
 			// view to the new parent.
 			if (!disposed.get()) {
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						view.setParentNode(parentNode);
 						return true;
@@ -162,6 +164,7 @@ public abstract class AbstractController implements IUpdateableListener {
 
 			// Add a new update action to remove the view.
 			renderQueue.enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 					view.dispose();
 					return true;
@@ -175,6 +178,7 @@ public abstract class AbstractController implements IUpdateableListener {
 	/**
 	 * Updates the controller and/or view if the {@link #model} has changed.
 	 */
+	@Override
 	public abstract void update(IUpdateable component);
 
 }

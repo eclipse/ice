@@ -117,6 +117,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	 * This operation fakes out Jsch's keyboard interactive check and gives it
 	 * the stored password.
 	 */
+	@Override
 	public String[] promptKeyboardInteractive(String destination, String name,
 			String instruction, String[] prompt, boolean[] echo) {
 
@@ -142,6 +143,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	 * 
 	 * @see UserInfo#getPassphrase()
 	 */
+	@Override
 	public String getPassphrase() {
 		return null;
 	}
@@ -151,6 +153,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	 * 
 	 * @see UserInfo#getPassword()
 	 */
+	@Override
 	public String getPassword() {
 
 		// Local Declarations
@@ -174,6 +177,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	 * 
 	 * @see UserInfo#promptPassword(String message)
 	 */
+	@Override
 	public boolean promptPassword(String message) {
 
 		// Local Declarations
@@ -201,6 +205,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	 * 
 	 * @see UserInfo#promptPassphrase(String message)
 	 */
+	@Override
 	public boolean promptPassphrase(String message) {
 		return true;
 	}
@@ -210,6 +215,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	 * 
 	 * @see UserInfo#promptYesNo(String message)
 	 */
+	@Override
 	public boolean promptYesNo(String message) {
 		return false;
 	}
@@ -219,6 +225,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 	 * 
 	 * @see UserInfo#showMessage(String message)
 	 */
+	@Override
 	public void showMessage(String message) {
 		// TODO Auto-generated method stub
 

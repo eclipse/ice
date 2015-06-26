@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.item;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
 import org.eclipse.ice.datastructures.form.Entry;
 
 /**

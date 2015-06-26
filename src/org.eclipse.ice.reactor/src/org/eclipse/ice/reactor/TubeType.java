@@ -100,6 +100,7 @@ public enum TubeType {
 	 *         The name of the enumerated value.
 	 *         </p>
 	 */
+	@Override
 	public String toString() {
 
 		return this.name;

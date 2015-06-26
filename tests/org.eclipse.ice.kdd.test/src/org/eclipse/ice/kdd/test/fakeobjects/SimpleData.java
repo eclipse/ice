@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.test.fakeobjects;
 
-import org.eclipse.ice.analysistool.IData;
-import java.util.Set;
 import java.util.ArrayList;
+
+import org.eclipse.ice.analysistool.IData;
 
 /**
  * <p>
@@ -120,6 +120,7 @@ public class SimpleData implements IData {
 	 * 
 	 * @see IData#getPosition()
 	 */
+	@Override
 	public ArrayList<Double> getPosition() {
 		return position;
 	}
@@ -129,6 +130,7 @@ public class SimpleData implements IData {
 	 * 
 	 * @see IData#getValue()
 	 */
+	@Override
 	public double getValue() {
 		return value;
 	}
@@ -138,6 +140,7 @@ public class SimpleData implements IData {
 	 * 
 	 * @see IData#getUncertainty()
 	 */
+	@Override
 	public double getUncertainty() {
 		return uncertainty;
 	}
@@ -147,6 +150,7 @@ public class SimpleData implements IData {
 	 * 
 	 * @see IData#getUnits()
 	 */
+	@Override
 	public String getUnits() {
 		return units;
 	}
@@ -156,6 +160,7 @@ public class SimpleData implements IData {
 	 * 
 	 * @see IData#getFeature()
 	 */
+	@Override
 	public String getFeature() {
 		return feature;
 	}

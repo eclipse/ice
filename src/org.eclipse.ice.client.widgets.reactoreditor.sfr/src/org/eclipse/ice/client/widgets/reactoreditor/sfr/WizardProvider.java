@@ -12,10 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
-import org.eclipse.jface.wizard.IWizard;
-
 import org.eclipse.ice.client.widgets.reactoreditor.IWizardProvider;
-
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.reactor.sfr.base.ISFRComponentVisitor;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
@@ -28,6 +25,7 @@ import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRAssembly;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
+import org.eclipse.jface.wizard.IWizard;
 
 /**
  * @author Taylor Patterson

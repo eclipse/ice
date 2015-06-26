@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.materials.IMaterialsDatabase;
+import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This is a content provider that reads an IMaterialsDatabase and lists the
@@ -80,7 +80,10 @@ public class MaterialsDatabaseContentProvider implements ITreeContentProvider {
 		
 		// This changes depending on whether it is the initial input or one of
 		// the Materials under it
-		if (parentElement instanceof Material) {
+		if(parentElement instanceof MaterialStack){
+			Material material = ((MaterialStack)parentElement).getMaterial();
+			retVal = material.getComponents().toArray();
+		} else if (parentElement instanceof Material) {
 			Material material = (Material) parentElement;
 			// Only return the children of this Material
 			retVal = material.getComponents().toArray();
@@ -115,9 +118,14 @@ public class MaterialsDatabaseContentProvider implements ITreeContentProvider {
 		
 		// This changes depending on whether it is the initial input or one of
 		// the Materials under it
+		if (element instanceof MaterialStack){
+			Material material = ((MaterialStack)element).getMaterial();
+			List<MaterialStack> children = material.getComponents();
+			retVal = !children.isEmpty();
+		}
 		if (element instanceof Material) {
 			Material material = (Material) element;
-			List<Material> children = material.getComponents();
+			List<MaterialStack> children = material.getComponents();
 			retVal = !children.isEmpty();
 		} else if (element instanceof ArrayList<?>) {
 			ArrayList<Material> materials = (ArrayList<Material>) element;

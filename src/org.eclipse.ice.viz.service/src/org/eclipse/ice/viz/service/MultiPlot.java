@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
+ *    Jay Jay Billings (UT-Battelle, LLC.) - moved IPlot
+ *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
 import java.io.IOException;
@@ -17,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
  * interface.
  * <p>
  * For client code that will be drawing these plots, do the following:
+ * </p>
  * <ol>
  * <li>Call {@link #draw(String, String, Composite)} with a {@code Composite}
  * and any category and type. This renders (if possible) a plot inside the
@@ -29,15 +41,14 @@ import org.eclipse.swt.widgets.Composite;
  * {@code Composite} based on the specified plot category and type. <i>You now
  * have two separate renderings based on the same {@code IPlot}.</i></li>
  * </ol>
- * </p>
  * <p>
  * Sub-classes should override the following methods so that the correct
  * {@link PlotRender} is created and updated properly:
+ * </p>
  * <ol>
  * <li>{@link #createPlotRender(Composite)}</li>
  * <li>{@link #updatePlotRender(PlotRender)}</li>
  * </ol>
- * </p>
  * 
  * @author Jordan
  *
@@ -136,6 +147,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
 	 */
+	@Override
 	public Map<String, String[]> getPlotTypes() throws Exception {
 		// If necessary, re-build the cache of plot types.
 		if (plotTypes == null) {
@@ -152,6 +164,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
 	 */
+	@Override
 	public int getNumberOfAxes() {
 		return 0;
 	}
@@ -193,6 +206,7 @@ public abstract class MultiPlot implements IPlot {
 	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getSourceHost()
 	 */
+	@Override
 	public String getSourceHost() {
 		return source.getHost();
 	}

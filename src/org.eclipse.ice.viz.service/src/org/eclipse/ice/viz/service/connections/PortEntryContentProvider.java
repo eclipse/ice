@@ -101,6 +101,7 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 	 * @param max
 	 *            The maximum port. Must be greater than or equal to min and
 	 *            between {@link #MIN_PORT} and {@link #MAX_PORT}.
+	 * @return True if the value changed, false otherwise.
 	 */
 	public boolean setRange(int min, int max) {
 		boolean changed = false;

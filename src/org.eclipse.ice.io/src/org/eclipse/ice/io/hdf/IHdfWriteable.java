@@ -12,9 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.io.hdf;
 
+import java.util.ArrayList;
+
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
-import java.util.ArrayList;
 
 /**
  * <p>

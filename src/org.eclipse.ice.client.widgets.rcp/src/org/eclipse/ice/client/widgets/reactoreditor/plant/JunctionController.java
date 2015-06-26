@@ -201,12 +201,15 @@ public class JunctionController extends AbstractPlantController implements
 
 				PlantControllerVisitor visitor = new PlantControllerVisitor() {
 					// Junctions do not connect Junctions or Reactors.
+					@Override
 					public void visit(Junction plantComp) {
 					}
 
+					@Override
 					public void visit(Reactor plantComp) {
 					}
 
+					@Override
 					public void visit(HeatExchanger plantComp) {
 						// If a secondary pipe was updated and changing it
 						// changed the bounds of the junction, we should update
@@ -216,6 +219,7 @@ public class JunctionController extends AbstractPlantController implements
 						}
 					}
 
+					@Override
 					public void visit(Pipe plantComp) {
 						// If we updated a primary pipe and the bounds change,
 						// we need to update the secondary pipes.
@@ -241,6 +245,7 @@ public class JunctionController extends AbstractPlantController implements
 				// with the mesh.
 				if (boundsChanged.get()) {
 					renderQueue.enqueue(new Callable<Boolean>() {
+						@Override
 						public Boolean call() {
 							view.refreshMesh();
 							return true;
@@ -261,6 +266,7 @@ public class JunctionController extends AbstractPlantController implements
 	 * org.eclipse.ice.reactor.plant.IJunctionListener#addedPipes(org.eclipse
 	 * .ice .reactor.plant.IJunction, java.util.List)
 	 */
+	@Override
 	public void addedPipes(IJunction junction, List<PlantComponent> addedPipes) {
 		// This method needs to add PipeInfos for the added Pipes and update the
 		// view based on the available controllers for the added pipes. It also
@@ -308,6 +314,7 @@ public class JunctionController extends AbstractPlantController implements
 			// the mesh.
 			if (boundsChanged) {
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						view.refreshMesh();
 						return true;
@@ -326,6 +333,7 @@ public class JunctionController extends AbstractPlantController implements
 	 * org.eclipse.ice.reactor.plant.IJunctionListener#removedPipes(org.eclipse
 	 * .ice .reactor.plant.IJunction, java.util.List)
 	 */
+	@Override
 	public void removedPipes(IJunction junction,
 			List<PlantComponent> removedPipes) {
 		// This method needs to remove the PipeInfos associated with the removed
@@ -342,16 +350,20 @@ public class JunctionController extends AbstractPlantController implements
 			// pipe IDs.
 			PlantControllerVisitor visitor = new PlantControllerVisitor() {
 				// Junctions do not connect Junctions or Reactors.
+				@Override
 				public void visit(Junction plantComp) {
 				}
 
+				@Override
 				public void visit(Reactor plantComp) {
 				}
 
+				@Override
 				public void visit(HeatExchanger plantComp) {
 					secondaryPipes.remove(plantComp.getId());
 				}
 
+				@Override
 				public void visit(Pipe plantComp) {
 					ids.add(plantComp.getId());
 				}
@@ -394,6 +406,7 @@ public class JunctionController extends AbstractPlantController implements
 			// the mesh.
 			if (boundsChanged) {
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						view.refreshMesh();
 						return true;
@@ -462,12 +475,15 @@ public class JunctionController extends AbstractPlantController implements
 		// Create a visitor for adding Pipes and HeatExchangers to the inputs.
 		PlantControllerVisitor visitor = new PlantControllerVisitor() {
 			// Junctions do not connect Junctions or Reactors.
+			@Override
 			public void visit(Junction plantComp) {
 			}
 
+			@Override
 			public void visit(Reactor plantComp) {
 			}
 
+			@Override
 			public void visit(HeatExchanger plantComp) {
 				// Get the ID and controller for the component.
 				int id = plantComp.getId();
@@ -484,6 +500,7 @@ public class JunctionController extends AbstractPlantController implements
 				plantComp.register(JunctionController.this);
 			}
 
+			@Override
 			public void visit(Pipe plantComp) {
 				// Get the ID and controller for the component.
 				int id = plantComp.getId();
@@ -517,12 +534,15 @@ public class JunctionController extends AbstractPlantController implements
 		// Create a visitor for adding Pipes and HeatExchangers to the outputs.
 		visitor = new PlantControllerVisitor() {
 			// Junctions do not connect Junctions or Reactors.
+			@Override
 			public void visit(Junction plantComp) {
 			}
 
+			@Override
 			public void visit(Reactor plantComp) {
 			}
 
+			@Override
 			public void visit(HeatExchanger plantComp) {
 				// Get the ID and controller for the component.
 				int id = plantComp.getId();
@@ -539,6 +559,7 @@ public class JunctionController extends AbstractPlantController implements
 				plantComp.register(JunctionController.this);
 			}
 
+			@Override
 			public void visit(Pipe plantComp) {
 				// Get the ID and controller for the component.
 				int id = plantComp.getId();
@@ -580,6 +601,7 @@ public class JunctionController extends AbstractPlantController implements
 	 * org.eclipse
 	 * .ice.client.widgets.reactoreditor.plant.AbstractPlantController)
 	 */
+	@Override
 	public void addedController(PlantComponent component,
 			AbstractPlantController controller) {
 		// This method needs to add the controller to its component's PipeInfo.
@@ -601,12 +623,15 @@ public class JunctionController extends AbstractPlantController implements
 				// in the map instead of the HeatExchanger itself.
 				PlantControllerVisitor visitor = new PlantControllerVisitor() {
 					// Junctions do not connect Junctions or Reactors.
+					@Override
 					public void visit(Junction plantComp) {
 					}
 
+					@Override
 					public void visit(Reactor plantComp) {
 					}
 
+					@Override
 					public void visit(HeatExchanger plantComp) {
 						if (info.pipe == plantComp) {
 							System.out.println("HeatExchanger found");
@@ -618,6 +643,7 @@ public class JunctionController extends AbstractPlantController implements
 						}
 					}
 
+					@Override
 					public void visit(Pipe plantComp) {
 						if (info.pipe == plantComp) {
 							wrapper.component = plantComp;
@@ -637,12 +663,15 @@ public class JunctionController extends AbstractPlantController implements
 				// is necessary. We only handle Pipes and HeatExchangers.
 				PlantControllerVisitor visitor = new PlantControllerVisitor() {
 					// Junctions do not connect Junctions or Reactors.
+					@Override
 					public void visit(Junction plantComp) {
 					}
 
+					@Override
 					public void visit(Reactor plantComp) {
 					}
 
+					@Override
 					public void visit(HeatExchanger plantComp) {
 						// HeatExchangers are considered secondary connections.
 						// Update the secondary connections for the view.
@@ -650,6 +679,7 @@ public class JunctionController extends AbstractPlantController implements
 						boundsChanged.set(view.setSecondaryPipes(boxes));
 					}
 
+					@Override
 					public void visit(Pipe plantComp) {
 						// Pipes are considered primary connections.
 						List<Integer> ids = new ArrayList<Integer>(1);
@@ -681,6 +711,7 @@ public class JunctionController extends AbstractPlantController implements
 			// the mesh.
 			if (boundsChanged.get()) {
 				renderQueue.enqueue(new Callable<Boolean>() {
+					@Override
 					public Boolean call() {
 						view.refreshMesh();
 						return true;
@@ -699,6 +730,7 @@ public class JunctionController extends AbstractPlantController implements
 	 * IPlantControllerManagerListener
 	 * #removedController(org.eclipse.ice.reactor.plant.PlantComponent)
 	 */
+	@Override
 	public void removedController(PlantComponent component) {
 		// This method needs to get the component's PipeInfo and set its
 		// controller to be null. It should also update the view by telling it
@@ -720,12 +752,15 @@ public class JunctionController extends AbstractPlantController implements
 				// is necessary. We only handle Pipes and HeatExchangers.
 				PlantControllerVisitor visitor = new PlantControllerVisitor() {
 					// Junctions do not connect Junctions or Reactors.
+					@Override
 					public void visit(Junction plantComp) {
 					}
 
+					@Override
 					public void visit(Reactor plantComp) {
 					}
 
+					@Override
 					public void visit(HeatExchanger plantComp) {
 						// HeatExchangers are considered secondary connections.
 						// Update the secondary connections for the view.
@@ -734,6 +769,7 @@ public class JunctionController extends AbstractPlantController implements
 						boundsChanged.set(changed);
 					}
 
+					@Override
 					public void visit(Pipe plantComp) {
 						// Pipes are considered primary connections.
 						List<Integer> ids = new ArrayList<Integer>(1);
@@ -757,6 +793,7 @@ public class JunctionController extends AbstractPlantController implements
 				// with the mesh.
 				if (boundsChanged.get()) {
 					renderQueue.enqueue(new Callable<Boolean>() {
+						@Override
 						public Boolean call() {
 							view.refreshMesh();
 							return true;

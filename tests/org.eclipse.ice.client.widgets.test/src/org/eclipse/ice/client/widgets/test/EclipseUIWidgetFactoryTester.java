@@ -12,9 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.client.widgets.EclipseErrorBoxWidget;
 import org.eclipse.ice.client.widgets.EclipseExtraInfoWidget;
@@ -28,6 +27,7 @@ import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
+import org.junit.Test;
 
 /**
  * <p>

@@ -146,6 +146,7 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 	 * org.eclipse.ice.viz.service.connections.IConnectionClient#setConnection
 	 * (org.eclipse.ice.viz.service.connections.IConnectionAdapter)
 	 */
+	@Override
 	public void setConnectionAdapter(IConnectionAdapter<T> adapter) {
 		if (adapter != this.adapter) {
 			if (this.adapter != null) {

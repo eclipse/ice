@@ -14,11 +14,11 @@ package org.eclipse.ice.item.geometry;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
-import org.eclipse.core.resources.IProject;
 
 /**
  * <p>
@@ -77,6 +77,7 @@ public class GeometryEditor extends Item {
 	 * </p>
 	 * 
 	 */
+	@Override
 	protected void setupForm() {
 
 		// Set the name, description and type

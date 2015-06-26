@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import java.io.InputStream;
 
 /**
  * <p>
@@ -55,6 +54,7 @@ public class PipeWithHeatStructure extends Pipe {
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Super's equals will take care of this.
@@ -71,6 +71,7 @@ public class PipeWithHeatStructure extends Pipe {
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.
@@ -108,6 +109,7 @@ public class PipeWithHeatStructure extends Pipe {
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Super's hashCode takes care of this.
@@ -125,6 +127,7 @@ public class PipeWithHeatStructure extends Pipe {
 	 *            The PlantComponent's visitor.
 	 *            </p>
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 
 		// Only accept valid visitors.

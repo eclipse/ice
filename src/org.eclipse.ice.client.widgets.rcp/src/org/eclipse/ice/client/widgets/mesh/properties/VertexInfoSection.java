@@ -15,10 +15,6 @@ package org.eclipse.ice.client.widgets.mesh.properties;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.Hex;
@@ -29,6 +25,10 @@ import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
 import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.views.properties.tabbed.ISection;
 
 /**
  * This class provides an {@link ISection} for displaying the information of a
@@ -99,10 +99,12 @@ public class VertexInfoSection extends GeneralInfoSection {
 			// instance whose properties are being exposed based on the type of
 			// IMeshPart passed in through the selection.
 			IMeshPartVisitor visitor = new IMeshPartVisitor() {
+				@Override
 				public void visit(MeshComponent mesh) {
 					// Do nothing.
 				}
 
+				@Override
 				public void visit(Polygon polygon) {
 					// Get the vertex from the polygon.
 					ArrayList<Vertex> vertices = polygon.getVertices();
@@ -111,16 +113,19 @@ public class VertexInfoSection extends GeneralInfoSection {
 					}
 				}
 
+				@Override
 				public void visit(Quad quad) {
 					// Re-direct to the standard polygon operation for now.
 					visit((Polygon) quad);
 				}
 
+				@Override
 				public void visit(Hex hex) {
 					// Re-direct to the standard polygon operation for now.
 					visit((Polygon) hex);
 				}
 
+				@Override
 				public void visit(Edge edge) {
 					// Get the vertex ID from the edge, then use the ID to get
 					// the vertex from the mesh.
@@ -130,20 +135,24 @@ public class VertexInfoSection extends GeneralInfoSection {
 					}
 				}
 
+				@Override
 				public void visit(BezierEdge edge) {
 					// Re-direct to the standard edge operation for now.
 					visit((Edge) edge);
 				}
 
+				@Override
 				public void visit(PolynomialEdge edge) {
 					// Re-direct to the standard edge operation for now.
 					visit((Edge) edge);
 				}
 
+				@Override
 				public void visit(Vertex vertex) {
 					object = vertex;
 				}
 
+				@Override
 				public void visit(Object object) {
 					// Do nothing.
 				}

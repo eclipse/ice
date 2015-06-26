@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form.painfullySimpleForm;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.Entry;
 
 /**
  * <p>

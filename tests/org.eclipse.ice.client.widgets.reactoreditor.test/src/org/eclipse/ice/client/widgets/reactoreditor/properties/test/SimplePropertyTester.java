@@ -13,8 +13,8 @@
 package org.eclipse.ice.client.widgets.reactoreditor.properties.test;
 
 import static org.junit.Assert.assertEquals;
-import org.eclipse.ice.client.widgets.reactoreditor.properties.SimpleProperty;
 
+import org.eclipse.ice.client.widgets.reactoreditor.properties.SimpleProperty;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.junit.Test;
 

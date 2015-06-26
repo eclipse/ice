@@ -152,6 +152,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * @param container
 	 *            The Composite containing this IAnalysisView.
 	 */
+	@Override
 	public void createViewContent(Composite container) {
 		System.out.println("AnalysisView message: Creating view contents.");
 
@@ -166,6 +167,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * 
 	 * @return The IAnalysisView's name.
 	 */
+	@Override
 	public String getName() {
 		return "Analysis View";
 	}
@@ -176,6 +178,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * 
 	 * @return The IAnalysisView's description.
 	 */
+	@Override
 	public String getDescription() {
 		return "A generic view for analysis.";
 	}
@@ -186,6 +189,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * 
 	 * @return The IAnalysisView's main content Composite.
 	 */
+	@Override
 	public Composite getComposite() {
 		return container;
 	}
@@ -197,6 +201,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * @param toolBar
 	 *            The ToolBar to fill with ToolItems.
 	 */
+	@Override
 	public void getToolBarContributions(ToolBar toolBar) {
 		System.out
 				.println("AnalysisView message: Populating provided ToolBar.");
@@ -222,6 +227,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * @param value
 	 *            The data object.
 	 */
+	@Override
 	public void setData(String key, Object value) {
 		return;
 	}
@@ -229,6 +235,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	/**
 	 * Disposes of any resources unique to this IAnalysisView.
 	 */
+	@Override
 	public void dispose() {
 
 		// Unregister from the broker.
@@ -263,6 +270,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * Sets the ISelectionProvider used to display properties in the Properties
 	 * View.
 	 */
+	@Override
 	public void setSelectionProvider(ISelectionProvider selectionProvider) {
 		this.selectionProvider = selectionProvider;
 	}
@@ -275,6 +283,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * unregister keys from the previous broker and register them with the new
 	 * broker.
 	 */
+	@Override
 	public void setBroker(StateBroker broker) {
 
 		// Unregister from the previous broker if necessary.
@@ -291,6 +300,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	/**
 	 * Registers any keys of interest with the current broker.
 	 */
+	@Override
 	public void registerKeys() {
 		return;
 	}
@@ -298,6 +308,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	/**
 	 * Unregisters any keys from the current broker.
 	 */
+	@Override
 	public void unregisterKeys() {
 		return;
 	}
@@ -305,6 +316,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	/**
 	 * This is called by the broker when a key of interest has changed.
 	 */
+	@Override
 	public void update(String key, Object value) {
 		return;
 	}

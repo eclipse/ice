@@ -12,10 +12,18 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
+import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.common.ActionTree;
-
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
@@ -27,16 +35,6 @@ import org.eclipse.ice.client.widgets.reactoreditor.grid.IGridListener;
 import org.eclipse.ice.client.widgets.reactoreditor.sfr.PinAnalysisView.AxialLevelWidget;
 import org.eclipse.ice.client.widgets.reactoreditor.sfr.PinFigure.DisplayType;
 import org.eclipse.ice.client.widgets.reactoreditor.sfr.properties.PropertySourceFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
-import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.AssemblyType;
 import org.eclipse.ice.reactor.sfr.core.assembly.PinAssembly;
@@ -917,6 +915,7 @@ public class PinAssemblyAnalysisView extends AnalysisView implements
 	 * Sends an update to {@link AnalysisView#broker broker} when a cell has
 	 * been selected.
 	 */
+	@Override
 	public void selectCell(int index) {
 		// FIXME for quadrant and octant symmetries.
 
@@ -958,6 +957,7 @@ public class PinAssemblyAnalysisView extends AnalysisView implements
 	 * Sends an update to {@link AnalysisView#selectionProvider
 	 * selectionProvider} when a cell has been clicked.
 	 */
+	@Override
 	public void clickCell(int index) {
 
 		// Get the component at that location.
@@ -1091,6 +1091,7 @@ public class PinAssemblyAnalysisView extends AnalysisView implements
 	 * 
 	 * @return The IAnalysisView's name.
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -1101,6 +1102,7 @@ public class PinAssemblyAnalysisView extends AnalysisView implements
 	 * 
 	 * @return The IAnalysisView's description.
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}

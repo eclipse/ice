@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.item.jobLauncher;
 
+import java.util.ArrayList;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -19,10 +22,6 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
-
-import java.util.ArrayList;
-
-import org.eclipse.core.resources.IProject;
 
 /**
  * The SuiteLauncher is capable of launching suites of codes where a suite is
@@ -360,12 +359,13 @@ public class SuiteLauncher extends JobLauncher {
 	 *            The launcher to compare against.
 	 * @return True if equal, false otherwise.
 	 */
-	public boolean equals(SuiteLauncher otherLauncher) {
+	public boolean equals(Object otherLauncher) {
 
 		// Aside from checking the executables, there's nothing to do but let
 		// Joblauncher check its info and the Form.
 		boolean retVal = super.equals(otherLauncher)
-				&& executablesList.equals(otherLauncher.executablesList);
+				&& executablesList
+						.equals(((SuiteLauncher) otherLauncher).executablesList);
 
 		return retVal;
 	}
@@ -376,6 +376,7 @@ public class SuiteLauncher extends JobLauncher {
 	 * 
 	 * @return The hash
 	 */
+	@Override
 	public int hashCode() {
 
 		int execHash = (executablesList != null) ? executablesList.hashCode()

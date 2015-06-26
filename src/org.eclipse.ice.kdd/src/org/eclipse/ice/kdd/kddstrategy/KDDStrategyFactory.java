@@ -12,15 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy;
 
-import static org.eclipse.ice.kdd.kddstrategy.KDDStrategy.*;
-import org.eclipse.ice.analysistool.IDataProvider;
-
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
-import org.eclipse.ice.kdd.kddstrategy.kmeansclustering.RawKMeansStrategy;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.datastructures.form.Entry;
 
 /**
  * <p>

@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or 
+ *      initial documentation
+ *    Dasha Gorin (UT-Battelle, LLC.) - code and documentation cleanup
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh;
 
 import java.util.HashMap;
@@ -317,6 +329,7 @@ public class EditMode extends MeshAppStateMode implements
 	/**
 	 * Registers additional controls for editing mesh elements.
 	 */
+	@Override
 	public void registerControls() {
 		super.registerControls();
 
@@ -344,6 +357,7 @@ public class EditMode extends MeshAppStateMode implements
 	/**
 	 * Unregisters the additional controls for adding mesh elements.
 	 */
+	@Override
 	public void unregisterControls() {
 		// Unregister the controls from the InputManager.
 		shiftAction.unregisterFromInput();
@@ -462,6 +476,7 @@ public class EditMode extends MeshAppStateMode implements
 			// false.
 			clickTimer = new Timer(true);
 			clickTimer.schedule(new TimerTask() {
+				@Override
 				public void run() {
 					click.set(false);
 				}
@@ -640,6 +655,7 @@ public class EditMode extends MeshAppStateMode implements
 	 * This method updates all controllers for temporary spatials to account for
 	 * any changes in zoom.
 	 */
+	@Override
 	public void zoomChanged(float distance) {
 		// Get the sizes of vertices and edges.
 		float vertexSize = appState.getVertexSize();

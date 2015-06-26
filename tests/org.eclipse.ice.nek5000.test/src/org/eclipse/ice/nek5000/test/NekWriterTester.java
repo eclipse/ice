@@ -25,12 +25,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.junit.Test;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.nek5000.NekReader;
 import org.eclipse.ice.nek5000.NekWriter;
 import org.eclipse.ice.nek5000.ProblemProperties;
+import org.junit.Test;
 
 /**
  * Tests the methods of the NekWriter class. Tests are broken down by Nek5000

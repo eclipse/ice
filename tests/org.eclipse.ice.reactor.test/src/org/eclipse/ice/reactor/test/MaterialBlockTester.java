@@ -19,26 +19,24 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.reactor.HDF5LWRTagType;
-import org.eclipse.ice.reactor.Material;
-import org.eclipse.ice.reactor.MaterialBlock;
-import org.eclipse.ice.reactor.Ring;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Test;
 
 import ncsa.hdf.object.Attribute;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.Group;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.io.hdf.HdfFileFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
+import org.eclipse.ice.reactor.HDF5LWRTagType;
+import org.eclipse.ice.reactor.Material;
+import org.eclipse.ice.reactor.MaterialBlock;
+import org.eclipse.ice.reactor.Ring;
+import org.junit.AfterClass;
+import org.junit.Test;
 
 /**
  * <p>

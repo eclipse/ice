@@ -44,6 +44,7 @@ public class FakeErrorBoxWidget implements IErrorBox {
 	/** 
 	 * <p>This operation implements display() from UIWidget with a simple pass through that makes whether or not the method was called. Nothing is drawn on the screen.</p>
 	 */
+	@Override
 	public void display() {
 
 		this.displayed = true;
@@ -56,6 +57,7 @@ public class FakeErrorBoxWidget implements IErrorBox {
 	 * (non-Javadoc)
 	 * @see IErrorBox#setErrorString(String error)
 	 */
+	@Override
 	public void setErrorString(String error) {
 
 		// Set the error message
@@ -69,6 +71,7 @@ public class FakeErrorBoxWidget implements IErrorBox {
 	 * (non-Javadoc)
 	 * @see IErrorBox#getErrorString()
 	 */
+	@Override
 	public String getErrorString() {
 
 		// Return the error message

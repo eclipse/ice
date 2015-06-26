@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
-
 import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalGridEditPart;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalGridLayout;
 

@@ -237,6 +237,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * @param colIndex
 	 * @return
 	 */
+	@Override
 	public Double getElement(int rowIndex, int colIndex) {
 		// Check that the indices are valid
 		if (rowIndex < 0 || colIndex < 0) {
@@ -261,6 +262,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public boolean setElement(int rowIndex, int colIndex, Double value) {
 		// Return if value is null
 		if (value == null) {
@@ -290,6 +292,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * 
 	 * @return
 	 */
+	@Override
 	public int numberOfRows() {
 		return nRows;
 	}
@@ -301,6 +304,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * 
 	 * @return
 	 */
+	@Override
 	public int numberOfColumns() {
 		return nCols;
 	}
@@ -311,6 +315,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * </p>
 	 * 
 	 */
+	@Override
 	public void transpose() {
 
 		// Save the old number of columns and rows
@@ -434,6 +439,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean deleteRow() {
 		// Remove for the number of columns
 		for (int i = 0; i < nCols; i++) {
@@ -452,6 +458,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean deleteColumn() {
 		// Remove for the number of rows
 		for (int i = 0; i < nRows; i++) {
@@ -613,27 +620,34 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * </p>
 	 * 
 	 * @param matrix
-	 * @return
+	 * @return true if the matrices are equal to each other, false otherwise.
 	 */
-	public boolean equals(KDDMatrix matrix) {
-		// First make sure the incoming matrix is the right
-		// size
-		if (matrix.numberOfColumns() != nCols || matrix.numberOfRows() != nRows) {
-			return false;
-		}
-		// Then make sure all the elements are the same
-		for (int i = 0; i < nRows; i++) {
-			for (int j = 0; j < nCols; j++) {
-				if (!matrix.getElement(i, j).equals(getElement(i, j))) {
-					return false;
+	public boolean equals(Object matrix) {
+
+		boolean retVal = true;
+
+		if (matrix != null && matrix instanceof KDDMatrix && matrix != this) {
+			KDDMatrix otherMatrix = (KDDMatrix) matrix;
+			// First make sure the incoming matrix is the right
+			// size
+			if (otherMatrix.numberOfColumns() != nCols
+					|| otherMatrix.numberOfRows() != nRows) {
+				retVal = false;
+			}
+			// Then make sure all the elements are the same
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					if (!otherMatrix.getElement(i, j).equals(getElement(i, j))) {
+						retVal = false;
+					}
 				}
 			}
 		}
 
 		// If we make it here, they are equal
-		return true;
+		return retVal;
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation returns the hashcode value of the KDDMatrix.
@@ -643,8 +657,9 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 *         The hashcode
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
-		
+
 		// Local Declarations
 		int hash = 8;
 
@@ -653,7 +668,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 		hash = 31 * hash + this.nRows;
 		hash = 31 * hash + this.elements.hashCode();
 		hash = 31 * hash + this.dataProvider.hashCode();
-		
+
 		// Done, return
 		return hash;
 	}

@@ -12,20 +12,18 @@
  *******************************************************************************/
 package org.eclipse.ice.client.test;
 
-import org.eclipse.ice.core.iCore.ICore;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.net.URI;
+import java.util.ArrayList;
 
+import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-
-import java.util.ArrayList;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.net.URI;
-import java.io.FileWriter;
-
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
 
@@ -204,6 +202,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#connect()
 	 */
+	@Override
 	public String connect() {
 		// TODO Auto-generated method stub
 		return "0";
@@ -214,6 +213,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#disconnect(int uniqueClientId)
 	 */
+	@Override
 	public void disconnect(int uniqueClientId) {
 		// TODO Auto-generated method stub
 
@@ -224,6 +224,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#getFileSystem(int uniqueClientID)
 	 */
+	@Override
 	public Form getFileSystem(int uniqueClientID) {
 		// TODO Auto-generated method stub
 		return new Form();
@@ -245,6 +246,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#registerCompositeItem(ICompositeItemBuilder builder)
 	 */
+	@Override
 	public void registerCompositeItem(ICompositeItemBuilder builder) {
 		// TODO Auto-generated method stub
 
@@ -276,6 +278,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#deleteItem(String itemId)
 	 */
+	@Override
 	public void deleteItem(String itemId) {
 
 		deleted = true;
@@ -312,6 +315,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#getAvailableItemTypes()
 	 */
+	@Override
 	public ICEList<String> getAvailableItemTypes() {
 
 		// Local Declarations
@@ -336,6 +340,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#updateItem(Form form, int uniqueClientId)
 	 */
+	@Override
 	public FormStatus updateItem(Form form, int uniqueClientId) {
 
 		// Change the name
@@ -391,6 +396,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#getItemList()
 	 */
+	@Override
 	public ArrayList<Identifiable> getItemList() {
 
 		// Local Declarations
@@ -418,6 +424,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#getItemOutputFile(int id)
 	 */
+	@Override
 	public File getItemOutputFile(int id) {
 
 		// Local Declarations
@@ -456,6 +463,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#cancelItemProcess(int itemId, String actionName)
 	 */
+	@Override
 	public FormStatus cancelItemProcess(int itemId, String actionName) {
 
 		// Throw the flag and return it
@@ -469,6 +477,7 @@ public class FakeCore implements ICore {
 	 * 
 	 * @see ICore#importFile(URI file)
 	 */
+	@Override
 	public void importFile(URI file) {
 		if (file != null) {
 			imported = true;

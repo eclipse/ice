@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.analysistool.IData;
-
 import java.util.ArrayList;
+
+import org.eclipse.ice.analysistool.IData;
 
 /**
  * <p>
@@ -65,10 +65,10 @@ public class FeatureSet {
 
 	/**
 	 * <p>
-	 * Returns the name of the feature.
+	 * Returns the name of the feature whose data is contained by this set.
 	 * </p>
 	 * 
-	 * @return
+	 * @return The name of the feature.
 	 */
 	public String getName() {
 
@@ -90,7 +90,7 @@ public class FeatureSet {
 		// If the name is null, then return a cloned copy of the array so that
 		// data can not be externally added/deleted.
 		if (this.name == null) {
-			return (ArrayList<IData>) this.iData.clone();
+			return new ArrayList<IData>(iData);
 		}
 
 		// Otherwise, return iData.
@@ -109,7 +109,7 @@ public class FeatureSet {
 	 *            <p>
 	 *            The data associated with the feature set.
 	 *            </p>
-	 * @return
+	 * @return True if the data was added, false otherwise.
 	 */
 	public boolean addIData(IData iData) {
 
@@ -142,6 +142,7 @@ public class FeatureSet {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local declarations
@@ -178,6 +179,7 @@ public class FeatureSet {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -229,6 +231,7 @@ public class FeatureSet {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations

@@ -12,14 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test.geometry;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeLabelProvider;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
+import org.junit.Test;
 
 /**
  * <p>

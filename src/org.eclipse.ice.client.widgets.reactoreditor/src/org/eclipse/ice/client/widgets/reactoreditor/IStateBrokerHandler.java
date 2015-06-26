@@ -41,6 +41,7 @@ public interface IStateBrokerHandler {
 	 * @param broker
 	 *            The StateBroker that will store the value. If null, no value
 	 *            is added.
+	 * @return True if the value was successfully updated, false otherwise.
 	 */
 	public boolean addValue(Object value, Object parent, StateBroker broker);
 

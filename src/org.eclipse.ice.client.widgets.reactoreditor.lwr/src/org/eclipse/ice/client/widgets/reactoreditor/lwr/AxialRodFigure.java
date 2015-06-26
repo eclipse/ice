@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
-import org.eclipse.ice.client.widgets.reactoreditor.MaterialShape;
-
 import java.util.ArrayList;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -22,6 +20,7 @@ import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.StackLayout;
+import org.eclipse.ice.client.widgets.reactoreditor.MaterialShape;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.MaterialBlock;

@@ -536,6 +536,7 @@ public class ICEResourceView extends PlayableViewPart implements
 
 			// Sync with the display
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					// Just do a blanket update - no need to check the component
 					if (resourceTreeViewer != null
@@ -819,9 +820,11 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * 
 	 * @see PlayableViewPart#setToNextResource()
 	 */
+	@Override
 	public void setToNextResource() {
 
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// Get the currently selected resource in the view. (Or the
 				// first selected resource if multiple resources are
@@ -856,9 +859,11 @@ public class ICEResourceView extends PlayableViewPart implements
 	 * 
 	 * @see PlayableViewPart#setToPreviousResource()
 	 */
+	@Override
 	public void setToPreviousResource() {
 
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// Get the currently selected resource in the view. (Or the
 				// first selected resource if multiple resources are

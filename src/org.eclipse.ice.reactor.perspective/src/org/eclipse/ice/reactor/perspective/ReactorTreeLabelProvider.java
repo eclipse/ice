@@ -14,7 +14,6 @@ package org.eclipse.ice.reactor.perspective;
 
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.resource.ICEResource;
-
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**

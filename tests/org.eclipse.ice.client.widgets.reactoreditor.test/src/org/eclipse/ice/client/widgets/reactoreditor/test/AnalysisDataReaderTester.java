@@ -14,13 +14,12 @@ package org.eclipse.ice.client.widgets.reactoreditor.test;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.client.widgets.reactoreditor.AnalysisDataReader;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.client.widgets.reactoreditor.AnalysisDataReader;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.junit.Test;
 

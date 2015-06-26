@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.perspective;
 
-import org.eclipse.ice.datastructures.resource.ICEResource;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;

@@ -16,12 +16,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
 import org.junit.Test;
 
 public class GridEditorInputTester {
