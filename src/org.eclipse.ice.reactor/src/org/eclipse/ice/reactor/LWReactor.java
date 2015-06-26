@@ -159,20 +159,8 @@ public class LWReactor extends LWRComposite {
 		return flag;
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -201,14 +189,8 @@ public class LWReactor extends LWRComposite {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public int hashCode() {
@@ -248,14 +230,8 @@ public class LWReactor extends LWRComposite {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public Object clone() {

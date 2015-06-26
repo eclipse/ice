@@ -77,7 +77,7 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
 		// TODO Review the logic here...
-		
+
 		// If the viewer has changed, we will need to unregister from the old
 		// viewer and register with the new one.
 		if (viewer != treeViewer) {
@@ -117,12 +117,14 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 	 * </p>
 	 * <p>
 	 * A TreeComposite's children are listed and ordered in the TreeViewer like
-	 * so:<br>
+	 * so:
+	 * </p>
 	 * <ol>
 	 * <li>All child data nodes. These are Components that are <i>not</i>
 	 * TreeComposites.</li>
 	 * <li>All child TreeComposites.</li>
 	 * </ol>
+	 * <p>
 	 * Children that have not been set up (e.g., its name has not been changed
 	 * from the default, <code>"ICE Object"</code>) are not included.
 	 * </p>

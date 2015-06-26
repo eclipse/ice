@@ -200,38 +200,37 @@ public class BasicEntryContentProvider extends ICEObject implements
 		return parent;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IEntryContentProvider#equals(IEntryContentProvider otherProvider)
+	/*
+	 * Overrides a method from ICEObject.
 	 */
 	@Override
-	public boolean equals(IEntryContentProvider otherProvider) {
+	public boolean equals(Object otherProvider) {
 
 		// Local Declarations
 		boolean retVal = false;
 
 		// Check the provider, null and base type check first.
-		if (otherProvider != null) {
+		if (otherProvider != null && otherProvider instanceof IEntryContentProvider) {
+			IEntryContentProvider provider = (IEntryContentProvider) otherProvider;
 			// See if they are the same reference on the heap
 			if (this == otherProvider) {
 				retVal = true;
 			} else {
 				// Check each member value
-				retVal = super.equals((ICEObject) otherProvider)
-						&& (this.defaultValue.equals(otherProvider
+				retVal = super.equals((ICEObject) provider)
+						&& (this.defaultValue.equals(provider
 								.getDefaultValue()))
-						&& (this.allowedValues.equals(otherProvider
+						&& (this.allowedValues.equals(provider
 								.getAllowedValues()))
-						&& (this.parent.equals(otherProvider.getParent()))
-						&& (this.allowedValueType.equals(otherProvider
+						&& (this.parent.equals(provider.getParent()))
+						&& (this.allowedValueType.equals(provider
 								.getAllowedValueType()));
 				// Check the tag if it is already set
 				if (this.tag != null) {
 					retVal = retVal
-							&& (this.tag.equals(otherProvider.getTag()));
+							&& (this.tag.equals(provider.getTag()));
 				} else {
-					if (otherProvider.getTag() != null) {
+					if (provider.getTag() != null) {
 						return false;
 					}
 				}

@@ -43,7 +43,7 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 	 * The workbench window used by the wizard.
 	 */
 	private IWorkbenchWindow workbenchWindow;
-	
+
 	/**
 	 * The database used to build the new material
 	 */
@@ -51,11 +51,12 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 
 	/**
 	 * A nullary constructor. This is used by the platform. <b>If called from an
-	 * {@link IHandler}, use {@link #AddMaterialWizard(IWorkbenchWindow)} </b>.
+	 * {@link IHandler}, use
+	 * {@link #AddMaterialWizard(IWorkbenchWindow, IMaterialsDatabase)} </b>.
 	 */
 	public AddMaterialWizard() {
 		super();
-		
+
 	}
 
 	/**
@@ -65,7 +66,8 @@ public class AddMaterialWizard extends Wizard implements INewWizard {
 	 * @param window
 	 *            The workbench window.
 	 */
-	public AddMaterialWizard(IWorkbenchWindow window, IMaterialsDatabase database) {
+	public AddMaterialWizard(IWorkbenchWindow window,
+			IMaterialsDatabase database) {
 		this();
 		// Store a reference to the workbench window.
 		workbenchWindow = window;

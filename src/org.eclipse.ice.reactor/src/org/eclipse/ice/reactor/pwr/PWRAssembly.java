@@ -508,20 +508,8 @@ public class PWRAssembly extends LWRComposite {
 
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -556,14 +544,8 @@ public class PWRAssembly extends LWRComposite {
 		return retVal;
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public int hashCode() {
@@ -612,14 +594,8 @@ public class PWRAssembly extends LWRComposite {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public Object clone() {
@@ -635,11 +611,8 @@ public class PWRAssembly extends LWRComposite {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -654,9 +627,8 @@ public class PWRAssembly extends LWRComposite {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @return
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -677,10 +649,8 @@ public class PWRAssembly extends LWRComposite {
 		return children;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {
@@ -738,15 +708,8 @@ public class PWRAssembly extends LWRComposite {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation returns an ArrayList of IHdfReadable child objects. If
-	 * this IHdfReadable has no IHdfReadable child objects, then null is
-	 * returned.
-	 * </p>
-	 * 
-	 * @param iHdfReadable
-	 * @return
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {

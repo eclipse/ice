@@ -359,19 +359,19 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * The unique identification number of the Item.
 	 */
 	protected int uniqueId;
-	
+
 	/**
 	 * The name of the Item.
 	 */
 	protected String itemName;
-	
+
 	/**
 	 * The description of the Item. This description should be different than
 	 * the name of the Item and should contain information that would be useful
 	 * to a human user.
 	 */
 	protected String itemDescription;
-	
+
 	/**
 	 * The ICEJAXBHandler used to marshal Items to and from XML.
 	 */
@@ -415,11 +415,11 @@ public class Item implements IComponentVisitor, Identifiable,
 	protected File outputFile;
 
 	/**
-	 * The ResourceHandler for this item that discovers and creates 
+	 * The ResourceHandler for this item that discovers and creates
 	 * {@link ICEResource} items.
 	 */
 	private static ResourceHandler resourceHandler = new ResourceHandler();
-	
+
 	/**
 	 * The list of listeners observing this Item.
 	 */
@@ -548,7 +548,9 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * desired IReader. To get the desired IReader, subclasses must specify the
 	 * IO type String by implementing the Item.getIOType() method.
 	 * 
-	 * @return
+	 * @return The IReader used by the sub-class, or {@code null} if the
+	 *         IOService is unavailable or the IReader name was not set by
+	 *         overriding {@link #getIOType()}.
 	 */
 	protected IReader getReader() {
 		if (ioService != null) {
@@ -563,7 +565,9 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * desired IWriter. To get the desired IWriter, subclasses must specify the
 	 * IO type String by implementing the Item.getIOType() method.
 	 * 
-	 * @return
+	 * @return The IWriter used by the sub-class, or {@code null} if the
+	 *         IOService is unavailable or the IWriter name was not set by
+	 *         overriding {@link #getIOType()}.
 	 */
 	protected IWriter getWriter() {
 		if (ioService != null) {
@@ -577,7 +581,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * Return the IO Type string. This method is to be used by subclasses to
 	 * indicate which IReader and IWriter the Item subclass needs to use.
 	 * 
-	 * @return
+	 * @return The name of the IReader/IWriter.
 	 */
 	protected String getIOType() {
 		return null;
@@ -1610,80 +1614,87 @@ public class Item implements IComponentVisitor, Identifiable,
 	}
 
 	/**
-	 * <p>This method is intended to discover and create {@link ICEResource} 
-	 * objects (and the {@link VizResource} subclass) that are associated to
-	 * the Item in some way. For example, a CSV post-processing file that can
-	 * be plotted.</p>
+	 * <p>
+	 * This method is intended to discover and create {@link ICEResource}
+	 * objects (and the {@link VizResource} subclass) that are associated to the
+	 * Item in some way. For example, a CSV post-processing file that can be
+	 * plotted.
+	 * </p>
 	 * 
-	 * <p>This method takes in a file path, and then delegates its work to the 
-	 * Item's {@link ResourceHandler}.</p>
+	 * <p>
+	 * This method takes in a file path, and then delegates its work to the
+	 * Item's {@link ResourceHandler}.
+	 * </p>
 	 * 
-	 * @param filePath		The file path of the Item's resource.
-	 * @return				Returns an {@link ICEResource} or 
-	 * 						{@link VizResource} depending on the file extension
-	 * 						of the file path. If the file path was invalid, 
-	 * 						returns null.
+	 * @param filePath
+	 *            The file path of the Item's resource.
+	 * @return Returns an {@link ICEResource} or {@link VizResource} depending
+	 *         on the file extension of the file path. If the file path was
+	 *         invalid, returns null.
 	 * @throws IOException
 	 */
 	public ICEResource getResource(String filePath) throws IOException {
-	
+
 		// Local declarations
 		ICEResource resource = null;
-		
+
 		// Call the ResourceHandler method to get the resource
 		resource = resourceHandler.getResource(filePath);
-		
+
 		return resource;
-		
+
 	}
-	
+
 	/**
-	 * <p>This method is similar to {@link #getResource(String)}, except that
-	 * it takes in an {@link Entry} instead. This is a special case where
-	 * a resource might be stored on the Item's Form (for example, a FileEntry
-	 * for a mesh file).</p>
+	 * <p>
+	 * This method is similar to {@link #getResource(String)}, except that it
+	 * takes in an {@link Entry} instead. This is a special case where a
+	 * resource might be stored on the Item's Form (for example, a FileEntry for
+	 * a mesh file).
+	 * </p>
 	 * 
-	 * <p>This method simply calls {@link #getResource(String)}. If the Entry's
+	 * <p>
+	 * This method simply calls {@link #getResource(String)}. If the Entry's
 	 * associated file (obtained by {@link Entry#getValue()}) is found in the
 	 * default ICE workspace, then it will pass the fully-qualified path name
 	 * into {@link #getResource(String)}. Otherwise, it will pass just the file
-	 * name (without a path), which will result in a null resource.</p>
+	 * name (without a path), which will result in a null resource.
+	 * </p>
 	 * 
-	 * @param file		The file path of the Item's resource.
-	 * @return			Returns an {@link ICEResource} or 
-	 * 					{@link VizResource} depending on the file extension
-	 * 					of the file path. If the file path was invalid, 
-	 * 					returns null.		
+	 * @param file
+	 *            The file path of the Item's resource.
+	 * @return Returns an {@link ICEResource} or {@link VizResource} depending
+	 *         on the file extension of the file path. If the file path was
+	 *         invalid, returns null.
 	 * @throws IOException
 	 */
 	public ICEResource getResource(Entry file) throws IOException {
-		
+
 		// Local declarations
 		ICEResource resource = null;
 		String filePath = file.getValue();
 		String defaultFilePath = "";
-		
-		// Check if the file is in the default workspace. If it is, get the 
+
+		// Check if the file is in the default workspace. If it is, get the
 		// fully qualified path
 		if (project != null) {
-			defaultFilePath = project.getLocation().toOSString() 
+			defaultFilePath = project.getLocation().toOSString()
 					+ System.getProperty("file.separator") + file.getValue();
 		}
 		File defaultFile = new File(defaultFilePath);
 		if (defaultFile != null && defaultFile.exists()) {
 			filePath = defaultFilePath;
 		}
-		
+
 		// Call the other getResource method
 		resource = getResource(filePath);
-		
+
 		// Register the resource
 		registry.register(resource, "resource");
 
 		return resource;
 	}
-	
-	
+
 	/**
 	 * Return a list of files with the provided fileExtension String. The files
 	 * are returned as a list of 'file names'. For example, the file
@@ -1884,13 +1895,13 @@ public class Item implements IComponentVisitor, Identifiable,
 			copyFile(sourceDir, destinationDir, fileName);
 		}
 	}
-	
+
 	/**
-	 * This method serves as a utility for copying a full directory structure
-	 * to a new location
+	 * This method serves as a utility for copying a full directory structure to
+	 * a new location
 	 * 
 	 * @param sourceDir
-	 *            The directory to copy 
+	 *            The directory to copy
 	 * @param destinationDir
 	 *            The location to put the copy of the directory
 	 */
@@ -1908,18 +1919,20 @@ public class Item implements IComponentVisitor, Identifiable,
 			} else {
 				// If it is a directory, recurse on it
 				copyFile(sourceDir, destinationDir, fileName);
-				
+
 				// This check is necessary for Windows filepaths
 				String pathSteps[] = null;
 				if (fileName.contains(separator)) {
 					pathSteps = fileName.split(separator);
 				}
-				String destFileName = (pathSteps == null ? fileName : pathSteps[pathSteps.length-1]);
-				copyDirectory(sourceDir + separator + fileName, destinationDir + separator + destFileName);
+				String destFileName = (pathSteps == null ? fileName
+						: pathSteps[pathSteps.length - 1]);
+				copyDirectory(sourceDir + separator + fileName, destinationDir
+						+ separator + destFileName);
 			}
 		}
 	}
-	
+
 	/**
 	 * This operation loads data into the Item from an input file. This
 	 * operation should be overridden by subclasses and specialized for the

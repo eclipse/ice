@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.bwr;
 
+import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWReactor;
 
@@ -26,18 +27,27 @@ public class BWReactor extends LWReactor {
 
 	/**
 	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
+	 * The constructor.
 	 * </p>
 	 * 
-	 * @param otherObject
+	 * @param size
 	 *            <p>
-	 *            The object to be compared.
+	 *            The size of the reactor.
 	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	 */
+	public BWReactor(int size) {
+
+		// Call super constructor
+		super(size);
+
+		// Setup default attributes
+		this.name = "BWReactor 1";
+		this.description = "BWReactor 1's Description";
+		this.HDF5LWRTag = HDF5LWRTagType.BWREACTOR;
+	}
+
+	/*
+	 * Overrides a method from LWReactor.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -47,14 +57,8 @@ public class BWReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
 	@Override
 	public int hashCode() {
@@ -81,14 +85,8 @@ public class BWReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
 	@Override
 	public Object clone() {
@@ -104,38 +102,8 @@ public class BWReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * The constructor.
-	 * </p>
-	 * 
-	 * @param size
-	 *            <p>
-	 *            The size of the reactor.
-	 *            </p>
-	 */
-	public BWReactor(int size) {
-
-		// Call super constructor
-		super(size);
-
-		// Setup default attributes
-		this.name = "BWReactor 1";
-		this.description = "BWReactor 1's Description";
-		this.HDF5LWRTag = HDF5LWRTag.BWREACTOR;
-	}
-
-	/**
-	 * <p>
-	 * This operation accepts an ILWRComponentVisitor that can be visit the
-	 * LWRComponent to ascertain its type and perform various type-specific
-	 * operations.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            <p>
-	 *            The visitor
-	 *            </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {
