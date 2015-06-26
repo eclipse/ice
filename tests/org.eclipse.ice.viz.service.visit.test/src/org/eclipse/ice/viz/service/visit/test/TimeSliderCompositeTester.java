@@ -8,15 +8,19 @@
  * Contributors:
  *   Jordan Deyton (UT-Battelle, LLC.) - Initial API and implementation and/or
  *     initial documentation
+ *   Jordan Deyton - bug 471166
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,8 +32,11 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotArrowButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotScale;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Test;
@@ -56,6 +63,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * the {@link #timeComposite}.
 	 */
 	private static List<Double> testTimes;
+
+	/**
+	 * A list of the complete test times, ordered, and without nulls or
+	 * duplicates.
+	 */
+	private static SortedSet<Double> orderedTimes;
 
 	/**
 	 * The expected size of {@link #testTimes}.
@@ -102,6 +115,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		testTimes.add(1337.1337);
 		testTimesSize = testTimes.size();
 
+		// Create an ordered set of the times, and remove nulls. We expect the
+		// time widget to effectively traverse across this set.
+		Set<Double> hashedTimes = new HashSet<Double>(testTimes);
+		hashedTimes.remove(null);
+		orderedTimes = new TreeSet<Double>(hashedTimes);
+
 		// Create the two fake listeners.
 		fakeListener1 = new FakeListener();
 		fakeListener2 = new FakeListener();
@@ -114,6 +133,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				timeComposite = new TimeSliderComposite(getShell(), SWT.NONE);
 				timeComposite.setTimes(testTimes);
 				timeComposite.addSelectionListener(fakeListener1);
+				// Refresh the shell's layout so screenshots will show changes.
+				getShell().layout();
 			}
 		});
 
@@ -160,6 +181,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 			public void run() {
 				timeComposite.dispose();
 				timeComposite = null;
+				// Refresh the shell's layout so screenshots will show changes.
+				getShell().layout();
 			}
 		});
 
@@ -205,17 +228,15 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkSetTimeSteps() {
 
-		// Create an ordered set of the times, and remove nulls. We expect the
-		// time widget to effectively traverse across this set.
-		Set<Double> hashedTimes = new HashSet<Double>(testTimes);
-		hashedTimes.remove(null);
-		SortedSet<Double> orderedTimes = new TreeSet<Double>(hashedTimes);
-
 		final AtomicInteger timestep = new AtomicInteger();
 		final AtomicReference<Double> time = new AtomicReference<Double>();
 
 		final List<Double> emptyList = new ArrayList<Double>();
 		final List<Double> nullList = null;
+
+		// Get a copy of the ordered times.
+		SortedSet<Double> orderedTimes = new TreeSet<Double>(
+				TimeSliderCompositeTester.orderedTimes);
 
 		// Get the time scale widget.
 		SWTBotScale widget = getTimeScale();
@@ -342,8 +363,9 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	public void checkWidgetsEnabled() {
 
 		SWTBotScale scale = getTimeScale();
-		SWTBotArrowButton nextButton = getTimeSpinnerNext();
-		SWTBotArrowButton prevButton = getTimeSpinnerPrev();
+		SWTBotButton nextButton = getNextButton();
+		SWTBotButton prevButton = getPrevButton();
+		SWTBotButton playButton = getPlayPauseButton();
 		SWTBotText text = getTimeText();
 
 		final List<Double> goodTimes = new ArrayList<Double>();
@@ -366,8 +388,9 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		// None of them should be enabled. Also, the text widget should say N/A.
 		SWTBot testBot = new SWTBot(testWidget.get());
 		assertNotEnabled(testBot.scale());
-		assertNotEnabled(testBot.arrowButton(0));
-		assertNotEnabled(testBot.arrowButton(1));
+		assertNotEnabled(testBot.button(0));
+		assertNotEnabled(testBot.button(1));
+		assertNotEnabled(testBot.button(2));
 		assertNotEnabled(testBot.text());
 		assertEquals(NO_TIMES, testBot.text().getText());
 
@@ -383,7 +406,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		// times have been set.
 		assertEnabled(scale);
 		assertEnabled(nextButton);
-		assertNotEnabled(prevButton); // First timestep... prev is disabled.
+		assertEnabled(prevButton);
+		assertEnabled(playButton);
 		assertEnabled(text);
 
 		// Setting the times to something with 1 value should disable them.
@@ -396,6 +420,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(scale);
 		assertNotEnabled(nextButton);
 		assertNotEnabled(prevButton);
+		assertNotEnabled(playButton);
 		assertNotEnabled(text);
 		// The text widget's text should be set to the current value.
 		assertEquals(badTimes.get(0).toString(), text.getText());
@@ -409,17 +434,9 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		});
 		assertEnabled(scale);
 		assertEnabled(nextButton);
-		assertNotEnabled(prevButton); // First timestep... prev is disabled.
-		assertEnabled(text);
-
-		// Setting it to the last timestep should disable the "next" button.
-		nextButton.click();
-		assertNotEnabled(nextButton);
 		assertEnabled(prevButton);
-		// Setting it to the first timestep should disable the "prev" button.
-		prevButton.click();
-		assertEnabled(nextButton);
-		assertNotEnabled(prevButton);
+		assertEnabled(playButton);
+		assertEnabled(text);
 
 		// Setting the times to something with 0 values should also disable
 		// them.
@@ -433,6 +450,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(scale);
 		assertNotEnabled(nextButton);
 		assertNotEnabled(prevButton);
+		assertNotEnabled(playButton);
 		assertNotEnabled(text);
 		// The text widget's text should be set to N/A.
 		assertEquals(NO_TIMES, text.getText());
@@ -530,29 +548,41 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 	/**
 	 * Checks that listeners are updated when the spinner widget changes.
+	 * <p>
+	 * The times should also loop between last and first when the next/previous
+	 * button is clicked.
+	 * </p>
 	 */
 	@Test
 	public void checkSelectionListenersBySpinner() {
 
 		// Get the specific widget that will be used to set the time.
-		SWTBotArrowButton nextButton = getTimeSpinnerNext();
-		SWTBotArrowButton prevButton = getTimeSpinnerPrev();
+		SWTBotButton nextButton = getNextButton();
+		SWTBotButton prevButton = getPrevButton();
 
-		// Register the second fake listener.
+		final FakeListener loopListener = new FakeListener();
+
+		// Register the second fake listener and the test listener.
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
+				timeComposite.addSelectionListener(loopListener);
 				timeComposite.addSelectionListener(fakeListener2);
 			}
 		});
 
 		// They should both be notified when the widget is used to change the
 		// values.
-		nextButton.click();
+		prevButton.click();
 		assertTrue(fakeListener1.wasNotified());
 		assertTrue(fakeListener2.wasNotified());
+		assertTrue(loopListener.wasNotified());
 
-		// Unregister this listener.
+		// The previous button should have looped around to the last time.
+		assertEquals(orderedTimes.last(),
+				loopListener.notificationTimes.poll(), epsilon);
+
+		// Unregister the second fake listener.
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -562,9 +592,149 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		// It should not be notified when the widget changes, but the other
 		// should still be notified.
-		prevButton.click();
+		nextButton.click();
 		assertFalse(fakeListener2.wasNotified()); // Test this one first!
 		assertTrue(fakeListener1.wasNotified());
+		assertTrue(loopListener.wasNotified());
+
+		// The next button should have looped around to the first time.
+		assertEquals(orderedTimes.first(),
+				loopListener.notificationTimes.poll(), epsilon);
+
+		// Unregister the loop listener.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.removeSelectionListener(loopListener);
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * Checks that listeners are periodically updated when the play button is
+	 * clicked, and that notifications stop when the same (pause) button is
+	 * clicked.
+	 * <p>
+	 * The times should also loop from last to first when the play button is
+	 * clicked.
+	 * </p>
+	 */
+	@Test
+	public void checkSelectionListenersByPlayButton() {
+
+		// Get the specific widget that will be used to set the time.
+		SWTBotButton widget = getPlayPauseButton();
+
+		// Set the time to the last timestep. This will ensure the play action
+		// hits the last timestep, then loops back around to the first.
+		getTimeScale().setValue(orderedTimes.size() - 2);
+
+		// Add a new test listener.
+		final FakeListener listener = new FakeListener();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.addSelectionListener(listener);
+			}
+		});
+
+		// Play for two seconds, then pause. Use a buffer of a half second in
+		// case the SWTBot click beats the display thread scheduling.
+		widget.click();
+		try {
+			Thread.sleep(2500);
+		} catch (InterruptedException e) {
+			fail("TimeSliderCompositeTester error: "
+					+ "Thread interrupted while testing play button.");
+		}
+		widget.click();
+
+		// The listener should have been notified twice: two timesteps were
+		// traversed while playing.
+		assertTrue(listener.wasNotified(2));
+
+		// Check the notification count and the times sent with each
+		// notification.
+		Queue<Double> times = listener.notificationTimes;
+		assertEquals(2, times.size());
+		assertEquals(orderedTimes.last(), times.poll(), epsilon);
+		assertEquals(orderedTimes.first(), times.poll(), epsilon);
+
+		// Remove the test listener.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.removeSelectionListener(listener);
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * Checks that, when any of the time widgets are updated, the active play
+	 * action is cancelled.
+	 */
+	@Test
+	public void checkPauseOnNewSelection() {
+
+		SWTBotButton playButton = getPlayPauseButton();
+
+		SWTBotText text = getTimeText();
+		String firstTime = text.getText();
+
+		// Add a new test listener.
+		final FakeListener listener = new FakeListener();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.addSelectionListener(listener);
+			}
+		});
+
+		// Pause by clicking the play button. No notification sent.
+		playButton.click();
+		playButton.click();
+		// Pause by clicking the time scale. 1 notification.
+		playButton.click();
+		getTimeScale().setValue(1);
+		// Pause by typing text. 1 notification.
+		playButton.click();
+		text.selectAll();
+		text.typeText(firstTime + SWT.CR + SWT.LF);
+		// Pause by clicking the next button. 1 notification.
+		playButton.click();
+		getNextButton().click();
+		// Pause by clicking the previous button. 1 notification.
+		playButton.click();
+		getPrevButton().click();
+
+		// In the above test, the listener should have only been notified 4
+		// times (when the other widgets, not including the play button, were
+		// clicked).
+		assertTrue(listener.wasNotified(4));
+		// The times sent should also alternate between the second and first
+		// timesteps, because each subsequent call undoes the previous one.
+		Iterator<Double> iter = orderedTimes.iterator();
+		double first = iter.next();
+		double second = iter.next();
+		assertEquals(second, listener.notificationTimes.poll());
+		assertEquals(first, listener.notificationTimes.poll());
+		assertEquals(second, listener.notificationTimes.poll());
+		assertEquals(first, listener.notificationTimes.poll());
+
+		// The listener should not be notified again.
+		assertFalse(listener.wasNotified(5));
+
+		// Remove the test listener.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.removeSelectionListener(listener);
+			}
+		});
 
 		return;
 	}
@@ -799,6 +969,91 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
+	 * Checks that setting the background for the main widget also updates its
+	 * child widgets.
+	 */
+	@Test
+	public void checkSetBackground() {
+
+		final Display display = getDisplay();
+		final AtomicReference<Color> bg = new AtomicReference<Color>();
+
+		// Set the background for the widget.
+		display.syncExec(new Runnable() {
+			@Override
+			public void run() {
+				bg.set(display.getSystemColor(SWT.COLOR_DARK_GREEN));
+				timeComposite.setBackground(bg.get());
+			}
+		});
+
+		// Check the background for all of the child widgets.
+		assertEquals(bg.get(), getPrevButton().backgroundColor());
+		assertEquals(bg.get(), getPlayPauseButton().backgroundColor());
+		assertEquals(bg.get(), getNextButton().backgroundColor());
+		assertEquals(bg.get(), getTimeScale().backgroundColor());
+
+		return;
+	}
+
+	/**
+	 * Checks that helpful tool tips are set on all of the child widgets.
+	 */
+	@Test
+	public void checkWidgetAppearance() {
+
+		// Get the widgets.
+		SWTBotScale scale = getTimeScale();
+		final SWTBotButton nextButton = getNextButton();
+		final SWTBotButton prevButton = getPrevButton();
+		final SWTBotButton playButton = getPlayPauseButton();
+		SWTBotText text = getTimeText();
+
+		// The buttons should not have text.
+		assertTrue(prevButton.getText().isEmpty());
+		assertTrue(playButton.getText().isEmpty());
+		assertTrue(nextButton.getText().isEmpty());
+
+		// Check that the buttons use images.
+		final List<Image> images = new ArrayList<Image>(3);
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				images.add(prevButton.widget.getImage());
+				images.add(playButton.widget.getImage());
+				images.add(nextButton.widget.getImage());
+			}
+		});
+		assertNotNull("\"prev\" button is missing an image.", images.get(0));
+		assertNotNull("\"play\" button is missing an image.", images.get(1));
+		assertNotNull("\"next\" button is missing an image.", images.get(2));
+
+		// Check the tool tips.
+		assertEquals("Previous", prevButton.getToolTipText());
+		assertEquals("Play", playButton.getToolTipText());
+		assertEquals("Next", nextButton.getToolTipText());
+		assertEquals("Traverses the timesteps", scale.getToolTipText());
+		assertEquals("The current time", text.getToolTipText());
+
+		// Check the tool tip before and after the play button is toggled.
+		playButton.click();
+		assertEquals("Pause", playButton.getToolTipText());
+		playButton.click();
+		assertEquals("Play", playButton.getToolTipText());
+
+		return;
+	}
+
+	/**
+	 * Gets the SWTBot-wrapped scale widget for the play/pause button.
+	 * 
+	 * @return The wrapped play button.
+	 */
+	private SWTBotButton getPlayPauseButton() {
+		return getBot().button(1);
+	}
+
+	/**
 	 * Gets the SWTBot-wrapped scale widget for the time steps.
 	 * 
 	 * @return The wrapped scale widget.
@@ -812,8 +1067,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * 
 	 * @return The wrapped next button.
 	 */
-	private SWTBotArrowButton getTimeSpinnerNext() {
-		return getBot().arrowButton(0);
+	private SWTBotButton getNextButton() {
+		return getBot().button(2);
 	}
 
 	/**
@@ -822,8 +1077,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * 
 	 * @return The wrapped previous button.
 	 */
-	private SWTBotArrowButton getTimeSpinnerPrev() {
-		return getBot().arrowButton(1);
+	private SWTBotButton getPrevButton() {
+		return getBot().button(0);
 	}
 
 	/**
@@ -847,6 +1102,18 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	private class FakeListener extends SelectionAdapter {
 
 		/**
+		 * This can be used to count how many notifications have been sent to
+		 * this listener.
+		 */
+		private final AtomicInteger notificationCount = new AtomicInteger();
+
+		/**
+		 * This can be used to determine what time was sent at each
+		 * notification.
+		 */
+		private final Queue<Double> notificationTimes = new ConcurrentLinkedQueue<Double>();
+
+		/**
 		 * This flag is set by {@link #widgetSelected(SelectionEvent)}.
 		 */
 		private final AtomicBoolean wasNotified = new AtomicBoolean();
@@ -861,6 +1128,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		 */
 		@Override
 		public void widgetSelected(SelectionEvent e) {
+			notificationTimes.add((Double) e.data);
+			notificationCount.incrementAndGet();
 			wasNotified.set(true);
 		}
 
@@ -889,6 +1158,30 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				notified = wasNotified.getAndSet(false);
 			}
 			return notified;
+		}
+
+		/**
+		 * Waits up to {@link #THRESHOLD} milliseconds before returning whether
+		 * or not the notification count is greater than or equal to the desired
+		 * count. This will return sooner if the notification count is satisfied
+		 * sooner!
+		 * 
+		 * @param count
+		 *            The number of notifications to wait on.
+		 * @return True if the notification count is at least the specified
+		 *         count, false otherwise.
+		 */
+		private boolean wasNotified(int count) {
+			long interval = 50;
+			for (long sleepTime = 0; sleepTime < THRESHOLD
+					&& notificationCount.get() < count; sleepTime += interval) {
+				try {
+					Thread.sleep(interval);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+			return notificationCount.get() >= count;
 		}
 	}
 }
