@@ -72,6 +72,7 @@ public class FakeExtraInfoWidget implements IExtraInfoWidget {
 	 * 
 	 * @see IExtraInfoWidget#display()
 	 */
+	@Override
 	public void display() {
 
 		// Set the displayed flag
@@ -99,6 +100,7 @@ public class FakeExtraInfoWidget implements IExtraInfoWidget {
 	 * 
 	 * @see IExtraInfoWidget#setForm(Form form)
 	 */
+	@Override
 	public void setForm(Form form) {
 
 		widgetForm = form;
@@ -112,6 +114,7 @@ public class FakeExtraInfoWidget implements IExtraInfoWidget {
 	 * 
 	 * @see IExtraInfoWidget#getForm()
 	 */
+	@Override
 	public Form getForm() {
 
 		return widgetForm;
@@ -122,6 +125,7 @@ public class FakeExtraInfoWidget implements IExtraInfoWidget {
 	 * 
 	 * @see IExtraInfoWidget#setCloseListener(IWidgetClosedListener listener)
 	 */
+	@Override
 	public void setCloseListener(IWidgetClosedListener listener) {
 
 		// Add the listener

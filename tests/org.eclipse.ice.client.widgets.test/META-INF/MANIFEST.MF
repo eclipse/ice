@@ -10,5 +10,7 @@ Import-Package: org.eclipse.ice.viz.service,
  org.junit
 Require-Bundle: org.eclipse.swtbot.eclipse.core;bundle-version="2.2.1",
  org.eclipse.swtbot.go;bundle-version="2.2.1",
- org.eclipse.swtbot.swt.finder
+ org.eclipse.swtbot.swt.finder,
+ org.eclipse.ice.client.widgets.test.utils,
+ org.eclipse.ice.materials
 Bundle-Vendor: Oak Ridge National Laboratory

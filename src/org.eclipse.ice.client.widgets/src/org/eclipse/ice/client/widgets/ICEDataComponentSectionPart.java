@@ -114,6 +114,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 
 		// Set an expansion listener
 		section.addExpansionListener(new ExpansionAdapter() {
+			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
 				// To get this to layout properly the scrolled form must be
 				// redrawn (reflow) and its grandparent must be laid out again.
@@ -212,6 +213,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
 	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// Make sure the components are the same --- FIXME: Will require a

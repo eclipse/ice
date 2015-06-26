@@ -72,6 +72,7 @@ public enum MaterialType {
 	 * <p>Returns the string name of the enumerated value.</p>
 	 * @return <p>The name of the enumerated value.</p>
 	 */
+	@Override
 	public String toString() {
 
 		return name;

@@ -70,6 +70,7 @@ public class RenameNodeTreeAction extends AbstractTreeAction {
 			// validator does not allow empty strings, long strings,
 			// or most special characters.
 			IInputValidator validator = new IInputValidator() {
+				@Override
 				public String isValid(String newText) {
 					// error is the error message. If null by the
 					// end of the method, then newText is accepted.

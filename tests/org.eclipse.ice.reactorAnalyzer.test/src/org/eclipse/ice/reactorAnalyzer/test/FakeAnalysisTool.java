@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.reactorAnalyzer.test;
 
-import org.eclipse.ice.analysistool.IAnalysisTool;
-import org.eclipse.ice.analysistool.IAnalysisDocument;
-import org.eclipse.ice.analysistool.IDataProvider;
-
 import java.net.URI;
+
+import org.eclipse.ice.analysistool.IAnalysisDocument;
+import org.eclipse.ice.analysistool.IAnalysisTool;
+import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * <p>
@@ -89,6 +89,7 @@ public class FakeAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#close()
 	 */
+	@Override
 	public Boolean close() {
 		// TODO Auto-generated method stub
 		return true;
@@ -99,6 +100,7 @@ public class FakeAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#getName()
 	 */
+	@Override
 	public String getName() {
 		return "Fake Analysis Tool";
 	}
@@ -108,6 +110,7 @@ public class FakeAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#getVersion()
 	 */
+	@Override
 	public String getVersion() {
 		return "1.0.0";
 	}
@@ -117,6 +120,7 @@ public class FakeAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#createDocument(URI data)
 	 */
+	@Override
 	public IAnalysisDocument createDocument(URI data) {
 
 		// Create the document if necessary
@@ -132,6 +136,7 @@ public class FakeAnalysisTool implements IAnalysisTool {
 	 * 
 	 * @see IAnalysisTool#isReady()
 	 */
+	@Override
 	public boolean isReady() {
 		return true;
 	}

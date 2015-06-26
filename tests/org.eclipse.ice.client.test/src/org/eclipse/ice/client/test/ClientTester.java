@@ -12,19 +12,20 @@
  *******************************************************************************/
 package org.eclipse.ice.client.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.ice.client.internal.Client;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.resource.ICEResource;
-
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 

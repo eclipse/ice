@@ -15,10 +15,9 @@ package org.eclipse.ice.client.widgets.mesh.properties;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
-
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -83,6 +82,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 	 * Creates the controls displayed in the section. It needs to at least
 	 * initialize {@link #nameText}, {@link #descText}, and {@link #idLabel}.
 	 */
+	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		// Call the super method first.
@@ -126,6 +126,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 		// Add a listener to modify the IMeshPart's description when the
 		// description Text field is changed.
 		descText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				if (object != null) {
 					object.setDescription(descText.getText());
@@ -155,6 +156,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 	 * This should take an {@link IMeshPart} from the current selection and set
 	 * it as the {@link #object} whose properties are exposed.
 	 */
+	@Override
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		super.setInput(part, selection);
 
@@ -182,6 +184,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 	/**
 	 * This should dispose of any resources used by this section.
 	 */
+	@Override
 	public void dispose() {
 		// Reset the object reference.
 		object = null;
@@ -203,6 +206,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 	 * This should update all of the widgets that show data from the associated
 	 * {@link IMeshPart}.
 	 */
+	@Override
 	public void refresh() {
 		// If there is a valid object, refresh all of the editable controls.
 		if (object != null) {

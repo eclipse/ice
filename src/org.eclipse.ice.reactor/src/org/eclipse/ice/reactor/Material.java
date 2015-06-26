@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
  * <p>
@@ -138,21 +139,10 @@ public class Material extends LWRComponent {
 		return this.materialType;
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -181,15 +171,10 @@ public class Material extends LWRComponent {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -226,15 +211,10 @@ public class Material extends LWRComponent {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public Object clone() {
 		// Local Delcarations
 		Material material = new Material();
@@ -247,12 +227,10 @@ public class Material extends LWRComponent {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -263,11 +241,10 @@ public class Material extends LWRComponent {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations

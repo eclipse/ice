@@ -20,7 +20,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * This is the base class for visualization service preference pages added to
- * the Eclipse IDE's Window -> Preferences dialog.
+ * the Eclipse IDE's Window > Preferences dialog.
  * <p>
  * For an example of how to create a preference page using this class, see
  * {@link VizPreferencePage} and its class documentation.
@@ -97,6 +97,7 @@ public abstract class AbstractVizPreferencePage extends
 	 * 
 	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
 	 */
+	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
 		// This method is used to get the page's preference store. This method
 		// will be called by the super class only when the store is unset and

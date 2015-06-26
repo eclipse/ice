@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets.geometry;
 
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
-
 import org.eclipse.jface.databinding.swt.IWidgetValueProperty;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
@@ -99,6 +98,7 @@ public class TransformationView extends ViewPart {
 	 * 
 	 * @param parent
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 
 		// Create a scrolled composite - scroll bars!

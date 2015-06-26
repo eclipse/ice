@@ -19,20 +19,18 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.client.widgets.ICEFormEditor;
+import org.eclipse.ice.client.widgets.ICETableComponentSectionPart;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import org.eclipse.ice.client.widgets.ICEFormEditor;
-import org.eclipse.ice.client.widgets.ICETableComponentSectionPart;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.TableComponent;
 
 /**
  * <p>

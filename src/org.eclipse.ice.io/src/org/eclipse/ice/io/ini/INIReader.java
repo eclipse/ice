@@ -362,6 +362,7 @@ public class INIReader implements ITemplatedReader {
 			final ArrayList<String> allowedVals,
 			final AllowedValueType valueType) {
 		Entry entry = new Entry() {
+			@Override
 			protected void setup() {
 				this.setName(name);
 				this.tag = "";
@@ -384,6 +385,7 @@ public class INIReader implements ITemplatedReader {
 	 * @param comm
 	 *            The comment string to look for
 	 */
+	@Override
 	public void setCommentString(String comm) {
 		comment = comm;
 	}
@@ -394,6 +396,7 @@ public class INIReader implements ITemplatedReader {
 	 * @param indent
 	 *            Set how to indent on sections
 	 */
+	@Override
 	public void setIndentString(String indent) {
 		sectionIndent = indent;
 	}
@@ -404,6 +407,7 @@ public class INIReader implements ITemplatedReader {
 	 * @param regex
 	 *            A regular expression to match to section headers
 	 */
+	@Override
 	public void setSectionPattern(String regex) {
 		sectionPattern = Pattern.compile(regex);
 	}
@@ -414,6 +418,7 @@ public class INIReader implements ITemplatedReader {
 	 * @param regex
 	 *            How to search for variable assignments
 	 */
+	@Override
 	public void setAssignmentPattern(String regex) {
 		assignmentPattern = regex;
 	}
@@ -425,6 +430,7 @@ public class INIReader implements ITemplatedReader {
 	 *            the type of template that should be used to validate the form
 	 *            after calling read()
 	 */
+	@Override
 	public void setTemplateType(String template) {
 		if (templateMap.containsKey(template)) {
 			templateFile = templateMap.get(template);
@@ -441,6 +447,7 @@ public class INIReader implements ITemplatedReader {
 	 * @param file
 	 *            The template file
 	 */
+	@Override
 	public void addTemplateType(String name, IFile file) {
 		// We are going remove the template if it exists
 		if (templateMap.containsKey(name)) {
@@ -460,7 +467,7 @@ public class INIReader implements ITemplatedReader {
 	 * @param regex
 	 *            A string representing a regular expression containing the
 	 *            specification of what to search for
-	 * @return an ArrayList<Entry> with the description set to the regex and the
+	 * @return an {@code ArrayList<Entry>} with the description set to the regex and the
 	 *         value set to the results.
 	 */
 	@Override

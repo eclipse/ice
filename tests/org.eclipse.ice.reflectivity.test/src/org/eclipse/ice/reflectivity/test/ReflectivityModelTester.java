@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.IElementSource;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.reflectivity.ReflectivityModel;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ca.odell.glazedlists.EventList;
@@ -46,7 +44,6 @@ public class ReflectivityModelTester implements IMaterialsDatabase {
 	public void checkConstruction() {
 
 		// Local Declarations
-		int listID = 1;
 		ListComponent<Material> list;
 
 		// Just create one with the nullary constructor
@@ -57,10 +54,10 @@ public class ReflectivityModelTester implements IMaterialsDatabase {
 
 		// Make sure we have a form and some components
 		assertNotNull(model.getForm());
-		assertEquals(1, model.getForm().getComponents().size());
+		assertEquals(2, model.getForm().getComponents().size());
 
 		// Get the table component
-		list = (ListComponent<Material>) model.getForm().getComponent(listID);
+		list = (ListComponent<Material>) model.getForm().getComponent(ReflectivityModel.matListId);
 
 		// Make sure it's not null and the name is correct
 		assertNotNull(list);

@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,24 +25,23 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Before;
-import org.junit.Test;
 import org.eclipse.ice.analysistool.IAnalysisAsset;
 import org.eclipse.ice.analysistool.IAnalysisDocument;
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.ice.kdd.KDDAnalysisTool;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
 import org.eclipse.ice.kdd.kddstrategy.godfreystrategy.GodfreyBuilder;
-import org.eclipse.ice.kdd.kddstrategy.godfreystrategy.GodfreyStrategy;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleData;
 import org.eclipse.ice.kdd.test.fakeobjects.SimpleDataProvider;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * <p>

@@ -318,6 +318,7 @@ public class PipeController extends AbstractPlantController {
 	/**
 	 * Updates the {@link #view} depending on the changes in the {@link #model}.
 	 */
+	@Override
 	public void update(IUpdateable component) {
 
 		// If the argument matches the model, then we may need to update the
@@ -338,6 +339,7 @@ public class PipeController extends AbstractPlantController {
 			// Add a new ISyncAction to synchronize these properties with the
 			// view.
 			renderQueue.enqueue(new Callable<Boolean>() {
+				@Override
 				public Boolean call() {
 					view.setLocation(location);
 					view.setRotation(rotation);

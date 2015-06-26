@@ -12,13 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -210,6 +205,7 @@ public class HeatExchanger extends GeometricalComponent {
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -239,6 +235,7 @@ public class HeatExchanger extends GeometricalComponent {
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		HeatExchanger clone = new HeatExchanger();
@@ -284,6 +281,7 @@ public class HeatExchanger extends GeometricalComponent {
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		int hash = super.hashCode();
@@ -306,6 +304,7 @@ public class HeatExchanger extends GeometricalComponent {
 	 *            The PlantComponent's visitor.
 	 *            </p>
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 
 		if (visitor != null) {
@@ -366,6 +365,7 @@ public class HeatExchanger extends GeometricalComponent {
 	 * Overrides the default behavior so that the primary and secondary Pipes
 	 * get the same ID as the HeatExchanger.
 	 */
+	@Override
 	public void setId(int id) {
 		// Set the IDs for the Pipes.
 		if (primaryPipe != null) {

@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.eclipse.ice.io.hdf.IHdfReadable;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.LWRComponentReader;
@@ -37,6 +36,8 @@ import org.eclipse.ice.reactor.pwr.FuelAssembly;
 import org.eclipse.ice.reactor.pwr.IncoreInstrument;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * 

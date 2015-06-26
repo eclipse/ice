@@ -15,6 +15,7 @@ package org.eclipse.ice.core.jaxrs.test;
 import javax.ws.rs.core.MediaType;
 
 import org.junit.Test;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;

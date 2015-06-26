@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
@@ -42,22 +42,23 @@ import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.swt.layout.GridData;
 
 /**
  * This is a FormPage that can render ListComponents into pages usable by the
  * ICEFormEditor.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Kasper Gammeltoft
  * 
  */
 public class ListComponentSectionPage extends ICEFormPage {
@@ -82,10 +83,15 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 * The composite that will act as the client of the section where everything
 	 * is drawn.
 	 */
-	Composite sectionClient;
+	private Composite sectionClient;
 
 	/**
-	 * The Constructor
+	 * The NatTable that is displayed
+	 */
+	private ListComponentNattable table;
+
+	/**
+	 * The Constructor.
 	 * 
 	 * @param editor
 	 *            The FormEditor for which the Page should be constructed.
@@ -105,6 +111,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 * org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui
 	 * .forms.IManagedForm)
 	 */
+	@Override
 	protected void createFormContent(IManagedForm managedForm) {
 
 		// Get the parent form and the toolkit
@@ -122,6 +129,7 @@ public class ListComponentSectionPage extends ICEFormPage {
 
 			// Get the parent
 			Composite parent = managedForm.getForm().getBody();
+
 			shell = parent.getShell();
 			// Create the section and set its layout info
 			Section listSection = formToolkit.createSection(parent,
@@ -136,12 +144,17 @@ public class ListComponentSectionPage extends ICEFormPage {
 			sectionClient.setLayout(new GridLayout(2, false));
 			sectionClient.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 					true, 1, 1));
+			// Fixes section header bug where label color is spammed
+			sectionClient.setBackground(Display.getCurrent().getSystemColor(
+					SWT.COLOR_WHITE));
+			// Fixes background color bug for NatTable
+			sectionClient.setBackgroundMode(SWT.INHERIT_FORCE);
 
-			// Draw the table
-			configureTable();
+			// Draws the table and sets that instance variable
+			table = new ListComponentNattable(sectionClient, list, true);
 
-			// Create the Add/Delete buttons
-			createAddDeleteButtons();
+			// Create the buttons for add, delete, up, and down
+			createButtons();
 
 			// Set the section client.
 			listSection.setClient(sectionClient);
@@ -152,9 +165,9 @@ public class ListComponentSectionPage extends ICEFormPage {
 
 	/**
 	 * This operation creates the add and delete buttons that are used to add
-	 * layers to the table.
+	 * layers to the table. Also creates buttons for moving layers around.
 	 */
-	private void createAddDeleteButtons() {
+	private void createButtons() {
 
 		// Create a composite for holding Add/Delete buttons to manipulate
 		// the table and lay it out.
@@ -219,83 +232,148 @@ public class ListComponentSectionPage extends ICEFormPage {
 		// from the list.
 		Button deleteMaterialButton = new Button(listButtonComposite, SWT.PUSH);
 		deleteMaterialButton.setText("Delete");
+		deleteMaterialButton.addSelectionListener(new SelectionListener() {
 
-		return;
-	}
-
-	/**
-	 * This operation configures the NatTable used to render the ListComponent
-	 * on the screen.
-	 */
-	private void configureTable() {
-
-		// Create the data layer of the table
-		IColumnPropertyAccessor accessor = new ListComponentColumnPropertyAccessor(
-				list);
-		IDataProvider dataProvider = new ListDataProvider(list, accessor);
-		DataLayer dataLayer = new DataLayer(dataProvider);
-		GlazedListsEventLayer eventLayer = new GlazedListsEventLayer(dataLayer,
-				list);
-
-		// Create the selection and viewport layers of the table
-		SelectionLayer selectionLayer = new SelectionLayer(eventLayer);
-		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
-
-		// Get the column names
-		String[] columnNames = new String[list.getColumnCount()];
-		for (int i = 0; i < list.getColumnCount(); i++) {
-			columnNames[i] = list.getColumnName(i);
-		}
-
-		// Create the column header layer (column names) of the table
-		IDataProvider columnHeaderDataProvider = new DefaultColumnHeaderDataProvider(
-				columnNames);
-		DataLayer columnHeaderDataLayer = new DefaultColumnHeaderDataLayer(
-				columnHeaderDataProvider);
-		ILayer columnHeaderLayer = new ColumnHeaderLayer(columnHeaderDataLayer,
-				viewportLayer, selectionLayer);
-		// Turn the column labels on by default
-		columnHeaderDataLayer
-				.setConfigLabelAccumulator(new ColumnLabelAccumulator());
-
-		// Create the row header layer (row names) of the table
-		IDataProvider rowHeaderDataProvider = new DefaultRowHeaderDataProvider(
-				dataProvider);
-		DataLayer rowHeaderDataLayer = new DefaultRowHeaderDataLayer(
-				rowHeaderDataProvider);
-		ILayer rowHeaderLayer = new RowHeaderLayer(rowHeaderDataLayer,
-				viewportLayer, selectionLayer);
-
-		// Create the corner layer of the table
-		IDataProvider cornerDataProvider = new DefaultCornerDataProvider(
-				columnHeaderDataProvider, rowHeaderDataProvider);
-		DataLayer cornerDataLayer = new DataLayer(cornerDataProvider);
-		ILayer cornerLayer = new CornerLayer(cornerDataLayer, rowHeaderLayer,
-				columnHeaderLayer);
-
-		// Create the grid layer and the table
-		GridLayer gridLayer = new GridLayer(viewportLayer, columnHeaderLayer,
-				rowHeaderLayer, cornerLayer);
-		NatTable natTable = new NatTable(sectionClient, gridLayer, false);
-		ConfigRegistry configRegistry = new ConfigRegistry();
-		natTable.setConfigRegistry(configRegistry);
-		// Set the default table style
-		natTable.addConfiguration(new DefaultNatTableStyleConfiguration());
-
-		// Make the table editable by updating the configuration rules
-		natTable.addConfiguration(new AbstractRegistryConfiguration() {
 			@Override
-			public void configureRegistry(IConfigRegistry configRegistry) {
-				configRegistry.registerConfigAttribute(
-						EditConfigAttributes.CELL_EDITABLE_RULE,
-						IEditableRule.ALWAYS_EDITABLE);
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+
 			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+
+				// checks if list has something to delete
+				if (list.size() > 0) {
+					ListComponent selected = table.getSelectedObjects();
+					if (selected.size() > 0) {
+
+						// removes that material from the list
+						// lock the list before removing the selection
+						list.getReadWriteLock().writeLock().lock();
+						try {
+							for (Object o : selected) {
+								list.remove(o);
+							}
+						} finally {
+							// Unlock it
+							list.getReadWriteLock().writeLock().unlock();
+						}
+					}
+				}
+			}
+
 		});
 
-		// Configure the table (lay it out)
-		natTable.configure();
-		natTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
-				1));
+		// Move up button, moves the selected rows up one index.
+		Button moveUpButton = new Button(listButtonComposite, SWT.PUSH);
+		moveUpButton.setText("^");
+		moveUpButton.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				// Makes sure there is actually data in the list to manipulate
+				if (list.size() > 0) {
+					// Gets selected rows
+					ListComponent selected = table.getSelectedObjects();
+					// Makes sure there are selected rows
+					if (selected.size() > 0) {
+						int numSelected = selected.size();
+						// Makes sure that the user does not move the cell at
+						// position 0 to position -1 (past top of table)
+						if (!(selected.get(0).equals(list.get(0)))) {
+
+							list.getReadWriteLock().writeLock().lock();
+
+							// Gets the object in the list that will be
+							// overridden
+							int index = 0;
+							Object toMove = list.get(0);
+
+							// Overrides the list entries to move the selected
+							// rows up by one row
+							for (int i = 0; i < numSelected; i++) {
+								index = list.indexOf(selected.get(i)) - 1;
+								toMove = list.get(index);
+								list.set(index, selected.get(i));
+								list.set(index + 1, toMove);
+
+							}
+
+							// Resets the overridden row to be at the end of the
+							// selected rows
+							list.set(index + 1, toMove);
+
+							// Unlocks the list
+							list.getReadWriteLock().writeLock().unlock();
+							table.setSelection(selected);
+
+						}
+
+					}
+				}
+			}
+
+		});
+
+		// Move down button, moves the currently selected rows down one index.
+		Button moveDownButton = new Button(listButtonComposite, SWT.PUSH);
+		moveDownButton.setText("v");
+		moveDownButton.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				// makes sure there is actually data in the list to manipulate
+				if (list.size() > 0) {
+					// Gets selected rows
+					ListComponent selected = table.getSelectedObjects();
+					// Makes sure there are selected rows
+					if (selected.size() > 0) {
+						int numSelected = selected.size();
+						// Makes sure that the user does not move the selected
+						// cell past the end of the table.
+						if (!(selected.get(numSelected - 1).equals(list
+								.get(list.size() - 1)))) {
+
+							list.getReadWriteLock().writeLock().lock();
+
+							// Gets the object in the list that will be
+							// overridden
+							int index = 0;
+							Object toMove = list.get(0);
+
+							// Overrides the list entries to move the selected
+							// rows up by one row
+							for (int i = numSelected - 1; i >= 0; i--) {
+								index = list.indexOf(selected.get(i)) + 1;
+								toMove = list.get(index);
+								list.set(index, selected.get(i));
+								list.set(index - 1, toMove);
+
+							}
+
+							// Resets the overridden row to be at the end of the
+							// selected rows
+							list.set(index - 1, toMove);
+
+							// Unlocks the list
+							list.getReadWriteLock().writeLock().unlock();
+							table.setSelection(selected);
+						}
+					}
+				}
+			}
+
+		});
 
 		return;
 	}
@@ -305,7 +383,8 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 * the section page.
 	 * 
 	 * @param list
-	 *            The ListComponent
+	 *            The ListComponent to set as the new list for this section page
+	 *            and for the data to be displayed in its table.
 	 */
 	public void setList(ListComponent list) {
 		this.list = list;

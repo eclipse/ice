@@ -11,19 +11,28 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import java.util.List;
-
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.visit.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 
@@ -74,6 +83,27 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * </p>
 	 */
 	private String plotType;
+
+	/**
+	 * The widget used to adjust the current timestep.
+	 */
+	private TimeSliderComposite timeSlider;
+
+	/**
+	 * The currently timestep rendered by the VisIt widget.
+	 */
+	private int renderedTimestep = 0;
+	/**
+	 * The current timestep as reported by the {@link #timeSlider} on the UI
+	 * thread.
+	 */
+	private final AtomicInteger widgetTimestep = new AtomicInteger();
+	/**
+	 * An ExecutorService for launching worker threads. Only one thread is
+	 * processed at a time in the order in which they are added.
+	 */
+	private final ExecutorService executorService = Executors
+			.newSingleThreadExecutor();
 
 	/**
 	 * The plot {@code Composite} that renders the files through the VisIt
@@ -133,14 +163,20 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 */
 	@Override
 	protected Composite createPlotComposite(Composite parent, int style,
-			VisItSwtConnection connection) throws Exception {
+			final VisItSwtConnection connection) throws Exception {
 
 		// Create a new window on the VisIt server if one does not already
 		// exist. We will need the corresponding connection and a window ID. If
 		// the window ID is -1, a new one is created.
 
+		Composite container = new Composite(parent, style);
+		container.setBackground(parent.getBackground());
+		container.setLayout(new GridLayout(1, false));
+
 		// Create the canvas.
-		canvas = new VisItSwtWidget(parent, style | SWT.DOUBLE_BUFFERED);
+		canvas = new VisItSwtWidget(container, SWT.DOUBLE_BUFFERED);
+		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		canvas.setBackground(parent.getBackground());
 		int windowWidth = Integer.parseInt(adapter
 				.getConnectionProperty("windowWidth"));
 		int windowHeight = Integer.parseInt(adapter
@@ -166,7 +202,6 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 			// and types in case it's not already available.
 		}
 
-		// FIXME There may be a better way to do this...
 		// When the Menu is about to be shown, add the representation options to
 		// it.
 		menu.addMenuListener(new MenuListener() {
@@ -183,7 +218,61 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 		canvas.setMenu(menu);
 
-		return canvas;
+		// Add a time slider widget.
+		timeSlider = new TimeSliderComposite(container, SWT.NONE);
+		timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		timeSlider.setBackground(parent.getBackground());
+		// Add a listener to trigger an update to the current timestep.
+		timeSlider.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Record the current timestep from the TimeSliderComposite.
+				widgetTimestep.set(timeSlider.getTimestep());
+
+				// Launch a worker thread to update the timestep for the VisIt
+				// widget.
+				executorService.submit(new Runnable() {
+					@Override
+					public void run() {
+
+						// FIXME We need a way to move to a specific timestep
+						// rather than cycling through them.
+
+						ViewerMethods methods = connection.getViewerMethods();
+
+						// Send next or previous timestep requests to the VisIt
+						// widget until it matches the current timestep in the
+						// TimeSliderComposite.
+						int targetStep;
+						while (renderedTimestep != (targetStep = widgetTimestep
+								.get())) {
+							if (renderedTimestep < targetStep) {
+								methods.animationNextState();
+								renderedTimestep++;
+							} else {
+								methods.animationPreviousState();
+								renderedTimestep--;
+							}
+						}
+						return;
+					}
+				});
+				return;
+			}
+		});
+
+		// TODO We need to figure out how to get the actual times from the VisIt
+		// client API. We are currently using the timestep indices.
+		// Get the available timesteps.
+		ViewerMethods widget = connection.getViewerMethods();
+		int timestepCount = widget.timeSliderGetNStates();
+		List<Double> times = new ArrayList<Double>(timestepCount);
+		for (double i = 0.0; i < timestepCount; i++) {
+			times.add(i);
+		}
+		timeSlider.setTimes(times);
+
+		return container;
 	}
 
 	/*
@@ -197,7 +286,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 			VisItSwtConnection connection) throws Exception {
 
 		// Check the input arguments. The canvas should be the plot Composite.
-		if (plotComposite != canvas) {
+		if (plotComposite != canvas.getParent()) {
 			throw new Exception("VisItPlot error: "
 					+ "The canvas was not created properly.");
 		}
@@ -245,11 +334,6 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// update the reference to the currently drawn category and type and
 		// update the widget.
 		if (plotTypeChanged) {
-
-			// TODO Remove this output...
-			System.out.println("VisItPlot message: " + "Drawing plot "
-					+ category + " - " + type + " for source file \""
-					+ sourcePath + "\".");
 
 			// Draw the specified plot on the Canvas.
 			ViewerMethods widget = canvas.getViewerMethods();

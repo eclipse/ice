@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.test;
 
-import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
+import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 
 /**
@@ -73,6 +73,7 @@ public class TestShapeVisitor implements IShapeVisitor {
 	 * 
 	 * @see IShapeVisitor#visit(ComplexShape complexShape)
 	 */
+	@Override
 	public void visit(ComplexShape complexShape) {
 		visits++;
 	}
@@ -82,6 +83,7 @@ public class TestShapeVisitor implements IShapeVisitor {
 	 * 
 	 * @see IShapeVisitor#visit(PrimitiveShape primitiveShape)
 	 */
+	@Override
 	public void visit(PrimitiveShape primitiveShape) {
 		visits++;
 	}

@@ -12,26 +12,22 @@
  *******************************************************************************/
 package org.eclipse.ice.client.internal;
 
-import org.eclipse.ice.core.iCore.ICore;
-
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.ICEObject.ICEList;
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
-
-import java.util.ArrayList;
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import javax.ws.rs.core.MediaType;
+
+import org.eclipse.ice.core.iCore.ICore;
+import org.eclipse.ice.datastructures.ICEObject.ICEList;
+import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
-
-import javax.ws.rs.core.MediaType;
-
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 /**
@@ -220,6 +216,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#connect()
 	 */
+	@Override
 	public String connect() {
 
 		// Only load the resource if the hostname is valid
@@ -244,6 +241,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#disconnect(int uniqueClientId)
 	 */
+	@Override
 	public void disconnect(int uniqueClientId) {
 		// TODO Auto-generated method stub
 
@@ -254,6 +252,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#getFileSystem(int uniqueClientID)
 	 */
+	@Override
 	public Form getFileSystem(int uniqueClientID) {
 		// TODO Auto-generated method stub
 		return null;
@@ -264,6 +263,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#registerItem(ItemBuilder itemBuilder)
 	 */
+	@Override
 	public void registerItem(ItemBuilder itemBuilder) {
 		// TODO Auto-generated method stub
 
@@ -274,6 +274,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#registerCompositeItem(ICompositeItemBuilder builder)
 	 */
+	@Override
 	public void registerCompositeItem(ICompositeItemBuilder builder) {
 		// TODO Auto-generated method stub
 
@@ -284,6 +285,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#unregisterItem(ItemBuilder itemBuilder)
 	 */
+	@Override
 	public void unregisterItem(ItemBuilder itemBuilder) {
 		// TODO Auto-generated method stub
 
@@ -294,6 +296,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#createItem(String itemType)
 	 */
+	@Override
 	public String createItem(String itemType) {
 
 		// Local Declarations
@@ -322,6 +325,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#deleteItem(String itemId)
 	 */
+	@Override
 	public void deleteItem(String itemId) {
 		// TODO Auto-generated method stub
 
@@ -332,6 +336,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#getItemStatus(Integer id)
 	 */
+	@Override
 	public FormStatus getItemStatus(Integer id) {
 		// TODO Auto-generated method stub
 		return null;
@@ -342,6 +347,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#getItem(int itemId)
 	 */
+	@Override
 	public Form getItem(int itemId) {
 
 		// Local Declarations
@@ -367,6 +373,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#getAvailableItemTypes()
 	 */
+	@Override
 	public ICEList<String> getAvailableItemTypes() {
 
 		// Local Declarations
@@ -391,6 +398,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#updateItem(Form form, int uniqueClientId)
 	 */
+	@Override
 	public FormStatus updateItem(Form form, int uniqueClientId) {
 		// TODO Auto-generated method stub
 		return null;
@@ -401,6 +409,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#processItem(int itemId, String actionName, int uniqueClientId)
 	 */
+	@Override
 	public FormStatus processItem(int itemId, String actionName,
 			int uniqueClientId) {
 		// TODO Auto-generated method stub
@@ -412,6 +421,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#getItemList()
 	 */
+	@Override
 	public ArrayList<Identifiable> getItemList() {
 		// TODO Auto-generated method stub
 		return null;
@@ -422,6 +432,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#getItemOutputFile(int id)
 	 */
+	@Override
 	public File getItemOutputFile(int id) {
 		// TODO Auto-generated method stub
 		return null;
@@ -432,6 +443,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#cancelItemProcess(int itemId, String actionName)
 	 */
+	@Override
 	public FormStatus cancelItemProcess(int itemId, String actionName) {
 		// TODO Auto-generated method stub
 		return null;
@@ -442,6 +454,7 @@ public class RemoteCoreProxy implements ICore {
 	 * 
 	 * @see ICore#importFile(URI file)
 	 */
+	@Override
 	public void importFile(URI file) {
 		// TODO Auto-generated method stub
 

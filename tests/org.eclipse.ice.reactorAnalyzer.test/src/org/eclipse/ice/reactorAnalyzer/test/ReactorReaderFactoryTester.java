@@ -18,16 +18,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.net.URI;
+
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.reactor.LWRComponentWriter;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.sfr.base.SFReactorIOHandler;
 import org.eclipse.ice.reactor.sfr.core.SFReactor;
 import org.eclipse.ice.reactorAnalyzer.ReactorReaderFactory;
-
-import java.io.File;
-import java.net.URI;
-
 import org.junit.Test;
 
 public class ReactorReaderFactoryTester {

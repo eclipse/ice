@@ -28,12 +28,12 @@ import org.eclipse.swt.widgets.TableColumn;
  * properties.
  * <p>
  * Additional features include:
+ * </p>
  * <ul>
  * <li>A column for enabling/disabling the <code>Entry</code> (disabling
  * comments them out in the input file).</li>
  * <li>A column for the <code>Entry</code> description or comments.</li>
  * </ul>
- * </p>
  * 
  * @author Jordan H. Deyton
  * 

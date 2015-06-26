@@ -78,6 +78,7 @@ public class ItemViewer extends ViewPart {
 		// Setup the thread that will wait for the client to come alive and then
 		// add the items to the table
 		drawThread = new Thread(new Runnable() {
+			@Override
 			public void run() {
 				// Wait until the client is available
 				while (client == null) {
@@ -94,6 +95,7 @@ public class ItemViewer extends ViewPart {
 				// Sync with the display
 				PlatformUI.getWorkbench().getDisplay()
 						.asyncExec(new Runnable() {
+							@Override
 							public void run() {
 								// If the client is no longer null, set the
 								// input on the
@@ -192,6 +194,7 @@ public class ItemViewer extends ViewPart {
 
 		// Create an update thread
 		Thread updateThread = new Thread() {
+			@Override
 			public void run() {
 				while (true) {
 					// Only update if the display is running
@@ -201,6 +204,7 @@ public class ItemViewer extends ViewPart {
 						// Asynchronously refresh the tableviewer
 						PlatformUI.getWorkbench().getDisplay()
 								.asyncExec(new Runnable() {
+									@Override
 									public void run() {
 										// Just do a blanket update
 										if (!tableViewer.getTable()

@@ -13,15 +13,10 @@
 package org.eclipse.ice.kdd.test.fakeobjects;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
-import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
-import org.eclipse.ice.kdd.test.fakeobjects.FakeStrategy;
 
 import org.eclipse.ice.analysistool.IDataProvider;
-import static org.eclipse.ice.kdd.test.fakeobjects.FakeStrategy.*;
-import static org.junit.Assert.assertTrue;
+import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
+import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
 
 /**
  * <p>

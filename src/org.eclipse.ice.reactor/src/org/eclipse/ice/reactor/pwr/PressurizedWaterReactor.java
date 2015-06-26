@@ -12,25 +12,19 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.pwr;
 
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
+import org.eclipse.ice.io.hdf.IHdfReadable;
 import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.GridLabelProvider;
@@ -263,15 +257,10 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the number of fuel assemblies across the core.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The number of fuel assemblies across the core.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
+	@Override
 	public int getSize() {
 
 		return this.size;
@@ -348,16 +337,10 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation reads Attributes from h5Group and assigns their values to
-	 * class variables. If h5Group is null, false is returned. Otherwise, true
-	 * is returned.
-	 * </p>
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWReactor.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		boolean flag = super.readAttributes(h5Group);
@@ -401,12 +384,10 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWReactor.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 
 		boolean flag = true;
@@ -418,21 +399,10 @@ public class PressurizedWaterReactor extends LWReactor {
 		return flag;
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// Local Declarations
 		PressurizedWaterReactor reactor;
@@ -460,10 +430,10 @@ public class PressurizedWaterReactor extends LWReactor {
 		return retVal;
 	}
 
-	/**
-	 * 
-	 * @return
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
 		// Get the children in super
@@ -485,16 +455,10 @@ public class PressurizedWaterReactor extends LWReactor {
 		return children;
 	}
 
-	/**
-	 * <p>
-	 * This operation returns an ArrayList of IHdfReadable child objects. If
-	 * this IHdfReadable has no IHdfReadable child objects, then null is
-	 * returned.
-	 * </p>
-	 * 
-	 * @param iHdfReadable
-	 * @return
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
 		// If the child is null or not an instance of LWRComponent, then return
@@ -591,15 +555,10 @@ public class PressurizedWaterReactor extends LWReactor {
 		return true;
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -685,15 +644,10 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -707,18 +661,10 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation accepts an ILWRComponentVisitor that can be visit the
-	 * LWRComponent to ascertain its type and perform various type-specific
-	 * operations.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            <p>
-	 *            The visitor
-	 *            </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

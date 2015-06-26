@@ -12,21 +12,18 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
 import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.h5.H5Datatype;
-import ncsa.hdf.object.h5.H5Group;
 import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
  * <p>
@@ -102,7 +99,7 @@ public class GridLabelProvider extends LWRComponent {
 		this.name = "GridLabelProvider 1";
 		this.description = "GridLabelProvider 1's Description";
 		this.id = 1;
-		this.HDF5LWRTag = HDF5LWRTag.GRID_LABEL_PROVIDER;
+		this.HDF5LWRTag = HDF5LWRTagType.GRID_LABEL_PROVIDER;
 
 		// Default values
 		this.size = 1;
@@ -294,6 +291,7 @@ public class GridLabelProvider extends LWRComponent {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -331,6 +329,7 @@ public class GridLabelProvider extends LWRComponent {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -393,6 +392,7 @@ public class GridLabelProvider extends LWRComponent {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -406,12 +406,10 @@ public class GridLabelProvider extends LWRComponent {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -422,12 +420,10 @@ public class GridLabelProvider extends LWRComponent {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -439,7 +435,7 @@ public class GridLabelProvider extends LWRComponent {
 		flag &= super.writeDatasets(h5File, h5Group);
 
 		H5Group labelsGroup = HdfWriterFactory.createH5Group(h5File,
-				this.LABELS_GROUP_NAME, h5Group);
+				GridLabelProvider.LABELS_GROUP_NAME, h5Group);
 
 		// If there are no columns or rows set, then return true
 		if (this.columnLabels.isEmpty() && this.rowLabels.isEmpty()) {
@@ -517,14 +513,10 @@ public class GridLabelProvider extends LWRComponent {
 		return flag;
 	}
 
-	/**
-	 * <p>
-	 * Overrides LWRComponent's readDatasets.
-	 * </p>
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readDatasets(H5Group h5Group) {
 
 		// Call super
@@ -584,11 +576,10 @@ public class GridLabelProvider extends LWRComponent {
 		return true;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations

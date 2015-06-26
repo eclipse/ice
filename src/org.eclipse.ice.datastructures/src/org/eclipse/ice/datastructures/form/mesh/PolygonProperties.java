@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * in the MESH DATA section of a Nek5000 reafile. Example:
  * </p>
  * <code>
- * >            ELEMENT      44 [    1R]  GROUP  0
+ *             ELEMENT      44 [    1R]  GROUP  0
  * </code>
  * <p>
  * For this Polygon, materialId = "1R", groupNum = 0.
@@ -133,6 +133,7 @@ public class PolygonProperties {
 	 *         </p>
 	 * 
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -166,6 +167,7 @@ public class PolygonProperties {
 	 *         The hash of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Add local hashes.
@@ -185,6 +187,7 @@ public class PolygonProperties {
 	 *         The new clone.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

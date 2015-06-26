@@ -128,6 +128,7 @@ public class GridDataManager extends GridManager {
 	 *            The object to compare against.
 	 * @return True if otherObject is equal. False otherwise.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -158,6 +159,7 @@ public class GridDataManager extends GridManager {
 	 * 
 	 * @return The hash of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Static hash at 31.
@@ -199,6 +201,7 @@ public class GridDataManager extends GridManager {
 	 * 
 	 * @return The newly instantiated cloned object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new GridManager.

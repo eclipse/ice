@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
+import java.net.URL;
+
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
@@ -19,9 +21,6 @@ import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
-
-import java.net.URL;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -91,6 +90,7 @@ public class ActionReplicateShape extends Action {
 	 * </p>
 	 * 
 	 */
+	@Override
 	public void run() {
 
 		GeometryComponent geometry = (GeometryComponent) view.treeViewer

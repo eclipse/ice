@@ -16,21 +16,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Vector;
 
-import ncsa.hdf.object.h5.H5CompoundDS;
-import ncsa.hdf.object.h5.H5Datatype;
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
 import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.HObject;
-import ncsa.hdf.object.h5.*;
-import ncsa.hdf.hdflib.*;
+import ncsa.hdf.object.h5.H5Datatype;
+import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
 
 import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.io.hdf.*;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
  * <p>
@@ -138,6 +135,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 *         True if otherObject is equal. False otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -200,6 +198,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 *         The hash of the object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -265,6 +264,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -283,6 +283,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * 
 	 * @see IGridManager#getComponentName(GridLocation location)
 	 */
+	@Override
 	public String getComponentName(GridLocation location) {
 
 		// If the location is not null, return the component
@@ -298,6 +299,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * @see IGridManager#addComponent(Component component, GridLocation
 	 *      location)
 	 */
+	@Override
 	public void addComponent(Component component, GridLocation location) {
 
 		// If the passed args are not null and if the locations are valid, add
@@ -318,6 +320,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * 
 	 * @see IGridManager#removeComponent(GridLocation location)
 	 */
+	@Override
 	public void removeComponent(GridLocation location) {
 
 		// If the location is not null, remove location
@@ -332,6 +335,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * 
 	 * @see IGridManager#removeComponent(Component component)
 	 */
+	@Override
 	public void removeComponent(Component component) {
 
 		// If the component is not null, remove the associated component
@@ -353,12 +357,10 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -369,22 +371,18 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
-
-		boolean flag = true;
 
 		// Return if the file or group is null
 		if (h5File == null || h5Group == null) {
 			return false;
 		}
 		// Call super's method
-		flag &= super.writeDatasets(h5File, h5Group);
+		super.writeDatasets(h5File, h5Group);
 
 		// Return true if there are no operations to write
 		if (this.lWRComponents.isEmpty()) {
@@ -392,8 +390,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		}
 		return this.writeFeatureSets(h5File, h5Group);
 	}
-
-	//
 
 	/**
 	 * This writes the FeatureSets due to a given location
@@ -406,7 +402,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * @return True if successful, false otherwise
 	 */
 	private boolean writeFeatureSets(H5File h5File, H5Group h5Group) {
-
 
 		// Return if the file or group is null
 		if (h5File == null || h5Group == null) {
@@ -607,8 +602,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 				ArrayList<IData> set = provider.getDataAtCurrentTime(provider
 						.getFeatureList().get(i));
 
-				H5Datatype datatype = null;
-
 				// Get the number of IDatas stored on the FeatureSet
 				int iDataSize = set.size();
 
@@ -691,17 +684,12 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		// Operation successful, return true
 		return true;
 
-
 	}
 
-	/**
-	 * <p>
-	 * Overrides LWRComponent's readDatasets.
-	 * </p>
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readDatasets(H5Group h5Group) {
 
 		// Call super
@@ -847,7 +835,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 *            The time steps on that group
 	 * @param arrayStrings
 	 *            An array of strings used to specify the unit list.
-	 * @return
+	 * @return True if the operation was successful, false otherwise.
 	 */
 	private boolean readTimeStepsAtFeature(LWRDataProvider provider,
 			ArrayList<H5Group> timeStepsMemberList, String[] arrayStrings) {
@@ -893,9 +881,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 				}
 
 				// get the dimensions of data and head
-				long dataRowSize = featureGroupData.getDims()[0];
 				long dataColSize = featureGroupData.getDims()[1];
-				long headRowSize = featureGroupHead.getDims()[0];
 				long headColSize = featureGroupHead.getDims()[1];
 
 				// Convert the data to a readable format
@@ -947,11 +933,10 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations

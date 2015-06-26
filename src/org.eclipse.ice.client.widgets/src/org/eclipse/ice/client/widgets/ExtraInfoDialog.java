@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import java.util.ArrayList;
-import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
-import org.eclipse.ice.datastructures.form.Entry;
 
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;

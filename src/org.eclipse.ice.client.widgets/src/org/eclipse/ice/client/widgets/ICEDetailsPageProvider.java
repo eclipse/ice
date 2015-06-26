@@ -12,14 +12,10 @@
 *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ui.forms.IDetailsPageProvider;
-
-import static org.eclipse.ice.client.widgets.ICEDataComponentDetailsPage.*;
-
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ui.forms.IDetailsPage;
+import org.eclipse.ui.forms.IDetailsPageProvider;
 
 /** 
  * <p>This class implements the IDetailsPageProvider interface to provide a Details pages for a MasterDetailsBlock. The only way to provide the MasterDetailsComponent handle for this class is through the constructor.</p>
@@ -66,6 +62,7 @@ public class ICEDetailsPageProvider implements IDetailsPageProvider {
 	 * (non-Javadoc)
 	 * @see IDetailsPageProvider#getPageKey(Object object)
 	 */
+	@Override
 	public Object getPageKey(Object object) {
 		return (String) object;
 	}
@@ -74,6 +71,7 @@ public class ICEDetailsPageProvider implements IDetailsPageProvider {
 	 * (non-Javadoc)
 	 * @see IDetailsPageProvider#getPage(Object key)
 	 */
+	@Override
 	public IDetailsPage getPage(Object key) {
 
 		// Local declarations

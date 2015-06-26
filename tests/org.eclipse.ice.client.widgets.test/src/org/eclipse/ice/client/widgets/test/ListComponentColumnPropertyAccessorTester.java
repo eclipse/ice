@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.ice.client.widgets.ListComponentColumnPropertyAccessor;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ca.odell.glazedlists.gui.WritableTableFormat;

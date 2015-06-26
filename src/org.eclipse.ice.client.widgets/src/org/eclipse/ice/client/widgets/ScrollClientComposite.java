@@ -317,7 +317,8 @@ public class ScrollClientComposite extends Composite {
 	 * Computes the available width for this {@code Composite} based on layout
 	 * padding and the client area of the {@link #scrolledAncestor}.
 	 * 
-	 * @return
+	 * @return The available width (in pixels) based on layout padding and the
+	 *         client area of the scrolled ancestor
 	 */
 	private int getAvailableWidth() {
 		return scrolledAncestor.getClientArea().width - totalPadLeft

@@ -13,8 +13,9 @@
 package org.eclipse.ice.io.hdf.test;
 
 import static org.junit.Assert.fail;
-import org.eclipse.ice.io.hdf.HdfIOFactory;
 
+import org.eclipse.ice.io.hdf.HdfIOFactory;
+import org.eclipse.ice.io.hdf.IHdfIORegistry;
 import org.junit.Ignore;
 import org.junit.Test;
 

@@ -12,16 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.test.fakeobjects;
 
-import org.eclipse.ice.analysistool.IDataProvider;
-import static org.eclipse.ice.kdd.test.fakeobjects.SimpleData.*;
-
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 import org.eclipse.ice.analysistool.IData;
-
-import java.util.ArrayList;
+import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * <p>
@@ -68,6 +63,7 @@ public class SimpleDataProvider implements IDataProvider {
 	 * 
 	 * @see IDataProvider#getFeatureList()
 	 */
+	@Override
 	public ArrayList<String> getFeatureList() {
 		return new ArrayList<String>(dataSet.keySet());
 	}
@@ -77,6 +73,7 @@ public class SimpleDataProvider implements IDataProvider {
 	 * 
 	 * @see IDataProvider#getNumberOfTimeSteps()
 	 */
+	@Override
 	public int getNumberOfTimeSteps() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -87,6 +84,7 @@ public class SimpleDataProvider implements IDataProvider {
 	 * 
 	 * @see IDataProvider#setTime(double step)
 	 */
+	@Override
 	public void setTime(double step) {
 		// TODO Auto-generated method stub
 
@@ -97,6 +95,7 @@ public class SimpleDataProvider implements IDataProvider {
 	 * 
 	 * @see IDataProvider#getDataAtCurrentTime(String feature)
 	 */
+	@Override
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
 		if (!dataSet.get(feature).isEmpty()) {
 			return dataSet.get(feature);
@@ -110,6 +109,7 @@ public class SimpleDataProvider implements IDataProvider {
 	 * 
 	 * @see IDataProvider#getSourceInfo()
 	 */
+	@Override
 	public String getSourceInfo() {
 		// TODO Auto-generated method stub
 		return null;
@@ -120,6 +120,7 @@ public class SimpleDataProvider implements IDataProvider {
 	 * 
 	 * @see IDataProvider#getFeaturesAtCurrentTime()
 	 */
+	@Override
 	public ArrayList<String> getFeaturesAtCurrentTime() {
 		return null;
 	}
@@ -129,6 +130,7 @@ public class SimpleDataProvider implements IDataProvider {
 	 * 
 	 * @see IDataProvider#getTimes()
 	 */
+	@Override
 	public ArrayList<Double> getTimes() {
 		// TODO Auto-generated method stub
 		return null;
@@ -139,6 +141,7 @@ public class SimpleDataProvider implements IDataProvider {
 	 * 
 	 * @see IDataProvider#getTimeStep(double time)
 	 */
+	@Override
 	public int getTimeStep(double time) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -149,6 +152,7 @@ public class SimpleDataProvider implements IDataProvider {
 	 * 
 	 * @see IDataProvider#getTimeUnits()
 	 */
+	@Override
 	public String getTimeUnits() {
 		// TODO Auto-generated method stub
 		return null;

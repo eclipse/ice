@@ -14,12 +14,12 @@ package org.eclipse.ice.datastructures.test;
 
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>

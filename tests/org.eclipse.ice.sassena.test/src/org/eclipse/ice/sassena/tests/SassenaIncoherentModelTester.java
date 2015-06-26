@@ -12,26 +12,28 @@
  *******************************************************************************/
 package org.eclipse.ice.sassena.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.sassena.SassenaCoherentModel;
 import org.eclipse.ice.sassena.SassenaIncoherentModel;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * <p>

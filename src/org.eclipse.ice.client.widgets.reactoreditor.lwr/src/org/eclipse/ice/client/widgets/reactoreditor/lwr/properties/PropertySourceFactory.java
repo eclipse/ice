@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets.reactoreditor.lwr.properties;
 
 import org.eclipse.ice.client.widgets.reactoreditor.properties.ReactorComponentPropertySource;
 import org.eclipse.ice.client.widgets.reactoreditor.properties.SimpleProperty;
-
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRRod;
@@ -65,6 +64,7 @@ public class PropertySourceFactory implements ILWRComponentVisitor {
 	/* ---- Implements ILWRComponentVisitor. ---- */
 	// These visit operations should set the propertySource variable
 	// appropriately in order to expose properties for the visted LWRComponent.
+	@Override
 	public void visit(PressurizedWaterReactor reactor) {
 
 		// Add dimension properties.
@@ -75,10 +75,12 @@ public class PropertySourceFactory implements ILWRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(BWReactor reactor) {
 		return;
 	}
 
+	@Override
 	public void visit(FuelAssembly assembly) {
 
 		// Add dimension properties.
@@ -91,6 +93,7 @@ public class PropertySourceFactory implements ILWRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(RodClusterAssembly assembly) {
 		// Add dimension properties.
 		String category = "Dimensions";
@@ -104,6 +107,7 @@ public class PropertySourceFactory implements ILWRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(LWRRod rod) {
 
 		// Add fill gas properties.
@@ -132,6 +136,7 @@ public class PropertySourceFactory implements ILWRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(ControlBank controlBank) {
 
 		// Add other properties.
@@ -148,6 +153,7 @@ public class PropertySourceFactory implements ILWRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(IncoreInstrument incoreInstrument) {
 
 		// Add thimble properties.
@@ -184,6 +190,7 @@ public class PropertySourceFactory implements ILWRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(Tube tube) {
 
 		// Add thimble properties.
@@ -212,6 +219,7 @@ public class PropertySourceFactory implements ILWRComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(Ring ring) {
 
 		// Add dimension properties.

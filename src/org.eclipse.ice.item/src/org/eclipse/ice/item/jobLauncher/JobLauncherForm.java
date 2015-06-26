@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.item.jobLauncher;
 
-import org.eclipse.ice.datastructures.form.Form;
-
-import java.awt.print.Paper;
 import java.util.ArrayList;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * <p>
@@ -194,6 +192,7 @@ public class JobLauncherForm extends Form {
 			// Create the Entry
 			mpiEntry = new Entry() {
 				// Setup the values
+				@Override
 				public void setup() {
 					// Add the min and max threads
 					if (minProcessesFixed != maxProcessesFixed) {
@@ -301,6 +300,7 @@ public class JobLauncherForm extends Form {
 			// Create the Entry
 			openMPEntry = new Entry() {
 				// Setup the values
+				@Override
 				public void setup() {
 					// Add the min and max threads
 					if (minThreadsFixed != maxThreadsFixed) {
@@ -407,6 +407,7 @@ public class JobLauncherForm extends Form {
 			// Create the Entry
 			tBBEntry = new Entry() {
 				// Setup the values
+				@Override
 				public void setup() {
 					// Add the min and max threads
 					if (minThreadsFixed != maxThreadsFixed) {
@@ -499,7 +500,8 @@ public class JobLauncherForm extends Form {
 		// Create an Entry with the filenames
 		Entry fileEntry = new Entry() {
 			// Setup the filenames
-			public void setup() {
+			@Override
+			protected void setup() {
 				// The input file should be one of the files in the "inputFiles"
 				// array.
 				this.allowedValues = finalFiles;

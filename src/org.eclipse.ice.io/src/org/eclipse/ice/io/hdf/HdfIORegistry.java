@@ -43,6 +43,7 @@ public class HdfIORegistry implements IHdfIORegistry {
 	 * org.eclipse.ice.io.hdf.IHdfIORegistry#registerHdfIOFactory(org.eclipse
 	 * .ice .io.hdf.IHdfIOFactory)
 	 */
+	@Override
 	public void registerHdfIOFactory(IHdfIOFactory factory) {
 
 		if (factory != null) {
@@ -67,6 +68,7 @@ public class HdfIORegistry implements IHdfIORegistry {
 	 * @see
 	 * org.eclipse.ice.io.hdf.IHdfIORegistry#getHdfIOFactory(java.lang.Object)
 	 */
+	@Override
 	public IHdfIOFactory getHdfIOFactory(Object object) {
 		return (object != null ? factoryMap.get(object.getClass()) : null);
 	}
@@ -77,6 +79,7 @@ public class HdfIORegistry implements IHdfIORegistry {
 	 * @see
 	 * org.eclipse.ice.io.hdf.IHdfIORegistry#getHdfIOFactory(java.lang.String)
 	 */
+	@Override
 	public IHdfIOFactory getHdfIOFactory(String tag) {
 		return factoryMap.get(tagMap.get(tag));
 	}

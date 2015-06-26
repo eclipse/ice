@@ -169,6 +169,7 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 
 				// Create the selection listener
 				itemList.addSelectionChangedListener(new ISelectionChangedListener() {
+					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
 						// Get and store the selection
 						String selection = (String) ((IStructuredSelection) event
@@ -189,6 +190,7 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 				// was already selected, then a double-click can advance or
 				// finish the wizard.
 				itemList.addDoubleClickListener(new IDoubleClickListener() {
+					@Override
 					public void doubleClick(DoubleClickEvent event) {
 
 						// If the page is complete, we can try to finish the

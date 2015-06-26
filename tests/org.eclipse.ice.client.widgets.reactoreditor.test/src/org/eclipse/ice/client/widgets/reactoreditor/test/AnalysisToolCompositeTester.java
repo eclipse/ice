@@ -110,6 +110,7 @@ public class AnalysisToolCompositeTester {
 
 	// Fake factories for the above views and models.
 	private final IAnalysisWidgetFactory factoryOne = new IAnalysisWidgetFactory() {
+		@Override
 		public List<String> getAvailableViews(DataSource dataSource) {
 			List<String> views = new ArrayList<String>(2);
 			views.add("View1");
@@ -117,6 +118,7 @@ public class AnalysisToolCompositeTester {
 			return views;
 		}
 
+		@Override
 		public IAnalysisView createView(String viewName, DataSource dataSource) {
 			IAnalysisView view = null;
 			if ("View1".equals(viewName)) {
@@ -127,21 +129,25 @@ public class AnalysisToolCompositeTester {
 			return view;
 		}
 
+		@Override
 		public List<Class<?>> getModelClasses() {
 			List<Class<?>> classes = new ArrayList<Class<?>>(1);
 			classes.add(One.class);
 			return classes;
 		}
 
+		@Override
 		public IStateBrokerHandler createStateBrokerHandler() {
 			return null;
 		}
 
+		@Override
 		public IWizard createWizard(Object selection) {
 			return null;
 		}
 	};
 	private final IAnalysisWidgetFactory factoryTwo = new IAnalysisWidgetFactory() {
+		@Override
 		public List<String> getAvailableViews(DataSource dataSource) {
 			List<String> views = new ArrayList<String>(2);
 			views.add("View1");
@@ -150,6 +156,7 @@ public class AnalysisToolCompositeTester {
 			return views;
 		}
 
+		@Override
 		public IAnalysisView createView(String viewName, DataSource dataSource) {
 			IAnalysisView view = null;
 			if ("View1".equals(viewName)) {
@@ -162,16 +169,19 @@ public class AnalysisToolCompositeTester {
 			return view;
 		}
 
+		@Override
 		public List<Class<?>> getModelClasses() {
 			List<Class<?>> classes = new ArrayList<Class<?>>(1);
 			classes.add(Two.class);
 			return classes;
 		}
 
+		@Override
 		public IStateBrokerHandler createStateBrokerHandler() {
 			return null;
 		}
 
+		@Override
 		public IWizard createWizard(Object selection) {
 			return null;
 		}
