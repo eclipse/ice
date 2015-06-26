@@ -116,6 +116,16 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.equinox.p2.discovery.feature" version="1.0.300.v20150430-1836"/>
       <feature id="org.eclipse.equinox.p2.user.ui" version="2.2.100.v20150601-1708"/>
       <feature id="org.eclipse.equinox.server.p2" version="1.2.200.v20150527-1706"/>
+      <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.cdt" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.jdt" version="3.11.0.v20150603-2000"/>
+      <feature id="org.eclipse.cdt.autotools" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.dsf"/>
+      <feature id="org.eclipse.cdt.gnu.build"/>
+      <feature id="org.eclipse.cdt.platform"/>
+      <feature id="org.eclipse.cdt.native"/>
+      <feature id="org.eclipse.cdt.gnu.debug"/>
+      <feature id="org.eclipse.cdt.gdb"/>
    </features>
 
    <configurations>
