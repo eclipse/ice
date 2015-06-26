@@ -232,33 +232,84 @@ public class ReflectivityModel extends Model {
 						+ Double.toString(depth[i]) + "\n";
 			}
 
-			ResourceComponent resComp = (ResourceComponent) form
+			ResourceComponent resources = (ResourceComponent) form
 					.getComponent(resourceCompId);
 
 			// Create the stream
 			ByteArrayInputStream scatStream = new ByteArrayInputStream(
 					scatData.getBytes());
 
-			// Write the data to the files.
-			try {
-				// First the reflectivity file
-				VizResource reflectSource = (VizResource) resComp.get(0);
-				IFile reflectivityFile = project.getFile(reflectSource
-						.getContents().getName());
-				reflectivityFile.setContents(new BufferedInputStream(
-						reflectStream), true, false, null);
+			// Create the new resources to output the data to!
+			if (resources.isEmpty()) {
+				// Create names with id from the form (should be unique)
+				String basename = "reflectivityModel_" + form.getId() + "_";
+				// Create the output file for the reflectivity data
+				IFile reflectivityFile = project.getFile(basename + "rfd.csv");
+				// Create the output file for the scattering density data
+				IFile scatteringFile = project.getFile(basename + "scdens.csv");
+				try {
+					// Reflectivity first
+					if (!reflectivityFile.exists()) {
+						reflectivityFile.create(reflectStream, true, null);
+					}
 
-				// Then the scattering density file
-				VizResource scatSource = (VizResource) resComp.get(1);
-				IFile scatteringFile = project.getFile(scatSource.getContents()
-						.getName());
-				scatteringFile.setContents(new BufferedInputStream(scatStream),
-						true, false, null);
+					// Then the scattering file
+					if (!scatteringFile.exists()) {
+						scatteringFile.create(scatStream, true, null);
+					}
 
-				// Catch exceptions, should return an error.
-			} catch (CoreException | NullPointerException e) {
-				e.printStackTrace();
-				retVal = FormStatus.InfoError;
+					// Create the VizResource to hold the reflectivity data
+					VizResource reflectivitySource = new VizResource(
+							reflectivityFile.getLocation().toFile());
+					reflectivitySource.setName("Reflectivity Data File");
+					reflectivitySource.setId(1);
+					reflectivitySource
+							.setDescription("Data from reflectivity calculation");
+
+					// Create the VizResource to hold the scatDensity data
+					VizResource scatDensitySource = new VizResource(
+							scatteringFile.getLocation().toFile());
+					scatDensitySource.setName("Scattering Density Data File");
+					scatDensitySource.setId(2);
+					scatDensitySource.setDescription("Data from Stattering "
+							+ "Density calculation");
+
+					resources.addResource(reflectivitySource);
+					resources.addResource(scatDensitySource);
+				} catch (CoreException | IOException e) {
+					// Complain
+					System.err.println("ReflectivityModel Error: "
+							+ "Problem creating reflectivity files!");
+					e.printStackTrace();
+				}
+
+				// Just override the existing files.
+			} else {
+
+				// Write the data to the files.
+				try {
+					// First the reflectivity file
+					VizResource reflectSource = (VizResource) resources.get(0);
+					IFile reflectivityFile = project.getFile(reflectSource
+							.getContents().getName());
+					reflectivityFile.setContents(new BufferedInputStream(
+							reflectStream), true, false, null);
+
+					// Then the scattering density file
+					VizResource scatSource = (VizResource) resources.get(1);
+					IFile scatteringFile = project.getFile(scatSource
+							.getContents().getName());
+					scatteringFile.setContents(new BufferedInputStream(
+							scatStream), true, false, null);
+
+					// Catch exceptions, should return an error.
+				} catch (CoreException | NullPointerException e) {
+					System.err.println("Reflectivity Model Error: "
+							+ "Problem writing to reflectivity files.");
+					e.printStackTrace();
+					retVal = FormStatus.InfoError;
+				}
+
 			}
 
 			// Return processed if the value has not already beens set.
@@ -283,23 +334,11 @@ public class ReflectivityModel extends Model {
 	@Override
 	protected void setupForm() {
 
-		// FIXME! Simple data entered now for testing
-		String line1 = "#features, p_x, p_y\n";
-		String line2 = "#units,p_x,p_y\n";
-		String line3 = "1.0,1.0\n";
-		String line4 = "2.0,4.0\n";
-		String line5 = "3.0,9.0\n";
-		String allLines = line1 + line2 + line3 + line4 + line5;
-
-		// Create an empty stream for the output files
-		ByteArrayInputStream stream = new ByteArrayInputStream(
-				allLines.getBytes());
-
 		// Let the parent setup the Form
 		super.setupForm();
 
-		// FIXME! - Add a data component for the number of rough layers and the
-		// input file
+		// The data component for the number of rough layers and the
+		// input file, along with other user inputs. 
 		DataComponent paramComponent = new DataComponent();
 		paramComponent.setDescription("Files and Parameters for calculation");
 		paramComponent.setName("Parameters and Files");
@@ -313,6 +352,7 @@ public class ReflectivityModel extends Model {
 				// Only set the allowed value type for this. No other work
 				// required.
 				allowedValueType = AllowedValueType.File;
+				defaultValue = "waveVector.csv";
 				return;
 			}
 		};
@@ -330,6 +370,7 @@ public class ReflectivityModel extends Model {
 				allowedValueType = AllowedValueType.Continuous;
 				allowedValues.add("1");
 				allowedValues.add("100");
+				defaultValue = "41";
 				return;
 			}
 		};
@@ -346,6 +387,7 @@ public class ReflectivityModel extends Model {
 				allowedValueType = AllowedValueType.Continuous;
 				allowedValues.add(".00001");
 				allowedValues.add("5.0");
+				defaultValue = ".0002";
 				return;
 			}
 		};
@@ -362,6 +404,7 @@ public class ReflectivityModel extends Model {
 				allowedValueType = AllowedValueType.Continuous;
 				allowedValues.add(".00001");
 				allowedValues.add("5.0");
+				defaultValue = ".03";
 				return;
 			}
 		};
@@ -378,6 +421,7 @@ public class ReflectivityModel extends Model {
 				allowedValueType = AllowedValueType.Continuous;
 				allowedValues.add(".000001");
 				allowedValues.add("1000");
+				defaultValue = "4.25";
 				return;
 			}
 		};
@@ -393,6 +437,7 @@ public class ReflectivityModel extends Model {
 				allowedValueType = AllowedValueType.Discrete;
 				allowedValues.add("True");
 				allowedValues.add("False");
+				defaultValue = "False";
 				return;
 			}
 		};
@@ -433,51 +478,6 @@ public class ReflectivityModel extends Model {
 		resources.setDescription("Results and Output");
 		resources.setId(resourceCompId);
 		form.addComponent(resources);
-
-		if (project != null) {
-			// FIXME! ID is always 1 at this point!
-			String basename = "reflectivityModel_" + getId() + "_";
-			// Create the output file for the reflectivity data
-			IFile reflectivityFile = project.getFile(basename + "rfd.csv");
-			// Create the output file for the scattering density data
-			IFile scatteringFile = project.getFile(basename + "scdens.csv");
-			try {
-				// Reflectivity first
-				if (!reflectivityFile.exists()) {
-					reflectivityFile.create(stream, true, null);
-					stream.reset();
-				}
-
-				// Then the scattering file
-				if (!scatteringFile.exists()) {
-					scatteringFile.create(stream, true, null);
-				}
-
-				// Create the VizResource to hold the reflectivity data
-				VizResource reflectivitySource = new VizResource(
-						reflectivityFile.getLocation().toFile());
-				reflectivitySource.setName("Reflectivity Data File");
-				reflectivitySource.setId(1);
-				reflectivitySource
-						.setDescription("Data from reflectivity calculation");
-
-				// Create the VizResource to hold the scatDensity data
-				VizResource scatDensitySource = new VizResource(scatteringFile
-						.getLocation().toFile());
-				scatDensitySource.setName("Scattering Density Data File");
-				scatDensitySource.setId(2);
-				scatDensitySource.setDescription("Data from Stattering "
-						+ "Density calculation");
-
-				resources.addResource(reflectivitySource);
-				resources.addResource(scatDensitySource);
-			} catch (CoreException | IOException e) {
-				// Complain
-				System.err.println("ReflectivityModel Error: "
-						+ "Problem creating reflectivity files!");
-				e.printStackTrace();
-			}
-		}
 
 		// Put the action name in the form so that the reflectivity can be
 		// calculated.
