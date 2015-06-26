@@ -12,11 +12,18 @@
 package org.eclipse.ice.viz.service;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.IFileEditorMapping;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.registry.EditorDescriptor;
+import org.eclipse.ui.internal.registry.EditorRegistry;
+import org.eclipse.ui.internal.registry.FileEditorMapping;
 
 /**
  * This class is the basic implementation of the IVizServiceFactory in ICE. It
@@ -73,6 +80,31 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 
 			// Put the service in service map so it can be retrieved later
 			serviceMap.put(name, service);
+
+			Set<String> supportedExtensions = new HashSet<String>();
+			supportedExtensions
+					.addAll(((AbstractVizService) service).supportedExtensions);
+
+			// Register the plot editor as default editor for all file
+			// extensions handled by the new viz service
+			for (String ext : supportedExtensions) {
+				EditorRegistry editorReg = (EditorRegistry) PlatformUI
+						.getWorkbench().getEditorRegistry();
+				EditorDescriptor editor = (EditorDescriptor) editorReg
+						.findEditor("org.eclipse.ice.viz.service.PlotEditor");
+				FileEditorMapping mapping = new FileEditorMapping(ext);
+				mapping.addEditor(editor);
+				mapping.setDefaultEditor(editor);
+
+				IFileEditorMapping[] mappings = editorReg
+						.getFileEditorMappings();
+				FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length + 1];
+				for (int i = 0; i < mappings.length; i++) {
+					newMappings[i] = (FileEditorMapping) mappings[i];
+				}
+				newMappings[mappings.length] = mapping;
+				editorReg.setFileEditorMappings(newMappings);
+			}
 
 			System.out.println("VizServiceFactory message: " + "Viz service \""
 					+ name + "\" registered.");

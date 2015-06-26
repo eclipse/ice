@@ -111,7 +111,7 @@ public class NewItemWizard extends Wizard implements INewWizard {
 			String selectedItem = page.getSelectedItem();
 
 			// Direct the client to create a new Item if a selection was made
-			if (selectedItem != null && selectedItem != null) {
+			if (selectedItem != null) {
 				finished = client.createItem(selectedItem) > 0;
 			}
 

@@ -5,10 +5,13 @@ Bundle-SymbolicName: org.eclipse.ice.viz.service;singleton:=true
 Bundle-Version: 2.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.eclipse.core.commands.common,
+Import-Package: org.eclipse.core.commands,
+ org.eclipse.core.commands.common,
  org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.core.runtime.jobs,
  org.eclipse.core.runtime.preferences,
  org.eclipse.draw2d,
+ org.eclipse.e4.ui.workbench,
  org.eclipse.equinox.security.storage;version="1.0.0",
  org.eclipse.ice.analysistool,
  org.eclipse.ice.client.common,
@@ -32,8 +35,10 @@ Import-Package: org.eclipse.core.commands.common,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
  org.eclipse.ui.dialogs,
+ org.eclipse.ui.forms,
  org.eclipse.ui.forms.events,
  org.eclipse.ui.forms.widgets,
+ org.eclipse.ui.internal.registry,
  org.eclipse.ui.part,
  org.eclipse.ui.preferences,
  org.osgi.framework;version="1.7.0",
@@ -41,7 +46,8 @@ Import-Package: org.eclipse.core.commands.common,
 Export-Package: org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.connections,
  org.eclipse.ice.viz.service.csv,
+ org.eclipse.ice.viz.service.internal,
  org.eclipse.ice.viz.service.preferences
-Service-Component: OSGI-INF/vizFactory.xml
+Service-Component: OSGI-INF/vizFactory.xml, OSGI-INF/VizServiceFactoryHolder.xml
 Require-Bundle: org.eclipse.nebula.visualization.widgets;bundle-version="1.0.0",
  org.eclipse.nebula.visualization.xygraph;bundle-version="1.0.0"
