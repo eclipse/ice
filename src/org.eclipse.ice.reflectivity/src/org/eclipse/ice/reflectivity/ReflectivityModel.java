@@ -15,7 +15,6 @@ package org.eclipse.ice.reflectivity;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,7 +30,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.io.csv.CSVReader;
 import org.eclipse.ice.item.model.Model;
@@ -40,8 +38,12 @@ import org.eclipse.ice.materials.MaterialWritableTableFormat;
 
 /**
  * This classes calculates the reflectivity profile of a set of materials
- * layered on top of each other. It... <add more after you figure out the
- * calculations>
+ * layered on top of each other. It has three components. The first displays
+ * entries for the user to specify a file for the wave vector (expects .csv) and
+ * fields for the angles, layers of roughness, and QR4. The second component
+ * displays a table for entering the materials and reordering the layers.
+ * Finally, the last component gives access to the computed data as both
+ * editable graphs (see CSVPlotEditor) and .csv files.
  * 
  * @author Jay Jay Billings, Alex McCaskey, Kasper Gammeltoft
  */
@@ -119,10 +121,12 @@ public class ReflectivityModel extends Model {
 		super(projectSpace);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * If the action name is ReflectivityModel.processActionName, then
+	 * calculates the reflectivity and scattering density profiles for the
+	 * material layers and input fields.
 	 * 
-	 * @see org.eclipse.ice.item.Item#process(java.lang.String)
+	 * @see {@link org.eclipse.ice.item.Item#process(String)}
 	 */
 	@Override
 	public FormStatus process(String actionName) {
@@ -565,8 +569,9 @@ public class ReflectivityModel extends Model {
 		return material;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Gives this item a name, description, and item type. Also sets the builder
+	 * name. The name should be the same as the ReflectivityModelBuilder name.
 	 * 
 	 * @see org.eclipse.ice.item.Item#setupItemInfo()
 	 */
@@ -585,8 +590,10 @@ public class ReflectivityModel extends Model {
 		return;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Sets up the form with the basic services needed for the reflectivity
+	 * model. Namely, sets the materials database and the table format for the
+	 * list component in the model.
 	 * 
 	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
 	 */
@@ -611,7 +618,6 @@ public class ReflectivityModel extends Model {
 
 		// Set the table format
 		matList.setTableFormat(format);
-		
 
 		// If the materials database is available, register it as the element
 		// provider for the list component of materials on the Form.
