@@ -66,7 +66,7 @@ public class ToolItemMenuListener implements Listener {
 
 		// event.detail == SWT.ARROW means the arrow has been clicked.
 		// event.detail == SWT.NONE means the button has been clicked.
-		if (event.detail == SWT.ARROW | event.detail == SWT.NONE) {
+		if (event.detail == SWT.ARROW || event.detail == SWT.NONE) {
 			Rectangle r = toolItem.getBounds();
 			Point p = new Point(r.x, r.y + r.height);
 			p = toolItem.getParent().toDisplay(p.x, p.y);
