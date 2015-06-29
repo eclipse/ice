@@ -11,7 +11,7 @@
       <relativePath>${basedir}/${pom-filename}</relativePath>
    </parent>
 
-   <artifactId>org.eclipse.ice.target.kepler</artifactId>
+   <artifactId>org.eclipse.ice.target.mars</artifactId>
    <packaging>pom</packaging>
 
    <build>
@@ -32,9 +32,9 @@
                      <artifacts>
                         <artifact>
                            <!-- note: the file name must be ${classifier}.target -->
-                           <file>kepler_rcp.target</file>
+                           <file>mars.target</file>
                            <type>target</type>
-                           <classifier>kepler_rcp</classifier>
+                           <classifier>mars</classifier>
                         </artifact>
                      </artifacts>
                   </configuration>

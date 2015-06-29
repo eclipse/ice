@@ -653,12 +653,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		// The listener should have been notified twice: two timesteps were
 		// traversed while playing.
-		assertTrue(listener.wasNotified(2));
+		assertTrue(listener.wasNotified(2, FakeListener.THRESHOLD * 2));
 
 		// Check the notification count and the times sent with each
 		// notification.
 		Queue<Double> times = listener.notificationTimes;
-		assertEquals(2, times.size());
+		assertTrue(times.size() >= 2);
 		assertEquals(orderedTimes.last(), times.poll(), epsilon);
 		assertEquals(orderedTimes.first(), times.poll(), epsilon);
 
@@ -714,7 +714,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		// In the above test, the listener should have only been notified 4
 		// times (when the other widgets, not including the play button, were
 		// clicked).
-		assertTrue(listener.wasNotified(4));
+		assertTrue(listener.wasNotified(4, FakeListener.THRESHOLD * 4));
 		// The times sent should also alternate between the second and first
 		// timesteps, because each subsequent call undoes the previous one.
 		Iterator<Double> iter = orderedTimes.iterator();
@@ -1174,6 +1174,32 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		private boolean wasNotified(int count) {
 			long interval = 50;
 			for (long sleepTime = 0; sleepTime < THRESHOLD
+					&& notificationCount.get() < count; sleepTime += interval) {
+				try {
+					Thread.sleep(interval);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+			return notificationCount.get() >= count;
+		}
+		
+		/**
+		 * Waits up to {@link #THRESHOLD} milliseconds before returning whether
+		 * or not the notification count is greater than or equal to the desired
+		 * count. This will return sooner if the notification count is satisfied
+		 * sooner!
+		 * 
+		 * @param count
+		 *            The number of notifications to wait on.
+		 * @param totalThreshold
+		 *            The total amount of time this request will wait.
+		 * @return True if the notification count is at least the specified
+		 *         count, false otherwise.
+		 */
+		private boolean wasNotified(int count, long totalThreshold) {
+			long interval = 50;
+			for (long sleepTime = 0; sleepTime < totalThreshold
 					&& notificationCount.get() < count; sleepTime += interval) {
 				try {
 					Thread.sleep(interval);

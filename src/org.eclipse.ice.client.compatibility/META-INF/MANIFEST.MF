@@ -36,3 +36,4 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.7.0";resolution:=optional;visib
  org.eclipse.ui.forms;bundle-version="3.5.101";resolution:=optional;visibility:=reexport,
  org.eclipse.ui.ide;bundle-version="3.7.0";resolution:=optional;visibility:=reexport,
  org.eclipse.ui.console;bundle-version="3.5.100";resolution:=optional;visibility:=reexport
+Bundle-Vendor: Oak Ridge National Laboratory

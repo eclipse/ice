@@ -14,3 +14,4 @@ Import-Package: org.apache.commons.math;version="2.1.0",
  org.eclipse.ice.materials,
  org.eclipse.ice.reflectivity,
  org.eclipse.ui.forms.widgets
+Bundle-Vendor: Oak Ridge National Laboratory
