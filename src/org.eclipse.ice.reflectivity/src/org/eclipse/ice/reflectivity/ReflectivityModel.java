@@ -22,6 +22,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -44,6 +47,17 @@ public class ReflectivityModel extends Model {
 	 * The process action name for calculating the reflectivity.
 	 */
 	private final String processActionName = "Calculate Reflectivity";
+
+	/**
+	 * Identification number for the component that contains the parameters.
+	 */
+	public static final int paramsCompId = 1;
+
+	/**
+	 * Identification number for the list component that contains all of the
+	 * materials.
+	 */
+	public static final int matListId = 2;
 
 	/**
 	 * The constructor.
@@ -71,25 +85,48 @@ public class ReflectivityModel extends Model {
 	 */
 	@Override
 	public FormStatus process(String actionName) {
-		
+
 		// Local Declarations
 		FormStatus retVal;
-		
+
 		if (actionName.equals(processActionName)) {
-			
+
 			// Convert the material table to slabs
-			
+
+			// Get the roughness parameter, dQ, dQ/Q and the wavelength
+
+			// Get and load the wave vector and related information
+
+			ListComponent<Material> matList = (ListComponent<Material>) form
+					.getComponent(2);
+			ArrayList<Slab> slabs = new ArrayList<Slab>();
+
+			// Create the slabs from the materials
+			for (Material mat : matList) {
+				Slab slab = new Slab();
+				slab.thickness = mat.getProperty("Thickness (A)");
+				slab.interfaceWidth = mat.getProperty("Roughness (A)");
+				slab.scatteringLength = mat
+						.getProperty(Material.SCAT_LENGTH_DENSITY);
+				slab.trueAbsLength = mat
+						.getProperty(Material.MASS_ABS_COHERENT);
+				slab.incAbsLength = mat
+						.getProperty(Material.MASS_ABS_INCOHERENT);
+				slabs.add(slab);
+			}
+
 			// Calculate the reflectivity
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
-			//calculator.getReflectivityProfile(slabs, numRough, deltaQ0, deltaQ1ByQ, wavelength, waveVector, getRQ4);
-			
+			// calculator.getReflectivityProfile(slabs, numRough, deltaQ0,
+			// deltaQ1ByQ, wavelength, waveVector, getRQ4);
+
 			// Write the files
-			
+
 			retVal = FormStatus.InfoError;
 		} else {
 			retVal = super.process(actionName);
 		}
-		
+
 		return retVal;
 	}
 
@@ -117,24 +154,61 @@ public class ReflectivityModel extends Model {
 		super.setupForm();
 
 		// FIXME! - Add a data component for the number of rough layers and the
-		// input
-		// file
+		// input file
+		DataComponent paramComponent = new DataComponent();
+		paramComponent.setDescription("Files and Parameters for calculation");
+		paramComponent.setName("Parameters and Files");
+		paramComponent.setId(paramsCompId);
+		form.addComponent(paramComponent);
+
+		// Add a file entry for the wave vector file
+		Entry fileEntry = new Entry() {
+			@Override
+			protected void setup() {
+				// Only set the allowed value type for this. No other work
+				// required.
+				allowedValueType = AllowedValueType.File;
+				return;
+			}
+		};
+		fileEntry.setId(1);
+		fileEntry.setName("Wave Vector (Q) file");
+		fileEntry.setDescription("Wave vector information for this problem.");
+		paramComponent.addEntry(fileEntry);
+
+		// Add an entry for the number of layers
+		Entry numLayersEntry = new Entry() {
+			@Override
+			protected void setup() {
+				// The number of layers should never be less than one and I
+				// imagine that 100 is a good upper limit.
+				allowedValueType = AllowedValueType.Continuous;
+				allowedValues.add("1");
+				allowedValues.add("100");
+				return;
+			}
+		};
+		numLayersEntry.setId(2);
+		numLayersEntry.setName("Roughness");
+		numLayersEntry.setDescription("Number of layers of "
+				+ "roughness per material layer.");
+		paramComponent.addEntry(numLayersEntry);
 
 		// Configure a list of property names for the materials
 		ArrayList<String> names = new ArrayList<String>();
 		names.add("Material ID");
 		names.add("Thickness (A)");
 		names.add("Roughness (A)");
-		names.add("Scattering Length Density (A^-2)");
-		names.add("Mu_abs (A^-2)");
-		names.add("Mu_inc (A^-1)");
+		names.add(Material.SCAT_LENGTH_DENSITY);
+		names.add(Material.MASS_ABS_COHERENT);
+		names.add(Material.MASS_ABS_INCOHERENT);
 		// Create the writable format to be used by the list
 		MaterialWritableTableFormat format = new MaterialWritableTableFormat(
 				names);
 
 		// Create the list that will contain all of the material information
 		ListComponent<Material> matList = new ListComponent<Material>();
-		matList.setId(1);
+		matList.setId(matListId);
 		matList.setName("Reflectivity Input Data");
 		matList.setDescription("Reflectivity Input Data");
 		matList.setTableFormat(format);
@@ -278,14 +352,13 @@ public class ReflectivityModel extends Model {
 		// material.
 		Material material = new Material();
 		material.setName(name);
-		material.setSize(1);
 		material.setProperty("Material ID", id);
 		material.setProperty("Thickness (A)", slab.thickness);
 		material.setProperty("Roughness (A)", slab.interfaceWidth);
-		material.setProperty("Scattering Length Density (A^-2)",
+		material.setProperty(Material.SCAT_LENGTH_DENSITY,
 				slab.scatteringLength);
-		material.setProperty("Mu_abs (A^-2)", slab.trueAbsLength);
-		material.setProperty("Mu_inc (A^-1)", slab.incAbsLength);
+		material.setProperty(Material.MASS_ABS_COHERENT, slab.trueAbsLength);
+		material.setProperty(Material.MASS_ABS_INCOHERENT, slab.incAbsLength);
 		return material;
 	}
 
@@ -323,7 +396,7 @@ public class ReflectivityModel extends Model {
 		if (database != null) {
 			// Grab the component
 			ListComponent<Material> matList = (ListComponent<Material>) form
-					.getComponent(1);
+					.getComponent(matListId);
 			// Set the database as an element source
 			matList.setElementSource(database);
 		}

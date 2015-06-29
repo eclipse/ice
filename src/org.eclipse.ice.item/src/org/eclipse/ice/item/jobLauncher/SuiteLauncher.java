@@ -359,12 +359,13 @@ public class SuiteLauncher extends JobLauncher {
 	 *            The launcher to compare against.
 	 * @return True if equal, false otherwise.
 	 */
-	public boolean equals(SuiteLauncher otherLauncher) {
+	public boolean equals(Object otherLauncher) {
 
 		// Aside from checking the executables, there's nothing to do but let
 		// Joblauncher check its info and the Form.
 		boolean retVal = super.equals(otherLauncher)
-				&& executablesList.equals(otherLauncher.executablesList);
+				&& executablesList
+						.equals(((SuiteLauncher) otherLauncher).executablesList);
 
 		return retVal;
 	}

@@ -27,6 +27,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * based on the current {@link #state} of the connection.
  * <p>
  * There are certain properties of a connection that are managed by this class:
+ * </p>
  * <ol>
  * <li>{@code key} - The key or name associated with the connection.</li>
  * <li>{@link #connection} - The connection object.</li>
@@ -36,7 +37,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * <li>{@code listeners} - Listeners registered with the adapter are notified
  * when the connection state changes.</li>
  * </ol>
- * 
+ * <p>
  * This class sub-classes {@link ICEObject}, which manages the key and the
  * listeners. However, the key is only ever set via
  * {@link #setConnectionProperties(List)}.

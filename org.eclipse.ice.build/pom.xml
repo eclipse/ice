@@ -40,6 +40,23 @@
 				<ui.test.vmargs></ui.test.vmargs>
 			</properties>
 		</profile>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.jdbc.url>
+					jdbc:mysql://${sonarHost}:${sonarJDBCPort}/sonar?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true&amp;useConfigs=maxPerformance
+				</sonar.jdbc.url>
+				<sonar.jdbc.username>${sonarUser}</sonar.jdbc.username>
+				<sonar.jdbc.password>${sonarPassword}</sonar.jdbc.password>
+				<sonar.host.url>
+					http://${sonarHost}:${sonarPort}/sonar
+				</sonar.host.url>
+			</properties>
+		</profile>
+		
 	</profiles>
 
 	<build>

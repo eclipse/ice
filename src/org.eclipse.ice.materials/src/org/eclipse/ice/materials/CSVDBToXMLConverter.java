@@ -83,9 +83,7 @@ public class CSVDBToXMLConverter {
 				tmpMaterial.setProperty(propertyNames[j],
 						Double.valueOf(properties[j]));
 			}
-			// Just setting it equal to one for now because there isn't a better
-			// number.
-			tmpMaterial.setSize(1);
+
 			// Add the material to the list
 			materials.add(tmpMaterial);
 		}

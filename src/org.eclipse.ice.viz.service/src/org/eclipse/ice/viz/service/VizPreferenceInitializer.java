@@ -21,6 +21,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * {@code org.eclipse.core.runtime.preferences} must have an {@code initializer}
  * attribute set to this class. In this case, the extension point in
  * {@code plugin.xml} looks like:
+ * </p>
  * 
  * <pre>
  * <code>
@@ -34,7 +35,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * {@literal </plugin>}
  * </code>
  * </pre>
- * 
+ * <p>
  * The same method should be used for preference initializers for other
  * preference pages.
  * </p>

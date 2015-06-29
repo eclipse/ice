@@ -71,6 +71,7 @@ public class ControlBank extends LWRComponent {
 	 * </p>
 	 * 
 	 * @param name
+	 *            The name of the component.
 	 * @param stepSize
 	 *            <p>
 	 *            The distance between an axial step.
@@ -165,11 +166,8 @@ public class ControlBank extends LWRComponent {
 		return ((double) this.maxNumberOfSteps) * this.stepSize;
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -184,20 +182,8 @@ public class ControlBank extends LWRComponent {
 		return flag;
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -227,14 +213,8 @@ public class ControlBank extends LWRComponent {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public int hashCode() {
@@ -275,14 +255,8 @@ public class ControlBank extends LWRComponent {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public Object clone() {
@@ -298,10 +272,8 @@ public class ControlBank extends LWRComponent {
 
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {
@@ -332,17 +304,8 @@ public class ControlBank extends LWRComponent {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation accepts an ILWRComponentVisitor that can be visit the
-	 * LWRComponent to ascertain its type and perform various type-specific
-	 * operations.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            <p>
-	 *            The visitor
-	 *            </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {

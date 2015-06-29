@@ -30,6 +30,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  * Use of this class requires explicit knowledge of the structure of the
  * {@code TableComponent}. For instance, for a table with two columns "one" and
  * "two", the following would <i>not</i> work:
+ * </p>
  * 
  * <pre>
  * <code>
@@ -52,7 +53,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  *  adapter.toTableComponent(store, table);
  * </code>
  * </pre>
- * 
+ * <p>
  * Future implementations of this class may be able to handle
  * {@code TableComponent} template creation automatically. Currently, the
  * approach is simply to write only the value for each {@code Entry} in the

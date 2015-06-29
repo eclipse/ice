@@ -148,20 +148,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 		}
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -190,14 +178,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public int hashCode() {
@@ -248,14 +230,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public Object clone() {
@@ -271,10 +247,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 	}
 
-	/**
-	 * Gets the children of this instance that can be written to the HDF format.
-	 * 
-	 * @return A list containing the writable children.
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -295,16 +269,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 		return children;
 	}
 
-	/**
-	 * <p>
-	 * This operation returns an ArrayList of IHdfReadable child objects. If
-	 * this IHdfReadable has no IHdfReadable child objects, then null is
-	 * returned.
-	 * </p>
-	 * 
-	 * @param iHdfReadable
-	 *            The HDF child of this instance.
-	 * @return True if the child could be read and added, false otherwise.
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -328,10 +294,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 		return true;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Composite#addComponent(Component child)
+	/*
+	 * Implements a method from Composite.
 	 */
 	@Override
 	public void addComponent(Component child) {
@@ -347,10 +311,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Composite#removeComponent(int childId)
+	/*
+	 * Implements a method from Composite.
 	 */
 	@Override
 	public void removeComponent(int childId) {
@@ -377,10 +339,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Composite#getComponent(int childId)
+	/*
+	 * Implements a method from Composite.
 	 */
 	@Override
 	public Component getComponent(int childId) {
@@ -410,10 +370,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Composite#getNumberOfComponents()
+	/*
+	 * Implements a method from Composite.
 	 */
 	@Override
 	public int getNumberOfComponents() {
@@ -422,10 +380,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 		return this.lWRComponents.size();
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Composite#getComponents()
+	/*
+	 * Implements a method from Composite.
 	 */
 	@Override
 	public ArrayList<Component> getComponents() {

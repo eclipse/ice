@@ -30,6 +30,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  * <p>
  * Each connection is defined by the following parameters (although it must be
  * noted that the only required unique value is the name/key/ID):
+ * </p>
  * <ol>
  * <li><b>Name</b> - A unique ID or key for the connection. This should be a
  * user-friendly value.</li>
@@ -48,7 +49,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  * <li><b>VisIt User</b> - The VisIt user name.</li>
  * <li><b>VisIt Password</b> - The VisIt session password.</li>
  * </ol>
- * </p>
  * 
  * @author Jordan Deyton
  *
