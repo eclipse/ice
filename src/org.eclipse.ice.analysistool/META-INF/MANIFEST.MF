@@ -7,3 +7,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.ice.analysistool
 Import-Package: org.eclipse.ice.datastructures.form
 Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0"
+Bundle-Vendor: Oak Ridge National Laboratory

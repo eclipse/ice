@@ -348,10 +348,8 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getFeatureList()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
 	@Override
 	public ArrayList<String> getFeatureList() {
@@ -386,10 +384,8 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getNumberOfTimeSteps()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
 	@Override
 	public int getNumberOfTimeSteps() {
@@ -397,10 +393,8 @@ public class LWRDataProvider implements IDataProvider {
 		return this.dataTree.size();
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#setTime(double step)
+	/*
+	 * Implements a method from IDataProvider.
 	 */
 	@Override
 	public void setTime(double step) {
@@ -410,10 +404,8 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getDataAtCurrentTime(String feature)
+	/*
+	 * Implements a method from IDataProvider.
 	 */
 	@Override
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
@@ -440,10 +432,8 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getSourceInfo()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
 	@Override
 	public String getSourceInfo() {
@@ -452,10 +442,8 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getFeaturesAtCurrentTime()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
 	@Override
 	public ArrayList<String> getFeaturesAtCurrentTime() {
@@ -480,10 +468,8 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getTimes()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
 	@Override
 	public ArrayList<Double> getTimes() {
@@ -504,10 +490,8 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getTimeStep(double time)
+	/*
+	 * Implements a method from IDataProvider.
 	 */
 	@Override
 	public int getTimeStep(double time) {
@@ -532,10 +516,8 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getTimeUnits()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
 	@Override
 	public String getTimeUnits() {

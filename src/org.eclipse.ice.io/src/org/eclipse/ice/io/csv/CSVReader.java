@@ -28,7 +28,7 @@ import org.eclipse.ice.io.serializable.IReader;
 /**
  * This class implements the IReader interface to provide a reader for CSV
  * files. It can read any well-formed CSV file. It stores its results in a
- * ListComponent<String []\> on the Form returned from read(). Each String [] in
+ * ListComponent<String[]> on the Form returned from read(). Each String [] in
  * the ListComponent is a line of the file, split and trimmed but uncast.
  * Clients must know the concrete type to which they want to cast.
  * 

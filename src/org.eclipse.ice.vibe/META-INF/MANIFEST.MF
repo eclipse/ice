@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Caebat
+Bundle-Name: Vibe
 Bundle-SymbolicName: org.eclipse.ice.vibe
 Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.ice.item;bundle-version="2.0.0",
 Export-Package: org.eclipse.ice.vibe.kvPair,
  org.eclipse.ice.vibe.launcher,
  org.eclipse.ice.vibe.model
+Bundle-Vendor: Oak Ridge National Laboratory

@@ -200,10 +200,8 @@ public class BasicEntryContentProvider extends ICEObject implements
 		return parent;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IEntryContentProvider#equals(IEntryContentProvider otherProvider)
+	/*
+	 * Overrides a method from ICEObject.
 	 */
 	@Override
 	public boolean equals(Object otherProvider) {

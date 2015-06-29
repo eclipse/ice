@@ -17,7 +17,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * This is the base class for setting default preferences for visualization
- * service preference pages added to the Eclipse IDE's Window -> Preferences
+ * service preference pages added to the Eclipse IDE's Window > Preferences
  * dialog.
  * <p>
  * For an example of how to intitialize defaults for a preference page using

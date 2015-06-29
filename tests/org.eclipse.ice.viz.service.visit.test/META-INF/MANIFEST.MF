@@ -6,7 +6,7 @@ Bundle-Version: 2.0.0
 Fragment-Host: org.eclipse.ice.viz.service.visit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit,
- org.eclipse.swtbot.eclipse.core;bundle-version="2.2.1",
- org.eclipse.swtbot.go;bundle-version="2.2.1"
-Import-Package: org.eclipse.ice.client.widgets.test.utils,
- org.eclipse.ice.viz.service.visit
+ org.eclipse.ice.client.widgets.test.utils,
+ org.eclipse.swtbot.swt.finder
+Import-Package: org.eclipse.ice.viz.service.visit
+Bundle-Vendor: Oak Ridge National Laboratory

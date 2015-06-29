@@ -20,14 +20,13 @@ import org.eclipse.swt.widgets.Event;
 
 /**
  * This class implements the necessary methods to support drawing the
- * platform-specific <code>Image</code>s checkbox
- * <code>Button<code> in the proper location in the cells.
+ * platform-specific {@code Image}s checkbox {@code Button} in the proper
+ * location in the cells.
  * 
  * @author Jordan H. Deyton
  * 
  */
-public class CheckboxCellLabelProvider extends
-		CellOwnerDrawLabelProvider {
+public class CheckboxCellLabelProvider extends CellOwnerDrawLabelProvider {
 
 	/**
 	 * The default constructor.

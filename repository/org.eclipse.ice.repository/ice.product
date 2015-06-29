@@ -99,15 +99,33 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
 
    <features>
       <feature id="org.eclipse.ice" version="2.0.0"/>
-      <feature id="org.eclipse.rcp" version="4.3.2.v20140221-1700"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.emf.common"/>
       <feature id="org.eclipse.e4.rcp"/>
-      <feature id="org.eclipse.equinox.p2.user.ui" version="2.2.0.v20140221-1852"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
-      <feature id="org.eclipse.platform" version="4.3.2.v20140221-1852"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
+      <feature id="org.eclipse.ecf.core.feature"/>
+      <feature id="org.eclipse.rcp" version="4.5.0.v20150603-2331"/>
+      <feature id="org.eclipse.platform" version="4.5.0.v20150603-2358"/>
+      <feature id="org.eclipse.equinox.p2.discovery.feature" version="1.0.300.v20150430-1836"/>
+      <feature id="org.eclipse.equinox.p2.user.ui" version="2.2.100.v20150601-1708"/>
+      <feature id="org.eclipse.equinox.server.p2" version="1.2.200.v20150527-1706"/>
+      <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.cdt" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.jdt" version="3.11.0.v20150603-2000"/>
+      <feature id="org.eclipse.cdt.autotools" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.dsf"/>
+      <feature id="org.eclipse.cdt.gnu.build"/>
+      <feature id="org.eclipse.cdt.platform"/>
+      <feature id="org.eclipse.cdt.native"/>
+      <feature id="org.eclipse.cdt.gnu.debug"/>
+      <feature id="org.eclipse.cdt.gdb"/>
    </features>
 
    <configurations>

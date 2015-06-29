@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.8.101",
  org.eclipse.ice.datastructures;bundle-version="2.0.0",
  org.eclipse.core.filesystem;bundle-version="1.4.0"
 Export-Package: org.eclipse.ice.sassena
+Bundle-Vendor: Oak Ridge National Laboratory

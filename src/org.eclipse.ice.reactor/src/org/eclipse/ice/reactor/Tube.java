@@ -215,20 +215,8 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from Ring.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -256,14 +244,8 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from Ring.
 	 */
 	@Override
 	public int hashCode() {
@@ -303,14 +285,8 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from Ring.
 	 */
 	@Override
 	public Object clone() {
@@ -326,7 +302,7 @@ public class Tube extends Ring {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * Overrides a method from Ring.
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -340,7 +316,7 @@ public class Tube extends Ring {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * Overrides a method from Ring.
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {
@@ -367,17 +343,8 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation accepts an ILWRComponentVisitor that can be visit the
-	 * LWRComponent to ascertain its type and perform various type-specific
-	 * operations.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            <p>
-	 *            The visitor
-	 *            </p>
+	/*
+	 * Overrides a method from Ring.
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {

@@ -23,12 +23,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 
 /**
- * This class provides a wizard for creating ICE </code>Item</code>s.
+ * This class provides a wizard for creating ICE {@code Item}s.
  * <p>
  * This wizard should be created either via an {@link IHandler} (for adding it
- * to the workbench <code>ToolBar</code>) or by using an
- * <code>org.eclipse.ui.newWizards</code> extension in the plugin (for adding it
- * to the workbench new wizards).
+ * to the workbench {@code ToolBar}) or by using an
+ * {@code org.eclipse.ui.newWizards} extension in the plugin (for adding it to
+ * the workbench new wizards).
  * </p>
  * 
  * @author Jay Jay Billings, Jordan Deyton
