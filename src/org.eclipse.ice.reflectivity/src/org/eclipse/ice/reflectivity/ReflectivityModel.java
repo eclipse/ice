@@ -15,7 +15,6 @@ package org.eclipse.ice.reflectivity;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,7 +30,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.io.csv.CSVReader;
 import org.eclipse.ice.item.model.Model;
@@ -40,8 +38,12 @@ import org.eclipse.ice.materials.MaterialWritableTableFormat;
 
 /**
  * This classes calculates the reflectivity profile of a set of materials
- * layered on top of each other. It... <add more after you figure out the
- * calculations>
+ * layered on top of each other. It has three components. The first displays
+ * entries for the user to specify a file for the wave vector (expects .csv) and
+ * fields for the angles, layers of roughness, and QR4. The second component
+ * displays a table for entering the materials and reordering the layers.
+ * Finally, the last component gives access to the computed data as both
+ * editable graphs (see CSVPlotEditor) and .csv files.
  * 
  * @author Jay Jay Billings, Alex McCaskey, Kasper Gammeltoft
  */
@@ -79,6 +81,11 @@ public class ReflectivityModel extends Model {
 	private static final String WaveLengthEntryName = "Wave Length";
 
 	/**
+	 * The qr4 entry name.
+	 */
+	private static final String QR4EntryName = "QR4";
+
+	/**
 	 * Identification number for the component that contains the parameters.
 	 */
 	public static final int paramsCompId = 1;
@@ -114,10 +121,12 @@ public class ReflectivityModel extends Model {
 		super(projectSpace);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * If the action name is ReflectivityModel.processActionName, then
+	 * calculates the reflectivity and scattering density profiles for the
+	 * material layers and input fields.
 	 * 
-	 * @see org.eclipse.ice.item.Item#process(java.lang.String)
+	 * @see {@link org.eclipse.ice.item.Item#process(String)}
 	 */
 	@Override
 	public FormStatus process(String actionName) {
@@ -167,6 +176,11 @@ public class ReflectivityModel extends Model {
 					.getComponent(paramsCompId)).retrieveEntry(
 					WaveLengthEntryName).getValue());
 
+			// Get the qr4 parameter
+			String qr4Val = ((DataComponent) form.getComponent(paramsCompId))
+					.retrieveEntry(QR4EntryName).getValue();
+			boolean qr4 = qr4Val.equalsIgnoreCase("true");
+
 			// Get the wave vector from the file picker in the paramters
 			// component.
 			double[] waveVector;
@@ -193,7 +207,7 @@ public class ReflectivityModel extends Model {
 			ReflectivityCalculator calculator = new ReflectivityCalculator();
 			ReflectivityProfile profile = calculator.getReflectivityProfile(
 					slabs.toArray(new Slab[slabs.size()]), numRough, deltaQ0,
-					deltaQ1ByQ, wavelength, waveVector, false);
+					deltaQ1ByQ, wavelength, waveVector, qr4);
 
 			// Get the data from the profile
 			double[] reflectivity = profile.reflectivity;
@@ -218,31 +232,84 @@ public class ReflectivityModel extends Model {
 						+ Double.toString(depth[i]) + "\n";
 			}
 
-			ResourceComponent resComp = (ResourceComponent) form
+			ResourceComponent resources = (ResourceComponent) form
 					.getComponent(resourceCompId);
 
 			// Create the stream
 			ByteArrayInputStream scatStream = new ByteArrayInputStream(
 					scatData.getBytes());
 
-			// Write the data to the files.
-			try {
-				// First the reflectivity file
-				VizResource reflectSource = (VizResource)resComp.get(0);
-				IFile reflectivityFile = project.getFile(reflectSource.getContents().getName());
-				reflectivityFile.setContents(new BufferedInputStream(
-						reflectStream), true, false, null);
+			// Create the new resources to output the data to!
+			if (resources.isEmpty()) {
+				// Create names with id from the form (should be unique)
+				String basename = "reflectivityModel_" + form.getId() + "_";
+				// Create the output file for the reflectivity data
+				IFile reflectivityFile = project.getFile(basename + "rfd.csv");
+				// Create the output file for the scattering density data
+				IFile scatteringFile = project.getFile(basename + "scdens.csv");
+				try {
+					// Reflectivity first
+					if (!reflectivityFile.exists()) {
+						reflectivityFile.create(reflectStream, true, null);
+					}
 
-				// Then the scattering density file
-				VizResource scatSource = (VizResource)resComp.get(1);
-				IFile scatteringFile = project.getFile(scatSource.getContents().getName());
-				scatteringFile.setContents(new BufferedInputStream(scatStream),
-						true, false, null);
+					// Then the scattering file
+					if (!scatteringFile.exists()) {
+						scatteringFile.create(scatStream, true, null);
+					}
 
-				// Catch exceptions, should return an error.
-			} catch (CoreException | NullPointerException e) {
-				e.printStackTrace();
-				retVal = FormStatus.InfoError;
+					// Create the VizResource to hold the reflectivity data
+					VizResource reflectivitySource = new VizResource(
+							reflectivityFile.getLocation().toFile());
+					reflectivitySource.setName("Reflectivity Data File");
+					reflectivitySource.setId(1);
+					reflectivitySource
+							.setDescription("Data from reflectivity calculation");
+
+					// Create the VizResource to hold the scatDensity data
+					VizResource scatDensitySource = new VizResource(
+							scatteringFile.getLocation().toFile());
+					scatDensitySource.setName("Scattering Density Data File");
+					scatDensitySource.setId(2);
+					scatDensitySource.setDescription("Data from Stattering "
+							+ "Density calculation");
+
+					resources.addResource(reflectivitySource);
+					resources.addResource(scatDensitySource);
+				} catch (CoreException | IOException e) {
+					// Complain
+					System.err.println("ReflectivityModel Error: "
+							+ "Problem creating reflectivity files!");
+					e.printStackTrace();
+				}
+
+				// Just override the existing files.
+			} else {
+
+				// Write the data to the files.
+				try {
+					// First the reflectivity file
+					VizResource reflectSource = (VizResource) resources.get(0);
+					IFile reflectivityFile = project.getFile(reflectSource
+							.getContents().getName());
+					reflectivityFile.setContents(new BufferedInputStream(
+							reflectStream), true, false, null);
+
+					// Then the scattering density file
+					VizResource scatSource = (VizResource) resources.get(1);
+					IFile scatteringFile = project.getFile(scatSource
+							.getContents().getName());
+					scatteringFile.setContents(new BufferedInputStream(
+							scatStream), true, false, null);
+
+					// Catch exceptions, should return an error.
+				} catch (CoreException | NullPointerException e) {
+					System.err.println("Reflectivity Model Error: "
+							+ "Problem writing to reflectivity files.");
+					e.printStackTrace();
+					retVal = FormStatus.InfoError;
+				}
+
 			}
 
 			// Return processed if the value has not already beens set.
@@ -267,23 +334,11 @@ public class ReflectivityModel extends Model {
 	@Override
 	protected void setupForm() {
 
-		// FIXME! Simple data entered now for testing
-		String line1 = "#features, p_x, p_y\n";
-		String line2 = "#units,p_x,p_y\n";
-		String line3 = "1.0,1.0\n";
-		String line4 = "2.0,4.0\n";
-		String line5 = "3.0,9.0\n";
-		String allLines = line1 + line2 + line3 + line4 + line5;
-
-		// Create an empty stream for the output files
-		ByteArrayInputStream stream = new ByteArrayInputStream(
-				allLines.getBytes());
-
 		// Let the parent setup the Form
 		super.setupForm();
 
-		// FIXME! - Add a data component for the number of rough layers and the
-		// input file
+		// The data component for the number of rough layers and the
+		// input file, along with other user inputs. 
 		DataComponent paramComponent = new DataComponent();
 		paramComponent.setDescription("Files and Parameters for calculation");
 		paramComponent.setName("Parameters and Files");
@@ -297,6 +352,7 @@ public class ReflectivityModel extends Model {
 				// Only set the allowed value type for this. No other work
 				// required.
 				allowedValueType = AllowedValueType.File;
+				defaultValue = "waveVector.csv";
 				return;
 			}
 		};
@@ -314,6 +370,7 @@ public class ReflectivityModel extends Model {
 				allowedValueType = AllowedValueType.Continuous;
 				allowedValues.add("1");
 				allowedValues.add("100");
+				defaultValue = "41";
 				return;
 			}
 		};
@@ -330,6 +387,7 @@ public class ReflectivityModel extends Model {
 				allowedValueType = AllowedValueType.Continuous;
 				allowedValues.add(".00001");
 				allowedValues.add("5.0");
+				defaultValue = ".0002";
 				return;
 			}
 		};
@@ -346,6 +404,7 @@ public class ReflectivityModel extends Model {
 				allowedValueType = AllowedValueType.Continuous;
 				allowedValues.add(".00001");
 				allowedValues.add("5.0");
+				defaultValue = ".03";
 				return;
 			}
 		};
@@ -362,6 +421,7 @@ public class ReflectivityModel extends Model {
 				allowedValueType = AllowedValueType.Continuous;
 				allowedValues.add(".000001");
 				allowedValues.add("1000");
+				defaultValue = "4.25";
 				return;
 			}
 		};
@@ -369,6 +429,22 @@ public class ReflectivityModel extends Model {
 		waveEntry.setName(WaveLengthEntryName);
 		waveEntry.setDescription("The wavelength of the neutron stream.");
 		paramComponent.addEntry(waveEntry);
+
+		// Add an entry for the qr4 boolean
+		Entry qr4 = new Entry() {
+			@Override
+			protected void setup() {
+				allowedValueType = AllowedValueType.Discrete;
+				allowedValues.add("True");
+				allowedValues.add("False");
+				defaultValue = "False";
+				return;
+			}
+		};
+		qr4.setId(6);
+		qr4.setName(QR4EntryName);
+		qr4.setDescription("Whether to use QR4.");
+		paramComponent.addEntry(qr4);
 
 		// Configure a list of property names for the materials
 		ArrayList<String> names = new ArrayList<String>();
@@ -402,52 +478,6 @@ public class ReflectivityModel extends Model {
 		resources.setDescription("Results and Output");
 		resources.setId(resourceCompId);
 		form.addComponent(resources);
-
-		if (project != null) {
-			// FIXME! ID is always 1 at this point!
-			String basename = "reflectivityModel_" + getId() + "_";
-			// Create the output file for the reflectivity data
-			IFile reflectivityFile = project.getFile(basename + "rfd.csv");
-			// Create the output file for the scattering density data
-			IFile scatteringFile = project.getFile(basename + "scdens.csv");
-			try {
-				// Reflectivity first
-				if (reflectivityFile.exists()) {
-					reflectivityFile.delete(true, null);
-				}
-				reflectivityFile.create(stream, true, null);
-				// Then the scattering file
-				if (scatteringFile.exists()) {
-					scatteringFile.delete(true, null);
-				}
-				stream.reset();
-				scatteringFile.create(stream, true, null);
-
-				// Create the VizResource to hold the reflectivity data
-				VizResource reflectivitySource = new VizResource(
-						reflectivityFile.getLocation().toFile());
-				reflectivitySource.setName("Reflectivity Data File");
-				reflectivitySource.setId(1);
-				reflectivitySource
-						.setDescription("Data from reflectivity calculation");
-
-				// Create the VizResource to hold the scatDensity data
-				VizResource scatDensitySource = new VizResource(scatteringFile
-						.getLocation().toFile());
-				scatDensitySource.setName("Scattering Density Data File");
-				scatDensitySource.setId(2);
-				scatDensitySource.setDescription("Data from Stattering "
-						+ "Density calculation");
-				
-				resources.addResource(reflectivitySource);
-				resources.addResource(scatDensitySource);
-			} catch (CoreException | IOException e) {
-				// Complain
-				System.err.println("ReflectivityModel Error: "
-						+ "Problem creating reflectivity files!");
-				e.printStackTrace();
-			}
-		}
 
 		// Put the action name in the form so that the reflectivity can be
 		// calculated.
@@ -539,8 +569,9 @@ public class ReflectivityModel extends Model {
 		return material;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Gives this item a name, description, and item type. Also sets the builder
+	 * name. The name should be the same as the ReflectivityModelBuilder name.
 	 * 
 	 * @see org.eclipse.ice.item.Item#setupItemInfo()
 	 */
@@ -559,21 +590,39 @@ public class ReflectivityModel extends Model {
 		return;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Sets up the form with the basic services needed for the reflectivity
+	 * model. Namely, sets the materials database and the table format for the
+	 * list component in the model.
 	 * 
 	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
 	 */
 	@Override
 	public void setupFormWithServices() {
 
+		// Grab the component
+		ListComponent<Material> matList = (ListComponent<Material>) form
+				.getComponent(matListId);
+
+		// Configure a list of property names for the materials
+		ArrayList<String> names = new ArrayList<String>();
+		names.add("Material ID");
+		names.add("Thickness (A)");
+		names.add("Roughness (A)");
+		names.add(Material.SCAT_LENGTH_DENSITY);
+		names.add(Material.MASS_ABS_COHERENT);
+		names.add(Material.MASS_ABS_INCOHERENT);
+		// Create the writable format to be used by the list
+		MaterialWritableTableFormat format = new MaterialWritableTableFormat(
+				names);
+
+		// Set the table format
+		matList.setTableFormat(format);
+
 		// If the materials database is available, register it as the element
 		// provider for the list component of materials on the Form.
 		IMaterialsDatabase database = getMaterialsDatabase();
 		if (database != null) {
-			// Grab the component
-			ListComponent<Material> matList = (ListComponent<Material>) form
-					.getComponent(matListId);
 			// Set the database as an element source
 			matList.setElementSource(database);
 		}
