@@ -126,6 +126,14 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.cdt.native"/>
       <feature id="org.eclipse.cdt.gnu.debug"/>
       <feature id="org.eclipse.cdt.gdb"/>
+      <feature id="org.eclipse.ease.feature" version="0.2.0.201504281226"/>
+      <feature id="org.eclipse.ease.javascript.feature" version="0.2.0.201504281226"/>
+      <feature id="org.eclipse.ease.modules.charting.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.modules.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.modules.team.svn.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.modules.unittest.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.python.feature" version="0.2.0.201504281226"/>
+      <feature id="org.eclipse.ease.ui.feature" version="0.2.0.201505111426"/>
    </features>
 
    <configurations>
