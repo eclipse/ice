@@ -39,6 +39,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotScale;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -366,6 +367,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		SWTBotButton nextButton = getNextButton();
 		SWTBotButton prevButton = getPrevButton();
 		SWTBotButton playButton = getPlayPauseButton();
+		SWTBotButton optionsButton = getOptionsButton();
 		SWTBotText text = getTimeText();
 
 		final List<Double> goodTimes = new ArrayList<Double>();
@@ -391,6 +393,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(testBot.button(0));
 		assertNotEnabled(testBot.button(1));
 		assertNotEnabled(testBot.button(2));
+		assertEnabled(testBot.button(3)); // The options are always enabled.
 		assertNotEnabled(testBot.text());
 		assertEquals(NO_TIMES, testBot.text().getText());
 
@@ -408,6 +411,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertEnabled(nextButton);
 		assertEnabled(prevButton);
 		assertEnabled(playButton);
+		assertEnabled(optionsButton); // The options are always enabled.
 		assertEnabled(text);
 
 		// Setting the times to something with 1 value should disable them.
@@ -421,6 +425,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(nextButton);
 		assertNotEnabled(prevButton);
 		assertNotEnabled(playButton);
+		assertEnabled(optionsButton); // The options are always enabled.
 		assertNotEnabled(text);
 		// The text widget's text should be set to the current value.
 		assertEquals(badTimes.get(0).toString(), text.getText());
@@ -436,6 +441,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertEnabled(nextButton);
 		assertEnabled(prevButton);
 		assertEnabled(playButton);
+		assertEnabled(optionsButton); // The options are always enabled.
 		assertEnabled(text);
 
 		// Setting the times to something with 0 values should also disable
@@ -451,6 +457,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(nextButton);
 		assertNotEnabled(prevButton);
 		assertNotEnabled(playButton);
+		assertEnabled(optionsButton); // The options are always enabled.
 		assertNotEnabled(text);
 		// The text widget's text should be set to N/A.
 		assertEquals(NO_TIMES, text.getText());
@@ -1045,6 +1052,26 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
+	 * Checks the available options for setting the framerate.
+	 */
+	@Ignore
+	@Test
+	public void checkFramerateOptionsAvailable() {
+		fail("Cannot be implemented until we can test "
+				+ "context Menus on Composites.");
+	}
+
+	/**
+	 * Checks that setting the framerate works.
+	 */
+	@Ignore
+	@Test
+	public void checkSetFramerate() {
+		fail("Cannot be implemented until we can test "
+				+ "context Menus on Composites.");
+	}
+
+	/**
 	 * Gets the SWTBot-wrapped scale widget for the play/pause button.
 	 * 
 	 * @return The wrapped play button.
@@ -1079,6 +1106,15 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 */
 	private SWTBotButton getPrevButton() {
 		return getBot().button(0);
+	}
+
+	/**
+	 * Gets the SWTBot-wrapped button widget that opens widget options.
+	 * 
+	 * @return The wrapped options button.
+	 */
+	private SWTBotButton getOptionsButton() {
+		return getBot().button(3);
 	}
 
 	/**
@@ -1183,7 +1219,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 			}
 			return notificationCount.get() >= count;
 		}
-		
+
 		/**
 		 * Waits up to {@link #THRESHOLD} milliseconds before returning whether
 		 * or not the notification count is greater than or equal to the desired
