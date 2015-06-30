@@ -55,25 +55,25 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * The time widget that will be tested. This gets initialized before and
 	 * disposed after each test.
 	 */
-	private static TimeSliderComposite timeComposite;
+	private TimeSliderComposite timeComposite;
 
 	/**
 	 * A list of test times. This includes the values -1.0, 0.0, null, -2.0,
 	 * 42.0, null, 0.0 (again) and 1337.1337. It should be able to be passed to
 	 * the {@link #timeComposite}.
 	 */
-	private static List<Double> testTimes;
+	private List<Double> testTimes;
 
 	/**
 	 * A list of the complete test times, ordered, and without nulls or
 	 * duplicates.
 	 */
-	private static SortedSet<Double> orderedTimes;
+	private SortedSet<Double> orderedTimes;
 
 	/**
 	 * The expected size of {@link #testTimes}.
 	 */
-	private static int testTimesSize;
+	private int testTimesSize;
 
 	/**
 	 * The string used in the time text widget when no times are available.
@@ -84,12 +84,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * A fake listener to listen to selection events. Its notified flag is reset
 	 * before each test.
 	 */
-	private static FakeListener fakeListener1;
+	private FakeListener fakeListener1;
 	/**
 	 * A second fake listener to listen to selection events. Its notified flag
 	 * is reset before each test.
 	 */
-	private static FakeListener fakeListener2;
+	private FakeListener fakeListener2;
 
 	/**
 	 * The error of margin for double comparisons.
@@ -100,8 +100,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * Overrides a method from AbstractSWTTester.
 	 */
 	@Override
-	public void beforeAllTests() {
-		super.beforeAllTests();
+	public void beforeEachTest() {
+		super.beforeEachTest();
 
 		// Initialize the list of times.
 		testTimes = new ArrayList<Double>();
@@ -137,17 +137,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				getShell().layout();
 			}
 		});
-
-		return;
-	}
-
-	/*
-	 * Overrides a method from AbstractSWTTester.
-	 */
-	@Override
-	public void beforeEachTest() {
-		super.beforeEachTest();
-
+		
 		// Reset the time.
 		SWTBotScale scale = getTimeScale();
 		scale.setValue(scale.getMinimum());
@@ -172,11 +162,11 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * Overrides a method from AbstractSWTTester.
 	 */
 	@Override
-	public void afterAllTests() {
+	public void afterEachTest() {
 
 		// Dispose the time widget. The UI thread can do this whenever it gets a
 		// chance.
-		getDisplay().asyncExec(new Runnable() {
+		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
 				timeComposite.dispose();
@@ -189,8 +179,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		// Empty out the list of times.
 		testTimes.clear();
 		testTimes = null;
-
-		super.afterAllTests();
+		
+		super.afterEachTest();
 	}
 
 	/**
@@ -234,7 +224,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		final List<Double> nullList = null;
 
 		// Get a copy of the ordered times.
-		SortedSet<Double> orderedTimes = new TreeSet<Double>(TimeSliderCompositeTester.orderedTimes);
+		SortedSet<Double> orderedTimes = new TreeSet<Double>(this.orderedTimes);
 
 		// Get the time scale widget.
 		SWTBotScale widget = getTimeScale();
