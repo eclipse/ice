@@ -39,6 +39,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotScale;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -658,6 +659,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * Checks that, when any of the time widgets are updated, the active play
 	 * action is cancelled.
 	 */
+	@Ignore
 	@Test
 	public void checkPauseOnNewSelection() {
 
