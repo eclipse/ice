@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.widgets;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +39,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Text;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This class provides a widget with three separate means of selecting times
@@ -558,17 +559,8 @@ public class TimeSliderComposite extends Composite {
 	 *         loaded.
 	 */
 	private Image loadImage(String name) {
-		// Bundle bundle = FrameworkUtil.getBundle(TimeSliderComposite.class);
-		// URL url = bundle.getEntry("icons/" + name);
-		URL url = null;
-		try {
-			url = new URL(
-					"file:///C:/dev/work/workspace/ice/src/org.eclipse.ice.viz.service.visit/icons/"
-							+ name);
-		} catch (MalformedURLException e) {
-			System.err.println("blaaaah");
-			e.printStackTrace();
-		}
+		Bundle bundle = FrameworkUtil.getBundle(TimeSliderComposite.class);
+		URL url = bundle.getEntry("icons/" + name);
 		return ImageDescriptor.createFromURL(url).createImage();
 	}
 
