@@ -36,6 +36,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Text;
@@ -312,25 +313,25 @@ public class TimeSliderComposite extends Composite {
 		playbackRate.add(new ActionTree(new Action("1 fps") {
 			@Override
 			public void run() {
-				setPlaybackFPS(1.0);
+				setFPS(1.0);
 			}
 		}));
 		playbackRate.add(new ActionTree(new Action("12 fps") {
 			@Override
 			public void run() {
-				setPlaybackFPS(12.0);
+				setFPS(12.0);
 			}
 		}));
 		playbackRate.add(new ActionTree(new Action("24 fps") {
 			@Override
 			public void run() {
-				setPlaybackFPS(24.0);
+				setFPS(24.0);
 			}
 		}));
 		playbackRate.add(new ActionTree(new Action("30 fps") {
 			@Override
 			public void run() {
-				setPlaybackFPS(30.0);
+				setFPS(30.0);
 			}
 		}));
 		// Add an action for selecting a custom framerate.
@@ -351,8 +352,7 @@ public class TimeSliderComposite extends Composite {
 								if (Double.compare(newValue, minFPS) >= 0) {
 									validatedText = text;
 								}
-							} catch (NullPointerException
-									| NumberFormatException exception) {
+							} catch (NullPointerException | NumberFormatException exception) {
 								// Nothing to do.
 							}
 						}
@@ -360,11 +360,9 @@ public class TimeSliderComposite extends Composite {
 					}
 				};
 				// Customize the dialog's appearance.
-				dialog.setInfoText("Enter a new frame rate or\n"
-						+ "select a previous rate.\n"
+				dialog.setInfoText("Enter a new frame rate or\n" + "select a previous rate.\n"
 						+ "Values must be greater than 0.0");
-				dialog.setErrorText("Please enter a number greater than 60\n"
-						+ "seconds per frame (0.0167 FPS).");
+				dialog.setErrorText("Please enter a number greater than 60\n" + "seconds per frame (0.0167 FPS).");
 				// Set the dialog Combo's allowed values and initial value.
 				dialog.setAllowedValues(previousRates);
 				dialog.setInitialValue(Double.toString(fps));
@@ -377,7 +375,7 @@ public class TimeSliderComposite extends Composite {
 					previousRates.add(value);
 					// Convert it to a double and set it as the new rate.
 					double newRate = Double.parseDouble(value);
-					setPlaybackFPS(newRate);
+					setFPS(newRate);
 				}
 
 				return;
@@ -487,7 +485,7 @@ public class TimeSliderComposite extends Composite {
 				setPlayback(false, e);
 
 				// Get the timestep from the scale widget.
-				if (setTimestep(scale.getSelection())) {
+				if (setValidTimestep(scale.getSelection())) {
 					notifyListeners(e);
 				}
 			}
@@ -523,7 +521,7 @@ public class TimeSliderComposite extends Composite {
 				try {
 					double value = Double.parseDouble(text.getText());
 					// Set the value to the nearest allowed time.
-					if (setTimestep(times.findNearestIndex(value))) {
+					if (setValidTimestep(times.findNearestIndex(value))) {
 						notifyListeners(e);
 					} else {
 						// Update the text to the set time regardless of whether
@@ -564,6 +562,135 @@ public class TimeSliderComposite extends Composite {
 		return ImageDescriptor.createFromURL(url).createImage();
 	}
 
+	// ---- Public Setters and Getters ---- //
+
+	/**
+	 * Gets the current playback rate in frames per second.
+	 * 
+	 * @return The current frames per second for playback.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public double getFPS() {
+		// Check that this widget can be accessed.
+		checkWidget();
+		return fps;
+	}
+
+	/**
+	 * Gets the currently selected time.
+	 * 
+	 * @return The selected time.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public double getTime() {
+		// Check that this widget can be accessed.
+		checkWidget();
+		return timestep >= 0 ? times.get(timestep) : 0.0;
+	}
+
+	/**
+	 * Gets the currently selected timestep (the index of the selected time).
+	 * 
+	 * @return The selected timestep.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public int getTimestep() {
+		// Check that this widget can be accessed.
+		checkWidget();
+		return timestep;
+	}
+
+	/**
+	 * Starts playback on the widget. Calling this method <i>will not itself
+	 * notify SelectionListeners</i>, but the ensuing playback <i>will</i>.
+	 * 
+	 * @return True if the widget was paused and is now playing, false
+	 *         otherwise.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public boolean play() {
+		// Check that this widget can be accessed.
+		checkWidget();
+
+		boolean changed = false;
+
+		if (!isPlaying) {
+			setPlayback(true, createBlankSelectionEvent());
+			changed = true;
+		}
+
+		return changed;
+	}
+
+	/**
+	 * Stops playback on the widget at its current timestep.
+	 * 
+	 * @return True if the widget was playing and is now paused, false
+	 *         otherwise.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public boolean pause() {
+		// Check that this widget can be accessed.
+		checkWidget();
+
+		boolean changed = false;
+
+		if (isPlaying) {
+			setPlayback(false, createBlankSelectionEvent());
+			changed = true;
+		}
+
+		return changed;
+	}
+
+	/**
+	 * Gets whether the widget is currently playing.
+	 * 
+	 * @return True if the widget is playing, false if it is paused.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public boolean isPlaying() {
+		// Check that this widget can be accessed.
+		checkWidget();
+		return isPlaying;
+	}
+
 	/*
 	 * Overrides a method from Control.
 	 */
@@ -578,6 +705,207 @@ public class TimeSliderComposite extends Composite {
 		prevButton.setBackground(color);
 
 		return;
+	}
+
+	/**
+	 * Sets the current playback rate in frames per second. The slowest allowed
+	 * framerate is defined by {@link #minFPS}.
+	 * 
+	 * @param fps
+	 *            The new framerate. Must be greater than the minimum allowed
+	 *            framerate.
+	 * @return True if the FPS was changed, false otherwise.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public boolean setFPS(double fps) {
+		// Check that this widget can be accessed.
+		checkWidget();
+
+		boolean changed = false;
+		if (Double.compare(fps, minFPS) >= 0 && Math.abs(fps - this.fps) > 1e-7) {
+			this.fps = fps;
+			// Convert the FPS into a millisecond delay.
+			fpsDelay = (int) (Math.round(1000.0 / this.fps));
+			changed = true;
+		}
+		return changed;
+	}
+
+	/**
+	 * Updates the timestep and all embedded widgets based on the nearest known
+	 * time to the specified time. Calling this method <i>will not notify
+	 * SelectionListeners!</i>
+	 * <p>
+	 * <b>Note:</b> Calling this method from the UI thread with valid arguments
+	 * will pause the widget if it is currently playing.
+	 * </p>
+	 * 
+	 * @param time
+	 *            The new time.
+	 * @return True if the timestep changed, false otherwise.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public boolean setTime(double time) {
+		// Check that this widget can be accessed.
+		checkWidget();
+
+		// Halt playback.
+		SelectionEvent event = createBlankSelectionEvent();
+		setPlayback(false, event);
+
+		// Set the timestep.
+		return setValidTimestep(times.findNearestIndex(time));
+	}
+
+	/**
+	 * Sets the list of timesteps used by this widget.
+	 * <p>
+	 * <b>Note:</b> Calling this method from the UI thread with valid arguments
+	 * will pause the widget if it is currently playing.
+	 * </p>
+	 * 
+	 * @param times
+	 *            The list of timesteps. Null values and duplicates will be
+	 *            ignored. The list will be ordered.
+	 * @exception IllegalArgumentException
+	 *                <ul>
+	 *                <li>ERROR_NULL_ARGUMENT - if the list of times is null
+	 *                </li>
+	 *                </ul>
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public void setTimes(List<Double> times) {
+		// Check that this widget can be accessed. Also check the list is not
+		// null.
+		checkWidget();
+		if (times == null) {
+			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
+		}
+
+		// Halt playback.
+		setPlayback(false, createBlankSelectionEvent());
+
+		// Try to recreate the tree of times based on the new list of times.
+		try {
+			this.times = new BinarySearchTree(times);
+			timestep = 0;
+		}
+		// If the list has no non-null values, set the timestep to -1.
+		catch (IllegalArgumentException e) {
+			this.times = null;
+			timestep = -1;
+		}
+
+		// Refresh the widgets.
+		final int size = this.times != null ? this.times.size() : 0;
+		boolean widgetsEnabled = size > 1;
+
+		// Enable/disable the widgets as necessary.
+		scale.setEnabled(widgetsEnabled);
+		text.setEnabled(widgetsEnabled);
+		nextButton.setEnabled(widgetsEnabled);
+		prevButton.setEnabled(widgetsEnabled);
+		playButton.setEnabled(widgetsEnabled);
+
+		// Refresh the scale widget's max value.
+		scale.setMaximum(widgetsEnabled ? size - 1 : 0);
+
+		// Reset the selection of the widgets.
+		scale.setSelection(0);
+		text.setText(size > 0 ? Double.toString(getTime()) : NO_TIMES);
+
+		return;
+	}
+
+	/**
+	 * Updates the timestep and all embedded widgets based on the new timestep
+	 * value. Calling this method <i>will not notify SelectionListeners!</i>
+	 * <p>
+	 * <b>Note:</b> Calling this method from the UI thread with valid arguments
+	 * will pause the widget if it is currently playing.
+	 * </p>
+	 * 
+	 * @param index
+	 *            The new index of the timestep.
+	 * @return True if the timestep changed, false otherwise.
+	 * @throws IndexOutOfBoundsException
+	 *             If the specified index is invalid.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public boolean setTimestep(int index) throws IndexOutOfBoundsException {
+		// Check that this widget can be accessed.
+		checkWidget();
+
+		// Check that the index is valid.
+		if (times == null || index < 0 || index >= times.size()) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		// Halt playback.
+		SelectionEvent event = createBlankSelectionEvent();
+		setPlayback(false, event);
+
+		// Set the timestep.
+		return setValidTimestep(index);
+	}
+
+	// ------------------------------------ //
+
+	/**
+	 * Creates a blank SelectionEvent that can be used when pausing the
+	 * playback.
+	 * 
+	 * @return A new, empty SelectionEvent associated with this widget.
+	 */
+	private SelectionEvent createBlankSelectionEvent() {
+		Event event = new Event();
+		event.widget = this;
+		return new SelectionEvent(event);
+	}
+
+	/**
+	 * Decrements the timestep. Updates all widgets as necessary. This will loop
+	 * back around to the last timestep if necessary.
+	 * 
+	 * @return True if the timestep changed, false otherwise.
+	 */
+	private boolean decrementTimestep() {
+		int size = times.size();
+		return setValidTimestep((timestep - 1 + size) % size);
+	}
+
+	/**
+	 * Increments the timestep. Updates all widgets as necessary. This will loop
+	 * back around to the first timestep if necessary.
+	 * 
+	 * @return True if the timestep changed, false otherwise.
+	 */
+	private boolean incrementTimestep() {
+		return setValidTimestep((timestep + 1) % times.size());
 	}
 
 	/**
@@ -636,37 +964,25 @@ public class TimeSliderComposite extends Composite {
 	}
 
 	/**
-	 * Sets the playback rate in frames per second.
+	 * Updates the timestep and all embedded widgets based on the new timestep
+	 * value.
+	 * <p>
+	 * <b>Note:</b> This method should be used when on the UI thread and the
+	 * timestep is known to be valid (e.g., from a widget's selection).
+	 * </p>
 	 * 
-	 * @param rate
-	 *            The new frames per second. Must be greater than
-	 *            {@link #minFPS}.
-	 * @return True if the value changed to a new value, false otherwise.
+	 * @param index
+	 *            The new timestep. <i>Assumed to be valid.</i>
+	 * @return True if the timestep changed to a new value, false otherwise.
 	 */
-	private boolean setPlaybackFPS(double rate) {
+	private boolean setValidTimestep(int index) {
 		boolean changed = false;
-		if (Double.compare(rate, minFPS) >= 0 && Math.abs(rate - fps) > 1e-7) {
-			fps = rate;
-			fpsDelay = (int) (Math.round(1.0 / fps) * 1000);
-			changed = true;
-		}
-		return changed;
-	}
+		if (index != timestep) {
 
-	/**
-	 * Updates the timestep and all widgets based on the new timestep value.
-	 * 
-	 * @param newValue
-	 *            The new value. Assumed to be valid.
-	 * @return True if the timestep changed, false otherwise.
-	 */
-	private boolean setTimestep(int newValue) {
-		boolean changed = false;
-
-		if (newValue != timestep) {
 			changed = true;
+
 			// Update the timestep.
-			timestep = newValue;
+			timestep = index;
 
 			// Update the selections on the widgets.
 			scale.setSelection(timestep);
@@ -676,121 +992,7 @@ public class TimeSliderComposite extends Composite {
 		return changed;
 	}
 
-	/**
-	 * Increments the timestep. Updates all widgets as necessary. This will loop
-	 * back around to the first timestep if necessary.
-	 * 
-	 * @return True if the timestep changed, false otherwise.
-	 */
-	private boolean incrementTimestep() {
-		return setTimestep((timestep + 1) % times.size());
-	}
-
-	/**
-	 * Decrements the timestep. Updates all widgets as necessary. This will loop
-	 * back around to the last timestep if necessary.
-	 * 
-	 * @return True if the timestep changed, false otherwise.
-	 */
-	private boolean decrementTimestep() {
-		int size = times.size();
-		return setTimestep((timestep - 1 + size) % size);
-	}
-
-	/**
-	 * Sets the list of timesteps used by this widget.
-	 * 
-	 * @param times
-	 *            The list of timesteps. Null values and duplicates will be
-	 *            ignored. The list will be ordered.
-	 * @exception IllegalArgumentException
-	 *                <ul>
-	 *                <li>ERROR_NULL_ARGUMENT - if the list of times is null</li>
-	 *                </ul>
-	 * @exception SWTException
-	 *                <ul>
-	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
-	 *                disposed</li>
-	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-	 *                thread that created the receiver</li>
-	 *                </ul>
-	 */
-	public void setTimes(List<Double> times) {
-		// Check that this widget can be accessed. Also check the list is not
-		// null.
-		checkWidget();
-		if (times == null) {
-			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
-		}
-
-		// Try to recreate the tree of times based on the new list of times.
-		try {
-			this.times = new BinarySearchTree(times);
-			timestep = 0;
-		}
-		// If the list has no non-null values, set the timestep to -1.
-		catch (IllegalArgumentException e) {
-			this.times = null;
-			timestep = -1;
-		}
-
-		// Refresh the widgets.
-		final int size = this.times != null ? this.times.size() : 0;
-		boolean widgetsEnabled = size > 1;
-
-		// Enable/disable the widgets as necessary.
-		scale.setEnabled(widgetsEnabled);
-		text.setEnabled(widgetsEnabled);
-		nextButton.setEnabled(widgetsEnabled);
-		prevButton.setEnabled(widgetsEnabled);
-		playButton.setEnabled(widgetsEnabled);
-
-		// Refresh the scale widget's max value.
-		scale.setMaximum(widgetsEnabled ? size - 1 : 0);
-
-		// Reset the selection of the widgets.
-		scale.setSelection(0);
-		text.setText(size > 0 ? Double.toString(getTime()) : NO_TIMES);
-
-		return;
-	}
-
-	/**
-	 * Gets the currently selected timestep (the index of the selected time).
-	 * 
-	 * @return The selected timestep.
-	 * @exception SWTException
-	 *                <ul>
-	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
-	 *                disposed</li>
-	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-	 *                thread that created the receiver</li>
-	 *                </ul>
-	 */
-	public int getTimestep() {
-		// Check that this widget can be accessed.
-		checkWidget();
-		return timestep;
-	}
-
-	/**
-	 * Gets the currently selected time.
-	 * 
-	 * @return The selected time.
-	 * @exception SWTException
-	 *                <ul>
-	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
-	 *                disposed</li>
-	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-	 *                thread that created the receiver</li>
-	 *                </ul>
-	 */
-	public double getTime() {
-		// Check that this widget can be accessed.
-		checkWidget();
-		return timestep >= 0 ? times.get(timestep) : 0.0;
-	}
-
+	// ---- SelectionListeners ---- //
 	/**
 	 * Adds a new listener to be notified when the selected time changes.
 	 * 
@@ -863,5 +1065,5 @@ public class TimeSliderComposite extends Composite {
 			listener.widgetSelected(e);
 		}
 	}
-
+	// ---------------------------- //
 }
