@@ -82,12 +82,12 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 		/**
 		 * The x position of the mouse event.
 		 */
-		public final int x;
+		public int x;
 		/**
 		 * The y position of the mouse event. Remember that y increases from top
 		 * to bottom.
 		 */
-		public final int y;
+		public int y;
 		/**
 		 * The "action" for the event. Usually one of "down", "up", "move",
 		 * "dblclick", "scroll".
@@ -263,13 +263,55 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 		return changed;
 	}
 
+	private int scrollCount = 0;
+	
 	/*
 	 * Implements a method from MouseWheelListener.
 	 */
 	@Override
 	public void mouseScrolled(MouseEvent e) {
 		// Add a new zoom request.
-		// TODO
+
+		// Triggering a mouse zoom means we need to pretend the CTRL key is
+		// pressed while a click and drag occurs.
+		final MouseInteraction event = new MouseInteraction(e, "none") {
+			@Override
+			public boolean[] getState() {
+				return new boolean[] { false, false, true, false, false,
+						false, false };
+			}
+		};
+		
+		scrollCount -= e.count;
+		
+		executorService.submit(new Runnable() {
+			@Override
+			public void run() {
+
+				double normY = 2.0 / Math.PI * Math.atan(0.005 * scrollCount) + 1.0;
+				System.err.println(normY);
+				
+				// Send the request to the client.
+				final IParaViewWebClient clientRef = client;
+				if (clientRef != null) {
+					try {
+						clientRef.event(viewId, 0.0, normY, event.action, event.getState()).get();
+					} catch (InterruptedException | ExecutionException e) {
+						// The event could not be processed.
+					}
+				}
+
+				// Refresh the Canvas.
+				final ParaViewCanvas canvasRef = canvas;
+				if (canvasRef != null) {
+					canvas.refresh();
+				}
+	
+				return;
+			}
+		});
+		
+		return;
 	}
 
 	/*
@@ -369,7 +411,7 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 						double normalizedX = (double) event.x / (double) size.x;
 						double normalizedY = 1.0 - (double) event.y
 								/ (double) size.y;
-
+						
 						// Send the request to the client.
 						final IParaViewWebClient clientRef = client;
 						if (clientRef != null) {
