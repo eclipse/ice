@@ -60,14 +60,14 @@ public class MOOSE extends Item {
 	/**
 	 * Reference to the MOOSE Input Model for this MOOSE workflow.
 	 */
-	@XmlElement()
+	@XmlTransient() //Element()
 	private MOOSEModel mooseModel;
 
 	/**
 	 * Reference to the MOOSELauncher used in executing a constructed MOOSE
 	 * input file.
 	 */
-	@XmlElement()
+	@XmlTransient() // Element()
 	private MOOSELauncher mooseLauncher;
 
 	/**
@@ -77,8 +77,8 @@ public class MOOSE extends Item {
 	private DataComponent modelFiles;
 
 	/**
-	 * Reference to the DataComponent containing the 
-	 * Postprocessors to display automatically.
+	 * Reference to the DataComponent containing the Postprocessors to display
+	 * automatically.
 	 */
 	@XmlTransient()
 	private DataComponent postProcessorsData;
@@ -97,9 +97,9 @@ public class MOOSE extends Item {
 	private HashMap<String, ICEResource> postProcessorResources;
 
 	/**
-	 * This map keeps track of File Entries in the modelFiles DataComponent 
-	 * and their corresponding parent TreeComposites so that we can 
-	 * keep them in sync.
+	 * This map keeps track of File Entries in the modelFiles DataComponent and
+	 * their corresponding parent TreeComposites so that we can keep them in
+	 * sync.
 	 */
 	@XmlTransient()
 	private HashMap<String, TreeComposite> fileEntryTreeMapping;
@@ -108,7 +108,15 @@ public class MOOSE extends Item {
 	 * Reference to the id of the DataComponent containign the Postprocessors
 	 * the user would like to automatically display.
 	 */
+	@XmlTransient()
 	public static final int ppDataId = 10;
+
+	/**
+	 * Boolean to indicate whether this Item has already registered with the
+	 * necessary Tree blocks.
+	 */
+	@XmlTransient()
+	private boolean registered = false;
 
 	/**
 	 * Nullary constructor.
@@ -117,8 +125,7 @@ public class MOOSE extends Item {
 		this(null);
 		mooseModel = new MOOSEModel(null);
 		mooseLauncher = new MOOSELauncher(null);
-		fileEntryTreeMapping = new HashMap<String, TreeComposite>();
-		postProcessorResources = new HashMap<String, ICEResource>();
+		addComponents();
 	}
 
 	/**
@@ -130,7 +137,13 @@ public class MOOSE extends Item {
 		super(projectSpace);
 		mooseModel = new MOOSEModel(projectSpace);
 		mooseLauncher = new MOOSELauncher(projectSpace);
+		addComponents();
+	}
 
+	/**
+	 * 
+	 */
+	private void addComponents() {
 		// Loop over all components and add them to this form
 		for (Component c : mooseModel.getForm().getComponents()) {
 			if (c.getName().equals("Mesh")) {
@@ -165,7 +178,6 @@ public class MOOSE extends Item {
 		if ((ppTree = getTreeByName("Postprocessors")) != null) {
 			setupPostprocessorData(ppTree);
 		}
-
 	}
 
 	/**
@@ -255,8 +267,6 @@ public class MOOSE extends Item {
 
 		return status;
 	}
-
-	private boolean registered = false;
 
 	/**
 	 * (non-Javadoc)
@@ -559,7 +569,7 @@ public class MOOSE extends Item {
 				DataComponent data = (DataComponent) fileEntryTreeMapping
 						.get(entry.getName()).getDataNodes().get(0);
 
-				// If not null, loop over the Entries til we find 
+				// If not null, loop over the Entries til we find
 				// the file Entry.
 				if (data != null) {
 					for (Entry e : data.retrieveAllEntries()) {
@@ -572,8 +582,8 @@ public class MOOSE extends Item {
 								&& (e.getName() + " = " + e.getValue())
 										.matches(mooseLauncher
 												.getFileDependenciesSearchString())) {
-							
-							// Set the value of the tree's file entry. 
+
+							// Set the value of the tree's file entry.
 							e.setValue(entry.getValue());
 							break;
 						}
@@ -796,19 +806,14 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * <p>
 	 * This operation is used to check equality between the MOOSE Item and
 	 * another MOOSE Item. It returns true if the Items are equal and false if
 	 * they are not.
-	 * </p>
 	 * 
 	 * @param otherMoose
-	 *            <p>
 	 *            The MOOSE Item that should be checked for equality.
-	 *            </p>
-	 * @return <p>
+	 * @return 
 	 *         True if the launchers are equal, false if not
-	 *         </p>
 	 */
 	public boolean equals(MOOSE otherMoose) {
 
@@ -854,9 +859,7 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * <p>
 	 * This operation returns the hashcode value of the MooseItem.
-	 * </p>
 	 * 
 	 * @return <p>
 	 *         The hashcode
@@ -875,6 +878,7 @@ public class MOOSE extends Item {
 	}
 
 	/**
+	 * Copy the provided Item into this Item. 
 	 * 
 	 * @param otherMoose
 	 *            <p>
@@ -882,30 +886,44 @@ public class MOOSE extends Item {
 	 *            another MOOSE Item into the current MOOSE Item.
 	 *            </p>
 	 */
-	public void copy(MOOSE otherMoose) {
+	@Override
+	public void copy(Item otherItem) {
 
 		// Return if otherMoose is null
-		if (otherMoose == null) {
+		if (otherItem == null) {
 			return;
 		}
+
+		// Cast to a MOOSE Item
+		MOOSE otherMoose = (MOOSE) otherItem;
 
 		// Copy contents into super and current object
 		super.copy((Item) otherMoose);
 
-		// Clone contents correctly
-		form = new Form();
-		mooseModel = new MOOSEModel(project);
-		mooseLauncher = new MOOSELauncher(project);
-		form.copy(otherMoose.form);
-
-		mooseModel.copy(otherMoose.mooseModel);
-		mooseLauncher.copy(otherMoose.mooseLauncher);
 		// Add the model files component
 		modelFiles = (DataComponent) form.getComponent(1);
+		
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
-
+		
+		// Must do this or we can't walk the tree to 
+		// get file entries correctly 
+		mooseModel.setActiveDataNodes(modelTree);
+		
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.item.Item#setProject(org.eclipse.core.resources.IProject)
+	 */
+	@Override
+	public void setProject(IProject projectSpace) {
+		super.setProject(projectSpace);
+		mooseModel.setProject(projectSpace);
+		mooseLauncher.setProject(projectSpace);
 	}
 
 	/**

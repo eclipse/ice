@@ -527,9 +527,13 @@ public class ItemManager implements ItemListener {
 	 */
 	private void rebuildItem(ItemBuilder builder, Item item,
 			IProject projectSpace) {
+		
 		// Build the proper Item
 		Item rebuiltItem = itemBuilderList.get(item.getItemBuilderName())
 				.build(projectSpace);
+
+		// Give the project to this temp Item
+		item.setProject(projectSpace);
 		// Copy over the information from the persistence
 		// provider
 		rebuiltItem.copy(item);

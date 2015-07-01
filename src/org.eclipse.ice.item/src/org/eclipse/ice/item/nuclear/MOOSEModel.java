@@ -444,8 +444,6 @@ public class MOOSEModel extends Item {
 					execFile.getAbsolutePath() + " --syntax > "
 							+ syntaxFile.getLocation().toOSString() };
 
-			System.out
-					.println(yamlCmd.toString() + "\n" + syntaxCmd.toString());
 			// Create the YAML and Syntax files
 			Process p1 = Runtime.getRuntime().exec(yamlCmd);
 			Process p2 = Runtime.getRuntime().exec(syntaxCmd);
@@ -454,7 +452,6 @@ public class MOOSEModel extends Item {
 				int code2 = p2.waitFor();
 
 				if (code1 != 0 || code2 != 0) {
-					System.out.println("ERROR CREATING YAML/SYNTAX");
 					throw new Exception(
 							"Error in creating the YAML/Syntax files. Job return codes were "
 									+ code1 + " and " + code2);
@@ -1541,7 +1538,7 @@ public class MOOSEModel extends Item {
 	 * @param tree
 	 *            The tree that will have all active data nodes set.
 	 */
-	private void setActiveDataNodes(TreeComposite tree) {
+	public void setActiveDataNodes(TreeComposite tree) {
 
 		// Perform a pre-order traversal of the tree. For each TreeComposite, we
 		// should set an active data node if none is already set.

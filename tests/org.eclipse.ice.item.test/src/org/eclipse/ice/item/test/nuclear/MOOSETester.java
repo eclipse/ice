@@ -18,11 +18,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -34,6 +39,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -41,6 +47,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.item.nuclear.MOOSELauncher;
@@ -454,6 +461,61 @@ public class MOOSETester {
 		assertEquals(mooseItem.getItemType(), copyItem.getItemType());
 		assertEquals(mooseItem.getName(), copyItem.getName());
 		assertEquals(mooseItem.getStatus(), copyItem.getStatus());
+
+		return;
+	}
+
+	/**
+	 * This operation checks the ability of the JobLauncher to persist itself to
+	 * XML and to load itself from an XML input stream.
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
+	 */
+	@Test
+	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
+		/*
+		 * The following sets of operations will be used to test the
+		 * "read and write" portion of the JobLauncher Item. It will demonstrate
+		 * the behavior of reading and writing from an
+		 * "XML (inputStream and outputStream)" file. It will use an annotated
+		 * Item to demonstrate basic behavior.
+		 */
+
+		// Local declarations
+		MOOSE loadedItem = new MOOSE();
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(MOOSE.class);
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		
+		// Set up item
+		MOOSE persistedItem = new MOOSE();
+		persistedItem.setDescription("MOOSE item description");
+		persistedItem.setId(5);
+		persistedItem.setName("Name!");
+		persistedItem.getForm().setItemID(6);
+
+		// persist to an output stream
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		xmlHandler.write(persistedItem, classList, outputStream);
+
+		// Load an Item from the first
+		loadedItem = (MOOSE) xmlHandler.read(classList,new ByteArrayInputStream(outputStream
+				.toByteArray()));
+		// Make sure they match
+		assertEquals(persistedItem, loadedItem);
+
+		// Check the contents more closely to make sure that JobLauncher Item.
+		assertEquals(persistedItem.getAvailableActions(),
+				loadedItem.getAvailableActions());
+		assertEquals(persistedItem.getDescription(),
+				loadedItem.getDescription());
+		assertEquals(persistedItem.getForm(), loadedItem.getForm());
+		assertEquals(persistedItem.getId(), loadedItem.getId());
+		assertEquals(persistedItem.getItemType(), loadedItem.getItemType());
+		assertEquals(persistedItem.getName(), loadedItem.getName());
+		assertEquals(persistedItem.getStatus(), loadedItem.getStatus());
 
 		return;
 	}
