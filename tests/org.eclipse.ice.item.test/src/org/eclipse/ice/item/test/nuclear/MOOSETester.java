@@ -168,7 +168,7 @@ public class MOOSETester {
 		// Check the form
 		Form form = model.getForm();
 		assertNotNull(form);
-		assertEquals(4, form.getComponents().size());
+		assertEquals(5, form.getComponents().size());
 
 		// Check the data component
 		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) instanceof DataComponent);
@@ -179,7 +179,7 @@ public class MOOSETester {
 				.retrieveEntry("MOOSE-Based Application");
 		assertNotNull(mooseAppEntry);
 		assertEquals(1, mooseAppEntry.getId());
-		assertEquals("Select Application",
+		assertEquals("Import Application",
 				mooseAppEntry.getDefaultValue());
 		assertEquals(mooseAppEntry.getDefaultValue(), mooseAppEntry.getValue());
 
@@ -196,97 +196,6 @@ public class MOOSETester {
 
 		// Check the ResourceComponent
 		assertTrue(form.getComponent(MOOSEModel.resourceComponentId) instanceof ResourceComponent);
-
-		return;
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	public void checkDynamicFileGeneration() {
-
-		// Create a MooseItem to test
-		MOOSE item = new MOOSE(projectSpace);
-		item.setIOService(service);
-
-		// FIXME REPLACE WITH PATH TO ICETESTS...
-		Entry appName = ((DataComponent) item.getForm().getComponent(1))
-				.retrieveEntry("MOOSE-Based Application");
-		appName.setValue("file:/Users/aqw/ICEFiles_prebuiltMoose/moose/test/moose_test-opt");
-
-		item.submitForm(item.getForm());
-
-		DataComponent filesComp = (DataComponent) item.getForm()
-				.getComponent(1);
-
-		TreeComposite tree = (TreeComposite) item.getForm().getComponent(2);
-		AdaptiveTreeComposite mesh = null;
-		for (int i = 0; i < tree.getNumberOfChildren(); i++) {
-			TreeComposite child = tree.getChildAtIndex(i);
-			// System.out.println("Child: " + child.getName());
-			if ("Mesh".equals(child.getName())) {
-				mesh = (AdaptiveTreeComposite) child;
-			}
-		}
-		mesh.setType("FileMesh");
-		mesh.setActive(true);
-		((DataComponent) mesh.getActiveDataNode()).retrieveEntry("file")
-				.setValue("mesh.e");
-
-		item.submitForm(item.getForm());
-
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		assertEquals(3, filesComp.retrieveAllEntries().size());
-
-	}
-
-	/**
-	 * This operation checks the MOOSEModel to make sure that it can correctly
-	 * process its Form and generate a MOOSE input file.
-	 */
-	@Test
-	public void checkProcessing() {
-
-		// Local Declarations
-		String testFilename = "input_coarse10.i";
-
-		// // Create a MOOSEModel to test
-		MOOSE moose = new MOOSE(projectSpace);
-
-		// Set the IOService on the model so we can write out
-		moose.setIOService(service);
-
-		// Check the form
-		Form form = moose.getForm();
-		assertNotNull(form);
-
-		// Check the action list
-		assertEquals(2, form.getActionList().size());
-		assertTrue(form.getActionList().contains("Write MOOSE File"));
-
-		// FIXME REPLACE WITH PATH TO ICETESTS...
-		Entry appName = ((DataComponent) form.getComponent(1))
-				.retrieveEntry("MOOSE-Based Application");
-		appName.setValue("file:/Users/aqw/projects/bison/bison-opt");
-
-		// Change the output file name to make sure that it is possible
-//		Entry outputFileEntry = ((DataComponent) form.getComponent(1))
-//				.retrieveEntry("Output File Name");
-//		outputFileEntry.setValue(testFilename);
-
-		// Resubmit the form
-		assertEquals(FormStatus.ReadyToProcess, moose.submitForm(form));
-
-		// Direct the model to write the output file
-		assertEquals(FormStatus.Processed, moose.process("Write MOOSE File"));
-
-		// Check that the file exists
-		assertTrue(projectSpace.getFile(testFilename).exists());
 
 		return;
 	}
@@ -416,14 +325,6 @@ public class MOOSETester {
 		assertEquals("max_rows", param.getName());
 		assertEquals("25", param.getValue());
 
-		// FIXME REPLACE WITH PATH TO ICETESTS...
-		Entry appName = ((DataComponent) mooseItem.getForm().getComponent(1))
-				.retrieveEntry("MOOSE-Based Application");
-		appName.setValue("file:/Users/aqw/ICEFiles_prebuiltMoose/moose/test/moose_test-opt");
-
-		assertTrue(mooseItem.submitForm(mooseItem.getForm()).equals(
-				FormStatus.ReadyToProcess));
-
 		return;
 	}
 
@@ -438,11 +339,15 @@ public class MOOSETester {
 	public void checkEquality() {
 
 		// Create JobLauncherItems to test
-		MOOSE item = new MOOSE();
-		MOOSE equalItem = new MOOSE();
+		MOOSE item = new MOOSE(projectSpace);
+		MOOSE equalItem = new MOOSE(projectSpace);
 		MOOSE unEqualItem = new MOOSE();
-		MOOSE transitiveItem = new MOOSE();
+		MOOSE transitiveItem = new MOOSE(projectSpace);
 
+		item.loadInput("input_coarse10.i");
+		equalItem.loadInput("input_coarse10.i");
+		transitiveItem.loadInput("input_coarse10.i");
+		
 		// Set ICEObject data
 		equalItem.setId(item.getId());
 		transitiveItem.setId(item.getId());

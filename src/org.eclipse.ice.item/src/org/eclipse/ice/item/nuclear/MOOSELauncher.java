@@ -24,6 +24,8 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
 /**
@@ -247,6 +249,127 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		}
 
 		return launchCommand;
+	}
+
+	/**
+	 * <p>
+	 * This operation is used to check equality between the MOOSEModel Item and
+	 * another MOOSEModel Item. It returns true if the Items are equal and false
+	 * if they are not.
+	 * </p>
+	 * 
+	 * @param otherMoose
+	 *            <p>
+	 *            The MOOSEModel Item that should be checked for equality.
+	 *            </p>
+	 * @return <p>
+	 *         True if the launchers are equal, false if not
+	 *         </p>
+	 */
+	public boolean equals(MOOSELauncher otherMoose) {
+
+		boolean retVal;
+
+		// Check if they are the same reference in memory
+		if (this == otherMoose) {
+			return true;
+		}
+
+		// Check that the object is not null, and that it is an Item
+		// Check that these objects have the same ICEObject data
+		if (otherMoose == null || !(otherMoose instanceof Item)
+				|| !super.equals(otherMoose)) {
+			return false;
+		}
+
+		// Check data
+		retVal = (this.allowedActions.equals(otherMoose.allowedActions))
+				&& (this.form.equals(otherMoose.form))
+				&& (this.itemType == otherMoose.itemType)
+				&& (this.status.equals(otherMoose.status));
+
+		// Check project
+		if (this.project != null && otherMoose.project != null
+				&& (!(this.project.equals(otherMoose.project)))) {
+			return false;
+		}
+
+		// Check project
+		if (this.project == null && otherMoose.project != null
+				|| this.project != null && otherMoose.project == null) {
+			return false;
+		}
+
+		// MOOSE Model specific stuff...
+
+		return retVal;
+	}
+
+	/**
+	 * <p>
+	 * This operation returns the hashcode value of the MOOSELauncher.
+	 * </p>
+	 * 
+	 * @return <p>
+	 *         The hashcode
+	 *         </p>
+	 */
+	public int hashCode() {
+
+		// Local Declaration
+		int hash = 9;
+		// Compute hash code from MOOSELauncher data
+		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + inputFileName.hashCode();
+		
+		return hash;
+	}
+
+	/**
+	 * 
+	 * @param otherMoose
+	 *            <p>
+	 *            This operation performs a deep copy of the attributes of
+	 *            another MOOSELauncher Item into the current MOOSELauncher Item.
+	 *            </p>
+	 */
+	public void copy(MOOSELauncher otherMoose) {
+
+		// Return if otherMoose is null
+		if (otherMoose == null) {
+			return;
+		}
+
+		// Copy contents into super and current object
+		super.copy((SuiteLauncher) otherMoose);
+
+		// Clone contents correctly
+		form = new Form();
+		form.copy(otherMoose.form);
+
+		// Copy Moose Launcher specific stuff
+		inputFileName = otherMoose.inputFileName;
+		execDataComp = (DataComponent) otherMoose.execDataComp.clone();
+
+		return;
+	}
+
+	/**
+	 * <p>
+	 * This operation provides a deep copy of the MOOSELauncher Item.
+	 * </p>
+	 * 
+	 * @return <p>
+	 *         A clone of the MOOSELauncher Item.
+	 *         </p>
+	 */
+	public Object clone() {
+
+		// Create a new instance of Moose Launcher and copy the contents
+		MOOSELauncher clone = new MOOSELauncher();
+		clone.copy(this);
+
+		return clone;
 	}
 
 	/**

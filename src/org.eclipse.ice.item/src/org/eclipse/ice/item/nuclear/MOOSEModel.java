@@ -345,20 +345,20 @@ public class MOOSEModel extends Item {
 		mooseDataTree.setName("Input Data");
 		form.addComponent(mooseDataTree);
 
-//		if (project != null) {
-//			Thread thread = new Thread(new Runnable() {
-//				public void run() {
-//					if (!mooseApps.isEmpty()) {
-//						try {
-//							loadTreeContents(loadedApp);
-//						} catch (IOException | CoreException e) {
-//							e.printStackTrace();
-//						}
-//					}
-//				}
-//			});
-//			thread.start();
-//		}
+		// if (project != null) {
+		// Thread thread = new Thread(new Runnable() {
+		// public void run() {
+		// if (!mooseApps.isEmpty()) {
+		// try {
+		// loadTreeContents(loadedApp);
+		// } catch (IOException | CoreException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// }
+		// });
+		// thread.start();
+		// }
 		return;
 	}
 
@@ -444,6 +444,8 @@ public class MOOSEModel extends Item {
 					execFile.getAbsolutePath() + " --syntax > "
 							+ syntaxFile.getLocation().toOSString() };
 
+			System.out
+					.println(yamlCmd.toString() + "\n" + syntaxCmd.toString());
 			// Create the YAML and Syntax files
 			Process p1 = Runtime.getRuntime().exec(yamlCmd);
 			Process p2 = Runtime.getRuntime().exec(syntaxCmd);
@@ -452,9 +454,12 @@ public class MOOSEModel extends Item {
 				int code2 = p2.waitFor();
 
 				if (code1 != 0 || code2 != 0) {
-					System.out.println("ERROR CREATING YAML SYNTAX");
+					System.out.println("ERROR CREATING YAML/SYNTAX");
+					throw new Exception(
+							"Error in creating the YAML/Syntax files. Job return codes were "
+									+ code1 + " and " + code2);
 				}
-			} catch (InterruptedException e1) {
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 
@@ -563,7 +568,7 @@ public class MOOSEModel extends Item {
 					} catch (BackingStoreException | URISyntaxException e1) {
 						e1.printStackTrace();
 					}
-					
+
 				}
 
 				// Try to find a mesh file and append it as an ICEResource
@@ -577,7 +582,7 @@ public class MOOSEModel extends Item {
 				// Update the status
 				retStatus = FormStatus.ReadyToProcess;
 			}
-		} 
+		}
 
 		return retStatus;
 	}
@@ -1788,19 +1793,19 @@ public class MOOSEModel extends Item {
 
 		// Cut off the footer, if there is one
 		if (hasFooter) {
-			
+
 			// Record the line number of the footer
 			footerLine = fileLines.indexOf(footer);
 			deleteLines(filePath, footerLine, fileLines.size() - footerLine + 1);
 		}
-		
+
 		// Cut off the header, if there is one
 		if (hasHeader) {
 
 			// Record the line number
 			headerLine = fileLines.indexOf(header);
-			deleteLines(filePath, 1, headerLine+1);
-			
+			deleteLines(filePath, 1, headerLine + 1);
+
 		}
 
 		return;
@@ -1856,6 +1861,138 @@ public class MOOSEModel extends Item {
 	@Override
 	protected String getIOType() {
 		return "moose";
+	}
+
+	/**
+	 * <p>
+	 * This operation is used to check equality between the MOOSEModel Item and
+	 * another MOOSEModel Item. It returns true if the Items are equal and false
+	 * if they are not.
+	 * </p>
+	 * 
+	 * @param otherMoose
+	 *            <p>
+	 *            The MOOSEModel Item that should be checked for equality.
+	 *            </p>
+	 * @return <p>
+	 *         True if the launchers are equal, false if not
+	 *         </p>
+	 */
+	public boolean equals(MOOSEModel otherMooseModel) {
+
+		boolean retVal;
+
+		// Check if they are the same reference in memory
+		if (this == otherMooseModel) {
+			return true;
+		}
+
+		// Check that the object is not null, and that it is an Item
+		// Check that these objects have the same ICEObject data
+		if (otherMooseModel == null || !(otherMooseModel instanceof Item)
+				|| !super.equals(otherMooseModel)) {
+			return false;
+		}
+
+		// Check data
+		retVal = (this.allowedActions.equals(otherMooseModel.allowedActions))
+				&& (this.form.equals(otherMooseModel.form))
+				&& (this.itemType == otherMooseModel.itemType)
+				&& (this.status.equals(otherMooseModel.status));
+
+		// Check project
+		if (this.project != null && otherMooseModel.project != null
+				&& (!(this.project.equals(otherMooseModel.project)))) {
+			return false;
+		}
+
+		// Check project
+		if (this.project == null && otherMooseModel.project != null
+				|| this.project != null && otherMooseModel.project == null) {
+			return false;
+		}
+
+		// MOOSE Model specific stuff...
+
+		return retVal;
+	}
+
+	/**
+	 * <p>
+	 * This operation returns the hashcode value of the MOOSEModel.
+	 * </p>
+	 * 
+	 * @return <p>
+	 *         The hashcode
+	 *         </p>
+	 */
+	public int hashCode() {
+
+		// Local Declaration
+		int hash = 9;
+		// Compute hash code from MOOSEModel data
+		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + this.loadedApp.hashCode();
+		hash = 31 * hash + this.mooseApps.hashCode();
+		if (meshBlock != null) {
+			hash = 31 * hash + meshBlock.hashCode();
+		}
+		if (meshFileName != null) {
+			hash = 31 * hash + meshFileName.hashCode();
+		}
+
+		return hash;
+	}
+
+	/**
+	 * 
+	 * @param otherMoose
+	 *            <p>
+	 *            This operation performs a deep copy of the attributes of
+	 *            another MOOSEModel Item into the current MOOSEModel Item.
+	 *            </p>
+	 */
+	public void copy(MOOSEModel otherMoose) {
+
+		// Return if otherMoose is null
+		if (otherMoose == null) {
+			return;
+		}
+
+		// Copy contents into super and current object
+		super.copy((Item) otherMoose);
+
+		// Clone contents correctly
+		form = new Form();
+		form.copy(otherMoose.form);
+
+		// Copy Moose Model specific stuff
+		loadedApp = otherMoose.loadedApp;
+		mooseApps = new ArrayList<String>(otherMoose.mooseApps);
+		if (otherMoose.meshBlock != null) {
+			meshBlock = (TreeComposite) otherMoose.meshBlock.clone();
+		}
+		meshFileName = otherMoose.meshFileName;
+
+		return;
+	}
+
+	/**
+	 * <p>
+	 * This operation provides a deep copy of the MOOSEModel Item.
+	 * </p>
+	 * 
+	 * @return <p>
+	 *         A clone of the Moose Item.
+	 *         </p>
+	 */
+	public Object clone() {
+
+		// Create a new instance of JobLauncher and copy the contents
+		MOOSEModel clone = new MOOSEModel();
+		clone.copy(this);
+
+		return clone;
 	}
 
 	/**

@@ -373,6 +373,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			System.out.println("MOOSEFileHandler Message: File loaded.");
 		}
 
+		System.out.println("filePath: " + filePath);
 		// Load the block list. Use YAMLBlocks so that they can be converted to
 		// TreeComposites appropriately.
 		for (int i = 0; i < list.size(); i++) {

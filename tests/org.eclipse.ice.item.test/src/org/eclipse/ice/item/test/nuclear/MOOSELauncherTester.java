@@ -13,6 +13,7 @@
 package org.eclipse.ice.item.test.nuclear;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -35,7 +36,9 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSELauncher;
+import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -199,6 +202,146 @@ public class MOOSELauncherTester {
 		// Verify the custom app Entry's type
 		assertEquals(customExecEntry.getValueType(), AllowedValueType.Undefined);
 		
+		return;
+	}
+
+	/**
+	 * <p>
+	 * This operation checks the MOOSE Item to ensure that its equals()
+	 * operation works.
+	 * </p>
+	 * 
+	 */
+	@Test
+	public void checkEquality() {
+
+		// Create JobLauncherItems to test
+		MOOSELauncher equalItem = new MOOSELauncher(projectSpace);
+		MOOSELauncher unEqualItem = new MOOSELauncher();
+		MOOSELauncher transitiveItem = new MOOSELauncher(projectSpace);
+
+		// Create a MOOSE Item
+		MOOSELauncher item = new MOOSELauncher(projectSpace);
+
+		// Set the IO service on the item so we can read/load data in
+		item.setIOService(service);
+		equalItem.setIOService(service);
+		transitiveItem.setIOService(service);
+		
+		// Load the input
+		item.loadInput("input_coarse10.i");
+		equalItem.loadInput("input_coarse10.i");
+		transitiveItem.loadInput("input_coarse10.i");
+		
+		// Set ICEObject data
+		equalItem.setId(item.getId());
+		transitiveItem.setId(item.getId());
+		unEqualItem.setId(2);
+
+		// Set names
+		equalItem.setName(item.getName());
+		transitiveItem.setName(item.getName());
+		unEqualItem.setName("DC UnEqual");
+
+		// Assert two equal Items return true
+		assertTrue(item.equals(equalItem));
+
+		// Assert two unequal Items return false
+		assertFalse(item.equals(unEqualItem));
+
+		// Assert equals() is reflexive
+		assertTrue(item.equals(item));
+
+		// Assert the equals() is Symmetric
+		assertTrue(item.equals(equalItem) && equalItem.equals(item));
+
+		// Assert equals() is transitive
+		if (item.equals(equalItem) && equalItem.equals(transitiveItem)) {
+			assertTrue(item.equals(transitiveItem));
+		} else {
+			fail();
+		}
+
+		// Assert equals is consistent
+		assertTrue(item.equals(equalItem) && item.equals(equalItem)
+				&& item.equals(equalItem));
+		assertTrue(!item.equals(unEqualItem) && !item.equals(unEqualItem)
+				&& !item.equals(unEqualItem));
+
+		// Assert checking equality with null is false
+		assertFalse(item == null);
+
+		// Assert that two equal objects return same hashcode
+		assertTrue(item.equals(equalItem)
+				&& item.hashCode() == equalItem.hashCode());
+
+		// Assert that hashcode is consistent
+		assertTrue(item.hashCode() == item.hashCode());
+
+		// Assert that hashcodes from unequal objects are different
+		assertTrue(item.hashCode() != unEqualItem.hashCode());
+
+	}
+
+	/**
+	 * <p>
+	 * This operation checks the MOOSE to ensure that its copy() and clone()
+	 * operations work as specified.
+	 * </p>
+	 * 
+	 */
+	@Test
+	public void checkCopying() {
+
+		// Local Declarations
+		MOOSE cloneItem = new MOOSE(null), copyItem = new MOOSE(null);
+		MOOSE mooseItem = new MOOSE(projectSpace);
+
+		mooseItem.setIOService(service);
+		mooseItem.loadInput("input_coarse10.i");
+		
+		mooseItem.setDescription("I am a job!");
+		mooseItem.setProject(null);
+
+		// run clone operations
+		cloneItem = (MOOSE) mooseItem.clone();
+
+		// check contents
+		assertEquals(mooseItem.getAvailableActions(),
+				cloneItem.getAvailableActions());
+		assertEquals(mooseItem.getDescription(), cloneItem.getDescription());
+		assertTrue(mooseItem.getForm().equals(cloneItem.getForm()));
+		assertEquals(mooseItem.getId(), cloneItem.getId());
+		assertEquals(mooseItem.getItemType(), cloneItem.getItemType());
+		assertEquals(mooseItem.getName(), cloneItem.getName());
+		assertEquals(mooseItem.getStatus(), cloneItem.getStatus());
+
+		// run copy operation
+		copyItem.copy(mooseItem);
+
+		// check contents
+		assertEquals(mooseItem.getAvailableActions(),
+				copyItem.getAvailableActions());
+		assertEquals(mooseItem.getDescription(), copyItem.getDescription());
+		assertTrue(mooseItem.getForm().equals(copyItem.getForm()));
+		assertEquals(mooseItem.getId(), copyItem.getId());
+		assertEquals(mooseItem.getItemType(), copyItem.getItemType());
+		assertEquals(mooseItem.getName(), copyItem.getName());
+		assertEquals(mooseItem.getStatus(), copyItem.getStatus());
+
+		// run copy operation by passing null
+		copyItem.copy(null);
+
+		// check contents - nothing has changed
+		assertEquals(mooseItem.getAvailableActions(),
+				copyItem.getAvailableActions());
+		assertEquals(mooseItem.getDescription(), copyItem.getDescription());
+		assertTrue(mooseItem.getForm().equals(copyItem.getForm()));
+		assertEquals(mooseItem.getId(), copyItem.getId());
+		assertEquals(mooseItem.getItemType(), copyItem.getItemType());
+		assertEquals(mooseItem.getName(), copyItem.getName());
+		assertEquals(mooseItem.getStatus(), copyItem.getStatus());
+
 		return;
 	}
 

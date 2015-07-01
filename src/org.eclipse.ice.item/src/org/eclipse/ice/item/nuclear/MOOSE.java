@@ -76,6 +76,10 @@ public class MOOSE extends Item {
 	@XmlTransient()
 	private DataComponent modelFiles;
 
+	/**
+	 * Reference to the DataComponent containing the 
+	 * Postprocessors to display automatically.
+	 */
 	@XmlTransient()
 	private DataComponent postProcessorsData;
 

@@ -234,9 +234,8 @@ public class JobLauncher extends Item {
 	private HashMap<IResource, Long> workingDirMemberModMap;
 
 	/**
-	 * Reference to the Eclipse Job that will wrap our 
-	 * JobLaunchAction to provide realtime progress reporting 
-	 * to the Eclipse status bar. 
+	 * Reference to the Eclipse Job that will wrap our JobLaunchAction to
+	 * provide realtime progress reporting to the Eclipse status bar.
 	 */
 	@XmlTransient()
 	private Job launchJob;
@@ -932,7 +931,7 @@ public class JobLauncher extends Item {
 				}
 				// Create the output files in the project space
 				createOutputFiles();
-				
+
 				// Launch the action
 				action = new JobLaunchAction();
 
@@ -942,15 +941,15 @@ public class JobLauncher extends Item {
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
 						final int ticks = 100;
-						monitor.beginTask(
-								"Executing the Job Launch Action...", ticks);
+						monitor.beginTask("Executing the Job Launch Action...",
+								ticks);
 						try {
 							// Execute the Action
-							status = action
-									.execute(actionDataMap);
+							status = action.execute(actionDataMap);
 
 							// While its processing, keep the progress bar going
-							while (!status.equals(FormStatus.Processed) && !status.equals(FormStatus.InfoError)) {
+							while (!status.equals(FormStatus.Processed)
+									&& !status.equals(FormStatus.InfoError)) {
 								monitor.subTask("Executing the Job");
 
 								// Check for Cancellation
@@ -968,36 +967,36 @@ public class JobLauncher extends Item {
 						return Status.OK_STATUS;
 					}
 				};
-				
+
 				// Schedule it for execution
 				launchJob.schedule();
 
 				// Set the status as processing, if it fails
 				// the Job will set the status correctly
 				status = FormStatus.Processing;
-				
+
 				// Invoke the output streaming thread
 				streamOutputData();
-				
+
 				// Return the new status
 				return status;
-				
+
 			} else {
 				localStatus = FormStatus.InfoError;
-				
+
 				status = localStatus;
-				
+
 				return status;
 			}
-			
+
 		}
 
 		return localStatus;
 	}
-	
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.Item#cancelProcess()
 	 */
 	@Override
@@ -1008,7 +1007,7 @@ public class JobLauncher extends Item {
 		}
 		return status;
 	}
-	
+
 	/**
 	 * This operations grabs the information from the stdout and stderr files
 	 * and puts it into the output file for JobLauncher that is consumed by
