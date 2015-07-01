@@ -21,3 +21,4 @@ Export-Package: org.eclipse.ice.proteus;
 Meta-Persistence: META-INF/persistence.xml
 JPA-PersistenceUnits: org.eclipse.ice.item
 Bundle-ClassPath: .
+Bundle-Vendor: Oak Ridge National Laboratory

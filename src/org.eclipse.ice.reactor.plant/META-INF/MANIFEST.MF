@@ -10,3 +10,4 @@ Import-Package: org.eclipse.ice.io.hdf,
  ncsa.hdf.hdf5lib,
  ncsa.hdf.hdf5lib.exceptions
 Service-Component: OSGI-INF/PlantIOFactory.xml
+Bundle-Vendor: Oak Ridge National Laboratory

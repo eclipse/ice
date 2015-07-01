@@ -9,12 +9,14 @@
  *   Jordan Deyton (UT-Battelle, LLC.) - Initial API and implementation and/or
  *     initial documentation
  *   Jordan Deyton - bug 471166
+ *   Jordan Deyton - bug 471248
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
@@ -39,6 +41,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotScale;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -51,29 +54,33 @@ import org.junit.Test;
  */
 public class TimeSliderCompositeTester extends AbstractSWTTester {
 
+	// TODO Figure out how to test the context Menu that appears when the
+	// options button is clicked.
+
 	/**
 	 * The time widget that will be tested. This gets initialized before and
 	 * disposed after each test.
 	 */
-	private static TimeSliderComposite timeComposite;
+	private TimeSliderComposite timeComposite;
 
 	/**
 	 * A list of test times. This includes the values -1.0, 0.0, null, -2.0,
 	 * 42.0, null, 0.0 (again) and 1337.1337. It should be able to be passed to
 	 * the {@link #timeComposite}.
 	 */
-	private static List<Double> testTimes;
+	private List<Double> testTimes;
 
 	/**
 	 * A list of the complete test times, ordered, and without nulls or
-	 * duplicates.
+	 * duplicates. This means it should include the values (in this exact
+	 * order): -2.0, -1.0, 0.0, 42.0, 1337.1337.
 	 */
-	private static SortedSet<Double> orderedTimes;
+	private SortedSet<Double> orderedTimes;
 
 	/**
 	 * The expected size of {@link #testTimes}.
 	 */
-	private static int testTimesSize;
+	private int testTimesSize;
 
 	/**
 	 * The string used in the time text widget when no times are available.
@@ -84,12 +91,12 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * A fake listener to listen to selection events. Its notified flag is reset
 	 * before each test.
 	 */
-	private static FakeListener fakeListener1;
+	private FakeListener fakeListener1;
 	/**
 	 * A second fake listener to listen to selection events. Its notified flag
 	 * is reset before each test.
 	 */
-	private static FakeListener fakeListener2;
+	private FakeListener fakeListener2;
 
 	/**
 	 * The error of margin for double comparisons.
@@ -100,8 +107,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * Overrides a method from AbstractSWTTester.
 	 */
 	@Override
-	public void beforeAllTests() {
-		super.beforeAllTests();
+	public void beforeEachTest() {
+		super.beforeEachTest();
 
 		// Initialize the list of times.
 		testTimes = new ArrayList<Double>();
@@ -138,16 +145,6 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 			}
 		});
 
-		return;
-	}
-
-	/*
-	 * Overrides a method from AbstractSWTTester.
-	 */
-	@Override
-	public void beforeEachTest() {
-		super.beforeEachTest();
-
 		// Reset the time.
 		SWTBotScale scale = getTimeScale();
 		scale.setValue(scale.getMinimum());
@@ -172,14 +169,16 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * Overrides a method from AbstractSWTTester.
 	 */
 	@Override
-	public void afterAllTests() {
+	public void afterEachTest() {
 
 		// Dispose the time widget. The UI thread can do this whenever it gets a
 		// chance.
 		getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				timeComposite.dispose();
+				if (!timeComposite.isDisposed()) {
+					timeComposite.dispose();
+				}
 				timeComposite = null;
 				// Refresh the shell's layout so screenshots will show changes.
 				getShell().layout();
@@ -190,7 +189,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		testTimes.clear();
 		testTimes = null;
 
-		super.afterAllTests();
+		super.afterEachTest();
 	}
 
 	/**
@@ -201,32 +200,408 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		final AtomicInteger timestep = new AtomicInteger();
 		final AtomicReference<Double> time = new AtomicReference<Double>();
+		final AtomicReference<Double> fps = new AtomicReference<Double>();
+		final AtomicBoolean isPlaying = new AtomicBoolean();
 
 		// Create a temporary, blank test Composite, pull off its default
 		// values, and dispose it.
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				TimeSliderComposite c = new TimeSliderComposite(getShell(),
-						SWT.NONE);
+				TimeSliderComposite c = new TimeSliderComposite(getShell(), SWT.NONE);
 				timestep.set(c.getTimestep());
 				time.set(c.getTime());
+				fps.set(c.getFPS());
+				isPlaying.set(c.isPlaying());
 				c.dispose();
 			}
 		});
 
-		// Check the two getters.
+		// The default timestep is -1 (no times set).
 		assertEquals(-1, timestep.get());
+		// The default time is 0.0 (no times set).
 		assertEquals(0.0, time.get(), epsilon);
+		// The default framerate is 1 FPS.
+		assertEquals(1.0, fps.get(), epsilon);
+		// The widget should not be playing.
+		assertFalse(isPlaying.get());
+
+		return;
+	}
+
+	// ---- Public getter/setter tests ---- //
+	/**
+	 * Checks that all but a few certain setters will cause the widget to pause
+	 * if it is currently playing.
+	 */
+	@Test
+	public void checkPauseWhenSettersCalled() {
+
+		// Check that the public setters also pause playback.
+		final Queue<Boolean> playing = new LinkedList<Boolean>();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				// Set the FPS to 1 frame every 10 seconds.
+				timeComposite.setFPS(0.1);
+
+				// We should be able to pause by sending the pause request.
+				timeComposite.play();
+				playing.add(timeComposite.isPlaying());
+				timeComposite.pause();
+				playing.add(timeComposite.isPlaying());
+
+				// We can pause by calling setTime(double).
+				timeComposite.play();
+				playing.add(timeComposite.isPlaying());
+				timeComposite.setTime(1000.0);
+				playing.add(timeComposite.isPlaying());
+
+				// We can pause by calling setTimes(List<Double>).
+				List<Double> newTimes = new ArrayList<Double>(orderedTimes);
+				newTimes.remove(0);
+				timeComposite.play();
+				playing.add(timeComposite.isPlaying());
+				timeComposite.setTimes(newTimes);
+				playing.add(timeComposite.isPlaying());
+
+				// We can pause by calling setTimestep(int).
+				timeComposite.play();
+				playing.add(timeComposite.isPlaying());
+				timeComposite.setTimestep(timeComposite.getTimestep() + 1);
+				playing.add(timeComposite.isPlaying());
+
+				// Setting the FPS shouldn't pause.
+				timeComposite.play();
+				playing.add(timeComposite.isPlaying());
+				timeComposite.setFPS(0.05); // 1 frame every 20 seconds.
+				playing.add(timeComposite.isPlaying());
+
+				// Sending another play command shouldn't pause.
+				timeComposite.play();
+				playing.add(timeComposite.isPlaying());
+
+				// Stop the widget.
+				timeComposite.pause();
+
+				return;
+			}
+		});
+
+		// Check each attempt to pause the widget.
+
+		// used pause()
+		assertTrue(playing.poll());
+		assertFalse(playing.poll());
+		// used setTime(double)
+		assertTrue(playing.poll());
+		assertFalse(playing.poll());
+		// used setTimes(List<Double>)
+		assertTrue(playing.poll());
+		assertFalse(playing.poll());
+		// used setTimestep(int)
+		assertTrue(playing.poll());
+		assertFalse(playing.poll());
+		// used setFPS(double) -- this shouldn't pause
+		assertTrue(playing.poll());
+		assertTrue(playing.poll());
+		// used play() -- this shouldn't pause.
+		assertTrue(playing.poll());
 
 		return;
 	}
 
 	/**
-	 * Checks that the time steps can be set and fetched.
+	 * Checks the return values for the play, pause, and isPlaying methods.
+	 * <p>
+	 * It also checks that this method can trigger notifications and that the
+	 * widgets are updated accordingly.
+	 * </p>
 	 */
 	@Test
-	public void checkSetTimeSteps() {
+	public void checkPlayPauseMethods() {
+
+		// Use queues to store return values and timesteps. This makes it a
+		// little easier so we don't have to clear any collections.
+		final Queue<Boolean> returnValues = new LinkedList<Boolean>();
+		final Queue<Integer> timesteps = new LinkedList<Integer>();
+
+		// Get the initial timestep. It should be 0. Try playing twice. Then try
+		// pausing twice. Then get the resulting timestep.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timesteps.add(timeComposite.getTimestep());
+				returnValues.add(timeComposite.play());
+				returnValues.add(timeComposite.isPlaying());
+				returnValues.add(timeComposite.play());
+				returnValues.add(timeComposite.isPlaying());
+				returnValues.add(timeComposite.pause());
+				returnValues.add(timeComposite.isPlaying());
+				returnValues.add(timeComposite.pause());
+				returnValues.add(timeComposite.isPlaying());
+				timesteps.add(timeComposite.getTimestep());
+			}
+		});
+
+		// The timestep shouldn't have changed because we paused before
+		// the first frame change.
+		assertEquals(0, (int) timesteps.poll());
+		assertEquals(0, (int) timesteps.poll());
+
+		// The first call to play should return true, and the widget is playing.
+		assertTrue(returnValues.poll());
+		assertTrue(returnValues.poll());
+		// The subsequent call to play should return false, but the widget is
+		// still playing.
+		assertFalse(returnValues.poll());
+		assertTrue(returnValues.poll());
+
+		// The first call to pause should return true, and the widget is not
+		// playing.
+		assertTrue(returnValues.poll());
+		assertFalse(returnValues.poll());
+		// The subsequent call to play should return false, but the widget is
+		// still not playing.
+		assertFalse(returnValues.poll());
+		assertFalse(returnValues.poll());
+
+		// The listener should not have been notified yet.
+		assertFalse(fakeListener1.wasNotified());
+
+		// Now trigger the play method and make sure the listener is notified.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.setFPS(10);
+				timeComposite.play();
+			}
+		});
+
+		// The listener should be notified at least 10 times.
+		assertTrue(fakeListener1.wasNotified(10));
+
+		final AtomicInteger timestep = new AtomicInteger();
+		final AtomicReference<Double> time = new AtomicReference<Double>();
+
+		// Stop the widget.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.pause();
+
+				// Get the current timestep and time.
+				timestep.set(timeComposite.getTimestep());
+				time.set(timeComposite.getTime());
+			}
+		});
+
+		// Check the contents of the widgets.
+		assertEquals(timestep.get(), getTimeScale().getValue());
+		assertEquals(Double.toString(time.get()), getTimeText().getText());
+
+		return;
+	}
+
+	/**
+	 * Checks that setting the background for the main widget also updates its
+	 * child widgets.
+	 */
+	@Test
+	public void checkSetBackground() {
+
+		final Display display = getDisplay();
+		final AtomicReference<Color> bg = new AtomicReference<Color>();
+
+		// Set the background for the widget.
+		display.syncExec(new Runnable() {
+			@Override
+			public void run() {
+				bg.set(display.getSystemColor(SWT.COLOR_DARK_GREEN));
+				timeComposite.setBackground(bg.get());
+			}
+		});
+
+		// Check the background for all of the child widgets.
+		assertEquals(bg.get(), getPrevButton().backgroundColor());
+		assertEquals(bg.get(), getPlayPauseButton().backgroundColor());
+		assertEquals(bg.get(), getNextButton().backgroundColor());
+		assertEquals(bg.get(), getTimeScale().backgroundColor());
+
+		return;
+	}
+
+	/**
+	 * Check the return values for setting the FPS as well as that the play rate
+	 * changes accordingly.
+	 */
+	@Test
+	public void checkSetFPS() {
+
+		// Use queues for the FPS values.
+		final Queue<Double> fpsValues = new LinkedList<Double>();
+		final Queue<Boolean> returnValues = new LinkedList<Boolean>();
+
+		// Try setting invalid FPS values.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				fpsValues.add(timeComposite.getFPS());
+				returnValues.add(timeComposite.setFPS(0.0));
+				fpsValues.add(timeComposite.getFPS());
+				returnValues.add(timeComposite.setFPS(0.01));
+				fpsValues.add(timeComposite.getFPS());
+			}
+		});
+
+		// The value never should have changed from the default value of 1.
+		assertEquals(1.0, fpsValues.poll(), epsilon);
+		assertEquals(1.0, fpsValues.poll(), epsilon);
+		assertEquals(1.0, fpsValues.poll(), epsilon);
+		// Both set requests should have failed.
+		assertFalse(returnValues.poll());
+		assertFalse(returnValues.poll());
+
+		// Try setting valid FPS values. Calls using the same value should
+		// return false.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				// Use the default value first. We expect false and no change.
+				returnValues.add(timeComposite.setFPS(1.0));
+				fpsValues.add(timeComposite.getFPS());
+				// Use a new value. We expect true and a change.
+				returnValues.add(timeComposite.setFPS(10.0));
+				fpsValues.add(timeComposite.getFPS());
+				// Use the same value. We expect false and no change.
+				returnValues.add(timeComposite.setFPS(10.0));
+				fpsValues.add(timeComposite.getFPS());
+				// Use a new value. We expect true and a change.
+				returnValues.add(timeComposite.setFPS(20.0));
+				fpsValues.add(timeComposite.getFPS());
+				// Use the same value. We expect false and no change.
+				returnValues.add(timeComposite.setFPS(20.0));
+				fpsValues.add(timeComposite.getFPS());
+			}
+		});
+
+		// The first call used the current FPS.
+		assertFalse(returnValues.poll());
+		assertEquals(1.0, fpsValues.poll(), epsilon);
+		// We then tried to set it to a new value twice (second attempt fails).
+		assertTrue(returnValues.poll());
+		assertEquals(10.0, fpsValues.poll(), epsilon);
+		assertFalse(returnValues.poll());
+		assertEquals(10.0, fpsValues.poll(), epsilon);
+		// We then set it to another new value twice (second attempt fails).
+		assertTrue(returnValues.poll());
+		assertEquals(20.0, fpsValues.poll(), epsilon);
+		assertFalse(returnValues.poll());
+		assertEquals(20.0, fpsValues.poll(), epsilon);
+
+		// To make sure the FPS change takes effect, play for half a second,
+		// then stop. We should get at least 10 notifications.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				// Play.
+				timeComposite.play();
+			}
+		});
+		// Check that the listener was notified more than once within a second.
+		// This validates that the FPS actually changed because the default
+		// number of notifications should be approximately 1 per second (1 FPS).
+		assertTrue(fakeListener1.wasNotified(2, 1000));
+
+		// Pause the widget.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.pause();
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * Checks the return values for setting the time and that the current time
+	 * for the widget changes accordingly.
+	 * <p>
+	 * It also checks that this method does not trigger notifications and that
+	 * the widgets are updated accordingly.
+	 * </p>
+	 */
+	@Test
+	public void checkSetTime() {
+
+		// Use queues for the time values.
+		final Queue<Double> timeValues = new LinkedList<Double>();
+		final Queue<Boolean> returnValues = new LinkedList<Boolean>();
+
+		Iterator<Double> iter = orderedTimes.iterator();
+		iter.next();
+		final double secondTime = iter.next();
+
+		// Try setting the time to the same (first) time, then a new time
+		// (last), then the same time again. Then try two more attempts with the
+		// second time.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				// Get the initial time.
+				timeValues.add(timeComposite.getTime());
+				// Set the same time value.
+				returnValues.add(timeComposite.setTime(orderedTimes.first()));
+				timeValues.add(timeComposite.getTime());
+				// Set a new time value.
+				returnValues.add(timeComposite.setTime(orderedTimes.last()));
+				timeValues.add(timeComposite.getTime());
+				// Set the same time value.
+				returnValues.add(timeComposite.setTime(orderedTimes.last()));
+				timeValues.add(timeComposite.getTime());
+				// Set a new time value.
+				returnValues.add(timeComposite.setTime(secondTime));
+				timeValues.add(timeComposite.getTime());
+				// Set the same time value.
+				returnValues.add(timeComposite.setTime(secondTime));
+				timeValues.add(timeComposite.getTime());
+			}
+		});
+
+		// Check the initial value.
+		assertEquals(orderedTimes.first(), timeValues.poll(), epsilon);
+		// The first attempt failed because the value was not new.
+		assertFalse(returnValues.poll());
+		assertEquals(orderedTimes.first(), timeValues.poll(), epsilon);
+		// The second attempt succeeded because the value was new.
+		assertTrue(returnValues.poll());
+		assertEquals(orderedTimes.last(), timeValues.poll(), epsilon);
+		// The third attempt failed because the value was not new.
+		assertFalse(returnValues.poll());
+		assertEquals(orderedTimes.last(), timeValues.poll(), epsilon);
+		// The fourth attempt succeeded because the value was new.
+		assertTrue(returnValues.poll());
+		assertEquals(secondTime, timeValues.poll(), epsilon);
+		// The fifth attempt failed because the value was not new.
+		assertFalse(returnValues.poll());
+		assertEquals(secondTime, timeValues.poll(), epsilon);
+
+		// The listener should not have been notified.
+		assertFalse(fakeListener1.wasNotified());
+
+		// Check the contents of the widgets.
+		assertEquals(1, getTimeScale().getValue());
+		assertEquals(Double.toString(secondTime), getTimeText().getText());
+
+		return;
+	}
+
+	/**
+	 * Checks that the set of allowed times set and fetched.
+	 */
+	@Test
+	public void checkSetTimes() {
 
 		final AtomicInteger timestep = new AtomicInteger();
 		final AtomicReference<Double> time = new AtomicReference<Double>();
@@ -235,17 +610,16 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		final List<Double> nullList = null;
 
 		// Get a copy of the ordered times.
-		SortedSet<Double> orderedTimes = new TreeSet<Double>(
-				TimeSliderCompositeTester.orderedTimes);
+		SortedSet<Double> orderedTimes = new TreeSet<Double>(this.orderedTimes);
 
 		// Get the time scale widget.
 		SWTBotScale widget = getTimeScale();
 		SWTBotScale scale = getTimeScale();
 
 		// Check that the list of times sent to the widget was not modified.
-		assertEquals("TimeSliderComposite failure: The collection passed into "
-				+ "setTimes(...) should not be modified!", testTimesSize,
-				testTimes.size());
+		assertEquals(
+				"TimeSliderComposite failure: The collection passed into " + "setTimes(...) should not be modified!",
+				testTimesSize, testTimes.size());
 
 		// Get the timestep and time from the time widget, and check its values
 		// match.
@@ -340,8 +714,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 			}
 		});
 		assertNotNull("TimeSliderComposite failure: Null argument exception "
-				+ "not thrown for setTimes(List<Double>) when passed a "
-				+ "null list.", e);
+				+ "not thrown for setTimes(List<Double>) when passed a " + "null list.", e);
 		assertEquals(SWT.ERROR_NULL_ARGUMENT, e.code);
 
 		// Restore the original times.
@@ -356,112 +729,268 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
-	 * Checks that the widgets are enabled when they should be (when there is
-	 * more than 1 time to pick from) and disabled otherwise.
+	 * Checks the return values for setting the timestep and that the current
+	 * time for the widget changes accordingly.
+	 * <p>
+	 * It also checks that this method does not trigger notifications and that
+	 * the widgets are updated accordingly.
+	 * </p>
 	 */
 	@Test
-	public void checkWidgetsEnabled() {
+	public void checkSetTimestep() {
 
-		SWTBotScale scale = getTimeScale();
-		SWTBotButton nextButton = getNextButton();
-		SWTBotButton prevButton = getPrevButton();
-		SWTBotButton playButton = getPlayPauseButton();
-		SWTBotText text = getTimeText();
+		// Use queues for the time values.
+		final Queue<Integer> timesteps = new LinkedList<Integer>();
+		final Queue<Boolean> returnValues = new LinkedList<Boolean>();
 
-		final List<Double> goodTimes = new ArrayList<Double>();
-		goodTimes.add(1.0);
-		goodTimes.add(2.0);
-		final List<Double> badTimes = new ArrayList<Double>();
-		badTimes.add(1.0);
+		Iterator<Double> iter = orderedTimes.iterator();
+		iter.next();
+		final double secondTime = iter.next();
+		final int size = orderedTimes.size();
 
-		// For a new time widget, all sub-widgets should be disabled (no times
-		// have been set).
-		final AtomicReference<TimeSliderComposite> testWidget;
-		testWidget = new AtomicReference<TimeSliderComposite>();
+		// Try setting the time to the same (first) time, then a new time
+		// (last), then the same time again. Then try two more attempts with the
+		// second time.
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				testWidget.set(new TimeSliderComposite(getShell(), SWT.NONE));
+				// Get the initial time.
+				timesteps.add(timeComposite.getTimestep());
+				// Set the same time value.
+				returnValues.add(timeComposite.setTimestep(0));
+				timesteps.add(timeComposite.getTimestep());
+				// Set a new time value.
+				returnValues.add(timeComposite.setTimestep(size - 1));
+				timesteps.add(timeComposite.getTimestep());
+				// Set the same time value.
+				returnValues.add(timeComposite.setTimestep(size - 1));
+				timesteps.add(timeComposite.getTimestep());
+				// Set a new time value.
+				returnValues.add(timeComposite.setTimestep(1));
+				timesteps.add(timeComposite.getTimestep());
+				// Set the same time value.
+				returnValues.add(timeComposite.setTimestep(1));
+				timesteps.add(timeComposite.getTimestep());
 			}
 		});
 
-		// None of them should be enabled. Also, the text widget should say N/A.
-		SWTBot testBot = new SWTBot(testWidget.get());
-		assertNotEnabled(testBot.scale());
-		assertNotEnabled(testBot.button(0));
-		assertNotEnabled(testBot.button(1));
-		assertNotEnabled(testBot.button(2));
-		assertNotEnabled(testBot.text());
-		assertEquals(NO_TIMES, testBot.text().getText());
+		// Check the initial value.
+		assertEquals(0, (int) timesteps.poll());
+		// The first attempt failed because the value was not new.
+		assertFalse(returnValues.poll());
+		assertEquals(0, (int) timesteps.poll());
+		// The second attempt succeeded because the value was new.
+		assertTrue(returnValues.poll());
+		assertEquals(size - 1, (int) timesteps.poll());
+		// The third attempt failed because the value was not new.
+		assertFalse(returnValues.poll());
+		assertEquals(size - 1, (int) timesteps.poll());
+		// The fourth attempt succeeded because the value was new.
+		assertTrue(returnValues.poll());
+		assertEquals(1, (int) timesteps.poll());
+		// The fifth attempt failed because the value was not new.
+		assertFalse(returnValues.poll());
+		assertEquals(1, (int) timesteps.poll());
 
-		// Dispose the temporary test widget.
+		// The listener should not have been notified.
+		assertFalse(fakeListener1.wasNotified());
+
+		// Check the contents of the widgets.
+		assertEquals(1, getTimeScale().getValue());
+		assertEquals(Double.toString(secondTime), getTimeText().getText());
+
+		return;
+	}
+
+	/**
+	 * Checks that attempting to set the timestep to an invalid index throws an
+	 * IndexOutOfBoundsException.
+	 */
+	@Test
+	public void checkSetTimestepIndexException() {
+
+		// Use queues for the time values.
+		final Queue<Integer> timesteps = new LinkedList<Integer>();
+		final Queue<IndexOutOfBoundsException> exceptions = new LinkedList<IndexOutOfBoundsException>();
+
+		// Get the max timestep index + 1.
+		final int size = orderedTimes.size();
+
+		// Try a timestep that is too low and one that is too high. Also try
+		// setting the timestep when there are no times.
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				testWidget.get().dispose();
+
+				// Try a timestep that is too low (negative).
+				try {
+					timeComposite.setTimestep(-1);
+					exceptions.add(null);
+				} catch (IndexOutOfBoundsException e) {
+					exceptions.add(e);
+				}
+
+				// Try a timestep that is too high.
+				try {
+					timeComposite.setTimestep(size);
+					exceptions.add(null);
+				} catch (IndexOutOfBoundsException e) {
+					exceptions.add(e);
+				}
+
+				// Get the current timestep.
+				timesteps.add(timeComposite.getTimestep());
+
+				// Try setting a timestep if there are no times set.
+				timeComposite.setTimes(new ArrayList<Double>(0));
+				try {
+					timeComposite.setTimestep(0);
+					exceptions.add(null);
+				} catch (IndexOutOfBoundsException e) {
+					exceptions.add(e);
+				}
+
+				// Get the current timestep.
+				timesteps.add(timeComposite.getTimestep());
+
+				return;
 			}
 		});
 
-		// Initially, the test time widget's sub-widgets are enabled because the
-		// times have been set.
-		assertEnabled(scale);
-		assertEnabled(nextButton);
-		assertEnabled(prevButton);
-		assertEnabled(playButton);
-		assertEnabled(text);
+		// A timestep that is too low should throw an exception.
+		assertNotNull(exceptions.poll());
+		// A timestep that is too high should throw an exception.
+		assertNotNull(exceptions.poll());
+		// The timestep should still be 0.
+		assertEquals(0, (int) timesteps.poll());
 
-		// Setting the times to something with 1 value should disable them.
-		getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				timeComposite.setTimes(badTimes);
-			}
-		});
-		assertNotEnabled(scale);
-		assertNotEnabled(nextButton);
-		assertNotEnabled(prevButton);
-		assertNotEnabled(playButton);
-		assertNotEnabled(text);
-		// The text widget's text should be set to the current value.
-		assertEquals(badTimes.get(0).toString(), text.getText());
+		// If there are no times, any index is invalid and should throw an index
+		// exception.
+		assertNotNull(exceptions.poll());
+		// The timestep should, in this case, be -1.
+		assertEquals(-1, (int) timesteps.poll());
 
-		// Setting the times to something with 2 values should enable them.
-		getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				timeComposite.setTimes(goodTimes);
-			}
-		});
-		assertEnabled(scale);
-		assertEnabled(nextButton);
-		assertEnabled(prevButton);
-		assertEnabled(playButton);
-		assertEnabled(text);
+		return;
+	}
+	// ------------------------------------ //
 
-		// Setting the times to something with 0 values should also disable
-		// them.
-		badTimes.clear();
-		getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				timeComposite.setTimes(badTimes);
-			}
-		});
-		assertNotEnabled(scale);
-		assertNotEnabled(nextButton);
-		assertNotEnabled(prevButton);
-		assertNotEnabled(playButton);
-		assertNotEnabled(text);
-		// The text widget's text should be set to N/A.
-		assertEquals(NO_TIMES, text.getText());
+	// ---- Widget tests ---- //
 
-		// Restore the times.
-		getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				timeComposite.setTimes(testTimes);
-			}
-		});
+	/**
+	 * Checks that attempting to set or get fields on the widget from a non-UI
+	 * thread throws an invalid thread access exception.
+	 */
+	@Test
+	public void checkInvalidThreadAccessExceptions() {
+		// Set up the helpful test failure message used if the exception is not
+		// thrown.
+		String missedExceptionFormat = "TimeSliderComposite failure: "
+				+ "Invalid thread exception not thrown for %s when accessed " + "from non-UI thread.";
+		final int errorCode = SWT.ERROR_THREAD_INVALID_ACCESS;
+
+		// Check getFPS().
+		try {
+			timeComposite.getFPS();
+			fail(String.format(missedExceptionFormat, "getFPS()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check getTime().
+		try {
+			timeComposite.getTime();
+			fail(String.format(missedExceptionFormat, "getTime()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check getTimeStep().
+		try {
+			timeComposite.getTimestep();
+			fail(String.format(missedExceptionFormat, "getTimestep()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check isPlaying().
+		try {
+			timeComposite.isPlaying();
+			fail(String.format(missedExceptionFormat, "isPlaying()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check pause().
+		try {
+			timeComposite.pause();
+			fail(String.format(missedExceptionFormat, "pause()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check play().
+		try {
+			timeComposite.play();
+			fail(String.format(missedExceptionFormat, "play()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setBackground(Color).
+		try {
+			timeComposite.setBackground(null);
+			fail(String.format(missedExceptionFormat, "setBackground(Color)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setFPS(double).
+		try {
+			timeComposite.setFPS(1.0);
+			fail(String.format(missedExceptionFormat, "setFPS(double)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setTime(double).
+		try {
+			timeComposite.setTime(1.0);
+			fail(String.format(missedExceptionFormat, "setTime(double)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setTimes(List<Double>).
+		try {
+			timeComposite.setTimes(testTimes);
+			fail(String.format(missedExceptionFormat, "setTimes(List<Double>)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setTimestep(int).
+		try {
+			timeComposite.setTimestep(0);
+			fail(String.format(missedExceptionFormat, "setTimestep(int)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check addSelectionListener(SelectionListener).
+		try {
+			timeComposite.addSelectionListener(fakeListener1);
+			fail(String.format(missedExceptionFormat, "addSelectionListener(SelectionListener)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check removeSelectionListener(SelectionListener).
+		try {
+			timeComposite.removeSelectionListener(fakeListener1);
+			fail(String.format(missedExceptionFormat, "removeSelectionListener(SelectionListener)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
 
 		return;
 	}
@@ -474,8 +1003,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		// Set up the helpful test failure message used if the exception is not
 		// thrown.
 		final String missedExceptionFormat = "TimeSliderComposite failure: "
-				+ "Null argument exception not thrown for %s when passed a "
-				+ "null selection listener.";
+				+ "Null argument exception not thrown for %s when passed a " + "null selection listener.";
 
 		final SelectionListener nullListener = null;
 
@@ -488,8 +1016,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				timeComposite.addSelectionListener(nullListener);
 			}
 		});
-		assertNotNull(String.format(missedExceptionFormat,
-				"addSelectionListener(SelectionListener)"), e);
+		assertNotNull(String.format(missedExceptionFormat, "addSelectionListener(SelectionListener)"), e);
 		assertEquals(SWT.ERROR_NULL_ARGUMENT, e.code);
 
 		// Check removeSelectionListener(SelectionListener).
@@ -499,9 +1026,112 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				timeComposite.removeSelectionListener(nullListener);
 			}
 		});
-		assertNotNull(String.format(missedExceptionFormat,
-				"removeSelectionListener(SelectionListener)"), e);
+		assertNotNull(String.format(missedExceptionFormat, "removeSelectionListener(SelectionListener)"), e);
 		assertEquals(SWT.ERROR_NULL_ARGUMENT, e.code);
+
+		return;
+	}
+
+	/**
+	 * Checks that, when any of the time widgets are updated, the active play
+	 * action is cancelled.
+	 */
+	@Test
+	public void checkPauseOnNewSelectionByWidget() {
+
+		SWTBotButton playButton = getPlayPauseButton();
+
+		SWTBotText text = getTimeText();
+		String firstTime = text.getText();
+
+		// Set the framerate to 1 frame every 10 seconds.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.setFPS(0.1);
+			}
+		});
+
+		// Pause by clicking the play button.
+		playButton.click();
+		assertTrue(isPlaying());
+		playButton.click();
+		assertFalse(isPlaying());
+
+		// Pause by clicking the time scale.
+		playButton.click();
+		assertTrue(isPlaying());
+		getTimeScale().setValue(1);
+		assertFalse(isPlaying());
+
+		// Pause by typing text.
+		playButton.click();
+		assertTrue(isPlaying());
+		text.selectAll();
+		text.typeText(firstTime + SWT.CR + SWT.LF);
+		assertFalse(isPlaying());
+
+		// Pause by clicking the next button.
+		playButton.click();
+		assertTrue(isPlaying());
+		getNextButton().click();
+		assertFalse(isPlaying());
+
+		// Pause by clicking the previous button.
+		playButton.click();
+		assertTrue(isPlaying());
+		getPrevButton().click();
+		assertFalse(isPlaying());
+
+		return;
+	}
+
+	/**
+	 * Checks that listeners are periodically updated when the play button is
+	 * clicked, and that notifications stop when the same (pause) button is
+	 * clicked.
+	 * <p>
+	 * The times should also loop from last to first when the play button is
+	 * clicked.
+	 * </p>
+	 */
+	@Test
+	public void checkPlayWidgetNotifiesSelectionListeners() {
+
+		// Get the specific widget that will be used to set the time.
+		SWTBotButton widget = getPlayPauseButton();
+
+		// Set the time to the last timestep. This will ensure the play action
+		// hits the last timestep, then loops back around to the first.
+		getTimeScale().setValue(orderedTimes.size() - 2);
+
+		// Set the FPS to 20.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.setFPS(20);
+			}
+		});
+
+		// Play.
+		widget.click();
+
+		// The listener should have been notified at least three times, which
+		// means the play button looped back around.
+		assertTrue(fakeListener1.wasNotified(3));
+
+		// Pause to stop notifications.
+		widget.click();
+
+		// Check the notification count and the times sent with each
+		// notification.
+		Queue<Double> times = fakeListener1.notificationTimes;
+		assertTrue(times.size() >= 3);
+		// Ignore the first value, as it is the second to last value which was
+		// sent out when setting the time with the scale widget.
+		times.poll();
+		assertEquals(orderedTimes.last(), times.poll(), epsilon);
+		assertEquals(orderedTimes.first(), times.poll(), epsilon);
 
 		return;
 	}
@@ -510,7 +1140,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * Checks that listeners are updated when the scale widget changes.
 	 */
 	@Test
-	public void checkSelectionListenersByScale() {
+	public void checkScaleNotifiesSelectionListeners() {
 
 		// Get the specific widget that will be used to set the time.
 		SWTBotScale widget = getTimeScale();
@@ -547,6 +1177,68 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
+	 * Checks that the FPS can be set via the options menu.
+	 */
+	@Ignore
+	@Test
+	public void checkSetFPSByOptionsMenu() {
+		fail("Not implemented. Figure out how to handle context Menus first.");
+
+		final AtomicReference<Double> fps = new AtomicReference<Double>();
+
+		// Try setting the option for 12 fps.
+		// TODO
+		// Get the current framerate.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				fps.set(timeComposite.getFPS());
+			}
+		});
+		// Check the current framerate.
+		assertEquals(12.0, fps.get(), epsilon);
+
+		// Try setting the option for 24 fps.
+		// TODO
+		// Get the current framerate.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				fps.set(timeComposite.getFPS());
+			}
+		});
+		// Check the current framerate.
+		assertEquals(24.0, fps.get(), epsilon);
+
+		// Try setting the option for 30 fps.
+		// TODO
+		// Get the current framerate.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				fps.set(timeComposite.getFPS());
+			}
+		});
+		// Check the current framerate.
+		assertEquals(24.0, fps.get(), epsilon);
+
+		// Try setting a custom framerate.
+		final double customFPS = 100.0;
+		// TODO
+		// Get the current framerate.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				fps.set(timeComposite.getFPS());
+			}
+		});
+		// Check the current framerate.
+		assertEquals(customFPS, fps.get(), epsilon);
+
+		return;
+	}
+
+	/**
 	 * Checks that listeners are updated when the spinner widget changes.
 	 * <p>
 	 * The times should also loop between last and first when the next/previous
@@ -554,19 +1246,16 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * </p>
 	 */
 	@Test
-	public void checkSelectionListenersBySpinner() {
+	public void checkSpinnerNotifiesSelectionListeners() {
 
 		// Get the specific widget that will be used to set the time.
 		SWTBotButton nextButton = getNextButton();
 		SWTBotButton prevButton = getPrevButton();
 
-		final FakeListener loopListener = new FakeListener();
-
-		// Register the second fake listener and the test listener.
+		// Register the second fake listener.
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				timeComposite.addSelectionListener(loopListener);
 				timeComposite.addSelectionListener(fakeListener2);
 			}
 		});
@@ -576,11 +1265,9 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		prevButton.click();
 		assertTrue(fakeListener1.wasNotified());
 		assertTrue(fakeListener2.wasNotified());
-		assertTrue(loopListener.wasNotified());
 
 		// The previous button should have looped around to the last time.
-		assertEquals(orderedTimes.last(),
-				loopListener.notificationTimes.poll(), epsilon);
+		assertEquals(orderedTimes.last(), fakeListener1.notificationTimes.poll(), epsilon);
 
 		// Unregister the second fake listener.
 		getDisplay().syncExec(new Runnable() {
@@ -595,146 +1282,9 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		nextButton.click();
 		assertFalse(fakeListener2.wasNotified()); // Test this one first!
 		assertTrue(fakeListener1.wasNotified());
-		assertTrue(loopListener.wasNotified());
 
 		// The next button should have looped around to the first time.
-		assertEquals(orderedTimes.first(),
-				loopListener.notificationTimes.poll(), epsilon);
-
-		// Unregister the loop listener.
-		getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				timeComposite.removeSelectionListener(loopListener);
-			}
-		});
-
-		return;
-	}
-
-	/**
-	 * Checks that listeners are periodically updated when the play button is
-	 * clicked, and that notifications stop when the same (pause) button is
-	 * clicked.
-	 * <p>
-	 * The times should also loop from last to first when the play button is
-	 * clicked.
-	 * </p>
-	 */
-	@Test
-	public void checkSelectionListenersByPlayButton() {
-
-		// Get the specific widget that will be used to set the time.
-		SWTBotButton widget = getPlayPauseButton();
-
-		// Set the time to the last timestep. This will ensure the play action
-		// hits the last timestep, then loops back around to the first.
-		getTimeScale().setValue(orderedTimes.size() - 2);
-
-		// Add a new test listener.
-		final FakeListener listener = new FakeListener();
-		getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				timeComposite.addSelectionListener(listener);
-			}
-		});
-
-		// Play for two seconds, then pause. Use a buffer of a half second in
-		// case the SWTBot click beats the display thread scheduling.
-		widget.click();
-		try {
-			Thread.sleep(2500);
-		} catch (InterruptedException e) {
-			fail("TimeSliderCompositeTester error: "
-					+ "Thread interrupted while testing play button.");
-		}
-		widget.click();
-
-		// The listener should have been notified twice: two timesteps were
-		// traversed while playing.
-		assertTrue(listener.wasNotified(2));
-
-		// Check the notification count and the times sent with each
-		// notification.
-		Queue<Double> times = listener.notificationTimes;
-		assertEquals(2, times.size());
-		assertEquals(orderedTimes.last(), times.poll(), epsilon);
-		assertEquals(orderedTimes.first(), times.poll(), epsilon);
-
-		// Remove the test listener.
-		getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				timeComposite.removeSelectionListener(listener);
-			}
-		});
-
-		return;
-	}
-
-	/**
-	 * Checks that, when any of the time widgets are updated, the active play
-	 * action is cancelled.
-	 */
-	@Test
-	public void checkPauseOnNewSelection() {
-
-		SWTBotButton playButton = getPlayPauseButton();
-
-		SWTBotText text = getTimeText();
-		String firstTime = text.getText();
-
-		// Add a new test listener.
-		final FakeListener listener = new FakeListener();
-		getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				timeComposite.addSelectionListener(listener);
-			}
-		});
-
-		// Pause by clicking the play button. No notification sent.
-		playButton.click();
-		playButton.click();
-		// Pause by clicking the time scale. 1 notification.
-		playButton.click();
-		getTimeScale().setValue(1);
-		// Pause by typing text. 1 notification.
-		playButton.click();
-		text.selectAll();
-		text.typeText(firstTime + SWT.CR + SWT.LF);
-		// Pause by clicking the next button. 1 notification.
-		playButton.click();
-		getNextButton().click();
-		// Pause by clicking the previous button. 1 notification.
-		playButton.click();
-		getPrevButton().click();
-
-		// In the above test, the listener should have only been notified 4
-		// times (when the other widgets, not including the play button, were
-		// clicked).
-		assertTrue(listener.wasNotified(4));
-		// The times sent should also alternate between the second and first
-		// timesteps, because each subsequent call undoes the previous one.
-		Iterator<Double> iter = orderedTimes.iterator();
-		double first = iter.next();
-		double second = iter.next();
-		assertEquals(second, listener.notificationTimes.poll());
-		assertEquals(first, listener.notificationTimes.poll());
-		assertEquals(second, listener.notificationTimes.poll());
-		assertEquals(first, listener.notificationTimes.poll());
-
-		// The listener should not be notified again.
-		assertFalse(listener.wasNotified(5));
-
-		// Remove the test listener.
-		getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				timeComposite.removeSelectionListener(listener);
-			}
-		});
+		assertEquals(orderedTimes.first(), fakeListener1.notificationTimes.poll(), epsilon);
 
 		return;
 	}
@@ -744,7 +1294,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * widget changes.
 	 */
 	@Test
-	public void checkSelectionListenersByText() {
+	public void checkTextNotifiesSelectionListeners() {
 
 		/*
 		 * IMPORTANT NOTE ABOUT THIS TEST!
@@ -804,7 +1354,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 * widget is set to an invalid time.
 	 */
 	@Test
-	public void checkInvalidInputIntoText() {
+	public void checkTextRejectsInvalidInput() {
 
 		// Get the text widget. We will try feeding it invalid times.
 		SWTBotText widget = getTimeText();
@@ -827,7 +1377,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		for (String invalidTime : invalidTimes) {
 			// Try setting an invalid time string.
-			widget.setText(invalidTime);
+			widget.selectAll();
+			widget.typeText(invalidTime + SWT.CR + SWT.LF);
 			getDisplay().syncExec(new Runnable() {
 				@Override
 				public void run() {
@@ -842,63 +1393,6 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
-	 * Checks that attempting to set or get fields on the widget from a non-UI
-	 * thread throws an invalid thread access exception.
-	 */
-	@Test
-	public void checkInvalidThreadAccessExceptions() {
-		// Set up the helpful test failure message used if the exception is not
-		// thrown.
-		String missedExceptionFormat = "TimeSliderComposite failure: "
-				+ "Invalid thread exception not thrown for %s when accessed "
-				+ "from non-UI thread.";
-
-		// Check getTimeStep().
-		try {
-			timeComposite.getTimestep();
-			fail(String.format(missedExceptionFormat, "getTimestep()"));
-		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_THREAD_INVALID_ACCESS, e.code);
-		}
-
-		// Check getTime().
-		try {
-			timeComposite.getTime();
-			fail(String.format(missedExceptionFormat, "getTime()"));
-		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_THREAD_INVALID_ACCESS, e.code);
-		}
-
-		// Check setTimes(List<Double>).
-		try {
-			timeComposite.setTimes(testTimes);
-			fail(String.format(missedExceptionFormat, "setTimes(List<Double>)"));
-		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_THREAD_INVALID_ACCESS, e.code);
-		}
-
-		// Check addSelectionListener(SelectionListener).
-		try {
-			timeComposite.addSelectionListener(fakeListener1);
-			fail(String.format(missedExceptionFormat,
-					"addSelectionListener(SelectionListener)"));
-		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_THREAD_INVALID_ACCESS, e.code);
-		}
-
-		// Check removeSelectionListener(SelectionListener).
-		try {
-			timeComposite.removeSelectionListener(fakeListener1);
-			fail(String.format(missedExceptionFormat,
-					"removeSelectionListener(SelectionListener)"));
-		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_THREAD_INVALID_ACCESS, e.code);
-		}
-
-		return;
-	}
-
-	/**
 	 * Checks that attempting to set or get fields on the widget throws a widget
 	 * disposed exception if it is disposed.
 	 */
@@ -907,91 +1401,237 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		// Set up the helpful test failure message used if the exception is not
 		// thrown.
 		String missedExceptionFormat = "TimeSliderComposite failure: "
-				+ "Widget disposed exception not thrown for %s when accessed "
-				+ "after widget is disposed.";
+				+ "Widget disposed exception not thrown for %s when accessed " + "after widget is disposed.";
+		final int errorCode = SWT.ERROR_WIDGET_DISPOSED;
 
-		// Create a disposed time widget.
-		final AtomicReference<TimeSliderComposite> testCompositeRef;
-		testCompositeRef = new AtomicReference<TimeSliderComposite>();
+		// Dispose the test time widget.
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				TimeSliderComposite composite;
-				composite = new TimeSliderComposite(getShell(), SWT.NONE);
-				composite.dispose();
-				testCompositeRef.set(composite);
+				timeComposite.dispose();
 			}
 		});
 
+		// Check getFPS().
+		try {
+			timeComposite.getFPS();
+			fail(String.format(missedExceptionFormat, "getFPS()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
 		// Check getTimeStep().
 		try {
-			testCompositeRef.get().getTimestep();
+			timeComposite.getTimestep();
 			fail(String.format(missedExceptionFormat, "getTimestep()"));
 		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_WIDGET_DISPOSED, e.code);
+			assertEquals(errorCode, e.code);
 		}
 
 		// Check getTime().
 		try {
-			testCompositeRef.get().getTime();
+			timeComposite.getTime();
 			fail(String.format(missedExceptionFormat, "getTime()"));
 		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_WIDGET_DISPOSED, e.code);
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check isPlaying().
+		try {
+			timeComposite.isPlaying();
+			fail(String.format(missedExceptionFormat, "isPlaying()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check pause().
+		try {
+			timeComposite.pause();
+			fail(String.format(missedExceptionFormat, "pause()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check play().
+		try {
+			timeComposite.play();
+			fail(String.format(missedExceptionFormat, "play()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setBackground(Color).
+		try {
+			timeComposite.setBackground(null);
+			fail(String.format(missedExceptionFormat, "setBackground(Color)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setFPS(double).
+		try {
+			timeComposite.setFPS(1.0);
+			fail(String.format(missedExceptionFormat, "setFPS(double)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setTime(double).
+		try {
+			timeComposite.setTime(1.0);
+			fail(String.format(missedExceptionFormat, "setTime(double)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
 		}
 
 		// Check setTimes(List<Double>).
 		try {
-			testCompositeRef.get().setTimes(testTimes);
+			timeComposite.setTimes(testTimes);
 			fail(String.format(missedExceptionFormat, "setTimes(List<Double>)"));
 		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_WIDGET_DISPOSED, e.code);
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setTimestep(int).
+		try {
+			timeComposite.setTimestep(0);
+			fail(String.format(missedExceptionFormat, "setTimestep(int)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
 		}
 
 		// Check addSelectionListener(SelectionListener).
 		try {
-			testCompositeRef.get().addSelectionListener(fakeListener1);
-			fail(String.format(missedExceptionFormat,
-					"addSelectionListener(SelectionListener)"));
+			timeComposite.addSelectionListener(fakeListener1);
+			fail(String.format(missedExceptionFormat, "addSelectionListener(SelectionListener)"));
 		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_WIDGET_DISPOSED, e.code);
+			assertEquals(errorCode, e.code);
 		}
 
 		// Check removeSelectionListener(SelectionListener).
 		try {
-			testCompositeRef.get().removeSelectionListener(fakeListener1);
-			fail(String.format(missedExceptionFormat,
-					"removeSelectionListener(SelectionListener)"));
+			timeComposite.removeSelectionListener(fakeListener1);
+			fail(String.format(missedExceptionFormat, "removeSelectionListener(SelectionListener)"));
 		} catch (SWTException e) {
-			assertEquals(SWT.ERROR_WIDGET_DISPOSED, e.code);
+			assertEquals(errorCode, e.code);
 		}
 
 		return;
 	}
 
 	/**
-	 * Checks that setting the background for the main widget also updates its
-	 * child widgets.
+	 * Checks that the widgets are enabled when they should be (when there is
+	 * more than 1 time to pick from) and disabled otherwise.
 	 */
 	@Test
-	public void checkSetBackground() {
+	public void checkWidgetsEnabled() {
 
-		final Display display = getDisplay();
-		final AtomicReference<Color> bg = new AtomicReference<Color>();
+		SWTBotScale scale = getTimeScale();
+		SWTBotButton nextButton = getNextButton();
+		SWTBotButton prevButton = getPrevButton();
+		SWTBotButton playButton = getPlayPauseButton();
+		SWTBotButton optionsButton = getOptionsButton();
+		SWTBotText text = getTimeText();
 
-		// Set the background for the widget.
-		display.syncExec(new Runnable() {
+		final List<Double> goodTimes = new ArrayList<Double>();
+		goodTimes.add(1.0);
+		goodTimes.add(2.0);
+		final List<Double> badTimes = new ArrayList<Double>();
+		badTimes.add(1.0);
+
+		// For a new time widget, all sub-widgets should be disabled (no times
+		// have been set).
+		final AtomicReference<TimeSliderComposite> testWidget;
+		testWidget = new AtomicReference<TimeSliderComposite>();
+		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				bg.set(display.getSystemColor(SWT.COLOR_DARK_GREEN));
-				timeComposite.setBackground(bg.get());
+				testWidget.set(new TimeSliderComposite(getShell(), SWT.NONE));
 			}
 		});
 
-		// Check the background for all of the child widgets.
-		assertEquals(bg.get(), getPrevButton().backgroundColor());
-		assertEquals(bg.get(), getPlayPauseButton().backgroundColor());
-		assertEquals(bg.get(), getNextButton().backgroundColor());
-		assertEquals(bg.get(), getTimeScale().backgroundColor());
+		// None of them should be enabled. Also, the text widget should say N/A.
+		SWTBot testBot = new SWTBot(testWidget.get());
+		assertNotEnabled(testBot.scale());
+		assertNotEnabled(testBot.button(0));
+		assertNotEnabled(testBot.button(1));
+		assertNotEnabled(testBot.button(2));
+		assertEnabled(testBot.button(3)); // The options are always enabled.
+		assertNotEnabled(testBot.text());
+		assertEquals(NO_TIMES, testBot.text().getText());
+
+		// Dispose the temporary test widget.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				testWidget.get().dispose();
+			}
+		});
+
+		// Initially, the test time widget's sub-widgets are enabled because the
+		// times have been set.
+		assertEnabled(scale);
+		assertEnabled(nextButton);
+		assertEnabled(prevButton);
+		assertEnabled(playButton);
+		assertEnabled(optionsButton); // The options are always enabled.
+		assertEnabled(text);
+
+		// Setting the times to something with 1 value should disable them.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.setTimes(badTimes);
+			}
+		});
+		assertNotEnabled(scale);
+		assertNotEnabled(nextButton);
+		assertNotEnabled(prevButton);
+		assertNotEnabled(playButton);
+		assertEnabled(optionsButton); // The options are always enabled.
+		assertNotEnabled(text);
+		// The text widget's text should be set to the current value.
+		assertEquals(badTimes.get(0).toString(), text.getText());
+
+		// Setting the times to something with 2 values should enable them.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.setTimes(goodTimes);
+			}
+		});
+		assertEnabled(scale);
+		assertEnabled(nextButton);
+		assertEnabled(prevButton);
+		assertEnabled(playButton);
+		assertEnabled(optionsButton); // The options are always enabled.
+		assertEnabled(text);
+
+		// Setting the times to something with 0 values should also disable
+		// them.
+		badTimes.clear();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.setTimes(badTimes);
+			}
+		});
+		assertNotEnabled(scale);
+		assertNotEnabled(nextButton);
+		assertNotEnabled(prevButton);
+		assertNotEnabled(playButton);
+		assertEnabled(optionsButton); // The options are always enabled.
+		assertNotEnabled(text);
+		// The text widget's text should be set to N/A.
+		assertEquals(NO_TIMES, text.getText());
+
+		// Restore the times.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.setTimes(testTimes);
+			}
+		});
 
 		return;
 	}
@@ -1043,6 +1683,26 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 		return;
 	}
+	// ---------------------- //
+
+	// ---- Convenient private getters. ---- //
+	/**
+	 * Gets the SWTBot-wrapped button widget that jumps to the next timestep.
+	 * 
+	 * @return The wrapped next button.
+	 */
+	private SWTBotButton getNextButton() {
+		return getBot().button(2);
+	}
+
+	/**
+	 * Gets the SWTBot-wrapped button widget that opens widget options.
+	 * 
+	 * @return The wrapped options button.
+	 */
+	private SWTBotButton getOptionsButton() {
+		return getBot().button(3);
+	}
 
 	/**
 	 * Gets the SWTBot-wrapped scale widget for the play/pause button.
@@ -1051,24 +1711,6 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	 */
 	private SWTBotButton getPlayPauseButton() {
 		return getBot().button(1);
-	}
-
-	/**
-	 * Gets the SWTBot-wrapped scale widget for the time steps.
-	 * 
-	 * @return The wrapped scale widget.
-	 */
-	private SWTBotScale getTimeScale() {
-		return getBot().scale();
-	}
-
-	/**
-	 * Gets the SWTBot-wrapped button widget that jumps to the next timestep.
-	 * 
-	 * @return The wrapped next button.
-	 */
-	private SWTBotButton getNextButton() {
-		return getBot().button(2);
 	}
 
 	/**
@@ -1082,6 +1724,15 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
+	 * Gets the SWTBot-wrapped scale widget for the time steps.
+	 * 
+	 * @return The wrapped scale widget.
+	 */
+	private SWTBotScale getTimeScale() {
+		return getBot().scale();
+	}
+
+	/**
 	 * Gets the SWTBot-wrapped text widget for the time steps.
 	 * 
 	 * @return The wrapped text widget.
@@ -1089,6 +1740,24 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	private SWTBotText getTimeText() {
 		return getBot().text();
 	}
+
+	/**
+	 * A convenient method for checking, on the UI thread, the result of
+	 * {@link TimeSliderComposite#isPlaying()}.
+	 * 
+	 * @return True if the time widget is playing, false otherwise.
+	 */
+	private boolean isPlaying() {
+		final AtomicBoolean isPlaying = new AtomicBoolean();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				isPlaying.set(timeComposite.isPlaying());
+			}
+		});
+		return isPlaying.get();
+	}
+	// ------------------------------------- //
 
 	/**
 	 * A fake {@link SelectionListener} that sets its {@link #wasNotified} flag
@@ -1173,7 +1842,32 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		 */
 		private boolean wasNotified(int count) {
 			long interval = 50;
-			for (long sleepTime = 0; sleepTime < THRESHOLD
+			for (long sleepTime = 0; sleepTime < THRESHOLD && notificationCount.get() < count; sleepTime += interval) {
+				try {
+					Thread.sleep(interval);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+			return notificationCount.get() >= count;
+		}
+
+		/**
+		 * Waits up to {@link #THRESHOLD} milliseconds before returning whether
+		 * or not the notification count is greater than or equal to the desired
+		 * count. This will return sooner if the notification count is satisfied
+		 * sooner!
+		 * 
+		 * @param count
+		 *            The number of notifications to wait on.
+		 * @param totalThreshold
+		 *            The total amount of time this request will wait.
+		 * @return True if the notification count is at least the specified
+		 *         count, false otherwise.
+		 */
+		private boolean wasNotified(int count, long totalThreshold) {
+			long interval = 50;
+			for (long sleepTime = 0; sleepTime < totalThreshold
 					&& notificationCount.get() < count; sleepTime += interval) {
 				try {
 					Thread.sleep(interval);

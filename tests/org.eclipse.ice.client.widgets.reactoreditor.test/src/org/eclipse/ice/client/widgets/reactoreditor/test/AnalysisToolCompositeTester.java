@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.test;
 
-import static org.eclipse.swtbot.swt.finder.SWTBotAssert.assertEnabled;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -45,10 +44,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarDropDownButton;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -223,24 +219,20 @@ public class AnalysisToolCompositeTester {
 		 * after simulating SelectionEvents for the view Menu buttons.
 		 */
 
-		final SWTWorkbenchBot bot = new SWTWorkbenchBot();
+		// FIXME Use SWTBot if possible...
+		// final SWTWorkbenchBot bot = new SWTWorkbenchBot();
 
-		// Some of these are unused because SWTBot cannot be used for more than
-		// one MenuItem click in context menus.
-		SWTBotToolbarDropDownButton viewsButton;
-		SWTBotMenu inputMenu;
-		SWTBotMenu refMenu;
-		SWTBotMenu compMenu;
-		SWTBotMenu menuItem;
+		final Display defaultDisplay = Display.getDefault();
 
 		// Create the ATC.
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 
 			@Override
 			public void run() {
-				Shell parent = bot.activeShell().widget;
+				Shell parent = new Shell(defaultDisplay);
 				atc = new AnalysisToolComposite(parent, broker, registry,
 						selectionProvider);
+				parent.open();
 			}
 		});
 
@@ -271,7 +263,7 @@ public class AnalysisToolCompositeTester {
 		// There should already be one MenuItem for each data source in the view
 		// Menu (all with empty Menus and disabled).
 		assertEquals(3, dataSourceItems.size());
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				for (MenuItem item : dataSourceItems.values()) {
@@ -289,7 +281,7 @@ public class AnalysisToolCompositeTester {
 		/* ---- Test adding a model for factoryOne. ---- */
 		// Add a model that uses factoryOne.
 		final One modelOne = new One();
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				atc.setData(DataSource.Input.toString(), modelOne);
@@ -311,7 +303,7 @@ public class AnalysisToolCompositeTester {
 
 		// The view Menu's input item should have an entry for View1 and View2.
 		final MenuItem inputItem = dataSourceItems.get(DataSource.Input);
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				Menu inputMenu = inputItem.getMenu();
@@ -339,7 +331,7 @@ public class AnalysisToolCompositeTester {
 		/* ---- Test adding a model for factoryTwo. ---- */
 		// Add a model that uses factoryTwo.
 		final Two modelTwo = new Two();
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				atc.setData(DataSource.Reference.toString(), modelTwo);
@@ -365,7 +357,7 @@ public class AnalysisToolCompositeTester {
 
 		// The view Menu's ref item should have an entry for View1 and View2.
 		final MenuItem refItem = dataSourceItems.get(DataSource.Reference);
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				Menu refMenu = refItem.getMenu();
@@ -376,7 +368,7 @@ public class AnalysisToolCompositeTester {
 			}
 		});
 		// Make sure the Input menu hasn't changed.
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				Menu inputMenu = inputItem.getMenu();
@@ -388,20 +380,19 @@ public class AnalysisToolCompositeTester {
 
 		// Set the active view and check the top Composite/ToolBar.
 		// This command simulates a button click on Reference -> View1.
-		// FIXME SWTBot will work on the first MenuItem click, but not on
-		// subsequent ones. After this, we have to manually "simulate" mouse
-		// clicks on the buttons.
-		viewsButton = bot.toolbarDropDownButton("Views");
-		refMenu = viewsButton.menuItem("Reference");
-		assertEnabled(refMenu);
-		menuItem = refMenu.menu("View1");
-		assertEnabled(menuItem);
-		menuItem.click();
+		// Simulate a mouse click on Reference -> View1
+		defaultDisplay.syncExec(new Runnable() {
+			@Override
+			public void run() {
+				Menu refMenu = refItem.getMenu();
+				refMenu.getItem(0).notifyListeners(SWT.Selection, new Event());
+			}
+		});
 		// Check that viewPart1 is at the front.
 		assertSame(viewPart1.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPart1.getContainer(), viewCompositeStack.topControl);
-		// Repeat this for View2.
-		Display.getDefault().syncExec(new Runnable() {
+		// Repeat this for Reference -> View2.
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				Menu refMenu = refItem.getMenu();
@@ -410,8 +401,8 @@ public class AnalysisToolCompositeTester {
 		});
 		assertSame(viewPart2.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPart2.getContainer(), viewCompositeStack.topControl);
-		// Repeat this for View3.
-		Display.getDefault().syncExec(new Runnable() {
+		// Repeat this for Reference -> View3.
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				Menu refMenu = refItem.getMenu();
@@ -422,7 +413,7 @@ public class AnalysisToolCompositeTester {
 		assertSame(viewPart3.getContainer(), viewCompositeStack.topControl);
 
 		// Make sure we can still select something from the Input menu!
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				Menu inputMenu = inputItem.getMenu();
@@ -439,7 +430,7 @@ public class AnalysisToolCompositeTester {
 		/* ---- Overwrite the Reference with new modelOne data. ---- */
 		// Add a reference model using an instance of model One.
 		final One clobberinTime = new One();
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				atc.setData(DataSource.Reference.toString(), clobberinTime);
@@ -480,7 +471,7 @@ public class AnalysisToolCompositeTester {
 		assertNull(viewPartMap.get(DataSource.Reference.toString() + "-View3"));
 
 		// The view Menu's ref item should have an entry for View1 and View2.
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				Menu refMenu = refItem.getMenu();
@@ -492,7 +483,7 @@ public class AnalysisToolCompositeTester {
 
 		// Set the active view and check the top Composite/ToolBar.
 		// This command simulates a button click on Reference -> View1.
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				refItem.getMenu().getItem(0)
@@ -502,7 +493,7 @@ public class AnalysisToolCompositeTester {
 		assertSame(viewPart1.getToolBar(), leftToolBarStack.topControl);
 		assertSame(viewPart1.getContainer(), viewCompositeStack.topControl);
 		// Make sure we can still select something from the Input menu!
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				inputItem.getMenu().getItem(0)
@@ -514,7 +505,7 @@ public class AnalysisToolCompositeTester {
 		assertSame(viewPartMap.get(DataSource.Input.toString() + "-View1")
 				.getContainer(), viewCompositeStack.topControl);
 		// Repeat the first step for View2.
-		Display.getDefault().syncExec(new Runnable() {
+		defaultDisplay.syncExec(new Runnable() {
 			@Override
 			public void run() {
 				refItem.getMenu().getItem(1)
