@@ -28,6 +28,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -126,8 +127,9 @@ public class PlotGridComposite extends Composite {
 	public PlotGridComposite(Composite parent, int style) {
 		super(parent, style);
 
-		// Set the background to be the same as the parent's.
-		setBackground(parent.getBackground());
+		// Set the initial background. This is so the ToolBar's widgets will all
+		// have the correct background when they are created.
+		super.setBackground(parent.getBackground());
 
 		// Initialize the list of drawn plots.
 		drawnPlots = new ArrayList<DrawnPlot>();
@@ -138,7 +140,6 @@ public class PlotGridComposite extends Composite {
 
 		// Set up the Composite containing the grid of plots.
 		gridComposite = new Composite(this, SWT.NONE);
-		gridComposite.setBackground(getBackground());
 		gridLayout = new GridLayout();
 		gridLayout.makeColumnsEqualWidth = true;
 		gridComposite.setLayout(gridLayout);
@@ -205,6 +206,29 @@ public class PlotGridComposite extends Composite {
 		// SWT.MouseEnter events. This listener *must* be removed when this plot
 		// grid is disposed.
 		getDisplay().addFilter(SWT.MouseEnter, plotHoverListener);
+
+		return;
+	}
+
+	/*
+	 * Overrides a method from Control.
+	 */
+	@Override
+	public void setBackground(Color color) {
+		super.setBackground(color);
+
+		// Update the background colors for the ToolBar and all of its widgets.
+		// Note: This will *not* update any grandchild widgets.
+		toolBar.setBackground(color);
+		for (Control child : toolBar.getChildren()) {
+			child.setBackground(color);
+		}
+
+		// Update the other child widgets.
+		gridComposite.setBackground(color);
+		for (DrawnPlot plot : drawnPlots) {
+			plot.setBackground(color);
+		}
 
 		return;
 	}
@@ -338,6 +362,7 @@ public class PlotGridComposite extends Composite {
 
 				// Create the basic plot Composite.
 				final DrawnPlot drawnPlot = new DrawnPlot(gridComposite, plot);
+				drawnPlot.setBackground(getBackground());
 
 				// Try to draw the category and type. If the underlying IPlot
 				// cannot draw, then dispose of the undrawn plot Composite.

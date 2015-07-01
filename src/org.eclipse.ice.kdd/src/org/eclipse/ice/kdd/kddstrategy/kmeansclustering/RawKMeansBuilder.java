@@ -35,6 +35,7 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 	/*
 	 * Implements a method in IStrategyBuilder.
 	 */
+	@Override
 	public KDDStrategy build(ArrayList<IDataProvider> data) {
 		if (kmeans != null) {
 			return kmeans;
@@ -46,6 +47,7 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 	/*
 	 * Implements a method in IStrategyBuilder.
 	 */
+	@Override
 	public String getStrategyName() {
 		return "Raw KMeans Clustering";
 	}
@@ -53,6 +55,7 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 	/*
 	 * Implements a method in IStrategyBuilder.
 	 */
+	@Override
 	public boolean isAvailable(ArrayList<IDataProvider> dataToCheck) {
 
 		// Make sure we have only one data provider
@@ -118,6 +121,7 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 	/*
 	 * Implements a method in IStrategyBuilder.
 	 */
+	@Override
 	public ArrayList<Entry> getStrategyPropertiesAsEntries() {
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
 		return retEntries;

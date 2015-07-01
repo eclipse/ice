@@ -204,7 +204,7 @@ public class MasterDetailsComponent extends ICEObject implements Component {
 		MasterDetailsPair mDetailsP;
 
 		// If the masterTypeList or detailList is null, return
-		if (!(masterTypeList != null & detailList != null)) {
+		if (!(masterTypeList != null && detailList != null)) {
 			return;
 		} else {
 			// This is a speedy boolean statement to check validation for
@@ -212,8 +212,8 @@ public class MasterDetailsComponent extends ICEObject implements Component {
 			// If the lists (plural) are not empty, are equal in size, and if
 			// the templatelist has not been set, everything is okay.
 			// Otherwise, return.
-			if (!(!masterTypeList.isEmpty() & !detailList.isEmpty()
-					& (masterTypeList.size() == detailList.size()) & this.masterDetailsTemplateList
+			if (!(!masterTypeList.isEmpty() && !detailList.isEmpty()
+					&& (masterTypeList.size() == detailList.size()) && this.masterDetailsTemplateList
 						.isEmpty())) {
 				return;
 			}
@@ -303,7 +303,7 @@ public class MasterDetailsComponent extends ICEObject implements Component {
 		// Return if the masterDetailsTemplateList is not set.
 		// Also check if the masterId < 0 || masterId > this.counter
 		// Faster boolean operations.
-		if (!(!this.masterDetailsTemplateList.isEmpty() & (masterId >= 0) & (masterId < this.counter))) {
+		if (!(!this.masterDetailsTemplateList.isEmpty() && (masterId >= 0) && (masterId < this.counter))) {
 			return null;
 		}
 
@@ -569,6 +569,7 @@ public class MasterDetailsComponent extends ICEObject implements Component {
 	 *         True if the MasterDetailsComponents are equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherMasterDetailsComponent) {
 		boolean retVal = true;
 		// Check if they are the same reference in memory
@@ -622,6 +623,7 @@ public class MasterDetailsComponent extends ICEObject implements Component {
 	 *         The hashcode.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		// Local Declaration
 		int hash = 1;
@@ -720,6 +722,7 @@ public class MasterDetailsComponent extends ICEObject implements Component {
 	 *         The deep-copy clone of this MasterDetailsComponent.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		// create a new instance of MasterDetailsComponent and copy contents
 		MasterDetailsComponent mDetailsP = new MasterDetailsComponent();
@@ -976,6 +979,7 @@ public class MasterDetailsComponent extends ICEObject implements Component {
 	 * 
 	 * @see Component#accept(IComponentVisitor visitor)
 	 */
+	@Override
 	public void accept(IComponentVisitor visitor) {
 		// Reveal our type to the visitor
 		visitor.visit(this);

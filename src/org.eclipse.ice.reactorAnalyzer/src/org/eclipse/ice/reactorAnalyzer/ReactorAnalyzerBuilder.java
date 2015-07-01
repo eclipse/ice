@@ -12,13 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.reactorAnalyzer;
 
-import static org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer.*;
-
 import java.util.ArrayList;
 
-import org.eclipse.ice.analysistool.IAnalysisTool;
-
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.analysistool.IAnalysisTool;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
@@ -121,6 +118,7 @@ public class ReactorAnalyzerBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemName()
 	 */
+	@Override
 	public String getItemName() {
 		return name;
 	}
@@ -130,6 +128,7 @@ public class ReactorAnalyzerBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemType()
 	 */
+	@Override
 	public ItemType getItemType() {
 		return type;
 	}
@@ -139,6 +138,7 @@ public class ReactorAnalyzerBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 
 		// Local Declarations

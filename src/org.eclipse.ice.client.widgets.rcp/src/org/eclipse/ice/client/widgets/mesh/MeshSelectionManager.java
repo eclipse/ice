@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh;
 
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.form.mesh.Polygon;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +19,11 @@ import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.eclipse.ice.datastructures.form.mesh.Edge;
+import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.form.mesh.Polygon;
+import org.eclipse.ice.datastructures.form.mesh.Vertex;
 
 /**
  * This class manages a selection of polygons, edges, and vertices for a

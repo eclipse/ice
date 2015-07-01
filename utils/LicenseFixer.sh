@@ -118,7 +118,7 @@ for match in $matches; do
     shopt -u nocasematch # Turn off ignore case.
 
     # Build the license text.
-    license="${header}\n * Copyright (c) ${years} UT-Battelle, LLC.\n * All rights reserved. This program and the accompanying materials\n * are made available under the terms of the Eclipse Public License v1.0\n * which accompanies this distribution, and is available at\n * http://www.eclipse.org/legal/epl-v10.html\n *\n * Contributors:\n *    ${author} - initial API and implementation and/or initial documentation\n *   ${contributors}\n${footer}"
+    license="${header}\n * Copyright (c) ${years} UT-Battelle, LLC.\n * All rights reserved. This program and the accompanying materials\n * are made available under the terms of the Eclipse Public License v1.0\n * which accompanies this distribution, and is available at\n * http://www.eclipse.org/legal/epl-v10.html\n *\n * Contributors:\n *    ${author} - initial API and implementation and/or initial documentation\n *    ${contributors}\n${footer}"
     
     # Prompt the user to make sure the license is OK.
     echo "The license for this file will be:"

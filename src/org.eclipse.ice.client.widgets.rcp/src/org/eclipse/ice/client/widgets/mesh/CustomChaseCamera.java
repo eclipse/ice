@@ -72,6 +72,7 @@ public class CustomChaseCamera extends ChaseCamera {
 		return;
 	}
 
+	@Override
 	public void setDragToRotate(boolean dragToRotate) {
 		this.dragToRotate = false;
 		canRotate = false;

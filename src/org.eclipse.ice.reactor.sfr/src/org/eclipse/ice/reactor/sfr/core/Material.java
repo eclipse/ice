@@ -67,6 +67,7 @@ public class Material extends SFRComponent {
 	 *            The other object to compare against.
 	 * @return Returns true if the two objects are equal, otherwise false.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Check if otherObject is invalid
@@ -94,6 +95,7 @@ public class Material extends SFRComponent {
 	 * 
 	 * @return The hashcode of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based upon superclass hash
@@ -131,6 +133,7 @@ public class Material extends SFRComponent {
 	 * 
 	 * @return The newly instantiated object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new material

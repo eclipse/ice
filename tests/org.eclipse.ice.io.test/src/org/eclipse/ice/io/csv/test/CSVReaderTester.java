@@ -11,7 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.io.csv.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -28,8 +32,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.csv.CSVReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.IOException;
 
 /**
  * Test class for {@link org.eclipse.ice.io.csv.CSVReader}.

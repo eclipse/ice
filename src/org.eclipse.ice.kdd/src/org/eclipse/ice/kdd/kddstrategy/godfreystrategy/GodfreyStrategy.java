@@ -12,17 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy.godfreystrategy;
 
-import static org.eclipse.ice.kdd.kddmath.IDataMatrix.*;
-import static org.eclipse.ice.kdd.kddstrategy.godfreystrategy.GodfreySubStrategy.*;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,18 +27,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.analysistool.IData;
-
-import java.util.Properties;
-import java.util.regex.Pattern;
-
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddmath.IDataMatrix;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 import org.eclipse.ice.kdd.kddstrategy.compositestrategy.CompositeStrategy;
-import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * <p>
@@ -419,6 +408,7 @@ public class GodfreyStrategy extends CompositeStrategy {
 	 * 
 	 * @return
 	 */
+	@Override
 	public ArrayList<Entry> getPropertiesAsEntryList() {
 
 		// Value could also be Relative

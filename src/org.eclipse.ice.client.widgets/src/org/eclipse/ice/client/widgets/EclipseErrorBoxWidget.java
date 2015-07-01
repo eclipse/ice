@@ -32,6 +32,7 @@ public class EclipseErrorBoxWidget implements IErrorBox {
 	 * (non-Javadoc)
 	 * @see IErrorBox#setErrorString(String error)
 	 */
+	@Override
 	public void setErrorString(String error) {
 		errorString = error;
 	}
@@ -40,6 +41,7 @@ public class EclipseErrorBoxWidget implements IErrorBox {
 	 * (non-Javadoc)
 	 * @see IErrorBox#getErrorString()
 	 */
+	@Override
 	public String getErrorString() {
 		return errorString;
 	}

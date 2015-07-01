@@ -41,6 +41,7 @@ public class SHARPLauncherBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemName()
 	 */
+	@Override
 	public String getItemName() {
 		return name;
 	}
@@ -50,6 +51,7 @@ public class SHARPLauncherBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#getItemType()
 	 */
+	@Override
 	public ItemType getItemType() {
 		return type;
 	}
@@ -59,6 +61,7 @@ public class SHARPLauncherBuilder implements ItemBuilder {
 	 * 
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
+	@Override
 	public Item build(IProject projectSpace) {
 
 		SHARPLauncher launcher = new SHARPLauncher(projectSpace);

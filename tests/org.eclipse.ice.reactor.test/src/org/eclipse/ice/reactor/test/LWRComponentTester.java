@@ -12,34 +12,32 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.reactor.HDF5LWRTagType;
-import org.eclipse.ice.reactor.LWRComponent;
-import org.eclipse.ice.reactor.LWRData;
-import org.eclipse.ice.reactor.LWRRod;
-import org.eclipse.ice.reactor.pwr.FuelAssembly;
-import org.eclipse.ice.datastructures.test.TestComponentListener;
-
-import static org.junit.Assert.*;
 import ncsa.hdf.object.Attribute;
-import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.Group;
 import ncsa.hdf.object.h5.H5CompoundDS;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
+import org.eclipse.ice.datastructures.test.TestComponentListener;
+import org.eclipse.ice.io.hdf.HdfFileFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
+import org.eclipse.ice.reactor.HDF5LWRTagType;
+import org.eclipse.ice.reactor.LWRComponent;
+import org.eclipse.ice.reactor.LWRData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

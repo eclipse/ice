@@ -14,7 +14,6 @@ package org.eclipse.ice.reflectivity;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.model.AbstractModelBuilder;
 

@@ -12,6 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
+import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.common.ActionTree;
@@ -21,15 +29,6 @@ import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
-
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
-import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.GridLabelProvider;
 import org.eclipse.ice.reactor.LWRComponent;
@@ -648,6 +647,7 @@ public class PlotAnalysisView extends AnalysisView {
 	 * 
 	 * @return The IAnalysisView's name.
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -658,6 +658,7 @@ public class PlotAnalysisView extends AnalysisView {
 	 * 
 	 * @return The IAnalysisView's description.
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}

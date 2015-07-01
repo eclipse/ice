@@ -12,12 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactorAnalyzer;
 
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.reactor.LWRComponentReader;
-import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
-import org.eclipse.ice.reactor.sfr.base.SFReactorIOHandler;
-import org.eclipse.ice.reactor.sfr.core.SFReactor;
-
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
@@ -27,6 +21,12 @@ import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import ncsa.hdf.hdf5lib.structs.H5O_info_t;
+
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.reactor.LWRComponentReader;
+import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
+import org.eclipse.ice.reactor.sfr.base.SFReactorIOHandler;
+import org.eclipse.ice.reactor.sfr.core.SFReactor;
 
 public class ReactorReaderFactory {
 
@@ -46,11 +46,13 @@ public class ReactorReaderFactory {
 		reactorFactoryMap = new HashMap<Class, IReactorFactory>();
 		reactorFactoryMap.put(PressurizedWaterReactor.class,
 				new IReactorFactory() {
+					@Override
 					public IReactorComponent read(URI uri) {
 						return (PressurizedWaterReactor) new LWRComponentReader()
 								.read(uri);
 					}
 
+					@Override
 					public void copy(IReactorComponent src,
 							IReactorComponent dst) {
 						((PressurizedWaterReactor) dst)
@@ -59,10 +61,12 @@ public class ReactorReaderFactory {
 					}
 				});
 		reactorFactoryMap.put(SFReactor.class, new IReactorFactory() {
+			@Override
 			public IReactorComponent read(URI uri) {
 				return new SFReactorIOHandler().readHDF5(uri);
 			}
 
+			@Override
 			public void copy(IReactorComponent src, IReactorComponent dst) {
 				((SFReactor) dst).copy((SFReactor) src);
 				return;

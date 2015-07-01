@@ -14,21 +14,21 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.forms.IFormPart;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.forms.IDetailsPage;
+import org.eclipse.ui.forms.IFormPart;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 /**
  * <p>
@@ -99,6 +99,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * 
 	 * @see IFormPart#initialize(IManagedForm form)
 	 */
+	@Override
 	public void initialize(IManagedForm form) {
 		this.mform = form;
 	}
@@ -108,6 +109,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * 
 	 * @see IFormPart#dispose()
 	 */
+	@Override
 	public void dispose() {
 
 	}
@@ -117,6 +119,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * 
 	 * @see IFormPart#commit(boolean onSave)
 	 */
+	@Override
 	public void commit(boolean onSave) {
 
 	}
@@ -126,6 +129,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * 
 	 * @see IFormPart#setFormInput(Object input)
 	 */
+	@Override
 	public boolean setFormInput(Object input) {
 		return false;
 	}
@@ -135,6 +139,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * 
 	 * @see IFormPart#setFocus()
 	 */
+	@Override
 	public void setFocus() {
 
 	}
@@ -144,6 +149,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * 
 	 * @see IFormPart#refresh()
 	 */
+	@Override
 	public void refresh() {
 
 	}
@@ -162,6 +168,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 *            The parent composite in which this page should be drawn.
 	 *            </p>
 	 */
+	@Override
 	public void createContents(Composite parent) {
 
 		TableWrapLayout layout = new TableWrapLayout();

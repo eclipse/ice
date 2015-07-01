@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ICE" uid="ice.product" id="org.eclipse.ice.client.rcp.product" application="org.eclipse.ui.ide.workbench" version="2.0.0" useFeatures="true" includeLaunchers="true">
+<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.0.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog -console -clean
+      <programArgs>-product org.eclipse.platform.ide -consoleLog -console --launcher.defaultAction openFile --launcher.appendVmargs
       </programArgs>
-      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080
+      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080 -Dosgi.instance.area=@user.home/ICEFiles
       </vmArgs>
-      <vmArgsLin>-Dosgi.instance.area=@user.home/ICEFiles -Dvisit.binpath=@user.home/visit/bin
+      <vmArgsLin>-Dvisit.binpath=@user.home/visit/bin
       </vmArgsLin>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Dosgi.instance.area=@user.home/ICEFiles -Dvisit.binpath=@user.home/visit/bin
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Dvisit.binpath=@user.home/visit/bin
       </vmArgsMac>
-      <vmArgsWin>-Dosgi.instance.area=@user.home\ICEFiles
--Dvisit.binpath=C:\PROGRA~1\LLNL\VISIT2~1.2&quot;\r&quot;
+      <vmArgsWin>-Dvisit.binpath=C:\PROGRA~1\LLNL\VISIT2~1.2&quot;\r&quot;
 -Djava.library.path=C:\PROGRA~1\HDF_Group\HDFView\2.10.1\lib&quot;\r&quot;
       </vmArgsWin>
    </launcherArgs>
@@ -100,14 +99,41 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
 
    <features>
       <feature id="org.eclipse.ice" version="2.0.0"/>
-      <feature id="org.eclipse.rcp" version="4.3.2.v20140221-1700"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.emf.common"/>
       <feature id="org.eclipse.e4.rcp"/>
-      <feature id="org.eclipse.equinox.p2.user.ui" version="2.2.0.v20140221-1852"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
+      <feature id="org.eclipse.ecf.core.feature"/>
+      <feature id="org.eclipse.rcp" version="4.5.0.v20150603-2331"/>
+      <feature id="org.eclipse.platform" version="4.5.0.v20150603-2358"/>
+      <feature id="org.eclipse.equinox.p2.discovery.feature" version="1.0.300.v20150430-1836"/>
+      <feature id="org.eclipse.equinox.p2.user.ui" version="2.2.100.v20150601-1708"/>
+      <feature id="org.eclipse.equinox.server.p2" version="1.2.200.v20150527-1706"/>
+      <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.cdt" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.jdt" version="3.11.0.v20150603-2000"/>
+      <feature id="org.eclipse.cdt.autotools" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.dsf"/>
+      <feature id="org.eclipse.cdt.gnu.build"/>
+      <feature id="org.eclipse.cdt.platform"/>
+      <feature id="org.eclipse.cdt.native"/>
+      <feature id="org.eclipse.cdt.gnu.debug"/>
+      <feature id="org.eclipse.cdt.gdb"/>
+      <feature id="org.eclipse.ease.feature" version="0.2.0.201504281226"/>
+      <feature id="org.eclipse.ease.javascript.feature" version="0.2.0.201504281226"/>
+      <feature id="org.eclipse.ease.modules.charting.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.modules.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.modules.team.svn.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.modules.unittest.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.python.feature" version="0.2.0.201504281226"/>
+      <feature id="org.eclipse.ease.ui.feature" version="0.2.0.201505111426"/>
    </features>
 
    <configurations>
@@ -121,6 +147,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.analysistool" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.caebat.batml" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
@@ -147,6 +174,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.reactor.plant" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.sfr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactorAnalyzer" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reflectivity" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.sassena" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.vibe" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
@@ -156,9 +184,19 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
       <plugin id="org.eclipse.platform" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ui.forms" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ui.ide.application" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.ui.intro" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="3" />
       <property name="eclipse.p2.data.area" value="@config.dir/../p2" />
       <property name="eclipse.p2.profile" value="epp.package.rcp" />
+      <property name="osgi.instance.area.default" value="@user.home/Documents/workspace" />
    </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>

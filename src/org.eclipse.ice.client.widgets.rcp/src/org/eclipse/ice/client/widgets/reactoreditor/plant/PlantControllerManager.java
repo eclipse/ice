@@ -107,6 +107,7 @@ public class PlantControllerManager {
 
 		// Set the references to the jME3 app and its update queue if possible.
 		this.renderQueue = (app != null ? app : new IRenderQueue() {
+			@Override
 			public <T> Future<T> enqueue(Callable<T> callable) {
 				return null;
 			}
@@ -166,6 +167,7 @@ public class PlantControllerManager {
 			// the component is supported and it does not already have a
 			// controller.
 			component.accept(new PlantControllerVisitor() {
+				@Override
 				public void visit(Junction plantComp) {
 
 					// Only create a new view/controller if there's not already
@@ -194,6 +196,7 @@ public class PlantControllerManager {
 					return;
 				}
 
+				@Override
 				public void visit(Reactor plantComp) {
 
 					// Only create a new view/controller if there's not already
@@ -222,6 +225,7 @@ public class PlantControllerManager {
 					return;
 				}
 
+				@Override
 				public void visit(HeatExchanger plantComp) {
 
 					// Only create a new view/controller if there's not already
@@ -249,6 +253,7 @@ public class PlantControllerManager {
 					return;
 				}
 
+				@Override
 				public void visit(Pipe plantComp) {
 
 					// Only create a new view/controller if there's not already
@@ -308,21 +313,25 @@ public class PlantControllerManager {
 			readLock.lock();
 			try {
 				component.accept(new PlantControllerVisitor() {
+					@Override
 					public void visit(Junction plantComp) {
 						wrapper.controller = junctionControllers.get(plantComp
 								.getId());
 					}
 
+					@Override
 					public void visit(Reactor plantComp) {
 						wrapper.controller = reactorControllers.get(plantComp
 								.getId());
 					}
 
+					@Override
 					public void visit(HeatExchanger plantComp) {
 						wrapper.controller = pipeControllers.get(plantComp
 								.getId());
 					}
 
+					@Override
 					public void visit(Pipe plantComp) {
 						wrapper.controller = pipeControllers.get(plantComp
 								.getId());
@@ -370,6 +379,7 @@ public class PlantControllerManager {
 			writeLock.lock();
 			try {
 				component.accept(new PlantControllerVisitor() {
+					@Override
 					public void visit(Junction plantComp) {
 						wrapper.controller = junctionControllers.get(id);
 						if (wrapper.controller != null
@@ -380,6 +390,7 @@ public class PlantControllerManager {
 						}
 					}
 
+					@Override
 					public void visit(Reactor plantComp) {
 						wrapper.controller = reactorControllers.get(id);
 						if (wrapper.controller != null
@@ -390,6 +401,7 @@ public class PlantControllerManager {
 						}
 					}
 
+					@Override
 					public void visit(HeatExchanger plantComp) {
 						wrapper.controller = pipeControllers.get(id);
 						if (wrapper.controller != null
@@ -400,6 +412,7 @@ public class PlantControllerManager {
 						}
 					}
 
+					@Override
 					public void visit(Pipe plantComp) {
 						wrapper.controller = pipeControllers.get(id);
 						if (wrapper.controller != null

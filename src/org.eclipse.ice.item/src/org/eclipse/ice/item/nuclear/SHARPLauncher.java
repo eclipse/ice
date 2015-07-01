@@ -14,10 +14,9 @@ package org.eclipse.ice.item.nuclear;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
  * <p>
@@ -74,6 +73,7 @@ public class SHARPLauncher extends JobLauncher {
 	 *         not in the list of available actions.
 	 *         </p>
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 		// Just forward the request to the super class. This operation is only
 		// here in case we need to do some work before processing.
@@ -86,6 +86,7 @@ public class SHARPLauncher extends JobLauncher {
 	 * </p>
 	 * 
 	 */
+	@Override
 	protected void setupForm() {
 
 		// Local Declarations
@@ -116,6 +117,7 @@ public class SHARPLauncher extends JobLauncher {
 	 * </p>
 	 * 
 	 */
+	@Override
 	protected void setupItemInfo() {
 
 		// Set the name and description of the Item

@@ -131,7 +131,7 @@ public interface IVizService {
 	 * @param file
 	 *            The file from which the plot should be created
 	 * @return The IPlot that will render a plot from the file
-	 * @throws e
+	 * @throws Exception
 	 *             An exception indicating that the IVizService could not create
 	 *             a plot with the given file and giving the reason why.
 	 */

@@ -12,8 +12,8 @@
 *******************************************************************************/
 package org.eclipse.ice.client.test;
 
-import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 
 /** 
  * <p>The FakeTextEditor is a realization of ITextEditor that is used for testing. It provides several methods in addition to the ITextEditor interface that are used for testing and introspection.</p>
@@ -41,6 +41,7 @@ public class FakeTextEditor implements ITextEditor {
 	 * (non-Javadoc)
 	 * @see ITextEditor#setResource(ICEResource resource)
 	 */
+	@Override
 	public void setResource(ICEResource resource) {
 
 		iceResource = resource;
@@ -53,6 +54,7 @@ public class FakeTextEditor implements ITextEditor {
 	 * (non-Javadoc)
 	 * @see ITextEditor#getResource()
 	 */
+	@Override
 	public ICEResource getResource() {
 		return iceResource;
 	}
@@ -61,6 +63,7 @@ public class FakeTextEditor implements ITextEditor {
 	 * (non-Javadoc)
 	 * @see ITextEditor#display()
 	 */
+	@Override
 	public void display() {
 
 		// Display if and only if the ICEResource is not equal to null

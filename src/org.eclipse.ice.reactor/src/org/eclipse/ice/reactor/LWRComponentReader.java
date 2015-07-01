@@ -16,15 +16,20 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
+
 import org.eclipse.ice.io.hdf.HdfFileFactory;
 import org.eclipse.ice.io.hdf.HdfReaderFactory;
 import org.eclipse.ice.io.hdf.IHdfReadable;
 import org.eclipse.ice.io.hdf.IHdfReader;
 import org.eclipse.ice.reactor.bwr.BWReactor;
-import org.eclipse.ice.reactor.pwr.*;
-
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
+import org.eclipse.ice.reactor.pwr.ControlBank;
+import org.eclipse.ice.reactor.pwr.FuelAssembly;
+import org.eclipse.ice.reactor.pwr.IncoreInstrument;
+import org.eclipse.ice.reactor.pwr.PWRAssembly;
+import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
+import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 
 /**
  * <p>
@@ -97,6 +102,7 @@ public class LWRComponentReader implements IHdfReader {
 	 * 
 	 * @see IHdfReader#read(URI uri)
 	 */
+	@Override
 	public IHdfReadable read(URI uri) {
 
 		// Open the file at the provided uri

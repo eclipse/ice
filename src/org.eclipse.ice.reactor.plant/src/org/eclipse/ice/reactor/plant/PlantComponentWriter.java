@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.io.hdf.HdfIOFactory;
-import org.eclipse.ice.datastructures.ICEObject.Composite;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
+
+import org.eclipse.ice.datastructures.ICEObject.Composite;
+import org.eclipse.ice.io.hdf.HdfIOFactory;
 
 /**
  * <p>
@@ -121,6 +121,7 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(PlantComposite plantComp) {
 
 		// This method writes a PlantComposite in the following way:
@@ -140,130 +141,162 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		// on its base type, e.g. Pipe sub-classes go in the pipes list.
 		IPlantComponentVisitor visitor = new IPlantComponentVisitor() {
 
+			@Override
 			public void visit(PlantComposite plantComp) {
 				// Do nothing.
 			}
 
+			@Override
 			public void visit(GeometricalComponent plantComp) {
 				others.add(plantComp);
 			}
 
+			@Override
 			public void visit(Junction plantComp) {
 				junctions.add(plantComp);
 			}
 
+			@Override
 			public void visit(Reactor plantComp) {
 				reactors.add(plantComp);
 			}
 
+			@Override
 			public void visit(PointKinetics plantComp) {
 				others.add(plantComp);
 			}
 
+			@Override
 			public void visit(HeatExchanger plantComp) {
 				heatExchangers.add(plantComp);
 			}
 
+			@Override
 			public void visit(Pipe plantComp) {
 				pipes.add(plantComp);
 			}
 
+			@Override
 			public void visit(CoreChannel plantComp) {
 				visit((Pipe) plantComp);
 			}
 
+			@Override
 			public void visit(Subchannel plantComp) {
 				visit((Pipe) plantComp);
 			}
 
+			@Override
 			public void visit(PipeWithHeatStructure plantComp) {
 				visit((Pipe) plantComp);
 			}
 
+			@Override
 			public void visit(Branch plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(SubchannelBranch plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(VolumeBranch plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(FlowJunction plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(WetWell plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(Boundary plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(OneInOneOutJunction plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(Turbine plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(IdealPump plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(Pump plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(Valve plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(PipeToPipeJunction plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(Inlet plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(MassFlowInlet plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(SpecifiedDensityAndVelocityInlet plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(Outlet plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(SolidWall plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(TDM plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(TimeDependentJunction plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(TimeDependentVolume plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(DownComer plantComp) {
 				visit((Junction) plantComp);
 			}
 
+			@Override
 			public void visit(SeparatorDryer plantComp) {
 				visit((Junction) plantComp);
 			}
@@ -351,6 +384,7 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 	}
 
 	// ---- Base classes ---- //
+	@Override
 	public void visit(GeometricalComponent plantComp) {
 		// super:PlantComponent
 		// position:double[3]
@@ -399,6 +433,7 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(Junction plantComp) {
 		// super:PlantComponent
 		// inputs:List<PlantComponent>
@@ -468,6 +503,7 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(Reactor plantComp) {
 		// super:PlantComponent
 		// coreChannels:List<CoreChannel>
@@ -514,12 +550,14 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(PointKinetics plantComp) {
 		// super:PlantComponent
 
 		// Nothing to do.
 	}
 
+	@Override
 	public void visit(HeatExchanger plantComp) {
 		// super:GeometricalComponent
 		// innerRadius:double
@@ -559,6 +597,7 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		return;
 	}
 
+	@Override
 	public void visit(Pipe plantComp) {
 		// super:GeometricalComponent
 		// radius:double
@@ -594,103 +633,128 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 	}
 
 	// ---- Pipe subclasses ---- //
+	@Override
 	public void visit(CoreChannel plantComp) {
 		visit((Pipe) plantComp);
 	}
 
+	@Override
 	public void visit(Subchannel plantComp) {
 		visit((Pipe) plantComp);
 	}
 
+	@Override
 	public void visit(PipeWithHeatStructure plantComp) {
 		visit((Pipe) plantComp);
 	}
 
 	// ---- Junction subclasses ---- //
+	@Override
 	public void visit(Branch plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(SubchannelBranch plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(VolumeBranch plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(FlowJunction plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(WetWell plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(Boundary plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(OneInOneOutJunction plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(Turbine plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(IdealPump plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(Pump plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(Valve plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(PipeToPipeJunction plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(Inlet plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(MassFlowInlet plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(SpecifiedDensityAndVelocityInlet plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(Outlet plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(SolidWall plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(TDM plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(TimeDependentJunction plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(TimeDependentVolume plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(DownComer plantComp) {
 		visit((Junction) plantComp);
 	}
 
+	@Override
 	public void visit(SeparatorDryer plantComp) {
 		visit((Junction) plantComp);
 	}

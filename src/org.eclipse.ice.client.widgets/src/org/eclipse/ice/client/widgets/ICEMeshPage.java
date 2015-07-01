@@ -423,38 +423,47 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 			// Create a visitor to populate the above lists of IDs
 			IMeshPartVisitor visitor = new IMeshPartVisitor() {
 
+				@Override
 				public void visit(Vertex vertex) {
 					vertexIds.add(vertex.getId());
 				}
 
+				@Override
 				public void visit(PolynomialEdge edge) {
 					visit((Edge) edge);
 				}
 
+				@Override
 				public void visit(BezierEdge edge) {
 					visit((Edge) edge);
 				}
 
+				@Override
 				public void visit(Edge edge) {
 					edgeIds.add(edge.getId());
 				}
 
+				@Override
 				public void visit(Hex hex) {
 					visit((Polygon) hex);
 				}
 
+				@Override
 				public void visit(Quad quad) {
 					visit((Polygon) quad);
 				}
 
+				@Override
 				public void visit(Polygon polygon) {
 					polygonIds.add(polygon.getId());
 				}
 
+				@Override
 				public void visit(Object object) {
 					// Do nothing.
 				}
 
+				@Override
 				public void visit(MeshComponent mesh) {
 					// Do nothing.
 				}
@@ -485,6 +494,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	 * the recent update to the MeshApplication's selection to the other
 	 * ISelectionListeners.
 	 */
+	@Override
 	public void selectionChanged() {
 
 		return;
@@ -534,10 +544,12 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	// --------------------------------------- //
 
 	// ---- These methods are required for tabbed properties. ---- //
+	@Override
 	public String getContributorId() {
 		return getSite().getId();
 	}
 
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IPropertySheetPage.class) {
 			return new TabbedPropertySheetPage(this);

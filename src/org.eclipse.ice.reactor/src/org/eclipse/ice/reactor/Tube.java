@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
+
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
  * <p>
@@ -214,21 +215,10 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from Ring.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -254,15 +244,10 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from Ring.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Get hash from super
@@ -300,15 +285,10 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from Ring.
 	 */
+	@Override
 	public Object clone() {
 		// Local Declarations
 		Tube tube = new Tube();
@@ -321,12 +301,10 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from Ring.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -337,11 +315,10 @@ public class Tube extends Ring {
 		return flag;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from Ring.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations
@@ -366,18 +343,10 @@ public class Tube extends Ring {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation accepts an ILWRComponentVisitor that can be visit the
-	 * LWRComponent to ascertain its type and perform various type-specific
-	 * operations.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            <p>
-	 *            The visitor
-	 *            </p>
+	/*
+	 * Overrides a method from Ring.
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

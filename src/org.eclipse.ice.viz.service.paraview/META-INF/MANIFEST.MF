@@ -27,3 +27,4 @@ Import-Package: com.google.gson,
 Export-Package: org.eclipse.ice.viz.service.paraview,
  org.eclipse.ice.viz.service.paraview.proxy
 Service-Component: OSGI-INF/vizService.xml,OSGI-INF/proxyFactory.xml,OSGI-INF/siloProxyBuilder.xml,OSGI-INF/exodusProxyBuilder.xml
+Bundle-Vendor: Oak Ridge National Laboratory

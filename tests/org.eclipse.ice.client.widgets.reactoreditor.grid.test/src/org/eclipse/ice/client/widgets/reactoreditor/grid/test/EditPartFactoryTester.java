@@ -14,6 +14,8 @@ package org.eclipse.ice.client.widgets.reactoreditor.grid.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import org.eclipse.gef.EditPart;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.CellEditPart;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.CircularCellEditPart;
@@ -26,8 +28,6 @@ import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalCellEditPart;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalGridEditPart;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalGridEditPartFactory;
-
-import org.eclipse.gef.EditPart;
 import org.junit.Test;
 
 /**

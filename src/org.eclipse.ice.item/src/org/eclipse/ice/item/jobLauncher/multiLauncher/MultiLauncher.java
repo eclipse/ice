@@ -12,31 +12,25 @@
  *******************************************************************************/
 package org.eclipse.ice.item.jobLauncher.multiLauncher;
 
-import org.eclipse.ice.datastructures.form.FormStatus;
-
-import static org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncherForm.*;
-
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.eclipse.ice.datastructures.form.MasterDetailsPair;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 
 /**
  * <p>
@@ -296,6 +290,7 @@ public class MultiLauncher extends Item implements Runnable {
 	 *         fails.
 	 *         </p>
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 
 		// Local Declarations
@@ -348,6 +343,7 @@ public class MultiLauncher extends Item implements Runnable {
 	 *         The status. See Item.getStatus() for an exact description.
 	 *         </p>
 	 */
+	@Override
 	public FormStatus getStatus() {
 
 		// Local Declarations
@@ -707,6 +703,7 @@ public class MultiLauncher extends Item implements Runnable {
 	 * 
 	 * @see Runnable#run()
 	 */
+	@Override
 	public void run() {
 
 		// Local Declarations
@@ -834,6 +831,7 @@ public class MultiLauncher extends Item implements Runnable {
 	 * 
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
 	 */
+	@Override
 	public void visit(MasterDetailsComponent component) {
 
 		jobMasterDetailsComp = component;

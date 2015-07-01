@@ -12,15 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
-
 import org.eclipse.ice.client.widgets.EclipseTextEditor;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.junit.Test;
 
 /**
  * <p>

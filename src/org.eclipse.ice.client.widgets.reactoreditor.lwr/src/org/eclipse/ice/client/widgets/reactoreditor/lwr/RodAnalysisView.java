@@ -12,6 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
@@ -19,12 +24,6 @@ import org.eclipse.ice.client.widgets.reactoreditor.Circle;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.lwr.RodFigure.DisplayType;
 import org.eclipse.ice.client.widgets.reactoreditor.lwr.properties.PropertySourceFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRRod;

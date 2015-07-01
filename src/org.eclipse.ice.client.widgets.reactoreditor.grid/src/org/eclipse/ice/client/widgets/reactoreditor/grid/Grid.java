@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.grid;
 
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 
 /**
  * This class provides the model for a grid of Cells. The Grid should keep track

@@ -12,3 +12,4 @@ Require-Bundle: org.junit;bundle-version="4.11.0",
 Import-Package: org.eclipse.ice.datastructures.form,
  org.eclipse.ice.datastructures.form.emf,
  org.eclipse.ice.item
+Bundle-Vendor: Oak Ridge National Laboratory

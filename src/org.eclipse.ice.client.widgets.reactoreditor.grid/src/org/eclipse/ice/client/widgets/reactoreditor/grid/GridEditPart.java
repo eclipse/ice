@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.grid;
 
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -23,6 +21,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 
 /**
  * This class provides the "root" EditPart (rectangular) for the {@link Grid}

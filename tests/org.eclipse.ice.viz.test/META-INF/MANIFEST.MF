@@ -13,3 +13,4 @@ Import-Package: org.eclipse.ice.viz,
  org.eclipse.ice.viz.csv.viewer,
  org.eclipse.ice.viz.service.csv,
  org.eclipse.swt.graphics
+Bundle-Vendor: Oak Ridge National Laboratory

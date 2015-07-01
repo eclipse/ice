@@ -16,9 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-
 import org.junit.Test;
 
 public class CellTester {

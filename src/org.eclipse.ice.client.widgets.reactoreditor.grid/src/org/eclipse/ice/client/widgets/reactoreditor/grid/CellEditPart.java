@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.grid;
 
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditPart;
@@ -24,6 +21,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.requests.SelectionRequest;
 import org.eclipse.gef.tools.DeselectAllTracker;
 import org.eclipse.gef.tools.MarqueeDragTracker;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 
 /**
  * This class provides the Controller for a {@link Cell}. In particular, it is

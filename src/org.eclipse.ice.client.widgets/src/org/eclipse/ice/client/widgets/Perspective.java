@@ -21,6 +21,7 @@ public class Perspective implements IPerspectiveFactory {
 
 	public static final String ID = "org.eclipse.ice.client.widgets.perspective";
 
+	@Override
 	public void createInitialLayout(IPageLayout layout) {
 
 		// Setup the perspective shortcut button in the top right corner

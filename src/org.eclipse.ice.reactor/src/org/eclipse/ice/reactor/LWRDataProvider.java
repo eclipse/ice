@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import org.eclipse.ice.analysistool.IData;
-import org.eclipse.ice.analysistool.IDataProvider;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
-import java.util.ArrayList;
+
+import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
  * <p>
@@ -250,6 +250,7 @@ public class LWRDataProvider implements IDataProvider {
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -294,6 +295,7 @@ public class LWRDataProvider implements IDataProvider {
 	 *         True if equal, false otherwise.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local declarations
@@ -330,6 +332,7 @@ public class LWRDataProvider implements IDataProvider {
 	 *         the hash.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		int hash = 31;
@@ -345,11 +348,10 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getFeatureList()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
+	@Override
 	public ArrayList<String> getFeatureList() {
 
 		// Local Declarations
@@ -382,21 +384,19 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getNumberOfTimeSteps()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
+	@Override
 	public int getNumberOfTimeSteps() {
 
 		return this.dataTree.size();
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#setTime(double step)
+	/*
+	 * Implements a method from IDataProvider.
 	 */
+	@Override
 	public void setTime(double step) {
 		if (step >= 0.0) {
 			this.time = step;
@@ -404,11 +404,10 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getDataAtCurrentTime(String feature)
+	/*
+	 * Implements a method from IDataProvider.
 	 */
+	@Override
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
 
 		// If feature is null, return
@@ -433,22 +432,20 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getSourceInfo()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
+	@Override
 	public String getSourceInfo() {
 
 		return this.sourceInfo;
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getFeaturesAtCurrentTime()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
+	@Override
 	public ArrayList<String> getFeaturesAtCurrentTime() {
 
 		// Local Declarations
@@ -471,11 +468,10 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getTimes()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
+	@Override
 	public ArrayList<Double> getTimes() {
 
 		// Local Declarations
@@ -494,11 +490,10 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getTimeStep(double time)
+	/*
+	 * Implements a method from IDataProvider.
 	 */
+	@Override
 	public int getTimeStep(double time) {
 
 		// Get the iterator
@@ -521,11 +516,10 @@ public class LWRDataProvider implements IDataProvider {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IDataProvider#getTimeUnits()
+	/*
+	 * Implements a method from IDataProvider.
 	 */
+	@Override
 	public String getTimeUnits() {
 
 		return this.timeUnit;

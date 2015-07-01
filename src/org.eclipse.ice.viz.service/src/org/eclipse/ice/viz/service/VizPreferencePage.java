@@ -17,12 +17,13 @@ import org.eclipse.ui.IWorkbench;
 
 /**
  * This class manages the main page of visualization service preferences in the
- * Eclipse Window -> Preferences dialog, specifically under the node
+ * Eclipse Window > Preferences dialog, specifically under the node
  * "Visualization".
  * <p>
  * In addition to the code here, the extension point
  * {@code org.eclipse.ui.preferencePage} must be used. In this case, the
  * extension point in {@code plugin.xml} looks like:
+ * </p>
  * 
  * <pre>
  * <code>
@@ -40,7 +41,7 @@ import org.eclipse.ui.IWorkbench;
  * {@literal </plugin>}
  * </code>
  * </pre>
- * 
+ * <p>
  * The same method should be used for other preference pages.
  * </p>
  * 

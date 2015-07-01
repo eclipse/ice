@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.kdd.kddstrategy.kmeansclustering;
 
-import static org.eclipse.ice.kdd.kddmath.KDDMatrix.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;

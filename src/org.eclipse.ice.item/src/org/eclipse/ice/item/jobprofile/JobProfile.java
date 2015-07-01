@@ -15,7 +15,6 @@ package org.eclipse.ice.item.jobprofile;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
@@ -31,14 +30,11 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
-import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
-import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 
 /**
  * <p>
@@ -154,6 +150,7 @@ public class JobProfile extends Item {
 	 *         The status.
 	 *         </p>
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 
 		// Local Declarations
@@ -293,6 +290,7 @@ public class JobProfile extends Item {
 	 * </p>
 	 * 
 	 */
+	@Override
 	protected void setupForm() {
 
 		// Copy only the forms contents. This is required for JPA to work.

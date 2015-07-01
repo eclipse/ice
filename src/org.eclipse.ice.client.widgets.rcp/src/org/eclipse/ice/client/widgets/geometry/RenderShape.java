@@ -386,6 +386,7 @@ public class RenderShape implements IShape {
 	/*
 	 * Overrides a super class method.
 	 */
+	@Override
 	public Object clone() {
 		return null;
 	}

@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -49,7 +50,6 @@ public class ReflectivityModelBuilderTester implements IMaterialsDatabase {
 		// called.
 
 		// Local Declarations
-		int listID = 1;
 		ListComponent<Material> list;
 
 		// Create the builder
@@ -62,10 +62,10 @@ public class ReflectivityModelBuilderTester implements IMaterialsDatabase {
 
 		// Make sure we have a form and some components
 		assertNotNull(model.getForm());
-		assertEquals(1, model.getForm().getComponents().size());
+		assertEquals(2, model.getForm().getComponents().size());
 
 		// Get the table component
-		list = (ListComponent<Material>) model.getForm().getComponent(listID);
+		list = (ListComponent<Material>) model.getForm().getComponent(ReflectivityModel.matListId);
 
 		// Make sure it's not null and the name is correct
 		assertNotNull(list);

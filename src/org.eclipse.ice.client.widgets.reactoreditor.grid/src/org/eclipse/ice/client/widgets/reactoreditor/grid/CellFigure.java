@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.grid;
 
-import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.StackLayout;
+import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 import org.eclipse.swt.graphics.Color;
 
 /**

@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.core;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.reactor.sfr.base.GridManager;
 import org.eclipse.ice.reactor.sfr.base.ISFRComponentVisitor;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.base.SFRComposite;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRAssembly;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * <p>
@@ -558,6 +558,7 @@ public class SFReactor extends SFRComposite {
 	 *            The object to be compared against.
 	 * @return True if otherObject is equal. False otherwise.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// By default, the objects are not equivalent.
@@ -591,6 +592,7 @@ public class SFReactor extends SFRComposite {
 	 * 
 	 * @return The hashcode of the object.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Hash based on super's hashCode.
@@ -642,6 +644,7 @@ public class SFReactor extends SFRComposite {
 	 * 
 	 * @return The newly instantiated copied object.
 	 */
+	@Override
 	public Object clone() {
 
 		// Initialize a new object.

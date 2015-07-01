@@ -12,17 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.perspective.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
+
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetRegistry;
 import org.eclipse.ice.client.widgets.reactoreditor.IReactorEditorRegistry;
 import org.eclipse.ice.client.widgets.reactoreditor.ReactorFormEditor;
 import org.eclipse.ice.client.widgets.reactoreditor.ReactorFormInput;
 import org.eclipse.ice.client.widgets.reactoreditor.ReactorFormInputFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-
 import org.eclipse.ice.reactor.perspective.ReactorViewer;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.ui.IEditorInput;
@@ -60,6 +59,7 @@ public class ReactorEditorRegistry implements IReactorEditorRegistry {
 	/**
 	 * Updates {@link #editors} with the new Reactor Editor.
 	 */
+	@Override
 	public void addReactorEditor(ReactorFormEditor editor, int id) {
 		editors.put(id, editor);
 
@@ -71,6 +71,7 @@ public class ReactorEditorRegistry implements IReactorEditorRegistry {
 	 * Removes the {@link ReactorFormEditor} associated with the ID from
 	 * {@link #editors}.
 	 */
+	@Override
 	public void removeReactorEditor(int id) {
 		editors.remove(id);
 

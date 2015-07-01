@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.internal;
 
-import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
-import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
-import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
-import org.eclipse.ice.core.iCore.ICore;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,9 +19,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
+
+import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
+import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
+import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 
 /**
  * <p>
@@ -400,6 +400,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 	 * </p>
 	 * 
 	 */
+	@Override
 	public void run() {
 
 		// Local Declarations
@@ -560,6 +561,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 	 * 
 	 * @see IWidgetClosedListener#closedOK()
 	 */
+	@Override
 	public void closedOK() {
 
 		// Set the flag
@@ -573,6 +575,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 	 * 
 	 * @see IWidgetClosedListener#cancelled()
 	 */
+	@Override
 	public void cancelled() {
 
 		// Set the flag

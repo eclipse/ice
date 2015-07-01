@@ -30,6 +30,7 @@ public class CoreIApplication implements IApplication {
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.
 	 * IApplicationContext)
 	 */
+	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
@@ -40,6 +41,7 @@ public class CoreIApplication implements IApplication {
 	 * 
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
+	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
 

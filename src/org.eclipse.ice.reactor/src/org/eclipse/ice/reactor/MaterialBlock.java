@@ -12,16 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
-import java.util.ArrayList;
+
+import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
 
 import org.eclipse.ice.io.hdf.HdfReaderFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.io.hdf.IHdfReadable;
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
+import org.eclipse.ice.io.hdf.IHdfWriteable;
 
 /**
  * <p>
@@ -277,21 +278,10 @@ public class MaterialBlock extends LWRComponent implements
 
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -321,15 +311,10 @@ public class MaterialBlock extends LWRComponent implements
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declarations
@@ -382,15 +367,10 @@ public class MaterialBlock extends LWRComponent implements
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -404,15 +384,10 @@ public class MaterialBlock extends LWRComponent implements
 
 	}
 
-	/**
-	 * <p>
-	 * Returns writeable children.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         the children
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
 		// Get the children in super
@@ -431,16 +406,10 @@ public class MaterialBlock extends LWRComponent implements
 		return children;
 	}
 
-	/**
-	 * <p>
-	 * This operation returns an ArrayList of IHdfReadable child objects. If
-	 * this IHdfReadable has no IHdfReadable child objects, then null is
-	 * returned.
-	 * </p>
-	 * 
-	 * @param iHdfReadable
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
 		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
@@ -461,15 +430,10 @@ public class MaterialBlock extends LWRComponent implements
 		return true;
 	}
 
-	/**
-	 * <p>
-	 * writes the hdf5 attributes.
-	 * </p>
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
 		boolean flag = true;
 
@@ -480,14 +444,10 @@ public class MaterialBlock extends LWRComponent implements
 		return flag;
 	}
 
-	/**
-	 * <p>
-	 * Reads the hdf5 attributes.
-	 * </p>
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		// Local Declarations
@@ -539,9 +499,11 @@ public class MaterialBlock extends LWRComponent implements
 		return this.pos;
 	}
 
+	/*
+	 * Implements a method from Comparable.
+	 */
 	@Override
 	public int compareTo(MaterialBlock arg0) {
-
 
 		if (this.pos < arg0.pos) {
 			return -1;
@@ -550,7 +512,6 @@ public class MaterialBlock extends LWRComponent implements
 		} else {
 			return 0;
 		}
-
 
 	}
 }

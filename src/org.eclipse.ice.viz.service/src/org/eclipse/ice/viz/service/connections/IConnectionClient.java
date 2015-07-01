@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 
 /**

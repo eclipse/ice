@@ -12,11 +12,11 @@
 *******************************************************************************/
 package org.eclipse.ice.analysistool;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.Set;
+
 import org.eclipse.ice.datastructures.form.Entry;
-import java.net.URI;
 
 /** 
  * <p>This interface represents an asset created by an IAnalysisDocument. Each IAnalysisAsset has a name, a type and a URI from which the asset can be retrieved. IAnalysisAssets also have a select number of properties whose values can be set to manipulate the asset. New properties can not be added.</p><p>An example of an IAnalysisAsset is a plot that is stored as a Portable Network Graphic (PNG) file. It has a name, is a picture, is stored somewhere on the disk and has properties such as the x axis label and the title.</p>

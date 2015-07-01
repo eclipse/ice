@@ -12,11 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.pwr;
 
-import org.eclipse.ice.io.hdf.IHdfReadable;
+import java.util.ArrayList;
 
-import ncsa.hdf.object.HObject;
 import ncsa.hdf.object.h5.H5Group;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.io.hdf.IHdfReadable;
 import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.reactor.GridLabelProvider;
 import org.eclipse.ice.reactor.GridLocation;
@@ -27,9 +28,6 @@ import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.Tube;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-
-import java.util.ArrayList;
 
 /**
  * <p>
@@ -459,21 +457,10 @@ public class FuelAssembly extends PWRAssembly {
 
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from PWRAssembly.
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 
 		// Local Declarations
@@ -515,15 +502,10 @@ public class FuelAssembly extends PWRAssembly {
 		return retVal;
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from PWRAssembly.
 	 */
+	@Override
 	public int hashCode() {
 		int hash = super.hashCode();
 
@@ -572,15 +554,10 @@ public class FuelAssembly extends PWRAssembly {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from PWRAssembly.
 	 */
+	@Override
 	public Object clone() {
 
 		// Local Declarations
@@ -594,10 +571,10 @@ public class FuelAssembly extends PWRAssembly {
 
 	}
 
-	/**
-	 * 
-	 * @return
+	/*
+	 * Overrides a method from PWRAssembly.
 	 */
+	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
 
 		// Get the children in super
@@ -617,16 +594,10 @@ public class FuelAssembly extends PWRAssembly {
 		return children;
 	}
 
-	/**
-	 * <p>
-	 * This operation returns an ArrayList of IHdfReadable child objects. If
-	 * this IHdfReadable has no IHdfReadable child objects, then null is
-	 * returned.
-	 * </p>
-	 * 
-	 * @param iHdfReadable
-	 * @return
+	/*
+	 * Overrides a method from PWRAssembly.
 	 */
+	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
 
 		// If the child is null or not an instance of LWRComponent, then return
@@ -687,11 +658,10 @@ public class FuelAssembly extends PWRAssembly {
 		return true;
 	}
 
-	/**
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from PWRAssembly.
 	 */
+	@Override
 	public boolean readAttributes(H5Group h5Group) {
 
 		boolean flag = super.readAttributes(h5Group);
@@ -733,18 +703,10 @@ public class FuelAssembly extends PWRAssembly {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation accepts an ILWRComponentVisitor that can be visit the
-	 * LWRComponent to ascertain its type and perform various type-specific
-	 * operations.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            <p>
-	 *            The visitor
-	 *            </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
+	@Override
 	public void accept(ILWRComponentVisitor visitor) {
 		visitor.visit(this);
 	}

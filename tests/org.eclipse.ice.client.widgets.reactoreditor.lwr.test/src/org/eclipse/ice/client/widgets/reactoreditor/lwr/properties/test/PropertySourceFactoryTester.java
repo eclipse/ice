@@ -15,12 +15,12 @@ package org.eclipse.ice.client.widgets.reactoreditor.lwr.properties.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import org.eclipse.ice.client.widgets.reactoreditor.properties.SimpleProperty;
-import org.eclipse.ice.client.widgets.reactoreditor.lwr.properties.PropertySourceFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.client.widgets.reactoreditor.lwr.properties.PropertySourceFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.properties.SimpleProperty;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.Ring;

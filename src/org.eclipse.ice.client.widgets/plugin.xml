@@ -3,45 +3,6 @@
 
 <plugin>
 
-      <!-- Temporarily disabling Workspace Explorer view
-   <extension
-         point="org.eclipse.ui.views">
-      <view
-            category="org.eclipse.ui"
-            class="org.eclipse.ice.iceclient.workspaceviewer.WorkspaceExplorer"
-            id="org.eclipse.ice.iceclient.WorkspaceExplorer"
-            name="Workspace Explorer"
-            restorable="true">
-      </view>
-   </extension>
-         -->
-<!-- Temporarily disabling Workspace Explorer view
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="*">
-         <view
-               closeable="false"
-               id="org.eclipse.ice.iceclient.WorkspaceExplorer"
-               minimized="false"
-               moveable="true"
-               ratio="0.15f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               showTitle="true"
-               visible="true">
-         </view>
-      </perspectiveExtension>
-   </extension>
-            -->
- <extension
-       point="org.eclipse.core.runtime.products">
-    <product
-          application="org.eclipse.ice.client.rcp.application"
-          description="The Eclipse Integrated Computational Environment"
-          name="ICE">
-    </product>
- </extension>
       <extension
          point="org.eclipse.ui.editors">
       <editor

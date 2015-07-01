@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import java.io.InputStream;
 
 /**
  * <p>
@@ -46,6 +45,7 @@ public class DownComer extends Junction {
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// Ensure the incoming object is not null
 		if (otherObject == null) {
@@ -73,6 +73,7 @@ public class DownComer extends Junction {
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 		DownComer temp = new DownComer();
 		temp.copy(this);
@@ -109,6 +110,7 @@ public class DownComer extends Junction {
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
@@ -123,6 +125,7 @@ public class DownComer extends Junction {
 	 *            The PlantComponent's visitor.
 	 *            </p>
 	 */
+	@Override
 	public void accept(IPlantComponentVisitor visitor) {
 		if (visitor != null) {
 			visitor.visit(this);

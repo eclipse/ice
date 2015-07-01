@@ -12,9 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
-import org.eclipse.ice.reactor.sfr.base.SFRComponent;
-
 import org.eclipse.ice.analysistool.IDataProvider;
+import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 
 /**
  * This class acts as a wrapper for SFRComponents in the SFR model. Because the
