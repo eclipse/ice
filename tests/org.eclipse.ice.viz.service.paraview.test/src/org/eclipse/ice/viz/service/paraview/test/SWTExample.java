@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.ice.viz.service.paraview.web.HttpParaViewWebClient;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.ice.viz.service.paraview.widgets.ParaViewCanvas;
+import org.eclipse.ice.viz.service.paraview.widgets.ParaViewMouseAdapter;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
@@ -119,14 +120,9 @@ public class SWTExample {
 			canvas.setClient(client);
 			canvas.setViewId(viewId);
 
-			// We also have to notify the frame when the shell gets focus to
-			// trigger a view refresh.
-			shell.addFocusListener(new FocusAdapter() {
-				@Override
-				public void focusGained(FocusEvent e) {
-					canvas.refresh();
-				}
-			});
+			// Add a mouse adapter to add mouse controls.
+			ParaViewMouseAdapter mouseAdapter = new ParaViewMouseAdapter(client, viewId, canvas);
+			mouseAdapter.setCanvas(canvas);
 
 			try {
 				JsonObject object;
@@ -206,15 +202,13 @@ public class SWTExample {
 			// UI input loop below.
 			shell.open();
 
-			// FIXME Remove this. For now, we have to manually refresh after a
-			// resize.
-			canvas.refresh();
-
 			while (!shell.isDisposed()) {
 				if (!display.readAndDispatch())
 					display.sleep();
 			}
 
+			client.disconnect();
+			
 			display.dispose();
 			return;
 		}
