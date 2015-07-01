@@ -23,6 +23,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Test;
 
 /**
@@ -56,10 +57,13 @@ public class ComboDialogTester extends AbstractSWTTester {
 	 */
 	@Override
 	protected SWTBot getBot() {
-		if (bot == null) {
-			bot = new SWTBot(dialog.getShell());
+		// Get the shell for the dialog, then return its associated bot.
+		for (SWTBotShell shell : super.getBot().shells()) {
+			if (shell.widget == dialog.getShell()) {
+				return shell.bot();
+			}
 		}
-		return bot;
+		return null;
 	}
 
 	/**
@@ -401,7 +405,8 @@ public class ComboDialogTester extends AbstractSWTTester {
 	 * <li>if the combo is read-only:
 	 * <ul>
 	 * <li>if the initial value is valid, it uses the initial value</li>
-	 * <li>if the initial value is invalid, it uses the first available value</li>
+	 * <li>if the initial value is invalid, it uses the first available value
+	 * </li>
 	 * </ul>
 	 * </li>
 	 * <li>if the combo is editable, it should be either the initial value
