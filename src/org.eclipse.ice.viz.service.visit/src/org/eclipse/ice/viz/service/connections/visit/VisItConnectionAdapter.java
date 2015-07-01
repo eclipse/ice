@@ -59,7 +59,7 @@ public class VisItConnectionAdapter extends
 				try {
 					connection = VisItSwtConnectionManager.createConnection(
 							getKey(), createDefaultShell(),
-							getConnectionProperties(), monitor);
+							getConnectionProperties());//, monitor);
 
 					if (connection == null) {
 						String errorMessage = "The VisIt connection was null. Check "
