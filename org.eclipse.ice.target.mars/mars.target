@@ -165,9 +165,4 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository"/>
 </location>
 </locations>
-<environment>
-<os>macosx</os>
-<ws>cocoa</ws>
-<arch>x86_64</arch>
-</environment>
 </target>
