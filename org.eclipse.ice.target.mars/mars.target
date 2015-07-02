@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="mars" sequenceNumber="149">
+<?pde version="3.8"?><target name="mars" sequenceNumber="152">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="ca.odell.glazedlists" version="1.9.0.v201303080712"/>
@@ -38,10 +38,6 @@
 <unit id="org.eclipse.nebula.widgets.nattable.extension.poi.source.feature.feature.group" version="1.3.0.201503261201"/>
 <unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="1.3.0.201503261201"/>
 <repository location="http://download.eclipse.org/nattable/releases/1.3.0/repository"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.apache.commons.math" version="2.1.0.v201105210652"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.ptp.remote.feature.group" version="9.0.0.201506101404"/>
@@ -163,10 +159,15 @@
 <unit id="org.eclipse.ease.modules.feature.feature.group" version="0.2.0.201504281229"/>
 <repository location="http://download.eclipse.org/ease/update/release"/>
 </location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.commons.math" version="2.1.0.v201105210652"/>
+<unit id="org.apache.commons.beanutils" version="1.8.0.v201205091237"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository"/>
+</location>
 </locations>
 <environment>
-<os>linux</os>
-<ws>gtk</ws>
+<os>macosx</os>
+<ws>cocoa</ws>
 <arch>x86_64</arch>
 </environment>
 </target>
