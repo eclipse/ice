@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -27,6 +28,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
+import org.eclipse.remote.core.IRemoteConnection;
 
 /**
  * A SuiteLauncher Item for all MOOSE products (MARMOT, BISON, RELAP-7, RAVEN).
@@ -34,7 +36,6 @@ import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
  * 
  * @author Anna Wojtowicz
  */
-
 @XmlRootElement(name = "MOOSELauncher")
 public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener {
 
@@ -57,7 +58,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * The name of the custom MOOSE executable.
 	 */
 	private static final String customExecName = "Custom executable name";
-
+	
 	/**
 	 * The DataComponent on the form that is used to store the list of
 	 * executable apps. This DataComponent contains two Entries: [0] The Entry

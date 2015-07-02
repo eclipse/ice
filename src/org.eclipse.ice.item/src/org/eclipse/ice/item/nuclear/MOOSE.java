@@ -16,7 +16,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -36,6 +40,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.datastructures.resource.ICEResource;
@@ -43,6 +48,13 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
+import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteConnectionHostService;
+import org.eclipse.remote.core.IRemoteConnectionType;
+import org.eclipse.remote.core.IRemoteServicesManager;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  * The MOOSE Item represents a unification of the MOOSEModel and MOOSELauncher.
@@ -60,7 +72,7 @@ public class MOOSE extends Item {
 	/**
 	 * Reference to the MOOSE Input Model for this MOOSE workflow.
 	 */
-	@XmlTransient() //Element()
+	@XmlTransient() // Element()
 	private MOOSEModel mooseModel;
 
 	/**
@@ -112,6 +124,18 @@ public class MOOSE extends Item {
 	public static final int ppDataId = 10;
 
 	/**
+	 * 
+	 */
+	@XmlTransient
+	private IRemoteConnection remoteConnection;
+
+	/**
+	 * 
+	 */
+	@XmlTransient
+	private IRemoteServicesManager remoteManager;
+
+	/**
 	 * Boolean to indicate whether this Item has already registered with the
 	 * necessary Tree blocks.
 	 */
@@ -138,6 +162,11 @@ public class MOOSE extends Item {
 		mooseModel = new MOOSEModel(projectSpace);
 		mooseLauncher = new MOOSELauncher(projectSpace);
 		addComponents();
+
+		// Get the IRemoteServicesManager
+		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+		ServiceReference<IRemoteServicesManager> ref = context.getServiceReference(IRemoteServicesManager.class);
+		remoteManager = (ref != null ? context.getService(ref) : null);
 	}
 
 	/**
@@ -155,6 +184,11 @@ public class MOOSE extends Item {
 		// Grab an explicit reference to the files component from the Model
 		modelFiles = (DataComponent) form.getComponent(1);
 
+		// Register this Item as a listener to the MOOSE-Based Application
+		// Entry so that if it changes to Remote, we can grab the
+		// IRemoteConnection
+		modelFiles.retrieveEntry("MOOSE-Based Application").register(this);
+
 		// Add the parallel execution component
 		form.addComponent(mooseLauncher.getForm().getComponent(3));
 
@@ -169,8 +203,7 @@ public class MOOSE extends Item {
 		// Create the Postprocessors DataComponent
 		postProcessorsData = new DataComponent();
 		postProcessorsData.setName("Show Postprocessors?");
-		postProcessorsData
-				.setDescription("Enable the Postprocessors you would like to monitor in real time.");
+		postProcessorsData.setDescription("Enable the Postprocessors you would like to monitor in real time.");
 		postProcessorsData.setId(MOOSE.ppDataId);
 		form.addComponent(postProcessorsData);
 
@@ -196,8 +229,7 @@ public class MOOSE extends Item {
 
 		// Local declarations
 		String description = "The Multiphysics Object-Oriented Simulation "
-				+ "Environment (MOOSE) is a multiphysics framework developed "
-				+ "by Idaho National Laboratory.";
+				+ "Environment (MOOSE) is a multiphysics framework developed " + "by Idaho National Laboratory.";
 
 		// Set the model defaults
 		setName("MOOSE Workflow");
@@ -254,7 +286,7 @@ public class MOOSE extends Item {
 		// kernel variable entries.
 		TreeComposite variablesTree = getTreeByName("Variables");
 
-		if (!registered) {
+		if (!registered && variablesTree != null) {
 			variablesTree.register(this);
 			modelTree.register(this);
 			registered = true;
@@ -284,29 +316,28 @@ public class MOOSE extends Item {
 		// Parse the action name
 		if ("Launch the Job".equals(actionName)) {
 
+			// FIXME WE NEED TO DO A CHECK FOR ALL THE REQUIRED BLOCKS!!!!
+
 			// Add the ICEUpdater tree block to Outputs
 			TreeComposite outputs = getTreeByName("Outputs");
 			TreeComposite postProcessors = getTreeByName("Postprocessors");
 
 			// First check to see if we have any post processors to
 			// watch for.
-			if (postProcessors.isActive()
-					&& postProcessors.getNumberOfChildren() > 0) {
+			if (postProcessors.isActive() && postProcessors.getNumberOfChildren() > 0) {
 
 				// If we do, we should add an ICEUpdater
 				boolean iNeedUpdater = true;
 
 				// If we already have one, then we shouldn't add another one
 				for (int i = 0; i < outputs.getNumberOfChildren(); i++) {
-					if ("ICEUpdater".equals(outputs.getChildAtIndex(i)
-							.getName())) {
+					if ("ICEUpdater".equals(outputs.getChildAtIndex(i).getName())) {
 
 						// But if the current one is not configured correctly
 						// then we should add a new one, Here we make sure the
 						// Item Id is correct...
 						TreeComposite iceUpdater = outputs.getChildAtIndex(i);
-						DataComponent data = (DataComponent) iceUpdater
-								.getDataNodes().get(0);
+						DataComponent data = (DataComponent) iceUpdater.getDataNodes().get(0);
 						Entry itemIdEntry = data.retrieveEntry("item_id");
 						if (Integer.valueOf(itemIdEntry.getValue()) != getId()) {
 							itemIdEntry.setValue(String.valueOf(getId()));
@@ -321,21 +352,14 @@ public class MOOSE extends Item {
 
 				if (iNeedUpdater) {
 					for (int i = 0; i < outputs.getChildExemplars().size(); i++) {
-						if ("ICEUpdater".equals(outputs.getChildExemplars()
-								.get(i).getName())) {
-							TreeComposite updater = (TreeComposite) outputs
-									.getChildExemplars().get(i).clone();
+						if ("ICEUpdater".equals(outputs.getChildExemplars().get(i).getName())) {
+							TreeComposite updater = (TreeComposite) outputs.getChildExemplars().get(i).clone();
 							outputs.setNextChild(updater);
 
-							DataComponent data = (DataComponent) updater
-									.getDataNodes().get(0);
-							data.retrieveEntry("item_id").setValue(
-									String.valueOf(getId()));
-							data.retrieveEntry("url")
-									.setValue(
-											"http://localhost:"
-													+ System.getProperty("org.eclipse.equinox.http.jetty.http.port")
-													+ "/ice/update");
+							DataComponent data = (DataComponent) updater.getDataNodes().get(0);
+							data.retrieveEntry("item_id").setValue(String.valueOf(getId()));
+							data.retrieveEntry("url").setValue("http://localhost:"
+									+ System.getProperty("org.eclipse.equinox.http.jetty.http.port") + "/ice/update");
 							updater.setActive(true);
 							updater.setActiveDataNode(data);
 							break;
@@ -345,12 +369,10 @@ public class MOOSE extends Item {
 			}
 
 			// Get a reference to the Launchers files component
-			DataComponent launcherFiles = (DataComponent) mooseLauncher
-					.getForm().getComponent(1);
+			DataComponent launcherFiles = (DataComponent) mooseLauncher.getForm().getComponent(1);
 
 			// Grab the file name the user has specified for the input file
-			String fileName = modelFiles.retrieveEntry("Output File Name")
-					.getValue();
+			String fileName = modelFiles.retrieveEntry("Output File Name").getValue();
 
 			// Write the Moose file if it doesn't exist
 			retStatus = mooseModel.process("Write MOOSE File");
@@ -372,17 +394,37 @@ public class MOOSE extends Item {
 			}
 
 			// Get the application URI
-			URI appUri = URI.create(modelFiles.retrieveEntry(
-					"MOOSE-Based Application").getValue());
+			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
 
-			// Set the executable string
-			mooseLauncher.setExecutable(new File(appUri).getName(), "",
-					appUri.getPath() + " -i ${inputFile} --no-color");
+			// Check if we're local or remote
+			if ("ssh".equals(appUri.getScheme()) && remoteConnection != null) {
+
+				mooseLauncher.setExecutable(Paths.get(appUri.getRawPath()).getFileName().toString(), "",
+						appUri.getRawPath() + " -i ${inputFile} --no-color");
+
+				// Setup the hosts table to use the remote host
+				TableComponent hostsTable = (TableComponent) mooseLauncher.getForm()
+						.getComponent(JobLauncherForm.parallelId + 1);
+				String hostname = remoteConnection.getService(IRemoteConnectionHostService.class).getHostname();
+				int index = hostsTable.addRow();
+				ArrayList<Entry> row = hostsTable.getRow(index);
+				ArrayList<Integer> selected = new ArrayList<Integer>();
+				selected.add(new Integer(index));
+				row.get(0).setValue(hostname);
+				hostsTable.setSelectedRows(selected);
+
+				mooseLauncher.setRemoteConnection(remoteConnection);
+
+			} else {
+
+				// Set the executable string
+				mooseLauncher.setExecutable(new File(appUri).getName(), "",
+						appUri.getPath() + " -i ${inputFile} --no-color");
+			}
 
 			// Register as a listener of the resource component
 			// so we can add the resources to our resource component
-			((ResourceComponent) mooseLauncher.getForm().getComponent(
-					JobLauncherForm.outputId)).register(this);
+			((ResourceComponent) mooseLauncher.getForm().getComponent(JobLauncherForm.outputId)).register(this);
 
 			// Launch the Moose application
 			retStatus = mooseLauncher.process(actionName);
@@ -430,8 +472,7 @@ public class MOOSE extends Item {
 		ArrayList<String> toBeRemoved = new ArrayList<String>();
 		for (Entry e : modelFiles.retrieveAllEntries()) {
 			String name = e.getName();
-			if (!"MOOSE-Based Application".equals(name)
-					&& !"Output File Name".equals(name)) {
+			if (!"MOOSE-Based Application".equals(name) && !"Output File Name".equals(name)) {
 				toBeRemoved.add(name);
 			}
 		}
@@ -453,8 +494,7 @@ public class MOOSE extends Item {
 		form = new Form();
 
 		String description = "The Multiphysics Object-Oriented Simulation "
-				+ "Environment (MOOSE) is a multiphysics framework developed "
-				+ "by Idaho National Laboratory.";
+				+ "Environment (MOOSE) is a multiphysics framework developed " + "by Idaho National Laboratory.";
 
 		// Set the model defaults
 		form.setName("MOOSE Workflow");
@@ -474,8 +514,7 @@ public class MOOSE extends Item {
 		// components only
 		for (Component c : mooseLauncher.getForm().getComponents()) {
 
-			if ("Parallel Execution".equals(c.getName())
-					|| "Output Files and Data".equals(c.getName())) {
+			if ("Parallel Execution".equals(c.getName()) || "Output Files and Data".equals(c.getName())) {
 				form.addComponent(c);
 			}
 
@@ -485,8 +524,7 @@ public class MOOSE extends Item {
 		// a list of Boolean Discrete Entries for each Postprocessor
 		postProcessorsData = new DataComponent();
 		postProcessorsData.setName("Show Postprocessors?");
-		postProcessorsData
-				.setDescription("Enable the Postprocessors you would like to monitor in real time.");
+		postProcessorsData.setDescription("Enable the Postprocessors you would like to monitor in real time.");
 		postProcessorsData.setId(MOOSE.ppDataId);
 		form.addComponent(postProcessorsData);
 
@@ -526,8 +564,7 @@ public class MOOSE extends Item {
 
 		if (updateable instanceof ResourceComponent) {
 			ResourceComponent comp = (ResourceComponent) updateable;
-			ResourceComponent ourComp = (ResourceComponent) form
-					.getComponent(3);
+			ResourceComponent ourComp = (ResourceComponent) form.getComponent(3);
 
 			ArrayList<String> names = new ArrayList<String>();
 
@@ -538,8 +575,7 @@ public class MOOSE extends Item {
 
 			for (ICEResource r : comp.getResources()) {
 				if (!names.contains(r.getName())) {
-					System.out.println("Adding Resource to Moose: "
-							+ r.getName());
+					System.out.println("Adding Resource to Moose: " + r.getName());
 					ourComp.add(r);
 				}
 			}
@@ -559,33 +595,71 @@ public class MOOSE extends Item {
 
 		} else if (updateable instanceof Entry) {
 
-			// If we get here, then we have a file Entry that
-			// has been changed on the modelFiles component
-			// and we need to sync up the tree with it.
 			Entry entry = (Entry) updateable;
 
-			// Grab the DataComponent
-			if (fileEntryTreeMapping.containsKey(entry.getName())) {
-				DataComponent data = (DataComponent) fileEntryTreeMapping
-						.get(entry.getName()).getDataNodes().get(0);
+			if ("MOOSE-Based Application".equals(entry.getName())) {
+				// If we are here, then someone has changed the Moose
+				// application
+				// We need to check if it's remote...
+				try {
+					URI appUri = new URI(entry.getValue());
 
-				// If not null, loop over the Entries til we find
-				// the file Entry.
-				if (data != null) {
-					for (Entry e : data.retrieveAllEntries()) {
+					if (remoteManager != null && "ssh".equals(appUri.getScheme())) {
+						IRemoteConnectionType connectionType = remoteManager
+								.getConnectionType("org.eclipse.remote.JSch");
+						String hostname = appUri.getHost();
+						for (IRemoteConnection c : connectionType.getConnections()) {
+							String connectionHost = c.getService(IRemoteConnectionHostService.class).getHostname();
+							try {
+								if (InetAddress.getByName(hostname).getHostAddress()
+										.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
+									remoteConnection = c;
+									break;
+								}
+							} catch (UnknownHostException e) {
+								e.printStackTrace();
+							}
+						}
 
-						// If the Entry's tag is "false" it is a commented out
-						// parameter.
-						if (!"false".equals(e.getTag())
-								&& e.getValue() != null
-								&& !e.getValue().isEmpty()
-								&& (e.getName() + " = " + e.getValue())
-										.matches(mooseLauncher
-												.getFileDependenciesSearchString())) {
+					} else {
+						remoteConnection = null;
+					}
 
-							// Set the value of the tree's file entry.
-							e.setValue(entry.getValue());
-							break;
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+					return;
+				}
+
+				// if (remoteConnection != null) {
+				mooseModel.setRemoteConnection(remoteConnection);
+				mooseLauncher.setRemoteConnection(remoteConnection);
+				// }
+			} else {
+				// If we get here, then we have a file Entry that
+				// has been changed on the modelFiles component
+				// and we need to sync up the tree with it.
+
+				// Grab the DataComponent
+				if (fileEntryTreeMapping.containsKey(entry.getName())) {
+					DataComponent data = (DataComponent) fileEntryTreeMapping.get(entry.getName()).getDataNodes()
+							.get(0);
+
+					// If not null, loop over the Entries til we find
+					// the file Entry.
+					if (data != null) {
+						for (Entry e : data.retrieveAllEntries()) {
+
+							// If the Entry's tag is "false" it is a commented
+							// out
+							// parameter.
+							if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
+									&& (e.getName() + " = " + e.getValue())
+											.matches(mooseLauncher.getFileDependenciesSearchString())) {
+
+								// Set the value of the tree's file entry.
+								e.setValue(entry.getValue());
+								break;
+							}
 						}
 					}
 				}
@@ -618,8 +692,7 @@ public class MOOSE extends Item {
 	 */
 	protected void loadFileEntries() {
 		// Walk the tree and get all Entries that may represent a file
-		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-				modelTree);
+		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(modelTree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
 
@@ -630,12 +703,9 @@ public class MOOSE extends Item {
 
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
-					if (!"false".equals(e.getTag())
-							&& e.getValue() != null
-							&& !e.getValue().isEmpty()
+					if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
 							&& (e.getName() + " = " + e.getValue())
-									.matches(mooseLauncher
-											.getFileDependenciesSearchString())) {
+									.matches(mooseLauncher.getFileDependenciesSearchString())) {
 
 						Entry clonedEntry = (Entry) e.clone();
 
@@ -644,27 +714,23 @@ public class MOOSE extends Item {
 						// we should reset its name to the block it belongs
 						// to
 						if ("file".equals(clonedEntry.getName().toLowerCase())
-								|| "data_file".equals(clonedEntry.getName()
-										.toLowerCase())) {
+								|| "data_file".equals(clonedEntry.getName().toLowerCase())) {
 							clonedEntry.setName(child.getName());
 						}
 
-						if (!clonedEntry.getValueType().equals(
-								AllowedValueType.File)) {
+						if (!clonedEntry.getValueType().equals(AllowedValueType.File)) {
 							mooseModel.convertToFileEntry(clonedEntry);
 
 						}
 
 						// Setup allowed values correctly
-						String extension = FilenameUtils.getExtension(project
-								.getFile(clonedEntry.getValue()).getLocation()
-								.toOSString());
+						String extension = FilenameUtils
+								.getExtension(project.getFile(clonedEntry.getValue()).getLocation().toOSString());
 
 						// Create a new content provider with the new file
 						// in the allowed values list
 						IEntryContentProvider prov = new BasicEntryContentProvider();
-						ArrayList<String> valueList = clonedEntry
-								.getAllowedValues();
+						ArrayList<String> valueList = clonedEntry.getAllowedValues();
 
 						for (String file : getProjectFileNames(extension)) {
 							if (!valueList.contains(file)) {
@@ -725,8 +791,7 @@ public class MOOSE extends Item {
 
 			// Get a reference to the VizResource file we are going
 			// to create and populate
-			File dataFile = new File(directory
-					+ System.getProperty("file.separator") + name + ".csv");
+			File dataFile = new File(directory + System.getProperty("file.separator") + name + ".csv");
 
 			// Get a reference to the ResourceComponent
 			ResourceComponent comp = (ResourceComponent) form.getComponent(3);
@@ -739,16 +804,14 @@ public class MOOSE extends Item {
 					dataFile.createNewFile();
 
 					// Write the new incoming data
-					PrintWriter printWriter = new PrintWriter(
-							new FileOutputStream(dataFile, true));
+					PrintWriter printWriter = new PrintWriter(new FileOutputStream(dataFile, true));
 					printWriter.write("Time, " + name + "\n");
 					printWriter.write(time + ", " + value + "\n");
 					printWriter.close();
 
 					// Create the VizResource, and add it to the
 					// ResourceComponent
-					ICEResource resource = getResource(dataFile
-							.getAbsolutePath());
+					ICEResource resource = getResource(dataFile.getAbsolutePath());
 					comp.add(resource);
 
 					// Remember the name of the resource for next time
@@ -757,8 +820,7 @@ public class MOOSE extends Item {
 				} else {
 
 					// Write the data to the existing resource
-					PrintWriter printWriter = new PrintWriter(
-							new FileOutputStream(dataFile, true));
+					PrintWriter printWriter = new PrintWriter(new FileOutputStream(dataFile, true));
 					printWriter.write(time + ", " + value + "\n");
 
 					// Update the ICEResource
@@ -812,8 +874,7 @@ public class MOOSE extends Item {
 	 * 
 	 * @param otherMoose
 	 *            The MOOSE Item that should be checked for equality.
-	 * @return 
-	 *         True if the launchers are equal, false if not
+	 * @return True if the launchers are equal, false if not
 	 */
 	public boolean equals(MOOSE otherMoose) {
 
@@ -825,33 +886,27 @@ public class MOOSE extends Item {
 
 		// Check that the object is not null, and that it is an Item
 		// Check that these objects have the same ICEObject data
-		if (otherMoose == null || !(otherMoose instanceof Item)
-				|| !super.equals(otherMoose)) {
+		if (otherMoose == null || !(otherMoose instanceof Item) || !super.equals(otherMoose)) {
 			return false;
 		}
 
 		// Check data
-		retVal = (this.allowedActions.equals(otherMoose.allowedActions))
-				&& (this.form.equals(otherMoose.form))
-				&& (this.itemType == otherMoose.itemType)
-				&& (this.status.equals(otherMoose.status));
+		retVal = (this.allowedActions.equals(otherMoose.allowedActions)) && (this.form.equals(otherMoose.form))
+				&& (this.itemType == otherMoose.itemType) && (this.status.equals(otherMoose.status));
 
 		// Check project
-		if (this.project != null && otherMoose.project != null
-				&& (!(this.project.equals(otherMoose.project)))) {
+		if (this.project != null && otherMoose.project != null && (!(this.project.equals(otherMoose.project)))) {
 			return false;
 
 		}
 
 		// Check project - set to null
 
-		if (this.project == null && otherMoose.project != null
-				|| this.project != null && otherMoose.project == null) {
+		if (this.project == null && otherMoose.project != null || this.project != null && otherMoose.project == null) {
 			return false;
 		}
 
-		if (!mooseModel.equals(otherMoose.mooseModel)
-				&& !mooseLauncher.equals(otherMoose.mooseLauncher)) {
+		if (!mooseModel.equals(otherMoose.mooseModel) && !mooseLauncher.equals(otherMoose.mooseLauncher)) {
 			return false;
 		}
 
@@ -861,7 +916,8 @@ public class MOOSE extends Item {
 	/**
 	 * This operation returns the hashcode value of the MooseItem.
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hashcode
 	 *         </p>
 	 */
@@ -878,7 +934,7 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * Copy the provided Item into this Item. 
+	 * Copy the provided Item into this Item.
 	 * 
 	 * @param otherMoose
 	 *            <p>
@@ -902,14 +958,14 @@ public class MOOSE extends Item {
 
 		// Add the model files component
 		modelFiles = (DataComponent) form.getComponent(1);
-		
+
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
-		
-		// Must do this or we can't walk the tree to 
-		// get file entries correctly 
+
+		// Must do this or we can't walk the tree to
+		// get file entries correctly
 		mooseModel.setActiveDataNodes(modelTree);
-		
+
 		return;
 	}
 
@@ -931,7 +987,8 @@ public class MOOSE extends Item {
 	 * This operation provides a deep copy of the MOOSE Item.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         A clone of the Moose Item.
 	 *         </p>
 	 */

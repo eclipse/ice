@@ -453,6 +453,8 @@ public class JobLaunchAction extends Action implements Runnable {
 	 */
 	private long maxFileSize;
 
+	private IRemoteConnection connection;
+
 	/**
 	 * The Constructor.
 	 */
@@ -546,7 +548,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				}
 				// Update the fixed file name
 				fixedFileName = shortInputName;
-				
+
 				// Put the file name in the map
 				fileMap.put(shortInputName, execDictionary.get(key));
 				// }
@@ -873,11 +875,17 @@ public class JobLaunchAction extends Action implements Runnable {
 				// Complain
 				e.printStackTrace();
 			}
-			
-			// If for some reason the job has failed, 
+
+			// If for some reason the job has failed,
 			// it shouldn't be alive and we should break;
-			if (!job.isAlive()) {
-				break;
+			if (isLocal.get()) {
+				if (!job.isAlive()) {
+					break;
+				}
+			} else {
+				if (remoteJob.isCompleted()) {
+					break;
+				}
 			}
 		}
 		System.out.println("JobLaunchAction Message: Exit value = " + exitValue);
@@ -942,7 +950,6 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// Local Declarations
 		IRemoteServicesManager manager = null;
-		IRemoteConnection connection = null;
 		IRemoteConnectionType connectionType = null;
 		IRemoteConnectionWorkingCopy workingCopy = null;
 		IRemoteProcessService processService = null;
@@ -983,7 +990,7 @@ public class JobLaunchAction extends Action implements Runnable {
 		IFileStore localDirectory = EFS.getLocalFileSystem().fromLocalFile(localStorageDir);
 		String launchCMDFileName = "";
 
-		// Create the IRemoteConnectionWorkingCopy
+		// Create the IRemoteConnectionType
 		connectionType = manager.getConnectionType("org.eclipse.remote.JSch");
 
 		// Block until the Form is submitted
@@ -1007,22 +1014,16 @@ public class JobLaunchAction extends Action implements Runnable {
 			return;
 		}
 
-		// Set the hostname of the connection
-		// connection.setAddress(execDictionary.get("hostname"));
-		// Get the username and password from the login component
-		DataComponent credentials = (DataComponent) formAtomic.get().getComponent(1);
+		// If we don't have a valid connection, then we should 
+		// have gotten valid user credentials for the remote machine 
+		// through the NeedsInfo status. Now we create the 
+		// IRemoteConnection 
+		if (connection == null) {
 
-		// Get the IRemoteConnection, Grab an existing one if possible, 
-		// otherwise get a new one. 
-		if (!connectionType.getConnections().isEmpty()) {
-			for (IRemoteConnection c : connectionType.getConnections()) {
-				String connectionHost = c.getService(IRemoteConnectionHostService.class).getHostname();
-				if (hostname.equals(connectionHost)) {
-					connection = c;
-					break;
-				}
-			}
-		} else {
+			// Get the DataComponent containing the username and password
+			DataComponent credentials = (DataComponent) formAtomic.get().getComponent(1);
+
+			// Create a new IRemoteConnectionWorkingCopy
 			try {
 				workingCopy = connectionType.newConnection(hostname + "_" + shortDate.format(currentDate));
 			} catch (RemoteConnectionException e3) {
@@ -1030,11 +1031,14 @@ public class JobLaunchAction extends Action implements Runnable {
 				status = FormStatus.InfoError;
 				return;
 			}
-			
+
 			// FIXME THIS IS BAD, BUT I HAVE NO CLUE HOW TO OTHERWISE
+			// Set the hostname, username, and password
 			workingCopy.setAttribute("JSCH_ADDRESS_ATTR", hostname);
 			workingCopy.setAttribute("JSCH_USERNAME_ATTR", credentials.retrieveAllEntries().get(0).getValue());
 			workingCopy.setSecureAttribute("JSCH_PASSWORD_ATTR", credentials.retrieveAllEntries().get(1).getValue());
+			
+			// Create the IRemoteConnection
 			try {
 				connection = workingCopy.save();
 			} catch (RemoteConnectionException e) {
@@ -1076,6 +1080,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				return;
 			}
 
+			// Create the remote working directory and upload required files. 
 			try {
 				IFileStore directory = fileStore.getChild(workingDirectoryBaseName).mkdir(EFS.SHALLOW, null);
 				System.out.println(
@@ -1319,6 +1324,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		DataComponent loginInfoComp;
 		Entry usernameEntry;
 		Thread processThread = new Thread(this);
+		formSubmitted = new AtomicBoolean();
+		formSubmitted.set(true);
 
 		// Determine if this is a local launch or not
 		String hostname = dictionary.get("hostname");
@@ -1331,7 +1338,7 @@ public class JobLaunchAction extends Action implements Runnable {
 		execDictionary = dictionary;
 
 		// Setup for remote launch if needed
-		if (!isLocal.get()) {
+		if (!isLocal.get() && !connectionIsValid()) {
 			// Create the new Form
 			actionForm = new LoginInfoForm();
 
@@ -1348,7 +1355,6 @@ public class JobLaunchAction extends Action implements Runnable {
 			usernameEntry.setValue(username);
 
 			// Mark the form as not yet submitted
-			formSubmitted = new AtomicBoolean();
 			formSubmitted.set(false);
 			formAtomic = new AtomicReference<LoginInfoForm>();
 
@@ -1360,6 +1366,38 @@ public class JobLaunchAction extends Action implements Runnable {
 		processThread.start();
 
 		return status;
+	}
+
+	/**
+	 * This utility method checks that the JobLaunchAction's IRemoteConnection
+	 * is valid. By valid we mean that it is not null (so it's been set
+	 * correctly) and it's provided host name is the same as the host name in
+	 * the execDictionary (ie, the host name specified by the user).
+	 * 
+	 * @return
+	 */
+	private boolean connectionIsValid() {
+
+		if (connection != null) {
+			// Get the hostname and the IRemoteConnection's hostname
+			String hostname = execDictionary.get("hostname");
+			String connectionHost = connection.getService(IRemoteConnectionHostService.class).getHostname();
+			try {
+				// Make sure they are the same
+				if (InetAddress.getByName(hostname).getHostAddress()
+						.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
+					return true;
+				} else {
+					return false;
+				}
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+				return false;
+			}
+		} else {
+			return false;
+		}
+
 	}
 
 	/**
@@ -1552,6 +1590,14 @@ public class JobLaunchAction extends Action implements Runnable {
 		header += "\n";
 
 		return header;
+	}
+
+	/**
+	 * 
+	 * @param remoteConnection
+	 */
+	public void setRemoteConnection(IRemoteConnection remoteConnection) {
+		connection = remoteConnection;
 	}
 
 }

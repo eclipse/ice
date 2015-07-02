@@ -200,8 +200,7 @@ public class Entry extends ICEObject implements IUpdateable {
 	 */
 	@XmlTransient
 	protected String continuousErrMsg = "'${incorrectValue}' is an "
-			+ "unacceptable value. The value must be between ${lowerBound} "
-			+ "and ${upperBound}.";
+			+ "unacceptable value. The value must be between ${lowerBound} " + "and ${upperBound}.";
 
 	/**
 	 * The template for the error that is returned for set value if the allowed
@@ -338,14 +337,11 @@ public class Entry extends ICEObject implements IUpdateable {
 		// equal to something if there are allowed values for the Entry!
 		if ("".equals(this.iEntryContentProvider.getDefaultValue())
 				&& !this.iEntryContentProvider.getAllowedValues().isEmpty()) {
-			this.iEntryContentProvider
-					.setDefaultValue(this.iEntryContentProvider
-							.getAllowedValues().get(0));
+			this.iEntryContentProvider.setDefaultValue(this.iEntryContentProvider.getAllowedValues().get(0));
 		}
 		// Return the proper value. The defaultValue and allowedValues are from
 		// BECP, value is from Entry.
-		return (value != null) ? value : this.iEntryContentProvider
-				.getDefaultValue();
+		return (value != null) ? value : this.iEntryContentProvider.getDefaultValue();
 	}
 
 	/**
@@ -489,17 +485,14 @@ public class Entry extends ICEObject implements IUpdateable {
 
 		// Get the allowed values and allowed value type from the content
 		// provider for use below.
-		final AllowedValueType allowedValueType = iEntryContentProvider
-				.getAllowedValueType();
-		final List<String> allowedValues = iEntryContentProvider
-				.getAllowedValues();
+		final AllowedValueType allowedValueType = iEntryContentProvider.getAllowedValueType();
+		final List<String> allowedValues = iEntryContentProvider.getAllowedValues();
 
 		// Make sure there is a default value that makes sense - If it wasn't
 		// set in construction but allowed values were provided, it should be
 		// reset to allowedValues.get(0). The default value should always be
 		// equal to something if there are allowed values for the Entry!
-		if ("".equals(iEntryContentProvider.getDefaultValue())
-				&& !allowedValues.isEmpty()) {
+		if ("".equals(iEntryContentProvider.getDefaultValue()) && !allowedValues.isEmpty()) {
 			iEntryContentProvider.setDefaultValue(allowedValues.get(0));
 		}
 		// Check discrete values
@@ -510,16 +503,13 @@ public class Entry extends ICEObject implements IUpdateable {
 			} else {
 				returnCode = false;
 			}
-		} else if (allowedValueType == AllowedValueType.Continuous
-				&& allowedValues != null) {
+		} else if (allowedValueType == AllowedValueType.Continuous && allowedValues != null) {
 			// Check continuous value against the bounds. Doing this with
 			// doubles is simplest. allowedValues should only have two
 			// values for Continuous values.
 			if (allowedValues.size() == 2) {
-				lowerBound = Double.valueOf(iEntryContentProvider
-						.getAllowedValues().get(0));
-				upperBound = Double.valueOf(iEntryContentProvider
-						.getAllowedValues().get(1));
+				lowerBound = Double.valueOf(iEntryContentProvider.getAllowedValues().get(0));
+				upperBound = Double.valueOf(iEntryContentProvider.getAllowedValues().get(1));
 				// Try to cast to a double, but fail if it is impossible.
 				try {
 					newValueDouble = Double.valueOf(newValue);
@@ -528,16 +518,15 @@ public class Entry extends ICEObject implements IUpdateable {
 				}
 				// Set the value if it is within the bounds
 				if (newValueDouble != null
-						&& (newValueDouble.compareTo(lowerBound) != -1 && newValueDouble
-								.compareTo(upperBound) != 1)) {
+						&& (newValueDouble.compareTo(lowerBound) != -1 && newValueDouble.compareTo(upperBound) != 1)) {
 					this.value = newValue;
 					returnCode = true;
 				} else {
 					returnCode = false;
 				}
 			}
-		} else if (allowedValueType == AllowedValueType.Undefined
-				|| allowedValueType == AllowedValueType.File) {
+		} else if (allowedValueType == AllowedValueType.Undefined || allowedValueType == AllowedValueType.File
+				|| allowedValueType == AllowedValueType.Executable) {
 			this.value = newValue;
 			returnCode = true;
 		}
@@ -559,12 +548,9 @@ public class Entry extends ICEObject implements IUpdateable {
 			}
 			String error = this.continuousErrMsg;
 			// Replace the default error values with the ones for this Entry
-			error = error.replace("${incorrectValue}",
-					newValue != null ? newValue : "null");
-			error = error.replace("${lowerBound}", iEntryContentProvider
-					.getAllowedValues().get(0));
-			error = error.replace("${upperBound}", iEntryContentProvider
-					.getAllowedValues().get(1));
+			error = error.replace("${incorrectValue}", newValue != null ? newValue : "null");
+			error = error.replace("${lowerBound}", iEntryContentProvider.getAllowedValues().get(0));
+			error = error.replace("${upperBound}", iEntryContentProvider.getAllowedValues().get(1));
 			this.errorMessage = error;
 		}
 		// Modify it according if the error message is for discrete allowed
@@ -589,8 +575,7 @@ public class Entry extends ICEObject implements IUpdateable {
 			}
 
 			// Replace with correct errors
-			error = error.replace("${incorrectValue}",
-					newValue != null ? newValue : "null");
+			error = error.replace("${incorrectValue}", newValue != null ? newValue : "null");
 			error = error.replace(" ${allowedValues}", tempValues);
 			this.errorMessage = error;
 		}
@@ -651,10 +636,8 @@ public class Entry extends ICEObject implements IUpdateable {
 					&& readyEquivalentValues.contains(newValue.toLowerCase())) {
 				this.ready = true;
 				this.changeState = false;
-			} else if (updatedKey
-					.equals(this.iEntryContentProvider.getParent())
-					&& notReadyEquivalentValues
-							.contains(newValue.toLowerCase())) {
+			} else if (updatedKey.equals(this.iEntryContentProvider.getParent())
+					&& notReadyEquivalentValues.contains(newValue.toLowerCase())) {
 				this.ready = false;
 			}
 
@@ -700,20 +683,15 @@ public class Entry extends ICEObject implements IUpdateable {
 			} else {
 				other = (Entry) otherEntry;
 				// Check each member value
-				retVal = (this.uniqueId == other.uniqueId)
-						&& (this.objectName.equals(other.objectName))
-						&& (this.objectDescription
-								.equals(other.objectDescription))
+				retVal = (this.uniqueId == other.uniqueId) && (this.objectName.equals(other.objectName))
+						&& (this.objectDescription.equals(other.objectDescription))
 						// Check data not available on the provider
-						&& (this.comment.equals(other.comment))
-						&& (this.ready == other.ready)
-						&& (this.changeState == other.changeState)
-						&& (this.secretFlag == other.secretFlag)
+						&& (this.comment.equals(other.comment)) && (this.ready == other.ready)
+						&& (this.changeState == other.changeState) && (this.secretFlag == other.secretFlag)
 						&& (this.required == other.required)
 						// Allowed Values, type, parent, and tag are checked on
 						// iEntryContentProvider
-						&& (this.iEntryContentProvider
-								.equals(other.iEntryContentProvider));
+						&& (this.iEntryContentProvider.equals(other.iEntryContentProvider));
 			}
 		}
 		return retVal;
@@ -737,18 +715,10 @@ public class Entry extends ICEObject implements IUpdateable {
 		hash = 31 * hash + (this.secretFlag ? 1 : 0);
 		hash = 31 * hash + (null == this.comment ? 0 : this.comment.hashCode());
 		hash = 31 * hash + (null == this.value ? 0 : this.value.hashCode());
-		hash = 31
-				* hash
-				+ (null == this.defaultValue ? 0 : this.defaultValue.hashCode());
+		hash = 31 * hash + (null == this.defaultValue ? 0 : this.defaultValue.hashCode());
 		hash = 31 * hash + (null == this.parent ? 0 : this.parent.hashCode());
-		hash = 31
-				* hash
-				+ (null == this.allowedValues ? 0 : this.allowedValues
-						.hashCode());
-		hash = 31
-				* hash
-				+ (null == this.allowedValueType ? 0 : this.allowedValueType
-						.hashCode());
+		hash = 31 * hash + (null == this.allowedValues ? 0 : this.allowedValues.hashCode());
+		hash = 31 * hash + (null == this.allowedValueType ? 0 : this.allowedValueType.hashCode());
 		hash = 31 * hash + (null == this.tag ? 0 : this.tag.hashCode());
 		hash = 31 * hash + this.iEntryContentProvider.hashCode();
 		hash = 31 * hash + (required ? 1 : 0);
@@ -794,8 +764,7 @@ public class Entry extends ICEObject implements IUpdateable {
 		this.parent = otherEntry.parent;
 		this.tag = otherEntry.tag;
 		this.required = otherEntry.required;
-		this.iEntryContentProvider = (IEntryContentProvider) otherEntry.iEntryContentProvider
-				.clone();
+		this.iEntryContentProvider = (IEntryContentProvider) otherEntry.iEntryContentProvider.clone();
 		// Deep copy allowed Values
 		this.allowedValues.clear();
 		for (int i = 0; i < otherEntry.allowedValues.size(); i++) {
@@ -850,7 +819,8 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * This operation returns a human-readable reason for a rejected value
 	 * passed to setValue().
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The error message. If the AllowedValueType of the Entry is
 	 *         Continuous, it will be an error of the form:
 	 *         </p>
