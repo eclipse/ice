@@ -164,9 +164,4 @@
 <repository location="http://download.eclipse.org/ease/update/release"/>
 </location>
 </locations>
-<environment>
-<os>linux</os>
-<ws>gtk</ws>
-<arch>x86_64</arch>
-</environment>
 </target>
