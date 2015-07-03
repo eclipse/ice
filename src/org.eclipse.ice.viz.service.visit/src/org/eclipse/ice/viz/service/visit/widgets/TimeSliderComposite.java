@@ -10,6 +10,7 @@
  *     initial documentation
  *   Jordan Deyton - bug 471166
  *   Jordan Deyton - bug 471248
+ *   Jordan Deyton - bug 471749
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.widgets;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -95,6 +97,10 @@ public class TimeSliderComposite extends Composite {
 	 * The Menu that appears beneath the options button.
 	 */
 	private final MenuManager optionsMenuManager;
+	/**
+	 * The Action in the options menu for toggling looped playback.
+	 */
+	private Action loopPlaybackAction;
 
 	/**
 	 * A minimum FPS of 1 frame per minute.
@@ -115,6 +121,11 @@ public class TimeSliderComposite extends Composite {
 	 */
 	private boolean isPlaying = false;
 	/**
+	 * Whether or not to loop playback. This does not apply to the previous/next
+	 * timestep buttons.
+	 */
+	private boolean loopPlayback = true;
+	/**
 	 * The runnable operation used for "playback". It increments the timestep
 	 * and schedules itself to execute later based on the value of
 	 * {@link #playbackInterval}.
@@ -131,25 +142,24 @@ public class TimeSliderComposite extends Composite {
 	private BinarySearchTree times;
 
 	/**
-	 * The image used for the "next" button.
+	 * A list of created ImageDescriptors. These will be used to allocate shared
+	 * Image resources for buttons in the widget.
 	 */
-	private static Image nextImage;
+	private List<ImageDescriptor> imageDescriptors = new ArrayList<ImageDescriptor>();
 	/**
-	 * The image used for the "options" button.
+	 * A list of created Image resources. These must be released when disposed.
 	 */
-	private static Image optionsImage;
+	private List<Image> images = new ArrayList<Image>();
 	/**
-	 * The image used for the "pause" button.
+	 * A reference to the play image. This will be displayed when the widget is
+	 * paused.
 	 */
-	private static Image pauseImage;
+	private Image playImage;
 	/**
-	 * The image used for the "play" button.
+	 * A reference to the pause image. This will be displayed when the widget is
+	 * playing.
 	 */
-	private static Image playImage;
-	/**
-	 * The image used for the "previous" button.
-	 */
-	private static Image prevImage;
+	private Image pauseImage;
 
 	/**
 	 * The string to use in the text box when there are no times configured.
@@ -236,13 +246,14 @@ public class TimeSliderComposite extends Composite {
 		});
 
 		// Load the button image as necessary.
-		if (nextImage == null) {
-			nextImage = loadImage("nav_forward.gif");
-		}
+		ImageDescriptor imgd = getImageDescriptor("nav_forward.gif");
+		Image img = (Image) imgd.createResource(getDisplay());
+		imageDescriptors.add(imgd);
+		images.add(img);
 
 		// Set the initial tool tip and image.
 		nextButton.setToolTipText("Next");
-		nextButton.setImage(nextImage);
+		nextButton.setImage(img);
 
 		return nextButton;
 	}
@@ -275,13 +286,14 @@ public class TimeSliderComposite extends Composite {
 		});
 
 		// Load the button image as necessary.
-		if (optionsImage == null) {
-			optionsImage = loadImage("thread_obj.gif");
-		}
+		ImageDescriptor imgd = getImageDescriptor("thread_obj.gif");
+		Image img = (Image) imgd.createResource(getDisplay());
+		imageDescriptors.add(imgd);
+		images.add(img);
 
 		// Set the initial tool tip and image.
 		optionsButton.setToolTipText("Playback settings");
-		optionsButton.setImage(optionsImage);
+		optionsButton.setImage(img);
 
 		return optionsButton;
 	}
@@ -383,6 +395,19 @@ public class TimeSliderComposite extends Composite {
 		}));
 		manager.add(playbackRate.getContributionItem());
 
+		// Add a menu item for toggling looped playback.
+		loopPlaybackAction = new Action("Loop Playback", IAction.AS_CHECK_BOX) {
+			@Override
+			public void run() {
+				setLoopPlayback(!loopPlayback);
+			}
+		};
+		loopPlaybackAction.setImageDescriptor(getImageDescriptor("loop.gif"));
+		// Toggle the initial state of the button depending on whether playback
+		// is looped by default.
+		loopPlaybackAction.setChecked(loopPlayback);
+		manager.add(loopPlaybackAction);
+
 		// Create the manager's context Menu.
 		manager.createContextMenu(parent);
 
@@ -409,13 +434,16 @@ public class TimeSliderComposite extends Composite {
 			}
 		});
 
-		// Load the play and pause button images as necessary.
-		if (playImage == null) {
-			playImage = loadImage("nav_go.gif");
-		}
-		if (pauseImage == null) {
-			pauseImage = loadImage("suspend_co.gif");
-		}
+		// Load the play image.
+		ImageDescriptor imgd = getImageDescriptor("nav_go.gif");
+		playImage = (Image) imgd.createResource(getDisplay());
+		imageDescriptors.add(imgd);
+		images.add(playImage);
+		// Load the pause image.
+		imgd = getImageDescriptor("suspend_co.gif");
+		pauseImage = (Image) imgd.createResource(getDisplay());
+		imageDescriptors.add(imgd);
+		images.add(pauseImage);
 
 		// Set the initial tool tip and image.
 		playButton.setToolTipText("Play");
@@ -450,13 +478,14 @@ public class TimeSliderComposite extends Composite {
 		});
 
 		// Load the button image as necessary.
-		if (prevImage == null) {
-			prevImage = loadImage("nav_backward.gif");
-		}
+		ImageDescriptor imgd = getImageDescriptor("nav_backward.gif");
+		Image img = (Image) imgd.createResource(getDisplay());
+		imageDescriptors.add(imgd);
+		images.add(img);
 
 		// Set the initial tool tip and image.
 		prevButton.setToolTipText("Previous");
-		prevButton.setImage(prevImage);
+		prevButton.setImage(img);
 
 		return prevButton;
 	}
@@ -547,6 +576,23 @@ public class TimeSliderComposite extends Composite {
 		return text;
 	}
 
+	/*
+	 * Overrides a method from Widget.
+	 */
+	@Override
+	public void dispose() {
+
+		// Dispose all ImageDescriptors and their used resources (Images).
+		for (int i = images.size() - 1; i >= 0; i--) {
+			imageDescriptors.remove(0).destroyResource(images.remove(0));
+		}
+		// The play and pause images are now disposed.
+		playImage = null;
+		pauseImage = null;
+
+		super.dispose();
+	}
+
 	/**
 	 * A convenient operation for loading a custom image resource from this
 	 * widget's path.
@@ -556,10 +602,10 @@ public class TimeSliderComposite extends Composite {
 	 * @return The loaded image, or {@code null} if the image could not be
 	 *         loaded.
 	 */
-	private Image loadImage(String name) {
+	private ImageDescriptor getImageDescriptor(String name) {
 		Bundle bundle = FrameworkUtil.getBundle(TimeSliderComposite.class);
 		URL url = bundle.getEntry("icons/" + name);
-		return ImageDescriptor.createFromURL(url).createImage();
+		return ImageDescriptor.createFromURL(url);
 	}
 
 	// ---- Public Setters and Getters ---- //
@@ -580,6 +626,25 @@ public class TimeSliderComposite extends Composite {
 		// Check that this widget can be accessed.
 		checkWidget();
 		return fps;
+	}
+
+	/**
+	 * Gets whether or not playback will loop back to the first timestep after
+	 * the last timestep is reached.
+	 * 
+	 * @return True if playback will be looped, false otherwise.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public boolean getLoopPlayback() {
+		// Check that this widget can be accessed.
+		checkWidget();
+		return loopPlayback;
 	}
 
 	/**
@@ -732,6 +797,36 @@ public class TimeSliderComposite extends Composite {
 			this.fps = fps;
 			// Convert the FPS into a millisecond delay.
 			fpsDelay = (int) (Math.round(1000.0 / this.fps));
+			changed = true;
+		}
+		return changed;
+	}
+
+	/**
+	 * Sets whether or not playback will loop back to the first timestep after
+	 * the last timestep is reached.
+	 * 
+	 * @param loop
+	 *            If true, then the playback will be looped. If false, playback
+	 *            will not be looped.
+	 * @return True if the property changed, false otherwise.
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public boolean setLoopPlayback(boolean loop) {
+		// Check that this widget can be accessed.
+		checkWidget();
+
+		boolean changed = false;
+		if (loop != loopPlayback) {
+			// Update the variable and the associated options menu item.
+			this.loopPlayback = loop;
+			loopPlaybackAction.setChecked(loop);
 			changed = true;
 		}
 		return changed;
@@ -933,15 +1028,28 @@ public class TimeSliderComposite extends Composite {
 				text = "Pause";
 				image = pauseImage;
 
+				// If play is clicked on the last timestep, immediately start
+				// from the first (next) timestep. Otherwise, insert a delay.
+				time = (timestep < times.size() - 1 ? fpsDelay : 0);
+
 				// The playback runnable should be created.
-				time = fpsDelay;
 				playbackRunnable = new Runnable() {
 					@Override
 					public void run() {
-						getDisplay().timerExec(fpsDelay, this);
+						// If the last timestep is reached and playback
+						// shouldn't be looped, halt playback.
+						if (!loopPlayback && timestep == times.size() - 2) {
+							setPlayback(false, null);
+						}
+						// Otherwise, schedule the next frame change.
+						else {
+							getDisplay().timerExec(fpsDelay, this);
+						}
+						// Increment the timestep.
 						if (incrementTimestep()) {
 							notifyListeners(e);
 						}
+						return;
 					}
 				};
 			} else {
