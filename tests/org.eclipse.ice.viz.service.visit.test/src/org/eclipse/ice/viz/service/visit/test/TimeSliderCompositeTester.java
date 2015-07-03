@@ -11,6 +11,7 @@
  *   Jordan Deyton - bug 471166
  *   Jordan Deyton - bug 471248
  *   Jordan Deyton - bug 471749
+ *   Jordan Deyton - bug 471750
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.test;
 
@@ -203,6 +204,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		final AtomicReference<Double> time = new AtomicReference<Double>();
 		final AtomicReference<Double> fps = new AtomicReference<Double>();
 		final AtomicBoolean isPlaying = new AtomicBoolean();
+
+		// TODO Check that the first/last timestep buttons are disabled.
 
 		// Create a temporary, blank test Composite, pull off its default
 		// values, and dispose it.
@@ -944,24 +947,6 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 
 	// ---- Widget tests ---- //
 	/**
-	 * Checks that the options menu item for going to the first timestep works.
-	 */
-	@Ignore
-	@Test
-	public void checkGoToFirstTimestep() {
-		fail("Not implemented. Figure out how to handle the context Menu.");
-	}
-
-	/**
-	 * Checks that the options menu item for going to the last timestep works.
-	 */
-	@Ignore
-	@Test
-	public void checkGoToLastTimestep() {
-		fail("Not implemented. Figure out how to handle the context Menu.");
-	}
-
-	/**
 	 * Checks that attempting to set or get fields on the widget from a non-UI
 	 * thread throws an invalid thread access exception.
 	 */
@@ -1092,6 +1077,49 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		} catch (SWTException e) {
 			assertEquals(errorCode, e.code);
 		}
+
+		return;
+	}
+
+	/**
+	 * Checks that clicking the first and last timestep buttons in the options
+	 * menu update the timestep properly and notifies selection listeners.
+	 */
+	@Ignore
+	@Test
+	public void checkFirstAndLastStepButtonsNotifySelectionListeners() {
+		fail("Not implemented. Figure out how to handle the context Menu.");
+
+		// Check that the initial timestep is 0.
+		assertEquals(0, getCurrentTimestep());
+
+		// TODO Click the last timestep button in the context Menu.
+
+		// Check that the listener was notified and the last timestep is the
+		// current one.
+		assertFalse(fakeListener1.wasNotified());
+		assertEquals(orderedTimes.size() - 1, getCurrentTimestep());
+
+		// TODO Click the last timestep button again.
+
+		// Check that the listener was not notified and the timestep hasn't
+		// changed.
+		assertFalse(fakeListener1.wasNotified());
+		assertEquals(orderedTimes.size() - 1, getCurrentTimestep());
+
+		// TODO Click the first timestep button in the context Menu.
+
+		// Check that the listener was notified and the first timestep is the
+		// current one.
+		assertTrue(fakeListener1.wasNotified());
+		assertEquals(0, getCurrentTimestep());
+
+		// TODO Click the first timestep button in the context Menu.
+
+		// Check that the listener was not notified and the timestep hasn't
+		// changed.
+		assertFalse(fakeListener1.wasNotified());
+		assertEquals(0, getCurrentTimestep());
 
 		return;
 	}
@@ -1708,6 +1736,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(testBot.button(2));
 		assertEnabled(testBot.button(3)); // The options are always enabled.
 		assertNotEnabled(testBot.text());
+		// TODO Check that the first/last timestep buttons are disabled.
 		assertEquals(NO_TIMES, testBot.text().getText());
 
 		// Dispose the temporary test widget.
@@ -1726,6 +1755,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertEnabled(playButton);
 		assertEnabled(optionsButton); // The options are always enabled.
 		assertEnabled(text);
+		// TODO Check that the first/last timestep buttons are enabled.
 
 		// Setting the times to something with 1 value should disable them.
 		getDisplay().syncExec(new Runnable() {
@@ -1740,6 +1770,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(playButton);
 		assertEnabled(optionsButton); // The options are always enabled.
 		assertNotEnabled(text);
+		// TODO Check that the first/last timestep buttons are disabled.
 		// The text widget's text should be set to the current value.
 		assertEquals(badTimes.get(0).toString(), text.getText());
 
@@ -1756,6 +1787,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertEnabled(playButton);
 		assertEnabled(optionsButton); // The options are always enabled.
 		assertEnabled(text);
+		// TODO Check that the first/last timestep buttons are enabled.
 
 		// Setting the times to something with 0 values should also disable
 		// them.
@@ -1772,6 +1804,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(playButton);
 		assertEnabled(optionsButton); // The options are always enabled.
 		assertNotEnabled(text);
+		// TODO Check that the first/last timestep buttons are disabled.
 		// The text widget's text should be set to N/A.
 		assertEquals(NO_TIMES, text.getText());
 
@@ -1906,6 +1939,23 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 			}
 		});
 		return isPlaying.get();
+	}
+
+	/**
+	 * A convenient method for getting the {@link #timeComposite}'s current
+	 * timestep index.
+	 * 
+	 * @return The timestep.
+	 */
+	private int getCurrentTimestep() {
+		final AtomicInteger timestep = new AtomicInteger();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timestep.set(timeComposite.getTimestep());
+			}
+		});
+		return timestep.get();
 	}
 	// ------------------------------------- //
 

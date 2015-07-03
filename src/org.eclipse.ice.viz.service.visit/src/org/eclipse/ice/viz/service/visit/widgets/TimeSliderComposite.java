@@ -11,6 +11,7 @@
  *   Jordan Deyton - bug 471166
  *   Jordan Deyton - bug 471248
  *   Jordan Deyton - bug 471749
+ *   Jordan Deyton - bug 471750
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.widgets;
 
@@ -97,6 +98,14 @@ public class TimeSliderComposite extends Composite {
 	 * The Menu that appears beneath the options button.
 	 */
 	private final MenuManager optionsMenuManager;
+	/**
+	 * The Action in the options menu for quickly getting to the first timestep.
+	 */
+	private Action firstStepAction;
+	/**
+	 * The Action in the options menu for quickly getting to the last timestep.
+	 */
+	private Action lastStepAction;
 	/**
 	 * The Action in the options menu for toggling looped playback.
 	 */
@@ -372,6 +381,7 @@ public class TimeSliderComposite extends Composite {
 					}
 				};
 				// Customize the dialog's appearance.
+				dialog.setTitle("Custom Framerate");
 				dialog.setInfoText("Enter a new frame rate or\n" + "select a previous rate.\n"
 						+ "Values must be greater than 0.0");
 				dialog.setErrorText("Please enter a number greater than 60\n" + "seconds per frame (0.0167 FPS).");
@@ -407,6 +417,42 @@ public class TimeSliderComposite extends Composite {
 		// is looped by default.
 		loopPlaybackAction.setChecked(loopPlayback);
 		manager.add(loopPlaybackAction);
+
+		// Add a menu item for skipping to the first timestep.
+		firstStepAction = new Action("First Step", IAction.AS_PUSH_BUTTON) {
+			@Override
+			public void run() {
+				SelectionEvent e = createBlankSelectionEvent();
+
+				// Disable playback.
+				setPlayback(false, e);
+
+				// Increment the timestep.
+				if (setValidTimestep(0)) {
+					notifyListeners(e);
+				}
+			}
+		};
+		firstStepAction.setImageDescriptor(getImageDescriptor("skip_backward.gif"));
+		manager.add(firstStepAction);
+
+		// Add a menu item for skipping to the last timestep.
+		lastStepAction = new Action("Last Step", IAction.AS_PUSH_BUTTON) {
+			@Override
+			public void run() {
+				SelectionEvent e = createBlankSelectionEvent();
+
+				// Disable playback.
+				setPlayback(false, e);
+
+				// Increment the timestep.
+				if (setValidTimestep(times.size() - 1)) {
+					notifyListeners(e);
+				}
+			}
+		};
+		lastStepAction.setImageDescriptor(getImageDescriptor("skip_forward.gif"));
+		manager.add(lastStepAction);
 
 		// Create the manager's context Menu.
 		manager.createContextMenu(parent);
@@ -919,6 +965,8 @@ public class TimeSliderComposite extends Composite {
 		nextButton.setEnabled(widgetsEnabled);
 		prevButton.setEnabled(widgetsEnabled);
 		playButton.setEnabled(widgetsEnabled);
+		firstStepAction.setEnabled(widgetsEnabled);
+		lastStepAction.setEnabled(widgetsEnabled);
 
 		// Refresh the scale widget's max value.
 		scale.setMaximum(widgetsEnabled ? size - 1 : 0);
