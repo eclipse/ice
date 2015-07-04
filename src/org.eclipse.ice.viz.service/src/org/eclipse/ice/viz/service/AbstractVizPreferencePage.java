@@ -20,7 +20,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * This is the base class for visualization service preference pages added to
- * the Eclipse IDE's Window -> Preferences dialog.
+ * the Eclipse IDE's Window > Preferences dialog.
  * <p>
  * For an example of how to create a preference page using this class, see
  * {@link VizPreferencePage} and its class documentation.

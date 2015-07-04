@@ -10,3 +10,4 @@ Import-Package: org.eclipse.ice.client.widgets.reactoreditor.grid,
 Require-Bundle: org.junit,
  org.eclipse.gef;bundle-version="3.9.0",
  org.eclipse.jface;bundle-version="3.8.102"
+Bundle-Vendor: Oak Ridge National Laboratory

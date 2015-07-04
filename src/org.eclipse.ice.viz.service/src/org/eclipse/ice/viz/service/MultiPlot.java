@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
  * interface.
  * <p>
  * For client code that will be drawing these plots, do the following:
+ * </p>
  * <ol>
  * <li>Call {@link #draw(String, String, Composite)} with a {@code Composite}
  * and any category and type. This renders (if possible) a plot inside the
@@ -40,15 +41,14 @@ import org.eclipse.swt.widgets.Composite;
  * {@code Composite} based on the specified plot category and type. <i>You now
  * have two separate renderings based on the same {@code IPlot}.</i></li>
  * </ol>
- * </p>
  * <p>
  * Sub-classes should override the following methods so that the correct
  * {@link PlotRender} is created and updated properly:
+ * </p>
  * <ol>
  * <li>{@link #createPlotRender(Composite)}</li>
  * <li>{@link #updatePlotRender(PlotRender)}</li>
  * </ol>
- * </p>
  * 
  * @author Jordan
  *

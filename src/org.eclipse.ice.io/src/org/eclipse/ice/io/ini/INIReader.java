@@ -467,7 +467,7 @@ public class INIReader implements ITemplatedReader {
 	 * @param regex
 	 *            A string representing a regular expression containing the
 	 *            specification of what to search for
-	 * @return an ArrayList<Entry> with the description set to the regex and the
+	 * @return an {@code ArrayList<Entry>} with the description set to the regex and the
 	 *         value set to the results.
 	 */
 	@Override

@@ -257,14 +257,8 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the number of fuel assemblies across the core.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The number of fuel assemblies across the core.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
 	@Override
 	public int getSize() {
@@ -343,15 +337,8 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation reads Attributes from h5Group and assigns their values to
-	 * class variables. If h5Group is null, false is returned. Otherwise, true
-	 * is returned.
-	 * </p>
-	 * 
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWReactor.
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {
@@ -397,11 +384,8 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * 
-	 * @param h5File
-	 * @param h5Group
-	 * @return
+	/*
+	 * Overrides a method from LWReactor.
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -415,20 +399,8 @@ public class PressurizedWaterReactor extends LWReactor {
 		return flag;
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -458,9 +430,8 @@ public class PressurizedWaterReactor extends LWReactor {
 		return retVal;
 	}
 
-	/**
-	 * 
-	 * @return
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -484,15 +455,8 @@ public class PressurizedWaterReactor extends LWReactor {
 		return children;
 	}
 
-	/**
-	 * <p>
-	 * This operation returns an ArrayList of IHdfReadable child objects. If
-	 * this IHdfReadable has no IHdfReadable child objects, then null is
-	 * returned.
-	 * </p>
-	 * 
-	 * @param iHdfReadable
-	 * @return
+	/*
+	 * Overrides a method from LWRComposite.
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -591,14 +555,8 @@ public class PressurizedWaterReactor extends LWReactor {
 		return true;
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
 	@Override
 	public int hashCode() {
@@ -686,14 +644,8 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWReactor.
 	 */
 	@Override
 	public Object clone() {
@@ -709,17 +661,8 @@ public class PressurizedWaterReactor extends LWReactor {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation accepts an ILWRComponentVisitor that can be visit the
-	 * LWRComponent to ascertain its type and perform various type-specific
-	 * operations.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            <p>
-	 *            The visitor
-	 *            </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {

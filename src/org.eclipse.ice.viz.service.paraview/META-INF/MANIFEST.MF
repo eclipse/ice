@@ -28,3 +28,4 @@ Import-Package: com.kitware.vtk.web,
  org.json
 Export-Package: org.eclipse.ice.viz.service.paraview
 Service-Component: OSGI-INF/vizService.xml
+Bundle-Vendor: Oak Ridge National Laboratory

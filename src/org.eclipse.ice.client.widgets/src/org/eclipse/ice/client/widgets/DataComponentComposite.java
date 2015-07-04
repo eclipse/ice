@@ -101,6 +101,8 @@ public class DataComponentComposite extends Composite implements
 	/**
 	 * The constructor.
 	 * 
+	 * @param comp
+	 *            The DataComponent shown in the composite.
 	 * @param parentComposite
 	 *            The parent of this composite.
 	 * @param style

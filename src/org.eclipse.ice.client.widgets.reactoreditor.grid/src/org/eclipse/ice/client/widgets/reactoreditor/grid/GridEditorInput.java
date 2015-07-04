@@ -22,19 +22,22 @@ import org.eclipse.ui.IPersistableElement;
 
 /**
  * In GEF, editors need to be passed an IEditorInput. GridEditorInput provides
- * an implementation of that interface for the GridEditor.<br>
- * <br>
+ * an implementation of that interface for the GridEditor.
+ * <p>
  * To provide the full user experience, the GridEditor uses the following
- * information:<br>
- * <br>
- * The number of rows and columns to display for the grid.<br>
- * Any labels for the rows and columns (default is the index+1).<br>
- * Any pre-selected locations/cells.<br>
- * Any invalid locations/cells.<br>
- * Any disabled locations/cells.<br>
- * <br>
+ * information:
+ * </p>
+ * <ul>
+ * <li>The number of rows and columns to display for the grid.</li>
+ * <li>Any labels for the rows and columns (default is the index+1).</li>
+ * <li>Any pre-selected locations/cells.</li>
+ * <li>Any invalid locations/cells.</li>
+ * <li>Any disabled locations/cells.</li>
+ * </ul>
+ * <p>
  * Cells that are invalid, selected, or disabled should be passed in via a
- * Map<Integer, Cell.State>.
+ * {@code Map<Integer, Cell.State>}.
+ * </p>
  * 
  * @author Jordan H. Deyton
  * 

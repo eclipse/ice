@@ -13,4 +13,5 @@ Import-Package: org.eclipse.ice.analysistool,
  ncsa.hdf.hdf5lib.exceptions,
  ncsa.hdf.hdf5lib.structs
 Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0"
+Bundle-Vendor: Oak Ridge National Laboratory
 

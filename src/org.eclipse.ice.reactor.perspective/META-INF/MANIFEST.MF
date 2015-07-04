@@ -33,3 +33,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.100",
 Export-Package: org.eclipse.ice.reactor.perspective
 Service-Component: OSGI-INF/ReactorEditorRegistry.xml,OSGI-INF/ReactorClientHolder.xml,
  OSGI-INF/IORegistryHolder.xml
+Bundle-Vendor: Oak Ridge National Laboratory

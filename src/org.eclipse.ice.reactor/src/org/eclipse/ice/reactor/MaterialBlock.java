@@ -278,20 +278,8 @@ public class MaterialBlock extends LWRComponent implements
 
 	}
 
-	/**
-	 * <p>
-	 * Overrides the equals operation to check the attributes on this object
-	 * with another object of the same type. Returns true if the objects are
-	 * equal. False otherwise.
-	 * </p>
-	 * 
-	 * @param otherObject
-	 *            <p>
-	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -323,14 +311,8 @@ public class MaterialBlock extends LWRComponent implements
 
 	}
 
-	/**
-	 * <p>
-	 * Returns the hashCode of the object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public int hashCode() {
@@ -385,14 +367,8 @@ public class MaterialBlock extends LWRComponent implements
 
 	}
 
-	/**
-	 * <p>
-	 * Deep copies and returns a newly instantiated object.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public Object clone() {
@@ -408,14 +384,8 @@ public class MaterialBlock extends LWRComponent implements
 
 	}
 
-	/**
-	 * <p>
-	 * Returns writeable children.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         the children
-	 *         </p>
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -436,17 +406,8 @@ public class MaterialBlock extends LWRComponent implements
 		return children;
 	}
 
-	/**
-	 * <p>
-	 * This operation returns an ArrayList of IHdfReadable child objects. If
-	 * this IHdfReadable has no IHdfReadable child objects, then null is
-	 * returned.
-	 * </p>
-	 * 
-	 * @param iHdfReadable
-	 *            The child that will be read.
-	 * @return True if the child could be read and added to this block, false
-	 *         otherwise.
+	/*
+	 * Overrides a method from LWRComponent.
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -538,6 +499,9 @@ public class MaterialBlock extends LWRComponent implements
 		return this.pos;
 	}
 
+	/*
+	 * Implements a method from Comparable.
+	 */
 	@Override
 	public int compareTo(MaterialBlock arg0) {
 

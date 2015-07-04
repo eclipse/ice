@@ -14,6 +14,7 @@ package org.eclipse.ice.client.widgets.test.utils;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -97,6 +98,7 @@ public class AbstractSWTTester extends AbstractICEUITester<SWTBot> {
 			public void run() {
 				// Create and open the shell.
 				shell = new Shell(display);
+				shell.setLayout(new FillLayout());
 				shell.open();
 			}
 		});
