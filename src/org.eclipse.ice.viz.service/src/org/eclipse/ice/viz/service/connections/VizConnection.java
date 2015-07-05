@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -98,6 +100,17 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	private ExecutorService executorService;
 
 	/**
+	 * A single thread executor service specifically for notifying listeners in
+	 * an orderly fashion.
+	 */
+	private final ExecutorService notificationExecutorService;
+	/**
+	 * A thread pool for worker threads in the notifications. This is used so
+	 * notifications are processed by listeners in parallel.
+	 */
+	private final ExecutorService notificationWorkerPool;
+
+	/**
 	 * The default constructor. Initializes the connection to the default
 	 * values.
 	 */
@@ -126,8 +139,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				if (value != null) {
 					newValue = value.trim();
 				}
-				return newValue != null && !newValue.isEmpty() ? newValue
-						: null;
+				return newValue != null && !newValue.isEmpty() ? newValue : null;
 			}
 		});
 		// The description property should only accept non-null strings. Values
@@ -148,8 +160,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				if (value != null) {
 					newValue = value.trim();
 				}
-				return newValue != null && !newValue.isEmpty() ? newValue
-						: null;
+				return newValue != null && !newValue.isEmpty() ? newValue : null;
 			}
 		});
 		// The port property should only accept integers lying in the valid port
@@ -189,6 +200,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 
 		// Initialize the set of connection listeners.
 		listeners = new HashSet<IVizConnectionListener<T>>();
+		notificationExecutorService = Executors.newSingleThreadExecutor();
+		notificationWorkerPool = Executors.newCachedThreadPool();
 
 		// Create the lock for accessing certain connection thread variables.
 		connectionLock = new ReentrantLock(true);
@@ -356,15 +369,13 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 			}
 
 			@Override
-			public ConnectionState get() throws InterruptedException,
-					ExecutionException {
+			public ConnectionState get() throws InterruptedException, ExecutionException {
 				return stateRef;
 			}
 
 			@Override
 			public ConnectionState get(long timeout, TimeUnit unit)
-					throws InterruptedException, ExecutionException,
-					TimeoutException {
+					throws InterruptedException, ExecutionException, TimeoutException {
 				return stateRef;
 			}
 		};
@@ -526,8 +537,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 
 				// If a previous task hasn't successfully disconnected, then try
 				// to disconnect.
-				if (threadState != ConnectionState.Disconnected
-						&& connectionWidget != null) {
+				if (threadState != ConnectionState.Disconnected && connectionWidget != null) {
 
 					// Try to disconnect.
 					boolean success = disconnectFromWidget(connectionWidget);
@@ -587,30 +597,49 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 *            The message to send to the listeners.
 	 */
 	private void notifyListeners(ConnectionState state, String message) {
-		if (!listeners.isEmpty()) {
+		/*
+		 * Notifications should be sent out in the order in which they occur.
+		 * This is achieved by using a single thread to delegate notifications
+		 * to worker threads (so they can work in parallel) and wait for them to
+		 * complete before the next set of notifications can be sent out.
+		 */
 
-			// Get final references to the arguments required to notify a given
-			// connection listener.
-			final IVizConnection<T> connRef = this;
-			final ConnectionState stateRef = state;
-			final String msgRef = message;
+		// Get final references to the arguments required to notify a given
+		// connection listener.
+		final IVizConnection<T> connRef = this;
+		final ConnectionState stateRef = state;
+		final String msgRef = message;
 
-			// Open up a set of threads and notify each listener by submitting
-			// tasks to the thread execution service.
-			ExecutorService executorService = Executors.newCachedThreadPool();
-			for (final IVizConnectionListener<T> listener : listeners) {
-				executorService.submit(new Runnable() {
-					@Override
-					public void run() {
-						listener.connectionStateChanged(connRef, stateRef,
-								msgRef);
+		// Submit a new task to notify all listeners.
+		notificationExecutorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<Future<?>> notifications;
+				notifications = new ArrayList<Future<?>>(listeners.size());
+
+				// Delegate each notification to the worker thread pool.
+				for (final IVizConnectionListener<T> listener : listeners) {
+					notifications.add(notificationWorkerPool.submit(new Runnable() {
+						@Override
+						public void run() {
+							listener.connectionStateChanged(connRef, stateRef, msgRef);
+						}
+					}));
+				}
+
+				// Wait for all notification requests to be completed.
+				for (Future<?> notification : notifications) {
+					try {
+						notification.get();
+					} catch (InterruptedException | ExecutionException e) {
+						e.printStackTrace();
 					}
-				});
+				}
+
+				return;
 			}
-			// Tell the service to close after all submitted tasks have been
-			// completed.
-			executorService.shutdown();
-		}
+		});
+
 		return;
 	}
 
