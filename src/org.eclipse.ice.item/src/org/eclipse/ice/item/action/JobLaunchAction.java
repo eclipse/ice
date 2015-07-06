@@ -1424,6 +1424,9 @@ public class JobLaunchAction extends Action implements Runnable {
 		return FormStatus.ReadyToProcess;
 	}
 
+	/**
+	 * Set the working directory name. 
+	 */
 	private void setWorkingDirectoryName() {
 
 		// Local Declarations
@@ -1593,6 +1596,10 @@ public class JobLaunchAction extends Action implements Runnable {
 	}
 
 	/**
+	 * Provide the JobLaunchAction with an existing IRemoteConnection. This 
+	 * connection will be used for remote launches if its corresponding 
+	 * hostname is the same as the user specified host name as defined in the 
+	 * execDictionary.
 	 * 
 	 * @param remoteConnection
 	 */

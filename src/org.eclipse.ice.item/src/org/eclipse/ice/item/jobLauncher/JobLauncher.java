@@ -980,6 +980,10 @@ public class JobLauncher extends Item {
 	}
 
 	/**
+	 * This method let's clients of the JobLauncher set an existing 
+	 * IRemoteConnection for remote job executions. If this connection is 
+	 * provided, the JobLauncher will forward it to the JobLaunchAction for 
+	 * use in the remote execution. 
 	 * 
 	 * @param connection
 	 */

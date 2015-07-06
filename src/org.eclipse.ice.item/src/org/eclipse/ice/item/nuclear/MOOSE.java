@@ -165,8 +165,10 @@ public class MOOSE extends Item {
 
 		// Get the IRemoteServicesManager
 		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-		ServiceReference<IRemoteServicesManager> ref = context.getServiceReference(IRemoteServicesManager.class);
-		remoteManager = (ref != null ? context.getService(ref) : null);
+		if (context != null) {
+			ServiceReference<IRemoteServicesManager> ref = context.getServiceReference(IRemoteServicesManager.class);
+			remoteManager = (ref != null ? context.getService(ref) : null);
+		}
 	}
 
 	/**

@@ -437,8 +437,6 @@ public class MOOSEModel extends Item {
 			URI uri = URI.create(mooseExecutableName);
 			IFile yamlFile = null, syntaxFile = null;
 
-			System.out.println("URI: " + uri.toString() + " " + uri.getPath() + " " + uri.getHost());
-
 			if ("ssh".equals(uri.getScheme())) {
 
 				// If we have a valid connection, then generate the files we

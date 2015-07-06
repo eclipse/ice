@@ -26,6 +26,9 @@ import org.eclipse.remote.core.IRemoteProcessService;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 /**
+ * This class serves as a utility for generating MOOSE YAML and Action Syntax
+ * files on a remote machine and using them to construct the MOOSE input tree
+ * locally in ICE.
  * 
  * @author Alex McCaskey
  *
@@ -33,10 +36,13 @@ import org.eclipse.remote.core.exception.RemoteConnectionException;
 public class RemoteYamlSyntaxGenerator {
 
 	/**
+	 * This method generates the YAML and Action syntax files in 
+	 * the local projectSpace/MOOSE directory from a remotely hosted 
+	 * MOOSE-based application. 
 	 * 
-	 * @param connection
-	 * @param mooseFolder
-	 * @param appPath
+	 * @param connection The remote connection for the machine with the application
+	 * @param mooseFolder The reference to the MOOSE folder in the project space
+	 * @param appPath The path for the remote MOOSE-based application
 	 */
 	public void generate(IRemoteConnection connection, IFolder mooseFolder, String appPath) {
 
@@ -113,16 +119,18 @@ public class RemoteYamlSyntaxGenerator {
 				Path yamlPath = Paths.get(mooseFolder.getLocation().toOSString() + "/" + animal + ".yaml");
 				Path syntaxPath = Paths.get(mooseFolder.getLocation().toOSString() + "/" + animal + ".syntax");
 
-				// Create those files
+				// Delete existing files 
 				if (Files.exists(yamlPath)) {
 					Files.delete(yamlPath);
 				}
 				if (Files.exists(syntaxPath)) {
 					Files.delete(syntaxPath);
 				}
+				
+				// Write the new files. 
 				Files.write(yamlPath, yamlString.getBytes());
 				Files.write(syntaxPath, syntaxString.getBytes());
-				
+
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

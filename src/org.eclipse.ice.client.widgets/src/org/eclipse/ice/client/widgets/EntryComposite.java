@@ -482,6 +482,10 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		return;
 	}
 
+	/**
+	 * This method creates a drop down Combo for an Entry 
+	 * with the Executable AllowedValueType.
+	 */
 	private void createExecutableDropDown() {
 		if (dropDown == null || dropDown.isDisposed()) {
 			dropDown = new Combo(this,
@@ -569,6 +573,11 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		}
 	}
 
+	/**
+	 * This method creates a Local/Remote file browser button for 
+	 * an Entry with the Executable AllowedValueType. 
+	 * 
+	 */
 	private void createExecutableBrowser() {
 		boolean redraw = buttons.isEmpty();
 
