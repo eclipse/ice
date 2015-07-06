@@ -32,8 +32,7 @@ import org.eclipse.swt.widgets.Control;
  * @author Jordan Deyton
  *
  */
-public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
-		MouseWheelListener {
+public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, MouseWheelListener {
 
 	/**
 	 * The client that is providing a ParaView image. Mouse events will trigger
@@ -71,6 +70,8 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 	 */
 	private final AtomicReference<MouseInteraction> mouseInteraction;
 
+	private final AtomicBoolean scrolled = new AtomicBoolean();
+	
 	/**
 	 * A simple wrapper for MouseEvents, except it also maintains metadata
 	 * required when posting mouse events to the web client.
@@ -117,8 +118,7 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 		 *         pressed.
 		 */
 		public boolean[] getState() {
-			return new boolean[] { false, false, false, false, false, false,
-					false };
+			return new boolean[] { false, false, false, false, false, false, false };
 		}
 	}
 
@@ -144,8 +144,7 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 	 *            for its various listener operations. Although this is
 	 *            typically a {@link ParaViewCanvas}, it may be any SWT Control.
 	 */
-	public ParaViewMouseAdapter(IParaViewWebClient client, int viewId,
-			Control control) {
+	public ParaViewMouseAdapter(IParaViewWebClient client, int viewId, Control control) {
 
 		// Set up the ExecutorService so we can start threads later.
 		executorService = Executors.newSingleThreadExecutor();
@@ -264,7 +263,7 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 	}
 
 	private int scrollCount = 0;
-	
+
 	/*
 	 * Implements a method from MouseWheelListener.
 	 */
@@ -272,27 +271,60 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 	public void mouseScrolled(MouseEvent e) {
 		// Add a new zoom request.
 
+		if (scrolled.compareAndSet(false, true)) {
+			final MouseInteraction mouseDownEvent = new MouseInteraction(e, "down") {
+				@Override
+				public boolean[] getState() {
+					boolean[] state = super.getState();
+					state[2] = true; // right mouse
+					state[4] = true; // ctrl
+					return state;
+				}
+			};
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					
+					double x = 0.005 * scrollCount;
+					double normY = Math.atan(x) / Math.PI + 0.5;
+					// double normY = x / (Math.PI * Math.sqrt(1.0 + x*x)) + 0.5;
+					System.err.println(normY);
+					
+					// Send the request to the client.
+					IParaViewWebClient clientRef = client;
+					if (clientRef != null) {
+						try {
+							clientRef.event(viewId, 0.0, normY, mouseDownEvent.action, mouseDownEvent.getState()).get();
+						} catch (InterruptedException | ExecutionException e) {
+							// The event could not be processed.
+						}
+					}
+				}
+			});
+		}
+		
 		// Triggering a mouse zoom means we need to pretend the CTRL key is
 		// pressed while a click and drag occurs.
-		final MouseInteraction event = new MouseInteraction(e, "none") {
+		final MouseInteraction event = new MouseInteraction(e, "move") {
 			@Override
 			public boolean[] getState() {
-				return new boolean[] { false, false, true, false, false,
-						false, false };
+				return new boolean[] { false, false, true, false, true, false, false };
 			}
 		};
-		
+
 		scrollCount -= e.count;
-		
+
 		executorService.submit(new Runnable() {
 			@Override
 			public void run() {
 
-				double normY = 2.0 / Math.PI * Math.atan(0.005 * scrollCount) + 1.0;
+				double x = 0.005 * scrollCount;
+				double normY = Math.atan(x) / Math.PI + 0.5;
+				// double normY = x / (Math.PI * Math.sqrt(1.0 + x*x)) + 0.5;
 				System.err.println(normY);
-				
+
 				// Send the request to the client.
-				final IParaViewWebClient clientRef = client;
+				IParaViewWebClient clientRef = client;
 				if (clientRef != null) {
 					try {
 						clientRef.event(viewId, 0.0, normY, event.action, event.getState()).get();
@@ -306,11 +338,11 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 				if (canvasRef != null) {
 					canvas.refresh();
 				}
-	
+
 				return;
 			}
 		});
-		
+
 		return;
 	}
 
@@ -322,11 +354,10 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 		// If the mouse is being dragged, send a mouse drag event to the web
 		// client.
 		if (mouseDown.get()) {
-			MouseInteraction event = new MouseInteraction(e, "none") {
+			MouseInteraction event = new MouseInteraction(e, "move") {
 				@Override
 				public boolean[] getState() {
-					return new boolean[] { true, false, false, false, false,
-							false, false };
+					return new boolean[] { true, false, false, false, false, false, false };
 				}
 			};
 			refreshMousePosition(event, true);
@@ -348,8 +379,48 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 	 */
 	@Override
 	public void mouseDown(MouseEvent e) {
+		
+		if (scrolled.compareAndSet(true, false)) {
+			final MouseInteraction mouseDownEvent = new MouseInteraction(e, "up") {
+				@Override
+				public boolean[] getState() {
+					boolean[] state = super.getState();
+//					state[2] = true; // right mouse
+//					state[4] = true; // ctrl
+					return state;
+				}
+			};
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					
+					double x = 0.005 * scrollCount;
+					double normY = Math.atan(x) / Math.PI + 0.5;
+					// double normY = x / (Math.PI * Math.sqrt(1.0 + x*x)) + 0.5;
+					System.err.println(normY);
+					
+					// Send the request to the client.
+					IParaViewWebClient clientRef = client;
+					if (clientRef != null) {
+						try {
+							clientRef.event(viewId, 0.0, normY, mouseDownEvent.action, mouseDownEvent.getState()).get();
+						} catch (InterruptedException | ExecutionException e) {
+							// The event could not be processed.
+						}
+					}
+				}
+			});
+		}
+		
 		// Send the mouse down event to the web client.
-		refreshMousePosition(new MouseInteraction(e, "down"), false);
+		refreshMousePosition(new MouseInteraction(e, "down") {
+			@Override
+			public boolean[] getState() {
+				boolean[] state = super.getState();
+				state[0] = true;
+				return state;
+			}
+		}, false);
 		// Now we can set the mouse drag flag to true.
 		mouseDown.set(true);
 	}
@@ -362,7 +433,14 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 		// Unset the mouse drag flag.
 		mouseDown.set(false);
 		// Send the mouse up event to the web client.
-		refreshMousePosition(new MouseInteraction(e, "up"), false);
+		refreshMousePosition(new MouseInteraction(e, "up") {
+			@Override
+			public boolean[] getState() {
+				boolean[] state = super.getState();
+				state[0] = false;
+				return state;
+			}
+		}, false);
 	}
 
 	/**
@@ -375,8 +453,7 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 	 *            Whether or not to trigger a refresh of the {@link #canvas}--if
 	 *            set--after the client is updated.
 	 */
-	private void refreshMousePosition(MouseInteraction e,
-			final boolean refreshCanvas) {
+	private void refreshMousePosition(MouseInteraction e, final boolean refreshCanvas) {
 		// Update the mouse event, getting its current value in the process. If
 		// there's already a pending event, then another task will eventually
 		// process this new event. Otherwise, we'll need to create a new task to
@@ -409,16 +486,13 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener,
 						// Compute the normalized x and y positions using the
 						// control's current size.
 						double normalizedX = (double) event.x / (double) size.x;
-						double normalizedY = 1.0 - (double) event.y
-								/ (double) size.y;
-						
+						double normalizedY = 1.0 - (double) event.y / (double) size.y;
+
 						// Send the request to the client.
 						final IParaViewWebClient clientRef = client;
 						if (clientRef != null) {
 							try {
-								clientRef.event(viewId, normalizedX,
-										normalizedY, "none", event.getState())
-										.get();
+								clientRef.event(viewId, normalizedX, normalizedY, event.action, event.getState()).get();
 							} catch (InterruptedException | ExecutionException e) {
 								// The event could not be processed.
 							}
