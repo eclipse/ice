@@ -63,7 +63,7 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		String home = System.getProperty("user.home");
 		file = new File(home + separator + "ICETests" + separator
 				+ "CSVPlot.csv");
-		String line1 = "#features,t, p_x, p_y";
+		String line1 = "t, p_x, p_y";
 		String line2 = "#units,t,p_x,p_y";
 		String line3 = "1.0,1.0,1.0";
 		String line4 = "2.0,4.0,8.0";

@@ -10,6 +10,8 @@
  *     initial documentation
  *   Jordan Deyton - bug 471166
  *   Jordan Deyton - bug 471248
+ *   Jordan Deyton - bug 471749
+ *   Jordan Deyton - bug 471750
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.test;
 
@@ -202,6 +204,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		final AtomicReference<Double> time = new AtomicReference<Double>();
 		final AtomicReference<Double> fps = new AtomicReference<Double>();
 		final AtomicBoolean isPlaying = new AtomicBoolean();
+
+		// TODO Check that the first/last timestep buttons are disabled.
 
 		// Create a temporary, blank test Composite, pull off its default
 		// values, and dispose it.
@@ -520,6 +524,73 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 				timeComposite.pause();
 			}
 		});
+
+		return;
+	}
+
+	/**
+	 * Checks the return values for setting and getting the looped playback
+	 * property.
+	 * <p>
+	 * This test checks that looped playback can be disabled. Checking that
+	 * enabled looped playback works is handled by
+	 * {@link #checkPlayWidgetNotifiesSelectionListeners()}.
+	 * </p>
+	 */
+	@Test
+	public void checkSetLoop() {
+
+		// Looped playback is already tested when
+
+		// Try toggling the loop. Check the return value if the new value is the
+		// same.
+		final Queue<Boolean> queue = new LinkedList<Boolean>();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				queue.add(timeComposite.getLoopPlayback());
+				queue.add(timeComposite.setLoopPlayback(true));
+				queue.add(timeComposite.getLoopPlayback());
+				queue.add(timeComposite.setLoopPlayback(false));
+				queue.add(timeComposite.getLoopPlayback());
+			}
+		});
+
+		// Initially, playback is looped.
+		assertTrue(queue.poll());
+		// Since the value is not new, the return value when setting
+		// loop-playback to true is false.
+		assertFalse(queue.poll());
+		// Playback is still looped.
+		assertTrue(queue.poll());
+		// The setting was changed, so the return value is true.
+		assertTrue(queue.poll());
+		// The playback should now be looped.
+		assertFalse(queue.poll());
+
+		// Set the framerate to something fast, then play.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timeComposite.setFPS(100);
+				timeComposite.play();
+			}
+		});
+
+		// The entire set of timesteps should have been traversed, and play
+		// should have stopped.
+		assertTrue(fakeListener1.wasNotified(orderedTimes.size() - 1));
+		assertFalse(isPlaying());
+
+		// Check that the current timestep is in fact the last one.
+		final AtomicInteger timestep = new AtomicInteger();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timestep.set(timeComposite.getTimestep());
+			}
+		});
+		assertEquals(orderedTimes.size() - 1, timestep.get());
 
 		return;
 	}
@@ -875,7 +946,6 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	// ------------------------------------ //
 
 	// ---- Widget tests ---- //
-
 	/**
 	 * Checks that attempting to set or get fields on the widget from a non-UI
 	 * thread throws an invalid thread access exception.
@@ -892,6 +962,14 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		try {
 			timeComposite.getFPS();
 			fail(String.format(missedExceptionFormat, "getFPS()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check getLoopPlayback().
+		try {
+			timeComposite.getLoopPlayback();
+			fail(String.format(missedExceptionFormat, "getLoopPlayback()"));
 		} catch (SWTException e) {
 			assertEquals(errorCode, e.code);
 		}
@@ -952,6 +1030,14 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 			assertEquals(errorCode, e.code);
 		}
 
+		// Check setLoopPlayback(boolean).
+		try {
+			timeComposite.setLoopPlayback(false);
+			fail(String.format(missedExceptionFormat, "setLoopPlayback(boolean)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
 		// Check setTime(double).
 		try {
 			timeComposite.setTime(1.0);
@@ -991,6 +1077,49 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		} catch (SWTException e) {
 			assertEquals(errorCode, e.code);
 		}
+
+		return;
+	}
+
+	/**
+	 * Checks that clicking the first and last timestep buttons in the options
+	 * menu update the timestep properly and notifies selection listeners.
+	 */
+	@Ignore
+	@Test
+	public void checkFirstAndLastStepButtonsNotifySelectionListeners() {
+		fail("Not implemented. Figure out how to handle the context Menu.");
+
+		// Check that the initial timestep is 0.
+		assertEquals(0, getCurrentTimestep());
+
+		// TODO Click the last timestep button in the context Menu.
+
+		// Check that the listener was notified and the last timestep is the
+		// current one.
+		assertFalse(fakeListener1.wasNotified());
+		assertEquals(orderedTimes.size() - 1, getCurrentTimestep());
+
+		// TODO Click the last timestep button again.
+
+		// Check that the listener was not notified and the timestep hasn't
+		// changed.
+		assertFalse(fakeListener1.wasNotified());
+		assertEquals(orderedTimes.size() - 1, getCurrentTimestep());
+
+		// TODO Click the first timestep button in the context Menu.
+
+		// Check that the listener was notified and the first timestep is the
+		// current one.
+		assertTrue(fakeListener1.wasNotified());
+		assertEquals(0, getCurrentTimestep());
+
+		// TODO Click the first timestep button in the context Menu.
+
+		// Check that the listener was not notified and the timestep hasn't
+		// changed.
+		assertFalse(fakeListener1.wasNotified());
+		assertEquals(0, getCurrentTimestep());
 
 		return;
 	}
@@ -1239,6 +1368,39 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
+	 * Checks that playback looping can be toggled via the options menu.
+	 */
+	@Ignore
+	@Test
+	public void checkSetLoopByOptionsMenu() {
+		fail("Not implemented. Figure out how to handle the context Menu.");
+
+		final AtomicBoolean isLooped = new AtomicBoolean();
+
+		// TODO Click the loop button in the options context Menu.
+		// Check that looped playback has been disabled.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				isLooped.set(timeComposite.getLoopPlayback());
+			}
+		});
+		assertFalse(isLooped.get());
+
+		// TODO Click the loop button in the options context Menu.
+		// Check that looped playback has been enabled.
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				isLooped.set(timeComposite.getLoopPlayback());
+			}
+		});
+		assertTrue(isLooped.get());
+
+		return;
+	}
+
+	/**
 	 * Checks that listeners are updated when the spinner widget changes.
 	 * <p>
 	 * The times should also loop between last and first when the next/previous
@@ -1420,10 +1582,10 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 			assertEquals(errorCode, e.code);
 		}
 
-		// Check getTimeStep().
+		// Check getLoopPlayback().
 		try {
-			timeComposite.getTimestep();
-			fail(String.format(missedExceptionFormat, "getTimestep()"));
+			timeComposite.getLoopPlayback();
+			fail(String.format(missedExceptionFormat, "getLoopPlayback()"));
 		} catch (SWTException e) {
 			assertEquals(errorCode, e.code);
 		}
@@ -1432,6 +1594,14 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		try {
 			timeComposite.getTime();
 			fail(String.format(missedExceptionFormat, "getTime()"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check getTimeStep().
+		try {
+			timeComposite.getTimestep();
+			fail(String.format(missedExceptionFormat, "getTimestep()"));
 		} catch (SWTException e) {
 			assertEquals(errorCode, e.code);
 		}
@@ -1472,6 +1642,14 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		try {
 			timeComposite.setFPS(1.0);
 			fail(String.format(missedExceptionFormat, "setFPS(double)"));
+		} catch (SWTException e) {
+			assertEquals(errorCode, e.code);
+		}
+
+		// Check setLoopPlayback(boolean).
+		try {
+			timeComposite.setLoopPlayback(false);
+			fail(String.format(missedExceptionFormat, "setLoopPlayback(boolean)"));
 		} catch (SWTException e) {
 			assertEquals(errorCode, e.code);
 		}
@@ -1558,6 +1736,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(testBot.button(2));
 		assertEnabled(testBot.button(3)); // The options are always enabled.
 		assertNotEnabled(testBot.text());
+		// TODO Check that the first/last timestep buttons are disabled.
 		assertEquals(NO_TIMES, testBot.text().getText());
 
 		// Dispose the temporary test widget.
@@ -1576,6 +1755,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertEnabled(playButton);
 		assertEnabled(optionsButton); // The options are always enabled.
 		assertEnabled(text);
+		// TODO Check that the first/last timestep buttons are enabled.
 
 		// Setting the times to something with 1 value should disable them.
 		getDisplay().syncExec(new Runnable() {
@@ -1590,6 +1770,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(playButton);
 		assertEnabled(optionsButton); // The options are always enabled.
 		assertNotEnabled(text);
+		// TODO Check that the first/last timestep buttons are disabled.
 		// The text widget's text should be set to the current value.
 		assertEquals(badTimes.get(0).toString(), text.getText());
 
@@ -1606,6 +1787,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertEnabled(playButton);
 		assertEnabled(optionsButton); // The options are always enabled.
 		assertEnabled(text);
+		// TODO Check that the first/last timestep buttons are enabled.
 
 		// Setting the times to something with 0 values should also disable
 		// them.
@@ -1622,6 +1804,7 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		assertNotEnabled(playButton);
 		assertEnabled(optionsButton); // The options are always enabled.
 		assertNotEnabled(text);
+		// TODO Check that the first/last timestep buttons are disabled.
 		// The text widget's text should be set to N/A.
 		assertEquals(NO_TIMES, text.getText());
 
@@ -1756,6 +1939,23 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 			}
 		});
 		return isPlaying.get();
+	}
+
+	/**
+	 * A convenient method for getting the {@link #timeComposite}'s current
+	 * timestep index.
+	 * 
+	 * @return The timestep.
+	 */
+	private int getCurrentTimestep() {
+		final AtomicInteger timestep = new AtomicInteger();
+		getDisplay().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				timestep.set(timeComposite.getTimestep());
+			}
+		});
+		return timestep.get();
 	}
 	// ------------------------------------- //
 

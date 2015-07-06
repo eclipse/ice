@@ -12,38 +12,65 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
 
+import java.util.HashMap;
+
+import org.apache.commons.math.linear.RealMatrix;
+
 /**
  * The series provider class will provide the data for a trace/series as well as
  * meta data such as the title, the type, and the uncertainty
  * 
- * @author Matthew Wang
+ * @author Matthew Wang, Alex McCaskey
  * 
  */
 public class SeriesProvider {
 	/**
-	 * The dataProvider that this series will pull from
+	 * The data provider that this series will pull from
 	 */
-	private CSVDataProvider dataProviderForSeries;
+	private RealMatrix csvData;
+
 	/**
 	 * The dataProvider's time for this series
 	 */
 	private double timeForDataProvider;
+
+	/**
+	 * The minimum value in this data set
+	 */
+	private double max;
+
+	/**
+	 * The maximum value in this data set.
+	 */
+	private double min;
+
+	/**
+	 * The map from string feature/variable names to their corresponding column
+	 * index in the CSV Matrix.
+	 */
+	private HashMap<String, Integer> featureMap;
+
 	/**
 	 * The title of the series
 	 */
 	private String seriesTitle;
+
 	/**
 	 * The feature of the xData
 	 */
 	private String xDataFeature;
+
 	/**
 	 * The feature of the yData
 	 */
 	private String yDataFeature;
+
 	/**
 	 * The series type (Scatter, Bar, Line, etc.)
 	 */
 	private String seriesType;
+
+	private CSVDataProvider dataProvider;
 
 	/**
 	 * Default constructor
@@ -77,7 +104,7 @@ public class SeriesProvider {
 	 * @param max
 	 */
 	public void setDataMax(double max) {
-		this.dataProviderForSeries.setDataMax(max);
+		dataProvider.setDataMax(max);
 	}
 
 	/**
@@ -86,16 +113,7 @@ public class SeriesProvider {
 	 * @param min
 	 */
 	public void setDataMin(double min) {
-		this.dataProviderForSeries.setDataMin(min);
-	}
-
-	/**
-	 * Mutator for the data provider to use for this series
-	 * 
-	 * @param dataProviderForSeries
-	 */
-	public void setDataProvider(CSVDataProvider dataProviderForSeries) {
-		this.dataProviderForSeries = dataProviderForSeries;
+		dataProvider.setDataMin(min);
 	}
 
 	/**
@@ -139,15 +157,6 @@ public class SeriesProvider {
 	}
 
 	/**
-	 * Accessor for the data provider to use for this series
-	 * 
-	 * @return
-	 */
-	public CSVDataProvider getDataProvider() {
-		return this.dataProviderForSeries;
-	}
-
-	/**
 	 * Accessor for the time the data provider is set for
 	 * 
 	 * @return
@@ -165,16 +174,25 @@ public class SeriesProvider {
 		return this.seriesTitle;
 	}
 
+	public double[] getXData() {
+		dataProvider.setTime(timeForDataProvider);
+		// Return the data
+		return dataProvider.getPositionAtCurrentTime(xDataFeature);
+	}
+
+	public double[] getYData() {
+		dataProvider.setTime(timeForDataProvider);
+		// Return the data
+		return dataProvider.getPositionAtCurrentTime(yDataFeature);
+	}
+
 	/**
 	 * Accessor for the xData
 	 * 
 	 * @return
 	 */
-	public double[] getXData() {
-		// Set the time for the dataProvider
-		dataProviderForSeries.setTime(timeForDataProvider);
-		// Return the data
-		return dataProviderForSeries.getPositionAtCurrentTime(xDataFeature);
+	public double[] getCSVMatrixXData() {
+		return csvData.getColumn(featureMap.get(xDataFeature));
 	}
 
 	/**
@@ -182,11 +200,8 @@ public class SeriesProvider {
 	 * 
 	 * @return
 	 */
-	public double[] getYData() {
-		// Set the time for the dataProvider
-		dataProviderForSeries.setTime(timeForDataProvider);
-		// return the data
-		return this.dataProviderForSeries.getValuesAtCurrentTime(yDataFeature);
+	public double[] getCSVMatrixYData() {
+		return csvData.getColumn(featureMap.get(yDataFeature));
 	}
 
 	/**
@@ -217,32 +232,12 @@ public class SeriesProvider {
 	}
 
 	/**
-	 * Accessor for the xDataUncertainty
-	 * 
-	 * @return
-	 */
-	public double[] getXDataUncertainty() {
-		return this.dataProviderForSeries
-				.getUncertaintiesAtCurrentTime(xDataFeature);
-	}
-
-	/**
-	 * Accessor for the yDataUncertianty
-	 * 
-	 * @return
-	 */
-	public double[] getYDataUncertainty() {
-		return this.dataProviderForSeries
-				.getUncertaintiesAtCurrentTime(yDataFeature);
-	}
-
-	/**
 	 * Accessor for the data minimum
 	 * 
 	 * @return
 	 */
 	public double getDataMin() {
-		return this.dataProviderForSeries.getDataMin();
+		return dataProvider.getDataMin();
 	}
 
 	/**
@@ -251,7 +246,7 @@ public class SeriesProvider {
 	 * @return
 	 */
 	public double getDataMax() {
-		return this.dataProviderForSeries.getDataMax();
+		return dataProvider.getDataMax();
 	}
 
 	/**
@@ -260,7 +255,7 @@ public class SeriesProvider {
 	 * @return
 	 */
 	public int getDataWidth() {
-		return this.dataProviderForSeries.getDataWidth();
+		return this.dataProvider.getDataWidth();
 	}
 
 	/**
@@ -269,6 +264,26 @@ public class SeriesProvider {
 	 * @return
 	 */
 	public int getDataHeight() {
-		return this.dataProviderForSeries.getDataHeight();
+		return this.dataProvider.getDataHeight();
+	}
+
+	/**
+	 * Set the Matrix of data loaded from the CSV file
+	 * 
+	 * @param csv
+	 * @param featureToIndexMap
+	 */
+	public void setCSVData(RealMatrix csv,
+			HashMap<String, Integer> featureToIndexMap) {
+		csvData = csv;
+		featureMap = featureToIndexMap;
+	}
+
+	public void setDataProvider(CSVDataProvider newDataProvider) {
+		dataProvider = newDataProvider;
+	}
+
+	public Object getDataProvider() {
+		return dataProvider;
 	}
 }

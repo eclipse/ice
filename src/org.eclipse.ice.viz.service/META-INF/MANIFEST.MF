@@ -5,9 +5,17 @@ Bundle-SymbolicName: org.eclipse.ice.viz.service;singleton:=true
 Bundle-Version: 2.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.google.gson;version="2.2.4",
+Import-Package: ca.odell.glazedlists,
+ org.apache.commons.beanutils,
+ org.apache.commons.math.linear;version="2.1.0",
+Import-Package: ca.odell.glazedlists,
+ com.google.gson;version="2.2.4",
+ org.apache.commons.beanutils,
+ org.apache.commons.math;version="2.1.0",
+ org.apache.commons.math.linear;version="2.1.0",
  org.eclipse.core.commands.common,
  org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.core.runtime.jobs,
  org.eclipse.core.runtime.preferences,
  org.eclipse.draw2d,
  org.eclipse.equinox.security.storage;version="1.0.0",
