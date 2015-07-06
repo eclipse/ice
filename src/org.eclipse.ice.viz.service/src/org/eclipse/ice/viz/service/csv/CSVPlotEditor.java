@@ -51,6 +51,7 @@ import org.eclipse.ui.part.EditorPart;
  * @author Taylor Patterson
  * @author Anna Wojtowicz
  * @author Jordan Deyton
+ * @author Alex McCaskey
  */
 public class CSVPlotEditor extends EditorPart {
 
@@ -62,7 +63,7 @@ public class CSVPlotEditor extends EditorPart {
 	/**
 	 * The top level composite that holds the editor's contents.
 	 */
-	private Composite vizComposite;
+	public Composite vizComposite;
 
 	/**
 	 * The {@code Composite} that contains the time slider.
@@ -215,9 +216,9 @@ public class CSVPlotEditor extends EditorPart {
 			intensityGraph.setMax(seriesProvider.getDataMax());
 			intensityGraph.setMin(seriesProvider.getDataMin());
 
-			// Set the data width and data height
-			intensityGraph.setDataHeight(seriesProvider.getDataHeight());
-			intensityGraph.setDataWidth(seriesProvider.getDataWidth());
+			// FIXME Set the data width and data height
+			// intensityGraph.setDataHeight(seriesProvider.getDataHeight());
+			// intensityGraph.setDataWidth(seriesProvider.getDataWidth());
 
 			// Stick with predefined colormap
 			intensityGraph.setColorMap(new ColorMap(PredefinedColorMap.JET,
@@ -226,7 +227,7 @@ public class CSVPlotEditor extends EditorPart {
 			// Set the contents
 			lws.setContents(intensityGraph);
 
-			intensityGraph.setDataArray(seriesProvider.getYData());
+			intensityGraph.setDataArray(seriesProvider.getCSVMatrixYData());
 
 			// Add controls for setting the min and max values
 			Composite minMaxComp = new Composite(vizComposite, SWT.NONE);
@@ -300,15 +301,15 @@ public class CSVPlotEditor extends EditorPart {
 		if (seriesProviderList == null) {
 			seriesProviderList = new ArrayList<SeriesProvider>();
 		}
-		for (SeriesProvider series : seriesProviderList) {
+		for (final SeriesProvider series : seriesProviderList) {
 
-			CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(
+			final CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(
 					false);
 			// Sets the size of the buffer
-			traceDataProvider.setBufferSize(series.getXData().length);
+			traceDataProvider.setBufferSize(series.getCSVMatrixXData().length);
 			// Set the data to be plotted
-			traceDataProvider.setCurrentXDataArray(series.getXData());
-			traceDataProvider.setCurrentYDataArray(series.getYData());
+			traceDataProvider.setCurrentXDataArray(series.getCSVMatrixXData());
+			traceDataProvider.setCurrentYDataArray(series.getCSVMatrixYData());
 
 			// Creates a new trace with the name, axis,and provider to plot
 			Trace trace = new Trace(series.getSeriesTitle(),
@@ -328,7 +329,9 @@ public class CSVPlotEditor extends EditorPart {
 
 			// Add the trace to newXYGraph
 			newXYGraph.addTrace(trace);
+
 		}
+
 		// Auto-scale the image
 		newXYGraph.performAutoScale();
 

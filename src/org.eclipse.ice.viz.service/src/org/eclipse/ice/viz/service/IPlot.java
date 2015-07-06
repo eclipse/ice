@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Composite;
  * Implementations should not be restricted to one usage scenario.
  * </p>
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Alex McCaskey
  *
  */
 public interface IPlot {
@@ -141,5 +141,17 @@ public interface IPlot {
 	 * @return True if the source is on a remote machine, false otherwise
 	 */
 	public boolean isSourceRemote();
-
+	
+	/**
+	 * This operation directs the IPlot to redraw its contents. This can be invoked 
+	 * when, for example, the data represented by this IPlot changes, and a change in 
+	 * the IPlot's UI must change accordingly.
+	 * 
+	 * The exact details of how this IPlot is redrawn after a valid draw is left 
+	 * completely to the implementation.
+	 *  
+	 */
+	public void redraw();
+	
+	
 }
