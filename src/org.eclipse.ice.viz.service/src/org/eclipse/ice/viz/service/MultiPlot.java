@@ -32,7 +32,8 @@ import org.eclipse.swt.widgets.Composite;
  * <ol>
  * <li>Call {@link #draw(String, String, Composite)} with a {@code Composite}
  * and any category and type. This renders (if possible) a plot inside the
- * specified {@code Composite} based on the specified plot category and type.</li>
+ * specified {@code Composite} based on the specified plot category and type.
+ * </li>
  * <li>Call {@link #draw(String, String, Composite)} with the same
  * {@code Composite} but different category and type. <i>The plot rendered by
  * the previous call will have its plot category and type changed.</i></li>
@@ -85,8 +86,7 @@ public abstract class MultiPlot implements IPlot {
 	public MultiPlot(IVizService vizService) {
 		// Check the parameters.
 		if (vizService == null) {
-			throw new NullPointerException("IPlot error: "
-					+ "Null viz service not allowed.");
+			throw new NullPointerException("IPlot error: " + "Null viz service not allowed.");
 		}
 
 		this.vizService = vizService;
@@ -106,18 +106,16 @@ public abstract class MultiPlot implements IPlot {
 	 * java.lang.String, org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public Composite draw(String category, String plotType, Composite parent)
-			throws Exception {
+	public Composite draw(String category, String plotType, Composite parent) throws Exception {
 
 		Composite child = null;
 
 		// Check the parameters.
 		if (category == null || plotType == null || parent == null) {
-			throw new NullPointerException("IPlot error: "
-					+ "Null arguments are not allowed when drawing plot.");
+			throw new NullPointerException("IPlot error: " + "Null arguments are not allowed when drawing plot.");
 		} else if (parent.isDisposed()) {
-			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED, "IPlot error: "
-					+ "Cannot draw plot inside disposed Composite.");
+			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED,
+					"IPlot error: " + "Cannot draw plot inside disposed Composite.");
 		}
 
 		// Get the PlotRender associated with the parent Composite.
@@ -140,6 +138,16 @@ public abstract class MultiPlot implements IPlot {
 		// with an alternate strategy.
 
 		return child;
+	}
+
+	/**
+	 * Updates all current plot renders.
+	 */
+	@Override
+	public void redraw() {
+		for (PlotRender plotRender : plotRenders.values()) {
+			updatePlotRender(plotRender);
+		}
 	}
 
 	/*
@@ -239,19 +247,16 @@ public abstract class MultiPlot implements IPlot {
 	 * @throws Exception
 	 *             if there is some other unspecified problem with the file
 	 */
-	public void setDataSource(URI file) throws NullPointerException,
-			IOException, IllegalArgumentException, Exception {
+	public void setDataSource(URI file) throws NullPointerException, IOException, IllegalArgumentException, Exception {
 
 		// Throw an error if the file is null.
 		if (file == null) {
-			throw new NullPointerException("IPlot error: "
-					+ "The file is null.");
+			throw new NullPointerException("IPlot error: " + "The file is null.");
 		}
 		// This handles the unusual (but perhaps entirely possible) situation
 		// where the URI is opaque, e.g., "mailto:user@site.com".
 		else if (file.getPath() == null) {
-			throw new IllegalArgumentException("IPlot error: "
-					+ "The file is not a valid URI.");
+			throw new IllegalArgumentException("IPlot error: " + "The file is not a valid URI.");
 		}
 
 		// Get the list of new plot types from the sub-class implementation.
@@ -259,8 +264,7 @@ public abstract class MultiPlot implements IPlot {
 
 		// If empty, throw an IllegalArgumentException.
 		if (newPlotTypes.isEmpty()) {
-			throw new IllegalArgumentException("IPlot error: "
-					+ "No plots available in file.");
+			throw new IllegalArgumentException("IPlot error: " + "No plots available in file.");
 		}
 
 		// Clear any cached meta data and rebuild the cache of plot types.
@@ -314,8 +318,7 @@ public abstract class MultiPlot implements IPlot {
 	 * @throws Exception
 	 *             if there is some other unspecified problem with the file
 	 */
-	protected abstract Map<String, String[]> findPlotTypes(URI file)
-			throws IOException, Exception;
+	protected abstract Map<String, String[]> findPlotTypes(URI file) throws IOException, Exception;
 
 	/**
 	 * Gets the visualization service responsible for this plot.
