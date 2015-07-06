@@ -197,4 +197,10 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 				: new ArrayList<String>());
 	}
 
+	@Override
+	public void redraw() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

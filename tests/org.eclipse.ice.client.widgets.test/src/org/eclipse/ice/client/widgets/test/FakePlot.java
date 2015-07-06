@@ -137,4 +137,10 @@ public class FakePlot implements IPlot {
 	public boolean isSourceRemote() {
 		return false;
 	}
+
+	@Override
+	public void redraw() {
+		// TODO Auto-generated method stub
+		
+	}
 }
