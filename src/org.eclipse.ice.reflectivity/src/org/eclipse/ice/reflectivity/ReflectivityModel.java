@@ -194,7 +194,7 @@ public class ReflectivityModel extends Model {
 			Form waveForm = new CSVReader().read(waveInput);
 			ListComponent<String[]> waveData = (ListComponent<String[]>) waveForm
 					.getComponent(1);
-
+			
 			// Pull the data from the form into an array.
 			waveVector = new double[waveData.size()];
 			for (int i = 0; i < waveData.size(); i++) {
@@ -294,6 +294,9 @@ public class ReflectivityModel extends Model {
 							.getContents().getName());
 					reflectivityFile.setContents(new BufferedInputStream(
 							reflectStream), true, false, null);
+					
+					// Refresh the resource
+					reflectSource.setName(reflectSource.getName());
 
 					// Then the scattering density file
 					VizResource scatSource = (VizResource) resources.get(1);
@@ -301,6 +304,9 @@ public class ReflectivityModel extends Model {
 							.getContents().getName());
 					scatteringFile.setContents(new BufferedInputStream(
 							scatStream), true, false, null);
+					
+					// Refresh the resource
+					scatSource.setName(scatSource.getName());
 
 					// Catch exceptions, should return an error.
 				} catch (CoreException | NullPointerException e) {
@@ -312,7 +318,7 @@ public class ReflectivityModel extends Model {
 
 			}
 
-			// Return processed if the value has not already beens set.
+			// Return processed if the value has not already been set.
 			if (retVal == null) {
 				retVal = FormStatus.Processed;
 			}
