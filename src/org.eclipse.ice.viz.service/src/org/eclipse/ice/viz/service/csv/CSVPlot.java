@@ -90,6 +90,16 @@ public class CSVPlot implements IPlot {
 	private final Map<Composite, DrawnPlot> drawnPlots;
 
 	/**
+	 * Reference to the currently selected category.
+	 */
+	private String currentCategory;
+	
+	/**
+	 * Reference to the currently selected plot type. 
+	 */
+	private String currentPlotType;
+	
+	/**
 	 * The Constructor
 	 * 
 	 * @param source
@@ -307,9 +317,6 @@ public class CSVPlot implements IPlot {
 
 		return retVal;
 	}
-
-	private String currentCategory;
-	private String currentPlotType;
 
 	/**
 	 * @see org.eclipse.ice.viz.service.IPlot#draw(java.lang.String,

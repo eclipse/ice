@@ -574,8 +574,13 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				}
 			}
 		} else if (component != null && component instanceof VizResource) {
+			// Cast to a VizResource
 			final VizResource resource = (VizResource) component;
+			
+			// Get the plot associated with this resource and redraw it. 
 			plots.get(getPlotKey(resource)).redraw();
+			
+			// Layout the composite on the UI thread.
 			if (pageComposite != null) {
 				pageComposite.getDisplay().asyncExec(new Runnable() {
 					public void run() {
