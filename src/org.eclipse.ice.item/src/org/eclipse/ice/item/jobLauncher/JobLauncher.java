@@ -52,6 +52,9 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.action.JobLaunchAction;
 import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteConnectionHostService;
+import org.eclipse.remote.core.IRemoteConnectionType;
+import org.eclipse.remote.core.IRemoteServicesManager;
 
 /**
  * <p>
@@ -245,7 +248,7 @@ public class JobLauncher extends Item {
 	 * 
 	 */
 	@XmlTransient()
-	private IRemoteConnection remoteConnection;
+	private static IRemoteServicesManager remoteManager;
 
 	/**
 	 * This is a utility class used to describe a type of file by the
@@ -904,10 +907,16 @@ public class JobLauncher extends Item {
 				action = new JobLaunchAction();
 
 				// If we have a valid connection then give it to the action
+				IRemoteConnection remoteConnection = getRemoteConnection(actionDataMap.get("hostname"));
 				if (remoteConnection != null) {
 					((JobLaunchAction) action).setRemoteConnection(remoteConnection);
+				} else if (remoteManager != null) {
+					// If it was null, we'll need to give the action a
+					// reference to the ConnectionType (SSH) so it can
+					// prompt the user for a new connection
+					((JobLaunchAction) action).setRemoteConnectionType(remoteManager.getRemoteConnectionTypes().get(0));
 				}
-				
+
 				// Create a new Eclipse Job for the JobLaunchAction
 				launchJob = new Job("Job Launch") {
 
@@ -922,14 +931,15 @@ public class JobLauncher extends Item {
 							// While its processing, keep the progress bar going
 							while (!status.equals(FormStatus.Processed) && !status.equals(FormStatus.InfoError)) {
 								monitor.subTask("Executing the Job");
-
+								Thread.sleep(1000);
 								// Check for Cancellation
 								if (monitor.isCanceled()) {
-									action.cancel();
-									status = FormStatus.ReadyToProcess;
+									status = action.cancel();
 									return Status.CANCEL_STATUS;
 								}
 							}
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						} finally {
 							monitor.subTask("Job Launched Successfully.");
 							monitor.worked(100);
@@ -949,6 +959,13 @@ public class JobLauncher extends Item {
 				// Invoke the output streaming thread
 				streamOutputData();
 
+				// Sleep the thread for a sec to give 
+				// the Action time to do its thing
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				// Return the new status
 				return status;
 
@@ -980,16 +997,16 @@ public class JobLauncher extends Item {
 	}
 
 	/**
-	 * This method let's clients of the JobLauncher set an existing 
-	 * IRemoteConnection for remote job executions. If this connection is 
-	 * provided, the JobLauncher will forward it to the JobLaunchAction for 
-	 * use in the remote execution. 
+	 * This method let's clients of the JobLauncher set an existing
+	 * IRemoteConnection for remote job executions. If this connection is
+	 * provided, the JobLauncher will forward it to the JobLaunchAction for use
+	 * in the remote execution.
 	 * 
 	 * @param connection
 	 */
-	public void setRemoteConnection(IRemoteConnection connection) {
-		remoteConnection = connection;
-	}
+	// public void setRemoteConnection(IRemoteConnection connection) {
+	// remoteConnection = connection;
+	// }
 
 	/**
 	 * This operations grabs the information from the stdout and stderr files
@@ -1741,6 +1758,52 @@ public class JobLauncher extends Item {
 	 */
 	protected String getWorkingDirectory() {
 		return actionDataMap.get("workingDir");
+	}
+
+	/**
+	 * This method is used by the platform to give this MOOSEModel a reference
+	 * to the available IRemoteServicesManager.
+	 * 
+	 * @param manager
+	 */
+	public void setRemoteServicesManager(IRemoteServicesManager manager) {
+		if (manager != null) {
+			System.out.println("[JobLauncher Message] Setting the IRemoteServicesManager: " + manager.toString());
+			remoteManager = manager;
+		}
+	}
+
+	/**
+	 * This method returns an IRemoteConnection stored in the Remote Preferences
+	 * that corresponds to the provided hostname.
+	 * 
+	 * @param host
+	 * @return
+	 */
+	public IRemoteConnection getRemoteConnection(String hostname) {
+		IRemoteConnection connection = null;
+		if (remoteManager != null) {
+			IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
+
+			if (connectionType != null) {
+				try {
+
+					for (IRemoteConnection c : connectionType.getConnections()) {
+						String connectionHost = c.getService(IRemoteConnectionHostService.class).getHostname();
+						if (InetAddress.getByName(hostname).getHostAddress()
+								.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
+							connection = c;
+							break;
+						}
+
+					}
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return connection;
 	}
 
 	/**

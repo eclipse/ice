@@ -454,6 +454,8 @@ public class JobLaunchAction extends Action implements Runnable {
 	private long maxFileSize;
 
 	private IRemoteConnection connection;
+	
+	private IRemoteConnectionType connectionType;
 
 	/**
 	 * The Constructor.
@@ -949,8 +951,6 @@ public class JobLaunchAction extends Action implements Runnable {
 	protected void launchRemotely() {
 
 		// Local Declarations
-		IRemoteServicesManager manager = null;
-		IRemoteConnectionType connectionType = null;
 		IRemoteConnectionWorkingCopy workingCopy = null;
 		IRemoteProcessService processService = null;
 		String remoteDownloadDirectory = execDictionary.get("downloadDirectory");
@@ -960,17 +960,6 @@ public class JobLaunchAction extends Action implements Runnable {
 		SimpleDateFormat shortDate = new SimpleDateFormat("yyyyMMddhhmmss");
 		String hostname = execDictionary.get("hostname");
 		String localDirectoryPath = "";
-
-		// Get the IRemoteServicesManager
-		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-		ServiceReference<IRemoteServicesManager> ref = context.getServiceReference(IRemoteServicesManager.class);
-		manager = (ref != null ? context.getService(ref) : null);
-		if (manager == null) {
-			System.err.println(
-					"JobLaunchAction Error: Could not retrieve a valid IRemoteServicesManager object. Remote Launch failed.");
-			status = FormStatus.InfoError;
-			return;
-		}
 
 		// Create a local directory where created files can be downloaded
 		// from the remote host
@@ -989,9 +978,6 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Get the directory where local files should be stored
 		IFileStore localDirectory = EFS.getLocalFileSystem().fromLocalFile(localStorageDir);
 		String launchCMDFileName = "";
-
-		// Create the IRemoteConnectionType
-		connectionType = manager.getConnectionType("org.eclipse.remote.JSch");
 
 		// Block until the Form is submitted
 		while (!formSubmitted.get()) {
@@ -1020,6 +1006,12 @@ public class JobLaunchAction extends Action implements Runnable {
 		// IRemoteConnection 
 		if (connection == null) {
 
+			if (connectionType == null) {
+				System.out.println("Invalid ConnectionType! Cannot create a new IRemoteConnection.");
+				status = FormStatus.InfoError;
+				return;
+			}
+			
 			// Get the DataComponent containing the username and password
 			DataComponent credentials = (DataComponent) formAtomic.get().getComponent(1);
 
@@ -1305,6 +1297,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			formSubmitted.set(true);
 
 			// Set the status
+			System.out.println("SETTING FLAG TO PROCESSING");
 			status = FormStatus.Processing;
 		} else {
 			status = FormStatus.InfoError;
@@ -1339,6 +1332,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// Setup for remote launch if needed
 		if (!isLocal.get() && !connectionIsValid()) {
+			
 			// Create the new Form
 			actionForm = new LoginInfoForm();
 
@@ -1607,4 +1601,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		connection = remoteConnection;
 	}
 
+	public void setRemoteConnectionType(IRemoteConnectionType type) {
+		connectionType = type;
+	}
+	
 }

@@ -83,7 +83,7 @@ public abstract class AbstractVizService implements IVizService {
 		// Throw an IllegalArgumentException if the file's URI is invalid.
 		if (!extensionSupported(file)) {
 			throw new IllegalArgumentException("IPlot error: "
-					+ "Invalid URI or URI not specified . " + file.toString());
+					+ "Invalid URI or URI not specified . " + ((file != null) ? file.toString() : ""));
 		}
 		return null;
 	}

@@ -72,14 +72,14 @@ public class MOOSE extends Item {
 	/**
 	 * Reference to the MOOSE Input Model for this MOOSE workflow.
 	 */
-	@XmlTransient() // Element()
+	@XmlTransient()
 	private MOOSEModel mooseModel;
 
 	/**
 	 * Reference to the MOOSELauncher used in executing a constructed MOOSE
 	 * input file.
 	 */
-	@XmlTransient() // Element()
+	@XmlTransient()
 	private MOOSELauncher mooseLauncher;
 
 	/**
@@ -162,13 +162,6 @@ public class MOOSE extends Item {
 		mooseModel = new MOOSEModel(projectSpace);
 		mooseLauncher = new MOOSELauncher(projectSpace);
 		addComponents();
-
-		// Get the IRemoteServicesManager
-		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-		if (context != null) {
-			ServiceReference<IRemoteServicesManager> ref = context.getServiceReference(IRemoteServicesManager.class);
-			remoteManager = (ref != null ? context.getService(ref) : null);
-		}
 	}
 
 	/**
@@ -399,7 +392,7 @@ public class MOOSE extends Item {
 			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
 
 			// Check if we're local or remote
-			if ("ssh".equals(appUri.getScheme()) && remoteConnection != null) {
+			if ("ssh".equals(appUri.getScheme())) {
 
 				mooseLauncher.setExecutable(Paths.get(appUri.getRawPath()).getFileName().toString(), "",
 						appUri.getRawPath() + " -i ${inputFile} --no-color");
@@ -407,6 +400,7 @@ public class MOOSE extends Item {
 				// Setup the hosts table to use the remote host
 				TableComponent hostsTable = (TableComponent) mooseLauncher.getForm()
 						.getComponent(JobLauncherForm.parallelId + 1);
+				IRemoteConnection remoteConnection = mooseLauncher.getRemoteConnection(appUri.getHost());
 				String hostname = remoteConnection.getService(IRemoteConnectionHostService.class).getHostname();
 				int index = hostsTable.addRow();
 				ArrayList<Entry> row = hostsTable.getRow(index);
@@ -414,8 +408,6 @@ public class MOOSE extends Item {
 				selected.add(new Integer(index));
 				row.get(0).setValue(hostname);
 				hostsTable.setSelectedRows(selected);
-
-				mooseLauncher.setRemoteConnection(remoteConnection);
 
 			} else {
 
@@ -599,74 +591,35 @@ public class MOOSE extends Item {
 
 			Entry entry = (Entry) updateable;
 
-			if ("MOOSE-Based Application".equals(entry.getName())) {
-				// If we are here, then someone has changed the Moose
-				// application
-				// We need to check if it's remote...
-				try {
-					URI appUri = new URI(entry.getValue());
+			// If we get here, then we have a file Entry that
+			// has been changed on the modelFiles component
+			// and we need to sync up the tree with it.
 
-					if (remoteManager != null && "ssh".equals(appUri.getScheme())) {
-						IRemoteConnectionType connectionType = remoteManager
-								.getConnectionType("org.eclipse.remote.JSch");
-						String hostname = appUri.getHost();
-						for (IRemoteConnection c : connectionType.getConnections()) {
-							String connectionHost = c.getService(IRemoteConnectionHostService.class).getHostname();
-							try {
-								if (InetAddress.getByName(hostname).getHostAddress()
-										.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
-									remoteConnection = c;
-									break;
-								}
-							} catch (UnknownHostException e) {
-								e.printStackTrace();
-							}
-						}
+			// Grab the DataComponent
+			if (fileEntryTreeMapping.containsKey(entry.getName())) {
+				DataComponent data = (DataComponent) fileEntryTreeMapping.get(entry.getName()).getDataNodes().get(0);
 
-					} else {
-						remoteConnection = null;
-					}
+				// If not null, loop over the Entries til we find
+				// the file Entry.
+				if (data != null) {
+					for (Entry e : data.retrieveAllEntries()) {
 
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-					return;
-				}
+						// If the Entry's tag is "false" it is a commented
+						// out
+						// parameter.
+						if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
+								&& (e.getName() + " = " + e.getValue())
+										.matches(mooseLauncher.getFileDependenciesSearchString())) {
 
-				// if (remoteConnection != null) {
-				mooseModel.setRemoteConnection(remoteConnection);
-				mooseLauncher.setRemoteConnection(remoteConnection);
-				// }
-			} else {
-				// If we get here, then we have a file Entry that
-				// has been changed on the modelFiles component
-				// and we need to sync up the tree with it.
-
-				// Grab the DataComponent
-				if (fileEntryTreeMapping.containsKey(entry.getName())) {
-					DataComponent data = (DataComponent) fileEntryTreeMapping.get(entry.getName()).getDataNodes()
-							.get(0);
-
-					// If not null, loop over the Entries til we find
-					// the file Entry.
-					if (data != null) {
-						for (Entry e : data.retrieveAllEntries()) {
-
-							// If the Entry's tag is "false" it is a commented
-							// out
-							// parameter.
-							if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
-									&& (e.getName() + " = " + e.getValue())
-											.matches(mooseLauncher.getFileDependenciesSearchString())) {
-
-								// Set the value of the tree's file entry.
-								e.setValue(entry.getValue());
-								break;
-							}
+							// Set the value of the tree's file entry.
+							e.setValue(entry.getValue());
+							break;
 						}
 					}
 				}
 			}
 		}
+
 	}
 
 	/**

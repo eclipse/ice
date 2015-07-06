@@ -18,8 +18,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -168,7 +170,7 @@ public class MOOSEModel extends Item {
 	 * 
 	 */
 	@XmlTransient
-	private IRemoteConnection remoteConnection;
+	private static IRemoteServicesManager remoteManager;
 
 	/**
 	 * An ArrayList of TreeComposites, constructed from the top-level children
@@ -402,6 +404,19 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
+	 * This method is used by the platform to give this MOOSEModel a reference
+	 * to the available IRemoteServicesManager.
+	 * 
+	 * @param manager
+	 */
+	public void setRemoteServicesManager(IRemoteServicesManager manager) {
+		if (manager != null) {
+			System.out.println("[MOOSEModel Message] Setting the IRemoteServicesManager: " + manager.toString());
+			remoteManager = manager;
+		}
+	}
+
+	/**
 	 * This operation loads the contents of the TreeComposite from the MOOSE
 	 * data. It is called when a MOOSE-based application has been accepted and
 	 * the entries are reviewed. It will only load the Form if the project space
@@ -439,11 +454,14 @@ public class MOOSEModel extends Item {
 
 			if ("ssh".equals(uri.getScheme())) {
 
+				IRemoteConnection remoteConnection = getRemoteConnectionReference(uri.getHost());
+
 				// If we have a valid connection, then generate the files we
 				// need
 				if (remoteConnection != null) {
-					RemoteYamlSyntaxGenerator generator = new RemoteYamlSyntaxGenerator();
-					generator.generate(remoteConnection, mooseFolder, uri.getRawPath());
+					RemoteYamlSyntaxGenerator generator = new RemoteYamlSyntaxGenerator(remoteConnection, mooseFolder,
+							uri.getRawPath());
+					generator.generate();
 				}
 
 				String animal = Paths.get(uri.getRawPath()).getFileName().toString();
@@ -521,6 +539,36 @@ public class MOOSEModel extends Item {
 		}
 
 		return;
+	}
+
+	/**
+	 * This method returns an IRemoteConnection stored in the Remote Preferences
+	 * that corresponds to the provided hostname.
+	 * 
+	 * @param host
+	 * @return
+	 */
+	private IRemoteConnection getRemoteConnectionReference(String host) {
+		IRemoteConnection connection = null;
+		IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
+
+		if (connectionType != null) {
+			try {
+
+				for (IRemoteConnection c : connectionType.getConnections()) {
+					String connectionHost = c.getService(IRemoteConnectionHostService.class).getHostname();
+					if (InetAddress.getByName(host).getHostAddress()
+							.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
+						connection = c;
+						break;
+					}
+
+				}
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+		}
+		return connection;
 	}
 
 	/**
@@ -2014,12 +2062,4 @@ public class MOOSEModel extends Item {
 			return type;
 		}
 	}
-
-	/**
-	 * 
-	 * @param connection
-	 */
-	public void setRemoteConnection(IRemoteConnection connection) {
-		remoteConnection = connection;
-	};
 }
