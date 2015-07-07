@@ -44,8 +44,7 @@ import com.google.gson.JsonObject;
  * @author Jordan Deyton
  *
  */
-public class ParaViewCanvas extends Canvas implements PaintListener,
-		ControlListener {
+public class ParaViewCanvas extends Canvas implements PaintListener, ControlListener {
 
 	/**
 	 * The client used to render meshes remotely. It sends images back that will
@@ -75,11 +74,19 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 	private final AtomicBoolean stale = new AtomicBoolean();
 
 	/**
+	 * The current size of the canvas.
+	 * <p>
+	 * This is set from the UI thread and read from worker threads.
+	 * </p>
+	 */
+	private AtomicReference<Point> size;
+
+	/**
 	 * The quality of the rendered image. This is a parameter that is sent to
 	 * the ParaView web client in
 	 * {@link #refreshClient(IParaViewWebClient, int, int, int)}.
 	 */
-	private static final int imageQuality = 100;
+	private static final int IMAGE_QUALITY = 100;
 
 	/**
 	 * The default constructor.
@@ -95,6 +102,9 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 
 		// Set up the ExecutorService so we can start threads later.
 		executorService = Executors.newSingleThreadExecutor();
+
+		// Set the initial size.
+		size = new AtomicReference<Point>(getSize());
 
 		// Register for paint and control resize events.
 		addPaintListener(this);
@@ -175,21 +185,10 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 					if (stale.getAndSet(false)) {
 
 						// Get the current size of the Canvas.
-						final Point size = new Point(0, 0);
-						getDisplay().syncExec(new Runnable() {
-							@Override
-							public void run() {
-								if (!isDisposed()) {
-									Point canvasSize = getSize();
-									size.x = canvasSize.x;
-									size.y = canvasSize.y;
-								}
-							}
-						});
+						final Point currentSize = size.get();
 
 						// Update the client and get the current render Image.
-						final Image newImage = refreshClient(client, viewId,
-								size.x, size.y);
+						final Image newImage = refreshClient(client, viewId, currentSize.x, currentSize.y);
 
 						// If a new Image could be retrieved, sync it with the
 						// UI thread. Note: We don't need to wait on the UI
@@ -224,8 +223,7 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 		Image image = this.image.get();
 		if (image != null) {
 			Rectangle imgBounds = image.getBounds();
-			e.gc.drawImage(image, 0, 0, imgBounds.width, imgBounds.height, 0,
-					0, e.width, e.height);
+			e.gc.drawImage(image, 0, 0, imgBounds.width, imgBounds.height, 0, 0, e.width, e.height);
 		}
 		return;
 	}
@@ -243,6 +241,8 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 	 */
 	@Override
 	public void controlResized(ControlEvent e) {
+		// Update the current size.
+		size.set(getSize());
 		// Trigger an update to the client.
 		refresh();
 	}
@@ -268,8 +268,7 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 	 * @return An Image from the client, or {@code null} if the render request
 	 *         could not be completed.
 	 */
-	private Image refreshClient(IParaViewWebClient client, int viewId,
-			int width, int height) {
+	private Image refreshClient(IParaViewWebClient client, int viewId, int width, int height) {
 
 		// Set the default return value.
 		Image image = null;
@@ -282,8 +281,7 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 			// Send a render request to the client and wait for the reply.
 			JsonObject response = null;
 			try {
-				response = client.render(viewId, imageQuality, width, height)
-						.get();
+				response = client.render(viewId, IMAGE_QUALITY, width, height).get();
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
@@ -302,12 +300,10 @@ public class ParaViewCanvas extends Canvas implements PaintListener,
 						// TODO When we start using Java 8, replace the
 						// DatatypeConverter with the java.util.Base64
 						// class.
-						byte[] decode = DatatypeConverter
-								.parseBase64Binary(base64Image);
+						byte[] decode = DatatypeConverter.parseBase64Binary(base64Image);
 						// byte[] decode = Base64.getDecoder().decode(
 						// base64Image.getBytes());
-						ByteArrayInputStream inputStream = new ByteArrayInputStream(
-								decode);
+						ByteArrayInputStream inputStream = new ByteArrayInputStream(decode);
 
 						// Load the input stream into a new Image.
 						ImageData[] data = new ImageLoader().load(inputStream);
