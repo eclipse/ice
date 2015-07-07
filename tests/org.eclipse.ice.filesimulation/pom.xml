@@ -10,9 +10,9 @@
 		<relativePath>${pom-filename}</relativePath>
 	</parent>
 	<groupId>ICE</groupId>
-	<artifactId>org.eclipse.ice.io.test</artifactId>
-	<version>1.0.0</version>
-	<packaging>eclipse-test-plugin</packaging>
+	<artifactId>org.eclipse.ice.filesimulation</artifactId>
+	<version>2.0.0</version>
+	<packaging>eclipse-test-plugin</packaging>	
 	<properties>
 		<sonar.skip>true</sonar.skip>
 	</properties>
