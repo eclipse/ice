@@ -22,6 +22,10 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
@@ -36,7 +40,7 @@ import org.eclipse.swt.widgets.Control;
  * @author Jordan Deyton
  *
  */
-public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, MouseWheelListener {
+public class ParaViewMouseAdapter {
 
 	/*-
 	 * Notes on requests sent to the ParaView client for mouse movement:
@@ -88,11 +92,6 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 * On the next non-scroll event -- send a zoom end event (step 3).
 	 */
 
-	// FIXME The canvas keeps getting marked as stale between the last "move" or
-	// zoom event that is processed and the next event (zoom or
-	// mouse-up/rotate). There may be something wrong with the sequence of
-	// events sent to the client.
-
 	// TODO I'm not sure how well this works if you try zooming and rotating at
 	// the same time.
 
@@ -123,11 +122,40 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 */
 	private ExecutorService executorService;
 
+	// ---- Listeners ---- //
+	/**
+	 * A listener that updates {@link #inverseSizeX} and {@link #inverseSizeY}
+	 * when the associated control is resized. These values will be used when
+	 * computing the normalized coordinates that must be sent to the web client.
+	 */
+	private final ControlListener controlListener;
 	/**
 	 * Listens for the associated control's dispose events. When the control is
 	 * unset or disposed, the worker thread should be shut down.
 	 */
 	private final DisposeListener disposeListener;
+	/**
+	 * When focus is lost, this stops the scroll event. This prevents the canvas
+	 * from constantly refreshing when it was last zoomed.
+	 */
+	private final FocusListener focusListener;
+	/**
+	 * The listener used to enable/disable rotating when the mouse buttons are
+	 * pressed/released. This also disables zooming on mouse up if zooming is
+	 * currently activated.
+	 */
+	private final MouseListener mouseListener;
+	/**
+	 * The listener used to send rotate events when the mouse is being (clicked
+	 * and) dragged.
+	 */
+	private final MouseMoveListener mouseMoveListener;
+	/**
+	 * The listener used to start zooming and send additional zoom events when
+	 * the mouse is scrolled.
+	 */
+	private final MouseWheelListener mouseWheelListener;
+	// ------------------- //
 
 	// ---- Rotation / Mouse-Drag Variables ---- //
 	/**
@@ -145,15 +173,6 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 */
 	private double inverseSizeY;
 	/**
-	 * Whether or not the mouse button is pressed down.
-	 * <p>
-	 * This is only ever accessed from the UI thread in
-	 * {@link #mouseDown(MouseEvent)}, {@link #mouseMove(MouseEvent)}, and
-	 * {@link #mouseUp(MouseEvent)}.
-	 * </p>
-	 */
-	private boolean mouseDown;
-	/**
 	 * An array for holding the current normalized position.
 	 * <p>
 	 * This is only ever used on the lone worker thread from the
@@ -164,6 +183,15 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 */
 	private final double[] normalizedPosition;
 	/**
+	 * Whether or not the mouse button is pressed down.
+	 * <p>
+	 * This is only ever accessed from the UI thread in
+	 * {@link #mouseDown(MouseEvent)}, {@link #mouseMove(MouseEvent)}, and
+	 * {@link #mouseUp(MouseEvent)}.
+	 * </p>
+	 */
+	private boolean rotating;
+	/**
 	 * The current rotation or mouse-drag event that needs to be processed.
 	 * <p>
 	 * This is used to eliminate intermediate requests to the client. When
@@ -172,12 +200,6 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 * </p>
 	 */
 	private final AtomicReference<MouseInteraction> rotation;
-	/**
-	 * A listener that updates {@link #inverseSizeX} and {@link #inverseSizeY}
-	 * when the associated control is resized. These values will be used when
-	 * computing the normalized coordinates that must be sent to the web client.
-	 */
-	private final ControlListener sizeUpdateListener;
 	// ----------------------------------------- //
 
 	// ---- Zoom / Mouse-Scroll Variables ---- //
@@ -195,14 +217,6 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 */
 	private int scrollCount;
 	/**
-	 * Whether or not the mouse wheel has been scrolled.
-	 * <p>
-	 * This is only ever accessed from the UI thread in
-	 * {@link #mouseScrolled(MouseEvent)} and {@link #mouseDown(MouseEvent)}.
-	 * </p>
-	 */
-	private boolean scrolled;
-	/**
 	 * The current rotation or mouse-drag event that needs to be processed.
 	 * <p>
 	 * This is used to eliminate intermediate requests to the client. When
@@ -211,6 +225,14 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 * </p>
 	 */
 	private final AtomicReference<MouseInteraction> zoom;
+	/**
+	 * Whether or not the mouse wheel has been scrolled.
+	 * <p>
+	 * This is only ever accessed from the UI thread in
+	 * {@link #mouseScrolled(MouseEvent)} and {@link #mouseDown(MouseEvent)}.
+	 * </p>
+	 */
+	private boolean zooming;
 	// --------------------------------------- //
 
 	/**
@@ -219,18 +241,21 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 * @author Jordan Deyton
 	 *
 	 */
-	public enum MouseAction {
+	public enum MouseInteractionType {
 		/**
 		 * A button has been pressed down. Usually the first action in a chain.
 		 */
-		DOWN("down"), /**
-						 * A button has been released. Usually the last action
-						 * in a chain.
-						 */
-		UP("up"), /**
-					 * The mouse has been moved. Usually between a {@link #DOWN}
-					 * and {@link #UP} action.
-					 */
+		DOWN("down"),
+
+		/**
+		 * A button has been released. Usually the last action in a chain.
+		 */
+		UP("up"),
+
+		/**
+		 * The mouse has been moved. Usually between a {@link #DOWN} and
+		 * {@link #UP} action.
+		 */
 		MOVE("move");
 
 		/**
@@ -244,7 +269,7 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 		 * @param actionString
 		 *            The string used by the web client to denote the action.
 		 */
-		private MouseAction(String actionString) {
+		private MouseInteractionType(String actionString) {
 			this.actionString = actionString;
 		}
 
@@ -275,10 +300,9 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 		 */
 		public double y;
 		/**
-		 * The "action" for the event. Usually one of "down", "up", "move",
-		 * "dblclick", "scroll".
+		 * The type of event.
 		 */
-		public final MouseAction action;
+		public final MouseInteractionType type;
 		/**
 		 * If true, tells the client that the left mouse button is pressed.
 		 */
@@ -302,10 +326,10 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 		 * @param action
 		 *            The action for the event. Expected not to be {@code null}.
 		 */
-		public MouseInteraction(double x, double y, MouseAction action) {
+		public MouseInteraction(double x, double y, MouseInteractionType action) {
 			this.x = x;
 			this.y = y;
-			this.action = action;
+			this.type = action;
 		}
 
 		/**
@@ -349,10 +373,10 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 		executorService = null;
 
 		// Initialize rotation variables.
-		mouseDown = false;
+		rotating = false;
 		normalizedPosition = new double[2];
 		rotation = new AtomicReference<MouseInteraction>();
-		sizeUpdateListener = new ControlAdapter() {
+		controlListener = new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {
 				refreshSizeVariables();
@@ -361,14 +385,46 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 
 		// Initialize zoom variables.
 		scrollCount = 0;
-		scrolled = false;
+		zooming = false;
 		zoom = new AtomicReference<MouseInteraction>();
 
-		// Initialize the dispose listener.
+		// Initialize the listeners.
 		disposeListener = new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
+				// Unset the control as it is not of use when it is disposed.
 				setControl(null);
+			}
+		};
+		focusListener = new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				stopZoom();
+			}
+		};
+		mouseListener = new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				stopZoom();
+				startRotate(e.x, e.y);
+			}
+
+			@Override
+			public void mouseUp(MouseEvent e) {
+				stopRotate(e.x, e.y);
+			}
+		};
+		mouseMoveListener = new MouseMoveListener() {
+			@Override
+			public void mouseMove(MouseEvent e) {
+				rotate(e.x, e.y);
+			}
+		};
+		mouseWheelListener = new MouseWheelListener() {
+			@Override
+			public void mouseScrolled(MouseEvent e) {
+				startZoom();
+				zoom(e.count);
 			}
 		};
 
@@ -398,11 +454,12 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 		if (control != this.control) {
 			// If the previous control was valid, unregister its listeners.
 			if (this.control != null) {
-				this.control.removeMouseListener(this);
-				this.control.removeMouseMoveListener(this);
-				this.control.removeMouseWheelListener(this);
-				this.control.removeControlListener(sizeUpdateListener);
+				this.control.removeControlListener(controlListener);
 				this.control.removeDisposeListener(disposeListener);
+				this.control.removeFocusListener(focusListener);
+				this.control.removeMouseListener(mouseListener);
+				this.control.removeMouseMoveListener(mouseMoveListener);
+				this.control.removeMouseWheelListener(mouseWheelListener);
 
 				// If there is no new control, shut down the worker thread.
 				if (control == null) {
@@ -422,12 +479,6 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 					executorService = Executors.newSingleThreadExecutor();
 				}
 
-				control.addMouseListener(this);
-				control.addMouseMoveListener(this);
-				control.addMouseWheelListener(this);
-				control.addControlListener(sizeUpdateListener);
-				control.addDisposeListener(disposeListener);
-
 				// Update the size variables based on the new control.
 				control.getDisplay().syncExec(new Runnable() {
 					@Override
@@ -435,6 +486,13 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 						refreshSizeVariables();
 					}
 				});
+
+				control.addControlListener(controlListener);
+				control.addDisposeListener(disposeListener);
+				control.addFocusListener(focusListener);
+				control.addMouseListener(mouseListener);
+				control.addMouseMoveListener(mouseMoveListener);
+				control.addMouseWheelListener(mouseWheelListener);
 			}
 		}
 
@@ -504,218 +562,6 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 		return changed;
 	}
 
-	/*
-	 * Implements a method from MouseWheelListener.
-	 */
-	@Override
-	public void mouseScrolled(MouseEvent e) {
-
-		// On the first scroll event, send a client event to *start* scrolling.
-		if (!scrolled) {
-			scrolled = true;
-
-			// Submit a task to send a DOWN event with the current zoom.
-			final int currentZoom = scrollCount;
-			executorService.submit(new Runnable() {
-				@Override
-				public void run() {
-					// Get the normalized x and y values for the current zoom.
-					double x = 0.0;
-					double y = getNormalizedZoom(currentZoom);
-
-					// Create a MouseInteraction for pressing buttons.
-					MouseInteraction zoomStart;
-					zoomStart = new MouseInteraction(x, y, MouseAction.DOWN);
-					zoomStart.buttonRight = true;
-					zoomStart.ctrlKey = true;
-
-					// Send the request to the client. There should be no need
-					// to refresh.
-					sendMouseInteraction(zoomStart, false);
-
-					return;
-				}
-			});
-		}
-
-		// Adjust the scroll count. Note that zooming in/out is inversely
-		// related to the direction of the count.
-		scrollCount -= e.count;
-
-		// Create a MouseInteraction for moving (zooming).
-		zoom.set(new MouseInteraction(0.0, scrollCount, MouseAction.MOVE));
-
-		// Submit a task to send an MOVE event with the current zoom.
-		executorService.submit(new Runnable() {
-			@Override
-			public void run() {
-				// Get the current mouse interaction.
-				MouseInteraction zoomEvent = zoom.getAndSet(null);
-				if (zoomEvent != null) {
-					// Update the zoom event.
-					zoomEvent.buttonRight = true;
-					zoomEvent.ctrlKey = true;
-
-					// Get the normalized y value for the current zoom event.
-					zoomEvent.y = getNormalizedZoom(zoomEvent.y);
-
-					// Send the request to the client. Refresh because a
-					// rotation has been applied.
-					sendMouseInteraction(zoomEvent, true);
-				}
-
-				return;
-			}
-		});
-
-		return;
-	}
-
-	/*
-	 * Implements a method from MouseMoveListener.
-	 */
-	@Override
-	public void mouseMove(MouseEvent e) {
-		// If the mouse is being dragged, send a mouse drag event to the web
-		// client.
-		if (mouseDown) {
-			// Create a MouseInteraction for moving (rotating).
-			rotation.set(new MouseInteraction(e.x, e.y, MouseAction.MOVE));
-
-			// Submit a task to send an MOVE event with the current position.
-			executorService.submit(new Runnable() {
-				@Override
-				public void run() {
-					// Get the current mouse interaction.
-					MouseInteraction rotateEvent = rotation.getAndSet(null);
-					if (rotateEvent != null) {
-						// Update the rotate event.
-						rotateEvent.buttonLeft = true;
-
-						// Normalize the position values.
-						double[] normPosition = getNormalizedPosition(rotateEvent.x, rotateEvent.y);
-						rotateEvent.x = normPosition[0];
-						rotateEvent.y = normPosition[1];
-
-						// Send the request to the client. Refresh because a
-						// rotation has been applied.
-						sendMouseInteraction(rotateEvent, true);
-					}
-
-					return;
-				}
-			});
-		}
-
-		return;
-	}
-
-	/*
-	 * Implements a method from MouseListener.
-	 */
-	@Override
-	public void mouseDoubleClick(MouseEvent e) {
-		// Nothing to do yet.
-	}
-
-	/*
-	 * Implements a method from MouseListener.
-	 */
-	@Override
-	public void mouseDown(MouseEvent e) {
-
-		// If the mouse was scrolled previously, send an event to *stop*
-		// scrolling.
-		if (scrolled) {
-			scrolled = false;
-			// Submit a task to send an UP event with the current zoom.
-			final int currentZoom = scrollCount;
-			executorService.submit(new Runnable() {
-				@Override
-				public void run() {
-					// Get the normalized x and y values for the current zoom.
-					double x = 0.0;
-					double y = getNormalizedZoom(currentZoom);
-
-					// Create a MouseInteraction for releasing buttons.
-					MouseInteraction zoomStop;
-					zoomStop = new MouseInteraction(x, y, MouseAction.UP);
-
-					// Send the request to the client. There should be no need
-					// to refresh.
-					sendMouseInteraction(zoomStop, false);
-
-					return;
-				}
-			});
-		}
-
-		// Get the actual mouse position when the mouse button was pressed.
-		final int mouseX = e.x;
-		final int mouseY = e.y;
-
-		// Submit a task to send a DOWN event with the current mouse position.
-		executorService.submit(new Runnable() {
-			@Override
-			public void run() {
-				// Get the normalized x and y values for the mouse position.
-				double[] normPosition = getNormalizedPosition(mouseX, mouseY);
-				double x = normPosition[0];
-				double y = normPosition[1];
-
-				// Create a MouseInteraction for pressing buttons.
-				MouseInteraction moveStart;
-				moveStart = new MouseInteraction(x, y, MouseAction.DOWN);
-				moveStart.buttonLeft = true;
-
-				// Send the request to the client. There should be no need to
-				// refresh.
-				sendMouseInteraction(moveStart, false);
-
-				return;
-			}
-		});
-
-		// Now we can set the mouse drag flag to true.
-		mouseDown = true;
-	}
-
-	/*
-	 * Implements a method from MouseListener.
-	 */
-	@Override
-	public void mouseUp(MouseEvent e) {
-		// Unset the mouse drag flag.
-		mouseDown = false;
-
-		// Get the actual mouse position when the mouse button was released.
-		final int mouseX = e.x;
-		final int mouseY = e.y;
-
-		// Submit a task to send an UP event with the current mouse position.
-		executorService.submit(new Runnable() {
-			@Override
-			public void run() {
-				// Get the normalized x and y values for the mouse position.
-				double[] normPosition = getNormalizedPosition(mouseX, mouseY);
-				double x = normPosition[0];
-				double y = normPosition[1];
-
-				// Create a MouseInteraction for releasing buttons.
-				MouseInteraction moveStop;
-				moveStop = new MouseInteraction(x, y, MouseAction.UP);
-
-				// Send the request to the client. There should be no need to
-				// refresh.
-				sendMouseInteraction(moveStop, false);
-
-				return;
-			}
-		});
-
-		return;
-	}
-
 	/**
 	 * Normalizes the specified x and y coordinates based on the size of the
 	 * associated {@link #control}.
@@ -778,7 +624,7 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 		if (clientRef != null) {
 			try {
 				// Send the mouse event to the client.
-				clientRef.event(viewId, interaction.x, interaction.y, interaction.action.toString(),
+				clientRef.event(viewId, interaction.x, interaction.y, interaction.type.toString(),
 						interaction.getState()).get();
 
 				// Set the flag that the event was processed.
@@ -797,4 +643,246 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 		return sent;
 	}
 
+	/**
+	 * Signals the client to start rotating the view.
+	 * 
+	 * @param x
+	 *            The current mouse x position when the mouse button was
+	 *            pressed.
+	 * @param y
+	 *            The current mouse y position when the mouse button was
+	 *            pressed.
+	 */
+	private void startRotate(int x, int y) {
+		if (!rotating) {
+			// Get the actual mouse position when the mouse button was pressed.
+			final int mouseX = x;
+			final int mouseY = y;
+
+			// Submit a task to send a DOWN event with the current mouse
+			// position.
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					// Get the normalized x and y values for the mouse position.
+					double[] normPosition = getNormalizedPosition(mouseX, mouseY);
+					double x = normPosition[0];
+					double y = normPosition[1];
+
+					// Create a MouseInteraction for pressing buttons.
+					MouseInteraction moveStart;
+					moveStart = new MouseInteraction(x, y, MouseInteractionType.DOWN);
+					moveStart.buttonLeft = true;
+
+					// Send the request to the client. There should be no need
+					// to
+					// refresh.
+					sendMouseInteraction(moveStart, false);
+
+					return;
+				}
+			});
+
+			// Now we can set the mouse drag flag to true.
+			rotating = true;
+		}
+		return;
+	}
+
+	/**
+	 * Signals the client to start zooming the view.
+	 */
+	private void startZoom() {
+		// On the first scroll event, send a client event to *start* scrolling.
+		if (!zooming) {
+			// Submit a task to send a DOWN event with the current zoom.
+			final int currentZoom = scrollCount;
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					// Get the normalized x and y values for the current zoom.
+					double x = 0.0;
+					double y = getNormalizedZoom(currentZoom);
+
+					// Create a MouseInteraction for pressing buttons.
+					MouseInteraction zoomStart;
+					zoomStart = new MouseInteraction(x, y, MouseInteractionType.DOWN);
+					zoomStart.buttonRight = true;
+					zoomStart.ctrlKey = true;
+
+					// Send the request to the client. There should be no need
+					// to refresh.
+					sendMouseInteraction(zoomStart, false);
+
+					return;
+				}
+			});
+
+			// Now we can set the zoom flag to true.
+			zooming = true;
+		}
+		return;
+	}
+
+	/**
+	 * Signals the client to rotate the view.
+	 * 
+	 * @param x
+	 *            The current mouse x position when the mouse button was moved.
+	 * @param y
+	 *            The current mouse y position when the mouse button was moved.
+	 */
+	private void rotate(int x, int y) {
+		// If the mouse is being dragged, send a mouse drag event to the web
+		// client.
+		if (rotating) {
+			// Create a MouseInteraction for moving (rotating).
+			rotation.set(new MouseInteraction(x, y, MouseInteractionType.MOVE));
+
+			// Submit a task to send an MOVE event with the current position.
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					// Get the current mouse interaction.
+					MouseInteraction rotateEvent = rotation.getAndSet(null);
+					if (rotateEvent != null) {
+						// Update the rotate event.
+						rotateEvent.buttonLeft = true;
+
+						// Normalize the position values.
+						double[] normPosition = getNormalizedPosition(rotateEvent.x, rotateEvent.y);
+						rotateEvent.x = normPosition[0];
+						rotateEvent.y = normPosition[1];
+
+						// Send the request to the client. Refresh because a
+						// rotation has been applied.
+						sendMouseInteraction(rotateEvent, true);
+					}
+
+					return;
+				}
+			});
+		}
+
+		return;
+	}
+
+	/**
+	 * Signals the client to zoom the view.
+	 * 
+	 * @param count
+	 *            The count from the mouse scroll operation.
+	 */
+	private void zoom(int count) {
+		if (zooming) {
+			// Adjust the scroll count. Note that zooming in/out is inversely
+			// related to the direction of the count.
+			scrollCount -= count;
+
+			// Create a MouseInteraction for moving (zooming).
+			zoom.set(new MouseInteraction(0.0, scrollCount, MouseInteractionType.MOVE));
+
+			// Submit a task to send an MOVE event with the current zoom.
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					// Get the current mouse interaction.
+					MouseInteraction zoomEvent = zoom.getAndSet(null);
+					if (zoomEvent != null) {
+						// Update the zoom event.
+						zoomEvent.buttonRight = true;
+						zoomEvent.ctrlKey = true;
+
+						// Get the normalized y value for the current zoom
+						// event.
+						zoomEvent.y = getNormalizedZoom(zoomEvent.y);
+
+						// Send the request to the client. Refresh because a
+						// rotation has been applied.
+						sendMouseInteraction(zoomEvent, true);
+					}
+
+					return;
+				}
+			});
+		}
+		return;
+	}
+
+	/**
+	 * Signals the client to stop rotating the view.
+	 * 
+	 * @param x
+	 *            The current mouse x position when the mouse button was
+	 *            released.
+	 * @param y
+	 *            The current mouse y position when the mouse button was
+	 *            released.
+	 */
+	private void stopRotate(int x, int y) {
+		// Unset the mouse drag flag.
+		if (rotating == true) {
+			rotating = false;
+
+			// Get the actual mouse position when the mouse button was released.
+			final int mouseX = x;
+			final int mouseY = y;
+
+			// Submit a task to send an UP event with the current mouse
+			// position.
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					// Get the normalized x and y values for the mouse position.
+					double[] normPosition = getNormalizedPosition(mouseX, mouseY);
+					double x = normPosition[0];
+					double y = normPosition[1];
+
+					// Create a MouseInteraction for releasing buttons.
+					MouseInteraction moveStop;
+					moveStop = new MouseInteraction(x, y, MouseInteractionType.UP);
+
+					// Send the request to the client. There should be no need
+					// to
+					// refresh.
+					sendMouseInteraction(moveStop, false);
+
+					return;
+				}
+			});
+		}
+		return;
+	}
+
+	/**
+	 * Signals the client to stop zooming the view.
+	 */
+	private void stopZoom() {
+		// If the mouse was scrolled previously, send an event to *stop*
+		// scrolling.
+		if (zooming) {
+			zooming = false;
+			// Submit a task to send an UP event with the current zoom.
+			final int currentZoom = scrollCount;
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					// Get the normalized x and y values for the current zoom.
+					double x = 0.0;
+					double y = getNormalizedZoom(currentZoom);
+
+					// Create a MouseInteraction for releasing buttons.
+					MouseInteraction zoomStop;
+					zoomStop = new MouseInteraction(x, y, MouseInteractionType.UP);
+
+					// Send the request to the client. There should be no need
+					// to refresh.
+					sendMouseInteraction(zoomStop, false);
+
+					return;
+				}
+			});
+		}
+		return;
+	}
 }
