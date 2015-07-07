@@ -124,18 +124,6 @@ public class MOOSE extends Item {
 	public static final int ppDataId = 10;
 
 	/**
-	 * 
-	 */
-	@XmlTransient
-	private IRemoteConnection remoteConnection;
-
-	/**
-	 * 
-	 */
-	@XmlTransient
-	private IRemoteServicesManager remoteManager;
-
-	/**
 	 * Boolean to indicate whether this Item has already registered with the
 	 * necessary Tree blocks.
 	 */
