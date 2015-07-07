@@ -30,5 +30,8 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>	
 </project>
