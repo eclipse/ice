@@ -20,6 +20,8 @@ import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
@@ -119,7 +121,13 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 * thread so that events are processed in order (which is required for
 	 * correct behavior of the web client).
 	 */
-	private final ExecutorService executorService;
+	private ExecutorService executorService;
+
+	/**
+	 * Listens for the associated control's dispose events. When the control is
+	 * unset or disposed, the worker thread should be shut down.
+	 */
+	private final DisposeListener disposeListener;
 
 	// ---- Rotation / Mouse-Drag Variables ---- //
 	/**
@@ -337,8 +345,8 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 	 */
 	public ParaViewMouseAdapter(IParaViewWebClient client, int viewId, Control control) {
 
-		// Set up the ExecutorService so we can start threads later.
-		executorService = Executors.newSingleThreadExecutor();
+		// There is no worker thread by default until a valid control is set.
+		executorService = null;
 
 		// Initialize rotation variables.
 		mouseDown = false;
@@ -355,6 +363,14 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 		scrollCount = 0;
 		scrolled = false;
 		zoom = new AtomicReference<MouseInteraction>();
+
+		// Initialize the dispose listener.
+		disposeListener = new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				setControl(null);
+			}
+		};
 
 		// Set the specified variables.
 		setClient(client);
@@ -386,6 +402,13 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 				this.control.removeMouseMoveListener(this);
 				this.control.removeMouseWheelListener(this);
 				this.control.removeControlListener(sizeUpdateListener);
+				this.control.removeDisposeListener(disposeListener);
+
+				// If there is no new control, shut down the worker thread.
+				if (control == null) {
+					executorService.shutdown();
+					executorService = null;
+				}
 			}
 
 			// Update the reference to the control.
@@ -394,10 +417,16 @@ public class ParaViewMouseAdapter implements MouseListener, MouseMoveListener, M
 
 			// If the new control is valid, register its listeners.
 			if (control != null) {
+				// Create the worker thread if necessary.
+				if (executorService == null) {
+					executorService = Executors.newSingleThreadExecutor();
+				}
+
 				control.addMouseListener(this);
 				control.addMouseMoveListener(this);
 				control.addMouseWheelListener(this);
 				control.addControlListener(sizeUpdateListener);
+				control.addDisposeListener(disposeListener);
 
 				// Update the size variables based on the new control.
 				control.getDisplay().syncExec(new Runnable() {

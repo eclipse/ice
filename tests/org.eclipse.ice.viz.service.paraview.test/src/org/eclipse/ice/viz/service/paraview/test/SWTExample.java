@@ -21,8 +21,6 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -67,7 +65,7 @@ public class SWTExample {
 	 */
 	public static void main(String[] jArgs) {
 
-		final boolean useExodus = true;
+		final boolean useExodus = false;
 
 		// Set up the shell to contain the render panel.
 		final Display display = new Display();
@@ -207,6 +205,8 @@ public class SWTExample {
 					display.sleep();
 			}
 
+			// Stop the client and the canvas.
+			canvas.dispose();
 			client.disconnect();
 			
 			display.dispose();

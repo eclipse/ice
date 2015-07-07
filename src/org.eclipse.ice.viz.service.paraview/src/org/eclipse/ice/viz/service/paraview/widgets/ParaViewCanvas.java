@@ -215,6 +215,17 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 	}
 
 	/*
+	 * Overrides a method from Widget.
+	 */
+	@Override
+	public void dispose() {
+		// Shut down the worker thread.
+		executorService.shutdown();
+		// Proceed with the default behavior.
+		super.dispose();
+	}
+
+	/*
 	 * Implements a method from PaintListener.
 	 */
 	@Override
