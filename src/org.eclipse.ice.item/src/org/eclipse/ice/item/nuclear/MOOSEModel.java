@@ -347,20 +347,6 @@ public class MOOSEModel extends Item {
 		mooseDataTree.setName("Input Data");
 		form.addComponent(mooseDataTree);
 
-		// if (project != null) {
-		// Thread thread = new Thread(new Runnable() {
-		// public void run() {
-		// if (!mooseApps.isEmpty()) {
-		// try {
-		// loadTreeContents(loadedApp);
-		// } catch (IOException | CoreException e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// }
-		// });
-		// thread.start();
-		// }
 		return;
 	}
 

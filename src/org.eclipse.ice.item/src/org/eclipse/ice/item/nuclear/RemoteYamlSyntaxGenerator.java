@@ -39,12 +39,28 @@ import org.eclipse.remote.core.exception.RemoteConnectionException;
  */
 public class RemoteYamlSyntaxGenerator {// extends Job {
 
+	/**
+	 * Reference to the remote PTP connection to use.
+	 */
 	private IRemoteConnection connection;
 
+	/**
+	 * Reference to the IFolder for MOOSE in the project space.
+	 */
 	private IFolder mooseFolder;
 
+	/**
+	 * Reference to the remote application absolute path. 
+	 */
 	private String appPath;
 
+	/**
+	 * The Constructor
+	 * 
+	 * @param conn
+	 * @param moose
+	 * @param app
+	 */
 	public RemoteYamlSyntaxGenerator(IRemoteConnection conn, IFolder moose, String app) {
 		//super("Executing Remote YAML/Syntax Invocation.");
 		connection = conn;
