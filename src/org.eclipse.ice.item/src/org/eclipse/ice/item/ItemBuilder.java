@@ -61,6 +61,16 @@ public interface ItemBuilder {
 	public ItemType getItemType();
 
 	/**
+	 * This operation returns true if the Item is publishable to 
+	 * the list of available Items, and false otherwise. By default, 
+	 * this should return true, and only false when an Item developer explicitly 
+	 * does not want this Item provided as available to the user.
+	 * 
+	 * @return True for publishable, false otherwise
+	 */
+	public boolean isPublishable();
+	
+	/**
 	 * <p>
 	 * This operation builds and returns an instance of the Item that can be
 	 * constructed by the ItemBuilder.

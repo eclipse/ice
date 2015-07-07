@@ -77,4 +77,9 @@ public class FakeGeometryBuilder implements ItemBuilder {
 		lastFakeItem = new FakeItem(projectSpace);
 		return lastFakeItem;
 	}
+
+	@Override
+	public boolean isPublishable() {
+		return true;
+	}
 }

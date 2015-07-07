@@ -144,11 +144,11 @@ public class AbstractVizServiceTester {
 			}
 			// --------------------------- //
 		} catch (URISyntaxException e) {
+			e.printStackTrace();
 			fail("AbstractVizServiceTester error: " + "A test URI was invalid.");
-			e.printStackTrace();
 		} catch (Exception e) {
-			fail("AbstractVizServiceTester error: " + "Unknown exception!");
 			e.printStackTrace();
+			fail("AbstractVizServiceTester error: " + "Unknown exception!");
 		}
 
 		return;

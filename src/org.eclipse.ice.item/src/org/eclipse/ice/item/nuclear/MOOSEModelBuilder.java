@@ -68,4 +68,13 @@ public class MOOSEModelBuilder implements ItemBuilder {
 
 		return mooseModel;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#isPublishable()
+	 */
+	@Override
+	public boolean isPublishable() {
+		return false;
+	}
 }

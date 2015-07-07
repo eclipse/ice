@@ -17,6 +17,9 @@ import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.connections.ConnectionAdapter;
 import org.eclipse.swt.widgets.Display;
@@ -41,8 +44,60 @@ public class VisItConnectionAdapter extends
 	 */
 	@Override
 	protected VisItSwtConnection openConnection() {
-		return VisItSwtConnectionManager.createConnection(getKey(),
-				createDefaultShell(), getConnectionProperties());
+
+		// Create a VisIt ConnectionJob
+		ConnectionJob connectionJob = new ConnectionJob("Connecting to VisIt") {
+
+			/*
+			 * (non-Javadoc)
+			 * @see org.eclipse.ice.viz.service.connections.ConnectionAdapter.ConnectionJob#run(org.eclipse.core.runtime.IProgressMonitor)
+			 */
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				final int ticks = 100;
+				monitor.beginTask("Creating the connection to VisIt...", ticks);
+				try {
+					connection = VisItSwtConnectionManager.createConnection(
+							getKey(), createDefaultShell(),
+							getConnectionProperties());//, monitor);
+
+					if (connection == null) {
+						String errorMessage = "The VisIt connection was null. Check "
+								+ "your VisIt application path, or specified port, in the Visualization > VisIt "
+								+ "preferences page.";
+						return new Status(
+								Status.ERROR,
+								"org.eclipse.ice.viz.service.connections.visit",
+								1, errorMessage, null);
+					}
+
+					if (monitor.isCanceled()) {
+						return Status.CANCEL_STATUS;
+					}
+
+				} finally {
+					monitor.subTask("VisIt connection established successfully.");
+					monitor.worked(100);
+					monitor.done();
+				}
+				return Status.OK_STATUS;
+			}
+
+		};
+
+		// Schedule it for execution
+		connectionJob.schedule();
+
+		// Let this thread wait til it's been launched
+		// and completed.
+		try {
+			connectionJob.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		// Return, clients should handle if its null or not
+		return connectionJob.getConnection();
 	}
 
 	/*
@@ -165,18 +220,18 @@ public class VisItConnectionAdapter extends
 		// working as expected. For now, just return 1. A bug ticket has been
 		// filed.
 		int windowId = 1;
-//		if (getState() == ConnectionState.Connected) {
-//			// The order of the returned list is not guaranteed. Throw it into
-//			// an ordered set and get the lowest positive ID not in the set.
-//			Set<Integer> ids = new HashSet<Integer>(getConnection()
-//					.getWindowIds());
-//			// Find the first integer not in the set.
-//			while (ids.contains(windowId)) {
-//				windowId++;
-//			}
-//		} else {
-//			windowId = -1;
-//		}
+		// if (getState() == ConnectionState.Connected) {
+		// // The order of the returned list is not guaranteed. Throw it into
+		// // an ordered set and get the lowest positive ID not in the set.
+		// Set<Integer> ids = new HashSet<Integer>(getConnection()
+		// .getWindowIds());
+		// // Find the first integer not in the set.
+		// while (ids.contains(windowId)) {
+		// windowId++;
+		// }
+		// } else {
+		// windowId = -1;
+		// }
 		return windowId;
 	}
 }

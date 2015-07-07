@@ -18,11 +18,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -34,27 +39,32 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.io.serializable.IOService;
-import org.eclipse.ice.item.nuclear.MOOSE;
+import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.ice.item.nuclear.MOOSELauncher;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
+import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This class tests the MOOSEModel Item to make sure that it can correctly
- * create its Form and process a modified Form.
+ * This class tests the MooseItem to make sure that it can correctly create its
+ * Form and process a modified Form.
  * 
  * @author Jay Jay Billings
  */
-public class MOOSEModelTester {
+public class MOOSETester {
 
 	/**
 	 * The project space used to create the workspace for the tests.
@@ -77,15 +87,12 @@ public class MOOSEModelTester {
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
 		IProject project = null;
-		String projectName = "MOOSEModelTesterWorkspace";
+		String projectName = "MooseItemTesterWorkspace";
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
 				+ "ICETests" + separator + "itemData";
 		String yamlFile = userDir + separator + "bison.yaml";
 		String filePath = userDir + separator + "input_coarse10.i";
-
-		// Debug information
-		System.out.println("MOOSE Test Data File: " + filePath);
 
 		// Setup the project
 		try {
@@ -156,19 +163,19 @@ public class MOOSEModelTester {
 	}
 
 	/**
-	 * This operation checks the MOOSEModel and makes sure that it can properly
+	 * This operation checks the MooseItem and makes sure that it can properly
 	 * construct its Form.
 	 */
 	@Test
 	public void checkConstruction() {
 
 		// Create a MOOSEModel to test
-		MOOSEModel model = new MOOSEModel(projectSpace);
+		MOOSE model = new MOOSE(projectSpace);
 
 		// Check the form
 		Form form = model.getForm();
 		assertNotNull(form);
-		assertEquals(3, form.getComponents().size());
+		assertEquals(5, form.getComponents().size());
 
 		// Check the data component
 		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) instanceof DataComponent);
@@ -179,7 +186,8 @@ public class MOOSEModelTester {
 				.retrieveEntry("MOOSE-Based Application");
 		assertNotNull(mooseAppEntry);
 		assertEquals(1, mooseAppEntry.getId());
-		assertEquals("Import Application", mooseAppEntry.getDefaultValue());
+		assertEquals("Import Application",
+				mooseAppEntry.getDefaultValue());
 		assertEquals(mooseAppEntry.getDefaultValue(), mooseAppEntry.getValue());
 
 		// Check the output file Entry
@@ -200,52 +208,6 @@ public class MOOSEModelTester {
 	}
 
 	/**
-	 * This operation checks the MOOSEModel to make sure that it can correctly
-	 * process its Form and generate a MOOSE input file.
-	 */
-	@Test
-	public void checkProcessing() {
-
-		// Local Declarations
-		String testFilename = "bison_test_file.inp";
-
-		// Create a MOOSEModel to test
-		MOOSEModel model = new MOOSEModel(projectSpace);
-
-		// Set the IOService on the model so we can write out
-		model.setIOService(service);
-
-		// Check the form
-		Form form = model.getForm();
-		assertNotNull(form);
-
-		// Check the action list
-		assertEquals(2, form.getActionList().size());
-		assertTrue(form.getActionList().contains("Write MOOSE File"));
-
-		// FIXME REPLACE WITH PATH TO ICETESTS...
-//		Entry appName = ((DataComponent) form.getComponent(1))
-//				.retrieveEntry("MOOSE-Based Application");
-//		appName.setValue("file:/Users/aqw/ICEFiles_prebuiltMoose/moose/test/moose_test-opt");
-
-		// Change the output file name to make sure that it is possible
-		Entry outputFileEntry = ((DataComponent) form.getComponent(1))
-				.retrieveEntry("Output File Name");
-		outputFileEntry.setValue(testFilename);
-
-		// Resubmit the form
-		assertEquals(FormStatus.ReadyToProcess, model.submitForm(form));
-
-		// Direct the model to write the output file
-		assertEquals(FormStatus.Processed, model.process("Write MOOSE File"));
-
-		// Check that the file exists
-		assertTrue(projectSpace.getFile(testFilename).exists());
-
-		return;
-	}
-
-	/**
 	 * This operation is responsible for ensuring that the MOOSEModel can load
 	 * input. This operation checks this by passing it an input file for Bison.
 	 */
@@ -256,7 +218,7 @@ public class MOOSEModelTester {
 		int numMooseBlocks = 20;
 
 		// Create a MOOSE Item
-		MOOSEModel mooseItem = new MOOSEModel(projectSpace);
+		MOOSE mooseItem = new MOOSE(projectSpace);
 
 		// Set the IO service on the item so we can read/load data in
 		mooseItem.setIOService(service);
@@ -384,19 +346,11 @@ public class MOOSEModelTester {
 	public void checkEquality() {
 
 		// Create JobLauncherItems to test
-		MOOSEModel equalItem = new MOOSEModel(projectSpace);
-		MOOSEModel unEqualItem = new MOOSEModel();
-		MOOSEModel transitiveItem = new MOOSEModel(projectSpace);
+		MOOSE item = new MOOSE(projectSpace);
+		MOOSE equalItem = new MOOSE(projectSpace);
+		MOOSE unEqualItem = new MOOSE();
+		MOOSE transitiveItem = new MOOSE(projectSpace);
 
-		// Create a MOOSE Item
-		MOOSEModel item = new MOOSEModel(projectSpace);
-
-		// Set the IO service on the item so we can read/load data in
-		item.setIOService(service);
-		equalItem.setIOService(service);
-		transitiveItem.setIOService(service);
-		
-		// Load the input
 		item.loadInput("input_coarse10.i");
 		equalItem.loadInput("input_coarse10.i");
 		transitiveItem.loadInput("input_coarse10.i");
@@ -437,7 +391,7 @@ public class MOOSEModelTester {
 				&& !item.equals(unEqualItem));
 
 		// Assert checking equality with null is false
-		assertFalse(item == null);
+		assertFalse(item==null);
 
 		// Assert that two equal objects return same hashcode
 		assertTrue(item.equals(equalItem)
@@ -453,8 +407,8 @@ public class MOOSEModelTester {
 
 	/**
 	 * <p>
-	 * This operation checks the MOOSE to ensure that its copy() and clone()
-	 * operations work as specified.
+	 * This operation checks the MOOSE to ensure that its copy() and
+	 * clone() operations work as specified.
 	 * </p>
 	 * 
 	 */
@@ -462,12 +416,10 @@ public class MOOSEModelTester {
 	public void checkCopying() {
 
 		// Local Declarations
-		MOOSE cloneItem = new MOOSE(null), copyItem = new MOOSE(null);
-		MOOSE mooseItem = new MOOSE(projectSpace);
+		MOOSE cloneItem = new MOOSE(null), copyItem = new MOOSE(
+				null);
+		MOOSE mooseItem = new MOOSE();
 
-		mooseItem.setIOService(service);
-		mooseItem.loadInput("input_coarse10.i");
-		
 		mooseItem.setDescription("I am a job!");
 		mooseItem.setProject(null);
 
@@ -509,6 +461,61 @@ public class MOOSEModelTester {
 		assertEquals(mooseItem.getItemType(), copyItem.getItemType());
 		assertEquals(mooseItem.getName(), copyItem.getName());
 		assertEquals(mooseItem.getStatus(), copyItem.getStatus());
+
+		return;
+	}
+
+	/**
+	 * This operation checks the ability of the JobLauncher to persist itself to
+	 * XML and to load itself from an XML input stream.
+	 * @throws IOException 
+	 * @throws JAXBException 
+	 * @throws NullPointerException 
+	 */
+	@Test
+	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
+		/*
+		 * The following sets of operations will be used to test the
+		 * "read and write" portion of the JobLauncher Item. It will demonstrate
+		 * the behavior of reading and writing from an
+		 * "XML (inputStream and outputStream)" file. It will use an annotated
+		 * Item to demonstrate basic behavior.
+		 */
+
+		// Local declarations
+		MOOSE loadedItem = new MOOSE();
+		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<Class> classList = new ArrayList<Class>();
+		classList.add(MOOSE.class);
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		
+		// Set up item
+		MOOSE persistedItem = new MOOSE();
+		persistedItem.setDescription("MOOSE item description");
+		persistedItem.setId(5);
+		persistedItem.setName("Name!");
+		persistedItem.getForm().setItemID(6);
+
+		// persist to an output stream
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		xmlHandler.write(persistedItem, classList, outputStream);
+
+		// Load an Item from the first
+		loadedItem = (MOOSE) xmlHandler.read(classList,new ByteArrayInputStream(outputStream
+				.toByteArray()));
+		// Make sure they match
+		assertEquals(persistedItem, loadedItem);
+
+		// Check the contents more closely to make sure that JobLauncher Item.
+		assertEquals(persistedItem.getAvailableActions(),
+				loadedItem.getAvailableActions());
+		assertEquals(persistedItem.getDescription(),
+				loadedItem.getDescription());
+		assertEquals(persistedItem.getForm(), loadedItem.getForm());
+		assertEquals(persistedItem.getId(), loadedItem.getId());
+		assertEquals(persistedItem.getItemType(), loadedItem.getItemType());
+		assertEquals(persistedItem.getName(), loadedItem.getName());
+		assertEquals(persistedItem.getStatus(), loadedItem.getStatus());
 
 		return;
 	}

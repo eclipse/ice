@@ -13,6 +13,7 @@
 package org.eclipse.ice.sassena;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
@@ -23,29 +24,22 @@ import org.eclipse.ice.item.ItemType;
  * 
  * @author Scott Forest Hull II
  */
-public class SassenaIncoherentModelBuilder implements ItemBuilder {
+public class SassenaIncoherentModelBuilder extends AbstractItemBuilder {
 
-	/*
-	 * Implements a method from ItemBuilder.
+	/**
+	 * The Constructor
 	 */
-	@Override
-	public String getItemName() {
-		return "Sassena Incoherent Model";
+	public SassenaIncoherentModelBuilder() {
+		setName("Sassena Incoherent Model");
+		setType(ItemType.Model);
 	}
-
+	
 	/*
-	 * Implements a method from ItemBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
 	@Override
-	public ItemType getItemType() {
-		return ItemType.Model;
-	}
-
-	/*
-	 * Implements a method from ItemBuilder.
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 		SassenaIncoherentModel sassena = new SassenaIncoherentModel(
 				projectSpace);
 		sassena.setItemBuilderName(getItemName());

@@ -425,7 +425,9 @@ public class ItemManager implements ItemListener {
 		// to new Strings since HashMap.keySet() returns the set of keys by
 		// reference and changes to that list would cause the map to change.
 		for (String j : this.itemBuilderList.keySet()) {
-			builders.add(new String(j));
+			if (itemBuilderList.get(j).isPublishable()) {
+				builders.add(new String(j));
+			}
 		}
 
 		// Check the size and determine whether or not null should be returned
@@ -525,9 +527,13 @@ public class ItemManager implements ItemListener {
 	 */
 	private void rebuildItem(ItemBuilder builder, Item item,
 			IProject projectSpace) {
+		
 		// Build the proper Item
 		Item rebuiltItem = itemBuilderList.get(item.getItemBuilderName())
 				.build(projectSpace);
+
+		// Give the project to this temp Item
+		item.setProject(projectSpace);
 		// Copy over the information from the persistence
 		// provider
 		rebuiltItem.copy(item);
@@ -770,6 +776,7 @@ public class ItemManager implements ItemListener {
 		boolean retVal = false;
 		int itemId = msg.getItemId();
 
+		System.out.println("Update Message Item Id is " + itemId);
 		// Push the message if possible
 		if (itemList.containsKey(itemId)) {
 			// Grab the Item

@@ -13,6 +13,7 @@
 package org.eclipse.ice.filesimulation;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
@@ -21,31 +22,21 @@ import org.eclipse.ice.item.ItemType;
  * <p>The SimulationBuilder is an ItemBuilder for the Simulation Item and is defined as an OSGi component in ICE. It dynamically registers the creation of Simulations as a service in ICE.</p>
  * @author Jay Jay Billings
  */
-public class FileSimulationBuilder implements ItemBuilder {
-	/** 
-	 * (non-Javadoc)
-	 * @see ItemBuilder#getItemName()
+public class FileSimulationBuilder extends AbstractItemBuilder {
+	
+	/**
+	 * The Constructor
 	 */
-	@Override
-	public String getItemName() {
-		return "File Command Launcher";
+	public FileSimulationBuilder() {
+		setName("File Command Launcher");
+		setType(ItemType.Simulation);
 	}
-
-	/** 
+	
+	/*
 	 * (non-Javadoc)
-	 * @see ItemBuilder#getItemType()
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
-	@Override
-	public ItemType getItemType() {
-		return ItemType.Simulation;
-	}
-
-	/** 
-	 * (non-Javadoc)
-	 * @see ItemBuilder#build()
-	 */
-	@Override
-	public Item build(IProject project) {
+	public Item getInstance(IProject project) {
 		
 		FileSimulation fileSim = new FileSimulation(project);
 		fileSim.setName(getItemName());

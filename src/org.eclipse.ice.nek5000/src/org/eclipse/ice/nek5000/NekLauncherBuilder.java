@@ -13,6 +13,7 @@
 package org.eclipse.ice.nek5000;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
@@ -23,7 +24,7 @@ import org.eclipse.ice.item.ItemType;
  * @author Jay Jay Billings
  *
  */
-public class NekLauncherBuilder implements ItemBuilder {
+public class NekLauncherBuilder extends AbstractItemBuilder {
 
 	/**
 	 * The name that should be used for the Item and this builder
@@ -35,27 +36,19 @@ public class NekLauncherBuilder implements ItemBuilder {
 	 */
 	public static final ItemType type = ItemType.Simulation;
 
-	/*
-	 * Implements a method from ItemBuilder.
+	/**
+	 * The Constructor
 	 */
-	@Override
-	public String getItemName() {
-		return name;
+	public NekLauncherBuilder() {
+		setName(name);
+		setType(type);
 	}
-
-	/*
+	
+	/**
 	 * Implements a method from ItemBuilder.
 	 */
 	@Override
-	public ItemType getItemType() {
-		return type;
-	}
-
-	/*
-	 * Implements a method from ItemBuilder.
-	 */
-	@Override
-	public Item build(IProject project) {
+	public Item getInstance(IProject project) {
 		return new NekLauncher(project);
 	}
 

@@ -13,6 +13,7 @@
 package org.eclipse.ice.vibe.model;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
@@ -23,28 +24,22 @@ import org.eclipse.ice.item.ItemType;
  * 
  * @author Scott Forest Hull II, Andrew Bennett
  */
-public class VibeModelBuilder implements ItemBuilder {
-	/*
-	 * Implements a method from ItemBuilder.
+public class VibeModelBuilder extends AbstractItemBuilder {
+	
+	/**
+	 * The Constructord
 	 */
-	@Override
-	public String getItemName() {
-		return "VIBE Model";
+	public VibeModelBuilder() {
+		setName("VIBE Model");
+		setType(ItemType.Model);
 	}
 
 	/*
-	 * Implements a method from ItemBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
 	@Override
-	public ItemType getItemType() {
-		return ItemType.Model;
-	}
-
-	/*
-	 * Implements a method from ItemBuilder.
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 
 		// Create a model
 		Item item = new VibeModel(projectSpace);

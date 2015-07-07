@@ -17,15 +17,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.window.Window;
+import org.eclipse.remote.core.IRemoteConnectionHostService;
+import org.eclipse.remote.ui.dialogs.RemoteResourceBrowser;
+import org.eclipse.remote.ui.widgets.RemoteFileWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -36,11 +44,14 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -161,8 +172,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		if (refEntry != null) {
 			entry = refEntry;
 		} else {
-			throw new RuntimeException("Entry passed to EntryComposite "
-					+ "constructor cannot be null!");
+			throw new RuntimeException("Entry passed to EntryComposite " + "constructor cannot be null!");
 		}
 		// Create the Buttons array
 		buttons = new ArrayList<Button>();
@@ -245,8 +255,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 		// Set the box to be checked if the current entry value is one of the
 		// "positive" answers from the allowed values
-		if (allowedBinaryValues.subList(0, 5).contains(
-				entry.getValue().toLowerCase())) {
+		if (allowedBinaryValues.subList(0, 5).contains(entry.getValue().toLowerCase())) {
 			tmpButton.setSelection(true);
 		} else {
 			// Otherwise unchecked
@@ -259,15 +268,13 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				// Notify any listeners that the selection has changed
 				notifyListeners(SWT.Selection, new Event());
 				// Get the index of the value
-				int index = lowercaseAllowedValues.indexOf(entry.getValue()
-						.toLowerCase());
+				int index = lowercaseAllowedValues.indexOf(entry.getValue().toLowerCase());
 				// Set the correct value
 				String value = null;
-				value = (index == 0) ? entry.getAllowedValues().get(1) : entry
-						.getAllowedValues().get(0);
+				value = (index == 0) ? entry.getAllowedValues().get(1) : entry.getAllowedValues().get(0);
 				setEntryValue(value);
-				System.out.println("EntryComposite Message: Updated Entry "
-						+ entry.getName() + " with value = " + entry.getValue());
+				System.out.println("EntryComposite Message: Updated Entry " + entry.getName() + " with value = "
+						+ entry.getValue());
 
 				return;
 			}
@@ -322,8 +329,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 		if (dropDown == null || dropDown.isDisposed()) {
 			// Create a drop-down menu
-			dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE
-					| SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+			dropDown = new Combo(this, SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
 			dropDown.setBackground(getBackground());
 
 			// Determine the current value of the entry.
@@ -442,6 +448,22 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						// Import the files
 						File importedFile = new File(filePath);
 						client.importFile(importedFile.toURI());
+						// Create a new content provider with the new file
+						// in the allowed values list
+						IEntryContentProvider prov = new BasicEntryContentProvider();
+						ArrayList<String> valueList = entry.getAllowedValues();
+						if (!valueList.contains(importedFile.getName())) {
+							valueList.add(importedFile.getName());
+						}
+						prov.setAllowedValueType(AllowedValueType.File);
+
+						// Finish setting the allowed values and default
+						// value
+						prov.setAllowedValues(valueList);
+
+						// Set the new provider
+						entry.setContentProvider(prov);
+
 						// Set the entry's value to the new file
 						setEntryValue(importedFile.getName());
 					}
@@ -458,6 +480,197 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		}
 
 		return;
+	}
+
+	/**
+	 * This method creates a drop down Combo for an Entry 
+	 * with the Executable AllowedValueType.
+	 */
+	private void createExecutableDropDown() {
+		if (dropDown == null || dropDown.isDisposed()) {
+			dropDown = new Combo(this,
+					SWT.BORDER | SWT.LEAD | SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+			dropDown.setFocus();
+			dropDown.setLayoutData(new GridData(400, SWT.DEFAULT));
+
+			List<String> allowedValues = entry.getAllowedValues();
+			// Add a selection listener
+			dropDown.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					// Set the value of the Entry
+					setEntryValue(((Combo) e.widget).getText());
+					// Notify any listeners that the selection has changed
+					notifyListeners(SWT.Selection, new Event());
+				}
+			});
+
+			// Add a traverse listener to validate the entry
+			// when the user hits Enter or Tab
+			dropDown.addTraverseListener(new TraverseListener() {
+				@Override
+				public void keyTraversed(TraverseEvent e) {
+					if (e.detail == SWT.TRAVERSE_RETURN || e.detail == SWT.TRAVERSE_TAB_NEXT) {
+
+						// Get the entered text and create a File
+						String path = dropDown.getText();
+						File file = new File(path);
+
+						// If this is an actual executable that exists, then
+						// add it to the File Entry.
+						if (file.exists() && file.isFile()) {
+							// Check if its an executable
+							if (file.canExecute()) {
+								IEntryContentProvider prov = new BasicEntryContentProvider();
+								ArrayList<String> valueList = entry.getAllowedValues();
+								valueList.add(file.toURI().toString());
+								prov.setAllowedValueType(AllowedValueType.Executable);
+
+								// Finish setting the allowed values and default
+								// value
+								prov.setAllowedValues(valueList);
+								entry.setContentProvider(prov);
+
+								// If it is executable just add its absolute
+								// path
+								setEntryValue(file.toURI().toString());
+							} else {
+								// If its just a File, import it
+								IClient client = ClientHolder.getClient();
+								client.importFile(file.toURI());
+								// Set the entry's value to the new file
+								setEntryValue(file.getName());
+							}
+
+							notifyListeners(SWT.Selection, new Event());
+						}
+					}
+				}
+			});
+
+			// Determine the current value of the entry.
+			String currentValue = entry.getValue();
+			for (int i = 0; i < allowedValues.size(); i++) {
+				String allowedValue = allowedValues.get(i);
+				dropDown.add(allowedValue);
+				if (allowedValue.equals(currentValue)) {
+					dropDown.select(i);
+				}
+			}
+		} else {
+			// If the dropDown hasn't been disposed, check if a new AllowedValue
+			// has been added to the Entry
+			List<String> allowedValues = entry.getAllowedValues();
+			List<String> comboValues = Arrays.asList(dropDown.getItems());
+
+			for (int i = 0; i < allowedValues.size(); i++) {
+				String allowedValue = allowedValues.get(i);
+				// Add any new AllowedValues to the dropDown
+				if (!comboValues.contains(allowedValue)) {
+					dropDown.add(allowedValue);
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method creates a Local/Remote file browser button for 
+	 * an Entry with the Executable AllowedValueType. 
+	 * 
+	 */
+	private void createExecutableBrowser() {
+		boolean redraw = buttons.isEmpty();
+
+		if (redraw) {
+			// Create a new button, set the text
+			Button browseButton = new Button(this, SWT.PUSH);
+			browseButton.setText("Browse...");
+
+			// RemoteFileWidget widg = new RemoteFileWidget(this, SWT.NONE,
+			// SWT.NONE, "TITLE", "/");
+			// Add an event listener that displays a Directory Dialog prompt
+			browseButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+
+					// Create a variable for the Executable Value
+					String entryValue = null;
+					
+					// Create a MessageDialog to get whether the user 
+					// wants to use a remote or local executable. 
+					MessageDialog dialog = new MessageDialog(getShell(), "Local or Remote Application", null,
+							"Please specify whether your executable is local or remote.",
+							MessageDialog.QUESTION_WITH_CANCEL, new String[] { "Local", "Remote" }, 0);
+					
+					// Launch the dialot and get the result
+					int result = dialog.open();
+
+					// If the user selected Remote
+					if (result == 1) {
+						
+						// Create a new Remote browser and set its type to File_Browser
+						RemoteResourceBrowser browser = new RemoteResourceBrowser(getShell(), SWT.NONE);
+						browser.setTitle("Select a remote executable.");
+						browser.setType(RemoteResourceBrowser.FILE_BROWSER);
+						
+						// Open and make sure they didn't select Cancel
+						if (browser.open() != Window.OK) {
+							return;
+						}
+
+						// Get the selected Resource
+						IFileStore fs = browser.getResource();
+
+						// Set the value as the remote URI string
+						entryValue = fs.toURI().toString();
+						
+					} else {
+						// If Local, just open up a file browser
+						FileDialog fileDialog = new FileDialog(getShell());
+						fileDialog.setText("Select an executable to import into ICE");
+						String filePath = fileDialog.open();
+						if (filePath != null) {
+							// Import the files
+							File importedFile = new File(filePath);
+							entryValue = importedFile.toURI().toString();
+						}
+					}
+					
+					// If we got a valid entryValue, then let's set it. 
+					if (entryValue != null && !entryValue.isEmpty()) {
+						// Create a new content provider with the new file
+						// in the allowed values list
+						IEntryContentProvider prov = new BasicEntryContentProvider();
+						ArrayList<String> valueList = entry.getAllowedValues();
+						if (!valueList.contains(entryValue)) {
+							valueList.add(entryValue);
+						}
+						prov.setAllowedValueType(AllowedValueType.Executable);
+
+						// Finish setting the allowed values and default
+						// value
+						prov.setAllowedValues(valueList);
+
+						// Set the new provider
+						entry.setContentProvider(prov);
+
+						// If it is executable just add its absolute path
+						setEntryValue(entryValue);
+					
+					}
+
+
+					// Notify any listeners of the selection event
+					notifyListeners(SWT.Selection, new Event());
+
+					return;
+				}
+
+			});
+
+			// Add the browse button
+			buttons.add(browseButton);
+		}
 	}
 
 	/**
@@ -502,9 +715,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			// We can use Radio buttons if the allowed values are few
 			if (numAllowedValues <= maxShortValues && shortValues) {
 				// Check to see if this is something that should use a check box
-				if (numAllowedValues == 2
-						&& allowedBinaryValues
-								.containsAll(lowercaseAllowedValues)) {
+				if (numAllowedValues == 2 && allowedBinaryValues.containsAll(lowercaseAllowedValues)) {
 					createCheckbox();
 				} else {
 					// Otherwise create the regular button set
@@ -527,83 +738,13 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				createDropdown();
 			}
 			createBrowseButton();
+			layout = setupDropDownLayout(numAllowedValues);
 
-			// FIXME We should use either this GridLayout or the RowLayout below
-			// // Instead of the default FillLayout, use a 3-column GridLayout.
-			// GridLayout gridLayout = new GridLayout(3, false);
-			//
-			// layout = gridLayout;
-			// // Since we use a GridLayout, set the GridData on the new
-			// widgets.
-			// label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-			// false));
-			//
-			// GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true,
-			// false);
-			// gridData.minimumWidth = 50;
-			// dropDown.setLayoutData(gridData);
-			//
-			// for (Button button : buttons) {
-			// button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-			// false));
-			// }
-
-			// The dropdown Combo should get all excess space, but we must also
-			// wrap the widgets when the EntryComposite is too small. Thus, we
-			// must use a RowLayout and manually resize the dropdown.
-
-			// Use a RowLayout so we can wrap widgets.
-			final RowLayout rowLayout = new RowLayout();
-			rowLayout.wrap = true;
-			rowLayout.fill = false;
-			rowLayout.center = true;
-			layout = rowLayout;
-
-			// If the file list Combo is rendered, we need to give it RowData so
-			// it will grab excess horizontal space. Otherwise, the default
-			// RowLayout above will suffice.
-			if (numAllowedValues > 0) {
-				// Use a RowData for the dropdown Combo so it can get excess
-				// space.
-				final RowData rowData = new RowData();
-				dropDown.setLayoutData(rowData);
-				// Set a minimum width of 50 for the dropdown.
-				final int minWidth = 50;
-
-				// Compute the space taken up by the label and browse button.
-				final int unwrappedWidth;
-				Button button = buttons.get(0);
-				int labelWidth = label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-				int buttonWidth = button.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-				int padding = 2 * rowLayout.spacing + rowLayout.marginLeft
-						+ rowLayout.marginWidth * 2 + rowLayout.marginRight
-						+ 30;
-				unwrappedWidth = labelWidth + buttonWidth + padding;
-
-				// Size the dropdown based on the currently available space.
-				int availableWidth = getClientArea().width - unwrappedWidth;
-				rowData.width = (availableWidth > minWidth ? availableWidth
-						: minWidth);
-
-				// If necessary, remove the old resize listener.
-				if (resizeListener != null) {
-					removeControlListener(resizeListener);
-				}
-
-				// Add a resize listener to the EntryComposite to update the
-				// size of the dropdown.
-				resizeListener = new ControlAdapter() {
-					@Override
-					public void controlResized(ControlEvent e) {
-						int availableWidth = getClientArea().width
-								- unwrappedWidth;
-						rowData.width = (availableWidth > minWidth ? availableWidth
-								: minWidth);
-						layout();
-					}
-				};
-				addControlListener(resizeListener);
-			}
+		} else if (valueType == AllowedValueType.Executable) {
+			createLabel();
+			createExecutableDropDown();
+			createExecutableBrowser();
+			layout = setupDropDownLayout(numAllowedValues);
 		} else {
 			// Otherwise create a text field
 			createLabel();
@@ -614,6 +755,64 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 		setLayout(layout);
 
 		return;
+	}
+
+	/**
+	 * 
+	 * @param layout
+	 * @param numAllowedValues
+	 */
+	private Layout setupDropDownLayout(int numAllowedValues) {
+		// Use a RowLayout so we can wrap widgets.
+		final RowLayout rowLayout = new RowLayout();
+		rowLayout.wrap = true;
+		rowLayout.fill = false;
+		rowLayout.center = true;
+		// Layout layout = rowLayout;
+
+		// If the file list Combo is rendered, we need to give it RowData so
+		// it will grab excess horizontal space. Otherwise, the default
+		// RowLayout above will suffice.
+		if (numAllowedValues > 0) {
+			// Use a RowData for the dropdown Combo so it can get excess
+			// space.
+			final RowData rowData = new RowData();
+			dropDown.setLayoutData(rowData);
+			// Set a minimum width of 50 for the dropdown.
+			final int minWidth = 50;
+
+			// Compute the space taken up by the label and browse button.
+			final int unwrappedWidth;
+			Button button = buttons.get(0);
+			int labelWidth = label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+			int buttonWidth = button.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+			int padding = 2 * rowLayout.spacing + rowLayout.marginLeft + rowLayout.marginWidth * 2
+					+ rowLayout.marginRight + 30;
+			unwrappedWidth = labelWidth + buttonWidth + padding;
+
+			// Size the dropdown based on the currently available space.
+			int availableWidth = getClientArea().width - unwrappedWidth;
+			rowData.width = (availableWidth > minWidth ? availableWidth : minWidth);
+
+			// If necessary, remove the old resize listener.
+			if (resizeListener != null) {
+				removeControlListener(resizeListener);
+			}
+
+			// Add a resize listener to the EntryComposite to update the
+			// size of the dropdown.
+			resizeListener = new ControlAdapter() {
+				@Override
+				public void controlResized(ControlEvent e) {
+					int availableWidth = getClientArea().width - unwrappedWidth;
+					rowData.width = (availableWidth > minWidth ? availableWidth : minWidth);
+					layout();
+				}
+			};
+			addControlListener(resizeListener);
+		}
+
+		return rowLayout;
 	}
 
 	/**
@@ -629,8 +828,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			if (errorMessage != null) {
 				// Display the error at the top of the screen
 				if (messageManager != null) {
-					messageManager.addMessage(messageName, errorMessage, null,
-							IMessageProvider.ERROR);
+					messageManager.addMessage(messageName, errorMessage, null, IMessageProvider.ERROR);
 				}
 				// Highlight the text if it is in a text box
 				if (text != null) {
@@ -677,8 +875,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 		// Print an error if this Entry has been prematurely disposed.
 		if (isDisposed()) {
-			System.out.println("EntryComposite Message: "
-					+ "This composite has been prematurely disposed!");
+			System.out.println("EntryComposite Message: " + "This composite has been prematurely disposed!");
 			return;
 		}
 
@@ -729,8 +926,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 			if (errorMessage != null) {
 				// Display the error at the top of the screen
 				if (messageManager != null) {
-					messageManager.addMessage(messageName, errorMessage, null,
-							IMessageProvider.ERROR);
+					messageManager.addMessage(messageName, errorMessage, null, IMessageProvider.ERROR);
 				}
 				// Highlight the text if it is in a text box
 				if (text != null) {
@@ -793,8 +989,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 						// Toggle the "unsaved changes" decoration if the entry
 						// value is different
-						if (!EntryComposite.this.entry.getValue().equals(
-								currentSelection)) {
+						if (!EntryComposite.this.entry.getValue().equals(currentSelection)) {
 							toggleSaveDecoration();
 						}
 
@@ -825,15 +1020,13 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 			// Set a description and image
 			decoration.setDescriptionText(saveMessage);
-			Image image = FieldDecorationRegistry.getDefault()
-					.getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
+			Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
 					.getImage();
 			decoration.setImage(image);
 
 			// Set a listener to hide/show the decoration according to the
 			// editor's state and the current entry value
-			final IEditorPart editor = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage()
+			final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.getActiveEditor();
 			editor.addPropertyListener(new IPropertyListener() {
 				@Override
@@ -841,9 +1034,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 					// Toggle the decoration on if the form is dirty and the
 					// value has changed
 					if (editor != null) {
-						if (editor.isDirty()
-								&& !EntryComposite.this.entry.getValue()
-										.equals(currentSelection)) {
+						if (editor.isDirty() && !EntryComposite.this.entry.getValue().equals(currentSelection)) {
 							// Show the decoration
 							EntryComposite.this.decoration.show();
 						} else if (!editor.isDirty()) {

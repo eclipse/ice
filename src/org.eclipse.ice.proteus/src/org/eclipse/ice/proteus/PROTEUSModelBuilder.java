@@ -13,6 +13,7 @@
 package org.eclipse.ice.proteus;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
@@ -21,7 +22,7 @@ import org.eclipse.ice.item.ItemType;
  * <p>An ItemBuilder for building PROTEUS models.</p>
  * @author Jay Jay Billings
  */
-public class PROTEUSModelBuilder implements ItemBuilder {
+public class PROTEUSModelBuilder extends AbstractItemBuilder {
 	/**
 	 * The name
 	 */
@@ -32,30 +33,16 @@ public class PROTEUSModelBuilder implements ItemBuilder {
 	 */
 	public static final ItemType type = ItemType.Model;
 	
-	/** 
-	 * (non-Javadoc)
-	 * @see ItemBuilder#getItemName()
-	 */
-	@Override
-	public String getItemName() {
-		return name;
+	public PROTEUSModelBuilder() {
+		setName(name);
+		setType(type);
 	}
 
-	/** 
+	/*
 	 * (non-Javadoc)
-	 * @see ItemBuilder#getItemType()
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
-	@Override
-	public ItemType getItemType() {
-		return type;
-	}
-
-	/** 
-	 * (non-Javadoc)
-	 * @see ItemBuilder#build(IProject projectSpace)
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 		
 		PROTEUSModel model = new PROTEUSModel(projectSpace);
 		model.setItemBuilderName(name);

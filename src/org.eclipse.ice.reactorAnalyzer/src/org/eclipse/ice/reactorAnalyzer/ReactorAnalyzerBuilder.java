@@ -14,10 +14,10 @@ package org.eclipse.ice.reactorAnalyzer;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.analysistool.IAnalysisTool;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
@@ -35,7 +35,7 @@ import org.eclipse.ice.item.ItemType;
  * 
  * @author Scott Forest Hull II
  */
-public class ReactorAnalyzerBuilder implements ItemBuilder {
+public class ReactorAnalyzerBuilder extends AbstractItemBuilder {
 	/**
 	 * <p>
 	 * The set of IAnalysisTools available for the ReactorAnalyzer.
@@ -68,6 +68,9 @@ public class ReactorAnalyzerBuilder implements ItemBuilder {
 	 */
 	public ReactorAnalyzerBuilder() {
 
+		setName(name);
+		setType(type);
+		
 		// Allocate the list of tools
 		analysisTools = new ArrayList<IAnalysisTool>();
 
@@ -115,31 +118,9 @@ public class ReactorAnalyzerBuilder implements ItemBuilder {
 
 	/**
 	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemName()
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
-	@Override
-	public String getItemName() {
-		return name;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemType()
-	 */
-	@Override
-	public ItemType getItemType() {
-		return type;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#build(IProject projectSpace)
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 
 		// Local Declarations
 		ReactorAnalyzer analyzer = null;

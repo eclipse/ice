@@ -1278,8 +1278,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	@Override
 	public void update(IUpdateable component) {
 
-		System.out.println("ICEFormEditor Message: State changed to dirty.");
-
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override

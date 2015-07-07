@@ -34,4 +34,9 @@ public class TableComponentTesterBuilder implements ItemBuilder {
 		return new TableComponentTester(projectSpace);
 	}
 
+	@Override
+	public boolean isPublishable() {
+		return false;
+	}
+
 }

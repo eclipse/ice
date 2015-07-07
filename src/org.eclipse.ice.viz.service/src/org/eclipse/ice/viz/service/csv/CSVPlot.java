@@ -384,8 +384,7 @@ public class CSVPlot implements IPlot {
 		} else {
 			// Complain that the plot is invalid
 			throw new Exception("Invalid plot: category = " + category
-					+ ", type = " + plotType + ", provider = "
-					+ baseProvider.toString());
+					+ ", type = " + plotType + "."); 
 		}
 
 		return child;
