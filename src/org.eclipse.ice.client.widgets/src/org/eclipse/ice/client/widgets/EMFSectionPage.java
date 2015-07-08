@@ -47,6 +47,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 
+	/// The ID
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEEMFPage";
 
 	/**
@@ -167,7 +168,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 //		Listener listener = new Listener() {
 //			@Override
 //			public void handleEvent(Event e) {
-//				// System.out.println("Changed!");
+//				// logger.info("Changed!");
 //				// Change the editor state
 //				editor.setDirty(true);
 //			}
@@ -226,7 +227,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 			msgStream.println("Streaming output console activated.");
 		} catch (PartInitException e) {
 			// Complain
-			System.out.println("EclipseStreamingTextWidget Message: Unable to "
+			logger.info("EclipseStreamingTextWidget Message: Unable to "
 					+ "stream text!");
 			e.printStackTrace();
 		}
@@ -285,7 +286,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 //						Listener listener = new Listener() {
 //							@Override
 //							public void handleEvent(Event e) {
-//								// System.out.println("Changed!");
+//								// logger.info("Changed!");
 //								// Change the editor state
 //								editor.setDirty(true);
 //							}

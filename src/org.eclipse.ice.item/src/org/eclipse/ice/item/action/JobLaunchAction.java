@@ -40,7 +40,6 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
-
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
@@ -55,6 +54,8 @@ import org.eclipse.remote.core.exception.RemoteConnectionException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.ice.datastructures.form.Form;
 
 /**
@@ -454,7 +455,7 @@ public class JobLaunchAction extends Action implements Runnable {
 	private long maxFileSize;
 
 	private IRemoteConnection connection;
-	
+
 	private IRemoteConnectionType connectionType;
 
 	/**
@@ -493,8 +494,10 @@ public class JobLaunchAction extends Action implements Runnable {
 	private String fixExecutableName() {
 
 		// Local Declarations
-		int numProcs = Math.max(1, Integer.parseInt(execDictionary.get("numProcs")));
-		int numTBBThreads = Math.max(1, Integer.parseInt(execDictionary.get("numTBBThreads")));
+		int numProcs = Math.max(1,
+				Integer.parseInt(execDictionary.get("numProcs")));
+		int numTBBThreads = Math.max(1,
+				Integer.parseInt(execDictionary.get("numTBBThreads")));
 		String fixedExecutableName = execDictionary.get("executable");
 		String installDir = execDictionary.get("installDir");
 		String workingDir = execDictionary.get("workingDir");
@@ -502,7 +505,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		String shortInputName = null;
 
 		// Print some debug information
-		System.out.println("JobLaunchAction Message: Raw executable command = " + fixedExecutableName);
+		logger.info("JobLaunchAction Message: Raw executable command = "
+				+ fixedExecutableName);
 
 		// Check to see whether the input file should be appended or if it was
 		// already configured some other way.
@@ -544,9 +548,11 @@ public class JobLaunchAction extends Action implements Runnable {
 				// for the last / or \
 				shortInputName = execDictionary.get(key);
 				if (shortInputName.contains("/")) {
-					shortInputName = shortInputName.substring(shortInputName.lastIndexOf("/") + 1);
+					shortInputName = shortInputName.substring(shortInputName
+							.lastIndexOf("/") + 1);
 				} else if (shortInputName.contains("\\")) {
-					shortInputName = shortInputName.substring(shortInputName.lastIndexOf("\\") + 1);
+					shortInputName = shortInputName.substring(shortInputName
+							.lastIndexOf("\\") + 1);
 				}
 				// Update the fixed file name
 				fixedFileName = shortInputName;
@@ -556,35 +562,41 @@ public class JobLaunchAction extends Action implements Runnable {
 				// }
 				// Update the executable name to account for any changes that
 				// may result because of it being on a remote machine.
-				fixedExecutableName = fixedExecutableName.replace("${" + key + "}", fixedFileName);
+				fixedExecutableName = fixedExecutableName.replace("${" + key
+						+ "}", fixedFileName);
 			}
 		}
 		// Fix the installation directory by replacing the ${installDir} flags
 		// in the executable string.
 		if (fixedExecutableName.contains("${installDir}") && installDir != null) {
-			fixedExecutableName = fixedExecutableName.replace("${installDir}", installDir);
+			fixedExecutableName = fixedExecutableName.replace("${installDir}",
+					installDir);
 		}
 		// Fix the working directory by replacing the ${workingDir} flags in the
 		// executable string.
 		if (fixedExecutableName.contains("${workingDir}") && workingDir != null) {
-			fixedExecutableName = fixedExecutableName.replace("${workingDir}", workingDir);
+			fixedExecutableName = fixedExecutableName.replace("${workingDir}",
+					workingDir);
 		}
 		// Figure out whether or not MPI should be used.
 		if (numProcs > 1) {
 			// A temporary modification to work with Titan & PBS.
 			if (!execDictionary.get("hostname").equals("titan.ccs.ornl.gov")) {
 				// Add the MPI command if there are multiple cores
-				fixedExecutableName = "mpiexec -n " + numProcs + " " + fixedExecutableName;
+				fixedExecutableName = "mpiexec -n " + numProcs + " "
+						+ fixedExecutableName;
 			} else {
 				// Add the MPI command for aprun if there are multiple cores
-				fixedExecutableName = "aprun -n " + numProcs + " " + fixedExecutableName;
+				fixedExecutableName = "aprun -n " + numProcs + " "
+						+ fixedExecutableName;
 			}
 		}
 
 		// Figure out whether or not TBB should be used.
 		if (numTBBThreads > 1) {
 			// Add the threads flag
-			fixedExecutableName = fixedExecutableName + " --n-threads=" + numTBBThreads;
+			fixedExecutableName = fixedExecutableName + " --n-threads="
+					+ numTBBThreads;
 		}
 
 		// Clean up any leading or trailing whitespace
@@ -605,7 +617,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Print launch stages
 		for (int i = 0; i < splitCMD.size(); i++) {
 			String cmd = splitCMD.get(i);
-			System.out.println("JobLaunchAction Message: Launch stage " + i + " = " + cmd);
+			logger.info("JobLaunchAction Message: Launch stage " + i + " = "
+					+ cmd);
 		}
 
 		return fixedExecutableName;
@@ -679,7 +692,9 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// The simplest names to check are 127.0.0.1 and localhost.localdomain.
 		// These names are always the local machine on Unix systems.
-		if ("127.0.0.1".equals(hostname) || "localhost.localdomain".equals(hostname) || "localhost".equals(hostname)) {
+		if ("127.0.0.1".equals(hostname)
+				|| "localhost.localdomain".equals(hostname)
+				|| "localhost".equals(hostname)) {
 			retVal = true;
 		} else {
 			// Get the local hostname by looking up the InetAddress
@@ -697,9 +712,12 @@ public class JobLaunchAction extends Action implements Runnable {
 			}
 		}
 
-		System.out.println("JobLaunchAction Message: Localhost hostname = " + localHostname);
-		System.out.println("JobLaunchAction Message: Target " + "Platform hostname = " + hostname);
-		System.out.println("JobLaunchAction Message: Host is" + ((retVal) ? " " : " NOT ") + "localhost.");
+		logger.info("JobLaunchAction Message: Localhost hostname = "
+				+ localHostname);
+		logger.info("JobLaunchAction Message: Target " + "Platform hostname = "
+				+ hostname);
+		logger.info("JobLaunchAction Message: Host is"
+				+ ((retVal) ? " " : " NOT ") + "localhost.");
 
 		return retVal;
 	}
@@ -739,7 +757,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		return;
 	}
 
-	protected FormStatus launchStageLocally(String cmd, BufferedWriter stdOut, BufferedWriter stdErr) {
+	protected FormStatus launchStageLocally(String cmd, BufferedWriter stdOut,
+			BufferedWriter stdErr) {
 
 		// Local Declarations
 		String errMsg = null;
@@ -774,10 +793,11 @@ public class JobLaunchAction extends Action implements Runnable {
 			// Get the local file to copy and create the File
 			// reference to where it should be copied
 			File localFile = new File(fileMap.get(fileString));
-			File copyToDirFile = new File(
-					directory.getAbsolutePath() + System.getProperty("file.separator") + fileString);
+			File copyToDirFile = new File(directory.getAbsolutePath()
+					+ System.getProperty("file.separator") + fileString);
 			try {
-				Files.copy(Paths.get(localFile.toURI()), Paths.get(copyToDirFile.toURI()));
+				Files.copy(Paths.get(localFile.toURI()),
+						Paths.get(copyToDirFile.toURI()));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -816,7 +836,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		}
 
 		// Print the execution command
-		System.out.println("JobLaunchAction Message: " + "Launching local command: " + "\"" + cmd + "\"");
+		logger.info("JobLaunchAction Message: " + "Launching local command: "
+				+ "\"" + cmd + "\"");
 
 		// Log the output
 		stdOutStream = job.getInputStream();
@@ -864,7 +885,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		while (exitValue != 0) {
 			// Try to get the exit value of the job
 			try {
-				exitValue = (isLocal.get()) ? job.exitValue() : remoteJob.exitValue();
+				exitValue = (isLocal.get()) ? job.exitValue() : remoteJob
+						.exitValue();
 			} catch (IllegalThreadStateException e) {
 				// Complain, but keep watching
 				e.printStackTrace();
@@ -890,7 +912,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				}
 			}
 		}
-		System.out.println("JobLaunchAction Message: Exit value = " + exitValue);
+		logger.info("JobLaunchAction Message: Exit value = " + exitValue);
 
 		return;
 	}
@@ -953,7 +975,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Local Declarations
 		IRemoteConnectionWorkingCopy workingCopy = null;
 		IRemoteProcessService processService = null;
-		String remoteDownloadDirectory = execDictionary.get("downloadDirectory");
+		String remoteDownloadDirectory = execDictionary
+				.get("downloadDirectory");
 		String separator = System.getProperty("file.separator");
 		File localStorageDir = null;
 		Date currentDate = new Date();
@@ -963,8 +986,8 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// Create a local directory where created files can be downloaded
 		// from the remote host
-		localDirectoryPath = projectSpaceDir + separator + "jobs" + separator + "remoteIceLaunch_"
-				+ shortDate.format(currentDate);
+		localDirectoryPath = projectSpaceDir + separator + "jobs" + separator
+				+ "remoteIceLaunch_" + shortDate.format(currentDate);
 		localStorageDir = new File(localDirectoryPath);
 
 		// Create the directory if it doesn't already exist
@@ -976,7 +999,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		execDictionary.put("workingDir", localDirectoryPath);
 
 		// Get the directory where local files should be stored
-		IFileStore localDirectory = EFS.getLocalFileSystem().fromLocalFile(localStorageDir);
+		IFileStore localDirectory = EFS.getLocalFileSystem().fromLocalFile(
+				localStorageDir);
 		String launchCMDFileName = "";
 
 		// Block until the Form is submitted
@@ -988,7 +1012,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				e1.printStackTrace();
 				return;
 			}
-			// DEBUG - System.out.println("Form not yet submitted.");
+			// DEBUG - logger.info("Form not yet submitted.");
 		} // FIXME - Need to be able to cancel!
 
 		// Write the command script that contains all of the commands to launch.
@@ -1000,24 +1024,26 @@ public class JobLaunchAction extends Action implements Runnable {
 			return;
 		}
 
-		// If we don't have a valid connection, then we should 
-		// have gotten valid user credentials for the remote machine 
-		// through the NeedsInfo status. Now we create the 
-		// IRemoteConnection 
+		// If we don't have a valid connection, then we should
+		// have gotten valid user credentials for the remote machine
+		// through the NeedsInfo status. Now we create the
+		// IRemoteConnection
 		if (connection == null) {
 
 			if (connectionType == null) {
-				System.out.println("Invalid ConnectionType! Cannot create a new IRemoteConnection.");
+				logger.info("Invalid ConnectionType! Cannot create a new IRemoteConnection.");
 				status = FormStatus.InfoError;
 				return;
 			}
-			
+
 			// Get the DataComponent containing the username and password
-			DataComponent credentials = (DataComponent) formAtomic.get().getComponent(1);
+			DataComponent credentials = (DataComponent) formAtomic.get()
+					.getComponent(1);
 
 			// Create a new IRemoteConnectionWorkingCopy
 			try {
-				workingCopy = connectionType.newConnection(hostname + "_" + shortDate.format(currentDate));
+				workingCopy = connectionType.newConnection(hostname + "_"
+						+ shortDate.format(currentDate));
 			} catch (RemoteConnectionException e3) {
 				e3.printStackTrace();
 				status = FormStatus.InfoError;
@@ -1027,9 +1053,11 @@ public class JobLaunchAction extends Action implements Runnable {
 			// FIXME THIS IS BAD, BUT I HAVE NO CLUE HOW TO OTHERWISE
 			// Set the hostname, username, and password
 			workingCopy.setAttribute("JSCH_ADDRESS_ATTR", hostname);
-			workingCopy.setAttribute("JSCH_USERNAME_ATTR", credentials.retrieveAllEntries().get(0).getValue());
-			workingCopy.setSecureAttribute("JSCH_PASSWORD_ATTR", credentials.retrieveAllEntries().get(1).getValue());
-			
+			workingCopy.setAttribute("JSCH_USERNAME_ATTR", credentials
+					.retrieveAllEntries().get(0).getValue());
+			workingCopy.setSecureAttribute("JSCH_PASSWORD_ATTR", credentials
+					.retrieveAllEntries().get(1).getValue());
+
 			// Create the IRemoteConnection
 			try {
 				connection = workingCopy.save();
@@ -1054,10 +1082,12 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Do the upload(s) and launch the job if the connection is open
 		if (connection.isOpen() && !cancelled.get()) {
 			// Diagnostic info
-			System.out.println("JobLaunchAction Message:" + " PTP connection established.");
+			logger.info("JobLaunchAction Message:"
+					+ " PTP connection established.");
 
 			// Get the remote file manager
-			IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
+			IRemoteFileService fileManager = connection
+					.getService(IRemoteFileService.class);
 
 			// Get the IRemoteProcessService
 			processService = connection.getService(IRemoteProcessService.class);
@@ -1065,18 +1095,21 @@ public class JobLaunchAction extends Action implements Runnable {
 			// Get the working directory
 			IFileStore fileStore;
 			try {
-				fileStore = EFS.getStore(fileManager.toURI(processService.getWorkingDirectory()));
+				fileStore = EFS.getStore(fileManager.toURI(processService
+						.getWorkingDirectory()));
 			} catch (CoreException e1) {
 				e1.printStackTrace();
 				status = FormStatus.InfoError;
 				return;
 			}
 
-			// Create the remote working directory and upload required files. 
+			// Create the remote working directory and upload required files.
 			try {
-				IFileStore directory = fileStore.getChild(workingDirectoryBaseName).mkdir(EFS.SHALLOW, null);
-				System.out.println(
-						"JobLaunchAction Message: " + "Created directory on remote system, " + directory.getName());
+				IFileStore directory = fileStore.getChild(
+						workingDirectoryBaseName).mkdir(EFS.SHALLOW, null);
+				logger.info("JobLaunchAction Message: "
+						+ "Created directory on remote system, "
+						+ directory.getName());
 
 				// Loop over all of the files in the file table and upload them
 				for (String shortInputName : fileMap.keySet()) {
@@ -1089,20 +1122,25 @@ public class JobLaunchAction extends Action implements Runnable {
 					// If input file uploading is enabled, OR, if input file
 					// uploading is disabled BUT this is the launch script, then
 					// upload the file
-					if (uploadInput || (!uploadInput && shortInputName.equals("launchJob.sh"))) {
+					if (uploadInput
+							|| (!uploadInput && shortInputName
+									.equals("launchJob.sh"))) {
 
 						// Get a handle where the input file will be stored
 						// remotely
-						IFileStore remoteFileStore = directory.getChild(shortInputName);
+						IFileStore remoteFileStore = directory
+								.getChild(shortInputName);
 						// Get a file store handle to the local copy of the
 						// input
 						// file
 						File localFile = new File(fileMap.get(shortInputName));
-						IFileStore localFileStore = EFS.getLocalFileSystem().fromLocalFile(localFile);
+						IFileStore localFileStore = EFS.getLocalFileSystem()
+								.fromLocalFile(localFile);
 
 						// Copy the local file to the remote file
 						localFileStore.copy(remoteFileStore, EFS.NONE, null);
-						System.out.println("JobLaunchAction Message: " + "Uploaded file " + shortInputName);
+						logger.info("JobLaunchAction Message: "
+								+ "Uploaded file " + shortInputName);
 					}
 				}
 
@@ -1114,13 +1152,16 @@ public class JobLaunchAction extends Action implements Runnable {
 			}
 
 			// Get the file separator on the remote system
-			String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
+			String remoteSeparator = connection
+					.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
 			// Set the new working directory
 			String currentWd = processService.getWorkingDirectory();
-			processService.setWorkingDirectory(currentWd + remoteSeparator + workingDirectoryBaseName);
+			processService.setWorkingDirectory(currentWd + remoteSeparator
+					+ workingDirectoryBaseName);
 			// Dump the new working directory
-			System.out.println(
-					"JobLaunchActionMessage: " + "PTP working directory set to" + processService.getWorkingDirectory());
+			logger.info("JobLaunchActionMessage: "
+					+ "PTP working directory set to"
+					+ processService.getWorkingDirectory());
 
 			// Create the command to launch based on whether this is a normal
 			// machine or Titan.
@@ -1131,14 +1172,18 @@ public class JobLaunchAction extends Action implements Runnable {
 				launchCMD = "qsub" + launchCMDFileName;
 			}
 			// Create the process builder for the remote job
-			IRemoteProcessBuilder processBuilder = processService.getProcessBuilder("sh", launchCMD);
+			IRemoteProcessBuilder processBuilder = processService
+					.getProcessBuilder("sh", launchCMD);
 			// Do not redirect the streams
 			processBuilder.redirectErrorStream(false);
 			try {
-				System.out.println("JobLaunchAction Message: " + "Attempting to launch with PTP...");
-				System.out
-						.println("JobLaunchAction Message: " + "Command sent to PTP = " + "sh ./" + launchCMDFileName);
-				remoteJob = processBuilder.start(IRemoteProcessBuilder.FORWARD_X11);
+				logger.info("JobLaunchAction Message: "
+						+ "Attempting to launch with PTP...");
+				logger.info("JobLaunchAction Message: "
+						+ "Command sent to PTP = " + "sh ./"
+						+ launchCMDFileName);
+				remoteJob = processBuilder
+						.start(IRemoteProcessBuilder.FORWARD_X11);
 			} catch (IOException e) {
 				// Print diagnostic information and fail
 				e.printStackTrace();
@@ -1148,7 +1193,8 @@ public class JobLaunchAction extends Action implements Runnable {
 			// Log the ouput
 			InputStream stdOutStream = remoteJob.getInputStream();
 			InputStream stdErrStream = remoteJob.getErrorStream();
-			if (logOutput(stdOutStream, stdErrStream).equals(FormStatus.InfoError)) {
+			if (logOutput(stdOutStream, stdErrStream).equals(
+					FormStatus.InfoError)) {
 				// Throw an error if the streaming fails
 				status = FormStatus.InfoError;
 				return;
@@ -1160,14 +1206,19 @@ public class JobLaunchAction extends Action implements Runnable {
 			// Check to see if the job should be cancelled.
 			if (!cancelled.get()) {
 				// Get download directory
-				String fixedRemoteWD = currentWd + remoteSeparator + workingDirectoryBaseName;
-				String remoteDir = (remoteDownloadDirectory == null) ? fixedRemoteWD : remoteDownloadDirectory;
-				System.out.println("JobLaunchAction Message: " + "Downloading remote files to "
+				String fixedRemoteWD = currentWd + remoteSeparator
+						+ workingDirectoryBaseName;
+				String remoteDir = (remoteDownloadDirectory == null) ? fixedRemoteWD
+						: remoteDownloadDirectory;
+				logger.info("JobLaunchAction Message: "
+						+ "Downloading remote files to "
 						+ localDirectory.getName() + " from " + remoteDir + ".");
-				IFileStore downloadFileStore = fileManager.getResource(remoteDir);
+				IFileStore downloadFileStore = fileManager
+						.getResource(remoteDir);
 				try {
 					// Get the children
-					IFileStore[] remoteStores = downloadFileStore.childStores(EFS.NONE, null);
+					IFileStore[] remoteStores = downloadFileStore.childStores(
+							EFS.NONE, null);
 					// Download all of the children
 					for (IFileStore remoteFile : remoteStores) {
 						// Check to see if the job should be cancelled.
@@ -1178,14 +1229,17 @@ public class JobLaunchAction extends Action implements Runnable {
 						IFileInfo fileInfo = remoteFile.fetchInfo();
 						if (fileInfo.getLength() < maxFileSize) {
 							// Print some debug information about the download
-							String msg = "JobLaunchAction Message: " + "Downloading " + fileInfo.getName()
-									+ " with length " + fileInfo.getLength() + ".";
-							System.out.println(msg);
+							String msg = "JobLaunchAction Message: "
+									+ "Downloading " + fileInfo.getName()
+									+ " with length " + fileInfo.getLength()
+									+ ".";
+							logger.info(msg);
 							stdOut.write(msg + "\n");
 							// Get a handle to the local file. Note that it may
 							// not
 							// exist yet.
-							IFileStore childStore = localDirectory.getChild(remoteFile.getName());
+							IFileStore childStore = localDirectory
+									.getChild(remoteFile.getName());
 							// Copy the file from the remote machine to the
 							// local
 							// machine.
@@ -1195,10 +1249,12 @@ public class JobLaunchAction extends Action implements Runnable {
 							// Print a debug note saying that the file is too
 							// big to
 							// download.
-							String msg = "JobLaunchAction Message: " + "File exceeds download limit. "
-									+ "File with size " + fileInfo.getLength() + " is " + sizeDiff + " bytes over the "
+							String msg = "JobLaunchAction Message: "
+									+ "File exceeds download limit. "
+									+ "File with size " + fileInfo.getLength()
+									+ " is " + sizeDiff + " bytes over the "
 									+ maxFileSize + " byte limit.";
-							System.out.println(msg);
+							logger.info(msg);
 							stdOut.write(msg + "\n");
 						}
 						// Flush the messages so that clients can be updated.
@@ -1241,8 +1297,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		Date currentDate = new Date();
 		SimpleDateFormat shortDate = new SimpleDateFormat("yyyyMMddhhmmss");
 		String separator = System.getProperty("file.separator");
-		String launchFileName = System.getProperty("user.dir") + separator + "launchJob_"
-				+ shortDate.format(currentDate);
+		String launchFileName = System.getProperty("user.dir") + separator
+				+ "launchJob_" + shortDate.format(currentDate);
 		File launchFile = new File(launchFileName);
 		FileWriter launchFileWriter = new FileWriter(launchFile);
 		String shortName = "launchJob.sh";
@@ -1250,17 +1306,22 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Write the header if the target machine is Titan
 		if (execDictionary.get("hostname").equals("titan.ccs.ornl.gov")) {
 			// Get the number of cores
-			int numCores = Math.max(1, Integer.parseInt(execDictionary.get("numProcs")));
+			int numCores = Math.max(1,
+					Integer.parseInt(execDictionary.get("numProcs")));
 			// Calculate the number of nodes.
 			int numNodes = Math.min(numCores / 16 + 1, 18688);
 			// Write the file
 			launchFileWriter.write("#!/bin/bash\n");
 			launchFileWriter.write("# Begin PBS directives\n");
-			launchFileWriter.write("#PBS -A " + execDictionary.get("accountCode") + "\n");
-			launchFileWriter.write("#PBS -N " + workingDirectoryBaseName + "\n");
+			launchFileWriter.write("#PBS -A "
+					+ execDictionary.get("accountCode") + "\n");
+			launchFileWriter
+					.write("#PBS -N " + workingDirectoryBaseName + "\n");
 			launchFileWriter.write("#PBS -j oe\n");
-			launchFileWriter.write("#PBS -l walltime=1:00:00,nodes=" + numNodes + "\n");
-			launchFileWriter.write("# End PBS directives and begin shell commands\n");
+			launchFileWriter.write("#PBS -l walltime=1:00:00,nodes=" + numNodes
+					+ "\n");
+			launchFileWriter
+					.write("# End PBS directives and begin shell commands\n");
 		}
 
 		// Write each command into the file
@@ -1297,7 +1358,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			formSubmitted.set(true);
 
 			// Set the status
-			System.out.println("SETTING FLAG TO PROCESSING");
+			logger.info("SETTING FLAG TO PROCESSING");
 			status = FormStatus.Processing;
 		} else {
 			status = FormStatus.InfoError;
@@ -1332,7 +1393,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// Setup for remote launch if needed
 		if (!isLocal.get() && !connectionIsValid()) {
-			
+
 			// Create the new Form
 			actionForm = new LoginInfoForm();
 
@@ -1375,11 +1436,15 @@ public class JobLaunchAction extends Action implements Runnable {
 		if (connection != null) {
 			// Get the hostname and the IRemoteConnection's hostname
 			String hostname = execDictionary.get("hostname");
-			String connectionHost = connection.getService(IRemoteConnectionHostService.class).getHostname();
+			String connectionHost = connection.getService(
+					IRemoteConnectionHostService.class).getHostname();
 			try {
 				// Make sure they are the same
-				if (InetAddress.getByName(hostname).getHostAddress()
-						.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
+				if (InetAddress
+						.getByName(hostname)
+						.getHostAddress()
+						.equals(InetAddress.getByName(connectionHost)
+								.getHostAddress())) {
 					return true;
 				} else {
 					return false;
@@ -1419,7 +1484,7 @@ public class JobLaunchAction extends Action implements Runnable {
 	}
 
 	/**
-	 * Set the working directory name. 
+	 * Set the working directory name.
 	 */
 	private void setWorkingDirectoryName() {
 
@@ -1436,12 +1501,14 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Set the name of the working directory properly if it is a local
 		// launch
 		if (isLocal.get()) {
-			launchDir = projectSpaceDir + separator + "jobs" + separator + workingDirectoryBaseName;
+			launchDir = projectSpaceDir + separator + "jobs" + separator
+					+ workingDirectoryBaseName;
 		} else if (execDictionary.get("hostname").equals("titan.ccs.ornl.gov")) {
 			// Get the project directory
 			String projId = execDictionary.get("accountCode");
 			// Set the directory to the $PROJ_WORK/projId directory on Titan
-			launchDir = "$PROJWORK" + separator + projId + separator + workingDirectoryBaseName;
+			launchDir = "$PROJWORK" + separator + projId + separator
+					+ workingDirectoryBaseName;
 		} else {
 			// Otherwise just leave it in the home directory
 			launchDir = workingDirectoryBaseName;
@@ -1451,7 +1518,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		execDictionary.put("workingDir", launchDir);
 
 		// Dump some debug info
-		System.out.println("JobLaunchAction Message: Working directory = " + execDictionary.get("workingDir"));
+		logger.info("JobLaunchAction Message: Working directory = "
+				+ execDictionary.get("workingDir"));
 
 		return;
 	}
@@ -1482,7 +1550,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		}
 
 		// Check the info and return if it is not available
-		if (executable == null || (uploadInput && inputFile == null) || stdOutFileName == null || stdErrFileName == null
+		if (executable == null || (uploadInput && inputFile == null)
+				|| stdOutFileName == null || stdErrFileName == null
 				|| hostname == null) {
 			status = FormStatus.InfoError;
 			return;
@@ -1491,7 +1560,8 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Get the flag from the dictionary that dictates whether or not the
 		// input file name should be appended to the executable command. It is
 		// optional, so treat it specially.
-		if (execDictionary.get("noAppendInput") != null && ("true").equals(execDictionary.get(("noAppendInput")))) {
+		if (execDictionary.get("noAppendInput") != null
+				&& ("true").equals(execDictionary.get(("noAppendInput")))) {
 			appendInput = false;
 		}
 
@@ -1570,7 +1640,8 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// Add the date and time
 		header = "# Job launch date: ";
-		header += new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "\n";
+		header += new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar
+				.getInstance().getTime()) + "\n";
 		// Add the point of origin
 		header += "# Launch host: " + localHostname + "\n";
 		// Add the target machine
@@ -1582,7 +1653,8 @@ public class JobLaunchAction extends Action implements Runnable {
 			header += "# Input file: " + execDictionary.get("inputFile") + "\n";
 		}
 		// Add the working directory
-		header += "# Working directory: " + execDictionary.get("workingDir") + "\n";
+		header += "# Working directory: " + execDictionary.get("workingDir")
+				+ "\n";
 		// Add an empty line
 		header += "\n";
 
@@ -1590,9 +1662,9 @@ public class JobLaunchAction extends Action implements Runnable {
 	}
 
 	/**
-	 * Provide the JobLaunchAction with an existing IRemoteConnection. This 
-	 * connection will be used for remote launches if its corresponding 
-	 * hostname is the same as the user specified host name as defined in the 
+	 * Provide the JobLaunchAction with an existing IRemoteConnection. This
+	 * connection will be used for remote launches if its corresponding hostname
+	 * is the same as the user specified host name as defined in the
 	 * execDictionary.
 	 * 
 	 * @param remoteConnection
@@ -1604,5 +1676,5 @@ public class JobLaunchAction extends Action implements Runnable {
 	public void setRemoteConnectionType(IRemoteConnectionType type) {
 		connectionType = type;
 	}
-	
+
 }

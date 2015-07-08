@@ -26,6 +26,8 @@ import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapText;
@@ -58,6 +60,12 @@ import com.jme3.scene.shape.Sphere;
  */
 public class GeometryApplication extends SimpleApplication implements
 		IUpdateableListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(GeometryApplication.class);
 
 	/**
 	 * Some of the code in this file was adapted from the JME3 tutorials and
@@ -131,7 +139,7 @@ public class GeometryApplication extends SimpleApplication implements
 	@Override
 	public void simpleInitApp() {
 
-		System.out.println("Opening jME3 geometry renderer...");
+		logger.info("Opening jME3 geometry renderer...");
 
 		// Turn off near clipping on the geometry
 		cam.setFrustumPerspective(45f,

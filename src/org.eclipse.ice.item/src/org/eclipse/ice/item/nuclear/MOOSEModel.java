@@ -381,7 +381,7 @@ public class MOOSEModel extends Item {
 	 */
 	public void setRemoteServicesManager(IRemoteServicesManager manager) {
 		if (manager != null) {
-			System.out.println("[MOOSEModel Message] Setting the IRemoteServicesManager: " + manager.toString());
+			logger.info("[MOOSEModel Message] Setting the IRemoteServicesManager: " + manager.toString());
 			remoteManager = manager;
 		}
 	}
@@ -1403,7 +1403,7 @@ public class MOOSEModel extends Item {
 
 				// Update the name on the Form
 				meshFileName = mesh.getName();
-				System.out.println("MOOSEModel Message: Adding new mesh file " + mesh.getName() + " to Resources list");
+				logger.info("MOOSEModel Message: Adding new mesh file " + mesh.getName() + " to Resources list");
 			}
 		}
 		// If a valid mesh file was not found, then the ResourceComponent should
@@ -1767,7 +1767,7 @@ public class MOOSEModel extends Item {
 		} else if (".syntax".equals(fileExt)) {
 			fileType = "SYNTAX";
 		} else {
-			System.out.println("MOOSEFileHandler message: File does not have "
+			logger.info("MOOSEFileHandler message: File does not have "
 					+ "vaid file extension. Must be .yaml or .syntax but is " + fileExt);
 		}
 
@@ -1829,7 +1829,7 @@ public class MOOSEModel extends Item {
 				linenumber++;
 			}
 			if (startline + numlines > linenumber) {
-				System.out.println("End of file reached.");
+				logger.info("End of file reached.");
 			}
 			br.close();
 
@@ -1838,7 +1838,7 @@ public class MOOSEModel extends Item {
 			fw.write(sb.toString());
 			fw.close();
 		} catch (Exception e) {
-			System.out.println("Something went horribly wrong: " + e.getMessage());
+			logger.info("Something went horribly wrong: " + e.getMessage());
 		}
 	}
 

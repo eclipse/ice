@@ -147,7 +147,7 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 			object = client.call("file.server.directory.list", args).get();
 			if (object != null) {
 				String directory = object.getJSONArray("path").getString(0);
-				System.out.println("The directory is: " + directory);
+				logger.info("The directory is: " + directory);
 
 				// If the path is indeed a full path, we need to determine its
 				// relative path.

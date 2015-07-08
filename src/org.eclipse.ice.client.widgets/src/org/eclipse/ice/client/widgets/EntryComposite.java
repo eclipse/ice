@@ -68,6 +68,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IMessageManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -87,6 +89,11 @@ import org.eclipse.ui.forms.IMessageManager;
  * @author Gregory M. Lyon, Anna Wojtowicz, Alex McCaskey
  */
 public class EntryComposite extends Composite implements IUpdateableListener {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(EntryComposite.class);
 
 	/**
 	 * A label that describes the Entry.
@@ -273,7 +280,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 				String value = null;
 				value = (index == 0) ? entry.getAllowedValues().get(1) : entry.getAllowedValues().get(0);
 				setEntryValue(value);
-				System.out.println("EntryComposite Message: Updated Entry " + entry.getName() + " with value = "
+				logger.info("EntryComposite Message: Updated Entry " + entry.getName() + " with value = "
 						+ entry.getValue());
 
 				return;
@@ -875,7 +882,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 		// Print an error if this Entry has been prematurely disposed.
 		if (isDisposed()) {
-			System.out.println("EntryComposite Message: " + "This composite has been prematurely disposed!");
+			logger.info("EntryComposite Message: " + "This composite has been prematurely disposed!");
 			return;
 		}
 

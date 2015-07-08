@@ -14,6 +14,8 @@ package org.eclipse.ice.client.widgets.jme.internal;
 
 import org.eclipse.ice.client.widgets.jme.MasterApplication;
 import org.eclipse.ice.client.widgets.jme.ViewAppState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -27,6 +29,11 @@ import org.eclipse.ice.client.widgets.jme.ViewAppState;
  */
 public class MasterApplicationHolder {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(MasterApplicationHolder.class);
+	
 	/**
 	 * The factory used to create a <code>MasterApplication</code>. <b>This
 	 * should only be set via OSGi DS!</b>
@@ -70,7 +77,7 @@ public class MasterApplicationHolder {
 	 *            <code>MasterApplication</code>.
 	 */
 	public void setApplicationFactory(IMasterApplicationFactory factory) {
-		System.out.println("MasterApplicationHolder message: "
+		logger.info("MasterApplicationHolder message: "
 				+ "Setting MasterApplication factory.");
 
 		// Set the static reference to the factory for use later.
@@ -92,7 +99,7 @@ public class MasterApplicationHolder {
 	public void unsetApplicationFactory(IMasterApplicationFactory factory) {
 
 		if (factory == MasterApplicationHolder.factory) {
-			System.out.println("MasterApplicationHolder message: "
+			logger.info("MasterApplicationHolder message: "
 					+ "Unsetting MasterApplication factory and disposing "
 					+ "MasterApplication.");
 

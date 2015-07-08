@@ -557,7 +557,7 @@ public class MOOSE extends Item {
 
 			for (ICEResource r : comp.getResources()) {
 				if (!names.contains(r.getName())) {
-					System.out.println("Adding Resource to Moose: " + r.getName());
+					logger.info("Adding Resource to Moose: " + r.getName());
 					ourComp.add(r);
 				}
 			}

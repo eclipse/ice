@@ -43,6 +43,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import visit.java.client.AttributeSubject;
 import visit.java.client.AttributeSubject.AttributeSubjectCallback;
@@ -55,6 +57,11 @@ import visit.java.client.AttributeSubject.AttributeSubjectCallback;
  * 
  */
 public class VisitPythonDialog extends TitleAreaDialog {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(VisitPythonDialog.class);
 
 	/**
 	 * The active VisItSwtWidget
@@ -153,7 +160,7 @@ public class VisitPythonDialog extends TitleAreaDialog {
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						System.out.println("unregistering...");
+						logger.info("unregistering...");
 						widget.getViewerState().unregisterCallback(
 								"ClientMethod", attSubCallback);
 					}

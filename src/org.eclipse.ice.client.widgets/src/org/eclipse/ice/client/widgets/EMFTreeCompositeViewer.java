@@ -220,7 +220,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	public void partActivated(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			System.out.println("EMFTreeCompositeViewer message: "
+			logger.info("EMFTreeCompositeViewer message: "
 					+ "EMFFormEditor part activated.");
 
 			// Update the TreeViewer with the current TreeComposite.
@@ -237,7 +237,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	public void partClosed(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			System.out.println("EMFTreeCompositeViewer message: "
+			logger.info("EMFTreeCompositeViewer message: "
 					+ "EMFFormEditor part closed.");
 
 			setInput(new TreeComposite(), null);
@@ -264,7 +264,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	public void partBroughtToTop(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			System.out.println("EMFTreeCompositeViewer message: "
+			logger.info("EMFTreeCompositeViewer message: "
 					+ "MOOSEFormEditor part brought to top.");
 
 			// Set this editor as the active one
@@ -278,7 +278,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	public void partDeactivated(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			System.out.println("EMFTreeCompositeViewer message: "
+			logger.info("EMFTreeCompositeViewer message: "
 					+ "EMFFormEditor part deactivated.");
 
 			// If the active editor closed, reset the active editor reference.
@@ -294,7 +294,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	public void partOpened(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			System.out.println("EMFTreeCompositeViewer message: "
+			logger.info("EMFTreeCompositeViewer message: "
 					+ "EMFFormEditor part opened.");
 		}
 
@@ -305,7 +305,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	public void partHidden(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			System.out.println("EmFTreeCompositeViewer message: "
+			logger.info("EmFTreeCompositeViewer message: "
 					+ "EMFFormEditor part hidden.");
 		}
 
@@ -316,7 +316,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	public void partVisible(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			System.out.println("EMFTreeCompositeViewer message: "
+			logger.info("EMFTreeCompositeViewer message: "
 					+ "EMFFormEditor part visible.");
 		}
 
@@ -327,7 +327,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	public void partInputChanged(IWorkbenchPartReference partRef) {
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
-			System.out.println("EMFTreeCompositeViewer message: "
+			logger.info("EMFTreeCompositeViewer message: "
 					+ "EMFFormEditor part input changed.");
 		}
 

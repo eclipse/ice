@@ -41,6 +41,8 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class extends the ViewPart class and provides a view in the
@@ -53,6 +55,12 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class VizFileViewer extends ViewPart implements IUpdateableListener,
 		ISelectionChangedListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(VizFileViewer.class);
 
 	/**
 	 * The ID for this view.
@@ -135,7 +143,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 	@Override
 	public void update(IUpdateable component) {
 
-		System.out.println("VizFileViewer Message: Incoming resource update.");
+		logger.info("VizFileViewer Message: Incoming resource update.");
 
 		// Sync with the display.
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
@@ -149,7 +157,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 					// ICEResources.
 					fileTreeViewer.setInput(resourceComponent.getResources());
 
-					System.out.println("VizFileViewer Message: "
+					logger.info("VizFileViewer Message: "
 							+ "Updating resource table.");
 					fileTreeViewer.refresh();
 					fileTreeViewer.getTree().redraw();
@@ -398,7 +406,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 				for (Iterator<?> iter = structuredSelection.iterator(); iter
 						.hasNext();) {
 					ICEResource resource = (ICEResource) iter.next();
-					System.out.println("VizFileViewer message: "
+					logger.info("VizFileViewer message: "
 							+ "Removing the resource for file \""
 							+ resource.getPath().getPath() + "\".");
 					resourceComponent.remove(resource);

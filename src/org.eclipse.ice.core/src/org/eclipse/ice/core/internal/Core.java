@@ -56,6 +56,8 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -78,6 +80,12 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
  */
 @ApplicationPath("/ice")
 public class Core extends Application implements ICore {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Core.class);
+	
 	/**
 	 * Reference to the ItemManager responsible for creating, querying, and
 	 * updating available Items.
@@ -161,7 +169,7 @@ public class Core extends Application implements ICore {
 		// Store the component's context
 		componentContext = context;
 
-		System.out.println("ICore Message: Component context set!");
+		logger.info("ICore Message: Component context set!");
 
 		// Setup the persistence provider for the ItemManager. The ItemManager
 		// will check them, so just pass the references regardless of whether or
@@ -233,7 +241,7 @@ public class Core extends Application implements ICore {
 
 		// Register the builder with the ItemManager so long as it is not null
 		if (itemBuilder != null) {
-			System.out.println("ICore Message: Item "
+			logger.info("ICore Message: Item "
 					+ itemBuilder.getItemName() + " registered with Core.");
 			itemManager.registerBuilder(itemBuilder);
 		}
@@ -251,7 +259,7 @@ public class Core extends Application implements ICore {
 
 		// Register the builder with the ItemManager so long as it is not null
 		if (builder != null) {
-			System.out.println("ICore Message: Composite Item "
+			logger.info("ICore Message: Composite Item "
 					+ builder.getItemName() + " registered with Core.");
 			itemManager.registerCompositeBuilder(builder);
 		}
@@ -451,7 +459,7 @@ public class Core extends Application implements ICore {
 						fileInProject.delete(true, null);
 					} catch (CoreException e) {
 						// Complain and don't do anything else.
-						System.out.println("Core Message: "
+						logger.info("Core Message: "
 								+ "Unable to import file.");
 						e.printStackTrace();
 						return;
@@ -465,13 +473,13 @@ public class Core extends Application implements ICore {
 					fileInProject.create(fileStream, true, null);
 				} catch (FileNotFoundException e) {
 					// Complain and don't do anything else.
-					System.out.println("Core Message: "
+					logger.info("Core Message: "
 							+ "Unable to import file.");
 					e.printStackTrace();
 					return;
 				} catch (CoreException e) {
 					// Complain and don't do anything else.
-					System.out.println("Core Message: "
+					logger.info("Core Message: "
 							+ "Unable to import file.");
 					e.printStackTrace();
 					return;
@@ -482,7 +490,7 @@ public class Core extends Application implements ICore {
 
 			// Drop some debug info.
 			if (System.getProperty("DebugICE") != null) {
-				System.out.println("Core Message: " + "Imported file "
+				logger.info("Core Message: " + "Imported file "
 						+ file.toString());
 			}
 		}
@@ -577,7 +585,7 @@ public class Core extends Application implements ICore {
 
 		// Set the webservice reference
 		httpService = service;
-		System.out.println("ICore Message: Web service set!");
+		logger.info("ICore Message: Web service set!");
 	}
 
 	/**
@@ -600,15 +608,15 @@ public class Core extends Application implements ICore {
 				if (componentContext != null) {
 					bundle = componentContext.getBundleContext().getBundle();
 				} else {
-					System.out
-							.println("ICore Message: ICE Core ComponentContext was null! No web service started.");
+					logger.info("ICore Message: "
+									+ "ICE Core ComponentContext was null! No web service started.");
 					return;
 				}
 
 				// Make sure we got a valid bundle
 				if (bundle == null) {
-					System.out
-							.println("ICore Message: ICE Core Bundle was null! No web service started.");
+					logger.info("ICore Message: "
+									+ "ICE Core Bundle was null! No web service started.");
 					return;
 				}
 
@@ -626,10 +634,10 @@ public class Core extends Application implements ICore {
 			} catch (ServletException | NamespaceException | IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println("ICore Message: ICE Core Server loaded and web "
+			logger.info("ICore Message: ICE Core Server loaded and web "
 					+ "service started!");
 		} else {
-			System.out.println("ICore Message: ICE Core Server loaded, but "
+			logger.info("ICore Message: ICE Core Server loaded, but "
 					+ "without webservice.");
 		}
 	}
@@ -667,7 +675,7 @@ public class Core extends Application implements ICore {
 
 		// Print some diagnostic information
 		if (Platform.getInstanceLocation() != null) {
-			System.out.println("ICore Message: Default workspace location is "
+			logger.info("ICore Message: Default workspace location is "
 					+ Platform.getInstanceLocation().getURL().toString());
 		}
 		// Create the project space for the *default* user. This will have to
@@ -719,7 +727,7 @@ public class Core extends Application implements ICore {
 
 		// If the provider is not null, store the reference and log a message.
 		if (provider != null) {
-			System.out.println("ICore Message: PersistenceProvider set!");
+			logger.info("ICore Message: PersistenceProvider set!");
 			this.provider = provider;
 		}
 	}
@@ -843,7 +851,7 @@ public class Core extends Application implements ICore {
 
 		// Print the message if debugging is enabled
 		// if (debuggingEnabled) {
-		System.out.println("Core Message: " + "Update received with message: "
+		logger.info("Core Message: " + "Update received with message: "
 				+ message);
 		// }
 

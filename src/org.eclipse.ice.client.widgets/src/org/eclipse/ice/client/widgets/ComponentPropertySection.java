@@ -50,6 +50,8 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for ICE Components in a TabbedPropertiesWindow.
@@ -60,6 +62,11 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public class ComponentPropertySection extends AbstractPropertySection implements
 		IComponentVisitor {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ComponentPropertySection.class);
+	
 	/**
 	 * The tree composite provided to this section as input.
 	 */
@@ -170,7 +177,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		super.setInput(part, selection);
 
-		System.out.println("ComponentPropertySection message: "
+		logger.info("ComponentPropertySection message: "
 				+ "Setting input.");
 
 		// Get and check the selection.
@@ -182,7 +189,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 			// Update the reference to the input TreeComposite.
 			treeComp = (TreeComposite) input;
 
-			System.out.println("ComponentPropertySection message: "
+			logger.info("ComponentPropertySection message: "
 					+ "Input changed to " + treeComp.getName());
 		}
 
@@ -197,7 +204,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 	public void refresh() {
 		super.refresh();
 
-		System.out.println("ComponentPropertySection message: "
+		logger.info("ComponentPropertySection message: "
 				+ "Refreshing properties.");
 
 		// Disable redrawing until the properties are completely redrawn. This

@@ -27,6 +27,10 @@ import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -55,6 +59,12 @@ import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
  * @author Jay Jay Billings
  */
 public class ItemProcessor implements IWidgetClosedListener, Runnable {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ItemProcessor.class);
+	
 	/**
 	 * <p>
 	 * A reference to an IExtraInfoWidget that can be used to gather extra
@@ -550,7 +560,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 		formWidget.updateStatus(statusMessageMap.get(status));
 
 		// Print a debug message for now
-		System.out.println("IClient ItemProcessor Message: Status = " + status);
+		logger.info("IClient ItemProcessor Message: Status = " + status);
 
 		return;
 

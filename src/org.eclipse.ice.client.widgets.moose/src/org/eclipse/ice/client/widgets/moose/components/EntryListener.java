@@ -15,6 +15,8 @@ package org.eclipse.ice.client.widgets.moose.components;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class can be used to listen to an {@link Entry}. This is just for
@@ -25,6 +27,12 @@ import org.eclipse.ice.datastructures.form.Entry;
  * 
  */
 public abstract class EntryListener implements IUpdateableListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(EntryListener.class);
 
 	/**
 	 * The entry that is this listener observes.
@@ -53,7 +61,7 @@ public abstract class EntryListener implements IUpdateableListener {
 	@Override
 	public final void update(IUpdateable component) {
 		if (component == entry) {
-			System.out.println("Entry \"" + entry.getName() + "\" updated.");
+			logger.info("Entry \"" + entry.getName() + "\" updated.");
 			updateEntry();
 		}
 	}

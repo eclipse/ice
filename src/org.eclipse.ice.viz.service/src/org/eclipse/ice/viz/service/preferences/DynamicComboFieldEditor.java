@@ -242,7 +242,7 @@ public class DynamicComboFieldEditor extends FieldEditor {
 	 */
 	@Override
 	protected void doLoad() {
-		// System.out.println("Loading current ");
+		// logger.info("Loading current ");
 		updateCombo(getPreferenceStore().getInt(getPreferenceName()));
 	}
 
@@ -253,7 +253,7 @@ public class DynamicComboFieldEditor extends FieldEditor {
 	 */
 	@Override
 	protected void doLoadDefault() {
-		// System.out.println("Loading default");
+		// logger.info("Loading default");
 		updateCombo(getPreferenceStore().getDefaultInt(getPreferenceName()));
 	}
 
@@ -264,7 +264,7 @@ public class DynamicComboFieldEditor extends FieldEditor {
 	 */
 	@Override
 	protected void doStore() {
-		// System.out.println("Storing " + value);
+		// logger.info("Storing " + value);
 		getPreferenceStore().setValue(getPreferenceName(), value);
 	}
 
@@ -306,7 +306,7 @@ public class DynamicComboFieldEditor extends FieldEditor {
 				public void widgetSelected(SelectionEvent evt) {
 					// Update the current value.
 					value = combo.getSelectionIndex();
-					// System.out.println("Selected " + value);
+					// logger.info("Selected " + value);
 					// Notify the underlying preference system of the change.
 					setPresentsDefaultValue(false);
 					fireValueChanged(VALUE, value, combo.getSelectionIndex());
@@ -323,7 +323,7 @@ public class DynamicComboFieldEditor extends FieldEditor {
 	 *            The new value.
 	 */
 	private void updateCombo(final int newValue) {
-		// System.out.println("Updating value from " + value + " to " +
+		// logger.info("Updating value from " + value + " to " +
 		// newValue);
 		value = newValue;
 		Display.getDefault().syncExec(new Runnable() {

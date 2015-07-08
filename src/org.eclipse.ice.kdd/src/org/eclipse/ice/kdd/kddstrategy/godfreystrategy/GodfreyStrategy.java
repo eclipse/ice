@@ -33,6 +33,8 @@ import org.eclipse.ice.kdd.kddmath.IDataMatrix;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 import org.eclipse.ice.kdd.kddstrategy.compositestrategy.CompositeStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -50,6 +52,13 @@ import org.eclipse.ice.kdd.kddstrategy.compositestrategy.CompositeStrategy;
  * @author Alex McCaskey
  */
 public class GodfreyStrategy extends CompositeStrategy {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(GodfreyStrategy.class);
+
 	/**
 	 * <p>
 	 * Reference to the number of rows in the pin powers matrix.
@@ -243,14 +252,14 @@ public class GodfreyStrategy extends CompositeStrategy {
 					&& "yes".equals(properties.get(name))
 					&& (temp = subStrategyFactory.createSubStrategy(name,
 							loadedPinPowers, refPinPowers, weights, properties)) != null) {
-				System.out.println("Adding " + name + " Sub-Strategy");
+				logger.info("Adding " + name + " Sub-Strategy");
 				strategies.add(temp);
 			}
 		}
 
 		// Since this is a CompositeStrategy, loop over its children
 		// invoking executeStrategy on each
-		System.out.println("Executing sub-strategies...");
+		logger.info("Executing sub-strategies...");
 		if (super.executeStrategy()) {
 			return createAsset();
 		} else {
@@ -300,7 +309,7 @@ public class GodfreyStrategy extends CompositeStrategy {
 		// should collect all the sub-strategy's URIs
 		// and combine them into one URI for use in ICE
 		for (KDDStrategy strategy : strategies) {
-			System.out.println("Adding URI for " + strategy.getName());
+			logger.info("Adding URI for " + strategy.getName());
 			uris.add(strategy.getURI());
 		}
 

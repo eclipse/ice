@@ -28,6 +28,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This Action opens a dialog that allows the user to create a series plot from
@@ -37,6 +39,12 @@ import org.eclipse.ui.part.ViewPart;
  * 
  */
 public class AddCSVSeriesAction extends Action {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AddCSVSeriesAction.class);
 
 	/**
 	 * The ViewPart that owns an object of this class.
@@ -80,7 +88,7 @@ public class AddCSVSeriesAction extends Action {
 			return;
 		}
 
-		System.out.println("AddCSVSeriesAction message: "
+		logger.info("AddCSVSeriesAction message: "
 				+ "The currently selected resource is \"" + resource.getName()
 				+ "\".");
 

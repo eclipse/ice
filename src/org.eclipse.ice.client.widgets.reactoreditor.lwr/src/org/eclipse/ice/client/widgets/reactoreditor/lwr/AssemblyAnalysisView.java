@@ -424,8 +424,8 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 	 *            The new fuel assembly object.
 	 */
 	private void setAssembly(FuelAssembly assembly) {
-		System.out
-				.println("FuelAssemblyAnalysisView message: Setting fuel assembly.");
+		logger.info("FuelAssemblyAnalysisView message: "
+						+ "Setting fuel assembly.");
 
 		// Check the parameters.
 		if (assembly != null && assembly != this.assembly) {
@@ -619,7 +619,7 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 	 *            The new symmetry, e.g., octant, quadrant, or full.
 	 */
 	private void setSymmetry(Symmetry symmetry, int symmetryIndex) {
-		System.out.println("Trying to set symmetry: " + symmetry.name + " "
+		logger.info("Trying to set symmetry: " + symmetry.name + " "
 				+ symmetryIndex);
 		// Make sure the symmetry value is not null *and* different.
 		// Also validate the symmetryIndex by modulo dividing it with the

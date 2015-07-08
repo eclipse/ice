@@ -150,7 +150,7 @@ public class VibeModel extends Item {
 
 		// Make sure the form has the right amount of data
 		if (components.size() != 4) {
-			System.out.println("VibeModel Message: Could not find enough data to write a complete input format." +
+			logger.info("VibeModel Message: Could not find enough data to write a complete input format." +
 					" 4 Components are required, but " + components.size() + " were found.");
 			retStatus = FormStatus.InfoError;
 		}
@@ -272,7 +272,7 @@ public class VibeModel extends Item {
 		}
 		
 		// Load the components from the file and setup the form
-		System.out.println("VibeModel Message: Loading " + inputFile.getName());		
+		logger.info("VibeModel Message: Loading " + inputFile.getName());		
 		IPSReader reader = (IPSReader) ioService.getReader("IPSReader"); //new IPSReader();
 		form = reader.read(inputFile);
 		form.setName(getName());

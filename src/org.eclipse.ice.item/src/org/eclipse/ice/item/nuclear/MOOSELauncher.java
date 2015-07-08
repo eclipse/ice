@@ -520,7 +520,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					// First, check if the file extension on the value is valid
 					if (!entry.getValue().contains(".i")) {
 						// Complain and exit
-						System.out.println("MOOSELauncher Message: Input files" + "must have a *.i extension!");
+						logger.info("MOOSELauncher Message: Input files" + "must have a *.i extension!");
 						return;
 					}
 

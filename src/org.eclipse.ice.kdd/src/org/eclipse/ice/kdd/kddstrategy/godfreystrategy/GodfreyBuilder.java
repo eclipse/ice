@@ -19,6 +19,8 @@ import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -30,6 +32,13 @@ import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
  * @author Alex McCaskey
  */
 public class GodfreyBuilder implements IStrategyBuilder {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(GodfreyBuilder.class);
+
 	/**
 	 * <p>
 	 * Boolean indicating whether this strategy is available or not.
@@ -122,7 +131,7 @@ public class GodfreyBuilder implements IStrategyBuilder {
 
 		isAvailable = false;
 
-		System.out.println("Data Size is " + dataToCheck.size());
+		logger.info("Data Size is " + dataToCheck.size());
 		// Make sure we got 2 IDataProviders
 		if (dataToCheck.isEmpty() || dataToCheck.size() == 1) {
 			System.err

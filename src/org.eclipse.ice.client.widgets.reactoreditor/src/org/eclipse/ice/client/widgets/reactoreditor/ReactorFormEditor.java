@@ -99,7 +99,7 @@ public class ReactorFormEditor extends ICEFormEditor {
 
 		// Loop over the DataComponents and get them into the map
 		for (Component i : iceDataForm.getComponents()) {
-			System.out.println("ReactorFormEditor Message: "
+			logger.info("ReactorFormEditor Message: "
 					+ "Adding component " + i.getName() + " " + i.getId());
 			i.accept(this);
 		}
@@ -148,7 +148,7 @@ public class ReactorFormEditor extends ICEFormEditor {
 			// Add the ReactorPages to the Editor's FormPages.
 			formPages.add(reactorPage);
 		} else {
-			System.out.println("ReactorFormEditor Message: "
+			logger.info("ReactorFormEditor Message: "
 					+ "No IReactorEditor present. IReactorComponents will not "
 					+ "be rendered.");
 		}

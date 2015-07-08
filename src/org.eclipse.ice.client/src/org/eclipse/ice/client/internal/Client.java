@@ -35,6 +35,8 @@ import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -55,8 +57,15 @@ import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
  */
 public class Client implements IUpdateEventListener, IProcessEventListener,
 		ISimpleResourceProvider, IWidgetClosedListener, IClient {
+
 	/**
-	 * 
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Client.class);
+
+	/**
+	 * The running ICE core that provides all of the required services to the
+	 * client.
 	 */
 	private ICore iCore;
 
@@ -145,9 +154,10 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		statusMessageMap.put(FormStatus.Unacceptable, "This Form will not be "
 				+ "processed or updated. It should be considered read-only.");
 
-		// Set the reference to this in the Singleton for the widget classes to retrieve as needed.
+		// Set the reference to this in the Singleton for the widget classes to
+		// retrieve as needed.
 		ClientHolder.setClient(this);
-		
+
 	}
 
 	/**
@@ -207,7 +217,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 */
 	@Override
 	public void setCoreService(ICore core) {
-		System.out.println("IClient Message: Core service set.");
+		logger.info("IClient Message: Core service set.");
 		this.iCore = core;
 	}
 
@@ -248,10 +258,10 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		iWidgetFactory = widgetFactory;
 
 		if (iWidgetFactory != null) {
-			System.out.println("IClient Message: Widget Factory set!");
+			logger.info("IClient Message: Widget Factory set!");
 		} else {
-			System.out
-					.println("IClient Message: Widget Factory set, but is null.");
+			logger.info("IClient Message: "
+					+ "Widget Factory set, but is null.");
 		}
 		return;
 	}
@@ -294,7 +304,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			formWidget.registerUpdateListener(this);
 			formWidget.registerProcessListener(this);
 			formWidget.registerResourceProvider(this);
-			System.out.println("IClient Message: Loaded Item " + itemId + ", "
+			logger.info("IClient Message: Loaded Item " + itemId + ", "
 					+ form.getName());
 			// Store the widget in the table of FormWidgets
 			formWidgetTable.put(itemId, formWidget);
@@ -369,8 +379,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			}
 			// Process the item
 			if (itemForm != null) {
-				System.out.println("IClient Message: Processing Item " + itemId
-						+ ", " + itemForm.getName());
+				logger.info("IClient Message: Processing Item " + itemId + ", "
+						+ itemForm.getName());
 				processItem(formWidgetTable.get(itemId), actionName);
 			}
 		} else if (itemId < 0 || itemForm == null) {
@@ -410,7 +420,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			}
 		}
 
-		System.out.println("IClient Message: Connected to core... " + status);
+		logger.info("IClient Message: Connected to core... " + status);
 
 		return status;
 	}

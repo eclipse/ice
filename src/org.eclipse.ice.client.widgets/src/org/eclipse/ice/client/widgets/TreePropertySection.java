@@ -71,6 +71,8 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides a proprty <code>Section</code> that displays the
@@ -87,6 +89,11 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public class TreePropertySection extends AbstractPropertySection implements
 		IUpdateableListener {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(TreePropertySection.class);	
+	
 	/**
 	 * The <code>TreeComposite</code> whose properties are displayed in this
 	 * section.
@@ -321,7 +328,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 						// Unset the isAdaptive flag.
 						isAdaptive = false;
 
-						System.out.println("TreePropertySection message: "
+						logger.info("TreePropertySection message: "
 								+ "Setting the input to tree " + tree.getName()
 								+ ".");
 					}

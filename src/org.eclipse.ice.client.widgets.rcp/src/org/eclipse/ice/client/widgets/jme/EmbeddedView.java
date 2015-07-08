@@ -31,6 +31,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jme3.app.Application;
 import com.jme3.input.InputManager;
 import com.jme3.post.SceneProcessor;
@@ -78,6 +81,11 @@ import com.jme3.util.BufferUtils;
  * 
  */
 public class EmbeddedView implements SceneProcessor {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(EmbeddedView.class);
 
 	// ---- Constant properties ---- //
 	/**

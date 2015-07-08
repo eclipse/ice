@@ -25,7 +25,8 @@ Import-Package: com.kitware.vtk.web,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
  org.eclipse.ui.forms,
- org.json
+ org.json,
+ org.slf4j;version="1.7.2"
 Export-Package: org.eclipse.ice.viz.service.paraview
 Service-Component: OSGI-INF/vizService.xml
 Bundle-Vendor: Oak Ridge National Laboratory

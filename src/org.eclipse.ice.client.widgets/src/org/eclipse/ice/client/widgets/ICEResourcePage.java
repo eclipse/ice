@@ -131,7 +131,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		// Set the ICEFormEditor
 		if (!(editor instanceof ICEFormEditor)) {
-			System.out.println("ICEResourcePage Message: Invalid FormEditor.");
+			logger.info("ICEResourcePage Message: Invalid FormEditor.");
 		}
 
 		// Setup the plot maps.
@@ -239,7 +239,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						+ "</body></html>");
 			}
 		} catch (SWTError e) {
-			System.out.println("Client Message: "
+			logger.info("Client Message: "
 					+ "Could not instantiate Browser: " + e.getMessage());
 		}
 

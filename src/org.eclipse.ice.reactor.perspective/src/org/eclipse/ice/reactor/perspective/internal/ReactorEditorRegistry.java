@@ -26,6 +26,8 @@ import org.eclipse.ice.reactor.perspective.ReactorViewer;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements {@link IReactorEditorRegistry} so that classes in the
@@ -42,6 +44,12 @@ import org.eclipse.ui.IEditorPart;
  * 
  */
 public class ReactorEditorRegistry implements IReactorEditorRegistry {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ReactorEditorRegistry.class);
 
 	/**
 	 * An ordered Map of all current Reactor Editors, keyed on their associated
@@ -63,7 +71,7 @@ public class ReactorEditorRegistry implements IReactorEditorRegistry {
 	public void addReactorEditor(ReactorFormEditor editor, int id) {
 		editors.put(id, editor);
 
-		System.out.println("ICE Reactor Perspective Message: "
+		logger.info("ICE Reactor Perspective Message: "
 				+ "Added new reactor analyzer with ID " + id);
 	}
 
@@ -75,7 +83,7 @@ public class ReactorEditorRegistry implements IReactorEditorRegistry {
 	public void removeReactorEditor(int id) {
 		editors.remove(id);
 
-		System.out.println("ICE Reactor Perspective Message: "
+		logger.info("ICE Reactor Perspective Message: "
 				+ "Removed reactor analyzer with ID " + id);
 	}
 
@@ -148,10 +156,10 @@ public class ReactorEditorRegistry implements IReactorEditorRegistry {
 			IAnalysisWidgetRegistry registry) {
 		if (registry != null) {
 			widgetRegistry = registry;
-			System.out.println("ICE Reactor Perspective Message: "
+			logger.info("ICE Reactor Perspective Message: "
 					+ "Analysis widget registry set successfully!");
 		} else {
-			System.out.println("ICE Reactor Perspective Message:"
+			logger.info("ICE Reactor Perspective Message:"
 					+ "Framework attempted to set analysis widget registry, "
 					+ "but the reference was null.");
 		}

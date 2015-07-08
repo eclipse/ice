@@ -109,8 +109,8 @@ public class ReactorAnalyzerBuilder extends AbstractItemBuilder {
 	 */
 	public void stop() {
 
-		System.out
-				.println("ReactorAnalyzerBuilder Message: Closing Analysis Tools!");
+		logger.info("ReactorAnalyzerBuilder Message: "
+						+ "Closing Analysis Tools!");
 		for (int i = 0; i < this.analysisTools.size(); i++) {
 			this.analysisTools.get(i).close();
 		}

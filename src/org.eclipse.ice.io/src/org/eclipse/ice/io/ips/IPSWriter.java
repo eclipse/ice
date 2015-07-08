@@ -39,6 +39,8 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.serializable.IWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -50,6 +52,12 @@ import org.eclipse.ice.io.serializable.IWriter;
  * 
  */
 public class IPSWriter implements IWriter {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(IPSWriter.class);
 
 	/**
 	 * Nullary constructor
@@ -109,13 +117,13 @@ public class IPSWriter implements IWriter {
 				out.close();
 				ifile.setContents(in, true, false, new NullProgressMonitor());
 			} catch (FileNotFoundException e) {
-				System.out.println("IPSWriter Message: Could not find "
+				logger.info("IPSWriter Message: Could not find "
 						+ ifile.getName() + " for writing.");
 			} catch (IOException e) {
-				System.out.println("IPSWriter Message: Could not write to "
+				logger.info("IPSWriter Message: Could not write to "
 						+ ifile.getName() + " du to an IO error");
 			} catch (CoreException e) {
-				System.out.println("IPSWriter Message: Could not write to "
+				logger.info("IPSWriter Message: Could not write to "
 						+ ifile.getName() + " due to an ICE Core error.");
 			}
 		}
@@ -159,11 +167,11 @@ public class IPSWriter implements IWriter {
 			}
 			reader.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("IPSWriter Message:  Could not find "
-					+ ifile.getName() + " for reading.");
+			logger.info("IPSWriter Message:  Could not find " + ifile.getName()
+					+ " for reading.");
 			return;
 		} catch (IOException e) {
-			System.out.println("IPSWriter Message:  Could not read in "
+			logger.info("IPSWriter Message:  Could not read in "
 					+ ifile.getName() + " for replacement writing.");
 			return;
 		} catch (CoreException e) {

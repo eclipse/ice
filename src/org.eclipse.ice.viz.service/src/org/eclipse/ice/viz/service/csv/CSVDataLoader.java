@@ -24,6 +24,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.ice.analysistool.IData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CSVDataLoader instantiates a CSVDataProvider and returns it
@@ -32,6 +34,12 @@ import org.eclipse.ice.analysistool.IData;
  * 
  */
 public class CSVDataLoader {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(CSVDataLoader.class);
 
 	/**
 	 * ArrayList of Double to hold times
@@ -133,31 +141,31 @@ public class CSVDataLoader {
 		int lineNumber = 1;
 		boolean hasHashFeature = false;
 		int elementOffset;
-		
+
 		// Reading in the data file line by line and passing to the provider
 		try {
-			
+
 			// Create a BufferedReader for reading the file
 			inputStream = new BufferedReader(new FileReader(csvInputFile));
 
 			// Begin reading the file. Find the line which contains the list
-			// of features, denoted either by the "#somefeature"-style label 
+			// of features, denoted either by the "#somefeature"-style label
 			// format, or just use line 1 if the hash-format is not used
 			while ((line = inputStream.readLine()) != null
 					&& (line.contains("#") || lineNumber == 1)) {
-				
-				// Replace characters if we can find a match to the 
+
+				// Replace characters if we can find a match to the
 				// "#label:stuff", "#label;stuff" or "#label/stuff" formats
 				// (not whitespace sensitive)
 				if (line.matches("#\\s*\\w+\\s*([:;/]).+")) {
-							
+
 					// Replace all special delimiters (":", ";", "/") with
 					// commas
 					line = line.replaceAll(":", ",");
 					line = line.replaceAll(";", ",");
 					line = line.replaceAll("/", ",");
 				}
-				
+
 				// Split the line at each comma
 				commentLine = line.trim().split(",");
 				commentLineLength = commentLine.length;
@@ -171,44 +179,43 @@ public class CSVDataLoader {
 				// If this line contains all the feature names (either with the
 				// "#feature" format (or simply by being line 1 if it contains
 				// no hashes), add them to the features ArrayList
-				if (hasHashFeature || 
-						(!line.contains("#") && lineNumber == 1)) {
-					
+				if (hasHashFeature || (!line.contains("#") && lineNumber == 1)) {
+
 					// First, get the number of features. This is used later
 					// to check each line contains the same number of entries
 					// as there are number of features
 					featureLineLength = commentLine.length;
-					
+
 					// We'll also check if there are error/uncertainty provided
-					// for each feature. Set up regex matcher.					
+					// for each feature. Set up regex matcher.
 					String pattern = "(.*)_(error|uncertainty)";
 					Pattern errorPattern = Pattern.compile(pattern);
 					Matcher match = null;
-					
+
 					// Now loop through the split line, add features to the
-					// list of features, and look for any error/uncertainty 
+					// list of features, and look for any error/uncertainty
 					// matches
 					elementOffset = (hasHashFeature ? 1 : 0);
 					for (int i = elementOffset; i < commentLineLength; i++) {
-						
+
 						// Add the current element of commentLine to the
 						// ArrayList of features
 						features.add(commentLine[i]);
-						
+
 						// Try to find any error/uncertainty match
 						match = errorPattern.matcher(commentLine[i]);
 						if (match.find()) {
 
-							 // Add the feature and it's corresponding error to
-							 // the feature error hashmap.
+							// Add the feature and it's corresponding error to
+							// the feature error hashmap.
 							featureErrorIndices.put(
 									features.indexOf(match.group(1)), i
 											- elementOffset);
 						}
 					}
 				} else if (line.toLowerCase().contains("#units")) {
-					
-					// Loops through the split line and appends to the 
+
+					// Loops through the split line and appends to the
 					// ArrayList of units
 					boolVarComp = ValueComp(featureLineLength,
 							commentLineLength);
@@ -217,18 +224,18 @@ public class CSVDataLoader {
 							units.add(commentLine[i]);
 						}
 					} else {
-						System.out.println("Number of units and "
+						logger.info("Number of units and "
 								+ "features do not match.");
 					}
-					
+
 				} else if (line.toLowerCase().contains("#time-units")) {
-					
+
 					// Set the time units
 					timeUnits = commentLine[1];
 					dataSet.setTimeUnits(timeUnits);
-					
+
 				} else if (line.toLowerCase().contains("#matrix")) {
-					
+
 					// Splits the line by comma
 					String[] matrixData = line.split(",");
 					// get the data width
@@ -239,13 +246,13 @@ public class CSVDataLoader {
 					dataSet.setDataWidth(dataWidth);
 					// set the data height in the provider
 					dataSet.setDataHeight(dataHeight);
-					
-				} 				
-				
+
+				}
+
 				// Increment the line counter
 				lineNumber++;
 			}
-			
+
 			/**
 			 * If the file had no given features, create a set of features
 			 * x0,x1,x2,...,xn for the fakeDataSet
@@ -260,7 +267,7 @@ public class CSVDataLoader {
 					features.add("x" + i);
 				}
 			}
-			
+
 			// Create an IData object to store information
 			IData data;
 			String[] dataLines;
@@ -316,8 +323,12 @@ public class CSVDataLoader {
 						data = new CSVData(features.get(i),
 								Double.parseDouble(dataLines[i]));
 					} else {
-						throw new Exception("CSV file in an unexpected format, "
-								+ "data must be a (m x n) matrix " + features.size() + " " + dataLines.length + "\n" + csvInputFile.getAbsolutePath());
+						throw new Exception(
+								"CSV file in an unexpected format, "
+										+ "data must be a (m x n) matrix "
+										+ features.size() + " "
+										+ dataLines.length + "\n"
+										+ csvInputFile.getAbsolutePath());
 					}
 					/**
 					 * Set the units if the units exist
@@ -427,30 +438,28 @@ public class CSVDataLoader {
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			System.out.println("filIn: " + e.fillInStackTrace());
-			System.out.println("cause: " + e.getCause());
-			System.out.println("local: " + e.getLocalizedMessage());
-			System.out.println("messa: " + e.getMessage());
-			System.out.println("trace: " + e.getStackTrace());
-			System.out.print("trace: ");
+			logger.info("filIn: " + e.fillInStackTrace());
+			logger.info("cause: " + e.getCause());
+			logger.info("local: " + e.getLocalizedMessage());
+			logger.info("messa: " + e.getMessage());
+			logger.info("trace: " + e.getStackTrace());
+			logger.info("trace: ");
 			e.printStackTrace();
-			System.out.println();
-			System.out.print("string: ");
+			logger.info("\nstring: ");
 			e.toString();
-			System.out.println();
+			logger.info("\n");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("filIn: " + e.fillInStackTrace());
-			System.out.println("cause: " + e.getCause());
-			System.out.println("local: " + e.getLocalizedMessage());
-			System.out.println("messa: " + e.getMessage());
-			System.out.println("trace: " + e.getStackTrace());
-			System.out.print("trace: ");
+			logger.info("filIn: " + e.fillInStackTrace());
+			logger.info("cause: " + e.getCause());
+			logger.info("local: " + e.getLocalizedMessage());
+			logger.info("messa: " + e.getMessage());
+			logger.info("trace: " + e.getStackTrace());
+			logger.info("trace: ");
 			e.printStackTrace();
-			System.out.println();
-			System.out.print("string: ");
+			logger.info("\nstring: ");
 			e.toString();
-			System.out.println();
+			logger.info("\n");
 		} finally {
 			/**
 			 * Check if the stream is null to catch IO error Close stream
@@ -460,7 +469,7 @@ public class CSVDataLoader {
 					inputStream.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					System.out.println("Error: Could not close stream");
+					logger.info("Error: Could not close stream");
 				}
 			}
 		}
@@ -649,8 +658,8 @@ public class CSVDataLoader {
 								units.add(commentLine[i]);
 							}
 						} else {
-							System.out
-									.println("Number of units and features do not match.");
+							logger.info("Number of units and "
+									+ "features do not match.");
 						}
 					} else if (line.toLowerCase().contains("#time-units,")) {
 						/**
@@ -821,30 +830,28 @@ public class CSVDataLoader {
 				}
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				System.out.println("filIn: " + e.fillInStackTrace());
-				System.out.println("cause: " + e.getCause());
-				System.out.println("local: " + e.getLocalizedMessage());
-				System.out.println("messa: " + e.getMessage());
-				System.out.println("trace: " + e.getStackTrace());
-				System.out.print("trace: ");
+				logger.info("filIn: " + e.fillInStackTrace());
+				logger.info("cause: " + e.getCause());
+				logger.info("local: " + e.getLocalizedMessage());
+				logger.info("messa: " + e.getMessage());
+				logger.info("trace: " + e.getStackTrace());
+				logger.info("trace: ");
 				e.printStackTrace();
-				System.out.println();
-				System.out.print("string: ");
+				logger.info("\nstring: ");
 				e.toString();
-				System.out.println();
+				logger.info("\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				System.out.println("filIn: " + e.fillInStackTrace());
-				System.out.println("cause: " + e.getCause());
-				System.out.println("local: " + e.getLocalizedMessage());
-				System.out.println("messa: " + e.getMessage());
-				System.out.println("trace: " + e.getStackTrace());
-				System.out.print("trace: ");
+				logger.info("filIn: " + e.fillInStackTrace());
+				logger.info("cause: " + e.getCause());
+				logger.info("local: " + e.getLocalizedMessage());
+				logger.info("messa: " + e.getMessage());
+				logger.info("trace: " + e.getStackTrace());
+				logger.info("trace: ");
 				e.printStackTrace();
-				System.out.println();
-				System.out.print("string: ");
+				logger.info("\nstring: ");
 				e.toString();
-				System.out.println();
+				logger.info("\n");
 			} finally {
 				/**
 				 * Check if the stream is null to catch IO error Close stream
@@ -854,7 +861,7 @@ public class CSVDataLoader {
 						inputStream.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						System.out.println("Error: Could not close stream");
+						logger.info("Error: Could not close stream");
 					}
 				}
 			}

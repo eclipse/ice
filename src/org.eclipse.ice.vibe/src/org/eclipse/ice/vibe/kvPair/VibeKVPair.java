@@ -63,7 +63,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	 * The tag that indicates this file should be exported to kv pairs.
 	 */
 	private String customTaggedExportString = "Export to key-value pair output";
-	
+
 	/**
 	 * The nullary constructor.
 	 */
@@ -80,7 +80,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	 */
 	public VibeKVPair(IProject projectSpace) {
 		// Punt to the base class.
-		super(projectSpace);		
+		super(projectSpace);
 		return;
 	}
 
@@ -124,7 +124,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		}
 		ioService.addReader(this);
 		ioService.addWriter(this);
-		
+
 		return;
 	}
 
@@ -145,7 +145,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 
 		// Make sure the form has the right amount of data
 		if (components.size() == 0) {
-			System.out.println("VIBE KV Pair Generator Message: "
+			logger.info("VIBE KV Pair Generator Message: "
 					+ "Could not find any data to write out");
 			retStatus = FormStatus.InfoError;
 		}
@@ -297,7 +297,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		}
 
 		// Load the components from the file and setup the form
-		System.out.println("VibeKVPair Message: Loading"
+		logger.info("VibeKVPair Message: Loading"
 				+ inputFile.getFullPath().toOSString());
 
 		form = read(inputFile);
@@ -353,16 +353,16 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 			// read in correctly
 			lines.add("EOF");
 		} catch (FileNotFoundException e) {
-			System.out
-					.println("VibeKVPair Message: Error!  Could not find file for loading.");
+			logger.error("VibeKVPair Message: "
+					+ "Error! Could not find file for loading.");
 			return null;
 		} catch (IOException e) {
-			System.out
-					.println("VibeKVPair Message: Error!  Trouble reading file.");
+			logger.error("VibeKVPair Message: "
+					+ "Error! Trouble reading file.");
 			return null;
 		} catch (CoreException e) {
-			System.out
-					.println("VibeKVPair Message: Error!  Trouble reading file from project location.");
+			logger.error("VibeKVPair Message: "
+					+ "Error! Trouble reading file from project location.");
 			return null;
 		}
 
@@ -446,10 +446,10 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 				ifile.setContents(in, true, false, new NullProgressMonitor());
 
 			} catch (FileNotFoundException e) {
-				System.out.println("VibeKVPair Message: Could not find "
+				logger.info("VibeKVPair Message: Could not find "
 						+ outputFile.getAbsolutePath() + " for writing.");
 			} catch (IOException e) {
-				System.out.println("VibeKVPair Message: Could not write to "
+				logger.info("VibeKVPair Message: Could not write to "
 						+ outputFile.getAbsolutePath() + ".");
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block

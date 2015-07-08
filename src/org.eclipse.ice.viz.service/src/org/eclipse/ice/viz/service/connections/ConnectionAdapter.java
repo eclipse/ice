@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides an adapter that wraps a connection. It provides feedback
@@ -50,7 +52,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  */
 public abstract class ConnectionAdapter<T> extends ICEObject implements
 		IConnectionAdapter<T> {
-
+	
 	/**
 	 * The current connection managed by this adapter.
 	 */
@@ -155,7 +157,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 
 		String key = getKey();
 
-		System.out.println("ConnectionAdapter message: "
+		logger.info("ConnectionAdapter message: "
 				+ "Attempting to connect to \"" + key
 				+ "\". The calling thread will " + (block ? "" : "not ")
 				+ "be blocked.");
@@ -163,12 +165,12 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 		if (state == ConnectionState.Connected) {
 			connected = true;
 
-			System.out.println("ConnectionAdapter message: " + "Connection \""
+			logger.info("ConnectionAdapter message: " + "Connection \""
 					+ key + "\" is already connected.");
 
 		} else if (state != ConnectionState.Connecting) {
 
-			System.out.println("ConnectionAdapter message: " + "Connection \""
+			logger.info("ConnectionAdapter message: " + "Connection \""
 					+ key + "\" is not connected.");
 
 			// Create a new thread to open the connection.
@@ -255,7 +257,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 
 		String key = getKey();
 
-		System.out.println("ConnectionAdapter message: "
+		logger.info("ConnectionAdapter message: "
 				+ "Attempting to disconnect from \"" + key
 				+ "\". The calling thread will " + (block ? "" : "not ")
 				+ "be blocked.");
@@ -263,7 +265,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 		if (state == ConnectionState.Connected) {
 			connected = true;
 
-			System.out.println("ConnectionAdapter message: " + "Connection \""
+			logger.info("ConnectionAdapter message: " + "Connection \""
 					+ key + "\" is connected. It will be disconnected.");
 
 			// Create a new thread to close the connection.
@@ -300,7 +302,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 				}
 			}
 		} else {
-			System.out.println("ConnectionAdapter message: " + "Connection \""
+			logger.info("ConnectionAdapter message: " + "Connection \""
 					+ key + "\" is already disconnected.");
 		}
 
@@ -365,7 +367,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 */
 	private void setState(ConnectionState state) {
 		if (state != this.state) {
-			System.out.println("ConnectionAdapter message: " + "Connection \""
+			logger.info("ConnectionAdapter message: " + "Connection \""
 					+ getKey() + "\" is now " + state + ".");
 			this.state = state;
 			notifyListeners();

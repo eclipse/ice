@@ -323,7 +323,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	 * to or removed from the List.
 	 */
 	private void updateActionManagers() {
-		System.out.println("ICEMeshPage message:"
+		logger.info("ICEMeshPage message:"
 				+ " Updating action ToolBar-/MenuManagers.");
 
 		// Clear the managers.

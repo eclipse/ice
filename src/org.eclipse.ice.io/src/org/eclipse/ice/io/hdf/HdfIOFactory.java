@@ -24,6 +24,8 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import ncsa.hdf.hdf5lib.structs.H5O_info_t;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -49,6 +51,12 @@ import org.eclipse.ice.datastructures.ICEObject.ICEObject;
  * 
  */
 public class HdfIOFactory implements IHdfIOFactory {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(HdfIOFactory.class);
 
 	/**
 	 * The default rank of an attribute. This means an attribute is a 1D array.
@@ -126,10 +134,9 @@ public class HdfIOFactory implements IHdfIOFactory {
 	public static void setHdfIORegistry(IHdfIORegistry registry) {
 		if (registry != null) {
 			hdfIORegistry = registry;
-			System.out.println("HdfIOFactory message: "
-					+ "Registry set successfully!");
+			logger.info("HdfIOFactory message: " + "Registry set successfully!");
 		} else {
-			System.out.println("HdfIOFactory message: "
+			logger.info("HdfIOFactory message: "
 					+ "Failed to set the registry.");
 		}
 
@@ -202,10 +209,10 @@ public class HdfIOFactory implements IHdfIOFactory {
 			// Check the file associated with the URI. If it exists, delete it.
 			File file = new File(uri);
 			String path = file.getPath();
-			System.out.println("HdfIOFactory message: " + "File \"" + path
+			logger.info("HdfIOFactory message: " + "File \"" + path
 					+ "\" is being opened.");
 			if (file.exists()) {
-				System.out.println("HdfIOFactory message: " + "File \"" + path
+				logger.info("HdfIOFactory message: " + "File \"" + path
 						+ "\" already exists and will be overwritten.");
 			} else {
 				// Make sure the directory containing this file exists! If we
@@ -213,8 +220,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 				String directoryName = file.getParent();
 				File directory = new File(directoryName);
 				if (!directory.exists()) {
-					System.out.println("HdfIOFactory message: "
-							+ "Directory \"" + directoryName
+					logger.info("HdfIOFactory message: " + "Directory \""
+							+ directoryName
 							+ "\" does not exist. Creating directory...");
 					if (!directory.mkdirs()) {
 						System.err.println("HdfIOFactory error: "
@@ -298,7 +305,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 			// read from it.
 			File file = new File(uri);
 			String path = file.getPath();
-			System.out.println("HdfIOFactory message: " + "File \"" + path
+			logger.info("HdfIOFactory message: " + "File \"" + path
 					+ "\" is being opened.");
 			if (!file.canRead()) {
 				System.err.println("HdfIOFactory error: " + "File \"" + path

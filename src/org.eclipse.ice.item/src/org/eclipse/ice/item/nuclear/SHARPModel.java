@@ -165,13 +165,13 @@ public class SHARPModel extends Item {
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
 				// Complain
-				System.out.println("SHARPModel Exception: "
+				logger.info("SHARPModel Exception: "
 						+ "Unable to refresh "
 						+ "project space after creating output file!");
 				e.printStackTrace();
 			} catch (IOException e) {
 				// Complain
-				System.out.println("SHARPModel Exception: "
+				logger.info("SHARPModel Exception: "
 						+ "Unable to save neutronics file!");
 				e.printStackTrace();
 			}

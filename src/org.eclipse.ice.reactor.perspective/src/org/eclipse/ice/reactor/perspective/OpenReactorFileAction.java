@@ -28,6 +28,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This Action is used to open a FileDialog that allows the user to select
@@ -36,6 +38,12 @@ import org.osgi.framework.FrameworkUtil;
  * @author Taylor Patterson
  */
 public class OpenReactorFileAction extends Action {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(OpenReactorFileAction.class);
 
 	/**
 	 * The ViewPart that owns an object of this class.
@@ -131,8 +139,7 @@ public class OpenReactorFileAction extends Action {
 				}
 			}
 		} else {
-			System.out.println("OpenReactorFileAction message: "
-					+ "No file selected.");
+			logger.info("OpenReactorFileAction message: " + "No file selected.");
 		}
 
 		return;

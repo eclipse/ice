@@ -24,6 +24,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.kdd.kddmath.KDDMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -36,7 +38,13 @@ import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 public class ClusterKDDMatrix extends KDDMatrix {
 
 	/**
-	 * 
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ClusterKDDMatrix.class);
+	
+	/**
+	 * The distance metric
 	 */
 	private DistanceMeasure distanceMeasure;
 
@@ -171,8 +179,7 @@ public class ClusterKDDMatrix extends KDDMatrix {
 
 		// Debug
 		for (Cluster c : clusters) {
-			System.out
-					.println("\n[ICE KDD] Cluster "
+			logger.info("\n[ICE KDD] Cluster "
 							+ c.getClusterIndex()
 							+ " has "
 							+ c.numberOfElements()

@@ -193,7 +193,7 @@ public class JobProfile extends Item {
 			launcher.setDescription("This operation will execute "
 					+ exeInfo.retrieveAllEntries().get(0).getValue());
 
-			System.out.println("Creating " + launcher.getForm().getName()
+			logger.info("Creating " + launcher.getForm().getName()
 					+ " profile.");
 
 			// Setup hostnames
@@ -278,8 +278,8 @@ public class JobProfile extends Item {
 			return super.process(actionName);
 		}
 
-		System.out
-				.println("JobProfile Message: Successfully serialized the JobLauncher!");
+		logger.info("JobProfile Message: "
+						+ "Successfully serialized the JobLauncher!");
 
 		return status;
 	}

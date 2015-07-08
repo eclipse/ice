@@ -43,6 +43,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.ToolBar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@code PlotGridComposite} is designed to display a grid of drawn
@@ -54,6 +56,12 @@ import org.eclipse.swt.widgets.ToolBar;
  *
  */
 public class PlotGridComposite extends Composite {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(PlotGridComposite.class);
 
 	/**
 	 * The {@code ToolBar} that contains widgets to update the grid layout and

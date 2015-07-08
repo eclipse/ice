@@ -15,6 +15,8 @@
 package org.eclipse.ice.materials.ui;
 
 import org.eclipse.ice.materials.IMaterialsDatabase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a simple class that catches the active Materials Database service and
@@ -26,6 +28,12 @@ import org.eclipse.ice.materials.IMaterialsDatabase;
  * 
  */
 public class MaterialsDatabaseServiceHolder {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(MaterialsDatabaseServiceHolder.class);
 
 	/**
 	 * The reference to the IMaterialsDatabase service.
@@ -40,7 +48,7 @@ public class MaterialsDatabaseServiceHolder {
 	 */
 	public static void set(IMaterialsDatabase database) {
 		materialsDB = database;
-		System.out.println("MaterialsDatabaseServiceHolder Message: "
+		logger.info("MaterialsDatabaseServiceHolder Message: "
 				+ "Service Handle Received!");
 	}
 
