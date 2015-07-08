@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Reflectivity Widgets
+Bundle-SymbolicName: org.eclipse.ice.reflectivity.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Oak Ridge National Laboratory
+Export-Package: org.eclipse.ice.reflectivity.ui
+Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0",
+ org.eclipse.ice.client.compatibility;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: ReflectivityModelComponent.xml
+Import-Package: org.eclipse.core.runtime;version="3.5.0",
+ org.eclipse.ice.client.widgets,
+ org.eclipse.ice.iclient.uiwidgets,
+ org.eclipse.ice.viz.service,
+ org.eclipse.swt.widgets,
+ org.eclipse.ui,
+ org.eclipse.ui.forms.editor

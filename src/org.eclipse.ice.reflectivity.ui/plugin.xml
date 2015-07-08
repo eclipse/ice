@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.ice.reflectivity.ui.ReflectivityPerspective"
+            id="org.eclipse.ice.reflectivity.ui.ReflectivityPerspective"
+            name="name">
+      </perspective>
+   </extension>
+
+</plugin>
