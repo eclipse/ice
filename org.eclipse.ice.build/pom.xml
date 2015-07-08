@@ -328,7 +328,7 @@
 		<module>../src/org.eclipse.ice.core</module>
 		<module>../tests/org.eclipse.ice.core.test</module>
 		<module>../src/org.eclipse.ice.item</module>
-		<!-- <module>../tests/org.eclipse.ice.item.test</module> -->
+		<module>../tests/org.eclipse.ice.item.test</module>
 		<module>../src/org.eclipse.ice.persistence.xml</module>
 		<module>../tests/org.eclipse.ice.persistence.xml.test</module>
 		<module>../src/org.eclipse.ice.io</module>
@@ -357,7 +357,7 @@
 		<module>../src/org.eclipse.ice.viz</module>
 		<module>../tests/org.eclipse.ice.viz.test</module>
 		<module>../src/org.eclipse.ice.viz.service</module>
-		<!--<module>../tests/org.eclipse.ice.viz.service.test</module> -->
+		<module>../tests/org.eclipse.ice.viz.service.test</module>
 		<module>../src/org.eclipse.ice.viz.service.visit</module>
 		<module>../tests/org.eclipse.ice.viz.service.visit.test</module>
 		<module>../src/org.eclipse.ice.xolotl</module>
