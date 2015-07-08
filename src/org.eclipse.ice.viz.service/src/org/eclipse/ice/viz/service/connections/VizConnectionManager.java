@@ -335,6 +335,14 @@ public abstract class VizConnectionManager<T> {
 	/**
 	 * Creates a viz connection instance based on the name and the preference
 	 * value from the preference store.
+	 * <p>
+	 * The name and preferences are provided as a convenience in case additional
+	 * preferences besides the name, host, port, and path are required. After
+	 * this method is called, the host, port, and path will be pulled from the
+	 * preference string using the delimiter provided by {@link #getDelimiter()}
+	 * , if possible. Additional preferences should be located in the preference
+	 * string <i>after</i> these three required preferences.
+	 * </p>
 	 * 
 	 * @param name
 	 *            The name of the connection.

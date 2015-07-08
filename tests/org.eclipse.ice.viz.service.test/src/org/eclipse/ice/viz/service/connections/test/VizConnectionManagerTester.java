@@ -42,6 +42,10 @@ import org.junit.Test;
  */
 public class VizConnectionManagerTester {
 
+	/**
+	 * The preference store for the test. The manager will pull preferences from
+	 * this.
+	 */
 	private CustomScopedPreferenceStore store;
 
 	/**
