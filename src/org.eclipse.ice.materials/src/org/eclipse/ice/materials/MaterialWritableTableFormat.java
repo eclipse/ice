@@ -8,6 +8,7 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
+ *   Kasper Gammeltoft (added conditional name setting for blank material)
  *******************************************************************************/
 package org.eclipse.ice.materials;
 
@@ -31,7 +32,7 @@ import ca.odell.glazedlists.gui.WritableTableFormat;
  * 
  * It always reports values as editable.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Kasper Gammeltoft
  *
  */
 public class MaterialWritableTableFormat implements
@@ -138,6 +139,12 @@ public class MaterialWritableTableFormat implements
 					Double.valueOf(editedValue.toString()));
 			} catch(Exception e){
 				e.printStackTrace();
+			}
+		// If the name is blank, then it is a template material that should
+		// be allowed to have its name set. 
+		} else {
+			if(baseObject.getName().equals("")){
+				baseObject.setName(editedValue.toString());
 			}
 		}
 		// Just return the material
