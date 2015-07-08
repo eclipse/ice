@@ -10,6 +10,7 @@ Import-Package: org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.connections,
  org.eclipse.ice.viz.service.csv,
+ org.eclipse.ice.viz.service.preferences,
  org.eclipse.swt.widgets
 Require-Bundle: org.junit,
  org.eclipse.swtbot.eclipse.core;bundle-version="2.2.1",

@@ -1,0 +1,388 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Jordan Deyton (UT-Battelle, LLC.) - Initial API and implementation and/or 
+ *     initial documentation
+ *******************************************************************************/
+package org.eclipse.ice.viz.service.connections;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+import org.osgi.service.prefs.BackingStoreException;
+
+/**
+ * This class manages multiple {@link IVizConnection}s and provides them to viz
+ * services to distribute to appropriate plot instances (depending on their
+ * URIs).
+ * <p>
+ * Furthermore, this manager also coordinates connection updates based on the
+ * settings stored in the Eclipse preferences. At startup, it creates
+ * connections for stored preferences and launches them in the background. These
+ * connections can then be consumed by client code in the viz services.
+ * </p>
+ * 
+ * @author Jordan Deyton
+ *
+ * @param <T>
+ *            The type of the underlying connection widget.
+ */
+public abstract class VizConnectionManager<T> {
+
+	/**
+	 * The listener that handles adding, updating, and removing viz connections
+	 * to this manager. This needs to be registered with the current preference
+	 * store's node under which connection preferences are stored.
+	 */
+	private final IPreferenceChangeListener preferenceListener;
+
+	/**
+	 * A map of the viz connections keyed on their names, which should all be
+	 * unique.
+	 */
+	private final Map<String, VizConnection<T>> connectionsByName;
+	/**
+	 * A map of the viz connection names keyed on the hosts. Multiple
+	 * connections can be configured per host.
+	 */
+	private final Map<String, Set<String>> connectionsByHost;
+
+	/**
+	 * The current preference store associated with this manager. Connections
+	 * should be loaded and updated based on the contents of this store.
+	 */
+	private CustomScopedPreferenceStore preferenceStore;
+	/**
+	 * The ID of the preference node under which connection information will be
+	 * stored.
+	 */
+	private String connectionsNodeId;
+
+	/**
+	 * The default constructor.
+	 */
+	public VizConnectionManager() {
+		// Create the two maps.
+		connectionsByName = new HashMap<String, VizConnection<T>>();
+		connectionsByHost = new HashMap<String, Set<String>>();
+
+		// Create the preference listener.
+		preferenceListener = createPreferenceListener();
+	}
+
+	/**
+	 * Gets the names of all available connections.
+	 * 
+	 * @return A lexicographically ordered set of available connection names.
+	 */
+	public Set<String> getConnections() {
+		return new TreeSet<String>(connectionsByName.keySet());
+	}
+
+	/**
+	 * Gets all connections available for the specified host.
+	 * 
+	 * @param host
+	 *            The host machine. Must not be {@code null}, but may be
+	 *            "localhost" or otherwise a resolvable hostname.
+	 * @return A lexicographically ordered set of connection names associated
+	 *         with the specified host. This set may be empty if there are no
+	 *         connections to the host.
+	 * @throws NullPointerException
+	 *             If the specified host is {@code null}.
+	 */
+	public Set<String> getConnectionsForHost(String host) throws NullPointerException {
+		// Throw an exception if the specified host name is null.
+		if (host == null) {
+			throw new NullPointerException(
+					"VizConnectionManager error: " + "Cannot find connections for null host name.");
+		}
+		// Get the associated connection names. If the host is not recognized,
+		// return an empty set.
+		Set<String> connections = connectionsByHost.get(host);
+		return connections != null ? new TreeSet<String>(connections) : new TreeSet<String>();
+	}
+
+	/**
+	 * Gets the viz connection with the specified name. Names should be
+	 * retrieved from either {@link #getConnections()} or
+	 * {@link #getConnectionsForHost(String)}.
+	 * 
+	 * @param name
+	 *            The name of the connection to acquire.
+	 * @return The associated viz connection, or {@code null} if there is no
+	 *         connection for the specified name.
+	 */
+	public IVizConnection<T> getConnection(String name) {
+		return connectionsByName.get(name);
+	}
+
+	/**
+	 * Sets the preference store used by the manager. This will first cause any
+	 * existing connections to be terminated. If any connections can be loaded
+	 * from the store, the manager will attempt to connect to them.
+	 * 
+	 * @param store
+	 *            The new store. Should not be {@code null}.
+	 * @param preferenceNodeId
+	 *            The ID of the preference node. Connection preferences will be
+	 *            found under this node. Should not be {@code null}.
+	 * @throws NullPointerException
+	 *             If the preference node ID is {@code null} and the store is
+	 *             not.
+	 */
+	public void setPreferenceStore(CustomScopedPreferenceStore store, String preferenceNodeId)
+			throws NullPointerException {
+		// Throw an exception if the preference node ID is null. We must have a
+		// valid node ID if we have a store.
+		if (store != null && preferenceNodeId == null) {
+			throw new NullPointerException("VizConnectionManager error: " + "Preference node ID cannot be null.");
+		}
+
+		if (store != preferenceStore || !preferenceNodeId.equals(connectionsNodeId)) {
+			// If the old store/node ID is valid, unregister the preferences
+			// listener and remove all current connections from the manager.
+			if (preferenceStore != null) {
+				preferenceStore.getNode(connectionsNodeId).removePreferenceChangeListener(preferenceListener);
+				preferenceStore = null;
+				connectionsNodeId = null;
+
+				// Remove all current connections.
+				connectionsByName.clear();
+				connectionsByHost.clear();
+			}
+
+			// If the new store/node ID is valid, add all new connections, then
+			// register the preferences listener.
+			if (store != null) {
+				// Get the node under which the connections will be stored.
+				IEclipsePreferences node = store.getNode(preferenceNodeId);
+				// Add all connections in the new preference store.
+				try {
+					String[] connectionNames = node.keys();
+					for (String connection : connectionNames) {
+						String preferences = node.get(connection, null);
+						addConnection(connection, preferences);
+					}
+				} catch (BackingStoreException e) {
+					e.printStackTrace();
+				}
+
+				// Register with the new store.
+				node.addPreferenceChangeListener(preferenceListener);
+			}
+
+			// Update the references to the store and the ID.
+			preferenceStore = store;
+			connectionsNodeId = preferenceNodeId;
+		}
+
+		return;
+	}
+
+	/**
+	 * Adds a new connection based on the specified name and preference value.
+	 * The connection will attempt to connect.
+	 * 
+	 * @param name
+	 *            The name of the connection (a preference name in the store).
+	 * @param preferences
+	 *            The preference value for the connection. This value should
+	 *            come straight from the {@link #preferenceStore}.
+	 */
+	private void addConnection(String name, String preferences) {
+		VizConnection<T> connection = createConnection(name, preferences);
+
+		String[] split = preferences.split(getDelimiter());
+
+		try {
+			// Ensure the connection's basic preferences are set.
+			connection.setName(name);
+			connection.setHost(split[0]);
+			connection.setPort(Integer.parseInt(split[1]));
+			connection.setPath(split[2]);
+
+			// Add the connection to the map of connections by name.
+			connectionsByName.put(name, connection);
+
+			// Add the connection to the map of connections by host.
+			String host = connection.getHost();
+			Set<String> connections = connectionsByHost.get(host);
+			// If necessary, create a new set for the connection's host.
+			if (connections == null) {
+				connections = new HashSet<String>();
+				connectionsByHost.put(host, connections);
+			}
+			connections.add(name);
+
+			// Try to connect.
+			connection.connect();
+
+		} catch (IndexOutOfBoundsException | NullPointerException | NumberFormatException e) {
+			// Cannot add the connection.
+		}
+
+		return;
+	}
+
+	/**
+	 * Removes a connection based on the specified name. The connection will be
+	 * disconnected.
+	 * 
+	 * @param name
+	 *            The name of the connection to remove.
+	 */
+	private void removeConnection(String name) {
+
+		// Remove the associated connection from the map of connections by name.
+		VizConnection<T> connection = connectionsByName.remove(name);
+
+		// Remove the connection from the map of connections by host.
+		String host = connection.getHost();
+		Set<String> connections = connectionsByHost.get(host);
+		connections.remove(name);
+		// If there are no more connections for the host, remove the host.
+		if (connections.isEmpty()) {
+			connectionsByHost.remove(host);
+		}
+
+		return;
+	}
+
+	/**
+	 * Updates the properties for a connection based on the specified name and
+	 * preference value. If necessary, the connection may be reset.
+	 * 
+	 * @param name
+	 *            The name of the connection (a preference name in the store).
+	 * @param preferences
+	 *            The <i>new</i> preference value for the connection. This value
+	 *            should come straight from the {@link #preferenceStore}.
+	 */
+	private void updateConnection(String name, String preferences) {
+		final VizConnection<T> connection = connectionsByName.get(name);
+
+		// If the update requires a reset, reset the connection.
+		if (updateConnectionPreferences(connection, preferences)) {
+			final Future<ConnectionState> disconnectRequest = connection.disconnect();
+			final ExecutorService executor = Executors.newSingleThreadExecutor();
+			executor.submit(new Runnable() {
+				@Override
+				public void run() {
+					// Wait for the disconnect request to complete or fail.
+					try {
+						disconnectRequest.get();
+					} catch (InterruptedException | ExecutionException e) {
+						e.printStackTrace();
+					}
+					// Try to re-connect.
+					connection.connect();
+				}
+			});
+		}
+
+		return;
+	}
+
+	/**
+	 * Creates a listener that appropriately adds, updates, or removes
+	 * connections based on the values in the {@link #preferenceStore}.
+	 * 
+	 * @return A new property change listener that can be registered with the
+	 *         preference store.
+	 */
+	private IPreferenceChangeListener createPreferenceListener() {
+		return new IPreferenceChangeListener() {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent event) {
+				String name = event.getKey();
+				Object oldValue = event.getOldValue();
+				Object newValue = event.getNewValue();
+
+				// Add, update, or remove depending on whether the old/new
+				// values are null.
+				if (oldValue != null) {
+					if (newValue != null) {
+						updateConnection(name, newValue.toString());
+					} else {
+						removeConnection(name);
+					}
+				} else if (newValue != null) {
+					addConnection(name, newValue.toString());
+				}
+
+				return;
+			}
+		};
+	}
+
+	/**
+	 * Creates a viz connection instance based on the name and the preference
+	 * value from the preference store.
+	 * 
+	 * @param name
+	 *            The name of the connection.
+	 * @param preferences
+	 *            The preference string from the store.
+	 * @return A new viz connection instance using the provided name and
+	 *         preferences.
+	 */
+	protected abstract VizConnection<T> createConnection(String name, String preferences);
+
+	/**
+	 * Gets the delimiter used to separate a connection's individual
+	 * preferences.
+	 * 
+	 * @return The string delimiter. The default value is a comma, although this
+	 *         can be overridden.
+	 */
+	protected String getDelimiter() {
+		return ",";
+	}
+
+	/**
+	 * Gets each connection property from the string of preferences, if
+	 * possible, and updates the connection based on them.
+	 * 
+	 * @return True if one of the properties changed and a reset of the
+	 *         connection is required, false if a reset is <i>not</i> required.
+	 */
+	protected boolean updateConnectionPreferences(VizConnection<T> connection, String preferences) {
+		boolean requiresReset = false;
+
+		String[] split = preferences.split(getDelimiter());
+
+		try {
+			// Get the host, port, and path, if possible.
+			String host = split[0];
+			int port = Integer.parseInt(split[1]);
+			String path = split[2];
+
+			// If any of these change, the connection will need to be reset.
+			requiresReset |= connection.setHost(host);
+			requiresReset |= connection.setPort(port);
+			requiresReset |= connection.setPath(path);
+		} catch (IndexOutOfBoundsException | NullPointerException | NumberFormatException e) {
+			// Cannot update the connection.
+			requiresReset = false;
+		}
+
+		return requiresReset;
+	}
+}
