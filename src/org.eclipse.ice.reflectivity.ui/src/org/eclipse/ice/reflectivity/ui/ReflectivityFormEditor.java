@@ -35,35 +35,60 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.client.widgets.ICEFormEditor#addPages()
 	 */
 	@Override
 	protected void addPages() {
-		System.out.println("Reflectivity Form Editor: Adding Custom Page");
-		// Loop over the DataComponents and get them into the map
+
+		// Loop over the DataComponents and get them into the map. This is the
+		// same process as for the regular ICEFormEditor
 		for (Component i : iceDataForm.getComponents()) {
 			System.out.println("ICEFormEditor Message: Adding component "
 					+ i.getName() + " " + i.getId());
 			i.accept(this);
 		}
 
+		// Get the components out if they were all properly set.
 		if (!(componentMap.get("data").isEmpty())
 				|| !(componentMap.get("list").isEmpty())
 				|| !(componentMap.get("output").isEmpty())) {
 
-			DataComponent dataComp = (DataComponent) componentMap.get("data").get(0);
-			ListComponent listComp = (ListComponent) componentMap.get("list").get(0);
-			ResourceComponent resComp = (ResourceComponent) componentMap.get("output").get(0);
-			
-			
-			TestReflectivitySectionPage page = new TestReflectivitySectionPage(this, "ID", "Test Section Page");
+			// Retrieve the data component
+			DataComponent dataComp = (DataComponent) componentMap.get("data")
+					.get(0);
+
+			// Retrieve the list component
+			ListComponent listComp = (ListComponent) componentMap.get("list")
+					.get(0);
+
+			// Retrieve the resource component
+			ResourceComponent resComp = (ResourceComponent) componentMap
+					.get("output").get(0);
+
+			// Create the reflectivity page. Use all of the components for the
+			// Id.
+			ReflectivitySectionPage page = new ReflectivitySectionPage(this,
+					dataComp.getName() + listComp.getName() + resComp.getName(),
+					"Reflectivity Page");
+
+			// Set the resource component page for the resource view to know
+			// where to open the resources (the VizResources)
+			super.resourceComponentPage = page;
+
+			// Add the viz service and the components to the reflectivity page.
+			page.setVizService(this.getVizServiceFactory());
+			page.setResourceComponent(resComp);
+			page.setDataComponent(dataComp);
+			page.setList(listComp);
+
+			// Finally, try adding the page to the editor.
 			try {
 				addPage(page);
 			} catch (PartInitException e) {
+				// Catch the stack trace
 				e.printStackTrace();
 			}
-			
 		}
-
 	}
 }

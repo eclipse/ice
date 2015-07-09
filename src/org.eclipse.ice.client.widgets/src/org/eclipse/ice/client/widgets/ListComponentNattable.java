@@ -12,7 +12,6 @@
 package org.eclipse.ice.client.widgets;
 
 import java.util.Iterator;
-import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -95,7 +94,15 @@ public class ListComponentNattable {
 	 */
 	private boolean canEdit;
 
-	private boolean percentResize;
+	/**
+	 * Flag denoting if the column widths should be sized to fit the container
+	 */
+	private boolean resizeWidths;
+
+	/**
+	 * Flag denoting if the row heights should be resized to fit the container
+	 */
+	private boolean resizeHeights;
 
 	/**
 	 * Constructor, needs the parent Composite and the List for data. This has
@@ -116,7 +123,8 @@ public class ListComponentNattable {
 		list = listComponent;
 		selectedList = new ListComponent();
 		canEdit = editable;
-		percentResize = true;
+		resizeWidths = true;
+		resizeHeights = false;
 		createTable();
 	}
 
@@ -129,18 +137,23 @@ public class ListComponentNattable {
 	 *            The ListComponent to be used as list data for the Nattable
 	 * @param editable
 	 *            A boolean representing if the table is editable by the user
-	 * @param sizeForParent
+	 * @param sizeWidths
 	 *            A boolean representing if the table should take the size of
 	 *            its parent or maintain its preferred size and have scroll bars
 	 *            or unfilled space instead. Only effects column width.
+	 * @param sizeHeights
+	 *            A boolean representing if the table should take the size of
+	 *            its parent or maintain its perferred size and ahve scroll bars
+	 *            or unfilled space instead. Only effects row height.
 	 */
 	public ListComponentNattable(Composite parent, ListComponent listComponent,
-			boolean editable, boolean sizeForParent) {
+			boolean editable, boolean sizeWidths, boolean sizeHeights) {
 		sectionClient = parent;
 		list = listComponent;
 		selectedList = new ListComponent();
 		canEdit = editable;
-		percentResize = sizeForParent;
+		resizeWidths = sizeWidths;
+		resizeHeights = sizeHeights;
 		createTable();
 	}
 
@@ -158,9 +171,10 @@ public class ListComponentNattable {
 		GlazedListsEventLayer eventLayer = new GlazedListsEventLayer(dataLayer,
 				list);
 
-		// If the table's columns should autoresize their widths to fill the
-		// parent Composite.
-		dataLayer.setColumnPercentageSizing(percentResize);
+		// If the table's columns and rows should autoresize their widths to
+		// fill the parent Composite.
+		dataLayer.setColumnPercentageSizing(resizeWidths);
+		dataLayer.setRowPercentageSizing(resizeHeights);
 
 		// Create the selection and viewport layers of the table
 		SelectionLayer selectionLayer = new SelectionLayer(eventLayer);
@@ -227,8 +241,8 @@ public class ListComponentNattable {
 
 		// Configure the table (lay it out)
 		natTable.configure();
-		natTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
-				1));
+		natTable.setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 
 		// Setting table instance variable
 		table = natTable;
