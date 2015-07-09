@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
@@ -25,7 +27,7 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.TableComponent;
 
 /**
- * This class manages a list of uniquely-keyed VisIt connections within an ICE
+ * This class manages a list of uniquely-keyed connections within an ICE
  * {@link TableComponent}.
  * <p>
  * Each connection is defined by the following parameters (although it must be
@@ -36,154 +38,61 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  * user-friendly value.</li>
  * <li><b>Host</b> - The FQDN or IP address of the remote host. For local
  * launches, this should be "localhost".</li>
- * <li><b>Host Port</b> - The port on which the host serves VisIt. The default
- * is 9600.</li>
- * <li><b>Host OS</b> - The operating system on the host.</li>
+ * <li><b>Port</b> - The port on which the host serves the connection. The
+ * default is 9600.</li>
+ * <li><s><b>Host OS</b> - The operating system on the host.</s></li>
  * <li><b>Path</b> - The path to the VisIt binaries on the host.</li>
- * <li><b>Username</b> - The username to use when connecting to a remote host.</li>
- * <li><b>Password</b> - The password to use when connecting to a remote host.</li>
- * <li><b>Proxy</b> - The FQDN or IP address of a proxy. If specified, the
- * connection will route through the proxy to the host.</li>
- * <li><b>Proxy Port</b> - The port to which the client must connect to use the
- * proxy.</li>
+ * <li><s><b>Username</b> - The username to use when connecting to a remote
+ * host.</s></li>
+ * <li><s><b>Password</b> - The password to use when connecting to a remote
+ * host.</s></li>
+ * <li><s><b>Proxy</b> - The FQDN or IP address of a proxy. If specified, the
+ * connection will route through the proxy to the host.</s></li>
+ * <li><s><b>Proxy Port</b> - The port to which the client must connect to use
+ * the proxy.</s></li>
  * </ol>
  * 
  * @author Jordan Deyton
  *
  */
-public class ConnectionTable extends TableComponent implements IKeyManager,
-		IUpdateableListener {
+public class ConnectionTable extends TableComponent {
 
-	// TODO Remove the debug output from this class.
+	// TODO Pull from PTP preferences if possible.
+
+	/**
+	 * Manages the keys or names of the connections. Each row's first Entry
+	 * corresponds to its name and must be unique, although there is no
+	 * restriction on allowed names.
+	 */
+	private final IKeyManager keyManager;
 
 	/**
 	 * A map from the user-friendly name/key of a connection to its row index as
 	 * maintained by the underlying {@code TableComponent}.
 	 */
 	private final Map<String, Integer> keyToIndexMap = new HashMap<String, Integer>();
-	/**
-	 * A map from the row index as maintained by the underlying
-	 * {@code TableComponent} to the user-friendly name/key of a connection.
-	 */
-	private final Map<Integer, String> indexToKeyMap = new HashMap<Integer, String>();
 
 	/**
-	 * This keeps track of the connection name/key column's {@code Entry}s. This
-	 * helps us determine the previous key (see {@link #oldKeys}) for a key
-	 * {@code Entry} that was changed.
+	 * A list of listeners added to the row Entry containing the connection
+	 * key/name. These will be used to update the key/name bookkeeping when the
+	 * Entry changes.
 	 */
-	private final List<Entry> keyEntries = new ArrayList<Entry>();
-	/**
-	 * This keeps track of the previous values for the connection name/key
-	 * column's {@code Entry}s. This enables us to remove old values from the
-	 * key maps (see {@link #keyToIndexMap} and {@link #indexToKeyMap}) when a
-	 * key value changes.
-	 */
-	private final List<String> oldKeys = new ArrayList<String>();
-
-	/*-
-	 * There are three situations that will require the above two maps to be
-	 * updated:
-	 * 
-	 * 1 - A row is added (override addRow())
-	 * 2 - A row is removed (override deleteRow(int))
-	 * 3 - The name/key/ID for a row is updated (listen for updates from each
-	 *     name/key/ID Entry)
-	 */
-
-	/**
-	 * A list of key change listeners.
-	 */
-	private final List<IKeyChangeListener> keyListeners = new ArrayList<IKeyChangeListener>();
+	private final List<IUpdateableListener> keyListeners = new ArrayList<IUpdateableListener>();
 
 	/**
 	 * The default constructor.
 	 */
 	public ConnectionTable() {
-		// Set the default row template. This should never change.
-		super.setRowTemplate(getConnectionTemplate());
-	}
+		// Create the connection key (name) manager and the key listener.
+		keyManager = createKeyManager();
+		// keyEntryListener = createKeyEntryListener();
 
-	/**
-	 * Does nothing. The row template cannot be changed for this class.
-	 */
-	@Override
-	public void setRowTemplate(ArrayList<Entry> template) {
-		// Do nothing...
-	}
-
-	/**
-	 * Gets the row template for a connection as defined in the
-	 * {@link ConnectionTable documentation for the class}.
-	 * 
-	 * @return An {@code ArrayList<Entry>} containing the template {@code Entry}
-	 *         s for each exposed connection property.
-	 */
-	protected ArrayList<Entry> getConnectionTemplate() {
-		ArrayList<Entry> template = new ArrayList<Entry>();
-
-		// TODO These Entries need descriptions.
-
-		IEntryContentProvider contentProvider;
-
-		// ---- name ---- //
-		KeyEntryContentProvider keyContentProvider = new KeyEntryContentProvider(
-				this);
-		Entry keyEntry = new Entry(keyContentProvider);
-		keyEntry.setName("Name");
-		template.add(keyEntry);
-		// ---- host ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setDefaultValue("localhost");
-		Entry hostEntry = new Entry(contentProvider);
-		hostEntry.setName("Host");
-		template.add(hostEntry);
-		// ---- host port ---- //
-		PortEntryContentProvider portContentProvider = new PortEntryContentProvider();
-		portContentProvider.setDefaultValue("9600");
-		Entry hostPortEntry = new PortEntry(portContentProvider);
-		hostPortEntry.setName("Host Port");
-		template.add(hostPortEntry);
-		// ---- host os ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Discrete);
-		ArrayList<String> systems = new ArrayList<String>(3);
-		systems.add("Windows");
-		systems.add("Linux");
-		systems.add("OS X");
-		contentProvider.setAllowedValues(systems);
-		contentProvider.setDefaultValue("Windows");
-		Entry hostOSEntry = new Entry(contentProvider);
-		hostOSEntry.setName("Host OS");
-		template.add(hostOSEntry);
-		// ---- path ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		Entry pathEntry = new Entry(contentProvider);
-		pathEntry.setName("Path");
-		template.add(pathEntry);
-		// ---- username ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		contentProvider.setDefaultValue("");
-		Entry userEntry = new Entry(contentProvider);
-		userEntry.setName("User");
-		template.add(userEntry);
-		// ---- password ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		contentProvider.setDefaultValue("");
-		Entry passwordEntry = new SecretEntry(contentProvider);
-		passwordEntry.setName("Password");
-		template.add(passwordEntry);
-
-		return template;
+		// Set the default row template.
+		super.setRowTemplate(createConnectionTemplate());
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.datastructures.form.TableComponent#addRow()
+	 * Overrides a method from TableComponent.
 	 */
 	@Override
 	public int addRow() {
@@ -194,126 +103,174 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 		// If a row was actually added, we need to do some bookkeeping. If the
 		// return value is -1, then a row was not added.
 		if (index >= 0) {
-			// Get the name/key/ID of the connection.
+			// Get the new row.
 			List<Entry> connection = getRow(index);
+
+			// Update its key to the next available one.
 			Entry keyEntry = connection.get(0);
-			String key = keyEntry.getValue();
+			final String key = keyManager.getNextKey();
+			keyEntry.setValue(key);
 
-			// Throw an exception if the new key is already in the bookkeeping.
-			// This should never happen as long as we use a KeyEntry and a
-			// KeyEntryContentProvider!
-			if (keyToIndexMap.containsKey(key)) {
-				throw new IllegalArgumentException("ConnectionManager error: "
-						+ "A new connection was added with the key \"" + key
-						+ "\", but the key is already in use!");
-			}
-
-			// Update the key maps.
+			// Update the key bookkeeping.
 			keyToIndexMap.put(key, index);
-			indexToKeyMap.put(index, key);
-			// Update the key lists.
-			keyEntries.add(keyEntry);
-			oldKeys.add(key);
 
 			// Register with the key Entry for changes to the key.
-			keyEntry.register(this);
+			IUpdateableListener keyListener = new IUpdateableListener() {
+				/**
+				 * The previous key. It starts off as the new key above.
+				 */
+				private String oldKey = key;
 
-			// Notify key change listeners that a new key was added.
-			notifyKeyChangeListeners(null, key);
+				/**
+				 * Updates the bookkeeping if the key/name changes.
+				 */
+				@Override
+				public void update(IUpdateable component) {
+					// Convert it to an Entry and get its key.
+					Entry entry = (Entry) component;
+					String newKey = entry.getValue();
+
+					// If the name changes, update the bookkeeping.
+					if (!oldKey.equals(newKey)) {
+						int i = keyToIndexMap.remove(oldKey);
+						keyToIndexMap.put(newKey, i);
+						oldKey = newKey;
+					}
+
+					return;
+				}
+			};
+			keyListeners.add(keyListener);
+			keyEntry.register(keyListener);
 		}
 
 		return index;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Gets the row template for a connection as defined in the
+	 * {@link ConnectionTable documentation for the class}.
 	 * 
-	 * @see org.eclipse.ice.datastructures.form.TableComponent#deleteRow(int)
+	 * @return An {@code ArrayList<Entry>} containing the template {@code Entry}
+	 *         s for each exposed connection property.
+	 */
+	protected ArrayList<Entry> createConnectionTemplate() {
+		ArrayList<Entry> template = new ArrayList<Entry>();
+
+		IEntryContentProvider contentProvider;
+
+		// ---- name ---- //
+		KeyEntryContentProvider keyContentProvider = new KeyEntryContentProvider(keyManager);
+		Entry keyEntry = new KeyEntry(keyContentProvider);
+		keyEntry.setName("Name");
+		keyEntry.setDescription("The name of the connection. This must be unique.");
+		template.add(keyEntry);
+		// ---- host ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setDefaultValue("localhost");
+		Entry hostEntry = new Entry(contentProvider);
+		hostEntry.setName("Host");
+		hostEntry.setDescription(
+				"The FQDN or IP address of the remote host.%n" + "For local launches, this should be \"localhost\".");
+		template.add(hostEntry);
+		// ---- host port ---- //
+		PortEntryContentProvider portContentProvider = new PortEntryContentProvider();
+		portContentProvider.setDefaultValue("9600");
+		Entry hostPortEntry = new PortEntry(portContentProvider);
+		hostPortEntry.setName("Port");
+		hostPortEntry.setDescription("The port on which the host serves the connection.%n"
+				+ "Should be a positive integer within the port range "
+				+ Integer.toString(PortEntryContentProvider.MIN_PORT) + "-"
+				+ Integer.toString(PortEntryContentProvider.MAX_PORT) + ".");
+		template.add(hostPortEntry);
+		// ---- path ---- //
+		contentProvider = new BasicEntryContentProvider();
+		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		Entry pathEntry = new Entry(contentProvider);
+		pathEntry.setName("Path");
+		pathEntry.setDescription("The full path to the local or remote installation.");
+		template.add(pathEntry);
+
+		return template;
+	}
+
+	/**
+	 * Creates a default key manager for managing connection key names.
+	 * 
+	 * @return The key manager for connection names.
+	 */
+	private IKeyManager createKeyManager() {
+		return new IKeyManager() {
+			@Override
+			public boolean keyAvailable(String key) {
+				return key != null && !keyToIndexMap.containsKey(key);
+			}
+
+			@Override
+			public List<String> getAvailableKeys() {
+				// Since we do not restrict the key names, return an empty list.
+				return new ArrayList<String>(0);
+			}
+
+			@Override
+			public String getNextKey() throws IllegalStateException {
+				String prefix = "Connection";
+				int i = 1;
+				String key = prefix + Integer.toString(i);
+				while (!keyAvailable(key)) {
+					key = prefix + Integer.toString(++i);
+				}
+				return key;
+			}
+
+			@Override
+			public void addKeyChangeListener(IKeyChangeListener listener) {
+				// if (listener != null && !keyListeners.contains(listener)) {
+				// keyListeners.add(listener);
+				// }
+			}
+
+			@Override
+			public void removeKeyChangeListener(IKeyChangeListener listener) {
+				// keyListeners.remove(listener);
+			}
+		};
+	}
+
+	/*
+	 * Overrides a method from TableComponent.
 	 */
 	@Override
 	public boolean deleteRow(int index) {
 		// Try to delete the row. If it was deleted, we will need to update our
 		// bookkeeping.
-		boolean deleted = super.deleteRow(index);
-		if (deleted) {
-			// Unregister from the key Entry.
-			keyEntries.get(index).unregister(this);
-			// Get the key from the old key list.
-			String key = oldKeys.get(index);
 
-			// Update the key maps.
-			keyToIndexMap.remove(key);
-			indexToKeyMap.remove(index);
-			// Update the key lists.
-			keyEntries.remove(index);
-			oldKeys.remove(index);
+		boolean deleted = false;
 
-			// Notify key change listeners that a key was removed.
-			notifyKeyChangeListeners(key, null);
+		if (index >= 0 && index < numberOfRows()) {
+			// Get the row.
+			List<Entry> row = getRow(index);
+
+			deleted = super.deleteRow(index);
+			if (deleted) {
+				// Unregister the key listener from the KeyEntry and dispose the
+				// listener.
+				row.get(0).unregister(keyListeners.remove(index));
+
+				// Get the key from the deleted row.
+				String key = row.get(0).getValue();
+
+				// Update the key map.
+				keyToIndexMap.remove(key);
+
+				// Update all other values in the key map.
+				for (int i = index; i < numberOfRows(); i++) {
+					key = getRow(index).get(0).getValue();
+					keyToIndexMap.put(key, i);
+				}
+			}
 		}
 		return deleted;
-	}
-
-	/**
-	 * Updates the bookkeeping for connection keys. If there is a key conflict,
-	 * this method throws an exception.
-	 * 
-	 * @param component
-	 *            The updated component. This should only every be an
-	 *            {@code Entry} for a connection's key.
-	 */
-	@Override
-	public void update(IUpdateable component) {
-		// See if the updated component is one of the key Entries. We have to
-		// test by reference, not by equality.
-		int index = -1;
-		for (int i = 0; i < keyEntries.size(); i++) {
-			if (component == keyEntries.get(i)) {
-				index = i;
-				i = keyEntries.size();
-			}
-		}
-
-		if (index >= 0) {
-			// Get the new and old keys from the key Entry.
-			Entry keyEntry = keyEntries.get(index);
-			String newKey = keyEntry.getValue();
-			String oldKey = oldKeys.get(index);
-
-			// If the key actually changed, we need to update our bookkeeping.
-			if (!oldKey.equals(newKey)) {
-				// Throw an exception if the new key is already in the
-				// bookkeeping!
-				if (keyToIndexMap.containsKey(newKey)) {
-					throw new IllegalArgumentException(
-							"ConnectionManager error: "
-									+ "A key Entry was updated from \""
-									+ oldKey + "\" to \"" + newKey
-									+ "\", but the key \"" + newKey
-									+ "\" is already in use!");
-				}
-
-				// Update the key maps. Note that we must remove the old key.
-				keyToIndexMap.remove(oldKey);
-				keyToIndexMap.put(newKey, index);
-				indexToKeyMap.put(index, newKey);
-				// Update the old key list.
-				oldKeys.set(index, newKey);
-
-				// Notify key change listeners that a key was changed.
-				notifyKeyChangeListeners(oldKey, newKey);
-			}
-		}
-		return;
-	}
-
-	/**
-	 * Gets the list of connection names or keys.
-	 * 
-	 * @return The connection names.
-	 */
-	public List<String> getConnectionNames() {
-		return new ArrayList<String>(oldKeys);
 	}
 
 	/**
@@ -330,98 +287,21 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 		return id != null ? getRow(id) : null;
 	}
 
-	// ---- Implements IKeyManager ---- //
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Gets the set of connection names or keys.
 	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.visit.connections.KeyManager#keyAvailable
-	 * (java.lang.String)
+	 * @return The connection names.
 	 */
-	@Override
-	public boolean keyAvailable(String key) {
-		return key != null && !keyToIndexMap.containsKey(key);
+	public Set<String> getConnectionNames() {
+		return new TreeSet<String>(keyToIndexMap.keySet());
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.visit.connections.KeyManager#getAvailableKeys
-	 * ()
-	 */
-	@Override
-	public List<String> getAvailableKeys() {
-		// Since we do not restrict the key names, return an empty list.
-		return new ArrayList<String>(1);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.visit.connections.KeyManager#getNextKey()
-	 */
-	@Override
-	public String getNextKey() throws IllegalStateException {
-		String prefix = "Connection";
-		int i = 1;
-		String key = prefix + Integer.toString(i);
-		while (!keyAvailable(key)) {
-			key = prefix + Integer.toString(++i);
-		}
-		return key;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.connections.IKeyManager#addKeyChangeListener
-	 * (org.eclipse.ice.viz.service.connections.IKeyChangeListener)
-	 */
-	@Override
-	public void addKeyChangeListener(IKeyChangeListener listener) {
-		if (listener != null && !keyListeners.contains(listener)) {
-			keyListeners.add(listener);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.connections.IKeyManager#removeKeyChangeListener
-	 * (org.eclipse.ice.viz.service.connections.IKeyChangeListener)
-	 */
-	@Override
-	public void removeKeyChangeListener(IKeyChangeListener listener) {
-		keyListeners.remove(listener);
-	}
-
-	// -------------------------------- //
 
 	/**
-	 * Notifies the {@link #keyListeners} of key change events on a separate
-	 * daemon thread.
-	 * 
-	 * @param oldKey
-	 *            The previous key. Null if the key is added.
-	 * @param newKey
-	 *            The new key. Null if the key is deleted.
+	 * Does nothing. The row template cannot be changed for this class.
 	 */
-	private void notifyKeyChangeListeners(final String oldKey,
-			final String newKey) {
-		Thread thread = new Thread() {
-			@Override
-			public void run() {
-				for (IKeyChangeListener listener : keyListeners) {
-					listener.keyChanged(oldKey, newKey);
-				}
-			}
-		};
-		thread.setDaemon(true);
-		thread.start();
-		return;
+	@Override
+	public void setRowTemplate(ArrayList<Entry> template) {
+		// Do nothing...
 	}
+
 }
