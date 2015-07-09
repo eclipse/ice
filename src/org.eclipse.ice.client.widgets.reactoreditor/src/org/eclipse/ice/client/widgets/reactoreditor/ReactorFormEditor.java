@@ -133,7 +133,7 @@ public class ReactorFormEditor extends ICEFormEditor {
 			reactorPage.setReactorComposite(reactorComposite);
 
 			// Add the resource component for comparison data.
-			reactorPage.addComponent((ResourceComponent) (componentMap
+			reactorPage.addComponent((componentMap
 					.get("output").get(0)));
 
 			// Add the data Components (input and reference loaders) to the

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.IMaterialsDatabase;
@@ -42,6 +43,7 @@ import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.SectionPart;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -102,8 +104,8 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 		// nice.
 		mForm = managedForm;
 		FormToolkit toolkit = mForm.getToolkit();
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR
-				| Section.DESCRIPTION | Section.EXPANDED);
+		Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR
+				| Section.DESCRIPTION | ExpandableComposite.EXPANDED);
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		section.setLayoutData(gridData);
 		section.setLayout(new GridLayout(1, true));
@@ -183,7 +185,7 @@ public class MaterialsDatabaseMasterDetailsBlock extends MasterDetailsBlock {
 				int numRemoved = 0;
 				for (int i = 0; i < materials.size(); i++) {
 
-					Material mat = (Material) materials.get(i);
+					Material mat = materials.get(i);
 
 					String matName = "";
 					if (useElementName) {

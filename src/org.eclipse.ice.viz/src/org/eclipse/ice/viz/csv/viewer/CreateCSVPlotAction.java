@@ -92,7 +92,7 @@ public class CreateCSVPlotAction extends Action {
 					+ resource.getName() + "\".");
 			// Checking for a VizResource for a file set
 			if (resource instanceof VizResource
-					&& ((VizResource) resource).getFileSet() != null) {
+					&& resource.getFileSet() != null) {
 				plotFileSet(shell, plotViewer, resource);
 			} else {
 				plotFile(shell, plotViewer, resource);

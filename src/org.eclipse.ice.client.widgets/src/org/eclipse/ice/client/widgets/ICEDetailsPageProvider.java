@@ -64,7 +64,7 @@ public class ICEDetailsPageProvider implements IDetailsPageProvider {
 	 */
 	@Override
 	public Object getPageKey(Object object) {
-		return (String) object;
+		return object;
 	}
 
 	/** 

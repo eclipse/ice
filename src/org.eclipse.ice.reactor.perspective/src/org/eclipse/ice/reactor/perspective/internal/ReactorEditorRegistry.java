@@ -130,7 +130,7 @@ public class ReactorEditorRegistry implements IReactorEditorRegistry {
 					dataSource);
 
 			// Set the input for the editor.
-			editor.setInput((IEditorInput) input);
+			editor.setInput(input);
 		}
 
 		return;

@@ -163,7 +163,7 @@ public class ControlBank extends LWRComponent {
 	 */
 	public double getStrokeLength() {
 
-		return ((double) this.maxNumberOfSteps) * this.stepSize;
+		return (this.maxNumberOfSteps) * this.stepSize;
 	}
 
 	/*

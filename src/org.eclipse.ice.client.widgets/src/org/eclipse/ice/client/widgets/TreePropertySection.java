@@ -67,6 +67,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -219,7 +220,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 
 		// Create a section for the data composites.
 		section = getWidgetFactory().createSection(parent,
-				Section.SHORT_TITLE_BAR | Section.DESCRIPTION);
+				ExpandableComposite.SHORT_TITLE_BAR | Section.DESCRIPTION);
 		section.setText("Node properties");
 		section.setDescription("All properties available for "
 				+ "this node can be modified here.");

@@ -44,6 +44,7 @@ import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -248,7 +249,7 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 		// updates, it calls the SectionPart's refresh() method. This method
 		// should call this class' refreshContent() method.
 		Section section = formToolkit.createSection(form.getBody(),
-				Section.NO_TITLE | Section.EXPANDED);
+				ExpandableComposite.NO_TITLE | ExpandableComposite.EXPANDED);
 		sectionPart = new SectionPart(section) {
 			@Override
 			public void refresh() {

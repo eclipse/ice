@@ -237,7 +237,7 @@ public class JobLauncherForm extends Form {
 		if (parallelComponentEnabled) {
 			parallelismComponent = getParallelismComponent();
 			if (!parallelismComponent.contains(openMPEntryName)
-					&& !parallelismComponent.contains(this.TBBEntryName)) {
+					&& !parallelismComponent.contains(JobLauncherForm.TBBEntryName)) {
 				removeParallelismComponent();
 			}
 			// Otherwise just remove the MPI Entry
@@ -345,7 +345,7 @@ public class JobLauncherForm extends Form {
 			parallelismComponent = getParallelismComponent();
 			// If MPI and TBB are disabled, remove the whole component
 			if (!parallelismComponent.contains(mpiEntryName)
-					&& !parallelismComponent.contains(this.TBBEntryName)) {
+					&& !parallelismComponent.contains(JobLauncherForm.TBBEntryName)) {
 				removeParallelismComponent();
 			}
 			// Otherwise just remove the MPI Entry
@@ -401,8 +401,8 @@ public class JobLauncherForm extends Form {
 			// Get the parallelism component)
 			parallelismComponent = getParallelismComponent();
 			// Delete the Entry if it is already in the Component
-			if (parallelismComponent.contains(this.TBBEntryName)) {
-				parallelismComponent.deleteEntry(this.TBBEntryName);
+			if (parallelismComponent.contains(JobLauncherForm.TBBEntryName)) {
+				parallelismComponent.deleteEntry(JobLauncherForm.TBBEntryName);
 			}
 			// Create the Entry
 			tBBEntry = new Entry() {
@@ -424,7 +424,7 @@ public class JobLauncherForm extends Form {
 				}
 			};
 
-			tBBEntry.setName(this.TBBEntryName);
+			tBBEntry.setName(JobLauncherForm.TBBEntryName);
 			tBBEntry.setId(2);
 			tBBEntry.setDescription("The number of threads to use with "
 					+ "Thread Building Blocks");
@@ -453,12 +453,12 @@ public class JobLauncherForm extends Form {
 			parallelismComponent = getParallelismComponent();
 			// If MPI and OpenMP is disabled, remove the whole component
 			if (!parallelismComponent.contains(mpiEntryName)
-					&& !parallelismComponent.contains(this.openMPEntryName)) {
+					&& !parallelismComponent.contains(JobLauncherForm.openMPEntryName)) {
 				removeParallelismComponent();
 			}
 			// Otherwise just remove the TBB Entry
 			else {
-				parallelismComponent.deleteEntry(this.TBBEntryName);
+				parallelismComponent.deleteEntry(JobLauncherForm.TBBEntryName);
 			}
 		}
 

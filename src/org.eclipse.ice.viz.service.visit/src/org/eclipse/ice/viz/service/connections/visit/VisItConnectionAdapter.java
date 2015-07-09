@@ -66,7 +66,7 @@ public class VisItConnectionAdapter extends
 								+ "your VisIt application path, or specified port, in the Visualization > VisIt "
 								+ "preferences page.";
 						return new Status(
-								Status.ERROR,
+								IStatus.ERROR,
 								"org.eclipse.ice.viz.service.connections.visit",
 								1, errorMessage, null);
 					}

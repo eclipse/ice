@@ -29,8 +29,6 @@ import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>

@@ -21,8 +21,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Entry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class provides an adapter that wraps a connection. It provides feedback

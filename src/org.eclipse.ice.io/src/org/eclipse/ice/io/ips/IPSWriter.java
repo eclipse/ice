@@ -108,7 +108,7 @@ public class IPSWriter implements IWriter {
 				// Write out each of the ports from the master individually
 				for (int i = 0; i < masterDetails.numberOfMasters(); i++) {
 					writeComponent(
-							(DataComponent) masterDetails.getDetailsAtIndex(i),
+							masterDetails.getDetailsAtIndex(i),
 							out);
 				}
 
