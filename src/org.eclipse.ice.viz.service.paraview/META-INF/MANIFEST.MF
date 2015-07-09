@@ -23,7 +23,8 @@ Import-Package: com.google.gson,
  org.eclipse.swt.layout,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
- org.eclipse.ui.forms
+ org.eclipse.ui.forms,
+ org.osgi.service.prefs;version="1.1.1"
 Export-Package: org.eclipse.ice.viz.service.paraview,
  org.eclipse.ice.viz.service.paraview.proxy
 Service-Component: OSGI-INF/vizService.xml,OSGI-INF/proxyFactory.xml,OSGI-INF/siloProxyBuilder.xml,OSGI-INF/exodusProxyBuilder.xml
