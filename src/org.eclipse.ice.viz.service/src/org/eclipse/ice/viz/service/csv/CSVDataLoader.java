@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * CSVDataLoader instantiates a CSVDataProvider and returns it
- * 
+ *
  * @author Claire Saunders, Anna Wojtowicz
- * 
+ *
  */
 public class CSVDataLoader {
 
@@ -82,7 +82,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Constructor for File
-	 * 
+	 *
 	 * @param csvFileName
 	 */
 	public CSVDataLoader(File csvFileName) {
@@ -94,7 +94,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Constructor for Array of Strings
-	 * 
+	 *
 	 * @param csvInputStringList
 	 */
 	public CSVDataLoader(String[] csvInputStringList) {
@@ -106,7 +106,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Constructor of the String, sets String and Filename
-	 * 
+	 *
 	 * @param csvFileString
 	 */
 	public CSVDataLoader(String csvFileString) {
@@ -120,7 +120,7 @@ public class CSVDataLoader {
 	/**
 	 * This method loads a CSV input file and returns the contents as a
 	 * CSVDataProvider object.
-	 * 
+	 *
 	 * @param csvInputFile
 	 *            The CSV input file to load
 	 * @return The contents of the CSV file as a CSVDataProvider object
@@ -437,39 +437,19 @@ public class CSVDataLoader {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			logger.info("filIn: " + e.fillInStackTrace());
-			logger.info("cause: " + e.getCause());
-			logger.info("local: " + e.getLocalizedMessage());
-			logger.info("messa: " + e.getMessage());
-			logger.info("trace: " + e.getStackTrace());
-			logger.info("trace: ");
+			// Complain
 			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("\nstring: ");
-			e.toString();
-			logger.info("\n");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			logger.info("filIn: " + e.fillInStackTrace());
-			logger.info("cause: " + e.getCause());
-			logger.info("local: " + e.getLocalizedMessage());
-			logger.info("messa: " + e.getMessage());
-			logger.info("trace: " + e.getStackTrace());
-			logger.info("trace: ");
+			// Complain
 			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("\nstring: ");
-			e.toString();
-			logger.info("\n");
 		} finally {
-			/**
-			 * Check if the stream is null to catch IO error Close stream
-			 */
+			// Check if the stream is null to catch IO error Close stream
 			if (inputStream != null) {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					logger.info("Error: Could not close stream");
+					// Complain
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
 		}
@@ -478,7 +458,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Checks the number of features
-	 * 
+	 *
 	 * @param featureSize
 	 * @param size
 	 * @return
@@ -503,7 +483,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Loads csvInputStringList via the CSVDataProvider
-	 * 
+	 *
 	 * @return
 	 */
 	public CSVDataProvider loadFileSet() {
@@ -522,7 +502,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Loads a file set, where it file is a separate time.
-	 * 
+	 *
 	 * @param csvFileSet
 	 * @return
 	 */
@@ -829,29 +809,11 @@ public class CSVDataLoader {
 					}
 				}
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				logger.info("filIn: " + e.fillInStackTrace());
-				logger.info("cause: " + e.getCause());
-				logger.info("local: " + e.getLocalizedMessage());
-				logger.info("messa: " + e.getMessage());
-				logger.info("trace: " + e.getStackTrace());
-				logger.info("trace: ");
+				// Complain
 				logger.error(getClass().getName() + " Exception!",e);
-				logger.info("\nstring: ");
-				e.toString();
-				logger.info("\n");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				logger.info("filIn: " + e.fillInStackTrace());
-				logger.info("cause: " + e.getCause());
-				logger.info("local: " + e.getLocalizedMessage());
-				logger.info("messa: " + e.getMessage());
-				logger.info("trace: " + e.getStackTrace());
-				logger.info("trace: ");
+				// Complain
 				logger.error(getClass().getName() + " Exception!",e);
-				logger.info("\nstring: ");
-				e.toString();
-				logger.info("\n");
 			} finally {
 				/**
 				 * Check if the stream is null to catch IO error Close stream
@@ -860,8 +822,8 @@ public class CSVDataLoader {
 					try {
 						inputStream.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						logger.info("Error: Could not close stream");
+						// Complain
+						logger.error(getClass().getName() + " Exception!", e);
 					}
 				}
 			}
@@ -872,7 +834,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Loads the FileName via the CSVDataProvider
-	 * 
+	 *
 	 * @param csvFileName
 	 * @return
 	 */
@@ -888,7 +850,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Loads csvInputFile via the CSVDataProvider
-	 * 
+	 *
 	 * @return
 	 */
 	public CSVDataProvider load() {
@@ -909,7 +871,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Sets the ArrayList csvInputStringList
-	 * 
+	 *
 	 * @param csvInputStringList
 	 */
 	public void setCSVInputStringList(String[] csvInputStringList) {
@@ -922,7 +884,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Sets the String csvInputString
-	 * 
+	 *
 	 * @param csvInputString
 	 */
 	public void setCSVInputString(String csvInputString) {
@@ -940,7 +902,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Sets the File csvInputFile
-	 * 
+	 *
 	 * @param csvInputFile
 	 */
 	public void setCSVInputFile(File csvInputFile) {
@@ -958,7 +920,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Gets the InputString
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCSVInputString() {
@@ -967,7 +929,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Gets the InputFile
-	 * 
+	 *
 	 * @return
 	 */
 	public File getCSVInputFile() {
@@ -976,7 +938,7 @@ public class CSVDataLoader {
 
 	/**
 	 * Gets the CSVInputStringList
-	 * 
+	 *
 	 * @return
 	 */
 	public String[] getCSVInputStringMult() {

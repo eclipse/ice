@@ -216,10 +216,8 @@ public class ReactorReaderFactory {
 			}
 		} catch (HDF5LibraryException e) {
 			logger.error(getClass().getName() + " Exception!",e);
-			System.err.println("ReactorReaderFactory error: " + e.getMessage());
 		} catch (NullPointerException e) {
 			logger.error(getClass().getName() + " Exception!",e);
-			System.err.println("ReactorReaderFactory error: " + e.getMessage());
 		}
 
 		// Look up the factory for the type and, if possible, use the factory to

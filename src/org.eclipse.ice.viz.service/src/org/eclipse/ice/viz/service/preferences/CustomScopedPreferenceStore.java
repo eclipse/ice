@@ -187,7 +187,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 		try {
 			exists = getPreferenceNode().nodeExists(validPath);
 		} catch (BackingStoreException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 		return exists;
 	}
@@ -270,7 +270,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 				removed = true;
 				dirty = true;
 			} catch (BackingStoreException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -291,7 +291,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.ui.preferences.ScopedPreferenceStore#needsSaving()
 	 */
 	@Override
@@ -301,19 +301,15 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.ui.preferences.ScopedPreferenceStore#save()
 	 */
 	@Override
 	public void save() throws IOException {
 		// Flush the secure preference node.
 		boolean secureFlushed = false;
-		try {
-			getSecurePreferenceNode().flush();
-			secureFlushed = true;
-		} catch (IOException e) {
-			throw new IOException(e.getMessage());
-		}
+		getSecurePreferenceNode().flush();
+		secureFlushed = true;
 
 		// If the secure store was flushed successfully, we can proceed with the
 		// super method's flush. We can't do this within the try because it will
@@ -352,7 +348,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 				node.put(name, value, true);
 				dirty = true;
 			} catch (StorageException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -379,7 +375,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 			try {
 				value = node.get(name, STRING_DEFAULT_DEFAULT);
 			} catch (StorageException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 		return value;

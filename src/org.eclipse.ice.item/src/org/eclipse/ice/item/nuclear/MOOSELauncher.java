@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
@@ -23,14 +24,13 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
 /**
  * A SuiteLauncher Item for all MOOSE products (MARMOT, BISON, RELAP-7, RAVEN).
  * The MOOSE framework is developed by Idaho National Lab.
- * 
+ *
  * @author Anna Wojtowicz
  */
 @XmlRootElement(name = "MOOSELauncher")
@@ -161,7 +161,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	/**
 	 * Overrides the base class operation to properly account for MOOSE's file
 	 * structure.
-	 * 
+	 *
 	 * @param installDir
 	 *            The installation directory of MOOSE.
 	 * @param executable
@@ -256,7 +256,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * another MOOSEModel Item. It returns true if the Items are equal and false
 	 * if they are not.
 	 * </p>
-	 * 
+	 *
 	 * @param otherMoose
 	 *            <p>
 	 *            The MOOSEModel Item that should be checked for equality.
@@ -265,6 +265,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 *         True if the launchers are equal, false if not
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object other) {
 
 		boolean retVal;
@@ -309,11 +310,12 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * <p>
 	 * This operation returns the hashcode value of the MOOSELauncher.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The hashcode
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declaration
@@ -326,7 +328,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	}
 
 	/**
-	 * 
+	 *
 	 * @param otherMoose
 	 *            <p>
 	 *            This operation performs a deep copy of the attributes of
@@ -342,7 +344,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		}
 
 		// Copy contents into super and current object
-		super.copy((SuiteLauncher) otherMoose);
+		super.copy(otherMoose);
 
 		// Clone contents correctly
 		form = new Form();
@@ -359,11 +361,12 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * <p>
 	 * This operation provides a deep copy of the MOOSELauncher Item.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         A clone of the MOOSELauncher Item.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new instance of Moose Launcher and copy the contents
@@ -394,7 +397,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.item.jobLauncher.JobLauncher#process(java.lang.String)
 	 */
@@ -409,24 +412,24 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		refreshProjectSpace();
 
 		// Loop over all file entries and make sure they exist
-		for (final Entry e : files.retrieveAllEntries()) {
+		for (final Entry entry : files.retrieveAllEntries()) {
 			try {
 				// Check the entry value validity, if bad throw an exception
-				if (e.getValue().isEmpty()
-						|| !project.getFile(e.getValue()).exists()) {
+				if (entry.getValue().isEmpty()
+						|| !project.getFile(entry.getValue()).exists()) {
 					throw new Exception(
 							"Error launching the Job, can't find file "
-									+ e.getValue());
+									+ entry.getValue());
 				}
-			} catch (Exception ex) {
+			} catch (Exception e) {
 				// Let's catch the Exception in a somewhat graceful way...
-				ex.printStackTrace();
+				logger.error(getClass().getName() + " Exception! ", e);
 				String errorMessage = "The MOOSE Application could not be launched because all required files "
 						+ "could not be found in "
 						+ project.getLocation().toOSString()
 						+ ". Please click 'Browse' on the following Entry to import the files.\n\nFile = "
-						+ (e.getValue().isEmpty() ? e.getName() : e.getValue())
-						+ "\n" + ex.getMessage();
+						+ (entry.getValue().isEmpty() ? entry.getName() : entry
+								.getValue()) + "\n" + e.getMessage();
 
 				// Invoke Item's throwErrorMessage to display a
 				// descriptive error to the user
@@ -450,7 +453,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * case certain JobLaunch flags (related to file uploading) must be turned
 	 * off. Conversely, these flags must be turned back on for any other
 	 * executable.
-	 * 
+	 *
 	 * @param preparedForm
 	 *            The Form to review.
 	 * @return The Form's status.
@@ -558,7 +561,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	/**
 	 * This method is used to get the String representing the working directory
 	 * for this Job launch.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getJobLaunchDirectory() {
@@ -567,7 +570,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.item.jobLauncher.JobLauncher#
 	 * getFileDependenciesSearchString()
 	 */
