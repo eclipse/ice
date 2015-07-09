@@ -23,6 +23,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -32,12 +34,18 @@ import org.eclipse.ui.PlatformUI;
  * ICEFormEditor. It wraps the Form from ICE in an instance of ICEFormInput to
  * conform to Eclipse's Editor interface.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class EclipseFormWidget implements IFormWidget {
 
-	/** 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
+
+	/**
+	 * Handle for storing the input to the form.
 	 */
 	protected ICEFormInput ICEFormInput;
 
@@ -66,7 +74,7 @@ public class EclipseFormWidget implements IFormWidget {
 	 * <p>
 	 * The instance of ICEFormEditor that is created and wrapped by this class.
 	 * </p>
-	 * 
+	 *
 	 */
 	protected ICEFormEditor ICEFormEditor;
 
@@ -76,7 +84,8 @@ public class EclipseFormWidget implements IFormWidget {
 	 * </p>
 	 */
 	public EclipseFormWidget() {
-
+		// Create the logger
+		logger = LoggerFactory.getLogger(EclipseFormWidget.class);
 	}
 
 	/**
@@ -84,7 +93,7 @@ public class EclipseFormWidget implements IFormWidget {
 	 * This is an alternative constructor that allows the ICEFormEditor to be
 	 * injected. It is primarily used for testing but may have other uses.
 	 * </p>
-	 * 
+	 *
 	 * @param editor
 	 *            <p>
 	 *            The instance of ICEFormEditor that should be used by the
@@ -92,6 +101,7 @@ public class EclipseFormWidget implements IFormWidget {
 	 *            </p>
 	 */
 	public EclipseFormWidget(ICEFormEditor editor) {
+		this();
 		ICEFormEditor = editor;
 	}
 
@@ -208,7 +218,7 @@ public class EclipseFormWidget implements IFormWidget {
 				ICEFormEditor = (ICEFormEditor) formEditor;
 			} catch (PartInitException e) {
 				// Dump the stacktrace if something happens.
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 		}

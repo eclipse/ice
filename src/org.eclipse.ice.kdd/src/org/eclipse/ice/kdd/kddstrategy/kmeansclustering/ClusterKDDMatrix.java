@@ -325,7 +325,7 @@ public class ClusterKDDMatrix extends KDDMatrix {
 			file.create(new ByteArrayInputStream(contents.getBytes()), false,
 					null);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			// Maybe check if file is there, delete it...
 			return null;
 		}

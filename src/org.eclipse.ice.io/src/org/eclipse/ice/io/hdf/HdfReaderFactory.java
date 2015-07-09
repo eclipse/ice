@@ -22,15 +22,25 @@ import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.HObject;
 import ncsa.hdf.object.h5.H5Group;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * <p>
  * The HdfReaderFactory class contains static methods used to read elements from
  * an HDF5 file.
  * </p>
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public class HdfReaderFactory {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(HdfReaderFactory.class);
+
 	/**
 	 * <p>
 	 * Returns the child H5Group called name from parentH5Group. If
@@ -38,7 +48,7 @@ public class HdfReaderFactory {
 	 * empty String, then null is returned. If there is no child H5Group called
 	 * name, then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param parentH5Group
 	 *            <p>
 	 *            The parent H5Group to search.
@@ -64,7 +74,7 @@ public class HdfReaderFactory {
 					parentH5Group.getFullName()
 							+ System.getProperty("file.separator") + name);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("HdfReaderFactory Exception!", e);
 			return null;
 		}
 
@@ -78,7 +88,7 @@ public class HdfReaderFactory {
 	 * null is returned. If the object at located at the provided index is not
 	 * an H5Group, then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param parentH5Group
 	 *            <p>
 	 *            The parent H5Group to search.
@@ -128,7 +138,7 @@ public class HdfReaderFactory {
 							+ System.getProperty("file.separator") + name);
 		} catch (Exception e) {
 			// If we encounter an error, return null.
-			e.printStackTrace();
+			logger.error("HdfReaderFactory Exception!", e);
 		}
 
 		// Now that we have the object's name, get the child H5Group.
@@ -141,7 +151,7 @@ public class HdfReaderFactory {
 	 * list. If parentH5Group is null, then null is returned. If parentH5Group
 	 * has no H5Group children, then an empty ArrayList is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param parentH5Group
 	 *            <p>
 	 *            The parent H5Group to search.
@@ -182,7 +192,7 @@ public class HdfReaderFactory {
 
 		try {
 			// Get the number of members in parentH5Group.
-			count = (int) H5.H5Gn_members(file_id, parentName);
+			count = H5.H5Gn_members(file_id, parentName);
 
 			// Go ahead and return if we there are no child members.
 			if (count == 0) {
@@ -209,7 +219,7 @@ public class HdfReaderFactory {
 					// Try to get the child H5Group from parentH5Group and add
 					// it
 					// to the list.
-					HObject hobj = (H5Group) parentH5Group.getFileFormat().get(
+					HObject hobj = parentH5Group.getFileFormat().get(
 							parentH5Group.getFullName()
 									+ System.getProperty("file.separator")
 									+ objectNames[i]);
@@ -220,7 +230,7 @@ public class HdfReaderFactory {
 			}
 		} catch (Exception e) {
 			// If we encounter an error, return the empty list.
-			e.printStackTrace();
+			logger.error("HdfReaderFactory Exception!", e);
 			return groupList;
 		}
 
@@ -232,7 +242,7 @@ public class HdfReaderFactory {
 	 * This is analogous to and should be used in lieu of
 	 * parentH5Group.getMemberList(), which only returns child HObjects that are
 	 * in memory.
-	 * 
+	 *
 	 * @param parentH5Group
 	 *            The parent H5Group to query.
 	 * @return An ArrayList of <b>all</b> child H5Objects, or an empty list if
@@ -264,7 +274,7 @@ public class HdfReaderFactory {
 
 		try {
 			// Get the number of members in parentH5Group.
-			count = (int) H5.H5Gn_members(file_id, parentName);
+			count = H5.H5Gn_members(file_id, parentName);
 
 			// Go ahead and return if we there are no child members.
 			if (count == 0) {
@@ -298,7 +308,7 @@ public class HdfReaderFactory {
 
 		} catch (Exception e) {
 			// If we encounter an error, return the empty list.
-			e.printStackTrace();
+			logger.error("HdfReaderFactory Exception!", e);
 			return groupList;
 		}
 
@@ -312,7 +322,7 @@ public class HdfReaderFactory {
 	 * returned. If h5Group has no Datasets, then null is returned. If a Dataset
 	 * called name can not be located, then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5Group
 	 *            <p>
 	 *            The H5Group to search.
@@ -339,7 +349,7 @@ public class HdfReaderFactory {
 					h5Group.getFullName()
 							+ System.getProperty("file.separator") + name);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("HdfReaderFactory Exception!", e);
 			return null;
 		}
 
@@ -354,7 +364,7 @@ public class HdfReaderFactory {
 	 * Attribute called name is located but is not of Datatype.CLASS_FLOAT, then
 	 * null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5Group
 	 *            <p>
 	 *            The H5Group to read.
@@ -394,7 +404,7 @@ public class HdfReaderFactory {
 			}
 		} catch (Exception e) {
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfReaderFactory Exception!", e);
 		}
 
 		// Return null, nothing found
@@ -411,7 +421,7 @@ public class HdfReaderFactory {
 	 * Attribute called name is located but is not of Datatype.CLASS_INTEGER,
 	 * then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5Group
 	 *            <p>
 	 *            The H5Group to read.
@@ -450,7 +460,7 @@ public class HdfReaderFactory {
 			}
 		} catch (Exception e) {
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfReaderFactory Exception!", e);
 		}
 		// Return null, nothing found
 		return null;
@@ -466,7 +476,7 @@ public class HdfReaderFactory {
 	 * Attribute called name is located but is not of Datatype.CLASS_STRING,
 	 * then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5Group
 	 *            <p >
 	 *            The H5Group to read.
@@ -506,7 +516,7 @@ public class HdfReaderFactory {
 			}
 		} catch (Exception e) {
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfReaderFactory Exception!", e);
 		}
 		// Return null, nothing found
 		return null;

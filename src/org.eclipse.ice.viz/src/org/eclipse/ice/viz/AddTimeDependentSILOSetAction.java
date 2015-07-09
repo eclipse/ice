@@ -159,7 +159,7 @@ public class AddTimeDependentSILOSetAction extends Action {
 				vizViewer.addFile(vizResource);
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 		} else {

@@ -32,8 +32,9 @@ import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
@@ -45,15 +46,21 @@ import ca.odell.glazedlists.gui.TableFormat;
  * Framework. It requires the Eclipse Resources Plugin. It should be started and
  * stopped with the start() and stop() functions at the beginning and end of its
  * lifecycle.
- * 
+ *
  * It stores the default list of Materials in a private folder ("data/") in its
  * bundle. It stores the (possibly) modified user list of Materials in its
  * bundle directory in the workspace.
- * 
+ *
  * @author Jay Jay Billings
- * 
+ *
  */
 public class XMLMaterialsDatabase implements IMaterialsDatabase {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(XMLMaterialsDatabase.class);
 
 	/**
 	 * This file contains the most recent version of the database that the user
@@ -85,11 +92,6 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 	ServiceTracker logTracker;
 
 	/**
-	 * The logging service.
-	 */
-	LogService logger;
-
-	/**
 	 * The constructor
 	 */
 	public XMLMaterialsDatabase() {
@@ -100,7 +102,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 	 * The test constructor. This should ONLY be used for testing. It overrides
 	 * the work performed by the default constructor to locate the database
 	 * files with values provided by the caller.
-	 * 
+	 *
 	 * @param testUserXMLDatabase
 	 *            The XML file that contains the materials.
 	 * @param testDefaultXMLDatabase
@@ -118,7 +120,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.materials.IMaterialDatabase#getMaterials()
 	 */
 	@Override
@@ -128,7 +130,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.materials.IMaterialDatabase#addMaterial(org.eclipse.ice
 	 * .materials.Material)
@@ -143,7 +145,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.materials.IMaterialDatabase#deleteMaterial(java.lang.
 	 * String)
@@ -157,7 +159,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.materials.IMaterialDatabase#deleteMaterial(org.eclipse
 	 * .ice.materials.Material)
@@ -171,7 +173,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.materials.IMaterialDatabase#updateMaterial(org.eclipse
 	 * .ice.materials.Material)
@@ -185,7 +187,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 	/**
 	 * This operation loads the database that is in the provided file.
-	 * 
+	 *
 	 * @param streamToLoad
 	 *            the file that contains a materials database in XML and which
 	 *            should be loaded.
@@ -204,7 +206,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 				materialsMap.put(material.getName(), material);
 			}
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 	}
 
@@ -224,13 +226,13 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 			jaxbMarshaller.marshal(materialsList, userDatabase);
 		} catch (JAXBException e) {
 			System.err.println("XMLMaterialDatabase: Error writing database!");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.materials.IMaterialDatabase#restoreDefaults()
 	 */
 	@Override
@@ -256,18 +258,17 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 		} catch (JAXBException e) {
 			// Complain to the logger service
 			if (logger != null) {
-				logger.log(LogService.LOG_ERROR, "Unable to initialize JAXB!",
+				logger.error("Unable to initialize JAXB!",
 						e);
 			} else {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
 		// Choose which database to load
 		if (userDatabase.exists()) {
 			if (logger != null) {
-				logger.log(LogService.LOG_INFO,
-						"Loading user-modified database.");
+				logger.info("Loading user-modified database.");
 			}
 			fileToLoad = userDatabase;
 		} else {
@@ -277,7 +278,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 		// Load it up and throw some info in the log
 		loadDatabase(fileToLoad);
 		if (logger != null) {
-			logger.log(LogService.LOG_INFO, "Started!");
+			logger.info("Started!");
 		}
 
 	}
@@ -285,7 +286,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 	/**
 	 * The OSGi-based start operation that performs framework-specific start
 	 * tasks to determine the location of the database files.
-	 * 
+	 *
 	 * @param context
 	 *            The component context
 	 */
@@ -303,20 +304,14 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 			defaultDatabase = new File(FileLocator.toFileURL(defaultDBURL)
 					.getPath());
 
-			// Grab and open the logging service
-			logTracker = new ServiceTracker(bundleContext,
-					LogService.class.getName(), null);
-			logger = (LogService) logTracker.getService();
-
 			// Once the files are set, just call the other start operation
 			start();
 		} catch (IOException e) {
 			// Complain
 			if (logger != null) {
-				logger.log(LogService.LOG_ERROR,
-						"Unable to start the service!", e);
+				logger.error("Unable to start the XMLPersistence service!", e);
 			} else {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 	}
@@ -330,14 +325,14 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 		writeDatabase();
 
 		if (logger != null) {
-			logger.log(LogService.LOG_INFO, "Service stopped!");
+			logger.info("Service stopped!");
 		}
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.datastructures.ICEObject.IElementSource#getElements()
 	 */
@@ -351,7 +346,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.datastructures.ICEObject.IElementSource#getTableFormat()
 	 */

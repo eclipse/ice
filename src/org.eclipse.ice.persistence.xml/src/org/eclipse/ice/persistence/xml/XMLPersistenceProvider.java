@@ -246,7 +246,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;
@@ -282,7 +282,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			}
 		} catch (CoreException e) {
 			// Catch exception for creating the project
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 	}
 
@@ -382,7 +382,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						// Complain if something interrupts naptime!
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 					// Increment the counter
 					counter++;
@@ -443,7 +443,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			marshaller.marshal(obj, outputStream);
 		} catch (JAXBException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("XMLPersistenceProvider Message: "
 					+ "Failed to execute persistence task for " + obj);
 		}
@@ -474,7 +474,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			}
 		} catch (CoreException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 		return;
 	}
@@ -527,10 +527,10 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			}
 		} catch (InterruptedException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (CoreException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;
@@ -554,7 +554,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 				processTask(currentTask);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -654,12 +654,12 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			}
 		} catch (CoreException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			// Null out the Item so that it can't be returned uninitialized
 			item = null;
 		} catch (JAXBException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			// Null out the Item so that it can't be returned uninitialized
 			item = null;
 		}
@@ -751,7 +751,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 							+ "IWriter.replace() is not supported.");
 		} catch (OperationNotSupportedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 	}
 
@@ -782,10 +782,10 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			form = (Form) unmarshaller.unmarshal(file.getContents());
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return form;
@@ -805,7 +805,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 							+ "IReader.findAll() is not supported.");
 		} catch (OperationNotSupportedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 		return null;
 	}

@@ -457,7 +457,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 				streamingTextWidget.display();
 			} catch (FileNotFoundException e) {
 				// Complain that the file could not be opened
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -523,7 +523,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					}
 				} catch (IOException e) {
 					// Complain because the next line could not be read
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 
@@ -538,7 +538,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					}
 				} catch (IOException e) {
 					// Complain
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 				break;
@@ -549,7 +549,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					Thread.sleep(pollTime);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 			// Print a debug message for now

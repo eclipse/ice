@@ -183,13 +183,13 @@ public class AnalysisDataReader {
 			// Handle IOExceptions.
 			System.err.println("IOException while reading " + fileName
 					+ ". Cannot read data.");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (NumberFormatException e) {
 			// Handle NumberFormatExceptions. These are thrown when dataRowRegex
 			// is not matched.
 			System.err.println("NumberFormatException while reading " + fileName
 					+ ". Invalid number.");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 		;
 	}

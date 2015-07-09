@@ -504,7 +504,7 @@ public class GridLabelProvider extends LWRComponent {
 		} catch (Exception e) {
 
 			// Print stack trace
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 
 			// Return false
 			return false;
@@ -556,7 +556,7 @@ public class GridLabelProvider extends LWRComponent {
 			rowData = rowSet.getData();
 			colData = colSet.getData();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return false;
 		}
 

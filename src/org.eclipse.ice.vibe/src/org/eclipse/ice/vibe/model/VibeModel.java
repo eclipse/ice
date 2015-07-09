@@ -193,7 +193,7 @@ public class VibeModel extends Item {
 					// Complain
 					System.err.println("VibeModel Message: "
 							+ "Failed to refresh the project space.");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 				// return a success
 				retStatus = FormStatus.Processed;
@@ -250,19 +250,19 @@ public class VibeModel extends Item {
 				inputFile = project.getFile("case_6.conf");
 
 			} catch (URISyntaxException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("VibeModel Message: Error!  Could not load the default"
 								+ " VIBE case data!");
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("VibeModel Message: Error!  Could not load the default"
 						+ " VIBE case data!");
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("VibeModel Message: Error!  Could not load the default"
 						+ " VIBE case data!");
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("VibeModel Message: Error!  Could not load the default"
 						+ " VIBE case data!");
 			}

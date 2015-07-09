@@ -28,6 +28,8 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Listener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is used for managing a daemon thread for processing mouse input.
@@ -38,11 +40,17 @@ import org.eclipse.swt.widgets.Listener;
  * location from the AtomicReference<Point> field. This approach causes the
  * image to rotate according to the location of the mouse whenever
  * AtomicReference<Point>#get() is called in the thread.
- * 
+ *
  * @author Taylor Patterson, Jordan Deyton
- * 
+ *
  */
 public class VisItMouseManager {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(VisItMouseManager.class);
 
 	/**
 	 * The widget that an instance of this object will manage the mouse
@@ -107,7 +115,7 @@ public class VisItMouseManager {
 
 	/**
 	 * The constructor
-	 * 
+	 *
 	 * @param visItWidget
 	 *            The VisItSwtWidget for which this instance will manage the
 	 *            mouse input.
@@ -164,7 +172,7 @@ public class VisItMouseManager {
 
 	/**
 	 * Creates and registers all listeners for the specified widget.
-	 * 
+	 *
 	 * @param widget
 	 *            The widget that will receive listeners.
 	 */
@@ -179,10 +187,10 @@ public class VisItMouseManager {
 				}
 			};
 			// Dummy listener required to give widget proper focus for mouse wheel
-			// scrolling. 
+			// scrolling.
 			Listener dummy = new Listener(){
 				@Override
-				public void handleEvent(org.eclipse.swt.widgets.Event event) {					
+				public void handleEvent(org.eclipse.swt.widgets.Event event) {
 				}
 			};
 			widget.addListener(SWT.KeyDown, dummy);
@@ -248,7 +256,7 @@ public class VisItMouseManager {
 
 	/**
 	 * Unregisters and unsets all listeners for the specified widget.
-	 * 
+	 *
 	 * @param widget
 	 *            The widget whose listeners should be removed.
 	 */
@@ -277,7 +285,7 @@ public class VisItMouseManager {
 	/**
 	 * This operation is called to begin executing the mouse movement processing
 	 * thread.
-	 * 
+	 *
 	 * @param x
 	 *            The horizontal location where the click-and-drag began
 	 * @param y
@@ -320,7 +328,7 @@ public class VisItMouseManager {
 		try {
 			thread.join();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Call the stop operation in the VisItSwtWidget
@@ -332,7 +340,7 @@ public class VisItMouseManager {
 	/**
 	 * This function collects the necessary state information execute an image
 	 * rotation operation.
-	 * 
+	 *
 	 * @param x
 	 *            The horizontal location of the mouse pointer
 	 * @param y

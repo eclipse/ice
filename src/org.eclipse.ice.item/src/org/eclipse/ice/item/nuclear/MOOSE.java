@@ -429,7 +429,7 @@ public class MOOSE extends Item {
 						try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							logger.error(getClass().getName() + " Exception!",e);
 						}
 
 						// Set the status
@@ -778,7 +778,7 @@ public class MOOSE extends Item {
 				}
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 

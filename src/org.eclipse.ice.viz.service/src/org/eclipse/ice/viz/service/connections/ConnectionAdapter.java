@@ -206,7 +206,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 					System.err.println("ConnectionAdapter error: "
 							+ "Thread exception while opening connection \""
 							+ key + "\".");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		}
@@ -298,7 +298,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 					System.err.println("ConnectionAdapter error: "
 							+ "Thread exception while closing connection \""
 							+ key + "\".");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		} else {

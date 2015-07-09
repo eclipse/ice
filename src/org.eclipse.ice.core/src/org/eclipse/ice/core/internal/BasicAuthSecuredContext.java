@@ -122,7 +122,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		} catch (IOException e) {
 			// Print the stack trace if the error can not be sent.
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return false;
@@ -190,7 +190,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 		try {
 			subject = login(request, userid, password);
 		} catch (LoginException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return failAuthorization(request, response);
 		}
 

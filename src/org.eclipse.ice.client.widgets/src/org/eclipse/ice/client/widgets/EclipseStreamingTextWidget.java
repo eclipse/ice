@@ -132,7 +132,7 @@ public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 					// Complain
 					logger.error("EclipseStreamingTextWidget Message: "
 							+ "Unable to stream text!");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 			}

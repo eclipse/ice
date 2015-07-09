@@ -497,7 +497,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 								}
 							}
 						} catch (PartInitException e) {
-							e.printStackTrace();
+							logger.error(getClass().getName() + " Exception!",e);
 						}
 					}
 					// If the file is something else...
@@ -520,7 +520,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 								}
 							}
 						} catch (PartInitException e) {
-							e.printStackTrace();
+							logger.error(getClass().getName() + " Exception!",e);
 						}
 					}
 				}

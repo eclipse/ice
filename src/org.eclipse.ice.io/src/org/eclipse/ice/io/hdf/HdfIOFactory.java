@@ -275,13 +275,13 @@ public class HdfIOFactory implements IHdfIOFactory {
 					throwException("Closing file \"" + path + "\"", status);
 				}
 			} catch (HDF5LibraryException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("HdfIOFactory error: " + e.getMessage());
 			} catch (HDF5Exception e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("HdfIOFactory error: " + e.getMessage());
 			} catch (NullPointerException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("HdfIOFactory error: " + e.getMessage());
 			}
 		}
@@ -365,13 +365,13 @@ public class HdfIOFactory implements IHdfIOFactory {
 					throwException("Closing file \"" + path + "\"", status);
 				}
 			} catch (HDF5LibraryException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("HdfIOFactory error: " + e.getMessage());
 			} catch (HDF5Exception e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("HdfIOFactory error: " + e.getMessage());
 			} catch (NullPointerException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				System.err.println("HdfIOFactory error: " + e.getMessage());
 			}
 		}

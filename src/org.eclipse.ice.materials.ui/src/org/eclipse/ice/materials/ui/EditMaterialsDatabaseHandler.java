@@ -23,12 +23,20 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jay Jay Billings
- * 
+ *
  */
 public class EditMaterialsDatabaseHandler extends AbstractHandler {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(EditMaterialsDatabaseHandler.class);
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -45,7 +53,7 @@ public class EditMaterialsDatabaseHandler extends AbstractHandler {
 			page.openEditor(input, MaterialsDatabaseEditor.ID);
 		} catch (PartInitException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			// Throw up an error dialog
 			MessageBox errBox = new MessageBox(window.getShell(),
 					SWT.ICON_ERROR | SWT.OK);

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Alex McCaskey (UT-Battelle, LLC.) - initial API and implementation and/or 
+ *    Alex McCaskey (UT-Battelle, LLC.) - initial API and implementation and/or
  *      initial documentation
  *    Jay Jay Billings (UT-Battelle, LLC.) - fixed class author tag
  *    Jordan Deyton (UT-Battelle, LLC.) - UML doc cleanup
@@ -37,7 +37,7 @@ import org.eclipse.ice.item.ItemType;
  * Eclipse Modeling Framework Ecore model, which is then translated to an ICE
  * TreeComposite to be visualized and editted by the user.
  * </p>
- * 
+ *
  * @author Alex McCaskey
  */
 @XmlRootElement(name = "BatMLModel")
@@ -69,7 +69,7 @@ public class BatMLModel extends Item {
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * 
+	 *
 	 */
 	public BatMLModel() {
 		this(null);
@@ -80,7 +80,7 @@ public class BatMLModel extends Item {
 	 * The constructor with a project space in which files should be
 	 * manipulated.
 	 * </p>
-	 * 
+	 *
 	 * @param projectSpace
 	 *            <p>
 	 *            The Eclipse project where files should be stored and from
@@ -100,8 +100,8 @@ public class BatMLModel extends Item {
 	 * it searches for the correct XML schema and creates an EMFComponent and
 	 * adds it to the Form.
 	 * </p>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	@Override
 	protected void setupForm() {
@@ -118,8 +118,8 @@ public class BatMLModel extends Item {
 				// Refresh the project space
 				try {
 					project.refreshLocal(IResource.DEPTH_INFINITE, null);
-				} catch (CoreException e1) {
-					e1.printStackTrace();
+				} catch (CoreException e) {
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 				// Get the batml folder and the correct XML schema
@@ -133,7 +133,7 @@ public class BatMLModel extends Item {
 						xsdFile = EFS.getStore(xsdIFile.getLocationURI())
 								.toLocalFile(0, new NullProgressMonitor());
 					} catch (CoreException e) {
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 
 					// Create the EMFComponent
@@ -164,7 +164,7 @@ public class BatMLModel extends Item {
 	 * <p>
 	 * This operation is used to setup the name and description of the model.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Override
 	protected void setupItemInfo() {
@@ -187,7 +187,7 @@ public class BatMLModel extends Item {
 	/**
 	 * <p>
 	 * </p>
-	 * 
+	 *
 	 * @param preparedForm
 	 *            The form prepared for review.
 	 * @return The Form's status if the review was successful or not.
@@ -223,7 +223,7 @@ public class BatMLModel extends Item {
 					retStatus = FormStatus.InfoError;
 				}
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				retStatus = FormStatus.InfoError;
 			}
 		}
@@ -234,7 +234,7 @@ public class BatMLModel extends Item {
 	/**
 	 * <p>
 	 * </p>
-	 * 
+	 *
 	 * @param input
 	 *            The name of the input input file, including the file extension
 	 */

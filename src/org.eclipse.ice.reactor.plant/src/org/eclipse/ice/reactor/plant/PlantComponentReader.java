@@ -178,12 +178,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			// ------------------------- //
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
@@ -238,12 +238,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			// ---------------------------------- //
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
@@ -306,12 +306,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			plantComp.setOutputs(outputs);
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Junction " + plantComp.getName() + " "
 					+ plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Junction " + plantComp.getName() + " "
 					+ plantComp.getId());
@@ -348,12 +348,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			plantComp.setCoreChannels(coreChannels);
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Junction " + plantComp.getName() + " "
 					+ plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Junction " + plantComp.getName() + " "
 					+ plantComp.getId());
@@ -395,12 +395,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 					"length", H5T_NATIVE_DOUBLE));
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
@@ -433,11 +433,11 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 					"length", H5T_NATIVE_DOUBLE));
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentReader error: " + "Failed to read Pipe "
 					+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("PlantComponentReader error: " + "Failed to read Pipe "
 					+ plantComp.getName() + " " + plantComp.getId());
 		}

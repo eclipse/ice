@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Alexander J. McCaskey
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * This class serves as a utility for generating MOOSE YAML and Action Syntax
  * files on a remote machine and using them to construct the MOOSE input tree
  * locally in ICE.
- * 
+ *
  * @author Alex McCaskey
  *
  */
@@ -62,7 +62,7 @@ public class RemoteYamlSyntaxGenerator {
 
 	/**
 	 * The Constructor
-	 * 
+	 *
 	 * @param conn
 	 * @param moose
 	 * @param app
@@ -96,7 +96,7 @@ public class RemoteYamlSyntaxGenerator {
 			connection.open(null);
 		} catch (RemoteConnectionException e) {
 			// Print diagnostic information and fail
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			String errorMessage = "Could not create connection to remote machine.";
 			return new Status(Status.ERROR, "org.eclipse.ice.item.nuclear", 1,
 					errorMessage, null);
@@ -140,7 +140,7 @@ public class RemoteYamlSyntaxGenerator {
 
 			} catch (IOException e) {
 				// Print diagnostic information and fail
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				String errorMessage = "Could not execute YAML/Syntax generation on remote machine.";
 				return new Status(Status.ERROR, "org.eclipse.ice.item.nuclear",
 						1, errorMessage, null);
@@ -155,7 +155,7 @@ public class RemoteYamlSyntaxGenerator {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// Complain
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 
@@ -193,8 +193,8 @@ public class RemoteYamlSyntaxGenerator {
 				Files.write(yamlPath, yamlString.getBytes());
 				Files.write(syntaxPath, syntaxString.getBytes());
 
-			} catch (IOException e1) {
-				e1.printStackTrace();
+			} catch (IOException e) {
+				logger.error(getClass().getName() + " Exception!",e);
 				String errorMessage = "Could not create write files locally.";
 				return new Status(Status.ERROR, "org.eclipse.ice.item.nuclear",
 						1, errorMessage, null);

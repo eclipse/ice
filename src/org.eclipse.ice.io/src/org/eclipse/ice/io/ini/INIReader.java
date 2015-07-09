@@ -29,15 +29,23 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.serializable.ITemplatedReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The INIReader provides functionality for parsing files that use the INI
  * structure.
- * 
+ *
  * @author Andrew Bennett
  *
  */
 public class INIReader implements ITemplatedReader {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(INIReader.class);
 
 	/**
 	 * The character to use as a comment symbol
@@ -88,7 +96,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * Constructor allowing the specification of different comment symbols.
-	 * 
+	 *
 	 * @param c
 	 *            the symbol to use to specify a comment
 	 */
@@ -100,7 +108,7 @@ public class INIReader implements ITemplatedReader {
 	 * Read through an INI file by reading each section. Declarations that are
 	 * not in a section (ie before a section has been declared) will be put into
 	 * their own category.
-	 * 
+	 *
 	 * @param file
 	 *            the INI file to read
 	 */
@@ -162,10 +170,10 @@ public class INIReader implements ITemplatedReader {
 					}
 					reader.close();
 				} catch (CoreException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return null;
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return null;
 				}
 			}
@@ -176,7 +184,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * If a template is used it can be loaded with this method.
-	 * 
+	 *
 	 * @return the default form from the template
 	 */
 	private Form buildTemplate() {
@@ -252,10 +260,10 @@ public class INIReader implements ITemplatedReader {
 				}
 				reader.close();
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return null;
 			}
 		}
@@ -265,7 +273,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * Update the form to have the correct data from the input file
-	 * 
+	 *
 	 * @param form
 	 *            : The template form
 	 * @param file
@@ -342,10 +350,10 @@ public class INIReader implements ITemplatedReader {
 				}
 				reader.close();
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return null;
 			}
 		}
@@ -355,7 +363,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * Initialize an entry with the correct allowed values
-	 * 
+	 *
 	 * @return the entry
 	 */
 	private Entry makeTemplateEntry(final String name, final String defaultVal,
@@ -381,7 +389,7 @@ public class INIReader implements ITemplatedReader {
 	/**
 	 * Set what the reader should consider to be the comment string in the ini
 	 * file
-	 * 
+	 *
 	 * @param comm
 	 *            The comment string to look for
 	 */
@@ -392,7 +400,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * Allows the changing of the section assignment indentation string.
-	 * 
+	 *
 	 * @param indent
 	 *            Set how to indent on sections
 	 */
@@ -403,7 +411,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * Allows the changing of the syntax for section headers.
-	 * 
+	 *
 	 * @param regex
 	 *            A regular expression to match to section headers
 	 */
@@ -414,7 +422,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * Allows the changing of the syntax for variable assignment
-	 * 
+	 *
 	 * @param regex
 	 *            How to search for variable assignments
 	 */
@@ -425,7 +433,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * Set the template file used to validate that the form is correctly set up.
-	 * 
+	 *
 	 * @param template
 	 *            the type of template that should be used to validate the form
 	 *            after calling read()
@@ -441,7 +449,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * Add a new template to the INIReader that can be used to validate forms.
-	 * 
+	 *
 	 * @param name
 	 *            The name to reference the template file with
 	 * @param file
@@ -461,7 +469,7 @@ public class INIReader implements ITemplatedReader {
 	/**
 	 * Searches a given IFile for content that matches a given regular
 	 * expression. Returns all instances that match.
-	 * 
+	 *
 	 * @param file
 	 *            The file to search in
 	 * @param regex
@@ -479,7 +487,7 @@ public class INIReader implements ITemplatedReader {
 
 	/**
 	 * Return that this is an INIReader
-	 * 
+	 *
 	 * @return INIReader
 	 */
 	@Override

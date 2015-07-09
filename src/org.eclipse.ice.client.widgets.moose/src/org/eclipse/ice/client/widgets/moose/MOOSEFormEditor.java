@@ -202,7 +202,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 									try {
 										Thread.sleep(500);
 									} catch (InterruptedException e) {
-										e.printStackTrace();
+										logger.error(getClass().getName() + " Exception!",e);
 									}
 
 									// Loop over the ICEResources and add them
@@ -237,7 +237,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 														resourceComponentPage
 																.showResource(r);
 													} catch (PartInitException e) {
-														e.printStackTrace();
+														logger.error(getClass().getName() + " Exception!",e);
 													}
 												}
 
@@ -288,7 +288,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				return true;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return false;
 		}
 	}
@@ -325,7 +325,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 					}
 				});
 			} catch (PartInitException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 

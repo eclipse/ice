@@ -199,7 +199,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 					// Complain
 					System.err.println("VibeKVPair Generator Message: "
 							+ "Failed to refresh the project space.");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 				// return a success
 				retStatus = FormStatus.Processed;
@@ -289,7 +289,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 						+ " Vibe case data!");
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		} else {
 			// Get the file
@@ -453,7 +453,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 						+ outputFile.getAbsolutePath() + ".");
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 

@@ -961,7 +961,7 @@ public class Item implements IComponentVisitor, Identifiable,
 					notifyListenersOfProjectChange();
 				} catch (CoreException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 			}
@@ -1517,7 +1517,7 @@ public class Item implements IComponentVisitor, Identifiable,
 			} catch (CoreException e) {
 				// Complain
 				logger.info("Item Message: " + "Unable to load project files!");
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -1591,7 +1591,7 @@ public class Item implements IComponentVisitor, Identifiable,
 					folder.create(true, true, null);
 				} catch (CoreException e) {
 					// Complain
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		}
@@ -1610,7 +1610,7 @@ public class Item implements IComponentVisitor, Identifiable,
 			try {
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return;
@@ -1774,7 +1774,7 @@ public class Item implements IComponentVisitor, Identifiable,
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -1811,7 +1811,7 @@ public class Item implements IComponentVisitor, Identifiable,
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return;
@@ -1854,7 +1854,7 @@ public class Item implements IComponentVisitor, Identifiable,
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 	}

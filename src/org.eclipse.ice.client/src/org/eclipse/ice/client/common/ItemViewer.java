@@ -28,6 +28,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides an Eclipse view showing the list of Items that have been
@@ -38,6 +40,11 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ItemViewer extends ViewPart {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ItemViewer.class);
+			
 	/**
 	 * The id
 	 */
@@ -89,7 +96,7 @@ public class ItemViewer extends ViewPart {
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 				}
 				// Sync with the display
@@ -220,7 +227,7 @@ public class ItemViewer extends ViewPart {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							logger.error(getClass().getName() + " Exception!",e);
 						}
 					}
 				}

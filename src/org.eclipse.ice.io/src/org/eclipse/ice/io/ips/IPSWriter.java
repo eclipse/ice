@@ -176,7 +176,7 @@ public class IPSWriter implements IWriter {
 			return;
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Break up the StringBuffer at each newline character
@@ -218,7 +218,7 @@ public class IPSWriter implements IWriter {
 					new NullProgressMonitor());
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 	}
 

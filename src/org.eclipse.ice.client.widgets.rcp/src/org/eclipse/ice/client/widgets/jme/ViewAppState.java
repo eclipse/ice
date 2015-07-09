@@ -6,9 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or 
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or
  *      initial documentation
- *   
+ *
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.jme;
 
@@ -23,6 +23,8 @@ import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jme3.app.Application;
 import com.jme3.math.ColorRGBA;
@@ -38,7 +40,7 @@ import com.jme3.scene.shape.Line;
  * can request multiple {@link EmbeddedView}s from the
  * <code>MasterApplication</code> and can embed these views in an SWT
  * {@link Composite}.
- * 
+ *
  * <p>
  * The standard lifecycle of a <code>ViewAppState</code> is as follows:
  * <ol>
@@ -55,12 +57,17 @@ import com.jme3.scene.shape.Line;
  * <code>Composite</code>s, and each <code>ViewAppState</code> should support
  * the ability to be stopped and restarted at a later time.
  * </p>
- * 
+ *
  * @author Jordan
- * 
+ *
  */
 public abstract class ViewAppState extends CompositeAppState implements
 		IEmbeddedViewClient {
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ViewAppState.class);
 
 	// ---- Basic features that cannot be changed ---- //
 	/**
@@ -142,7 +149,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	 * embedded within it. This method gets an {@link EmbeddedView} from the
 	 * {@link MasterApplication}, connects with that view, and embeds that view
 	 * in the <code>Composite</code>.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent <code>Composite</code>.
 	 * @return The <code>Composite</code> that has an embedded jME view managed
@@ -189,7 +196,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 					Thread.sleep(50);
 					count += 50;
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
 
@@ -230,7 +237,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	/**
 	 * Disposes of the specified <code>EmbeddedView</code>. This should only be
 	 * called when the container for the <code>EmbeddedView</code> is disposed..
-	 * 
+	 *
 	 * @param embeddedView
 	 *            The view that should be released.
 	 */
@@ -260,7 +267,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	/**
 	 * Starts the <code>ViewAppState</code> by attaching it to the specified
 	 * <code>MasterApplication</code>.
-	 * 
+	 *
 	 * @param app
 	 *            The jME-based <code>MasterApplication</code> that will be
 	 *            hosting this <code>ViewAppState</code>.
@@ -442,7 +449,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	/**
 	 * Gets the current jME-based <code>MasterApplication</code> to which this
 	 * <code>ViewAppState</code> is attached.
-	 * 
+	 *
 	 * @return The current jME-based master {@link #app}. This will be null if
 	 *         the <code>SimpleAppState</code> has not been started.
 	 */
@@ -454,7 +461,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	 * Gets the <code>ViewAppState</code>'s root <code>Node</code>. Any updates
 	 * to this value should be done on the render thread if the
 	 * <code>ViewAppState</code> is initialized.
-	 * 
+	 *
 	 * @return The <code>ViewAppState</code>'s root <code>Node</code>.
 	 */
 	public Node getRootNode() {
@@ -472,7 +479,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	/**
 	 * Sets whether or not to show the HUD ({@link #guiNode}). If the value
 	 * changes, this will enable/disable the HUD in the rendering thread.
-	 * 
+	 *
 	 * @param display
 	 *            Whether or not to show the HUD.
 	 * @see #getDisplayHUD()
@@ -507,7 +514,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	/**
 	 * Sets whether or not to show the {@link #axes}. If the value changes, this
 	 * will enable/disable the axes in the rendering thread.
-	 * 
+	 *
 	 * @param display
 	 *            Whether or not to show the axes.
 	 * @see #getDisplayAxes()
@@ -565,7 +572,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.jme.IEmbeddedViewClient#updateHUD(org.
 	 * eclipse.ice.client.widgets.jme.EmbeddedView, int, int)
@@ -621,7 +628,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.jme.IEmbeddedViewClient#disposeViewCamera
 	 * (org.eclipse.ice.client.widgets.jme.EmbeddedView)
@@ -641,7 +648,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.jme.IEmbeddedViewClient#viewResized(org
 	 * .eclipse.ice.client.widgets.jme.EmbeddedView, int, int)
@@ -653,7 +660,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.jme.IEmbeddedViewClient#viewActivated(
 	 * org.eclipse.ice.client.widgets.jme.EmbeddedView)
@@ -668,7 +675,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.jme.IEmbeddedViewClient#viewDeactivated
 	 * (org.eclipse.ice.client.widgets.jme.EmbeddedView)
@@ -687,7 +694,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	/**
 	 * Gets a Ray from the crosshair's location to the grid. This uses the
 	 * camera's position and direction.
-	 * 
+	 *
 	 * @return A Ray derived from the crosshair's location.
 	 */
 	public Ray getCrosshairRay() {
@@ -702,7 +709,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	 * <b>Use this method when getting the cursor's location after a mouse-move
 	 * event. For mouse-click events, use {@link #getCursorRayFromClick()}.</b>
 	 * </p>
-	 * 
+	 *
 	 * @return A Ray derived from the cursor's location.
 	 */
 	public Ray getCursorRay() {
@@ -719,7 +726,7 @@ public abstract class ViewAppState extends CompositeAppState implements
 	 * cursor's location after a mouse-click event. For mouse-move events, use
 	 * {@link #getCursorRay()}.</b>
 	 * </p>
-	 * 
+	 *
 	 * @return A Ray derived from the cursor's location.
 	 */
 	public Ray getCursorRayFromClick() {

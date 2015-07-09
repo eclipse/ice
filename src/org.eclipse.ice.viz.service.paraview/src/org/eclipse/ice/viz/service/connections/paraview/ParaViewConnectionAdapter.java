@@ -65,9 +65,9 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 			// Try to connect.
 			connected = client.connect(url).get();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (ExecutionException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// If the connection was not successful, we should return null.

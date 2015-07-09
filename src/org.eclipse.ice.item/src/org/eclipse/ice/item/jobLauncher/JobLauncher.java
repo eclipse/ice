@@ -406,7 +406,7 @@ public class JobLauncher extends Item {
 						false, null);
 			} catch (CoreException e) {
 				// Complain
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			// Create the standard error project file
 			try {
@@ -421,7 +421,7 @@ public class JobLauncher extends Item {
 						false, null);
 			} catch (CoreException e) {
 				// Complain
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			// Put the paths to the standard error and out files into the map.
 			// Note that the toOSSString() operation returns the file path with
@@ -453,7 +453,7 @@ public class JobLauncher extends Item {
 							members[i].getModificationStamp());
 				}
 			} catch (CoreException | IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -547,11 +547,11 @@ public class JobLauncher extends Item {
 				}
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 	}
@@ -761,7 +761,7 @@ public class JobLauncher extends Item {
 			// Get the address of localhost
 			InetAddress addr = InetAddress.getLocalHost();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Identify the log
@@ -979,7 +979,7 @@ public class JobLauncher extends Item {
 								}
 							}
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							logger.error(getClass().getName() + " Exception!",e);
 						} finally {
 							monitor.subTask("Job Launched Successfully.");
 							monitor.worked(100);
@@ -1004,7 +1004,7 @@ public class JobLauncher extends Item {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 				// Return the new status
 				return status;
@@ -1113,11 +1113,11 @@ public class JobLauncher extends Item {
 					updateResourceComponent();
 				} catch (IOException e) {
 					// Complain and return
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return;
 				} catch (InterruptedException e) {
 					// Complain and return
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return;
 				}
 
@@ -1864,7 +1864,7 @@ public class JobLauncher extends Item {
 
 					}
 				} catch (UnknownHostException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		}

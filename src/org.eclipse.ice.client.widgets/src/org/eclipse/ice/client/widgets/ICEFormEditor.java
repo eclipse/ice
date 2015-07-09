@@ -524,7 +524,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 				getSite().getWorkbenchWindow().getActivePage()
 						.showView(getTreeCompositeViewerID());
 			} catch (PartInitException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 			// Get the TreeComposite to pass to the tree view.
@@ -1049,7 +1049,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 				addPage(i);
 			}
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;

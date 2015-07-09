@@ -227,7 +227,7 @@ public class PROTEUSModel extends Item {
 					// Complain
 					System.err.println("ProteusModel Message: "
 							+ "Failed to refresh the project space.");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 				// return a success
 				retStatus = FormStatus.Processed;

@@ -706,7 +706,7 @@ public class PlotGridComposite extends Composite {
 									try {
 										draw(categoryRef, typeRef);
 									} catch (Exception e) {
-										e.printStackTrace();
+										logger.error(getClass().getName() + " Exception!",e);
 									}
 								}
 							}));

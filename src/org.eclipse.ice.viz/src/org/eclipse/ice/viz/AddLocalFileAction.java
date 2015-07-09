@@ -132,7 +132,7 @@ public class AddLocalFileAction extends Action {
 					System.err.println("AddLocalFileAction error: Failed to "
 							+ "create an ICEResource for the file at \""
 							+ filePath + "\".");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		} else {

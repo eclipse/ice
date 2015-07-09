@@ -209,7 +209,7 @@ public class ReactorFormEditor extends ICEFormEditor {
 				addPage(i);
 			}
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;

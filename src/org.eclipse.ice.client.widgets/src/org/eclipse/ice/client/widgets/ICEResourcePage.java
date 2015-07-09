@@ -163,7 +163,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(ICEResourceView.ID);
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Get the parent Composite for the Resource Page widgets and set its

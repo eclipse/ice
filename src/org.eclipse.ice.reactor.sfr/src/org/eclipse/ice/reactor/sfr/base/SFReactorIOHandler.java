@@ -38,6 +38,8 @@ import org.eclipse.ice.reactor.sfr.core.assembly.ReflectorAssembly;
 import org.eclipse.ice.reactor.sfr.core.assembly.Ring;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRPin;
 import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -45,15 +47,22 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
  * both reads HDF5 data into the SFReactor, and writes from the SFReactor into
  * HDF5 data.
  * </p>
- * 
+ *
  * @author Anna Wojtowicz
  */
 public class SFReactorIOHandler {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(SFReactorIOHandler.class);
+
 	/**
 	 * <p>
 	 * Nullary constructor.
 	 * </p>
-	 * 
+	 *
 	 */
 	public SFReactorIOHandler() {
 
@@ -63,7 +72,7 @@ public class SFReactorIOHandler {
 
 	/**
 	 * Reads data from an input HDF5 file into a SFReactor.
-	 * 
+	 *
 	 * @return A valid {@link SFReactor} if the file could be completely read,
 	 *         {@code null} if the file could not be opened.
 	 */
@@ -486,13 +495,13 @@ public class SFReactorIOHandler {
 				throwException("Closing file \"" + path + "\"", status);
 			}
 		} catch (HDF5LibraryException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		}
 
@@ -504,7 +513,7 @@ public class SFReactorIOHandler {
 	 * <p>
 	 * Writes data from the input SFReactor into a HDF5 file.
 	 * </p>
-	 * 
+	 *
 	 * @param reactor
 	 */
 	public void writeHDF5(URI uri, SFReactor reactor) {
@@ -859,13 +868,13 @@ public class SFReactorIOHandler {
 				throwException("Closing file \"" + path + "\"", status);
 			}
 		} catch (HDF5LibraryException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		}
 
@@ -874,7 +883,7 @@ public class SFReactorIOHandler {
 
 	/**
 	 * This utility method throws an HDF5LibraryException with a custom message.
-	 * 
+	 *
 	 * @param message
 	 *            The message to append to the exception.
 	 * @param status
@@ -890,7 +899,7 @@ public class SFReactorIOHandler {
 
 	/**
 	 * Opens an HDF5 Group.
-	 * 
+	 *
 	 * @param parentId
 	 *            The ID of the parent's Group, which should be open itself.
 	 * @param name
@@ -910,7 +919,7 @@ public class SFReactorIOHandler {
 
 	/**
 	 * Creates and opens an HDF5 Group.
-	 * 
+	 *
 	 * @param parentId
 	 *            The ID of the parent's Group, which should be open itself.
 	 * @param name
@@ -931,7 +940,7 @@ public class SFReactorIOHandler {
 
 	/**
 	 * Closes an HDF5 Group.
-	 * 
+	 *
 	 * @param groupId
 	 *            The ID of the Group to close.
 	 * @throws HDF5LibraryException
@@ -947,7 +956,7 @@ public class SFReactorIOHandler {
 	/**
 	 * Gets a List of all child Objects of an HDF5 Group with the specified ID
 	 * and type.
-	 * 
+	 *
 	 * @param parentId
 	 *            The ID of the parent Group.
 	 * @param objectType
@@ -1000,7 +1009,7 @@ public class SFReactorIOHandler {
 	/**
 	 * Writes an Attribute for an HDF5 Object, which is typically a Group. Array
 	 * Attributes are not supported.
-	 * 
+	 *
 	 * @param objectId
 	 *            The ID for the Object, which should be open, that will get the
 	 *            Attribute.
@@ -1064,7 +1073,7 @@ public class SFReactorIOHandler {
 	/**
 	 * Reads an Attribute for an HDF5 Object, which is typically a Group. Array
 	 * Attributes are not supported.
-	 * 
+	 *
 	 * @param objectId
 	 *            The ID for the Object, which should be open, that has the
 	 *            Attribute.
@@ -1094,7 +1103,7 @@ public class SFReactorIOHandler {
 		int attributeId = status;
 
 		// Read the attribute.
-		status = H5.H5Aread(attributeId, type, (Object) buffer);
+		status = H5.H5Aread(attributeId, type, buffer);
 		if (status < 0) {
 			throwException("Reading attribute \"" + name + "\"", status);
 		}
@@ -1110,7 +1119,7 @@ public class SFReactorIOHandler {
 	 * Writes a String as an Attribute for an HDF5 Object, which is typically a
 	 * Group. This requires a special method because the String must first be
 	 * converted to a byte array.
-	 * 
+	 *
 	 * @param objectId
 	 *            The ID for the Object, which should be open, that will get the
 	 *            Attribute.
@@ -1201,7 +1210,7 @@ public class SFReactorIOHandler {
 	 * Reads a String Attribute from an HDF5 Object, which is typically a Group.
 	 * This requires a special method because the String must first be converted
 	 * to a byte array.
-	 * 
+	 *
 	 * @param objectId
 	 *            The ID for the Object, which should be open, that has the
 	 *            Attribute.
@@ -1262,7 +1271,7 @@ public class SFReactorIOHandler {
 	 * This method writes an HDF5 Dataset containing the data that is stored in
 	 * a buffer. All of the data's properties and the buffer must be allocated
 	 * before calling this method.
-	 * 
+	 *
 	 * @param objectId
 	 *            The ID for the Object, which should be open, that will get the
 	 *            Dataset.
@@ -1329,7 +1338,7 @@ public class SFReactorIOHandler {
 
 	/**
 	 * Writes all of the properties and data stored for an SFRComponent.
-	 * 
+	 *
 	 * @param component
 	 *            An initialized SFRComponent from which to write data.
 	 * @param groupId
@@ -1366,7 +1375,7 @@ public class SFReactorIOHandler {
 
 	/**
 	 * Reads all of the properties and data into an SFRComponent.
-	 * 
+	 *
 	 * @param component
 	 *            An initialized SFRComponent to read data into.
 	 * @param groupId
@@ -1404,7 +1413,7 @@ public class SFReactorIOHandler {
 	/**
 	 * Writes the data for a GridDataManager from a pre-constructed List of
 	 * IDataProviders (SFRComponents).
-	 * 
+	 *
 	 * @param providers
 	 *            A List of IDataProviders to write the data from.
 	 * @param groupId
@@ -1446,7 +1455,7 @@ public class SFReactorIOHandler {
 	/**
 	 * Writes all of the data from an IDataProvider (implemented by
 	 * SFRComponent).
-	 * 
+	 *
 	 * @param provider
 	 *            The IDataProvider to write the data from.
 	 * @param groupId
@@ -1571,7 +1580,7 @@ public class SFReactorIOHandler {
 	/**
 	 * Reads in the data for a GridDataManager into a pre-constructed List of
 	 * IDataProviders (SFRComponents).
-	 * 
+	 *
 	 * @param providers
 	 *            A List of IDataProviders to read the data into.
 	 * @param groupId
@@ -1613,7 +1622,7 @@ public class SFReactorIOHandler {
 	/**
 	 * Reads all of the data in for an IDataProvider (implemented by
 	 * SFRComponent).
-	 * 
+	 *
 	 * @param provider
 	 *            The IDataProvider to read the data into.
 	 * @param groupId
@@ -1831,7 +1840,7 @@ public class SFReactorIOHandler {
 
 	/**
 	 * Writes a List of locations, stored as Integers, as a Dataset.
-	 * 
+	 *
 	 * @param locations
 	 *            The List of location indexes to write.
 	 * @param groupId
@@ -1862,7 +1871,7 @@ public class SFReactorIOHandler {
 
 	/**
 	 * Reads a List of locations, stored as Integers, from a Dataset.
-	 * 
+	 *
 	 * @param groupId
 	 *            The ID of the HDF5 Group, which should be open, that holds the
 	 *            location Dataset.
@@ -1942,7 +1951,7 @@ public class SFReactorIOHandler {
 	/**
 	 * Writes an SFR Ring to an HDF5 Group. This includes its properties and the
 	 * Material stored in the Ring.
-	 * 
+	 *
 	 * @param ring
 	 *            The Ring to write to a file.
 	 * @param ringGroupId
@@ -1980,7 +1989,7 @@ public class SFReactorIOHandler {
 	/**
 	 * Reads an SFR Ring from an HDF5 Group. This includes its properties and
 	 * Material stored in the Ring.
-	 * 
+	 *
 	 * @param ringGroupId
 	 *            The ID of the Ring's HDF5 Group, which should be open
 	 * @return A new Ring object with the properties read in from the file.

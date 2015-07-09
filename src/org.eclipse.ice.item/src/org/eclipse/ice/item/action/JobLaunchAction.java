@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -40,6 +39,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
@@ -49,14 +49,7 @@ import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemoteProcess;
 import org.eclipse.remote.core.IRemoteProcessBuilder;
 import org.eclipse.remote.core.IRemoteProcessService;
-import org.eclipse.remote.core.IRemoteServicesManager;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.eclipse.ice.datastructures.form.Form;
 
 /**
  * <p>
@@ -305,13 +298,13 @@ import org.eclipse.ice.datastructures.form.Form;
  * </td>
  * </tr>
  * </table>
- * 
+ *
  * The JobLaunchAction adds the working directory to the map with the key
  * "workingDir".
- * 
+ *
  * The Action appends to the end of each output file listed in the map. It never
  * overwrites these files.
- * 
+ *
  * Additional parameters may be specified in the dictionary and the
  * JobLaunchAction will replace them in the executable if required. For a key
  * "v" in the dictionary, each instance of the search string "${v}" in the
@@ -322,9 +315,9 @@ import org.eclipse.ice.datastructures.form.Form;
  * properly name files will result in a failure. Capitalization does not matter.
  * The stdOutFile and stdErrFile are exceptions that are not transferred to
  * remote machines.
- * 
+ *
  * The cancel() operation attempts to kill the process if it is still running.
- * 
+ *
  * This class launches the job on a separate thread. An AtomicReference is used
  * for managing access to the Form information an the LoginInfoForm is used
  * simply as an internal reference to the current Form within an operation. It
@@ -333,7 +326,7 @@ import org.eclipse.ice.datastructures.form.Form;
  * of a command. This assumption is valid on Windows, Linux and Unix systems so
  * long as the Windows shell is Powershell.
  * <p>
- * 
+ *
  * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class JobLaunchAction extends Action implements Runnable {
@@ -487,7 +480,7 @@ public class JobLaunchAction extends Action implements Runnable {
 	 * according to the specification. It also configures the commands to setup
 	 * the parallel execution environment if indicated by the number of
 	 * processors or threads.
-	 * 
+	 *
 	 * @return The name of the executable with all variable references and
 	 *         required string replacements fixed.
 	 */
@@ -626,7 +619,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 	/**
 	 * This operation retrieves the username from the LoginInfoForm.
-	 * 
+	 *
 	 * @return The username.
 	 */
 	private String getUsernameFromForm() {
@@ -636,7 +629,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 	/**
 	 * This operation creates a new SSH session for the given username.
-	 * 
+	 *
 	 * @param dictionary
 	 *            The dictionary of values to be used to create the session.
 	 */
@@ -648,7 +641,7 @@ public class JobLaunchAction extends Action implements Runnable {
 	/**
 	 * This operation returns a buffered writer to the caller that will append
 	 * to file specified in the call.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the file to which the BufferedWriter should
 	 *            append.
@@ -666,7 +659,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				writer = new FileWriter(filename, true);
 			} catch (IOException e) {
 				// Complain
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			bufferedWriter = new BufferedWriter(writer);
 			return bufferedWriter;
@@ -678,7 +671,7 @@ public class JobLaunchAction extends Action implements Runnable {
 	/**
 	 * This operation checks the hostname to determine whether or not it is the
 	 * same as localhost.
-	 * 
+	 *
 	 * @param hostname
 	 *            The hostname of the target platform on which the job will be
 	 *            launched.
@@ -704,7 +697,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				// Get the hostname
 				localHostname = addr.getHostName();
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			// Compare the names
 			if (hostname.equals(localHostname)) {
@@ -800,7 +793,7 @@ public class JobLaunchAction extends Action implements Runnable {
 						Paths.get(copyToDirFile.toURI()));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -830,7 +823,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				stdErr.close();
 			} catch (IOException e) {
 				// Complain if the error can't be written
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			return FormStatus.InfoError;
 		}
@@ -889,7 +882,7 @@ public class JobLaunchAction extends Action implements Runnable {
 						.exitValue();
 			} catch (IllegalThreadStateException e) {
 				// Complain, but keep watching
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			// Give it a second
 			try {
@@ -897,7 +890,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// Complain
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 			// If for some reason the job has failed,
@@ -919,7 +912,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 	/**
 	 * This operation logs the content of the output and error streams
-	 * 
+	 *
 	 * @param output
 	 *            The output stream from the code
 	 * @param errors
@@ -960,7 +953,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			}
 		} catch (IOException e) {
 			// Or fail and complain about it.
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return FormStatus.InfoError;
 		}
 
@@ -1009,7 +1002,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
 				// Complain
-				e1.printStackTrace();
+				logger.error(getClass().getName() + " Exception!", e1);
 				return;
 			}
 			// DEBUG - logger.info("Form not yet submitted.");
@@ -1020,7 +1013,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			launchCMDFileName = writeRemoteCommandFile();
 		} catch (Exception e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return;
 		}
 
@@ -1063,7 +1056,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				connection = workingCopy.save();
 			} catch (RemoteConnectionException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				status = FormStatus.InfoError;
 				return;
 			}
@@ -1074,7 +1067,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			connection.open(null);
 		} catch (RemoteConnectionException e) {
 			// Print diagnostic information and fail
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			status = FormStatus.InfoError;
 			return;
 		}
@@ -1098,7 +1091,7 @@ public class JobLaunchAction extends Action implements Runnable {
 				fileStore = EFS.getStore(fileManager.toURI(processService
 						.getWorkingDirectory()));
 			} catch (CoreException e1) {
-				e1.printStackTrace();
+				logger.error(getClass().getName() + " Exception!", e1);
 				status = FormStatus.InfoError;
 				return;
 			}
@@ -1146,7 +1139,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 			} catch (CoreException e) {
 				// Print diagnostic information and fail
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				status = FormStatus.InfoError;
 				return;
 			}
@@ -1186,7 +1179,7 @@ public class JobLaunchAction extends Action implements Runnable {
 						.start(IRemoteProcessBuilder.FORWARD_X11);
 			} catch (IOException e) {
 				// Print diagnostic information and fail
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				status = FormStatus.InfoError;
 				return;
 			}
@@ -1262,10 +1255,10 @@ public class JobLaunchAction extends Action implements Runnable {
 					}
 				} catch (CoreException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		}
@@ -1282,12 +1275,12 @@ public class JobLaunchAction extends Action implements Runnable {
 	/**
 	 * This operation creates a file that contains all of the commands that need
 	 * to be launched, one per line.
-	 * 
+	 *
 	 * It adds the file to file map so that it is automatically moved to the
 	 * working directory by the calling routine.
-	 * 
+	 *
 	 * It writes it in the local working directory from which ICE was run.
-	 * 
+	 *
 	 * @return The full path to the launch file.
 	 * @throws IOException
 	 */
@@ -1341,7 +1334,7 @@ public class JobLaunchAction extends Action implements Runnable {
 	/**
 	 * This operation overrides Action.submitForm to add the Form to an Atomic
 	 * container instead of the default Form class variable.
-	 * 
+	 *
 	 * @param form
 	 *            The form being submitted.
 	 * @return The status of the submission.
@@ -1368,7 +1361,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.item.action.Action#execute(java.util.Dictionary)
 	 */
 	@Override
@@ -1428,7 +1421,7 @@ public class JobLaunchAction extends Action implements Runnable {
 	 * is valid. By valid we mean that it is not null (so it's been set
 	 * correctly) and it's provided host name is the same as the host name in
 	 * the execDictionary (ie, the host name specified by the user).
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean connectionIsValid() {
@@ -1450,7 +1443,7 @@ public class JobLaunchAction extends Action implements Runnable {
 					return false;
 				}
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return false;
 			}
 		} else {
@@ -1461,7 +1454,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see Action#cancel()
 	 */
 	@Override
@@ -1526,7 +1519,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see Runnable#run()
 	 */
 	@Override
@@ -1587,7 +1580,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			stdErr.write(stdErrHeader);
 		} catch (IOException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Determine where to launch
@@ -1605,7 +1598,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			stdErr.close();
 		} catch (IOException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			status = FormStatus.InfoError;
 			return;
 		}
@@ -1616,7 +1609,7 @@ public class JobLaunchAction extends Action implements Runnable {
 	/**
 	 * This operation creates a standard header that contains information about
 	 * the job being launched. It is used primarily by the run() operation.
-	 * 
+	 *
 	 * @param logName
 	 *            The name that should be used to identify the log in its
 	 *            header.
@@ -1635,7 +1628,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			// Get the hostname
 			localHostname = addr.getHostName();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Add the date and time
@@ -1666,7 +1659,7 @@ public class JobLaunchAction extends Action implements Runnable {
 	 * connection will be used for remote launches if its corresponding hostname
 	 * is the same as the user specified host name as defined in the
 	 * execDictionary.
-	 * 
+	 *
 	 * @param remoteConnection
 	 */
 	public void setRemoteConnection(IRemoteConnection remoteConnection) {

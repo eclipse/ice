@@ -93,7 +93,7 @@ public class VisItConnectionAdapter extends
 		try {
 			connectionJob.join();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Return, clients should handle if its null or not

@@ -698,7 +698,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 					page.openEditor(editorInput, CSVPlotEditor.ID);
 				} catch (PartInitException e) {
 					// Complain
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					Shell shell = PlatformUI.getWorkbench()
 							.getActiveWorkbenchWindow().getShell();
 

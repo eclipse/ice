@@ -444,7 +444,7 @@ public class CSVDataLoader {
 			logger.info("messa: " + e.getMessage());
 			logger.info("trace: " + e.getStackTrace());
 			logger.info("trace: ");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("\nstring: ");
 			e.toString();
 			logger.info("\n");
@@ -456,7 +456,7 @@ public class CSVDataLoader {
 			logger.info("messa: " + e.getMessage());
 			logger.info("trace: " + e.getStackTrace());
 			logger.info("trace: ");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			logger.info("\nstring: ");
 			e.toString();
 			logger.info("\n");
@@ -512,7 +512,7 @@ public class CSVDataLoader {
 				return loadAsFileSet(csvInputStringList);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		} else {
 			return null;
@@ -836,7 +836,7 @@ public class CSVDataLoader {
 				logger.info("messa: " + e.getMessage());
 				logger.info("trace: " + e.getStackTrace());
 				logger.info("trace: ");
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				logger.info("\nstring: ");
 				e.toString();
 				logger.info("\n");
@@ -848,7 +848,7 @@ public class CSVDataLoader {
 				logger.info("messa: " + e.getMessage());
 				logger.info("trace: " + e.getStackTrace());
 				logger.info("trace: ");
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				logger.info("\nstring: ");
 				e.toString();
 				logger.info("\n");
@@ -899,7 +899,7 @@ public class CSVDataLoader {
 			try {
 				return load(csvInputFile);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		} else {
 			return null;

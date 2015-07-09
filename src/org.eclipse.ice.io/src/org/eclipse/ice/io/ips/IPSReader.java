@@ -238,7 +238,7 @@ public class IPSReader implements IReader {
 					ifile.getContents()));
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Read the FileInputStream and append to a StringBuffer

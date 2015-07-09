@@ -8,10 +8,11 @@ Export-Package:
  org.eclipse.ice.reactor.sfr.base,
  org.eclipse.ice.reactor.sfr.core,
  org.eclipse.ice.reactor.sfr.core.assembly
-Import-Package: org.eclipse.ice.analysistool,
- ncsa.hdf.hdf5lib,
+Import-Package: ncsa.hdf.hdf5lib,
  ncsa.hdf.hdf5lib.exceptions,
- ncsa.hdf.hdf5lib.structs
+ ncsa.hdf.hdf5lib.structs,
+ org.eclipse.ice.analysistool,
+ org.slf4j;version="1.7.2"
 Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0"
 Bundle-Vendor: Oak Ridge National Laboratory
 

@@ -461,7 +461,7 @@ public class Core extends Application implements ICore {
 						// Complain and don't do anything else.
 						logger.info("Core Message: "
 								+ "Unable to import file.");
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 						return;
 					}
 				}
@@ -475,13 +475,13 @@ public class Core extends Application implements ICore {
 					// Complain and don't do anything else.
 					logger.info("Core Message: "
 							+ "Unable to import file.");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return;
 				} catch (CoreException e) {
 					// Complain and don't do anything else.
 					logger.info("Core Message: "
 							+ "Unable to import file.");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return;
 				}
 			}
@@ -557,7 +557,7 @@ public class Core extends Application implements ICore {
 							itemManager.registerBuilder(builder);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							logger.error(getClass().getName() + " Exception!",e);
 							status = false;
 						}
 					}
@@ -568,7 +568,7 @@ public class Core extends Application implements ICore {
 				project.getFolder("jobProfiles").create(true, true, null);
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return status;
@@ -632,7 +632,7 @@ public class Core extends Application implements ICore {
 				httpService.registerServlet("/ice", new ServletContainer(this),
 						servletParams, httpContext);
 			} catch (ServletException | NamespaceException | IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			logger.info("ICore Message: ICE Core Server loaded and web "
 					+ "service started!");
@@ -705,7 +705,7 @@ public class Core extends Application implements ICore {
 			projectTable.put("defaultUser", project);
 		} catch (CoreException e) {
 			// Catch for creating the project
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			status = false;
 		}
 
@@ -829,7 +829,7 @@ public class Core extends Application implements ICore {
 			// Log the message
 			System.err.println("Core Message: "
 					+ "JSON parsing failed for message " + messageString);
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return messages;

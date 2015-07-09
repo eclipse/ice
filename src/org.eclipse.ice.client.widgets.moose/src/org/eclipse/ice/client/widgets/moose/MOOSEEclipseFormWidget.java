@@ -20,6 +20,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class creates and displays a {@link MOOSEFormEditor} for modifying a
@@ -29,6 +31,12 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public class MOOSEEclipseFormWidget extends EclipseFormWidget {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(MOOSEEclipseFormWidget.class);
 
 	/**
 	 * The visualization service factory provided to MOOSEFormEditors through
@@ -78,7 +86,7 @@ public class MOOSEEclipseFormWidget extends EclipseFormWidget {
 
 		} catch (PartInitException e) {
 			// Dump the stacktrace if something happens.
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return;

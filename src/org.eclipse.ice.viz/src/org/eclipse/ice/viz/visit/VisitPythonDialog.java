@@ -242,7 +242,7 @@ public class VisitPythonDialog extends TitleAreaDialog {
 										fullFileStr);
 							} catch (Exception e1) {
 								// Complain if needed
-								e1.printStackTrace();
+								logger.error(getClass().getName() + " Exception!",e);
 							}
 						}
 					}

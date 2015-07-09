@@ -741,7 +741,7 @@ public class MultiLauncher extends Item implements Runnable {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 					// Update the status
 					launchStatus = job.getStatus();
@@ -797,7 +797,7 @@ public class MultiLauncher extends Item implements Runnable {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		// Add the output if the status does not indicate an error

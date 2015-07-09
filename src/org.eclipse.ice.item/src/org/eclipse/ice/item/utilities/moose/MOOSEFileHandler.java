@@ -167,7 +167,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			} catch (IOException e) {
 				logger.info("MOOSEFileHandler Exception: "
 						+ "Unable to write output file.");
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -224,7 +224,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			// Complain if the file is not found
 			System.err.println("MOOSEFileHandler Message: "
 					+ "Unable to load GetPot file!");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Check the string before proceeding
@@ -395,7 +395,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			input.close();
 		} catch (IOException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Put all the names of top-level nodes into a list (we use this later)
@@ -475,7 +475,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		try {
 			hardPathsList = loadActionSyntax(syntaxFilePath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Begin looking through the TreeComposites for matches to the list of
@@ -728,7 +728,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			throw new OperationNotSupportedException("MOOSEFileHandler Error: "
 					+ "IWriter.replace() is not supported.");
 		} catch (OperationNotSupportedException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;
@@ -830,7 +830,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				}
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return null;
 			}
 		}

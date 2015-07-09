@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jordan Deyton
  *******************************************************************************/
 package org.eclipse.ice.viz.service.preferences;
@@ -23,25 +23,33 @@ import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.prefs.BackingStoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides a customized {@link ScopedPreferenceStore} that gives
  * client code following options:
- * 
+ *
  * <ul>
  * <li>Can add and remove child {@link IEclipsePreferences} nodes to the store.</li>
  * <li>Can remove keyed values from the store.</li>
  * <li>Can add and remove values for secure storage.</li>
  * </ul>
- * 
+ *
  * Changes to the store using any of the aforementioned features are not
  * persisted until {@link #save()} is called by the JFace preference page
  * platform.
- * 
+ *
  * @author Jordan Deyton
  *
  */
 public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(CustomScopedPreferenceStore.class);
 
 	/**
 	 * The scoped context to which preferences are stored, usually
@@ -85,7 +93,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	/**
 	 * A convenient constructor for getting a default
 	 * {@code CustomScopedPreferenceStore} for a class' bundle.
-	 * 
+	 *
 	 * @param clazz
 	 *            The target class.
 	 */
@@ -96,7 +104,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 	/**
 	 * The default constructor.
-	 * 
+	 *
 	 * @param context
 	 *            The scope to store to, e.g., {@link InstanceScope#INSTANCE}.
 	 * @param qualifier
@@ -114,7 +122,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 	/**
 	 * Gets the associated preference node from the {@link #context}.
-	 * 
+	 *
 	 * @return The primary preference node.
 	 */
 	private IEclipsePreferences getPreferenceNode() {
@@ -124,7 +132,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	/**
 	 * Gets the associated default preference node from the
 	 * {@link #defaultContext}.
-	 * 
+	 *
 	 * @return The preference node for default values.
 	 */
 	private IEclipsePreferences getDefaultPreferenceNode() {
@@ -134,7 +142,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	/**
 	 * Gets the associated secure preference node from the
 	 * {@link SecurePreferencesFactory}.
-	 * 
+	 *
 	 * @return The preference node for secure values.
 	 */
 	private ISecurePreferences getSecurePreferenceNode() {
@@ -145,7 +153,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	/**
 	 * Determines whether or not the preference node with the specified relative
 	 * path exists underneath this store's associated preference node.
-	 * 
+	 *
 	 * @param path
 	 *            The relative path. A relative path must not start with "/"
 	 *            (meaning it is an absolute path) and must not be an empty
@@ -169,7 +177,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 	/**
 	 * Determines whether or not a child node exists in the preference store.
-	 * 
+	 *
 	 * @param validPath
 	 *            A path validated by {@link #validatePath(String)}.
 	 * @return True if the node existed, false otherwise.
@@ -179,7 +187,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 		try {
 			exists = getPreferenceNode().nodeExists(validPath);
 		} catch (BackingStoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 		return exists;
 	}
@@ -187,7 +195,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	/**
 	 * Validates the path, returning the valid version of the path, or null if
 	 * the path is invalid.
-	 * 
+	 *
 	 * @param path
 	 *            The path to validate.
 	 * @return The trimmed, validated path, or null if the path is invalid.
@@ -208,7 +216,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	/**
 	 * Gets the child preferences node from the specified relative path. If such
 	 * a node did not exist previously, it will be created.
-	 * 
+	 *
 	 * @param path
 	 *            The relative path. A relative path must not start with "/"
 	 *            (meaning it is an absolute path) and must not be an empty
@@ -241,7 +249,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	 * {@link IEclipsePreferences#removeNode()}, as the parent node needs to be
 	 * flushed afterward.
 	 * </p>
-	 * 
+	 *
 	 * @param path
 	 *            The relative path. A relative path must not start with "/"
 	 *            (meaning it is an absolute path) and must not be an empty
@@ -262,7 +270,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 				removed = true;
 				dirty = true;
 			} catch (BackingStoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -271,7 +279,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 	/**
 	 * Removes the specified value (including its defaults) from the store.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the value to remove.
 	 */
@@ -283,7 +291,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.preferences.ScopedPreferenceStore#needsSaving()
 	 */
 	@Override
@@ -293,7 +301,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.preferences.ScopedPreferenceStore#save()
 	 */
 	@Override
@@ -330,7 +338,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	 * the property name is the name of the preference, and the old and new
 	 * values are wrapped as objects.
 	 * </p>
-	 * 
+	 *
 	 * @param name
 	 *            The name of the preference.
 	 * @param value
@@ -344,7 +352,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 				node.put(name, value, true);
 				dirty = true;
 			} catch (StorageException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -371,7 +379,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 			try {
 				value = node.get(name, STRING_DEFAULT_DEFAULT);
 			} catch (StorageException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return value;
@@ -379,7 +387,7 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 
 	/**
 	 * Removes the specified, <i>securely stored</i> value from the store.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the value to remove.
 	 */

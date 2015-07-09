@@ -42,7 +42,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  * This class is a FormPage that creates a page with an embedded Form for
  * manipulating an EMFComponent.
  * </p>
- * 
+ *
  * @author Alex McCaskey
  */
 public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
@@ -54,7 +54,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 * <p>
 	 * Reference to the EMFComponent being visualized.
 	 * </p>
-	 * 
+	 *
 	 */
 	private EMFComponent emfComponent;
 
@@ -63,7 +63,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 * Reference to the TreeViewer that shows the overall EMF Ecore model tree
 	 * structure.
 	 * </p>
-	 * 
+	 *
 	 */
 	private EMFTreeCompositeViewer emfTreeView;
 
@@ -72,7 +72,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 * Reference to the parent Composite that all TreeComposite DataComponent
 	 * nodes will be showed on.
 	 * </p>
-	 * 
+	 *
 	 */
 	private Composite parent;
 
@@ -81,7 +81,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 * Reference to the DataComponentComposite used for displaying the
 	 * DataComponents from the EMFTreeComposite.
 	 * </p>
-	 * 
+	 *
 	 */
 	private DataComponentComposite dataComposite;
 
@@ -105,7 +105,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * 
+	 *
 	 * @param editor
 	 *            <p>
 	 *            The FormEditor for which the Page should be constructed.
@@ -129,7 +129,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 * <p>
 	 * Set the EMFComponent that this EMFSectionPage should display.
 	 * </p>
-	 * 
+	 *
 	 */
 	public void setEMFComponent(EMFComponent emf) {
 		emfComponent = emf;
@@ -140,7 +140,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 * This operation overrides the default/abstract implementation of
 	 * FormPage.createFormContents to create the contents of the EMFSectionPage.
 	 * </p>
-	 * 
+	 *
 	 * @param managedForm
 	 *            <p>
 	 *            The Form widget on which the ICEMasterDetailsPage exists.
@@ -189,8 +189,8 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 		try {
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(EMFTreeCompositeViewer.ID);
-		} catch (PartInitException e1) {
-			e1.printStackTrace();
+		} catch (PartInitException e) {
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Get a reference to the EMFTreeView ViewPart from the Workbench
@@ -229,7 +229,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 			// Complain
 			logger.info("EclipseStreamingTextWidget Message: Unable to "
 					+ "stream text!");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 	}
 
@@ -238,7 +238,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 * This operation retrieves the EMFComponent that is currently managed by
 	 * the EMFSectionPage.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The EMFComponent or null if the component has not yet been set in
 	 *         the page.
@@ -270,7 +270,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 //					DataComponent dataComp = emfComponent
 //							.getDataFromTreeNode((TreeComposite) data);
 //
-//					// Make sure its not null, the DataComponentComposite is not null, 
+//					// Make sure its not null, the DataComponentComposite is not null,
 //					// and that we don't have the same DataComponent.
 //					if (dataComp != null
 //							&& dataComposite != null

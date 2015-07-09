@@ -512,7 +512,7 @@ public class ICEResourceView extends PlayableViewPart implements
 			try {
 				resourcePage.showResource(selectedResource);
 			} catch (PartInitException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 

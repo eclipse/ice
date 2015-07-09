@@ -19,22 +19,32 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.object.FileFormat;
 import ncsa.hdf.object.h5.H5File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * <p>
  * The HDFFileFactory class contains static methods used to create, open, and
  * close HDF5 files.
  * </p>
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public class HdfFileFactory {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(HdfFileFactory.class);
+
 	/**
 	 * <p>
 	 * Creates, opens, and returns an H5File from the provided uri. If the uri
 	 * is null, the null is returned. If the FID of resulting h5File is -1, then
 	 * null is returned. If any Exception is thrown, then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param uri
 	 *            <p>
 	 *            The URI of the H5File to create and open.
@@ -84,7 +94,7 @@ public class HdfFileFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfFileFactory Exception!", e);
 
 			// Return null
 			return null;
@@ -97,7 +107,7 @@ public class HdfFileFactory {
 	 * <p>
 	 * Closes an h5File.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            The H5File to close.
@@ -118,7 +128,7 @@ public class HdfFileFactory {
 		} catch (HDF5Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfFileFactory Exception!", e);
 		}
 
 	}
@@ -130,7 +140,7 @@ public class HdfFileFactory {
 	 * returned. If the resulting h5File is null or does not exist, then null is
 	 * returned. If any Exception is thrown, then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param uri
 	 *            <p>
 	 *            The URI of the H5File to open.
@@ -180,7 +190,7 @@ public class HdfFileFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfFileFactory Exception!", e);
 
 			// Return null
 			return null;

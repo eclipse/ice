@@ -337,10 +337,10 @@ public class GodfreyStrategy extends CompositeStrategy {
 					fileContents.add(line);
 				}
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return false;
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return false;
 			}
 		}
@@ -356,7 +356,7 @@ public class GodfreyStrategy extends CompositeStrategy {
 			file.create(new ByteArrayInputStream(contents.getBytes()), false,
 					null);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return false;
 		}
 

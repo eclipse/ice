@@ -792,7 +792,7 @@ public class EmbeddedView implements SceneProcessor {
 			try {
 				ImageIO.write(image, "png", screenshotFile);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 			// Unset the screenshot file reference now that we have taken the
