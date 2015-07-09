@@ -12,13 +12,17 @@
 package org.eclipse.ice.viz.service.connections.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.PortEntryContentProvider;
 import org.junit.Test;
 
@@ -520,6 +524,120 @@ public class PortEntryContentProviderTester {
 		contentProvider.setAllowedValueType(nullType);
 		assertEquals(AllowedValueType.Continuous,
 				contentProvider.getAllowedValueType());
+
+		return;
+	}
+
+	/**
+	 * Checks the equals and hash code methods for an object, an equivalent
+	 * object, an unequal object, and invalid arguments.
+	 */
+	@Test
+	public void checkEquals() {
+
+		PortEntryContentProvider object;
+		Object equalObject;
+		Object unequalObject;
+		BasicEntryContentProvider superObject;
+
+		// Set up the object under test.
+		object = new PortEntryContentProvider();
+		object.setName("Plo Koon");
+		object.setRange(60000, 60010);
+
+		// Set up the equivalent object.
+		equalObject = new PortEntryContentProvider();
+		((PortEntryContentProvider) equalObject).setName("Plo Koon");
+		((PortEntryContentProvider) equalObject).setRange(60000, 60010);
+
+		// Set up the different object.
+		unequalObject = new PortEntryContentProvider();
+		((PortEntryContentProvider) unequalObject).setName("Plo Koon");
+		((PortEntryContentProvider) unequalObject).setRange(59999, 60010); // Different!
+
+		// Set up the super object.
+		superObject = new BasicEntryContentProvider();
+		superObject.copy(object);
+
+		// Check for equivalence (reflective case).
+		assertTrue(object.equals(object));
+		assertEquals(object.hashCode(), object.hashCode());
+
+		// Check that the object and its equivalent object are, in fact, equal,
+		// and that their hash codes match.
+		assertNotSame(object, equalObject);
+		assertTrue(object.equals(equalObject));
+		assertTrue(equalObject.equals(object));
+		assertTrue(object.hashCode() == equalObject.hashCode());
+
+		// Check that the object and the different object are not equal and that
+		// their hash codes are different.
+		assertNotSame(object, unequalObject);
+		assertFalse(object.equals(unequalObject));
+		assertFalse(unequalObject.equals(object));
+		assertFalse(object.hashCode() == unequalObject.hashCode());
+		// Verify with the equivalent object as well.
+		assertFalse(equalObject.equals(unequalObject));
+		assertFalse(unequalObject.equals(equalObject));
+		assertFalse(equalObject.hashCode() == unequalObject.hashCode());
+
+		// Test invalid arguments.
+		assertFalse(object.equals(null));
+		assertFalse(object.equals("Kuze"));
+
+		// Test against a super-class object that is technically equivalent.
+		// While the super class may think it is equivalent, the same should not
+		// be true in the reverse direction.
+		assertNotSame(object, superObject);
+		assertTrue(superObject.equals(object));
+		assertFalse(object.equals(superObject));
+		// Their hash codes should also be different.
+		assertFalse(object.hashCode() == superObject.hashCode());
+
+		return;
+	}
+
+	/**
+	 * Checks the copy and clone methods.
+	 */
+	@Test
+	public void checkCopy() {
+
+		PortEntryContentProvider object;
+		PortEntryContentProvider copy;
+		Object clone;
+
+		final PortEntryContentProvider nullObject = null;
+
+		// Create the initial object that will be copied and cloned later.
+		object = new PortEntryContentProvider();
+		object.setRange(737, 747);
+		object.setName("Dengar");
+
+		// Copying it should yield an equivalent object.
+		copy = new PortEntryContentProvider(object);
+		// After copying, check that they're unique references but equal.
+		copy.copy(object);
+		assertNotSame(object, copy);
+		assertEquals(object, copy);
+		assertEquals(copy, object);
+
+		// Cloning it should yield an equivalent object of the correct type.
+		clone = object.clone();
+		// Check that it's a non-null object of the correct type.
+		assertNotNull(clone);
+		assertTrue(clone instanceof PortEntryContentProvider);
+		// Check that they're unique references but equal.
+		assertNotSame(object, clone);
+		assertEquals(object, clone);
+		assertEquals(clone, object);
+
+		// Check invalid arguments to the copy constructor.
+		try {
+			copy = new PortEntryContentProvider(nullObject);
+		} catch (NullPointerException e) {
+			// Exception thrown as expected. Nothing to do.
+		}
 
 		return;
 	}

@@ -56,42 +56,115 @@ public class SecretEntryTester {
 	}
 
 	/**
+	 * Checks the equals and hash code methods for an object, an equivalent
+	 * object, an unequal object, and invalid arguments.
+	 */
+	@Test
+	public void checkEquals() {
+
+		SecretEntry object;
+		Object equalObject;
+		Object unequalObject;
+		Entry superObject;
+
+		// Set up the object under test.
+		object = new SecretEntry();
+		object.setName("Boba");
+
+		// Set up the equivalent object.
+		equalObject = new SecretEntry();
+		((SecretEntry) equalObject).setName("Boba");
+
+		// Set up the different object.
+		unequalObject = new SecretEntry();
+		((SecretEntry) unequalObject).setName("Jango"); // Different!
+
+		// Set up the super object.
+		superObject = new Entry();
+		superObject.copy(object);
+
+		// Check for equivalence (reflective case).
+		assertTrue(object.equals(object));
+		assertEquals(object.hashCode(), object.hashCode());
+
+		// Check that the object and its equivalent object are, in fact, equal,
+		// and that their hash codes match.
+		assertNotSame(object, equalObject);
+		assertTrue(object.equals(equalObject));
+		assertTrue(equalObject.equals(object));
+		assertTrue(object.hashCode() == equalObject.hashCode());
+
+		// Check that the object and the different object are not equal and that
+		// their hash codes are different.
+		assertNotSame(object, unequalObject);
+		assertFalse(object.equals(unequalObject));
+		assertFalse(unequalObject.equals(object));
+		assertFalse(object.hashCode() == unequalObject.hashCode());
+		// Verify with the equivalent object as well.
+		assertFalse(equalObject.equals(unequalObject));
+		assertFalse(unequalObject.equals(equalObject));
+		assertFalse(equalObject.hashCode() == unequalObject.hashCode());
+
+		// Test invalid arguments.
+		assertFalse(object.equals(null));
+		assertFalse(object.equals("Bossk"));
+
+		// Test against a super-class object that is technically equivalent.
+		// While the super class may think it is equivalent, the same should not
+		// be true in the reverse direction.
+		assertNotSame(object, superObject);
+		assertTrue(superObject.equals(object));
+		assertFalse(object.equals(superObject));
+		// Their hash codes should also be different.
+		assertFalse(object.hashCode() == superObject.hashCode());
+
+		return;
+	}
+
+	/**
 	 * Checks that the secret flag is properly set when copying.
 	 */
 	@Test
 	public void checkCopy() {
-		SecretEntry entry;
+
+		SecretEntry object;
 		SecretEntry copy;
 		Object clone;
 
-		// Create the initial Entry that will be copied and cloned later.
-		entry = new SecretEntry();
-		entry.setName("Adam Gibson");
-		entry.setDescription("There's someone in my house, "
+		final SecretEntry nullObject = null;
+
+		// Create the initial object that will be copied and cloned later.
+		object = new SecretEntry();
+		object.setName("Adam Gibson");
+		object.setDescription("There's someone in my house, "
 				+ "eating my birthday cake, with my family, and it's not me!");
 		// Double-check that its secret flag is set.
-		assertTrue(entry.isSecret());
+		assertTrue(object.isSecret());
 
-		// Copying it should yield an equivalent SecretEntry.
-		copy = new SecretEntry();
-		assertFalse(entry.equals(copy));
+		// Copying it should yield an equivalent object.
+		copy = new SecretEntry(object);
 		// After copying, check that they're unique references but equal.
-		copy.copy(entry);
-		assertNotSame(entry, copy);
-		assertEquals(entry, copy);
-		assertEquals(copy, entry);
+		copy.copy(object);
+		assertNotSame(object, copy);
+		assertEquals(object, copy);
+		assertEquals(copy, object);
 
-		// Cloning it should yield an equivalent *SecretEntry*.
-		clone = entry.clone();
-		// Check that it's a non-null SecretEntry.
+		// Cloning it should yield an equivalent object of the correct type.
+		clone = object.clone();
+		// Check that it's a non-null object of the correct type.
 		assertNotNull(clone);
 		assertTrue(clone instanceof SecretEntry);
-		// Check that the clone's secret flag is set.
-		assertTrue(((Entry) clone).isSecret());
 		// Check that they're unique references but equal.
-		assertNotSame(entry, clone);
-		assertEquals(entry, clone);
-		assertEquals(clone, entry);
+		assertNotSame(object, clone);
+		assertEquals(object, clone);
+		assertEquals(clone, object);
+
+		// Check invalid arguments to the copy constructor.
+		try {
+			copy = new SecretEntry(nullObject);
+		} catch (NullPointerException e) {
+			// Exception thrown as expected. Nothing to do.
+		}
 
 		return;
 	}

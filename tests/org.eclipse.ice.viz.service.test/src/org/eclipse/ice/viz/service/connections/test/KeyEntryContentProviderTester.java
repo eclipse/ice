@@ -14,6 +14,7 @@ package org.eclipse.ice.viz.service.connections.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.IKeyManager;
 import org.eclipse.ice.viz.service.connections.KeyEntryContentProvider;
 import org.junit.Test;
@@ -121,16 +123,9 @@ public class KeyEntryContentProviderTester {
 		assertNotNull(allowedValues);
 		assertEquals(0, allowedValues.size());
 
-		// Try getting the default value. Since this pulls from the key
-		// manager's next available key, and there are no more keys left, it
-		// should throw an IllegalStateException.
-		try {
-			contentProvider.getDefaultValue();
-			fail("An IllegalStateException (stating that no keys are left) "
-					+ "should have been thrown.");
-		} catch (IllegalStateException e) {
-			// Passed. Do nothing.
-		}
+		// Since there is no key available, the content provider's default value
+		// should be the empty string.
+		assertEquals("", contentProvider.getDefaultValue());
 		// -------------------------------------------------------- //
 
 		// Try invalid arguments.
@@ -225,13 +220,9 @@ public class KeyEntryContentProviderTester {
 		// Take all of the keys. An exception should be thrown the next time.
 		discreteKeys.takeKeys("Motoko", "Batou", "Togusa", "Ishikawa", "Saito",
 				"Paz", "Borma");
-		try {
-			contentProvider.getDefaultValue();
-			fail("An IllegalStateException (stating that no keys are left) "
-					+ "should have been thrown.");
-		} catch (IllegalStateException e) {
-			// Passed. Do nothing.
-		}
+		// Since there are no keys left, the content provider's default value is
+		// the empty string.
+		assertEquals("", contentProvider.getDefaultValue());
 		// -------------------------------------------------------------- //
 
 		// Release all of the keys, then try setting a null default value.
@@ -448,6 +439,209 @@ public class KeyEntryContentProviderTester {
 		// The value type should not change.
 		assertEquals(AllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
+
+		return;
+	}
+
+	/**
+	 * Checks that the {@link KeyEntryContentProvider#keyAvailable(String)}
+	 * method works in sync with the associated key manager.
+	 */
+	@Test
+	public void checkKeyAvailable() {
+
+		KeyEntryContentProvider contentProvider;
+
+		SimpleCountKeyManager intKeys;
+		SimpleDiscreteKeyManager discreteKeys;
+
+		String key;
+
+		// ---- Try setting it up with an UNDEFINED key manager. ---- //
+		// An "undefined" key manager means there is no limit on the number of
+		// keys, nor is there a pre-defined list of available keys.
+
+		// Set up the content provider with a simple *undefined* IKeyManager.
+		intKeys = new SimpleCountKeyManager();
+		contentProvider = new KeyEntryContentProvider(intKeys);
+
+		// The default key should be available in both cases.
+		key = intKeys.getNextKey();
+		assertTrue(contentProvider.keyAvailable(key));
+		assertEquals(intKeys.keyAvailable(key),
+				contentProvider.keyAvailable(key));
+
+		// Taking the previous key should mean it is no longer available.
+		intKeys.takeKey();
+		assertFalse(contentProvider.keyAvailable(key));
+		assertEquals(intKeys.keyAvailable(key),
+				contentProvider.keyAvailable(key));
+
+		// Another valid key should return true for both.
+		key = "1";
+		assertTrue(contentProvider.keyAvailable(key));
+		assertEquals(intKeys.keyAvailable(key),
+				contentProvider.keyAvailable(key));
+
+		// An invalid key should return false for both.
+		key = null;
+		assertFalse(contentProvider.keyAvailable(key));
+		assertEquals(intKeys.keyAvailable(key),
+				contentProvider.keyAvailable(key));
+		// ---------------------------------------------------------- //
+
+		// ---- Try setting it up with a DISCRETE key manager. ---- //
+		// A "discrete" key manager means it has a pre-defined list of allowed
+		// keys.
+
+		// Set up the content provider with a simple *discrete* IKeyManager.
+		discreteKeys = new SimpleDiscreteKeyManager("Motoko", "Batou",
+				"Togusa", "Ishikawa", "Saito", "Paz", "Borma");
+		contentProvider = new KeyEntryContentProvider(discreteKeys);
+
+		// The default key should be available in both cases.
+		key = discreteKeys.getNextKey();
+		assertTrue(contentProvider.keyAvailable(key));
+		assertEquals(discreteKeys.keyAvailable(key),
+				contentProvider.keyAvailable(key));
+
+		// Taking the previous key should mean it is no longer available.
+		discreteKeys.takeKeys(key);
+		assertFalse(contentProvider.keyAvailable(key));
+		assertEquals(discreteKeys.keyAvailable(key),
+				contentProvider.keyAvailable(key));
+
+		// Another valid key should return true for both.
+		key = (key.equals("Saito") ? "Paz" : "Saito");
+		assertTrue(contentProvider.keyAvailable(key));
+		assertEquals(discreteKeys.keyAvailable(key),
+				contentProvider.keyAvailable(key));
+
+		// An invalid key should return false for both.
+		key = "Laughing Man";
+		assertFalse(contentProvider.keyAvailable(key));
+		assertEquals(discreteKeys.keyAvailable(key),
+				contentProvider.keyAvailable(key));
+		// -------------------------------------------------------- //
+
+		return;
+	}
+
+	/**
+	 * Checks the equals and hash code methods for an object, an equivalent
+	 * object, an unequal object, and invalid arguments.
+	 */
+	@Test
+	public void checkEquals() {
+
+		KeyEntryContentProvider object;
+		Object equalObject;
+		Object unequalObject;
+		BasicEntryContentProvider superObject;
+
+		SimpleCountKeyManager keyManager = new SimpleCountKeyManager();
+		keyManager.takeKey();
+
+		SimpleCountKeyManager keyManagerDifferent = new SimpleCountKeyManager();
+		keyManagerDifferent.takeKey();
+		keyManagerDifferent.takeKey(); // Different!
+
+		// Set up the object under test.
+		object = new KeyEntryContentProvider(keyManager);
+		object.setName("Individual Eleven");
+
+		// Set up the equivalent object.
+		equalObject = new KeyEntryContentProvider(keyManager);
+		((KeyEntryContentProvider) equalObject).setName("Individual Eleven");
+
+		// Set up the different object.
+		unequalObject = new KeyEntryContentProvider(keyManagerDifferent);
+		((KeyEntryContentProvider) unequalObject).setName("Individual Eleven");
+
+		// Set up the "equivalent" super class object.
+		superObject = new BasicEntryContentProvider();
+		superObject.copy(object);
+
+		// Check for equivalence (reflective case).
+		assertTrue(object.equals(object));
+		assertEquals(object.hashCode(), object.hashCode());
+
+		// Check that the object and its equivalent object are, in fact, equal,
+		// and that their hash codes match.
+		assertNotSame(object, equalObject);
+		assertTrue(object.equals(equalObject));
+		assertTrue(equalObject.equals(object));
+		assertTrue(object.hashCode() == equalObject.hashCode());
+
+		// Check that the object and the different object are not equal and that
+		// their hash codes are different.
+		assertNotSame(object, unequalObject);
+		assertFalse(object.equals(unequalObject));
+		assertFalse(unequalObject.equals(object));
+		assertFalse(object.hashCode() == unequalObject.hashCode());
+		// Verify with the equivalent object as well.
+		assertFalse(equalObject.equals(unequalObject));
+		assertFalse(unequalObject.equals(equalObject));
+		assertFalse(equalObject.hashCode() == unequalObject.hashCode());
+
+		// Test invalid arguments.
+		assertFalse(object.equals(null));
+		assertFalse(object.equals("Kuze"));
+
+		// Test against a super-class object that is technically equivalent.
+		// While the super class may think it is equivalent, the same should not
+		// be true in the reverse direction.
+		assertNotSame(object, superObject);
+		assertTrue(superObject.equals(object));
+		assertFalse(object.equals(superObject));
+		// Their hash codes should also be different.
+		assertFalse(object.hashCode() == superObject.hashCode());
+
+		return;
+	}
+
+	/**
+	 * Checks the copy and clone methods.
+	 */
+	@Test
+	public void checkCopy() {
+
+		KeyEntryContentProvider object;
+		KeyEntryContentProvider copy;
+		Object clone;
+
+		final KeyEntryContentProvider nullObject = null;
+
+		SimpleCountKeyManager intKeys = new SimpleCountKeyManager();
+
+		// Create the initial object that will be copied and cloned later.
+		object = new KeyEntryContentProvider(intKeys);
+		object.setName("Puppetmaster");
+
+		// Copying it should yield an equivalent object.
+		copy = new KeyEntryContentProvider(object);
+		// After copying, check that they're unique references but equal.
+		copy.copy(object);
+		assertNotSame(object, copy);
+		assertEquals(object, copy);
+		assertEquals(copy, object);
+
+		// Cloning it should yield an equivalent object of the correct type.
+		clone = object.clone();
+		// Check that it's a non-null object of the correct type.
+		assertNotNull(clone);
+		assertTrue(clone instanceof KeyEntryContentProvider);
+		// Check that they're unique references but equal.
+		assertNotSame(object, clone);
+		assertEquals(object, clone);
+		assertEquals(clone, object);
+
+		// Check invalid arguments to the copy constructor.
+		try {
+			copy = new KeyEntryContentProvider(nullObject);
+		} catch (NullPointerException e) {
+			// Exception thrown as expected. Nothing to do.
+		}
 
 		return;
 	}

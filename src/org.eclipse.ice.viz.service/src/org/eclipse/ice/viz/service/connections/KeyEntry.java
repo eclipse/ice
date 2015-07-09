@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.connections;
 
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 
 /**
  * A {@code KeyEntry} is essentially a basic {@link Entry} with a single caveat:
@@ -29,15 +30,16 @@ import org.eclipse.ice.datastructures.form.Entry;
 public class KeyEntry extends Entry {
 
 	/**
-	 * The manager for the keys stored in this and other {@code KeyEntry}s.
+	 * The content provider for this {@code Entry}. It must be hooked up to an
+	 * {@link IKeyManager}.
 	 */
-	private final IKeyManager keyManager;
+	private KeyEntryContentProvider contentProvider;
 
 	/**
 	 * An error message for invalid keys in the case where there is no set list
 	 * of allowed keys.
 	 */
-	protected static final String undefinedErrMsg = "'${incorrectValue}' is an unacceptable value. It must be a unique string.";
+	private static final String undefinedErrMsg = "'${incorrectValue}' is an unacceptable value. It must be a unique string.";
 
 	/**
 	 * The default constructor.
@@ -47,20 +49,23 @@ public class KeyEntry extends Entry {
 	 * @param manager
 	 *            The manager for the keys stored in this and other
 	 *            {@code KeyEntry}s.
+	 * @throws NullPointerException
+	 *             An NPE is thrown if the provided content provider is null, as
+	 *             a valid {@code KeyEntryContentProvider} is required.
 	 */
-	public KeyEntry(KeyEntryContentProvider contentProvider, IKeyManager manager) {
+	public KeyEntry(KeyEntryContentProvider contentProvider)
+			throws NullPointerException {
 		super(contentProvider);
 
-		// Store a reference to the KeyManager if applicable. Otherwise, we
-		// should throw an exception as the KeyManager is required.
-		if (manager != null) {
-			keyManager = manager;
+		// Store a reference to the content provider if applicable. Otherwise,
+		// we should throw an exception as the KeyManager is required.
+		this.contentProvider = contentProvider;
 
-			// Set the initial value of the Entry.
-			setValue(keyManager.getNextKey());
-		} else {
+		// Throw an NPE if the content provider is null. A KeyEntry requires a
+		// valid content provider!
+		if (contentProvider == null) {
 			throw new NullPointerException("KeyEntry error: "
-					+ "Null KeyManager passed to constructor.");
+					+ "Content provider cannot be null.");
 		}
 
 		return;
@@ -68,35 +73,61 @@ public class KeyEntry extends Entry {
 
 	/**
 	 * The copy constructor. When used, both {@code KeyEntry}s will use the
-	 * exact same {@link #keyManager}.
-	 * <p>
-	 * <b>Note:</b> This method should not be used. It is implemented so that a
-	 * template {@code KeyEntry} can be copied when used in
-	 * {@code ConnectionManager} {@code TableComponent}s.
-	 * </p>
+	 * exact same {@link #keyManager} (but valid or unique keys).
 	 * 
-	 * @param otherEntry
+	 * @param entry
 	 *            The other {@code KeyEntry} to copy.
+	 * @throws NullPointerException
+	 *             An NPE is thrown if the provided entry to copy is null, as a
+	 *             valid {@code KeyEntryContentProvider} cannot be acquired from
+	 *             a null entry.
 	 */
-	private KeyEntry(KeyEntry otherEntry) {
-		// Perform the typical Entry copy method.
-		super.copy(otherEntry);
+	public KeyEntry(KeyEntry entry) throws NullPointerException {
+		// If the specified entry is not null, we can copy it.
+		if (entry != null) {
+			// Copy the super class' variables.
+			super.copy(entry);
 
-		// Copy the KeyEntry-specific features.
-		if (otherEntry != null) {
-			keyManager = otherEntry.keyManager;
-
-			// Set the initial value of the Entry.
-			setValue(keyManager.getNextKey());
-
-			// Share the custom content provider!
-			iEntryContentProvider = otherEntry.iEntryContentProvider;
-		} else {
-			// We should throw an exception.
-			throw new NullPointerException("KeyEntry error: "
-					+ "Null copy constructor argument.");
+			// Copy this class' variables.
+			// The super class clones the content provider, so we just need to
+			// set the cast reference to it.
+			contentProvider = (KeyEntryContentProvider) iEntryContentProvider;
 		}
+		// Otherwise, we must throw an exception as this will be in an invalid
+		// state (no KeyEntryContentProvider).
+		else {
+			throw new NullPointerException("KeyEntry error: "
+					+ "Cannot copy null KeyEntry.");
+		}
+		return;
+	}
 
+	/**
+	 * Overrides the parent method to enforce the rule that content providers
+	 * *must* be {@link KeyEntryContentProvider}s.
+	 */
+	@Override
+	public void setContentProvider(IEntryContentProvider contentProvider) {
+		if (contentProvider instanceof KeyEntryContentProvider) {
+			setContentProvider((KeyEntryContentProvider) contentProvider);
+		}
+	}
+
+	/**
+	 * Sets the content provider. Resets the value to the default.
+	 * 
+	 * @param contentProvider
+	 *            The new {@code KeyEntryContentProvider}. If null, nothing is
+	 *            done.
+	 */
+	public void setContentProvider(KeyEntryContentProvider contentProvider) {
+		// Update the references to the KeyEntryContentProvider (including the
+		// super class) and reset the value to default.
+		if (contentProvider != null) {
+			this.contentProvider = contentProvider;
+			super.setContentProvider(contentProvider);
+			value = null;
+		}
 		return;
 	}
 
@@ -110,54 +141,94 @@ public class KeyEntry extends Entry {
 	public boolean setValue(String newValue) {
 		boolean returnCode = false;
 
-		AllowedValueType valueType = iEntryContentProvider
-				.getAllowedValueType();
+		AllowedValueType valueType = contentProvider.getAllowedValueType();
 
-		// Update the key value if we can.
-		if (keyManager.keyAvailable(newValue)) {
-			value = newValue;
+		// If the new value is the same, do nothing.
+		if (value == newValue || (value != null && value.equals(newValue))) {
 			returnCode = true;
 
-			changeState = true;
+			changeState = false;
 			errorMessage = null;
-			notifyListeners();
 		}
-		// Otherwise, handle the error message for a set of allowed keys.
-		else if (valueType == AllowedValueType.Discrete) {
-			String allowedValues = null;
-			for (String allowedValue : iEntryContentProvider.getAllowedValues()) {
-				if (allowedValues != null) {
-					allowedValues += ", " + allowedValue;
-				} else {
-					allowedValues = allowedValue;
-				}
-			}
+		// For an undefined set of keys, we need to check if the specified key
+		// is valid.
+		else if (valueType == AllowedValueType.Undefined) {
+			// If the new value is valid, change it.
+			if (contentProvider.keyAvailable(newValue)) {
+				value = newValue;
+				returnCode = true;
 
-			String error = discreteErrMsg;
-			error = error.replace("${incorrectValue}", newValue);
-			error = error.replace(" ${allowedValues}", allowedValues);
-			errorMessage = error;
+				changeState = true;
+				errorMessage = null;
+				notifyListeners();
+			}
+			// If the new value is invalid, set up the error message.
+			else {
+				String error = undefinedErrMsg;
+				changeState = false;
+				errorMessage = error.replace("${incorrectValue}",
+						newValue != null ? newValue : "null");
+			}
 		}
-		// Handle the case where there is no set list of keys.
-		else {
-			String error = undefinedErrMsg;
-			error = error.replace("${incorrectValue}", newValue);
+		// Otherwise, for a discrete set of keys, we can rely on the default
+		// behavior.
+		else { // AllowedValueType.Discrete
+			returnCode = super.setValue(newValue);
 		}
 
 		return returnCode;
 	}
 
-	/**
-	 * Overrides the default clone operation on {@code Entry}.
-	 * <p>
-	 * <b>Note:</b> This method should not be used. It is implemented so that a
-	 * template {@code KeyEntry} can be copied when used in
-	 * {@code ConnectionManager} {@code TableComponent}s.
-	 * </p>
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#clone()
 	 */
 	@Override
 	public Object clone() {
 		return new KeyEntry(this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		boolean equals = false;
+
+		// If the references match, we know it is equivalent.
+		if (object == this) {
+			equals = true;
+		}
+		// Otherwise, if the type of the object is correct, we need to perform a
+		// full equivalence check.
+		else if (object != null && object instanceof KeyEntry) {
+			// Check all of the super class variables.
+			equals = super.equals(object);
+
+			// Compare all class variables.
+			// Nothing to do (the content provider was already compared in the
+			// super method).
+		}
+
+		return equals;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		// Get the default hash code.
+		int hash = super.hashCode();
+
+		// Add class variable hash codes here:
+		hash += 31 * contentProvider.hashCode();
+
+		return hash;
+	}
 }

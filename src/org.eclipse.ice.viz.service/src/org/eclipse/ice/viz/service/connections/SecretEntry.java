@@ -23,9 +23,6 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
  */
 public class SecretEntry extends Entry {
 
-	// If we add any other properties, then we will need to override the clone
-	// operation and provide a copy constructor.
-
 	/**
 	 * A constructor that will create an {@code Entry} with only a unique ID and
 	 * a name. Default values are set:
@@ -58,6 +55,29 @@ public class SecretEntry extends Entry {
 		secretFlag = true;
 	}
 
+	/**
+	 * A copy constructor.
+	 * 
+	 * @param entry
+	 *            The entry whose data will be copied into this one.
+	 */
+	public SecretEntry(SecretEntry entry) {
+		// Use the default setup initially. This is reasonable since the default
+		// construction doesn't create any heavy-weight objects.
+		this();
+
+		// If the specified entry is not null, we can copy it.
+		if (entry != null) {
+			// Copy the super class' variables.
+			super.copy(entry);
+
+			// Copy this class' variables.
+			// Nothing to copy.
+		}
+		// Otherwise, the default settings have already been set.
+		return;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -65,12 +85,53 @@ public class SecretEntry extends Entry {
 	 */
 	@Override
 	public Object clone() {
-		// Create a new entry and copy the contents. Note that since we already
-		// set the secret flag to true in the constructor, we can rely on the
-		// default copy operation.
-		Entry entry = new SecretEntry();
-		entry.copy(this);
+		return new SecretEntry(this);
+	}
 
-		return entry;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		boolean equals = false;
+
+		// If the references match, we know it is equivalent.
+		if (object == this) {
+			equals = true;
+		}
+		// Otherwise, if the type of the object is correct, we need to perform a
+		// full equivalence check.
+		else if (object != null && object instanceof SecretEntry) {
+			// Check all of the super class variables.
+			equals = super.equals(object);
+
+			// Compare all class variables.
+			// Nothing to do.
+		}
+
+		return equals;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.form.Entry#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		// Get the default hash code.
+		int hash = super.hashCode();
+
+		// Add class variable hash codes here:
+		// Nothing to add. The secretness is stored as a flag in the base class.
+
+		// To avoid an equivalent hash code from a regular Entry copied from
+		// this one (which should not be the case), add a static value to the
+		// hash code.
+		hash += 31 * 1;
+
+		return hash;
 	}
 }

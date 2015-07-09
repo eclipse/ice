@@ -46,8 +46,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  * connection will route through the proxy to the host.</li>
  * <li><b>Proxy Port</b> - The port to which the client must connect to use the
  * proxy.</li>
- * <li><b>VisIt User</b> - The VisIt user name.</li>
- * <li><b>VisIt Password</b> - The VisIt session password.</li>
  * </ol>
  * 
  * @author Jordan Deyton
@@ -125,14 +123,13 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 		ArrayList<Entry> template = new ArrayList<Entry>();
 
 		// TODO These Entries need descriptions.
-		// TODO Add the password Entries.
 
 		IEntryContentProvider contentProvider;
 
 		// ---- name ---- //
 		KeyEntryContentProvider keyContentProvider = new KeyEntryContentProvider(
 				this);
-		Entry keyEntry = new KeyEntry(keyContentProvider, this);
+		Entry keyEntry = new Entry(keyContentProvider);
 		keyEntry.setName("Name");
 		template.add(keyEntry);
 		// ---- host ---- //

@@ -27,10 +27,12 @@ public interface IKeyChangeListener {
 	 * 
 	 * @param oldKey
 	 *            The previous value of the key. This is {@code null} if the key
-	 *            did not previously exist.
+	 *            did not previously exist. For "discrete" key managers, this
+	 *            key was available previously but has been taken.
 	 * @param newKey
 	 *            The new value of the key. This is {@code null} if the key no
-	 *            longer exists.
+	 *            longer exists. For "discrete" key managers, this key was taken
+	 *            previously but is now available.
 	 */
 	public void keyChanged(String oldKey, String newKey);
 

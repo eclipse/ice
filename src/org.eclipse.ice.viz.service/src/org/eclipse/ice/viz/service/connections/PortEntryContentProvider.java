@@ -62,6 +62,29 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 	}
 
 	/**
+	 * A copy constructor.
+	 * 
+	 * @param provider
+	 *            The other PortEntryContentProvider to copy.
+	 */
+	public PortEntryContentProvider(PortEntryContentProvider provider) {
+		// Use the default setup initially. This is reasonable since the default
+		// construction doesn't create any heavy-weight objects.
+		this();
+
+		// If the specified content provider is not null, we can copy it.
+		if (provider != null) {
+			// Copy the super class' variables.
+			super.copy(provider);
+
+			// Copy this class' variables.
+			// Nothing to copy.
+		}
+		// Otherwise, the default settings have already been set.
+		return;
+	}
+
+	/**
 	 * Does nothing. {@link PortEntry}s are strictly of the continuous type.
 	 */
 	@Override
@@ -162,5 +185,66 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 		}
 
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.form.BasicEntryContentProvider#clone()
+	 */
+	@Override
+	public Object clone() {
+		return new PortEntryContentProvider(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.ICEObject#equals(java.lang.Object
+	 * )
+	 */
+	@Override
+	public boolean equals(Object object) {
+		boolean equals = false;
+
+		// If the references match, we know it is equivalent.
+		if (object == this) {
+			equals = true;
+		}
+		// Otherwise, if the type of the object is correct, we need to perform a
+		// full equivalence check.
+		else if (object != null && object instanceof PortEntryContentProvider) {
+			// Check all of the super class variables.
+			equals = super.equals(object);
+
+			// Compare all class variables.
+			// Nothing to do.
+		}
+
+		return equals;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.form.BasicEntryContentProvider#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		// Get the default hash code.
+		int hash = super.hashCode();
+
+		// Add local variable hash codes here:
+		// Nothing to add. The port range is stored as allowed values.
+
+		// To avoid an equivalent hashcode from a regular content provider
+		// copied from this one (which should not be the case), add a static
+		// value to the hash code.
+		hash += 31 * 1;
+
+		return hash;
 	}
 }
