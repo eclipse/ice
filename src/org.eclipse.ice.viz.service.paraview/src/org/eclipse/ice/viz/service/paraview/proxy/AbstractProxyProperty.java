@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
 
 /**
  * This class provides a basic implementation of an {@link IProxyProperty}.

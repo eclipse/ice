@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnectionManager;
-import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionManager;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionManager;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.junit.Test;

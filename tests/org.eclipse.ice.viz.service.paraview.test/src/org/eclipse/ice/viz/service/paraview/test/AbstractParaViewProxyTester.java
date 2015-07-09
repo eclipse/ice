@@ -32,7 +32,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;

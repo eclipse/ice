@@ -7,7 +7,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.ice.viz.service.preferences"
-            class="org.eclipse.ice.viz.service.visit.VisItPreferencePage"
+            class="org.eclipse.ice.viz.service.visit.connections.preferences.VisItPreferencePage"
             id="org.eclipse.ice.viz.service.visit.preferences"
             name="VisIt">
       </page>
@@ -15,7 +15,7 @@
    <extension
    		point="org.eclipse.core.runtime.preferences">
    		<initializer 
-   			class="org.eclipse.ice.viz.service.visit.VisItPreferenceInitializer">
+   			class="org.eclipse.ice.viz.service.visit.preferences.VisItPreferenceInitializer">
    		</initializer>
    </extension>
 </plugin>

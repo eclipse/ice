@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jordan Deyton
  *******************************************************************************/
-package org.eclipse.ice.viz.service.paraview;
+package org.eclipse.ice.viz.service.paraview.connections.preferences;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,10 +17,11 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.viz.service.AbstractVizPreferencePage;
-import org.eclipse.ice.viz.service.connections.ConnectionTable;
+import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
+import org.eclipse.ice.viz.service.connections.preferences.TableComponentComposite;
+import org.eclipse.ice.viz.service.paraview.ParaViewVizService;
+import org.eclipse.ice.viz.service.preferences.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
-import org.eclipse.ice.viz.service.preferences.TableComponentComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,7 +36,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPreferencePage extends AbstractVizPreferencePage {
+public class ParaViewConnectionPreferencePage extends AbstractVizPreferencePage {
 
 	/**
 	 * The {@code ConnectionTable} used by this preference page. It is
@@ -46,7 +47,7 @@ public class ParaViewPreferencePage extends AbstractVizPreferencePage {
 	/**
 	 * The default constructor.
 	 */
-	public ParaViewPreferencePage() {
+	public ParaViewConnectionPreferencePage() {
 		super(GRID);
 	}
 

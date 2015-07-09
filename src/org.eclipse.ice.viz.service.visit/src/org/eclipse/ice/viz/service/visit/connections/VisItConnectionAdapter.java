@@ -9,7 +9,7 @@
  *   Jordan Deyton - Initial API and implementation and/or initial documentation 
  *   
  *******************************************************************************/
-package org.eclipse.ice.viz.service.connections.visit;
+package org.eclipse.ice.viz.service.visit.connections;
 
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtConnectionManager;

@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jordan Deyton
  *******************************************************************************/
-package org.eclipse.ice.viz.service.connections.visit;
+package org.eclipse.ice.viz.service.visit.connections.preferences;
 
 import java.util.ArrayList;
 
@@ -17,9 +17,9 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-import org.eclipse.ice.viz.service.connections.ConnectionTable;
-import org.eclipse.ice.viz.service.connections.PortEntry;
-import org.eclipse.ice.viz.service.connections.PortEntryContentProvider;
+import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
+import org.eclipse.ice.viz.service.connections.preferences.PortEntry;
+import org.eclipse.ice.viz.service.connections.preferences.PortEntryContentProvider;
 
 /**
  * This class extends {@link ConnectionTable} to provide additional connection

@@ -24,7 +24,7 @@ import java.util.TreeMap;
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
-import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
+import org.eclipse.ice.viz.service.visit.connections.VisItConnectionAdapter;
 import org.eclipse.swt.widgets.Composite;
 
 import visit.java.client.FileInfo;

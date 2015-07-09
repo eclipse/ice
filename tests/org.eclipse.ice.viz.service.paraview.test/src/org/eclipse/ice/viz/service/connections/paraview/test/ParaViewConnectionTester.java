@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.ice.viz.service.connections.VizConnection;
-import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnection;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.web.HttpParaViewWebClient;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.junit.Before;

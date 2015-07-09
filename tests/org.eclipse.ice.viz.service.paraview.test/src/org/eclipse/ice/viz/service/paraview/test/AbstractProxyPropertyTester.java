@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractProxyProperty;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;

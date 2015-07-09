@@ -9,18 +9,18 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jordan Deyton
  *******************************************************************************/
-package org.eclipse.ice.viz.service.visit;
+package org.eclipse.ice.viz.service.paraview.preferences;
 
-import org.eclipse.ice.viz.service.AbstractVizPreferenceInitializer;
+import org.eclipse.ice.viz.service.preferences.AbstractVizPreferenceInitializer;
 
 /**
- * This class initializes default preferences for the VisIt visualization
+ * This class initializes default preferences for the ParaView visualization
  * service.
  * 
  * @author Jordan Deyton
  *
  */
-public class VisItPreferenceInitializer extends
+public class ParaViewPreferenceInitializer extends
 		AbstractVizPreferenceInitializer {
 
 	/*
@@ -31,10 +31,12 @@ public class VisItPreferenceInitializer extends
 	 */
 	@Override
 	public void initializeDefaultPreferences() {
-		// Get the PreferenceStore used for the VisIt viz service preferences.
+		// // Get the PreferenceStore used for the ParaView viz service
+		// preferences.
 		// IPreferenceStore store = getPreferenceStore();
-
-		// Set all defaults.
+		//
+		// // Set all defaults.
+		// store.setDefault("preference_name", "preference_value_of_some_type");
 
 		return;
 	}

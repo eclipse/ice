@@ -7,7 +7,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.ice.viz.service.preferences"
-            class="org.eclipse.ice.viz.service.paraview.ParaViewPreferencePage"
+            class="org.eclipse.ice.viz.service.paraview.connections.preferences.ParaViewConnectionPreferencePage"
             id="org.eclipse.ice.viz.service.paraview.preferences"
             name="ParaView">
       </page>
@@ -15,7 +15,7 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.eclipse.ice.viz.service.paraview.ParaViewPreferenceInitializer">
+            class="org.eclipse.ice.viz.service.paraview.preferences.ParaViewPreferenceInitializer">
       </initializer>
    </extension>
 

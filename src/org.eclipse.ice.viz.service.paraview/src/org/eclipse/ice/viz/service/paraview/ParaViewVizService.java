@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionManager;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionManager;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;

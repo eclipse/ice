@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
 
 /**
  * A proxy serves as an intermediary between client code and a particular file

@@ -9,7 +9,7 @@
  *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
  *    
  *******************************************************************************/
-package org.eclipse.ice.viz.service.connections.paraview;
+package org.eclipse.ice.viz.service.paraview.connections;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;

@@ -9,7 +9,7 @@
  *   Jordan Deyton - Initial API and implementation and/or initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.viz.service.connections.paraview;
+package org.eclipse.ice.viz.service.paraview.connections;
 
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnectionManager;

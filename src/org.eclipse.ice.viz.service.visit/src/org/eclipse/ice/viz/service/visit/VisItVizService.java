@@ -20,11 +20,11 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
-import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
-import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
-import org.eclipse.ice.viz.service.connections.visit.VisItConnectionTable;
+import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+import org.eclipse.ice.viz.service.visit.connections.VisItConnectionAdapter;
+import org.eclipse.ice.viz.service.visit.connections.preferences.VisItConnectionTable;
 
 /**
  * This is an implementation of the IVizService interface for the VisIt
@@ -103,7 +103,7 @@ public class VisItVizService extends AbstractVizService {
 	 * 
 	 * @return The current instance of the viz service.
 	 */
-	protected static VisItVizService getInstance() {
+	public static VisItVizService getInstance() {
 		return instance;
 	}
 
@@ -111,7 +111,7 @@ public class VisItVizService extends AbstractVizService {
 	 * This method notifies the service that the preferences have changed. Any
 	 * connections that have changed should be reset.
 	 */
-	protected void preferencesChanged(Map<String, String> changedKeys,
+	public void preferencesChanged(Map<String, String> changedKeys,
 			Set<String> addedKeys, Set<String> removedKeys) {
 		connections.preferencesChanged(changedKeys, addedKeys, removedKeys);
 	}

@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.connections.ConnectionState;
-import org.eclipse.ice.viz.service.connections.paraview.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;

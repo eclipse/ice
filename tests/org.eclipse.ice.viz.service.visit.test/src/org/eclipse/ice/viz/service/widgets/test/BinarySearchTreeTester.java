@@ -9,7 +9,7 @@
  *   Jordan Deyton (UT-Battelle, LLC.) - Initial API and implementation and/or
  *     initial documentation
  *******************************************************************************/
-package org.eclipse.ice.viz.service.visit.test;
+package org.eclipse.ice.viz.service.widgets.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

@@ -9,14 +9,14 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Jordan Deyton
  *******************************************************************************/
-package org.eclipse.ice.viz.service.visit;
+package org.eclipse.ice.viz.service.visit.connections.preferences;
 
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.connections.ConnectionTable;
-import org.eclipse.ice.viz.service.connections.visit.VisItConnectionTable;
-import org.eclipse.ice.viz.service.preferences.VizConnectionPreferencePage;
+import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
+import org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage;
+import org.eclipse.ice.viz.service.visit.VisItVizService;
 import org.eclipse.ui.IWorkbench;
 
 /**

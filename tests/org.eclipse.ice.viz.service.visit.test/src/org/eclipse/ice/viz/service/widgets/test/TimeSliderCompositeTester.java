@@ -13,7 +13,7 @@
  *   Jordan Deyton - bug 471749
  *   Jordan Deyton - bug 471750
  *******************************************************************************/
-package org.eclipse.ice.viz.service.visit.test;
+package org.eclipse.ice.viz.service.widgets.test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
