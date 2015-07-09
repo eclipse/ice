@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Reflectivity Widgets
 Bundle-SymbolicName: org.eclipse.ice.reflectivity.ui;singleton:=true
-Bundle-Version: 2.0.0
+Bundle-Version: 1.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Export-Package: org.eclipse.ice.reflectivity.ui
 Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0",
@@ -16,3 +16,4 @@ Import-Package: org.eclipse.core.runtime;version="3.5.0",
  org.eclipse.swt.widgets,
  org.eclipse.ui,
  org.eclipse.ui.forms.editor
+Bundle-ActivationPolicy: lazy

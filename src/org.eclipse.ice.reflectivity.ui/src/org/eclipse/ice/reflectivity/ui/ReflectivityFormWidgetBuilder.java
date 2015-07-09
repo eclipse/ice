@@ -58,7 +58,7 @@ public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
 	 */
 	@Override
 	public IFormWidget build() {
-		return new ReflectivityFormWidget(vizServiceFactory);
+		return new ReflectivityEclipseFormWidget(vizServiceFactory);
 	}
 
 	/**
@@ -69,6 +69,7 @@ public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
 	 *            The factory service available through OSGi.
 	 */
 	public void setVizServiceFactory(IVizServiceFactory factory) {
+		System.out.println("ReflectivityFormWidgetBuilder: Setting Viz Service");
 		this.vizServiceFactory = factory;
 	}
 

@@ -28,7 +28,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Kasper Gammeltoft, Jordan H. Deyton
  *
  */
-public class ReflectivityFormWidget extends EclipseFormWidget {
+public class ReflectivityEclipseFormWidget extends EclipseFormWidget {
 
 	/**
 	 * The visualization service factory provided to ReflecitvityFormEditors
@@ -43,13 +43,13 @@ public class ReflectivityFormWidget extends EclipseFormWidget {
 	 *            The visualization service factory provided to ReflectivityFormEditors
 	 *            through OSGi.
 	 */
-	public ReflectivityFormWidget(IVizServiceFactory factory) {
+	public ReflectivityEclipseFormWidget(IVizServiceFactory factory) {
 		// Nothing to do yet.
 		this.vizServiceFactory = factory;
 	}
 
 	/**
-	 * This operation displays the {@link MOOSEFormEditor} instead of the
+	 * This operation displays the {@link ReflectivityFormEditor} instead of the
 	 * standard ICEFormEditor.
 	 */
 	@Override
