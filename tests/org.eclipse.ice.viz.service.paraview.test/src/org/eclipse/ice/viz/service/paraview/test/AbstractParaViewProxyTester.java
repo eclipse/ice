@@ -32,13 +32,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonObject;
@@ -78,9 +77,9 @@ public class AbstractParaViewProxyTester {
 	private FakeParaViewWebClient fakeClient;
 
 	/**
-	 * The connection adapter that should be used by the proxy.
+	 * The connection that should be used by the proxy.
 	 */
-	private ParaViewConnectionAdapter connection;
+	private ParaViewConnection connection;
 
 	/**
 	 * Initializes the {@link #proxy}, {@link #fakeProxy}, and {@link #testURI}.
@@ -94,19 +93,12 @@ public class AbstractParaViewProxyTester {
 		proxy = fakeProxy;
 
 		// Add some features.
-		fakeProxy.features.put("europe",
-				createSet("berlin", "madrid", "paris", "london", "zagreb"));
-		fakeProxy.features.put("north america",
-				createSet("ottawa", "mexico city", "havanna", "san salvador"));
+		fakeProxy.features.put("europe", createSet("berlin", "madrid", "paris", "london", "zagreb"));
+		fakeProxy.features.put("north america", createSet("ottawa", "mexico city", "havanna", "san salvador"));
 		// Add some properties.
-		fakeProxy.properties.put("south america",
-				createSet("bogota", "brasilia", "caracas", "buenos aires"));
-		fakeProxy.properties.put("africa",
-				createSet("johannesburg", "cairo", "abuja", "djibouti"));
-		fakeProxy.properties.put(
-				"asia",
-				createSet("ulaanbaatar", "beijing", "tokyo", "seoul",
-						"new delhi"));
+		fakeProxy.properties.put("south america", createSet("bogota", "brasilia", "caracas", "buenos aires"));
+		fakeProxy.properties.put("africa", createSet("johannesburg", "cairo", "abuja", "djibouti"));
+		fakeProxy.properties.put("asia", createSet("ulaanbaatar", "beijing", "tokyo", "seoul", "new delhi"));
 		fakeProxy.properties.put("australia", createSet("canberra"));
 
 		// Set up the fake client.
@@ -126,17 +118,21 @@ public class AbstractParaViewProxyTester {
 		});
 
 		// Establish a valid ParaView connection that is connected.
-		connection = new ParaViewConnectionAdapter() {
+		connection = new ParaViewConnection() {
 			@Override
-			protected IParaViewWebClient openConnection() {
+			protected IParaViewWebClient connectToWidget() {
 				// Point the connection to localhost.
-				setConnectionProperty("host", "localhost");
+				setHost("localhost");
 				// Return the fake client.
 				fakeClient.connect("localhost");
 				return fakeClient;
 			}
 		};
-		connection.connect(true);
+		try {
+			connection.connect().get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
 
 		return;
 	}
@@ -167,8 +163,7 @@ public class AbstractParaViewProxyTester {
 		// Trying to use a null URI should throw a NullPointerException.
 		try {
 			fakeProxy = new FakeParaViewProxy(nullURI);
-			fail("AbstractParaViewProxyTester error: "
-					+ "A NullPointerException was not thrown when constructed "
+			fail("AbstractParaViewProxyTester error: " + "A NullPointerException was not thrown when constructed "
 					+ "with a null URI.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
@@ -178,27 +173,31 @@ public class AbstractParaViewProxyTester {
 	}
 
 	/**
-	 * Checks that {@link AbstractParaViewProxy#open(ParaViewConnectionAdapter)}
-	 * throws exceptions when the arguments are invalid. Also checks that it
-	 * correctly calls the implemented open operation.
+	 * Checks that {@link AbstractParaViewProxy#open(ParaViewConnection)} throws
+	 * exceptions when the arguments are invalid. Also checks that it correctly
+	 * calls the implemented open operation.
 	 */
 	@Test
 	public void checkOpen() throws InterruptedException, ExecutionException {
 
-		final ParaViewConnectionAdapter nullConnection = null;
+		final ParaViewConnection nullConnection = null;
 		// Create a remote URI and remote connection for testing.
-		final ParaViewConnectionAdapter remoteConnection = new ParaViewConnectionAdapter() {
+		final ParaViewConnection remoteConnection = new ParaViewConnection() {
 			@Override
-			protected IParaViewWebClient openConnection() {
+			protected IParaViewWebClient connectToWidget() {
 				// Point the connection to localhost.
-				setConnectionProperty("host", "remoteHost");
+				setHost("remoteHost");
 				// Return the fake client.
 				fakeClient.connect("remoteHost");
 				return fakeClient;
 			}
 		};
 		URI remoteURI = TestUtils.createURI("someExtension", "remoteHost");
-		remoteConnection.connect(true);
+		try {
+			connection.connect().get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
 		FakeParaViewProxy fakeRemoteProxy;
 		AbstractParaViewProxy remoteProxy;
 
@@ -247,7 +246,7 @@ public class AbstractParaViewProxyTester {
 
 		// Set a valid connection that is not connected. An exception should not
 		// be thrown, but the return value should be false.
-		connection = new ParaViewConnectionAdapter();
+		connection = new ParaViewConnection();
 		assertFalse(proxy.open(connection).get());
 		assertFalse(fakeProxy.openImplCalled.get());
 		// The features and properties should not have been queried.
@@ -257,8 +256,7 @@ public class AbstractParaViewProxyTester {
 		// Trying to use a null connection should throw an NPE when opening.
 		try {
 			proxy.open(nullConnection).get();
-			fail("AbstractParaViewProxyTester error: "
-					+ "A NullPointerException was not thrown when opened with "
+			fail("AbstractParaViewProxyTester error: " + "A NullPointerException was not thrown when opened with "
 					+ "a null connection.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
@@ -273,8 +271,7 @@ public class AbstractParaViewProxyTester {
 	 * when it should and gracefully fails when the connection is bad.
 	 */
 	@Test
-	public void checkOpenImplementation() throws InterruptedException,
-			ExecutionException {
+	public void checkOpenImplementation() throws InterruptedException, ExecutionException {
 
 		// Initially, the file, view, and representation IDs should be -1.
 		assertEquals(-1, fakeProxy.getFileId());
@@ -357,8 +354,7 @@ public class AbstractParaViewProxyTester {
 		// opened before it finds features for the file.
 		try {
 			proxy.open(connection).get();
-		} catch (NullPointerException | InterruptedException
-				| ExecutionException e1) {
+		} catch (NullPointerException | InterruptedException | ExecutionException e1) {
 			e1.printStackTrace();
 			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
 		}
@@ -425,8 +421,7 @@ public class AbstractParaViewProxyTester {
 		// Trying to get the features for a null category should throw an NPE.
 		try {
 			proxy.getFeatures(nullString);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed a null category, " + "getFeatures(String) "
+			fail("AbstractParaViewProxyTester error: " + "When passed a null category, " + "getFeatures(String) "
 					+ "should throw a NullPointerException.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
@@ -436,9 +431,7 @@ public class AbstractParaViewProxyTester {
 		// IllegalArgumentException.
 		try {
 			proxy.getFeatures("antarctica");
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed an invalid category, "
-					+ "getFeatures(String) "
+			fail("AbstractParaViewProxyTester error: " + "When passed an invalid category, " + "getFeatures(String) "
 					+ "should throw an IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
@@ -453,8 +446,7 @@ public class AbstractParaViewProxyTester {
 	 * appropriate exceptions are thrown based on the supplied input.
 	 */
 	@Test
-	public void checkSetFeature() throws InterruptedException,
-			ExecutionException {
+	public void checkSetFeature() throws InterruptedException, ExecutionException {
 
 		final String nullString = null;
 		String validCategory;
@@ -467,8 +459,7 @@ public class AbstractParaViewProxyTester {
 		// opened before it finds features for the file.
 		try {
 			proxy.open(connection).get();
-		} catch (NullPointerException | InterruptedException
-				| ExecutionException e1) {
+		} catch (NullPointerException | InterruptedException | ExecutionException e1) {
 			e1.printStackTrace();
 			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
 		}
@@ -513,9 +504,7 @@ public class AbstractParaViewProxyTester {
 		// Trying to set the feature using a null category should throw an NPE.
 		try {
 			proxy.setFeature(nullString, validFeature);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed a null category, "
-					+ "setFeature(String, String) "
+			fail("AbstractParaViewProxyTester error: " + "When passed a null category, " + "setFeature(String, String) "
 					+ "should throw a NullPointerException.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
@@ -524,10 +513,8 @@ public class AbstractParaViewProxyTester {
 		// Trying to set the feature using a null feature should throw an NPE.
 		try {
 			proxy.setFeature(validCategory, nullString);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed a null feature, " + ""
-					+ "setFeature(String, String) "
-					+ "should throw a NullPointerException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed a null feature, " + ""
+					+ "setFeature(String, String) " + "should throw a NullPointerException.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
 		}
@@ -536,10 +523,8 @@ public class AbstractParaViewProxyTester {
 		// IllegalArgumentException.
 		try {
 			proxy.setFeature("antarctica", validFeature);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed an invalid category, "
-					+ "setFeature(String, String) "
-					+ "should throw a IllegalArgumentException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed an invalid category, "
+					+ "setFeature(String, String) " + "should throw a IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
@@ -548,10 +533,8 @@ public class AbstractParaViewProxyTester {
 		// IllegalArgumentException.
 		try {
 			proxy.setFeature(validCategory, "international space station");
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed an invalid feature, "
-					+ "setFeature(String, String) "
-					+ "should throw a IllegalArgumentException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed an invalid feature, "
+					+ "setFeature(String, String) " + "should throw a IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
@@ -574,8 +557,7 @@ public class AbstractParaViewProxyTester {
 		// opened before it finds properties for the file.
 		try {
 			proxy.open(connection).get();
-		} catch (NullPointerException | InterruptedException
-				| ExecutionException e1) {
+		} catch (NullPointerException | InterruptedException | ExecutionException e1) {
 			e1.printStackTrace();
 			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
 		}
@@ -614,10 +596,8 @@ public class AbstractParaViewProxyTester {
 		assertEquals(propertySet, proxy.getProperties());
 		for (String property : propertySet.keySet()) {
 			propertyValueSet = proxy.getPropertyAllowedValues(property);
-			assertNotSame(propertyValueSet,
-					proxy.getPropertyAllowedValues(property));
-			assertEquals(propertyValueSet,
-					proxy.getPropertyAllowedValues(property));
+			assertNotSame(propertyValueSet, proxy.getPropertyAllowedValues(property));
+			assertEquals(propertyValueSet, proxy.getPropertyAllowedValues(property));
 		}
 
 		// Check that manipulating the returned set of properties or values
@@ -644,9 +624,7 @@ public class AbstractParaViewProxyTester {
 		// Trying to get the values for a null property should throw an NPE.
 		try {
 			proxy.getFeatures(nullString);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed a null property, "
-					+ "getPropertyValues(String) "
+			fail("AbstractParaViewProxyTester error: " + "When passed a null property, " + "getPropertyValues(String) "
 					+ "should throw a NullPointerException.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
@@ -656,10 +634,8 @@ public class AbstractParaViewProxyTester {
 		// IllegalArgumentException.
 		try {
 			proxy.getFeatures("antarctica");
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed an invalid property, "
-					+ "getPropertyValues(String) "
-					+ "should throw an IllegalArgumentException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed an invalid property, "
+					+ "getPropertyValues(String) " + "should throw an IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
@@ -673,8 +649,7 @@ public class AbstractParaViewProxyTester {
 	 * appropriate exceptions are thrown based on the supplied input.
 	 */
 	@Test
-	public void checkSetProperty() throws InterruptedException,
-			ExecutionException {
+	public void checkSetProperty() throws InterruptedException, ExecutionException {
 
 		final String nullString = null;
 		String validProperty;
@@ -687,8 +662,7 @@ public class AbstractParaViewProxyTester {
 		// opened before it finds properties for the file.
 		try {
 			proxy.open(connection).get();
-		} catch (NullPointerException | InterruptedException
-				| ExecutionException e1) {
+		} catch (NullPointerException | InterruptedException | ExecutionException e1) {
 			e1.printStackTrace();
 			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
 		}
@@ -722,17 +696,14 @@ public class AbstractParaViewProxyTester {
 
 		// Get the first valid property/value from the proxy.
 		validProperty = proxy.getProperties().keySet().iterator().next();
-		validValue = proxy.getPropertyAllowedValues(validProperty).iterator()
-				.next();
+		validValue = proxy.getPropertyAllowedValues(validProperty).iterator().next();
 
 		// Trying to set the property value using a null property should throw
 		// an NPE.
 		try {
 			proxy.setProperty(nullString, validValue);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed a null property, "
-					+ "setProperty(String, String) "
-					+ "should throw a NullPointerException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed a null property, "
+					+ "setProperty(String, String) " + "should throw a NullPointerException.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
 		}
@@ -741,10 +712,8 @@ public class AbstractParaViewProxyTester {
 		// NPE.
 		try {
 			proxy.setProperty(validProperty, nullString);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed a null value, " + ""
-					+ "setProperty(String, String) "
-					+ "should throw a NullPointerException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed a null value, " + ""
+					+ "setProperty(String, String) " + "should throw a NullPointerException.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
 		}
@@ -753,10 +722,8 @@ public class AbstractParaViewProxyTester {
 		// an IllegalArgumentException.
 		try {
 			proxy.setProperty("antarctica", validValue);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed an invalid property, "
-					+ "setProperty(String, String) "
-					+ "should throw a IllegalArgumentException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed an invalid property, "
+					+ "setProperty(String, String) " + "should throw a IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
@@ -765,10 +732,8 @@ public class AbstractParaViewProxyTester {
 		// IllegalArgumentException.
 		try {
 			proxy.setProperty(validProperty, "international space station");
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed an invalid value, "
-					+ "setProperty(String, String) "
-					+ "should throw a IllegalArgumentException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed an invalid value, "
+					+ "setProperty(String, String) " + "should throw a IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
@@ -796,8 +761,7 @@ public class AbstractParaViewProxyTester {
 		// opened before it finds properties for the file.
 		try {
 			proxy.open(connection).get();
-		} catch (NullPointerException | InterruptedException
-				| ExecutionException e1) {
+		} catch (NullPointerException | InterruptedException | ExecutionException e1) {
 			e1.printStackTrace();
 			fail("AbstractParaViewProxyTester error: " + "Thread interrupted!");
 		}
@@ -817,17 +781,14 @@ public class AbstractParaViewProxyTester {
 
 		// Get the first valid property/value from the proxy.
 		validProperty = proxy.getProperties().keySet().iterator().next();
-		validValue = proxy.getPropertyAllowedValues(validProperty).iterator()
-				.next();
+		validValue = proxy.getPropertyAllowedValues(validProperty).iterator().next();
 
 		// If any of the new property names are null, an NPE will be thrown.
 		newProperties.put(nullString, validValue);
 		try {
 			proxy.setProperties(newProperties);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed a null property, "
-					+ "setProperties(Map<String, String>) "
-					+ "should throw a NullPointerException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed a null property, "
+					+ "setProperties(Map<String, String>) " + "should throw a NullPointerException.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
 		}
@@ -838,10 +799,8 @@ public class AbstractParaViewProxyTester {
 		newProperties.put(validProperty, nullString);
 		try {
 			proxy.setProperties(newProperties);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed a null value, " + ""
-					+ "setProperties(Map<String, String>) "
-					+ "should throw a NullPointerException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed a null value, " + ""
+					+ "setProperties(Map<String, String>) " + "should throw a NullPointerException.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
 		}
@@ -853,10 +812,8 @@ public class AbstractParaViewProxyTester {
 		newProperties.put("antarctica", validValue);
 		try {
 			proxy.setProperties(newProperties);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed an invalid property, "
-					+ "setProperties(Map<String, String>) "
-					+ "should throw a IllegalArgumentException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed an invalid property, "
+					+ "setProperties(Map<String, String>) " + "should throw a IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
@@ -868,10 +825,8 @@ public class AbstractParaViewProxyTester {
 		newProperties.put(validProperty, "international space station");
 		try {
 			proxy.setProperties(newProperties);
-			fail("AbstractParaViewProxyTester error: "
-					+ "When passed an invalid value, "
-					+ "setProperties(Map<String, String>) "
-					+ "should throw a IllegalArgumentException.");
+			fail("AbstractParaViewProxyTester error: " + "When passed an invalid value, "
+					+ "setProperties(Map<String, String>) " + "should throw a IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 			// Exception thrown as expected.
 		}
@@ -927,8 +882,8 @@ public class AbstractParaViewProxyTester {
 		public final Map<String, Set<String>> properties;
 
 		/**
-		 * Whether or not {@link #openProxyOnClient(IParaViewWebClient, String)} was
-		 * called.
+		 * Whether or not {@link #openProxyOnClient(IParaViewWebClient, String)}
+		 * was called.
 		 */
 		public final AtomicBoolean openImplCalled = new AtomicBoolean();
 		/**
@@ -936,12 +891,14 @@ public class AbstractParaViewProxyTester {
 		 */
 		public final AtomicBoolean findFeaturesCalled = new AtomicBoolean();
 		/**
-		 * Whether or not {@link #findProperties(IParaViewWebClient)} was called.
+		 * Whether or not {@link #findProperties(IParaViewWebClient)} was
+		 * called.
 		 */
 		public final AtomicBoolean findPropertiesCalled = new AtomicBoolean();
 		/**
 		 * Whether or not
-		 * {@link #setFeatureOnClient(IParaViewWebClient, String, String)} was called.
+		 * {@link #setFeatureOnClient(IParaViewWebClient, String, String)} was
+		 * called.
 		 */
 		public final AtomicBoolean setFeatureImplCalled = new AtomicBoolean();
 		/**
@@ -953,8 +910,8 @@ public class AbstractParaViewProxyTester {
 
 		/**
 		 * If true, then
-		 * {@link #setFeatureOnClient(IParaViewWebClient, String, String)} will "fail"
-		 * and return false, otherwise it will "succeed" and return true.
+		 * {@link #setFeatureOnClient(IParaViewWebClient, String, String)} will
+		 * "fail" and return false, otherwise it will "succeed" and return true.
 		 */
 		public boolean failToSetFeature = false;
 		/**
@@ -1021,8 +978,7 @@ public class AbstractParaViewProxyTester {
 		 * Overrides the default behavior to additionally set
 		 * {@link #openImplCalled} to true when called.
 		 */
-		public boolean openProxyOnClient(ParaViewConnectionAdapter connection,
-				String fullPath) {
+		public boolean openProxyOnClient(ParaViewConnection connection, String fullPath) {
 			openImplCalled.set(true);
 			return super.openProxyOnClient(connection, fullPath);
 		}
@@ -1031,8 +987,7 @@ public class AbstractParaViewProxyTester {
 		 * Overrides a method from AbstractParaViewProxy.
 		 */
 		@Override
-		protected Map<String, Set<String>> findFeatures(
-				ParaViewConnectionAdapter connection) {
+		protected Map<String, Set<String>> findFeatures(ParaViewConnection connection) {
 			findFeaturesCalled.set(true);
 			return features;
 		}
@@ -1041,8 +996,7 @@ public class AbstractParaViewProxyTester {
 		 * Overrides a method from AbstractParaViewProxy.
 		 */
 		@Override
-		protected List<IProxyProperty> findProperties(
-				ParaViewConnectionAdapter connection) {
+		protected List<IProxyProperty> findProperties(ParaViewConnection connection) {
 			// Load the properties into the required list of properties.
 			List<IProxyProperty> propertyList = new ArrayList<IProxyProperty>();
 			for (Entry<String, Set<String>> e : properties.entrySet()) {
@@ -1072,9 +1026,7 @@ public class AbstractParaViewProxyTester {
 					 */
 					@Override
 					public boolean setValue(String value)
-							throws NullPointerException,
-							IllegalArgumentException,
-							UnsupportedOperationException {
+							throws NullPointerException, IllegalArgumentException, UnsupportedOperationException {
 						setPropertyImplCalled.set(true);
 						return !failToSetProperty;
 					}
@@ -1091,9 +1043,7 @@ public class AbstractParaViewProxyTester {
 		 * {@link #failToSetFeature} is false, false otherwise.
 		 */
 		@Override
-		protected boolean setFeatureOnClient(
-				ParaViewConnectionAdapter connection, String category,
-				String feature) {
+		protected boolean setFeatureOnClient(ParaViewConnection connection, String category, String feature) {
 			setFeatureImplCalled.set(true);
 			return !failToSetFeature;
 		}

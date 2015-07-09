@@ -45,6 +45,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * @param <T>
  *            The type of the connection object.
  */
+@Deprecated
 public abstract class ConnectionAdapter<T> extends ICEObject implements
 		IConnectionAdapter<T> {
 

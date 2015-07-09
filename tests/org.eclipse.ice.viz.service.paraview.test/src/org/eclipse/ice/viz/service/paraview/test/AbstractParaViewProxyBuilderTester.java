@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
@@ -245,13 +245,13 @@ public class AbstractParaViewProxyBuilderTester {
 			IParaViewProxy proxy = new AbstractParaViewProxy(uri) {
 				@Override
 				protected Map<String, Set<String>> findFeatures(
-						ParaViewConnectionAdapter connection) {
+						ParaViewConnection connection) {
 					return new HashMap<String, Set<String>>();
 				}
 
 				@Override
 				protected boolean setFeatureOnClient(
-						ParaViewConnectionAdapter connection, String category,
+						ParaViewConnection connection, String category,
 						String feature) {
 					return false;
 				}

@@ -29,6 +29,7 @@ import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
  * @param <T>
  *            The type of the connection object.
  */
+@Deprecated
 public interface IConnectionAdapter<T> extends IUpdateable {
 
 	/**

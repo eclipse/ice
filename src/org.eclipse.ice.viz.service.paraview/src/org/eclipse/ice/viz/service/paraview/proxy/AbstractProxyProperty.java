@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 
 /**
  * This class provides a basic implementation of an {@link IProxyProperty}.
@@ -52,7 +52,7 @@ public abstract class AbstractProxyProperty implements IProxyProperty {
 	 * The connection to ParaView. This should be the same one used by the
 	 * {@link #proxy}.
 	 */
-	private ParaViewConnectionAdapter connection;
+	private ParaViewConnection connection;
 
 	/**
 	 * The default constructor.
@@ -65,7 +65,7 @@ public abstract class AbstractProxyProperty implements IProxyProperty {
 	 *            The connection used by the proxy.
 	 */
 	public AbstractProxyProperty(String name, IParaViewProxy proxy,
-			ParaViewConnectionAdapter connection) {
+			ParaViewConnection connection) {
 		this.name = name;
 		this.proxy = proxy;
 		this.connection = connection;
@@ -151,7 +151,7 @@ public abstract class AbstractProxyProperty implements IProxyProperty {
 	 * @return The property's current value, or {@code null} if it could not be
 	 *         found.
 	 */
-	protected abstract String findValue(ParaViewConnectionAdapter connection);
+	protected abstract String findValue(ParaViewConnection connection);
 
 	/**
 	 * Finds the property's allowed values via the connection to ParaView.
@@ -162,7 +162,7 @@ public abstract class AbstractProxyProperty implements IProxyProperty {
 	 *         could not be loaded.
 	 */
 	protected abstract Set<String> findAllowedValues(
-			ParaViewConnectionAdapter connection);
+			ParaViewConnection connection);
 
 	/**
 	 * Sets the property's value via the connection to ParaView.
@@ -176,5 +176,5 @@ public abstract class AbstractProxyProperty implements IProxyProperty {
 	 *         otherwise.
 	 */
 	protected abstract boolean setValueOnClient(String value,
-			ParaViewConnectionAdapter connection);
+			ParaViewConnection connection);
 }

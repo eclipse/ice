@@ -65,8 +65,7 @@ public class ParaViewVizService extends AbstractVizService {
 
 		// Set up the manager and hook it into the preferences.
 		manager = new ParaViewConnectionManager();
-		manager.setPreferenceStore((CustomScopedPreferenceStore) getPreferenceStore(),
-				CONNECTIONS_NODE_ID);
+		manager.setPreferenceStore((CustomScopedPreferenceStore) getPreferenceStore(), CONNECTIONS_NODE_ID);
 
 		return;
 	}
@@ -161,8 +160,7 @@ public class ParaViewVizService extends AbstractVizService {
 
 		// Create the plot with the connection and URI.
 		ParaViewPlot plot = new ParaViewPlot(this);
-		// TODO set the connection.
-		// plot.setConnection(connection);
+		plot.setConnection(connection);
 		plot.setDataSource(uri);
 
 		return plot;

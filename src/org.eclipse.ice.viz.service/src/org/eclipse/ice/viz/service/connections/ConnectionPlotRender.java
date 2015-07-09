@@ -23,7 +23,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
-public abstract class ConnectionPlotRender<T> extends PlotRender {
+public abstract class ConnectionPlotRender<T> extends PlotRender implements IVizConnectionListener<T> {
 
 	// TODO Make the image/icon in the PlotRender class customizable.
 
@@ -31,6 +31,11 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 * The rendered {@code ConnectionPlot}. This cannot be changed.
 	 */
 	public final ConnectionPlot<T> plot;
+
+	/**
+	 * The current connection associated with this plot.
+	 */
+	private IVizConnection<T> connection;
 
 	// ---- UI Widgets ---- //
 	/**
@@ -63,6 +68,34 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	}
 
 	/**
+	 * Sets the viz connection used to render visualizations inside the content
+	 * composite.
+	 * 
+	 * @param connection
+	 *            The new connection.
+	 */
+	public void setConnection(IVizConnection<T> connection) {
+		if (connection != this.connection) {
+			// Unregister from the old connection.
+			if (this.connection != null) {
+				this.connection.removeListener(this);
+			}
+
+			// Set the new connection.
+			this.connection = connection;
+
+			// Trigger a refresh.
+			refresh();
+
+			// Register with the new connection if possible.
+			if (connection != null) {
+				connection.addListener(this);
+			}
+		}
+		return;
+	}
+
+	/**
 	 * Adds a {@link #link} to the visualization service's connection
 	 * preferences after the message label.
 	 */
@@ -70,8 +103,7 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	protected Composite createInfoComposite(Composite parent, int style) {
 
 		// Get the info Composite and its child with the message label.
-		final Composite infoComposite = super
-				.createInfoComposite(parent, style);
+		final Composite infoComposite = super.createInfoComposite(parent, style);
 		final Composite msgComposite = (Composite) infoComposite.getChildren()[1];
 
 		// Get a Display and Shell used to create the hyperlink.
@@ -79,8 +111,8 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 		final Shell shell = infoComposite.getShell();
 
 		// Set the text to display in the hyperlink.
-		final String linkText = "Click here to update the "
-				+ plot.getVizService().getName() + " connection preferences.";
+		final String linkText = "Click here to update the " + plot.getVizService().getName()
+				+ " connection preferences.";
 
 		// Create a link to the preference page.
 		link = new Hyperlink(msgComposite, SWT.NONE);
@@ -103,8 +135,7 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				// Open up the viz service connection preferences.
-				PreferencesUtil.createPreferenceDialogOn(shell,
-						getPreferenceNodeID(), null, null).open();
+				PreferencesUtil.createPreferenceDialogOn(shell, getPreferenceNodeID(), null, null).open();
 			}
 		});
 
@@ -155,21 +186,18 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 * </p>
 	 */
 	@Override
-	protected Composite createPlotComposite(Composite parent, int style)
-			throws Exception {
+	protected Composite createPlotComposite(Composite parent, int style) throws Exception {
 
 		// The default return value.
 		Composite plotComposite = null;
 
 		// Validate the current state of the connection. This throws an
 		// exception if there's a connection problem.
-		IConnectionAdapter<T> adapter = plot.getConnectionAdapter();
-		validateConnection(adapter);
+		validateConnection(connection);
 
 		// Try to render the plot. This may also throw an exception depending on
 		// the sub-class' implementation.
-		plotComposite = createPlotComposite(parent, style,
-				adapter.getConnection());
+		plotComposite = createPlotComposite(parent, style, connection.getWidget());
 
 		return plotComposite;
 	}
@@ -184,10 +212,9 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 *             An exception with an informative message is thrown if there
 	 *             is a problem with the connection.
 	 */
-	protected void validateConnection(IConnectionAdapter<T> adapter)
-			throws Exception {
+	protected void validateConnection(IVizConnection<T> adapter) throws Exception {
 		// Get the connection and its state from the connection adapter.
-		final T connection = adapter.getConnection();
+		final T connection = adapter.getWidget();
 		final ConnectionState state = adapter.getState();
 
 		// Set the message and icon based on the state of the connection.
@@ -207,16 +234,13 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 			showLink = false;
 			return;
 		} else if (state == ConnectionState.Connecting) {
-			message = "The " + serviceName
-					+ " connection is being established...";
+			message = "The " + serviceName + " connection is being established...";
 			image = display.getSystemImage(SWT.ICON_WORKING);
 		} else if (state == ConnectionState.Disconnected) {
 			if (connection == null) {
-				message = "The " + serviceName
-						+ " connection is not configured.";
+				message = "The " + serviceName + " connection is not configured.";
 			} else {
-				message = "The " + serviceName
-						+ " connection is currently disconnected.";
+				message = "The " + serviceName + " connection is currently disconnected.";
 			}
 			image = display.getSystemImage(SWT.ICON_WARNING);
 		} else if (state == ConnectionState.Failed) {
@@ -250,8 +274,7 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 *             rendered, this throws an exception with an informative
 	 *             message.
 	 */
-	protected abstract Composite createPlotComposite(Composite parent,
-			int style, T connection) throws Exception;
+	protected abstract Composite createPlotComposite(Composite parent, int style, T connection) throws Exception;
 
 	/**
 	 * Checks the current connection's status before re-directing to
@@ -261,17 +284,15 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 * </p>
 	 */
 	@Override
-	protected void updatePlotComposite(Composite plotComposite)
-			throws Exception {
+	protected void updatePlotComposite(Composite plotComposite) throws Exception {
 
 		// Validate the current state of the connection. This throws an
 		// exception if there's a connection problem.
-		IConnectionAdapter<T> adapter = plot.getConnectionAdapter();
-		validateConnection(adapter);
+		validateConnection(connection);
 
 		// Try to update the plot. This may also throw an exception depending on
 		// the sub-class' implementation.
-		updatePlotComposite(plotComposite, adapter.getConnection());
+		updatePlotComposite(plotComposite, connection.getWidget());
 
 		return;
 	}
@@ -289,6 +310,17 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 *             rendered, this throws an exception with an informative
 	 *             message.
 	 */
-	protected abstract void updatePlotComposite(Composite plotComposite,
-			T connection) throws Exception;
+	protected abstract void updatePlotComposite(Composite plotComposite, T connection) throws Exception;
+
+	/*
+	 * Implements a method from IVizConnectionListener.
+	 */
+	@Override
+	public void connectionStateChanged(IVizConnection<T> connection, ConnectionState state, String message) {
+		// Trigger a refresh.
+		refresh();
+
+		// TODO We can do more with this.
+	}
+
 }

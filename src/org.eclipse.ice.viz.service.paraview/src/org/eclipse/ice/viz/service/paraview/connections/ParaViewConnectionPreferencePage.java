@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jordan Deyton
  *******************************************************************************/
-package org.eclipse.ice.viz.service.paraview.connections.preferences;
+package org.eclipse.ice.viz.service.paraview.connections;
 
 import java.util.HashSet;
 import java.util.List;

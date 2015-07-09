@@ -35,8 +35,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * @author Jordan Deyton
  *
  */
-public class ParaViewProxyRender extends
-		ConnectionPlotRender<IParaViewWebClient> {
+public class ParaViewPlotRender extends ConnectionPlotRender<IParaViewWebClient> {
 
 	// TODO If the data source (i.e. IParaViewProxy) is changed, then a new
 	// render panel will need to be created and pointed to that proxy's view ID.
@@ -92,7 +91,7 @@ public class ParaViewProxyRender extends
 	 * @param plot
 	 *            The rendered ConnectionPlot. This cannot be changed.
 	 */
-	public ParaViewProxyRender(Composite parent, ParaViewPlot plot) {
+	public ParaViewPlotRender(Composite parent, ParaViewPlot plot) {
 		super(parent, plot);
 
 		// Set the reference to the ParaViewPlot.
@@ -111,8 +110,8 @@ public class ParaViewProxyRender extends
 	 * Overrides a method from ConnectionPlotRender.
 	 */
 	@Override
-	protected Composite createPlotComposite(Composite parent, int style,
-			IParaViewWebClient connection) throws Exception {
+	protected Composite createPlotComposite(Composite parent, int style, IParaViewWebClient connection)
+			throws Exception {
 
 		// Get the current proxy used to open the rendered ParaView file.
 		IParaViewProxy proxy = plot.getParaViewProxy();
@@ -151,8 +150,7 @@ public class ParaViewProxyRender extends
 		canvas.refresh();
 
 		// Add mouse controls to the canvas.
-		canvasMouseListener = new ParaViewMouseAdapter(connection,
-				proxy.getViewId(), canvas);
+		canvasMouseListener = new ParaViewMouseAdapter(connection, proxy.getViewId(), canvas);
 		canvasMouseListener.setCanvas(canvas);
 
 		// Update the ToolBar based on the current proxy.
@@ -166,8 +164,7 @@ public class ParaViewProxyRender extends
 	 * Overrides a method from ConnectionPlotRender.
 	 */
 	@Override
-	protected void updatePlotComposite(Composite plotComposite,
-			IParaViewWebClient connection) throws Exception {
+	protected void updatePlotComposite(Composite plotComposite, IParaViewWebClient connection) throws Exception {
 
 		// Get the current proxy used to open the rendered ParaView file.
 		IParaViewProxy proxy = plot.getParaViewProxy();
@@ -188,7 +185,7 @@ public class ParaViewProxyRender extends
 			canvas.setViewId(proxy.getViewId());
 			canvas.refresh();
 			canvasMouseListener.setViewId(proxy.getViewId());
-			
+
 			// Update the ToolBar based on the current proxy.
 			refreshToolBar(toolBar);
 		}
@@ -197,8 +194,7 @@ public class ParaViewProxyRender extends
 
 		// TODO We'll need to do more than this! We also should do anything if
 		// the value hasn't changed.
-		Future<Boolean> task = proxy.setFeature(getPlotCategory(),
-				getPlotType());
+		Future<Boolean> task = proxy.setFeature(getPlotCategory(), getPlotType());
 		refreshWidgetAfterTask(task);
 
 		return;
@@ -224,8 +220,7 @@ public class ParaViewProxyRender extends
 	 * @param toolBar
 	 *            The {@code ToolBarManager} that will be populated.
 	 */
-	private void fillToolBar(ToolBarManager toolBar,
-			final IParaViewWebClient connection) {
+	private void fillToolBar(ToolBarManager toolBar, final IParaViewWebClient connection) {
 
 		plotTypeTree = new ActionTree("Plot Types");
 		toolBar.add(plotTypeTree.getContributionItem());
@@ -265,8 +260,7 @@ public class ParaViewProxyRender extends
 				tree.add(new ActionTree(new Action(feature) {
 					@Override
 					public void run() {
-						Future<Boolean> task = proxy.setFeature(category,
-								feature);
+						Future<Boolean> task = proxy.setFeature(category, feature);
 						refreshWidgetAfterTask(task);
 					}
 				}));
@@ -283,8 +277,7 @@ public class ParaViewProxyRender extends
 				tree.add(new ActionTree(new Action(value) {
 					@Override
 					public void run() {
-						Future<Boolean> task = proxy.setProperty(property,
-								value);
+						Future<Boolean> task = proxy.setProperty(property, value);
 						refreshWidgetAfterTask(task);
 					}
 				}));

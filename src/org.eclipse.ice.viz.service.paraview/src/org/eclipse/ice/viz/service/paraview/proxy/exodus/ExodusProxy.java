@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
@@ -66,7 +66,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	 */
 	@Override
 	protected Map<String, Set<String>> findFeatures(
-			ParaViewConnectionAdapter connection) {
+			ParaViewConnection connection) {
 
 		// Initialize the map of categories and features. This map will be
 		// returned.
@@ -89,7 +89,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		// TODO By default, it appears that all of the variables are loaded. It
 		// would probably be better to only load them when selected.
 
-		IParaViewWebClient client = connection.getConnection();
+		IParaViewWebClient client = connection.getWidget();
 		
 		// Loop over the "data" > "arrays" JsonArray and get all point, cell,
 		// and field variables.
@@ -135,10 +135,10 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	 */
 
 	@Override
-	protected boolean setFeatureOnClient(ParaViewConnectionAdapter connection,
+	protected boolean setFeatureOnClient(ParaViewConnection connection,
 			String category, String feature) {
 		
-		IParaViewWebClient client = connection.getConnection();
+		IParaViewWebClient client = connection.getWidget();
 		
 		boolean updated = false;
 
@@ -178,7 +178,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	 */
 	@Override
 	protected List<IProxyProperty> findProperties(
-			ParaViewConnectionAdapter connection) {
+			ParaViewConnection connection) {
 		List<IProxyProperty> properties = super.findProperties(connection);
 		// TODO Add exodus-specific properties.
 		return properties;

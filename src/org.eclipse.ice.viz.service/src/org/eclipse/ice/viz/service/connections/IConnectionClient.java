@@ -25,6 +25,7 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
  * @param <T>
  *            The connection object's type.
  */
+@Deprecated
 public interface IConnectionClient<T> extends IUpdateableListener {
 
 	/**

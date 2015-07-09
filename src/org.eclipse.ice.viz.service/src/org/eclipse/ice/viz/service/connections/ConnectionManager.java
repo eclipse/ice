@@ -37,6 +37,7 @@ import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
  * @param <T>
  *            The type of the connection object.
  */
+@Deprecated
 public abstract class ConnectionManager<T> {
 
 	// TODO Implement support for multiple connections rather than a single

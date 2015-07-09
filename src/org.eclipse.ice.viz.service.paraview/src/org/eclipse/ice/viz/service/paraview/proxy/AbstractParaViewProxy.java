@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.connections.ConnectionState;
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
@@ -54,7 +54,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * The current connection used to open or manipulate the file specified by
 	 * the {@link #uri}.
 	 */
-	private ParaViewConnectionAdapter connection = null;
+	private ParaViewConnection connection = null;
 
 	/**
 	 * The ParaView ID pointing to the file's proxy on the server.
@@ -135,7 +135,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public Future<Boolean> open(ParaViewConnectionAdapter connection)
+	public Future<Boolean> open(ParaViewConnection connection)
 			throws NullPointerException {
 		// Throw an exception if the argument is null.
 		if (connection == null) {
@@ -143,7 +143,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 					+ "Cannot open a proxy with a null connection.");
 		}
 
-		final ParaViewConnectionAdapter conn = connection;
+		final ParaViewConnection conn = connection;
 
 		// Create a new callable to open the connection. This will need to be
 		// run in a separate thread.
@@ -487,11 +487,11 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * @return True if the file at the specified path on the host machine could
 	 *         be opened, false otherwise.
 	 */
-	protected boolean openProxyOnClient(ParaViewConnectionAdapter connection,
+	protected boolean openProxyOnClient(ParaViewConnection connection,
 			String fullPath) {
 		boolean opened = false;
 
-		IParaViewWebClient client = connection.getConnection();
+		IParaViewWebClient client = connection.getWidget();
 
 		// The argument array must contain the full path to the file.
 		JsonArray args = new JsonArray();
@@ -565,7 +565,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 *         be empty and <i>not</i> {@code null}.
 	 */
 	protected abstract Map<String, Set<String>> findFeatures(
-			ParaViewConnectionAdapter connection);
+			ParaViewConnection connection);
 
 	/**
 	 * Finds the properties in the file by querying the associated ParaView
@@ -583,7 +583,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 *         <i>not</i> {@code null}.
 	 */
 	protected List<IProxyProperty> findProperties(
-			ParaViewConnectionAdapter connection) {
+			ParaViewConnection connection) {
 		List<IProxyProperty> properties = new ArrayList<IProxyProperty>();
 
 		// Set up a property that sets the "pv.vcr.action", which can be used to
@@ -592,14 +592,14 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		// time.
 		properties.add(new AbstractProxyProperty("Timestep", this, connection) {
 			@Override
-			protected String findValue(ParaViewConnectionAdapter connection) {
+			protected String findValue(ParaViewConnection connection) {
 				// Always start on the first timestep.
 				return "first";
 			}
 
 			@Override
 			protected Set<String> findAllowedValues(
-					ParaViewConnectionAdapter connection) {
+					ParaViewConnection connection) {
 				// Set up the four allowed values.
 				Set<String> allowedValues = new HashSet<String>();
 				allowedValues.add("first");
@@ -611,9 +611,9 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 
 			@Override
 			protected boolean setValueOnClient(String value,
-					ParaViewConnectionAdapter connection) {
+					ParaViewConnection connection) {
 
-				IParaViewWebClient client = connection.getConnection();
+				IParaViewWebClient client = connection.getWidget();
 				boolean updated = false;
 
 				// Set up the arguments to pv.vcr.action, which takes a single
@@ -640,14 +640,14 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		properties.add(new AbstractProxyProperty("Representation", this,
 				connection) {
 			@Override
-			protected String findValue(ParaViewConnectionAdapter connection) {
+			protected String findValue(ParaViewConnection connection) {
 				// TODO This can be found from the file.
 				return "Surface";
 			}
 
 			@Override
 			protected Set<String> findAllowedValues(
-					ParaViewConnectionAdapter connection) {
+					ParaViewConnection connection) {
 				// TODO This can be found from the file.
 				Set<String> allowedValues = new HashSet<String>();
 				allowedValues.add("3D Glyphs");
@@ -662,9 +662,9 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 
 			@Override
 			protected boolean setValueOnClient(String value,
-					ParaViewConnectionAdapter connection) {
+					ParaViewConnection connection) {
 
-				IParaViewWebClient client = connection.getConnection();
+				IParaViewWebClient client = connection.getWidget();
 
 				boolean updated = false;
 
@@ -728,7 +728,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 *         otherwise.
 	 */
 	protected abstract boolean setFeatureOnClient(
-			ParaViewConnectionAdapter connection, String category,
+			ParaViewConnection connection, String category,
 			String feature);
 
 	/**

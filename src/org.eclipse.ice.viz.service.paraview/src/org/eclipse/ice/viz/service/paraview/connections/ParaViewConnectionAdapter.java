@@ -31,9 +31,10 @@ import com.google.gson.JsonPrimitive;
  * @author Jordan Deyton
  *
  */
+@Deprecated
 public class ParaViewConnectionAdapter extends ConnectionAdapter<IParaViewWebClient> {
 
-	// TODO Theoretically, one connection adapter could support multiple views.
+	// TODO Theoretically, one connection could support multiple views.
 	// These will need to be managed somewhere.
 	// /**
 	// * A set containing the view IDs for all views created on this connection.

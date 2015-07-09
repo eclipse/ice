@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractProxyProperty;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
@@ -216,7 +216,7 @@ public class AbstractProxyPropertyTester {
 
 		/**
 		 * This boolean is set if
-		 * {@link #setValueOnClient(String, ParaViewConnectionAdapter)} is
+		 * {@link #setValueOnClient(String, ParaViewConnection)} is
 		 * called.
 		 */
 		public final AtomicBoolean setValueImplCalled = new AtomicBoolean();
@@ -230,7 +230,7 @@ public class AbstractProxyPropertyTester {
 		 * The default constructor. Passes through to the super constructor.
 		 */
 		public FakeProxyProperty(String name, IParaViewProxy proxy,
-				ParaViewConnectionAdapter connection, String... allowedValues) {
+				ParaViewConnection connection, String... allowedValues) {
 			super(name, proxy, connection);
 		}
 
@@ -238,7 +238,7 @@ public class AbstractProxyPropertyTester {
 		 * Returns {@link #value}.
 		 */
 		@Override
-		protected String findValue(ParaViewConnectionAdapter connection) {
+		protected String findValue(ParaViewConnection connection) {
 			return value;
 		}
 
@@ -247,7 +247,7 @@ public class AbstractProxyPropertyTester {
 		 */
 		@Override
 		protected Set<String> findAllowedValues(
-				ParaViewConnectionAdapter connection) {
+				ParaViewConnection connection) {
 			return allowedValues;
 		}
 
@@ -257,7 +257,7 @@ public class AbstractProxyPropertyTester {
 		 */
 		@Override
 		protected boolean setValueOnClient(String value,
-				ParaViewConnectionAdapter connection) {
+				ParaViewConnection connection) {
 			setValueImplCalled.set(true);
 			if (!failToSetValue) {
 				AbstractProxyPropertyTester.this.value = value;

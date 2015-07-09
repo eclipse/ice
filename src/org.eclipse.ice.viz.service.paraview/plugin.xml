@@ -7,7 +7,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.ice.viz.service.preferences"
-            class="org.eclipse.ice.viz.service.paraview.connections.preferences.ParaViewConnectionPreferencePage"
+            class="org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionPreferencePage"
             id="org.eclipse.ice.viz.service.paraview.preferences"
             name="ParaView">
       </page>

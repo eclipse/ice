@@ -14,12 +14,14 @@ package org.eclipse.ice.viz.service.connections;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.MultiPlot;
 import org.eclipse.ice.viz.service.PlotRender;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * This class provides the basic implementation for an {@link IPlot} whose
@@ -31,13 +33,16 @@ import org.eclipse.ice.viz.service.PlotRender;
  * @param <T>
  *            The type of the connection object.
  */
-public abstract class ConnectionPlot<T> extends MultiPlot implements
-		IConnectionClient<T> {
+public abstract class ConnectionPlot<T> extends MultiPlot {
+
+	// TODO Some things are not yet documented.
 
 	/**
-	 * The current connection adapter associated with this client.
+	 * The current connection associated with this plot.
 	 */
-	private IConnectionAdapter<T> adapter;
+	private IVizConnection<T> connection;
+
+	private final List<ConnectionPlotRender<T>> plotRenders;
 
 	/**
 	 * The default constructor.
@@ -49,6 +54,38 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 		super(vizService);
 
 		// Nothing else to do yet.
+		plotRenders = new ArrayList<ConnectionPlotRender<T>>();
+	}
+
+	protected PlotRender createPlotRender(Composite parent) {
+		ConnectionPlotRender<T> plotRender = createConnectionPlotRender(parent);
+		plotRenders.add(plotRender);
+		plotRender.setConnection(connection);
+		return plotRender;
+	}
+
+	protected List<ConnectionPlotRender<T>> getConnectionPlotRenders() {
+		return new ArrayList<ConnectionPlotRender<T>>(plotRenders);
+	}
+
+	protected abstract ConnectionPlotRender<T> createConnectionPlotRender(Composite parent);
+
+	/**
+	 * Sets the viz connection used by this plot.
+	 * 
+	 * @param connection
+	 *            The new connection to use for this plot.
+	 */
+	public void setConnection(IVizConnection<T> connection) {
+		if (connection != this.connection) {
+			this.connection = connection;
+
+			// Set the connection for all of the plot renders.
+			for (ConnectionPlotRender<T> plotRender : plotRenders) {
+				plotRender.setConnection(connection);
+			}
+		}
+		return;
 	}
 
 	/**
@@ -73,8 +110,7 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 	 *             if there is some other unspecified problem with the file
 	 */
 	@Override
-	public void setDataSource(URI file) throws NullPointerException,
-			IOException, IllegalArgumentException, Exception {
+	public void setDataSource(URI file) throws NullPointerException, IOException, IllegalArgumentException, Exception {
 
 		// Check that the file's host matches the connection host. Also check
 		// that the file exists. We check that the file is not null so that the
@@ -82,37 +118,31 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 		if (file != null) {
 			// Check if the connection exists. If not, we need to throw an
 			// exception.
-			if (adapter == null) {
-				throw new NullPointerException("IPlot error: "
-						+ "The plot's connection is not set.");
+			if (connection == null) {
+				throw new NullPointerException("IPlot error: " + "The plot's connection is not set.");
 			}
 
 			// Set up a message in case the file cannot be read by this plot.
 			final String message;
 
-			// TODO We may need to reintroduce this code if we start putting
-			// connection info in the URI.
-			// // Check for a mismatched host.
-			// String fileHost = file.getHost();
-			// String connHost = adapter.getHost();
-			// if (fileHost != null && !fileHost.equals(connHost)) {
-			// message = "The file host \"" + fileHost
-			// + "\" does not match the connection's host \""
-			// + connHost + "\".";
-			// }
-			// // This is necessary in case the file's host is null (localhost).
-			// else if (fileHost == null && adapter.isRemote()) {
-			// message = "The file host is localhost, while the "
-			// + "connection host is \"" + connHost + "\".";
-			// }
-			// else
+			// Get the hosts from the connection and the URI.
+			String connHost = connection.getHost();
+			String fileHost = file.getHost();
+			if (fileHost == null) {
+				fileHost = "localhost";
+			}
 
-			// Check that the local file exists and can be read.
-			if (!adapter.isRemote()) {
+			// If they do not match, throw an exception.
+			if (!fileHost.equals(connHost)) {
+				message = "The file host \"" + fileHost + "\" does not match the connection's host \"" + connHost
+						+ "\".";
+			}
+			// If they do match and the file is local, check that the file
+			// exists and can be read.
+			else if ("localhost".equals(connHost)) {
 				File fileRef = new File(file);
 				if (!fileRef.isFile()) {
-					message = "The path \"" + file
-							+ "\" does not exist or is not a file.";
+					message = "The path \"" + file + "\" does not exist or is not a file.";
 				} else if (!fileRef.canRead()) {
 					message = "The file \"" + file + "\" cannot be read.";
 				}
@@ -121,7 +151,7 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 					message = null;
 				}
 			}
-			// Check that the remote file exists and can be read.
+			// Do the same for remote files.
 			else {
 				// TODO We need to find a way to check remote files...
 				message = null;
@@ -138,65 +168,12 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 		super.setDataSource(file);
 	}
 
-	// ---- Implements IConnectionClient (and IUpdateableListener) ---- //
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.connections.IConnectionClient#setConnection
-	 * (org.eclipse.ice.viz.service.connections.IConnectionAdapter)
-	 */
-	@Override
-	public void setConnectionAdapter(IConnectionAdapter<T> adapter) {
-		if (adapter != this.adapter) {
-			if (this.adapter != null) {
-				this.adapter.unregister(this);
-			}
-			this.adapter = adapter;
-
-			// Trigger an update.
-			update(adapter);
-
-			// Register for updates from the adapter if possible.
-			if (adapter != null) {
-				adapter.register(this);
-			}
-		}
-		return;
-	}
-
 	/**
-	 * This method informs the plot that its associated connection has been
-	 * updated. The plot can then update its contents if it has contributed to
-	 * the UI.
+	 * Gets the current connection associated with this plot.
 	 * 
-	 * @param component
-	 *            The component that was updated. This is expected to be the
-	 *            associated {@link ConnectionAdapter}.
+	 * @return The {@link #connection}. This may be {@code null}.
 	 */
-	@Override
-	public void update(IUpdateable component) {
-		// If the argument is null, then do nothing. Even if the current adapter
-		// is null, the UI should already be up to date!
-		if (component != null && component == adapter) {
-			// Clear the cache for this plot, since the new connection may
-			// affect the available plot types.
-			clearCache();
-			// Trigger an update to the UI for all currently rendered plots.
-			for (PlotRender plotRender : getPlotRenders()) {
-				plotRender.refresh(true);
-			}
-		}
-	}
-
-	// ---------------------------------------------------------------- //
-
-	/**
-	 * Gets the adapter for the current connection associated with this plot.
-	 * 
-	 * @return The {@link #adapter}. This may be null.
-	 */
-	protected IConnectionAdapter<T> getConnectionAdapter() {
-		return adapter;
+	protected IVizConnection<T> getConnection() {
+		return connection;
 	}
 }

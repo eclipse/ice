@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 
 /**
  * A proxy serves as an intermediary between client code and a particular file
@@ -42,7 +42,7 @@ public interface IParaViewProxy {
 	 * @throws NullPointerException
 	 *             If the specified connection is {@code null}.
 	 */
-	public Future<Boolean> open(ParaViewConnectionAdapter connection)
+	public Future<Boolean> open(ParaViewConnection connection)
 			throws NullPointerException;
 
 	/**

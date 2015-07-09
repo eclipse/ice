@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
@@ -58,7 +58,7 @@ public class SiloProxy extends AbstractParaViewProxy {
 	 */
 	@Override
 	protected Map<String, Set<String>> findFeatures(
-			ParaViewConnectionAdapter connection) {
+			ParaViewConnection connection) {
 
 		// Initialize the map of categories and features. This map will be
 		// returned.
@@ -74,7 +74,7 @@ public class SiloProxy extends AbstractParaViewProxy {
 	 */
 
 	@Override
-	protected boolean setFeatureOnClient(ParaViewConnectionAdapter connection,
+	protected boolean setFeatureOnClient(ParaViewConnection connection,
 			String category, String feature) {
 		// TODO
 		return false;
@@ -85,7 +85,7 @@ public class SiloProxy extends AbstractParaViewProxy {
 	 */
 	@Override
 	protected List<IProxyProperty> findProperties(
-			ParaViewConnectionAdapter connection) {
+			ParaViewConnection connection) {
 		List<IProxyProperty> properties = super.findProperties(connection);
 		// TODO Add exodus-specific properties.
 		return properties;

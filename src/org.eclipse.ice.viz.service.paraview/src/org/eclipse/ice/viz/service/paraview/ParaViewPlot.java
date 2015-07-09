@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.swt.widgets.Composite;
@@ -70,19 +70,16 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	 * Overrides a method from ConnectionPlot.
 	 */
 	@Override
-	public void setDataSource(URI uri) throws NullPointerException,
-			IOException, IllegalArgumentException, Exception {
+	public void setDataSource(URI uri) throws NullPointerException, IOException, IllegalArgumentException, Exception {
 
 		// Attempt to create the IParaViewProxy. This will throw an exception if
 		// the URI is null or its extension is invalid.
-		IParaViewProxy proxy = vizService.getProxyFactory()
-				.createProxy(uri);
+		IParaViewProxy proxy = vizService.getProxyFactory().createProxy(uri);
 		// Attempt to open the file. Wait until the process completes.
-		if (proxy.open(getParaViewConnectionAdapter()).get()) {
+		if (proxy.open(getParaViewConnection()).get()) {
 			this.proxy = proxy;
 		} else {
-			throw new IllegalArgumentException("ParaViewPlot error: "
-					+ "Cannot open the file \"" + uri.getPath()
+			throw new IllegalArgumentException("ParaViewPlot error: " + "Cannot open the file \"" + uri.getPath()
 					+ "\" using the existing connection.");
 		}
 
@@ -90,15 +87,11 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.MultiPlot#createPlotRender(org.eclipse.swt
-	 * .widgets.Composite)
+	 * Implements an abstract method from ConnectionPlot.
 	 */
 	@Override
-	protected PlotRender createPlotRender(Composite parent) {
-		return new ParaViewProxyRender(parent, this);
+	protected ConnectionPlotRender<IParaViewWebClient> createConnectionPlotRender(Composite parent) {
+		return new ParaViewPlotRender(parent, this);
 	}
 
 	/*
@@ -107,12 +100,11 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	 * @see org.eclipse.ice.viz.service.MultiPlot#getPlotTypes(java.net.URI)
 	 */
 	@Override
-	protected Map<String, String[]> findPlotTypes(URI uri) throws IOException,
-			Exception {
+	protected Map<String, String[]> findPlotTypes(URI uri) throws IOException, Exception {
 		// Throw an exception in case the proxy was not created.
 		if (proxy == null) {
-			throw new IllegalStateException("ParaViewPlot error: "
-					+ "A proxy was not created before finding the plot types.");
+			throw new IllegalStateException(
+					"ParaViewPlot error: " + "A proxy was not created before finding the plot types.");
 		}
 
 		// Set up the default return value.
@@ -129,13 +121,13 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/**
-	 * Gets the connection adapter for the associated connection cast as a
-	 * {@link ParaViewConnectionAdapter}.
+	 * Gets the connection for the associated connection cast as a
+	 * {@link ParaViewConnection}.
 	 * 
-	 * @return The associated connection adapter.
+	 * @return The associated connection.
 	 */
-	protected ParaViewConnectionAdapter getParaViewConnectionAdapter() {
-		return (ParaViewConnectionAdapter) getConnectionAdapter();
+	protected ParaViewConnection getParaViewConnection() {
+		return (ParaViewConnection) getConnection();
 	}
 
 	/**
