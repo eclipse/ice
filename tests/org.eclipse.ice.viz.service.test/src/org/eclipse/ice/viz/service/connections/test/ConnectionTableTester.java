@@ -155,22 +155,26 @@ public class ConnectionTableTester {
 		String name;
 		String host = "qwerty";
 
-		// Add two connections.
+		// Add three connections.
 		assertEquals(0, table.addRow());
 		assertEquals(1, table.addRow());
+		assertEquals(2, table.addRow());
 		assertNotNull(table.getConnection("Connection1"));
 		assertNotNull(table.getConnection("Connection2"));
+		assertNotNull(table.getConnection("Connection3"));
 
 		// Remove the first one. The first one should no longer exist.
 		table.deleteRow(0);
 		assertNull(table.getConnection("Connection1"));
 		assertNotNull(table.getConnection("Connection2"));
+		assertNotNull(table.getConnection("Connection3"));
 		// Check the number of rows and the set of connection names.
-		assertEquals(1, table.numberOfRows());
+		assertEquals(2, table.numberOfRows());
 		assertFalse(table.getConnectionNames().contains("Connection1"));
 		assertTrue(table.getConnectionNames().contains("Connection2"));
+		assertTrue(table.getConnectionNames().contains("Connection3"));
 
-		// Check the contents of the remaining connection.
+		// Check the contents of the remaining connections.
 		name = "Connection2";
 		row = table.getRow(0);
 		// It should be a non-empty row.
@@ -184,15 +188,29 @@ public class ConnectionTableTester {
 		assertEquals(DEFAULT_PATH, row.get(3).getValue());
 		// Getting it by connection name should return the same row.
 		assertEquals(row, table.getConnection(name));
+		// Do the same for the next connection.
+		name = "Connection3";
+		row = table.getRow(1);
+		// It should be a non-empty row.
+		assertNotNull(row);
+		assertFalse(row.isEmpty());
+		// Check its information.
+		assertEquals(4, row.size());
+		assertEquals(name, row.get(0).getValue());
+		assertEquals(DEFAULT_HOST, row.get(1).getValue());
+		assertEquals(DEFAULT_PORT, row.get(2).getValue());
+		assertEquals(DEFAULT_PATH, row.get(3).getValue());
+		// Getting it by connection name should return the same row.
+		assertEquals(row, table.getConnection(name));
 
-		// Update the host name of connection 2.
+		// Update the host name of connection 3.
 		row.get(1).setValue(host);
 
 		// Add a new row.
 		name = "Connection1";
-		assertEquals(1, table.addRow());
+		assertEquals(2, table.addRow());
 		// Check its contents.
-		row = table.getRow(1);
+		row = table.getRow(2);
 		// It should be a non-empty row.
 		assertNotNull(row);
 		assertFalse(row.isEmpty());
@@ -214,6 +232,20 @@ public class ConnectionTableTester {
 		// Check its information.
 		assertEquals(4, row.size());
 		assertEquals(name, row.get(0).getValue());
+		assertEquals(DEFAULT_HOST, row.get(1).getValue());
+		assertEquals(DEFAULT_PORT, row.get(2).getValue());
+		assertEquals(DEFAULT_PATH, row.get(3).getValue());
+		// Getting it by connection name should return the same row.
+		assertEquals(row, table.getConnection(name));
+		// Do the same for the third connection.
+		name = "Connection3";
+		row = table.getRow(1);
+		// It should be a non-empty row.
+		assertNotNull(row);
+		assertFalse(row.isEmpty());
+		// Check its information.
+		assertEquals(4, row.size());
+		assertEquals(name, row.get(0).getValue());
 		assertEquals(host, row.get(1).getValue());
 		assertEquals(DEFAULT_PORT, row.get(2).getValue());
 		assertEquals(DEFAULT_PATH, row.get(3).getValue());
@@ -221,9 +253,10 @@ public class ConnectionTableTester {
 		assertEquals(row, table.getConnection(name));
 
 		// Check the number of rows and the set of connection names.
-		assertEquals(2, table.numberOfRows());
+		assertEquals(3, table.numberOfRows());
 		assertTrue(table.getConnectionNames().contains("Connection1"));
 		assertTrue(table.getConnectionNames().contains("Connection2"));
+		assertTrue(table.getConnectionNames().contains("Connection3"));
 
 		return;
 	}

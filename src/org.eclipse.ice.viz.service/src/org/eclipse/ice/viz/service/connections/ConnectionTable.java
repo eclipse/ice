@@ -265,7 +265,7 @@ public class ConnectionTable extends TableComponent {
 
 				// Update all other values in the key map.
 				for (int i = index; i < numberOfRows(); i++) {
-					key = getRow(index).get(0).getValue();
+					key = getRow(i).get(0).getValue();
 					keyToIndexMap.put(key, i);
 				}
 			}
