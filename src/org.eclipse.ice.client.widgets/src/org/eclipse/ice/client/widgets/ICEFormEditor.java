@@ -65,6 +65,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The ICEFormEditor is an Eclipse FormEditor subclass that renders and displays
@@ -77,6 +79,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class ICEFormEditor extends SharedHeaderFormEditor implements
 		IComponentVisitor, IObservableWidget, IUpdateableListener {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
+	
 	/**
 	 * ID for Eclipse
 	 */
@@ -167,6 +174,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 */
 	public ICEFormEditor() {
 
+		// Create the logger
+		logger = LoggerFactory.getLogger(getClass());
+		
 		// Setup listener lists
 		updateListeners = new ArrayList<IUpdateEventListener>();
 		processListeners = new ArrayList<IProcessEventListener>();
@@ -196,7 +206,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 */
 	public static void setVizServiceFactory(IVizServiceFactory factory) {
 		vizFactory = factory;
-		System.out.println("ICEFormEditor Message: IVizServiceFactory set!");
+		Logger staticLogger = LoggerFactory.getLogger(ICEFormEditor.class);
+		staticLogger.info("ICEFormEditor Message: IVizServiceFactory set!");
 	}
 
 	/**
@@ -513,7 +524,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 				getSite().getWorkbenchWindow().getActivePage()
 						.showView(getTreeCompositeViewerID());
 			} catch (PartInitException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 			// Get the TreeComposite to pass to the tree view.
@@ -975,7 +986,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Loop over the DataComponents and get them into the map
 		for (Component i : iceDataForm.getComponents()) {
-			System.out.println("ICEFormEditor Message: Adding component "
+			logger.info("ICEFormEditor Message: Adding component "
 					+ i.getName() + " " + i.getId());
 			i.accept(this);
 		}
@@ -1021,7 +1032,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Create the page for Reactors
 		if (!(componentMap.get("reactor").isEmpty())) {
-			System.out.println("ICEFormEditor Message: "
+			logger.info("ICEFormEditor Message: "
 					+ componentMap.get("reactor").size()
 					+ " IReactorComponents not rendered.");
 		}
@@ -1038,7 +1049,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 				addPage(i);
 			}
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;
@@ -1341,7 +1352,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 */
 	@Override
 	public void visit(EMFComponent component) {
-		System.out.println("Adding EMFComponent: " + component.getName());
+		logger.info("Adding EMFComponent: " + component.getName());
 		addComponentToMap(component, "emf");
 	}
 

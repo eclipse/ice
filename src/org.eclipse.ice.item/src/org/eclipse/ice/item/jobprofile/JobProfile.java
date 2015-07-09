@@ -53,12 +53,12 @@ import org.eclipse.ice.item.jobLauncher.JobLauncher;
  * Item name so that the SerializedItemBuilder used to load it can be found even
  * after the Item is persisted to the database.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 /*
  * @Entity
- * 
+ *
  * @Table(name = "JobProfile")
  */
 @XmlRootElement(name = "JobProfile")
@@ -67,7 +67,7 @@ public class JobProfile extends Item {
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * 
+	 *
 	 */
 	public JobProfile() {
 
@@ -81,7 +81,7 @@ public class JobProfile extends Item {
 	 * The constructor with a project space in which files should be
 	 * manipulated.
 	 * </p>
-	 * 
+	 *
 	 * @param projectSpace
 	 *            <p>
 	 *            The Eclipse project where files should be stored and from
@@ -131,17 +131,17 @@ public class JobProfile extends Item {
 		} catch (NullPointerException | JAXBException | IOException
 				| CoreException e1) {
 			// Complain
-			e1.printStackTrace();
+			logger.error(getClass().getName() + " Exception!", e1);
 		}
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation creates a new JobLauncher and writes it to disk if the
 	 * action name is equal to "Create new Job Launcher" and it forwards the
 	 * call to the Item base class if it is equal to something else.
 	 * </p>
-	 * 
+	 *
 	 * @param actionName
 	 *            <p>
 	 *            The name of the action to perform.
@@ -193,7 +193,7 @@ public class JobProfile extends Item {
 			launcher.setDescription("This operation will execute "
 					+ exeInfo.retrieveAllEntries().get(0).getValue());
 
-			System.out.println("Creating " + launcher.getForm().getName()
+			logger.info("Creating " + launcher.getForm().getName()
 					+ " profile.");
 
 			// Setup hostnames
@@ -260,7 +260,7 @@ public class JobProfile extends Item {
 				try {
 					jobProfileFolder.create(true, true, null);
 				} catch (CoreException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 
@@ -278,8 +278,8 @@ public class JobProfile extends Item {
 			return super.process(actionName);
 		}
 
-		System.out
-				.println("JobProfile Message: Successfully serialized the JobLauncher!");
+		logger.info("JobProfile Message: "
+						+ "Successfully serialized the JobLauncher!");
 
 		return status;
 	}
@@ -288,14 +288,14 @@ public class JobProfile extends Item {
 	 * <p>
 	 * This operation sets up the JobProfileForm.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Override
 	protected void setupForm() {
 
 		// Copy only the forms contents. This is required for JPA to work.
 		this.form = new Form();
-		this.form.copy((Form) new JobProfileForm());
+		this.form.copy(new JobProfileForm());
 
 		// Create a set of Actions
 		ArrayList<String> actions = new ArrayList<String>();

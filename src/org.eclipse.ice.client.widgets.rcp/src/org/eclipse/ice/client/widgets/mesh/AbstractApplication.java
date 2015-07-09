@@ -17,6 +17,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
@@ -44,6 +47,12 @@ import com.jme3.system.awt.AwtPanel;
  * 
  */
 public abstract class AbstractApplication extends SimpleApplication {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AbstractApplication.class);
 
 	// ---- Application Initialization ---- //
 	/**
@@ -566,7 +575,7 @@ public abstract class AbstractApplication extends SimpleApplication {
 	public void printCollisionResults(CollisionResults results) {
 		if (results != null) {
 			// Print the results of the collision.
-			System.out.println("Hits: " + results.size());
+			logger.info("Hits: " + results.size());
 			if (results.size() > 0) {
 
 				// Print the results.
@@ -576,7 +585,7 @@ public abstract class AbstractApplication extends SimpleApplication {
 					float dist = result.getDistance();
 					Vector3f pt = result.getContactPoint();
 					String hit = result.getGeometry().getName();
-					System.out.println("Hit " + hit + " at distance " + dist
+					logger.info("Hit " + hit + " at distance " + dist
 							+ " at location " + pt.toString());
 				}
 			}

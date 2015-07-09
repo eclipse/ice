@@ -14,6 +14,8 @@ package org.eclipse.ice.client.widgets.reactoreditor;
 
 import org.eclipse.ice.client.widgets.IFormWidgetBuilder;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides the declarative service that registers the Reactor Editor
@@ -23,6 +25,12 @@ import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
  * 
  */
 public class ReactorFormWidgetBuilder implements IFormWidgetBuilder {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ReactorFormWidgetBuilder.class);
 
 	/**
 	 * The name of the items/forms used to create {@link ReactorFormEditor}s.
@@ -63,7 +71,7 @@ public class ReactorFormWidgetBuilder implements IFormWidgetBuilder {
 		ReactorEclipseFormWidget widget = null;
 
 		if (widgetRegistry == null || editorRegistry == null) {
-			System.out.println("ReactorFormWidgetBuilder error: "
+			logger.info("ReactorFormWidgetBuilder error: "
 					+ "No analysis widget registry or editor registry "
 					+ "available for creating a ReactorEclipseFormWidget!");
 		} else {
@@ -82,7 +90,7 @@ public class ReactorFormWidgetBuilder implements IFormWidgetBuilder {
 	 *            The widget registry.
 	 */
 	public void setAnalysisWidgetRegistry(IAnalysisWidgetRegistry registry) {
-		System.out.println("ReactorFormWidgetBuilder: "
+		logger.info("ReactorFormWidgetBuilder: "
 				+ "Adding new IAnalysisWidgetRegistry.");
 		if (registry != null) {
 			this.widgetRegistry = registry;
@@ -99,7 +107,7 @@ public class ReactorFormWidgetBuilder implements IFormWidgetBuilder {
 	 *            The editor registry.
 	 */
 	public void setReactorEditorRegistry(IReactorEditorRegistry registry) {
-		System.out.println("ReactorFormWidgetBuilder: "
+		logger.info("ReactorFormWidgetBuilder: "
 				+ "Adding new IReactorEditorRegistry.");
 		if (registry != null) {
 			this.editorRegistry = registry;

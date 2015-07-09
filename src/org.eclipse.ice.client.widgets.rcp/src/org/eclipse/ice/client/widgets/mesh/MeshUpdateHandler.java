@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class handles queuing {@link MeshComponent} updates for a
@@ -41,11 +43,17 @@ import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
  * already updating. Instead of running the update n times for n calls, only the
  * current update and the last remaining update need to be handled.
  * </p>
- * 
+ *
  * @author Jordan Deyton
- * 
+ *
  */
 public class MeshUpdateHandler implements IUpdateableListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(MeshUpdateHandler.class);
 
 	/**
 	 * The current <code>MeshComponent</code> to which this listener/updater
@@ -89,7 +97,7 @@ public class MeshUpdateHandler implements IUpdateableListener {
 	 * currently being processed, it is finished and then all remaining
 	 * unprocessed updates are ignored. An initial update is run with the new
 	 * mesh.
-	 * 
+	 *
 	 * @param mesh
 	 *            The new mesh to listen to.
 	 */
@@ -121,7 +129,7 @@ public class MeshUpdateHandler implements IUpdateableListener {
 	 * Starts the <code>MeshUpdateHandler</code> so that updates from a
 	 * <code>MeshComponent</code> can be handled one at a time and reduced in
 	 * number when multiple updates are required at the same time.
-	 * 
+	 *
 	 * @param app
 	 *            The <code>MeshAppState</code> that needs to update based on
 	 *            changes in the mesh.
@@ -171,7 +179,7 @@ public class MeshUpdateHandler implements IUpdateableListener {
 	/**
 	 * Creates the thread that updates the {@link #app} when the
 	 * {@link #needsUpdate} flag is set to true.
-	 * 
+	 *
 	 * @return An update thread.
 	 */
 	private Thread createUpdateThread() {
@@ -194,7 +202,7 @@ public class MeshUpdateHandler implements IUpdateableListener {
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 				}
 

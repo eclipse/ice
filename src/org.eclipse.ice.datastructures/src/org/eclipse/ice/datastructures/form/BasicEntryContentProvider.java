@@ -217,7 +217,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 				retVal = true;
 			} else {
 				// Check each member value
-				retVal = super.equals((ICEObject) provider)
+				retVal = super.equals(provider)
 						&& (this.defaultValue.equals(provider
 								.getDefaultValue()))
 						&& (this.allowedValues.equals(provider
@@ -257,7 +257,7 @@ public class BasicEntryContentProvider extends ICEObject implements
 		}
 
 		// copy from super class
-		super.copy((ICEObject) otherProvider);
+		super.copy(otherProvider);
 
 		// Copy current values
 		// Deep copy of allowed Values

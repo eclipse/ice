@@ -30,11 +30,11 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * The SassenaIncoherentModel extends the Item to provide a model generator for the 
+ * The SassenaIncoherentModel extends the Item to provide a model generator for the
  * Sassena Incohrent input files. It uses an EMFComponent to map the Sassena schema to an
  * Eclipse Modeling Framework Ecore model, which is then translated to an ICE
  * TreeComposite to be visualized and editted by the user.
- * 
+ *
  * @author Alex McCaskey
  */
 @XmlRootElement(name = "SassenaIncoherentModel")
@@ -47,7 +47,7 @@ public class SassenaIncoherentModel extends Item {
 
 	/**
 	 * The constructor.
-	 * 
+	 *
 	 */
 	public SassenaIncoherentModel() {
 		this(null);
@@ -56,7 +56,7 @@ public class SassenaIncoherentModel extends Item {
 	/**
 	 * The constructor with a project space in which files should be
 	 * manipulated.
-	 * 
+	 *
 	 * @param projectSpace
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
@@ -72,7 +72,7 @@ public class SassenaIncoherentModel extends Item {
 	 * This method sets up the SassenaIncoherentModel Item's Form reference, specifically,
 	 * it searches for the correct XML schema and creates an EMFComponent and
 	 * adds it to the Form.
-	 * 
+	 *
 	 */
 	@Override
 	protected void setupForm() {
@@ -89,8 +89,8 @@ public class SassenaIncoherentModel extends Item {
 			// Refresh the project space
 			try {
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			} catch (CoreException e1) {
-				e1.printStackTrace();
+			} catch (CoreException e) {
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 			// Get the batml folder and the correct XML schema
@@ -104,7 +104,7 @@ public class SassenaIncoherentModel extends Item {
 					xsdFile = EFS.getStore(xsdIFile.getLocationURI())
 							.toLocalFile(0, new NullProgressMonitor());
 				} catch (CoreException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 				// Create the EMFComponent
@@ -131,7 +131,7 @@ public class SassenaIncoherentModel extends Item {
 
 	/**
 	 * This operation is used to setup the name and description of the model.
-	 * 
+	 *
 	 */
 	@Override
 	protected void setupItemInfo() {
@@ -152,8 +152,8 @@ public class SassenaIncoherentModel extends Item {
 	}
 
 	/**
-	 * This method overrides Item.process to provide a process 
-	 * action that writes the EMFComponent to an XML file. 
+	 * This method overrides Item.process to provide a process
+	 * action that writes the EMFComponent to an XML file.
 	 */
 	@Override
 	public FormStatus process(String actionName) {
@@ -178,7 +178,7 @@ public class SassenaIncoherentModel extends Item {
 					retStatus = FormStatus.InfoError;
 				}
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				retStatus = FormStatus.InfoError;
 			}
 		}
@@ -188,7 +188,7 @@ public class SassenaIncoherentModel extends Item {
 
 	/**
 	 * This method loads an existing XML file as an EMFComponent.
-	 *  
+	 *
 	 * @param input
 	 *            The name of the input input file, including the file extension
 	 */

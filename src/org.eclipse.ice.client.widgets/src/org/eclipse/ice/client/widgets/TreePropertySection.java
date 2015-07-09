@@ -67,10 +67,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides a proprty <code>Section</code> that displays the
@@ -87,6 +90,11 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public class TreePropertySection extends AbstractPropertySection implements
 		IUpdateableListener {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(TreePropertySection.class);	
+	
 	/**
 	 * The <code>TreeComposite</code> whose properties are displayed in this
 	 * section.
@@ -212,7 +220,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 
 		// Create a section for the data composites.
 		section = getWidgetFactory().createSection(parent,
-				Section.SHORT_TITLE_BAR | Section.DESCRIPTION);
+				ExpandableComposite.SHORT_TITLE_BAR | Section.DESCRIPTION);
 		section.setText("Node properties");
 		section.setDescription("All properties available for "
 				+ "this node can be modified here.");
@@ -321,7 +329,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 						// Unset the isAdaptive flag.
 						isAdaptive = false;
 
-						System.out.println("TreePropertySection message: "
+						logger.info("TreePropertySection message: "
 								+ "Setting the input to tree " + tree.getName()
 								+ ".");
 					}

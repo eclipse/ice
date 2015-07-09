@@ -177,7 +177,7 @@ public class ReactorController extends AbstractPlantController implements
 		// removed or added. We should update the view based on these pipes.
 		if (component == model) {
 			// Get the current control channel pipes from the reactor model.
-			List<CoreChannel> pipes = (List<CoreChannel>) model
+			List<CoreChannel> pipes = model
 					.getCoreChannels();
 
 			// Create the lists that will need to be passed to the view.

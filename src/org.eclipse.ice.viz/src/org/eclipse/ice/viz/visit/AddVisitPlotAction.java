@@ -52,6 +52,8 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import visit.java.client.FileInfo;
 
@@ -62,6 +64,12 @@ import visit.java.client.FileInfo;
  * @author Taylor Patterson, Jordan H. Deyton
  */
 public class AddVisitPlotAction extends Action {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AddVisitPlotAction.class);
 
 	/**
 	 * The ViewPart that owns an object of this class.
@@ -139,7 +147,7 @@ public class AddVisitPlotAction extends Action {
 
 		// If we pulled an ICEResource from the selection, we may proceed.
 		if (resource != null) {
-			System.out.println("AddVisitPlotAction message: "
+			logger.info("AddVisitPlotAction message: "
 					+ "The currently selected resource is \""
 					+ resource.getName() + "\".");
 
@@ -358,8 +366,7 @@ public class AddVisitPlotAction extends Action {
 					}
 				}
 			} else {
-				System.out.println("AddPlotAction message: "
-						+ "No plot selected.");
+				logger.info("AddPlotAction message: " + "No plot selected.");
 			}
 		}
 

@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
@@ -180,7 +181,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 
 		FormToolkit toolkit = mform.getToolkit();
 		Section section = toolkit.createSection(parent, Section.DESCRIPTION
-				| Section.TITLE_BAR);
+				| ExpandableComposite.TITLE_BAR);
 		section.marginWidth = 10;
 		section.setText(component.getName());
 		section.setDescription(component.getDescription());

@@ -37,6 +37,8 @@ import org.eclipse.ice.item.nuclear.MOOSELauncher;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class executes the steps needed to generate MOOSE YAML and Action Syntax
@@ -46,6 +48,11 @@ import org.eclipse.ui.handlers.HandlerUtil;
  *
  */
 public class GenerateYAMLHandler extends AbstractHandler implements Runnable {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(GenerateYAMLHandler.class);
 
 	/**
 	 * Reference to the MOOSELauncher that we will use to generate the YAML and
@@ -155,7 +162,7 @@ public class GenerateYAMLHandler extends AbstractHandler implements Runnable {
 				// Open the widget
 				streamingTextWidget.display();
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -192,7 +199,7 @@ public class GenerateYAMLHandler extends AbstractHandler implements Runnable {
 					}
 				} catch (IOException e) {
 					// Complain because the next line could not be read
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 
@@ -202,7 +209,7 @@ public class GenerateYAMLHandler extends AbstractHandler implements Runnable {
 			outputFileBufferedReader.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		streamingTextWidget

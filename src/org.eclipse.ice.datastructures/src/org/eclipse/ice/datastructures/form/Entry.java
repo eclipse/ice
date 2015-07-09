@@ -751,7 +751,7 @@ public class Entry extends ICEObject implements IUpdateable {
 		}
 
 		// copy from super class
-		super.copy((ICEObject) otherEntry);
+		super.copy(otherEntry);
 
 		// Copy current values
 		this.allowedValueType = otherEntry.allowedValueType;

@@ -53,6 +53,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class extends the ViewPart class and provides a view in the
@@ -63,6 +65,12 @@ import org.eclipse.ui.part.WorkbenchPart;
 public class CSVPlotViewer extends PlayableViewPart implements
 		IDeletePlotActionViewPart, IUpdateableListener,
 		ISelectionChangedListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(CSVPlotViewer.class);
 
 	/**
 	 * The ID for this view
@@ -253,7 +261,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 				// If possible, reset the plotTreeViewer's input.
 				if (plotTreeViewer != null) {
 
-					System.out.println("CSVPlotViewer message: "
+					logger.info("CSVPlotViewer message: "
 							+ "Refreshing TreeViewer.");
 
 					// Reset the input for the plotTreeViewer. The viewer just
@@ -279,7 +287,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 	@Override
 	public void update(IUpdateable component) {
 
-		System.out.println("CSVPlotViewer Message: Incoming resource update.");
+		logger.info("CSVPlotViewer Message: Incoming resource update.");
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
@@ -290,7 +298,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 					// TODO Reset the input for the plotTreeViewer.
 					// plotTreeViewer.setInput(null);
 
-					System.out.println("CSVPlotViewer Message: "
+					logger.info("CSVPlotViewer Message: "
 							+ "Updating resource table.");
 					plotTreeViewer.refresh();
 					plotTreeViewer.getTree().redraw();
@@ -428,7 +436,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 			// Add this entry to our bookkeeping.
 			plottedProviders.add(newPlotProvider);
 
-			System.out.println("CSVPlotViewer message: adding plot \""
+			logger.info("CSVPlotViewer message: adding plot \""
 					+ newPlotProvider.getPlotTitle() + "\".");
 
 			// Update the plotViewer.
@@ -460,7 +468,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 				// Remove the resource and entry from our bookkeeping.
 				plottedProviders.remove(index);
 
-				System.out.println("CSVPlotViewer message: Removing plot \""
+				logger.info("CSVPlotViewer message: Removing plot \""
 						+ newPlotProvider.getPlotTitle() + "\".");
 
 				// Update the plotViewer.
@@ -491,7 +499,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 
 			if (index > -1) {
 
-				System.out.println("CSVPlotViewer message: Drawing plot \""
+				logger.info("CSVPlotViewer message: Drawing plot \""
 						+ newPlotProvider.getPlotTitle());
 
 				// Get the CSVPlotEditor.
@@ -594,7 +602,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 		} else {
 			fileName = resource.getContents().getAbsolutePath();
 		}
-		System.out.println("CSVPlotViewer message: The "
+		logger.info("CSVPlotViewer message: The "
 				+ "selected file from the VizFileViewer is \"" + fileName
 				+ "\".");
 
@@ -690,7 +698,7 @@ public class CSVPlotViewer extends PlayableViewPart implements
 					page.openEditor(editorInput, CSVPlotEditor.ID);
 				} catch (PartInitException e) {
 					// Complain
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					Shell shell = PlatformUI.getWorkbench()
 							.getActiveWorkbenchWindow().getShell();
 

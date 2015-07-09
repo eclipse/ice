@@ -105,7 +105,7 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 		}
 		// If the element is a Component, we need to look it up in the map.
 		else if (element instanceof Component) {
-			parent = parentMap.get((Component) element);
+			parent = parentMap.get(element);
 		}
 		return parent;
 	}
@@ -156,7 +156,7 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 				// Update the child's count if possible. Data nodes have no
 				// children, but TreeComposites can have multiple children.
 				int childCount = 0;
-				TreeComposite childTree = (TreeComposite) child;
+				TreeComposite childTree = child;
 
 				// Get the number of children of the updated child.
 				childCount = childTree.getNumberOfChildren();

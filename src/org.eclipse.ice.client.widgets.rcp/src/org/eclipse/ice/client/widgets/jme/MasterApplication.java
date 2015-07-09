@@ -6,9 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or 
+ *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or
  *      initial documentation
- *   
+ *
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.jme;
 
@@ -25,6 +25,9 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
@@ -40,7 +43,7 @@ import com.jme3.system.awt.PaintMode;
  * A MasterApplication is a {@link SimpleApplication} that provides a rendering
  * functionality for jME-based scenes. Typical (and suggested) workflow for
  * using a MasterApplication is as follows:
- * 
+ *
  * <ol>
  * <li>
  * Instantiate a MasterApplication with {@link #createApplication()}.</li>
@@ -63,7 +66,7 @@ import com.jme3.system.awt.PaintMode;
  * <li>
  * When finished with the MasterApplication, call {@link #stop()}.</li>
  * </ol>
- * 
+ *
  * Any number of EmbeddedViews can be created and used for a single AppState
  * provided all EmbeddedViews are released to the MasterApplication before the
  * AppState is detached.<br>
@@ -71,11 +74,16 @@ import com.jme3.system.awt.PaintMode;
  * MasterApplication is built on {@link AwtPanel}s and the
  * {@link AwtPanelsContext}. AwtPanels (and any associated objects contained in
  * the EmbeddedView class) are reused when possible.
- * 
+ *
  * @author Jordan Deyton
- * 
+ *
  */
 public class MasterApplication extends SimpleApplication {
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(MasterApplication.class);
 
 	/**
 	 * A dummy AwtPanel. This is used as the AwtPanelsContext's (see
@@ -172,7 +180,7 @@ public class MasterApplication extends SimpleApplication {
 					dummyPanel.setSize(0, 0);
 					dummyPanel.setLocation(p);
 					((AwtPanelsContext) getContext())
-							.setInputSource(dummyPanel);
+					.setInputSource(dummyPanel);
 				}
 
 				return;
@@ -188,7 +196,7 @@ public class MasterApplication extends SimpleApplication {
 	/**
 	 * Creates a default MasterApplication that runs in the background. To stop
 	 * the application, its {@link #stop()} method must be called.
-	 * 
+	 *
 	 * @return A pre-configured MasterApplication.
 	 */
 	public static MasterApplication createApplication() {
@@ -267,7 +275,7 @@ public class MasterApplication extends SimpleApplication {
 	 * {@link ViewAppState}s. This is used to keep two top-level
 	 * <code>Node</code>s attached to the root <code>Node</code> from having the
 	 * same name.
-	 * 
+	 *
 	 * @return The next available ID for a jME view that uses this
 	 *         <code>MasterApplication</code>.
 	 */
@@ -282,7 +290,7 @@ public class MasterApplication extends SimpleApplication {
 	 * the client AppState should call
 	 * {@link #releaseEmbeddedView(EmbeddedView)} with the EmbeddedView returned
 	 * by this method.
-	 * 
+	 *
 	 * @return An EmbeddedView.
 	 */
 	public EmbeddedView getEmbeddedView() {
@@ -309,7 +317,7 @@ public class MasterApplication extends SimpleApplication {
 	 * Releases an {@link EmbeddedView} for use elsewhere in the program. This
 	 * is important because {@link AwtPanel}s cannot yet be easily disposed in
 	 * jME.
-	 * 
+	 *
 	 * @param embeddedView
 	 *            The EmbeddedView that can be recycled for use elsewhere.
 	 */
@@ -328,7 +336,7 @@ public class MasterApplication extends SimpleApplication {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.jme3.app.SimpleApplication#simpleInitApp()
 	 */
 	@Override
@@ -352,7 +360,7 @@ public class MasterApplication extends SimpleApplication {
 	 * been initialized. This method will return either when the app is
 	 * initialized or until the limit is reached. By specifying 0 or a negative
 	 * number, you can wait indefinitely.
-	 * 
+	 *
 	 * @param limit
 	 *            The limit, in seconds, to wait until the
 	 *            <code>MasterApplication</code> has initialized.
@@ -377,7 +385,7 @@ public class MasterApplication extends SimpleApplication {
 				try {
 					Thread.sleep(step);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 				wait += step;
 			}
@@ -387,7 +395,7 @@ public class MasterApplication extends SimpleApplication {
 				try {
 					Thread.sleep(step);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
 		}

@@ -37,6 +37,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -250,8 +251,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 			// Create a new Section for the current DataComponent.
 			DataComponent dataComponent = dataComponents.get(i);
 			Section section = formToolkit.createSection(dataGridComposite,
-					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
-							| Section.EXPANDED | Section.COMPACT);
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+							| ExpandableComposite.EXPANDED | ExpandableComposite.COMPACT);
 			// Each Section should grab all available space it can get within
 			// the containing Composite created above this loop.
 			section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -295,8 +296,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 			// Create a new Section for the current TableComponent.
 			TableComponent tableComponent = tableComponents.get(i);
 			Section section = formToolkit.createSection(container,
-					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
-							| Section.EXPANDED);
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+							| ExpandableComposite.EXPANDED);
 			// Each Section should fill all available horizontal and vertical
 			// space in the parent GridLayout, but it should only grab excess
 			// horizontal space.
@@ -349,8 +350,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 			// Create a new Section for the current MatrixComponent.
 			MatrixComponent matrixComponent = matrixComponents.get(i);
 			Section section = formToolkit.createSection(matrixGridComposite,
-					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
-							| Section.EXPANDED);
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+							| ExpandableComposite.EXPANDED);
 			// No layout data needs to be set because the matrixGridComposite
 			// uses a FillLayout.
 

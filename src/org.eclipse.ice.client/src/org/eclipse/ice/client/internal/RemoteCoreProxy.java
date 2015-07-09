@@ -29,6 +29,8 @@ import org.eclipse.ice.item.ItemBuilder;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -57,6 +59,12 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
  * @author Jay Jay Billings
  */
 public class RemoteCoreProxy implements ICore {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(RemoteCoreProxy.class);
+	
 	/**
 	 * <p>
 	 * The hostname of the server to which the proxy is connected.
@@ -228,10 +236,10 @@ public class RemoteCoreProxy implements ICore {
 		String response = baseResource.accept(MediaType.TEXT_PLAIN)
 				.header("X-FOO", "BAR").get(String.class);
 
-		System.out.println("RemoteCoreProxy connection information: ");
-		System.out.println("\tHostname: " + host);
-		System.out.println("\tPort: " + serverPort);
-		System.out.println("\tUnique Client Id: " + response);
+		logger.info("RemoteCoreProxy connection information: ");
+		logger.info("\tHostname: " + host);
+		logger.info("\tPort: " + serverPort);
+		logger.info("\tUnique Client Id: " + response);
 
 		return response;
 	}
@@ -313,9 +321,9 @@ public class RemoteCoreProxy implements ICore {
 		id = resource.queryParam("type", itemType).accept(MediaType.TEXT_PLAIN)
 				.header("X-FOO", "BAR").post(String.class);
 
-		System.out.println("RemoteCoreProxy Message: POST URL = "
+		logger.info("RemoteCoreProxy Message: POST URL = "
 				+ resource.queryParam("type", itemType).toString());
-		System.out.println("RemoteCoreProxy Message: Item id = " + id);
+		logger.info("RemoteCoreProxy Message: Item id = " + id);
 
 		return id;
 	}

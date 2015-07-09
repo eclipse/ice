@@ -32,6 +32,8 @@ import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
@@ -74,6 +76,12 @@ import com.jme3.util.BufferUtils;
  */
 public class MeshAppState extends ViewAppState implements
 		IMeshSelectionListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(MeshAppState.class);
 
 	// TODO The player controls and physics have long since been deprecated.
 	// They will need to be updated to something newer that works the same way.
@@ -884,7 +892,7 @@ public class MeshAppState extends ViewAppState implements
 	 */
 	protected void updateMesh(MeshComponent mesh) {
 
-		System.out.println("MeshApplication message: Updating the mesh.");
+		logger.info("MeshApplication message: Updating the mesh.");
 
 		// This method should listen for new or deleted polygons.
 		// If a polygon is new, then appropriate controllers should be created
@@ -909,10 +917,10 @@ public class MeshAppState extends ViewAppState implements
 			curPolygons.put(id, polygon);
 			Polygon oldPolygon = polygons.get(id);
 			if (oldPolygon == null) {
-				// System.out.println("The polygon with ID " + id + " is new.");
+				// logger.info("The polygon with ID " + id + " is new.");
 				newPolygons.add(polygon);
 			} else if (oldPolygon != polygon) {
-				// System.out.println("The polygon with ID " + id
+				// logger.info("The polygon with ID " + id
 				// + " is stale and must be replaced.");
 
 				// Remove any expired edges.
@@ -942,7 +950,7 @@ public class MeshAppState extends ViewAppState implements
 				// We need to add the newer version of the polygon, too!
 				newPolygons.add(polygon);
 			} else {
-				// System.out.println("The polygon with ID " + id
+				// logger.info("The polygon with ID " + id
 				// + " already exists in the mesh.");
 			}
 		}
@@ -956,7 +964,7 @@ public class MeshAppState extends ViewAppState implements
 			if (!curPolygons.containsKey(id)) {
 				// Remove the polygon with id i.
 
-				// System.out.println("The polygon with ID " + id
+				// logger.info("The polygon with ID " + id
 				// + " no longer exists in the mesh.");
 
 				// Remove any expired edges.
@@ -1017,15 +1025,14 @@ public class MeshAppState extends ViewAppState implements
 				}
 			}
 
-			// System.out.println("The polygon with ID " + polygon.getId()
+			// logger.info("The polygon with ID " + polygon.getId()
 			// + " is new in the mesh.");
 
 			// Add the polygon's ID to our set of polygon IDs.
 			polygons.put(polygon.getId(), polygon);
 		}
 
-		System.out
-				.println("MeshApplication message: Finished updating the mesh.");
+		logger.info("MeshApplication message: " + "Finished updating the mesh.");
 
 		return;
 	}

@@ -318,7 +318,7 @@ public class RadialPower extends GodfreySubStrategy {
 			file.create(new ByteArrayInputStream(contents.getBytes()), false,
 					null);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return false;
 		}
 

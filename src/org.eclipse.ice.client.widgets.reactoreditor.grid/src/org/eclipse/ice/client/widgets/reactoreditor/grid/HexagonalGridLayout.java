@@ -118,10 +118,10 @@ public class HexagonalGridLayout extends GridLayout {
 			// width/height of
 			// the client area.
 			double lx = 2.0
-					* (double) (limit.width - horizontalSpacing * (columns - 1))
-					/ (double) (3 * columns + 1);
-			double ly = (double) (limit.height - verticalSpacing * (rows - 1))
-					/ (cosPiDivSix * (double) (rows * 2 + 1));
+					* (limit.width - horizontalSpacing * (columns - 1))
+					/ (3 * columns + 1);
+			double ly = (limit.height - verticalSpacing * (rows - 1))
+					/ (cosPiDivSix * (rows * 2 + 1));
 
 			// Determine which length to use and flag the direction that needs
 			// to be
@@ -142,10 +142,10 @@ public class HexagonalGridLayout extends GridLayout {
 			// Compute the necessary padding for whichever dimension needs it.
 			if (paddingX != 0) { // Size restricted by height.
 				paddingX = (int) (((double) limit.width - horizontalSpacing
-						* (rows - 1) - (lx * (double) (3 * columns + 1))) / 2.0);
+						* (rows - 1) - (lx * (3 * columns + 1))) / 2.0);
 			} else { // Size restricted by width.
 				paddingY = (int) (((double) limit.height - verticalSpacing
-						* (rows - 1) - (ly * (double) (2 * rows + 1))) / 2.0);
+						* (rows - 1) - (ly * (2 * rows + 1))) / 2.0);
 			}
 
 			// Update the PointList used by each hexagon.
@@ -161,8 +161,8 @@ public class HexagonalGridLayout extends GridLayout {
 
 			// We want to limit math ops, so compute the factors used in the
 			// loop.
-			double xFactor = l + lx + (double) horizontalSpacing;
-			double yFactor = 2 * ly + (double) verticalSpacing;
+			double xFactor = l + lx + horizontalSpacing;
+			double yFactor = 2 * ly + verticalSpacing;
 
 			// Compute the width and height of each hexagon.
 			int width = (int) Math.ceil(2 * l);
@@ -187,7 +187,7 @@ public class HexagonalGridLayout extends GridLayout {
 				// Compute the bounds of the cell in the row, column position.
 				x = paddingX + (int) (column * xFactor) + offsets.x;
 				y = paddingY
-						+ (int) (row * yFactor + ly * (double) (column % 2))
+						+ (int) (row * yFactor + ly * (column % 2))
 						+ offsets.y;
 				w = width + offsets.width;
 				h = height + offsets.height;
@@ -200,12 +200,12 @@ public class HexagonalGridLayout extends GridLayout {
 			// Get the hexagon side lengths supported by the current
 			// width/height of
 			// the client area.
-			double lx = (double) (limit.width - horizontalSpacing
+			double lx = (limit.width - horizontalSpacing
 					* (columns - 1))
-					/ (cosPiDivSix * (double) (columns * 2 + 1));
+					/ (cosPiDivSix * (columns * 2 + 1));
 			double ly = 2.0
-					* (double) (limit.height - verticalSpacing * (rows - 1))
-					/ (double) (3 * rows + 1);
+					* (limit.height - verticalSpacing * (rows - 1))
+					/ (3 * rows + 1);
 
 			// Determine which length to use and flag the direction that needs
 			// to be
@@ -226,10 +226,10 @@ public class HexagonalGridLayout extends GridLayout {
 			// Compute the necessary padding for whichever dimension needs it.
 			if (paddingX != 0) { // Size restricted by height.
 				paddingX = (int) (((double) limit.width - horizontalSpacing
-						* (columns - 1) - (lx * (double) (2 * columns + 1))) / 2.0);
+						* (columns - 1) - (lx * (2 * columns + 1))) / 2.0);
 			} else { // Size restricted by width.
 				paddingY = (int) (((double) limit.height - verticalSpacing
-						* (rows - 1) - (ly * (double) (3 * rows + 1))) / 2.0);
+						* (rows - 1) - (ly * (3 * rows + 1))) / 2.0);
 			}
 
 			// Update the PointList used by each hexagon.
@@ -245,8 +245,8 @@ public class HexagonalGridLayout extends GridLayout {
 
 			// We want to limit math ops, so compute the factors used in the
 			// loop.
-			double xFactor = lx + lx + (double) horizontalSpacing;
-			double yFactor = l + ly + (double) verticalSpacing;
+			double xFactor = lx + lx + horizontalSpacing;
+			double yFactor = l + ly + verticalSpacing;
 
 			// Compute the width and height of each hexagon.
 			int width = (int) Math.ceil(lx + lx);
@@ -270,7 +270,7 @@ public class HexagonalGridLayout extends GridLayout {
 
 				// Compute the bounds of the cell in the row, column position.
 				x = paddingX
-						+ (int) (column * xFactor + lx * (double) (row % 2))
+						+ (int) (column * xFactor + lx * (row % 2))
 						+ offsets.x;
 				y = paddingY + (int) (row * yFactor) + offsets.y;
 				w = width + offsets.width;

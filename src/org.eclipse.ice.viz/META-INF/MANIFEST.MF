@@ -19,6 +19,7 @@ Import-Package: gov.lbnl.visit.swt,
  org.eclipse.ui.views.contentoutline,
  org.eclipse.ui.views.properties,
  org.eclipse.ui.views.properties.tabbed,
+ org.slf4j;version="1.7.2",
  visit.java.client
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.100",
  org.eclipse.ice.client.compatibility;bundle-version="2.0.0",

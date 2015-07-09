@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
  *   Kasper Gammeltoft (added numRough limitations and logic on calculate 
  *   reflectivity)
@@ -16,6 +16,8 @@ package org.eclipse.ice.reflectivity;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.complex.Complex;
 import org.apache.commons.math.special.Erf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class performs all of the operations necessary to calculate the
@@ -23,11 +25,17 @@ import org.apache.commons.math.special.Erf;
  * developed by John Ankner at Oak Ridge National Laboratory that uses the
  * method described in Parratt, Phys. Rev. 95, 359(1954). It has been corrected
  * to incorporate incoherent and true absorption.
- * 
+ *
  * @author Jay Jay Billings, John Ankner
  *
  */
 public class ReflectivityCalculator {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ReflectivityCalculator.class);
 
 	/**
 	 * The maximum number of points used by the convolution routine.
@@ -48,7 +56,7 @@ public class ReflectivityCalculator {
 	/**
 	 * This operation returns the value of the squared modulus of the specular
 	 * reflectivity for a single wave vector Q.
-	 * 
+	 *
 	 * @param waveVectorQ
 	 *            the value of the wave vector
 	 * @param wavelength
@@ -123,7 +131,7 @@ public class ReflectivityCalculator {
 	/**
 	 * This operation convolutes the data in refFit with a Gaussian resolution
 	 * function in q, calculated from theta, delThe, and delLamOLam.
-	 * 
+	 *
 	 * @param waveVector
 	 *            the wave vector (Q) plus additional space for the convolution.
 	 *            This array should have length = numPoints + numLowPoints.
@@ -227,7 +235,7 @@ public class ReflectivityCalculator {
 	 * This operation calculates the length of the low-Q extension of the data
 	 * to be convoluted with the delt-Q full-width half-maximum Gaussian
 	 * resolution function.
-	 * 
+	 *
 	 * @param waveVector
 	 *            the wave vector (Q) plus additional space for the convolution.
 	 *            This array should have length = numPoints + numLowPoints.
@@ -266,7 +274,7 @@ public class ReflectivityCalculator {
 	 * This operation calculates the length of the high-Q extension of the data
 	 * to be convoluted with the delt-Q full-width half-maximum Gaussian
 	 * resolution function.
-	 * 
+	 *
 	 * @param waveVector
 	 *            the wave vector (Q) plus additional space for the convolution.
 	 *            This array should have length = numPoints + numLowPoints.
@@ -304,7 +312,7 @@ public class ReflectivityCalculator {
 	/**
 	 * This operation generates the interfacial profile using an error function
 	 * of numRough ordinate steps based on those of the hyperbolic tangent.
-	 * 
+	 *
 	 * @param numRough
 	 *            the number of ordinate steps
 	 * @param zInt
@@ -329,7 +337,7 @@ public class ReflectivityCalculator {
 			numRough = 1;
 		}
 		// Set the step size
-		step = 2.0 / ((double) (numRough + 1));
+		step = 2.0 / (numRough + 1);
 
 		// Evaluate the lower half of the interface
 		dist = -step / 2.0;
@@ -374,7 +382,7 @@ public class ReflectivityCalculator {
 	/**
 	 * This operation generates a list of Tiles from the slabs with the
 	 * corresponding number of ordinate steps.
-	 * 
+	 *
 	 * @param slabs
 	 *            the slabs of materials that define the system
 	 * @param numRough
@@ -440,7 +448,7 @@ public class ReflectivityCalculator {
 					* (refSlab.interfaceWidth + secondRefSlab.interfaceWidth);
 			if (gDMid <= 1.0e-10) {
 				// The interfaces are overlapping. Step through the entire slab
-				step = refSlab.thickness / ((double) (numRough + 1));
+				step = refSlab.thickness / (numRough + 1);
 				// Take the first half step
 				tmpSlab = generatedSlabs[nGlay];
 				tmpSlab.thickness = step / 2.0;
@@ -517,7 +525,7 @@ public class ReflectivityCalculator {
 	/**
 	 * This operation performs the tile updates needed by the generateTile()
 	 * operation where interfaces should be considered.
-	 * 
+	 *
 	 * @param tile
 	 *            the tile to update
 	 * @param slabM1
@@ -546,7 +554,7 @@ public class ReflectivityCalculator {
 	/**
 	 * This operation performs the tile updates needed by the generateTile()
 	 * operation.
-	 * 
+	 *
 	 * @param tile
 	 *            the tile to update
 	 * @param slabM1
@@ -584,7 +592,7 @@ public class ReflectivityCalculator {
 	 * This is a convenience operation that performs a lengthy, complicated
 	 * update operation. In the original code this formula was used for several
 	 * quantities and caused significant bloat.
-	 * 
+	 *
 	 * @param xm1
 	 *            the value at one index less than the midpoint
 	 * @param x
@@ -606,7 +614,7 @@ public class ReflectivityCalculator {
 	/**
 	 * This operation computes the convolution of the reflectivity with a
 	 * variable Gaussian resolution function.
-	 * 
+	 *
 	 * @param deltaQ0
 	 *            - FIXME!
 	 * @param deltaQ1ByQ
@@ -650,7 +658,7 @@ public class ReflectivityCalculator {
 		waveVecStep = waveVector[numPoints - 1] - waveVector[numPoints - 2];
 		for (int i = 0; i < numHighPoints; i++) {
 			tempWaveVector[i + numLowPoints + numPoints] = waveVector[numPoints - 1]
-					+ waveVecStep * ((double) i);
+					+ waveVecStep * (i);
 		}
 
 		// Create a temporary array to hold the extended reflectivity.
@@ -690,7 +698,7 @@ public class ReflectivityCalculator {
 	/**
 	 * This operation computes the neutron scattering density profile for a set
 	 * of tiles.
-	 * 
+	 *
 	 * @param tiles
 	 *            the set of tiles that define the material
 	 * @return The neutron scattering density profile.
@@ -728,9 +736,9 @@ public class ReflectivityCalculator {
 	/**
 	 * This operation returns the reflectivity profile for the given wave vector
 	 * and set of slabs that define the material.
-	 * 
+	 *
 	 * This function has entirely too many arguments and needs to be refactored.
-	 * 
+	 *
 	 * @param slabs
 	 *            the slabs that define the material
 	 * @param numRough
@@ -808,7 +816,7 @@ public class ReflectivityCalculator {
 		} catch (MathException e) {
 			// Complain
 			System.err.println("Unable to generate the interfacial profile!");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			// Null out the profile so no bad data is returned
 			profile = null;
 		}

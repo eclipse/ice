@@ -20,12 +20,13 @@ import org.eclipse.ice.kdd.kddmath.KDDMatrix;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 
 /**
- * 
+ *
  * @author Alex McCaskey
  */
 public class GodfreySubStrategy extends KDDStrategy {
+
 	/**
-	 * 
+	 * True if the strategy executed, false otherwise.
 	 */
 	protected boolean executed;
 
@@ -34,7 +35,7 @@ public class GodfreySubStrategy extends KDDStrategy {
 	 * Reference to pin power difference between the data and the reference
 	 * data.
 	 * </p>
-	 * 
+	 *
 	 */
 	protected HashMap<Integer, ArrayList<IDataMatrix>> loadedPinPowers;
 
@@ -42,17 +43,17 @@ public class GodfreySubStrategy extends KDDStrategy {
 	 * <p>
 	 * Reference to the rank-4 weight tensor.
 	 * </p>
-	 * 
+	 *
 	 */
 	protected HashMap<Integer, ArrayList<KDDMatrix>> weights;
 
 	/**
-	 * 
+	 *
 	 */
 	protected HashMap<Integer, ArrayList<IDataMatrix>> refPinPowers;
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasExecuted() {
@@ -60,7 +61,7 @@ public class GodfreySubStrategy extends KDDStrategy {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param pinPowers
 	 * @param refPinPowers
 	 * @param weights
@@ -82,7 +83,7 @@ public class GodfreySubStrategy extends KDDStrategy {
 	 * detection algorithm and produce a KDDAnalysisAsset for clients to display
 	 * and manipulate.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -91,7 +92,7 @@ public class GodfreySubStrategy extends KDDStrategy {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void resetExecuted() {
 		executed = false;
