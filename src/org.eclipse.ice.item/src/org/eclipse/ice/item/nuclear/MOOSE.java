@@ -819,21 +819,22 @@ public class MOOSE extends Item {
 	 *            The MOOSE Item that should be checked for equality.
 	 * @return True if the launchers are equal, false if not
 	 */
-	public boolean equals(MOOSE otherMoose) {
+	public boolean equals(Object other) {
 
 		boolean retVal;
 		// Check if they are the same reference in memory
-		if (this == otherMoose) {
+		if (this == other) {
 			return true;
 		}
 
 		// Check that the object is not null, and that it is an Item
 		// Check that these objects have the same ICEObject data
-		if (otherMoose == null || !(otherMoose instanceof Item) || !super.equals(otherMoose)) {
+		if (other == null || !(other instanceof MOOSE) || !super.equals(other)) {
 			return false;
 		}
 
 		// Check data
+		MOOSE otherMoose = (MOOSE) other;
 		retVal = (this.allowedActions.equals(otherMoose.allowedActions)) && (this.form.equals(otherMoose.form))
 				&& (this.itemType == otherMoose.itemType) && (this.status.equals(otherMoose.status));
 

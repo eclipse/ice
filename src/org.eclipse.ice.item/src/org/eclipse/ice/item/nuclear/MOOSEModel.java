@@ -1869,22 +1869,23 @@ public class MOOSEModel extends Item {
 	 *         True if the launchers are equal, false if not
 	 *         </p>
 	 */
-	public boolean equals(MOOSEModel otherMooseModel) {
+	public boolean equals(Object other) {
 
 		boolean retVal;
 
 		// Check if they are the same reference in memory
-		if (this == otherMooseModel) {
+		if (this == other) {
 			return true;
 		}
 
 		// Check that the object is not null, and that it is an Item
 		// Check that these objects have the same ICEObject data
-		if (otherMooseModel == null || !(otherMooseModel instanceof Item) || !super.equals(otherMooseModel)) {
+		if (other == null || !(other instanceof MOOSEModel) || !super.equals(other)) {
 			return false;
 		}
 
 		// Check data
+		MOOSEModel otherMooseModel = (MOOSEModel) other;
 		retVal = (this.allowedActions.equals(otherMooseModel.allowedActions))
 				&& (this.form.equals(otherMooseModel.form)) && (this.itemType == otherMooseModel.itemType)
 				&& (this.status.equals(otherMooseModel.status));
