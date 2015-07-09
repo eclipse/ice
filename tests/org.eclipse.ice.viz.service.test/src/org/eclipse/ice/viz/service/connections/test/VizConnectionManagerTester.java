@@ -29,7 +29,6 @@ import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnectionManager;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -92,16 +91,9 @@ public class VizConnectionManagerTester {
 
 		// Create a new, empty preference store.
 		store = new CustomScopedPreferenceStore(getClass());
+		store.removeNode(NODE_ID);
 
 		return;
-	}
-
-	/**
-	 * Removes any stored connection preferences.
-	 */
-	@After
-	public void afterEachTest() {
-		store.removeNode(NODE_ID);
 	}
 
 	/**
@@ -207,7 +199,7 @@ public class VizConnectionManagerTester {
 		// while the value is a delimited string containing its properties.
 		name = "trevor something";
 		port = 9001;
-		path = "/home/music/different/path";
+		path = "";
 		node.put(name, host + "," + port + "," + path);
 
 		// Make sure that the connection was added to the manager.
@@ -372,7 +364,7 @@ public class VizConnectionManagerTester {
 		// Add the second connection.
 		connection2 = "trevor something";
 		port = 9001;
-		path = "/home/music/different/path";
+		path = "";
 		node.put(connection2, host + "," + port + "," + path);
 
 		// Both have been added.

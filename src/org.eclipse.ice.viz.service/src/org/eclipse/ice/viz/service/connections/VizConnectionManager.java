@@ -207,9 +207,14 @@ public abstract class VizConnectionManager<T> {
 	 *            come straight from the {@link #preferenceStore}.
 	 */
 	private void addConnection(String name, String preferences) {
+		System.out.println("VizConnectionManager message: " + "Adding connection \"" + name
+				+ "\" using the preference string \"" + preferences + "\".");
+
 		VizConnection<T> connection = createConnection(name, preferences);
 
-		String[] split = preferences.split(getDelimiter());
+		// Split the string using the delimiter. The -1 is necessary to include
+		// empty values from the split.
+		String[] split = preferences.split(getDelimiter(), -1);
 
 		try {
 			// Ensure the connection's basic preferences are set.
@@ -249,6 +254,7 @@ public abstract class VizConnectionManager<T> {
 	 *            The name of the connection to remove.
 	 */
 	private void removeConnection(String name) {
+		System.out.println("VizConnectionManager message: " + "Removing connection \"" + name + "\".");
 
 		// Remove the associated connection from the map of connections by name.
 		VizConnection<T> connection = connectionsByName.remove(name);
@@ -276,6 +282,9 @@ public abstract class VizConnectionManager<T> {
 	 *            should come straight from the {@link #preferenceStore}.
 	 */
 	private void updateConnection(String name, String preferences) {
+		System.out.println("VizConnectionManager message: " + "Updating connection \"" + name
+				+ "\" using the preference string \"" + preferences + "\".");
+
 		final VizConnection<T> connection = connectionsByName.get(name);
 
 		// If the update requires a reset, reset the connection.
@@ -365,8 +374,22 @@ public abstract class VizConnectionManager<T> {
 	}
 
 	/**
+	 * 
+	 * 
+	 */
+	/**
 	 * Gets each connection property from the string of preferences, if
 	 * possible, and updates the connection based on them.
+	 * <p>
+	 * <b>Note:</b> If overridden, it is recommended to call the super method so
+	 * that teh host, port, and path will be updated. This method will return
+	 * true if any of those three properties change.
+	 * </p>
+	 * 
+	 * @param connection
+	 *            The connection whose preferences are being updated.
+	 * @param preferences
+	 *            The serialized string of preferences.
 	 * 
 	 * @return True if one of the properties changed and a reset of the
 	 *         connection is required, false if a reset is <i>not</i> required.
@@ -374,7 +397,9 @@ public abstract class VizConnectionManager<T> {
 	protected boolean updateConnectionPreferences(VizConnection<T> connection, String preferences) {
 		boolean requiresReset = false;
 
-		String[] split = preferences.split(getDelimiter());
+		// Split the string using the delimiter. The -1 is necessary to include
+		// empty values from the split.
+		String[] split = preferences.split(getDelimiter(), -1);
 
 		try {
 			// Get the host, port, and path, if possible.
