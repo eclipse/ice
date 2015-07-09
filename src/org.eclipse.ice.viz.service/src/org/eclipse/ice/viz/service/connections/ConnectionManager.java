@@ -71,8 +71,7 @@ public abstract class ConnectionManager<T> {
 		table = createConnectionTable();
 		TableComponentPreferenceAdapter tableAdapter;
 		tableAdapter = new TableComponentPreferenceAdapter();
-		tableAdapter.toTableComponent(
-				(CustomScopedPreferenceStore) getPreferenceStore(), table);
+		tableAdapter.toTableComponent((CustomScopedPreferenceStore) getPreferenceStore(), table);
 
 		// Create the default adapter based on the current properties. Do not
 		// connect yet.
@@ -165,8 +164,7 @@ public abstract class ConnectionManager<T> {
 	 * This method notifies the manager that the preferences have changed. Any
 	 * connections that have changed should be reset.
 	 */
-	public void preferencesChanged(Map<String, String> changedKeys,
-			Set<String> addedKeys, Set<String> removedKeys) {
+	public void preferencesChanged(Map<String, String> changedKeys, Set<String> addedKeys, Set<String> removedKeys) {
 
 		// Clear the old connection preferences.
 		for (int i = 0; i < table.numberOfRows(); i++) {
@@ -176,8 +174,7 @@ public abstract class ConnectionManager<T> {
 		// Update the connection preferences based on the stored preferences.
 		TableComponentPreferenceAdapter tableAdapter;
 		tableAdapter = new TableComponentPreferenceAdapter();
-		tableAdapter.toTableComponent(
-				(CustomScopedPreferenceStore) getPreferenceStore(), table);
+		tableAdapter.toTableComponent((CustomScopedPreferenceStore) getPreferenceStore(), table);
 
 		// TODO When we have multiple connections, we will need to do the
 		// following, then send the new connection adapters to the plots.
@@ -255,8 +252,11 @@ public abstract class ConnectionManager<T> {
 	 */
 	private String getDefaultConnectionKey() {
 		int id = getPreferenceStore().getInt("defaultConnection");
-		List<String> connectionNames = table.getConnectionNames();
-		return (id < connectionNames.size() ? connectionNames.get(id) : null);
+		String key = null;
+		if (id >= 0 && id < table.numberOfRows()) {
+			key = table.getRow(id).get(0).getValue();
+		}
+		return key;
 	}
 
 }

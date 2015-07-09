@@ -13,7 +13,6 @@ package org.eclipse.ice.viz.service;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbench;
 
 /**
  * This class manages the main page of visualization service preferences in the
@@ -61,17 +60,6 @@ public class VizPreferencePage extends AbstractVizPreferencePage {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	@Override
-	public void init(IWorkbench workbench) {
-		setDescription("Visualization Preferences");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
 	 * org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors
 	 * ()
 	 */
@@ -87,17 +75,6 @@ public class VizPreferencePage extends AbstractVizPreferencePage {
 				parent));
 
 		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.AbstractVizPreferencePage#getVizService()
-	 */
-	@Override
-	protected IVizService getVizService() {
-		return null;
 	}
 
 }

@@ -37,9 +37,9 @@ public class VisItConnectionTable extends ConnectionTable {
 	 * getConnectionTemplate()
 	 */
 	@Override
-	protected ArrayList<Entry> getConnectionTemplate() {
+	protected ArrayList<Entry> createConnectionTemplate() {
 		// Get the default connection template so we can add additional columns.
-		ArrayList<Entry> template = super.getConnectionTemplate();
+		ArrayList<Entry> template = super.createConnectionTemplate();
 
 		// TODO These Entries need descriptions.
 

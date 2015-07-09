@@ -75,7 +75,7 @@ public abstract class VizConnectionPreferencePage extends
 	@Override
 	public void init(IWorkbench workbench) {
 		// Set the page description/title.
-		setDescription(getVizService().getName() + " Connection Preferences");
+		super.init(workbench);
 
 		// Read the table of connections stored in the preferences into the
 		// ConnectionManager.
@@ -87,7 +87,7 @@ public abstract class VizConnectionPreferencePage extends
 		// Sync the key changes from the ConnectionManager and register for key
 		// change events.
 		resetKeyChangeInfo();
-		connectionManager.addKeyChangeListener(this);
+//		connectionManager.addKeyChangeListener(this);
 
 		return;
 	}
@@ -103,33 +103,33 @@ public abstract class VizConnectionPreferencePage extends
 	protected void createFieldEditors() {
 		Composite parent = getFieldEditorParent();
 
-		// Create a new DynamicComboFieldEditor for the default connection. The
-		// default connection should only be selected from the list of
-		// connections from the connection table.
-		final DynamicComboFieldEditor defaultConnection;
-		defaultConnection = new DynamicComboFieldEditor("defaultConnection",
-				"Default Connection", parent,
-				connectionManager.getConnectionNames());
-		addField(defaultConnection);
-
-		// Add a key change listener so that we can refresh the values in the
-		// default connection field editor when necessary.
-		connectionManager.addKeyChangeListener(new IKeyChangeListener() {
-			@Override
-			public void keyChanged(String oldKey, String newKey) {
-				// Get the current value for the default connection.
-				String value = defaultConnection.getValue();
-				// Update the default connection Combo's allowed values.
-				List<String> names = connectionManager.getConnectionNames();
-				defaultConnection.setAllowedValues(names);
-				// If the selected connection's name was changed, make sure it
-				// is still the default connection.
-				if (oldKey != null && newKey != null && oldKey.equals(value)) {
-					defaultConnection.setValue(newKey);
-				}
-				return;
-			}
-		});
+//		// Create a new DynamicComboFieldEditor for the default connection. The
+//		// default connection should only be selected from the list of
+//		// connections from the connection table.
+//		final DynamicComboFieldEditor defaultConnection;
+//		defaultConnection = new DynamicComboFieldEditor("defaultConnection",
+//				"Default Connection", parent,
+//				connectionManager.getConnectionNames());
+//		addField(defaultConnection);
+//
+//		// Add a key change listener so that we can refresh the values in the
+//		// default connection field editor when necessary.
+//		connectionManager.addKeyChangeListener(new IKeyChangeListener() {
+//			@Override
+//			public void keyChanged(String oldKey, String newKey) {
+//				// Get the current value for the default connection.
+//				String value = defaultConnection.getValue();
+//				// Update the default connection Combo's allowed values.
+//				List<String> names = connectionManager.getConnectionNames();
+//				defaultConnection.setAllowedValues(names);
+//				// If the selected connection's name was changed, make sure it
+//				// is still the default connection.
+//				if (oldKey != null && newKey != null && oldKey.equals(value)) {
+//					defaultConnection.setValue(newKey);
+//				}
+//				return;
+//			}
+//		});
 
 		return;
 	}
