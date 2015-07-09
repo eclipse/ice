@@ -81,29 +81,32 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 			// Put the service in service map so it can be retrieved later
 			serviceMap.put(name, service);
 
-			Set<String> supportedExtensions = new HashSet<String>();
-			supportedExtensions
-					.addAll(((AbstractVizService) service).supportedExtensions);
+			//Handle associated file types if the service supports file extensions  
+			if (service instanceof AbstractVizService) {
+				Set<String> supportedExtensions = new HashSet<String>();
+				supportedExtensions
+						.addAll(((AbstractVizService) service).supportedExtensions);
 
-			// Register the plot editor as default editor for all file
-			// extensions handled by the new viz service
-			for (String ext : supportedExtensions) {
-				EditorRegistry editorReg = (EditorRegistry) PlatformUI
-						.getWorkbench().getEditorRegistry();
-				EditorDescriptor editor = (EditorDescriptor) editorReg
-						.findEditor("org.eclipse.ice.viz.service.PlotEditor");
-				FileEditorMapping mapping = new FileEditorMapping(ext);
-				mapping.addEditor(editor);
-				mapping.setDefaultEditor(editor);
+				// Register the plot editor as default editor for all file
+				// extensions handled by the new viz service
+				for (String ext : supportedExtensions) {
+					EditorRegistry editorReg = (EditorRegistry) PlatformUI
+							.getWorkbench().getEditorRegistry();
+					EditorDescriptor editor = (EditorDescriptor) editorReg
+							.findEditor("org.eclipse.ice.viz.service.PlotEditor");
+					FileEditorMapping mapping = new FileEditorMapping(ext);
+					mapping.addEditor(editor);
+					mapping.setDefaultEditor(editor);
 
-				IFileEditorMapping[] mappings = editorReg
-						.getFileEditorMappings();
-				FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length + 1];
-				for (int i = 0; i < mappings.length; i++) {
-					newMappings[i] = (FileEditorMapping) mappings[i];
+					IFileEditorMapping[] mappings = editorReg
+							.getFileEditorMappings();
+					FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length + 1];
+					for (int i = 0; i < mappings.length; i++) {
+						newMappings[i] = (FileEditorMapping) mappings[i];
+					}
+					newMappings[mappings.length] = mapping;
+					editorReg.setFileEditorMappings(newMappings);
 				}
-				newMappings[mappings.length] = mapping;
-				editorReg.setFileEditorMappings(newMappings);
 			}
 
 			System.out.println("VizServiceFactory message: " + "Viz service \""

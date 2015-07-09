@@ -83,8 +83,6 @@ public class PlotEditorInputTester {
 
 		@Override
 		public void redraw() {
-			// TODO Auto-generated method stub
-			
 		}
 	}
 }
