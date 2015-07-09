@@ -46,6 +46,7 @@ Import-Package: ca.odell.glazedlists,
  org.osgi.service.prefs;version="1.1.1"
 Export-Package: org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.connections,
+ org.eclipse.ice.viz.service.connections.preferences,
  org.eclipse.ice.viz.service.csv,
  org.eclipse.ice.viz.service.preferences
 Service-Component: OSGI-INF/vizFactory.xml

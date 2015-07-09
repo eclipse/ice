@@ -16,9 +16,9 @@ import static org.junit.Assert.*;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
 import org.eclipse.ice.viz.service.connections.ConnectionState;
-import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.IConnectionClient;
+import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
 import org.junit.Test;
 
 /**

@@ -17,8 +17,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
+import org.eclipse.ice.viz.service.connections.preferences.TableComponentPreferenceAdapter;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
-import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
 
 /**
  * A {@code ConnectionManager} maps {@link IConnectionAdapter}s to

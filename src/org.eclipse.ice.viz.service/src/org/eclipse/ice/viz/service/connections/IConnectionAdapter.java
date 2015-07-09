@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
 
 /**
  * This is an interface for adapters that wrap any sort of local or remote
