@@ -51,6 +51,11 @@ public class ParaViewVizService extends AbstractVizService {
 	private IParaViewProxyFactory proxyFactory;
 
 	/**
+	 * The ID of the preferences node under which all connections will be added.
+	 */
+	public static final String CONNECTIONS_NODE_ID = "org.eclipse.ice.viz.paraview.connections";
+
+	/**
 	 * The default constructor.
 	 * <p>
 	 * <b>Note:</b> Only OSGi should call this method!
@@ -61,7 +66,7 @@ public class ParaViewVizService extends AbstractVizService {
 		// Set up the manager and hook it into the preferences.
 		manager = new ParaViewConnectionManager();
 		manager.setPreferenceStore((CustomScopedPreferenceStore) getPreferenceStore(),
-				"org.eclipse.ice.viz.paraview.connections");
+				CONNECTIONS_NODE_ID);
 
 		return;
 	}

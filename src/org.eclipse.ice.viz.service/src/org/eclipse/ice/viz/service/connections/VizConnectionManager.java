@@ -374,10 +374,6 @@ public abstract class VizConnectionManager<T> {
 	}
 
 	/**
-	 * 
-	 * 
-	 */
-	/**
 	 * Gets each connection property from the string of preferences, if
 	 * possible, and updates the connection based on them.
 	 * <p>

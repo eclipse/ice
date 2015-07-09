@@ -89,7 +89,7 @@ public abstract class AbstractVizPreferencePage extends
 	 */
 	@Override
 	public void init(IWorkbench workbench) {
-		setDescription(getVizService().getName() + " Preferences");
+		setDescription("Visualization Service Preferences");
 	}
 
 	/*
@@ -113,9 +113,5 @@ public abstract class AbstractVizPreferencePage extends
 		// also need to be updated.
 		return new CustomScopedPreferenceStore(getClass());
 	}
-
-	/**
-	 * Gets the IVizService whose preferences are displayed here.
-	 */
-	protected abstract IVizService getVizService();
+	
 }
