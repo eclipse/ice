@@ -51,5 +51,4 @@ public class VisItConnectionManager extends VizConnectionManager<VisItSwtConnect
 
 		return connection;
 	}
-
 }

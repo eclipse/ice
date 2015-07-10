@@ -11,19 +11,13 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-
 import java.net.URI;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
-import org.eclipse.ice.viz.service.connections.ConnectionManager;
-import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
-import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
-import org.eclipse.ice.viz.service.visit.connections.VisItConnectionAdapter;
+import org.eclipse.ice.viz.service.visit.connections.VisItConnectionManager;
 
 /**
  * This is an implementation of the IVizService interface for the VisIt
@@ -35,21 +29,16 @@ import org.eclipse.ice.viz.service.visit.connections.VisItConnectionAdapter;
 public class VisItVizService extends AbstractVizService {
 
 	/**
-	 * The current instance of the viz service. This instance was created when
-	 * the OSGi viz service was instantiated.
+	 * The manager for all of the VisIt connections. It syncs with the Eclipse
+	 * preferences automatically.
 	 */
-	private static VisItVizService instance;
-
-	/**
-	 * The manager for all of the VisIt connections.
-	 */
-	private final ConnectionManager<VisItSwtConnection> connections;
+	private final VisItConnectionManager manager;
 
 	/**
 	 * The ID of the preferences node under which all connections will be added.
 	 */
 	public static final String CONNECTIONS_NODE_ID = "org.eclipse.ice.viz.visit.connections";
-	
+
 	/**
 	 * The default constructor.
 	 * <p>
@@ -57,14 +46,6 @@ public class VisItVizService extends AbstractVizService {
 	 * </p>
 	 */
 	public VisItVizService() {
-		// Update the instance to point to this viz service (there should be
-		// only one).
-		instance = this;
-
-		// Set up the connection manager. The connection preference table is a
-		// little more complicated for VisIt, so we need to use the
-		// VisItConnectionTable rather than the default.
-		connections = null;
 
 		// Add supported ExodusII file format extensions.
 		supportedExtensions.add("ex");
@@ -78,36 +59,15 @@ public class VisItVizService extends AbstractVizService {
 		// Add supported Silo file format extensions.
 		supportedExtensions.add("silo");
 
+		// Set up the manager and hook it into the preferences.
+		manager = new VisItConnectionManager();
+		manager.setPreferenceStore((CustomScopedPreferenceStore) getPreferenceStore(), CONNECTIONS_NODE_ID);
+
 		return;
 	}
 
-	/**
-	 * Gets the current instance of the viz service. This instance was created
-	 * by OSGi.
-	 * <p>
-	 * <b>Note:</b> This method is only intended to be used by the preference
-	 * page to notify the service when the preferences have changed.
-	 * </p>
-	 * 
-	 * @return The current instance of the viz service.
-	 */
-	public static VisItVizService getInstance() {
-		return instance;
-	}
-
-	/**
-	 * This method notifies the service that the preferences have changed. Any
-	 * connections that have changed should be reset.
-	 */
-	public void preferencesChanged(Map<String, String> changedKeys,
-			Set<String> addedKeys, Set<String> removedKeys) {
-		connections.preferencesChanged(changedKeys, addedKeys, removedKeys);
-	}
-
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getName()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public String getName() {
@@ -115,20 +75,16 @@ public class VisItVizService extends AbstractVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getVersion()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public String getVersion() {
 		return "1.0";
 	}
 
+	// TODO REMOVE THESE LINES ----------------------------------
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * hasConnectionProperties()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public boolean hasConnectionProperties() {
@@ -137,10 +93,7 @@ public class VisItVizService extends AbstractVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * getConnectionProperties()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public Map<String, String> getConnectionProperties() {
@@ -149,10 +102,7 @@ public class VisItVizService extends AbstractVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * setConnectionProperties(java.util.Map)
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public void setConnectionProperties(Map<String, String> props) {
@@ -160,46 +110,40 @@ public class VisItVizService extends AbstractVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#connect()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public boolean connect() {
 		return false;
-//		return connections.connect();
+		// return connections.connect();
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#disconnect()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public boolean disconnect() {
-		return connections.disconnect();
+		return false;
 	}
+	// ----------------------------------------------------------
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
-	 * .net.URI)
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
 		// Call the super method to validate the URI's extension.
 		super.createPlot(file);
-		
+
 		VisItPlot plot = null;
 
-//		// Create the plot.
-//		plot = new VisItPlot(this);
-//		// Associate the plot with the connection.
-//		connections.addClient(plot);
-//		// Set teh data source for the file.
-//		plot.setDataSource(file);
+		// TODO
+		// // Create the plot.
+		// plot = new VisItPlot(this);
+		// // Associate the plot with the connection.
+		// connections.addClient(plot);
+		// // Set teh data source for the file.
+		// plot.setDataSource(file);
 
 		return plot;
 	}

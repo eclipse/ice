@@ -44,10 +44,30 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 		propertyHandlers.put("port", propertyHandlers.remove("Port"));
 		propertyHandlers.put("visDir", propertyHandlers.remove("Path"));
 		// Add a property handler for the proxy name and port.
-		propertyHandlers.put("gateway", propertyHandlers.get("url"));
+		propertyHandlers.put("gateway", new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				// Accept any non-null strings.
+				String newValue = null;
+				if (value != null) {
+					newValue = value.trim();
+				}
+				return newValue;
+			}
+		});
 		propertyHandlers.put("localGatewayPort", propertyHandlers.get("port"));
 		// Add a property handler for the VisIt session username.
-		propertyHandlers.put("username", propertyHandlers.get("connId"));
+		propertyHandlers.put("username", new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				// Accept any non-null strings.
+				String newValue = null;
+				if (value != null) {
+					newValue = value.trim();
+				}
+				return newValue;
+			}
+		});
 
 		return;
 	}
