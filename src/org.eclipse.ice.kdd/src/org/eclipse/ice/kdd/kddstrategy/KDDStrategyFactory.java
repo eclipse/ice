@@ -17,6 +17,8 @@ import java.util.HashMap;
 
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -29,6 +31,13 @@ import org.eclipse.ice.datastructures.form.Entry;
  * @author Alex McCaskey
  */
 public class KDDStrategyFactory {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(KDDStrategyFactory.class);
+	
 	/**
 	 * <p>
 	 * Reference to this KDDStrategies collection of KDDStrategyBuilders.
@@ -90,9 +99,9 @@ public class KDDStrategyFactory {
 	 */
 	public void registerStrategy(IStrategyBuilder strategyBuilder) {
 		if (strategyBuilder != null) {
-			System.out
-					.println("KDDStrategyFactory Message: Registering Builder "
-							+ strategyBuilder.getStrategyName());
+			logger.info("KDDStrategyFactory Message: "
+					+ "Registering Builder "
+					+ strategyBuilder.getStrategyName());
 			builders.put(strategyBuilder.getStrategyName(), strategyBuilder);
 		}
 	}
@@ -134,8 +143,8 @@ public class KDDStrategyFactory {
 	 * @param strategyBuilder
 	 */
 	public void unregisterStrategy(IStrategyBuilder strategyBuilder) {
-		System.out
-				.println("KDDStrategyFactory Message: Un registering Builder "
+		logger.info("KDDStrategyFactory Message: "
+						+ "Un registering Builder "
 						+ strategyBuilder.getStrategyName());
 		builders.remove(strategyBuilder);
 		return;

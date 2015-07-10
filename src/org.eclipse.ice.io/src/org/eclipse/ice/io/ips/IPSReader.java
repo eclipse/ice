@@ -30,6 +30,8 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.serializable.IReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -43,6 +45,12 @@ import org.eclipse.ice.io.serializable.IReader;
 public class IPSReader implements IReader {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(IPSReader.class);
+
+	/**
 	 * <p>
 	 * Keeps track of the current ID for entries. Since we don't know how many
 	 * entries we will need for each section we can just keep a global count of
@@ -52,18 +60,18 @@ public class IPSReader implements IReader {
 	private int currID = 0;
 
 	/**
-	 * Keeps track of default values of a port entry in case a configuration 
-	 * file doesn't define some of them.  If this variable is needed it is
-	 * loaded via the createPortMap method.
+	 * Keeps track of default values of a port entry in case a configuration
+	 * file doesn't define some of them. If this variable is needed it is loaded
+	 * via the createPortMap method.
 	 */
 	private HashMap<String, ArrayList<String>> portMap = null;
-	
+
 	/**
-	 * The current line of the file that the iterator is on while parsing through 
-	 * the input file.
+	 * The current line of the file that the iterator is on while parsing
+	 * through the input file.
 	 */
 	private String line = "";
-	
+
 	/**
 	 * Nullary constructor
 	 */
@@ -74,10 +82,10 @@ public class IPSReader implements IReader {
 
 	/**
 	 * <p>
-	 * Reads in the given IFile to the VibeModel datastructures. There are
-	 * four components in each IPS INI file that are parsed and arranged into
-	 * the form that will be displayed to the user. Returns a form composed of
-	 * the data read in from the specified location which can be modified and
+	 * Reads in the given IFile to the VibeModel datastructures. There are four
+	 * components in each IPS INI file that are parsed and arranged into the
+	 * form that will be displayed to the user. Returns a form composed of the
+	 * data read in from the specified location which can be modified and
 	 * written out by the user.
 	 * </p>
 	 * 
@@ -98,10 +106,10 @@ public class IPSReader implements IReader {
 		try {
 			lines = readFileLines(ifile);
 		} catch (FileNotFoundException e) {
-			System.out.println("IPSReader Message: Error!  Could not find file for loading.");
+			logger.info("IPSReader Message: Error!  Could not find file for loading.");
 			return null;
 		} catch (IOException e) {
-			System.out.println("IPSReader Message: Error!  Trouble reading file.");
+			logger.info("IPSReader Message: Error!  Trouble reading file.");
 			return null;
 		}
 
@@ -162,7 +170,7 @@ public class IPSReader implements IReader {
 	public ArrayList<Entry> findAll(IFile ifile, String regex) {
 		// Make sure there's something to look in
 		if (ifile == null) {
-			System.out.println("IPSReader Message: Error!  Null file given.");
+			logger.info("IPSReader Message: Error!  Null file given.");
 			return null;
 		}
 
@@ -173,12 +181,12 @@ public class IPSReader implements IReader {
 		try {
 			lines = readFileLines(ifile);
 		} catch (FileNotFoundException e) {
-			System.out
-					.println("IPSReader Message: Error!  Could not find file for loading.");
+			logger.info("IPSReader Message: "
+							+ "Error!  Could not find file for loading.");
 			return null;
 		} catch (IOException e) {
-			System.out
-					.println("IPSReader Message: Error!  Trouble reading file.");
+			logger.info("IPSReader Message: "
+							+ "Error!  Trouble reading file.");
 			return null;
 		}
 
@@ -226,10 +234,11 @@ public class IPSReader implements IReader {
 		// Read in the ini file and create the iterator
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader( ifile.getContents()));
+			reader = new BufferedReader(new InputStreamReader(
+					ifile.getContents()));
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Read the FileInputStream and append to a StringBuffer
@@ -476,11 +485,11 @@ public class IPSReader implements IReader {
 		portComponent.setDescription("A port in an IPS file.");
 		portComponent.setId(currID);
 		currID++;
-		
+
 		if (portComponent.getName().equals("TIME_LOOP")) {
 			return portComponent;
 		}
-		
+
 		// Read parameters until reaching a whitespace line that separates ports
 		boolean foundNextPort = false;
 		while (!foundNextPort) {
@@ -502,25 +511,25 @@ public class IPSReader implements IReader {
 
 			// Read in another line
 			line = it.next();
-			
+
 			// If the line has a comment split on it and disregard it
 			if (line.contains("#")) {
 				line = line.split("#", 2)[0];
 			}
-			
+
 			// Check if we are at a new port section
 			if (line.trim().startsWith("[") && line.trim().endsWith("]")) {
 				foundNextPort = true;
 			}
 		}
-		
+
 		// Make sure that we are not at the end of the file
 		if (!it.hasNext()) {
 			System.err.println("IPS Reader Message: Reached unexpected "
 					+ "end of file while reading the port configuration.");
 			return null;
 		}
-		
+
 		// Return the parameters
 		return portComponent;
 	}
@@ -545,12 +554,12 @@ public class IPSReader implements IReader {
 				.setDescription("Setup for each of the ports in the simulation.");
 		String portName;
 		int masterId;
-		
+
 		// Set the allowed ports so that users don't try to go too far and end
 		// up with settings that don't exist
-		String[] allowedPortNames = {"INIT_STATE", "AMPERES_THERMAL",
-				"AMPERES_ELECTRICAL", "CHARTRAN_ELECTRICAL_THERMAL_DRIVER", 
-				"NTG", "DUALFOIL"};
+		String[] allowedPortNames = { "INIT_STATE", "AMPERES_THERMAL",
+				"AMPERES_ELECTRICAL", "CHARTRAN_ELECTRICAL_THERMAL_DRIVER",
+				"NTG", "DUALFOIL" };
 		ArrayList<String> allowedPortList = new ArrayList<String>(
 				Arrays.asList(allowedPortNames));
 		ArrayList<DataComponent> portTemplates = new ArrayList<DataComponent>();
@@ -567,7 +576,7 @@ public class IPSReader implements IReader {
 		if (allowedPortList.size() > 0 && portMap == null) {
 			populatePortMap();
 		}
-		
+
 		// Add in the missing definitions
 		for (String port : allowedPortList) {
 			portTemplates.add(loadComponent(portMap.get(port).iterator()));
@@ -576,7 +585,7 @@ public class IPSReader implements IReader {
 		// Recreate the overall list & Set the template
 		allowedPortList = new ArrayList<String>(Arrays.asList(allowedPortNames));
 		masterDetails.setTemplates(allowedPortList, portTemplates);
-		
+
 		// Add the ports to the MasterDetailsComponent
 		for (DataComponent data : ipsComponents) {
 			masterId = masterDetails.addMaster();
@@ -584,7 +593,7 @@ public class IPSReader implements IReader {
 
 			// Get the information corrected
 			masterDetails.setMasterInstanceValue(masterId, portName);
-			masterDetails.getDetailsAtIndex(masterId-1).copy(data);
+			masterDetails.getDetailsAtIndex(masterId - 1).copy(data);
 		}
 		return masterDetails;
 	}
@@ -651,78 +660,97 @@ public class IPSReader implements IReader {
 	}
 
 	/**
-	 * Fills the portMap in with the correct default information for each port.  This method is 
-	 * used when filling in the MasterDetailsComponent, in the event that a configuration file
-	 * is lacking a definition of a port.
+	 * Fills the portMap in with the correct default information for each port.
+	 * This method is used when filling in the MasterDetailsComponent, in the
+	 * event that a configuration file is lacking a definition of a port.
 	 * 
-	 * Each of the default definition arrays must end with two separate blank or whitespace filled 
-	 * strings in order to satisfy the exit statement of the loadComponent() definition.
+	 * Each of the default definition arrays must end with two separate blank or
+	 * whitespace filled strings in order to satisfy the exit statement of the
+	 * loadComponent() definition.
 	 */
 	private void populatePortMap() {
-		String[] allowedPortNames = {"INIT_STATE", "AMPERES_THERMAL",
-				"AMPERES_ELECTRICAL", "CHARTRAN_ELECTRICAL_THERMAL_DRIVER", 
-				"NTG", "DUALFOIL"};
+		String[] allowedPortNames = { "INIT_STATE", "AMPERES_THERMAL",
+				"AMPERES_ELECTRICAL", "CHARTRAN_ELECTRICAL_THERMAL_DRIVER",
+				"NTG", "DUALFOIL" };
 		ArrayList<String> portLines;
 		portMap = new HashMap<String, ArrayList<String>>();
-		
+
 		// INIT_STATE definitions
-		String[] initStrings = {"[INIT_STATE]","CLASS = DRIVERS","SUB_CLASS = ",
-				"NAME = InitialState","NPROC = 1","BIN_PATH = $CAEBAT_ROOT/bin",
-			    "INPUT_DIR = $DATA_ROOT/","INPUT_FILES  =","OUTPUT_FILES = $CURRENT_STATE",
-			    "VARIABLES = 'lumped_source', 'lumped_resistance', 'lumped_temperature'",
-			    "INIT_VALUES  = '0.0', '0.0', '298.'","SCRIPT = $BIN_PATH/init_state.py","",""};
+		String[] initStrings = {
+				"[INIT_STATE]",
+				"CLASS = DRIVERS",
+				"SUB_CLASS = ",
+				"NAME = InitialState",
+				"NPROC = 1",
+				"BIN_PATH = $CAEBAT_ROOT/bin",
+				"INPUT_DIR = $DATA_ROOT/",
+				"INPUT_FILES  =",
+				"OUTPUT_FILES = $CURRENT_STATE",
+				"VARIABLES = 'lumped_source', 'lumped_resistance', 'lumped_temperature'",
+				"INIT_VALUES  = '0.0', '0.0', '298.'",
+				"SCRIPT = $BIN_PATH/init_state.py", "", "" };
 		portLines = new ArrayList<String>(Arrays.asList(initStrings));
 		portMap.put("INIT_STATE", portLines);
-		
+
 		// AMPERES_THERMAL definitions
-		String[] thermStrings = {"[AMPERES_THERMAL]","CLASS = THERMAL",
-				"SUB_CLASS =","NAME = Amperes","NPROC = 1","BIN_PATH = $CAEBAT_ROOT/bin",
-				"INPUT_DIR = $SIM_ROOT/input","INPUT_FILES = 'input_keyvalue', 'Cell-zones1.e'",
-				"OUTPUT_FILES = $CURRENT_STATE","INPUT_VAR= 'lumped_source'",
-				"OUTPUT_VAR   = 'lumped_temperature'","SCRIPT = $BIN_PATH/amperes_thermal.py","",""};
+		String[] thermStrings = { "[AMPERES_THERMAL]", "CLASS = THERMAL",
+				"SUB_CLASS =", "NAME = Amperes", "NPROC = 1",
+				"BIN_PATH = $CAEBAT_ROOT/bin", "INPUT_DIR = $SIM_ROOT/input",
+				"INPUT_FILES = 'input_keyvalue', 'Cell-zones1.e'",
+				"OUTPUT_FILES = $CURRENT_STATE", "INPUT_VAR= 'lumped_source'",
+				"OUTPUT_VAR   = 'lumped_temperature'",
+				"SCRIPT = $BIN_PATH/amperes_thermal.py", "", "" };
 		portLines = new ArrayList<String>(Arrays.asList(thermStrings));
 		portMap.put("AMPERES_THERMAL", portLines);
-		
+
 		// AMPERES_ELECTRICAL definitions
-		String[] elecStrings ={"[AMPERES_ELECTRICAL]","CLASS = ELECTRICAL","SUB_CLASS =",
-						"NAME = Amperes","NPROC = 1","BIN_PATH = $CAEBAT_ROOT/bin",
-						"INPUT_DIR = $SIM_ROOT/input","INPUT_FILES = 'input_keyvalue', 'Cell-zones1.e'",
-						"OUTPUT_FILES = $CURRENT_STATE","INPUT_VAR= 'lumped_resistance'",
-						"OUTPUT_VAR   = 'lumped_source'","SCRIPT = $BIN_PATH/amperes_electrical.py","",""};
+		String[] elecStrings = { "[AMPERES_ELECTRICAL]", "CLASS = ELECTRICAL",
+				"SUB_CLASS =", "NAME = Amperes", "NPROC = 1",
+				"BIN_PATH = $CAEBAT_ROOT/bin", "INPUT_DIR = $SIM_ROOT/input",
+				"INPUT_FILES = 'input_keyvalue', 'Cell-zones1.e'",
+				"OUTPUT_FILES = $CURRENT_STATE",
+				"INPUT_VAR= 'lumped_resistance'",
+				"OUTPUT_VAR   = 'lumped_source'",
+				"SCRIPT = $BIN_PATH/amperes_electrical.py", "", "" };
 		portLines = new ArrayList<String>(Arrays.asList(elecStrings));
 		portMap.put("AMPERES_ELECTRICAL", portLines);
-		
+
 		// CHARTRAN_ELECTRICAL_THERMAL_DRIVER definitions
-		String[] cetdStrings = {"[CHARTRAN_ELECTRICAL_THERMAL_DRIVER]","CLASS = DRIVERS",
-				"SUB_CLASS = CHARTRAN_THERMAL","NAME = Driver","NPROC = 1",
-				"BIN_PATH = $CAEBAT_ROOT/bin","INPUT_DIR = $SIM_ROOT/",
-				"INPUT_FILES =","OUTPUT_FILES = $CURRENT_STATE ",
-				"SCRIPT = $BIN_PATH/thermal_electrical_chartran_driver_n.py","",""};
+		String[] cetdStrings = { "[CHARTRAN_ELECTRICAL_THERMAL_DRIVER]",
+				"CLASS = DRIVERS", "SUB_CLASS = CHARTRAN_THERMAL",
+				"NAME = Driver", "NPROC = 1", "BIN_PATH = $CAEBAT_ROOT/bin",
+				"INPUT_DIR = $SIM_ROOT/", "INPUT_FILES =",
+				"OUTPUT_FILES = $CURRENT_STATE ",
+				"SCRIPT = $BIN_PATH/thermal_electrical_chartran_driver_n.py",
+				"", "" };
 		portLines = new ArrayList<String>(Arrays.asList(cetdStrings));
 		portMap.put("CHARTRAN_ELECTRICAL_THERMAL_DRIVER", portLines);
-		
+
 		// NTG definitions
-		String[] ntgStrings = {"[NTG]","CLASS= CHARTRAN","SUB_CLASS=","NAME = NTG",
-						"NPROC= 1","BIN_PATH = $CAEBAT_ROOT/bin","INPUT_DIR= $SIM_ROOT/input",
-						"INPUT_FILES  = 'input_keyvalue'","OUTPUT_FILES = 'ntg.out'",
-						"INPUT_VAR= 'lumped_temperature'","OUTPUT_VAR   = 'lumped_source', 'lumped_resistance'",
-						"SCRIPT   = $BIN_PATH/ntg_chartran.py","",""};
+		String[] ntgStrings = { "[NTG]", "CLASS= CHARTRAN", "SUB_CLASS=",
+				"NAME = NTG", "NPROC= 1", "BIN_PATH = $CAEBAT_ROOT/bin",
+				"INPUT_DIR= $SIM_ROOT/input",
+				"INPUT_FILES  = 'input_keyvalue'", "OUTPUT_FILES = 'ntg.out'",
+				"INPUT_VAR= 'lumped_temperature'",
+				"OUTPUT_VAR   = 'lumped_source', 'lumped_resistance'",
+				"SCRIPT   = $BIN_PATH/ntg_chartran.py", "", "" };
 		portLines = new ArrayList<String>(Arrays.asList(ntgStrings));
 		portMap.put("NTG", portLines);
-		
+
 		// DUALFOIL definitions
-		String[] dfoilStrings = {"[DUALFOIL]","CLASS = CHARTRAN","SUB_CLASS =",
-				"NAME = DualFoil","NPROC = 1","BIN_PATH = $CAEBAT_ROOT/bin",
-				"INPUT_DIR = $SIM_ROOT/input","INPUT_FILES = 'dualfoil5.in' , 'li-ion-ebar.in'",
-				"OUTPUT_FILES = 'df_caebat.out'","INPUT_VAR= 'lumped_temperature'",
+		String[] dfoilStrings = { "[DUALFOIL]", "CLASS = CHARTRAN",
+				"SUB_CLASS =", "NAME = DualFoil", "NPROC = 1",
+				"BIN_PATH = $CAEBAT_ROOT/bin", "INPUT_DIR = $SIM_ROOT/input",
+				"INPUT_FILES = 'dualfoil5.in' , 'li-ion-ebar.in'",
+				"OUTPUT_FILES = 'df_caebat.out'",
+				"INPUT_VAR= 'lumped_temperature'",
 				"OUTPUT_VAR   = 'lumped_source', 'lumped_resistance'",
-				"SCRIPT = $BIN_PATH/dualfoil_chartran.py","",""};
+				"SCRIPT = $BIN_PATH/dualfoil_chartran.py", "", "" };
 		portLines = new ArrayList<String>(Arrays.asList(dfoilStrings));
 		portMap.put("DUALFOIL", portLines);
-				
+
 	}
-	
-	
+
 	/**
 	 * Initialize a default entry for an IPS model
 	 * 

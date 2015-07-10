@@ -28,6 +28,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This action adds a set of time-dependent SILO files. The files must have file
@@ -39,6 +41,12 @@ import org.eclipse.ui.part.ViewPart;
  * 
  */
 public class AddTimeDependentSILOSetAction extends Action {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AddTimeDependentSILOSetAction.class);
 
 	/**
 	 * The ViewPart that owns an object of this class.
@@ -70,9 +78,10 @@ public class AddTimeDependentSILOSetAction extends Action {
 	}
 
 	/**
-	 * The function called whenever the Action is selected from the drop-down. 
-	 * It will grab the set of silo files and create a .visit file from them 
-	 * which just sequentially lists the files, separated by a newline character. 
+	 * The function called whenever the Action is selected from the drop-down.
+	 * It will grab the set of silo files and create a .visit file from them
+	 * which just sequentially lists the files, separated by a newline
+	 * character.
 	 */
 	@Override
 	public void run() {
@@ -84,7 +93,7 @@ public class AddTimeDependentSILOSetAction extends Action {
 		ArrayList<String> siloFilesToAdd;
 		VizResource vizResource = null, child = null;
 		ArrayList<VizResource> children = new ArrayList<VizResource>();
-		
+
 		// Filter files by images (*.silo) or all files.
 		String[] filterNames = new String[] { "All Files (*)", ".silo Files",
 				"VisIt Files" };
@@ -128,31 +137,33 @@ public class AddTimeDependentSILOSetAction extends Action {
 				Files.write(Paths.get(visitFileName), siloFilesToAdd,
 						Charset.defaultCharset(), StandardOpenOption.CREATE,
 						StandardOpenOption.TRUNCATE_EXISTING);
-				
+
 				for (String name : fileNames) {
-					child = new VizResource(new File(dialog.getFilterPath() + separator + name));
+					child = new VizResource(new File(dialog.getFilterPath()
+							+ separator + name));
 					child.setHost("localhost");
 					children.add(child);
 				}
-				
+
 				// Create the VizResource from it
-				vizResource = new VizResource(new File(visitFileName));//, children);
-				
+				vizResource = new VizResource(new File(visitFileName));// ,
+																		// children);
+
 				// Set the host, this should just be local
 				vizResource.setHost("localhost");
-				
+
 				// Add the File names so they show up in the tree
 				vizResource.setFileSet(fileNames);
-				
+
 				// Give the .visit file to the FileViewer
 				vizViewer.addFile(vizResource);
-				
+
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 		} else {
-			System.out.println("AddFileSetAction message: No file selected.");
+			logger.info("AddFileSetAction message: No file selected.");
 		}
 
 		return;

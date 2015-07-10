@@ -26,14 +26,22 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class handles the launch of the VisIt client.
- * 
+ *
  * @author Jay Jay Billings, Taylor Patterson
- * 
+ *
  */
 public class LaunchVisitHandler extends AbstractHandler {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(LaunchVisitHandler.class);
 
 	/**
 	 * This operation handles the command and launches the VisIt configuration
@@ -84,7 +92,7 @@ public class LaunchVisitHandler extends AbstractHandler {
 			page.openEditor(input, VisitEditor.ID);
 		} catch (PartInitException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			// Throw up an error dialog
 			MessageBox errBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.OK);
 			errBox.setText("VisIt Editor Error!");

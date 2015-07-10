@@ -165,7 +165,7 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		// Setup Control Banks information
 		LWRComposite controlBankComposite = new LWRComposite();
-		controlBankComposite.setName(this.CONTROL_BANK_COMPOSITE_NAME);
+		controlBankComposite.setName(PressurizedWaterReactor.CONTROL_BANK_COMPOSITE_NAME);
 		controlBankComposite
 				.setDescription("A Composite that contains many ControlBank Components.");
 		controlBankComposite.setId(1);
@@ -175,11 +175,11 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		// Setup Grid Manager
 		LWRGridManager controlBankGridManager = new LWRGridManager(this.size);
-		controlBankGridManager.setName(this.CONTROL_BANK_GRID_MANAGER_NAME);
+		controlBankGridManager.setName(PressurizedWaterReactor.CONTROL_BANK_GRID_MANAGER_NAME);
 
 		// Setup Fuel Assemblies information
 		LWRComposite fuelAssemblyComposite = new LWRComposite();
-		fuelAssemblyComposite.setName(this.FUEL_ASSEMBLY_COMPOSITE_NAME);
+		fuelAssemblyComposite.setName(PressurizedWaterReactor.FUEL_ASSEMBLY_COMPOSITE_NAME);
 		fuelAssemblyComposite
 				.setDescription("A Composite that contains many FuelAssembly Components.");
 		fuelAssemblyComposite.setId(2);
@@ -189,14 +189,14 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		// Setup Grid Manager
 		LWRGridManager fuelAssemblyGridManager = new LWRGridManager(this.size);
-		fuelAssemblyGridManager.setName(this.FUEL_ASSEMBLY_GRID_MANAGER_NAME);
+		fuelAssemblyGridManager.setName(PressurizedWaterReactor.FUEL_ASSEMBLY_GRID_MANAGER_NAME);
 
 		this.fuelAssemblyPitch = 0.0;
 
 		// Setup InCoreInstruments
 		LWRComposite incoreInstrumentComposite = new LWRComposite();
 		incoreInstrumentComposite
-				.setName(this.INCORE_INSTRUMENT_COMPOSITE_NAME);
+				.setName(PressurizedWaterReactor.INCORE_INSTRUMENT_COMPOSITE_NAME);
 		incoreInstrumentComposite
 				.setDescription("A Composite that contains many IncoreInstrument Components.");
 		incoreInstrumentComposite.setId(3);
@@ -208,12 +208,12 @@ public class PressurizedWaterReactor extends LWReactor {
 		LWRGridManager incoreInstrumentGridManager = new LWRGridManager(
 				this.size);
 		incoreInstrumentGridManager
-				.setName(this.INCORE_INSTRUMENT_GRID_MANAGER_NAME);
+				.setName(PressurizedWaterReactor.INCORE_INSTRUMENT_GRID_MANAGER_NAME);
 
 		// Setup RodClusterAssemblies
 		LWRComposite rodClusterAssemblyComposite = new LWRComposite();
 		rodClusterAssemblyComposite
-				.setName(this.ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME);
+				.setName(PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME);
 		rodClusterAssemblyComposite
 				.setDescription("A Composite that contains many RodClusterAssembly Components.");
 		rodClusterAssemblyComposite.setId(4);
@@ -225,11 +225,11 @@ public class PressurizedWaterReactor extends LWReactor {
 		LWRGridManager rodClusterAssemblyGridManager = new LWRGridManager(
 				this.size);
 		rodClusterAssemblyGridManager
-				.setName(this.ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME);
+				.setName(PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME);
 
 		// Add a default GridLabelProvider
 		this.gridLabelProvider = new GridLabelProvider(this.size);
-		this.gridLabelProvider.setName(this.GRID_LABEL_PROVIDER_NAME);
+		this.gridLabelProvider.setName(PressurizedWaterReactor.GRID_LABEL_PROVIDER_NAME);
 
 		// Setup the Name, Id, Description
 		this.name = "PWReactor 1";
@@ -358,10 +358,10 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		// Reset info
 		this.gridLabelProvider = new GridLabelProvider(this.size);
-		this.gridLabelProvider.setName(this.GRID_LABEL_PROVIDER_NAME);
+		this.gridLabelProvider.setName(PressurizedWaterReactor.GRID_LABEL_PROVIDER_NAME);
 
 		LWRGridManager controlBankGridManager = new LWRGridManager(this.size);
-		controlBankGridManager.setName(this.CONTROL_BANK_GRID_MANAGER_NAME);
+		controlBankGridManager.setName(PressurizedWaterReactor.CONTROL_BANK_GRID_MANAGER_NAME);
 		LWRGridManager fuelAssemblyGridManager = new LWRGridManager(this.size);
 		fuelAssemblyGridManager.setName(FUEL_ASSEMBLY_GRID_MANAGER_NAME);
 		LWRGridManager incoreInstrumentGridManager = new LWRGridManager(
@@ -485,23 +485,23 @@ public class PressurizedWaterReactor extends LWReactor {
 
 			// Check the name and assign to correct object
 			if (lWRGridManager.getName().equals(
-					this.CONTROL_BANK_GRID_MANAGER_NAME)) {
+					PressurizedWaterReactor.CONTROL_BANK_GRID_MANAGER_NAME)) {
 
 				this.managers.put(AssemblyType.ControlBank, lWRGridManager);
 
 			} else if (lWRGridManager.getName().equals(
-					this.FUEL_ASSEMBLY_GRID_MANAGER_NAME)) {
+					PressurizedWaterReactor.FUEL_ASSEMBLY_GRID_MANAGER_NAME)) {
 
 				this.managers.put(AssemblyType.Fuel, lWRGridManager);
 
 			} else if (lWRGridManager.getName().equals(
-					this.INCORE_INSTRUMENT_GRID_MANAGER_NAME)) {
+					PressurizedWaterReactor.INCORE_INSTRUMENT_GRID_MANAGER_NAME)) {
 
 				this.managers
 						.put(AssemblyType.IncoreInstrument, lWRGridManager);
 
 			} else if (lWRGridManager.getName().equals(
-					this.ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME)) {
+					PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME)) {
 
 				this.managers.put(AssemblyType.RodCluster, lWRGridManager);
 
@@ -514,7 +514,7 @@ public class PressurizedWaterReactor extends LWReactor {
 			LWRComposite lWRComposite = (LWRComposite) childComponent;
 
 			// Check the name and assign to correct object
-			if (lWRComposite.getName().equals(this.CONTROL_BANK_COMPOSITE_NAME)) {
+			if (lWRComposite.getName().equals(PressurizedWaterReactor.CONTROL_BANK_COMPOSITE_NAME)) {
 
 				// Remove existing component and replace with new one
 				this.lWRComponents.remove(lWRComposite.getName());
@@ -523,7 +523,7 @@ public class PressurizedWaterReactor extends LWReactor {
 						lWRComposite);
 
 			} else if (lWRComposite.getName().equals(
-					this.FUEL_ASSEMBLY_COMPOSITE_NAME)) {
+					PressurizedWaterReactor.FUEL_ASSEMBLY_COMPOSITE_NAME)) {
 
 				// Remove existing component and replace with new one
 				this.lWRComponents.remove(lWRComposite.getName());
@@ -531,7 +531,7 @@ public class PressurizedWaterReactor extends LWReactor {
 				this.assemblyComposites.put(AssemblyType.Fuel, lWRComposite);
 
 			} else if (lWRComposite.getName().equals(
-					this.INCORE_INSTRUMENT_COMPOSITE_NAME)) {
+					PressurizedWaterReactor.INCORE_INSTRUMENT_COMPOSITE_NAME)) {
 
 				// Remove existing component and replace with new one
 				this.lWRComponents.remove(lWRComposite.getName());
@@ -540,7 +540,7 @@ public class PressurizedWaterReactor extends LWReactor {
 						lWRComposite);
 
 			} else if (lWRComposite.getName().equals(
-					this.ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME)) {
+					PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME)) {
 
 				// Remove existing component and replace with new one
 				this.lWRComponents.remove(lWRComposite.getName());

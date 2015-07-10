@@ -14,31 +14,6 @@ package org.eclipse.ice.client.widgets;
 import org.eclipse.ice.datastructures.ICEObject.IElementSource;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.jface.window.Window;
-import org.eclipse.nebula.widgets.nattable.NatTable;
-import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
-import org.eclipse.nebula.widgets.nattable.config.ConfigRegistry;
-import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
-import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
-import org.eclipse.nebula.widgets.nattable.config.IEditableRule;
-import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
-import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
-import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
-import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
-import org.eclipse.nebula.widgets.nattable.extension.glazedlists.GlazedListsEventLayer;
-import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
-import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
-import org.eclipse.nebula.widgets.nattable.grid.data.DefaultRowHeaderDataProvider;
-import org.eclipse.nebula.widgets.nattable.grid.layer.ColumnHeaderLayer;
-import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
-import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultColumnHeaderDataLayer;
-import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultRowHeaderDataLayer;
-import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
-import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
-import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
-import org.eclipse.nebula.widgets.nattable.layer.ILayer;
-import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnLabelAccumulator;
-import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
-import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -50,6 +25,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -133,8 +109,8 @@ public class ListComponentSectionPage extends ICEFormPage {
 			shell = parent.getShell();
 			// Create the section and set its layout info
 			Section listSection = formToolkit.createSection(parent,
-					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
-							| Section.EXPANDED | Section.COMPACT);
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+							| ExpandableComposite.EXPANDED | ExpandableComposite.COMPACT);
 			listSection.setLayout(new GridLayout(1, false));
 			listSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 					true, 1, 1));

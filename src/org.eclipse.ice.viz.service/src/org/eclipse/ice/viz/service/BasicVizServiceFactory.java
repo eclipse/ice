@@ -25,6 +25,10 @@ import org.eclipse.ui.internal.registry.EditorDescriptor;
 import org.eclipse.ui.internal.registry.EditorRegistry;
 import org.eclipse.ui.internal.registry.FileEditorMapping;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 /**
  * This class is the basic implementation of the IVizServiceFactory in ICE. It
  * is registered with the platform as an OSGi service.
@@ -36,6 +40,12 @@ import org.eclipse.ui.internal.registry.FileEditorMapping;
  * 
  */
 public class BasicVizServiceFactory implements IVizServiceFactory {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(BasicVizServiceFactory.class);
 
 	/**
 	 * The map that stores all of the services.
@@ -81,6 +91,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 			// Put the service in service map so it can be retrieved later
 			serviceMap.put(name, service);
 
+
 			//Handle associated file types if the service supports file extensions  
 			if (service instanceof AbstractVizService) {
 				Set<String> supportedExtensions = new HashSet<String>();
@@ -109,17 +120,18 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 				}
 			}
 
-			System.out.println("VizServiceFactory message: " + "Viz service \""
-					+ name + "\" registered.");
+			logger.info("VizServiceFactory message: " + "Viz service \"" + name
+					+ "\" registered.");
+
 
 			// If the preference for automatically connecting to default viz
 			// service connections is set, establish default connections.
 			if (getPreferenceStore().getBoolean("autoConnectToDefaults")) {
 				if (service.connect()) {
-					System.out.println("VizServiceFactory message: "
+					logger.info("VizServiceFactory message: "
 							+ "Viz service \"" + name + "\" connected.");
 				} else {
-					System.out.println("VizServiceFactory message: "
+					logger.info("VizServiceFactory message: "
 							+ "Viz service \"" + name + "\" is connecting...");
 				}
 			}
@@ -140,11 +152,10 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 			serviceMap.remove(service.getName());
 			// Try to disconnect the service.
 			if (service.disconnect()) {
-				System.out.println("VizServiceFactory message: "
-						+ service.getName() + "unregistered and disconnected.");
+				logger.info("VizServiceFactory message: " + service.getName()
+						+ "unregistered and disconnected.");
 			} else {
-				System.out.println("VizServiceFactory message: "
-						+ service.getName()
+				logger.info("VizServiceFactory message: " + service.getName()
 						+ "unregistered and is currently disconnecting.");
 			}
 		}

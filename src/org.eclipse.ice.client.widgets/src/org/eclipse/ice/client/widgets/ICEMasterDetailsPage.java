@@ -17,6 +17,7 @@ import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -92,7 +93,7 @@ public class ICEMasterDetailsPage extends ICEFormPage {
 
 		FormToolkit toolkit = managedForm.getToolkit();
 		Section section = toolkit.createSection(scrolledForm.getBody(),
-				Section.DESCRIPTION | Section.TITLE_BAR);
+				Section.DESCRIPTION | ExpandableComposite.TITLE_BAR);
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		section.setLayoutData(gd);

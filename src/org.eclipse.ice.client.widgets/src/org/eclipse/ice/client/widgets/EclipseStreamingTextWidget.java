@@ -23,12 +23,20 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author Jay Jay Billings
  */
 public class EclipseStreamingTextWidget implements IStreamingTextWidget {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(EclipseStreamingTextWidget.class);
 
 	/**
 	 * The label that will be used for the console. It is set by calling
@@ -122,10 +130,9 @@ public class EclipseStreamingTextWidget implements IStreamingTextWidget {
 					msgStream.println("Streaming output console activated.");
 				} catch (PartInitException e) {
 					// Complain
-					System.out
-							.println("EclipseStreamingTextWidget Message: Unable to "
-									+ "stream text!");
-					e.printStackTrace();
+					logger.error("EclipseStreamingTextWidget Message: "
+							+ "Unable to stream text!");
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 			}

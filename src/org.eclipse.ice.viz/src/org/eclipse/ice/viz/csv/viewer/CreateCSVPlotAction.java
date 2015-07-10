@@ -27,6 +27,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This Action opens a dialog that allows the user to pick from plots available
@@ -35,6 +37,12 @@ import org.eclipse.ui.part.ViewPart;
  * @author Matthew Wang, Taylor Patterson
  */
 public class CreateCSVPlotAction extends Action {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(CreateCSVPlotAction.class);
 
 	/**
 	 * The ViewPart that owns an object of this class.
@@ -79,12 +87,12 @@ public class CreateCSVPlotAction extends Action {
 
 		// If we pulled an VizResource from the selection, we may proceed.
 		if (resource != null) {
-			System.out.println("CreateCSVPlotAction message: "
+			logger.info("CreateCSVPlotAction message: "
 					+ "The currently selected resource is \""
 					+ resource.getName() + "\".");
 			// Checking for a VizResource for a file set
 			if (resource instanceof VizResource
-					&& ((VizResource) resource).getFileSet() != null) {
+					&& resource.getFileSet() != null) {
 				plotFileSet(shell, plotViewer, resource);
 			} else {
 				plotFile(shell, plotViewer, resource);

@@ -29,6 +29,8 @@ import org.eclipse.ice.reactor.plant.Junction;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.Reactor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jme3.bounding.BoundingBox;
 import com.jme3.math.Vector3f;
@@ -43,6 +45,12 @@ import com.jme3.math.Vector3f;
  */
 public class JunctionController extends AbstractPlantController implements
 		IJunctionListener, IPlantControllerManagerListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(JunctionController.class);
 
 	/**
 	 * The {@link Junction} model for which this controller provides a view.
@@ -110,8 +118,7 @@ public class JunctionController extends AbstractPlantController implements
 	 *            connected to the Junction.
 	 */
 	public JunctionController(Junction model, JunctionView view,
-			IRenderQueue renderQueue,
-			PlantControllerManager manager) {
+			IRenderQueue renderQueue, PlantControllerManager manager) {
 		super(model, view, renderQueue);
 
 		// Set the model. If it is null, create a new, default model.
@@ -634,11 +641,10 @@ public class JunctionController extends AbstractPlantController implements
 					@Override
 					public void visit(HeatExchanger plantComp) {
 						if (info.pipe == plantComp) {
-							System.out.println("HeatExchanger found");
+							logger.info("HeatExchanger found");
 							wrapper.component = plantComp;
 						} else if (info.pipe == plantComp.getPrimaryPipe()) {
-							System.out
-									.println("HeatExchanger primary pipe found");
+							logger.info("HeatExchanger primary pipe found");
 							wrapper.component = plantComp.getPrimaryPipe();
 						}
 					}

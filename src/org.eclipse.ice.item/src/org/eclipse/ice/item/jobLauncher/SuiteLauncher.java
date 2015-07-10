@@ -359,6 +359,7 @@ public class SuiteLauncher extends JobLauncher {
 	 *            The launcher to compare against.
 	 * @return True if equal, false otherwise.
 	 */
+	@Override
 	public boolean equals(Object otherLauncher) {
 
 		// Aside from checking the executables, there's nothing to do but let

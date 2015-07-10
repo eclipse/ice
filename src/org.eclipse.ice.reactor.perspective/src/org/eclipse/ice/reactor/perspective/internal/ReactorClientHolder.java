@@ -13,8 +13,16 @@
 package org.eclipse.ice.reactor.perspective.internal;
 
 import org.eclipse.ice.iclient.IClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReactorClientHolder {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ReactorClientHolder.class);
 
 	/**
 	 * The reference to the ICEClient provided by the OSGi.
@@ -36,10 +44,10 @@ public class ReactorClientHolder {
 		// Set the reference and do some reporting
 		if (iceClient != null) {
 			client = iceClient;
-			System.out.println("ICE Reactor Perspective Message: "
+			logger.info("ICE Reactor Perspective Message: "
 					+ "Client set successfully!");
 		} else {
-			System.out.println("ICE Reactor Perspective Message:"
+			logger.info("ICE Reactor Perspective Message:"
 					+ "Framework attempted to set client, but the "
 					+ "reference was null.");
 		}

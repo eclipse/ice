@@ -58,6 +58,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.osgi.framework.Bundle;
@@ -165,6 +166,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 				if ("Launch the Job".equals(processName)) {
 					Thread ppThread = new Thread(new Runnable() {
+						@Override
 						public void run() {
 
 							// Local Declarations
@@ -202,7 +204,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 									try {
 										Thread.sleep(500);
 									} catch (InterruptedException e) {
-										e.printStackTrace();
+										logger.error(getClass().getName() + " Exception!",e);
 									}
 
 									// Loop over the ICEResources and add them
@@ -229,6 +231,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 									// Kick off on UI thread
 									PlatformUI.getWorkbench().getDisplay()
 											.asyncExec(new Runnable() {
+												@Override
 												public void run() {
 													try {
 														MOOSEFormEditor.this
@@ -237,7 +240,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 														resourceComponentPage
 																.showResource(r);
 													} catch (PartInitException e) {
-														e.printStackTrace();
+														logger.error(getClass().getName() + " Exception!",e);
 													}
 												}
 
@@ -288,7 +291,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				return true;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return false;
 		}
 	}
@@ -316,8 +319,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						body.setLayout(new FillLayout());
 
 						// Create a Section for the plant view.
-						section = toolkit.createSection(body, Section.NO_TITLE
-								| Section.EXPANDED);
+						section = toolkit.createSection(body, ExpandableComposite.NO_TITLE
+								| ExpandableComposite.EXPANDED);
 						populatePlantViewSection(section, toolkit);
 						// No layout data to set for FillLayouts.
 
@@ -325,7 +328,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 					}
 				});
 			} catch (PartInitException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 

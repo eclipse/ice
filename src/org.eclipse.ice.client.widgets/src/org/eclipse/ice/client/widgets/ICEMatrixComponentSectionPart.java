@@ -50,6 +50,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.Section;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -66,6 +68,13 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class ICEMatrixComponentSectionPart extends SectionPart implements
 		IUpdateableListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ICEMatrixComponentSectionPart.class);
+
 	/**
 	 * <p>
 	 * This attribute is a reference to an ICE MatrixComponent that stores the
@@ -390,7 +399,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 					matrixComponent.setElementValue(row.getRowIndex(), counter,
 							input);
 				} catch (NumberFormatException ex) {
-					System.out.println("Invalid Matrix Element.");
+					logger.info("Invalid Matrix Element.");
 				}
 
 				// FIXME FUTURE GREG WORK, ADD ERRORS AND FONT CHANGE...
@@ -797,19 +806,19 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 					if (rows.length != matrixComponent.numberOfRows()
 							|| rows[0].getRowWrapper().size() != matrixComponent
 									.numberOfColumns()) {
-						System.out.println("Altering Rows: "
+						logger.info("Altering Rows: "
 								+ matrixComponent.numberOfRows() + " "
 								+ matrixComponent.numberOfColumns());
 						newRows = new RowWrapper[matrixComponent.numberOfRows()];
 						for (int i = 0; i < matrixComponent.numberOfRows(); i++) {
-							System.out.println("Row: ");
+							logger.info("Row: ");
 							for (int j = 0; j < matrixComponent
 									.numberOfColumns(); j++) {
-								System.out.print(matrixComponent.getRow(i).get(
+								logger.info(matrixComponent.getRow(i).get(
 										j)
 										+ " ");
 							}
-							System.out.println("");
+							logger.info("");
 							newRows[i] = new RowWrapper(matrixComponent
 									.getRow(i), i);
 						}
@@ -1368,7 +1377,7 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						if (matrixComponent != null && matrixViewer != null) {
-							System.out.println("Adding a new Column");
+							logger.info("Adding a new Column");
 							matrixComponent.addColumn();
 
 							// We need to get the old set of CellEditors and add

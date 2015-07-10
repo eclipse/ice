@@ -66,7 +66,7 @@ public class VisItConnectionAdapter extends
 								+ "your VisIt application path, or specified port, in the Visualization > VisIt "
 								+ "preferences page.";
 						return new Status(
-								Status.ERROR,
+								IStatus.ERROR,
 								"org.eclipse.ice.viz.service.connections.visit",
 								1, errorMessage, null);
 					}
@@ -93,7 +93,7 @@ public class VisItConnectionAdapter extends
 		try {
 			connectionJob.join();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Return, clients should handle if its null or not
@@ -150,13 +150,13 @@ public class VisItConnectionAdapter extends
 
 			// Print out some debug messages about the new input when debugging.
 			if (System.getProperty("DebugICE") != null) {
-				System.out.println("VisItConnectionAdapter message: "
+				logger.info("VisItConnectionAdapter message: "
 						+ "Connection input properties:");
 				for (java.util.Map.Entry<String, String> e : getConnectionProperties()
 						.entrySet()) {
-					System.out.println("  " + e.getKey() + "," + e.getValue());
+					logger.info("  " + e.getKey() + "," + e.getValue());
 				}
-				System.out.println("VisItConnectionAdapter message: "
+				logger.info("VisItConnectionAdapter message: "
 						+ "End of connection input properties.");
 			}
 

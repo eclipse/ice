@@ -27,14 +27,22 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This Action presents a {@link VisItRemoteFileDialog} to select files from a
  * remote file system and add them to the {@link VizFileViewer}.
- * 
+ *
  * @author Taylor Patterson
  */
 public class AddRemoteFileAction extends Action {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AddRemoteFileAction.class);
 
 	/**
 	 * The ViewPart that owns an object of this class.
@@ -48,7 +56,7 @@ public class AddRemoteFileAction extends Action {
 
 	/**
 	 * The constructor
-	 * 
+	 *
 	 * @param parentView
 	 *            The ViewPart to whom the object of this class belongs.
 	 * @param parentAction
@@ -128,7 +136,7 @@ public class AddRemoteFileAction extends Action {
 		} catch (IOException e) {
 			System.err.println("AddRemoteFileAction error: Failed to create "
 					+ "an ICEResource for the file at \"" + remoteFile + "\".");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;

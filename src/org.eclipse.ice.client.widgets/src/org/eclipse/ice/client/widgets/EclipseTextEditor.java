@@ -22,27 +22,32 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
  * This class implements ITextEditor interface to open a text editor using
  * elements of SWT/JFace and the Eclipse Rich Client Platform.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class EclipseTextEditor implements ITextEditor {
+
 	/**
-	 * <p>
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(EclipseTextEditor.class);
+
+	/**
 	 * The ICEResource managed by the EclipseTextEditor.
-	 * </p>
-	 * 
 	 */
 	private ICEResource iceResource;
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ITextEditor#setResource(ICEResource resource)
 	 */
 	@Override
@@ -54,7 +59,7 @@ public class EclipseTextEditor implements ITextEditor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ITextEditor#getResource()
 	 */
 	@Override
@@ -66,7 +71,7 @@ public class EclipseTextEditor implements ITextEditor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ITextEditor#display()
 	 */
 	@Override
@@ -87,9 +92,9 @@ public class EclipseTextEditor implements ITextEditor {
 			if (!textFile.isSynchronized(IResource.DEPTH_ZERO)) {
 				try {
 					textFile.refreshLocal(IResource.DEPTH_ZERO, null);
-				} catch (CoreException e1) {
+				} catch (CoreException e) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 			// Get the workbench page
@@ -101,7 +106,7 @@ public class EclipseTextEditor implements ITextEditor {
 						"org.eclipse.ui.DefaultTextEditor");
 			} catch (PartInitException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 		}

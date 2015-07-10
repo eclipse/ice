@@ -18,14 +18,22 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is an editor for the Materials Database Service.
- * 
+ *
  * @author Jay Jay Billings
- * 
+ *
  */
 public class MaterialsDatabaseEditor extends FormEditor {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(MaterialsDatabaseEditor.class);
 
 	/**
 	 * The unique ID of this editor part
@@ -104,18 +112,18 @@ public class MaterialsDatabaseEditor extends FormEditor {
 	 */
 	@Override
 	protected void addPages() {
-		
+
 		// Get the input
 		MaterialsDatabaseEditorInput input = (MaterialsDatabaseEditorInput) getEditorInput();
 		IMaterialsDatabase database = input.getDatabase();
-		
+
 		try {
 			// Create the Master-Details page for the Materials
 			addPage(new MaterialsDatabaseMasterDetailsPage(this, "MDPage",
 					"Materials Database", database));
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 	}
 

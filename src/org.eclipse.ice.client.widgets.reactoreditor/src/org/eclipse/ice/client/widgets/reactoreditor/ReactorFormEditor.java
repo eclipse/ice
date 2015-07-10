@@ -99,7 +99,7 @@ public class ReactorFormEditor extends ICEFormEditor {
 
 		// Loop over the DataComponents and get them into the map
 		for (Component i : iceDataForm.getComponents()) {
-			System.out.println("ReactorFormEditor Message: "
+			logger.info("ReactorFormEditor Message: "
 					+ "Adding component " + i.getName() + " " + i.getId());
 			i.accept(this);
 		}
@@ -133,7 +133,7 @@ public class ReactorFormEditor extends ICEFormEditor {
 			reactorPage.setReactorComposite(reactorComposite);
 
 			// Add the resource component for comparison data.
-			reactorPage.addComponent((ResourceComponent) (componentMap
+			reactorPage.addComponent((componentMap
 					.get("output").get(0)));
 
 			// Add the data Components (input and reference loaders) to the
@@ -148,7 +148,7 @@ public class ReactorFormEditor extends ICEFormEditor {
 			// Add the ReactorPages to the Editor's FormPages.
 			formPages.add(reactorPage);
 		} else {
-			System.out.println("ReactorFormEditor Message: "
+			logger.info("ReactorFormEditor Message: "
 					+ "No IReactorEditor present. IReactorComponents will not "
 					+ "be rendered.");
 		}
@@ -209,7 +209,7 @@ public class ReactorFormEditor extends ICEFormEditor {
 				addPage(i);
 			}
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;

@@ -32,6 +32,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.eclipse.equinox.security.auth.ILoginContext;
 import org.eclipse.equinox.security.auth.LoginContextFactory;
 import org.osgi.service.http.HttpContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements the HttpContext interface and provides basic
@@ -44,6 +46,12 @@ import org.osgi.service.http.HttpContext;
  * 
  */
 public class BasicAuthSecuredContext implements HttpContext {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(BasicAuthSecuredContext.class);
 
 	/**
 	 * A URL to the resource directory where files and data are stored for the
@@ -84,10 +92,9 @@ public class BasicAuthSecuredContext implements HttpContext {
 		this.realm = realm;
 
 		// Print some diagnostic information.
-		System.out.println("ICore Message: Resource URL = "
-				+ resourceBase.getPath());
-		System.out.println("ICore Message: Authentication config "
-				+ "file URL = " + configFile.getPath());
+		logger.info("ICore Message: Resource URL = " + resourceBase.getPath());
+		logger.info("ICore Message: Authentication config " + "file URL = "
+				+ configFile.getPath());
 
 	}
 
@@ -104,7 +111,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 	private boolean failAuthorization(HttpServletRequest request,
 			HttpServletResponse response) {
 
-		System.out.println("ICore Message: Basic Authentication failed!");
+		logger.info("ICore Message: Basic Authentication failed!");
 
 		// Force a session to be created
 		request.getSession(true);
@@ -115,7 +122,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		} catch (IOException e) {
 			// Print the stack trace if the error can not be sent.
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return false;
@@ -137,7 +144,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 		try {
 			return new URL(resourceBase, name);
 		} catch (MalformedURLException e) {
-			System.out.println("Unable to create resource URL");
+			logger.info("Unable to create resource URL");
 			return null;
 		}
 	}
@@ -183,7 +190,7 @@ public class BasicAuthSecuredContext implements HttpContext {
 		try {
 			subject = login(request, userid, password);
 		} catch (LoginException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return failAuthorization(request, response);
 		}
 

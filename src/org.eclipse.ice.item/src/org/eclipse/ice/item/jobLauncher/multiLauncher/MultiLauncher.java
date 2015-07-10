@@ -438,7 +438,7 @@ public class MultiLauncher extends Item implements Runnable {
 			} else {
 				// Submit the Form to the needy launcher
 				needyLauncher.submitForm(preparedForm);
-				System.out.println("MultiLauncher Message: "
+				logger.info("MultiLauncher Message: "
 						+ "Submitting sub-form to needy launcher.");
 				launcherStatus = FormStatus.Processing;
 				multiLaunchStatus.set(launcherStatus);
@@ -493,17 +493,17 @@ public class MultiLauncher extends Item implements Runnable {
 		for (Item job : runningLaunchers) {
 			// Launch the job if the Form is ready to process
 			if (job.getStatus().equals(FormStatus.ReadyToProcess)) {
-				System.out
-						.println("MultiLauncher Message: Launching parallel job "
-								+ job.getName() + " with id " + job.getId());
+				logger.info("MultiLauncher Message: "
+						+ "Launching parallel job " + job.getName()
+						+ " with id " + job.getId());
 				// Launch it
 				retVal = job.process("Launch the Job");
 			} else {
-				System.out
-						.println("MultiLauncher Message: Unable to launch parallel job!");
-				System.out.println("MultiLauncher Message: Failed job name = "
+				logger.info("MultiLauncher Message: "
+						+ "Unable to launch parallel job!");
+				logger.info("MultiLauncher Message: " + "Failed job name = "
 						+ job.getName());
-				System.out.println("MultiLauncher Message: Failed job id = "
+				logger.info("MultiLauncher Message: " + "Failed job id = "
 						+ job.getId());
 				break; // Otherwise throw the error.
 			}
@@ -559,9 +559,9 @@ public class MultiLauncher extends Item implements Runnable {
 			if (!inputFilesEntry.getAllowedValues().contains(filename)) {
 				inputFilesList = inputFilesEntry.getAllowedValues();
 				inputFilesList.add(0, filename);
-				System.out
-						.println("MultiLauncher Message: Resetting file name for chained launch to "
-								+ filename);
+				logger.info("MultiLauncher Message: "
+						+ "Resetting file name for chained launch to "
+						+ filename);
 				// Reset the list
 				String desc = "The input file that should be used in the launch.";
 				((JobLauncherForm) currentJob.getForm()).setInputFiles(
@@ -608,8 +608,7 @@ public class MultiLauncher extends Item implements Runnable {
 				.findFilesForLocationURI(fileURI);
 		outputName = fileHandles[0].getName();
 
-		System.out.println("MultiLauncher Message: Last filename = "
-				+ outputName);
+		logger.info("MultiLauncher Message: Last filename = " + outputName);
 
 		return outputName;
 
@@ -721,9 +720,9 @@ public class MultiLauncher extends Item implements Runnable {
 			for (int i = 0; i < runningLaunchers.size(); i++) {
 				// Get and launch the job
 				job = runningLaunchers.get(i);
-				System.out
-						.println("MultiLauncher Message: Launching sequential job #"
-								+ (i + 1) + ", " + job.getName());
+				logger.info("MultiLauncher Message: "
+						+ "Launching sequential job #" + (i + 1) + ", "
+						+ job.getName());
 				// Set the input file to the output file of the last code it is
 				// necessary.
 				if (i > 0) {
@@ -742,7 +741,7 @@ public class MultiLauncher extends Item implements Runnable {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 					// Update the status
 					launchStatus = job.getStatus();
@@ -798,7 +797,7 @@ public class MultiLauncher extends Item implements Runnable {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		// Add the output if the status does not indicate an error

@@ -58,6 +58,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class extends the ViewPart class and provides a view in the
@@ -68,6 +70,12 @@ import org.eclipse.ui.part.WorkbenchPart;
 public class VisitPlotViewer extends ViewPart implements
 		IDeletePlotActionViewPart, IUpdateableListener,
 		ISelectionChangedListener, IDoubleClickListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(VisitPlotViewer.class);
 
 	/**
 	 * The ID for this view
@@ -291,8 +299,8 @@ public class VisitPlotViewer extends ViewPart implements
 	@Override
 	public void update(IUpdateable component) {
 
-		System.out
-				.println("VisitPlotViewer Message: Incoming resource update.");
+		logger.info("VisitPlotViewer Message: "
+						+ "Incoming resource update.");
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
@@ -303,7 +311,7 @@ public class VisitPlotViewer extends ViewPart implements
 					// TODO Reset the input for the plotTreeViewer.
 					// plotTreeViewer.setInput(null);
 
-					System.out.println("VisitPlotViewer Message: "
+					logger.info("VisitPlotViewer Message: "
 							+ "Updating resource table.");
 					plotTreeViewer.refresh();
 					plotTreeViewer.getTree().redraw();
@@ -512,7 +520,7 @@ public class VisitPlotViewer extends ViewPart implements
 			// Mark the entry as being plotted.
 			entry.setValue("true");
 
-			System.out.println("VisitPlotViewer message: Adding plot \""
+			logger.info("VisitPlotViewer message: Adding plot \""
 					+ entry.getName() + "\".");
 
 			// Update the plotViewer.
@@ -546,7 +554,7 @@ public class VisitPlotViewer extends ViewPart implements
 				entryResources.remove(index);
 				plotEntries.remove(index);
 
-				System.out.println("VisitPlotViewer message: Removing plot \""
+				logger.info("VisitPlotViewer message: Removing plot \""
 						+ entry.getName() + "\".");
 
 				// Mark the plot as not plotted.
@@ -593,7 +601,7 @@ public class VisitPlotViewer extends ViewPart implements
 			if (index > -1) {
 				// Get the ICEResource associated with this entry.
 
-				System.out.println("VisitPlotViewer message: Drawing plot \""
+				logger.info("VisitPlotViewer message: Drawing plot \""
 						+ entry.getName() + "\"." + entry.getParent());
 
 				// Store a reference to the plotted Entry.
@@ -710,7 +718,7 @@ public class VisitPlotViewer extends ViewPart implements
 	public void setResource(VizResource inResource) {
 		// Reset the VizResource
 		resource = inResource;
-		System.out.println("VisitPlotViewer message: The selected file from "
+		logger.info("VisitPlotViewer message: The selected file from "
 				+ "the VizFileViewer is \"" + resource.getName() + "\".");
 
 		// Enable the AddPlotAction.

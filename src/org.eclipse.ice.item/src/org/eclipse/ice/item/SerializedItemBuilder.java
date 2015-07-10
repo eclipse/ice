@@ -27,6 +27,8 @@ import javax.xml.bind.JAXBException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -44,22 +46,29 @@ import org.eclipse.ice.item.jobLauncher.JobLauncher;
  * The Item Builder name of the Item is set to the name of the Item in file and
  * the SerializedItemBuilder will return the same name by calling getItemName().
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class SerializedItemBuilder implements ItemBuilder {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(SerializedItemBuilder.class);
+
 	/**
 	 * <p>
 	 * The name of the Item that this builder can create.
 	 * </p>
-	 * 
+	 *
 	 */
 	private String name;
 	/**
 	 * <p>
 	 * The ItemType of the Item that this builder can create.
 	 * </p>
-	 * 
+	 *
 	 */
 	private ItemType type;
 	/**
@@ -68,7 +77,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 	 * instantiated upon construction. All subsequent Items are created as
 	 * copies of this Item so that the InputStream can be released.
 	 * </p>
-	 * 
+	 *
 	 */
 	private Item originalItem;
 
@@ -81,7 +90,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 	 * the contents of the stream are not consistent with either the XML or the
 	 * PSF formats, then it will throw an IOException.
 	 * </p>
-	 * 
+	 *
 	 * @param inputStream
 	 *            <p>
 	 *            The InputStream from which the SerializedItemBuilder should
@@ -136,10 +145,10 @@ public class SerializedItemBuilder implements ItemBuilder {
 				originalItem = (Item) xmlMarshaller.read(classList,
 						itemReadStream);
 			} catch (NullPointerException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				tryAgain = true;
 			} catch (JAXBException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				tryAgain = true;
 			}
 
@@ -156,10 +165,10 @@ public class SerializedItemBuilder implements ItemBuilder {
 					originalItem = (Item) xmlMarshaller.read(classList,
 							itemReadStream);
 				} catch (NullPointerException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					tryAgain = true;
 				} catch (JAXBException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					tryAgain = true;
 				}
 			}
@@ -199,7 +208,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ItemBuilder#getItemName()
 	 */
 	@Override
@@ -209,7 +218,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ItemBuilder#getItemType()
 	 */
 	@Override
@@ -219,7 +228,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
 	@Override

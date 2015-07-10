@@ -313,7 +313,7 @@ public class GridEditorTools {
 
 					// Use the law of cosines to determine the distance of the
 					// hexagon's center from the origin.
-					double R2 = (double) i2 + (double) r2 - 2 * i * r
+					double R2 = i2 + r2 - 2 * i * r
 							* cosPiDivThree;
 					double R = Math.sqrt(R2);
 
@@ -379,7 +379,7 @@ public class GridEditorTools {
 
 					// Use the law of cosines to determine the distance of the
 					// hexagon's center from the origin.
-					double R2 = (double) i2 + (double) r2 - 2 * i * r
+					double R2 = i2 + r2 - 2 * i * r
 							* cosPiDivThree;
 					double R = Math.sqrt(R2);
 
