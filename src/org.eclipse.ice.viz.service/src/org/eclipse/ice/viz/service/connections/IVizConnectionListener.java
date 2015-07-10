@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Jordan Deyton (UT-Battelle, LLC.) - Initial API and implementation and/or 
- *     initial documentation
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 

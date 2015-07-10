@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2015- UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jordan Deyton
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.preferences;
 
@@ -19,7 +19,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * This is the base class for visualization service preference pages added to
- * the Eclipse IDE's Window > Preferences dialog.
+ * the Eclipse IDE's Preferences dialog.
  * <p>
  * For an example of how to create a preference page using this class, see
  * {@link VizPreferencePage} and its class documentation.
@@ -28,8 +28,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author Jordan Deyton
  *
  */
-public abstract class AbstractVizPreferencePage extends
-		FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public abstract class AbstractVizPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
 	/**
 	 * The default constructor. Other constructors are available that are passed
@@ -75,16 +74,12 @@ public abstract class AbstractVizPreferencePage extends
 	 * @param style
 	 *            either <code>GRID</code> or <code>FLAT</code>
 	 */
-	public AbstractVizPreferencePage(String title, ImageDescriptor image,
-			int style) {
+	public AbstractVizPreferencePage(String title, ImageDescriptor image, int style) {
 		super(title, image, style);
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 * Overrides a method from PreferencePage.
 	 */
 	@Override
 	public void init(IWorkbench workbench) {
@@ -92,9 +87,7 @@ public abstract class AbstractVizPreferencePage extends
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
+	 * Overrides a method from PreferencePage.
 	 */
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
@@ -112,5 +105,5 @@ public abstract class AbstractVizPreferencePage extends
 		// also need to be updated.
 		return new CustomScopedPreferenceStore(getClass());
 	}
-	
+
 }

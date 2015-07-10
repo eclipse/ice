@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2015- UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jordan Deyton
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
@@ -23,6 +23,19 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
+/**
+ * This class provides a {@link PlotRender} specifically for rendering
+ * visualizations from a {@link ConnectionPlot}.
+ * <p>
+ * In particular, such plots require access to an {@link IVizConnection} in
+ * order to function properly.
+ * </p>
+ * 
+ * @author Jordan Deyton
+ *
+ * @param <T>
+ *            The type of widget used for underlying viz connections.
+ */
 public abstract class ConnectionPlotRender<T> extends PlotRender implements IVizConnectionListener<T> {
 
 	// TODO Make the image/icon in the PlotRender class customizable.

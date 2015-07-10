@@ -6,8 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
- *    Jay Jay Billings (UT-Battelle, LLC.) - moved IPlot
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jay Jay Billings - moved IPlot
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 

@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Jordan Deyton (UT-Battelle, LLC.) - Initial API and implementation and/or 
- *     initial documentation
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
@@ -73,6 +73,12 @@ public abstract class VizConnectionManager<T> {
 	 * stored.
 	 */
 	private String connectionsNodeId;
+
+	/**
+	 * The default delimiter for connection preferences when they are
+	 * saved/loaded to Eclipse preferences.
+	 */
+	public static final String DEFAULT_CONNECTION_PREFERENCE_DELIMITER = ",";
 
 	/**
 	 * The default constructor.
@@ -214,7 +220,7 @@ public abstract class VizConnectionManager<T> {
 
 		// Split the string using the delimiter. The -1 is necessary to include
 		// empty values from the split.
-		String[] split = preferences.split(getDelimiter(), -1);
+		String[] split = preferences.split(getConnectionPreferenceDelimiter(), -1);
 
 		try {
 			// Ensure the connection's basic preferences are set.
@@ -348,9 +354,10 @@ public abstract class VizConnectionManager<T> {
 	 * The name and preferences are provided as a convenience in case additional
 	 * preferences besides the name, host, port, and path are required. After
 	 * this method is called, the host, port, and path will be pulled from the
-	 * preference string using the delimiter provided by {@link #getDelimiter()}
-	 * , if possible. Additional preferences should be located in the preference
-	 * string <i>after</i> these three required preferences.
+	 * preference string using the delimiter provided by
+	 * {@link #getConnectionPreferenceDelimiter()} , if possible. Additional
+	 * preferences should be located in the preference string <i>after</i> these
+	 * three required preferences.
 	 * </p>
 	 * 
 	 * @param name
@@ -366,11 +373,10 @@ public abstract class VizConnectionManager<T> {
 	 * Gets the delimiter used to separate a connection's individual
 	 * preferences.
 	 * 
-	 * @return The string delimiter. The default value is a comma, although this
-	 *         can be overridden.
+	 * @return The string delimiter for connection preferences.
 	 */
-	protected String getDelimiter() {
-		return ",";
+	protected String getConnectionPreferenceDelimiter() {
+		return DEFAULT_CONNECTION_PREFERENCE_DELIMITER;
 	}
 
 	/**
@@ -395,7 +401,7 @@ public abstract class VizConnectionManager<T> {
 
 		// Split the string using the delimiter. The -1 is necessary to include
 		// empty values from the split.
-		String[] split = preferences.split(getDelimiter(), -1);
+		String[] split = preferences.split(getConnectionPreferenceDelimiter(), -1);
 
 		try {
 			// Get the host, port, and path, if possible.

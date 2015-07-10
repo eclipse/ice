@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2015- UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jordan Deyton
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
@@ -25,8 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * This class provides the basic implementation for an {@link IPlot} whose
- * content depends on a local or remote connection (a {@link ConnectionAdapter}
- * ).
+ * content depends on a local or remote connection (an {@link IVizConnection} ).
  * 
  * @author Jordan Deyton
  *
@@ -35,13 +34,15 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class ConnectionPlot<T> extends MultiPlot {
 
-	// TODO Some things are not yet documented.
-
 	/**
 	 * The current connection associated with this plot.
 	 */
 	private IVizConnection<T> connection;
 
+	/**
+	 * A list of the plot renders cast as {@link ConnectionPlotRender}s. Their
+	 * connection should be synchronized with this plot's current connection.
+	 */
 	private final List<ConnectionPlotRender<T>> plotRenders;
 
 	/**
@@ -57,18 +58,46 @@ public abstract class ConnectionPlot<T> extends MultiPlot {
 		plotRenders = new ArrayList<ConnectionPlotRender<T>>();
 	}
 
+	/*
+	 * Implements an abstract method from MultiPlot#createPlotRender.
+	 */
 	protected PlotRender createPlotRender(Composite parent) {
+		// Create a ConnectionPlotRender.
 		ConnectionPlotRender<T> plotRender = createConnectionPlotRender(parent);
 		plotRenders.add(plotRender);
+		// Set its connection.
 		plotRender.setConnection(connection);
 		return plotRender;
 	}
 
+	/**
+	 * Creates a {@link ConnectionPlotRender} inside the specified parent
+	 * Composite. The PlotRender's content should not be created yet.
+	 * 
+	 * @param parent
+	 *            The parent Composite that will contain the new PlotRender.
+	 * @return The new PlotRender.
+	 */
+	protected abstract ConnectionPlotRender<T> createConnectionPlotRender(Composite parent);
+
+	/**
+	 * Gets the current connection associated with this plot.
+	 * 
+	 * @return The {@link #connection}. This may be {@code null}.
+	 */
+	protected IVizConnection<T> getConnection() {
+		return connection;
+	}
+
+	/**
+	 * Gets a list of all current rendered plots.
+	 * 
+	 * @return A list containing each current {@link ConnectionPlotRender} in
+	 *         this {@code ConnectionPlot}.
+	 */
 	protected List<ConnectionPlotRender<T>> getConnectionPlotRenders() {
 		return new ArrayList<ConnectionPlotRender<T>>(plotRenders);
 	}
-
-	protected abstract ConnectionPlotRender<T> createConnectionPlotRender(Composite parent);
 
 	/**
 	 * Sets the viz connection used by this plot.
@@ -168,12 +197,4 @@ public abstract class ConnectionPlot<T> extends MultiPlot {
 		super.setDataSource(file);
 	}
 
-	/**
-	 * Gets the current connection associated with this plot.
-	 * 
-	 * @return The {@link #connection}. This may be {@code null}.
-	 */
-	protected IVizConnection<T> getConnection() {
-		return connection;
-	}
 }

@@ -6,8 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Jordan H. Deyton (UT-Battelle, LLC.) - Initial API and implementation 
- *   and/or initial documentation
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
  *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview;
@@ -30,7 +29,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 
 /**
- * TODO Documentation
+ * This class manages rendering visualizations using a viz connection to a
+ * {@link IParaViewWebClient}.
  * 
  * @author Jordan Deyton
  *

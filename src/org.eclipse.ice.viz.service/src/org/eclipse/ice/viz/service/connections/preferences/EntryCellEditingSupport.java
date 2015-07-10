@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2015- UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jordan Deyton
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.preferences;
 
@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -24,6 +25,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * This class provides editing capabilities for JFace viewers where the input
+ * element is expected to be an {@link Entry}.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class EntryCellEditingSupport extends EditingSupport {
 
 	/**
@@ -64,8 +72,7 @@ public class EntryCellEditingSupport extends EditingSupport {
 	 *            <code>EditingSupport</code> are passed to this content
 	 *            provider.
 	 */
-	public EntryCellEditingSupport(ColumnViewer viewer,
-			EntryCellContentProvider contentProvider) {
+	public EntryCellEditingSupport(ColumnViewer viewer, EntryCellContentProvider contentProvider) {
 		super(viewer);
 
 		this.contentProvider = contentProvider;
@@ -77,8 +84,7 @@ public class EntryCellEditingSupport extends EditingSupport {
 		textCell = new TextCellEditor(parent, SWT.LEFT);
 
 		// Create the ComboBoxCellEditor.
-		comboCell = new ComboBoxCellEditor(parent, new String[] {},
-				SWT.DROP_DOWN | SWT.READ_ONLY);
+		comboCell = new ComboBoxCellEditor(parent, new String[] {}, SWT.DROP_DOWN | SWT.READ_ONLY);
 		comboCell.getControl().setBackground(parent.getBackground());
 		// Create a HashMap to contain values for discrete Entry values.
 		valueMap = new HashMap<String, Integer>();
@@ -104,8 +110,7 @@ public class EntryCellEditingSupport extends EditingSupport {
 				editor = comboCell;
 
 				// Update the Combo's items.
-				List<String> allowedValues = contentProvider
-						.getAllowedValues(element);
+				List<String> allowedValues = contentProvider.getAllowedValues(element);
 				String[] items = new String[allowedValues.size()];
 				comboCell.setItems(allowedValues.toArray(items));
 

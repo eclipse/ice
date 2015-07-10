@@ -6,17 +6,18 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
- *    
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.preferences;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.connections.VizConnectionManager;
 import org.eclipse.ice.viz.service.preferences.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -25,38 +26,24 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
+import org.osgi.service.prefs.BackingStoreException;
 
-public abstract class VizConnectionPreferencePage extends
-		AbstractVizPreferencePage implements IKeyChangeListener {
+/**
+ * This class provides a preference page for configuring multiple viz
+ * connections. It currently contains a single table with an add and remove
+ * button for adding or removing connections. Connections can be updated by
+ * manipulating cells in the table.
+ * 
+ * @author Jordan Deyton
+ *
+ */
+public abstract class VizConnectionPreferencePage extends AbstractVizPreferencePage {
 
 	/**
 	 * The {@code ConnectionTable} used by this preference page. It is
 	 * represented by a {@link TableComponentComposite} on the page.
 	 */
-	private final ConnectionTable connectionManager = createConnectionTable();
-
-	/**
-	 * This set contains removed keys for pre-existing connections (those that
-	 * are in the preference store when the page loads).
-	 * <p>
-	 * <b>Note:</b> Removed keys should be processed before changed keys, as it
-	 * is acceptable for a key to be removed and later change an existing key to
-	 * that removed key.
-	 * </p>
-	 */
-	private final Set<String> removedKeys = new HashSet<String>();
-	/**
-	 * This map contains changed keys for pre-existing connections (those that
-	 * are in the preference store when the page loads) whose keys have been
-	 * changed. A map entry's key is the new key, while its value is the
-	 * original key at page load.
-	 */
-	private final Map<String, String> newToOld = new HashMap<String, String>();
-	/**
-	 * This set strictly contains new keys that do not currently exist in the
-	 * preference store.
-	 */
-	private final Set<String> addedKeys = new HashSet<String>();
+	private final ConnectionTable table = new ConnectionTable();
 
 	/**
 	 * The default constructor.
@@ -66,71 +53,11 @@ public abstract class VizConnectionPreferencePage extends
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	@Override
-	public void init(IWorkbench workbench) {
-		// Set the page description/title.
-		super.init(workbench);
-
-		// Read the table of connections stored in the preferences into the
-		// ConnectionManager.
-		TableComponentPreferenceAdapter adapter = new TableComponentPreferenceAdapter();
-		adapter.toTableComponent(
-				(CustomScopedPreferenceStore) getPreferenceStore(),
-				connectionManager);
-
-		// Sync the key changes from the ConnectionManager and register for key
-		// change events.
-		resetKeyChangeInfo();
-//		connectionManager.addKeyChangeListener(this);
-
-		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors
-	 * ()
+	 * Implements an abstract method from FieldEditorPreferencePage.
 	 */
 	@Override
 	protected void createFieldEditors() {
-		Composite parent = getFieldEditorParent();
-
-//		// Create a new DynamicComboFieldEditor for the default connection. The
-//		// default connection should only be selected from the list of
-//		// connections from the connection table.
-//		final DynamicComboFieldEditor defaultConnection;
-//		defaultConnection = new DynamicComboFieldEditor("defaultConnection",
-//				"Default Connection", parent,
-//				connectionManager.getConnectionNames());
-//		addField(defaultConnection);
-//
-//		// Add a key change listener so that we can refresh the values in the
-//		// default connection field editor when necessary.
-//		connectionManager.addKeyChangeListener(new IKeyChangeListener() {
-//			@Override
-//			public void keyChanged(String oldKey, String newKey) {
-//				// Get the current value for the default connection.
-//				String value = defaultConnection.getValue();
-//				// Update the default connection Combo's allowed values.
-//				List<String> names = connectionManager.getConnectionNames();
-//				defaultConnection.setAllowedValues(names);
-//				// If the selected connection's name was changed, make sure it
-//				// is still the default connection.
-//				if (oldKey != null && newKey != null && oldKey.equals(value)) {
-//					defaultConnection.setValue(newKey);
-//				}
-//				return;
-//			}
-//		});
-
-		return;
+		// No field editors yet, just the table of connections.
 	}
 
 	/**
@@ -157,128 +84,183 @@ public abstract class VizConnectionPreferencePage extends
 
 		// Create a ConnectionComposite to show all of the cached connection
 		// preferences.
-		TableComponentComposite connections = new TableComponentComposite(
-				container, SWT.NONE);
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true,
-				gridLayout.numColumns, 1);
+		TableComponentComposite connections = new TableComponentComposite(container, SWT.NONE);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true, gridLayout.numColumns, 1);
 		connections.setLayoutData(gridData);
 
 		// Set the custom Composite's TableComponent to fill the table.
-		connections.setTableComponent(connectionManager);
+		connections.setTableComponent(table);
 
 		return control;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Gets the ID of the {@link IEclipsePreferences} node in the store.
+	 * Connections will be stored under this node.
 	 * 
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
+	 * @return The ID of the connection preferences node.
+	 */
+	protected abstract String getConnectionsPreferenceNodeId();
+
+	/**
+	 * Gets the delimiter used when saving/loading connection preferences.
+	 * 
+	 * @return The delimiter for serializing connection preferences.
+	 */
+	protected String getConnectionPreferenceDelimiter() {
+		return VizConnectionManager.DEFAULT_CONNECTION_PREFERENCE_DELIMITER;
+	}
+
+	/*
+	 * Overrides a method from AbstractVizPreferencePage.
+	 */
+	@Override
+	public void init(IWorkbench workbench) {
+		/*
+		 * This method is called every time the page is loaded.
+		 */
+
+		// Perform the required basic initialization.
+		super.init(workbench);
+
+		// Replace the default title.
+		setDescription("ParaView Visualization Preferences");
+
+		// Load the current preferences into the table.
+		loadPreferences(table);
+
+		return;
+	}
+
+	/**
+	 * Loads the specified {@link ConnectionTable} based on the current
+	 * preferences.
+	 * 
+	 * @param table
+	 *            The table to load the current preferences into.
+	 */
+	private void loadPreferences(ConnectionTable table) {
+		// Get the preference node for connection preferences.
+		CustomScopedPreferenceStore store = (CustomScopedPreferenceStore) getPreferenceStore();
+		IEclipsePreferences node = store.getNode(getConnectionsPreferenceNodeId());
+
+		// Load the current preferences into the table.
+		String[] existingKeys;
+		try {
+			existingKeys = node.keys();
+			for (String key : existingKeys) {
+				int index = table.addRow();
+				List<Entry> row = table.getRow(index);
+
+				// Update the key/name in the table.
+				row.get(0).setValue(key);
+				// Update the other properties.
+				String[] preferences = unserializeConnectionPreferences(node.get(key, null));
+				for (int i = 0; i < preferences.length; i++) {
+					row.get(i + 1).setValue(preferences[i]);
+				}
+			}
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+
+		return;
+	}
+
+	/*
+	 * Overrides a method from FieldEditorPreferencePage.
 	 */
 	@Override
 	public boolean performOk() {
+		/*
+		 * This method is called every time OK or Apply is clicked.
+		 */
 		boolean ok = super.performOk();
 
-		// Write the table of connections stored in the ConnectionManager into
-		// the preference store.
-		TableComponentPreferenceAdapter adapter = new TableComponentPreferenceAdapter();
-		adapter.toPreferences(connectionManager,
-				(CustomScopedPreferenceStore) getPreferenceStore());
-
-		// Notify the viz service that the preferences have been updated.
-		applyKeyChangeInfo(newToOld, addedKeys, removedKeys);
-		// Clear the key change info now that the viz service has been notified
-		// of all changes.
-		resetKeyChangeInfo();
+		// Apply the preferences from the table.
+		savePreferences(table);
 
 		return ok;
 	}
 
 	/**
-	 * Applies the specified key changes to the associated viz service.
+	 * Saves the preferences from the specified {@link ConnectionTable}.
 	 * 
-	 * @param changedKeys
-	 *            A map from old keys to new keys.
-	 * @param addedKeys
-	 *            A set of newly added keys.
-	 * @param removedKeys
-	 *            A set of removed keys.
+	 * @param table
+	 *            The table containing the new connection preferences to store.
 	 */
-	protected abstract void applyKeyChangeInfo(Map<String, String> changedKeys,
-			Set<String> addedKeys, Set<String> removedKeys);
+	private void savePreferences(ConnectionTable table) {
+		// Get the preference node for connection preferences.
+		CustomScopedPreferenceStore store = (CustomScopedPreferenceStore) getPreferenceStore();
+		IEclipsePreferences node = store.getNode(getConnectionsPreferenceNodeId());
 
-	/**
-	 * Resets the information about changed connection keys.
-	 */
-	private void resetKeyChangeInfo() {
+		// Get a set of connection names from the table. At the end of this
+		// operation, only the connections in the table will be in the
+		// preferences.
+		Set<String> updated = new HashSet<String>(table.getConnectionNames());
+		List<Entry> row;
 
-		// Clear all of the key change information and put all current keys into
-		// the new-to-old-key map.
-		newToOld.clear();
-		addedKeys.clear();
-		removedKeys.clear();
+		// Update old connections in the preferences.
+		String[] existingNames;
+		try {
+			existingNames = node.keys();
+			for (String name : existingNames) {
+				row = table.getConnection(name);
+				// If the connection name has a row in the table, it will need
+				// to be updated in the preferences.
+				if (row != null) {
+					node.put(name, serializeConnectionPreferences(row));
+					updated.remove(name);
+				}
+				// Otherwise, the connection was removed from the table and
+				// should be removed from the preferences.
+				else {
+					node.remove(name);
+				}
+			}
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
 
-		for (String key : connectionManager.getConnectionNames()) {
-			newToOld.put(key, key);
+		// Add all new connections to the preferences.
+		for (String name : updated) {
+			row = table.getConnection(name);
+			node.put(name, serializeConnectionPreferences(row));
 		}
 
 		return;
 	}
 
-	// TODO Test this method.
 	/**
-	 * This method keeps track of added, removed, and changed keys. It keeps
-	 * track of the respective collections to make updating the viz service's
-	 * known connections easier.
-	 */
-	@Override
-	public void keyChanged(String oldKey, String newKey) {
-
-		// If a key was changed...
-		if (oldKey != null && newKey != null) {
-			// A pre-existing key was changed...
-			if (newToOld.containsKey(oldKey)) {
-				newToOld.put(newKey, newToOld.remove(oldKey));
-			}
-			// A new key was changed...
-			else if (addedKeys.contains(oldKey)) {
-				addedKeys.remove(oldKey);
-				addedKeys.add(newKey);
-			}
-		}
-		// If a key was removed...
-		else if (oldKey != null) {
-			// A pre-existing key was removed...
-			if (newToOld.containsKey(oldKey)) {
-				removedKeys.add(newToOld.remove(oldKey));
-			}
-			// A new key was removed...
-			else if (addedKeys.contains(oldKey)) {
-				addedKeys.remove(oldKey);
-			}
-		}
-		// If a key was added...
-		else if (newKey != null) {
-			// A pre-existing key was added...
-			if (removedKeys.contains(newKey)) {
-				removedKeys.remove(newKey);
-				newToOld.put(newKey, newKey);
-			}
-			// A new key was added...
-			else if (!addedKeys.contains(newKey)) {
-				addedKeys.add(newKey);
-			}
-		}
-		return;
-	}
-
-	/**
-	 * This method is used to create the {@code ConnectionTable} used by this
-	 * preference page. It is represented by a {@link TableComponentComposite}
-	 * on the page.
+	 * Serializes the specified connection preferences into a string that can be
+	 * stored in the preferences.
 	 * 
-	 * @return The page's connection table.
+	 * @param connection
+	 *            The table row for the connection.
+	 * @return The serialized connection preferences.
 	 */
-	protected ConnectionTable createConnectionTable() {
-		return new ConnectionTable();
+	private String serializeConnectionPreferences(List<Entry> connection) {
+		String preferences = "";
+		String delimiter = getConnectionPreferenceDelimiter();
+
+		// Add the host, port, and path.
+		preferences += connection.get(1).getValue();
+		preferences += delimiter + connection.get(2).getValue();
+		preferences += delimiter + connection.get(3).getValue();
+
+		return preferences;
 	}
+
+	/**
+	 * Converts the serialized connection preferences into an array of string
+	 * values that can be used to update a row in the connection table.
+	 * 
+	 * @param preferences
+	 *            The serialized connection preferences.
+	 * @return An array of all preferences for the row.
+	 */
+	private String[] unserializeConnectionPreferences(String preferences) {
+		return preferences.split(getConnectionPreferenceDelimiter(), -1);
+	}
+
 }
