@@ -59,7 +59,6 @@ public class ICETableComponentSectionPartTester {
 	 * 
 	 */
 	@Test
-	@Ignore
 	public void checkTableComponent() {
 
 		// Local Declarations

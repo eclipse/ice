@@ -50,7 +50,6 @@ public class ICESectionPageTester {
 	 * 
 	 */
 	@Test
-	@Ignore
 	public void checkComponents() {
 
 		// Local Declarations

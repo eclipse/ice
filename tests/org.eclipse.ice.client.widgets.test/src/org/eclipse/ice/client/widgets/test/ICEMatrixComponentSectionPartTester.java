@@ -54,7 +54,6 @@ public class ICEMatrixComponentSectionPartTester {
 	 * 
 	 */
 	@Test
-	@Ignore
 	public void checkMatrixComponent() {
 		MatrixComponent matrixComponent = new MatrixComponent();
 		Display display;

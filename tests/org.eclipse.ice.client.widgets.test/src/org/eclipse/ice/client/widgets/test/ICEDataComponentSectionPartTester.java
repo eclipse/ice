@@ -56,7 +56,6 @@ public class ICEDataComponentSectionPartTester {
 	 */
 	
 	@Test
-	@Ignore
 	public void checkDataComponent() {
 
 		// Local Declarations
