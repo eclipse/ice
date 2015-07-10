@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is the basic implementation of the IVizServiceFactory in ICE. It
  * is registered with the platform as an OSGi service.
- * 
+ *
  * The default IVizService is "ice-plot" and it is registered when the service
  * is started.
- * 
+ *
  * @author Jay Jay Billings
- * 
+ *
  */
 public class BasicVizServiceFactory implements IVizServiceFactory {
 
@@ -76,7 +76,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#register
 	 * (org.eclipse.ice.client.widgets.viz.service.IVizService)
@@ -89,29 +89,34 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 			// Put the service in service map so it can be retrieved later
 			serviceMap.put(name, service);
 
-			Set<String> supportedExtensions = new HashSet<String>();
-			supportedExtensions
-					.addAll(((AbstractVizService) service).supportedExtensions);
+			// Handle associated file types if the service supports file
+			// extensions
+			if (service instanceof AbstractVizService) {
 
-			// Register the plot editor as default editor for all file
-			// extensions handled by the new viz service
-			for (String ext : supportedExtensions) {
-				EditorRegistry editorReg = (EditorRegistry) PlatformUI
-						.getWorkbench().getEditorRegistry();
-				EditorDescriptor editor = (EditorDescriptor) editorReg
-						.findEditor("org.eclipse.ice.viz.service.PlotEditor");
-				FileEditorMapping mapping = new FileEditorMapping(ext);
-				mapping.addEditor(editor);
-				mapping.setDefaultEditor(editor);
+				Set<String> supportedExtensions = new HashSet<String>();
+				supportedExtensions
+						.addAll(((AbstractVizService) service).supportedExtensions);
 
-				IFileEditorMapping[] mappings = editorReg
-						.getFileEditorMappings();
-				FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length + 1];
-				for (int i = 0; i < mappings.length; i++) {
-					newMappings[i] = (FileEditorMapping) mappings[i];
+				// Register the plot editor as default editor for all file
+				// extensions handled by the new viz service
+				for (String ext : supportedExtensions) {
+					EditorRegistry editorReg = (EditorRegistry) PlatformUI
+							.getWorkbench().getEditorRegistry();
+					EditorDescriptor editor = (EditorDescriptor) editorReg
+							.findEditor("org.eclipse.ice.viz.service.PlotEditor");
+					FileEditorMapping mapping = new FileEditorMapping(ext);
+					mapping.addEditor(editor);
+					mapping.setDefaultEditor(editor);
+
+					IFileEditorMapping[] mappings = editorReg
+							.getFileEditorMappings();
+					FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length + 1];
+					for (int i = 0; i < mappings.length; i++) {
+						newMappings[i] = (FileEditorMapping) mappings[i];
+					}
+					newMappings[mappings.length] = mapping;
+					editorReg.setFileEditorMappings(newMappings);
 				}
-				newMappings[mappings.length] = mapping;
-				editorReg.setFileEditorMappings(newMappings);
 			}
 
 			logger.info("VizServiceFactory message: " + "Viz service \"" + name
@@ -134,7 +139,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#unregister
 	 * (org.eclipse.ice.client.widgets.viz.service.IVizService)
@@ -157,7 +162,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#getServiceNames
 	 * ()
@@ -173,7 +178,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#get(java
 	 * .lang.String)
@@ -192,7 +197,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#get()
 	 */
 	@Override
@@ -202,7 +207,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 
 	/**
 	 * Gets the {@link IPreferenceStore} for the associated preference page.
-	 * 
+	 *
 	 * @return The {@code IPreferenceStore} whose defaults should be set.
 	 */
 	private IPreferenceStore getPreferenceStore() {
