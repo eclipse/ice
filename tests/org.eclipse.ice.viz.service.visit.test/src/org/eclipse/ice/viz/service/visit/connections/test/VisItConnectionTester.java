@@ -9,7 +9,7 @@
  *   Jordan Deyton - Initial API and implementation and/or initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.viz.service.connections.paraview.test;
+package org.eclipse.ice.viz.service.visit.connections.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -17,27 +17,24 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.eclipse.ice.viz.service.connections.VizConnection;
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
-import org.eclipse.ice.viz.service.paraview.web.HttpParaViewWebClient;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.ice.viz.service.visit.connections.VisItConnection;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
+
 /**
- * Tests {@link ParaViewConnection}'s implementation of {@link VizConnection}.
+ * Tests {@link VisItConnection}'s implementation of {@link VizConnection}.
  * 
  * @author Jordan Deyton
  *
  */
-public class ParaViewConnectionTester {
+public class VisItConnectionTester {
 
+	// TODO Make sure these tests work.
+	
 	/**
 	 * Whether or not the fake client widget will successfully disconnect.
 	 */
@@ -51,7 +48,7 @@ public class ParaViewConnectionTester {
 	/**
 	 * A fake client to be used when testing disconnecting.
 	 */
-	private IParaViewWebClient fakeClient;
+	private VisItSwtConnection fakeClient;
 
 	/**
 	 * Sets up test class variables before each test.
@@ -65,39 +62,8 @@ public class ParaViewConnectionTester {
 
 		// Create a fake IParaViewWebClient that returns the class variable
 		// "succeed" when it is queried.
-		fakeClient = new HttpParaViewWebClient() {
-			@Override
-			public Future<Boolean> disconnect() {
-				return new Future<Boolean>() {
-					@Override
-					public boolean cancel(boolean mayInterruptIfRunning) {
-						return false;
-					}
-
-					@Override
-					public boolean isCancelled() {
-						return false;
-					}
-
-					@Override
-					public boolean isDone() {
-						return true;
-					}
-
-					@Override
-					public Boolean get() throws InterruptedException, ExecutionException {
-						return succeed;
-					}
-
-					@Override
-					public Boolean get(long timeout, TimeUnit unit)
-							throws InterruptedException, ExecutionException, TimeoutException {
-						return succeed;
-					}
-				};
-			}
-
-		};
+		fakeClient = null;
+		// TODO
 
 		return;
 	}
@@ -146,7 +112,7 @@ public class ParaViewConnectionTester {
 	public void checkFailedToDisconnect() {
 
 		// Should return false when the widget is null.
-		IParaViewWebClient nullClient = null;
+		VisItSwtConnection nullClient = null;
 		assertFalse(fakeConnection.disconnectFromWidget(nullClient));
 
 		// Should return false when the widget fails to disconnect.
@@ -161,12 +127,12 @@ public class ParaViewConnectionTester {
 	 * @author Jordan
 	 *
 	 */
-	private class FakeConnection extends ParaViewConnection {
+	private class FakeConnection extends VisItConnection {
 		/*
 		 * Overrides a method from ParaViewConnection.
 		 */
 		@Override
-		protected IParaViewWebClient connectToWidget() {
+		protected VisItSwtConnection connectToWidget() {
 			return super.connectToWidget();
 		}
 
@@ -174,7 +140,7 @@ public class ParaViewConnectionTester {
 		 * Overrides a method from ParaViewConnection.
 		 */
 		@Override
-		protected boolean disconnectFromWidget(IParaViewWebClient widget) {
+		protected boolean disconnectFromWidget(VisItSwtConnection widget) {
 			return super.disconnectFromWidget(widget);
 		}
 	}

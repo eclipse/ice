@@ -365,7 +365,8 @@ public abstract class VizConnectionManager<T> {
 	 * @param preferences
 	 *            The preference string from the store.
 	 * @return A new viz connection instance using the provided name and
-	 *         preferences.
+	 *         preferences, or {@code null} if the properties could not be
+	 *         sufficiently read from the string to create a connection.
 	 */
 	protected abstract VizConnection<T> createConnection(String name, String preferences);
 

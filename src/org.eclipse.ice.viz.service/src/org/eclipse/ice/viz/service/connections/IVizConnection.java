@@ -120,6 +120,16 @@ public interface IVizConnection<T> {
 	public Map<String, String> getProperties();
 
 	/**
+	 * Gets the value of the property with the specified name.
+	 * 
+	 * @param name
+	 *            The name of the property to get.
+	 * @return The current value of the property with the specified name, or
+	 *         {@code null} if it has not been set.
+	 */
+	public String getProperty(String name);
+
+	/**
 	 * Adds a listener for state changes to this connection. A listener can only
 	 * be registered once, and will be notified on a separate thread when the
 	 * connection state changes.

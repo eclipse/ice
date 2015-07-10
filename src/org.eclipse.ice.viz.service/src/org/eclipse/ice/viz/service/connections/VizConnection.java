@@ -281,6 +281,13 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 		return new HashMap<String, String>(properties);
 	}
 
+	/**
+	 * Implements a method from IVizConnection.
+	 */
+	public String getProperty(String value) {
+		return properties.get(value);
+	}
+
 	/*
 	 * Implements a method from IVizConnection.
 	 */
@@ -658,8 +665,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	public boolean setProperty(String name, String value) {
 		boolean changed = false;
 
-		// If a handler is not available, then assume the new value is valid.
-		boolean canChange = true;
+		// If a handler is not available, then assume the new value is invalid.
+		boolean canChange = false;
 		String newValue = value;
 
 		// Validate the value through any available handler.
