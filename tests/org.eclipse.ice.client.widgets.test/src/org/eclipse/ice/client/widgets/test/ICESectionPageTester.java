@@ -15,7 +15,6 @@ package org.eclipse.ice.client.widgets.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
@@ -30,7 +29,7 @@ import org.junit.Test;
  * <p>
  * This class is responsible for testing the ICESectionPage.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class ICESectionPageTester {
@@ -38,7 +37,7 @@ public class ICESectionPageTester {
 	 * <p>
 	 * The ICESectionPage that will be tested.
 	 * </p>
-	 * 
+	 *
 	 */
 	private ICESectionPage page;
 
@@ -46,14 +45,14 @@ public class ICESectionPageTester {
 	 * <p>
 	 * This operation checks the Component accessor operations on ICESectionPage
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkComponents() {
 
 		// Local Declarations
 		DataComponent comp1 = new DataComponent(), comp2 = new DataComponent();
-		ArrayList<DataComponent> compList = null;
+		ArrayList<Component> compList = null;
 		String compName = null;
 		Form testForm = new Form();
 
@@ -69,15 +68,8 @@ public class ICESectionPageTester {
 		page.addComponent(comp2);
 
 		// Get the list of components and check them
-		assertNotNull(page.getComponents());
-		if (page.getComponents().size() > 1) {
-			compList = new ArrayList<DataComponent>();
-		} else {
-			fail(); // Fail if there are no components in the list
-		}
-		for (Component i : page.getComponents()) {
-			compList.add((DataComponent) i);
-		}
+		compList = page.getComponents();
+		assertNotNull(compList);
 		assertEquals(compList.size(), 2);
 		compName = compList.get(0).getName();
 		assertTrue("Gravy".equals(compName) || "Train".equals(compName));
