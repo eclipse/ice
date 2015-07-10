@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
@@ -38,6 +39,7 @@ import java.io.File;
  *
  */
 
+@Ignore
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class PlotEditorTester {
 	/*

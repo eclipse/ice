@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -53,7 +54,9 @@ public class ICEDataComponentSectionPartTester {
 	 * </p>
 	 * 
 	 */
+	
 	@Test
+	@Ignore
 	public void checkDataComponent() {
 
 		// Local Declarations

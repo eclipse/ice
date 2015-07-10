@@ -36,6 +36,7 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IEditorReference;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,6 +45,7 @@ import org.junit.Test;
  * @author Jay Jay Billings
  * @author Jordan H. Deyton
  */
+@Ignore
 public class ICEResourcePageTester extends AbstractWorkbenchTester {
 
 	// ---- Resources shared between tests. ---- //
