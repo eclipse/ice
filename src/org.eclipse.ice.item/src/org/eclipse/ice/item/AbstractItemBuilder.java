@@ -12,6 +12,8 @@
 package org.eclipse.ice.item;
 
 import org.eclipse.core.resources.IProject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a conceptually abstract (but concretely implemented) realization of
@@ -34,6 +36,11 @@ import org.eclipse.core.resources.IProject;
  * 
  */
 public class AbstractItemBuilder implements ItemBuilder {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
 
 	/**
 	 * The name of the Item that will be built and the name of this builder.
@@ -51,6 +58,14 @@ public class AbstractItemBuilder implements ItemBuilder {
 	 */
 	private IActionFactory actionFactory;
 
+	/**
+	 * The constructor
+	 */
+	public AbstractItemBuilder() {
+		// Create the logger
+		logger = LoggerFactory.getLogger(getClass());
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

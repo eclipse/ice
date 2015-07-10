@@ -26,9 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-
 import javax.xml.bind.annotation.XmlRootElement;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -61,10 +59,11 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	 */
 	private ArrayList<String> actionItems;
 
+	/**
+	 * The tag that indicates this file should be exported to kv pairs.
+	 */
 	private String customTaggedExportString = "Export to key-value pair output";
 
-	private IOService ioService;
-	
 	/**
 	 * The nullary constructor.
 	 */
@@ -72,7 +71,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		this(null);
 		return;
 	}
-	
+
 	/**
 	 * The required constructor.
 	 * 
@@ -81,15 +80,14 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	 */
 	public VibeKVPair(IProject projectSpace) {
 		// Punt to the base class.
-		
 		super(projectSpace);
 		return;
 	}
 
 	/**
 	 * This operation overrides the base class' operation to create a Form with
-	 * Entries that will be used to generate the VIBEkey-value pair file. It
-	 * has one DataComponent per VIBE component.
+	 * Entries that will be used to generate the VIBEkey-value pair file. It has
+	 * one DataComponent per VIBE component.
 	 */
 	@Override
 	public void setupForm() {
@@ -116,24 +114,26 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		setDescription("Generate input files for VIBE.");
 		allowedActions.remove("Export to ICE Native Format");
 		actionItems = getAvailableActions();
-		
-		ioService = getIOService();
+
+		// Register this class as an IOService.
+		// Note: Andrew, what are you doing here?
+		IOService ioService = getIOService();
 		if (ioService == null) {
 			setIOService(new IOService());
 			ioService = getIOService();
 		}
 		ioService.addReader(this);
 		ioService.addWriter(this);
+
+		return;
 	}
 
 	/**
-	 * Checks to make sure that the form given has some data
-	 * to write out.
+	 * Checks to make sure that the form given has some data to write out.
 	 * 
 	 * @param preparedForm
-	 * 			The form to review.
-	 * @return retStatus 
-	 * 			Whether or not the form passed review
+	 *            The form to review.
+	 * @return retStatus Whether or not the form passed review
 	 */
 	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
@@ -145,8 +145,8 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 
 		// Make sure the form has the right amount of data
 		if (components.size() == 0) {
-			System.out
-					.println("VIBE KV Pair Generator Message: Could not find any data to write out");
+			logger.info("VIBE KV Pair Generator Message: "
+					+ "Could not find any data to write out");
 			retStatus = FormStatus.InfoError;
 		}
 		return retStatus;
@@ -158,9 +158,8 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	 * default definition
 	 * 
 	 * @param actionName
-	 * 			The name of the action to be taken.
-	 * @return retStatus
-	 * 			The status of the action
+	 *            The name of the action to be taken.
+	 * @return retStatus The status of the action
 	 */
 	@Override
 	public FormStatus process(String actionName) {
@@ -200,7 +199,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 					// Complain
 					System.err.println("VibeKVPair Generator Message: "
 							+ "Failed to refresh the project space.");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 				// return a success
 				retStatus = FormStatus.Processed;
@@ -245,7 +244,8 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 				} else {
 					defaultFilePath = ResourcesPlugin.getWorkspace().getRoot()
 							.getLocation().toOSString()
-							+ System.getProperty("file.separator") + "case_6.dat";
+							+ System.getProperty("file.separator")
+							+ "case_6.dat";
 				}
 
 				// Create a temporary location to load the default file
@@ -276,20 +276,20 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 				}
 
 			} catch (URISyntaxException e) {
-				System.err
-						.println("VibeKVPair Message: Error!  Could not load the default"
-								+ " Vibe case data!");
+				System.err.println("VibeKVPair Message: "
+						+ "Error!  Could not load the default"
+						+ " Vibe case data!");
 			} catch (MalformedURLException e) {
-				System.err
-						.println("VibeKVPair Message: Error!  Could not load the default"
-								+ " Vibe case data!");
+				System.err.println("VibeKVPair Message: "
+						+ "Error!  Could not load the default"
+						+ " Vibe case data!");
 			} catch (IOException e) {
-				System.err
-						.println("VibeKVPair Message: Error!  Could not load the default"
-								+ " Vibe case data!");
+				System.err.println("VibeKVPair Message: "
+						+ "Error!  Could not load the default"
+						+ " Vibe case data!");
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		} else {
 			// Get the file
@@ -297,7 +297,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		}
 
 		// Load the components from the file and setup the form
-		System.out.println("VibeKVPair Message: Loading"
+		logger.info("VibeKVPair Message: Loading"
 				+ inputFile.getFullPath().toOSString());
 
 		form = read(inputFile);
@@ -353,15 +353,16 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 			// read in correctly
 			lines.add("EOF");
 		} catch (FileNotFoundException e) {
-			System.out
-					.println("VibeKVPair Message: Error!  Could not find file for loading.");
+			logger.error("VibeKVPair Message: "
+					+ "Error! Could not find file for loading.");
 			return null;
 		} catch (IOException e) {
-			System.out
-					.println("VibeKVPair Message: Error!  Trouble reading file.");
+			logger.error("VibeKVPair Message: "
+					+ "Error! Trouble reading file.");
 			return null;
 		} catch (CoreException e) {
-			System.out.println("VibeKVPair Message: Error!  Trouble reading file from project location.");
+			logger.error("VibeKVPair Message: "
+					+ "Error! Trouble reading file from project location.");
 			return null;
 		}
 
@@ -445,14 +446,14 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 				ifile.setContents(in, true, false, new NullProgressMonitor());
 
 			} catch (FileNotFoundException e) {
-				System.out.println("VibeKVPair Message: Could not find "
+				logger.info("VibeKVPair Message: Could not find "
 						+ outputFile.getAbsolutePath() + " for writing.");
 			} catch (IOException e) {
-				System.out.println("VibeKVPair Message: Could not write to "
+				logger.info("VibeKVPair Message: Could not write to "
 						+ outputFile.getAbsolutePath() + ".");
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 

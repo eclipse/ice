@@ -17,6 +17,8 @@ import java.util.List;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@code TableComponentPreferenceAdapter} can marshal a
@@ -64,6 +66,12 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  *
  */
 public class TableComponentPreferenceAdapter {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(TableComponentPreferenceAdapter.class);
 
 	/**
 	 * The separator used when a serialized list of strings is written to a
@@ -174,9 +182,8 @@ public class TableComponentPreferenceAdapter {
 		// Log a problem with the table's template if the column count does not
 		// match.
 		if (columns != table.numberOfColumns()) {
-			System.out
-					.println("TableComponentPreferenceAdapter warning: "
-							+ "Specified TableComponent has incorrect number of columns.");
+			logger.info("TableComponentPreferenceAdapter warning: "
+					+ "Specified TableComponent has incorrect number of columns.");
 			badTemplate = true;
 		}
 		// Otherwise, check all of the column names.
@@ -191,12 +198,11 @@ public class TableComponentPreferenceAdapter {
 				// don't match. We should exit before updating the
 				// TableComponent's rows.
 				if (!columnName.equals(template.get(j).getName())) {
-					System.out
-							.println("TableComponentPreferenceAdapter warning: "
-									+ "Specified TableComponent has mismatching column names. Expected \""
-									+ columnName
-									+ "\" but found \""
-									+ template.get(j).getName() + "\".");
+					logger.info("TableComponentPreferenceAdapter warning: "
+							+ "Specified TableComponent has "
+							+ "mismatching column names. Expected \""
+							+ columnName + "\" but found \""
+							+ template.get(j).getName() + "\".");
 					badTemplate = true;
 				}
 			}

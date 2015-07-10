@@ -15,12 +15,20 @@ package org.eclipse.ice.client.widgets;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** 
  * <p>The ICEFormPage class is the base class for all FormPages in ICE.</p>
  * @author Jay Jay Billings
  */
 public class ICEFormPage extends FormPage {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
+	
 	/** 
 	 * <p>The Form from ICE that contains the data to be displayed in this on this Page.</p>
 	 */
@@ -40,6 +48,9 @@ public class ICEFormPage extends FormPage {
 
 		// Call the super constructor
 		super(editor, id, title);
+		
+		// Create the logger
+		logger = LoggerFactory.getLogger(getClass());
 
 	}
 }

@@ -183,7 +183,7 @@ public class CSVData extends ICEObject implements IData {
 			return;
 		}
 		// Copy contents into super and current object
-		super.copy((ICEObject) otherCSVData);
+		super.copy(otherCSVData);
 
 		// Copy the feature
 		this.feature = otherCSVData.getFeature();

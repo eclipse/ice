@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -32,6 +34,13 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
  */
 @XmlRootElement(name = "ParameterList")
 public class ParameterList {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ParameterList.class);
+
 	/**
 	 * <p>
 	 * The name of the parameter list.
@@ -92,7 +101,7 @@ public class ParameterList {
 				dataComp.addEntry(paramEntry);
 			}
 		} else {
-			System.out.println("ParameterList Message: " + name
+			logger.info("ParameterList Message: " + name
 					+ " has no parameters! WARNING!");
 		}
 		// Add the data component as a data node

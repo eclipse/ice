@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Alex McCaskey - Initial API and implementation and/or initial documentation
- *   
+ *
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose.actions;
 
@@ -68,6 +68,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The ForkStorkHandler displays a Wizard to the user to gather a new MOOSE
@@ -76,15 +78,20 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * Additionally, it imports the project as a CDT Makefile project with existing
  * code, creates a new Make Target, and adds the appropriate MOOSE include files
  * to the Paths and Symbols preference page.
- * 
+ *
  * @author Alex McCaskey
  *
  */
 public class ForkStorkHandler extends AbstractHandler {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ForkStorkHandler.class);
+
+	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
@@ -158,10 +165,10 @@ public class ForkStorkHandler extends AbstractHandler {
 
 					// Edit the name
 					service.editRepository(repo, fields);
-				} catch (IOException e1) {
-					e1.printStackTrace();
+				} catch (IOException e) {
+					logger.error(getClass().getName() + " Exception!",e);
 					String errorMessage = "ICE failed in forking the new stork.";
-					return new Status(Status.ERROR,
+					return new Status(IStatus.ERROR,
 							"org.eclipse.ice.client.widgets.moose", 1,
 							errorMessage, null);
 				}
@@ -174,10 +181,10 @@ public class ForkStorkHandler extends AbstractHandler {
 				try {
 					Git result = Git.cloneRepository().setURI(remoteURI)
 							.setDirectory(workspaceFile).call();
-				} catch (GitAPIException e1) {
-					e1.printStackTrace();
+				} catch (GitAPIException e) {
+					logger.error(getClass().getName() + " Exception!",e);
 					String errorMessage = "ICE failed in cloning the new application.";
-					return new Status(Status.ERROR,
+					return new Status(IStatus.ERROR,
 							"org.eclipse.ice.client.widgets.moose", 1,
 							errorMessage, null);
 				}
@@ -199,9 +206,9 @@ public class ForkStorkHandler extends AbstractHandler {
 						// Execute the python script!
 						jobBuilder.start();
 					} catch (IOException e) {
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 						String errorMessage = "ICE could not execute the make_new_application python script.";
-						return new Status(Status.ERROR,
+						return new Status(IStatus.ERROR,
 								"org.eclipse.ice.client.widgets.moose", 1,
 								errorMessage, null);
 					}
@@ -289,9 +296,9 @@ public class ForkStorkHandler extends AbstractHandler {
 					target.setUseDefaultBuildCmd(false);
 					target.setBuildAttribute(
 							IMakeCommonBuildInfo.BUILD_COMMAND, "make");
-					target.setBuildAttribute(IMakeTarget.BUILD_LOCATION,
+					target.setBuildAttribute(IMakeCommonBuildInfo.BUILD_LOCATION,
 							cProject.getLocation().toOSString());
-					target.setBuildAttribute(IMakeTarget.BUILD_ARGUMENTS, "");
+					target.setBuildAttribute(IMakeCommonBuildInfo.BUILD_ARGUMENTS, "");
 					target.setBuildAttribute(IMakeTarget.BUILD_TARGET, "all");
 					manager.addTarget(cProject, target);
 
@@ -347,9 +354,9 @@ public class ForkStorkHandler extends AbstractHandler {
 					project.setDescription(desc, new NullProgressMonitor());
 
 				} catch (CoreException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					String errorMessage = "ICE could not import the new MOOSE application as a C++ project.";
-					return new Status(Status.ERROR,
+					return new Status(IStatus.ERROR,
 							"org.eclipse.ice.client.widgets.moose", 1,
 							errorMessage, null);
 				}
@@ -373,7 +380,7 @@ public class ForkStorkHandler extends AbstractHandler {
 	/**
 	 * Private method used basically to just compartimentalize all the include
 	 * additions for the MOOSE build system.
-	 * 
+	 *
 	 * @return
 	 */
 	private List<ICLanguageSettingEntry> getIncludePaths() {

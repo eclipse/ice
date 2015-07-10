@@ -210,7 +210,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(TransformationView.ID);
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Create the geometry composite - get the parent
@@ -323,7 +323,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	 * to or removed from the List.
 	 */
 	private void updateActionManagers() {
-		System.out.println("ICEMeshPage message:"
+		logger.info("ICEMeshPage message:"
 				+ " Updating action ToolBar-/MenuManagers.");
 
 		// Clear the managers.

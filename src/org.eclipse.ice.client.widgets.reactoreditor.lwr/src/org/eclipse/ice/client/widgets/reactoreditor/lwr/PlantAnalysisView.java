@@ -220,7 +220,7 @@ public class PlantAnalysisView extends AnalysisView {
 	@Override
 	public void update(String key, Object value) {
 
-		System.out.println("PlantAnalysisView message: "
+		logger.info("PlantAnalysisView message: "
 				+ "Receiving update for key " + key + ": " + value.toString());
 
 		// Currently, the only value this class listens to is the one that holds

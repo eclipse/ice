@@ -45,6 +45,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides an {@link IAnalysisView} for plotting data for rods,
@@ -54,6 +56,11 @@ import org.eclipse.swt.widgets.Composite;
  * 
  */
 public class PlotAnalysisView extends AnalysisView {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(PlotAnalysisView.class);
 
 	/**
 	 * The name for this type of analysis view. This can be used for the display
@@ -341,9 +348,9 @@ public class PlotAnalysisView extends AnalysisView {
 	 * selection of plotted data for the current feature.
 	 */
 	private void requestPlotSeries() {
-		System.out.println("Request plot series called");
+		logger.info("Request plot series called");
 		if (feature != null) {
-			System.out.println("Feature is " + feature);
+			logger.info("Feature is " + feature);
 
 			// Get the size of the assembly.
 			int rows = size;

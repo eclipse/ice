@@ -27,8 +27,16 @@ import org.eclipse.ice.reactor.LWRComponentReader;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.sfr.base.SFReactorIOHandler;
 import org.eclipse.ice.reactor.sfr.core.SFReactor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReactorReaderFactory {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ReactorReaderFactory.class);
 
 	// FIXME - In lieu of registering OSGi services, I'm simply calling the
 	// specific reactor classes and methods directly.
@@ -79,7 +87,7 @@ public class ReactorReaderFactory {
 	/**
 	 * This method reads the data from a given file into an implementation of an
 	 * IReactorComponent. It will return null if the file could not be read.
-	 * 
+	 *
 	 * @param source
 	 *            The URI of the source data file.
 	 * @return An instance of an implementation of IReactorComponent, or
@@ -207,11 +215,9 @@ public class ReactorReaderFactory {
 						+ path + "\".");
 			}
 		} catch (HDF5LibraryException e) {
-			e.printStackTrace();
-			System.err.println("ReactorReaderFactory error: " + e.getMessage());
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			System.err.println("ReactorReaderFactory error: " + e.getMessage());
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Look up the factory for the type and, if possible, use the factory to
@@ -226,7 +232,7 @@ public class ReactorReaderFactory {
 	/**
 	 * Copies the information from a source IReactorComponent instance to
 	 * another IReactorComponent.
-	 * 
+	 *
 	 * @param source
 	 *            The source IReactorComponent to be copied from.
 	 * @param destination

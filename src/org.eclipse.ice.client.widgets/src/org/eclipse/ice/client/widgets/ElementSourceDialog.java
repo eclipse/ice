@@ -90,8 +90,9 @@ public class ElementSourceDialog<T> extends Dialog {
 		// available
 		if (!list.isEmpty() && list.get(0) instanceof Comparable) {
 			Collections.sort(list, new Comparator<T>() {
+				@Override
 				public int compare(Object first, Object second) {
-					return ((Comparable) first).compareTo((Comparable) second);
+					return ((Comparable) first).compareTo(second);
 				}
 			});
 		}

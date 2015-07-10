@@ -62,6 +62,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.odell.glazedlists.swt.DefaultEventTableViewer;
 
@@ -76,7 +78,13 @@ import ca.odell.glazedlists.swt.DefaultEventTableViewer;
  */
 public class ICEResourceView extends PlayableViewPart implements
 		IUpdateableListener, IPartListener2, IDoubleClickListener {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ICEResourceView.class);
 
+	// The ID
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEResourceView";
 
 	// ---- Current Editor and Resources ---- //
@@ -504,7 +512,7 @@ public class ICEResourceView extends PlayableViewPart implements
 			try {
 				resourcePage.showResource(selectedResource);
 			} catch (PartInitException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -541,7 +549,7 @@ public class ICEResourceView extends PlayableViewPart implements
 					// Just do a blanket update - no need to check the component
 					if (resourceTreeViewer != null
 							&& !resourceTreeViewer.getControl().isDisposed()) {
-						System.out.println("ICEResourceView Message: "
+						logger.info("ICEResourceView Message: "
 								+ "Updating resource table.");
 						sortTreeContent();
 						setTreeContent();
@@ -574,7 +582,7 @@ public class ICEResourceView extends PlayableViewPart implements
 				} else if (i.isPictureType()) {
 					imageList.add(new ResourcePropertySource(i));
 				} else {
-					System.out.println("ERROR: Unknown resource type.");
+					logger.info("ERROR: Unknown resource type.");
 				}
 			}
 		}

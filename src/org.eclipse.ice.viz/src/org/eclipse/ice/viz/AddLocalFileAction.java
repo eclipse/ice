@@ -22,6 +22,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This Action presents a FileDialog to select files from the local file system
@@ -30,6 +32,12 @@ import org.eclipse.ui.part.ViewPart;
  * @author Taylor Patterson
  */
 public class AddLocalFileAction extends Action {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AddLocalFileAction.class);
 
 	/**
 	 * The ViewPart that owns an object of this class.
@@ -124,11 +132,11 @@ public class AddLocalFileAction extends Action {
 					System.err.println("AddLocalFileAction error: Failed to "
 							+ "create an ICEResource for the file at \""
 							+ filePath + "\".");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		} else {
-			System.out.println("AddLocalFileAction message: No file selected.");
+			logger.info("AddLocalFileAction message: No file selected.");
 		}
 
 		return;

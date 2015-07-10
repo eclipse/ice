@@ -22,14 +22,11 @@ import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.SingleMaterialWritableTableFormat;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.selection.RowSelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -43,6 +40,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -306,8 +304,8 @@ public class MaterialDetailsPage implements IDetailsPage {
 		// Put in an overall section to hold the master details block. It is
 		// just a stylistic thing for the most part.
 		FormToolkit toolkit = managedForm.getToolkit();
-		Section section = toolkit.createSection(parent, Section.TITLE_BAR
-				| Section.DESCRIPTION | Section.EXPANDED);
+		Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR
+				| Section.DESCRIPTION | ExpandableComposite.EXPANDED);
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		section.setLayoutData(gridData);
 		section.setLayout(new GridLayout(1, true));

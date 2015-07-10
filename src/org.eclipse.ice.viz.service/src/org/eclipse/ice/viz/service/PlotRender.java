@@ -22,6 +22,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class manages a single rendering of an {@link IPlot}.
@@ -40,6 +42,11 @@ import org.eclipse.swt.widgets.Label;
  *
  */
 public abstract class PlotRender {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
 
 	// TODO We may want to add a ToolBar
 
@@ -102,6 +109,10 @@ public abstract class PlotRender {
 	 *            The rendered {@code IPlot}. This cannot be changed.
 	 */
 	public PlotRender(Composite parent, IPlot plot) {
+		
+		// Create the logger
+		logger = LoggerFactory.getLogger(PlotRender.class);
+		
 		// Check the parameters.
 		if (parent == null || plot == null) {
 			throw new NullPointerException("PlotRender error: "

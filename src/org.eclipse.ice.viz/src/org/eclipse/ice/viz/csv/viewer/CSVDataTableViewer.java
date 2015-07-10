@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class extends the ViewPart class and provides a view in the
@@ -40,6 +42,12 @@ import org.eclipse.ui.part.ViewPart;
  * 
  */
 public class CSVDataTableViewer extends ViewPart implements ISelectionListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(CSVDataTableViewer.class);
 
 	/**
 	 * The ID for this view
@@ -176,7 +184,7 @@ public class CSVDataTableViewer extends ViewPart implements ISelectionListener {
 	 */
 	public void refreshDataTable(CSVDataProvider newDataProvider) {
 
-		System.out.println("CSVDataTableViewer Message: Refreshing the data "
+		logger.info("CSVDataTableViewer Message: Refreshing the data "
 				+ "table: " + newDataProvider.getSourceInfo());
 
 		// Iterates through the times

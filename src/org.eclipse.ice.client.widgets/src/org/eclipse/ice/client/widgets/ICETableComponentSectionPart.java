@@ -54,6 +54,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.Section;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is a subclass of SectionPart from org.eclipse.ui.forms that
@@ -68,6 +70,13 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class ICETableComponentSectionPart extends SectionPart implements
 		IUpdateableListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ICETableComponentSectionPart.class);
+
 	/**
 	 * This attribute is a reference to an ICE TableComponent that stores the
 	 * data that should be displayed by this SectionPart. The TableComponent
@@ -624,7 +633,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 						tableComponent.setSelectedRows(selectedRowList);
 						// Log some output for debugging purposes
 						if (System.getProperty("DebugICE") != null) {
-							System.out.println("ICETableComponentSectionPart "
+							logger.info("ICETableComponentSectionPart "
 									+ "Message: " + "Selected rows = "
 									+ tableComponent.getSelectedRows());
 						}
@@ -749,7 +758,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 					boolean success = row.getRowWrapper().get(counter)
 							.setValue((String) value);
 					if (System.getProperty("DebugICE") != null) {
-						System.out.println("ICETableComponentSectionPart "
+						logger.info("ICETableComponentSectionPart "
 								+ "Message: " + "Setting value returned "
 								+ success);
 					}

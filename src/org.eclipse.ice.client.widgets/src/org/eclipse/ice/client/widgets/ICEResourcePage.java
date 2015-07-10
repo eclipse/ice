@@ -53,13 +53,13 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 /**
  * This class is a FormPage that creates a page with table and metadata viewing
  * area for an ICE ResourceComponent.
- * 
+ *
  * @author Jay Jay Billings
  * @author Taylor Patterson
  * @author Anna Wojtowicz
  * @author Jordan Deyton
  * @author Alex McCaskey
- * 
+ *
  */
 public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		IUpdateableListener {
@@ -115,7 +115,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 	/**
 	 * The default constructor.
-	 * 
+	 *
 	 * @param editor
 	 *            The FormEditor for which the Page should be constructed. This
 	 *            should be an {@link ICEFormEditor}.
@@ -131,7 +131,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		// Set the ICEFormEditor
 		if (!(editor instanceof ICEFormEditor)) {
-			System.out.println("ICEResourcePage Message: Invalid FormEditor.");
+			logger.info("ICEResourcePage Message: Invalid FormEditor.");
 		}
 
 		// Setup the plot maps.
@@ -148,7 +148,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * This operation overrides the default/abstract implementation of
 	 * FormPage.createFormContents to create the contents of the
 	 * ICEResourcePage.
-	 * 
+	 *
 	 * @param managedForm
 	 *            The Form widget on which the ICEResourcePage exists.
 	 */
@@ -163,7 +163,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(ICEResourceView.ID);
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Get the parent Composite for the Resource Page widgets and set its
@@ -205,7 +205,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	/**
 	 * This operation draws a browser on the page that displays the selected
 	 * ICEResource.
-	 * 
+	 *
 	 * @param formToolkit
 	 *            The FormToolkit that is used to create SWT widgets for this
 	 *            page.
@@ -239,8 +239,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						+ "</body></html>");
 			}
 		} catch (SWTError e) {
-			System.out.println("Client Message: "
-					+ "Could not instantiate Browser: " + e.getMessage());
+			logger.error(getClass().getName() + " Exception! ", e);
 		}
 
 		return browser;
@@ -251,7 +250,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * <p>
 	 * <b>Note:</b> This method assumes it is called from the UI thread.
 	 * </p>
-	 * 
+	 *
 	 * @param resource
 	 *            The resource to render. Assumed not to be {@code null}.
 	 * @throws PartInitException
@@ -309,9 +308,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				}
 			} catch (Exception e) {
 				// Instead of printing the stack trace, print the error message.
-				System.err.println(e.getMessage());
-				System.err.println("ICEResourcePage error: "
-						+ "The plot could not be drawn.");
+				logger.error(getClass().getName() + " Exception! ", e);
 			}
 		}
 
@@ -357,7 +354,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 	/**
 	 * Gets the resource's key for use in the plot maps.
-	 * 
+	 *
 	 * @param resource
 	 *            The resource whose key should be determined. Assumed not to be
 	 *            {@code null}.
@@ -372,7 +369,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * until it finds the first one that can create an {@link IPlot} for the
 	 * specified resource. If one could be created, it will be added to the map
 	 * of {@link #plots}.
-	 * 
+	 *
 	 * @param resource
 	 *            The resource that needs an {@link IPlot}.
 	 * @return The plot, or {@code null} if one could not be created.
@@ -396,7 +393,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				} catch (Exception e) {
 					// Instead of printing the stack trace, print the error
 					// message. This means the plot could not be created.
-					System.err.println("Create Plot failed: " + e.getMessage());
+					logger.error(getClass().getName() + " Exception! ", e);
 				}
 			}
 		}
@@ -432,7 +429,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	/**
 	 * This operation sets the IVizServiceFactory that should be used to create
 	 * plots.
-	 * 
+	 *
 	 * @param factory
 	 *            The service factory that should be used
 	 */
@@ -448,7 +445,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 * <p>
 	 * <b>Note:</b> This method should only be called when the page is created.
 	 * </p>
-	 * 
+	 *
 	 * @param component
 	 *            The ResourceComponent
 	 */
@@ -518,7 +515,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	/**
 	 * This operation retrieves the ResourceComponent that has been rendered by
 	 * the ICEResourcePage or null if the component does not exist.
-	 * 
+	 *
 	 * @return The ResourceComponent or null if the component was not previously
 	 *         set.
 	 */
@@ -529,7 +526,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	/**
 	 * This operation sets the ISimpleResource provider that should be used by
 	 * the output page to load ICEResources.
-	 * 
+	 *
 	 * @param provider
 	 *            The ISimpleResourceProvider
 	 */
@@ -576,13 +573,14 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		} else if (component != null && component instanceof VizResource) {
 			// Cast to a VizResource
 			final VizResource resource = (VizResource) component;
-			
-			// Get the plot associated with this resource and redraw it. 
+
+			// Get the plot associated with this resource and redraw it.
 			plots.get(getPlotKey(resource)).redraw();
-			
+
 			// Layout the composite on the UI thread.
 			if (pageComposite != null) {
 				pageComposite.getDisplay().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						pageComposite.layout();
 						activateEditor();
@@ -597,7 +595,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.
 	 * IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */

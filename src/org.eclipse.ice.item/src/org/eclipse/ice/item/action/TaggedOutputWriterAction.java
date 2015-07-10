@@ -83,7 +83,7 @@ public class TaggedOutputWriterAction extends Action {
 				status = FormStatus.Processed;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 
 			}
 		}

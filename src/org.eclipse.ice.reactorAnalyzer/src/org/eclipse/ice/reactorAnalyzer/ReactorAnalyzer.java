@@ -391,7 +391,7 @@ public class ReactorAnalyzer extends Item implements Runnable {
 			}
 		} catch (Exception e) {
 			// Catch any of the exceptions that are thrown the above operations.
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return reviewStatus;
@@ -668,7 +668,7 @@ public class ReactorAnalyzer extends Item implements Runnable {
 				}
 			} catch (CoreException e) {
 				// Complain
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -930,9 +930,9 @@ public class ReactorAnalyzer extends Item implements Runnable {
 				try {
 					resource.setContents(new File(asset.getURI().getPath()));
 				} catch (NullPointerException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 				resource.setPath(asset.getURI());
 				resource.setName(asset.getName());

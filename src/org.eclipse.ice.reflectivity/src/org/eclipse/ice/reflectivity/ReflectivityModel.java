@@ -280,7 +280,7 @@ public class ReflectivityModel extends Model {
 					// Complain
 					System.err.println("ReflectivityModel Error: "
 							+ "Problem creating reflectivity files!");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 				// Just override the existing files.
@@ -306,7 +306,7 @@ public class ReflectivityModel extends Model {
 				} catch (CoreException | NullPointerException e) {
 					System.err.println("Reflectivity Model Error: "
 							+ "Problem writing to reflectivity files.");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					retVal = FormStatus.InfoError;
 				}
 

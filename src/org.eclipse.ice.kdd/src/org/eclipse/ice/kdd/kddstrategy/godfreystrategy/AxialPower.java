@@ -31,16 +31,17 @@ import org.eclipse.ice.kdd.kddmath.KDDMatrix;
  * input nuclear reactor pin power data as well as the pin power difference and
  * produces the axial power data.
  * </p>
- * 
+ *
  * @author Alex McCaskey
  */
 public class AxialPower extends GodfreySubStrategy {
+
 	/**
 	 * <p>
 	 * Reference to the pin power difference calculations.
 	 * </p>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	private PinPowerDifference differences;
 
@@ -48,7 +49,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * <p>
 	 * Reference to the axial power.
 	 * </p>
-	 * 
+	 *
 	 */
 	private KDDMatrix axialPower;
 
@@ -56,7 +57,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * <p>
 	 * Reference to the generated axial power for the pin power differences.
 	 * </p>
-	 * 
+	 *
 	 */
 	private KDDMatrix axialPowerDiff;
 
@@ -64,28 +65,28 @@ public class AxialPower extends GodfreySubStrategy {
 	 * <p>
 	 * Reference to the average axial power.
 	 * </p>
-	 * 
+	 *
 	 */
 	private Double axialPowerAverage;
 	/**
 	 * <p>
 	 * Reference to the average axial power difference.
 	 * </p>
-	 * 
+	 *
 	 */
 	private Double axialPowerDiffAverage;
 	/**
 	 * <p>
 	 * Reference to the RMS average axial power.
 	 * </p>
-	 * 
+	 *
 	 */
 	private Double axialPowerRMS;
 	/**
 	 * <p>
 	 * Reference to the RMS axial power difference.
 	 * </p>
-	 * 
+	 *
 	 */
 	private Double axialPowerDiffRMS;
 
@@ -94,7 +95,7 @@ public class AxialPower extends GodfreySubStrategy {
 	/**
 	 * The constructor takes an instance of the PinPowerDifference substrategy
 	 * for use in calculating the axial power difference.
-	 * 
+	 *
 	 * @param difference
 	 * @param pinPowers
 	 * @param refPinPowers
@@ -123,7 +124,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * detection algorithm and produce a KDDAnalysisAsset for clients to display
 	 * and manipulate.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -222,7 +223,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * This method is responsible for creating the URI describing the generated
 	 * data.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean createAsset() {
@@ -295,7 +296,7 @@ public class AxialPower extends GodfreySubStrategy {
 			file.create(new ByteArrayInputStream(contents.getBytes()), false,
 					null);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return false;
 		}
 
@@ -309,7 +310,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * <p>
 	 * Return the axial power difference.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public KDDMatrix getAxialPower() {
@@ -320,7 +321,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * <p>
 	 * Return the axial power pin power difference.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public KDDMatrix getAxialPowerDifference() {
@@ -331,7 +332,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * <p>
 	 * Return the average axial power.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public Double getAxialPowerAverage() {
@@ -342,7 +343,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * <p>
 	 * Return the average axial power difference.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public Double getAxialPowerDifferenceAverage() {
@@ -353,7 +354,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * <p>
 	 * Return the RMS axial power.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public Double getAxialPowerRMS() {
@@ -364,7 +365,7 @@ public class AxialPower extends GodfreySubStrategy {
 	 * <p>
 	 * Return the RMS axial power difference.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public Double getAxialPowerDifferenceRMS() {

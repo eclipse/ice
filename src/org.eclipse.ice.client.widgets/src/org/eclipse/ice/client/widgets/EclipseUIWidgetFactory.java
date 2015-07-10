@@ -20,6 +20,8 @@ import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -38,6 +40,12 @@ import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
  * @author Jay Jay Billings
  */
 public class EclipseUIWidgetFactory implements IWidgetFactory {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(EclipseUIWidgetFactory.class);	
+	
 	/**
 	 * <p>
 	 * The set of IFormWidgetBuilders registered with the Factory.
@@ -65,7 +73,7 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 		// Only add the widget builder if it is good
 		if (builder != null && builder.getTargetFormName() != null) {
 			widgetBuildersMap.put(builder.getTargetFormName(), builder);
-			System.out.println("EclipseUIWidgetFactory Message: New "
+			logger.info("EclipseUIWidgetFactory Message: New "
 					+ "IFormWidgetBuilder registered for "
 					+ builder.getTargetFormName());
 		}

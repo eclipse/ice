@@ -12,8 +12,6 @@
 package org.eclipse.ice.client.widgets;
 
 import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;

@@ -26,7 +26,6 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -38,13 +37,13 @@ import org.junit.Test;
  * It only tests the accessor operations for the TableComponent and the update
  * routine from IComponentListener.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 
 public class ICETableComponentSectionPartTester {
 	/**
-	 * 
+	 *
 	 */
 	private ICETableComponentSectionPart ICETableComponentSectionPart;
 
@@ -55,149 +54,156 @@ public class ICETableComponentSectionPartTester {
 	 * ICESectionPart by modifying a TableComponent and insuring that the
 	 * ICESectionPart gets the update.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkTableComponent() {
 
 		// Local Declarations
-		TableComponent tableComponent = new TableComponent();
+		final TableComponent tableComponent = new TableComponent();
 		TableComponent tempTableC = null;
 		TableComponent tableComponent2 = null;
-		Display display;
-		FormToolkit formTk;
-		ManagedForm eclipseTestForm;
+		final Display display;
 
-		// Setup the display, form toolkit and test form. The display must be
-		// retrieve from the Eclipse PlatformUI if it is running or created
-		// separately if not.
-		if (!PlatformUI.isWorkbenchRunning()) {
-			display = new Display();
-		} else {
-			display = PlatformUI.getWorkbench().getDisplay();
-		}
-		formTk = new FormToolkit(display);
-		eclipseTestForm = new ManagedForm(new Shell(display));
+		// Setup the display, form toolkit and test form.
+		display = Display.getDefault();
+		display.syncExec(new Runnable() {
 
-		// Setup TableComponent
-		Entry column1 = new Entry();
-		Entry column2 = new Entry();
-		Entry column3 = new Entry();
-
-		ArrayList<Entry> template = new ArrayList<Entry>();
-		ArrayList<Entry> row1 = new ArrayList<Entry>();
-		ArrayList<Entry> row2 = new ArrayList<Entry>();
-
-		// set tableComponent values for name, id, description
-		tableComponent.setName("Table 1");
-		tableComponent.setId(1);
-		tableComponent.setDescription("This is a table that contains entries.");
-
-		// Set row template - gather columns to table
-		column1.setName("Column1");
-		column1.setId(1);
-		column1.setDescription("I am Column1!");
-		column1.setValue("Over 9000!");
-		column1.setTag("Column");
-
-		column2 = new Entry() {
 			@Override
-			protected void setup() {
-				allowedValueType = AllowedValueType.Continuous;
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("0");
-				this.allowedValues.add("15");
+			public void run() {
+
+				FormToolkit formTk;
+				ManagedForm eclipseTestForm;
+				formTk = new FormToolkit(display);
+				eclipseTestForm = new ManagedForm(new Shell(display));
+
+				// Setup TableComponent
+				Entry column1 = new Entry();
+				Entry column2 = new Entry();
+				Entry column3 = new Entry();
+
+				ArrayList<Entry> template = new ArrayList<Entry>();
+				ArrayList<Entry> row1 = new ArrayList<Entry>();
+				ArrayList<Entry> row2 = new ArrayList<Entry>();
+
+				// set tableComponent values for name, id, description
+				tableComponent.setName("Table 1");
+				tableComponent.setId(1);
+				tableComponent
+						.setDescription("This is a table that contains entries.");
+
+				// Set row template - gather columns to table
+				column1.setName("Column1");
+				column1.setId(1);
+				column1.setDescription("I am Column1!");
+				column1.setValue("Over 9000!");
+				column1.setTag("Column");
+
+				column2 = new Entry() {
+					@Override
+					protected void setup() {
+						allowedValueType = AllowedValueType.Continuous;
+						allowedValues = new ArrayList<String>();
+						allowedValues.add("0");
+						allowedValues.add("15");
+					}
+				};
+				column2.setName("Column2");
+				column2.setId(2);
+				column2.setDescription("I am Column2! I can only take values from 0 to 15");
+				column2.setValue("0");
+				column2.setTag("Column");
+
+				// Override ->add menuitem
+				column3 = new Entry() {
+					@Override
+					protected void setup() {
+						allowedValueType = AllowedValueType.Discrete;
+						allowedValues = new ArrayList<String>();
+						allowedValues.add("I am one");
+						allowedValues.add("I am two");
+					}
+				};
+				column3.setName("Column3");
+				column3.setId(3);
+				column3.setDescription("I am Column3!");
+				column3.setValue("I am one");
+				column3.setTag("Column");
+
+				// Add columns to template arraylist
+				template.add(column1);
+				template.add(column2);
+				template.add(column3);
+
+				// Add template to tableComponent
+				tableComponent.setRowTemplate(template);
+
+				assertNotNull(tableComponent.getRowTemplate());
+
+				// add rows to tableComponent
+				tableComponent.addRow();
+				tableComponent.addRow();
+
+				// Get row ArrayLists
+				row1 = tableComponent.getRow(0);
+				row2 = tableComponent.getRow(1);
+
+				// edit row1
+				row1.get(0).setName("Entry1");
+				row1.get(0).setId(1);
+				row1.get(0).setDescription("I am Entry1!");
+
+				row1.get(1).setName("Entry2");
+				row1.get(1).setId(2);
+				row1.get(1).setDescription("I am Entry2!");
+				row1.get(1).setValue("0");
+
+				row1.get(2).setName("Entry3");
+				row1.get(2).setId(3);
+				row1.get(2).setDescription("I am Entry3!");
+
+				// edit row2
+				row2.get(0).setName("Entry4");
+				row2.get(0).setId(4);
+				row2.get(0).setDescription("I am Entry4!");
+
+				row2.get(1).setName("Entry5");
+				row2.get(1).setId(5);
+				row2.get(1).setDescription("I am Entry5!");
+				row2.get(1).setValue("15");
+
+				row2.get(2).setName("Entry6");
+				row2.get(2).setId(6);
+				row2.get(2).setDescription("I am Entry6!");
+
+				// check to make sure the values have been set for row1 and row2
+				assertEquals("0", row1.get(1).getValue());
+				assertEquals("15", row2.get(1).getValue());
+
+				// Initialize the ICETableComponentSectionPart - with proper
+				// values
+				ICETableComponentSectionPart = new ICETableComponentSectionPart(
+						formTk.createSection(eclipseTestForm.getForm()
+								.getBody(), Section.TITLE_BAR
+								| Section.DESCRIPTION | Section.TWISTIE
+								| Section.EXPANDED), new ICEFormEditor(),
+						eclipseTestForm);
+
+				// TODO Auto-generated method stub
+
 			}
-		};
-		column2.setName("Column2");
-		column2.setId(2);
-		column2.setDescription("I am Column2! I can only take values from 0 to 15");
-		column2.setValue("0");
-		column2.setTag("Column");
-
-		// Override ->add menuitem
-		column3 = new Entry() {
-			@Override
-			protected void setup() {
-				allowedValueType = AllowedValueType.Discrete;
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("I am one");
-				this.allowedValues.add("I am two");
-			}
-		};
-		column3.setName("Column3");
-		column3.setId(3);
-		column3.setDescription("I am Column3!");
-		column3.setValue("I am one");
-		column3.setTag("Column");
-
-		// Add columns to template arraylist
-		template.add(column1);
-		template.add(column2);
-		template.add(column3);
-
-		// Add template to tableComponent
-		tableComponent.setRowTemplate(template);
-
-		assertNotNull(tableComponent.getRowTemplate());
-
-		// add rows to tableComponent
-		tableComponent.addRow();
-		tableComponent.addRow();
-
-		// Get row ArrayLists
-		row1 = tableComponent.getRow(0);
-		row2 = tableComponent.getRow(1);
-
-		// edit row1
-		row1.get(0).setName("Entry1");
-		row1.get(0).setId(1);
-		row1.get(0).setDescription("I am Entry1!");
-
-		row1.get(1).setName("Entry2");
-		row1.get(1).setId(2);
-		row1.get(1).setDescription("I am Entry2!");
-		row1.get(1).setValue("0");
-
-		row1.get(2).setName("Entry3");
-		row1.get(2).setId(3);
-		row1.get(2).setDescription("I am Entry3!");
-
-		// edit row2
-		row2.get(0).setName("Entry4");
-		row2.get(0).setId(4);
-		row2.get(0).setDescription("I am Entry4!");
-
-		row2.get(1).setName("Entry5");
-		row2.get(1).setId(5);
-		row2.get(1).setDescription("I am Entry5!");
-		row2.get(1).setValue("15");
-
-		row2.get(2).setName("Entry6");
-		row2.get(2).setId(6);
-		row2.get(2).setDescription("I am Entry6!");
-
-		// check to make sure the values have been set for row1 and row2
-		assertEquals("0", row1.get(1).getValue());
-		assertEquals("15", row2.get(1).getValue());
-
-		// Initialize the ICETableComponentSectionPart - with proper values
-		this.ICETableComponentSectionPart = new ICETableComponentSectionPart(
-				formTk.createSection(eclipseTestForm.getForm().getBody(),
-						Section.TITLE_BAR | Section.DESCRIPTION
-								| Section.TWISTIE | Section.EXPANDED),
-				new ICEFormEditor(), eclipseTestForm);
+		});
 
 		// make sure that the tableComponent is set to null when the getter is
 		// used
 		// on a newly initialized object of ICETableComponentSectionPart
-		assertNull(this.ICETableComponentSectionPart.getTableComponent());
+		assertNull(ICETableComponentSectionPart.getTableComponent());
 
 		// call the setter with a valid tableComponent (initialized and pretty)
-		this.ICETableComponentSectionPart.setTableComponent(tableComponent);
+		ICETableComponentSectionPart.setTableComponent(tableComponent);
 
 		// call the getter - check values
-		tempTableC = this.ICETableComponentSectionPart.getTableComponent();
+		tempTableC = ICETableComponentSectionPart.getTableComponent();
 
 		// make sure it is not null and check some values
 		assertNotNull(tempTableC);
@@ -206,11 +212,11 @@ public class ICETableComponentSectionPartTester {
 		assertTrue(tempTableC.equals(tableComponent));
 
 		// test for null on setter
-		this.ICETableComponentSectionPart.setTableComponent(null);
+		ICETableComponentSectionPart.setTableComponent(null);
 
 		// check the values - nothing has changed
 		tempTableC = null;
-		tempTableC = this.ICETableComponentSectionPart.getTableComponent();
+		tempTableC = ICETableComponentSectionPart.getTableComponent();
 
 		// make sure it has some values
 		assertNotNull(tempTableC);
@@ -227,12 +233,12 @@ public class ICETableComponentSectionPartTester {
 		tableComponent2.setId(2);
 
 		// pass the table to the setter
-		this.ICETableComponentSectionPart.setTableComponent(tableComponent2);
+		ICETableComponentSectionPart.setTableComponent(tableComponent2);
 
 		// get the tableComponent - make sure the tableComponent2 has not been
 		// set.
 		tempTableC = null;
-		tempTableC = this.ICETableComponentSectionPart.getTableComponent();
+		tempTableC = ICETableComponentSectionPart.getTableComponent();
 
 		assertNotNull(tempTableC);
 
@@ -246,12 +252,9 @@ public class ICETableComponentSectionPartTester {
 
 		// get the tableComponent and see if the row was added
 		tempTableC = null;
-		tempTableC = this.ICETableComponentSectionPart.getTableComponent();
+		tempTableC = ICETableComponentSectionPart.getTableComponent();
 		assertNotNull(tempTableC);
 		assertEquals(3, tempTableC.numberOfRows());
-
-		// close display
-		display.dispose();
 
 	}
 }

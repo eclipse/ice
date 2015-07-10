@@ -18,6 +18,8 @@ import org.eclipse.ice.analysistool.IAnalysisDocument;
 import org.eclipse.ice.analysistool.IAnalysisTool;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -29,6 +31,13 @@ import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
  * @author Alex McCaskey
  */
 public class KDDAnalysisTool implements IAnalysisTool {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(KDDAnalysisTool.class);
+
 	/**
 	 * <p>
 	 * The name of this AnomalyDetectionTool.
@@ -99,12 +108,12 @@ public class KDDAnalysisTool implements IAnalysisTool {
 	 */
 	public void registerStrategyFactory(KDDStrategyFactory factory) {
 		if (factory != null) {
-			System.out
-					.println("KDDAnalysisTool Message: Registering new KDDStrategyFactory.");
+			logger.info("KDDAnalysisTool Message: "
+					+ "Registering new KDDStrategyFactory.");
 			strategyFactory = factory;
 		} else {
-			System.out
-					.println("KDDAnalysisTool Message: Invalid KDDStrategyFactory instance.");
+			logger.info("KDDAnalysisTool Message: "
+					+ "Invalid KDDStrategyFactory instance.");
 			strategyFactory = null;
 		}
 	}
