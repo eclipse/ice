@@ -23,6 +23,7 @@ import java.util.TreeMap;
 
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
+import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnectionAdapter;
 import org.eclipse.swt.widgets.Composite;
@@ -104,34 +105,34 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	@Override
 	protected Map<String, String[]> findPlotTypes(URI file) throws IOException,
 			Exception {
-
-		// Set the default return value.
-		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
-
-		// Get the connection adapter.
-		IConnectionAdapter<VisItSwtConnection> adapter = getConnectionAdapter();
-
-		// Determine the source path string. Unfortunately, we can't just give
-		// the URI directly to the VisIt client API.
-		String sourcePath = VisItPlot.getSourcePath(file);
-
-		// Determine the VisIt FileInfo for the data source.
-		ViewerMethods methods = adapter.getConnection().getViewerMethods();
-		methods.openDatabase(sourcePath);
-		FileInfo info = methods.getDatabaseInfo();
-
-		// Get all of the plot types and plots in the file.
-		List<String> plots;
-		plots = info.getMeshes();
-		plotTypes.put("Meshes", plots.toArray(new String[plots.size()]));
-		plots = info.getMaterials();
-		plotTypes.put("Materials", plots.toArray(new String[plots.size()]));
-		plots = info.getScalars();
-		plotTypes.put("Scalars", plots.toArray(new String[plots.size()]));
-		plots = info.getVectors();
-		plotTypes.put("Vectors", plots.toArray(new String[plots.size()]));
-
-		return plotTypes;
+		throw new Exception("Not implemented.");
+//		// Set the default return value.
+//		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
+//
+//		// Get the connection adapter.
+//		IConnectionAdapter<VisItSwtConnection> adapter = getConnectionAdapter();
+//
+//		// Determine the source path string. Unfortunately, we can't just give
+//		// the URI directly to the VisIt client API.
+//		String sourcePath = VisItPlot.getSourcePath(file);
+//
+//		// Determine the VisIt FileInfo for the data source.
+//		ViewerMethods methods = adapter.getConnection().getViewerMethods();
+//		methods.openDatabase(sourcePath);
+//		FileInfo info = methods.getDatabaseInfo();
+//
+//		// Get all of the plot types and plots in the file.
+//		List<String> plots;
+//		plots = info.getMeshes();
+//		plotTypes.put("Meshes", plots.toArray(new String[plots.size()]));
+//		plots = info.getMaterials();
+//		plotTypes.put("Materials", plots.toArray(new String[plots.size()]));
+//		plots = info.getScalars();
+//		plotTypes.put("Scalars", plots.toArray(new String[plots.size()]));
+//		plots = info.getVectors();
+//		plotTypes.put("Vectors", plots.toArray(new String[plots.size()]));
+//
+//		return plotTypes;
 	}
 
 	/**
@@ -141,7 +142,8 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	 * @return The associated connection adapter.
 	 */
 	protected VisItConnectionAdapter getVisItConnectionAdapter() {
-		return (VisItConnectionAdapter) getConnectionAdapter();
+		return null;
+//		return (VisItConnectionAdapter) getConnectionAdapter();
 	}
 
 	/**
@@ -201,6 +203,13 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	public void redraw() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	
+	@Override
+	protected ConnectionPlotRender<VisItSwtConnection> createConnectionPlotRender(Composite parent) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Shell;
  * @author Jordan Deyton
  *
  */
+@Deprecated
 public class VisItConnectionAdapter extends
 		ConnectionAdapter<VisItSwtConnection> {
 

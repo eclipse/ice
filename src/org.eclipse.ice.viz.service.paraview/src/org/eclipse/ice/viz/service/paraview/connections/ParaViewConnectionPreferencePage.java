@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.paraview.connections;
 
 import org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage;
 import org.eclipse.ice.viz.service.paraview.ParaViewVizService;
+import org.eclipse.ui.IWorkbench;
 
 /**
  * This class provides a preference page for the ParaView visualization
@@ -29,6 +30,17 @@ public class ParaViewConnectionPreferencePage extends VizConnectionPreferencePag
 	@Override
 	protected String getConnectionsPreferenceNodeId() {
 		return ParaViewVizService.CONNECTIONS_NODE_ID;
+	}
+
+	/*
+	 * Overrides a method from VizConnectionPreferencePage.
+	 */
+	@Override
+	public void init(IWorkbench workbench) {
+		super.init(workbench);
+
+		// Replace the default title.
+		setDescription("ParaView Visualization Preferences");
 	}
 
 }

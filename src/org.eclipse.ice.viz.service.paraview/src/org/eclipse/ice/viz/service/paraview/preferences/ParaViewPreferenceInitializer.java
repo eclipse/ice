@@ -20,14 +20,10 @@ import org.eclipse.ice.viz.service.preferences.AbstractVizPreferenceInitializer;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPreferenceInitializer extends
-		AbstractVizPreferenceInitializer {
+public class ParaViewPreferenceInitializer extends AbstractVizPreferenceInitializer {
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#
-	 * initializeDefaultPreferences()
+	 * Implements a method from AbstractPreferenceInitializer.
 	 */
 	@Override
 	public void initializeDefaultPreferences() {

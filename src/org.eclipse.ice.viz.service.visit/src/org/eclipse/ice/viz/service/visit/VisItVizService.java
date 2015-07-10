@@ -24,7 +24,6 @@ import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnectionAdapter;
-import org.eclipse.ice.viz.service.visit.connections.preferences.VisItConnectionTable;
 
 /**
  * This is an implementation of the IVizService interface for the VisIt
@@ -47,6 +46,11 @@ public class VisItVizService extends AbstractVizService {
 	private final ConnectionManager<VisItSwtConnection> connections;
 
 	/**
+	 * The ID of the preferences node under which all connections will be added.
+	 */
+	public static final String CONNECTIONS_NODE_ID = "org.eclipse.ice.viz.visit.connections";
+	
+	/**
 	 * The default constructor.
 	 * <p>
 	 * <b>Note:</b> Only OSGi should call this method!
@@ -60,23 +64,7 @@ public class VisItVizService extends AbstractVizService {
 		// Set up the connection manager. The connection preference table is a
 		// little more complicated for VisIt, so we need to use the
 		// VisItConnectionTable rather than the default.
-		connections = new ConnectionManager<VisItSwtConnection>() {
-			@Override
-			protected CustomScopedPreferenceStore getPreferenceStore() {
-				return (CustomScopedPreferenceStore) VisItVizService.this
-						.getPreferenceStore();
-			}
-
-			@Override
-			protected ConnectionTable createConnectionTable() {
-				return new VisItConnectionTable();
-			}
-
-			@Override
-			protected IConnectionAdapter<VisItSwtConnection> createConnectionAdapter() {
-				return new VisItConnectionAdapter();
-			}
-		};
+		connections = null;
 
 		// Add supported ExodusII file format extensions.
 		supportedExtensions.add("ex");
@@ -178,7 +166,8 @@ public class VisItVizService extends AbstractVizService {
 	 */
 	@Override
 	public boolean connect() {
-		return connections.connect();
+		return false;
+//		return connections.connect();
 	}
 
 	/*
@@ -205,12 +194,12 @@ public class VisItVizService extends AbstractVizService {
 		
 		VisItPlot plot = null;
 
-		// Create the plot.
-		plot = new VisItPlot(this);
-		// Associate the plot with the connection.
-		connections.addClient(plot);
-		// Set teh data source for the file.
-		plot.setDataSource(file);
+//		// Create the plot.
+//		plot = new VisItPlot(this);
+//		// Associate the plot with the connection.
+//		connections.addClient(plot);
+//		// Set teh data source for the file.
+//		plot.setDataSource(file);
 
 		return plot;
 	}

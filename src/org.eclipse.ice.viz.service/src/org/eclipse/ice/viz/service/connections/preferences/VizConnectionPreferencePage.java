@@ -43,7 +43,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 * The {@code ConnectionTable} used by this preference page. It is
 	 * represented by a {@link TableComponentComposite} on the page.
 	 */
-	private final ConnectionTable table = new ConnectionTable();
+	private ConnectionTable table;
 
 	/**
 	 * The default constructor.
@@ -52,12 +52,14 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 		super(GRID);
 	}
 
-	/*
-	 * Implements an abstract method from FieldEditorPreferencePage.
+	/**
+	 * Creates the table of connection preferences. This method may be
+	 * overridden to provide a custom table with more properties.
+	 * 
+	 * @return A table of connections.
 	 */
-	@Override
-	protected void createFieldEditors() {
-		// No field editors yet, just the table of connections.
+	protected ConnectionTable createConnectionTable() {
+		return new ConnectionTable();
 	}
 
 	/**
@@ -94,6 +96,14 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 		return control;
 	}
 
+	/*
+	 * Implements an abstract method from FieldEditorPreferencePage.
+	 */
+	@Override
+	protected void createFieldEditors() {
+		// No field editors yet, just the table of connections.
+	}
+
 	/**
 	 * Gets the ID of the {@link IEclipsePreferences} node in the store.
 	 * Connections will be stored under this node.
@@ -123,10 +133,8 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 		// Perform the required basic initialization.
 		super.init(workbench);
 
-		// Replace the default title.
-		setDescription("ParaView Visualization Preferences");
-
 		// Load the current preferences into the table.
+		table = createConnectionTable();
 		loadPreferences(table);
 
 		return;
@@ -239,15 +247,19 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 *            The table row for the connection.
 	 * @return The serialized connection preferences.
 	 */
-	private String serializeConnectionPreferences(List<Entry> connection) {
+	protected String serializeConnectionPreferences(List<Entry> connection) {
 		String preferences = "";
 		String delimiter = getConnectionPreferenceDelimiter();
 
-		// Add the host, port, and path.
-		preferences += connection.get(1).getValue();
-		preferences += delimiter + connection.get(2).getValue();
-		preferences += delimiter + connection.get(3).getValue();
-
+		if (connection.size() >= 2) {
+			// Add the first preference.
+			preferences += connection.get(1).getValue();
+			// Add all remaining preferences.
+			for (int i = 2; i < connection.size(); i++) {
+				preferences += delimiter + connection.get(i).getValue();			
+			}
+		}
+		
 		return preferences;
 	}
 
@@ -259,7 +271,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 *            The serialized connection preferences.
 	 * @return An array of all preferences for the row.
 	 */
-	private String[] unserializeConnectionPreferences(String preferences) {
+	protected String[] unserializeConnectionPreferences(String preferences) {
 		return preferences.split(getConnectionPreferenceDelimiter(), -1);
 	}
 

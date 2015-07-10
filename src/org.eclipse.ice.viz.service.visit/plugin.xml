@@ -7,7 +7,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.ice.viz.service.preferences"
-            class="org.eclipse.ice.viz.service.visit.connections.preferences.VisItPreferencePage"
+            class="org.eclipse.ice.viz.service.visit.connections.VisItConnectionPreferencePage"
             id="org.eclipse.ice.viz.service.visit.preferences"
             name="VisIt">
       </page>
