@@ -35,7 +35,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * been updated (i.e. - "gone stale" in the Eclipse parlance). The Java source
  * code for this class contains a private hashmap that is not represented in the
  * model because Jay can not figure out how to show a java.util.hashmap in RSA.
- * 
+ *
  * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class ICEDataComponentSectionPart extends SectionPart implements
@@ -68,7 +68,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 
 	/**
 	 * The Constructor
-	 * 
+	 *
 	 * @param section
 	 *            The new Section to be managed by the ICESectionPart.
 	 * @param formEditor
@@ -165,7 +165,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 	/**
 	 * This operation sets the DataComponent that should be rendered, updated
 	 * and monitored by the ICESectionPart.
-	 * 
+	 *
 	 * @param component
 	 *            The DataComponent
 	 */
@@ -173,6 +173,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 
 		// If the Component is not null, store it and register for updates
 		if (component != null) {
+			// Update the data component reference
 			dataComp = component;
 			// Register the component so that the UI can be marked stale when it
 			// changes.
@@ -184,11 +185,11 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 	/**
 	 * This operation retrieves the DataComponent that is currently rendered,
 	 * updated and monitored by the ICESectionPart.
-	 * 
+	 *
 	 * @return The DataComponent
 	 */
 	public DataComponent getDataComponent() {
-		return dataComposite.getDataComponent();
+		return dataComp;
 	}
 
 	/**
@@ -208,7 +209,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
 	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
