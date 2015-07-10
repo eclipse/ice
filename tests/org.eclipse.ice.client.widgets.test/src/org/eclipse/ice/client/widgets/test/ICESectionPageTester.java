@@ -23,6 +23,7 @@ import org.eclipse.ice.client.widgets.ICESectionPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
