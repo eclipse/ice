@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -22,13 +19,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
-import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.visit.connections.VisItConnection;
 import org.eclipse.ice.viz.service.visit.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -36,8 +30,17 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
+import gov.lbnl.visit.swt.VisItSwtWidget;
 import visit.java.client.ViewerMethods;
 
+/**
+ * This class manages rendering visualizations using a viz connection to a
+ * {@link VisItSwtConnection}.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 	/**
@@ -46,10 +49,6 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * {@link #representation}.
 	 */
 	private final VisItPlot plot;
-
-	// TODO This could be moved to the parent class, as the connection adapter
-	// may prove useful.
-	private final IConnectionAdapter<VisItSwtConnection> adapter;
 
 	/**
 	 * 
@@ -102,8 +101,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * An ExecutorService for launching worker threads. Only one thread is
 	 * processed at a time in the order in which they are added.
 	 */
-	private final ExecutorService executorService = Executors
-			.newSingleThreadExecutor();
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 	/**
 	 * The plot {@code Composite} that renders the files through the VisIt
@@ -129,9 +127,6 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	public VisItPlotRender(Composite parent, VisItPlot plot) {
 		super(parent, plot);
 
-		// Store the adapter so that we can access its connection later.
-		adapter = plot.getVisItConnectionAdapter();
-
 		// Set a reference to the VisItPlot. We specifically need this
 		// implementation to access the plot representations.
 		this.plot = plot;
@@ -144,10 +139,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotRender#
-	 * getPreferenceNodeID()
+	 * Implements an abstract method from ConnectionPlotRender.
 	 */
 	@Override
 	protected String getPreferenceNodeID() {
@@ -155,19 +147,17 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotRender#
-	 * createPlotComposite(org.eclipse.swt.widgets.Composite, int,
-	 * java.lang.Object)
+	 * Implements an abstract method from ConnectionPlotRender.
 	 */
 	@Override
-	protected Composite createPlotComposite(Composite parent, int style,
-			final VisItSwtConnection connection) throws Exception {
+	protected Composite createPlotComposite(Composite parent, int style, final VisItSwtConnection widget)
+			throws Exception {
 
 		// Create a new window on the VisIt server if one does not already
 		// exist. We will need the corresponding connection and a window ID. If
 		// the window ID is -1, a new one is created.
+
+		VisItConnection connection = plot.getVisItConnection();
 
 		Composite container = new Composite(parent, style);
 		container.setBackground(parent.getBackground());
@@ -177,46 +167,17 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		canvas = new VisItSwtWidget(container, SWT.DOUBLE_BUFFERED);
 		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		canvas.setBackground(parent.getBackground());
-		int windowWidth = Integer.parseInt(adapter
-				.getConnectionProperty("windowWidth"));
-		int windowHeight = Integer.parseInt(adapter
-				.getConnectionProperty("windowHeight"));
+		int windowWidth = Integer.parseInt(connection.getProperty("windowWidth"));
+		int windowHeight = Integer.parseInt(connection.getProperty("windowHeight"));
 
 		// Establish the canvas' connection to the VisIt server. This may throw
 		// an exception.
-		int windowId = plot.getVisItConnectionAdapter().getNextWindowId();
-		canvas.setVisItSwtConnection(connection, windowId, windowWidth,
-				windowHeight);
+		int windowId = connection.getNextWindowId();
+		canvas.setVisItSwtConnection(widget, windowId, windowWidth, windowHeight);
 
 		// Create a mouse manager to handle mouse events inside the
 		// canvas.
 		new VisItMouseManager(canvas);
-
-		// Set up the canvas' context Menu.
-		MenuManager menuManager = new MenuManager();
-		// If the parent context Menu is not available, create a new one.
-		Menu menu = parent.getMenu();
-		if (menu == null) {
-			menu = menuManager.createContextMenu(canvas);
-			// TODO Populate the "Set Plot Type" menu with the plot categories
-			// and types in case it's not already available.
-		}
-
-		// When the Menu is about to be shown, add the representation options to
-		// it.
-		menu.addMenuListener(new MenuListener() {
-			@Override
-			public void menuHidden(MenuEvent e) {
-				// Nothing to do.
-			}
-
-			@Override
-			public void menuShown(MenuEvent e) {
-				repTree.getContributionItem().fill((Menu) e.widget, -1);
-			}
-		});
-
-		canvas.setMenu(menu);
 
 		// Add a time slider widget.
 		timeSlider = new TimeSliderComposite(container, SWT.NONE);
@@ -238,14 +199,13 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 						// FIXME We need a way to move to a specific timestep
 						// rather than cycling through them.
 
-						ViewerMethods methods = connection.getViewerMethods();
+						ViewerMethods methods = widget.getViewerMethods();
 
 						// Send next or previous timestep requests to the VisIt
 						// widget until it matches the current timestep in the
 						// TimeSliderComposite.
 						int targetStep;
-						while (renderedTimestep != (targetStep = widgetTimestep
-								.get())) {
+						while (renderedTimestep != (targetStep = widgetTimestep.get())) {
 							if (renderedTimestep < targetStep) {
 								methods.animationNextState();
 								renderedTimestep++;
@@ -264,8 +224,8 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// TODO We need to figure out how to get the actual times from the VisIt
 		// client API. We are currently using the timestep indices.
 		// Get the available timesteps.
-		ViewerMethods widget = connection.getViewerMethods();
-		int timestepCount = widget.timeSliderGetNStates();
+		ViewerMethods viewerMethods = widget.getViewerMethods();
+		int timestepCount = viewerMethods.timeSliderGetNStates();
 		List<Double> times = new ArrayList<Double>(timestepCount);
 		for (double i = 0.0; i < timestepCount; i++) {
 			times.add(i);
@@ -276,19 +236,24 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotRender#
-	 * updatePlotComposite(org.eclipse.swt.widgets.Composite, java.lang.Object)
+	 * Overrides a method from PlotRender.
+	 */
+	protected Menu createPlotCompositeContextMenu(Composite plotComposite) {
+		// Set the context Menu for the canvas, too.
+		Menu menu = super.createPlotCompositeContextMenu(plotComposite);
+		canvas.setMenu(menu);
+		return menu;
+	}
+
+	/*
+	 * Implements an abstract method from ConnectionPlotRender.
 	 */
 	@Override
-	protected void updatePlotComposite(Composite plotComposite,
-			VisItSwtConnection connection) throws Exception {
+	protected void updatePlotComposite(Composite plotComposite, VisItSwtConnection connection) throws Exception {
 
 		// Check the input arguments. The canvas should be the plot Composite.
 		if (plotComposite != canvas.getParent()) {
-			throw new Exception("VisItPlot error: "
-					+ "The canvas was not created properly.");
+			throw new Exception("VisItPlot error: " + "The canvas was not created properly.");
 		}
 
 		// Get the source path from the VisItPlot class. We can't,
@@ -304,8 +269,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// Check that the type is non-null and new. Then do the same for the
 		// representation and category.
 		boolean plotTypeChanged = (type != null && !type.equals(plotType));
-		plotTypeChanged |= (representation != null && !representation
-				.equals(plotRepresentation));
+		plotTypeChanged |= (representation != null && !representation.equals(plotRepresentation));
 		plotTypeChanged |= (category != null && !category.equals(plotCategory));
 		// Now check the validity of each property.
 		if (plotTypeChanged && type != null) {
@@ -372,9 +336,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.PlotRender#clearCache()
+	 * Implements an abstract method from PlotRender.
 	 */
 	@Override
 	protected void clearCache() {
@@ -395,8 +357,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// If the category changed, we will need to update the representation to
 		// the default representation for the new category, or null if the
 		// category has no valid representations.
-		if (oldCategory != category
-				&& (oldCategory == null || !oldCategory.equals(category))) {
+		if (oldCategory != category && (oldCategory == null || !oldCategory.equals(category))) {
 			List<String> reps = plot.getRepresentations(category);
 			setPlotRepresentation(reps.isEmpty() ? null : reps.get(0));
 		}
@@ -419,6 +380,18 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		this.representation = representation;
 	}
 
+	/*
+	 * Overrides a method from PlotRender.
+	 */
+	@Override
+	protected List<ActionTree> getPlotRenderActions() {
+		// In addition to the default actions, add the action to set the
+		// "representation".
+		List<ActionTree> actions = super.getPlotRenderActions();
+		actions.add(repTree);
+		return actions;
+	}
+
 	/**
 	 * Gets the current plot representation. This is a "sub-category" that lies
 	 * between the plot category and type as derived from the {@link VisItPlot}.
@@ -428,4 +401,5 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	private String getPlotRepresentation() {
 		return representation;
 	}
+
 }

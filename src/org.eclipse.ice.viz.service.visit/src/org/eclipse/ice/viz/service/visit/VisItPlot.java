@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -21,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
-import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
-import org.eclipse.ice.viz.service.visit.connections.VisItConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.ice.viz.service.visit.connections.VisItConnection;
 import org.eclipse.swt.widgets.Composite;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
 import visit.java.client.FileInfo;
 import visit.java.client.ViewerMethods;
 
@@ -40,6 +38,11 @@ import visit.java.client.ViewerMethods;
 public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 	// TODO We should manage the window IDs here.
+
+	/**
+	 * A reference to the viz service conveniently cast to its actual type.
+	 */
+	private final VisItVizService vizService;
 
 	/**
 	 * A map of allowed representations, keyed on the category. Instead of
@@ -56,6 +59,8 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	 */
 	public VisItPlot(VisItVizService vizService) {
 		super(vizService);
+
+		this.vizService = vizService;
 
 		// Create the map of VisIt plot representations. The keys are the
 		// categories exposed by VisItPlot in findPlotTypes(...). The first
@@ -86,64 +91,56 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.MultiPlot#createPlotRender(org.eclipse.swt
-	 * .widgets.Composite)
+	 * Implements an abstract method from ConnectionPlot.
 	 */
 	@Override
-	protected PlotRender createPlotRender(Composite parent) {
+	protected ConnectionPlotRender<VisItSwtConnection> createConnectionPlotRender(Composite parent) {
 		return new VisItPlotRender(parent, this);
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.MultiPlot#findPlotTypes(java.net.URI)
+	 * Implements an abstract method from MultiPlot.
 	 */
 	@Override
-	protected Map<String, String[]> findPlotTypes(URI file) throws IOException,
-			Exception {
-		throw new Exception("Not implemented.");
-//		// Set the default return value.
-//		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
-//
-//		// Get the connection adapter.
-//		IConnectionAdapter<VisItSwtConnection> adapter = getConnectionAdapter();
-//
-//		// Determine the source path string. Unfortunately, we can't just give
-//		// the URI directly to the VisIt client API.
-//		String sourcePath = VisItPlot.getSourcePath(file);
-//
-//		// Determine the VisIt FileInfo for the data source.
-//		ViewerMethods methods = adapter.getConnection().getViewerMethods();
-//		methods.openDatabase(sourcePath);
-//		FileInfo info = methods.getDatabaseInfo();
-//
-//		// Get all of the plot types and plots in the file.
-//		List<String> plots;
-//		plots = info.getMeshes();
-//		plotTypes.put("Meshes", plots.toArray(new String[plots.size()]));
-//		plots = info.getMaterials();
-//		plotTypes.put("Materials", plots.toArray(new String[plots.size()]));
-//		plots = info.getScalars();
-//		plotTypes.put("Scalars", plots.toArray(new String[plots.size()]));
-//		plots = info.getVectors();
-//		plotTypes.put("Vectors", plots.toArray(new String[plots.size()]));
-//
-//		return plotTypes;
+	protected Map<String, String[]> findPlotTypes(URI uri) throws IOException, Exception {
+
+		// Set the default return value.
+		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
+
+		// Get the connection adapter.
+		IVizConnection<VisItSwtConnection> connection = getConnection();
+
+		// Determine the source path string. Unfortunately, we can't just give
+		// the URI directly to the VisIt client API.
+		String sourcePath = VisItPlot.getSourcePath(uri);
+
+		// Determine the VisIt FileInfo for the data source.
+		ViewerMethods methods = connection.getWidget().getViewerMethods();
+		methods.openDatabase(sourcePath);
+		FileInfo info = methods.getDatabaseInfo();
+
+		// Get all of the plot types and plots in the file.
+		List<String> plots;
+		plots = info.getMeshes();
+		plotTypes.put("Meshes", plots.toArray(new String[plots.size()]));
+		plots = info.getMaterials();
+		plotTypes.put("Materials", plots.toArray(new String[plots.size()]));
+		plots = info.getScalars();
+		plotTypes.put("Scalars", plots.toArray(new String[plots.size()]));
+		plots = info.getVectors();
+		plotTypes.put("Vectors", plots.toArray(new String[plots.size()]));
+
+		return plotTypes;
 	}
 
 	/**
 	 * Gets the connection adapter for the associated connection cast as a
-	 * {@link VisItConnectionAdapter}.
+	 * {@link VisItConnection}.
 	 * 
-	 * @return The associated connection adapter.
+	 * @return The associated connection.
 	 */
-	protected VisItConnectionAdapter getVisItConnectionAdapter() {
-		return null;
-//		return (VisItConnectionAdapter) getConnectionAdapter();
+	protected VisItConnection getVisItConnection() {
+		return (VisItConnection) getConnection();
 	}
 
 	/**
@@ -168,12 +165,10 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 			// TODO VisIt should just be able to handle a raw URI... The code
 			// below can't handle remote Windows machines.
 			if ((host == null || "localhost".equals(host))
-					&& System.getProperty("os.name").toLowerCase()
-							.contains("windows")) {
+					&& System.getProperty("os.name").toLowerCase().contains("windows")) {
 				if (path.startsWith("/")) {
 					path = path.substring(1);
-					path = path.replace("/",
-							System.getProperty("file.separator"));
+					path = path.replace("/", System.getProperty("file.separator"));
 				}
 			}
 		}
@@ -195,21 +190,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 		// Always return a copy so the list of representations for a category is
 		// not (un)intentionally modified.
 		List<String> types = representations.get(category);
-		return (types != null ? new ArrayList<String>(types)
-				: new ArrayList<String>());
-	}
-
-	@Override
-	public void redraw() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	@Override
-	protected ConnectionPlotRender<VisItSwtConnection> createConnectionPlotRender(Composite parent) {
-		// TODO Auto-generated method stub
-		return null;
+		return (types != null ? new ArrayList<String>(types) : new ArrayList<String>());
 	}
 
 }

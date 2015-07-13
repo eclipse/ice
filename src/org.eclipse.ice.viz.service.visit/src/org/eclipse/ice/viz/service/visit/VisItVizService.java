@@ -13,11 +13,15 @@ package org.eclipse.ice.viz.service.visit;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnectionManager;
+
+import gov.lbnl.visit.swt.VisItSwtConnection;
 
 /**
  * This is an implementation of the IVizService interface for the VisIt
@@ -131,21 +135,49 @@ public class VisItVizService extends AbstractVizService {
 	 * Implements a method from IVizService.
 	 */
 	@Override
-	public IPlot createPlot(URI file) throws Exception {
+	public IPlot createPlot(URI uri) throws Exception {
 		// Call the super method to validate the URI's extension.
-		super.createPlot(file);
+		super.createPlot(uri);
 
-		VisItPlot plot = null;
+		// Get a connection for the file.
+		IVizConnection<VisItSwtConnection> connection = getConnection(uri);
 
-		// TODO
-		// // Create the plot.
-		// plot = new VisItPlot(this);
-		// // Associate the plot with the connection.
-		// connections.addClient(plot);
-		// // Set teh data source for the file.
-		// plot.setDataSource(file);
+		// Create the plot with the connection and URI.
+		VisItPlot plot = new VisItPlot(this);
+		plot.setConnection(connection);
+		plot.setDataSource(uri);
 
 		return plot;
+	}
+
+	// TODO Move the below method to a super class so it can be re-used between
+	// ParaView and VisIt.
+	/**
+	 * Gets a valid connection for the file the associated connection manager
+	 * 
+	 * @param uri
+	 *            The URI of the file that needs a connection to open.
+	 * @return A valid connection. This should never be {@code null}. If a
+	 *         connection could not be found, an exception should be thrown.
+	 * @throws Exception
+	 *             If there is not connection available for the URI.
+	 */
+	private IVizConnection<VisItSwtConnection> getConnection(URI uri) throws Exception {
+
+		// Get the host from the URI.
+		String host = uri.getHost();
+		if (host == null) {
+			host = "localhost";
+		}
+
+		// Get the next available connection for the URI's host.
+		Set<String> availableConnections = manager.getConnectionsForHost(host);
+		if (availableConnections.isEmpty()) {
+			throw new Exception("VisItVizService error: " + "No configured VisIt connection to host \"" + host + "\".");
+		}
+		String name = availableConnections.iterator().next();
+		// Return the next available connection.
+		return manager.getConnection(name);
 	}
 
 }

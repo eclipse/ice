@@ -68,6 +68,43 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 				return newValue;
 			}
 		});
+		// Add a property handler for the VisIt session password.
+		propertyHandlers.put("password", new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				return "notused";
+			}
+		});
+
+		// Set up a property handler that accepts positive, non-zero integers.
+		IPropertyHandler positiveIntHandler = new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				String newValue = null;
+				if (value != null) {
+					String trimmedValue = value.trim();
+					try {
+						if (Integer.parseInt(trimmedValue) > 0) {
+							newValue = trimmedValue;
+						}
+					} catch (NumberFormatException e) {
+						// Invalid value.
+					}
+				}
+				return newValue;
+			}
+		};
+		// Add a property handler for the window width and height.
+		propertyHandlers.put("windowWidth", positiveIntHandler);
+		propertyHandlers.put("windowHeight", positiveIntHandler);
+		// Add a property handler for the window ID.
+		propertyHandlers.put("windowId", positiveIntHandler);
+
+		// Set default values for additional properties.
+		setProperty("password", "notused");
+		setProperty("windowWidth", "1340");
+		setProperty("windowHeight", "1020");
+		setProperty("windowId", "1");
 
 		return;
 	}
@@ -81,11 +118,8 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 		Shell shell = createDefaultShell();
 		Map<String, String> properties = getProperties();
 
-		// Add fixed properties that cannot yet be changed.
-		properties.put("password", "notused");
-		properties.put("windowWidth", "1340");
-		properties.put("windowHeight", "1020");
-		properties.put("windowId", "1");
+		// Add fixed properties that are only required for connecting and cannot
+		// be changed.
 		properties.put("isLaunch", "true");
 		properties.put("useTunneling", "localhost".equals(getHost()) ? "false" : "true");
 
@@ -221,4 +255,30 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 		return setProperty("visDir", path);
 	}
 
+	/**
+	 * Gets the next available window ID from the underlying connection. Each
+	 * unique, disjoint view powered by VisIt requires a separate "window" in
+	 * VisIt. Views that share a window ID will be updated concurrently.
+	 * 
+	 * @return The next available window ID, or -1 if the connection is not
+	 *         open.
+	 */
+	public int getNextWindowId() {
+		// FIXME There is a bug that prevents any window ID besides 1 from
+		// working as expected. For now, just return 1. A bug ticket has been
+		// filed.
+		int windowId = 1;
+		// if (getState() == ConnectionState.Connected) {
+		// // The order of the returned list is not guaranteed. Throw it into
+		// // an ordered set and get the lowest positive ID not in the set.
+		// Set<Integer> ids = new HashSet<Integer>(getWidget().getWindowIds());
+		// // Find the first integer not in the set.
+		// while (ids.contains(windowId)) {
+		// windowId++;
+		// }
+		// } else {
+		// windowId = -1;
+		// }
+		return windowId;
+	}
 }

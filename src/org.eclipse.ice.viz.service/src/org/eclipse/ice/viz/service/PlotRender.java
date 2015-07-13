@@ -11,15 +11,26 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +51,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public abstract class PlotRender {
-	
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
@@ -107,15 +118,14 @@ public abstract class PlotRender {
 	 *            The rendered {@code IPlot}. This cannot be changed.
 	 */
 	public PlotRender(Composite parent, IPlot plot) {
-		
+
 		// Create the logger
 		logger = LoggerFactory.getLogger(PlotRender.class);
-		
+
 		// Check the parameters.
 		if (parent == null || plot == null) {
-			throw new NullPointerException("PlotRender error: "
-					+ "Cannot render a plot that is null or "
-					+ "inside a null parent Composite.");
+			throw new NullPointerException(
+					"PlotRender error: " + "Cannot render a plot that is null or " + "inside a null parent Composite.");
 		}
 
 		this.parent = parent;
@@ -239,13 +249,13 @@ public abstract class PlotRender {
 		}
 
 		// Get the StackLayout from the plot Composite.
-		final StackLayout stackLayout = (StackLayout) stackComposite
-				.getLayout();
+		final StackLayout stackLayout = (StackLayout) stackComposite.getLayout();
 
 		try {
 			// Update the plotComposite. Create it if necessary.
 			if (plotComposite == null) {
 				plotComposite = createPlotComposite(stackComposite, SWT.NONE);
+				createPlotCompositeContextMenu(plotComposite);
 			}
 			updatePlotComposite(plotComposite);
 
@@ -333,19 +343,16 @@ public abstract class PlotRender {
 
 		// Create an info label with an image.
 		iconLabel = new Label(infoComposite, SWT.NONE);
-		iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
-				false, false));
+		iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
 		// Create a Composite to contain the info message.
 		Composite msgComposite = new Composite(infoComposite, SWT.NONE);
-		msgComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
-				false, false));
+		msgComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		msgComposite.setLayout(new GridLayout(1, false));
 
 		// Create an info label with informative text.
 		msgLabel = new Label(msgComposite, SWT.NONE);
-		msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-				false));
+		msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
 		return infoComposite;
 	}
@@ -360,13 +367,11 @@ public abstract class PlotRender {
 	 * @param message
 	 *            The message to display in its message label.
 	 */
-	protected void updateInfoComposite(Composite infoComposite,
-			final String message) {
+	protected void updateInfoComposite(Composite infoComposite, final String message) {
 		// Set the message and icon based on the state of the connection.
 		final Display display = infoComposite.getDisplay();
 		// If there's no icon set, default to something useful.
-		final Image image = (infoIcon != null ? infoIcon : display
-				.getSystemImage(SWT.ICON_WARNING));
+		final Image image = (infoIcon != null ? infoIcon : display.getSystemImage(SWT.ICON_WARNING));
 
 		// Update the contents of the infoComposite's widgets.
 		iconLabel.setImage(image);
@@ -406,8 +411,68 @@ public abstract class PlotRender {
 	 *             rendered, this throws an exception with an informative
 	 *             message.
 	 */
-	protected abstract Composite createPlotComposite(Composite parent, int style)
-			throws Exception;
+	protected abstract Composite createPlotComposite(Composite parent, int style) throws Exception;
+
+	/**
+	 * Creates the context Menu for the plot Composite. The Menu is then set for
+	 * the Composite. If the parent of the plot Composite already has a Menu,
+	 * then it will be updated.
+	 * <p>
+	 * <b>Notes:</b>
+	 * <ul>
+	 * <li>If the sub-class needs to add this context Menu to other widgets
+	 * inside the plot Composite, override this method and get the Menu from the
+	 * super method.</li>
+	 * <li>If the sub-class needs to add more items to the context Menu,
+	 * override {@link #getPlotRenderActions()}.</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @param plotComposite
+	 *            The plot Composite that will be getting a context Menu.
+	 * @return The new context Menu.
+	 */
+	protected Menu createPlotCompositeContextMenu(Composite plotComposite) {
+		// Get the list of available actions for this PlotRender.
+		final List<ActionTree> actions = getPlotRenderActions();
+
+		// Get the current context Menu from the parent of the plot Composite.
+		Menu menu = plotComposite.getParent().getMenu();
+
+		// If it exists, it should be using a MenuManager. However, we cannot
+		// add new actions to the MenuManager (there is no way to get it), so we
+		// must add a MenuListener to add additional items when the menu opens.
+		if (menu != null) {
+			menu.addMenuListener(new MenuListener() {
+				@Override
+				public void menuHidden(MenuEvent e) {
+					// Nothing to do.
+				}
+
+				@Override
+				public void menuShown(MenuEvent e) {
+					Menu menu = (Menu) e.widget;
+					for (ActionTree action : actions) {
+						action.getContributionItem().fill(menu, -1);
+					}
+				}
+			});
+		}
+		// If the parent Menu does not exist, create a new context Menu and set
+		// it for the plot Composite.
+		else {
+			MenuManager menuManager = new MenuManager();
+			for (ActionTree action : actions) {
+				menuManager.add(action.getContributionItem());
+			}
+			menu = menuManager.createContextMenu(plotComposite);
+		}
+
+		// Set the Menu for the plot Composite.
+		plotComposite.setMenu(menu);
+
+		return menu;
+	}
 
 	/**
 	 * Updates the plot rendering contained in the specified plot
@@ -420,8 +485,7 @@ public abstract class PlotRender {
 	 *             rendered, this throws an exception with an informative
 	 *             message.
 	 */
-	protected abstract void updatePlotComposite(Composite plotComposite)
-			throws Exception;
+	protected abstract void updatePlotComposite(Composite plotComposite) throws Exception;
 
 	/**
 	 * Disposes the specified plot {@code Composite} and any related resources.
@@ -433,4 +497,54 @@ public abstract class PlotRender {
 		// Nothing to do.
 	}
 
+	/**
+	 * Gets the list of default actions that can be performed on the plot
+	 * render. This list can be used to populate context Menus or ToolBars for
+	 * the render's container.
+	 * 
+	 * @return A list of default actions.
+	 */
+	protected List<ActionTree> getPlotRenderActions() {
+		List<ActionTree> actions = new ArrayList<ActionTree>();
+
+		// Create the root ActionTree for setting the plot category and type.
+		final ActionTree plotTypeTree = new ActionTree("Set Plot Type");
+		actions.add(plotTypeTree);
+		try {
+			// Add an ActionTree for each category, and then add ActionTree
+			// leaf nodes for each type.
+			Map<String, String[]> plotTypes = plot.getPlotTypes();
+			for (Entry<String, String[]> entry : plotTypes.entrySet()) {
+				String category = entry.getKey();
+				String[] types = entry.getValue();
+
+				if (category != null && types != null && types.length > 0) {
+					// Create the category ActionTree.
+					ActionTree categoryTree = new ActionTree(category);
+					plotTypeTree.add(categoryTree);
+
+					// Add all types to the category ActionTree. Each Action
+					// should try to set the plot category and type of the drawn
+					// plot.
+					final String categoryRef = category;
+					for (String type : types) {
+						final String typeRef = type;
+						categoryTree.add(new ActionTree(new Action(type) {
+							@Override
+							public void run() {
+								setPlotCategory(categoryRef);
+								setPlotType(typeRef);
+								refresh();
+							}
+						}));
+					}
+				}
+			}
+		} catch (Exception e) {
+			// Print out the error message (from getPlotTypes()).
+			logger.error(getClass().getName() + " Exception! ", e);
+		}
+
+		return actions;
+	}
 }
