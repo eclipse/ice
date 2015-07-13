@@ -107,7 +107,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 		// Set the default return value.
 		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
 
-		// Get the connection adapter.
+		// Get the connection.
 		IVizConnection<VisItSwtConnection> connection = getConnection();
 
 		// Determine the source path string. Unfortunately, we can't just give
@@ -134,8 +134,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	}
 
 	/**
-	 * Gets the connection adapter for the associated connection cast as a
-	 * {@link VisItConnection}.
+	 * Gets the associated connection cast as a {@link VisItConnection}.
 	 * 
 	 * @return The associated connection.
 	 */

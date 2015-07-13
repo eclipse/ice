@@ -219,16 +219,16 @@ public abstract class ConnectionPlotRender<T> extends PlotRender implements IViz
 	 * Validates the connection, returning if the connection is valid or
 	 * throwing an exception otherwise.
 	 * 
-	 * @param adapter
-	 *            The {@link #plot}'s connection adapter.
+	 * @param connection
+	 *            The {@link #plot}'s connection.
 	 * @throws Exception
 	 *             An exception with an informative message is thrown if there
 	 *             is a problem with the connection.
 	 */
-	protected void validateConnection(IVizConnection<T> adapter) throws Exception {
-		// Get the connection and its state from the connection adapter.
-		final T connection = adapter.getWidget();
-		final ConnectionState state = adapter.getState();
+	protected void validateConnection(IVizConnection<T> connection) throws Exception {
+		// Get the widget and its state from the connection.
+		final T widget = connection.getWidget();
+		final ConnectionState state = connection.getState();
 
 		// Set the message and icon based on the state of the connection.
 		final String message;
@@ -241,7 +241,7 @@ public abstract class ConnectionPlotRender<T> extends PlotRender implements IViz
 
 		// If the connection is valid, we should immediately break and return.
 		// This is expected to be the most common situation.
-		if (connection != null && state == ConnectionState.Connected) {
+		if (widget != null && state == ConnectionState.Connected) {
 			// There does not appear to be an issue related to the connection
 			// preferences, so hide the link.
 			showLink = false;
@@ -250,7 +250,7 @@ public abstract class ConnectionPlotRender<T> extends PlotRender implements IViz
 			message = "The " + serviceName + " connection is being established...";
 			image = display.getSystemImage(SWT.ICON_WORKING);
 		} else if (state == ConnectionState.Disconnected) {
-			if (connection == null) {
+			if (widget == null) {
 				message = "The " + serviceName + " connection is not configured.";
 			} else {
 				message = "The " + serviceName + " connection is currently disconnected.";
