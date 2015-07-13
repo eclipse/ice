@@ -27,6 +27,11 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+
 /**
  * This abstract class provides a base implementation for the core functionality
  * inherent in all viz connections. Instead of directly implementing the
@@ -398,6 +403,62 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 */
 	private Future<ConnectionState> startConnectThread() {
 		executorService = Executors.newSingleThreadExecutor();
+
+		// Create a new job to listen for the connection status. It will notify
+		// users about the progress of the connection attempt.
+		Job job = new Job("Viz Connection") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+
+				/*
+				 * Currently, we give the task 100 "ticks". The initial
+				 * transition from "disconnected" to "connecting" is worth 30
+				 * ticks. While the state is "connecting", a tick is added every
+				 * timeout while waiting for the state to change. When the
+				 * connection is established or fails, all remaining ticks are
+				 * filled.
+				 */
+
+				// Set the initial task name.
+				monitor.beginTask("Viz connection \"" + VizConnection.this.getName(), 100);
+
+				String message = null;
+				long timeout = 250;
+
+				// Wait for the connection to go from "Disconnected" to
+				// "Connecting".
+				message = VizConnection.this.getStatusMessage();
+				monitor.subTask(message);
+				while (state == ConnectionState.Disconnected) {
+					try {
+						Thread.sleep(timeout);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				monitor.worked(30);
+
+				// Wait for the connection to finish its connection attempt.
+				message = VizConnection.this.getStatusMessage();
+				monitor.subTask(message);
+				while (state == ConnectionState.Connecting) {
+					try {
+						Thread.sleep(timeout);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					monitor.worked(1);
+				}
+				monitor.worked(100);
+
+				// Return the result.
+				int statusFlag = state == ConnectionState.Connected ? Status.OK : Status.ERROR;
+				message = VizConnection.this.getStatusMessage();
+				return new Status(statusFlag, "org.eclipse.viz.service", 1, message, null);
+			}
+		};
+		job.schedule();
+
 		return executorService.submit(new Callable<ConnectionState>() {
 			@Override
 			public ConnectionState call() throws Exception {
@@ -523,6 +584,49 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 *         connected or failed.
 	 */
 	private Future<ConnectionState> startDisconnectThread() {
+
+		// Create a new job to listen for the connection status. It will notify
+		// users about the progress of the disconnect attempt.
+		Job job = new Job("Viz Connection") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+
+				/*
+				 * Currently, we give the task 100 "ticks". While the state is
+				 * changing from "connected" to "disconnected" or "failed", a
+				 * tick is added every timeout while waiting for the state to
+				 * change. When the connection is disconnected or fails, all
+				 * remaining ticks are filled.
+				 */
+
+				// Set the initial task name.
+				monitor.beginTask("Viz connection \"" + VizConnection.this.getName(), 100);
+
+				String message = null;
+				long timeout = 250;
+
+				// Wait for the connection to go from "Connected" to
+				// "Disconnected" or "Failed".
+				message = VizConnection.this.getStatusMessage();
+				monitor.subTask(message);
+				while (state == ConnectionState.Connected) {
+					try {
+						Thread.sleep(timeout);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					monitor.worked(1);
+				}
+				monitor.worked(100);
+
+				// Return the result.
+				int statusFlag = state == ConnectionState.Disconnected ? Status.OK : Status.ERROR;
+				message = VizConnection.this.getStatusMessage();
+				return new Status(statusFlag, "org.eclipse.viz.service", 1, message, null);
+			}
+		};
+		job.schedule();
+
 		// If necessary, create the executor service.
 		if (executorService == null) {
 			executorService = Executors.newSingleThreadExecutor();
