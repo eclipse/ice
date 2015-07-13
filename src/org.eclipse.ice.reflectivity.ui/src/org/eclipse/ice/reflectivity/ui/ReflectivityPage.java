@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.ice.client.widgets.ElementSourceDialog;
 import org.eclipse.ice.client.widgets.ICEResourcePage;
 import org.eclipse.ice.client.widgets.ListComponentNattable;
+import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Material;
@@ -25,7 +26,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
+import org.eclipse.nebula.widgets.nattable.selection.RowSelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
@@ -88,6 +91,8 @@ public class ReflectivityPage extends ICEResourcePage
 	 * properties tab
 	 */
 	private DataComponent data;
+
+	private Component[] selection;
 
 	/**
 	 * The sash form that is the base composite for the editor in this page
@@ -170,6 +175,21 @@ public class ReflectivityPage extends ICEResourcePage
 
 		// Set the section client.
 		listSection.setClient(sectionClient);
+
+		// Enable a new selection listener to listen to the table's selection
+		// events
+		RowSelectionProvider provider = listTable.getSelectionProvider();
+		provider.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = event.getSelection();
+				IStructuredSelection structSelect = (IStructuredSelection) selection;
+				Object obj = structSelect.getFirstElement();
+
+			}
+
+		});
 
 		// Create the scrolled and managed forms to pass to
 		// super.createFormContent() to create the resource page in the sash

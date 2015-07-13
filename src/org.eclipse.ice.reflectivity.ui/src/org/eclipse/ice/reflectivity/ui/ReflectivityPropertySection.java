@@ -103,6 +103,10 @@ public class ReflectivityPropertySection extends AbstractPropertySection {
 					Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 		}
 
+		// Adapt the composite to be rendered with the default widget factory
+		// toolkit
+		getWidgetFactory().adapt(dataComposite);
+
 		// Set the client area for the section.
 		section.setClient(dataComposite);
 
