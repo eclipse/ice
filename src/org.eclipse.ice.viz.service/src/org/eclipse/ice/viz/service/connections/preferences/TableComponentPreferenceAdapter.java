@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@code TableComponentPreferenceAdapter} can marshal a
@@ -68,6 +70,11 @@ import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 public class TableComponentPreferenceAdapter {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(TableComponentPreferenceAdapter.class);
+
+	/**
 	 * The separator used when a serialized list of strings is written to a
 	 * preference node.
 	 */
@@ -84,13 +91,11 @@ public class TableComponentPreferenceAdapter {
 	 * @param store
 	 *            The target preference store.
 	 */
-	public void toPreferences(TableComponent table,
-			CustomScopedPreferenceStore store) {
+	public void toPreferences(TableComponent table, CustomScopedPreferenceStore store) {
 		// Check the parameters.
 		if (table == null || store == null) {
 			throw new NullPointerException(
-					"TableComponentPreferenceAdapter error: "
-							+ "Cannot store preferences based from null arguments.");
+					"TableComponentPreferenceAdapter error: " + "Cannot store preferences based from null arguments.");
 		}
 
 		// Clear out the old preferences.
@@ -123,8 +128,7 @@ public class TableComponentPreferenceAdapter {
 			List<Entry> row = table.getRow(i);
 			for (int j = 0; j < columns; j++) {
 				Entry entry = row.get(j);
-				String key = prefix + Integer.toString(i) + "."
-						+ Integer.toString(j);
+				String key = prefix + Integer.toString(i) + "." + Integer.toString(j);
 
 				// If the Entry shouldn't be secret, just put it in the store.
 				// Otherwise, it should be stored securely.
@@ -153,13 +157,11 @@ public class TableComponentPreferenceAdapter {
 	 *            The target table whose rows should be read in from the
 	 *            preference store.
 	 */
-	public void toTableComponent(CustomScopedPreferenceStore store,
-			TableComponent table) {
+	public void toTableComponent(CustomScopedPreferenceStore store, TableComponent table) {
 		// Check the parameters.
 		if (table == null || store == null) {
 			throw new NullPointerException(
-					"TableComponentPreferenceAdapter error: "
-							+ "Cannot load preferences based from null arguments.");
+					"TableComponentPreferenceAdapter error: " + "Cannot load preferences based from null arguments.");
 		}
 
 		String prefix = getPrefix(table);
@@ -176,9 +178,8 @@ public class TableComponentPreferenceAdapter {
 		// Log a problem with the table's template if the column count does not
 		// match.
 		if (columns != table.numberOfColumns()) {
-			System.out
-					.println("TableComponentPreferenceAdapter warning: "
-							+ "Specified TableComponent has incorrect number of columns.");
+			logger.info("TableComponentPreferenceAdapter warning: "
+					+ "Specified TableComponent has incorrect number of columns.");
 			badTemplate = true;
 		}
 		// Otherwise, check all of the column names.
@@ -193,12 +194,9 @@ public class TableComponentPreferenceAdapter {
 				// don't match. We should exit before updating the
 				// TableComponent's rows.
 				if (!columnName.equals(template.get(j).getName())) {
-					System.out
-							.println("TableComponentPreferenceAdapter warning: "
-									+ "Specified TableComponent has mismatching column names. Expected \""
-									+ columnName
-									+ "\" but found \""
-									+ template.get(j).getName() + "\".");
+					logger.info("TableComponentPreferenceAdapter warning: " + "Specified TableComponent has "
+							+ "mismatching column names. Expected \"" + columnName + "\" but found \""
+							+ template.get(j).getName() + "\".");
 					badTemplate = true;
 				}
 			}
@@ -218,8 +216,7 @@ public class TableComponentPreferenceAdapter {
 			for (int j = 0; j < columns; j++) {
 				Entry entry = row.get(j);
 				// The key is stored as row.column using their indices.
-				String key = prefix + Integer.toString(i) + "."
-						+ Integer.toString(j);
+				String key = prefix + Integer.toString(i) + "." + Integer.toString(j);
 
 				// Try to get the Entry's value from the primary store. If the
 				// value is not there, it should be in secure storage.
@@ -255,8 +252,7 @@ public class TableComponentPreferenceAdapter {
 	 * @param store
 	 *            The store from which to remove the preferences.
 	 */
-	private void clearPreferences(TableComponent table,
-			CustomScopedPreferenceStore store) {
+	private void clearPreferences(TableComponent table, CustomScopedPreferenceStore store) {
 
 		final String prefix = getPrefix(table);
 
@@ -274,8 +270,7 @@ public class TableComponentPreferenceAdapter {
 		// Remove each row from the preferences.
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
-				String key = prefix + Integer.toString(i) + "."
-						+ Integer.toString(j);
+				String key = prefix + Integer.toString(i) + "." + Integer.toString(j);
 				// We need to remove its value and its defaults or remove its
 				// secure value.
 				if (store.contains(key)) {

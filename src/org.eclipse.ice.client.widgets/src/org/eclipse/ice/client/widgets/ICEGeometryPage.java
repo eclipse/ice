@@ -157,7 +157,7 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 					.showView(TransformationView.ID);
 
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Create the geometry composite - get the parent

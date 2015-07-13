@@ -16,5 +16,16 @@
       <initializer
             class="org.eclipse.ice.viz.service.preferences.VizPreferenceInitializer">
       </initializer>
+   </extension>	
+   		
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.ice.viz.service.PlotEditor"
+            default="false"
+            id="org.eclipse.ice.viz.service.PlotEditor"
+            name="PlotEditor">
+      </editor>
    </extension>
+   
 </plugin>

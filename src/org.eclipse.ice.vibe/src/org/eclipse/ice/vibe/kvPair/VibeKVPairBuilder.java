@@ -14,7 +14,7 @@ package org.eclipse.ice.vibe.kvPair;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
@@ -22,7 +22,7 @@ import org.eclipse.ice.item.ItemType;
  * @author Jay Jay Billings, Andrew Bennett
  *
  */
-public class VibeKVPairBuilder implements ItemBuilder {
+public class VibeKVPairBuilder extends AbstractItemBuilder {
 
 	// The Item name
 	public static final String name = "VIBE Key-Value Pair";
@@ -30,27 +30,20 @@ public class VibeKVPairBuilder implements ItemBuilder {
 	// The type
 	public static final ItemType type = ItemType.Model;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemName()
+	/**
+	 * The Constructor
 	 */
-	@Override
-	public String getItemName() {
-		return name;
+	public VibeKVPairBuilder() {
+		setName(name);
+		setType(type);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemType()
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
 	@Override
-	public ItemType getItemType() {
-		return type;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ice.item.ItemBuilder#build(org.eclipse.core.resources.IProject)
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 		return new VibeKVPair(projectSpace);
 	}
 

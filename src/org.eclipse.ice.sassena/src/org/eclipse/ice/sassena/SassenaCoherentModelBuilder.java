@@ -13,39 +13,31 @@
 package org.eclipse.ice.sassena;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
  * This class builds the SassenaCoherentModel. It inherits its operations from
  * ItemBuilder.
  * 
- * @author Scott Forest Hull II
+ * @author Alex McCaskey
  */
-public class SassenaCoherentModelBuilder implements ItemBuilder {
+public class SassenaCoherentModelBuilder extends AbstractItemBuilder {
 
-	/*
-	 * Implements a method from ItemBuilder.
+	/**
+	 * The Constructor
 	 */
-	@Override
-	public String getItemName() {
-		return "Sassena Coherent Model";
+	public SassenaCoherentModelBuilder() {
+		setName("Sassena Coherent Model");
+		setType(ItemType.Model);
 	}
-
+	
 	/*
-	 * Implements a method from ItemBuilder.
+	 * Implements a method from AbstractItemBuilder.
 	 */
 	@Override
-	public ItemType getItemType() {
-		return ItemType.Model;
-	}
-
-	/*
-	 * Implements a method from ItemBuilder.
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 		SassenaCoherentModel sassenaCoh = new SassenaCoherentModel(projectSpace);
 		sassenaCoh.setItemBuilderName(getItemName());
 		return sassenaCoh;

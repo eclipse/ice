@@ -3,8 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ICEItem
 Bundle-SymbolicName: org.eclipse.ice.item;singleton:=true
 Bundle-Version: 2.0.0
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.jcraft.jsch;version="0.1.41",
+ org.apache.commons.io;version="2.0.1",
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.componentVisitor,
  org.eclipse.ice.datastructures.form,
@@ -19,6 +20,7 @@ Import-Package: com.jcraft.jsch;version="0.1.41",
  org.eclipse.remote.core,
  org.eclipse.remote.core.exception,
  org.eclipse.remote.internal.jsch.core,
+ org.slf4j;version="1.7.2",
  org.yaml.snakeyaml
 Export-Package: org.eclipse.ice.item,
  org.eclipse.ice.item.action,

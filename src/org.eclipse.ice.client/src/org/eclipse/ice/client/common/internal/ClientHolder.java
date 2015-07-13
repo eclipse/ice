@@ -13,6 +13,8 @@
 package org.eclipse.ice.client.common.internal;
 
 import org.eclipse.ice.iclient.IClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class accepts a reference to the Client from the OSGi Framework and
@@ -23,6 +25,11 @@ import org.eclipse.ice.iclient.IClient;
  */
 public class ClientHolder {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ClientHolder.class);
+	
 	/**
 	 * The reference to the Client provided by the OSGi.
 	 */
@@ -43,10 +50,10 @@ public class ClientHolder {
 		// Set the reference and do some reporting
 		if (iceClient != null) {
 			client = iceClient;
-			System.out.println("ICE Eclipse Common Widgets Message: "
+			logger.info("ICE Eclipse Common Widgets Message: "
 					+ "Client set successfully!");
 		} else {
-			System.out.println("ICE Eclipse Common Widgets Message:"
+			logger.info("ICE Eclipse Common Widgets Message:"
 					+ "Framework attempted to set client, but the "
 					+ "reference was null.");
 		}

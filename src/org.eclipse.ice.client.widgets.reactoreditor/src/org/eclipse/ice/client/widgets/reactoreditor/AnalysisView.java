@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.ToolBar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This provides a super-class for specialized IAnalysisViews. Of particular
@@ -56,6 +58,11 @@ import org.eclipse.swt.widgets.ToolBar;
  * 
  */
 public class AnalysisView implements IAnalysisView, IStateListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
 
 	/**
 	 * The Composite that contains all tools used to display analysis
@@ -104,6 +111,9 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 */
 	public AnalysisView(DataSource dataSource) {
 
+		// Create the logger
+		logger = LoggerFactory.getLogger(getClass());
+
 		// Set the data source associated with this analysis view.
 		this.dataSource = dataSource;
 
@@ -124,8 +134,8 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 * to or removed from the List.
 	 */
 	protected void updateActionManagers() {
-		System.out
-				.println("AnalysisView message: Updating action ToolBar-/MenuManagers.");
+		logger.info("AnalysisView message: "
+				+ "Updating action ToolBar-/MenuManagers.");
 
 		// Clear the managers.
 		actionToolBarManager.removeAll();
@@ -154,7 +164,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 */
 	@Override
 	public void createViewContent(Composite container) {
-		System.out.println("AnalysisView message: Creating view contents.");
+		logger.info("AnalysisView message: Creating view contents.");
 
 		this.container = container;
 
@@ -203,8 +213,8 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 */
 	@Override
 	public void getToolBarContributions(ToolBar toolBar) {
-		System.out
-				.println("AnalysisView message: Populating provided ToolBar.");
+		logger.info("AnalysisView message: "
+						+ "Populating provided ToolBar.");
 
 		// To populate a pre-existing ToolBar, we *have* to re-initialize the
 		// ToolBarManager and pass the ToolBar as a parameter to the

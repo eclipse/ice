@@ -13,15 +13,15 @@
 package org.eclipse.ice.item.jobprofile;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
  * 
  * @author Jay Jay Billings
  */
-public class JobProfileBuilder implements ItemBuilder {
+public class JobProfileBuilder extends AbstractItemBuilder {
 	/**
 	 * <p>
 	 * A handle to the JobProfile created by the builder.
@@ -31,34 +31,19 @@ public class JobProfileBuilder implements ItemBuilder {
 	private JobProfile jobProfile;
 
 	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemName()
+	 * The Constructor
 	 */
-	@Override
-	public String getItemName() {
-
-		return "Job Profile";
+	public JobProfileBuilder() {
+		setName("Job Profile");
+		setType(ItemType.Model);
 	}
-
-	/**
+	
+	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemType()
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
 	@Override
-	public ItemType getItemType() {
-
-		return ItemType.Model;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#build(IProject projectSpace)
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 		// Create a new job profile
 		JobProfile item = new JobProfile(projectSpace);
 		// Set the name for the builder
@@ -67,4 +52,5 @@ public class JobProfileBuilder implements ItemBuilder {
 		return item;
 
 	}
+
 }

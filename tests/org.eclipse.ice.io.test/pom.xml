@@ -13,4 +13,7 @@
 	<artifactId>org.eclipse.ice.io.test</artifactId>
 	<version>1.0.0</version>
 	<packaging>eclipse-test-plugin</packaging>
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
 </project>

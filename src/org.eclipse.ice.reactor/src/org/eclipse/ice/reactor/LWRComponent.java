@@ -37,6 +37,8 @@ import org.eclipse.ice.io.hdf.HdfReaderFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.io.hdf.IHdfReadable;
 import org.eclipse.ice.io.hdf.IHdfWriteable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -58,16 +60,22 @@ import org.eclipse.ice.io.hdf.IHdfWriteable;
  * <p>
  * This class implements the ICE Component interface.
  * </p>
- * 
+ *
  * @author Scott Forest Hull II
  */
 public class LWRComponent implements IReactorComponent, IDataProvider,
 		IHdfWriteable, IHdfReadable {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
+
 	/**
 	 * <p>
 	 * An ArrayList of ICE IComponentListeners.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private ArrayList<IUpdateableListener> listeners;
@@ -76,7 +84,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * Classifies a LWRComponentType. This should only be set on the lowest
 	 * level constructor AND should represent the lowest level object.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	protected HDF5LWRTagType HDF5LWRTag;
@@ -84,7 +92,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * <p>
 	 * Name of this LWRComponent.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	protected String name;
@@ -101,7 +109,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * The current time step. Can not be less than 0, and must be strictly less
 	 * than the number of TimeSteps. Defaults to 0.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private double time;
@@ -110,7 +118,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * A description of the source of information for this provider and its
 	 * data.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private String sourceInfo;
@@ -118,7 +126,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * <p>
 	 * The time unit.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private String timeUnit;
@@ -126,7 +134,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * <p>
 	 * The id of this LWRComponent. Can not be less than zero.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	protected int id;
@@ -134,7 +142,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * <p>
 	 * The description of this LWRComponent.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	protected String description;
@@ -149,6 +157,9 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * The nullary Constructor.
 	 */
 	public LWRComponent() {
+
+		// Create the logger
+		logger = LoggerFactory.getLogger(getClass());
 
 		// Setup default values
 		this.name = "Component 1";
@@ -175,7 +186,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	/**
 	 * A parameterized Constructor.
-	 * 
+	 *
 	 * @param name
 	 *            Name of this LWRComponent
 	 */
@@ -227,7 +238,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * Sets the sourceInfo. Can not be null or the empty string. Strings passed
 	 * will be trimmed before being set.
 	 * </p>
-	 * 
+	 *
 	 * @param sourceInfo
 	 *            <p>
 	 *            The sourceInfo to set.
@@ -247,7 +258,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * Adds a IData piece, keyed on the feature and timeStep, to the dataTree.
 	 * If the feature exists in the tree, it will append to the end of the list.
 	 * </p>
-	 * 
+	 *
 	 * @param data
 	 *            <p>
 	 *            The data to add.
@@ -316,7 +327,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * tree, then use the appropriate getData operation on that feature and
 	 * manipulate the data that way.
 	 * </p>
-	 * 
+	 *
 	 * @param feature
 	 *            <p>
 	 *            The feature.
@@ -888,7 +899,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 					dataSet.init();
 				} catch (Exception e) {
 					// Break and return
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return false;
 				}
 
@@ -1003,7 +1014,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 					try {
 						data = featureGroup.getData();
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 						return false;
 					}
 
@@ -1060,7 +1071,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * <p>
 	 * Returns the current time step.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The current time step.
 	 *         </p>
@@ -1074,7 +1085,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * <p>
 	 * Returns the LWRComponentType.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The LWRComponentType.
 	 *         </p>
@@ -1088,7 +1099,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * 
+	 *
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
@@ -1142,7 +1153,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
@@ -1165,7 +1176,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * <p>
 	 * Sets the time units.
 	 * </p>
-	 * 
+	 *
 	 * @param timeUnit
 	 *            <p>
 	 *            The time unit to be set.
@@ -1185,7 +1196,7 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * LWRComponent to ascertain its type and perform various type-specific
 	 * operations.
 	 * </p>
-	 * 
+	 *
 	 * @param visitor
 	 *            <p>
 	 *            The visitor

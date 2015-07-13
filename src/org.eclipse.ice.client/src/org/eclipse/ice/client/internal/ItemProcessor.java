@@ -27,6 +27,8 @@ import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -55,6 +57,12 @@ import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
  * @author Jay Jay Billings
  */
 public class ItemProcessor implements IWidgetClosedListener, Runnable {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ItemProcessor.class);
+	
 	/**
 	 * <p>
 	 * A reference to an IExtraInfoWidget that can be used to gather extra
@@ -447,7 +455,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 				streamingTextWidget.display();
 			} catch (FileNotFoundException e) {
 				// Complain that the file could not be opened
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -513,7 +521,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					}
 				} catch (IOException e) {
 					// Complain because the next line could not be read
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 
@@ -528,7 +536,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					}
 				} catch (IOException e) {
 					// Complain
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 				break;
@@ -539,7 +547,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					Thread.sleep(pollTime);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 			// Print a debug message for now
@@ -550,7 +558,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 		formWidget.updateStatus(statusMessageMap.get(status));
 
 		// Print a debug message for now
-		System.out.println("IClient ItemProcessor Message: Status = " + status);
+		logger.info("IClient ItemProcessor Message: Status = " + status);
 
 		return;
 

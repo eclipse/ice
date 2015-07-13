@@ -8,7 +8,8 @@ Export-Package: org.eclipse.ice.reactor,
  org.eclipse.ice.reactor.bwr,
  org.eclipse.ice.reactor.pwr
 Import-Package: org.eclipse.ice.datastructures.ICEObject,
- org.eclipse.ice.reactor.pwr
+ org.eclipse.ice.reactor.pwr,
+ org.slf4j;version="1.7.2"
 Require-Bundle: org.eclipse.ice.datastructures,
  org.eclipse.ice.io;visibility:=reexport,
  org.eclipse.ice.analysistool;bundle-version="2.0.0"

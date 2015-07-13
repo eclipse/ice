@@ -34,14 +34,19 @@ import javax.naming.OperationNotSupportedException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -72,6 +77,12 @@ import org.yaml.snakeyaml.Yaml;
  * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  */
 public class MOOSEFileHandler implements IReader, IWriter {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(MOOSEFileHandler.class);
 
 	/**
 	 * A flag to denote whether or not debugging is enabled
@@ -154,9 +165,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				fileOutputWriter.close();
 				fileWriter.close();
 			} catch (IOException e) {
-				System.out.println("MOOSEFileHandler Exception: "
+				logger.info("MOOSEFileHandler Exception: "
 						+ "Unable to write output file.");
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -191,7 +202,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		// Post some debug info
 		if (debugFlag) {
-			System.out.println("MOOSEFileHandler Message: "
+			logger.info("MOOSEFileHandler Message: "
 					+ "Attempting to loading GetPot file " + filePath);
 		}
 
@@ -207,13 +218,13 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			mooseFile.close();
 			// Post some more debug info
 			if (debugFlag) {
-				System.out.println("MOOSEFileHandler Message: File loaded.");
+				logger.info("MOOSEFileHandler Message: File loaded.");
 			}
 		} catch (IOException e) {
 			// Complain if the file is not found
 			System.err.println("MOOSEFileHandler Message: "
 					+ "Unable to load GetPot file!");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Check the string before proceeding
@@ -305,12 +316,12 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 					// Print some debug information
 					if (debugFlag) {
-						System.out.println("\nMOOSEFileHandler Message: "
+						logger.info("\nMOOSEFileHandler Message: "
 								+ "Block output read from GetPot file "
 								+ filePath + " follows.");
 						// Dump each line of the newly created block
 						for (String line : blockLines) {
-							System.out.println(line);
+							logger.info(line);
 						}
 					}
 
@@ -361,13 +372,13 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		// Load the YAML tree
 		if (debugFlag) {
-			System.out.println("MOOSEFileHandler Message: Loading YAML file "
+			logger.info("MOOSEFileHandler Message: Loading YAML file "
 					+ filePath.toString());
 		}
 		Yaml yaml = new Yaml();
 		ArrayList<?> list = (ArrayList<?>) yaml.load(input);
 		if (debugFlag) {
-			System.out.println("MOOSEFileHandler Message: File loaded.");
+			logger.info("MOOSEFileHandler Message: File loaded.");
 		}
 
 		// Load the block list. Use YAMLBlocks so that they can be converted to
@@ -384,7 +395,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			input.close();
 		} catch (IOException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Put all the names of top-level nodes into a list (we use this later)
@@ -464,7 +475,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		try {
 			hardPathsList = loadActionSyntax(syntaxFilePath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Begin looking through the TreeComposites for matches to the list of
@@ -504,7 +515,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				if (hasType) {
 					// Get the exemplars of <type>, these will become
 					// the list of types to chose from
-					types = (ArrayList<TreeComposite>) currTree
+					types = currTree
 							.getChildExemplars().get(typeIndex)
 							.getChildExemplars();
 
@@ -620,7 +631,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		// Check if the filepath is valid
 		if (filePath == null || filePath.isEmpty()) {
 			if (debugFlag) {
-				System.out.println("MOOSEFileHandler Error: Could not open "
+				logger.info("MOOSEFileHandler Error: Could not open "
 						+ "action syntax file: " + filePath);
 			}
 			return actionSyntax;
@@ -628,7 +639,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		// Open the action syntax file
 		if (debugFlag) {
-			System.out.println("MOOSEFileHandler Message: Loading action "
+			logger.info("MOOSEFileHandler Message: Loading action "
 					+ "syntax file: " + filePath);
 		}
 
@@ -717,7 +728,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			throw new OperationNotSupportedException("MOOSEFileHandler Error: "
 					+ "IWriter.replace() is not supported.");
 		} catch (OperationNotSupportedException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;
@@ -762,7 +773,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			if (splitPath.length > 1) {
 				fileExt = splitPath[1];
 			} else {
-				System.out.println("MOOSEFileHandler Message:"
+				logger.info("MOOSEFileHandler Message:"
 						+ "File did not have file extension: "
 						+ mooseFile.getAbsolutePath());
 				return null;
@@ -798,6 +809,12 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					if (!fileExt.toLowerCase().equals("yaml")) {
 						// Set the active data nodes
 						setActiveDataNodes(rootNode);
+
+						// Set the variable entries in the tree to
+						// be discrete based on the available Variables and
+						// AuxVariables
+						setupVariables(rootNode);
+						setupAuxVariables(rootNode);
 					}
 
 					// Set the Identifiable data on the TreeComposite
@@ -813,12 +830,148 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				}
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return null;
 			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * This method converts the non-AuxVariable 'variable' Entries in the tree
+	 * to contain only the discrete list of available Variable sub-blocks.
+	 * 
+	 * @param tree
+	 *            The root node of the Moose tree
+	 */
+	public void setupVariables(TreeComposite tree) {
+
+		// Local Declarations
+		TreeComposite variables = null;
+		ArrayList<String> vars = new ArrayList<String>();
+		IEntryContentProvider provider = new BasicEntryContentProvider();
+		provider.setAllowedValueType(AllowedValueType.Discrete);
+
+		// Grab the Variables Block
+		for (int i = 0; i < tree.getNumberOfChildren(); i++) {
+			if ("Variables".equals(tree.getChildAtIndex(i).getName())) {
+				variables = tree.getChildAtIndex(i);
+				break;
+			}
+		}
+
+		// If we even have a variables block...
+		if (variables != null) {
+			// Add the names of the variables to the vars list
+			for (int i = 0; i < variables.getNumberOfChildren(); i++) {
+				vars.add(variables.getChildAtIndex(i).getName());
+			}
+
+			if (vars.isEmpty()) {
+				vars.add("Create a Variable");
+			}
+
+			// Set the allowed values as the list of available vars
+			provider.setAllowedValues(vars);
+
+			// Walk the tree and search for non-AuxVariable 'variable' Entries
+			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+					tree);
+			while (iter.hasNext()) {
+				TreeComposite block = iter.next();
+
+				// Check that this node has data
+				if (!block.getDataNodes().isEmpty()) {
+					DataComponent data = (DataComponent) block.getDataNodes()
+							.get(0);
+
+					// Only operate if this data component is valid, has a
+					// variable
+					// Entry, and is not an AuxVariable
+					if (data != null && data.contains("variable")
+							&& !block.getParent().getName().contains("Aux")) {
+
+						Entry variableEntry = data.retrieveEntry("variable");
+						String currentValue = variableEntry.getValue();
+						data.retrieveEntry("variable").setContentProvider(
+								provider);
+						if (vars.contains(currentValue)) {
+							variableEntry.setValue(currentValue);
+						} else {
+							variableEntry.setValue(vars.get(0));
+						}
+					}
+
+				}
+			}
+		}
+
+		return;
+
+	}
+
+	/**
+	 * This method converts the AuxVariable 'variable' Entries in the tree to
+	 * contain only the discrete list of available AuxVariable sub-blocks.
+	 * 
+	 * @param tree
+	 *            The root node of the Moose tree
+	 */
+	public void setupAuxVariables(TreeComposite tree) {
+
+		// Local Declarations
+		TreeComposite auxVariablesBlock = null;
+		ArrayList<String> auxVars = new ArrayList<String>();
+		IEntryContentProvider provider = new BasicEntryContentProvider();
+		provider.setAllowedValueType(AllowedValueType.Discrete);
+
+		// Grab the AuxVariables Block
+		for (int i = 0; i < tree.getNumberOfChildren(); i++) {
+			if ("AuxVariables".equals(tree.getChildAtIndex(i).getName())) {
+				auxVariablesBlock = tree.getChildAtIndex(i);
+				break;
+			}
+		}
+
+		if (auxVariablesBlock != null) {
+			// Add the names of the variables to the vars list
+			for (int i = 0; i < auxVariablesBlock.getNumberOfChildren(); i++) {
+				auxVars.add(auxVariablesBlock.getChildAtIndex(i).getName());
+			}
+
+			// Set the allowed values as the list of available vars
+			provider.setAllowedValues(auxVars);
+
+			// Walk the tree and search for non-AuxVariable 'variable' Entries
+			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
+					tree);
+			while (iter.hasNext()) {
+				TreeComposite block = iter.next();
+
+				// Check that this node has data
+				if (!block.getDataNodes().isEmpty()) {
+					DataComponent data = (DataComponent) block.getDataNodes()
+							.get(0);
+
+					// Only operate if this data component is valid, has a
+					// variable
+					// Entry, and is not an AuxVariable
+					if (data != null
+							&& data.contains("variable")
+							&& block.getParent().getName()
+									.contains("AuxKernels")) {
+						Entry variableEntry = data.retrieveEntry("variable");
+						String currentValue = variableEntry.getValue();
+						data.retrieveEntry("variable").setContentProvider(
+								provider);
+						variableEntry.setValue(currentValue);
+					}
+
+				}
+			}
+		}
+		return;
 	}
 
 	/**
@@ -853,17 +1006,17 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			TreeComposite child = iter.next();
 
 			// Make sure we have a valid DataComponent
-			if (child.getActiveDataNode() != null) {
+			if (child.getActiveDataNode() != null && child.isActive()) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
 				for (Entry e : data.retrieveAllEntries()) {
 
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
-					if (!"false".equals(e.getTag()) && e.getValue() != null
+					if (!"false".equals(e.getTag())
+							&& e.getValue() != null
 							&& !e.getValue().isEmpty()
-							&& e.getName().toLowerCase().contains(regex)
-							&& !e.getName().toLowerCase().contains("profile")
-							&& !e.getName().toLowerCase().contains("file_base")) {
+							&& (e.getName() + " = " + e.getValue())
+									.matches(regex)) {
 
 						// If this Entry does not have a very descriptive name
 						// we should reset its name to the block it belongs to

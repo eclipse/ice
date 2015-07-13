@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An AnalysisToolComposite provides an SWT Composite built to contain multiple
@@ -49,6 +51,12 @@ import org.eclipse.swt.widgets.ToolItem;
  * 
  */
 public class AnalysisToolComposite extends Composite {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AnalysisToolComposite.class);
 
 	/**
 	 * The StateBroker is used to share "selection" events, e.g., the currently
@@ -241,9 +249,8 @@ public class AnalysisToolComposite extends Composite {
 	 */
 	private void createViews(DataSource dataSource,
 			IAnalysisWidgetFactory factory) {
-		System.out
-				.println("AnalysisToolComposite message: Creating views for data source "
-						+ dataSource);
+		logger.info("AnalysisToolComposite message: "
+				+ "Creating views for data source " + dataSource);
 
 		// Get the list of available views.
 		List<String> viewNames = factory.getAvailableViews(dataSource);
@@ -326,8 +333,8 @@ public class AnalysisToolComposite extends Composite {
 	 *            The key of the IAnalysisView that will be displayed.
 	 */
 	private void setActiveView(String key) {
-		System.out
-				.println("AnalysisToolComposite message: Setting active view to "
+		logger.info("AnalysisToolComposite message: "
+						+ "Setting active view to "
 						+ key);
 
 		// Fetch the view part using the key.
@@ -366,8 +373,8 @@ public class AnalysisToolComposite extends Composite {
 	 */
 	private void removeViews(DataSource dataSource,
 			IAnalysisWidgetFactory factory) {
-		System.out
-				.println("AnalysisToolComposite message: Removing views for data source "
+		logger.info("AnalysisToolComposite message: "
+						+ "Removing views for data source "
 						+ dataSource);
 
 		// Get the list of available views.
@@ -386,7 +393,7 @@ public class AnalysisToolComposite extends Composite {
 
 		// Dispose of the ViewPart for each view.
 		for (String viewName : viewNames) {
-			System.out.println("AnalysisToolComposite message: Removing view "
+			logger.info("AnalysisToolComposite message: Removing view "
 					+ viewName);
 
 			ViewPart viewPart = viewPartMap.remove(dataSource + "-" + viewName);
@@ -505,7 +512,7 @@ public class AnalysisToolComposite extends Composite {
 			return;
 		}
 
-		System.out.println("AnalysisToolComposite message: " + "Data for "
+		logger.info("AnalysisToolComposite message: " + "Data for "
 				+ dataSource.toString() + " set!");
 
 		// See if we need to create new views.

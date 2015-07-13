@@ -91,7 +91,7 @@ public class ReactorEclipseFormWidget extends EclipseFormWidget {
 
 			} catch (PartInitException e) {
 				// Dump the stacktrace if something happens.
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 		}

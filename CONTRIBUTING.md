@@ -2,6 +2,10 @@
 
 Please read this if you intend to contribute to the project.
 
+## Developer Guidelines
+
+The full set of ICE developer guidelines are availalbe [here](https://wiki.eclipse.org/ICE_Developer_Documentation). You should read them before proceeding.
+
 ## Legal stuff
 
 Apologies in advance for the extra work required here - this is necessary to comply with the Eclipse Foundation's

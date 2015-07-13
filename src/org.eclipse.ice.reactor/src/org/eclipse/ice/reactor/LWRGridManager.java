@@ -41,12 +41,12 @@ import org.eclipse.ice.io.hdf.HdfWriterFactory;
  * time instead of using LWRComponent's IDataProvider directly. Please see
  * GridLocation for more details on the usage of this delegation class.
  * </p>
- * 
+ *
  * @author Scott Forest Hull II
  */
 public class LWRGridManager extends LWRComponent implements IGridManager {
 	/**
-	 * 
+	 *
 	 */
 	private TreeMap<GridLocation, String> lWRComponents;
 
@@ -54,7 +54,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * <p>
 	 * The size of the rows and columns.
 	 * </p>
-	 * 
+	 *
 	 */
 	private int size;
 
@@ -62,7 +62,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * <p>
 	 * A grid table suffix for reading the dataset.
 	 * </p>
-	 * 
+	 *
 	 */
 	protected String hdf5GridTableSuffix = "'s Grid Table";
 	// Names for groups
@@ -76,7 +76,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * <p>
 	 * The Constructor.
 	 * </p>
-	 * 
+	 *
 	 * @param size
 	 *            <p>
 	 *            The maximum number of rows or columns.
@@ -110,7 +110,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * <p>
 	 * Returns the maximum number of rows or columns.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         Returns the maximum number of rows or columns.
 	 *         </p>
@@ -126,7 +126,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
 	 * </p>
-	 * 
+	 *
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be compared.
@@ -193,7 +193,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * <p>
 	 * Returns the hashCode of the object.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The hash of the object.
 	 *         </p>
@@ -217,7 +217,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * <p>
 	 * Deep copies the contents of the object.
 	 * </p>
-	 * 
+	 *
 	 * @param otherObject
 	 *            <p>
 	 *            The object to be copied.
@@ -259,7 +259,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * <p>
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The newly instantiated copied object.
 	 *         </p>
@@ -280,7 +280,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IGridManager#getComponentName(GridLocation location)
 	 */
 	@Override
@@ -295,7 +295,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IGridManager#addComponent(Component component, GridLocation
 	 *      location)
 	 */
@@ -317,7 +317,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IGridManager#removeComponent(GridLocation location)
 	 */
 	@Override
@@ -332,7 +332,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IGridManager#removeComponent(Component component)
 	 */
 	@Override
@@ -393,12 +393,12 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 	/**
 	 * This writes the FeatureSets due to a given location
-	 * 
+	 *
 	 * @param The
 	 *            H5File
 	 * @param The
 	 *            Group
-	 * 
+	 *
 	 * @return True if successful, false otherwise
 	 */
 	private boolean writeFeatureSets(H5File h5File, H5Group h5Group) {
@@ -469,8 +469,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 						dimsPosition, null, null, 0, positionData);
 
 				positionDataset.init();
-			} catch (Exception e1) {
-				e1.printStackTrace();
+			} catch (Exception e) {
+				logger.error(getClass().getName() + " Exception!",e);
 				return false;
 			}
 
@@ -546,7 +546,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 		} catch (Exception e) {
 			// Break and return
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return false;
 
 		}
@@ -558,7 +558,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	/**
 	 * Writes the Datasets for all the time steps to the group. Returns true if
 	 * the operation was successful, false otherwise.
-	 * 
+	 *
 	 * @param dataH5Group
 	 *            The main data group
 	 * @param h5File
@@ -673,7 +673,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 					dataSet2.init();
 				} catch (Exception e) {
 					// Break and return
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 
 					return false;
 				}
@@ -733,7 +733,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 				arrayStrings = (String[]) unitListData;
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return false;
 			}
 		}
@@ -759,7 +759,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 				// Cast to array of strings
 				arrayPositions = (String[]) positionsNamesData;
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 				return false;
 			}
 		}
@@ -783,8 +783,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 			try {
 				positionDataset.init();
 				positionData = positionDataset.getData();
-			} catch (Exception e1) {
-				e1.printStackTrace();
+			} catch (Exception e) {
+				logger.error(getClass().getName() + " Exception!",e);
 				return false;
 			}
 
@@ -828,7 +828,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * Reads the time steps at a feature and adds the time steps to the
 	 * GridLocation. Returns true if the operation was successful, false
 	 * otherwise.
-	 * 
+	 *
 	 * @param provider
 	 *            The LWRDataProvider
 	 * @param timeStepsMemberList
@@ -876,7 +876,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 					dataListData = featureGroupData.getData();
 					headListData = featureGroupHead.getData();
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return false;
 				}
 
@@ -967,7 +967,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * Returns the data provider at the grid location or null if it does not
 	 * exist.
 	 * </p>
-	 * 
+	 *
 	 * @param location
 	 *            <p>
 	 *            The grid location.
@@ -1002,7 +1002,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 * Returns the list of grid locations at the given name. If none are found,
 	 * returns an empty list.
 	 * </p>
-	 * 
+	 *
 	 * @param name
 	 *            <p>
 	 *            The name

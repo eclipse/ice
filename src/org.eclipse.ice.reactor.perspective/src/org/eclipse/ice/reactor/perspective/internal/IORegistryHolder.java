@@ -13,6 +13,8 @@
 package org.eclipse.ice.reactor.perspective.internal;
 
 import org.eclipse.ice.io.hdf.IHdfIORegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class grabs the currently available {@link IHdfIORegistry}
@@ -23,6 +25,12 @@ import org.eclipse.ice.io.hdf.IHdfIORegistry;
  * 
  */
 public class IORegistryHolder {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(IORegistryHolder.class);
 
 	/**
 	 * The currently available {@link IHdfIORegistry} implementation, which runs
@@ -53,10 +61,10 @@ public class IORegistryHolder {
 
 		if (registry != null) {
 			IORegistryHolder.registry = registry;
-			System.out.println("ICE Reactor Perspective Message: "
+			logger.info("ICE Reactor Perspective Message: "
 					+ "IO registry set successfully!");
 		} else {
-			System.out.println("ICE Reactor Perspective Message:"
+			logger.info("ICE Reactor Perspective Message:"
 					+ "Framework attempted to set IO registry, but the "
 					+ "reference was null.");
 		}

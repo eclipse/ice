@@ -23,7 +23,6 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -35,12 +34,12 @@ import org.junit.Test;
  * It only tests the accessor operations for the DataComponent and the update
  * routine from IComponentListener.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class ICEDataComponentSectionPartTester {
 	/**
-	 * 
+	 *
 	 */
 	private ICEDataComponentSectionPart iCESectionPart;
 
@@ -51,40 +50,43 @@ public class ICEDataComponentSectionPartTester {
 	 * ICESectionPart by modifying a DataComponent and insuring that the
 	 * ICESectionPart gets the update.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkDataComponent() {
 
 		// Local Declarations
-		DataComponent comp1 = new DataComponent(), comp2 = null;
-		ArrayList<DataComponent> compList = null;
-		String compName = null;
-		Display display;
-		FormToolkit formTk;
-		ManagedForm eclipseTestForm;
-
-		// Setup the display, form toolkit and test form. The display must be
-		// retrieve from the Eclipse PlatformUI if it is running or created
-		// separately if not.
-		if (!PlatformUI.isWorkbenchRunning()) {
-			display = new Display();
-		} else {
-			display = PlatformUI.getWorkbench().getDisplay();
-		}
-		formTk = new FormToolkit(display);
-		eclipseTestForm = new ManagedForm(new Shell(display));
+		final DataComponent comp1 = new DataComponent();
+		DataComponent comp2 = null;
+		final ArrayList<DataComponent> compList = null;
+		final String compName = null;
+		final Display display;
 
 		// Set some info on the first component
 		comp1.setName("Gravy");
 
-		// Setup the ICESectionPage
-		iCESectionPart = new ICEDataComponentSectionPart(formTk.createSection(
-				eclipseTestForm.getForm().getBody(), Section.TITLE_BAR
-						| Section.DESCRIPTION | Section.TWISTIE
-						| Section.EXPANDED), new ICEFormEditor(),
-				eclipseTestForm);
-		iCESectionPart.setDataComponent(comp1);
+		// Setup the display, form toolkit and test form.
+		display = Display.getDefault();
+		display.syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				FormToolkit formTk;
+				ManagedForm eclipseTestForm;
+				formTk = new FormToolkit(display);
+				eclipseTestForm = new ManagedForm(new Shell(display));
+
+
+				// Setup the ICESectionPage
+				iCESectionPart = new ICEDataComponentSectionPart(formTk
+						.createSection(eclipseTestForm.getForm().getBody(),
+								Section.TITLE_BAR | Section.DESCRIPTION
+										| Section.TWISTIE | Section.EXPANDED),
+						new ICEFormEditor(), eclipseTestForm);
+				iCESectionPart.setDataComponent(comp1);
+
+			}
+		});
 
 		// Get the component and check it
 		comp2 = iCESectionPart.getDataComponent();
@@ -101,9 +103,6 @@ public class ICEDataComponentSectionPartTester {
 		comp2 = iCESectionPart.getDataComponent();
 		assertNotNull(comp2);
 		assertEquals(comp2.retrieveAllEntries().size(), 1);
-
-		// close display
-		display.dispose();
 
 		return;
 

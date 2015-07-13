@@ -36,6 +36,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -47,6 +51,10 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.action.JobLaunchAction;
+import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteConnectionHostService;
+import org.eclipse.remote.core.IRemoteConnectionType;
+import org.eclipse.remote.core.IRemoteServicesManager;
 
 /**
  * <p>
@@ -230,6 +238,19 @@ public class JobLauncher extends Item {
 	private HashMap<IResource, Long> workingDirMemberModMap;
 
 	/**
+	 * Reference to the Eclipse Job that will wrap our JobLaunchAction to
+	 * provide realtime progress reporting to the Eclipse status bar.
+	 */
+	@XmlTransient()
+	private Job launchJob;
+
+	/**
+	 * 
+	 */
+	@XmlTransient()
+	private static IRemoteServicesManager remoteManager;
+
+	/**
 	 * This is a utility class used to describe a type of file by the
 	 * JobLauncher.
 	 * 
@@ -385,7 +406,7 @@ public class JobLauncher extends Item {
 						false, null);
 			} catch (CoreException e) {
 				// Complain
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			// Create the standard error project file
 			try {
@@ -400,7 +421,7 @@ public class JobLauncher extends Item {
 						false, null);
 			} catch (CoreException e) {
 				// Complain
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			// Put the paths to the standard error and out files into the map.
 			// Note that the toOSSString() operation returns the file path with
@@ -409,7 +430,7 @@ public class JobLauncher extends Item {
 					.toOSString());
 			actionDataMap.put("stdErrFileName", stdErrProjectFile.getLocation()
 					.toOSString());
-			System.out.println("JobLauncher Message: File paths: "
+			logger.info("JobLauncher Message: File paths: "
 					+ "\n\tStandard Out File = "
 					+ actionDataMap.get("stdOutFileName")
 					+ "\n\tStandard Error File = "
@@ -432,7 +453,7 @@ public class JobLauncher extends Item {
 							members[i].getModificationStamp());
 				}
 			} catch (CoreException | IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -485,7 +506,7 @@ public class JobLauncher extends Item {
 			for (int i = 0; i < latestMembers.length; i++) {
 				IResource currentResource = latestMembers[i];
 				if (!workingDirMemberModMap.keySet().contains(currentResource)) {
-					System.out.println("JobLauncher Message: " + "Adding file "
+					logger.info("JobLauncher Message: " + "Adding file "
 							+ currentResource.getName() + " to list.");
 					// Get the file as an ICEResource object
 					ICEResource resource = getResource(currentResource
@@ -508,9 +529,8 @@ public class JobLauncher extends Item {
 					// sure that the file is not already in the resource list.
 					if (lastTimeStamp != currentResource.getModificationStamp()
 							&& !resourceNames.contains(fileName)) {
-						System.out.println("JobLauncher Message: "
-								+ "Adding file " + currentResource.getName()
-								+ " to list.");
+						logger.info("JobLauncher Message: " + "Adding file "
+								+ currentResource.getName() + " to list.");
 						// Get the file as an ICEResource
 						ICEResource resource = getResource(currentResource
 								.getLocation().toOSString());
@@ -527,11 +547,11 @@ public class JobLauncher extends Item {
 				}
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 	}
@@ -574,7 +594,7 @@ public class JobLauncher extends Item {
 			// all valid too
 			for (Entry entry : fileData.retrieveAllEntries()) {
 				if (entry.getValue() == null || entry.getValue().isEmpty()) {
-					System.out.println("JobLauncher Error: All input file "
+					logger.info("JobLauncher Error: All input file "
 							+ "entries must be set!");
 					return FormStatus.InfoError;
 				}
@@ -591,11 +611,10 @@ public class JobLauncher extends Item {
 				fileResource = project.findMember(fileEntry.getValue());
 				// Make sure the file exists
 				if (fileResource == null || !fileResource.exists()) {
-					System.out.println("JobLauncher Message: Base filename = "
+					logger.info("JobLauncher Message: Base filename = "
 							+ filename);
-					System.out
-							.println("JobLauncher Message: Allowed file names = "
-									+ fileEntry.getAllowedValues());
+					logger.info("JobLauncher Message: Allowed file names = "
+							+ fileEntry.getAllowedValues());
 					return FormStatus.InfoError;
 				}
 				// Get the full filename
@@ -603,7 +622,7 @@ public class JobLauncher extends Item {
 				actionDataMap.put(inputFileNameMap.get(entryName).varName,
 						filename);
 			} else {
-				System.out.println("File not found in Form: " + entryName);
+				logger.info("File not found in Form: " + entryName);
 			}
 		}
 
@@ -677,11 +696,9 @@ public class JobLauncher extends Item {
 		if (remoteDownloadDir != null) {
 			actionDataMap.put("downloadDirectory", remoteDownloadDir);
 		}
-		// Dump the action map if debugging is enabled
-		if (debuggingEnabled) {
-			System.out.println("JobLauncher Message: " + "Action Data Map = "
-					+ actionDataMap);
-		}
+
+		logger.debug("JobLauncher Message: " + "Action Data Map = "
+				+ actionDataMap);
 
 		return FormStatus.ReadyToProcess;
 	}
@@ -711,8 +728,7 @@ public class JobLauncher extends Item {
 		// If the filepath corresponded to a valid resource, we add it to the
 		// ResourceComponent
 		if (outputResource != null) {
-			System.out.println("Resource location = "
-					+ file.getFullPath().toString());
+			logger.info("Resource location = " + file.getFullPath().toString());
 			// Set the properties
 			outputResource.setName(form.getName() + " " + resourceName);
 			outputResource.setId(resourceId);
@@ -745,7 +761,7 @@ public class JobLauncher extends Item {
 			// Get the address of localhost
 			InetAddress addr = InetAddress.getLocalHost();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Identify the log
@@ -854,12 +870,12 @@ public class JobLauncher extends Item {
 					preparedForm.markReady(true);
 					form = preparedForm;
 					status = FormStatus.ReadyToProcess;
-				} else if (debuggingEnabled) {
+				} else {
 					System.err.println("JobLauncher Message: "
 							+ "Found an empty hosts table "
 							+ "during entry review!");
 				}
-			} else if (debuggingEnabled) {
+			} else {
 				System.err.println("JobLauncher Message: "
 						+ "Invalid form id for submitted form during review!");
 			}
@@ -920,22 +936,117 @@ public class JobLauncher extends Item {
 				}
 				// Create the output files in the project space
 				createOutputFiles();
+
 				// Launch the action
 				action = new JobLaunchAction();
-				localStatus = action.execute(actionDataMap);
+
+				// If we have a valid connection then give it to the action
+				IRemoteConnection remoteConnection = getRemoteConnection(actionDataMap
+						.get("hostname"));
+				if (remoteConnection != null) {
+					((JobLaunchAction) action)
+							.setRemoteConnection(remoteConnection);
+				} else if (remoteManager != null) {
+					// If it was null, we'll need to give the action a
+					// reference to the ConnectionType (SSH) so it can
+					// prompt the user for a new connection
+					((JobLaunchAction) action)
+							.setRemoteConnectionType(remoteManager
+									.getRemoteConnectionTypes().get(0));
+				}
+
+				// Create a new Eclipse Job for the JobLaunchAction
+				launchJob = new Job("Job Launch") {
+
+					@Override
+					protected IStatus run(IProgressMonitor monitor) {
+						final int ticks = 100;
+						monitor.beginTask("Executing the Job Launch Action...",
+								ticks);
+						try {
+							// Execute the Action
+							status = action.execute(actionDataMap);
+
+							// While its processing, keep the progress bar going
+							while (!status.equals(FormStatus.Processed)
+									&& !status.equals(FormStatus.InfoError)) {
+								monitor.subTask("Executing the Job");
+								Thread.sleep(1000);
+								// Check for Cancellation
+								if (monitor.isCanceled()) {
+									status = action.cancel();
+									return Status.CANCEL_STATUS;
+								}
+							}
+						} catch (InterruptedException e) {
+							logger.error(getClass().getName() + " Exception!",e);
+						} finally {
+							monitor.subTask("Job Launched Successfully.");
+							monitor.worked(100);
+							monitor.done();
+						}
+						return Status.OK_STATUS;
+					}
+				};
+
+				// Schedule it for execution
+				launchJob.schedule();
+
+				// Set the status as processing, if it fails
+				// the Job will set the status correctly
+				status = FormStatus.Processing;
+
+				// Invoke the output streaming thread
+				streamOutputData();
+
+				// Sleep the thread for a sec to give
+				// the Action time to do its thing
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					logger.error(getClass().getName() + " Exception!",e);
+				}
+				// Return the new status
+				return status;
+
 			} else {
 				localStatus = FormStatus.InfoError;
+
+				status = localStatus;
+
+				return status;
 			}
-			// Start the thread that fills the output file to stream to clients.
-			streamOutputData();
 
 		}
 
-		// Set the status
-		status = localStatus;
+		return localStatus;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.item.Item#cancelProcess()
+	 */
+	@Override
+	public FormStatus cancelProcess() {
+		status = super.cancelProcess();
+		if (status.equals(FormStatus.ReadyToProcess)) {
+			launchJob.cancel();
+		}
 		return status;
 	}
+
+	/**
+	 * This method let's clients of the JobLauncher set an existing
+	 * IRemoteConnection for remote job executions. If this connection is
+	 * provided, the JobLauncher will forward it to the JobLaunchAction for use
+	 * in the remote execution.
+	 * 
+	 * @param connection
+	 */
+	// public void setRemoteConnection(IRemoteConnection connection) {
+	// remoteConnection = connection;
+	// }
 
 	/**
 	 * This operations grabs the information from the stdout and stderr files
@@ -1002,11 +1113,11 @@ public class JobLauncher extends Item {
 					updateResourceComponent();
 				} catch (IOException e) {
 					// Complain and return
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return;
 				} catch (InterruptedException e) {
 					// Complain and return
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 					return;
 				}
 
@@ -1014,7 +1125,7 @@ public class JobLauncher extends Item {
 		});
 
 		// Start the thread
-		System.out.println("JobLauncher Message: Starting output data stream.");
+		logger.info("JobLauncher Message: Starting output data stream.");
 		streamingThread.start();
 
 		return;
@@ -1065,12 +1176,10 @@ public class JobLauncher extends Item {
 			hosts.add(hostname);
 
 			// Dump some debugging information
-			if (debuggingEnabled) {
-				System.out.println("JobLauncher Message: "
-						+ "Successfully added host " + hostname);
-			}
+			logger.debug("JobLauncher Message: " + "Successfully added host "
+					+ hostname);
 
-		} else if (debuggingEnabled) {
+		} else {
 			System.err.println("JobLauncher Message: " + "Invalid host added!");
 		}
 
@@ -1163,7 +1272,7 @@ public class JobLauncher extends Item {
 		if (form.getComponents().size() > 3) {
 			DataComponent dataC = (DataComponent) form.getComponents().get(
 					JobLauncherForm.parallelId);
-			Entry entry = (Entry) dataC
+			Entry entry = dataC
 					.retrieveEntry("Number of MPI Processes");
 			if (entry != null) {
 				this.mpiEnabled = true;
@@ -1231,7 +1340,7 @@ public class JobLauncher extends Item {
 			if (form.getComponents().size() > 3) {
 				DataComponent dataC = (DataComponent) form
 						.getComponent(JobLauncherForm.parallelId);
-				Entry entry = (Entry) dataC
+				Entry entry = dataC
 						.retrieveEntry("Number of OpenMP Threads");
 				if (entry != null) {
 					openMPEnabled = true;
@@ -1309,7 +1418,7 @@ public class JobLauncher extends Item {
 			if (form.getComponents().size() > 3) {
 				DataComponent dataC = (DataComponent) form
 						.getComponent(JobLauncherForm.parallelId);
-				Entry entry = (Entry) dataC
+				Entry entry = dataC
 						.retrieveEntry("Number of TBB Threads");
 				if (entry != null) {
 					tbbEnabled = true;
@@ -1356,6 +1465,7 @@ public class JobLauncher extends Item {
 	 *         True if the launchers are equal, false if not
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherLauncher) {
 
 		boolean retVal;
@@ -1502,7 +1612,7 @@ public class JobLauncher extends Item {
 			return;
 		}
 		// Copy contents into super and current object
-		super.copy((Item) otherLauncher);
+		super.copy(otherLauncher);
 
 		// Clone contents correctly
 		JobLauncherForm launcherForm = new JobLauncherForm();
@@ -1708,6 +1818,59 @@ public class JobLauncher extends Item {
 	 */
 	protected String getWorkingDirectory() {
 		return actionDataMap.get("workingDir");
+	}
+
+	/**
+	 * This method is used by the platform to give this MOOSEModel a reference
+	 * to the available IRemoteServicesManager.
+	 * 
+	 * @param manager
+	 */
+	public void setRemoteServicesManager(IRemoteServicesManager manager) {
+		if (manager != null) {
+			logger.info("[JobLauncher Message] Setting the IRemoteServicesManager: "
+					+ manager.toString());
+			remoteManager = manager;
+		}
+	}
+
+	/**
+	 * This method returns an IRemoteConnection stored in the Remote Preferences
+	 * that corresponds to the provided hostname.
+	 * 
+	 * @param host
+	 * @return
+	 */
+	public IRemoteConnection getRemoteConnection(String hostname) {
+		IRemoteConnection connection = null;
+		if (remoteManager != null) {
+			IRemoteConnectionType connectionType = remoteManager
+					.getRemoteConnectionTypes().get(0);
+
+			if (connectionType != null) {
+				try {
+
+					for (IRemoteConnection c : connectionType.getConnections()) {
+						String connectionHost = c.getService(
+								IRemoteConnectionHostService.class)
+								.getHostname();
+						if (InetAddress
+								.getByName(hostname)
+								.getHostAddress()
+								.equals(InetAddress.getByName(connectionHost)
+										.getHostAddress())) {
+							connection = c;
+							break;
+						}
+
+					}
+				} catch (UnknownHostException e) {
+					logger.error(getClass().getName() + " Exception!",e);
+				}
+			}
+		}
+
+		return connection;
 	}
 
 	/**

@@ -28,6 +28,8 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -55,6 +57,12 @@ import org.eclipse.ice.item.messaging.Message;
  * @author Jay Jay Billings
  */
 public class ItemManager implements ItemListener {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ItemManager.class);
+	
 	/**
 	 * <p>
 	 * This is a list of all of the items that are managed by the ItemManger.
@@ -206,7 +214,7 @@ public class ItemManager implements ItemListener {
 
 		// If the provider exists, persist to the provider
 		if (provider != null) {
-			System.out.println("ItemManager Message: Persisting Item " + retVal
+			logger.info("ItemManager Message: Persisting Item " + retVal
 					+ " with the provider");
 			provider.persistItem(item);
 		}
@@ -344,7 +352,7 @@ public class ItemManager implements ItemListener {
 								builder.getItemName())) {
 					rebuildItem(builder, item, loadedProject);
 					item.disable(false);
-					System.out.println("ItemManager Message: "
+					logger.info("ItemManager Message: "
 							+ "Enabling orphaned Item " + item.getName() + " "
 							+ item.getId() + " with builder "
 							+ builder.getItemName() + ".");
@@ -425,7 +433,9 @@ public class ItemManager implements ItemListener {
 		// to new Strings since HashMap.keySet() returns the set of keys by
 		// reference and changes to that list would cause the map to change.
 		for (String j : this.itemBuilderList.keySet()) {
-			builders.add(new String(j));
+			if (itemBuilderList.get(j).isPublishable()) {
+				builders.add(new String(j));
+			}
 		}
 
 		// Check the size and determine whether or not null should be returned
@@ -513,7 +523,7 @@ public class ItemManager implements ItemListener {
 	public void setPersistenceProvider(IPersistenceProvider provider) {
 
 		if (provider != null) {
-			System.out.println("ItemManager Message: PersistenceProvider set!");
+			logger.info("ItemManager Message: PersistenceProvider set!");
 			this.provider = provider;
 		}
 
@@ -525,9 +535,13 @@ public class ItemManager implements ItemListener {
 	 */
 	private void rebuildItem(ItemBuilder builder, Item item,
 			IProject projectSpace) {
+		
 		// Build the proper Item
 		Item rebuiltItem = itemBuilderList.get(item.getItemBuilderName())
 				.build(projectSpace);
+
+		// Give the project to this temp Item
+		item.setProject(projectSpace);
 		// Copy over the information from the persistence
 		// provider
 		rebuiltItem.copy(item);
@@ -587,7 +601,7 @@ public class ItemManager implements ItemListener {
 								.getItemBuilderName());
 						rebuildItem(builder, item, projectSpace);
 					} else {
-						System.out.println("ItemManager Message: "
+						logger.info("ItemManager Message: "
 								+ "Builder not found for " + item.getName()
 								+ " " + item.getId() + " with builder "
 								+ item.getItemBuilderName()
@@ -616,7 +630,7 @@ public class ItemManager implements ItemListener {
 				}
 			} else {
 				// Complain a little bit
-				System.out.println("Unable to load items in bulk from "
+				logger.info("Unable to load items in bulk from "
 						+ "the IPersistenceProvider.");
 			}
 			// Save the project space
@@ -654,7 +668,7 @@ public class ItemManager implements ItemListener {
 
 		// Update all of the Items in the database if the provider is available.
 		if (provider != null) {
-			System.out.println("ItemManager Message: Updating all Items with "
+			logger.info("ItemManager Message: Updating all Items with "
 					+ "Persistence Provider.");
 			for (Item item : itemList.values()) {
 				provider.updateItem(item);
@@ -770,6 +784,7 @@ public class ItemManager implements ItemListener {
 		boolean retVal = false;
 		int itemId = msg.getItemId();
 
+		logger.info("Update Message Item Id is " + itemId);
 		// Push the message if possible
 		if (itemList.containsKey(itemId)) {
 			// Grab the Item
@@ -792,7 +807,7 @@ public class ItemManager implements ItemListener {
 		// Not threaded for now, but should it be? ~JJB 20130912 17:06
 
 		// Direct all of the Items to reload their data
-		System.out.println("ItemManager Message: "
+		logger.info("ItemManager Message: "
 				+ "Reloading all Item project data.");
 		for (Item item : itemList.values()) {
 			item.reloadProjectData();
@@ -955,7 +970,7 @@ public class ItemManager implements ItemListener {
 			// If the provider exists, delete the Item from the provider
 			if (this.provider != null) {
 				Item item = itemList.get(itemID);
-				System.out.println("ItemManager Message: Deleting Item "
+				logger.info("ItemManager Message: Deleting Item "
 						+ item.getName() + " " + item.getId()
 						+ " from provider");
 				provider.deleteItem(itemList.get(itemID));

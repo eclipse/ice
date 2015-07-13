@@ -44,19 +44,19 @@ public class CircularGridEditPart extends GridEditPart {
 			// behavior of child Figures.
 			// @Override
 			// protected void paintClientArea(Graphics graphics) {
-			// System.out.println("paintClientArea");
+			// logger.info("paintClientArea");
 			// graphics.setAntialias(SWT.ON);
 			// super.paintClientArea(graphics);
 			// }
 			// @Override
 			// protected void paintFigure(Graphics graphics) {
-			// System.out.println("paintFigure");
+			// logger.info("paintFigure");
 			// graphics.setAntialias(SWT.ON);
 			// super.paintFigure(graphics);
 			// }
 			// @Override
 			// protected void paintChildren(Graphics graphics) {
-			// System.out.println("paintChildren");
+			// logger.info("paintChildren");
 			// graphics.setAntialias(SWT.ON);
 			// super.paintChildren(graphics);
 			// }

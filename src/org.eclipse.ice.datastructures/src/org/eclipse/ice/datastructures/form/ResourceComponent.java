@@ -12,13 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.form;
 
-import java.util.ArrayList;
-
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 
@@ -68,7 +66,7 @@ public class ResourceComponent extends ListComponent<ICEResource> {
 
 		return;
 	}
-	
+
 	/**
 	 * This operation gets all of the ICEResources from the component.
 	 * 
@@ -155,31 +153,32 @@ public class ResourceComponent extends ListComponent<ICEResource> {
 
 		return;
 	}
-	
-//	/**
-//	 * This protected operation notifies the listeners of the ResourceComponent
-//	 * that its state has changed.
-//	 */
-//	protected void notifyListeners() {
-//
-//		// Only process the update if there are listeners
-//		if (listeners != null && !listeners.isEmpty()) {
-//			// Create a thread on which to notify the listeners.
-//			Thread notifierThread = new Thread() {
-//				@Override
-//				public void run() {
-//					// Loop over all listeners and update them
-//					for (int i = 0; i < listeners.size(); i++) {
-//						listeners.get(i).update(ResourceComponent.this);
-//					}
-//					return;
-//				}
-//			};
-//
-//			// Launch the thread and do the notifications
-//			notifierThread.start();
-//		}
-//
-//		return;
-//	}
+
+	// /**
+	// * This protected operation notifies the listeners of the
+	// ResourceComponent
+	// * that its state has changed.
+	// */
+	// protected void notifyListeners() {
+	//
+	// // Only process the update if there are listeners
+	// if (listeners != null && !listeners.isEmpty()) {
+	// // Create a thread on which to notify the listeners.
+	// Thread notifierThread = new Thread() {
+	// @Override
+	// public void run() {
+	// // Loop over all listeners and update them
+	// for (int i = 0; i < listeners.size(); i++) {
+	// listeners.get(i).update(ResourceComponent.this);
+	// }
+	// return;
+	// }
+	// };
+	//
+	// // Launch the thread and do the notifications
+	// notifierThread.start();
+	// }
+	//
+	// return;
+	// }
 }

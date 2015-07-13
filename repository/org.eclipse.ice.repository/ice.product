@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-product org.eclipse.platform.ide -consoleLog -console --launcher.defaultAction openFile --launcher.appendVmargs
+      <programArgs>-product org.eclipse.platform.ide --launcher.defaultAction openFile --launcher.appendVmargs
       </programArgs>
       <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080 -Dosgi.instance.area=@user.home/ICEFiles
       </vmArgs>
@@ -131,10 +131,11 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ease.modules.charting.feature" version="0.2.0.201504281229"/>
       <feature id="org.eclipse.ease.modules.feature" version="0.2.0.201504281229"/>
       <feature id="org.eclipse.ease.modules.team.svn.feature" version="0.2.0.201504281229"/>
-      <feature id="org.eclipse.ease.modules.unittest.feature" version="0.2.0.201504281229"/>
       <feature id="org.eclipse.ease.python.feature" version="0.2.0.201504281226"/>
       <feature id="org.eclipse.ease.ui.feature" version="0.2.0.201505111426"/>
       <feature id="org.eclipse.epp.mpc" version="1.4.0.v20150618-1659"/>
+      <feature id="org.eclipse.remote" version="2.0.0.201506061609"/>
+      <feature id="org.eclipse.pde" version="3.11.0.v20150603-2000"/>
    </features>
 
    <configurations>
@@ -168,7 +169,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.materials.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.nek5000" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="5" />
+      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.ice.proteus" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.perspective" autoStart="true" startLevel="0" />

@@ -12,7 +12,18 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,8 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -43,25 +55,30 @@ import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteConnectionHostService;
+import org.eclipse.remote.core.IRemoteConnectionType;
+import org.eclipse.remote.core.IRemoteServicesManager;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * An MOOSE Item for creating MOOSE input files. This Item expects to find the
  * YAML and action syntax files necessary in the ${workspace}/MOOSE directory.
  * These files can be generated automatically using the ICE YAML/action syntax
  * generator, or manually at the command line with the command(s):
- * 
+ *
  * ./{moose-app}-opt --yaml > {moose-app}.yaml <br>
  * ./{moose-app}-opt --syntax > {moose-app}.syntax
- * 
+ *
  * These lines must be executed for each MOOSE-based code to be used by ICE.
  * This class' Item builder defaults the MOOSE-based application to null,
  * forcing the user to select the app. Once an app is selected, reviewEntries()
  * is triggered and loads the YAML spec. If the Item was imported from an input
  * file, any data from the input file is consolidated with the YAML file in the
  * reviewEntries() method as well.
- * 
+ *
  * The MOOSEModel Form has components with set IDs as such:
- * 
+ *
  * ID = 1: The output file DataComponent ID = 2: The TreeComposite containing
  * MOOSE data ID = 3: The ResourceComponent (for displaying mesh files as
  * ICEResources)
@@ -70,7 +87,7 @@ import org.eclipse.ice.item.ItemType;
  * reconfiguration can be done by the builder by setting the executable name
  * since the only thing that changes from application to application is the YAML
  * input file.
- * 
+ *
  * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  */
 
@@ -118,7 +135,7 @@ public class MOOSEModel extends Item {
 	 */
 	@XmlTransient
 	protected String meshFileName;
-	
+
 	/**
 	 * The "Mesh" block stored on the TreeComposite (if there is one). Used to
 	 * convert a mesh file into a VizResource by {@link #createMeshResource()}.
@@ -132,6 +149,12 @@ public class MOOSEModel extends Item {
 	 */
 	@XmlTransient
 	private ArrayList<TreeComposite> topLevelYamlTrees = null;
+
+	/**
+	 *
+	 */
+	@XmlTransient
+	private static IRemoteServicesManager remoteManager;
 
 	/**
 	 * An ArrayList of TreeComposites, constructed from the top-level children
@@ -152,7 +175,7 @@ public class MOOSEModel extends Item {
 	/**
 	 * The constructor with a project space in which files should be
 	 * manipulated.
-	 * 
+	 *
 	 * @param projectSpace
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
@@ -165,7 +188,7 @@ public class MOOSEModel extends Item {
 
 	/**
 	 * This operation creates the MOOSE input file.
-	 * 
+	 *
 	 * @param actionName
 	 *            The name of action that should be performed using the
 	 *            processed Form data.
@@ -179,16 +202,14 @@ public class MOOSEModel extends Item {
 
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
-		Entry outputFileEntry = ((DataComponent) form
-				.getComponent(fileDataComponentId))
+		Entry outputFileEntry = ((DataComponent) form.getComponent(fileDataComponentId))
 				.retrieveEntry("Output File Name");
 		String outputFilename = outputFileEntry.getValue();
 		IWriter writer = getWriter();
 
 		// Check that the process is something that we will do and that the Item
 		// is enabled
-		if (mooseProcessActionString.equals(actionName) && isEnabled()
-				&& writer != null) {
+		if (mooseProcessActionString.equals(actionName) && isEnabled() && writer != null) {
 			// Get the file location
 			IFile outputFile = project.getFile(outputFilename);
 
@@ -218,17 +239,17 @@ public class MOOSEModel extends Item {
 	/**
 	 * This operation sets up the Form for the MOOSEModel. The form is designed
 	 * to contain 3 Components.
-	 * 
+	 *
 	 * The Form component with ID=1 is a DataComponent containing Entries
 	 * related to which MOOSE-based codes are available, as well as the output
 	 * file created from the MOOSE Model. These Entries in the DataComponent are
 	 * named "MOOSE-Based Application" with ID=1 and "Output File Name" with
 	 * ID=2.
-	 * 
+	 *
 	 * The Form component with ID=2 is a TreeComposite containing the structure
 	 * of the MOOSE input tree. By default, this Tree is empty until blocks are
 	 * added to it by the user.
-	 * 
+	 *
 	 * The Form component with ID=3 is the ResourceComponent which can store
 	 * ICEResources on it. This is intended to be used for problems with mesh
 	 * files which can be rendered through a VizResource publisher.
@@ -246,53 +267,35 @@ public class MOOSEModel extends Item {
 		DataComponent fileDataComponent = new DataComponent();
 		fileDataComponent.setId(fileDataComponentId);
 		fileDataComponent.setName("Output File Parameters");
-		fileDataComponent.setDescription("Global parameters for the output "
-				+ "file that ICE will create.");
+		fileDataComponent.setDescription("Global parameters for the output " + "file that ICE will create.");
 		form.addComponent(fileDataComponent);
 
 		// Create the ResourceComponent and add it
 		ResourceComponent resourceComponent = new ResourceComponent();
 		resourceComponent.setName("Mesh");
 		resourceComponent.setId(3);
-		resourceComponent.setDescription("File resources associated "
-				+ "to this MOOSE Model.");
+		resourceComponent.setDescription("File resources associated " + "to this MOOSE Model.");
 		form.addComponent(resourceComponent);
 
 		// Add the default dummy text to the list of available apps
 		mooseApps = new ArrayList<String>();
-		mooseApps.add("None");
 
-		// Get the list of MOOSE configuration files available to ICE, if
-		// possible, before creating the app Entry.
-		if (project != null && project.isAccessible()) {
-			// Get the MOOSE folder
-			IFolder mooseFolder = project.getFolder("MOOSE");
-			// Get the files from it if it exists
-			if (mooseFolder.exists()) {
-				try {
-					IResource[] resources = mooseFolder.members();
-					// Check the resources and retrieve the .yaml files
-					for (IResource resource : resources) {
-						if (resource.getType() == IResource.FILE
-								&& resource.getProjectRelativePath()
-										.lastSegment().contains(".yaml")) {
-							String[] splitName = resource.getName()
-									.split("\\.");
-							// Only add the app name, not the file extension.
-							// Use upper case for consistency with the MOOSE
-							// Launcher, also since the app names are acronyms.
-							mooseApps.add(splitName[0].toUpperCase());
-						}
-					}
-				} catch (CoreException e) {
-					// Complain
-					e.printStackTrace();
+		// Get the Application preferences
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("org.eclipse.ice.item.moose");
+		try {
+			for (String key : prefs.keys()) {
+				String app = prefs.get(key, "");
+				if (!app.isEmpty()) {
+					mooseApps.add(app);
 				}
 			}
+		} catch (BackingStoreException e) {
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Only load up the Entry if some MOOSE apps were discovered.
 		if (!mooseApps.isEmpty()) {
+			mooseApps.add(0, "Select Application");
 			// Set the default to "none", forcing the user to make a selection.
 			loadedApp = mooseApps.get(0);
 			// Create the MOOSE application Entry. Add all of the files if any
@@ -301,22 +304,26 @@ public class MOOSEModel extends Item {
 				@Override
 				protected void setup() {
 					allowedValues = mooseApps;
-					allowedValueType = AllowedValueType.Discrete;
+					allowedValueType = AllowedValueType.Executable;
 					defaultValue = loadedApp;
 				}
 			};
 		} else {
+			mooseApps.add("Import Application");
+			loadedApp = mooseApps.get(0);
 			mooseAppEntry = new Entry() {
 				@Override
 				protected void setup() {
-					defaultValue = "No MOOSE apps were found.";
+					defaultValue = loadedApp;
+					allowedValues = mooseApps;
+					allowedValueType = AllowedValueType.Executable;
 				}
 			};
 		}
 		mooseAppEntry.setId(1);
 		mooseAppEntry.setName("MOOSE-Based Application");
-		mooseAppEntry.setDescription("The name of the MOOSE-based application "
-				+ "for which you would like to create an input file.");
+		mooseAppEntry.setDescription(
+				"The name of the MOOSE-based application " + "for which you would like to create an input file.");
 		// Add it to the DataComponent
 		fileDataComponent.addEntry(mooseAppEntry);
 
@@ -329,16 +336,14 @@ public class MOOSEModel extends Item {
 		};
 		outputFileEntry.setId(2);
 		outputFileEntry.setName("Output File Name");
-		outputFileEntry.setDescription("The file name of the output file, "
-				+ "including extension.");
+		outputFileEntry.setDescription("The file name of the output file, " + "including extension.");
 		// Add it to the DataComponent
 		fileDataComponent.addEntry(outputFileEntry);
 
 		// Create the TreeComposite on the form
 		TreeComposite mooseDataTree = new TreeComposite();
 		mooseDataTree.setId(mooseTreeCompositeId);
-		mooseDataTree
-				.setDescription("The tree of input data for this problem.");
+		mooseDataTree.setDescription("The tree of input data for this problem.");
 		mooseDataTree.setName("Input Data");
 		form.addComponent(mooseDataTree);
 
@@ -352,8 +357,7 @@ public class MOOSEModel extends Item {
 	protected void setupItemInfo() {
 
 		// Local Declarations
-		String desc = "This item builds models for "
-				+ "MOOSE-based applications for "
+		String desc = "This item builds models for " + "MOOSE-based applications for "
 				+ "nuclear energy modeling and simulation.";
 
 		// Describe the Item
@@ -370,6 +374,19 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
+	 * This method is used by the platform to give this MOOSEModel a reference
+	 * to the available IRemoteServicesManager.
+	 *
+	 * @param manager
+	 */
+	public void setRemoteServicesManager(IRemoteServicesManager manager) {
+		if (manager != null) {
+			logger.info("[MOOSEModel Message] Setting the IRemoteServicesManager: " + manager.toString());
+			remoteManager = manager;
+		}
+	}
+
+	/**
 	 * This operation loads the contents of the TreeComposite from the MOOSE
 	 * data. It is called when a MOOSE-based application has been accepted and
 	 * the entries are reviewed. It will only load the Form if the project space
@@ -378,19 +395,17 @@ public class MOOSEModel extends Item {
 	 * function with the files in the project directory and looks for a match
 	 * with the name "executuableName.yaml" that it can load. It throws an
 	 * IOException if it cannot find a match.
-	 * 
+	 *
 	 * @param mooseExecutableName
 	 *            The name of the MOOSE executable whose YAML input
 	 *            specification should be loaded into the Form's TreeComposite.
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	protected void loadTreeContents(String mooseExecutableName)
-			throws IOException, CoreException {
+	protected void loadTreeContents(String mooseExecutableName) throws IOException, CoreException {
 
 		// Local Declarations
-		TreeComposite mooseParentTree = (TreeComposite) form
-				.getComponent(mooseTreeCompositeId), tmpParentTree;
+		TreeComposite mooseParentTree = (TreeComposite) form.getComponent(mooseTreeCompositeId), tmpParentTree;
 
 		// Load the file from the project space if possible
 		if (project != null && project.isAccessible()) {
@@ -401,28 +416,83 @@ public class MOOSEModel extends Item {
 			// If the MOOSE folder doesn't exist, create it and complain
 			if (!mooseFolder.exists()) {
 				mooseFolder.create(true, true, null);
-				throw new IOException("MOOSEModel Exception: "
-						+ "MOOSE directory is empty. Run YAML/action syntax "
-						+ "generator to populate with necessary data.");
 			}
 
-			// Get the file. We must convert to lower case to match the YAML
-			// files.
-			IFile modelFile = mooseFolder.getFile(mooseExecutableName
-					.toLowerCase() + ".yaml");
+			// Create the URI from the user's application path
+			URI uri = URI.create(mooseExecutableName);
+			IFile yamlFile = null, syntaxFile = null;
+
+			if ("ssh".equals(uri.getScheme())) {
+
+				IRemoteConnection remoteConnection = getRemoteConnectionReference(uri.getHost());
+
+				// If we have a valid connection, then generate the files we
+				// need
+				if (remoteConnection != null) {
+					RemoteYamlSyntaxGenerator generator = new RemoteYamlSyntaxGenerator(remoteConnection, mooseFolder,
+							uri.getRawPath());
+					generator.generate();
+				}
+
+				String animal = Paths.get(uri.getRawPath()).getFileName().toString();
+
+				// Refresh the project space now that
+				// we've create 2 more files
+				refreshProjectSpace();
+
+				// Get the YAML and Syntax files file.
+				yamlFile = mooseFolder.getFile(animal + ".yaml");
+				syntaxFile = mooseFolder.getFile(animal + ".syntax");
+
+			} else {
+
+				// Create a File so we can easily get its file name
+				File execFile = new File(uri);
+
+				// Get the YAML and Syntax files file.
+				yamlFile = mooseFolder.getFile(execFile.getName().toLowerCase() + ".yaml");
+				syntaxFile = mooseFolder.getFile(execFile.getName().toLowerCase() + ".syntax");
+
+				// Create the yaml and syntax exec strings
+				String[] yamlCmd = { "/bin/sh", "-c",
+						execFile.getAbsolutePath() + " --yaml > " + yamlFile.getLocation().toOSString() };
+				String[] syntaxCmd = { "/bin/sh", "-c",
+						execFile.getAbsolutePath() + " --syntax > " + syntaxFile.getLocation().toOSString() };
+
+				// Create the YAML and Syntax files
+				Process p1 = Runtime.getRuntime().exec(yamlCmd);
+				Process p2 = Runtime.getRuntime().exec(syntaxCmd);
+				try {
+					int code1 = p1.waitFor();
+					int code2 = p2.waitFor();
+
+					if (code1 != 0 || code2 != 0) {
+						throw new Exception("Error in creating the YAML/Syntax files. Job return codes were " + code1
+								+ " and " + code2);
+					}
+				} catch (Exception e) {
+					logger.error(getClass().getName() + " Exception!",e);
+				}
+			}
+
+			// Clean up the comments in the files
+			createCleanMOOSEFile(yamlFile.getLocation().toOSString());
+			createCleanMOOSEFile(syntaxFile.getLocation().toOSString());
+
+			// Refresh the space
+			refreshProjectSpace();
 
 			// Get the IReader instance
 			IReader reader = getReader();
 
 			// Load the tree if the file exists
-			if (modelFile.exists() && reader != null) {
+			if (yamlFile.exists() && syntaxFile.exists() && reader != null) {
 
 				// Read the file and get the returned Form
-				Form readerForm = reader.read(modelFile);
+				Form readerForm = reader.read(yamlFile);
 
 				// Get the TreeComposite from the read-in Form
-				tmpParentTree = (TreeComposite) readerForm
-						.getComponent(mooseTreeCompositeId);
+				tmpParentTree = (TreeComposite) readerForm.getComponent(mooseTreeCompositeId);
 
 				// Copy the temporary into the parent. This is the cleanest way
 				// to clear out the parent completely.
@@ -430,24 +500,53 @@ public class MOOSEModel extends Item {
 
 			} else {
 				// Complain
-				throw new IOException("MOOSEModel Exception: Executable file, "
-						+ mooseExecutableName + ".yaml" + ", not available!");
+				throw new IOException("MOOSEModel Exception: Executable file, " + yamlFile.getName() + " or "
+						+ syntaxFile.getName() + ", not available!");
 			}
 		} else {
 			// Complain
-			throw new IOException(
-					"MOOSEModel Exception: Project space not available!");
+			throw new IOException("MOOSEModel Exception: Project space not available!");
 		}
 
 		return;
 	}
 
 	/**
-	 * 
+	 * This method returns an IRemoteConnection stored in the Remote Preferences
+	 * that corresponds to the provided hostname.
+	 *
+	 * @param host
+	 * @return
+	 */
+	private IRemoteConnection getRemoteConnectionReference(String host) {
+		IRemoteConnection connection = null;
+		IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
+
+		if (connectionType != null) {
+			try {
+
+				for (IRemoteConnection c : connectionType.getConnections()) {
+					String connectionHost = c.getService(IRemoteConnectionHostService.class).getHostname();
+					if (InetAddress.getByName(host).getHostAddress()
+							.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
+						connection = c;
+						break;
+					}
+
+				}
+			} catch (UnknownHostException e) {
+				logger.error(getClass().getName() + " Exception!",e);
+			}
+		}
+		return connection;
+	}
+
+	/**
+	 *
 	 * This operation reviews the Entries in the MOOSEModel to determine if the
 	 * currently selected MOOSE app has changed. If it has, it loads up the new
 	 * app's YAML tree and merges it with any existing tree data (if any).
-	 * 
+	 *
 	 * @param preparedForm
 	 *            The form prepared for review.
 	 * @return The Form's status if the review was successful or not.
@@ -462,10 +561,9 @@ public class MOOSEModel extends Item {
 		// Get the MOOSE file information, if available
 		mooseFileComponent = (DataComponent) preparedForm.getComponent(1);
 		if (mooseFileComponent != null) {
-			
+
 			// Get the entry that stores the currently-selected MOOSE app name
-			Entry mooseSpecFileEntry = mooseFileComponent
-					.retrieveEntry("MOOSE-Based Application");
+			Entry mooseSpecFileEntry = mooseFileComponent.retrieveEntry("MOOSE-Based Application");
 
 			// Load the MOOSE-based application if it is different than the one
 			// currently loaded.
@@ -473,31 +571,41 @@ public class MOOSEModel extends Item {
 
 				// Get the current value of the MOOSE app Entry and determine
 				String mooseSpecValue = mooseSpecFileEntry.getValue();
-				if (loadedApp == null ||
-						(!mooseSpecValue.equalsIgnoreCase("none") 
-							&& !loadedApp.equals(mooseSpecValue))) {
+				if (loadedApp == null
+						|| (!mooseSpecValue.equalsIgnoreCase("none") && !loadedApp.equals(mooseSpecValue))) {
 
 					// Get the app name
 					loadedApp = mooseSpecFileEntry.getValue();
 
 					// Grab a clone of the old form's TreeComposite with data
 					// imported into it
-					TreeComposite inputTree = (TreeComposite) preparedForm
-							.getComponent(mooseTreeCompositeId).clone();
+					TreeComposite inputTree = (TreeComposite) preparedForm.getComponent(mooseTreeCompositeId).clone();
 
-					// Re-load the Form's tree based on the YAML spec
 					try {
 						loadTreeContents(loadedApp);
 					} catch (IOException | CoreException e) {
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 
 					// Get the empty YAML TreeComposite
-					TreeComposite yamlTree = (TreeComposite) form
-							.getComponent(mooseTreeCompositeId);
+					TreeComposite yamlTree = (TreeComposite) form.getComponent(mooseTreeCompositeId);
 
 					// Merge the input tree into the YAML spec
 					mergeTrees(inputTree, yamlTree);
+
+					// Save this App as a Preference
+					IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("org.eclipse.ice.item.moose");
+					try {
+						URI uri = new URI(loadedApp);
+						if ("ssh".equals(uri.getScheme())) {
+							prefs.put(Paths.get(uri.getRawPath()).getFileName().toString(), loadedApp);
+						} else {
+							prefs.put(new File(uri).getName(), loadedApp);
+						}
+						prefs.flush();
+					} catch (BackingStoreException | URISyntaxException e) {
+						logger.error(getClass().getName() + " Exception!",e);
+					}
 
 				}
 
@@ -506,7 +614,7 @@ public class MOOSEModel extends Item {
 				try {
 					updateMeshResource();
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 				// Update the status
@@ -522,7 +630,7 @@ public class MOOSEModel extends Item {
 	 * Form's TreeComposite (id=2). It expects the input to be in the MOOSE's
 	 * GetPot format. This method is used when an input file is imported as a
 	 * MOOSE Model Builder Item.
-	 * 
+	 *
 	 * @param input
 	 *            The name of the input input file, including the file extension
 	 *            (ex. "bison.i", "raven.i", etc.)
@@ -556,25 +664,25 @@ public class MOOSEModel extends Item {
 	 * This method is responsible for merging the TreeComposite of imported
 	 * MOOSE data from an input file, with the corresponding YAML spec for that
 	 * MOOSE application.
-	 * 
+	 *
 	 * We will construct three HashMaps: one for the YAML tree, one for the
 	 * input tree, and one for the exemplar children of the YAML tree. All Maps
 	 * will be keyed on a tree's pathname relative to the root. (For the sake
 	 * semantics here, any reference to "top-level" trees is referring to the
 	 * trees directly beneath the root.)
-	 * 
+	 *
 	 * Then, we will traverse the input map (this includes all children,
 	 * subchildren, etc.) and copy over any applicable exemplar children from
 	 * the exemplar map. Once all exemplar children are set in the input tree,
 	 * then we will copy over the top-level trees (trees right below the root)
 	 * from the input map into the YAML map.
-	 * 
+	 *
 	 * @param inputTree
 	 *            The TreeComposite of imported MOOSE file data.
 	 * @param yamlTree
 	 *            The TreeComposite loaded from the MOOSE YAML spec.
 	 */
-	private void mergeTrees(TreeComposite inputTree, TreeComposite yamlTree) {
+	protected void mergeTrees(TreeComposite inputTree, TreeComposite yamlTree) {
 
 		// Local declarations
 		TreeComposite child = null;
@@ -628,10 +736,10 @@ public class MOOSEModel extends Item {
 	 * This utility method is responsible for taking in a TreeComposite loaded
 	 * from a MOOSE YAML spec, and constructs a Map of all its nodes, keyed on a
 	 * String pathname (relative to the root).
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param yamlTree
 	 *            The TreeComposite loaded from a MOOSE YAML spec.
 	 * @return A Map containing all the YAML tree's nodes, keyed on pathname.
@@ -668,10 +776,10 @@ public class MOOSEModel extends Item {
 	 * This utility method is responsible for taking a TreeComposite loaded from
 	 * a MOOSE input file, and constructs a Map of all its nodes keyed on a
 	 * String pathname (relative to the root).
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param inputTree
 	 *            The TreeComposite loaded from an input MOOSE file.
 	 * @return A Map containing all the nodes of the input tree, keyed on
@@ -704,9 +812,7 @@ public class MOOSEModel extends Item {
 			// Append to the tree name
 			treeName += "/" + tree.getName();
 			// Put the tree in the Map, keyed on path name
-			inputMap.put(
-					(treeName.startsWith("/") ? treeName.substring(1,
-							treeName.length()) : treeName), tree);
+			inputMap.put((treeName.startsWith("/") ? treeName.substring(1, treeName.length()) : treeName), tree);
 
 			// Clear the children list in case there are any
 			// from a previous tree
@@ -751,10 +857,10 @@ public class MOOSEModel extends Item {
 	 * This utility method is responsible for taking in a TreeComposite loaded
 	 * from a MOOSE YAML spec, and constructs a Map of all child exemplars
 	 * contained in the tree keyed on a String pathname (relative to the root).
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param yamlTree
 	 *            The TreeComposite loaded from a YAML spec.
 	 * @return A Map containing all the child exemplars of the YAML tree, keyed
@@ -786,9 +892,7 @@ public class MOOSEModel extends Item {
 			// Append to the tree name
 			treeName += "/" + tree.getName();
 			// Put the tree in the Map, keyed on path name
-			exemplarMap.put(
-					(treeName.startsWith("/") ? treeName.substring(1,
-							treeName.length()) : treeName), tree);
+			exemplarMap.put((treeName.startsWith("/") ? treeName.substring(1, treeName.length()) : treeName), tree);
 
 			// Push child exemplars to the top of the tree stack
 			childExemplars = tree.getChildExemplars();
@@ -819,9 +923,7 @@ public class MOOSEModel extends Item {
 				// Go up another level if the next tree in the stack isn't
 				// a child exemplar of the current tree referenced by treeName
 				oneUpTree = exemplarMap.get(treeName.substring(1));
-				if (oneUpTree != null
-						&& !oneUpTree.getChildExemplars().contains(
-								treeStack.peek())) {
+				if (oneUpTree != null && !oneUpTree.getChildExemplars().contains(treeStack.peek())) {
 					prevNameIndex = treeName.lastIndexOf("/");
 					treeName = ((prevNameIndex == 0 || prevNameIndex == -1) ? treeName
 							: treeName.substring(0, prevNameIndex));
@@ -840,7 +942,7 @@ public class MOOSEModel extends Item {
 	 * This method is responsible for append a "blank" TreeComposite to the
 	 * input tree's list of child exemplars. This enables a MOOSE user to add
 	 * their own, customized blocks.
-	 * 
+	 *
 	 * @param tree
 	 *            The tree to which a blank child exemplar will be appended.
 	 */
@@ -863,15 +965,15 @@ public class MOOSEModel extends Item {
 	 * data, comparing it to a HashMap of child exemplars. While it does this,
 	 * it copies over any exemplar children, plus converts parameters that are
 	 * supposed to have a discrete set of options.
-	 * 
+	 *
 	 * This method is "smart" enough to correctly match "wildchar" blocks (ie.
 	 * Block/Subblock/*) as well as chains of wildchar blocks when an exact
 	 * match to a block name cannot be found. This occurs when a user has
 	 * renamed a block.
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param inputMap
 	 *            The HashMap of TreeComposites constructed from an imported
 	 *            MOOSE input file, and keyed on pathname.
@@ -879,8 +981,7 @@ public class MOOSEModel extends Item {
 	 *            The HashMap of TreeComposites constructed from the child
 	 *            exemplars of a loaded MOOSE YAML spec, and keyed on pathname.
 	 */
-	private void setExemplarData(HashMap<String, TreeComposite> inputMap,
-			HashMap<String, TreeComposite> exemplarMap) {
+	private void setExemplarData(HashMap<String, TreeComposite> inputMap, HashMap<String, TreeComposite> exemplarMap) {
 
 		// Local declarations
 		TreeComposite inputCur = null, exemplarCur = null;
@@ -919,30 +1020,30 @@ public class MOOSEModel extends Item {
 			 * a matching block in the exemplar map. Say our current inputCur
 			 * points to the node located at /Block/Subblock/foo/bar. Priority
 			 * for matching, in descending order:
-			 * 
+			 *
 			 * 1. Exact match An exact match to /Block/Subblock/foo/bar is found
 			 * in the exemplar HashMap
-			 * 
+			 *
 			 * 2. Renamed (with type) bar might have been previously named
 			 * something else, but was renamed. If bar has a parameter named
 			 * "type" on it, get the parameter value and check the exemplar
 			 * HashMap for /Block/Subblock/foo/parameter_value
-			 * 
+			 *
 			 * 3. Renamed (without type) bar might have been previously named
 			 * something else, but was renamed. If /foo/ has an exemplar child
 			 * named "*", check the exemplar HashMap for /Block/Subblock/foo/*
-			 * 
+			 *
 			 * 4. Multi-level Renamed If no match to /Block/Subblock/foo/* is
 			 * found in exemplar HashMap, begin traversing upwards replacing
 			 * more wildchars in the pathname until a match is found, or the
 			 * top-level of the tree is reached.
-			 * 
+			 *
 			 * First search: //Block//Subblock//
 			 *//*
 				 * Second search: //Block//
 				 *//*
-					 * //* Third search: Reached top-level, stop, no match found
-					 */
+				 * //* Third search: Reached top-level, stop, no match found
+				 */
 
 			// First, using the exemplar map, see if this tree is an exact
 			// match to an exemplar child (search method #1)
@@ -958,8 +1059,7 @@ public class MOOSEModel extends Item {
 				// the type
 				treeType = TreeType.fromString(inputCur.getClass().toString());
 
-				if (treeType != null
-						&& treeType == TreeType.AdaptiveTreeComposite) {
+				if (treeType != null && treeType == TreeType.AdaptiveTreeComposite) {
 					setAdaptiveType((AdaptiveTreeComposite) inputCur);
 				}
 
@@ -994,8 +1094,7 @@ public class MOOSEModel extends Item {
 				// this is handy when the blocks have been renamed. Note that
 				// this "type" parameter is not related to the "type" of
 				// AdaptiveTreeComposites.
-				if (!typeName.isEmpty()
-						&& exemplarMap.containsKey(parentKey + "/" + typeName)) {
+				if (!typeName.isEmpty() && exemplarMap.containsKey(parentKey + "/" + typeName)) {
 
 					// Get a handle on the matching exemplar block
 					exemplarCur = exemplarMap.get(parentKey + "/" + typeName);
@@ -1005,11 +1104,9 @@ public class MOOSEModel extends Item {
 
 					// Check if this is an AdaptiveTreeComposite and if it is,
 					// set the type
-					treeType = TreeType.fromString(inputCur.getClass()
-							.toString());
+					treeType = TreeType.fromString(inputCur.getClass().toString());
 
-					if (treeType != null
-							&& treeType == TreeType.AdaptiveTreeComposite) {
+					if (treeType != null && treeType == TreeType.AdaptiveTreeComposite) {
 						setAdaptiveType((AdaptiveTreeComposite) inputCur);
 					}
 
@@ -1085,8 +1182,7 @@ public class MOOSEModel extends Item {
 
 							// Get the parent's exemplar list and set it as
 							// this tree's exemplar list
-							inputCur.setChildExemplars(exemplarCur
-									.getChildExemplars());
+							inputCur.setChildExemplars(exemplarCur.getChildExemplars());
 
 							// While we're here, a bit of administrative work...
 							// Fix any parameters in inputCur that are Discrete
@@ -1107,14 +1203,13 @@ public class MOOSEModel extends Item {
 	 * the YAML spec) has any parameters that are intended to have discrete sets
 	 * of values (AllowedValueType.Discrete), the inputCur is fixed to reflect
 	 * the same value type and list of AllowedValues.
-	 * 
+	 *
 	 * @param exemplarCur
 	 *            The TreeComposite from the YAML file to compare against
 	 * @param inputCur
 	 *            The input TreeComposite which should be changed if necessary
 	 */
-	private void setDiscreteParams(TreeComposite exemplarCur,
-			TreeComposite inputCur) {
+	private void setDiscreteParams(TreeComposite exemplarCur, TreeComposite inputCur) {
 
 		// Local declarations
 		DataComponent exemplarNode = null, inputNode = null;
@@ -1128,8 +1223,7 @@ public class MOOSEModel extends Item {
 
 			exemplarParam = exemplarNode.retrieveAllEntries().get(i);
 
-			if ((AllowedValueType.Discrete)
-					.equals(exemplarParam.getValueType())) {
+			if ((AllowedValueType.Discrete).equals(exemplarParam.getValueType())) {
 
 				// Get the data node on the input tree
 				inputNode = (DataComponent) inputCur.getDataNodes().get(0);
@@ -1138,18 +1232,15 @@ public class MOOSEModel extends Item {
 				for (int j = 0; j < inputNode.retrieveAllEntries().size(); j++) {
 
 					// Get the next inputParameter
-					Entry inputParameter = inputNode.retrieveAllEntries()
-							.get(j);
+					Entry inputParameter = inputNode.retrieveAllEntries().get(j);
 
-					if (inputParameter.getName()
-							.equals(exemplarParam.getName())) {
+					if (inputParameter.getName().equals(exemplarParam.getName())) {
 
 						// Clone the YAML parameter
 						Entry paramClone = (Entry) exemplarParam.clone();
 
 						// Merge Data from the input parameter into it
-						paramClone.setDescription(inputParameter
-								.getDescription());
+						paramClone.setDescription(inputParameter.getDescription());
 						paramClone.setId(inputParameter.getId());
 						paramClone.setTag(inputParameter.getTag());
 						paramClone.setRequired(inputParameter.isRequired());
@@ -1157,9 +1248,8 @@ public class MOOSEModel extends Item {
 
 						// Set the value
 						String oldValue = inputParameter.getValue();
-						paramClone.setValue(paramClone.getAllowedValues()
-								.contains(oldValue) ? oldValue : paramClone
-								.getAllowedValues().get(0));
+						paramClone.setValue(paramClone.getAllowedValues().contains(oldValue) ? oldValue
+								: paramClone.getAllowedValues().get(0));
 
 						// Set the new parameter on the data node
 						inputNode.deleteEntry(inputParameter.getName());
@@ -1176,16 +1266,16 @@ public class MOOSEModel extends Item {
 	 * of an imported MOOSE input data TreeComposite, into a HashMap of a YAML
 	 * TreeComposite, where both keys match. If a key match is not found, the
 	 * block in particular is discarded.
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param inputMap
 	 *            The HashMap of the imported MOOSE data TreeComposite.
 	 * @param yamlMap
 	 */
-	private void mergeInputIntoYaml(HashMap<String, TreeComposite> inputMap,
-			HashMap<String, TreeComposite> yamlMap, TreeComposite yamlTree) {
+	private void mergeInputIntoYaml(HashMap<String, TreeComposite> inputMap, HashMap<String, TreeComposite> yamlMap,
+			TreeComposite yamlTree) {
 
 		// Local declarations
 		TreeComposite inputCur = null, yamlCur = null;
@@ -1216,8 +1306,7 @@ public class MOOSEModel extends Item {
 				// Now, check if this is an AdaptiveTreeComposite
 				// and if it is, set the type
 				treeType = TreeType.fromString(yamlCur.getClass().toString());
-				if (treeType != null
-						&& treeType == TreeType.AdaptiveTreeComposite) {
+				if (treeType != null && treeType == TreeType.AdaptiveTreeComposite) {
 					setAdaptiveType((AdaptiveTreeComposite) yamlCur);
 				}
 
@@ -1228,14 +1317,11 @@ public class MOOSEModel extends Item {
 				// level deep for now. We will have to implement a more robust
 				// routine that recursively checks if any of the subchildren
 				// need to be converted to AdaptiveTreeComposites
-				ArrayList<TreeComposite> exemplars = yamlCur
-						.getChildExemplars();
+				ArrayList<TreeComposite> exemplars = yamlCur.getChildExemplars();
 				for (TreeComposite exemplar : exemplars) {
 
-					treeType = TreeType.fromString(exemplar.getClass()
-							.toString());
-					if (treeType != null
-							&& treeType == TreeType.AdaptiveTreeComposite) {
+					treeType = TreeType.fromString(exemplar.getClass().toString());
+					if (treeType != null && treeType == TreeType.AdaptiveTreeComposite) {
 						String childName = exemplar.getName();
 						yamlCur.resetChildIterator();
 						TreeComposite childCur = null;
@@ -1247,8 +1333,7 @@ public class MOOSEModel extends Item {
 
 								// Clone the exemplar with all the "types" data
 								// already entered
-								AdaptiveTreeComposite adapChild = (AdaptiveTreeComposite) exemplar
-										.clone();
+								AdaptiveTreeComposite adapChild = (AdaptiveTreeComposite) exemplar.clone();
 								// Set the new AdaptiveTreeComposite in the
 								// yamlCur's list of children
 								yamlCur.removeChild(childCur);
@@ -1269,13 +1354,12 @@ public class MOOSEModel extends Item {
 				if (tree.getName().equals("Mesh")) {
 
 					// Get the mesh file entry on the Mesh block
-					DataComponent dataComp = (DataComponent) yamlCur
-							.getDataNodes().get(0);
+					DataComponent dataComp = (DataComponent) yamlCur.getDataNodes().get(0);
 					Entry meshEntry = dataComp.retrieveEntry("file");
 
 					// Convert the Entry to a "File" type Entry
 					if (meshEntry != null) {
-						convertMeshEntry(meshEntry);						
+						convertToFileEntry(meshEntry);
 					}
 				}
 			}
@@ -1288,18 +1372,17 @@ public class MOOSEModel extends Item {
 	 * This method attempts to add a mesh ICEResource to the Form's
 	 * ResourceComponent. If it cannot get a handle on a valid ICEResource, this
 	 * method does nothing.
-	 * 
+	 *
 	 * This method assumes the MOOSE Model Builder only deals with one
 	 * ICEResource at a time (the mesh), and thus, the Form's ResourceComponent
 	 * will contain no more than one ICEResource at a time.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private void updateMeshResource() throws IOException {
 
 		// Get the ResourceComponent on the Form
-		ResourceComponent resourceComponent = (ResourceComponent) form
-				.getComponent(resourceComponentId);
+		ResourceComponent resourceComponent = (ResourceComponent) form.getComponent(resourceComponentId);
 		// Try to find the mesh file Entry on the Mesh TreeComposite and
 		// convert it to an ICEResource
 		ICEResource mesh = createMeshResource();
@@ -1320,8 +1403,7 @@ public class MOOSEModel extends Item {
 
 				// Update the name on the Form
 				meshFileName = mesh.getName();
-				System.out.println("MOOSEModel Message: Adding new mesh file "
-						+ mesh.getName() + " to Resources list");
+				logger.info("MOOSEModel Message: Adding new mesh file " + mesh.getName() + " to Resources list");
 			}
 		}
 		// If a valid mesh file was not found, then the ResourceComponent should
@@ -1337,7 +1419,7 @@ public class MOOSEModel extends Item {
 	 * This method scans the Form's TreeComposite with ID=2 for the Mesh block.
 	 * If the Mesh block was found, it will return the corresponding
 	 * TreeComposite. Otherwise, it will return null.
-	 * 
+	 *
 	 * @return The Mesh block's TreeComposite, or null if it could not be found.
 	 */
 	private TreeComposite findMeshBlock() {
@@ -1346,8 +1428,7 @@ public class MOOSEModel extends Item {
 		TreeComposite meshTree = null;
 
 		// Try to find the Mesh block on the TreeComposite
-		TreeComposite tree = (TreeComposite) form
-				.getComponent(mooseTreeCompositeId);
+		TreeComposite tree = (TreeComposite) form.getComponent(mooseTreeCompositeId);
 		TreeComposite treeCur = null;
 
 		// Check if the tree has children
@@ -1373,7 +1454,7 @@ public class MOOSEModel extends Item {
 	 * If the Mesh block exists, it will attempt to find the name of a mesh file
 	 * on it. If a mesh filename is found, it will create and return an
 	 * ICEResource representing the mesh file.
-	 * 
+	 *
 	 * @return An ICEResource representing the MOOSE tree's mesh file, or null
 	 *         if no mesh file was found.
 	 * @throws IOException
@@ -1391,14 +1472,13 @@ public class MOOSEModel extends Item {
 		if (meshBlock != null) {
 
 			// Try to find the Entry with the mesh filename
-			DataComponent meshDataComp = 
-					(DataComponent) meshBlock.getDataNodes().get(0);
+			DataComponent meshDataComp = (DataComponent) meshBlock.getDataNodes().get(0);
 			Entry meshEntry = meshDataComp.retrieveEntry("file");
 			if (meshEntry != null) {
-				
+
 				// Convert the Mesh entry to a File Entry
-				convertMeshEntry(meshEntry);
-				
+				convertToFileEntry(meshEntry);
+
 				// Create an ICEResource from the entry
 				if (!meshEntry.getValue().isEmpty()) {
 					mesh = getResource(meshEntry);
@@ -1410,21 +1490,19 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
-	 * This method convert the mesh "file" Entry into a Entry with 
+	 * This method convert the mesh "file" Entry into a Entry with
 	 * AllowedValueType.File and registers the Form as a listener.
-	 * 
+	 *
 	 * @param meshEntry
 	 *            The "file" Entry on the Mesh TreeComposite
 	 */
-	private void convertMeshEntry(Entry meshEntry) {
+	protected void convertToFileEntry(Entry meshEntry) {
 
 		// If the "file" Entry isn't a File Entry, convert it, otherwise do
 		// nothing
-		if (meshEntry != null
-				&& !meshEntry.getValueType().equals(AllowedValueType.File)) {
+		if (meshEntry != null && !meshEntry.getValueType().equals(AllowedValueType.File)) {
 
-			final ArrayList<String> meshAllowedValues = new ArrayList<String>(
-					Arrays.asList(meshEntry.getValue()));
+			final ArrayList<String> meshAllowedValues = new ArrayList<String>(Arrays.asList(meshEntry.getValue()));
 
 			// Create an Entry with the mesh filename
 			Entry fileEntry = new Entry() {
@@ -1464,14 +1542,14 @@ public class MOOSEModel extends Item {
 	 * all that have activeDataNode=null. This method requires that all parent,
 	 * sibling and child references be set correctly on all TreeComposites to be
 	 * successful.
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}
-	 * 
+	 *
 	 * @param tree
 	 *            The tree that will have all active data nodes set.
 	 */
-	private void setActiveDataNodes(TreeComposite tree) {
+	public void setActiveDataNodes(TreeComposite tree) {
 
 		// Perform a pre-order traversal of the tree. For each TreeComposite, we
 		// should set an active data node if none is already set.
@@ -1506,7 +1584,7 @@ public class MOOSEModel extends Item {
 	 * AdaptiveTreeComposite, checks the "type" Entry (found in the tree's
 	 * DataNode), and setting the AdaptiveTreeComposite.type to be that (if such
 	 * a type exists in its typesMap).
-	 * 
+	 *
 	 * @param tree
 	 *            The AdaptiveTreeComposite to set the type of.
 	 */
@@ -1523,21 +1601,19 @@ public class MOOSEModel extends Item {
 		Entry fileEntry = dataNode.retrieveEntry("file");
 
 		// Check if we're given a valid type name
-		if (typeEntry != null && typeEntry.getValue() 
-				!= null && !typeEntry.getValue().isEmpty()) {
+		if (typeEntry != null && typeEntry.getValue() != null && !typeEntry.getValue().isEmpty()) {
 			typeName = typeEntry.getValue();
 		}
-		
+
 		// Try setting the type
 		if (typeName != null && !typeName.isEmpty() && tree.setType(typeName)) {
-			
-		} else if (tree.getName().equals("Mesh") 
-				&& fileEntry != null && fileEntry.getValue() != null 
+
+		} else if (tree.getName().equals("Mesh") && fileEntry != null && fileEntry.getValue() != null
 				&& !fileEntry.getValue().isEmpty()) {
 			// Otherwise try setting the Mesh type "FileMesh", if appropriate
 			tree.setType("FileMesh");
 		}
-		
+
 		// Lastly, if this is the Mesh block, set a listener on its type
 		if (tree.getName().equals("Mesh")) {
 			tree.register(this);
@@ -1547,13 +1623,13 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
-	 * This method updates the ResourceComponet with a new VizResource if the 
-	 * Mesh block's "file" Entry has changed. It is also used to correctly 
-	 * display the "file" Entry as commented/uncommented depending on the Mesh 
+	 * This method updates the ResourceComponet with a new VizResource if the
+	 * Mesh block's "file" Entry has changed. It is also used to correctly
+	 * display the "file" Entry as commented/uncommented depending on the Mesh
 	 * block's currently set type. Lastly, it will listen to updates from the
-	 * Mesh's active data node in case a new "file" Entry is ever manually
-	 * added (in which case it will register the new Entry with the form).
-	 * 
+	 * Mesh's active data node in case a new "file" Entry is ever manually added
+	 * (in which case it will register the new Entry with the form).
+	 *
 	 * @param component
 	 *            The component that triggered an update
 	 */
@@ -1563,63 +1639,56 @@ public class MOOSEModel extends Item {
 		// If the mesh file name is different, update the ResourceComponent and
 		// the Mesh block type
 		if (component instanceof Entry) {
-			
+
 			Entry fileEntry = (Entry) component;
-			if (meshFileName == null || meshFileName.isEmpty()
-					|| !fileEntry.getValue().equals(meshFileName)) {
+			if (meshFileName == null || meshFileName.isEmpty() || !fileEntry.getValue().equals(meshFileName)) {
 				try {
 					// Update the mesh resource
 					updateMeshResource();
-					
-					// Also change the file type on the Mesh block to "FileEntry"
-					if (meshBlock == null ) {
-						meshBlock = (AdaptiveTreeComposite) findMeshBlock();
+
+					// Also change the file type on the Mesh block to
+					// "FileEntry"
+					if (meshBlock == null) {
+						meshBlock = findMeshBlock();
 					}
-					DataComponent meshDataComp = 
-							(DataComponent) meshBlock.getActiveDataNode();
-					if (meshDataComp != null 
-							&& meshDataComp.retrieveEntry("file") != null) {
-						String meshFileName = 
-								meshDataComp.retrieveEntry("file").getValue();
-						if (!meshFileName.isEmpty() 
-								&& ((AdaptiveTreeComposite) meshBlock).getType() == null) {
+					DataComponent meshDataComp = (DataComponent) meshBlock.getActiveDataNode();
+					if (meshDataComp != null && meshDataComp.retrieveEntry("file") != null) {
+						String meshFileName = meshDataComp.retrieveEntry("file").getValue();
+						if (!meshFileName.isEmpty() && ((AdaptiveTreeComposite) meshBlock).getType() == null) {
 							((AdaptiveTreeComposite) meshBlock).setType("FileMesh");
 						}
 					}
-					
+
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
-			
-		// If the Mesh type has changed, evaluate if the "file" parameter should
-		// be commented/uncommented
-		} else if (component instanceof AdaptiveTreeComposite 
-				&& component.getName().equals("Mesh")) {
-			
-			AdaptiveTreeComposite meshBlock = (AdaptiveTreeComposite) component;	
+
+			// If the Mesh type has changed, evaluate if the "file" parameter
+			// should
+			// be commented/uncommented
+		} else if (component instanceof AdaptiveTreeComposite && component.getName().equals("Mesh")) {
+
+			AdaptiveTreeComposite meshBlock = (AdaptiveTreeComposite) component;
 			if (meshBlock.getActiveDataNode() != null) {
-				
+
 				// Get the "file" Entry/parameter
-				DataComponent dataComp = 
-						(DataComponent) meshBlock.getActiveDataNode();
+				DataComponent dataComp = (DataComponent) meshBlock.getActiveDataNode();
 				Entry fileParam = dataComp.retrieveEntry("file");
-				
+
 				if (fileParam != null) {
-					
+
 					// Get the type and tag
 					String type = meshBlock.getType();
 					String fileTag = fileParam.getTag();
-				
+
 					// Set the tag and required flag correctly
-					if (!type.equals("FileMesh")
-							&& (fileTag.equalsIgnoreCase("true")) 
-								|| fileTag.equalsIgnoreCase("new_parameter")) {
+					if (!type.equals("FileMesh") && (fileTag.equalsIgnoreCase("true"))
+							|| fileTag.equalsIgnoreCase("new_parameter")) {
 						// Comment out the "file" parameter
-						fileParam.setTag("false");	
+						fileParam.setTag("false");
 						fileParam.setRequired(false);
-					} else if (type.equals("FileMesh")
-							&& fileTag.equalsIgnoreCase("false")) {
+					} else if (type.equals("FileMesh") && fileTag.equalsIgnoreCase("false")) {
 						// Enable the "file" parameter
 						fileParam.setTag("true");
 						fileParam.setRequired(true);
@@ -1630,22 +1699,22 @@ public class MOOSEModel extends Item {
 					}
 				}
 			}
-		
-		// If a "file" Entry is added, make sure everything is hooked up
-		// correctly to the mesh
+
+			// If a "file" Entry is added, make sure everything is hooked up
+			// correctly to the mesh
 		} else if (component instanceof DataComponent) {
-			
+
 			DataComponent dataComp = (DataComponent) component;
 			if (dataComp.retrieveEntry("file") != null) {
-				
+
 				Entry fileEntry = dataComp.retrieveEntry("file");
 				if (!fileEntry.getValue().isEmpty()) {
-					
+
 					// Re-register the fileEntry in case this "file" parameter
 					// parameter was created after the tree was set up
 					fileEntry.unregister(this);
 					fileEntry.register(this);
-					
+
 					// Try updating the Mesh block so the file parameter will
 					// be set correctly depending on the current block type
 					if (meshBlock == null) {
@@ -1662,9 +1731,121 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
+	 * This method is intended to take a filePath corresponding to a MOOSE YAML
+	 * or action syntax file, and remove any extraneous header or footer lines
+	 * that aren't valid syntax. If any lines from the file were removed, it
+	 * re-writes the file. If no changes were made (no header/footer to remove),
+	 * it does nothing.
+	 *
+	 * @param filePath
+	 *            The filepath to the YAML or action syntax file.
+	 * @throws IOException
+	 * @throws CoreException
+	 */
+	private void createCleanMOOSEFile(String filePath) throws IOException, CoreException {
+
+		// Local declarations
+		String fileExt, fileType = null;
+		boolean hasHeader = false, hasFooter = false;
+		int headerLine = 0, footerLine = 0;
+		String separator = System.getProperty("file.separator");
+		ArrayList<String> fileLines;
+
+		// Check if the MOOSE folder exists; create it if it doesn't
+		IFolder mooseFolder = project.getFolder("MOOSE");
+
+		// If the MOOSE folder doesn't exist, create it
+		if (!mooseFolder.exists()) {
+			mooseFolder.create(true, true, null);
+		}
+
+		// Define where the "clean" MOOSE file will be written
+		fileExt = filePath.substring(filePath.lastIndexOf("."));
+
+		if (".yaml".equals(fileExt)) {
+			fileType = "YAML";
+		} else if (".syntax".equals(fileExt)) {
+			fileType = "SYNTAX";
+		} else {
+			logger.info("MOOSEFileHandler message: File does not have "
+					+ "vaid file extension. Must be .yaml or .syntax but is " + fileExt);
+		}
+
+		// Read in the MOOSE file into an ArrayList of Strings
+		java.nio.file.Path readPath = Paths.get(filePath);
+		fileLines = (ArrayList<String>) Files.readAllLines(readPath, Charset.defaultCharset());
+
+		// Define what the header/footer lines look like
+		String header = "**START " + fileType + " DATA**";
+		String footer = "**END " + fileType + " DATA**";
+
+		// Determine if there is a header and/or footer
+		hasHeader = fileLines.contains(header);
+		hasFooter = fileLines.contains(footer);
+
+		// Cut off the footer, if there is one
+		if (hasFooter) {
+
+			// Record the line number of the footer
+			footerLine = fileLines.indexOf(footer);
+			deleteLines(filePath, footerLine, fileLines.size() - footerLine + 1);
+		}
+
+		// Cut off the header, if there is one
+		if (hasHeader) {
+
+			// Record the line number
+			headerLine = fileLines.indexOf(header);
+			deleteLines(filePath, 1, headerLine + 1);
+
+		}
+
+		return;
+	}
+
+	/**
+	 * A private utility used for deleting a range of lines in a text file.
+	 *
+	 * @param filename
+	 * @param startline
+	 * @param numlines
+	 */
+	private void deleteLines(String filename, int startline, int numlines) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(filename));
+
+			// String buffer to store contents of the file
+			StringBuffer sb = new StringBuffer("");
+
+			// Keep track of the line number
+			int linenumber = 1;
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				// Store each valid line in the string buffer
+				if (linenumber < startline || linenumber >= startline + numlines) {
+					sb.append(line + "\n");
+				}
+				linenumber++;
+			}
+			if (startline + numlines > linenumber) {
+				logger.info("End of file reached.");
+			}
+			br.close();
+
+			FileWriter fw = new FileWriter(new File(filename));
+			// Write entire string buffer into the file
+			fw.write(sb.toString());
+			fw.close();
+		} catch (Exception e) {
+			logger.error(getClass().getName() + " Exception!",e);
+		}
+	}
+
+	/**
 	 * Return the IO Type string. This method is to be overriden by subclasses
 	 * to indicate which IReader and IWriter the Item subclass needs to use.
-	 * 
+	 *
 	 * @return The type of IO Reader/Writer to use (moose).
 	 */
 	@Override
@@ -1673,16 +1854,152 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
+	 * <p>
+	 * This operation is used to check equality between the MOOSEModel Item and
+	 * another MOOSEModel Item. It returns true if the Items are equal and false
+	 * if they are not.
+	 * </p>
+	 *
+	 * @param otherMoose
+	 *            <p>
+	 *            The MOOSEModel Item that should be checked for equality.
+	 *            </p>
+	 * @return
+	 * 		<p>
+	 *         True if the launchers are equal, false if not
+	 *         </p>
+	 */
+	@Override
+	public boolean equals(Object other) {
+
+		boolean retVal;
+
+		// Check if they are the same reference in memory
+		if (this == other) {
+			return true;
+		}
+
+		// Check that the object is not null, and that it is an Item
+		// Check that these objects have the same ICEObject data
+		if (other == null || !(other instanceof MOOSEModel) || !super.equals(other)) {
+			return false;
+		}
+
+		// Check data
+		MOOSEModel otherMooseModel = (MOOSEModel) other;
+		retVal = (this.allowedActions.equals(otherMooseModel.allowedActions))
+				&& (this.form.equals(otherMooseModel.form)) && (this.itemType == otherMooseModel.itemType)
+				&& (this.status.equals(otherMooseModel.status));
+
+		// Check project
+		if (this.project != null && otherMooseModel.project != null
+				&& (!(this.project.equals(otherMooseModel.project)))) {
+			return false;
+		}
+
+		// Check project
+		if (this.project == null && otherMooseModel.project != null
+				|| this.project != null && otherMooseModel.project == null) {
+			return false;
+		}
+
+		// MOOSE Model specific stuff...
+
+		return retVal;
+	}
+
+	/**
+	 * <p>
+	 * This operation returns the hashcode value of the MOOSEModel.
+	 * </p>
+	 *
+	 * @return
+	 * 		<p>
+	 *         The hashcode
+	 *         </p>
+	 */
+	@Override
+	public int hashCode() {
+
+		// Local Declaration
+		int hash = 9;
+		// Compute hash code from MOOSEModel data
+		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + this.loadedApp.hashCode();
+		hash = 31 * hash + this.mooseApps.hashCode();
+		if (meshBlock != null) {
+			hash = 31 * hash + meshBlock.hashCode();
+		}
+		if (meshFileName != null) {
+			hash = 31 * hash + meshFileName.hashCode();
+		}
+
+		return hash;
+	}
+
+	/**
+	 *
+	 * @param otherMoose
+	 *            <p>
+	 *            This operation performs a deep copy of the attributes of
+	 *            another MOOSEModel Item into the current MOOSEModel Item.
+	 *            </p>
+	 */
+	public void copy(MOOSEModel otherMoose) {
+
+		// Return if otherMoose is null
+		if (otherMoose == null) {
+			return;
+		}
+
+		// Copy contents into super and current object
+		super.copy(otherMoose);
+
+		// Clone contents correctly
+		form = new Form();
+		form.copy(otherMoose.form);
+
+		// Copy Moose Model specific stuff
+		loadedApp = otherMoose.loadedApp;
+		mooseApps = new ArrayList<String>(otherMoose.mooseApps);
+		if (otherMoose.meshBlock != null) {
+			meshBlock = (TreeComposite) otherMoose.meshBlock.clone();
+		}
+		meshFileName = otherMoose.meshFileName;
+
+		return;
+	}
+
+	/**
+	 * <p>
+	 * This operation provides a deep copy of the MOOSEModel Item.
+	 * </p>
+	 *
+	 * @return
+	 * 		<p>
+	 *         A clone of the Moose Item.
+	 *         </p>
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new instance of JobLauncher and copy the contents
+		MOOSEModel clone = new MOOSEModel();
+		clone.copy(this);
+
+		return clone;
+	}
+
+	/**
 	 * Enumeration to discern if a tree object is an AdaptiveTreeComposite, or
 	 * just a TreeComposite. This is an alternative to using instanceof.
-	 * 
+	 *
 	 * @author Anna Wojtowicz
 	 */
 	public enum TreeType {
 
 		// The Strings returned by getClass().toString()
-		AdaptiveTreeComposite(
-				"class org.eclipse.ice.datastructures.form.AdaptiveTreeComposite"), TreeComposite(
+		AdaptiveTreeComposite("class org.eclipse.ice.datastructures.form.AdaptiveTreeComposite"), TreeComposite(
 				"class org.eclipse.ice.datastructures.form.TreeComposite");
 
 		private final String type;
@@ -1698,7 +2015,7 @@ public class MOOSEModel extends Item {
 		/**
 		 * This method performs a lookup to return a tree type based on an input
 		 * string, assumed to be equal to getClass().toString().
-		 * 
+		 *
 		 * @param className
 		 *            The String returned by getClass().toString()
 		 * @return The type associated to the className parameter, or null if
@@ -1718,5 +2035,5 @@ public class MOOSEModel extends Item {
 
 			return type;
 		}
-	};
+	}
 }

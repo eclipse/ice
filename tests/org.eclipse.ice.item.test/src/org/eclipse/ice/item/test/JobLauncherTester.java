@@ -132,7 +132,13 @@ public class JobLauncherTester {
 
 		// Process the Item
 		status = jobLauncher.process("Launch the Job");
-
+//
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//			fail();
+//		}
 		// Check the status
 		assertEquals(FormStatus.NeedsInfo, status);
 

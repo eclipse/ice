@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class provides an implementation of {@link IAnalysisWidgetRegistry}. The
  * underlying structure is a Map with Classes as the key and
@@ -29,6 +32,12 @@ import java.util.Map;
  * 
  */
 public class AnalysisWidgetRegistry implements IAnalysisWidgetRegistry {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AnalysisWidgetRegistry.class);
 
 	/**
 	 * The Map providing the structure of the registry for
@@ -45,8 +54,8 @@ public class AnalysisWidgetRegistry implements IAnalysisWidgetRegistry {
 	 */
 	@Override
 	public void addAnalysisWidgetFactory(IAnalysisWidgetFactory factory) {
-		System.out
-				.println("AnalysisWidgetRegistry message: Adding an IAnalysisWidgetFactory.");
+		logger.info("AnalysisWidgetRegistry message: "
+				+ "Adding an IAnalysisWidgetFactory.");
 
 		if (factory != null) {
 			List<Class<?>> classes = factory.getModelClasses();
@@ -68,9 +77,9 @@ public class AnalysisWidgetRegistry implements IAnalysisWidgetRegistry {
 	@Override
 	public IAnalysisWidgetFactory getAnalysisWidgetFactory(Class<?> key) {
 		if (key != null) {
-			System.out
-					.println("AnalysisWidgetRegistry message: Fetching an IAnalysisWidgetFactory for class name \""
-							+ key.getName() + "\"");
+			logger.info("AnalysisWidgetRegistry message: "
+					+ "Fetching an IAnalysisWidgetFactory for class name \""
+					+ key.getName() + "\"");
 			return analysisWidgetFactoryRegistry.get(key);
 		}
 		return null;

@@ -1,21 +1,22 @@
 /*******************************************************************************
-* Copyright (c) 2012, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -40,9 +41,12 @@ import org.eclipse.ui.forms.IDetailsPageProvider;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.SectionPart;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -55,6 +59,12 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Jay Jay Billings
  */
 public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ICEScrolledPropertiesBlock.class);
 
 	/**
 	 * A content provider that provides the proper names for Masters added to
@@ -196,7 +206,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 
 		// Define key features for the ScrolledPropertiesBlock
 		Section section = toolkit.createSection(parent, Section.DESCRIPTION
-				| Section.TITLE_BAR);
+				| ExpandableComposite.TITLE_BAR);
 		section.setText(masterDetailsComponent.getName());
 		section.setDescription(masterDetailsComponent.getDescription());
 		section.marginWidth = 10;
@@ -378,7 +388,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	protected void createToolBarActions(IManagedForm managedForm) {
 		final ScrolledForm form = managedForm.getForm();
 		Action haction = new Action("Horizontal Orientation",
-				Action.AS_RADIO_BUTTON) {
+				IAction.AS_RADIO_BUTTON) {
 			@Override
 			public void run() {
 				sashForm.setOrientation(SWT.HORIZONTAL);
@@ -388,7 +398,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		haction.setChecked(true);
 		haction.setToolTipText("Set Details to the Right of Masters");
 		Action vaction = new Action("Vertical Orientation",
-				Action.AS_RADIO_BUTTON) {
+				IAction.AS_RADIO_BUTTON) {
 			@Override
 			public void run() {
 				sashForm.setOrientation(SWT.VERTICAL);

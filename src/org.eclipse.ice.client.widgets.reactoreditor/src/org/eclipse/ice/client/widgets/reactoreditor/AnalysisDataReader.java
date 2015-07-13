@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.eclipse.ice.reactor.LWRData;
 import org.eclipse.ice.reactor.LWRDataProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class should read in data into data structures used by the
@@ -36,6 +38,13 @@ import org.eclipse.ice.reactor.LWRDataProvider;
  * 
  */
 public class AnalysisDataReader {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AnalysisDataReader.class);
+	
 	// NOTES
 	// 1) Currently, we have a Map of supported features. The map tells us if
 	// we need to look for axial levels.
@@ -105,8 +114,7 @@ public class AnalysisDataReader {
 
 		// Make sure the file exists.
 		if (!file.exists()) {
-			System.err.println("Invalid file " + fileName
-					+ ". Cannot read data.");
+			System.err.println("Invalid file " + fileName + ". Cannot read data.");
 			return;
 		}
 
@@ -175,13 +183,13 @@ public class AnalysisDataReader {
 			// Handle IOExceptions.
 			System.err.println("IOException while reading " + fileName
 					+ ". Cannot read data.");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (NumberFormatException e) {
 			// Handle NumberFormatExceptions. These are thrown when dataRowRegex
 			// is not matched.
-			System.err.println("NumberFormatException while reading "
-					+ fileName + ". Invalid number.");
-			e.printStackTrace();
+			System.err.println("NumberFormatException while reading " + fileName
+					+ ". Invalid number.");
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 		;
 	}

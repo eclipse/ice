@@ -625,7 +625,7 @@ public class CoreAnalysisView extends AnalysisView implements IGridListener {
 	 */
 	@Override
 	public void update(String key, Object value) {
-		System.out.println("CoreAnalysisView message: "
+		logger.info("CoreAnalysisView message: "
 				+ "Receving key update for key \"" + key + "\"");
 
 		// Split the key (the first part is the datasource and the second is the

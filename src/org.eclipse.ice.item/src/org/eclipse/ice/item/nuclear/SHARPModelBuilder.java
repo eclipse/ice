@@ -14,7 +14,7 @@ package org.eclipse.ice.item.nuclear;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
@@ -24,7 +24,7 @@ import org.eclipse.ice.item.ItemType;
  * 
  * @author Jay Jay Billings
  */
-public class SHARPModelBuilder implements ItemBuilder {
+public class SHARPModelBuilder extends AbstractItemBuilder {
 	/**
 	 * The name
 	 */
@@ -35,37 +35,22 @@ public class SHARPModelBuilder implements ItemBuilder {
 	 */
 	public static final ItemType type = ItemType.Model;
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemName()
-	 */
-	@Override
-	public String getItemName() {
-		return name;
+	public SHARPModelBuilder() {
+		setName(name);
+		setType(type);
 	}
-
-	/**
+	
+	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#getItemType()
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
 	@Override
-	public ItemType getItemType() {
-		return type;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ItemBuilder#build(IProject projectSpace)
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 
 		SHARPModel model = new SHARPModel(projectSpace);
 		model.setItemBuilderName(name);
 
 		return model;
 	}
+
 }

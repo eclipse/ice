@@ -12,7 +12,6 @@
 package org.eclipse.ice.materials.ui;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -21,17 +20,25 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a JFace Dialog for adding properties to materials in the materials
  * Database. It has two text fields: A name for the property and a value for the
  * property that should be a String and a double, respectively.
- * 
- * 
+ *
+ *
  * @author Kasper Gammeltoft
- * 
+ *
  */
 public class AddPropertyDialog extends Dialog {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AddPropertyDialog.class);
 
 	/**
 	 * The material property to return after the dialog closes.
@@ -50,7 +57,7 @@ public class AddPropertyDialog extends Dialog {
 
 	/**
 	 * The constructor. Creates a new Dialog for adding properties to materials.
-	 * 
+	 *
 	 * @param parentShell
 	 *            The parent shell to create the Dialog in
 	 */
@@ -62,7 +69,7 @@ public class AddPropertyDialog extends Dialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
 	 * .Composite)
@@ -105,7 +112,7 @@ public class AddPropertyDialog extends Dialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets
 	 * .Shell)
@@ -118,7 +125,7 @@ public class AddPropertyDialog extends Dialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
 	@Override
@@ -139,7 +146,7 @@ public class AddPropertyDialog extends Dialog {
 		try {
 			dVal = Double.parseDouble(val);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 		newProperty.value = dVal;
 		super.okPressed();
@@ -147,7 +154,7 @@ public class AddPropertyDialog extends Dialog {
 
 	/**
 	 * Returns the new material property.
-	 * 
+	 *
 	 * @return The material property that was created by this dialog to be added
 	 *         to a material.
 	 */

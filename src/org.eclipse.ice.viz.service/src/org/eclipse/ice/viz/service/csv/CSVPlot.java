@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
@@ -37,18 +37,26 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements the IPlot interface to provide access to a basic CSV
  * plot using the existing CSV infrastructure in ICE.
- * 
+ *
  * In addition to the IPlot operations it provides the load() operation that
  * should be called after construction.
- * 
+ *
  * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  *
  */
 public class CSVPlot implements IPlot {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(CSVPlot.class);
 
 	/**
 	 * Reference to the read-in matrix of CSV data.
@@ -93,15 +101,15 @@ public class CSVPlot implements IPlot {
 	 * Reference to the currently selected category.
 	 */
 	private String currentCategory;
-	
+
 	/**
-	 * Reference to the currently selected plot type. 
+	 * Reference to the currently selected plot type.
 	 */
 	private String currentPlotType;
-	
+
 	/**
 	 * The Constructor
-	 * 
+	 *
 	 * @param source
 	 *            The URI of the CSV file.
 	 */
@@ -124,7 +132,7 @@ public class CSVPlot implements IPlot {
 	 * This operation loads the data that will be plotted. It uses a separate
 	 * thread to avoid hanging the UI in the event that the file is large. It
 	 * does not attempt to load the file if the source is null.
-	 * 
+	 *
 	 */
 	public void load() {
 
@@ -157,7 +165,7 @@ public class CSVPlot implements IPlot {
 	 * Attempts to load the specified file. This should populate the
 	 * {@link #baseProvider} as well as the map of {@link #types} or plot
 	 * series.
-	 * 
+	 *
 	 * @param file
 	 *            The file to load. This is assumed to be a valid file.
 	 */
@@ -197,7 +205,7 @@ public class CSVPlot implements IPlot {
 
 		} catch (IOException e) {
 			// Complain
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		if (!lines.isEmpty()) {
@@ -356,7 +364,7 @@ public class CSVPlot implements IPlot {
 				parent.addDisposeListener(new DisposeListener() {
 					@Override
 					public void widgetDisposed(DisposeEvent e) {
-						drawnPlots.remove((Composite) e.widget).dispose();
+						drawnPlots.remove(e.widget).dispose();
 					}
 				});
 			}
@@ -384,8 +392,7 @@ public class CSVPlot implements IPlot {
 		} else {
 			// Complain that the plot is invalid
 			throw new Exception("Invalid plot: category = " + category
-					+ ", type = " + plotType + ", provider = "
-					+ baseProvider.toString());
+					+ ", type = " + plotType + ".");
 		}
 
 		return child;
@@ -395,7 +402,7 @@ public class CSVPlot implements IPlot {
 	 * An instance of this nested class is composed of the drawn
 	 * {@link CSVPlotEditor} and all providers necessary to populate it with CSV
 	 * data.
-	 * 
+	 *
 	 * @author Jordan Deyton
 	 *
 	 */
@@ -434,12 +441,12 @@ public class CSVPlot implements IPlot {
 		 * Creates a {@link CSVPlotEditor} and all providers necessary to
 		 * populate it. The editor is created inside the specified parent
 		 * {@code Composite}.
-		 * 
+		 *
 		 * @param parent
 		 *            The {@code Composite} in which to draw the CSV plot
 		 *            editor.
 		 */
-		public DrawnPlot(Composite parent) throws Exception {
+		public DrawnPlot(final Composite parent) throws Exception {
 			// Create the editor and all required providers.
 			editor = new CSVPlotEditor();
 			plotProvider = new PlotProvider();
@@ -515,12 +522,19 @@ public class CSVPlot implements IPlot {
 
 				@Override
 				public void menuShown(MenuEvent e) {
+
 					// Rebuild the menu.
 					Menu menu = (Menu) e.widget;
+					if (parent.getMenu() == null) {
+						for (MenuItem item : menu.getItems()) {
+							item.dispose();
+						}
+					}
 					addSeriesTree.getContributionItem().fill(menu, -1);
 					removeSeriesTree.getContributionItem().fill(menu, -1);
 					separator.fill(menu, -1);
 					clearAction.getContributionItem().fill(menu, -1);
+
 				}
 			});
 
@@ -533,7 +547,7 @@ public class CSVPlot implements IPlot {
 
 		/**
 		 * Adds a new series to the drawn plot.
-		 * 
+		 *
 		 * @param category
 		 *            The category of the series to add.
 		 * @param type
@@ -581,7 +595,7 @@ public class CSVPlot implements IPlot {
 
 		/**
 		 * Removes the specified series from the drawn plot.
-		 * 
+		 *
 		 * @param series
 		 *            The series to remove.
 		 */
@@ -632,15 +646,16 @@ public class CSVPlot implements IPlot {
 	public void redraw() {
 		// Start off by reloading this IPlot's representative data set.
 		load();
-		
-		// Then loop over all drawn plots and re-execute the draw method. 
+
+		// Then loop over all drawn plots and re-execute the draw method.
 		for (final Composite comp : drawnPlots.keySet()) {
 			comp.getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					try {
 						draw(currentCategory, currentPlotType, comp);
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 				}
 			});

@@ -22,7 +22,8 @@ Import-Package: javax.ws.rs.core,
  org.eclipse.ice.datastructures.resource,
  org.eclipse.ice.item,
  org.eclipse.ui.views.properties.tabbed,
- org.osgi.framework;version="1.7.0"
+ org.osgi.framework;version="1.7.0",
+ org.slf4j;version="1.7.2"
 Service-Component: OSGI-INF/clientComponent.xml
 Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0",
  com.sun.jersey;bundle-version="1.17.0",

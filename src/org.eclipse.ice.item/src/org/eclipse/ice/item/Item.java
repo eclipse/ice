@@ -42,6 +42,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -76,6 +80,9 @@ import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Item class is responsible for carrying out activities necessary to
@@ -282,6 +289,13 @@ import org.eclipse.ice.item.messaging.Message;
 @XmlRootElement(name = "Item")
 public class Item implements IComponentVisitor, Identifiable,
 		IUpdateableListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	@XmlTransient
+	protected final Logger logger;
+
 	/**
 	 * The ItemType of the Item.
 	 */
@@ -427,12 +441,6 @@ public class Item implements IComponentVisitor, Identifiable,
 	protected ArrayList<ItemListener> listeners;
 
 	/**
-	 * A flag that is true if debug mode is enabled, false otherwise.
-	 */
-	@XmlTransient()
-	protected boolean debuggingEnabled = false;
-
-	/**
 	 * Reference to the IOService that provides IReaders and IWriters for the
 	 * Item.
 	 */
@@ -461,10 +469,8 @@ public class Item implements IComponentVisitor, Identifiable,
 	 */
 	public Item(IProject projectSpace) {
 
-		// Determine whether or not ICE is in debug mode
-		if (System.getProperty("DebugICE") != null) {
-			debuggingEnabled = true;
-		}
+		// Allocate the logger
+		logger = LoggerFactory.getLogger(getClass());
 
 		// Set the default information
 		uniqueId = 1;
@@ -821,7 +827,7 @@ public class Item implements IComponentVisitor, Identifiable,
 			itemIdsMatch = preparedForm.getItemID() == actionForm.getItemID();
 		}
 
-		System.out.println("Item Message: Form submitted for review.");
+		logger.info("Item Message: Form submitted for review.");
 
 		// Check the Form Entries only if the Form represents this Item. First
 		// make sure the Item ids match and then make sure the Forms share
@@ -847,16 +853,16 @@ public class Item implements IComponentVisitor, Identifiable,
 				retVal = action.submitForm(preparedForm);
 			}
 		} else {
-			System.out.println("Item " + getId() + " Message: Something is "
+			System.err.println("Item " + getId() + " Message: Something is "
 					+ "wrong with the submitted form.");
-			System.out.println("Item " + getId() + " Message: Matching Ids... "
+			System.err.println("Item " + getId() + " Message: Matching Ids... "
 					+ idsMatch);
-			System.out.println("Item " + getId()
-					+ " Message: Matching Names..." + namesMatch);
-			System.out.println("Item " + getId()
+			System.err.println("Item " + getId() + " Message: Matching Names..."
+					+ namesMatch);
+			System.err.println("Item " + getId()
 					+ " Message: Matching Descriptions..." + descMatch);
-			System.out.println("Item " + getId()
-					+ " Message: Matching Item Ids..." + itemIdsMatch);
+			System.err.println("Item " + getId() + " Message: Matching Item Ids..."
+					+ itemIdsMatch);
 		}
 
 		// Set the status
@@ -934,7 +940,6 @@ public class Item implements IComponentVisitor, Identifiable,
 					propsDictionary.put("iceTaggedOutputFileName", outputFile
 							.getLocationURI().getPath());
 					// Add the key-value pairs
-					System.out.println(entryList.size());
 					for (Entry i : entryList) {
 						// Use tags if they are available
 						if (i.getTag() != null) {
@@ -942,7 +947,7 @@ public class Item implements IComponentVisitor, Identifiable,
 						} else {
 							// Otherwise just use the Entry's name
 							propsDictionary.put(i.getName(), i.getValue());
-							System.out.println("Processing value " + i.getTag()
+							logger.info("Item Message: Processing value " + i.getTag()
 									+ " = " + i.getValue());
 						}
 					}
@@ -951,12 +956,12 @@ public class Item implements IComponentVisitor, Identifiable,
 					retStatus = action.execute(propsDictionary);
 					// Refresh the project space so that the file is added or
 					// updated
-					project.refreshLocal(IProject.DEPTH_ONE, null);
+					project.refreshLocal(IResource.DEPTH_ONE, null);
 					// Notify any observers of the change
 					notifyListenersOfProjectChange();
 				} catch (CoreException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 			}
@@ -1133,7 +1138,7 @@ public class Item implements IComponentVisitor, Identifiable,
 		// Dispatch the updates
 		registry.dispatch();
 
-		System.out.println("Item Message: Entries reviewed.");
+		logger.info("Item Message: Entries reviewed.");
 
 		// Set the status
 		if (updateStatus) {
@@ -1314,7 +1319,6 @@ public class Item implements IComponentVisitor, Identifiable,
 			setupEntryList();
 			// Set the Item name and description
 			setName(form.getName());
-			System.out.println("Form name = " + form.getName());
 			setDescription(form.getDescription());
 			// Get the ItemType - just a linear search for now
 			for (String i : inputLines) {
@@ -1452,7 +1456,7 @@ public class Item implements IComponentVisitor, Identifiable,
 			try {
 				outputFile.createNewFile();
 			} catch (Exception fileFailException) {
-				System.out.println("Item Message: Unable to create output "
+				logger.info("Item Message: Unable to create output "
 						+ "file in workspace. Aborting.");
 				fileFailException.printStackTrace();
 				return;
@@ -1512,9 +1516,8 @@ public class Item implements IComponentVisitor, Identifiable,
 				}
 			} catch (CoreException e) {
 				// Complain
-				System.out.println("Item Message: "
-						+ "Unable to load project files!");
-				e.printStackTrace();
+				logger.info("Item Message: " + "Unable to load project files!");
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -1588,7 +1591,7 @@ public class Item implements IComponentVisitor, Identifiable,
 					folder.create(true, true, null);
 				} catch (CoreException e) {
 					// Complain
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		}
@@ -1607,7 +1610,7 @@ public class Item implements IComponentVisitor, Identifiable,
 			try {
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return;
@@ -1771,7 +1774,7 @@ public class Item implements IComponentVisitor, Identifiable,
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -1808,7 +1811,7 @@ public class Item implements IComponentVisitor, Identifiable,
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return;
@@ -1851,7 +1854,7 @@ public class Item implements IComponentVisitor, Identifiable,
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 	}
@@ -1972,14 +1975,12 @@ public class Item implements IComponentVisitor, Identifiable,
 	 */
 	public boolean update(Message msg) {
 
-		// Dump the text to stdout if we are in debugging mode.
-		if (debuggingEnabled) {
-			System.out.println("Item Message: Received update message!");
-			System.out.println("Item Message: Id = " + msg.getId());
-			System.out.println("Item Message: Item Id = " + msg.getItemId());
-			System.out.println("Item Message: Content = " + msg.getMessage());
-			System.out.println("Item Message: Type = " + msg.getType());
-		}
+		// Catch some debug info
+		logger.debug("Item Message: Received update message!");
+		logger.debug("Item Message: Id = " + msg.getId());
+		logger.debug("Item Message: Item Id = " + msg.getItemId());
+		logger.debug("Item Message: Content = " + msg.getMessage());
+		logger.debug("Item Message: Type = " + msg.getType());
 
 		// Just return true for now until the logging functionality can be moved
 		// from JobLauncher to Item.
@@ -2065,6 +2066,41 @@ public class Item implements IComponentVisitor, Identifiable,
 			copiedFileHandle = new File(outputFile.toURI());
 		}
 		return copiedFileHandle;
+	}
+
+	/**
+	 * This operations allows subclasses to throw a visual error message to
+	 * users of the subclassed Item to indicate an error in the use of the Item.
+	 * This operation takes the title of the error, the java package location,
+	 * and a descriptive error message, all of which is used to throw a
+	 * descriptive UI message to the user. Subclasses that use this method are
+	 * advised to set the proper FormStatus flag when this method is used, ie
+	 * returning FormStatus.InfoError.
+	 * 
+	 * @param title
+	 * @param packageLocation
+	 * @param errorMessage
+	 */
+	protected void throwErrorMessage(String title, String packageLocation,
+			String errorMessage) {
+		// Local Declarations
+		final String location = packageLocation;
+		final String message = errorMessage;
+
+		// Create a "Failed Job", which gets run,
+		// immediately fails and presents a dialog to the user
+		// explaining what went wrong based on the provided errorMessage.
+		Job badJob = new Job(title) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				return new Status(IStatus.ERROR, location, 1, message, null);
+			}
+		};
+
+		// Start the job
+		badJob.schedule();
+
+		return;
 	}
 
 	/**

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -85,13 +86,23 @@ public class ElementSourceDialog<T> extends Dialog {
 		list.setTableFormat((WritableTableFormat<T>) source.getTableFormat());
 		elements = source.getElements();
 		list.addAll(elements);
+		
+		try {
+			Object o = list.get(0).getClass().getConstructors()[0].newInstance();
+			list.add((T) o);
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException
+				| SecurityException e) {
+			e.printStackTrace();
+		}
 
 		// Sorts the list according to the item's comparator, if it is
 		// available
 		if (!list.isEmpty() && list.get(0) instanceof Comparable) {
 			Collections.sort(list, new Comparator<T>() {
+				@Override
 				public int compare(Object first, Object second) {
-					return ((Comparable) first).compareTo((Comparable) second);
+					return ((Comparable) first).compareTo(second);
 				}
 			});
 		}

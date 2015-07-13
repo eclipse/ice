@@ -18,8 +18,8 @@ import java.util.Set;
 
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
-import org.eclipse.ice.viz.service.connections.preferences.TableComponentPreferenceAdapter;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+import org.eclipse.ice.viz.service.connections.preferences.TableComponentPreferenceAdapter;
 
 /**
  * A {@code ConnectionManager} maps {@link IConnectionAdapter}s to
@@ -73,7 +73,7 @@ public abstract class ConnectionManager<T> {
 		table = createConnectionTable();
 		TableComponentPreferenceAdapter tableAdapter;
 		tableAdapter = new TableComponentPreferenceAdapter();
-		tableAdapter.toTableComponent((CustomScopedPreferenceStore) getPreferenceStore(), table);
+		tableAdapter.toTableComponent(getPreferenceStore(), table);
 
 		// Create the default adapter based on the current properties. Do not
 		// connect yet.
@@ -176,7 +176,7 @@ public abstract class ConnectionManager<T> {
 		// Update the connection preferences based on the stored preferences.
 		TableComponentPreferenceAdapter tableAdapter;
 		tableAdapter = new TableComponentPreferenceAdapter();
-		tableAdapter.toTableComponent((CustomScopedPreferenceStore) getPreferenceStore(), table);
+		tableAdapter.toTableComponent(getPreferenceStore(), table);
 
 		// TODO When we have multiple connections, we will need to do the
 		// following, then send the new connection adapters to the plots.

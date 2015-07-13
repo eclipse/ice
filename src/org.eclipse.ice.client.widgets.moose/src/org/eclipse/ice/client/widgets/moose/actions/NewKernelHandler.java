@@ -32,6 +32,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.IDE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The NewKernelHandler subclasses AbstractHandler to provide an execute implementation 
@@ -43,6 +45,11 @@ import org.eclipse.ui.ide.IDE;
  *
  */
 public class NewKernelHandler extends AbstractHandler {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(NewKernelHandler.class);
 
 	/**
 	 * (non-Javadoc)
@@ -190,7 +197,7 @@ public class NewKernelHandler extends AbstractHandler {
 					.getActivePage(), newIncludeFile);
 
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return null;

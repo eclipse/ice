@@ -37,6 +37,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -46,18 +47,10 @@ import org.eclipse.ui.forms.widgets.Section;
  * This class is a FormPage that creates a page with multiple sections for a set
  * of ICE DataComponents.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
-	/**
-	 * <p>
-	 * The list of Components managed by this page. It contains components of
-	 * multiple types and is not sorted.
-	 * </p>
-	 * 
-	 */
-	private ArrayList<Component> components;
 
 	/**
 	 * The IManagedForm for the SectionPage.
@@ -69,7 +62,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * The list of DataComponents that is formed by visiting the Components
 	 * assigned to this page.
 	 * </p>
-	 * 
+	 *
 	 */
 	private ArrayList<DataComponent> dataComponents;
 
@@ -78,7 +71,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * The list of TableComponents that is formed by visiting the Components
 	 * assigned to this page.
 	 * </p>
-	 * 
+	 *
 	 */
 	private ArrayList<TableComponent> tableComponents;
 
@@ -87,7 +80,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * The list of MatrixComponents that is formed by visiting the Components
 	 * assigned to this page.
 	 * </p>
-	 * 
+	 *
 	 */
 	private ArrayList<MatrixComponent> matrixComponents;
 
@@ -95,7 +88,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * <p>
 	 * The Constructor
 	 * </p>
-	 * 
+	 *
 	 * @param editor
 	 *            <p>
 	 *            The FormEditor for which the Page should be constructed.
@@ -123,7 +116,6 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 					+ " constructor cannot be null.");
 		}
 		// Setup the list for Components
-		components = new ArrayList<Component>();
 		dataComponents = new ArrayList<DataComponent>();
 		tableComponents = new ArrayList<TableComponent>();
 		matrixComponents = new ArrayList<MatrixComponent>();
@@ -166,7 +158,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * This operation should not be generally used, but for testing purposes
 	 * where there is a setter there must be a getter.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The set of Components managed by this page.
 	 *         </p>
@@ -179,7 +171,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		compList.addAll(tableComponents);
 		compList.addAll(matrixComponents);
 
-		return components;
+		return compList;
 	}
 
 	/**
@@ -187,7 +179,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * This operation adds a Component to the set of Components that are managed
 	 * by this page.
 	 * </p>
-	 * 
+	 *
 	 * @param component
 	 *            <p>
 	 *            A new Component for this page to manage
@@ -207,7 +199,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * they should be arranged and span across the page based on their
 	 * properties.
 	 * </p>
-	 * 
+	 *
 	 */
 	private void createDataComponentSections() {
 
@@ -250,8 +242,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 			// Create a new Section for the current DataComponent.
 			DataComponent dataComponent = dataComponents.get(i);
 			Section section = formToolkit.createSection(dataGridComposite,
-					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
-							| Section.EXPANDED | Section.COMPACT);
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+							| ExpandableComposite.EXPANDED | ExpandableComposite.COMPACT);
 			// Each Section should grab all available space it can get within
 			// the containing Composite created above this loop.
 			section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -276,7 +268,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * they should be arranged and span across the page based on their
 	 * properties.
 	 * </p>
-	 * 
+	 *
 	 */
 	private void createTableComponentSections() {
 
@@ -295,8 +287,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 			// Create a new Section for the current TableComponent.
 			TableComponent tableComponent = tableComponents.get(i);
 			Section section = formToolkit.createSection(container,
-					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
-							| Section.EXPANDED);
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+							| ExpandableComposite.EXPANDED);
 			// Each Section should fill all available horizontal and vertical
 			// space in the parent GridLayout, but it should only grab excess
 			// horizontal space.
@@ -322,7 +314,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * how they should be arranged and span across the page based on their
 	 * properties.
 	 * </p>
-	 * 
+	 *
 	 */
 	private void createMatrixComponentSections() {
 
@@ -349,8 +341,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 			// Create a new Section for the current MatrixComponent.
 			MatrixComponent matrixComponent = matrixComponents.get(i);
 			Section section = formToolkit.createSection(matrixGridComposite,
-					Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
-							| Section.EXPANDED);
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+							| ExpandableComposite.EXPANDED);
 			// No layout data needs to be set because the matrixGridComposite
 			// uses a FillLayout.
 
@@ -369,7 +361,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IComponentVisitor#visit(DataComponent component)
 	 */
 	@Override
@@ -384,7 +376,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IComponentVisitor#visit(ResourceComponent component)
 	 */
 	@Override
@@ -394,7 +386,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IComponentVisitor#visit(TableComponent component)
 	 */
 	@Override
@@ -409,7 +401,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IComponentVisitor#visit(MatrixComponent component)
 	 */
 	@Override
@@ -424,7 +416,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IComponentVisitor#visit(IShape component)
 	 */
 	@Override
@@ -434,7 +426,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IComponentVisitor#visit(GeometryComponent component)
 	 */
 	@Override
@@ -444,7 +436,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
 	 */
 	@Override
@@ -454,7 +446,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IComponentVisitor#visit(TreeComposite component)
 	 */
 	@Override
@@ -464,7 +456,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IComponentVisitor#visit(IReactorComponent component)
 	 */
 	@Override
@@ -474,7 +466,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
 	 * (org.eclipse.ice.datastructures.form.TimeDataComponent)
@@ -491,7 +483,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
 	 * (org.eclipse.ice.datastructures.form.mesh.MeshComponent)
@@ -503,7 +495,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
 	 * (org.eclipse.ice.datastructures.form.AdaptiveTreeComposite)
@@ -515,7 +507,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor#visit
 	 * (org.eclipse.ice.datastructures.form.emf.EMFComponent)
@@ -528,7 +520,7 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	@Override
 	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

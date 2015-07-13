@@ -63,6 +63,10 @@ public class YAMLBlock extends Block {
 			for (int i = 0; i < subblocks.size(); i++) {
 				TreeComposite childTreeComp = subblocks.get(i)
 						.toTreeComposite();
+				if (childTreeComp.getName().equals("*")) {
+					childTreeComp.setName("New_"
+							+ name.substring(0, name.length() - 1));
+				}
 				childTreeComp.setId(i + 2);
 				exemplars.add(childTreeComp);
 			}

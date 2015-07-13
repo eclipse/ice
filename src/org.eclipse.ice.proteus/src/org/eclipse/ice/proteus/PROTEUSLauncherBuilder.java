@@ -13,15 +13,15 @@
 package org.eclipse.ice.proteus;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /** 
  * <p>An ItemBuilder for building PROTEUS job launchers.</p>
  * @author Jay Jay Billings
  */
-public class PROTEUSLauncherBuilder implements ItemBuilder {
+public class PROTEUSLauncherBuilder extends AbstractItemBuilder {
 	
 	/**
 	 * The name
@@ -33,30 +33,17 @@ public class PROTEUSLauncherBuilder implements ItemBuilder {
 	 */
 	public static final ItemType type = ItemType.Simulation;
 	
-	/** 
-	 * (non-Javadoc)
-	 * @see ItemBuilder#getItemName()
-	 */
-	@Override
-	public String getItemName() {
-		return name;
+	public PROTEUSLauncherBuilder() {
+		setName(name);
+		setType(type);
 	}
-
-	/** 
+	
+	/**
 	 * (non-Javadoc)
-	 * @see ItemBuilder#getItemType()
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
 	@Override
-	public ItemType getItemType() {
-		return type;
-	}
-
-	/** 
-	 * (non-Javadoc)
-	 * @see ItemBuilder#build(IProject projectSpace)
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 		
 		PROTEUSLauncher launcher = new PROTEUSLauncher(projectSpace);
 		launcher.setName(name);

@@ -315,7 +315,7 @@ public class Parameter {
 					// Set the default value and description
 					defaultValue = (Parameter.this.getDefault().equals(0)) ? "false"
 							: "true";
-				}
+				} 
 				// Otherwise, for all other parameters
 				else {
 					allowedValueType = AllowedValueType.Undefined;
@@ -329,6 +329,11 @@ public class Parameter {
 		entry.setComment(getComment());
 		entry.setRequired(required);
 		entry.setTag(enabled ? "true" : "false");
+
+		if ("type".equals(getName())) {
+			entry.setRequired(true);
+			entry.setTag("true");
+		}
 
 		return entry;
 	}

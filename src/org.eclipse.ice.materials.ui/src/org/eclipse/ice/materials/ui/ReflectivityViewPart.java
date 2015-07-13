@@ -25,14 +25,22 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a view that holds the Reflectivity plot.
- * 
+ *
  * @author Jay Jay Billings
  *
  */
 public class ReflectivityViewPart extends ViewPart {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ReflectivityViewPart.class);
 
 	/**
 	 * The constructor
@@ -43,7 +51,7 @@ public class ReflectivityViewPart extends ViewPart {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
 	 * .Composite)
@@ -62,15 +70,15 @@ public class ReflectivityViewPart extends ViewPart {
 			label.setImage(image);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
-		
-		
+
+
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
 	@Override

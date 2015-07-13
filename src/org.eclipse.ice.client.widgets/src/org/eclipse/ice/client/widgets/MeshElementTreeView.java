@@ -40,6 +40,8 @@ import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class extends ViewPart to create a tree of elements (polygons, edges,
@@ -50,6 +52,12 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public class MeshElementTreeView extends ViewPart implements
 		IUpdateableListener, IPartListener2, ISelectionListener,
 		ITabbedPropertySheetPageContributor {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(MeshElementTreeView.class);
 
 	/**
 	 * Eclipse view ID
@@ -323,7 +331,7 @@ public class MeshElementTreeView extends ViewPart implements
 	@Override
 	public void update(IUpdateable component) {
 
-		System.out.println("ICEMeshPage Message: " + "Mesh changed!");
+		logger.info("ICEMeshPage Message: " + "Mesh changed!");
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
@@ -331,7 +339,7 @@ public class MeshElementTreeView extends ViewPart implements
 			public void run() { // Just do a blanket update - no need to check
 								// the component
 				if (elementTreeViewer != null) {
-					System.out.println("MeshElementTreeView Message: "
+					logger.info("MeshElementTreeView Message: "
 							+ "Updating element view.");
 
 					// Set the tree content
@@ -362,7 +370,7 @@ public class MeshElementTreeView extends ViewPart implements
 	@Override
 	public void partClosed(IWorkbenchPartReference partRef) {
 
-		System.out.println("MeshElementTreeView Message: Called partClosed("
+		logger.info("MeshElementTreeView Message: Called partClosed("
 				+ partRef.getId() + ")");
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -396,7 +404,7 @@ public class MeshElementTreeView extends ViewPart implements
 	@Override
 	public void partActivated(IWorkbenchPartReference partRef) {
 
-		System.out.println("MeshElementTreeView Message: Called partActivated("
+		logger.info("MeshElementTreeView Message: Called partActivated("
 				+ partRef.getId() + ")");
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -426,7 +434,7 @@ public class MeshElementTreeView extends ViewPart implements
 	@Override
 	public void partHidden(IWorkbenchPartReference partRef) {
 
-		System.out.println("MeshElementTreeView Message: Called partHidden("
+		logger.info("MeshElementTreeView Message: Called partHidden("
 				+ partRef.getId() + ")");
 
 		if (partRef.getId().equals(ICEFormEditor.ID)) {
@@ -511,7 +519,7 @@ public class MeshElementTreeView extends ViewPart implements
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
-		//Get the selection made in the ICEMeshPage.
+		// Get the selection made in the ICEMeshPage.
 
 		return;
 	}

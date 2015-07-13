@@ -6,8 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
+ *   Kasper Gammeltoft (added conditional name setting for blank material)
  *******************************************************************************/
 package org.eclipse.ice.materials;
 
@@ -15,27 +16,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.form.Material;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.odell.glazedlists.gui.WritableTableFormat;
 
 /**
  * This class implements the WritableTableFormat interface to make it possible
  * to read and write GlazedLists of Materials.
- * 
+ *
  * It must be instantiated with a list of properties that represent its columns
  * and from which it can acquire the number of columns. It will also use this
  * list as the keys when pulling properties from the Materials passed to it.
- * 
+ *
  * Instead of assuming that updated values passed to it are doubles, it calls
  * Object.toString() and interprets that value as a double.
- * 
+ *
  * It always reports values as editable.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Kasper Gammeltoft
  *
  */
 public class MaterialWritableTableFormat implements
 		WritableTableFormat<Material> {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(MaterialWritableTableFormat.class);
 
 	/**
 	 * The list of properties that provides the keys needed to read the Material
@@ -45,7 +54,7 @@ public class MaterialWritableTableFormat implements
 
 	/**
 	 * The constructor
-	 * 
+	 *
 	 * @param propertiesList
 	 *            The list of properties that provides the keys needed to read
 	 *            the Material properties of the List with which this format is
@@ -62,7 +71,7 @@ public class MaterialWritableTableFormat implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ca.odell.glazedlists.gui.TableFormat#getColumnCount()
 	 */
 	@Override
@@ -72,7 +81,7 @@ public class MaterialWritableTableFormat implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ca.odell.glazedlists.gui.TableFormat#getColumnName(int)
 	 */
 	@Override
@@ -90,7 +99,7 @@ public class MaterialWritableTableFormat implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * ca.odell.glazedlists.gui.TableFormat#getColumnValue(java.lang.Object,
 	 * int)
@@ -110,7 +119,7 @@ public class MaterialWritableTableFormat implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * ca.odell.glazedlists.gui.WritableTableFormat#isEditable(java.lang.Object,
 	 * int)
@@ -123,7 +132,7 @@ public class MaterialWritableTableFormat implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * ca.odell.glazedlists.gui.WritableTableFormat#setColumnValue(java.lang
 	 * .Object, java.lang.Object, int)
@@ -137,7 +146,13 @@ public class MaterialWritableTableFormat implements
 			baseObject.setProperty(properties.get(column),
 					Double.valueOf(editedValue.toString()));
 			} catch(Exception e){
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
+			}
+		// If the name is blank, then it is a template material that should
+		// be allowed to have its name set. 
+		} else {
+			if(baseObject.getName().equals("")){
+				baseObject.setName(editedValue.toString());
 			}
 		}
 		// Just return the material

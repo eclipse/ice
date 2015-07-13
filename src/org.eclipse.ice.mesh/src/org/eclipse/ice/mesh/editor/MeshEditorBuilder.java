@@ -13,8 +13,8 @@
 package org.eclipse.ice.mesh.editor;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
@@ -23,7 +23,7 @@ import org.eclipse.ice.item.ItemType;
  * @author Jay Jay Billings
  * 
  */
-public class MeshEditorBuilder implements ItemBuilder {
+public class MeshEditorBuilder extends AbstractItemBuilder {
 
 	/**
 	 * The name of this builder.
@@ -35,27 +35,19 @@ public class MeshEditorBuilder implements ItemBuilder {
 	 */
 	public static final ItemType type = ItemType.Mesh;
 
-	/*
-	 * Implements a method from ItemBuilder.
+	/**
+	 * The Constructor
 	 */
-	@Override
-	public String getItemName() {
-		return name;
+	public MeshEditorBuilder() {
+		setName(name);
+		setType(type);
 	}
-
+	
 	/*
 	 * Implements a method from ItemBuilder.
 	 */
 	@Override
-	public ItemType getItemType() {
-		return type;
-	}
-
-	/*
-	 * Implements a method from ItemBuilder.
-	 */
-	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 
 		// Build the editor. The Mesh Editor sets its own name and ItemBuilder
 		// name.

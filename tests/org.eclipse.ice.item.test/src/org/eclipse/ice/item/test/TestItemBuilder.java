@@ -41,4 +41,13 @@ public class TestItemBuilder implements ItemBuilder {
 		return new TestItem(projectSpace);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#isPublishable()
+	 */
+	@Override
+	public boolean isPublishable() {
+		return true;
+	}
+
 }

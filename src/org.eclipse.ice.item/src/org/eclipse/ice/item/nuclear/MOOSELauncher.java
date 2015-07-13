@@ -12,36 +12,27 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 
 /**
  * A SuiteLauncher Item for all MOOSE products (MARMOT, BISON, RELAP-7, RAVEN).
  * The MOOSE framework is developed by Idaho National Lab.
- * 
+ *
  * @author Anna Wojtowicz
  */
-
 @XmlRootElement(name = "MOOSELauncher")
 public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener {
 
@@ -49,7 +40,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * The currently selected MOOSE application. Set by reviewEntries().
 	 */
 	private String execName = "";
-	
+
 	/**
 	 * The currently selected *.i input file.
 	 */
@@ -64,15 +55,15 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * The name of the custom MOOSE executable.
 	 */
 	private static final String customExecName = "Custom executable name";
-	
+
 	/**
 	 * The DataComponent on the form that is used to store the list of
-	 * executable apps. This DataComponent contains two Entries: [0] The Entry 
+	 * executable apps. This DataComponent contains two Entries: [0] The Entry
 	 * containing BISON, MARMOT, RAVEN and RELAP-7, and [1] An Entry of type
 	 * Undefined in which the user can enter their own MOOSE app name.
 	 */
 	private DataComponent execDataComp;
-	
+
 	/**
 	 * Nullary constructor.
 	 */
@@ -108,19 +99,19 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		executables.add("RAVEN");
 		executables.add("MOOSE_TEST");
 		executables.add(customExecName);
-		//executables.add(yamlSyntaxGenerator);
+		// executables.add(yamlSyntaxGenerator);
 
 		// Add the list to the suite
 		addExecutables(executables);
-		
+
 		// Setup the Form
 		super.setupForm();
-		
+
 		// Get a handle on the "executables" DataComponent
 		execDataComp = (DataComponent) form.getComponent(5);
 		// Register the launcher as a listener of the executables DataComponent
 		execDataComp.register(this);
-		
+
 		// Create an entry for a "custom" MOOSE executable
 		Entry customExecEntry = new Entry();
 		customExecEntry.setName(customExecName);
@@ -128,9 +119,10 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 				+ "that this field is case-sensitive and should be entered as "
 				+ "it appears in the filesystem.");
 		customExecEntry.setId(2);
-		customExecEntry.setParent(execDataComp.retrieveAllEntries().get(0).getName());
+		customExecEntry.setParent(execDataComp.retrieveAllEntries().get(0)
+				.getName());
 		customExecEntry.setReady(false);
-		
+
 		// Add it to the form
 		execDataComp.addEntry(customExecEntry);
 
@@ -151,8 +143,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Enable TBB
 		enableTBB(1, 256, 1);
 
-		// Register this MooseLauncher as a listener of the Input File Entry. 
-		// When it is set to something we can react with a search of related 
+		// Register this MooseLauncher as a listener of the Input File Entry.
+		// When it is set to something we can react with a search of related
 		// moose files.
 		inputFilesComp.retrieveEntry("Input File").register(this);
 
@@ -169,7 +161,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	/**
 	 * Overrides the base class operation to properly account for MOOSE's file
 	 * structure.
-	 * 
+	 *
 	 * @param installDir
 	 *            The installation directory of MOOSE.
 	 * @param executable
@@ -183,12 +175,12 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Local declarations
 		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
 		String customExecValue = "";
-		if (execDataComp != null && customExecEntry != null 
+		if (execDataComp != null && customExecEntry != null
 				&& customExecEntry.getValue() != null) {
-			customExecValue = 
-					execDataComp.retrieveEntry(customExecName).getValue();
+			customExecValue = execDataComp.retrieveEntry(customExecName)
+					.getValue();
 		}
-		
+
 		// A HashMap of MOOSE product executables that can be launched
 		HashMap<String, String> executableMap = new HashMap<String, String>();
 		executableMap.put("MARMOT", "marmot");
@@ -209,7 +201,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					+ "-opt -i ${inputFile} --no-color";
 		} else if (yamlSyntaxGenerator.equals(executable)) {
 			launchCommand =
-					// BISON files
+			// BISON files
 			"if [ -d ${installDir}bison ] "
 					+ "&& [ -f ${installDir}bison/bison-opt ]\n then\n"
 					+ "    ${installDir}bison/bison-opt --yaml > bison.yaml\n"
@@ -229,7 +221,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					+ "    ${installDir}relap-7/relap-7-opt --yaml > relap.yaml\n"
 					+ "    ${installDir}relap-7/relap-7-opt --syntax > relap.syntax\n"
 					+ "    echo 'Generating RELAP-7 files'\n"
-					+ "elif [ -d ${installDir}r7_moose ] " // Old name
+					+ "elif [ -d ${installDir}r7_moose ] " // Old
+															// name
 					+ "&& [ -f ${installDir}r7_moose/r7_moose-opt ]\n then\n"
 					+ "    ${installDir}r7_moose/r7_moose-opt --yaml > relap.yaml\n"
 					+ "    ${installDir}r7_moose/r7_moose-opt --syntax > relap.syntax\n"
@@ -247,7 +240,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 					+ "/" + executable + "-opt -i ${inputFile} --no-color";
 
 		} else {
-			// BISON, MARMOT, RELAP-7 and (presumably) custom apps follow the 
+			// BISON, MARMOT, RELAP-7 and (presumably) custom apps follow the
 			// same execution pattern
 			launchCommand = "${installDir}" + executableMap.get(executable)
 					+ "/" + executableMap.get(executable)
@@ -255,6 +248,132 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		}
 
 		return launchCommand;
+	}
+
+	/**
+	 * <p>
+	 * This operation is used to check equality between the MOOSEModel Item and
+	 * another MOOSEModel Item. It returns true if the Items are equal and false
+	 * if they are not.
+	 * </p>
+	 *
+	 * @param otherMoose
+	 *            <p>
+	 *            The MOOSEModel Item that should be checked for equality.
+	 *            </p>
+	 * @return <p>
+	 *         True if the launchers are equal, false if not
+	 *         </p>
+	 */
+	@Override
+	public boolean equals(Object other) {
+
+		boolean retVal;
+
+		// Check if they are the same reference in memory
+		if (this == other) {
+			return true;
+		}
+
+		// Check that the object is not null, and that it is an Item
+		// Check that these objects have the same ICEObject data
+		if (other == null || !(other instanceof MOOSELauncher)
+				|| !super.equals(other)) {
+			return false;
+		}
+
+		// Check data
+		MOOSELauncher otherMooseLauncher = (MOOSELauncher) other;
+		retVal = (this.allowedActions.equals(otherMooseLauncher.allowedActions))
+				&& (this.form.equals(otherMooseLauncher.form))
+				&& (this.itemType == otherMooseLauncher.itemType)
+				&& (this.status.equals(otherMooseLauncher.status));
+
+		// Check project
+		if (this.project != null && otherMooseLauncher.project != null
+				&& (!(this.project.equals(otherMooseLauncher.project)))) {
+			return false;
+		}
+
+		// Check project
+		if (this.project == null && otherMooseLauncher.project != null
+				|| this.project != null && otherMooseLauncher.project == null) {
+			return false;
+		}
+
+		// MOOSE Model specific stuff...
+
+		return retVal;
+	}
+
+	/**
+	 * <p>
+	 * This operation returns the hashcode value of the MOOSELauncher.
+	 * </p>
+	 *
+	 * @return <p>
+	 *         The hashcode
+	 *         </p>
+	 */
+	@Override
+	public int hashCode() {
+
+		// Local Declaration
+		int hash = 9;
+		// Compute hash code from MOOSELauncher data
+		hash = 31 * hash + super.hashCode();
+		hash = 31 * hash + inputFileName.hashCode();
+
+		return hash;
+	}
+
+	/**
+	 *
+	 * @param otherMoose
+	 *            <p>
+	 *            This operation performs a deep copy of the attributes of
+	 *            another MOOSELauncher Item into the current MOOSELauncher
+	 *            Item.
+	 *            </p>
+	 */
+	public void copy(MOOSELauncher otherMoose) {
+
+		// Return if otherMoose is null
+		if (otherMoose == null) {
+			return;
+		}
+
+		// Copy contents into super and current object
+		super.copy(otherMoose);
+
+		// Clone contents correctly
+		form = new Form();
+		form.copy(otherMoose.form);
+
+		// Copy Moose Launcher specific stuff
+		inputFileName = otherMoose.inputFileName;
+		execDataComp = (DataComponent) otherMoose.execDataComp.clone();
+
+		return;
+	}
+
+	/**
+	 * <p>
+	 * This operation provides a deep copy of the MOOSELauncher Item.
+	 * </p>
+	 *
+	 * @return <p>
+	 *         A clone of the MOOSELauncher Item.
+	 *         </p>
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new instance of Moose Launcher and copy the contents
+		MOOSELauncher clone = new MOOSELauncher();
+		clone.copy(this);
+
+		return clone;
 	}
 
 	/**
@@ -276,13 +395,65 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		return;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.eclipse.ice.item.jobLauncher.JobLauncher#process(java.lang.String)
+	 */
+	@Override
+	public FormStatus process(String actionName) {
+
+		// Grab the Files Component so we can check
+		// that all the user specified files
+		// exist in the project space.
+		DataComponent files = (DataComponent) form
+				.getComponent(JobLauncherForm.filesId);
+		refreshProjectSpace();
+
+		// Loop over all file entries and make sure they exist
+		for (final Entry entry : files.retrieveAllEntries()) {
+			try {
+				// Check the entry value validity, if bad throw an exception
+				if (entry.getValue().isEmpty()
+						|| !project.getFile(entry.getValue()).exists()) {
+					throw new Exception(
+							"Error launching the Job, can't find file "
+									+ entry.getValue());
+				}
+			} catch (Exception e) {
+				// Let's catch the Exception in a somewhat graceful way...
+				logger.error(getClass().getName() + " Exception! ", e);
+				String errorMessage = "The MOOSE Application could not be launched because all required files "
+						+ "could not be found in "
+						+ project.getLocation().toOSString()
+						+ ". Please click 'Browse' on the following Entry to import the files.\n\nFile = "
+						+ (entry.getValue().isEmpty() ? entry.getName() : entry
+								.getValue()) + "\n" + e.getMessage();
+
+				// Invoke Item's throwErrorMessage to display a
+				// descriptive error to the user
+				throwErrorMessage("MOOSE Application Launch",
+						"org.eclipse.ice.item.nuclear", errorMessage);
+
+				// Tell the client InfoError.
+				return FormStatus.InfoError;
+			}
+
+		}
+
+		// Run the job launchers process method.
+		return super.process(actionName);
+
+	}
+
 	/**
 	 * This operation overrides Item.reviewEntries(). This override is required
 	 * in the event that the YAML/action syntax generator is selected, in which
 	 * case certain JobLaunch flags (related to file uploading) must be turned
 	 * off. Conversely, these flags must be turned back on for any other
 	 * executable.
-	 * 
+	 *
 	 * @param preparedForm
 	 *            The Form to review.
 	 * @return The Form's status.
@@ -311,203 +482,22 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 				// Set this back to true in case it's been changed by the YAML/
 				// action syntax generator
 				setUploadInputFlag(true);
-				
+
 				if (yamlSyntaxGenerator.equals(execName)) {
 					// Disable input file appending (no input file to append)
 					setAppendInputFlag(false);
 					// Disable input file uploading
 					setUploadInputFlag(false);
 				}
-				
+
 				retStatus = FormStatus.ReadyToProcess;
-								
+
 			} else {
 				retStatus = FormStatus.InfoError;
 			}
 		}
 
 		return retStatus;
-	}
-
-	/**
-	 * Override of the JobLauncher.updateResourceComponent() method to also
-	 * process the downloaded *.yaml and *.syntax files after the super method
-	 * is executed. Any extraneous header/footer text is removed, and the
-	 * resulting file is placed in the default/MOOSE folder (which is created,
-	 * if it doesn't already exist). Any old *.yaml and *.syntax files in the
-	 * MOOSE directory will be overwritten.
-	 */
-	@Override
-	protected void updateResourceComponent() {
-		// Call the super
-		super.updateResourceComponent();
-
-		// Get the working directory for the job launch
-		String workingDirectory = getWorkingDirectory();
-
-		// If this is the YAML/action syntax process, we need a few extra steps
-		if (yamlSyntaxGenerator.equals(execName)) {
-
-			// Get the MOOSE folder
-			IFolder mooseFolder = project.getFolder("MOOSE");
-
-			// Check if the MOOSE folder exists; create it if it doesn't
-			if (!mooseFolder.exists()) {
-				try {
-					mooseFolder.create(true, true, null);
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
-			}
-
-			// Get all files that end with .yaml or .syntax and move them from
-			// the
-			// MooseLauncher working directory to the MOOSE folder.
-			moveFiles(workingDirectory, mooseFolder.getLocation().toOSString(),
-					".yaml");
-			moveFiles(workingDirectory, mooseFolder.getLocation().toOSString(),
-					".syntax");
-
-			// Clean up the MOOSE yaml/syntax files.
-			try {
-				mooseFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-				for (IResource resource : mooseFolder.members()) {
-					if (resource.getType() == IResource.FILE
-							&& resource.getProjectRelativePath().lastSegment()
-									.contains(".yaml")
-							|| resource.getProjectRelativePath().lastSegment()
-									.contains(".syntax")) {
-						createCleanMOOSEFile(resource.getLocation()
-								.toOSString());
-
-					}
-				}
-
-			} catch (CoreException | IOException e) {
-				e.printStackTrace();
-			}
-
-			// Since this is just the GenerateYAML Executable, we don't
-			// really need to keep the working directory, so delete it here.
-			deleteDirectory(workingDirectory);
-
-			// Refresh the project space
-			refreshProjectSpace();
-		}
-
-	}
-
-	/**
-	 * This method is intended to take a filePath corresponding to a MOOSE YAML
-	 * or action syntax file, and remove any extraneous header or footer lines
-	 * that aren't valid syntax. If any lines from the file were removed, it
-	 * re-writes the file. If no changes were made (no header/footer to remove),
-	 * it does nothing.
-	 * 
-	 * @param filePath
-	 *            The filepath to the YAML or action syntax file.
-	 * @throws IOException
-	 * @throws CoreException
-	 */
-	private void createCleanMOOSEFile(String filePath) throws IOException,
-			CoreException {
-
-		// Local declarations
-		String fileExt, execName, fileType = null;
-		boolean hasHeader = false, hasFooter = false;
-		int headerLine = 0, footerLine = 0;
-		String separator = System.getProperty("file.separator");
-		ArrayList<String> fileLines;
-
-		// Check if the MOOSE folder exists; create it if it doesn't
-		IFolder mooseFolder = project.getFolder("MOOSE");
-
-		// If the MOOSE folder doesn't exist, create it
-		if (!mooseFolder.exists()) {
-			mooseFolder.create(true, true, null);
-		}
-
-		// Define where the "clean" MOOSE file will be written
-		fileExt = filePath.substring(filePath.lastIndexOf("."));
-		execName = filePath.substring(filePath.lastIndexOf(separator) + 1,
-				filePath.lastIndexOf(fileExt));
-		String cleanFilePath = filePath.substring(0,
-				filePath.lastIndexOf(separator))
-				+ separator + execName + fileExt;
-
-		if (".yaml".equals(fileExt)) {
-			fileType = "YAML";
-		} else if (".syntax".equals(fileExt)) {
-			fileType = "SYNTAX";
-		} else {
-			System.out.println("MOOSEFileHandler message: File does not have "
-					+ "vaid file extension. Must be .yaml or .syntax but is "
-					+ fileExt);
-		}
-
-		// Read in the MOOSE file into an ArrayList of Strings
-		java.nio.file.Path readPath = Paths.get(filePath);
-		fileLines = (ArrayList<String>) Files.readAllLines(readPath,
-				Charset.defaultCharset());
-
-		// Define what the header/footer lines look like
-		String header = "**START " + fileType + " DATA**";
-		String footer = "**END " + fileType + " DATA**";
-
-		// Determine if there is a header and/or footer
-		hasHeader = fileLines.contains(header);
-		hasFooter = fileLines.contains(footer);
-
-		// Cut off the footer, if there is one
-		if (hasFooter) {
-
-			// Record the line number of the footer
-			footerLine = fileLines.indexOf(footer);
-
-			// Remove the footer line and anything after it
-			int i = footerLine;
-			while (i < fileLines.size()) {
-				fileLines.remove(i);
-			}
-		}
-
-		// Cut off the header, if there is one
-		if (hasHeader) {
-
-			// Record the line number
-			headerLine = fileLines.indexOf(header);
-
-			// Remove the header line and anything before it
-			for (int i = headerLine; i >= 0; i--) {
-				fileLines.remove(i);
-			}
-		}
-
-		// If there was any changes made to the file, write it out and replace
-		// the original one
-		if (hasHeader || hasFooter) {
-
-			// If there's an already existing file to where we want to write,
-			// get rid of it
-			IFile cleanFile = mooseFolder.getFile(execName + fileExt);
-			if (cleanFile.exists()) {
-				cleanFile.delete(true, null);
-			}
-
-			// Write out to the clean file now
-			java.nio.file.Path writePath = Paths.get(cleanFilePath);
-			Files.write(writePath, fileLines, Charset.defaultCharset(),
-					StandardOpenOption.CREATE);
-			System.out.println("MOOSELauncher Message: "
-					+ "Placing file in /ICEFiles/default/MOOSE: " + execName
-					+ fileExt);
-
-			// Delete the old file
-			// File oldFile = new File(filePath);
-			// oldFile.delete();
-		}
-
-		return;
 	}
 
 	/**
@@ -519,67 +509,81 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 */
 	@Override
 	public void update(IUpdateable component) {
-		
+
 		// If the component is a DataComponent, then toggle the custom MOOSE
 		// app entry on/off
 		if (component instanceof DataComponent) {
-			
+
 			// Grab the name of the current executable selected by the user
 			if (execDataComp != null) {
 				execName = execDataComp.retrieveAllEntries().get(0).getValue();
 			}
-			
+
 			Entry parentEntry = execDataComp.retrieveEntry("Executable");
 			Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
-			
+
 			if (execName.equals(customExecName) && !customExecEntry.isReady()) {
-				// Reveal the custom app Entry if it's currently hidden and 
+				// Reveal the custom app Entry if it's currently hidden and
 				// the user wants to enter a name
 				customExecEntry.update(parentEntry.getName(), "true");
-			} else if (!execName.equals(customExecName) && customExecEntry.isReady()) {
+			} else if (!execName.equals(customExecName)
+					&& customExecEntry.isReady()) {
 				// Hide the custom app Entry if it's exposed and the user
 				// selected another app
 				customExecEntry.update(parentEntry.getName(), "false");
 			}
 		} else {
-			
+
 			if (component instanceof Entry) {
 
 				// Check if this is the Input File entry and has a valid value
 				Entry entry = (Entry) component;
-				if (entry.getName().equals("Input File") && !entry.getValue().isEmpty()) {
-					
+				if (entry.getName().equals("Input File")
+						&& !entry.getValue().isEmpty()) {
+
 					// First, check if the file extension on the value is valid
 					if (!entry.getValue().contains(".i")) {
 						// Complain and exit
-						System.out.println("MOOSELauncher Message: Input files"
+						logger.info("MOOSELauncher Message: Input files"
 								+ "must have a *.i extension!");
 						return;
 					}
-					
-					// Check if the input file name has changed
-					if (!entry.getValue().equals(inputFileName)) {
-						// Set the new reference value
-						inputFileName = entry.getValue();
-					} else {
-						// If the file name hasn't changed, just stop here
-						// (otherwise super.update will be called, which will
-						// redundantly re-search the whole file for dependencies
-						// and re-draw them)
-						return;
-					}
+
 				}
 			}
-			
+
 			super.update(component);
 		}
-		
-		return;		
+
+		return;
 	}
-	
+
+	/**
+	 * This method is used to get the String representing the working directory
+	 * for this Job launch.
+	 *
+	 * @return
+	 */
+	public String getJobLaunchDirectory() {
+		return getWorkingDirectory();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.eclipse.ice.item.jobLauncher.JobLauncher#
+	 * getFileDependenciesSearchString()
+	 */
 	@Override
 	protected String getFileDependenciesSearchString() {
-		return "file";
+		String re1 = "((?:[a-z][a-z0-9_]*))";
+		String re2 = "(\\s+)";
+		String re3 = "(=)";
+		String re4 = "(\\s+)";
+		String re5 = "((?:[a-z][a-z0-9_]*))";
+		String re6 = "(\\.)";
+		String re7 = "((?:[a-z][a-z0-9_]*))";
+		return re1 + re2 + re3 + re4 + re5 + re6 + re7;
 	}
 
 	/**

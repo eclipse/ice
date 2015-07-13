@@ -224,7 +224,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 		while (iter.hasNext()) {
 			String key = iter.next();
 			this.lWRComponents.put(key,
-					(LWRComponent) otherObject.lWRComponents.get(key));
+					otherObject.lWRComponents.get(key));
 
 		}
 
@@ -400,7 +400,7 @@ public class LWRComposite extends LWRComponent implements Composite {
 			// Iterate the next piece
 			component = iter.next();
 			// Add the component to the list
-			components.add((Component) component);
+			components.add(component);
 		}
 
 		// Return the list

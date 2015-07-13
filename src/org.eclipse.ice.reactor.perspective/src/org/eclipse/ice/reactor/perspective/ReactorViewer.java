@@ -41,6 +41,8 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class extends the ViewPart class to display opened reactor files and
@@ -50,6 +52,12 @@ import org.eclipse.ui.part.WorkbenchPart;
  */
 public class ReactorViewer extends ViewPart implements
 		ISelectionChangedListener, IUpdateableListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ReactorViewer.class);
 
 	/**
 	 * The id for this view
@@ -201,7 +209,7 @@ public class ReactorViewer extends ViewPart implements
 	@Override
 	public void update(IUpdateable component) {
 
-		System.out.println("ReactorViewer Message: Incoming resource update.");
+		logger.info("ReactorViewer Message: Incoming resource update.");
 
 		// Sync with the display.
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
@@ -215,7 +223,7 @@ public class ReactorViewer extends ViewPart implements
 					// ICEResources.
 					reactorTreeViewer.setInput(resourceComponent.getResources());
 
-					System.out.println("ReactorViewer Message: "
+					logger.info("ReactorViewer Message: "
 							+ "Updating resource table.");
 					reactorTreeViewer.refresh();
 					reactorTreeViewer.getTree().redraw();
@@ -345,7 +353,7 @@ public class ReactorViewer extends ViewPart implements
 				for (Iterator<?> iter = structuredSelection.iterator(); iter
 						.hasNext();) {
 					ICEResource resource = (ICEResource) iter.next();
-					System.out.println("ReactorViewer message: "
+					logger.info("ReactorViewer message: "
 							+ "Removing the resource \"" + resource.getName()
 							+ "\".");
 					resources.remove(resource);
@@ -370,7 +378,7 @@ public class ReactorViewer extends ViewPart implements
 	public void addReactorFile(ICEResource resource) {
 
 		if (resource != null) {
-			System.out.println("ReactorViewer message: Getting ICEResource "
+			logger.info("ReactorViewer message: Getting ICEResource "
 					+ "for file at \"" + resource.getPath().getPath() + "\".");
 
 			// Only add the resource to the ResourceComponent if a resource for
@@ -392,7 +400,7 @@ public class ReactorViewer extends ViewPart implements
 	 */
 	public void showSelection(int reactorEditorId) {
 
-		System.out.println("ReactorViewer message: Showing selection in"
+		logger.info("ReactorViewer message: Showing selection in"
 				+ " Reactor Editor " + reactorEditorId);
 
 		// Get the current selection from the TreeViewer.
@@ -419,7 +427,7 @@ public class ReactorViewer extends ViewPart implements
 		// TODO Change it to do some actual comparison rather than just setting
 		// the reference!
 
-		System.out.println("ReactorViewer message: Showing selection in"
+		logger.info("ReactorViewer message: Showing selection in"
 				+ " Reactor Editor " + reactorEditorId);
 
 		// Get the current selection from the TreeViewer.

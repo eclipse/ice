@@ -19,15 +19,25 @@ import ncsa.hdf.object.h5.H5Datatype;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * <p>
  * The HdfWriterFactory class contains static methods used to write elements to
  * an HDF5 file.
  * </p>
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public class HdfWriterFactory {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(HdfWriterFactory.class);
+
 	/**
 	 * <p>
 	 * Creates and returns a child H5Group called name for parentH5Group using
@@ -36,7 +46,7 @@ public class HdfWriterFactory {
 	 * If parentH5Group is null, then null is returned. If an exception is
 	 * thrown, then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            An H5File.
@@ -83,7 +93,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			return null;
 		}
@@ -99,7 +109,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			// Return null
 			return null;
@@ -113,7 +123,7 @@ public class HdfWriterFactory {
 	 * h5File is null or can not be opened, then null is returned. If an
 	 * exception is thrown, then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            An H5File.
@@ -144,7 +154,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			return null;
 		}
@@ -161,7 +171,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			// Return null
 			return null;
@@ -175,7 +185,7 @@ public class HdfWriterFactory {
 	 * or can not be opened, then null is returned. If an exception is thrown,
 	 * then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            An H5File.
@@ -206,7 +216,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			return null;
 		}
@@ -224,7 +234,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			// Return null
 			return null;
@@ -240,7 +250,7 @@ public class HdfWriterFactory {
 	 * is null, then false is returned. If an exception is thrown, then false is
 	 * returned. Otherwise, true is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            An H5File.
@@ -294,7 +304,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			return false;
 		}
@@ -319,7 +329,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			// return false
 			return false;
@@ -336,7 +346,7 @@ public class HdfWriterFactory {
 	 * is null, then false is returned. If an exception is thrown, then false is
 	 * returned. Otherwise, true is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            An H5File.
@@ -390,7 +400,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			return false;
 		}
@@ -414,7 +424,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			// return false
 			return false;
@@ -432,7 +442,7 @@ public class HdfWriterFactory {
 	 * thrown, then false is returned. If h5Group is null, then false is
 	 * returned. Otherwise, true is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            An H5File.
@@ -487,7 +497,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			return false;
 		}
@@ -526,7 +536,7 @@ public class HdfWriterFactory {
 		} catch (Exception e) {
 
 			// Print the stack trace
-			e.printStackTrace();
+			logger.error("HdfWriterFactory Exception!", e);
 
 			// return false
 			return false;

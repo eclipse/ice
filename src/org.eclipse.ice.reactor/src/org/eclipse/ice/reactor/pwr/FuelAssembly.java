@@ -98,18 +98,18 @@ public class FuelAssembly extends PWRAssembly {
 
 		// Setup rows and cols
 		this.gridLabelProvider = new GridLabelProvider(this.size);
-		this.gridLabelProvider.setName(this.GRID_LABEL_PROVIDER_NAME);
+		this.gridLabelProvider.setName(FuelAssembly.GRID_LABEL_PROVIDER_NAME);
 
 		// Setup tube map
 		this.tubeComposite = new LWRComposite();
-		this.tubeComposite.setName(this.TUBE_COMPOSITE_NAME);
+		this.tubeComposite.setName(FuelAssembly.TUBE_COMPOSITE_NAME);
 		this.tubeComposite
 				.setDescription("A Composite that contains many Tubes.");
 		this.tubeComposite.setId(2);
 
 		// Setup tube grid manager
 		this.tubeGridManager = new LWRGridManager(this.size);
-		this.tubeGridManager.setName(this.TUBE_GRID_MANAGER_NAME);
+		this.tubeGridManager.setName(FuelAssembly.TUBE_GRID_MANAGER_NAME);
 
 		// Add tubeComposite to components
 
@@ -195,7 +195,7 @@ public class FuelAssembly extends PWRAssembly {
 	public boolean addTube(Tube tube) {
 
 		// Add the component to the composite
-		this.tubeComposite.addComponent((Component) tube);
+		this.tubeComposite.addComponent(tube);
 
 		// If the component is not contained, return false
 		if (!this.tubeComposite.getComponents().contains(tube)) {
@@ -354,7 +354,7 @@ public class FuelAssembly extends PWRAssembly {
 				column));
 
 		// Return the component by name
-		return (Tube) this.getTubeByName(name);
+		return this.getTubeByName(name);
 	}
 
 	/**
@@ -408,7 +408,7 @@ public class FuelAssembly extends PWRAssembly {
 		// Set the location
 		this.tubeGridManager
 				.addComponent(
-						(Component) this.tubeComposite.getComponent(tubeName),
+						this.tubeComposite.getComponent(tubeName),
 						location);
 
 		// If the name changed, then return true
@@ -626,7 +626,7 @@ public class FuelAssembly extends PWRAssembly {
 			LWRGridManager lWRGridManager = (LWRGridManager) childComponent;
 
 			// Assign to correct object
-			if (lWRGridManager.getName().equals(this.TUBE_GRID_MANAGER_NAME)) {
+			if (lWRGridManager.getName().equals(FuelAssembly.TUBE_GRID_MANAGER_NAME)) {
 
 				this.tubeGridManager = (LWRGridManager) childComponent;
 
@@ -639,10 +639,10 @@ public class FuelAssembly extends PWRAssembly {
 			LWRComposite lWRComposite = (LWRComposite) childComponent;
 
 			// Assign to correct object
-			if (lWRComposite.getName().equals(this.TUBE_COMPOSITE_NAME)) {
+			if (lWRComposite.getName().equals(FuelAssembly.TUBE_COMPOSITE_NAME)) {
 
 				// Remove the tube from the composite and add it back
-				this.lWRComponents.remove(this.TUBE_COMPOSITE_NAME);
+				this.lWRComponents.remove(FuelAssembly.TUBE_COMPOSITE_NAME);
 				this.tubeComposite = lWRComposite;
 				this.lWRComponents.put(tubeComposite.getName(), tubeComposite);
 

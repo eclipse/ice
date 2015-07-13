@@ -13,8 +13,8 @@
 package org.eclipse.ice.xolotl;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**
@@ -22,7 +22,7 @@ import org.eclipse.ice.item.ItemType;
  * @author Jay Jay Billings
  *
  */
-public class XolotlLauncherBuilder implements ItemBuilder {
+public class XolotlLauncherBuilder extends AbstractItemBuilder {
 
 	// The name
 	public static final String name = "Xolotl Launcher";
@@ -30,29 +30,19 @@ public class XolotlLauncherBuilder implements ItemBuilder {
 	// The type
 	public static final ItemType type = ItemType.Simulation;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemName()
+	/**
+	 * The Constructor
 	 */
-	@Override
-	public String getItemName() {
-		// TODO Auto-generated method stub
-		return name;
+	public XolotlLauncherBuilder() {
+		setName(name);
+		setType(type);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ice.item.ItemBuilder#getItemType()
-	 */
-	@Override
-	public ItemType getItemType() {
-		// TODO Auto-generated method stub
-		return type;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ice.item.ItemBuilder#build(org.eclipse.core.resources.IProject)
 	 */
 	@Override
-	public Item build(IProject projectSpace) {
+	public Item getInstance(IProject projectSpace) {
 
 		XolotlLauncher launcher = new XolotlLauncher(projectSpace);
 		return launcher;
