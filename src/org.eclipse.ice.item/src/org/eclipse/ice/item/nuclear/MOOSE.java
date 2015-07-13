@@ -517,7 +517,10 @@ public class MOOSE extends Item {
 		// Register this Item as a listener to the Variables block
 		// this is so we can use the variables to populate things like
 		// kernel variable entries.
-		getTreeByName("Variables").register(this);
+		TreeComposite vars = getTreeByName("Variables");
+		if (vars != null) {
+			vars.register(this);
+		}
 		TreeComposite aux = getTreeByName("AuxVariables");
 		if (aux != null) {
 			aux.register(this);
