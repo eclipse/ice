@@ -17,7 +17,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.viz.service.connections.VizConnectionManager;
+import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
 import org.eclipse.ice.viz.service.preferences.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -118,7 +118,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 * @return The delimiter for serializing connection preferences.
 	 */
 	protected String getConnectionPreferenceDelimiter() {
-		return VizConnectionManager.DEFAULT_CONNECTION_PREFERENCE_DELIMITER;
+		return IVizConnectionManager.DEFAULT_CONNECTION_PREFERENCE_DELIMITER;
 	}
 
 	/*
