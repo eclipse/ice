@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <!-- Perspective -->
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -9,6 +10,7 @@
             name="name">
       </perspective>
    </extension>
+   <!-- Editor -->
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -18,5 +20,17 @@
             name="ReflectivityEditor">
       </editor>
    </extension>
+   <!--Custom Properties View-->
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="org.eclipse.ice.reflectivity.ui.ReflectivityFormEditor"
+            tabDescriptorProvider="org.eclipse.ice.reflectivity.ui.ReflectivityTabDescriptorProvider">
+         <propertyCategory
+               category="Reflectivity"></propertyCategory>
+      </propertyContributor>
+   </extension>
+   
+   
 
 </plugin>

@@ -18,6 +18,7 @@ import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
 
 /**
  * The custom form editor for the reflectivity model. Should be used instead of
@@ -32,6 +33,8 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 	 * ID for Eclipse, used for the bundle's editor extension point.
 	 */
 	public static final String ID = "org.eclipse.ice.reflectivity.ui.ReflectivityFormEditor";
+
+	private ReflectivityPage reflectPage;
 
 	/*
 	 * (non-Javadoc)
@@ -68,7 +71,7 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 
 			// Create the reflectivity page. Use all of the components for the
 			// Id.
-			ReflectivitySectionPage page = new ReflectivitySectionPage(this,
+			ReflectivityPage page = new ReflectivityPage(this,
 					dataComp.getName() + listComp.getName() + resComp.getName(),
 					"Reflectivity Page");
 
@@ -89,6 +92,21 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 				// Catch the stack trace
 				e.printStackTrace();
 			}
+
+			// Finally set the global variable to reference later
+			reflectPage = page;
 		}
+	}
+
+	/**
+	 * Gets the specific adapter needed for the class given
+	 */
+
+	@Override
+	public Object getAdapter(Class adapter) {
+		if (adapter == IPropertySheetPage.class) {
+			return reflectPage.getAdapter(adapter);
+		}
+		return super.getAdapter(adapter);
 	}
 }
