@@ -406,7 +406,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 
 		// Create a new job to listen for the connection status. It will notify
 		// users about the progress of the connection attempt.
-		Job job = new Job("Viz Connection") {
+		Job job = new Job("Vizualization Service") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
@@ -420,7 +420,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				 */
 
 				// Set the initial task name.
-				monitor.beginTask("Viz connection \"" + VizConnection.this.getName(), 100);
+				monitor.beginTask("Viz connection \"" + VizConnection.this.getName() + "\"", 100);
 
 				String message = null;
 				long timeout = 250;
@@ -452,8 +452,14 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				monitor.worked(100);
 
 				// Return the result.
-				int statusFlag = state == ConnectionState.Connected ? Status.OK : Status.ERROR;
+				int statusFlag = Status.OK;
 				message = VizConnection.this.getStatusMessage();
+				// Add a helpful message if the connection attempt failed.
+				if (state != ConnectionState.Connected) {
+					statusFlag = Status.ERROR;
+					message += "\nPlease check the settings for \"" + VizConnection.this.getName()
+							+ "\" under Windows > Preferences > Vizualization.";
+				}
 				return new Status(statusFlag, "org.eclipse.viz.service", 1, message, null);
 			}
 		};
@@ -587,7 +593,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 
 		// Create a new job to listen for the connection status. It will notify
 		// users about the progress of the disconnect attempt.
-		Job job = new Job("Viz Connection") {
+		Job job = new Job("Vizualization Service") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
@@ -600,7 +606,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				 */
 
 				// Set the initial task name.
-				monitor.beginTask("Viz connection \"" + VizConnection.this.getName(), 100);
+				monitor.beginTask("Viz connection \"" + VizConnection.this.getName() + "\"", 100);
 
 				String message = null;
 				long timeout = 250;
