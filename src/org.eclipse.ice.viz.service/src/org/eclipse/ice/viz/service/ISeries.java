@@ -12,8 +12,6 @@
 
 package org.eclipse.ice.viz.service;
 
-import java.util.List;
-
 /**
  * The {@code ISeries} interface defines the set of methods necessary to
  * describe a series in ICE used for plotting on an {@link IPlot}. The ISeries
@@ -24,52 +22,6 @@ import java.util.List;
  *
  */
 public interface ISeries {
-
-	/**
-	 * Adds a data point to the end of the series. The data must be a
-	 * {@code double}, as that is the only type of data that the platform can
-	 * plot using the current interface.
-	 * 
-	 * @param data
-	 *            The data point to add.
-	 */
-	public void add(double data);
-
-	/**
-	 * Adds all of the data from the specified list to the series. Appends this
-	 * list to the current data in the series.
-	 * 
-	 * @param data
-	 *            List<Double> the list to append.
-	 */
-	public void addAll(List<Double> data);
-
-	/**
-	 * Removes the indicated data point from the series. Note that the series is
-	 * zero indexed, so calling series.remove(4) removes the fifth data point.
-	 * If the index is not within a reasonable range, should throw an index out
-	 * of bounds exception.
-	 * 
-	 * @param index
-	 *            The index of the data to remove.
-	 */
-	public void remove(int index);
-
-	/**
-	 * Removes all of the data points from the series, meaning that some other
-	 * methods will throw exceptions until data is added back.
-	 */
-	public void removeAll();
-
-	/**
-	 * Gets the series as an array of double values in a {@code List<Double>}.
-	 * Note that changing this List should not change the series. Use the
-	 * {@link ISeries#add(double)}, {@link ISeries#remove(double)}, and
-	 * {@link ISeries#removeAll()} methods to effect the series.
-	 * 
-	 * @return List<Double> The list of values in the series.
-	 */
-	public List<Double> getArray();
 
 	/**
 	 * Gets the bounds for this series. The bounds are described as the minimum
@@ -89,36 +41,15 @@ public interface ISeries {
 	public double[] getBounds();
 
 	/**
-	 * Gets the number of the axis for this series. This is an indication of
-	 * whether the data is dependent or independent, and limits which axis the
-	 * data can be displayed on.
+	 * Gets all of the data points for this series, used to plot the series no
+	 * matter what visualization service is being used. It is up to the service
+	 * to know what type of objects are being stored in the array and caste
+	 * appropriately.
 	 * 
-	 * @return The number of the specified axis for this series. See
-	 *         {@link ISeries#setAxis()} for more information on what the
-	 *         returned value correlates to.
+	 * @return Object[] An array containing all of the data points for this
+	 *         series.
 	 */
-	public int getAxis();
-
-	/**
-	 * Sets the axis for this series, so that if this data is independent it
-	 * will only be compared with dependent data and will not be displayed on
-	 * the Y axis for a standard xyz plane, for example. </br>
-	 * For XYZ, the x axis is number 1, the y is 2, and the z is three. For
-	 * polar, 1 is theta, 2 is the radius, and 3 is phi. Depending on the type
-	 * of plot this series will be plotted, on, independent data is typically 1
-	 * while the dependent axes are numbered Incrementally from that. </br>
-	 * This method does nothing if the axis is invalid, meaining less than zero
-	 * or greater than the number of axes for the correlating {@link IPlot}
-	 * . </br>
-	 * Giving zero as the axis means that the series is enabled on all axes, as
-	 * is the default behavior. Note that this method is invalid if the series
-	 * has children series, as it makes no sense to specify an axis for all of
-	 * the child series.
-	 * 
-	 * @param axis
-	 *            The specified axis number.
-	 */
-	public void setAxis(int axis);
+	public Object[] getDataPoints();
 
 	/**
 	 * Gets the parent series for this series. This allows for grouping of
@@ -129,15 +60,6 @@ public interface ISeries {
 	 * @return ISeries The parent series to this one.
 	 */
 	public ISeries getParentSeries();
-
-	/**
-	 * Adds a child series to this series. Note that there can be several
-	 * different relationships amoungst series, such as one containing both the
-	 * x and y series, or having error associated with the parent series.
-	 * 
-	 * @param child
-	 */
-	public void addChildSeries(ISeries child);
 
 	/**
 	 * Gets the label used to describe this series and to be shown on the

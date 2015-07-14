@@ -25,6 +25,8 @@ package org.eclipse.ice.viz.service;
  */
 public interface IPlot extends IVizCanvas {
 
+	public void setPlotTitle(String title);
+
 	/**
 	 * Sets the series that will be on the independent axis for this plot. All
 	 * other series will be plotted in reference to this series.
@@ -44,16 +46,22 @@ public interface IPlot extends IVizCanvas {
 	 *            The dependent series to add.
 	 */
 	public void addDependantSeries(ISeries series);
-	
+
 	/**
-	 * Sets the title that the visualization service will use to label 
-	 * @param axisTitle
+	 * Removes the specified series from the dependent series list.
+	 * 
+	 * @param series
+	 *            The series to remove from the list.
 	 */
-	public void setXAxisTitle(String axisTitle);
-	
-	public void setYAxisTitle(String axisTitle);
-	
-	public void setZAxisTitle(String axisTitle);
-	
+	public void removeDependantSeries(ISeries series);
+
+	/**
+	 * Gets the specified dependent series. The index is zero based and
+	 * correlates to when the dependent series was added to the plot.
+	 * 
+	 * @param index
+	 *            The index of the series, being zero based.
+	 */
+	public ISeries getDependantSeries(int index);
 
 }

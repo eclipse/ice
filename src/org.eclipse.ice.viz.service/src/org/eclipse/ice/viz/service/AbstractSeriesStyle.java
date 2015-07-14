@@ -17,6 +17,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * An abstract implementation of a series style object to be subclassed. It
+ * provides the basic architecture for mapping the properties of the style. It
+ * is recommended to use this class with a modified constructor to set the
+ * standard property key set to be used for different default cases. The methods
+ * declared in the {@link ISeriesStyle} that are implemented here are not meant
+ * to be overridden.
+ * 
  * @author Kasper Gammeltoft
  *
  */
@@ -56,11 +63,25 @@ public abstract class AbstractSeriesStyle implements ISeriesStyle {
 	 */
 	@Override
 	public boolean setProperty(String propertyType, Object value) {
-		boolean retVal = properties.containsKey(propertyType);
-		if (retVal) {
-			properties.put(propertyType, value);
+		// Make sure that the caller is not creating a new property and that the
+		// new value for the property is of the allowed type.
+		boolean propertyExists = properties.containsKey(propertyType);
+		boolean valueIsGood = false;
+		// If the property exists then see if the value is of the right type
+		if (propertyExists) {
+			// If the current value is null, then any value is good. Otherwise,
+			// see if the new value is an instance of the current value
+			valueIsGood = properties.get(propertyType) == null || (value
+					.getClass().isInstance(properties.get(propertyType)));
+
+			// Set the property
+			if (valueIsGood) {
+				properties.put(propertyType, value);
+			}
 		}
-		return retVal;
+		// Return true if both the property type and new value were acceptable,
+		// as only then is the property set.
+		return propertyExists && valueIsGood;
 	}
 
 	/*
