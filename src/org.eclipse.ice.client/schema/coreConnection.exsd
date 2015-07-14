@@ -44,6 +44,21 @@
       </complexType>
    </element>
 
+   <element name="coreClass">
+      <complexType>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  The implementation of ICore that will be used to manage ICE Core requests.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.ice.core.iCore.ICore"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
    <annotation>
       <appinfo>
          <meta.section type="since"/>
