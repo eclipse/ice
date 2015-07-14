@@ -12,31 +12,24 @@
 package org.eclipse.ice.viz.service.paraview.proxy.exodus;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature;
+import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature.ColorByLocation;
+import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature.ColorByMode;
 
 /**
  * This class provides a concrete {@link IParaViewProxy} that supports loading
  * and rendering Exodus files.
  * <p>
  * <b>Note:</b> In practice, instances of this class should not be instantiated.
- * Rather, they should be obtained from the
- * {@link IParaViewProxyFactory}.
+ * Rather, they should be obtained from the {@link IParaViewProxyFactory}.
  * </p>
  * 
  * @author Jordan Deyton
@@ -59,18 +52,12 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		// Nothing to do yet.
 	}
 
-
 	/*
-	 * Overrides a method from AbstractParaViewProxy.
+	 * Implements an abstract method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected Map<String, Set<String>> findFeatures(
-			ParaViewConnection connection) {
+	protected List<ProxyFeature> findFeatures(ParaViewConnection connection) {
 
-		// Initialize the map of categories and features. This map will be
-		// returned.
-		Map<String, Set<String>> featureMap = new HashMap<String, Set<String>>();
-		
 		/*
 		 * The structure of Exodus files looks like so:
 		 * 
@@ -85,95 +72,25 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		 * "Global Variables", a list of variables that can be loaded
 		 */
 
-		// TODO By default, it appears that all of the variables are loaded. It
-		// would probably be better to only load them when selected.
+		// Initialize the list of supported features.
+		List<ProxyFeature> features = new ArrayList<ProxyFeature>();
 
-		IParaViewWebClient client = connection.getWidget();
-		
-		// Loop over the "data" > "arrays" JsonArray and get all point, cell,
-		// and field variables.
-		JsonObject object;
-		JsonArray array;
-		try {
-			// Query the client for the file proxy's information.
-			array = new JsonArray();
-			array.add(new JsonPrimitive(Integer.toString(getFileId())));
-			object = client.call("pv.proxy.manager.get", array).get();
-			// Get the "data" object's "arrays" array.
-			object = object.get("data").getAsJsonObject();
-			array = object.get("arrays").getAsJsonArray();
-			// Loop over every element in the array and put it in the
-			// appropriate category.
-			for (int i = 0; i < array.size(); i++) {
-				object = array.get(i).getAsJsonObject();
-				// Get the category and feature name.
-				String category = object.get("location").getAsString();
-				String name = object.get("name").getAsString();
-				Set<String> features = featureMap.get(category);
-				if (features == null) {
-					features = new HashSet<String>();
-					featureMap.put(category, features);
-				}
-				features.add(name);
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-			System.err.println("ExodusProxy error: "
-					+ "Connection error while getting file proxy information.");
-		} catch (NullPointerException | ClassCastException
-				| IllegalStateException e) {
-			System.err.println("ExodusProxy error: "
-					+ "Error while reading file proxy information.");
-		}
+		features.add(new ProxyFeature(11, "Point Variables", "PointVariables",
+				ColorByMode.ARRAY, ColorByLocation.POINTS));
+		features.add(new ProxyFeature(2, "Element Variables",
+				"ElementVariables", ColorByMode.ARRAY, ColorByLocation.CELLS));
+		// features.put("Face Variables", new ProxyFeature(3, "Face Variables",
+		// "FaceVariables"));
+		// features.put("Edge Variables", new ProxyFeature(4, "Edge Variables",
+		// "EdgeVariables"));
+		// features.put("Global Variables", new ProxyFeature(12, "Global
+		// Variables", "GlobalVariables"));
 
-		return featureMap;
+		return features;
 	}
 
 	/*
-	 * Overrides a method from AbstractParaViewProxy.
-	 */
-
-	@Override
-	protected boolean setFeatureOnClient(ParaViewConnection connection,
-			String category, String feature) {
-		
-		IParaViewWebClient client = connection.getWidget();
-		
-		boolean updated = false;
-
-		// Currently, we can only draw point or cell arrays.
-		if (category.equals("POINTS") || category.equals("CELLS")) {
-
-			// Set the "color by" to color based on the feature name.
-			JsonArray args = new JsonArray();
-
-			// Add the requisite arguments to the argument array.
-			args.add(new JsonPrimitive(Integer.toString(getRepresentationId())));
-			args.add(new JsonPrimitive("ARRAY"));
-			args.add(new JsonPrimitive(category));
-			args.add(new JsonPrimitive(feature));
-			args.add(new JsonPrimitive("Magnitude"));
-			args.add(new JsonPrimitive(0));
-			args.add(new JsonPrimitive(true));
-
-			// Call the client.
-			try {
-				// The only way to tell if the client even received the message
-				// is if we get back an empty JsonObject. If null, then there
-				// was an error.
-				if (client.call("pv.color.manager.color.by", args).get() != null) {
-					updated = true;
-				}
-			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return updated;
-	}
-
-	/*
-	 * Overrides a method from AbstractParaViewProxy.
+	 * Implements an abstract method from AbstractParaViewProxy.
 	 */
 	@Override
 	protected List<IProxyProperty> findProperties(
