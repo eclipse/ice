@@ -109,8 +109,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	protected AbstractParaViewProxy(URI uri) throws NullPointerException {
 		// Throw an exception if the argument is null.
 		if (uri == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Cannot open a null URI.");
+			throw new NullPointerException(
+					"ParaViewProxy error: " + "Cannot open a null URI.");
 		}
 
 		// Set the reference to the URI.
@@ -184,9 +184,6 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 					// Update the reference to the current connection.
 					AbstractParaViewProxy.this.connection = conn;
 
-					// TODO Do we want to allow null values for properties and
-					// features?
-
 					// Re-build the map of features.
 					featureMap.clear();
 					featureMap.putAll(findFeatures(conn));
@@ -202,6 +199,10 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 							propertyMap.put(name, property);
 						}
 					}
+
+					// Set the initial category and feature.
+					category = findInitialCategory();
+					feature = findInitialFeature();
 				}
 
 				return opened;
@@ -246,7 +247,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		Set<String> featureSet = featureMap.get(category);
 		if (featureSet == null) {
 			throw new IllegalArgumentException("ParaViewProxy error: "
-					+ "Cannot find features for category \"" + category + "\".");
+					+ "Cannot find features for category \"" + category
+					+ "\".");
 		}
 
 		// Return an ordered copy of the set of allowed features.
@@ -290,7 +292,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 							// Only attempt to update the feature and category
 							// if the client is connected and can be
 							// successfully updated.
-							if (connection.getState() == ConnectionState.Connected
+							if (connection
+									.getState() == ConnectionState.Connected
 									&& setFeatureOnClient(connection,
 											newCategory, newFeature)) {
 								AbstractParaViewProxy.this.category = newCategory;
@@ -337,8 +340,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public String getProperty(String name) throws NullPointerException,
-			IllegalArgumentException {
+	public String getProperty(String name)
+			throws NullPointerException, IllegalArgumentException {
 		// Return the current value of the property.
 		return getProxyProperty(name).getValue();
 	}
@@ -535,9 +538,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 					reason = "Unknown due to malformed response.";
 				}
 				// Print out the reason for the failure.
-				System.err.println("ParaViewProxy error: "
-						+ "Failed to open \"" + fullPath + "\". Reason: "
-						+ reason);
+				System.err.println("ParaViewProxy error: " + "Failed to open \""
+						+ fullPath + "\". Reason: " + reason);
 			}
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
@@ -565,6 +567,34 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 */
 	protected abstract Map<String, Set<String>> findFeatures(
 			ParaViewConnection connection);
+
+	/**
+	 * Finds the current category from the file. This is only called when the
+	 * file is opened.
+	 * <p>
+	 * <b>Note:</b> Sub-classes may override this method to find the current
+	 * category. The default behavior is to return {@code null}.
+	 * </p>
+	 * 
+	 * @return The current category according to the ParaView web client.
+	 */
+	protected String findInitialCategory() {
+		return null;
+	}
+
+	/**
+	 * Finds the current feature from the file. This is only called when the
+	 * file is opened.
+	 * <p>
+	 * <b>Note:</b> Sub-classes may override this method to find the current
+	 * feature. The default behavior is to return {@code null}.
+	 * </p>
+	 * 
+	 * @return The current feature according to the ParaView web client.
+	 */
+	protected String findInitialFeature() {
+		return null;
+	}
 
 	/**
 	 * Finds the properties in the file by querying the associated ParaView
@@ -636,70 +666,71 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		});
 
 		// Set up a property that can be used to set the representation type.
-		properties.add(new AbstractProxyProperty("Representation", this,
-				connection) {
-			@Override
-			protected String findValue(ParaViewConnection connection) {
-				// TODO This can be found from the file.
-				return "Surface";
-			}
-
-			@Override
-			protected Set<String> findAllowedValues(
-					ParaViewConnection connection) {
-				// TODO This can be found from the file.
-				Set<String> allowedValues = new HashSet<String>();
-				allowedValues.add("3D Glyphs");
-				allowedValues.add("Outline");
-				allowedValues.add("Points");
-				allowedValues.add("Surface");
-				allowedValues.add("Surface With Edges");
-				allowedValues.add("Volume");
-				allowedValues.add("Wireframe");
-				return allowedValues;
-			}
-
-			@Override
-			protected boolean setValueOnClient(String value,
-					ParaViewConnection connection) {
-
-				IParaViewWebClient client = connection.getWidget();
-
-				boolean updated = false;
-
-				JsonArray args = new JsonArray();
-				JsonArray updatedProperties = new JsonArray();
-				JsonObject repProperty = new JsonObject();
-				repProperty.addProperty("id",
-						Integer.toString(getRepresentationId()));
-				repProperty.addProperty("name", "Representation");
-				repProperty.addProperty("value", value);
-				updatedProperties.add(repProperty);
-
-				// Update the properties that were configured.
-				args = new JsonArray();
-				args.add(updatedProperties);
-				JsonObject response;
-				try {
-					response = client.call("pv.proxy.manager.update", args)
-							.get();
-					if (!response.get("success").getAsBoolean()) {
-						System.out
-								.println("Failed to set the representation: ");
-						JsonArray array = response.get("errorList")
-								.getAsJsonArray();
-						for (int i = 0; i < array.size(); i++) {
-							System.out.println(array.get(i));
-						}
+		properties.add(
+				new AbstractProxyProperty("Representation", this, connection) {
+					@Override
+					protected String findValue(ParaViewConnection connection) {
+						// TODO This can be found from the file.
+						return "Surface";
 					}
-					updated = true;
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				}
 
-				return updated;
-			}
-		});
+					@Override
+					protected Set<String> findAllowedValues(
+							ParaViewConnection connection) {
+						// TODO This can be found from the file.
+						Set<String> allowedValues = new HashSet<String>();
+						allowedValues.add("3D Glyphs");
+						allowedValues.add("Outline");
+						allowedValues.add("Points");
+						allowedValues.add("Surface");
+						allowedValues.add("Surface With Edges");
+						allowedValues.add("Volume");
+						allowedValues.add("Wireframe");
+						return allowedValues;
+					}
+
+					@Override
+					protected boolean setValueOnClient(String value,
+							ParaViewConnection connection) {
+
+						IParaViewWebClient client = connection.getWidget();
+
+						boolean updated = false;
+
+						JsonArray args = new JsonArray();
+						JsonArray updatedProperties = new JsonArray();
+						JsonObject repProperty = new JsonObject();
+						repProperty.addProperty("id",
+								Integer.toString(getRepresentationId()));
+						repProperty.addProperty("name", "Representation");
+						repProperty.addProperty("value", value);
+						updatedProperties.add(repProperty);
+
+						// Update the properties that were configured.
+						args = new JsonArray();
+						args.add(updatedProperties);
+						JsonObject response;
+						try {
+							response = client
+									.call("pv.proxy.manager.update", args)
+									.get();
+							if (!response.get("success").getAsBoolean()) {
+								System.out.println(
+										"Failed to set the representation: ");
+								JsonArray array = response.get("errorList")
+										.getAsJsonArray();
+								for (int i = 0; i < array.size(); i++) {
+									System.out.println(array.get(i));
+								}
+							}
+							updated = true;
+						} catch (InterruptedException | ExecutionException e) {
+							e.printStackTrace();
+						}
+
+						return updated;
+					}
+				});
 
 		return properties;
 	}
@@ -726,9 +757,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * @return True if the new category and feature could be set, false
 	 *         otherwise.
 	 */
-	protected abstract boolean setFeatureOnClient(
-			ParaViewConnection connection, String category,
-			String feature);
+	protected abstract boolean setFeatureOnClient(ParaViewConnection connection,
+			String category, String feature);
 
 	/**
 	 * Gets the ParaView ID pointing to the file's proxy on the server.
@@ -770,4 +800,112 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		return feature;
 	}
 
+	/**
+	 * Sets the feature by which the ParaView web client colors the
+	 * visualization.
+	 * 
+	 * @param connection
+	 *            The connection wrapping the ParaView web client.
+	 * @param featureInfo
+	 *            The information about the proxy feature that is being applied
+	 *            to the visualization.
+	 * @param feature
+	 *            The name of the feature to color by.
+	 * @return True if the operation was sent to the client successfully, false
+	 *         otherwise.
+	 */
+	protected boolean setColorBy(ParaViewConnection connection,
+			ProxyFeature featureInfo, String feature) {
+		boolean updated = false;
+
+		if (connection != null
+				&& connection.getState() == ConnectionState.Connected
+				&& featureInfo != null && feature != null) {
+
+			// Get the ParaView web client widget.
+			IParaViewWebClient widget = connection.getWidget();
+
+			// Determine the "arrayName". If unsetting the current color, use
+			// the empty string.
+			final String arrayName = featureInfo.canColorBy ? feature : "";
+
+			// Set the "color by" to color based on the feature name.
+			JsonArray args = new JsonArray();
+
+			// Add the required arguments to the argument array.
+			args.add(
+					new JsonPrimitive(Integer.toString(getRepresentationId())));
+			args.add(new JsonPrimitive(featureInfo.colorByMode.toString()));
+			args.add(new JsonPrimitive(featureInfo.colorByLocation.toString()));
+			args.add(new JsonPrimitive(arrayName));
+			args.add(new JsonPrimitive("Magnitude"));
+			args.add(new JsonPrimitive(0));
+			args.add(new JsonPrimitive(true));
+
+			// Post the color by change to the client.
+			try {
+				// The only way to tell if the client even received the message
+				// is if we get back an empty JsonObject. If null, then there
+				// was an error.
+				if (widget.call("pv.color.manager.color.by", args)
+						.get() != null) {
+					updated = true;
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return updated;
+	}
+
+	/**
+	 * Sends the JsonArray of changed or updated properties to the web client.
+	 * If this operation fails, errors will be printed to the log.
+	 * 
+	 * @param connection
+	 *            The connection wrapping the web client.
+	 * @param changedProperties
+	 *            A JsonArray of changed properties.
+	 * @return True if the properties were successfully changed, false
+	 *         otherwise.
+	 */
+	protected boolean applyProperties(ParaViewConnection connection,
+			JsonArray changedProperties) {
+		boolean updated = false;
+
+		if (connection != null
+				&& connection.getState() == ConnectionState.Connected
+				&& changedProperties != null && changedProperties.size() > 0) {
+
+			// Get the ParaView web client widget.
+			IParaViewWebClient widget = connection.getWidget();
+
+			JsonObject object;
+			// Create the argument array.
+			JsonArray array = new JsonArray();
+			array.add(changedProperties);
+			try {
+				// Update the web client.
+				object = widget.call("pv.proxy.manager.update", array).get();
+				// Check the response to verify that the operation was
+				// successful.
+				updated = object.get("success").getAsBoolean();
+				if (!updated) {
+					System.err.println("Failed to apply the properties: ");
+					array = object.get("errorList").getAsJsonArray();
+					for (int i = 0; i < array.size(); i++) {
+						System.err.println(array.get(i));
+					}
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			} catch (NullPointerException | ClassCastException
+					| IllegalStateException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return updated;
+	}
 }
