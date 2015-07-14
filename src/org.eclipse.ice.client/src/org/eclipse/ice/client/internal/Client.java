@@ -18,6 +18,10 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -52,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * that it can handle notifications and requests from the widgets and data
  * structures.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class Client implements IUpdateEventListener, IProcessEventListener,
@@ -73,12 +77,12 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * <p>
 	 * The set of ErroBoxWidgets used by the Client.
 	 * </p>
-	 * 
+	 *
 	 */
 	private ArrayList<IErrorBox> errorBoxWidgets;
 
 	/**
-	 * 
+	 *
 	 */
 	private IWidgetFactory iWidgetFactory;
 
@@ -95,7 +99,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the Client was
 	 * closed OK and is false otherwise.
 	 * </p>
-	 * 
+	 *
 	 */
 	private AtomicBoolean widgetClosedOK;
 
@@ -104,7 +108,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the Client was
 	 * cancelled and is false otherwise.
 	 * </p>
-	 * 
+	 *
 	 */
 	private AtomicBoolean widgetCancelled;
 
@@ -112,7 +116,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * <p>
 	 * The unique id assigned to this client by the ICE server.
 	 * </p>
-	 * 
+	 *
 	 */
 	private int clientId = -1;
 
@@ -126,7 +130,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * <p>
 	 * The Constructor
 	 * </p>
-	 * 
+	 *
 	 */
 	public Client() {
 
@@ -161,6 +165,36 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	}
 
 	/**
+	 * This operation grabs and sets the iCore if it is not already available.
+	 */
+	public void getCore() {
+
+		if (iCore == null) {
+			String id = "org.eclipse.ice.client.coreConnection";
+			IExtensionRegistry registry = Platform.getExtensionRegistry();
+			IConfigurationElement[] elements = registry
+					.getConfigurationElementsFor(id);
+			if (elements.length > 0) {
+				for (int i = 0; i < elements.length; i++) {
+					IConfigurationElement element = elements[i];
+					if (id.equals(element.getAttribute("coreConnection"))) {
+						try {
+							setCoreService((ICore) element
+									.createExecutableExtension("class"));
+						} catch (CoreException e) {
+							logger.error(
+									"ICE Client Error! Unable to get ICore!", e);
+						}
+					}
+				}
+			} else {
+				logger.error("ICE Client Error! No ICore found!");
+			}
+		}
+
+	}
+
+	/**
 	 * <p>
 	 * This private operation is called by the implementations of
 	 * IClient.processItem() and IProcessEventListener.processSelected(). It
@@ -168,7 +202,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 * launches a FormProcessor to handle polling and update the IFormWidget for
 	 * the Item as it is processed by the Core.
 	 * </p>
-	 * 
+	 *
 	 * @param formWidget
 	 *            <p>
 	 *            The Form that represents the Item that will be processed.
@@ -212,7 +246,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#setCoreService(ICore core)
 	 */
 	@Override
@@ -223,7 +257,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#createItem(String itemType)
 	 */
 	@Override
@@ -249,7 +283,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#setUIWidgetFactory(IWidgetFactory widgetFactory)
 	 */
 	@Override
@@ -268,7 +302,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#loadItem(int itemId)
 	 */
 	@Override
@@ -319,7 +353,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#throwSimpleError(String error)
 	 */
 	@Override
@@ -341,7 +375,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#getAvailableItemTypes()
 	 */
 	@Override
@@ -358,7 +392,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#processItem(int itemId, String actionName)
 	 */
 	@Override
@@ -394,7 +428,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#connectToCore(String hostname, int port)
 	 */
 	@Override
@@ -427,17 +461,18 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#getItems()
 	 */
 	@Override
 	public ArrayList<Identifiable> getItems() {
+		getCore();
 		return iCore.getItemList();
 	}
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#deleteItem(int id)
 	 */
 	@Override
@@ -450,7 +485,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#importFile(URI file)
 	 */
 	@Override
@@ -464,7 +499,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IUpdateEventListener#formUpdated(Form form)
 	 */
 	@Override
@@ -511,7 +546,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IProcessEventListener#processSelected(Form form, String process)
 	 */
 	@Override
@@ -527,7 +562,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IProcessEventListener#cancelRequested(Form form, String process)
 	 */
 	@Override
@@ -542,7 +577,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ISimpleResourceProvider#loadResource(ICEResource resource)
 	 */
 	@Override
@@ -564,7 +599,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IWidgetClosedListener#closedOK()
 	 */
 	@Override
@@ -576,7 +611,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IWidgetClosedListener#cancelled()
 	 */
 	@Override
@@ -588,7 +623,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IClient#getFileSystem()
 	 */
 	@Override

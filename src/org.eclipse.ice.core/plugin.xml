@@ -21,5 +21,10 @@
             class="org.eclipse.ice.core.internal.SimpleLogin">
       </loginModule>
    </extension>
+   <extension
+         id="org.eclipse.ice.core.coreConnection"
+         name="ICE Core Connection"
+         point="org.eclipse.ice.client.coreConnection">
+   </extension>
 
 </plugin>

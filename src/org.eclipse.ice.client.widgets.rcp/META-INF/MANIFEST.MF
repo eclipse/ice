@@ -127,3 +127,4 @@ Bundle-ClassPath: .
 Service-Component: OSGI-INF/MasterApplicationFactory.xml,
  OSGI-INF/MasterApplicationHolder.xml
 Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-ActivationPolicy: lazy

@@ -48,3 +48,4 @@ Require-Bundle: org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
 Service-Component: OSGI-INF/MOOSEEditorComponent.xml
 Export-Package: org.eclipse.ice.client.widgets.moose
 Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-ActivationPolicy: lazy
