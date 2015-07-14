@@ -89,6 +89,38 @@ public interface ISeries {
 	public double[] getBounds();
 
 	/**
+	 * Gets the number of the axis for this series. This is an indication of
+	 * whether the data is dependent or independent, and limits which axis the
+	 * data can be displayed on.
+	 * 
+	 * @return The number of the specified axis for this series. See
+	 *         {@link ISeries#setAxis()} for more information on what the
+	 *         returned value correlates to.
+	 */
+	public int getAxis();
+
+	/**
+	 * Sets the axis for this series, so that if this data is independent it
+	 * will only be compared with dependent data and will not be displayed on
+	 * the Y axis for a standard xyz plane, for example. </br>
+	 * For XYZ, the x axis is number 1, the y is 2, and the z is three. For
+	 * polar, 1 is theta, 2 is the radius, and 3 is phi. Depending on the type
+	 * of plot this series will be plotted, on, independent data is typically 1
+	 * while the dependent axes are numbered Incrementally from that. </br>
+	 * This method does nothing if the axis is invalid, meaining less than zero
+	 * or greater than the number of axes for the correlating {@link IPlot}
+	 * . </br>
+	 * Giving zero as the axis means that the series is enabled on all axes, as
+	 * is the default behavior. Note that this method is invalid if the series
+	 * has children series, as it makes no sense to specify an axis for all of
+	 * the child series.
+	 * 
+	 * @param axis
+	 *            The specified axis number.
+	 */
+	public void setAxis(int axis);
+
+	/**
 	 * Gets the parent series for this series. This allows for grouping of
 	 * series and for one to be of direct relation to another. For example, a
 	 * certain series could be the error of another series, and their
@@ -99,13 +131,13 @@ public interface ISeries {
 	public ISeries getParentSeries();
 
 	/**
-	 * Sets the parent series. This gives a hierarchy to the series so that one
-	 * series can have multiple children but only one parent.
+	 * Adds a child series to this series. Note that there can be several
+	 * different relationships amoungst series, such as one containing both the
+	 * x and y series, or having error associated with the parent series.
 	 * 
-	 * @param parent
-	 *            The parent series.
+	 * @param child
 	 */
-	public void setParentSeries(ISeries parent);
+	public void addChildSeries(ISeries child);
 
 	/**
 	 * Gets the label used to describe this series and to be shown on the
@@ -125,7 +157,7 @@ public interface ISeries {
 	public void setLabel(String label);
 
 	/**
-	 * Sets the {@link ISeriesStyle} of the series. That style defigns the
+	 * Sets the {@link ISeriesStyle} of the series. That style defines the
 	 * color, point style, line style, default preferred axis, and many other
 	 * types of style information for the series to be properly formatted when
 	 * being plotted. This allows for some configuration rather than the default
@@ -136,7 +168,7 @@ public interface ISeries {
 	public ISeriesStyle getStyle();
 
 	/**
-	 * Sets the {@link ISeriesStyle} used for this series. That style defigns
+	 * Sets the {@link ISeriesStyle} used for this series. That style defines
 	 * the color, point style, line style, default preferred axis, and many
 	 * other types of style information for the series to be properly formatted
 	 * when being plotted. This allows for some configuration rather than the
