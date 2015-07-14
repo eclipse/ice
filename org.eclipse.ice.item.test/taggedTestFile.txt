@@ -1,0 +1,4 @@
+Scotty=chief engineer
+Kirk=captain
+Bones=chief medical officer
+Spock=first officer
