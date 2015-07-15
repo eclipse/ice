@@ -16,15 +16,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -50,11 +46,6 @@ import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
-import org.eclipse.remote.core.IRemoteConnectionType;
-import org.eclipse.remote.core.IRemoteServicesManager;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * The MOOSE Item represents a unification of the MOOSEModel and MOOSELauncher.
@@ -208,6 +199,7 @@ public class MOOSE extends Item {
 	/**
 	 * Sets the information that identifies the MOOSE Item.
 	 */
+	@Override
 	protected void setupItemInfo() {
 
 		// Local declarations
@@ -288,6 +280,7 @@ public class MOOSE extends Item {
 	 * 
 	 * @see org.eclipse.ice.item.Item#process(java.lang.String)
 	 */
+	@Override
 	public FormStatus process(String actionName) {
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
@@ -422,6 +415,7 @@ public class MOOSE extends Item {
 		// Keep the status in sync
 		if (status.equals(FormStatus.Processing)) {
 			Thread statusThread = new Thread(new Runnable() {
+				@Override
 				public void run() {
 					while (!status.equals(FormStatus.Processed)) {
 						// Sleep for a bit
@@ -523,7 +517,10 @@ public class MOOSE extends Item {
 		// Register this Item as a listener to the Variables block
 		// this is so we can use the variables to populate things like
 		// kernel variable entries.
-		getTreeByName("Variables").register(this);
+		TreeComposite vars = getTreeByName("Variables");
+		if (vars != null) {
+			vars.register(this);
+		}
 		TreeComposite aux = getTreeByName("AuxVariables");
 		if (aux != null) {
 			aux.register(this);
@@ -819,6 +816,7 @@ public class MOOSE extends Item {
 	 *            The MOOSE Item that should be checked for equality.
 	 * @return True if the launchers are equal, false if not
 	 */
+	@Override
 	public boolean equals(Object other) {
 
 		boolean retVal;
@@ -865,6 +863,7 @@ public class MOOSE extends Item {
 	 *         The hashcode
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declaration
@@ -898,7 +897,7 @@ public class MOOSE extends Item {
 		MOOSE otherMoose = (MOOSE) otherItem;
 
 		// Copy contents into super and current object
-		super.copy((Item) otherMoose);
+		super.copy(otherMoose);
 
 		// Add the model files component
 		modelFiles = (DataComponent) form.getComponent(1);
@@ -936,6 +935,7 @@ public class MOOSE extends Item {
 	 *         A clone of the Moose Item.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new instance of JobLauncher and copy the contents

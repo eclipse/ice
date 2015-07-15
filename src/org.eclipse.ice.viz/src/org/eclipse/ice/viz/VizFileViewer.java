@@ -323,7 +323,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 					if (resource.getChildrenResources() != null
 							&& !resource.getChildrenResources().isEmpty()) {
 						// Return all Child resources
-						return (Object[]) resource.getChildrenResources()
+						return resource.getChildrenResources()
 								.toArray();
 
 					} else if (resource.getFileSet() != null
@@ -331,7 +331,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 						// If we didn't have VizResourc children, then check
 						// that we
 						// have file names to return
-						return (Object[]) resource.getFileSet();
+						return resource.getFileSet();
 					}
 				}
 

@@ -75,7 +75,7 @@ public class ActionTree {
 
 		// Define a new JFace Action that will open a Menu for this node. The
 		// Menu will show items for the children of this node.
-		action = new Action(this.text, Action.AS_DROP_DOWN_MENU) {
+		action = new Action(this.text, IAction.AS_DROP_DOWN_MENU) {
 			@Override
 			public void run() {
 				// This method only appears to be run when the action

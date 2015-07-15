@@ -37,6 +37,7 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -445,7 +446,7 @@ public class CSVPlot implements IPlot {
 		 *            The {@code Composite} in which to draw the CSV plot
 		 *            editor.
 		 */
-		public DrawnPlot(Composite parent) throws Exception {
+		public DrawnPlot(final Composite parent) throws Exception {
 			// Create the editor and all required providers.
 			editor = new CSVPlotEditor();
 			plotProvider = new PlotProvider();
@@ -521,12 +522,19 @@ public class CSVPlot implements IPlot {
 
 				@Override
 				public void menuShown(MenuEvent e) {
+
 					// Rebuild the menu.
 					Menu menu = (Menu) e.widget;
+					if (parent.getMenu() == null) {
+						for (MenuItem item : menu.getItems()) {
+							item.dispose();
+						}
+					}
 					addSeriesTree.getContributionItem().fill(menu, -1);
 					removeSeriesTree.getContributionItem().fill(menu, -1);
 					separator.fill(menu, -1);
 					clearAction.getContributionItem().fill(menu, -1);
+
 				}
 			});
 

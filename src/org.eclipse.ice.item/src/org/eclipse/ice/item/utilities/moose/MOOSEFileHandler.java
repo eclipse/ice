@@ -515,7 +515,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				if (hasType) {
 					// Get the exemplars of <type>, these will become
 					// the list of types to chose from
-					types = (ArrayList<TreeComposite>) currTree
+					types = currTree
 							.getChildExemplars().get(typeIndex)
 							.getChildExemplars();
 

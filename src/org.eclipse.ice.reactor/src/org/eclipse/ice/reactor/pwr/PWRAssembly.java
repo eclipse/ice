@@ -107,14 +107,14 @@ public class PWRAssembly extends LWRComposite {
 
 		// Setup the LWRComposite and associated values.
 		this.lWRRodComposite = new LWRComposite();
-		this.lWRRodComposite.setName(this.LWRROD_COMPOSITE_NAME);
+		this.lWRRodComposite.setName(PWRAssembly.LWRROD_COMPOSITE_NAME);
 		this.lWRRodComposite
 				.setDescription("A Composite that contains many LWRRods.");
 		this.lWRRodComposite.setId(1);
 
 		// Setup GridManager
 		this.lWRRodGridManager = new LWRGridManager(this.size);
-		this.lWRRodGridManager.setName(this.LWRROD_GRID_MANAGER_NAME);
+		this.lWRRodGridManager.setName(PWRAssembly.LWRROD_GRID_MANAGER_NAME);
 
 		// Add the component to the LWRComposite list
 		super.addComponent(lWRRodComposite);
@@ -181,7 +181,7 @@ public class PWRAssembly extends LWRComposite {
 	 */
 	public boolean addLWRRod(LWRRod lWRRod) {
 		// Add the component to the composite
-		this.lWRRodComposite.addComponent((Component) lWRRod);
+		this.lWRRodComposite.addComponent(lWRRod);
 
 		// If the component is not contained, return false
 		if (!this.lWRRodComposite.getComponents().contains(lWRRod)) {
@@ -300,7 +300,7 @@ public class PWRAssembly extends LWRComposite {
 				column));
 
 		// Return the component
-		return (LWRRod) this.getLWRRodByName(name);
+		return this.getLWRRodByName(name);
 
 	}
 
@@ -355,7 +355,7 @@ public class PWRAssembly extends LWRComposite {
 
 		// Set the location
 		this.lWRRodGridManager.addComponent(
-				(Component) this.lWRRodComposite.getComponent(lWRRodName),
+				this.lWRRodComposite.getComponent(lWRRodName),
 				location);
 
 		// If the name changed, then return true
@@ -677,7 +677,7 @@ public class PWRAssembly extends LWRComposite {
 
 		// Reset the sizes on the grids
 		this.lWRRodGridManager = new LWRGridManager(size.intValue());
-		this.lWRRodGridManager.setName(this.LWRROD_GRID_MANAGER_NAME);
+		this.lWRRodGridManager.setName(PWRAssembly.LWRROD_GRID_MANAGER_NAME);
 
 		return true;
 
@@ -730,7 +730,7 @@ public class PWRAssembly extends LWRComposite {
 			LWRGridManager lWRGridManager = (LWRGridManager) childComponent;
 
 			// Assign to the correct object
-			if (lWRGridManager.getName().equals(this.LWRROD_GRID_MANAGER_NAME)) {
+			if (lWRGridManager.getName().equals(PWRAssembly.LWRROD_GRID_MANAGER_NAME)) {
 				this.lWRRodGridManager = (LWRGridManager) childComponent;
 
 			}
@@ -741,8 +741,8 @@ public class PWRAssembly extends LWRComposite {
 			// Cast into a LWRComposite object
 			LWRComposite lWRComposite = (LWRComposite) childComponent;
 			// Assign to the correct object
-			if (lWRComposite.getName().equals(this.LWRROD_COMPOSITE_NAME)) {
-				super.removeComponent(this.LWRROD_COMPOSITE_NAME);
+			if (lWRComposite.getName().equals(PWRAssembly.LWRROD_COMPOSITE_NAME)) {
+				super.removeComponent(PWRAssembly.LWRROD_COMPOSITE_NAME);
 				this.lWRRodComposite = lWRComposite;
 				super.addComponent(lWRRodComposite);
 

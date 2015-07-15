@@ -168,7 +168,7 @@ public class ForkStorkHandler extends AbstractHandler {
 				} catch (IOException e) {
 					logger.error(getClass().getName() + " Exception!",e);
 					String errorMessage = "ICE failed in forking the new stork.";
-					return new Status(Status.ERROR,
+					return new Status(IStatus.ERROR,
 							"org.eclipse.ice.client.widgets.moose", 1,
 							errorMessage, null);
 				}
@@ -184,7 +184,7 @@ public class ForkStorkHandler extends AbstractHandler {
 				} catch (GitAPIException e) {
 					logger.error(getClass().getName() + " Exception!",e);
 					String errorMessage = "ICE failed in cloning the new application.";
-					return new Status(Status.ERROR,
+					return new Status(IStatus.ERROR,
 							"org.eclipse.ice.client.widgets.moose", 1,
 							errorMessage, null);
 				}
@@ -208,7 +208,7 @@ public class ForkStorkHandler extends AbstractHandler {
 					} catch (IOException e) {
 						logger.error(getClass().getName() + " Exception!",e);
 						String errorMessage = "ICE could not execute the make_new_application python script.";
-						return new Status(Status.ERROR,
+						return new Status(IStatus.ERROR,
 								"org.eclipse.ice.client.widgets.moose", 1,
 								errorMessage, null);
 					}
@@ -296,9 +296,9 @@ public class ForkStorkHandler extends AbstractHandler {
 					target.setUseDefaultBuildCmd(false);
 					target.setBuildAttribute(
 							IMakeCommonBuildInfo.BUILD_COMMAND, "make");
-					target.setBuildAttribute(IMakeTarget.BUILD_LOCATION,
+					target.setBuildAttribute(IMakeCommonBuildInfo.BUILD_LOCATION,
 							cProject.getLocation().toOSString());
-					target.setBuildAttribute(IMakeTarget.BUILD_ARGUMENTS, "");
+					target.setBuildAttribute(IMakeCommonBuildInfo.BUILD_ARGUMENTS, "");
 					target.setBuildAttribute(IMakeTarget.BUILD_TARGET, "all");
 					manager.addTarget(cProject, target);
 
@@ -356,7 +356,7 @@ public class ForkStorkHandler extends AbstractHandler {
 				} catch (CoreException e) {
 					logger.error(getClass().getName() + " Exception!",e);
 					String errorMessage = "ICE could not import the new MOOSE application as a C++ project.";
-					return new Status(Status.ERROR,
+					return new Status(IStatus.ERROR,
 							"org.eclipse.ice.client.widgets.moose", 1,
 							errorMessage, null);
 				}

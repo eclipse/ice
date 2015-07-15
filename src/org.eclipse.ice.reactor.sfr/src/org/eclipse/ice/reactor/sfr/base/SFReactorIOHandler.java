@@ -496,13 +496,10 @@ public class SFReactorIOHandler {
 			}
 		} catch (HDF5LibraryException e) {
 			logger.error(getClass().getName() + " Exception!",e);
-			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		} catch (HDF5Exception e) {
 			logger.error(getClass().getName() + " Exception!",e);
-			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		} catch (NullPointerException e) {
 			logger.error(getClass().getName() + " Exception!",e);
-			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		}
 
 		// Return the loaded SFReactor.
@@ -869,13 +866,10 @@ public class SFReactorIOHandler {
 			}
 		} catch (HDF5LibraryException e) {
 			logger.error(getClass().getName() + " Exception!",e);
-			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		} catch (HDF5Exception e) {
 			logger.error(getClass().getName() + " Exception!",e);
-			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		} catch (NullPointerException e) {
 			logger.error(getClass().getName() + " Exception!",e);
-			System.err.println("SFReactorIOHandler error: " + e.getMessage());
 		}
 
 		return;

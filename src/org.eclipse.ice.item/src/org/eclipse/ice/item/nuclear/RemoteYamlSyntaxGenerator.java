@@ -98,7 +98,7 @@ public class RemoteYamlSyntaxGenerator {
 			// Print diagnostic information and fail
 			logger.error(getClass().getName() + " Exception!",e);
 			String errorMessage = "Could not create connection to remote machine.";
-			return new Status(Status.ERROR, "org.eclipse.ice.item.nuclear", 1,
+			return new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear", 1,
 					errorMessage, null);
 		}
 
@@ -142,7 +142,7 @@ public class RemoteYamlSyntaxGenerator {
 				// Print diagnostic information and fail
 				logger.error(getClass().getName() + " Exception!",e);
 				String errorMessage = "Could not execute YAML/Syntax generation on remote machine.";
-				return new Status(Status.ERROR, "org.eclipse.ice.item.nuclear",
+				return new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear",
 						1, errorMessage, null);
 			}
 
@@ -196,7 +196,7 @@ public class RemoteYamlSyntaxGenerator {
 			} catch (IOException e) {
 				logger.error(getClass().getName() + " Exception!",e);
 				String errorMessage = "Could not create write files locally.";
-				return new Status(Status.ERROR, "org.eclipse.ice.item.nuclear",
+				return new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear",
 						1, errorMessage, null);
 			}
 

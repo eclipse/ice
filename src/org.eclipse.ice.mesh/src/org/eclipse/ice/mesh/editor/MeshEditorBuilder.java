@@ -15,7 +15,6 @@ package org.eclipse.ice.mesh.editor;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 
 /**

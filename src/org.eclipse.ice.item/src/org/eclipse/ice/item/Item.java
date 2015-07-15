@@ -956,7 +956,7 @@ public class Item implements IComponentVisitor, Identifiable,
 					retStatus = action.execute(propsDictionary);
 					// Refresh the project space so that the file is added or
 					// updated
-					project.refreshLocal(IProject.DEPTH_ONE, null);
+					project.refreshLocal(IResource.DEPTH_ONE, null);
 					// Notify any observers of the change
 					notifyListenersOfProjectChange();
 				} catch (CoreException e) {
@@ -2093,7 +2093,7 @@ public class Item implements IComponentVisitor, Identifiable,
 		Job badJob = new Job(title) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				return new Status(Status.ERROR, location, 1, message, null);
+				return new Status(IStatus.ERROR, location, 1, message, null);
 			}
 		};
 

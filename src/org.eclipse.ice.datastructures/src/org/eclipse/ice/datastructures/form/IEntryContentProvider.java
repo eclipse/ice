@@ -111,6 +111,7 @@ public interface IEntryContentProvider {
 	 *            </p>
 	 * @return True if equivalent, false otherwise.
 	 */
+	@Override
 	public boolean equals(Object otherProvider);
 
 	/**

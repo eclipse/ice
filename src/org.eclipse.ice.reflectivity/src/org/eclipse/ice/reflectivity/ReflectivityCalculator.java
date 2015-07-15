@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,8 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
+ *   Kasper Gammeltoft (added numRough limitations and logic on calculate 
+ *   reflectivity)
  *******************************************************************************/
 package org.eclipse.ice.reflectivity;
 
@@ -773,8 +775,25 @@ public class ReflectivityCalculator {
 				slabs[i].scatteringLength -= qCCorr;
 			}
 
-			// Generate tiled roughness layers
-			Tile[] tiles = generateTiles(slabs, numRough, zInt, rufInt);
+			// Makes sure that numRough is an odd number, and is at least 1.
+			if(numRough<2){
+				numRough = 1;
+			} else if (numRough%2==0){
+				numRough++;
+			}
+			
+			// Generate the tiled roughness layers
+			Tile[] tiles;
+			
+			// Check to see if user wants to not generate the layers
+			if(numRough==1){
+				// If not, then just use the slabs
+				tiles = slabs;
+			} else {
+				// Use the regular stepping function to generate the interfacial
+				// tiled layers
+				tiles = generateTiles(slabs, numRough, zInt, rufInt);
+			}
 
 			// Un-correct the refractive indices for incident medium
 			for (int i = 0; i < slabs.length; i++) {

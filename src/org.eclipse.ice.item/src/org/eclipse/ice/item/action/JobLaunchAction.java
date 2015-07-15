@@ -812,6 +812,7 @@ public class JobLaunchAction extends Action implements Runnable {
 		} catch (IOException e) {
 			// Grab the error
 			errMsg = e.getMessage();
+			logger.error(getClass().getName() + " Exception! ", e);
 		}
 		// Log any errors and return
 		if (errMsg != null) {

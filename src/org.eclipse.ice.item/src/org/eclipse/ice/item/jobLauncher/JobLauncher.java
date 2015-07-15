@@ -1272,7 +1272,7 @@ public class JobLauncher extends Item {
 		if (form.getComponents().size() > 3) {
 			DataComponent dataC = (DataComponent) form.getComponents().get(
 					JobLauncherForm.parallelId);
-			Entry entry = (Entry) dataC
+			Entry entry = dataC
 					.retrieveEntry("Number of MPI Processes");
 			if (entry != null) {
 				this.mpiEnabled = true;
@@ -1340,7 +1340,7 @@ public class JobLauncher extends Item {
 			if (form.getComponents().size() > 3) {
 				DataComponent dataC = (DataComponent) form
 						.getComponent(JobLauncherForm.parallelId);
-				Entry entry = (Entry) dataC
+				Entry entry = dataC
 						.retrieveEntry("Number of OpenMP Threads");
 				if (entry != null) {
 					openMPEnabled = true;
@@ -1418,7 +1418,7 @@ public class JobLauncher extends Item {
 			if (form.getComponents().size() > 3) {
 				DataComponent dataC = (DataComponent) form
 						.getComponent(JobLauncherForm.parallelId);
-				Entry entry = (Entry) dataC
+				Entry entry = dataC
 						.retrieveEntry("Number of TBB Threads");
 				if (entry != null) {
 					tbbEnabled = true;
@@ -1465,6 +1465,7 @@ public class JobLauncher extends Item {
 	 *         True if the launchers are equal, false if not
 	 *         </p>
 	 */
+	@Override
 	public boolean equals(Object otherLauncher) {
 
 		boolean retVal;
@@ -1611,7 +1612,7 @@ public class JobLauncher extends Item {
 			return;
 		}
 		// Copy contents into super and current object
-		super.copy((Item) otherLauncher);
+		super.copy(otherLauncher);
 
 		// Clone contents correctly
 		JobLauncherForm launcherForm = new JobLauncherForm();

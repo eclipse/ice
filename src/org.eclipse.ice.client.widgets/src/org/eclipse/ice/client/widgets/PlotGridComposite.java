@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Jordan Deyton - Initial API and implementation and/or initial documentation 
- *   
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * {@link IPlot}s. It includes widgets to customize the grid-based layout of the
  * plots. The order of a plot in the grid is based on its add order, and the
  * same plot can be added to the grid more than once.
- * 
+ *
  * @author Jordan Deyton
  *
  */
@@ -125,7 +125,7 @@ public class PlotGridComposite extends Composite {
 	/**
 	 * The default constructor. Creates a {@code Composite} designed to display
 	 * a grid of {@code Composites} populated by {@code IPlot} implementations.
-	 * 
+	 *
 	 * @param parent
 	 *            A widget that will be the parent of the new instance (cannot
 	 *            be null).
@@ -248,7 +248,7 @@ public class PlotGridComposite extends Composite {
 	 * <li>Grid rows and columns</li>
 	 * <li>A button to clear plots from the grid</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param parent
 	 *            The parent {@code Composite} in which to draw the
 	 *            {@code ToolBar}.
@@ -326,7 +326,7 @@ public class PlotGridComposite extends Composite {
 	/**
 	 * Adds a plot to be drawn inside the plot grid. Note that the same plot can
 	 * be added more than once.
-	 * 
+	 *
 	 * @param plot
 	 *            The plot to draw inside the grid.
 	 * @return The index of the plot in the grid, or -1 if the plot could not be
@@ -407,7 +407,7 @@ public class PlotGridComposite extends Composite {
 	 * Removes the drawn plot at the specified index in the grid. If t a drawn
 	 * plot was removed, then, at the end of this call, the grid layout will be
 	 * refreshed.
-	 * 
+	 *
 	 * @param index
 	 *            The index of the drawn plot to remove. If invalid, nothing is
 	 *            done.
@@ -426,7 +426,7 @@ public class PlotGridComposite extends Composite {
 	 * <b>This should be the defacto way to remove a drawn plot</b>. <i>If the
 	 * code only has access to the drawn plot itself and not this method</i>,
 	 * then the plot should be disposed directly.
-	 * 
+	 *
 	 * @param drawnPlot
 	 *            The drawn plot to remove (and, if necessary, dispose).
 	 * @param refreshLayout
@@ -463,7 +463,7 @@ public class PlotGridComposite extends Composite {
 	 * Removes all renderings of the specified plot from the grid. If a drawn
 	 * plot was removed, then, at the end of this call, the grid layout will be
 	 * refreshed.
-	 * 
+	 *
 	 * @param plot
 	 *            The plot whose renderings should be removed from the grid. If
 	 *            invalid or not rendered, nothing is done.
@@ -509,7 +509,7 @@ public class PlotGridComposite extends Composite {
 
 	/**
 	 * Finds the ancestor plot for the specified child {@code Composite}.
-	 * 
+	 *
 	 * @param child
 	 *            The child {@code Composite} from which to start the search.
 	 *            This could even be the plot {@code Composite} itself. Assumed
@@ -576,7 +576,7 @@ public class PlotGridComposite extends Composite {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.swt.widgets.Widget#dispose()
 	 */
 	@Override
@@ -599,7 +599,7 @@ public class PlotGridComposite extends Composite {
 	 * This nested class provides the {@code Composite} that immediately wraps a
 	 * rendering from an {@code IPlot} implementation. It handles all
 	 * plot-specific widgets and layouts for the associated {@link #plot}.
-	 * 
+	 *
 	 * @author Jordan Deyton
 	 *
 	 */
@@ -613,7 +613,7 @@ public class PlotGridComposite extends Composite {
 		/**
 		 * The default constructor. Creates a container for an {@code IPlot}
 		 * instance with the {@code SWT.BORDER} style.
-		 * 
+		 *
 		 * @param parent
 		 *            The parent in which to draw the plot.
 		 * @param plot
@@ -625,7 +625,7 @@ public class PlotGridComposite extends Composite {
 
 		/**
 		 * The full constructor that allows a custom style to be set.
-		 * 
+		 *
 		 * @param parent
 		 *            The parent in which to draw the plot.
 		 * @param plot
@@ -662,7 +662,7 @@ public class PlotGridComposite extends Composite {
 		 * It is up to the related {@code IPlot} implementation to take the
 		 * created {@code Menu} and add it to child {@code Composite}s or update
 		 * it.
-		 * 
+		 *
 		 * @return The JFace {@code MenuManager} for the context {@code Menu}.
 		 */
 		private MenuManager createContextMenu() {
@@ -715,7 +715,7 @@ public class PlotGridComposite extends Composite {
 				}
 			} catch (Exception e) {
 				// Print out the error message (from getPlotTypes()).
-				System.err.println(e.getMessage());
+				logger.error(getClass().getName() + " Exception! ", e);
 			}
 
 			// Add the items to the context menu.
@@ -732,7 +732,7 @@ public class PlotGridComposite extends Composite {
 		/**
 		 * Attempts to draw the specified plot category and type with the
 		 * underlying {@link IPlot} implementation.
-		 * 
+		 *
 		 * @param category
 		 *            The new plot category.
 		 * @param type

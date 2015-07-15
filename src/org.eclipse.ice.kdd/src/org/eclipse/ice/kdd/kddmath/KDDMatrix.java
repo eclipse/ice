@@ -631,6 +631,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * @param matrix
 	 * @return true if the matrices are equal to each other, false otherwise.
 	 */
+	@Override
 	public boolean equals(Object matrix) {
 
 		boolean retVal = true;

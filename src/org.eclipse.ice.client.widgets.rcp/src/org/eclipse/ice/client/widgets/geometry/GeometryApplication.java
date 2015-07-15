@@ -159,7 +159,7 @@ public class GeometryApplication extends SimpleApplication implements
 		rootNode.addLight(al);
 
 		ColorRGBA MediumGray = new ColorRGBA((float) .3, (float) .3,
-				(float) .3, (float) 1);
+				(float) .3, 1);
 
 		// Setup the light source that is emitted from behind the camera
 		cameraLight = new DirectionalLight();

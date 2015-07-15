@@ -201,7 +201,7 @@ public class PROTEUSModel extends Item {
 	public FormStatus process(String actionName) {
 		FormStatus retStatus;
 
-		if (this.proteusProcessActionString.equals(actionName)) {
+		if (PROTEUSModel.proteusProcessActionString.equals(actionName)) {
 
 			// Get the file from the project space to create the output
 			String filename = getName().replaceAll("\\s+", "_") + "_" + getId()

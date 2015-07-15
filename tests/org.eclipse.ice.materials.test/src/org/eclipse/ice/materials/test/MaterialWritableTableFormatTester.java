@@ -8,6 +8,8 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay 
  *   Billings
+ *   Kasper Gammeltoft (added additional testing for implementation in 
+ *   MaterialWritableTableFormat class)
  *******************************************************************************/
 package org.eclipse.ice.materials.test;
 
@@ -24,7 +26,7 @@ import org.junit.Test;
 /**
  * This class is responsible for testing {@link MaterialWritableTableFormat}.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Kasper Gammeltoft
  *
  */
 public class MaterialWritableTableFormatTester {
@@ -141,6 +143,12 @@ public class MaterialWritableTableFormatTester {
 	@Test
 	public void testSetColumnValue() {
 		assertEquals(material, tableFormat.setColumnValue(material, 2.5, 0));
+		
+		// Make sure that a blank material's name can be set
+		Material blank = new Material();
+		String newName = "New Material";
+		assertEquals(blank, tableFormat.setColumnValue(blank, newName, 0));
+		assertEquals(blank.getName(), newName);
 	}
 
 }

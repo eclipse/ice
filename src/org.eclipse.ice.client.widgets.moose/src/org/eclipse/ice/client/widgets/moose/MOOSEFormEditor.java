@@ -58,6 +58,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.osgi.framework.Bundle;
@@ -165,6 +166,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 				if ("Launch the Job".equals(processName)) {
 					Thread ppThread = new Thread(new Runnable() {
+						@Override
 						public void run() {
 
 							// Local Declarations
@@ -229,6 +231,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 									// Kick off on UI thread
 									PlatformUI.getWorkbench().getDisplay()
 											.asyncExec(new Runnable() {
+												@Override
 												public void run() {
 													try {
 														MOOSEFormEditor.this
@@ -316,8 +319,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						body.setLayout(new FillLayout());
 
 						// Create a Section for the plant view.
-						section = toolkit.createSection(body, Section.NO_TITLE
-								| Section.EXPANDED);
+						section = toolkit.createSection(body, ExpandableComposite.NO_TITLE
+								| ExpandableComposite.EXPANDED);
 						populatePlantViewSection(section, toolkit);
 						// No layout data to set for FillLayouts.
 

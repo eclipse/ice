@@ -276,13 +276,10 @@ public class HdfIOFactory implements IHdfIOFactory {
 				}
 			} catch (HDF5LibraryException e) {
 				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("HdfIOFactory error: " + e.getMessage());
 			} catch (HDF5Exception e) {
 				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("HdfIOFactory error: " + e.getMessage());
 			} catch (NullPointerException e) {
 				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("HdfIOFactory error: " + e.getMessage());
 			}
 		}
 
@@ -366,13 +363,10 @@ public class HdfIOFactory implements IHdfIOFactory {
 				}
 			} catch (HDF5LibraryException e) {
 				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("HdfIOFactory error: " + e.getMessage());
 			} catch (HDF5Exception e) {
 				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("HdfIOFactory error: " + e.getMessage());
 			} catch (NullPointerException e) {
 				logger.error(getClass().getName() + " Exception!",e);
-				System.err.println("HdfIOFactory error: " + e.getMessage());
 			}
 		}
 
@@ -596,7 +590,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 		int attributeId = status;
 
 		// Read the attribute.
-		status = H5.H5Aread(attributeId, type, (Object) buffer);
+		status = H5.H5Aread(attributeId, type, buffer);
 		if (status < 0) {
 			throwException("Reading attribute \"" + name + "\"", status);
 		}
