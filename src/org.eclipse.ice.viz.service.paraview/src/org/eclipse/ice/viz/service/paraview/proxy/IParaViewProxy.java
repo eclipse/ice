@@ -12,6 +12,7 @@
 package org.eclipse.ice.viz.service.paraview.proxy;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -120,8 +121,8 @@ public interface IParaViewProxy {
 	 * @throws IllegalArgumentException
 	 *             If the specified property is an invalid property.
 	 */
-	public String getProperty(String name) throws NullPointerException,
-			IllegalArgumentException;
+	public String getProperty(String name)
+			throws NullPointerException, IllegalArgumentException;
 
 	/**
 	 * Gets the set of allowed values for the specified property.
@@ -176,10 +177,37 @@ public interface IParaViewProxy {
 			throws NullPointerException;
 
 	/**
-	 * Gets the ID of the underlying view.
+	 * Gets the ID of the underlying "view" object.
 	 * 
 	 * @return The ID of the underlying view, or {@code -1} if the proxy was not
 	 *         opened.
 	 */
 	public int getViewId();
+
+	/**
+	 * Gets the ID of the underlying "representation" object.
+	 * 
+	 * @return The ID of the underlying representation, or {@code -1} if the
+	 *         proxy was not opened.
+	 */
+	public int getRepresentationId();
+
+	/**
+	 * Gets the ID of the underlying "file" object.
+	 * 
+	 * @return The ID of the underlying file, or {@code -1} if the proxy was not
+	 *         opened.
+	 */
+	public int getFileId();
+
+	/**
+	 * Gets a list of timesteps for the loaded proxy.
+	 * 
+	 * @return A list containing the allowed timesteps for the proxy. This list
+	 *         may be empty, but should not be {@code null}.
+	 */
+	public List<Double> getTimesteps();
+	
+	public Future<Boolean> setTimestep(int timestep);
+
 }

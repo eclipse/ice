@@ -11,12 +11,18 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.connections;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.paraview.web.HttpParaViewWebClient;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 /**
  * Provides an {@link IVizConnection} for connecting to
@@ -78,4 +84,29 @@ public class ParaViewConnection extends VizConnection<IParaViewWebClient> {
 		return closed;
 	}
 
+	/**
+	 * Gets the ParaView web client's proxy object with the specified ID.
+	 * 
+	 * @param id
+	 *            The ID of the proxy object to get (for instance, a view,
+	 *            representation, or file ID).
+	 * @return The corresponding proxy JsonObject, or {@code null} if an error
+	 *         was encountered.
+	 */
+	public JsonObject getProxyObject(int id) {
+		JsonArray args;
+		JsonObject object = null;
+
+		args = new JsonArray();
+		args.add(new JsonPrimitive(id));
+
+		try {
+			object = getWidget().call("pv.proxy.manager.get", args).get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+
+		return object;
+	}
+	
 }

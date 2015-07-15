@@ -13,7 +13,10 @@ package org.eclipse.ice.viz.service.paraview;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
@@ -21,8 +24,13 @@ import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.ice.viz.service.paraview.widgets.ParaViewCanvas;
 import org.eclipse.ice.viz.service.paraview.widgets.ParaViewMouseAdapter;
+import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -59,6 +67,11 @@ public class ParaViewPlotRender
 	 * dragging, etc.) for the {@link #canvas}.
 	 */
 	private ParaViewMouseAdapter canvasMouseListener;
+
+	/**
+	 * The widget used to adjust the current timestep.
+	 */
+	private TimeSliderComposite timeSlider;
 
 	/**
 	 * The {@code ActionTree} that can be used to update the available plot
@@ -106,18 +119,18 @@ public class ParaViewPlotRender
 		}
 
 		// Create the overall container.
-		Composite plotContainer = new Composite(parent, style);
-		plotContainer.setBackground(parent.getBackground());
-		plotContainer.setFont(parent.getFont());
+		Composite container = new Composite(parent, style);
+		container.setBackground(parent.getBackground());
+		container.setFont(parent.getFont());
 		GridLayout gridLayout = new GridLayout();
 		// Get rid of the default margins (5 px on top, bottom, left, right).
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
-		plotContainer.setLayout(gridLayout);
+		container.setLayout(gridLayout);
 
 		// Create the ParaView Canvas.
 		this.proxy = proxy;
-		canvas = new ParaViewCanvas(plotContainer, SWT.NONE);
+		canvas = new ParaViewCanvas(container, SWT.NONE);
 		canvas.setBackground(parent.getBackground());
 		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		canvas.setClient(connection);
@@ -132,11 +145,15 @@ public class ParaViewPlotRender
 		// Refresh the plot render actions.
 		refreshPlotRenderActions();
 
+		// Add a time slider widget.
+		timeSlider = createTimeSlider(container);
+		timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
 		// Set the context Menu for the ParaView canvas.
 		canvas.setMenu(getContextMenu());
 
 		// Return the overall container.
-		return plotContainer;
+		return container;
 	}
 
 	/*
@@ -258,4 +275,73 @@ public class ParaViewPlotRender
 		thread.start();
 		return;
 	}
+
+	private TimeSliderComposite createTimeSlider(Composite parent) {
+
+		// The widget that will be created.
+		final TimeSliderComposite timeSlider;
+
+		// The currently rendered timestep and the slider's timestep.
+		final AtomicInteger renderedTimestep = new AtomicInteger();
+		final AtomicInteger widgetTimestep = new AtomicInteger();
+		// A worker thread for updating the canvas.
+		final ExecutorService executorService = Executors
+				.newSingleThreadExecutor();
+
+		// Add a time slider widget.
+		timeSlider = new TimeSliderComposite(parent, SWT.NONE);
+		timeSlider.setBackground(parent.getBackground());
+
+		// Create a task that can be used to update the canvas when the timestep
+		// changes.
+		final Runnable updateCanvasTask = new Runnable() {
+			@Override
+			public void run() {
+
+				// FIXME We need a way to move to a specific timestep
+				// rather than cycling through them.
+
+				// Until the timesteps match, keep setting it to the next
+				// timestep.
+				int targetStep = widgetTimestep.get();
+				while (renderedTimestep.getAndSet(targetStep) != targetStep) {
+					try {
+						proxy.setTimestep(targetStep).get();
+					} catch (InterruptedException | ExecutionException e) {
+						e.printStackTrace();
+					}
+					targetStep = widgetTimestep.get();
+				}
+
+				// The canvas will need to be refreshed.
+				canvas.refresh();
+
+				return;
+			}
+		};
+
+		// When the time slider is disposed, shut down the worker thread.
+		timeSlider.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				executorService.shutdown();
+			}
+		});
+
+		// When the selection changes, trigger an update to the canvas.
+		timeSlider.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Record the current timestep from the TimeSliderComposite.
+				widgetTimestep.set(timeSlider.getTimestep());
+				executorService.submit(updateCanvasTask);
+			}
+		});
+
+		// Set the times for the time slider.
+		timeSlider.setTimes(proxy.getTimesteps());
+
+		return timeSlider;
+	}
+
 }

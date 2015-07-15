@@ -29,6 +29,8 @@ import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
+import org.eclipse.ice.viz.service.paraview.proxy.properties.RepresentationProperty;
+import org.eclipse.ice.viz.service.paraview.proxy.properties.ScalarBarProperty;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
@@ -96,6 +98,18 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * The executor used to run operations on a separate thread.
 	 */
 	protected final ExecutorService requestExecutor;
+
+	private boolean scaleByAllTimes = false;
+
+	/**
+	 * The timesteps for the proxy.
+	 */
+	private final List<Double> times = new ArrayList<Double>();
+	/**
+	 * The current timestep.
+	 */
+	private int timestep = 0;
+	private int targetTimestep = 0;
 
 	/**
 	 * The default constructor. This should only be called by sub-class
@@ -184,6 +198,10 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 				if (opened) {
 					// Update the reference to the current connection.
 					AbstractParaViewProxy.this.connection = conn;
+
+					// Find the timesteps.
+					times.clear();
+					times.addAll(findTimesteps());
 
 					// Re-build the map of features.
 					featureMap.clear();
@@ -705,6 +723,8 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		args.add(new JsonPrimitive(0));
 		args.add(new JsonPrimitive(true));
 
+		System.out.println(args.toString());
+
 		// Post the color by change to the client.
 		try {
 			// The only way to tell if the client even received the message
@@ -739,122 +759,9 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 			ParaViewConnection connection) {
 		List<IProxyProperty> properties = new ArrayList<IProxyProperty>();
 
-		// Set up a property that sets the "pv.vcr.action", which can be used to
-		// update the timestep. This action takes a single argument, which must
-		// be one of "next", "prev", "first", and "last". It returns the current
-		// time.
-		properties.add(new AbstractProxyProperty("Timestep", this, connection) {
-			@Override
-			protected String findValue(ParaViewConnection connection) {
-				// Always start on the first timestep.
-				return "first";
-			}
-
-			@Override
-			protected Set<String> findAllowedValues(
-					ParaViewConnection connection) {
-				// Set up the four allowed values.
-				Set<String> allowedValues = new HashSet<String>();
-				allowedValues.add("first");
-				allowedValues.add("last");
-				allowedValues.add("next");
-				allowedValues.add("prev");
-				return allowedValues;
-			}
-
-			@Override
-			protected boolean setValueOnClient(String value,
-					ParaViewConnection connection) {
-
-				IParaViewWebClient client = connection.getWidget();
-				boolean updated = false;
-
-				// Set up the arguments to pv.vcr.action, which takes a single
-				// string "action", which is one of "first", "last", "next",
-				// "prev".
-				JsonArray args = new JsonArray();
-				args.add(new JsonPrimitive(value));
-
-				// Send the request to the client.
-				try {
-					JsonObject response = client.call("pv.vcr.action", args)
-							.get();
-					System.out.println(response.toString());
-					updated = true;
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				}
-
-				return updated;
-			}
-		});
-
-		// Set up a property that can be used to set the representation type.
-		properties.add(
-				new AbstractProxyProperty("Representation", this, connection) {
-					@Override
-					protected String findValue(ParaViewConnection connection) {
-						// TODO This can be found from the file.
-						return "Surface";
-					}
-
-					@Override
-					protected Set<String> findAllowedValues(
-							ParaViewConnection connection) {
-						// TODO This can be found from the file.
-						Set<String> allowedValues = new HashSet<String>();
-						allowedValues.add("3D Glyphs");
-						allowedValues.add("Outline");
-						allowedValues.add("Points");
-						allowedValues.add("Surface");
-						allowedValues.add("Surface With Edges");
-						allowedValues.add("Volume");
-						allowedValues.add("Wireframe");
-						return allowedValues;
-					}
-
-					@Override
-					protected boolean setValueOnClient(String value,
-							ParaViewConnection connection) {
-
-						IParaViewWebClient client = connection.getWidget();
-
-						boolean updated = false;
-
-						JsonArray args = new JsonArray();
-						JsonArray updatedProperties = new JsonArray();
-						JsonObject repProperty = new JsonObject();
-						repProperty.addProperty("id",
-								Integer.toString(getRepresentationId()));
-						repProperty.addProperty("name", "Representation");
-						repProperty.addProperty("value", value);
-						updatedProperties.add(repProperty);
-
-						// Update the properties that were configured.
-						args = new JsonArray();
-						args.add(updatedProperties);
-						JsonObject response;
-						try {
-							response = client
-									.call("pv.proxy.manager.update", args)
-									.get();
-							if (!response.get("success").getAsBoolean()) {
-								System.out.println(
-										"Failed to set the representation: ");
-								JsonArray array = response.get("errorList")
-										.getAsJsonArray();
-								for (int i = 0; i < array.size(); i++) {
-									System.out.println(array.get(i));
-								}
-							}
-							updated = true;
-						} catch (InterruptedException | ExecutionException e) {
-							e.printStackTrace();
-						}
-
-						return updated;
-					}
-				});
+		// Add some default properties.
+		properties.add(new RepresentationProperty(this, connection));
+		properties.add(new ScalarBarProperty(this, connection));
 
 		return properties;
 	}
@@ -912,6 +819,9 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		// property.
 		if (applyProperties(changedProperties)) {
 			setColorBy(featureInfo, feature);
+			// We always need to rescale when the feature changes.
+			rescale();
+			refreshScalarBar();
 			updated = true;
 		}
 		// Otherwise, revert the changes to the category and feature.
@@ -930,7 +840,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 *         on the server, sometimes just called "the" proxy). If unset, this
 	 *         returns {@code -1}.
 	 */
-	protected int getFileId() {
+	public int getFileId() {
 		return fileId;
 	}
 
@@ -941,7 +851,7 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * @return The ID for the server's representation proxy. If unset, this
 	 *         returns {@code -1}.
 	 */
-	protected int getRepresentationId() {
+	public int getRepresentationId() {
 		return repId;
 	}
 
@@ -975,4 +885,130 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		return featureMap.get(category);
 	}
 
+	private JsonObject getProxyInfo() {
+		IParaViewWebClient widget = connection.getWidget();
+		JsonArray array;
+		JsonObject object = null;
+
+		try {
+			// Query the client for the file proxy's information.
+			array = new JsonArray();
+			array.add(new JsonPrimitive(Integer.toString(getFileId())));
+			object = widget.call("pv.proxy.manager.get", array).get();
+		} catch (InterruptedException | ExecutionException e) {
+			System.err.println("ParaViewProxy error: "
+					+ "Connection error while getting file proxy information.");
+		}
+
+		return object;
+	}
+
+	private List<Double> findTimesteps() {
+		JsonArray array;
+		JsonObject object;
+
+		List<Double> timesteps = null;
+
+		object = getProxyInfo();
+		try {
+			object = object.get("data").getAsJsonObject();
+			array = object.get("time").getAsJsonArray();
+			int size = array.size();
+			timesteps = new ArrayList<Double>(size);
+			for (int i = 0; i < size; i++) {
+				timesteps.add(array.get(i).getAsDouble());
+			}
+		} catch (NullPointerException | ClassCastException
+				| IllegalStateException e) {
+			e.printStackTrace();
+		}
+
+		return timesteps != null ? timesteps : new ArrayList<Double>(0);
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	public List<Double> getTimesteps() {
+		return new ArrayList<Double>(times);
+	}
+
+	/**
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Future<Boolean> setTimestep(int step) {
+		this.targetTimestep = step;
+
+		return requestExecutor.submit(new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				// FIXME We need a way to just go straight to the desired time.
+				while (timestep != targetTimestep) {
+					if (timestep < targetTimestep) {
+						setTimestep("next");
+						timestep++;
+					} else {
+						setTimestep("prev");
+						timestep--;
+					}
+				}
+
+				// If we scale by the current time, then we need to refresh the
+				// scale.
+				if (!scaleByAllTimes) {
+					rescale();
+				}
+
+				return true;
+			}
+		});
+	}
+
+	private void setTimestep(String action) {
+		IParaViewWebClient widget = connection.getWidget();
+		JsonArray array;
+
+		// FIXME This changes the time for ALL views, not just this one.
+
+		array = new JsonArray();
+		array.add(new JsonPrimitive(action));
+		try {
+			widget.call("pv.vcr.action", array).get();
+			// Despite the documentation, this RPC call returns nothing.
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+
+		return;
+	}
+
+	private void rescale() {
+		IParaViewWebClient widget = connection.getWidget();
+		JsonArray array;
+
+		// Auto-scale the color map to the data.
+		array = new JsonArray();
+		JsonObject scaleOptions = new JsonObject();
+		scaleOptions.addProperty("type", scaleByAllTimes ? "time" : "data");
+		scaleOptions.addProperty("proxyId", Integer.toString(fileId));
+		array.add(scaleOptions);
+		try {
+			widget.call("pv.color.manager.rescale.transfer.function", array)
+					.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+
+		return;
+	}
+
+	private void refreshScalarBar() {
+		AbstractProxyProperty prop = (AbstractProxyProperty) getProxyProperty(
+				"Toggle Scalar Bar");
+		if ("Show".equals(prop.getValue())) {
+			prop.setValueOnClient("Show", connection);
+		}
+		return;
+	}
 }

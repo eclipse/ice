@@ -13,9 +13,13 @@ package org.eclipse.ice.viz.service.paraview.proxy;
 
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 /**
  * This class provides a basic implementation of an {@link IProxyProperty}.
@@ -120,9 +124,9 @@ public abstract class AbstractProxyProperty implements IProxyProperty {
 			}
 			// Throw an IllegalArgumentException if the value is not allowed.
 			else {
-				throw new IllegalArgumentException("ParaView error: "
-						+ "Cannot set \"" + getName() + "\" to the value \""
-						+ value + "\".");
+				throw new IllegalArgumentException(
+						"ParaView error: " + "Cannot set \"" + getName()
+								+ "\" to the value \"" + value + "\".");
 			}
 		}
 
@@ -176,4 +180,52 @@ public abstract class AbstractProxyProperty implements IProxyProperty {
 	 */
 	protected abstract boolean setValueOnClient(String value,
 			ParaViewConnection connection);
+
+	/**
+	 * Attempts to set the property on the underlying proxy object.
+	 * 
+	 * @param id
+	 *            The ID of the proxy (file, representation, or view) that will
+	 *            have a property updated.
+	 * @param name
+	 *            The name or key of the property value in the "properties"
+	 *            JsonArray.
+	 * @param value
+	 *            The new value for the property.
+	 * @return True if the value was set, false otherwise.
+	 */
+	public boolean setProxyProperty(int id, String name, String value) {
+
+		boolean updated = false;
+
+		JsonArray args = new JsonArray();
+		JsonArray updatedProperties = new JsonArray();
+		JsonObject repProperty = new JsonObject();
+		repProperty.addProperty("id", Integer.toString(id));
+		repProperty.addProperty("name", "Representation");
+		repProperty.addProperty("value", value);
+		updatedProperties.add(repProperty);
+
+		// Update the properties that were configured.
+		args = new JsonArray();
+		args.add(updatedProperties);
+		JsonObject response;
+		try {
+			response = connection.getWidget()
+					.call("pv.proxy.manager.update", args).get();
+			if (!response.get("success").getAsBoolean()) {
+				System.out.println(
+						"Failed to change the property \"" + name + "\": ");
+				JsonArray array = response.get("errorList").getAsJsonArray();
+				for (int i = 0; i < array.size(); i++) {
+					System.out.println(array.get(i));
+				}
+			}
+			updated = true;
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+
+		return updated;
+	}
 }
