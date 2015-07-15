@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="org.eclipse.ice.client">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" immediate="false" name="org.eclipse.ice.client">
    <implementation class="org.eclipse.ice.client.internal.Client"/>
    <service>
       <provide interface="org.eclipse.ice.iclient.IClient"/>

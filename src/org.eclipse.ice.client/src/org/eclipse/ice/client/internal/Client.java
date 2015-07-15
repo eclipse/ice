@@ -18,10 +18,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -39,6 +35,8 @@ import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,6 +125,16 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	HashMap<FormStatus, String> statusMessageMap = new HashMap<FormStatus, String>();
 
 	/**
+	 * The BundleContext created by the OSGi for the Client bundle.
+	 */
+	private BundleContext context;
+
+	/**
+	 * A service reference for retrieving the core.
+	 */
+	private ServiceReference<ICore> iCoreServiceRef;
+
+	/**
 	 * <p>
 	 * The Constructor
 	 * </p>
@@ -165,33 +173,39 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	}
 
 	/**
+	 * This operation starts the client and stores the bundle context
+	 *
+	 * @param context
+	 *            the bundle's context from the OSGi
+	 */
+	public void start(BundleContext context) {
+		this.context = context;
+	}
+
+	/**
+	 * This operation releases the ICore service references and stops the Client
+	 * service.
+	 */
+	public void stop() {
+		// Release the service reference
+		if (iCoreServiceRef != null) {
+			context.ungetService(iCoreServiceRef);
+		}
+	}
+
+	/**
 	 * This operation grabs and sets the iCore if it is not already available.
 	 */
-	public void getCore() {
+	public ICore getCore() {
 
 		if (iCore == null) {
-			String id = "org.eclipse.ice.client.coreConnection";
-			IExtensionRegistry registry = Platform.getExtensionRegistry();
-			IConfigurationElement[] elements = registry
-					.getConfigurationElementsFor(id);
-			if (elements.length > 0) {
-				for (int i = 0; i < elements.length; i++) {
-					IConfigurationElement element = elements[i];
-					if (id.equals(element.getAttribute("coreConnection"))) {
-						try {
-							setCoreService((ICore) element
-									.createExecutableExtension("class"));
-						} catch (CoreException e) {
-							logger.error(
-									"ICE Client Error! Unable to get ICore!", e);
-						}
-					}
-				}
-			} else {
-				logger.error("ICE Client Error! No ICore found!");
-			}
+			logger.info("IClient Message: Retrieving ICore for the client.");
+			iCoreServiceRef = context.getServiceReference(ICore.class);
+			iCore = context.getService(iCoreServiceRef);
+			logger.info("IClient Message: Core service set.");
 		}
 
+		return iCore;
 	}
 
 	/**
@@ -226,7 +240,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		if (formWidget != null) {
 			// Load up the processor
 			processor.setActionName(actionName);
-			processor.setCore(iCore);
+			processor.setCore(getCore());
 			infoWidget = iWidgetFactory.getExtraInfoWidget();
 			infoWidget.setForm(formWidget.getForm());
 			textWidget = iWidgetFactory.getStreamingTextWidget();
@@ -252,7 +266,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	@Override
 	public void setCoreService(ICore core) {
 		logger.info("IClient Message: Core service set.");
-		this.iCore = core;
+		iCore = core;
 	}
 
 	/**
@@ -267,7 +281,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		int itemId = -1;
 
 		// Create the Item
-		itemId = Integer.valueOf(iCore.createItem(itemType));
+		itemId = Integer.valueOf(getCore().createItem(itemType));
 
 		// FIXME - Get the status! Need ItemStatus type or something
 
@@ -316,14 +330,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		// If the Item exists
 		if (itemId > 0) {
 			// Get the Form
-			form = iCore.getItem(itemId);
+			form = getCore().getItem(itemId);
 			// Load the editor
 			formWidget = iWidgetFactory.getFormWidget(form.getName());
 			formWidget.setForm(form);
 			// Display the editor
 			formWidget.display();
 			// Set the initial status of the Form
-			formStatus = iCore.getItemStatus(itemId);
+			formStatus = getCore().getItemStatus(itemId);
 			formWidget.updateStatus(statusMessageMap.get(iCore
 					.getItemStatus(itemId)));
 			// If the FormStatus signifies that the Form is absolutely
@@ -385,7 +399,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		ArrayList<String> types = null;
 
 		// Get the types
-		types = this.iCore.getAvailableItemTypes().getList();
+		types = this.getCore().getAvailableItemTypes().getList();
 
 		return types;
 	}
@@ -467,7 +481,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	@Override
 	public ArrayList<Identifiable> getItems() {
 		getCore();
-		return iCore.getItemList();
+		return getCore().getItemList();
 	}
 
 	/**
@@ -479,7 +493,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	public void deleteItem(int id) {
 
 		// Forward the call
-		iCore.deleteItem(String.valueOf(id));
+		getCore().deleteItem(String.valueOf(id));
 
 	}
 
@@ -492,7 +506,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	public void importFile(URI file) {
 
 		// Just forward the call
-		iCore.importFile(file);
+		getCore().importFile(file);
 
 		return;
 	}
@@ -514,13 +528,13 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			formId = form.getId();
 
 			// Post the update //FIXME! Client ID!
-			status = this.iCore.updateItem(form, 1);
+			status = this.getCore().updateItem(form, 1);
 
 			// Update the Form if needed, skip FormStatus.InReview for now.
 			// FIXME! - need FormStatus.InReview
 			if (!status.equals(FormStatus.InfoError)
 					&& !status.equals(FormStatus.Unacceptable)) {
-				form = iCore.getItem(formId);
+				form = getCore().getItem(formId);
 				// Update the status of the Item update
 				if (formWidgetTable.containsKey(form.getItemID())) {
 					String statusMessage = statusMessageMap.get(status);
@@ -570,7 +584,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 		// Forward the request to the core so that it can try to shut the
 		// process down.
-		iCore.cancelItemProcess(form.getId(), process);
+		getCore().cancelItemProcess(form.getId(), process);
 
 		return;
 	}
@@ -629,14 +643,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	@Override
 	public Object getFileSystem() {
 		// TODO Auto-generated method stub
-		return iCore.getFileSystem(1);
+		return getCore().getFileSystem(1);
 	}
 
 	@Override
 	public int importFileAsItem(URI file, String itemType) {
 
 		// Pass the call on to the core
-		return Integer.valueOf(iCore.importFileAsItem(file, itemType));
+		return Integer.valueOf(getCore().importFileAsItem(file, itemType));
 
 	}
 
