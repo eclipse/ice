@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
+import java.util.List;
+
 /**
  * This interface defines the principle type for plots created and handled by
  * the platform. Its primary purpose is to provide a specific interface for
@@ -38,14 +40,12 @@ public interface IPlot extends IVizCanvas {
 	public void setIndependentSeries(ISeries series);
 
 	/**
-	 * Adds an dependent series that will be plotted against the dependent
-	 * series on this plot. It is up to the implementation to determine how
-	 * these series will be presented.
+	 * Gets the independent series for the plot. This is the series that all the
+	 * other series should be plotted against.
 	 * 
-	 * @param series
-	 *            The dependent series to add.
+	 * @return ISeries the independent series.
 	 */
-	public void addDependantSeries(ISeries series);
+	public ISeries getIndependentSeries();
 
 	/**
 	 * Removes the specified series from the dependent series list.
@@ -56,12 +56,10 @@ public interface IPlot extends IVizCanvas {
 	public void removeDependantSeries(ISeries series);
 
 	/**
-	 * Gets the specified dependent series. The index is zero based and
-	 * correlates to when the dependent series was added to the plot.
+	 * Gets all of the dependent series specified for this IPlot, as a list.
 	 * 
-	 * @param index
-	 *            The index of the series, being zero based.
+	 * @return List<ISeries> all of the dependent series to be plotted.
 	 */
-	public ISeries getDependantSeries(int index);
+	public List<ISeries> getAllDependentSeries();
 
 }

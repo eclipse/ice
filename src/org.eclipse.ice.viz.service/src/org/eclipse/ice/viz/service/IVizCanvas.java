@@ -47,8 +47,9 @@ public interface IVizCanvas {
 	 * parent composite are left completely up to the implementation.
 	 * 
 	 * @param parent
+	 * @throws Exception
 	 */
-	public void draw(Composite parent);
+	public Composite draw(Composite parent) throws Exception;
 
 	/**
 	 * This operation returns the number of axes of the plot.

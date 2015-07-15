@@ -1,10 +1,9 @@
 package org.eclipse.ice.viz.service.styles;
 
-import org.eclipse.ice.viz.service.AbstractSeriesStyle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
-public class AxisStyle extends AbstractSeriesStyle {
+public class XYZAxisStyle extends AbstractSeriesStyle {
 
 	public static final String AXIS_TITLE = "title";
 	public static final String TITLE_FONT = "titleFont";
@@ -20,7 +19,7 @@ public class AxisStyle extends AbstractSeriesStyle {
 	public static final String GRID_LINE_IS_DASHED = "dashedGridLine";
 	public static final String GRID_LINE_COLOR = "gridLineColor";
 
-	public AxisStyle() {
+	public XYZAxisStyle() {
 		super();
 		properties.put(AXIS_TITLE, "Axis");
 		properties.put(TITLE_FONT, Display.getCurrent().getSystemFont());

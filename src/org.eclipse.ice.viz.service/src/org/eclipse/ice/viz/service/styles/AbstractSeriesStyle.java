@@ -10,11 +10,13 @@
  *   Kasper Gammeltoft
  *******************************************************************************/
 
-package org.eclipse.ice.viz.service;
+package org.eclipse.ice.viz.service.styles;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.ice.viz.service.ISeriesStyle;
 
 /**
  * An abstract implementation of a series style object to be subclassed. It

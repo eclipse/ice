@@ -3,7 +3,6 @@
  */
 package org.eclipse.ice.viz.service.styles;
 
-import org.eclipse.ice.viz.service.AbstractSeriesStyle;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.BaseLine;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.PointStyle;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;

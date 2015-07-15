@@ -1,6 +1,5 @@
 package org.eclipse.ice.viz.service.styles;
 
-import org.eclipse.ice.viz.service.AbstractSeriesStyle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
