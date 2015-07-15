@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -21,12 +22,10 @@ import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.ice.viz.service.paraview.widgets.ParaViewCanvas;
 import org.eclipse.ice.viz.service.paraview.widgets.ParaViewMouseAdapter;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
 
 /**
  * This class manages rendering visualizations using a viz connection to a
@@ -35,10 +34,8 @@ import org.eclipse.swt.widgets.ToolBar;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPlotRender extends ConnectionPlotRender<IParaViewWebClient> {
-
-	// TODO If the data source (i.e. IParaViewProxy) is changed, then a new
-	// render panel will need to be created and pointed to that proxy's view ID.
+public class ParaViewPlotRender
+		extends ConnectionPlotRender<IParaViewWebClient> {
 
 	/**
 	 * A reference to the plot conveniently cast to its actual type.
@@ -64,23 +61,10 @@ public class ParaViewPlotRender extends ConnectionPlotRender<IParaViewWebClient>
 	private ParaViewMouseAdapter canvasMouseListener;
 
 	/**
-	 * The {@code ToolBarManager} that will contain the plot actions that can
-	 * update the plot widget.
-	 */
-	private ToolBarManager toolBar;
-
-	/**
-	 * The {@code ActionTree} that can be used to update the plot category and
-	 * type.
-	 */
-	private ActionTree plotTypeTree;
-
-	/**
 	 * The {@code ActionTree} that can be used to update the available plot
 	 * properties.
 	 */
 	private ActionTree propertiesTree;
-
 	// ----------------------- //
 
 	/**
@@ -110,8 +94,8 @@ public class ParaViewPlotRender extends ConnectionPlotRender<IParaViewWebClient>
 	 * Overrides a method from ConnectionPlotRender.
 	 */
 	@Override
-	protected Composite createPlotComposite(Composite parent, int style, IParaViewWebClient connection)
-			throws Exception {
+	protected Composite createPlotComposite(Composite parent, int style,
+			IParaViewWebClient connection) throws Exception {
 
 		// Get the current proxy used to open the rendered ParaView file.
 		IParaViewProxy proxy = plot.getParaViewProxy();
@@ -131,15 +115,6 @@ public class ParaViewPlotRender extends ConnectionPlotRender<IParaViewWebClient>
 		gridLayout.marginHeight = 0;
 		plotContainer.setLayout(gridLayout);
 
-		// Create a ToolBar.
-		ToolBarManager toolBarManager = new ToolBarManager();
-		this.toolBar = toolBarManager;
-		ToolBar toolBar = toolBarManager.createControl(plotContainer);
-		toolBar.setBackground(parent.getBackground());
-		toolBar.setFont(parent.getFont());
-		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		fillToolBar(toolBarManager, connection);
-
 		// Create the ParaView Canvas.
 		this.proxy = proxy;
 		canvas = new ParaViewCanvas(plotContainer, SWT.NONE);
@@ -150,21 +125,45 @@ public class ParaViewPlotRender extends ConnectionPlotRender<IParaViewWebClient>
 		canvas.refresh();
 
 		// Add mouse controls to the canvas.
-		canvasMouseListener = new ParaViewMouseAdapter(connection, proxy.getViewId(), canvas);
+		canvasMouseListener = new ParaViewMouseAdapter(connection,
+				proxy.getViewId(), canvas);
 		canvasMouseListener.setCanvas(canvas);
 
-		// Update the ToolBar based on the current proxy.
-		refreshToolBar(toolBarManager);
+		// Refresh the plot render actions.
+		refreshPlotRenderActions();
+
+		// Set the context Menu for the ParaView canvas.
+		canvas.setMenu(getContextMenu());
 
 		// Return the overall container.
 		return plotContainer;
 	}
 
 	/*
+	 * Overrides a method from PlotRender.
+	 */
+	@Override
+	protected List<ActionTree> createPlotRenderActions() {
+		// In addition to the default actions, add the action to set the
+		// "representation".
+		List<ActionTree> actions = super.createPlotRenderActions();
+
+		// Create an ActionTree to change values from the proxy's available set
+		// of properties.
+		if (propertiesTree == null) {
+			propertiesTree = new ActionTree("Properties");
+		}
+		actions.add(propertiesTree);
+
+		return actions;
+	}
+
+	/*
 	 * Overrides a method from ConnectionPlotRender.
 	 */
 	@Override
-	protected void updatePlotComposite(Composite plotComposite, IParaViewWebClient connection) throws Exception {
+	protected void updatePlotComposite(Composite plotComposite,
+			IParaViewWebClient connection) throws Exception {
 
 		// Get the current proxy used to open the rendered ParaView file.
 		IParaViewProxy proxy = plot.getParaViewProxy();
@@ -186,109 +185,54 @@ public class ParaViewPlotRender extends ConnectionPlotRender<IParaViewWebClient>
 			canvas.refresh();
 			canvasMouseListener.setViewId(proxy.getViewId());
 
-			// Update the ToolBar based on the current proxy.
-			refreshToolBar(toolBar);
+			// Refresh the plot render actions.
+			refreshPlotRenderActions();
 		}
 
 		// Otherwise, we should be able to update the render panel.
 
 		// TODO We'll need to do more than this! We also should do anything if
 		// the value hasn't changed.
-		Future<Boolean> task = proxy.setFeature(getPlotCategory(), getPlotType());
+		Future<Boolean> task = proxy.setFeature(getPlotCategory(),
+				getPlotType());
 		refreshWidgetAfterTask(task);
 
 		return;
 	}
 
-	/*
-	 * Overrides a method from ConnectionPlotRender.
-	 */
-	@Override
-	protected void clearCache() {
-		// TODO Auto-generated method stub
-
-	}
-
 	/**
-	 * Fills the specified {@code ToolBar} with actions that can be used to
-	 * update the rendered plot.
-	 * <p>
-	 * <b>Note:</b> This method should only be called once, and should be called
-	 * at plot creation time.
-	 * </p>
-	 * 
-	 * @param toolBar
-	 *            The {@code ToolBarManager} that will be populated.
+	 * Refreshes the plot render actions that need to be refreshed when the
+	 * proxy changes.
 	 */
-	private void fillToolBar(ToolBarManager toolBar, final IParaViewWebClient connection) {
-
-		plotTypeTree = new ActionTree("Plot Types");
-		toolBar.add(plotTypeTree.getContributionItem());
-
-		// Add widgets to change the representation.
-		propertiesTree = new ActionTree("Properties");
-		toolBar.add(propertiesTree.getContributionItem());
-
-		// Refresh the ToolBar.
-		toolBar.update(true);
-
-		return;
-	}
-
-	/**
-	 * Refreshes (if necessary) the widgets in the {@code ToolBar}.
-	 * <p>
-	 * Specifically, this method updates both the {@link #plotTypeTree} and
-	 * {@link #representationTree}.
-	 * </p>
-	 * 
-	 * @param toolBar
-	 *            The {@code ToolBar} to update.
-	 */
-	private void refreshToolBar(ToolBarManager toolBar) {
-		// Create an ActionTree for the available plot categories and types.
-		// Selecting one of the leaf nodes should set the category and type for
-		// the associated plot.
-
+	private void refreshPlotRenderActions() {
 		ActionTree tree;
 
-		// Re-build the plot type tree with the proxy's categories and features.
-		plotTypeTree.removeAll();
-		for (final String category : proxy.getFeatureCategories()) {
-			tree = new ActionTree(category);
-			for (final String feature : proxy.getFeatures(category)) {
-				tree.add(new ActionTree(new Action(feature) {
-					@Override
-					public void run() {
-						Future<Boolean> task = proxy.setFeature(category, feature);
-						refreshWidgetAfterTask(task);
-					}
-				}));
-			}
-			plotTypeTree.add(tree);
-		}
-
-		// Re-build the property tree with the proxy's properties and allowed
-		// values.
+		// Reset the properties tree for the current proxy.
 		propertiesTree.removeAll();
 		for (final String property : proxy.getProperties().keySet()) {
 			tree = new ActionTree(property);
-			for (final String value : proxy.getPropertyAllowedValues(property)) {
+			for (final String value : proxy
+					.getPropertyAllowedValues(property)) {
 				tree.add(new ActionTree(new Action(value) {
 					@Override
 					public void run() {
-						Future<Boolean> task = proxy.setProperty(property, value);
+						Future<Boolean> task = proxy.setProperty(property,
+								value);
 						refreshWidgetAfterTask(task);
 					}
 				}));
 			}
 			propertiesTree.add(tree);
 		}
+	}
 
-		// Refresh the ToolBar.
-		toolBar.update(true);
+	/*
+	 * Implements an abstract method from PlotRender.
+	 */
+	@Override
+	protected void clearCache() {
+		// TODO Auto-generated method stub
 
-		return;
 	}
 
 	/**

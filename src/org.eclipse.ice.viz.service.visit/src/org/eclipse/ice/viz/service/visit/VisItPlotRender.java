@@ -28,7 +28,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
@@ -101,7 +100,8 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * An ExecutorService for launching worker threads. Only one thread is
 	 * processed at a time in the order in which they are added.
 	 */
-	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private final ExecutorService executorService = Executors
+			.newSingleThreadExecutor();
 
 	/**
 	 * The plot {@code Composite} that renders the files through the VisIt
@@ -150,8 +150,8 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * Implements an abstract method from ConnectionPlotRender.
 	 */
 	@Override
-	protected Composite createPlotComposite(Composite parent, int style, final VisItSwtConnection widget)
-			throws Exception {
+	protected Composite createPlotComposite(Composite parent, int style,
+			final VisItSwtConnection widget) throws Exception {
 
 		// Create a new window on the VisIt server if one does not already
 		// exist. We will need the corresponding connection and a window ID. If
@@ -167,13 +167,16 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		canvas = new VisItSwtWidget(container, SWT.DOUBLE_BUFFERED);
 		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		canvas.setBackground(parent.getBackground());
-		int windowWidth = Integer.parseInt(connection.getProperty("windowWidth"));
-		int windowHeight = Integer.parseInt(connection.getProperty("windowHeight"));
+		int windowWidth = Integer
+				.parseInt(connection.getProperty("windowWidth"));
+		int windowHeight = Integer
+				.parseInt(connection.getProperty("windowHeight"));
 
 		// Establish the canvas' connection to the VisIt server. This may throw
 		// an exception.
 		int windowId = connection.getNextWindowId();
-		canvas.setVisItSwtConnection(widget, windowId, windowWidth, windowHeight);
+		canvas.setVisItSwtConnection(widget, windowId, windowWidth,
+				windowHeight);
 
 		// Create a mouse manager to handle mouse events inside the
 		// canvas.
@@ -205,7 +208,8 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 						// widget until it matches the current timestep in the
 						// TimeSliderComposite.
 						int targetStep;
-						while (renderedTimestep != (targetStep = widgetTimestep.get())) {
+						while (renderedTimestep != (targetStep = widgetTimestep
+								.get())) {
 							if (renderedTimestep < targetStep) {
 								methods.animationNextState();
 								renderedTimestep++;
@@ -232,28 +236,23 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		}
 		timeSlider.setTimes(times);
 
-		return container;
-	}
+		// Set the context Menu for the VisIt canvas.
+		canvas.setMenu(getContextMenu());
 
-	/*
-	 * Overrides a method from PlotRender.
-	 */
-	protected Menu createPlotCompositeContextMenu(Composite plotComposite) {
-		// Set the context Menu for the canvas, too.
-		Menu menu = super.createPlotCompositeContextMenu(plotComposite);
-		canvas.setMenu(menu);
-		return menu;
+		return container;
 	}
 
 	/*
 	 * Implements an abstract method from ConnectionPlotRender.
 	 */
 	@Override
-	protected void updatePlotComposite(Composite plotComposite, VisItSwtConnection connection) throws Exception {
+	protected void updatePlotComposite(Composite plotComposite,
+			VisItSwtConnection connection) throws Exception {
 
 		// Check the input arguments. The canvas should be the plot Composite.
 		if (plotComposite != canvas.getParent()) {
-			throw new Exception("VisItPlot error: " + "The canvas was not created properly.");
+			throw new Exception("VisItPlot error: "
+					+ "The canvas was not created properly.");
 		}
 
 		// Get the source path from the VisItPlot class. We can't,
@@ -269,7 +268,8 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// Check that the type is non-null and new. Then do the same for the
 		// representation and category.
 		boolean plotTypeChanged = (type != null && !type.equals(plotType));
-		plotTypeChanged |= (representation != null && !representation.equals(plotRepresentation));
+		plotTypeChanged |= (representation != null
+				&& !representation.equals(plotRepresentation));
 		plotTypeChanged |= (category != null && !category.equals(plotCategory));
 		// Now check the validity of each property.
 		if (plotTypeChanged && type != null) {
@@ -313,16 +313,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 			// Rebuild the VisIt representation tree based on the current
 			// category (if the category actually changed).
 			if (!category.equals(plotCategory)) {
-				repTree.removeAll();
-				for (final String rep : plot.getRepresentations(category)) {
-					repTree.add(new ActionTree(new Action(rep) {
-						@Override
-						public void run() {
-							setPlotRepresentation(rep);
-							refresh();
-						}
-					}));
-				}
+				refreshPlotRenderActions();
 			}
 
 			// Change the record of the current plot category and type for this
@@ -357,7 +348,8 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// If the category changed, we will need to update the representation to
 		// the default representation for the new category, or null if the
 		// category has no valid representations.
-		if (oldCategory != category && (oldCategory == null || !oldCategory.equals(category))) {
+		if (oldCategory != category
+				&& (oldCategory == null || !oldCategory.equals(category))) {
 			List<String> reps = plot.getRepresentations(category);
 			setPlotRepresentation(reps.isEmpty() ? null : reps.get(0));
 		}
@@ -384,12 +376,33 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * Overrides a method from PlotRender.
 	 */
 	@Override
-	protected List<ActionTree> getPlotRenderActions() {
+	protected List<ActionTree> createPlotRenderActions() {
 		// In addition to the default actions, add the action to set the
 		// "representation".
-		List<ActionTree> actions = super.getPlotRenderActions();
+		List<ActionTree> actions = super.createPlotRenderActions();
 		actions.add(repTree);
 		return actions;
+	}
+
+	/**
+	 * Refreshes the plot render actions that need to be refreshed when the
+	 * plotted data changes.
+	 */
+	private void refreshPlotRenderActions() {
+
+		// Update the representations based on the current category.
+		repTree.removeAll();
+		for (final String rep : plot.getRepresentations(getPlotCategory())) {
+			repTree.add(new ActionTree(new Action(rep) {
+				@Override
+				public void run() {
+					setPlotRepresentation(rep);
+					refresh();
+				}
+			}));
+		}
+
+		return;
 	}
 
 	/**

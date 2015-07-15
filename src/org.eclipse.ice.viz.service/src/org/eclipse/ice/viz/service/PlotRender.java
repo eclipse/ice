@@ -107,6 +107,15 @@ public abstract class PlotRender {
 	 */
 	protected Image infoIcon;
 
+	/**
+	 * The list of actions that can be accessed via context Menus or ToolBars.
+	 */
+	private List<ActionTree> actions;
+
+	/**
+	 * A JFace MenuManager for the plot Composite's context menu.
+	 */
+	private Menu contextMenu;
 	// -------------------- //
 
 	/**
@@ -124,8 +133,9 @@ public abstract class PlotRender {
 
 		// Check the parameters.
 		if (parent == null || plot == null) {
-			throw new NullPointerException(
-					"PlotRender error: " + "Cannot render a plot that is null or " + "inside a null parent Composite.");
+			throw new NullPointerException("PlotRender error: "
+					+ "Cannot render a plot that is null or "
+					+ "inside a null parent Composite.");
 		}
 
 		this.parent = parent;
@@ -249,13 +259,14 @@ public abstract class PlotRender {
 		}
 
 		// Get the StackLayout from the plot Composite.
-		final StackLayout stackLayout = (StackLayout) stackComposite.getLayout();
+		final StackLayout stackLayout = (StackLayout) stackComposite
+				.getLayout();
 
 		try {
 			// Update the plotComposite. Create it if necessary.
 			if (plotComposite == null) {
 				plotComposite = createPlotComposite(stackComposite, SWT.NONE);
-				createPlotCompositeContextMenu(plotComposite);
+				plotComposite.setMenu(contextMenu);
 			}
 			updatePlotComposite(plotComposite);
 
@@ -312,6 +323,12 @@ public abstract class PlotRender {
 		// Set the stackComposite's context Menu to the parent's.
 		stackComposite.setMenu(parent.getMenu());
 
+		// Get the plot render actions.
+		actions = createPlotRenderActions();
+		// Create the context Menu.
+		contextMenu = createContextMenu(stackComposite);
+		// Create the ToolBar if desired.
+
 		return;
 	}
 
@@ -343,16 +360,19 @@ public abstract class PlotRender {
 
 		// Create an info label with an image.
 		iconLabel = new Label(infoComposite, SWT.NONE);
-		iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		iconLabel.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
 		// Create a Composite to contain the info message.
 		Composite msgComposite = new Composite(infoComposite, SWT.NONE);
-		msgComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		msgComposite.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		msgComposite.setLayout(new GridLayout(1, false));
 
 		// Create an info label with informative text.
 		msgLabel = new Label(msgComposite, SWT.NONE);
-		msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		msgLabel.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
 		return infoComposite;
 	}
@@ -367,11 +387,13 @@ public abstract class PlotRender {
 	 * @param message
 	 *            The message to display in its message label.
 	 */
-	protected void updateInfoComposite(Composite infoComposite, final String message) {
+	protected void updateInfoComposite(Composite infoComposite,
+			final String message) {
 		// Set the message and icon based on the state of the connection.
 		final Display display = infoComposite.getDisplay();
 		// If there's no icon set, default to something useful.
-		final Image image = (infoIcon != null ? infoIcon : display.getSystemImage(SWT.ICON_WARNING));
+		final Image image = (infoIcon != null ? infoIcon
+				: display.getSystemImage(SWT.ICON_WARNING));
 
 		// Update the contents of the infoComposite's widgets.
 		iconLabel.setImage(image);
@@ -411,7 +433,8 @@ public abstract class PlotRender {
 	 *             rendered, this throws an exception with an informative
 	 *             message.
 	 */
-	protected abstract Composite createPlotComposite(Composite parent, int style) throws Exception;
+	protected abstract Composite createPlotComposite(Composite parent,
+			int style) throws Exception;
 
 	/**
 	 * Creates the context Menu for the plot Composite. The Menu is then set for
@@ -424,20 +447,17 @@ public abstract class PlotRender {
 	 * inside the plot Composite, override this method and get the Menu from the
 	 * super method.</li>
 	 * <li>If the sub-class needs to add more items to the context Menu,
-	 * override {@link #getPlotRenderActions()}.</li>
+	 * override {@link #createPlotRenderActions()}.</li>
 	 * </ul>
 	 * </p>
 	 * 
-	 * @param plotComposite
+	 * @param parent
 	 *            The plot Composite that will be getting a context Menu.
 	 * @return The new context Menu.
 	 */
-	protected Menu createPlotCompositeContextMenu(Composite plotComposite) {
-		// Get the list of available actions for this PlotRender.
-		final List<ActionTree> actions = getPlotRenderActions();
-
+	private Menu createContextMenu(Composite parent) {
 		// Get the current context Menu from the parent of the plot Composite.
-		Menu menu = plotComposite.getParent().getMenu();
+		Menu menu = parent.getParent().getMenu();
 
 		// If it exists, it should be using a MenuManager. However, we cannot
 		// add new actions to the MenuManager (there is no way to get it), so we
@@ -465,13 +485,20 @@ public abstract class PlotRender {
 			for (ActionTree action : actions) {
 				menuManager.add(action.getContributionItem());
 			}
-			menu = menuManager.createContextMenu(plotComposite);
+			menu = menuManager.createContextMenu(parent);
 		}
 
-		// Set the Menu for the plot Composite.
-		plotComposite.setMenu(menu);
-
 		return menu;
+	}
+
+	/**
+	 * Gets the context menu for the plot {@code Composite}.
+	 * 
+	 * @return The MenuManager used to populate the plot {@code Composite}'s
+	 *         context menu.
+	 */
+	protected Menu getContextMenu() {
+		return contextMenu;
 	}
 
 	/**
@@ -485,7 +512,8 @@ public abstract class PlotRender {
 	 *             rendered, this throws an exception with an informative
 	 *             message.
 	 */
-	protected abstract void updatePlotComposite(Composite plotComposite) throws Exception;
+	protected abstract void updatePlotComposite(Composite plotComposite)
+			throws Exception;
 
 	/**
 	 * Disposes the specified plot {@code Composite} and any related resources.
@@ -504,7 +532,7 @@ public abstract class PlotRender {
 	 * 
 	 * @return A list of default actions.
 	 */
-	protected List<ActionTree> getPlotRenderActions() {
+	protected List<ActionTree> createPlotRenderActions() {
 		List<ActionTree> actions = new ArrayList<ActionTree>();
 
 		// Create the root ActionTree for setting the plot category and type.
@@ -547,4 +575,5 @@ public abstract class PlotRender {
 
 		return actions;
 	}
+
 }
