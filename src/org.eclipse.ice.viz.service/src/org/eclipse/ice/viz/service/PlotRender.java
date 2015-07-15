@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -108,12 +109,7 @@ public abstract class PlotRender {
 	protected Image infoIcon;
 
 	/**
-	 * The list of actions that can be accessed via context Menus or ToolBars.
-	 */
-	private List<ActionTree> actions;
-
-	/**
-	 * A JFace MenuManager for the plot Composite's context menu.
+	 * The plot render's context Menu.
 	 */
 	private Menu contextMenu;
 	// -------------------- //
@@ -324,10 +320,40 @@ public abstract class PlotRender {
 		stackComposite.setMenu(parent.getMenu());
 
 		// Get the plot render actions.
-		actions = createPlotRenderActions();
-		// Create the context Menu.
-		contextMenu = createContextMenu(stackComposite);
-		// Create the ToolBar if desired.
+		List<ActionTree> actions = createPlotRenderActions();
+
+		// Create the context MenuManager and create its Menu.
+		final MenuManager menuManager = new MenuManager();
+		for (ActionTree action : actions) {
+			menuManager.add(action.getContributionItem());
+		}
+		// Get the current context Menu from the parent of the plot Composite.
+		contextMenu = stackComposite.getParent().getMenu();
+		// If it exists, it should be using a MenuManager. However, we cannot
+		// add new actions to the MenuManager (there is no way to get it), so we
+		// must add a MenuListener to add additional items when the menu opens.
+		if (contextMenu != null) {
+			contextMenu.addMenuListener(new MenuListener() {
+				@Override
+				public void menuHidden(MenuEvent e) {
+					// Nothing to do.
+				}
+
+				@Override
+				public void menuShown(MenuEvent e) {
+					Menu menu = (Menu) e.widget;
+					// Add all items from the MenuManager.
+					for (IContributionItem item : menuManager.getItems()) {
+						item.fill(menu, -1);
+					}
+				}
+			});
+		}
+		// If the parent Menu does not exist, create a new context Menu and set
+		// it for the plot Composite.
+		else {
+			contextMenu = menuManager.createContextMenu(parent);
+		}
 
 		return;
 	}
@@ -435,61 +461,6 @@ public abstract class PlotRender {
 	 */
 	protected abstract Composite createPlotComposite(Composite parent,
 			int style) throws Exception;
-
-	/**
-	 * Creates the context Menu for the plot Composite. The Menu is then set for
-	 * the Composite. If the parent of the plot Composite already has a Menu,
-	 * then it will be updated.
-	 * <p>
-	 * <b>Notes:</b>
-	 * <ul>
-	 * <li>If the sub-class needs to add this context Menu to other widgets
-	 * inside the plot Composite, override this method and get the Menu from the
-	 * super method.</li>
-	 * <li>If the sub-class needs to add more items to the context Menu,
-	 * override {@link #createPlotRenderActions()}.</li>
-	 * </ul>
-	 * </p>
-	 * 
-	 * @param parent
-	 *            The plot Composite that will be getting a context Menu.
-	 * @return The new context Menu.
-	 */
-	private Menu createContextMenu(Composite parent) {
-		// Get the current context Menu from the parent of the plot Composite.
-		Menu menu = parent.getParent().getMenu();
-
-		// If it exists, it should be using a MenuManager. However, we cannot
-		// add new actions to the MenuManager (there is no way to get it), so we
-		// must add a MenuListener to add additional items when the menu opens.
-		if (menu != null) {
-			menu.addMenuListener(new MenuListener() {
-				@Override
-				public void menuHidden(MenuEvent e) {
-					// Nothing to do.
-				}
-
-				@Override
-				public void menuShown(MenuEvent e) {
-					Menu menu = (Menu) e.widget;
-					for (ActionTree action : actions) {
-						action.getContributionItem().fill(menu, -1);
-					}
-				}
-			});
-		}
-		// If the parent Menu does not exist, create a new context Menu and set
-		// it for the plot Composite.
-		else {
-			MenuManager menuManager = new MenuManager();
-			for (ActionTree action : actions) {
-				menuManager.add(action.getContributionItem());
-			}
-			menu = menuManager.createContextMenu(parent);
-		}
-
-		return menu;
-	}
 
 	/**
 	 * Gets the context menu for the plot {@code Composite}.
