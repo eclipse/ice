@@ -64,12 +64,27 @@ public abstract class MultiPlot implements IPlot {
 	/**
 	 * The data source, either a local or remote file.
 	 */
-	private URI source;
+	protected URI source;
 
 	/**
 	 * The list of ISeries series for this plot to render
 	 */
 	private List<ISeries> series;
+
+	/**
+	 * The title of the plot
+	 */
+	private String plotTitle;
+
+	/**
+	 * The style that provides the basic stylistic information for this plot
+	 */
+	protected ISeriesStyle plotStyle;
+
+	/**
+	 * The plot properties
+	 */
+	private final Map<String, String> properties;
 
 	/**
 	 * The independent series, for plotting against the other series.
@@ -80,7 +95,23 @@ public abstract class MultiPlot implements IPlot {
 	 * The map of current {@link PlotRender}s, keyed on their parent
 	 * {@code Composite}s.
 	 */
-	private final Map<Composite, PlotRender> plotRenders;
+	protected final Map<Composite, PlotRender> plotRenders;
+
+	/**
+	 * This should only be called by a subclass that has specific behavior but
+	 * still uses the super class variables.
+	 * 
+	 * @param source
+	 *            The source for this plot
+	 */
+	protected MultiPlot(URI source) {
+		// Instantiate variables
+		this.source = source;
+		this.vizService = null;
+		this.plotRenders = new HashMap<Composite, PlotRender>();
+		properties = new HashMap<String, String>();
+		return;
+	}
 
 	/**
 	 * The default constructor.
@@ -99,8 +130,27 @@ public abstract class MultiPlot implements IPlot {
 
 		// Initialize any final collections.
 		plotRenders = new HashMap<Composite, PlotRender>();
-
+		properties = new HashMap<String, String>();
 		return;
+	}
+
+	/**
+	 * Gets the plot style for this plot
+	 * 
+	 * @return The plot style
+	 */
+	public ISeriesStyle getPlotStyle() {
+		return plotStyle;
+	}
+
+	/**
+	 * Sets the plot style for this plot
+	 * 
+	 * @param style
+	 *            The plot style
+	 */
+	public void setPlotStyle(ISeriesStyle style) {
+		plotStyle = style;
 	}
 
 	// ---- Implements IPlot ---- //
@@ -150,7 +200,17 @@ public abstract class MultiPlot implements IPlot {
 	 */
 	@Override
 	public void setPlotTitle(String title) {
+		plotTitle = title;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.IPlot#getPlotTitle()
+	 */
+	@Override
+	public String getPlotTitle() {
+		return plotTitle;
 	}
 
 	/*
@@ -175,6 +235,18 @@ public abstract class MultiPlot implements IPlot {
 	@Override
 	public ISeries getIndependentSeries() {
 		return independentSeries;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.IPlot#addDependentSeries(org.eclipse.ice.viz.
+	 * service.ISeries)
+	 */
+	@Override
+	public void addDependentSeries(ISeries series) {
+		this.series.add(series);
 	}
 
 	/*
@@ -234,7 +306,7 @@ public abstract class MultiPlot implements IPlot {
 	 */
 	@Override
 	public Map<String, String> getProperties() {
-		return new HashMap<String, String>();
+		return properties;
 	}
 
 	/*
@@ -279,7 +351,15 @@ public abstract class MultiPlot implements IPlot {
 	 */
 	@Override
 	public boolean isSourceRemote() {
-		return !"localhost".equals(getSourceHost());
+		boolean retVal = false;
+
+		// If the source is null, then it is a local file. Otherwise check it
+		// explicitly.
+		if (source.getHost() != null) {
+			retVal = !"localhost".equals(source.getHost());
+		}
+
+		return retVal;
 	}
 
 	// -------------------------- //

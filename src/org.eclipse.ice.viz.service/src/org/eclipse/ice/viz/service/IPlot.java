@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
@@ -22,12 +22,27 @@ import java.util.List;
  * 
  * @see org.eclipse.ice.viz.service.ISeries
  * 
- * @author Jay Jay Billings, Alex McCaskey, Kasper Gammeltoft
+ * @author Jay Jay Billings, Alex McCaskey
+ * @author Kasper Gammeltoft - Viz refactor for series
  *
  */
 public interface IPlot extends IVizCanvas {
 
+	/**
+	 * Sets the title of the plot to the specified string.
+	 * 
+	 * @param title
+	 *            The new title for this plot
+	 */
 	public void setPlotTitle(String title);
+
+	/**
+	 * Gets the title of the plot to be displayed in whatever visualization
+	 * service is rendering this plot
+	 * 
+	 * @return String The plot title
+	 */
+	public String getPlotTitle();
 
 	/**
 	 * Sets the series that will be on the independent axis for this plot. All
@@ -46,6 +61,14 @@ public interface IPlot extends IVizCanvas {
 	 * @return ISeries the independent series.
 	 */
 	public ISeries getIndependentSeries();
+
+	/**
+	 * | Adds the specified series to the list of series to plot.
+	 * 
+	 * @param seriesToAdd
+	 *            The {@link ISeries} to add.
+	 */
+	public void addDependentSeries(ISeries seriesToAdd);
 
 	/**
 	 * Removes the specified series from the dependent series list.

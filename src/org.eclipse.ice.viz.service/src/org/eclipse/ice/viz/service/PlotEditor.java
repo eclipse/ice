@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,14 +7,13 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Robert Smith, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -47,10 +46,11 @@ import org.eclipse.ui.part.FileEditorInput;
  * a file of visualization data. It can make use of any VizService registered to
  * the BasicVizServiceFactory to create the plot. It can prompt the user in case
  * there are multiple applicable services for the file. The UI contains options
- * to redraw the plot using the IPlot's provided list of categories and plot
- * types. The IPlot's provided context menu is also available to the user.
+ * to redraw the plot using the IPlot's provided list of series. The IPlot's
+ * provided context menu is also available to the user.
  * 
  * @author Robert Smith
+ * @author Kasper Gammeltoft- Viz refactor for series
  *
  */
 
@@ -129,9 +129,8 @@ public class PlotEditor extends EditorPart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 * .Composite)
+	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.
+	 * widgets .Composite)
 	 */
 	@Override
 	public void createPartControl(final Composite parent) {
@@ -169,8 +168,8 @@ public class PlotEditor extends EditorPart {
 					inputArray.add(new PlotEditorInput(plot));
 					serviceNames.add(fullServiceNames[i]);
 				} catch (Exception e1) {
-					System.out
-							.println("Problem creating plot with visualization service "
+					System.out.println(
+							"Problem creating plot with visualization service "
 									+ fullServiceNames[i] + ".");
 				}
 
@@ -181,18 +180,16 @@ public class PlotEditor extends EditorPart {
 		// If all available services failed to create a plot, give the user an
 		// error message.
 		if (serviceNames.isEmpty()) {
-			System.out
-					.println("All available visualizaiton services failed to render a plot.");
+			System.out.println(
+					"All available visualizaiton services failed to render a plot.");
 			Status status = new Status(IStatus.ERROR, "org.eclipse.ice", 0,
 					"No visualization service could render the file.", null);
-			ErrorDialog
-					.openError(
-							Display.getCurrent().getActiveShell(),
-							"Visualization Failed",
-							"All visualization services failed to render a plot. \n"
-									+ "If you are using an external rendering program, "
-									+ "make sure it is connected to ICE.",
-							status);
+			ErrorDialog.openError(Display.getCurrent().getActiveShell(),
+					"Visualization Failed",
+					"All visualization services failed to render a plot. \n"
+							+ "If you are using an external rendering program, "
+							+ "make sure it is connected to ICE.",
+					status);
 			return;
 		}
 
@@ -267,46 +264,42 @@ public class PlotEditor extends EditorPart {
 	 *            A reference to the Editor calling the function
 	 */
 	public void setUpEditor(final Composite body,
-			final PlotEditorInput selectedService, final IEditorPart thisEditor) {
-		// Temporary holder for plot types available from the selected
-		// service
-		Map<String, String[]> selectedServiceTypesTemp = null;
+			final PlotEditorInput selectedService,
+			final IEditorPart thisEditor) {
+		// Temporary holder for the plot series available from the service
+		List<ISeries> tempSeries = null;
+		// Temporary holder for the independent series for the plot
+		ISeries tempIndSeries = null;
 		try {
-			selectedServiceTypesTemp = selectedService.getPlot().getPlotTypes();
+			tempSeries = selectedService.getPlot().getAllDependentSeries();
+			tempIndSeries = selectedService.getPlot().getIndependentSeries();
 		} catch (Exception e2) {
 			System.out.println("Error reading plot types.");
 		}
 
 		// While loading is not yet complete, wait and periodically
 		// attempt to read the plot types again.
-		while (selectedServiceTypesTemp == null
-				|| selectedServiceTypesTemp.isEmpty()) {
+		while (tempSeries == null || tempIndSeries == null
+				|| tempSeries.isEmpty()) {
 			try {
 				Thread.sleep(500);
-				selectedServiceTypesTemp = selectedService.getPlot()
-						.getPlotTypes();
+				if (tempSeries == null || tempSeries.isEmpty()) {
+					tempSeries = selectedService.getPlot()
+							.getAllDependentSeries();
+				}
+				if (tempIndSeries == null) {
+					tempIndSeries = selectedService.getPlot()
+							.getIndependentSeries();
+				}
+
 			} catch (Exception e1) {
 				System.out.println("Error reading plot types.");
 			}
 		}
 
-		// Plot types available from the selected service
-		final Map<String, String[]> selectedServiceTypes = selectedServiceTypesTemp;
-
-		// The plot categories available from the selected service.
-		final Set<String> selectedCategorySet = selectedServiceTypes.keySet();
-
-		// An array containing the plot categories available from the
-		// selected service
-		String[] selectedCategoryArray = selectedCategorySet
-				.toArray(new String[selectedCategorySet.size()]);
-
-		// The category to use for drawing the plot initially
-		final String selectedCategory = selectedCategoryArray[0];
-
-		// The plot type to use for drawing the plot initially.
-		final String selectedPlotType = selectedServiceTypes
-				.get(selectedCategory)[0];
+		// Get final references to use in the new thread.
+		final List<ISeries> depSeries = tempSeries;
+		final ISeries indSeries = tempIndSeries;
 
 		// Toolbar for the editor window
 		final ToolBarManager barManager = new ToolBarManager();
@@ -316,9 +309,8 @@ public class PlotEditor extends EditorPart {
 
 			@Override
 			public void run() {
-				createUI(barManager, body, selectedCategorySet,
-						selectedServiceTypes, selectedService, thisEditor,
-						selectedCategory, selectedPlotType);
+				createUI(barManager, body, selectedService, thisEditor,
+						depSeries, indSeries);
 
 			}
 		});
@@ -332,28 +324,22 @@ public class PlotEditor extends EditorPart {
 	 *            Manager for the editor's toolbar
 	 * @param body
 	 *            The composite in which the editor will be drawn
-	 * @param selectedCategorySet
-	 *            The set of possible categories for the plot in the selected
-	 *            service
-	 * @param selectedServiceTypes
-	 *            A map associating possible categories with the types of plot
-	 *            available within that category
 	 * @param selectedService
 	 *            A PlotEditorInput containing the IPlot created with the
 	 *            selected visualization service
 	 * @param thisEditor
 	 *            A reference to the editor being created.
-	 * @param selectedCategory
-	 *            The category of the initial plot to draw
+	 * @param seriesToPlot
+	 *            The list of the valid series for this editor to be able to
+	 *            plot. should have already checked the validity (at least one
+	 *            element) in this list.
 	 * @param selectedPlotType
 	 *            The type of the initial plot to draw
 	 */
 	private void createUI(ToolBarManager barManager, Composite body,
-			Set<String> selectedCategorySet,
-			Map<String, String[]> selectedServiceTypes,
-			final PlotEditorInput selectedService,
-			final IEditorPart thisEditor, final String selectedCategory,
-			final String selectedPlotType) {
+			final PlotEditorInput selectedService, final IEditorPart thisEditor,
+			final List<ISeries> seriesToPlot, final ISeries independentSeries) {
+
 		// Finish setting up the editor window
 		ToolBar bar = barManager.createControl(body);
 		final Composite plotComposite = new Composite(body, SWT.NONE);
@@ -364,37 +350,36 @@ public class PlotEditor extends EditorPart {
 		// Top level menu
 		ActionTree menuTree = new ActionTree("Menu");
 
-		// Second level menu for plot category selection
-		ActionTree categoriesTree = new ActionTree("Plot Categories");
-		menuTree.add(categoriesTree);
+		// A second level menu that will hold the series to plot
+		ActionTree seriesTree = new ActionTree("Plot Series");
+		menuTree.add(seriesTree);
 
-		// Add all categories and plot types to menu
-		for (final String category : selectedCategorySet) {
+		// Set the independent series for this editor
+		selectedService.getPlot().setIndependentSeries(independentSeries);
 
-			// Third level menu for plot type selection within a
-			// specific category
-			ActionTree plotTree = new ActionTree(category);
-			categoriesTree.add(plotTree);
+		// Add the first series in the list so that we are plotting something
+		selectedService.getPlot().addDependentSeries(seriesToPlot.get(0));
 
-			for (final String type : selectedServiceTypes.get(category)) {
+		for (final ISeries series : seriesToPlot) {
 
-				// A menu item to redraw the plot with the
-				// selected category and plot type
-				Action tempAction = new Action(type) {
-					@Override
-					public void run() {
-						try {
-							selectedService.getPlot().draw(category, type,
-									plotComposite);
-						} catch (Exception e) {
-							System.out.println("Error while drawing plot.");
-						}
+			// A menu item to redraw the plot with the
+			// selected category and plot type
+			Action tempAction = new Action(series.getLabel()) {
+				@Override
+				public void run() {
+					try {
+						// Adds the series to the editor and sets the plot to
+						// redraw.
+						selectedService.getPlot().addDependentSeries(series);
+						selectedService.getPlot().draw(plotComposite);
+					} catch (Exception e) {
+						System.out.println("Error while drawing plot.");
 					}
+				}
 
-				};
-				plotTree.add(new ActionTree(tempAction));
-
-			}
+			};
+			// Add the new menu entry
+			seriesTree.add(new ActionTree(tempAction));
 
 		}
 
@@ -402,8 +387,8 @@ public class PlotEditor extends EditorPart {
 		Action close = new Action("Close") {
 			@Override
 			public void run() {
-				thisEditor.getEditorSite().getPage()
-						.closeEditor(thisEditor, false);
+				thisEditor.getEditorSite().getPage().closeEditor(thisEditor,
+						false);
 			}
 		};
 
@@ -411,7 +396,7 @@ public class PlotEditor extends EditorPart {
 		menuTree.add(new ActionTree(close));
 
 		// Update menu
-		categoriesTree.getContributionItem().fill(menu.getMenu(), -1);
+		seriesTree.getContributionItem().fill(menu.getMenu(), -1);
 		menu.updateAll(true);
 		barManager.add(menuTree.getContributionItem());
 
@@ -424,12 +409,11 @@ public class PlotEditor extends EditorPart {
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		plotComposite.setLayout(new FillLayout());
 
-		// Draw the plot.
+		// Draw the plot
 		try {
-			selectedService.getPlot().draw(selectedCategory, selectedPlotType,
-					plotComposite);
+			selectedService.getPlot().draw(plotComposite);
 		} catch (Exception e) {
-			System.out.println("Error drawing plot.");
+			System.err.println("PlotEditor: Error while drawing plot.");
 		}
 
 		body.layout();

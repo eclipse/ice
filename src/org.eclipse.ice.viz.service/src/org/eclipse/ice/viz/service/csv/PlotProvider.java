@@ -16,11 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.eclipse.ice.viz.service.ISeries;
+
 /**
  * The provider for the plot which will include plot attributes and a structure
  * for the series
  * 
  * @author Matthew Wang
+ * @author Kasper Gammeltoft - Viz refactor to use ISeries rather than
+ *         SeriesProvider
  * 
  */
 public class PlotProvider {
@@ -33,7 +37,13 @@ public class PlotProvider {
 	/**
 	 * The TreeMap structure that will hold the series for each time
 	 */
-	private TreeMap<Double, ArrayList<SeriesProvider>> seriesMap;
+	private TreeMap<Double, ArrayList<ISeries>> seriesMap;
+
+	/**
+	 * The independent series. All of the other series in the map should be
+	 * plotted with respect to this series.
+	 */
+	private ISeries independentSeries;
 
 	/**
 	 * The plot's x axis title
@@ -67,25 +77,42 @@ public class PlotProvider {
 	 */
 	public PlotProvider(String newPlotTitle) {
 		plotTitle = newPlotTitle;
-		seriesMap = new TreeMap<Double, ArrayList<SeriesProvider>>();
+		seriesMap = new TreeMap<Double, ArrayList<ISeries>>();
+		independentSeries = new CSVSeries();
 		xAxisTitle = "X-Axis";
 		yAxisTitle = "Y-Axis";
 		timeUnits = null;
 	}
 
 	/**
-	 * Adds a new SeriesProvider to the specified time
+	 * Sets the independent series to provide. Must not be null.
+	 * 
+	 * @param indptSeries
+	 *            The {@link ISeries} to provide.
+	 */
+	public void setIndependentSeries(ISeries indptSeries) {
+		if (indptSeries != null) {
+			independentSeries = indptSeries;
+		}
+	}
+
+	public ISeries getIndependentSeries() {
+		return independentSeries;
+	}
+
+	/**
+	 * Adds a new ISeries to the specified time
 	 * 
 	 * @param time
 	 * @param newSeries
 	 */
-	public void addSeries(double time, SeriesProvider newSeries) {
+	public void addSeries(double time, ISeries newSeries) {
 		// Only add non-null SeriesProviders.
 		if (newSeries != null) {
-			ArrayList<SeriesProvider> seriesProviders = seriesMap.get(time);
+			ArrayList<ISeries> seriesProviders = seriesMap.get(time);
 			// Create an entry in the Map of SeriesProviders if the time is new.
 			if (seriesProviders == null) {
-				seriesProviders = new ArrayList<SeriesProvider>();
+				seriesProviders = new ArrayList<ISeries>();
 				seriesMap.put(time, seriesProviders);
 			}
 			seriesProviders.add(newSeries);
@@ -102,13 +129,14 @@ public class PlotProvider {
 	 * @param oldSeries
 	 *            The series that should be removed.
 	 */
-	public void removeSeries(double time, SeriesProvider oldSeries) {
-		List<SeriesProvider> seriesProviders = seriesMap.get(time);
+	public void removeSeries(double time, ISeries oldSeries) {
+		List<ISeries> seriesProviders = seriesMap.get(time);
 		if (seriesProviders != null) {
 			// Remove the old series. If it was removed and the list of
 			// SeriesProviders is now empty, remove the time and its now-empty
 			// list from the seriesMap.
-			if (seriesProviders.remove(oldSeries) && seriesProviders.isEmpty()) {
+			if (seriesProviders.remove(oldSeries)
+					&& seriesProviders.isEmpty()) {
 				seriesMap.remove(time);
 			}
 		}
@@ -121,7 +149,7 @@ public class PlotProvider {
 	 * @param time
 	 * @return
 	 */
-	public ArrayList<SeriesProvider> getSeriesAtTime(double time) {
+	public ArrayList<ISeries> getSeriesAtTime(double time) {
 		return seriesMap.get(time);
 	}
 

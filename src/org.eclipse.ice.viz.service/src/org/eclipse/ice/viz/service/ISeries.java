@@ -52,6 +52,17 @@ public interface ISeries {
 	public Object[] getDataPoints();
 
 	/**
+	 * Gets all of the data points for the specified time, if this series has
+	 * multiple sets of data for a time range.
+	 * 
+	 * @param time
+	 *            The time to retrieve this data.
+	 * @return Object[] An array of all of the data for this series at the
+	 *         specified time.
+	 */
+	public Object[] getDataPointsAtTime(double time);
+
+	/**
 	 * Gets the parent series for this series. This allows for grouping of
 	 * series and for one to be of direct relation to another. For example, a
 	 * certain series could be the error of another series, and their
@@ -99,5 +110,14 @@ public interface ISeries {
 	 * @param style
 	 */
 	public void setStyle(ISeriesStyle style);
+
+	/**
+	 * Gets if this series is enabled or not. This determines which series is
+	 * plotted when they are added to different plots.
+	 * 
+	 * @return True if the series is enabled and will be shown on a plot, false
+	 *         if otherwise
+	 */
+	public boolean enabled();
 
 }

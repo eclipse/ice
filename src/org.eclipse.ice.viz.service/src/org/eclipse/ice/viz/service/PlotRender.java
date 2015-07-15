@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public abstract class PlotRender {
-	
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
@@ -59,15 +59,6 @@ public abstract class PlotRender {
 	 */
 	public final IPlot plot;
 
-	/**
-	 * The current plot category.
-	 */
-	private String category;
-	/**
-	 * The current plot type.
-	 */
-	private String type;
-
 	// ---- UI Widgets ---- //
 	/**
 	 * This composite contains the {@link #plotComposite} and
@@ -77,12 +68,12 @@ public abstract class PlotRender {
 	/**
 	 * The current widget used to draw the plot.
 	 */
-	private Composite plotComposite = null;
+	protected Composite plotComposite = null;
 	/**
 	 * This presents the user with helpful information about the status of the
 	 * plot. It should only be visible if the plot cannot be drawn.
 	 */
-	private Composite infoComposite = null;
+	protected Composite infoComposite = null;
 	/**
 	 * Displays an icon to demonstrate the severity of the message.
 	 */
@@ -109,10 +100,10 @@ public abstract class PlotRender {
 	 *            The rendered {@code IPlot}. This cannot be changed.
 	 */
 	public PlotRender(Composite parent, IPlot plot) {
-		
+
 		// Create the logger
 		logger = LoggerFactory.getLogger(PlotRender.class);
-		
+
 		// Check the parameters.
 		if (parent == null || plot == null) {
 			throw new NullPointerException("PlotRender error: "
@@ -124,52 +115,6 @@ public abstract class PlotRender {
 		this.plot = plot;
 
 		return;
-	}
-
-	/**
-	 * Sets the current plot category.
-	 * <p>
-	 * <b>Note:</b> A subsequent call to {@link #refresh()} will be necessary to
-	 * sync the UI with this call's changes.
-	 * </p>
-	 * 
-	 * @param category
-	 *            The new plot category.
-	 */
-	public void setPlotCategory(String category) {
-		this.category = category;
-	}
-
-	/**
-	 * Sets the current plot type.
-	 * <p>
-	 * <b>Note:</b> A subsequent call to {@link #refresh()} will be necessary to
-	 * sync the UI with this call's changes.
-	 * </p>
-	 * 
-	 * @param type
-	 *            The new plot type.
-	 */
-	public void setPlotType(String type) {
-		this.type = type;
-	}
-
-	/**
-	 * Gets the current plot category.
-	 * 
-	 * @return The current plot category.
-	 */
-	public String getPlotCategory() {
-		return category;
-	}
-
-	/**
-	 * Gets the current plot type.
-	 * 
-	 * @return The current plot type.
-	 */
-	public String getPlotType() {
-		return type;
 	}
 
 	/**
@@ -335,19 +280,19 @@ public abstract class PlotRender {
 
 		// Create an info label with an image.
 		iconLabel = new Label(infoComposite, SWT.NONE);
-		iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
-				false, false));
+		iconLabel.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
 		// Create a Composite to contain the info message.
 		Composite msgComposite = new Composite(infoComposite, SWT.NONE);
-		msgComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
-				false, false));
+		msgComposite.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		msgComposite.setLayout(new GridLayout(1, false));
 
 		// Create an info label with informative text.
 		msgLabel = new Label(msgComposite, SWT.NONE);
-		msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-				false));
+		msgLabel.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
 		return infoComposite;
 	}
@@ -367,8 +312,8 @@ public abstract class PlotRender {
 		// Set the message and icon based on the state of the connection.
 		final Display display = infoComposite.getDisplay();
 		// If there's no icon set, default to something useful.
-		final Image image = (infoIcon != null ? infoIcon : display
-				.getSystemImage(SWT.ICON_WARNING));
+		final Image image = (infoIcon != null ? infoIcon
+				: display.getSystemImage(SWT.ICON_WARNING));
 
 		// Update the contents of the infoComposite's widgets.
 		iconLabel.setImage(image);
@@ -408,8 +353,8 @@ public abstract class PlotRender {
 	 *             rendered, this throws an exception with an informative
 	 *             message.
 	 */
-	protected abstract Composite createPlotComposite(Composite parent, int style)
-			throws Exception;
+	protected abstract Composite createPlotComposite(Composite parent,
+			int style) throws Exception;
 
 	/**
 	 * Updates the plot rendering contained in the specified plot

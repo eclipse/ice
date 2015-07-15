@@ -5,7 +5,9 @@ package org.eclipse.ice.viz.service.csv;
 
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.ISeriesStyle;
+import org.eclipse.ice.viz.service.styles.XYZSeriesStyle;
 
+import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.event.ListEvent;
@@ -33,13 +35,26 @@ public class CSVSeries extends TransformedList<Double, Double>
 	protected String unit;
 
 	/**
+	 * A flag signifying if the series is enabled. This determines if the series
+	 * will be plotted or not.
+	 */
+	protected boolean isEnabled;
+
+	/**
+	 * Constructor, creates a new csv series with no data and the default style.
+	 */
+	public CSVSeries() {
+		this(new BasicEventList<Double>());
+	}
+
+	/**
 	 * Creates a new CSV Series with the given source list.
 	 * 
 	 * @param source
 	 */
 	protected CSVSeries(EventList<Double> source) {
 		super(source);
-		style = null;
+		style = new XYZSeriesStyle();
 	}
 
 	@Override
@@ -87,6 +102,11 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	@Override
+	public Object[] getDataPointsAtTime(double time) {
+		return getDataPoints();
+	}
+
+	@Override
 	public ISeries getParentSeries() {
 		// TODO Should we have a parent/child architecture?
 		return null;
@@ -110,6 +130,21 @@ public class CSVSeries extends TransformedList<Double, Double>
 	@Override
 	public void setStyle(ISeriesStyle style) {
 		this.style = style;
+	}
+
+	@Override
+	public boolean enabled() {
+		return isEnabled;
+	}
+
+	/**
+	 * Sets whether this series is enabled or not.
+	 * 
+	 * @param enabledFlag
+	 *            The enabled flag.
+	 */
+	public void setEnabled(boolean enabledFlag) {
+		isEnabled = enabledFlag;
 	}
 
 	/**
