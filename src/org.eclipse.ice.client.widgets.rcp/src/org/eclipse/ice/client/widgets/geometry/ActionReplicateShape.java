@@ -150,7 +150,7 @@ public class ActionReplicateShape extends Action {
 			if (parentShape != null) {
 				parentShape.removeShape(selectedShape);
 			} else {
-				geometry.removeShape(selectedShape);
+				geometry.getGeometry().removeShape(selectedShape);
 			}
 		}
 
@@ -200,7 +200,7 @@ public class ActionReplicateShape extends Action {
 			// The parent is the root GeometryComponent
 
 			synchronized (geometry) {
-				geometry.addShape(replicateUnion);
+				geometry.getGeometry().addShape(replicateUnion);
 			}
 
 			view.treeViewer.refresh();

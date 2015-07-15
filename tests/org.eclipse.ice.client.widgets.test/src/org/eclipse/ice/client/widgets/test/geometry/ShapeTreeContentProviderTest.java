@@ -186,11 +186,11 @@ public class ShapeTreeContentProviderTest {
 		// Put them all in a GeometryComponent
 
 		GeometryComponent geometry = new GeometryComponent();
-		geometry.addShape(sphere1);
-		geometry.addShape(cube1);
-		geometry.addShape(union1);
-		geometry.addShape(complement1);
-		geometry.addShape(sphere1);
+		geometry.getGeometry().addShape(sphere1);
+		geometry.getGeometry().addShape(cube1);
+		geometry.getGeometry().addShape(union1);
+		geometry.getGeometry().addShape(complement1);
+		geometry.getGeometry().addShape(sphere1);
 
 		Object[] expectedElements = new Object[] { sphere1, cube1, union1,
 				complement1, sphere1 };

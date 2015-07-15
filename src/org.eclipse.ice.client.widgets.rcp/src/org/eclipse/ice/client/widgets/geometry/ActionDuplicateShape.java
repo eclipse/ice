@@ -132,14 +132,14 @@ public class ActionDuplicateShape extends Action {
 					// Find the index of the selected shape in the list of its
 					// siblings
 
-					ArrayList<IShape> childShapes = geometry.getShapes();
+					ArrayList<IShape> childShapes = geometry.getGeometry().getShapes();
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					// Add the cloned shape to the root GeometryComponent
 
 					synchronized (geometry) {
 						childShapes.add(selectedShapeIndex + 1, clonedShape);
-						geometry.setShapes(childShapes);
+						geometry.getGeometry().setShapes(childShapes);
 					}
 
 					view.treeViewer.refresh();

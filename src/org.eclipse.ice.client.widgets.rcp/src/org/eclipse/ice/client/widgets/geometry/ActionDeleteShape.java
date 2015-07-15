@@ -136,7 +136,7 @@ public class ActionDeleteShape extends Action {
 					// so try removing it from there.
 
 					synchronized (geometry) {
-						geometry.removeShape(selectedShape);
+						geometry.getGeometry().removeShape(selectedShape);
 					}
 					view.treeViewer.refresh();
 				}

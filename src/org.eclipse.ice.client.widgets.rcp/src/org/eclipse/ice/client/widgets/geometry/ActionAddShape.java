@@ -242,7 +242,7 @@ public class ActionAddShape extends Action {
 			// Add a new shape to the root GeometryComponent
 
 			synchronized (geometry) {
-				geometry.addShape(childShape);
+				geometry.getGeometry().addShape(childShape);
 			}
 
 			view.treeViewer.refresh();

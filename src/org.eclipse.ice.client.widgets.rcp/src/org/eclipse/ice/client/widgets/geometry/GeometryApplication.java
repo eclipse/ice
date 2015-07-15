@@ -294,7 +294,7 @@ public class GeometryApplication extends SimpleApplication implements
 
 		AddShapeToNode addShapeToNode = new AddShapeToNode(rootNode);
 
-		for (IShape shape : geometry.getShapes()) {
+		for (IShape shape : geometry.getGeometry().getShapes()) {
 
 			// Trigger the visitor pattern to render the IShape
 
@@ -316,7 +316,7 @@ public class GeometryApplication extends SimpleApplication implements
 
 			// Get the shapes list from the GeometryComponent
 
-			ArrayList<IShape> shapes = geometry.getShapes();
+			ArrayList<IShape> shapes = geometry.getGeometry().getShapes();
 
 			SyncShapes syncVisitor = new SyncShapes(rootNode);
 

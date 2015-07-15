@@ -101,7 +101,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		if (inputElement instanceof GeometryComponent) {
 			// Return an array of the GeometryComponent's shapes
 			GeometryComponent parentGeometry = (GeometryComponent) inputElement;
-			return parentGeometry.getShapes().toArray();
+			return parentGeometry.getGeometry().getShapes().toArray();
 		} else {
 			return null;
 		}
