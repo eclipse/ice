@@ -9,7 +9,7 @@
  *   Jordan Deyton (UT-Battelle, LLC.) - Initial API and implementation and/or
  *     initial documentation
  *******************************************************************************/
-package org.eclipse.ice.viz.service.visit.widgets;
+package org.eclipse.ice.viz.service.widgets;
 
 import java.util.ArrayList;
 import java.util.HashSet;

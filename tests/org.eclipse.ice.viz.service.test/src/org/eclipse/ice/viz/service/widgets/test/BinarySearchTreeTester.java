@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.visit.widgets.BinarySearchTree;
+import org.eclipse.ice.viz.service.widgets.BinarySearchTree;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

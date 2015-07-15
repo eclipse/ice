@@ -13,7 +13,7 @@
  *   Jordan Deyton - bug 471749
  *   Jordan Deyton - bug 471750
  *******************************************************************************/
-package org.eclipse.ice.viz.service.visit.widgets;
+package org.eclipse.ice.viz.service.widgets;
 
 import java.net.URL;
 import java.util.ArrayList;

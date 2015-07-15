@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnection;
-import org.eclipse.ice.viz.service.visit.widgets.TimeSliderComposite;
+import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
