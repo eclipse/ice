@@ -49,7 +49,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
-import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.SerializedItemBuilder;
 import org.eclipse.ice.item.messaging.Message;
@@ -119,12 +118,6 @@ public class Core extends Application implements ICore {
 	private IPersistenceProvider provider;
 
 	/**
-	 * A flag to hold the debugging state. True if ICE is in debug mode, false
-	 * otherwise.
-	 */
-	private boolean debuggingEnabled = false;
-
-	/**
 	 * An AtomicBoolean to lock and unlock the update operation with hardware.
 	 * True if locked, false if not.
 	 */
@@ -148,9 +141,27 @@ public class Core extends Application implements ICore {
 			throw new RuntimeException(
 					"ICore Message: Unable to load workspace!");
 		}
-		// Set the debugging flag
-		if (System.getProperty("DebugICE") != null) {
-			debuggingEnabled = true;
+
+		// Set the update lock
+		updateLock = new AtomicBoolean(false);
+
+		return;
+	}
+
+	/**
+	 * The Constructor
+	 *
+	 */
+	public Core() {
+
+		// Setup the ItemManager and the project table
+		itemManager = new ItemManager();
+		projectTable = new Hashtable<String, IProject>();
+
+		// Set the project location
+		if (!setupProjectLocation()) {
+			throw new RuntimeException(
+					"ICore Message: Unable to load workspace!");
 		}
 
 		// Set the update lock
@@ -198,32 +209,6 @@ public class Core extends Application implements ICore {
 	}
 
 	/**
-	 * The Constructor
-	 *
-	 */
-	public Core() {
-
-		// Setup the ItemManager and the project table
-		itemManager = new ItemManager();
-		projectTable = new Hashtable<String, IProject>();
-
-		// Set the project location
-		if (!setupProjectLocation()) {
-			throw new RuntimeException(
-					"ICore Message: Unable to load workspace!");
-		}
-		// Set the debugging flag
-		if (System.getProperty("DebugICE") != null) {
-			debuggingEnabled = true;
-		}
-
-		// Set the update lock
-		updateLock = new AtomicBoolean(false);
-
-		return;
-	}
-
-	/**
 	 * (non-Javadoc)
 	 *
 	 * @see ICore#getFileSystem(int uniqueClientID)
@@ -243,8 +228,8 @@ public class Core extends Application implements ICore {
 
 		// Register the builder with the ItemManager so long as it is not null
 		if (itemBuilder != null) {
-			logger.info("ICore Message: Item "
-					+ itemBuilder.getItemName() + " registered with Core.");
+			logger.info("ICore Message: Item " + itemBuilder.getItemName()
+					+ " registered with Core.");
 			itemManager.registerBuilder(itemBuilder);
 		}
 
@@ -461,9 +446,8 @@ public class Core extends Application implements ICore {
 						fileInProject.delete(true, null);
 					} catch (CoreException e) {
 						// Complain and don't do anything else.
-						logger.info("Core Message: "
-								+ "Unable to import file.");
-						logger.error(getClass().getName() + " Exception!",e);
+						logger.info("Core Message: " + "Unable to import file.");
+						logger.error(getClass().getName() + " Exception!", e);
 						return;
 					}
 				}
@@ -475,15 +459,13 @@ public class Core extends Application implements ICore {
 					fileInProject.create(fileStream, true, null);
 				} catch (FileNotFoundException e) {
 					// Complain and don't do anything else.
-					logger.info("Core Message: "
-							+ "Unable to import file.");
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.info("Core Message: " + "Unable to import file.");
+					logger.error(getClass().getName() + " Exception!", e);
 					return;
 				} catch (CoreException e) {
 					// Complain and don't do anything else.
-					logger.info("Core Message: "
-							+ "Unable to import file.");
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.info("Core Message: " + "Unable to import file.");
+					logger.error(getClass().getName() + " Exception!", e);
 					return;
 				}
 			}
@@ -559,7 +541,8 @@ public class Core extends Application implements ICore {
 							itemManager.registerBuilder(builder);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
-							logger.error(getClass().getName() + " Exception!",e);
+							logger.error(getClass().getName() + " Exception!",
+									e);
 							status = false;
 						}
 					}
@@ -570,7 +553,7 @@ public class Core extends Application implements ICore {
 				project.getFolder("jobProfiles").create(true, true, null);
 			}
 		} catch (CoreException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return status;
@@ -611,14 +594,14 @@ public class Core extends Application implements ICore {
 					bundle = componentContext.getBundleContext().getBundle();
 				} else {
 					logger.info("ICore Message: "
-									+ "ICE Core ComponentContext was null! No web service started.");
+							+ "ICE Core ComponentContext was null! No web service started.");
 					return;
 				}
 
 				// Make sure we got a valid bundle
 				if (bundle == null) {
 					logger.info("ICore Message: "
-									+ "ICE Core Bundle was null! No web service started.");
+							+ "ICE Core Bundle was null! No web service started.");
 					return;
 				}
 
@@ -634,7 +617,7 @@ public class Core extends Application implements ICore {
 				httpService.registerServlet("/ice", new ServletContainer(this),
 						servletParams, httpContext);
 			} catch (ServletException | NamespaceException | IOException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 			logger.info("ICore Message: ICE Core Server loaded and web "
 					+ "service started!");
@@ -707,7 +690,7 @@ public class Core extends Application implements ICore {
 			projectTable.put("defaultUser", project);
 		} catch (CoreException e) {
 			// Catch for creating the project
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			status = false;
 		}
 
@@ -734,8 +717,15 @@ public class Core extends Application implements ICore {
 		}
 	}
 
+	/**
+	 * This operation configures the IOService that should be used by Items
+	 *
+	 * @param service
+	 *            The IOService that provides Input/Output capabilities to Items
+	 *            managed by the Core.
+	 */
 	public void setIOService(IOService service) {
-		(new Item(null)).setIOService(service);
+		itemManager.setIOService(service);
 	}
 
 	/**
@@ -835,7 +825,7 @@ public class Core extends Application implements ICore {
 			// Log the message
 			System.err.println("Core Message: "
 					+ "JSON parsing failed for message " + messageString);
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return messages;

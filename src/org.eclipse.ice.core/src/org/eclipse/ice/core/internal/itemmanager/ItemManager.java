@@ -22,6 +22,7 @@ import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
@@ -53,22 +54,22 @@ import org.slf4j.LoggerFactory;
  * output file and retrieving a Form are separated because they are treated as
  * two distinctly different things on the Item class.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class ItemManager implements ItemListener {
-	
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(ItemManager.class);
-	
+
 	/**
 	 * <p>
 	 * This is a list of all of the items that are managed by the ItemManger.
 	 * The key is the Item Id and the value is a reference to the Item.
 	 * </p>
-	 * 
+	 *
 	 */
 	private HashMap<Integer, Item> itemList;
 
@@ -86,7 +87,7 @@ public class ItemManager implements ItemListener {
 	 * Items. It equal to the next available integer, starting from 1, that has
 	 * not been used by an Item.
 	 * </p>
-	 * 
+	 *
 	 */
 	private int nextSequentialId;
 
@@ -97,7 +98,7 @@ public class ItemManager implements ItemListener {
 	 * compute their values, which would require a time consuming search over
 	 * all Items.
 	 * </p>
-	 * 
+	 *
 	 */
 	private ArrayList<Integer> reusableIds;
 
@@ -107,7 +108,7 @@ public class ItemManager implements ItemListener {
 	 * maintained because composite Items must be notified when the list of
 	 * available builders changes.
 	 * </p>
-	 * 
+	 *
 	 */
 	private ArrayList<ICompositeItemBuilder> compositeBuilders;
 
@@ -115,7 +116,7 @@ public class ItemManager implements ItemListener {
 	 * <p>
 	 * The persistence provider.
 	 * </p>
-	 * 
+	 *
 	 */
 	private IPersistenceProvider provider;
 
@@ -129,7 +130,7 @@ public class ItemManager implements ItemListener {
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * 
+	 *
 	 */
 	public ItemManager() {
 
@@ -159,7 +160,7 @@ public class ItemManager implements ItemListener {
 	 * The ItemManager will call the persistence provider to store the newly
 	 * created Item when this operation is called.
 	 * </p>
-	 * 
+	 *
 	 * @param newItemType
 	 *            <p>
 	 *            The type of new Item to create. This type name must be one of
@@ -242,7 +243,7 @@ public class ItemManager implements ItemListener {
 	 * This version takes a file that should be loaded as input by the newly
 	 * created Item and is primarily intend for file import.
 	 * </p>
-	 * 
+	 *
 	 * @param filename
 	 *            <p>
 	 *            The file that should be imported. Nothing will happen if this
@@ -295,7 +296,7 @@ public class ItemManager implements ItemListener {
 	 * information. The smaller Form is created by the Action that is executed
 	 * during the call to processItem().
 	 * </p>
-	 * 
+	 *
 	 * @param itemID
 	 *            <p>
 	 *            The unique itemID of the item that should be retrieved.
@@ -324,7 +325,7 @@ public class ItemManager implements ItemListener {
 	 * class with the ItemManager. This operation is primarily used by the
 	 * underlying OSGi framework to publish available Item types to ICE.
 	 * </p>
-	 * 
+	 *
 	 * @param builder
 	 *            <p>
 	 *            An instance of ItemBuilder for a particular Item that is
@@ -373,7 +374,7 @@ public class ItemManager implements ItemListener {
 	 * usual unregisterBuilder() operation should be called to unregister an
 	 * ICompositeItemBuilder.
 	 * </p>
-	 * 
+	 *
 	 * @param builder
 	 *            <p>
 	 *            The ICompositeItemBuilder that will be used to create an Item
@@ -395,7 +396,7 @@ public class ItemManager implements ItemListener {
 	 * This operation unregisters an ItemBuilder and thereby a particular Item
 	 * class with the ItemManager.
 	 * </p>
-	 * 
+	 *
 	 * @param builder
 	 *            <p>
 	 *            An instance of ItemBuilder for a particular Item that is now
@@ -419,7 +420,7 @@ public class ItemManager implements ItemListener {
 	 * based on the ItemBuilders that have been registered in the ItemManager.
 	 * If no ItemBuilders have been registered, this operation returns null.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The list of available Items.
 	 *         </p>
@@ -454,7 +455,7 @@ public class ItemManager implements ItemListener {
 	 * ItemType. If no ItemBuilders have been registered for the specified
 	 * ItemType, this operation returns null.
 	 * </p>
-	 * 
+	 *
 	 * @param type
 	 * @return
 	 */
@@ -486,7 +487,7 @@ public class ItemManager implements ItemListener {
 	 * <p>
 	 * This operation returns the status of an Item with the specified id.
 	 * </p>
-	 * 
+	 *
 	 * @param itemId
 	 * @return
 	 */
@@ -514,7 +515,7 @@ public class ItemManager implements ItemListener {
 	 * This operation sets up the persistence provider that implements the
 	 * IPersistenceProvider interface.
 	 * </p>
-	 * 
+	 *
 	 * @param provider
 	 *            <p>
 	 *            The persistence provider.
@@ -535,7 +536,7 @@ public class ItemManager implements ItemListener {
 	 */
 	private void rebuildItem(ItemBuilder builder, Item item,
 			IProject projectSpace) {
-		
+
 		// Build the proper Item
 		Item rebuiltItem = itemBuilderList.get(item.getItemBuilderName())
 				.build(projectSpace);
@@ -574,7 +575,7 @@ public class ItemManager implements ItemListener {
 	 * (No one wants to have five Items spread across three orders of magnitude
 	 * in ids!)
 	 * </p>
-	 * 
+	 *
 	 * @param projectSpace
 	 *            <p>
 	 *            The project space that the Items should use for their work. It
@@ -659,7 +660,7 @@ public class ItemManager implements ItemListener {
 	 * persistence provider is asked to update all of the information for the
 	 * persisted Items.
 	 * </p>
-	 * 
+	 *
 	 */
 	public void persistItems() {
 
@@ -688,7 +689,7 @@ public class ItemManager implements ItemListener {
 	 * should be careful to only read from the file. It will return null if an
 	 * Item with the specified id does not exist.
 	 * </p>
-	 * 
+	 *
 	 * @param id
 	 *            <p>
 	 *            The id of the Item.
@@ -715,7 +716,7 @@ public class ItemManager implements ItemListener {
 	 * This operation cancels the process with the specified name for the Item
 	 * identified.
 	 * </p>
-	 * 
+	 *
 	 * @param itemId
 	 *            <p>
 	 *            The id of the Item whose process should be canceled.
@@ -750,7 +751,7 @@ public class ItemManager implements ItemListener {
 	 * This operation directs the ItemManager to have its Items reload any data
 	 * because of updates to projects during runtime.
 	 * </p>
-	 * 
+	 *
 	 */
 	public void reloadItemData() {
 
@@ -768,7 +769,7 @@ public class ItemManager implements ItemListener {
 	 * that a particular event has occurred in an ICE subsystem, remote ICE
 	 * subsystem or external third-party process.
 	 * </p>
-	 * 
+	 *
 	 * @param msg
 	 *            <p>
 	 *            The incoming Message.
@@ -798,7 +799,7 @@ public class ItemManager implements ItemListener {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ItemListener#reloadProjectData()
 	 */
 	@Override
@@ -821,7 +822,7 @@ public class ItemManager implements ItemListener {
 	 * This operation will return a list of Identifiables that contain the names
 	 * and unique item ids of each Item that is managed by the ItemManager.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The list of ItemHandles that contains the names and unique ids of
 	 *         the Items managed by the ItemManager.
@@ -852,7 +853,7 @@ public class ItemManager implements ItemListener {
 	 * The ItemManager will call the persistence provider to update the Item
 	 * when this operation is called.
 	 * </p>
-	 * 
+	 *
 	 * @param form
 	 *            <p>
 	 *            The Form that is associated with the Item that needs to be
@@ -911,7 +912,7 @@ public class ItemManager implements ItemListener {
 	 * The ItemManager will call the persistence provider to update the Item
 	 * when this operation is called.
 	 * </p>
-	 * 
+	 *
 	 * @param itemId
 	 *            <p>
 	 *            The identification number of the Item.
@@ -950,7 +951,7 @@ public class ItemManager implements ItemListener {
 	 * The ItemManager will call the persistence provider to delete the Item
 	 * when this operation is called.
 	 * </p>
-	 * 
+	 *
 	 * @param itemID
 	 *            <p>
 	 *            The id of the item that should be deleted.
@@ -983,5 +984,20 @@ public class ItemManager implements ItemListener {
 
 		return retVal;
 
+	}
+
+	/**
+	 * This operation configures the IOService that should be used by Items
+	 *
+	 * @param service
+	 *            The IOService that provides Input/Output capabilities to Items
+	 *            managed by the Core.
+	 */
+	public void setIOService(IOService service) {
+		// We need to set the IOService very early and this gets around a weird
+		// bug/feature of OSGi services that aggressively starts the
+		// ResourcesPlugin and results in a crash because the project space has
+		// not yet been set.
+		(new Item(null)).setIOService(service);
 	}
 }
