@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.swt.widgets.Composite;
@@ -76,7 +75,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 		// the URI is null or its extension is invalid.
 		IParaViewProxy proxy = vizService.getProxyFactory().createProxy(uri);
 		// Attempt to open the file. Wait until the process completes.
-		if (proxy.open(getParaViewConnection()).get()) {
+		if (proxy.open(getConnection()).get()) {
 			this.proxy = proxy;
 		} else {
 			throw new IllegalArgumentException("ParaViewPlot error: " + "Cannot open the file \"" + uri.getPath()
@@ -95,9 +94,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.MultiPlot#getPlotTypes(java.net.URI)
+	 * Implements an abstract method from MultiPlot.
 	 */
 	@Override
 	protected Map<String, String[]> findPlotTypes(URI uri) throws IOException, Exception {
@@ -118,16 +115,6 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 		}
 
 		return plotTypes;
-	}
-
-	/**
-	 * Gets the connection for the associated connection cast as a
-	 * {@link ParaViewConnection}.
-	 * 
-	 * @return The associated connection.
-	 */
-	protected ParaViewConnection getParaViewConnection() {
-		return (ParaViewConnection) getConnection();
 	}
 
 	/**
