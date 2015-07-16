@@ -47,7 +47,9 @@ import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
+import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.SerializedItemBuilder;
 import org.eclipse.ice.item.messaging.Message;
@@ -75,17 +77,17 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
  * interface and provides additional administration operations not found on
  * ICore. Most of the operations performed for managing Items are forwarded
  * directly to the ItemManager class.
- * 
+ *
  * @author Jay Jay Billings
  */
 @ApplicationPath("/ice")
 public class Core extends Application implements ICore {
-	
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(Core.class);
-	
+
 	/**
 	 * Reference to the ItemManager responsible for creating, querying, and
 	 * updating available Items.
@@ -94,7 +96,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * The component context for the ICE Core OSGi component.
-	 * 
+	 *
 	 */
 	private ComponentContext componentContext;
 
@@ -112,7 +114,7 @@ public class Core extends Application implements ICore {
 	 * The persistence provided by the osgi. This piece is set by the
 	 * setPersistenceProvider method. This piece is passed to the ItemManager to
 	 * be used for persisting Items.
-	 * 
+	 *
 	 */
 	private IPersistenceProvider provider;
 
@@ -131,7 +133,7 @@ public class Core extends Application implements ICore {
 	/**
 	 * An alternative constructor that allows the Core to be constructed with a
 	 * particular ItemManager. This is used for testing.
-	 * 
+	 *
 	 * @param manager
 	 *            The alternative ItemManager.
 	 */
@@ -160,7 +162,7 @@ public class Core extends Application implements ICore {
 	/**
 	 * This operation starts the Core, sets the component context and starts the
 	 * web client if the HTTP service is available.
-	 * 
+	 *
 	 * @param context
 	 *            The bundle context for this OSGi bundle.
 	 */
@@ -181,14 +183,14 @@ public class Core extends Application implements ICore {
 
 		// Start the webservice!
 		startHttpService();
-		
+
 		return;
 
 	}
 
 	/**
 	 * This operation stops the Core.
-	 * 
+	 *
 	 */
 	public void stop() {
 		// Update everything in the ItemManager that requires it
@@ -197,7 +199,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * The Constructor
-	 * 
+	 *
 	 */
 	public Core() {
 
@@ -223,7 +225,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#getFileSystem(int uniqueClientID)
 	 */
 	@Override
@@ -233,7 +235,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#registerItem(ItemBuilder itemBuilder)
 	 */
 	@Override
@@ -251,7 +253,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#registerCompositeItem(ICompositeItemBuilder builder)
 	 */
 	@Override
@@ -269,7 +271,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#unregisterItem(ItemBuilder itemBuilder)
 	 */
 	@Override
@@ -278,7 +280,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#createItem(String itemType)
 	 */
 	@Override
@@ -300,7 +302,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#deleteItem(String itemId)
 	 */
 	@Override
@@ -315,7 +317,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#getItemStatus(Integer id)
 	 */
 	@Override
@@ -325,7 +327,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#getItem(int itemId)
 	 */
 	@Override
@@ -335,7 +337,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#getAvailableItemTypes()
 	 */
 	@Override
@@ -356,7 +358,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#updateItem(Form form, int uniqueClientId)
 	 */
 	@Override
@@ -376,7 +378,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#processItem(int itemId, String actionName, int uniqueClientId)
 	 */
 	@Override
@@ -397,7 +399,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#getItemList()
 	 */
 	@Override
@@ -407,7 +409,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#getItemOutputFile(int id)
 	 */
 	@Override
@@ -417,7 +419,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#cancelItemProcess(int itemId, String actionName)
 	 */
 	@Override
@@ -427,7 +429,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#importFile(URI file)
 	 */
 	@Override
@@ -501,7 +503,7 @@ public class Core extends Application implements ICore {
 	/**
 	 * This operation publishes a message to a publicly available log that may
 	 * be consumed by clients.
-	 * 
+	 *
 	 * @param message
 	 *            The message that should be published.
 	 */
@@ -512,7 +514,7 @@ public class Core extends Application implements ICore {
 	 * This operation scans the default project area for SerializedItems and
 	 * loads them into the Core. It returns false if it encounters and error and
 	 * true if it is successful.
-	 * 
+	 *
 	 * @return True if the SerializedItems stored in the default project area
 	 *         were loaded successfully, false otherwise.
 	 */
@@ -577,7 +579,7 @@ public class Core extends Application implements ICore {
 	/**
 	 * This operation sets the HTTP service that should be used by the Core to
 	 * publish itself.
-	 * 
+	 *
 	 * @param service
 	 *            The HTTP service.
 	 */
@@ -646,7 +648,7 @@ public class Core extends Application implements ICore {
 	 * This operation returns the current instance of the ICE core to the HTTP
 	 * service so that it can be published. It overrides
 	 * Application.getSingletons().
-	 * 
+	 *
 	 * @return The set of "singletons" - in this case just the running instance
 	 *         of the Core.
 	 */
@@ -662,7 +664,7 @@ public class Core extends Application implements ICore {
 	 * This private operation configures the project area for the Core. It uses
 	 * the Eclipse Resources Plugin and behaves differently based on the value
 	 * of the osgi.instance.area system property. </p> <!-- end-UML-doc -->
-	 * 
+	 *
 	 * @return True if the setup operation was successful and false otherwise.
 	 */
 	private boolean setupProjectLocation() {
@@ -719,7 +721,7 @@ public class Core extends Application implements ICore {
 	/**
 	 * This operation sets the persistence provider from the
 	 * IPersistenceProvider interface. This is picked up via OSGI.
-	 * 
+	 *
 	 * @param provider
 	 *            The persistence provider.
 	 */
@@ -732,9 +734,13 @@ public class Core extends Application implements ICore {
 		}
 	}
 
+	public void setIOService(IOService service) {
+		(new Item(null)).setIOService(service);
+	}
+
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#connect()
 	 */
 	@Override
@@ -744,7 +750,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#disconnect(int uniqueClientId)
 	 */
 	@Override
@@ -753,7 +759,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#importFileAsItem(URI file, String itemType)
 	 */
 	@Override
@@ -781,9 +787,9 @@ public class Core extends Application implements ICore {
 	/**
 	 * This private operation creates an instance of the Message class from a
 	 * string using a JSON parser.
-	 * 
+	 *
 	 * This operation is synchronized so that the core can't be overloaded.
-	 * 
+	 *
 	 * @param messageString
 	 *            The original message, as a string
 	 * @return list list of built messages.
@@ -837,7 +843,7 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ICore#postUpdateMessage(String message)
 	 */
 	@Override
