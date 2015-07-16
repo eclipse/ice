@@ -14,7 +14,6 @@ package org.eclipse.ice.viz.service.paraview.proxy;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,50 +27,28 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.connections.ConnectionState;
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
-import org.eclipse.ice.viz.service.paraview.proxy.properties.RepresentationProperty;
-import org.eclipse.ice.viz.service.paraview.proxy.properties.ScalarBarProperty;
+import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-/**
- * This class provides a basic implementation of {@link IParaViewProxy} and
- * should be used whenever possible when dealing with the ParaView Java client.
- * 
- * @author Jordan Deyton
- *
- */
-public abstract class AbstractParaViewProxy implements IParaViewProxy {
+public class AbstractParaViewProxy implements IParaViewProxy {
 
 	/**
-	 * The URI for this proxy. This should only ever be set once.
+	 * The currently selected category.
 	 */
-	private final URI uri;
-
+	private String category;
 	/**
 	 * The current connection used to open or manipulate the file specified by
 	 * the {@link #uri}.
 	 */
-	private ParaViewConnection connection = null;
-
+	private IVizConnection<IParaViewWebClient> connection = null;
 	/**
-	 * The ParaView ID pointing to the file's proxy on the server.
+	 * The currently selected feature.
 	 */
-	private int fileId = -1;
-	/**
-	 * The ParaView ID pointing to the file's associated render view proxy on
-	 * the server.
-	 */
-	private int viewId = -1;
-	/**
-	 * The ParaView ID pointing to the file's associated representation proxy on
-	 * the server.
-	 */
-	private int repId = -1;
-
+	private String feature;
 	/**
 	 * The map of features for the proxy, keyed on the feature "name" or
 	 * "category". These are features that can be changed to update the
@@ -79,48 +56,57 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 */
 	private final Map<String, ProxyFeature> featureMap;
 	/**
+	 * The ParaView ID pointing to the file's proxy on the server.
+	 */
+	private int fileId;
+	/**
 	 * The map of properties. The keys are property names, while the values are
 	 * property objects that manage the current property value as well as
 	 * syncing the property via the connection.
 	 */
-	private final Map<String, IProxyProperty> propertyMap;
-
+	private final Map<String, ProxyProperty> propertyMap;
 	/**
-	 * The currently selected category.
+	 * The ParaView ID pointing to the file's associated representation proxy on
+	 * the server.
 	 */
-	private String category;
-	/**
-	 * The currently selected feature.
-	 */
-	private String feature;
-
+	private int repId;
 	/**
 	 * The executor used to run operations on a separate thread.
 	 */
 	protected final ExecutorService requestExecutor;
-
-	private boolean scaleByAllTimes = false;
-
 	/**
 	 * The timesteps for the proxy.
 	 */
-	private final List<Double> times = new ArrayList<Double>();
+	private final List<Double> times;
 	/**
 	 * The current timestep.
 	 */
-	private int timestep = 0;
-	private int targetTimestep = 0;
+	private int timestep;
+	/**
+	 * The URI for this proxy. This should only ever be set once.
+	 */
+	private final URI uri;
 
 	/**
-	 * The default constructor. This should only be called by sub-class
-	 * constructors.
+	 * The ParaView ID pointing to the file's associated render view proxy on
+	 * the server.
+	 */
+	private int viewId;
+
+	private int targetTimestep = 0;
+	// TODO Make these properties.
+	private boolean scaleByAllTimes = false;
+	private boolean showScalarBar = true;
+
+	/**
+	 * The default constructor.
 	 * 
 	 * @param uri
 	 *            The URI for the ParaView-supported file.
 	 * @throws NullPointerException
 	 *             If the specified URI is null.
 	 */
-	protected AbstractParaViewProxy(URI uri) throws NullPointerException {
+	public AbstractParaViewProxy(URI uri) throws NullPointerException {
 		// Throw an exception if the argument is null.
 		if (uri == null) {
 			throw new NullPointerException(
@@ -131,144 +117,36 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		this.uri = uri;
 
 		// Initialize the maps of allowed features and properties.
-		// featureMap = new HashMap<String, Set<String>>();
-		propertyMap = new HashMap<String, IProxyProperty>();
 		featureMap = new HashMap<String, ProxyFeature>();
+		propertyMap = new HashMap<String, ProxyProperty>();
 
-		// Initialize the current feature and properties.
+		// Initialize the current feature.
 		category = null;
 		feature = null;
 
 		// Initialize the executor used to run operations on another thread.
 		requestExecutor = Executors.newSingleThreadExecutor();
 
+		// Initialize the times.
+		times = new ArrayList<Double>();
+		timestep = 0;
+
+		// Initialize the underlying proxy IDs.
+		fileId = -1;
+		repId = -1;
+		viewId = -1;
+
 		return;
 	}
 
-	/*
-	 * Implements a method from IParaViewProxy.
+	/**
+	 * Gets the current connection associated with this proxy.
+	 * 
+	 * @return The proxy's current connection, or {@code null} if it has not
+	 *         been set.
 	 */
-	@Override
-	public Future<Boolean> open(ParaViewConnection connection)
-			throws NullPointerException {
-		// Throw an exception if the argument is null.
-		if (connection == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Cannot open a proxy with a null connection.");
-		}
-
-		final ParaViewConnection conn = connection;
-
-		// Create a new callable to open the connection. This will need to be
-		// run in a separate thread.
-		Callable<Boolean> operation = new Callable<Boolean>() {
-			@Override
-			public Boolean call() throws Exception {
-				// Set the default return value.
-				boolean opened = false;
-
-				// Only attempt to open the file if the connection is
-				// established.
-				if (conn.getState() == ConnectionState.Connected) {
-					// Validate that the connection server and the URI point to
-					// the same server.
-
-					// Get the connection host.
-					String clientHost = conn.getHost();
-
-					// Get the URI host.
-					String fileHost = uri.getHost();
-					if (fileHost == null) {
-						fileHost = "localhost";
-					}
-
-					// TODO We need better validation of hostnames, local vs
-					// remote, FQDN vs IP, etc. For instance, there should be no
-					// difference between "localhost" and whatever the existing
-					// hostname is.
-
-					// If they match, attempt to open the file.
-					if (clientHost != null && clientHost.equals(fileHost)) {
-						opened = openProxyOnClient(conn, uri.getPath());
-					}
-				}
-
-				// If the connection was opened, re-build the maps of features
-				// and properties.
-				if (opened) {
-					// Update the reference to the current connection.
-					AbstractParaViewProxy.this.connection = conn;
-
-					// Find the timesteps.
-					times.clear();
-					times.addAll(findTimesteps());
-
-					// Re-build the map of features.
-					featureMap.clear();
-					for (ProxyFeature featureInfo : findFeatures(conn)) {
-						featureMap.put(featureInfo.name, featureInfo);
-
-						// Load the current settings for the feature.
-						loadFeatureAllowedValues(featureInfo);
-					}
-
-					// Re-build the map of properties.
-					propertyMap.clear();
-					for (IProxyProperty property : findProperties(conn)) {
-						// Get the name of the property if possible.
-						String name = (property != null ? property.getName()
-								: null);
-						// Load properties with names into the property map.
-						if (name != null) {
-							propertyMap.put(name, property);
-						}
-					}
-
-					// Set the initial category and feature.
-					category = null;
-					feature = null;
-					if (!featureMap.isEmpty()) {
-						for (ProxyFeature featureInfo : featureMap.values()) {
-							if (!featureInfo.allowedValues.isEmpty()) {
-								category = featureInfo.name;
-								feature = featureInfo.allowedValues.iterator()
-										.next();
-								featureInfo.selectedValues.add(feature);
-								break;
-							}
-						}
-					}
-
-					// Apply the currently selected values to the file proxy.
-					// This ensures that only one category/feature is currently
-					// selected.
-					JsonArray changedProperties = new JsonArray();
-					for (ProxyFeature featureInfo : featureMap.values()) {
-						changedProperties
-								.add(createPropertyChangeObject(featureInfo));
-					}
-					applyProperties(changedProperties);
-					// Update the view by coloring it if possible.
-					if (category != null) {
-						setColorBy(featureMap.get(category), feature);
-					}
-				}
-
-				return opened;
-			}
-		};
-
-		// Kick off the operation in a new thread. The caller may use the
-		// returned Future to wait on the operation to complete.
-		return requestExecutor.submit(operation);
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public URI getURI() {
-		return uri;
+	public IVizConnection<IParaViewWebClient> getConnection() {
+		return connection;
 	}
 
 	/*
@@ -284,24 +162,110 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public Set<String> getFeatures(String category)
-			throws NullPointerException, IllegalArgumentException {
-		// Check for a null argument.
-		if (category == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Cannot find features for a null category.");
-		}
-
-		// Try to get the features for the category from the map.
-		ProxyFeature feature = featureMap.get(category);
-		if (feature == null) {
-			throw new IllegalArgumentException("ParaViewProxy error: "
-					+ "Cannot find features for category \"" + category
-					+ "\".");
-		}
-
+	public Set<String> getFeatures(String category) {
 		// Return an ordered copy of the set of allowed features.
-		return new TreeSet<String>(feature.allowedValues);
+		ProxyFeature feature = featureMap.get(category);
+		return feature != null ? new TreeSet<String>(feature.getAllowedValues())
+				: null;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public int getFileId() {
+		return fileId;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Map<String, String> getProperties() {
+		// Load the property values from the IProxyPropertys into a new map,
+		// which will be returned.
+		Map<String, String> properties = new TreeMap<String, String>();
+		for (Entry<String, ProxyProperty> e : propertyMap.entrySet()) {
+			properties.put(e.getKey(), e.getValue().getValue());
+		}
+		return properties;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public String getProperty(String name) {
+		ProxyProperty property = propertyMap.get(name);
+		return property != null ? property.getValue() : null;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Set<String> getPropertyAllowedValues(String name) {
+		ProxyProperty property = propertyMap.get(name);
+		return property != null ? property.getAllowedValues() : null;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	public int getRepresentationId() {
+		return repId;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public List<Double> getTimesteps() {
+		return new ArrayList<Double>(times);
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public URI getURI() {
+		return uri;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public int getViewId() {
+		return viewId;
+	}
+
+	/*
+	 * Implements a method from IParaViewProxy.
+	 */
+	@Override
+	public Future<Boolean> open(IVizConnection<IParaViewWebClient> connection)
+			throws NullPointerException {
+		// Throw an exception if the argument is null.
+		if (connection == null) {
+			throw new NullPointerException("ParaViewProxy error: "
+					+ "Cannot open a proxy with a null connection.");
+		}
+
+		final IVizConnection<IParaViewWebClient> conn = connection;
+
+		// Create a new callable to open the connection. This will need to be
+		// run in a separate thread.
+		Callable<Boolean> operation = new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				return setConnection(conn);
+			}
+		};
+
+		// Kick off the operation in a new thread. The caller may use the
+		// returned Future to wait on the operation to complete.
+		return requestExecutor.submit(operation);
 	}
 
 	/*
@@ -314,6 +278,17 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		if (category == null || feature == null) {
 			throw new NullPointerException("ParaViewProxy error: "
 					+ "Null categories and features are not supported.");
+		}
+
+		// Validate the category and feature.
+		final ProxyFeature featureInfo = featureMap.get(category);
+		if (featureInfo == null) {
+			throw new IllegalArgumentException("ParaViewProxyError: "
+					+ "The category \"" + category + "\" is invalid.");
+		} else if (!featureInfo.valueAllowed(feature)) {
+			throw new IllegalArgumentException("ParaViewwProxyError: "
+					+ "The feature \"" + feature
+					+ "\" is invalid for the category \"" + category + "\".");
 		}
 
 		final String newCategory = category;
@@ -329,133 +304,19 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 				String category = getCategory();
 				String feature = getFeature();
 
-				// Only proceed if the feature and/or category changed.
-				if (!newCategory.equals(category)
-						|| !newFeature.equals(feature)) {
-					// Get the set of features for the category.
-					ProxyFeature featureInfo = featureMap.get(newCategory);
-					if (featureInfo != null) {
-						Set<String> featureSet = featureInfo.allowedValues;
+				// Only proceed if the feature and/or category changed. Also,
+				// the connection must be established.
+				if ((!newCategory.equals(category)
+						|| !newFeature.equals(feature))
+						&& connection.getState() == ConnectionState.Connected
+						&& setFeatureOnClient(newCategory, newFeature)) {
 
-						// Make sure the feature is valid for the category
-						// before updating the client.
-						if (featureSet.contains(newFeature)) {
-							// Only attempt to update the feature and category
-							// if the client is connected and can be
-							// successfully updated.
-							if (connection
-									.getState() == ConnectionState.Connected
-									&& setFeatureOnClient(newCategory,
-											newFeature)) {
-								AbstractParaViewProxy.this.category = newCategory;
-								AbstractParaViewProxy.this.feature = newFeature;
-								changed = true;
-							}
-						} else {
-							throw new IllegalArgumentException(
-									"ParaViewProxy error: "
-											+ "Invalid feature \"" + newFeature
-											+ "\".");
-						}
-					} else {
-						throw new IllegalArgumentException(
-								"ParaViewProxy error: " + "Invalid category \""
-										+ newCategory + "\".");
-					}
+					AbstractParaViewProxy.this.category = newCategory;
+					AbstractParaViewProxy.this.feature = newFeature;
+					changed = true;
 				}
 
 				return changed;
-			}
-		};
-
-		// Kick off the operation in a new thread. The caller may use the
-		// returned Future to wait on the operation to complete.
-		return requestExecutor.submit(operation);
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public Map<String, String> getProperties() {
-		// Load the property values from the IProxyPropertys into a new map,
-		// which will be returned.
-		Map<String, String> properties = new TreeMap<String, String>();
-		for (Entry<String, IProxyProperty> e : propertyMap.entrySet()) {
-			properties.put(e.getKey(), e.getValue().getValue());
-		}
-		return properties;
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public String getProperty(String name)
-			throws NullPointerException, IllegalArgumentException {
-		// Return the current value of the property.
-		return getProxyProperty(name).getValue();
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public Set<String> getPropertyAllowedValues(String name)
-			throws NullPointerException, IllegalArgumentException {
-		return getProxyProperty(name).getAllowedValues();
-	}
-
-	/**
-	 * Gets the {@link IProxyProperty} from {@link #propertyMap}, throwing an
-	 * exception if the property is somehow invalid.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @return The property associated with the specified name.
-	 * @throws NullPointerException
-	 *             If the name is {@code null} and not in the map of properties.
-	 * @throws IllegalArgumentException
-	 *             If the name is an invalid property name not in the map of
-	 *             properties.
-	 */
-	private IProxyProperty getProxyProperty(String name)
-			throws NullPointerException, IllegalArgumentException {
-		IProxyProperty property = propertyMap.get(name);
-		if (property == null) {
-			if (name == null) {
-				throw new NullPointerException("ParaViewProxy error: "
-						+ "Null properties are not supported.");
-			} else {
-				throw new IllegalArgumentException("ParaViewProxy error: "
-						+ "The property \"" + name + "\" is invalid.");
-			}
-		}
-		return property;
-	}
-
-	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	@Override
-	public Future<Boolean> setProperty(String name, String value)
-			throws NullPointerException, IllegalArgumentException {
-
-		final String newName = name;
-		final String newValue = value;
-
-		// Create a callable to perform the property update. This will need to
-		// connect with the host to update the ParaView proxy.
-		Callable<Boolean> operation = new Callable<Boolean>() {
-			@Override
-			public Boolean call() throws Exception {
-				// Get the property from the map. This handles error checking
-				// for the property name.
-				IProxyProperty property = getProxyProperty(newName);
-
-				// Attempt to set the value. This handles error checking for the
-				// property value.
-				return property.setValue(newValue);
 			}
 		};
 
@@ -489,19 +350,15 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 					try {
 						// Fetch the property first. This may throw an exception
 						// if the property is invalid.
-						IProxyProperty property = getProxyProperty(name);
+						ProxyProperty property = propertyMap.get(name);
 						// Attempt to set the value. This may throw an exception
 						// if the value is invalid or the property is read-only.
-						if (property.setValue(value)) {
+						if (property != null && property.selectValue(value)) {
 							// If the value changed, increment the count.
 							count++;
 						}
 					} catch (NullPointerException | IllegalArgumentException
 							| UnsupportedOperationException e) {
-						System.err.println(e.getMessage());
-					} catch (Exception e) {
-						System.err.println("ParaViewProxy warning: "
-								+ "Unexpected exception!");
 						System.err.println(e.getMessage());
 					}
 				}
@@ -520,420 +377,33 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public int getViewId() {
-		return viewId;
-	}
+	public Future<Boolean> setProperty(String name, String value)
+			throws NullPointerException, IllegalArgumentException {
 
-	/**
-	 * Opens the file at the specified path using the ParaView connection. When
-	 * called, the full path is expected to be a path on the connection's host.
-	 * <p>
-	 * This method should set {@link #fileId}, {@link #viewId}, and
-	 * {@link #repId}.
-	 * </p>
-	 * 
-	 * @param connection
-	 *            The connection used to open the file.
-	 * @param fullPath
-	 *            The full path on the connection's host machine to the file
-	 *            that will be opened.
-	 * @return True if the file at the specified path on the host machine could
-	 *         be opened, false otherwise.
-	 */
-	protected boolean openProxyOnClient(ParaViewConnection connection,
-			String fullPath) {
-		boolean opened = false;
+		final String newName = name;
+		final String newValue = value;
 
-		IParaViewWebClient client = connection.getWidget();
+		// Create a callable to perform the property update. This will need to
+		// connect with the host to update the ParaView proxy.
+		Callable<Boolean> operation = new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				// Get the property from the map. This handles error checking
+				// for the property name.
+				ProxyProperty property = propertyMap.get(newName);
 
-		// The argument array must contain the full path to the file.
-		JsonArray args = new JsonArray();
-		args.add(new JsonPrimitive(fullPath));
-
-		// Attempt to create a view on the ParaView server.
-		try {
-			JsonObject response = client.call("createView", args).get();
-
-			// If the response does not contain an "error" value, then try to
-			// determine the file, view, and representation IDs.
-			if (response.get("error") == null) {
-				// The file was likely opened successfully.
-				opened = true;
-				// Try to get the IDs from the response.
-				try {
-					int fileId = response.get("proxyId").getAsInt();
-					int viewId = response.get("viewId").getAsInt();
-					int repId = response.get("repId").getAsInt();
-
-					// Update the IDs if everything worked.
-					this.fileId = fileId;
-					this.viewId = viewId;
-					this.repId = repId;
-				} catch (NullPointerException | ClassCastException
-						| IllegalStateException e) {
-					System.err.println("ParaViewProxy error: "
-							+ "Could not retrieve file, view, and/or "
-							+ "representation ID from connection.");
-					opened = false;
-				}
+				// Attempt to set the value. This handles error checking for the
+				// property value.
+				return property.selectValue(newValue);
 			}
-			// Otherwise, if the response contains an "error" value, print out
-			// the reason for the error.
-			else {
-				// Try to determine the reason for the failure.
-				String reason;
-				try {
-					reason = response.get("error").getAsString();
-				} catch (NullPointerException | ClassCastException
-						| IllegalStateException e) {
-					reason = "Unknown due to malformed response.";
-				}
-				// Print out the reason for the failure.
-				System.err.println("ParaViewProxy error: " + "Failed to open \""
-						+ fullPath + "\". Reason: " + reason);
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-			System.err.println("ParaViewProxy error: " + "Failed to open \""
-					+ fullPath + "\" due to connection error.");
-		}
+		};
 
-		return opened;
-	}
-
-	protected abstract List<ProxyFeature> findFeatures(
-			ParaViewConnection connection);
-
-	private JsonObject createPropertyChangeObject(ProxyFeature feature) {
-		// Create an object for the file proxy and the feature.
-		JsonObject object = new JsonObject();
-		object.addProperty("id", Integer.toString(getFileId()));
-		object.addProperty("name", feature.propertyName);
-		// Populate the new value (array) for the property based on the
-		// feature's selected values.
-		JsonArray array = new JsonArray();
-		for (String selectedValue : feature.selectedValues) {
-			array.add(new JsonPrimitive(selectedValue));
-		}
-		// Add the new value (array) to the property change object.
-		object.add("value", array);
-		return object;
-	}
-
-	private JsonArray getFileArray(String id) {
-		JsonObject object;
-		JsonArray array = null;
-		IParaViewWebClient widget = connection.getWidget();
-		try {
-			// Query the client for the file proxy's information.
-			array = new JsonArray();
-			array.add(new JsonPrimitive(Integer.toString(getFileId())));
-			object = widget.call("pv.proxy.manager.get", array).get();
-
-			// Try to get the array with the specified ID.
-			array = null;
-			array = object.get(id).getAsJsonArray();
-		} catch (InterruptedException | ExecutionException e) {
-			System.err.println("ParaViewProxy error: "
-					+ "Connection error while getting file proxy information.");
-		} catch (NullPointerException | ClassCastException
-				| IllegalStateException e) {
-			System.err.println("ParaViewProxy error: "
-					+ "Error while reading file proxy information.");
-		}
-		return array;
-	}
-
-	private boolean applyProperties(JsonArray changedProperties) {
-		boolean updated = false;
-
-		if (changedProperties.size() > 0) {
-
-			// Get the ParaView web client widget.
-			IParaViewWebClient widget = connection.getWidget();
-
-			JsonObject object;
-			// Create the argument array.
-			JsonArray array = new JsonArray();
-			array.add(changedProperties);
-			try {
-				// Update the web client.
-				object = widget.call("pv.proxy.manager.update", array).get();
-				// Check the response to verify that the operation was
-				// successful.
-				updated = object.get("success").getAsBoolean();
-				if (!updated) {
-					System.err.println("Failed to apply the properties: ");
-					array = object.get("errorList").getAsJsonArray();
-					for (int i = 0; i < array.size(); i++) {
-						System.err.println(array.get(i));
-					}
-				}
-			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
-			} catch (NullPointerException | ClassCastException
-					| IllegalStateException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return updated;
-	}
-
-	private void loadFeatureAllowedValues(ProxyFeature feature) {
-		JsonArray uiArray = getFileArray("ui");
-		JsonObject object = uiArray.get(feature.index).getAsJsonObject();
-		// Add all strings from the "values" array to a new, ordered set.
-		JsonArray array = object.get("values").getAsJsonArray();
-		for (int i = 0; i < array.size(); i++) {
-			feature.allowedValues.add(array.get(i).getAsString());
-		}
-		return;
-	}
-
-	private void loadFeatureSelectedValues(ProxyFeature feature) {
-		JsonArray propArray = getFileArray("properties");
-		JsonObject object = propArray.get(feature.index).getAsJsonObject();
-		JsonArray array = object.get("value").getAsJsonArray();
-		for (int i = 0; i < array.size(); i++) {
-			feature.selectedValues.add(array.get(i).getAsString());
-		}
-		return;
-	}
-
-	private boolean setColorBy(ProxyFeature featureInfo, String feature) {
-		boolean updated = false;
-
-		// Get the ParaView web client widget.
-		IParaViewWebClient widget = connection.getWidget();
-
-		// Determine the "arrayName". If unsetting the current color, use
-		// the empty string.
-		final String arrayName = featureInfo.canColorBy ? feature : "";
-
-		// Set the "color by" to color based on the feature name.
-		JsonArray args = new JsonArray();
-
-		// Add the required arguments to the argument array.
-		args.add(new JsonPrimitive(Integer.toString(getRepresentationId())));
-		args.add(new JsonPrimitive(featureInfo.colorByMode.toString()));
-		args.add(new JsonPrimitive(featureInfo.colorByLocation.toString()));
-		args.add(new JsonPrimitive(arrayName));
-		args.add(new JsonPrimitive("Magnitude"));
-		args.add(new JsonPrimitive(0));
-		args.add(new JsonPrimitive(true));
-
-		System.out.println(args.toString());
-
-		// Post the color by change to the client.
-		try {
-			// The only way to tell if the client even received the message
-			// is if we get back an empty JsonObject. If null, then there
-			// was an error.
-			if (widget.call("pv.color.manager.color.by", args).get() != null) {
-				updated = true;
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-
-		return updated;
-	}
-
-	/**
-	 * Finds the properties in the file by querying the associated ParaView
-	 * connection.
-	 * <p>
-	 * The connection should be both valid and connected when this method is
-	 * called, and the file will already be opened using the ParaView
-	 * connection.
-	 * </p>
-	 * 
-	 * @param connection
-	 *            The connection used by this proxy.
-	 * @return A map of properties that can be rendered, keyed on their names.
-	 *         If none can be found, then the returned list should be empty and
-	 *         <i>not</i> {@code null}.
-	 */
-	protected List<IProxyProperty> findProperties(
-			ParaViewConnection connection) {
-		List<IProxyProperty> properties = new ArrayList<IProxyProperty>();
-
-		// Add some default properties.
-		properties.add(new RepresentationProperty(this, connection));
-		properties.add(new ScalarBarProperty(this, connection));
-
-		return properties;
-	}
-
-	/**
-	 * Sends the appropriate requests over the connection to change the
-	 * currently rendered feature.
-	 * <p>
-	 * The connection should be both valid and connected when this method is
-	 * called, and the file will already be opened using the ParaView
-	 * connection.
-	 * </p>
-	 * <p>
-	 * Furthermore, the category and feature should be both <i>new</i>
-	 * (different from the previous value) and <i>valid</i>.
-	 * </p>
-	 * 
-	 * @param category
-	 *            The category for the feature.
-	 * @param feature
-	 *            The new feature for the ParaView render.
-	 * @return True if the new category and feature could be set, false
-	 *         otherwise.
-	 */
-	private boolean setFeatureOnClient(String category, String feature) {
-		boolean updated = false;
-
-		// Get the previous feature.
-		String oldCategory = getCategory();
-		String oldFeature = getFeature();
-		// Get the SiloFeature for the new feature.
-		ProxyFeature featureInfo = getProxyFeature(category);
-		// Create a JsonArray for all changed or updated properties. These will
-		// be sent to the web client in bulk.
-		JsonArray changedProperties = new JsonArray();
-
-		// If the categories are the same, remove the old feature.
-		if (category.equals(oldCategory)) {
-			featureInfo.selectedValues.remove(oldFeature);
-		}
-		// Otherwise, only remove the old feature if the previous feature was
-		// not a mesh.
-		else {
-			ProxyFeature oldFeatureInfo = getProxyFeature(oldCategory);
-			oldFeatureInfo.selectedValues.remove(oldFeature);
-			// Since the categories are different, we have to update another
-			// property in the file proxy.
-			changedProperties.add(createPropertyChangeObject(oldFeatureInfo));
-		}
-		// Add the new feature and get the property change.
-		featureInfo.selectedValues.add(feature);
-		changedProperties.add(createPropertyChangeObject(featureInfo));
-
-		// Try to change the properties. If successful, update the "color by"
-		// property.
-		if (applyProperties(changedProperties)) {
-			setColorBy(featureInfo, feature);
-			// We always need to rescale when the feature changes.
-			rescale();
-			refreshScalarBar();
-			updated = true;
-		}
-		// Otherwise, revert the changes to the category and feature.
-		else {
-			getProxyFeature(oldCategory).selectedValues.add(oldFeature);
-			featureInfo.selectedValues.remove(feature);
-		}
-
-		return updated;
-	}
-
-	/**
-	 * Gets the ParaView ID pointing to the file's proxy on the server.
-	 * 
-	 * @return The ID for the server's file proxy (the main proxy for the file
-	 *         on the server, sometimes just called "the" proxy). If unset, this
-	 *         returns {@code -1}.
-	 */
-	public int getFileId() {
-		return fileId;
-	}
-
-	/**
-	 * Gets the ParaView ID pointing to the file's associated representation
-	 * proxy on the server.
-	 * 
-	 * @return The ID for the server's representation proxy. If unset, this
-	 *         returns {@code -1}.
-	 */
-	public int getRepresentationId() {
-		return repId;
-	}
-
-	/**
-	 * Gets the selected category for the feature rendered by ParaView.
-	 * 
-	 * @return The currently selected category.
-	 */
-	protected String getCategory() {
-		return category;
-	}
-
-	/**
-	 * Gets the selected feature rendered by ParaView.
-	 * 
-	 * @return The currently selected feature.
-	 */
-	protected String getFeature() {
-		return feature;
-	}
-
-	/**
-	 * Gets the {@link ProxyFeature} for the specified feature category.
-	 * 
-	 * @param category
-	 *            The category of the feature (its "ui" element name).
-	 * @return The associated {@code ProxyFeature}, or {@code null} if it does
-	 *         not exist.
-	 */
-	protected ProxyFeature getProxyFeature(String category) {
-		return featureMap.get(category);
-	}
-
-	private JsonObject getProxyInfo() {
-		IParaViewWebClient widget = connection.getWidget();
-		JsonArray array;
-		JsonObject object = null;
-
-		try {
-			// Query the client for the file proxy's information.
-			array = new JsonArray();
-			array.add(new JsonPrimitive(Integer.toString(getFileId())));
-			object = widget.call("pv.proxy.manager.get", array).get();
-		} catch (InterruptedException | ExecutionException e) {
-			System.err.println("ParaViewProxy error: "
-					+ "Connection error while getting file proxy information.");
-		}
-
-		return object;
-	}
-
-	private List<Double> findTimesteps() {
-		JsonArray array;
-		JsonObject object;
-
-		List<Double> timesteps = null;
-
-		object = getProxyInfo();
-		try {
-			object = object.get("data").getAsJsonObject();
-			array = object.get("time").getAsJsonArray();
-			int size = array.size();
-			timesteps = new ArrayList<Double>(size);
-			for (int i = 0; i < size; i++) {
-				timesteps.add(array.get(i).getAsDouble());
-			}
-		} catch (NullPointerException | ClassCastException
-				| IllegalStateException e) {
-			e.printStackTrace();
-		}
-
-		return timesteps != null ? timesteps : new ArrayList<Double>(0);
+		// Kick off the operation in a new thread. The caller may use the
+		// returned Future to wait on the operation to complete.
+		return requestExecutor.submit(operation);
 	}
 
 	/*
-	 * Implements a method from IParaViewProxy.
-	 */
-	public List<Double> getTimesteps() {
-		return new ArrayList<Double>(times);
-	}
-
-	/**
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
@@ -965,50 +435,236 @@ public abstract class AbstractParaViewProxy implements IParaViewProxy {
 		});
 	}
 
-	private void setTimestep(String action) {
-		IParaViewWebClient widget = connection.getWidget();
-		JsonArray array;
+	/**
+	 * Gets the current category set on the proxy.
+	 * 
+	 * @return The current category.
+	 */
+	protected String getCategory() {
+		return category;
+	}
 
-		// FIXME This changes the time for ALL views, not just this one.
+	/**
+	 * Gets the current feature set on the proxy.
+	 * 
+	 * @return The current feature.
+	 */
+	protected String getFeature() {
+		return feature;
+	}
 
-		array = new JsonArray();
-		array.add(new JsonPrimitive(action));
+	private boolean setConnection(
+			IVizConnection<IParaViewWebClient> connection) {
+		boolean opened = false;
+
+		if (connection != this.connection
+				&& connection.getState() == ConnectionState.Connected) {
+			IParaViewWebClient widget = connection.getWidget();
+
+			// Open the file on the web client.
+			if (openFile(widget, uri.getPath())) {
+				opened = true;
+
+				// Update the reference to the connection.
+				this.connection = connection;
+
+				// ---- Reset the proxy information. ---- //
+				// Reset the timesteps.
+				times.clear();
+				times.addAll(findTimesteps());
+				timestep = 0;
+
+				// Reset the features.
+				featureMap.clear();
+				for (ProxyFeature featureInfo : findFeatures()) {
+					if (featureInfo.setProxy(this)) {
+						featureMap.put(featureInfo.uiName, featureInfo);
+					}
+				}
+
+				// Reset the properties.
+				propertyMap.clear();
+				for (ProxyProperty propertyInfo : findProperties()) {
+					if (propertyInfo.setProxy(this)) {
+						propertyMap.put(propertyInfo.uiName, propertyInfo);
+					}
+				}
+
+				// Reset the selected category and feature to the next available
+				// one.
+				category = null;
+				feature = null;
+				// -------------------------------------- //
+			}
+		}
+
+		return opened;
+	}
+
+	private boolean openFile(IParaViewWebClient client, String fullPath) {
+		boolean opened = false;
+
+		// The argument array must contain the full path to the file.
+		JsonArray args = new JsonArray();
+		args.add(new JsonPrimitive(fullPath));
 		try {
-			widget.call("pv.vcr.action", array).get();
-			// Despite the documentation, this RPC call returns nothing.
+			// Attempt to create a view on the ParaView server.
+			JsonObject response = client.call("createView", args).get();
+			// If the response does not contain an "error" value, then try to
+			// determine the file, view, and representation IDs.
+			if (response.get("error") == null) {
+				int fileId = response.get("proxyId").getAsInt();
+				int viewId = response.get("viewId").getAsInt();
+				int repId = response.get("repId").getAsInt();
+
+				// Update the IDs if everything worked.
+				this.fileId = fileId;
+				this.viewId = viewId;
+				this.repId = repId;
+				opened = true;
+			}
 		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		} catch (NullPointerException | ClassCastException
+				| IllegalStateException e) {
 			e.printStackTrace();
 		}
 
-		return;
+		return opened;
 	}
 
-	private void rescale() {
-		IParaViewWebClient widget = connection.getWidget();
-		JsonArray array;
-
-		// Auto-scale the color map to the data.
-		array = new JsonArray();
-		JsonObject scaleOptions = new JsonObject();
-		scaleOptions.addProperty("type", scaleByAllTimes ? "time" : "data");
-		scaleOptions.addProperty("proxyId", Integer.toString(fileId));
-		array.add(scaleOptions);
+	protected JsonObject getProxyObject(int id) {
+		JsonObject object = null;
+		JsonArray args = new JsonArray();
+		args.add(new JsonPrimitive(id));
 		try {
-			widget.call("pv.color.manager.rescale.transfer.function", array)
+			object = connection.getWidget().call("pv.proxy.manager.get", args)
 					.get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
-
-		return;
+		return object;
 	}
 
-	private void refreshScalarBar() {
-		AbstractProxyProperty prop = (AbstractProxyProperty) getProxyProperty(
-				"Toggle Scalar Bar");
-		if ("Show".equals(prop.getValue())) {
-			prop.setValueOnClient("Show", connection);
+	protected List<ProxyFeature> findFeatures() {
+		return new ArrayList<ProxyFeature>();
+	}
+
+	protected List<ProxyProperty> findProperties() {
+		List<ProxyProperty> properties = new ArrayList<ProxyProperty>();
+		properties
+				.add(new ProxyProperty(1, "Representation", "Representation") {
+					@Override
+					protected int getPropertyProxyId() {
+						return repId;
+					}
+				});
+		return properties;
+	}
+
+	private List<Double> findTimesteps() {
+		List<Double> timesteps = new ArrayList<Double>();
+		JsonObject proxyObject = getProxyObject(fileId);
+		try {
+			JsonObject dataObject = proxyObject.get("data").getAsJsonObject();
+			JsonArray valueArray = dataObject.get("time").getAsJsonArray();
+			for (int i = 0; i < valueArray.size(); i++) {
+				timesteps.add(valueArray.get(i).getAsDouble());
+			}
+		} catch (NullPointerException | ClassCastException
+				| IllegalStateException e) {
+			e.printStackTrace();
 		}
-		return;
+		return timesteps;
+	}
+
+	private boolean setFeatureOnClient(String category, String feature) {
+		boolean updated = false;
+
+		// Get the previous feature.
+		String oldCategory = getCategory();
+		String oldFeature = getFeature();
+		// Get the SiloFeature for the new feature.
+		ProxyFeature featureInfo = featureMap.get(category);
+
+		// If the categories are the same, remove the old feature.
+		if (category.equals(oldCategory)) {
+			updated |= featureInfo.unselectValue(oldFeature);
+		}
+		// Otherwise, only remove the old feature if the previous feature was
+		// not a mesh.
+		else if (oldCategory != null) {
+			ProxyFeature oldFeatureInfo = featureMap.get(oldCategory);
+			updated |= oldFeatureInfo.unselectValue(oldFeature);
+		}
+		// Add the new feature and get the property change.
+		updated |= featureInfo.selectValue(feature);
+
+		// Refresh the view appropriately.
+		if (updated) {
+			setColorBy(featureInfo, feature);
+			rescale();
+			refreshScalarBar();
+		}
+
+		return updated;
+	}
+
+	private Future<JsonObject> setColorBy(ProxyFeature feature, String value) {
+		IParaViewWebClient widget = connection.getWidget();
+		JsonArray args;
+
+		// Determine the "arrayName". If unsetting the current color, use
+		// the empty string.
+		final String arrayName = feature.canColorBy ? value : "";
+
+		// Add the required arguments to the argument array.
+		args = new JsonArray();
+		args.add(new JsonPrimitive(Integer.toString(getRepresentationId())));
+		args.add(new JsonPrimitive(feature.colorByMode.toString()));
+		args.add(new JsonPrimitive(feature.colorByLocation.toString()));
+		args.add(new JsonPrimitive(arrayName));
+		args.add(new JsonPrimitive("Magnitude"));
+		args.add(new JsonPrimitive(0));
+		args.add(new JsonPrimitive(true));
+
+		// Post the request to the client.
+		return widget.call("pv.color.manager.color.by", args);
+	}
+
+	private Future<JsonObject> rescale() {
+		IParaViewWebClient widget = connection.getWidget();
+		JsonArray args;
+
+		// Auto-scale the color map to the data.
+		args = new JsonArray();
+		JsonObject scaleOptions = new JsonObject();
+		scaleOptions.addProperty("type", scaleByAllTimes ? "time" : "data");
+		scaleOptions.addProperty("proxyId", Integer.toString(fileId));
+		args.add(scaleOptions);
+
+		// Make the request, but don't wait.
+		return widget.call("pv.color.manager.rescale.transfer.function", args);
+	}
+
+	private Future<JsonObject> refreshScalarBar() {
+		IParaViewWebClient widget = connection.getWidget();
+		JsonArray args;
+
+		// Set the visibility of the legend to true.
+		JsonObject legendVisibilities = new JsonObject();
+		legendVisibilities.addProperty(Integer.toString(fileId), showScalarBar);
+		args = new JsonArray();
+		args.add(legendVisibilities);
+
+		return widget.call("pv.color.manager.scalarbar.visibility.set", args);
+	}
+
+	private Future<JsonObject> setTimestep(String action) {
+		// FIXME This changes the time for ALL views, not just this one.
+		IParaViewWebClient widget = connection.getWidget();
+		JsonArray array = new JsonArray();
+		array.add(new JsonPrimitive(action));
+		return widget.call("pv.vcr.action", array);
 	}
 }

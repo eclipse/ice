@@ -17,40 +17,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
+import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 /**
  * A proxy serves as an intermediary between client code and a particular file
  * loaded into a view in ParaView. Each proxy is responsible for <i>exactly</i>
  * one particular file for a given view. If another file needs to be
  * manipulated, another proxy should be created for that file.
+ * <p>
+ * Furthermore, a proxy provides an interface to ParaViewPlots for access to the
+ * contents of the file.
+ * </p>
  * 
  * @author Jordan Deyton
  *
  */
 public interface IParaViewProxy {
-
-	/**
-	 * Opens the designated URI, if possible, using the specified ParaView
-	 * connection.
-	 * 
-	 * @param connection
-	 *            The connection to use when opening the URI. Should not be
-	 *            {@code null}.
-	 * @return True if the proxy could be opened using the connection (also when
-	 *         it is already open), false otherwise.
-	 * @throws NullPointerException
-	 *             If the specified connection is {@code null}.
-	 */
-	public Future<Boolean> open(ParaViewConnection connection)
-			throws NullPointerException;
-
-	/**
-	 * Gets the current URI associated with the proxy.
-	 * 
-	 * @return The URI pointing to the proxy's file.
-	 */
-	public URI getURI();
 
 	/**
 	 * Gets the categories of "features" in the file that can be rendered. This
@@ -68,14 +51,93 @@ public interface IParaViewProxy {
 	 *            The category whose features will be returned. This should be a
 	 *            value retrieved from {@link #getFeatureCategories()}.
 	 * @return A set of features that can be rendered. This set may be unique to
-	 *         the specified category.
-	 * @throws NullPointerException
-	 *             If the specified category is {@code null}.
-	 * @throws IllegalArgumentException
-	 *             If the specified category is an invalid category.
+	 *         the specified category. Returns {@code null} if the category name
+	 *         is invalid.
 	 */
-	public Set<String> getFeatures(String category)
+	public Set<String> getFeatures(String category);
+
+	/**
+	 * Gets the ID of the underlying "file" object.
+	 * 
+	 * @return The ID of the underlying file, or {@code -1} if the proxy was not
+	 *         opened.
+	 */
+	public int getFileId();
+
+	/**
+	 * Gets the current properties for the proxy.
+	 * 
+	 * @return A map of the current properties for the proxy. The keys are
+	 *         property names, while the values are their current values.
+	 */
+	public Map<String, String> getProperties();
+
+	/**
+	 * Gets the current value for the proxy's specified property.
+	 * 
+	 * @param name
+	 *            The name of the property to retrieve.
+	 * @return The current value of the property, or {@code null} if the
+	 *         property name is invalid.
+	 */
+	public String getProperty(String name)
 			throws NullPointerException, IllegalArgumentException;
+
+	/**
+	 * Gets the set of allowed values for the specified property.
+	 * 
+	 * @param name
+	 *            The property whose allowed values will be returned.
+	 * @return A set containing all allowed values for the specified property,
+	 *         or {@code null} if the property name is invalid.
+	 */
+	public Set<String> getPropertyAllowedValues(String name);
+
+	/**
+	 * Gets the ID of the underlying "representation" object.
+	 * 
+	 * @return The ID of the underlying representation, or {@code -1} if the
+	 *         proxy was not opened.
+	 */
+	public int getRepresentationId();
+
+	/**
+	 * Gets a list of timesteps for the loaded proxy.
+	 * 
+	 * @return A list containing the allowed timesteps for the proxy. This list
+	 *         may be empty, but should not be {@code null}.
+	 */
+	public List<Double> getTimesteps();
+
+	/**
+	 * Gets the current URI associated with the proxy.
+	 * 
+	 * @return The URI pointing to the proxy's file.
+	 */
+	public URI getURI();
+
+	/**
+	 * Gets the ID of the underlying "view" object.
+	 * 
+	 * @return The ID of the underlying view, or {@code -1} if the proxy was not
+	 *         opened.
+	 */
+	public int getViewId();
+
+	/**
+	 * Opens the designated URI, if possible, using the specified ParaView
+	 * connection.
+	 * 
+	 * @param connection
+	 *            The connection to use when opening the URI. Should not be
+	 *            {@code null}.
+	 * @return True if the proxy could be opened using the connection (also when
+	 *         it is already open), false otherwise.
+	 * @throws NullPointerException
+	 *             If the specified connection is {@code null}.
+	 */
+	public Future<Boolean> open(IVizConnection<IParaViewWebClient> connection)
+			throws NullPointerException;
 
 	/**
 	 * Sets the current feature that is rendered via ParaView.
@@ -94,48 +156,6 @@ public interface IParaViewProxy {
 	 *             for the category.
 	 */
 	public Future<Boolean> setFeature(String category, String feature)
-			throws NullPointerException, IllegalArgumentException;
-
-	/**
-	 * Gets the set of allowed properties for the proxy.
-	 * 
-	 * @return A set of properties that can be updated and may or may not affect
-	 *         the rendered view.
-	 */
-	/**
-	 * Gets the current properties for the proxy.
-	 * 
-	 * @return A map of the current properties for the proxy. The keys are
-	 *         property names, while the values are their current values.
-	 */
-	public Map<String, String> getProperties();
-
-	/**
-	 * Gets the current value for the proxy's specified property.
-	 * 
-	 * @param name
-	 *            The name of the property to retrieve.
-	 * @return The current value of the property.
-	 * @throws NullPointerException
-	 *             If the specified property name is {@code null}.
-	 * @throws IllegalArgumentException
-	 *             If the specified property is an invalid property.
-	 */
-	public String getProperty(String name)
-			throws NullPointerException, IllegalArgumentException;
-
-	/**
-	 * Gets the set of allowed values for the specified property.
-	 * 
-	 * @param name
-	 *            The property whose allowed values will be returned.
-	 * @return A set containing all allowed values for the specified property.
-	 * @throws NullPointerException
-	 *             If the specified property is {@code null}.
-	 * @throws IllegalArgumentException
-	 *             If the specified property is an invalid property.
-	 */
-	public Set<String> getPropertyAllowedValues(String name)
 			throws NullPointerException, IllegalArgumentException;
 
 	/**
@@ -177,37 +197,12 @@ public interface IParaViewProxy {
 			throws NullPointerException;
 
 	/**
-	 * Gets the ID of the underlying "view" object.
+	 * Sets the timestep for the loaded proxy.
 	 * 
-	 * @return The ID of the underlying view, or {@code -1} if the proxy was not
-	 *         opened.
+	 * @param timestep
+	 *            The new timestep index.
+	 * @return True when the operation has completed.
 	 */
-	public int getViewId();
-
-	/**
-	 * Gets the ID of the underlying "representation" object.
-	 * 
-	 * @return The ID of the underlying representation, or {@code -1} if the
-	 *         proxy was not opened.
-	 */
-	public int getRepresentationId();
-
-	/**
-	 * Gets the ID of the underlying "file" object.
-	 * 
-	 * @return The ID of the underlying file, or {@code -1} if the proxy was not
-	 *         opened.
-	 */
-	public int getFileId();
-
-	/**
-	 * Gets a list of timesteps for the loaded proxy.
-	 * 
-	 * @return A list containing the allowed timesteps for the proxy. This list
-	 *         may be empty, but should not be {@code null}.
-	 */
-	public List<Double> getTimesteps();
-	
 	public Future<Boolean> setTimestep(int timestep);
 
 }

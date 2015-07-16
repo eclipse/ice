@@ -12,14 +12,10 @@
 package org.eclipse.ice.viz.service.paraview.proxy.silo;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
-import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature.ColorByLocation;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature.ColorByMode;
@@ -48,40 +44,26 @@ public class SiloProxy extends AbstractParaViewProxy {
 	 */
 	protected SiloProxy(URI uri) throws NullPointerException {
 		super(uri);
-		
 		// Nothing to do yet.
 	}
 
-
 	/*
-	 * Implements an abstract method from AbstractParaViewProxy.
+	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected List<ProxyFeature> findFeatures(
-			ParaViewConnection connection) {
+	protected List<ProxyFeature> findFeatures() {
 
 		// Initialize the list of supported features.
-		List<ProxyFeature> features = new ArrayList<ProxyFeature>();
+		List<ProxyFeature> features = super.findFeatures();
 
-		//features.add(new ProxyFeature(0, "Meshes", "MeshStatus"));
-		//features.add(new ProxyFeature(1, "Materials", "MaterialStatus"));
-		features.add(new ProxyFeature(2, "Cell Arrays",
-				"CellArrayStatus", ColorByMode.ARRAY, ColorByLocation.CELLS));
-		features.add(new ProxyFeature(3, "Point Arrays",
-				"PointArrayStatus", ColorByMode.ARRAY, ColorByLocation.POINTS));
+		// features.add(new ProxyFeature(0, "Meshes", "MeshStatus"));
+		// features.add(new ProxyFeature(1, "Materials", "MaterialStatus"));
+		features.add(new ProxyFeature(2, "Cell Arrays", "CellArrayStatus",
+				ColorByMode.ARRAY, ColorByLocation.CELLS));
+		features.add(new ProxyFeature(3, "Point Arrays", "PointArrayStatus",
+				ColorByMode.ARRAY, ColorByLocation.POINTS));
 
 		return features;
-	}
-
-	/*
-	 * Implements an abstract method from AbstractParaViewProxy.
-	 */
-	@Override
-	protected List<IProxyProperty> findProperties(
-			ParaViewConnection connection) {
-		List<IProxyProperty> properties = super.findProperties(connection);
-		// TODO Add silo-specific properties.
-		return properties;
 	}
 
 }

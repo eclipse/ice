@@ -12,14 +12,11 @@
 package org.eclipse.ice.viz.service.paraview.proxy.exodus;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
-import org.eclipse.ice.viz.service.paraview.proxy.IProxyProperty;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature.ColorByLocation;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature.ColorByMode;
@@ -48,16 +45,14 @@ public class ExodusProxy extends AbstractParaViewProxy {
 	 */
 	protected ExodusProxy(URI uri) throws NullPointerException {
 		super(uri);
-
 		// Nothing to do yet.
 	}
-
+	
 	/*
-	 * Implements an abstract method from AbstractParaViewProxy.
+	 * Overrides a method from AbstractParaViewProxy.
 	 */
 	@Override
-	protected List<ProxyFeature> findFeatures(ParaViewConnection connection) {
-
+	protected List<ProxyFeature> findFeatures() {
 		/*
 		 * The structure of Exodus files looks like so:
 		 * 
@@ -71,9 +66,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		 * "Point Variables", a list of variables that can be loaded
 		 * "Global Variables", a list of variables that can be loaded
 		 */
-
-		// Initialize the list of supported features.
-		List<ProxyFeature> features = new ArrayList<ProxyFeature>();
+		List<ProxyFeature> features = super.findFeatures();
 
 		features.add(new ProxyFeature(11, "Point Variables", "PointVariables",
 				ColorByMode.ARRAY, ColorByLocation.POINTS));
@@ -87,16 +80,5 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		// Variables", "GlobalVariables"));
 
 		return features;
-	}
-
-	/*
-	 * Implements an abstract method from AbstractParaViewProxy.
-	 */
-	@Override
-	protected List<IProxyProperty> findProperties(
-			ParaViewConnection connection) {
-		List<IProxyProperty> properties = super.findProperties(connection);
-		// TODO Add exodus-specific properties.
-		return properties;
 	}
 }

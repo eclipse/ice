@@ -100,7 +100,7 @@ public class ParaViewPlotRender
 	 */
 	@Override
 	protected String getPreferenceNodeID() {
-		return "org.eclipse.ice.viz.service.paraview.preferences";
+		return ParaViewVizService.PREFERENCE_PAGE_ID;
 	}
 
 	/*
@@ -148,6 +148,8 @@ public class ParaViewPlotRender
 		// Add a time slider widget.
 		timeSlider = createTimeSlider(container);
 		timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		// Set the times for the time slider.
+		timeSlider.setTimes(proxy.getTimesteps());
 
 		// Set the context Menu for the ParaView canvas.
 		canvas.setMenu(getContextMenu());
@@ -204,6 +206,9 @@ public class ParaViewPlotRender
 
 			// Refresh the plot render actions.
 			refreshPlotRenderActions();
+
+			// Set the times for the time slider.
+			timeSlider.setTimes(proxy.getTimesteps());
 		}
 
 		// Otherwise, we should be able to update the render panel.
@@ -276,6 +281,14 @@ public class ParaViewPlotRender
 		return;
 	}
 
+	/**
+	 * Creates a time slider widget and hooks it up to the ParaView web client
+	 * and the current proxy.
+	 * 
+	 * @param parent
+	 *            The parent Composite that will contain the time slider widget.
+	 * @return The new time slider widget.
+	 */
 	private TimeSliderComposite createTimeSlider(Composite parent) {
 
 		// The widget that will be created.
@@ -297,9 +310,6 @@ public class ParaViewPlotRender
 		final Runnable updateCanvasTask = new Runnable() {
 			@Override
 			public void run() {
-
-				// FIXME We need a way to move to a specific timestep
-				// rather than cycling through them.
 
 				// Until the timesteps match, keep setting it to the next
 				// timestep.
@@ -337,9 +347,6 @@ public class ParaViewPlotRender
 				executorService.submit(updateCanvasTask);
 			}
 		});
-
-		// Set the times for the time slider.
-		timeSlider.setTimes(proxy.getTimesteps());
 
 		return timeSlider;
 	}
