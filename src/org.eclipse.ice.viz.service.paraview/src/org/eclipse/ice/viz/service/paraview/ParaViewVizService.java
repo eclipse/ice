@@ -11,19 +11,19 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview;
 
-import java.net.URI;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.AbstractVizService;
-import org.eclipse.ice.viz.service.IPlot;
-import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnectionManager;
+import org.eclipse.ice.viz.service.connections.ConnectionPlot;
+import org.eclipse.ice.viz.service.connections.ConnectionVizService;
+import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
+import org.eclipse.ice.viz.service.connections.VizConnection;
+import org.eclipse.ice.viz.service.connections.VizConnectionManager;
+import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
-import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 
 /**
  * This class is responsible for providing a service to connect to (or launch)
@@ -32,17 +32,12 @@ import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
  * within an SWT-based application.
  * 
  * @see ParaViewPlot
- * @see #createPlot(URI)
  * 
  * @author Jordan Deyton
  *
  */
-public class ParaViewVizService extends AbstractVizService {
-
-	/**
-	 * The manager for all of the paraview connections.
-	 */
-	private final ParaViewConnectionManager manager;
+public class ParaViewVizService
+		extends ConnectionVizService<IParaViewWebClient> {
 
 	/**
 	 * The factory of builders used to get {@link IParaViewProxy}s for
@@ -56,18 +51,62 @@ public class ParaViewVizService extends AbstractVizService {
 	public static final String CONNECTIONS_NODE_ID = "org.eclipse.ice.viz.paraview.connections";
 
 	/**
+	 * The ID of the preferences page.
+	 */
+	public static final String PREFERENCE_PAGE_ID = "org.eclipse.ice.viz.service.paraview.preferences";
+
+	/**
 	 * The default constructor.
 	 * <p>
 	 * <b>Note:</b> Only OSGi should call this method!
 	 * </p>
 	 */
 	public ParaViewVizService() {
+		// Nothing to do.
+	}
 
-		// Set up the manager and hook it into the preferences.
-		manager = new ParaViewConnectionManager();
-		manager.setPreferenceStore((CustomScopedPreferenceStore) getPreferenceStore(), CONNECTIONS_NODE_ID);
+	/*
+	 * Implements an abstract method from ConnectionVizService.
+	 */
+	@Override
+	protected IVizConnectionManager<IParaViewWebClient> createConnectionManager() {
+		// Return a new connection manager that can be used to create a
+		// ParaViewConnection.
+		return new VizConnectionManager<IParaViewWebClient>() {
+			/*
+			 * Implements an abstract method from VizConnection.
+			 */
+			@Override
+			protected VizConnection<IParaViewWebClient> createConnection(
+					String name, String preferences) {
+				return new ParaViewConnection();
+			}
+		};
+	}
 
-		return;
+	/*
+	 * Implements an abstract method from ConnectionVizService.
+	 */
+	@Override
+	protected ConnectionPlot<IParaViewWebClient> createConnectionPlot() {
+		return new ParaViewPlot(this);
+	}
+
+	/*
+	 * Implements an abstract method from ConnectionVizService.
+	 */
+	@Override
+	protected Set<String> findSupportedExtensions() {
+		return proxyFactory != null ? proxyFactory.getExtensions()
+				: new HashSet<String>(0);
+	}
+
+	/*
+	 * Implements an abstract method from ConnectionVizService.
+	 */
+	@Override
+	protected String getConnectionPreferencesNodeId() {
+		return CONNECTIONS_NODE_ID;
 	}
 
 	/*
@@ -86,86 +125,6 @@ public class ParaViewVizService extends AbstractVizService {
 		return "";
 	}
 
-	// TODO REMOVE THESE LINES ----------------------------------
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public boolean hasConnectionProperties() {
-		// Do nothing yet.
-		return false;
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public Map<String, String> getConnectionProperties() {
-		// Do nothing yet.
-		return null;
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public void setConnectionProperties(Map<String, String> props) {
-		// Do nothing yet.
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public boolean connect() {
-		return false;
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public boolean disconnect() {
-		return false;
-	}
-	// ----------------------------------------------------------
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
-	 * .net.URI)
-	 */
-	@Override
-	public IPlot createPlot(URI uri) throws Exception {
-		// Check the URI. It should be non-null and have a valid extension.
-		super.createPlot(uri);
-
-		// Get the host from the URI.
-		String host = uri.getHost();
-		if (host == null) {
-			host = "localhost";
-		}
-
-		// Get the next available connection for the URI's host.
-		Set<String> availableConnections = manager.getConnectionsForHost(host);
-		if (availableConnections.isEmpty()) {
-			throw new Exception(
-					"ParaViewVizService error: " + "No configured ParaView connection to host \"" + host + "\".");
-		}
-		String name = availableConnections.iterator().next();
-		IVizConnection<IParaViewWebClient> connection;
-		connection = manager.getConnection(name);
-
-		// Create the plot with the connection and URI.
-		ParaViewPlot plot = new ParaViewPlot(this);
-		plot.setConnection(connection);
-		plot.setDataSource(uri);
-
-		return plot;
-	}
-
 	/**
 	 * Sets the factory. This factory should be used to create an
 	 * {@link IParaViewProxy} when performing operations on a supported file
@@ -180,9 +139,6 @@ public class ParaViewVizService extends AbstractVizService {
 	protected void setProxyFactory(IParaViewProxyFactory factory) {
 		if (factory != null && factory != proxyFactory) {
 			proxyFactory = factory;
-			// Update the supported file types.
-			supportedExtensions.clear();
-			supportedExtensions.addAll(factory.getExtensions());
 		}
 		return;
 	}
@@ -199,8 +155,6 @@ public class ParaViewVizService extends AbstractVizService {
 	protected void unsetProxyFactory(IParaViewProxyFactory factory) {
 		if (factory == proxyFactory) {
 			proxyFactory = null;
-			// The file types are no longer supported.
-			supportedExtensions.clear();
 		}
 		return;
 	}
@@ -214,4 +168,5 @@ public class ParaViewVizService extends AbstractVizService {
 	protected IParaViewProxyFactory getProxyFactory() {
 		return proxyFactory;
 	}
+
 }

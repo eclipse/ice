@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This is a pluggable service interface whereby visualization engines can
@@ -122,7 +123,7 @@ public interface IVizService {
 	 *         disconnect.
 	 */
 	public boolean disconnect();
-	
+
 	/**
 	 * This operation directs the IVizService to create a new plot using the
 	 * specified file and to return a handle to that plot to the caller so that
@@ -136,4 +137,18 @@ public interface IVizService {
 	 *             a plot with the given file and giving the reason why.
 	 */
 	public IPlot createPlot(URI file) throws Exception;
+
+	/**
+	 * Gets a set containing all supported file extensions for which an IPlot
+	 * can be created. Extensions in the set are expected to conform to the
+	 * following format:
+	 * <ul>
+	 * <li>simple (tar and gz, but not tar.gz),</li>
+	 * <li>should not include the leading period (doc, not .doc), and</li>
+	 * <li>should be lower case (txt, not TXT).</li>
+	 * </ul>
+	 * 
+	 * @return A set containing all supported extensions.
+	 */
+	public Set<String> getSupportedExtensions();
 }

@@ -12,8 +12,8 @@
 package org.eclipse.ice.viz.service.csv;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
@@ -38,51 +38,7 @@ public class CSVVizService extends AbstractVizService {
 	 * </p>
 	 */
 	public CSVVizService() {
-		// Add supported CSV extensions.
-		supportedExtensions.add("csv");
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public String getName() {
-		return "ice-plot";
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public String getVersion() {
-		return "2.0";
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public Map<String, String> getConnectionProperties() {
-		// There are no connection properties, but still an empty map is
-		// required.
-		return new HashMap<String, String>();
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public void setConnectionProperties(Map<String, String> props) {
-		// Nothing to do
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public boolean connect() {
-		// No connection to be made, so just return true
-		return true;
+		// Nothing to do.
 	}
 
 	/*
@@ -101,19 +57,29 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * Implements an abstract method from AbstractVizService.
 	 */
 	@Override
-	public boolean hasConnectionProperties() {
-		return false;
+	protected Set<String> findSupportedExtensions() {
+		Set<String> extensions = new HashSet<String>();
+		extensions.add("csv");
+		return extensions;
 	}
 
 	/*
 	 * Implements a method from IVizService.
 	 */
 	@Override
-	public boolean disconnect() {
-		return true;
+	public String getName() {
+		return "ice-plot";
+	}
+
+	/*
+	 * Implements a method from IVizService.
+	 */
+	@Override
+	public String getVersion() {
+		return "2.0";
 	}
 
 }

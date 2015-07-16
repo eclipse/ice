@@ -12,9 +12,7 @@
 package org.eclipse.ice.viz.service;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
@@ -89,34 +87,26 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 			// Put the service in service map so it can be retrieved later
 			serviceMap.put(name, service);
 
-			// Handle associated file types if the service supports file
-			// extensions
-			if (service instanceof AbstractVizService) {
+			// Register the plot editor as default editor for all file
+			// extensions handled by the new viz service
+			for (String ext : service.getSupportedExtensions()) {
+				EditorRegistry editorReg = (EditorRegistry) PlatformUI
+						.getWorkbench().getEditorRegistry();
+				EditorDescriptor editor = (EditorDescriptor) editorReg
+						.findEditor("org.eclipse.ice.viz.service.PlotEditor");
+				FileEditorMapping mapping = new FileEditorMapping(ext);
+				mapping.addEditor(editor);
+				mapping.setDefaultEditor(editor);
 
-				Set<String> supportedExtensions = new HashSet<String>();
-				supportedExtensions
-						.addAll(((AbstractVizService) service).supportedExtensions);
-
-				// Register the plot editor as default editor for all file
-				// extensions handled by the new viz service
-				for (String ext : supportedExtensions) {
-					EditorRegistry editorReg = (EditorRegistry) PlatformUI
-							.getWorkbench().getEditorRegistry();
-					EditorDescriptor editor = (EditorDescriptor) editorReg
-							.findEditor("org.eclipse.ice.viz.service.PlotEditor");
-					FileEditorMapping mapping = new FileEditorMapping(ext);
-					mapping.addEditor(editor);
-					mapping.setDefaultEditor(editor);
-
-					IFileEditorMapping[] mappings = editorReg
-							.getFileEditorMappings();
-					FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length + 1];
-					for (int i = 0; i < mappings.length; i++) {
-						newMappings[i] = (FileEditorMapping) mappings[i];
-					}
-					newMappings[mappings.length] = mapping;
-					editorReg.setFileEditorMappings(newMappings);
+				IFileEditorMapping[] mappings = editorReg
+						.getFileEditorMappings();
+				FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length
+						+ 1];
+				for (int i = 0; i < mappings.length; i++) {
+					newMappings[i] = (FileEditorMapping) mappings[i];
 				}
+				newMappings[mappings.length] = mapping;
+				editorReg.setFileEditorMappings(newMappings);
 			}
 
 			logger.info("VizServiceFactory message: " + "Viz service \"" + name
@@ -126,11 +116,11 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 			// service connections is set, establish default connections.
 			if (getPreferenceStore().getBoolean("autoConnectToDefaults")) {
 				if (service.connect()) {
-					logger.info("VizServiceFactory message: "
-							+ "Viz service \"" + name + "\" connected.");
+					logger.info("VizServiceFactory message: " + "Viz service \""
+							+ name + "\" connected.");
 				} else {
-					logger.info("VizServiceFactory message: "
-							+ "Viz service \"" + name + "\" is connecting...");
+					logger.info("VizServiceFactory message: " + "Viz service \""
+							+ name + "\" is connecting...");
 				}
 			}
 		}
@@ -163,9 +153,8 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#getServiceNames
-	 * ()
+	 * @see org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#
+	 * getServiceNames ()
 	 */
 	@Override
 	public String[] getServiceNames() {

@@ -149,7 +149,7 @@ public class PlotEditor extends EditorPart {
 
 		// An ArrayList of all registered service names.
 		final ArrayList<String> serviceNames = new ArrayList<String>();
-		AbstractVizService service = null;
+		IVizService service = null;
 
 		// An ArrayList of PlotEditorInputs, one created with each VizService
 		// capable of handling the file type.
@@ -157,18 +157,18 @@ public class PlotEditor extends EditorPart {
 
 		for (int i = 0; i < fullServiceNames.length; i++) {
 
-			service = (AbstractVizService) factory.get(fullServiceNames[i]);
+			service = factory.get(fullServiceNames[i]);
 
 			// If this service can handle the file extension, create a
 			// PlotEditorInput and add its name to the list of applicable
 			// services.
-			if (service != null && service.extensionSupported(filepath)) {
+			if (service != null) {
 				IPlot plot = null;
 				try {
 					plot = service.createPlot(filepath);
 					inputArray.add(new PlotEditorInput(plot));
 					serviceNames.add(fullServiceNames[i]);
-				} catch (Exception e1) {
+				} catch (Exception e) {
 					System.out
 							.println("Problem creating plot with visualization service "
 									+ fullServiceNames[i] + ".");
