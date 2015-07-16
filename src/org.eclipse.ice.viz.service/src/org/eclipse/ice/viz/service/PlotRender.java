@@ -333,7 +333,9 @@ public abstract class PlotRender {
 	 *            The info {@code Composite} to dispose.
 	 */
 	protected void disposeInfoComposite(Composite infoComposite) {
-		infoComposite.dispose();
+		if (infoComposite != null) {
+			infoComposite.dispose();
+		}
 		iconLabel = null;
 		msgLabel = null;
 	}

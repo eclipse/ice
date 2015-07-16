@@ -13,10 +13,10 @@
 package org.eclipse.ice.viz.service.csv;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.ice.viz.service.ISeries;
@@ -132,6 +132,10 @@ public class CSVPlotEditor extends EditorPart {
 	 * The constructor
 	 */
 	public CSVPlotEditor() {
+		seriesMap = new HashMap<ISeries, List<ISeries>>();
+		existingTraces = new HashMap<ISeries, Trace>();
+		xyGraph = null;
+		graphToolbar = null;
 		return;
 	}
 
@@ -448,7 +452,7 @@ public class CSVPlotEditor extends EditorPart {
 	 */
 	private void showXYGraph(PlotProvider plotProvider, double time,
 			boolean resetTraces) {
-
+		System.out.println("Got here!");
 		if (this.xyGraph == null) {
 			xyGraph = new XYGraph();
 			graphToolbar = new ToolbarArmedXYGraph(xyGraph);
@@ -549,8 +553,8 @@ public class CSVPlotEditor extends EditorPart {
 				int yErrorType = 0;
 
 				if (seriesMap.containsKey(series)) {
-					List<ISeries> errors = seriesMap.get(independentSeries);
-					if (errors.size() > 0) {
+					List<ISeries> errors = seriesMap.get(series);
+					if (errors != null && errors.size() > 0) {
 						// TODO: Get the error arrays in a better way!!
 						ISeries error = errors.get(0);
 						yPlusError = getDoubleValue(error);
@@ -684,6 +688,10 @@ public class CSVPlotEditor extends EditorPart {
 					}
 				}
 
+				// Add the trace that was just created
+				this.existingTraces.put(series, trace);
+				xyGraph.addTrace(trace);
+
 			}
 
 		}
@@ -709,8 +717,11 @@ public class CSVPlotEditor extends EditorPart {
 	 */
 	private double[] getDoubleValue(ISeries series) {
 		// Try to get valid data from the series, and convert to double values
-		double[] newArray = (double[]) ConvertUtils
-				.convert(series.getDataPoints(), Double.TYPE);
+		CSVSeries csvData = (CSVSeries) series;
+		double[] newArray = new double[csvData.size()];
+		for (int i = 0; i < csvData.size(); i++) {
+			newArray[i] = (Double) csvData.get(i);
+		}
 		return newArray;
 	}
 

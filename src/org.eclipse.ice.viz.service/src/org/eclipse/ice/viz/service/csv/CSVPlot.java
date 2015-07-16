@@ -19,10 +19,11 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import org.apache.commons.beanutils.ConvertUtils;
-import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.MultiPlot;
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.styles.XYZAxisStyle;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -184,6 +185,8 @@ public class CSVPlot extends MultiPlot {
 			// Add the rest of the series as dependent series
 			for (int i = 1; i < series.length; i++) {
 				this.addDependantSeries(series[i]);
+				System.err.println(
+						"Adding series to plot: " + series[i].getLabel());
 			}
 
 		}
@@ -249,11 +252,29 @@ public class CSVPlot extends MultiPlot {
 
 		// Create the plot render if it doesn't exist and legitimize the parent
 		// composite for use with this plot using MultiPlot's draw method
-		super.draw(parent);
+		Composite child = null;
+
+		// Check the parameters.
+		if (parent == null) {
+			throw new NullPointerException("IPlot error: "
+					+ "Null arguments are not allowed when drawing plot.");
+		} else if (parent.isDisposed()) {
+			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED, "IPlot error: "
+					+ "Cannot draw plot inside disposed Composite.");
+		}
+
+		// Get the PlotRender associated with the parent Composite.
+		PlotRender plotRender = plotRenders.get(parent);
+
+		// Create the PlotRender and associate it with the parent as necessary.
+		if (plotRender == null) {
+			plotRender = createPlotRender(parent);
+			plotRenders.put(parent, plotRender);
+		}
 
 		// Get the drawn plot associated with the parent Composite, creating
 		// a new editor if necessary.
-		CSVPlotRender plotRender = (CSVPlotRender) plotRenders.get(parent);
+		plotRender = (CSVPlotRender) plotRenders.get(parent);
 
 		// When the parent is disposed, remove the drawn plot and
 		// dispose of any of its resources.
@@ -269,11 +290,8 @@ public class CSVPlot extends MultiPlot {
 		// FIXME Won't this affect all of the drawn plots?
 		// baseProvider.setTime(plotTime);
 
-		// Add all of the series. This should only actually add new series to
-		// the render
-		for (ISeries s : getAllDependentSeries()) {
-			plotRender.addSeries(s);
-		}
+		// Trigger the appropriate update to the PlotRender's content.
+		updatePlotRender(plotRender);
 
 		// Refresh the drawn plot.
 		plotRender.refresh();
@@ -282,7 +300,7 @@ public class CSVPlot extends MultiPlot {
 		// really sync up with MultiPlot's draw method (which returns its own
 		// plot composite rather than something from an editor), but that is ok
 		// for now.
-		Composite child = plotRender.getEditor().getPlotCanvas();
+		child = ((CSVPlotRender) plotRender).getEditor().getPlotCanvas();
 
 		// Return the child composite
 		return child;

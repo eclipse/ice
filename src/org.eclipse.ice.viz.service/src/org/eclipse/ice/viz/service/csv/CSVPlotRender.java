@@ -106,6 +106,10 @@ public class CSVPlotRender extends PlotRender {
 		// updated.
 		for (ISeries series : plot.getAllDependentSeries()) {
 			if (series != null) {
+				// Add the series to plot right away to the provider
+				if (series.enabled()) {
+					plotProvider.addSeries(0.0, series);
+				}
 				// Create Actions for all the types. Each Action should call
 				// addSeries(...) with the specified series
 				final ISeries finSeries = series;
@@ -178,7 +182,10 @@ public class CSVPlotRender extends PlotRender {
 	@Override
 	public void refresh() {
 		// Add the new plot to the editor.
-		editor.showPlotProvider(plotProvider);
+		if (plotProvider.getIndependentSeries() != null
+				&& plotProvider.getSeriesAtTime(0.0) != null) {
+			editor.showPlotProvider(plotProvider);
+		}
 	}
 
 	/**
