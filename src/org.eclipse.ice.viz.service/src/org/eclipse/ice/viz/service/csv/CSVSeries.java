@@ -1,11 +1,20 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation
+ *   - Kasper Gammeltoft
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
 
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.ISeriesStyle;
 import org.eclipse.ice.viz.service.styles.XYZSeriesStyle;
+import org.eclipse.swt.graphics.Color;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -41,10 +50,17 @@ public class CSVSeries extends TransformedList<Double, Double>
 	protected boolean isEnabled;
 
 	/**
-	 * Constructor, creates a new csv series with no data and the default style.
+	 * Null constructor
 	 */
 	public CSVSeries() {
-		this(new BasicEventList<Double>());
+		this(null);
+	}
+
+	/**
+	 * Constructor, creates a new csv series with no data and the default style.
+	 */
+	public CSVSeries(Color color) {
+		this(new BasicEventList<Double>(), color);
 	}
 
 	/**
@@ -52,9 +68,9 @@ public class CSVSeries extends TransformedList<Double, Double>
 	 * 
 	 * @param source
 	 */
-	protected CSVSeries(EventList<Double> source) {
+	protected CSVSeries(EventList<Double> source, Color color) {
 		super(source);
-		style = new XYZSeriesStyle();
+		style = new XYZSeriesStyle(color);
 	}
 
 	@Override
@@ -143,6 +159,7 @@ public class CSVSeries extends TransformedList<Double, Double>
 	 * @param enabledFlag
 	 *            The enabled flag.
 	 */
+	@Override
 	public void setEnabled(boolean enabledFlag) {
 		isEnabled = enabledFlag;
 	}

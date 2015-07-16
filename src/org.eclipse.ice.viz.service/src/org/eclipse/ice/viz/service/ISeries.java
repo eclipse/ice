@@ -120,4 +120,14 @@ public interface ISeries {
 	 */
 	public boolean enabled();
 
+	/**
+	 * Sets the enabled state of this series. This determines if the series will
+	 * be drawn.
+	 * 
+	 * @param enable
+	 *            The state of the series. True will enable the series for
+	 *            plotting, false will disable the series.
+	 */
+	public void setEnabled(boolean enable);
+
 }

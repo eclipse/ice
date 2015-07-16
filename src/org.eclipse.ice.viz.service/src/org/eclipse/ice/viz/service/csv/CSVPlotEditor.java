@@ -16,23 +16,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.styles.BasicErrorStyle;
+import org.eclipse.ice.viz.service.styles.XYZAxisStyle;
+import org.eclipse.ice.viz.service.styles.XYZPlotStyle;
 import org.eclipse.ice.viz.service.styles.XYZSeriesStyle;
 import org.eclipse.nebula.visualization.widgets.datadefinition.ColorMap;
 import org.eclipse.nebula.visualization.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.nebula.visualization.widgets.figures.IntensityGraphFigure;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.CircularBufferDataProvider;
 import org.eclipse.nebula.visualization.xygraph.dataprovider.Sample;
+import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.ToolbarArmedXYGraph;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
+import org.eclipse.nebula.visualization.xygraph.figures.Trace.ErrorBarType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
+import org.eclipse.nebula.visualization.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -379,6 +387,62 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/**
+	 * Configures the specified axis for the style given.
+	 * 
+	 * @param style
+	 *            The XYZAxisStyle to use when configuring the axis properties
+	 * @param axis
+	 *            The Axis to configure
+	 */
+	private void configureAxis(Axis axis, XYZAxisStyle style) {
+		// Set the default behavior if there is no axis style
+		if (style == null) {
+			axis.setShowMajorGrid(true);
+			axis.setAutoScale(true);
+
+			// Otherwise, set the config options from the axis style
+		} else {
+			// Set the title
+			axis.setTitle((String) style.getProperty(XYZAxisStyle.AXIS_TITLE));
+			// Set the axis title font, if specified
+			if (style.getProperty(XYZAxisStyle.TITLE_FONT) != null) {
+				axis.setTitleFont(
+						(Font) style.getProperty(XYZAxisStyle.TITLE_FONT));
+			}
+			// Set the axis font, if specified
+			if (style.getProperty(XYZAxisStyle.SCALE_FONT) != null) {
+				axis.setFont((Font) style.getProperty(XYZAxisStyle.SCALE_FONT));
+			}
+			// Set the axis color, if specified
+			if (style.getProperty(XYZAxisStyle.AXIS_COLOR) != null) {
+				axis.setForegroundColor(
+						(Color) style.getProperty(XYZAxisStyle.AXIS_COLOR));
+			}
+			// Set the log scale, true for use log, false for use linear scale
+			axis.setLogScale((boolean) style.getProperty(XYZAxisStyle.IS_LOG));
+			// Set the auto scale feature, true for does auto scale, false for
+			// does not
+			axis.setAutoScale(
+					(boolean) style.getProperty(XYZAxisStyle.AUTO_SCALE));
+			// Set the major grid lines to appear, true for show the grid lines,
+			// false for do not
+			axis.setShowMajorGrid(
+					(boolean) style.getProperty(XYZAxisStyle.SHOW_GRID_LINE));
+			// Set the grid line to either be dashed for true and solid for
+			// false
+			axis.setDashGridLine((boolean) style
+					.getProperty(XYZAxisStyle.GRID_LINE_IS_DASHED));
+			// Sets the grid line color if it is available
+			if (style.getProperty(XYZAxisStyle.GRID_LINE_COLOR) != null) {
+				axis.setMajorGridColor((Color) style
+						.getProperty(XYZAxisStyle.GRID_LINE_COLOR));
+			}
+
+		}
+
+	}
+
+	/**
 	 * @param plotProvider
 	 * @param time
 	 */
@@ -394,10 +458,28 @@ public class CSVPlotEditor extends EditorPart {
 
 		// Set the title as the source
 		xyGraph.setTitle(plotProvider.getPlotTitle());
-		xyGraph.primaryXAxis.setShowMajorGrid(true);
-		xyGraph.primaryYAxis.setShowMajorGrid(true);
-		xyGraph.primaryYAxis.setAutoScale(true);
-		xyGraph.primaryXAxis.setAutoScale(true);
+
+		// Set all of the xy graph settings from the plot style
+		XYZPlotStyle plotStyle = plotProvider.getPlotStyle();
+		if (plotStyle != null) {
+			xyGraph.setTransparent((boolean) plotStyle
+					.getProperty(XYZPlotStyle.IS_TRANSPARENT));
+			xyGraph.setBackgroundColor(
+					(Color) plotStyle.getProperty(XYZPlotStyle.PLOT_COLOR));
+			xyGraph.setShowLegend(
+					(boolean) plotStyle.getProperty(XYZPlotStyle.SHOW_LEGEND));
+			xyGraph.getPlotArea().setShowBorder((boolean) plotStyle
+					.getProperty(XYZPlotStyle.SHOW_PLOT_BORDER));
+
+		}
+
+		// Get the axes styles from the plot provider
+		XYZAxisStyle xStyle = plotProvider.getXAxisStyle();
+		XYZAxisStyle yStyle = plotProvider.getYAxisStyle();
+
+		// Configure the axes
+		configureAxis(xyGraph.primaryXAxis, xStyle);
+		configureAxis(xyGraph.primaryYAxis, yStyle);
 
 		// Make sure the lightweight system is displaying the xy graph
 		lws.setContents(graphToolbar);
@@ -407,7 +489,13 @@ public class CSVPlotEditor extends EditorPart {
 		if (seriesToPlot == null) {
 			seriesToPlot = new ArrayList<ISeries>();
 		}
+		// Local flag for signaling if there is x error
+		boolean xError = false;
+		// Only used locally. 0 is for no error, 1 is for plus error, 2 is for
+		// minus error, and 3 is for both.
+		int xErrorType = 0;
 
+		// Get the x values and error for plotting
 		double[] xValues = getDoubleValue(independentSeries);
 		double[] xPlusError = null;
 		double[] xMinusError = null;
@@ -416,8 +504,25 @@ public class CSVPlotEditor extends EditorPart {
 			if (errors.size() > 0) {
 				// TODO: Get the error arrays in a better way!!
 				ISeries error = errors.get(0);
+				// Gets the errors and sets local flags for error type
 				xPlusError = getDoubleValue(error);
-				xMinusError = xPlusError;
+				xMinusError = getDoubleValue(error);
+				if (xPlusError != null) {
+					xError = true;
+					// There is plus error!
+					xErrorType = 1;
+				}
+				if (xMinusError != null) {
+					xError = true;
+					// If there is plus error, then the type is both plus and
+					// minus error
+					if (xErrorType == 1) {
+						xErrorType = 3;
+						// Otherwise, the type is just minus error
+					} else {
+						xErrorType = 2;
+					}
+				}
 			}
 
 		}
@@ -438,13 +543,35 @@ public class CSVPlotEditor extends EditorPart {
 				double[] yValues = getDoubleValue(series);
 				double[] yPlusError = null;
 				double[] yMinusError = null;
+				// Flag to signal if there is y error for this series
+				boolean yError = false;
+				// Same error types as above for the x error
+				int yErrorType = 0;
+
 				if (seriesMap.containsKey(series)) {
 					List<ISeries> errors = seriesMap.get(independentSeries);
 					if (errors.size() > 0) {
 						// TODO: Get the error arrays in a better way!!
 						ISeries error = errors.get(0);
 						yPlusError = getDoubleValue(error);
-						yMinusError = yPlusError;
+						yMinusError = getDoubleValue(error);
+						if (yPlusError != null) {
+							yError = true;
+							// There is plus error!
+							yErrorType = 1;
+						}
+						if (yMinusError != null) {
+							yError = true;
+							// If there is plus error, then the type is both
+							// plus and
+							// minus error
+							if (yErrorType == 1) {
+								yErrorType = 3;
+								// Otherwise, the type is just minus error
+							} else {
+								yErrorType = 2;
+							}
+						}
 					}
 
 				}
@@ -454,14 +581,36 @@ public class CSVPlotEditor extends EditorPart {
 
 				// Set the data to be plotted
 				for (int i = 0; i < series.size(); i++) {
-					Sample point = new Sample(xValues[i], yValues[i],
-							yPlusError != null ? yPlusError[i] : 0,
-							yMinusError != null ? yMinusError[i] : 0,
-							xPlusError != null ? xPlusError[i] : 0,
-							xMinusError != null ? xMinusError[i] : 0,
-							Double.toString(xValues[i]) + ", "
-									+ Double.toString(yValues[i]));
+					double xPlus = 0;
+					double xMinus = 0;
+					double yPlus = 0;
+					double yMinus = 0;
+					// Get the error if it exists
+					if (xError) {
+						if (xErrorType == 1 || xErrorType == 3) {
+							xPlus = xPlusError[i];
+						}
+						if (xErrorType == 2 || xErrorType == 3) {
+							xMinus = xMinusError[i];
+						}
+					}
+					// If there is error, get it
+					if (yError) {
+						// Gets the error associated with the point
+						if (yErrorType == 1 || yErrorType == 3) {
+							yPlus = yPlusError[i];
+						}
+						// Gets the error associated with the point
+						if (yErrorType == 2 || yErrorType == 3) {
+							yMinus = yMinusError[i];
+						}
+					}
+					// Create the new point add add it to the trace
+					Sample point = new Sample(xValues[i], yValues[i], yPlus,
+							yMinus, xPlus, xMinus, Double.toString(xValues[i])
+									+ ", " + Double.toString(yValues[i]));
 
+					// Add the new point to the trace
 					traceDataProvider.addSample(point);
 				}
 
@@ -472,16 +621,67 @@ public class CSVPlotEditor extends EditorPart {
 				// Get the series style to configure the trace
 				XYZSeriesStyle style = (XYZSeriesStyle) series.getStyle();
 
+				// Sets trace properties
 				trace.setAntiAliasing((boolean) style
 						.getProperty(XYZSeriesStyle.ANTI_ALIASING));
 				trace.setAreaAlpha(
 						(int) style.getProperty(XYZSeriesStyle.AREA_ALPHA));
-				trace.setBackgroundColor(
-						(Color) style.getProperty(XYZSeriesStyle.COLOR));
 
-				if (yPlusError != null || yMinusError != null) {
+				// Sets the trace color if it is set in the style
+				if (style.getProperty(XYZSeriesStyle.COLOR) != null) {
+					trace.setBackgroundColor(
+							(Color) style.getProperty(XYZSeriesStyle.COLOR));
+				}
+
+				// If there is error, then enable error bars and the proper
+				// error options on the trace
+				if (xError || yError) {
 					trace.setErrorBarEnabled(true);
-					trace.setErrorBarCapWidth(4);
+					// Get the error style from the series map
+					BasicErrorStyle errStyle = null;
+					errStyle = (BasicErrorStyle) (seriesMap.get(series)).get(0)
+							.getStyle();
+					trace.setErrorBarCapWidth((int) errStyle
+							.getProperty(BasicErrorStyle.ERROR_BAR_CAP_WIDTH));
+					// Set the error bar color if available
+					if (errStyle.getProperty(BasicErrorStyle.COLOR) != null) {
+						trace.setErrorBarColor((Color) errStyle
+								.getProperty(BasicErrorStyle.COLOR));
+					} else {
+						// Sets the color for the error bars to default to red
+						trace.setErrorBarColor(XYGraphMediaFactory.getInstance()
+								.getColor(new RGB(255, 50, 50)));
+					}
+					// Set the error bar type, dependent on which type of error
+					// is present for the series
+					switch (xErrorType) {
+					case 1:
+						trace.setXErrorBarType(ErrorBarType.PLUS);
+						break;
+					case 2:
+						trace.setXErrorBarType(ErrorBarType.MINUS);
+						break;
+					case 3:
+						trace.setXErrorBarType(ErrorBarType.BOTH);
+						break;
+					default:
+						trace.setXErrorBarType(ErrorBarType.NONE);
+					}
+
+					// Do the same for the y error
+					switch (yErrorType) {
+					case 1:
+						trace.setYErrorBarType(ErrorBarType.PLUS);
+						break;
+					case 2:
+						trace.setYErrorBarType(ErrorBarType.MINUS);
+						break;
+					case 3:
+						trace.setYErrorBarType(ErrorBarType.BOTH);
+						break;
+					default:
+						trace.setYErrorBarType(ErrorBarType.NONE);
+					}
 				}
 
 			}
@@ -508,21 +708,9 @@ public class CSVPlotEditor extends EditorPart {
 	 * @return Returns an array of double values to use
 	 */
 	private double[] getDoubleValue(ISeries series) {
-		// Try to get valid data from the series
-		double[] newArray = null;
-
-		// Transfer the data from the series
-		try {
-			Object[] data = series.getDataPoints();
-			newArray = new double[data.length];
-			for (int i = 0; i < data.length; i++) {
-				newArray[i] = (Double) data[i];
-			}
-
-		} catch (Exception e) {
-			// Complain
-			logger.error(getClass().getName() + " Exception!", e);
-		}
+		// Try to get valid data from the series, and convert to double values
+		double[] newArray = (double[]) ConvertUtils
+				.convert(series.getDataPoints(), Double.TYPE);
 		return newArray;
 	}
 

@@ -9,6 +9,8 @@ import java.util.Map;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.PlotRender;
+import org.eclipse.ice.viz.service.styles.XYZAxisStyle;
+import org.eclipse.ice.viz.service.styles.XYZPlotStyle;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -67,6 +69,10 @@ public class CSVPlotRender extends PlotRender {
 
 		// Set the title for the new plot provider
 		plotProvider.setPlotTitle(plotTitle);
+
+		// Set the plot and axes styles
+		plotProvider.setPlotStyle((XYZPlotStyle) plot.getPlotStyle());
+		plotProvider.setXAxisStyle((XYZAxisStyle) plot.getXAxisStyle());
 
 		plotProvider.setIndependentSeries(plot.getIndependentSeries());
 

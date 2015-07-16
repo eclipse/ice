@@ -110,6 +110,7 @@ public abstract class MultiPlot implements IPlot {
 		this.vizService = null;
 		this.plotRenders = new HashMap<Composite, PlotRender>();
 		properties = new HashMap<String, String>();
+		this.series = new ArrayList<ISeries>();
 		return;
 	}
 
@@ -131,6 +132,7 @@ public abstract class MultiPlot implements IPlot {
 		// Initialize any final collections.
 		plotRenders = new HashMap<Composite, PlotRender>();
 		properties = new HashMap<String, String>();
+		this.series = new ArrayList<ISeries>();
 		return;
 	}
 
@@ -187,8 +189,8 @@ public abstract class MultiPlot implements IPlot {
 		// Trigger the appropriate update to the PlotRender's content.
 		updatePlotRender(plotRender);
 
-		// FIXME The child needs to be set to something, or we need to come up
-		// with an alternate strategy.
+		// Try to return the plot composite used to draw this plot
+		child = plotRender.plotComposite;
 
 		return child;
 	}

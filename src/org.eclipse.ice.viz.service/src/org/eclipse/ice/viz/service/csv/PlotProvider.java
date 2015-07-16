@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.eclipse.ice.viz.service.ISeries;
+import org.eclipse.ice.viz.service.styles.XYZAxisStyle;
+import org.eclipse.ice.viz.service.styles.XYZPlotStyle;
 
 /**
  * The provider for the plot which will include plot attributes and a structure
@@ -35,6 +37,11 @@ public class PlotProvider {
 	private String plotTitle;
 
 	/**
+	 * The style for the plot as a whole.
+	 */
+	private XYZPlotStyle plotStyle;
+
+	/**
 	 * The TreeMap structure that will hold the series for each time
 	 */
 	private TreeMap<Double, ArrayList<ISeries>> seriesMap;
@@ -46,14 +53,16 @@ public class PlotProvider {
 	private ISeries independentSeries;
 
 	/**
-	 * The plot's x axis title
+	 * The axis style for the x axis, providing the description necessary to
+	 * properly format that axis.
 	 */
-	private String xAxisTitle;
+	private XYZAxisStyle xAxisStyle;
 
 	/**
-	 * The plot's y axis title
+	 * The axis style for the y axis, providing the description necessary to
+	 * properly format that axis.
 	 */
-	private String yAxisTitle;
+	private XYZAxisStyle yAxisStyle;
 
 	/**
 	 * The plot's time units
@@ -79,8 +88,9 @@ public class PlotProvider {
 		plotTitle = newPlotTitle;
 		seriesMap = new TreeMap<Double, ArrayList<ISeries>>();
 		independentSeries = new CSVSeries();
-		xAxisTitle = "X-Axis";
-		yAxisTitle = "Y-Axis";
+		plotStyle = new XYZPlotStyle();
+		xAxisStyle = new XYZAxisStyle();
+		yAxisStyle = new XYZAxisStyle();
 		timeUnits = null;
 	}
 
@@ -159,34 +169,43 @@ public class PlotProvider {
 	 * @return
 	 */
 	public String getPlotTitle() {
-		return this.plotTitle;
+		return plotTitle;
 	}
 
 	/**
-	 * Accessor for the x axis title
+	 * Accessor for the plot style
 	 * 
 	 * @return
 	 */
-	public String getXAxisTitle() {
-		return this.xAxisTitle;
+	public XYZPlotStyle getPlotStyle() {
+		return plotStyle;
 	}
 
 	/**
-	 * Accessor for the y axis title
+	 * Accessor for the plot's x axis style
 	 * 
 	 * @return
 	 */
-	public String getYAxisTitle() {
-		return this.yAxisTitle;
+	public XYZAxisStyle getXAxisStyle() {
+		return xAxisStyle;
 	}
 
 	/**
-	 * Accessor for the time units
+	 * Accessor for the plot's y axis style
+	 * 
+	 * @return
+	 */
+	public XYZAxisStyle getYAxisStyle() {
+		return yAxisStyle;
+	}
+
+	/**
+	 * Accessor for the plot's time units
 	 * 
 	 * @return
 	 */
 	public String getTimeUnits() {
-		return this.timeUnits;
+		return timeUnits;
 	}
 
 	/**
@@ -212,36 +231,48 @@ public class PlotProvider {
 	 * 
 	 * @param plotTitle
 	 */
-	public void setPlotTitle(String plotTitle) {
-		this.plotTitle = plotTitle;
+	public void setPlotTitle(String newTitle) {
+		plotTitle = newTitle;
 	}
 
 	/**
+	 * Sets the {@link XYZPlotStyle} for the plot, which is read in by the
+	 * editor and applied appropriately.
 	 * 
-	 * @param newXTitle
+	 * @param newStyle
 	 */
-	public void setXAxisTitle(String newXTitle) {
-		this.xAxisTitle = newXTitle;
+	public void setPlotStyle(XYZPlotStyle newStyle) {
+		plotStyle = newStyle;
 	}
 
 	/**
+	 * Sets the x axis style for the plot.
 	 * 
-	 * @param newYTitle
+	 * @param newStyle
 	 */
-	public void setYAxisTitle(String newYTitle) {
-		this.yAxisTitle = newYTitle;
+	public void setXAxisStyle(XYZAxisStyle newStyle) {
+		xAxisStyle = newStyle;
+	}
+
+	/**
+	 * Sets the y axis style for the plot
+	 * 
+	 * @param newStyle
+	 */
+	public void setYAxisStyle(XYZAxisStyle newStyle) {
+		yAxisStyle = newStyle;
 	}
 
 	/**
 	 * 
 	 * @param timeUnits
 	 */
-	public void setTimeUnits(String timeUnits) {
-		this.timeUnits = timeUnits;
+	public void setTimeUnits(String newUnit) {
+		timeUnits = newUnit;
 	}
 
 	/**
-	 * 
+	 * Sets the plot to be drawn as a contour map rather than a series plot
 	 */
 	public void setPlotAsContour() {
 		contourFlag = true;

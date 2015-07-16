@@ -1,8 +1,5 @@
 package org.eclipse.ice.viz.service.styles;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-
 public class XYZAxisStyle extends AbstractSeriesStyle {
 
 	public static final String AXIS_TITLE = "title";
@@ -22,10 +19,9 @@ public class XYZAxisStyle extends AbstractSeriesStyle {
 	public XYZAxisStyle() {
 		super();
 		properties.put(AXIS_TITLE, "Axis");
-		properties.put(TITLE_FONT, Display.getCurrent().getSystemFont());
-		properties.put(SCALE_FONT, Display.getCurrent().getSystemFont());
-		properties.put(AXIS_COLOR,
-				Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+		properties.put(TITLE_FONT, null);
+		properties.put(SCALE_FONT, null);
+		properties.put(AXIS_COLOR, null);
 		properties.put(IS_LOG, false);
 		properties.put(AUTO_SCALE, true);
 		properties.put(MIN_VALUE, 0);
@@ -34,8 +30,7 @@ public class XYZAxisStyle extends AbstractSeriesStyle {
 		properties.put(AUTO_FORMAT, true);
 		properties.put(SHOW_GRID_LINE, true);
 		properties.put(GRID_LINE_IS_DASHED, true);
-		properties.put(GRID_LINE_COLOR,
-				Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+		properties.put(GRID_LINE_COLOR, null);
 	}
 
 }
