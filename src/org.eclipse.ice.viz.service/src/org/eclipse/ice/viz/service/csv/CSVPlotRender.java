@@ -60,6 +60,7 @@ public class CSVPlotRender extends PlotRender {
 	 */
 	public CSVPlotRender(Composite parent, CSVPlot plot) {
 		super(parent, plot);
+
 		// Create the editor and all required providers.
 		editor = new CSVPlotEditor();
 		plotProvider = new PlotProvider();
@@ -106,20 +107,24 @@ public class CSVPlotRender extends PlotRender {
 		// updated.
 		for (ISeries series : plot.getAllDependentSeries()) {
 			if (series != null) {
-				// Add the series to plot right away to the provider
-				if (series.enabled()) {
-					plotProvider.addSeries(0.0, series);
-				}
 				// Create Actions for all the types. Each Action should call
 				// addSeries(...) with the specified series
 				final ISeries finSeries = series;
 				addSeriesTree.add(new ActionTree(new Action(series.getLabel()) {
 					@Override
 					public void run() {
+						finSeries.setEnabled(true);
 						addSeries(finSeries);
 						refresh();
 					}
 				}));
+
+				// Add the series to plot right away to the provider if it is
+				// enabled
+				if (series.enabled()) {
+					addSeries(series);
+					refresh();
+				}
 			}
 		}
 		final Composite menuComp = this.parent;
@@ -137,11 +142,16 @@ public class CSVPlotRender extends PlotRender {
 
 				// Rebuild the menu.
 				Menu menu = (Menu) e.widget;
-				if (menuComp.getMenu() == null) {
-					for (MenuItem item : menu.getItems()) {
-						item.dispose();
-					}
+				// TODO- think of better way to re-add the menu items. This just
+				// takes over the entire context menu, ignoring any context for
+				// the parent composites and on up the hierarchy
+				// if (menuComp.getMenu() == null) {
+				for (MenuItem item : menu.getItems()) {
+					item.dispose();
 				}
+				// }
+
+				// Add the items back, to refresh
 				addSeriesTree.getContributionItem().fill(menu, -1);
 				removeSeriesTree.getContributionItem().fill(menu, -1);
 				separator.fill(menu, -1);
@@ -222,6 +232,7 @@ public class CSVPlotRender extends PlotRender {
 			ActionTree tree = new ActionTree(new Action(series.getLabel()) {
 				@Override
 				public void run() {
+					finSeries.setEnabled(false);
 					removeSeries(finSeries);
 					refresh();
 				}
@@ -259,6 +270,8 @@ public class CSVPlotRender extends PlotRender {
 		double plotTime = 0.0;// dataProvider.getTimes().get(0);
 		for (ISeries series : seriesMap.keySet()) {
 			plotProvider.removeSeries(plotTime, series);
+			editor.removeSeries(series);
+			series.setEnabled(false);
 		}
 		seriesMap.clear();
 		removeSeriesTree.removeAll();

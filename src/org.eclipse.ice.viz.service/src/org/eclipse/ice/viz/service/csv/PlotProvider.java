@@ -117,8 +117,6 @@ public class PlotProvider {
 	 * @param newSeries
 	 */
 	public void addSeries(double time, ISeries newSeries) {
-		System.err.println(
-				"Series added: " + newSeries.getLabel() + " at time: " + time);
 		// Only add non-null SeriesProviders.
 		if (newSeries != null) {
 			ArrayList<ISeries> seriesProviders = seriesMap.get(time);

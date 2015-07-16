@@ -185,8 +185,6 @@ public class CSVPlot extends MultiPlot {
 			// Add the rest of the series as dependent series
 			for (int i = 1; i < series.length; i++) {
 				this.addDependantSeries(series[i]);
-				System.err.println(
-						"Adding series to plot: " + series[i].getLabel());
 			}
 
 		}

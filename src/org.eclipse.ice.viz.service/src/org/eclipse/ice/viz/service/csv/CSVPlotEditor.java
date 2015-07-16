@@ -33,6 +33,8 @@ import org.eclipse.nebula.visualization.xygraph.figures.Axis;
 import org.eclipse.nebula.visualization.xygraph.figures.ToolbarArmedXYGraph;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.ErrorBarType;
+import org.eclipse.nebula.visualization.xygraph.figures.Trace.PointStyle;
+import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.nebula.visualization.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.swt.SWT;
@@ -224,6 +226,12 @@ public class CSVPlotEditor extends EditorPart {
 		setFocus();
 	}
 
+	/**
+	 * Removes the selected series from this editor. Should remove if the series
+	 * is
+	 * 
+	 * @param series
+	 */
 	public void removeSeries(ISeries series) {
 
 		// Searches the series map to see if it is there and removes the series
@@ -233,11 +241,14 @@ public class CSVPlotEditor extends EditorPart {
 			// See if it is an error series to a parent in the map and remove it
 		} else if (seriesMap.containsKey(series.getParentSeries())) {
 			seriesMap.get(series.getParentSeries()).remove(series);
+			// TODO- Refresh the plot that had this error series on it
 		}
 
 		// Remove the trace as well if it is being plotted on the graph
 		if (existingTraces.containsKey(series)) {
 			xyGraph.removeTrace(existingTraces.remove(series));
+			// TODO- Run on separate thread?
+			xyGraph.repaint();
 		}
 	}
 
@@ -452,38 +463,37 @@ public class CSVPlotEditor extends EditorPart {
 	 */
 	private void showXYGraph(PlotProvider plotProvider, double time,
 			boolean resetTraces) {
-		System.out.println("Got here!");
 		if (this.xyGraph == null) {
 			xyGraph = new XYGraph();
 			graphToolbar = new ToolbarArmedXYGraph(xyGraph);
 			lws.setContents(graphToolbar);
 			existingTraces.clear();
+
+			// Set the title as the source
+			xyGraph.setTitle(plotProvider.getPlotTitle());
+
+			// Set all of the xy graph settings from the plot style
+			XYZPlotStyle plotStyle = plotProvider.getPlotStyle();
+			if (plotStyle != null) {
+				xyGraph.setTransparent((boolean) plotStyle
+						.getProperty(XYZPlotStyle.IS_TRANSPARENT));
+				xyGraph.setBackgroundColor(
+						(Color) plotStyle.getProperty(XYZPlotStyle.PLOT_COLOR));
+				xyGraph.setShowLegend((boolean) plotStyle
+						.getProperty(XYZPlotStyle.SHOW_LEGEND));
+				xyGraph.getPlotArea().setShowBorder((boolean) plotStyle
+						.getProperty(XYZPlotStyle.SHOW_PLOT_BORDER));
+
+			}
+
+			// Get the axes styles from the plot provider
+			XYZAxisStyle xStyle = plotProvider.getXAxisStyle();
+			XYZAxisStyle yStyle = plotProvider.getYAxisStyle();
+
+			// Configure the axes
+			configureAxis(xyGraph.primaryXAxis, xStyle);
+			configureAxis(xyGraph.primaryYAxis, yStyle);
 		}
-
-		// Set the title as the source
-		xyGraph.setTitle(plotProvider.getPlotTitle());
-
-		// Set all of the xy graph settings from the plot style
-		XYZPlotStyle plotStyle = plotProvider.getPlotStyle();
-		if (plotStyle != null) {
-			xyGraph.setTransparent((boolean) plotStyle
-					.getProperty(XYZPlotStyle.IS_TRANSPARENT));
-			xyGraph.setBackgroundColor(
-					(Color) plotStyle.getProperty(XYZPlotStyle.PLOT_COLOR));
-			xyGraph.setShowLegend(
-					(boolean) plotStyle.getProperty(XYZPlotStyle.SHOW_LEGEND));
-			xyGraph.getPlotArea().setShowBorder((boolean) plotStyle
-					.getProperty(XYZPlotStyle.SHOW_PLOT_BORDER));
-
-		}
-
-		// Get the axes styles from the plot provider
-		XYZAxisStyle xStyle = plotProvider.getXAxisStyle();
-		XYZAxisStyle yStyle = plotProvider.getYAxisStyle();
-
-		// Configure the axes
-		configureAxis(xyGraph.primaryXAxis, xStyle);
-		configureAxis(xyGraph.primaryYAxis, yStyle);
 
 		// Make sure the lightweight system is displaying the xy graph
 		lws.setContents(graphToolbar);
@@ -633,9 +643,29 @@ public class CSVPlotEditor extends EditorPart {
 
 				// Sets the trace color if it is set in the style
 				if (style.getProperty(XYZSeriesStyle.COLOR) != null) {
-					trace.setBackgroundColor(
+					trace.setTraceColor(
 							(Color) style.getProperty(XYZSeriesStyle.COLOR));
 				}
+
+				// Sets the trace type if it has been set
+				if (style.getProperty(XYZSeriesStyle.TYPE) != null) {
+					trace.setTraceType(
+							(TraceType) style.getProperty(XYZSeriesStyle.TYPE));
+				}
+
+				// Sets the point style for this trace
+				if (style.getProperty(XYZSeriesStyle.POINT) != null) {
+					trace.setPointStyle((PointStyle) style
+							.getProperty(XYZSeriesStyle.POINT));
+				}
+
+				// Sets the line's width for this trace.
+				trace.setLineWidth(
+						(int) style.getProperty(XYZSeriesStyle.LINE_WIDTH));
+
+				// Set the point size (radius) for the points on the trace
+				trace.setPointSize(
+						(int) style.getProperty(XYZSeriesStyle.POINT_SIZE));
 
 				// If there is error, then enable error bars and the proper
 				// error options on the trace
@@ -696,6 +726,8 @@ public class CSVPlotEditor extends EditorPart {
 
 		}
 
+		// Repaint the figure
+		// TODO- Run on separate thread?
 		xyGraph.repaint();
 
 		// TODO Should we reset the scale of the graph? It has its perks but
