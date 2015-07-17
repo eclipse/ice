@@ -45,7 +45,6 @@ import org.junit.Test;
  * @author Jay Jay Billings
  * @author Jordan H. Deyton
  */
-@Ignore
 public class ICEResourcePageTester extends AbstractWorkbenchTester {
 
 	// ---- Resources shared between tests. ---- //
