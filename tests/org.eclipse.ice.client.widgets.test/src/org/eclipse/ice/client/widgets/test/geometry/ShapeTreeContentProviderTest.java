@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ice.viz.service.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;

@@ -66,7 +66,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ice.datastructures.form.geometry.IGeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
@@ -80,7 +80,6 @@ import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -2192,7 +2191,7 @@ public class Item implements IComponentVisitor, Identifiable,
 	 * @see IComponentVisitor#visit(GeometryComponent component)
 	 */
 	@Override
-	public void visit(GeometryComponent component) {
+	public void visit(IGeometryComponent component) {
 		// TODO Auto-generated method stub
 
 	}

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEGeometryPage;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ice.viz.service.geometry.GeometryComponent;
 import org.junit.Test;
 
 /**

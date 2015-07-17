@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ice.viz.service.geometry.GeometryComponent;
 import org.eclipse.ice.item.geometry.GeometryEditor;
 import org.eclipse.ice.item.geometry.GeometryEditorBuilder;
 import org.junit.Test;

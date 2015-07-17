@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ice.viz.service.geometry.GeometryComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 

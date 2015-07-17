@@ -34,7 +34,8 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ice.viz.service.geometry.GeometryComponent;
+import org.eclipse.ice.datastructures.form.geometry.IGeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
@@ -1126,7 +1127,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @see IComponentVisitor#visit(GeometryComponent component)
 	 */
 	@Override
-	public void visit(GeometryComponent component) {
+	public void visit(IGeometryComponent component) {
 
 		// Add the GeometryComponent to the map of components
 		addComponentToMap(component, "geometry");
