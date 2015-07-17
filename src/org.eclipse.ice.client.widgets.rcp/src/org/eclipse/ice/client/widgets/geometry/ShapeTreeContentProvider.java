@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
@@ -101,7 +101,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		if (inputElement instanceof GeometryComponent) {
 			// Return an array of the GeometryComponent's shapes
 			GeometryComponent parentGeometry = (GeometryComponent) inputElement;
-			return parentGeometry.getShapes().toArray();
+			return parentGeometry.getGeometry().getShapes().toArray();
 		} else {
 			return null;
 		}

@@ -18,8 +18,8 @@ import java.util.Vector;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
@@ -294,7 +294,7 @@ public class GeometryApplication extends SimpleApplication implements
 
 		AddShapeToNode addShapeToNode = new AddShapeToNode(rootNode);
 
-		for (IShape shape : geometry.getShapes()) {
+		for (IShape shape : geometry.getGeometry().getShapes()) {
 
 			// Trigger the visitor pattern to render the IShape
 
@@ -316,7 +316,7 @@ public class GeometryApplication extends SimpleApplication implements
 
 			// Get the shapes list from the GeometryComponent
 
-			ArrayList<IShape> shapes = geometry.getShapes();
+			ArrayList<IShape> shapes = geometry.getGeometry().getShapes();
 
 			SyncShapes syncVisitor = new SyncShapes(rootNode);
 
