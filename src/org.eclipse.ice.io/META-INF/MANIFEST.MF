@@ -4,13 +4,28 @@ Bundle-Name: org.eclipse.ice.io
 Bundle-SymbolicName: org.eclipse.ice.io;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ deps/jhdf.jar,
+ deps/jhdf4obj.jar,
+ deps/jhdf5.jar,
+ deps/jhdf5obj.jar,
+ deps/jhdfobj.jar
 Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0",
  org.eclipse.ice.dependencies;bundle-version="2.0.0";visibility:=reexport
 Service-Component: OSGI-INF/HdfIORegistry.xml,OSGI-INF/HdfIOFactory.xml,
  OSGI-INF/ioservice.xml
 Comment: Service-Component: OSGI-INF/ICEDatabaseHarness.xml
-Export-Package: org.eclipse.ice.io.csv,
+Export-Package: ncsa.hdf.hdf5lib,
+ ncsa.hdf.hdf5lib.callbacks,
+ ncsa.hdf.hdf5lib.exceptions,
+ ncsa.hdf.hdf5lib.structs,
+ ncsa.hdf.hdflib,
+ ncsa.hdf.object,
+ ncsa.hdf.object.fits,
+ ncsa.hdf.object.h4,
+ ncsa.hdf.object.h5,
+ ncsa.hdf.object.nc2,
+ org.eclipse.ice.io.csv,
  org.eclipse.ice.io.hdf,
  org.eclipse.ice.io.ini,
  org.eclipse.ice.io.ips,
@@ -19,3 +34,6 @@ Bundle-Vendor: Oak Ridge National Laboratory
 Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.slf4j
+Bundle-NativeCode: deps/lib/linux/x86_64/libhdf.a; deps/lib/linux/x86_64/libhdf5.a; deps/lib/linux/x86_64/libjhdf.so; deps/lib/linux/x86_64/libjhdf.so.2.10.0; deps/lib/linux/x86_64/libjhdf5.so; deps/lib/linux/x86_64/libjhdf5.so.2.10.0;
+    processor=x86_64; osname=linux,
+  *
