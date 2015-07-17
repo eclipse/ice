@@ -353,7 +353,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 						ProxyProperty property = propertyMap.get(name);
 						// Attempt to set the value. This may throw an exception
 						// if the value is invalid or the property is read-only.
-						if (property != null && property.selectValue(value)) {
+						if (property != null && property.setValue(value)) {
 							// If the value changed, increment the count.
 							count++;
 						}
@@ -394,7 +394,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 
 				// Attempt to set the value. This handles error checking for the
 				// property value.
-				return property.selectValue(newValue);
+				return property.setValue(newValue);
 			}
 		};
 
@@ -478,7 +478,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 				featureMap.clear();
 				for (ProxyFeature featureInfo : findFeatures()) {
 					if (featureInfo.setProxy(this)) {
-						featureMap.put(featureInfo.uiName, featureInfo);
+						featureMap.put(featureInfo.name, featureInfo);
 					}
 				}
 
@@ -486,7 +486,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 				propertyMap.clear();
 				for (ProxyProperty propertyInfo : findProperties()) {
 					if (propertyInfo.setProxy(this)) {
-						propertyMap.put(propertyInfo.uiName, propertyInfo);
+						propertyMap.put(propertyInfo.name, propertyInfo);
 					}
 				}
 
@@ -552,13 +552,16 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 
 	protected List<ProxyProperty> findProperties() {
 		List<ProxyProperty> properties = new ArrayList<ProxyProperty>();
-		properties
-				.add(new ProxyProperty(1, "Representation", "Representation") {
-					@Override
-					protected int getPropertyProxyId() {
-						return repId;
-					}
-				});
+
+		// Add a property to change the representation. This is a discrete
+		// property stored in the "representation" proxy.
+		properties.add(new ProxyProperty("Representation", 1) {
+			@Override
+			protected int getProxyId() {
+				return repId;
+			}
+		});
+
 		return properties;
 	}
 
@@ -583,22 +586,18 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 
 		// Get the previous feature.
 		String oldCategory = getCategory();
-		String oldFeature = getFeature();
 		// Get the SiloFeature for the new feature.
 		ProxyFeature featureInfo = featureMap.get(category);
 
-		// If the categories are the same, remove the old feature.
-		if (category.equals(oldCategory)) {
-			updated |= featureInfo.unselectValue(oldFeature);
-		}
-		// Otherwise, only remove the old feature if the previous feature was
-		// not a mesh.
-		else if (oldCategory != null) {
+		// If the new feature is from a new category, unset the old feature from
+		// the old category if possible.
+		if (!category.equals(oldCategory) && oldCategory != null) {
 			ProxyFeature oldFeatureInfo = featureMap.get(oldCategory);
-			updated |= oldFeatureInfo.unselectValue(oldFeature);
+			updated |= oldFeatureInfo.setValue(null);
 		}
-		// Add the new feature and get the property change.
-		updated |= featureInfo.selectValue(feature);
+
+		// Set the new feature.
+		updated |= featureInfo.setValue(feature);
 
 		// Refresh the view appropriately.
 		if (updated) {

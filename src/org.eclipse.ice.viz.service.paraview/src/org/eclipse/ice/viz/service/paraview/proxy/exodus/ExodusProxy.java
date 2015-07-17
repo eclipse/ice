@@ -47,7 +47,7 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		super(uri);
 		// Nothing to do yet.
 	}
-	
+
 	/*
 	 * Overrides a method from AbstractParaViewProxy.
 	 */
@@ -68,10 +68,10 @@ public class ExodusProxy extends AbstractParaViewProxy {
 		 */
 		List<ProxyFeature> features = super.findFeatures();
 
-		features.add(new ProxyFeature(11, "Point Variables", "PointVariables",
-				ColorByMode.ARRAY, ColorByLocation.POINTS));
-		features.add(new ProxyFeature(2, "Element Variables",
-				"ElementVariables", ColorByMode.ARRAY, ColorByLocation.CELLS));
+		features.add(new ProxyFeature("Point Variables", 11, ColorByMode.ARRAY,
+				ColorByLocation.POINTS));
+		features.add(new ProxyFeature("Element Variables", 2, ColorByMode.ARRAY,
+				ColorByLocation.CELLS));
 		// features.put("Face Variables", new ProxyFeature(3, "Face Variables",
 		// "FaceVariables"));
 		// features.put("Edge Variables", new ProxyFeature(4, "Edge Variables",

@@ -58,10 +58,10 @@ public class SiloProxy extends AbstractParaViewProxy {
 
 		// features.add(new ProxyFeature(0, "Meshes", "MeshStatus"));
 		// features.add(new ProxyFeature(1, "Materials", "MaterialStatus"));
-		features.add(new ProxyFeature(2, "Cell Arrays", "CellArrayStatus",
-				ColorByMode.ARRAY, ColorByLocation.CELLS));
-		features.add(new ProxyFeature(3, "Point Arrays", "PointArrayStatus",
-				ColorByMode.ARRAY, ColorByLocation.POINTS));
+		features.add(new ProxyFeature("Cell Arrays", 2, ColorByMode.ARRAY,
+				ColorByLocation.CELLS));
+		features.add(new ProxyFeature("Point Arrays", 3, ColorByMode.ARRAY,
+				ColorByLocation.POINTS));
 
 		return features;
 	}

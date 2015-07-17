@@ -25,13 +25,13 @@ public class ProxyFeature extends ProxyProperty {
 		POINTS, CELLS;
 	}
 
-	public ProxyFeature(int index, String uiName, String propertyName) {
-		this(index, uiName, propertyName, null, null);
+	public ProxyFeature(String name, int index) {
+		this(name, index, null, null);
 	}
 
-	public ProxyFeature(int index, String uiName, String propertyName,
-			ColorByMode mode, ColorByLocation location) {
-		super(index, uiName, propertyName);
+	public ProxyFeature(String name, int index, ColorByMode mode,
+			ColorByLocation location) {
+		super(name, index, PropertyType.DISCRETE_MULTI);
 
 		canColorBy = (mode != null && location != null);
 		colorByMode = (mode != null ? mode : ColorByMode.SOLID);
@@ -39,5 +39,9 @@ public class ProxyFeature extends ProxyProperty {
 				: ColorByLocation.POINTS);
 	}
 
-	
+	@Override
+	protected int getProxyId() {
+		return proxy != null ? proxy.getFileId() : -1;
+	}
+
 }
