@@ -6,10 +6,11 @@ Bundle-Version: 2.0.0
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: ca.odell.glazedlists,
+ ca.odell.glazedlists.event,
  com.google.gson;version="2.2.4",
- org.apache.commons.math.linear;version="2.1.0",
  org.apache.commons.beanutils,
  org.apache.commons.math;version="2.1.0",
+ org.apache.commons.math.linear;version="2.1.0",
  org.eclipse.core.commands,
  org.eclipse.core.commands.common,
  org.eclipse.core.runtime;version="3.4.0",

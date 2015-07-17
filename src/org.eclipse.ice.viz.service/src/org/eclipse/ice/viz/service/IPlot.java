@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2012, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,151 +7,82 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
-import java.net.URI;
-import java.util.Map;
-
-import org.eclipse.swt.widgets.Composite;
+import java.util.List;
 
 /**
  * This interface defines the principle type for plots created and handled by
  * the platform. Its primary purpose is to provide a specific interface for
- * manipulating plots and analysis data that is separated in purpose and scope
- * from the IVizService (perhaps completely separate, in fact).
- * <p>
- * When implemented in tandem with an IVizService, the class that realizes this
- * interface should encapsulate all details related to the internal workings of
- * the IVizService and refrain from exposing them to the client. For example,
- * service ids, credentials, window ids and other information should be stored
- * as private variables and not exposed in the properties map unless absolutely
- * necessary.
- * </p>
- * <p>
- * A proper implementation of IPlot is one that can be used in standalone tools,
- * workbench-based tools, and embedded in composites in larger, existing tools.
- * Implementations should not be restricted to one usage scenario.
- * </p>
+ * manipulating plots using multiple series. The plot is responsible for
+ * plotting the series according to their style, as that should be the only
+ * configuration of the series necessary.
+ * 
+ * @see org.eclipse.ice.viz.service.ISeries
  * 
  * @author Jay Jay Billings, Alex McCaskey
+ * @author Kasper Gammeltoft - Viz refactor for series
  *
  */
-public interface IPlot {
+public interface IPlot extends IVizCanvas {
 
 	/**
-	 * This operation returns a simple map of plot types that can be created by
-	 * the IPlot using its data source. The map is meant to have a structure
-	 * where each individual key is a type of plot - mesh, scalar, line, etc. -
-	 * with a list of values of all of the plots it can create of that given
-	 * type from the data source. For example, for a CSV file with three columns
-	 * x, y1, y2, y3, the map might be:
-	 * <p>
-	 * key | value<br>
-	 * line | "x vs y1", "x vs y2", "x vs y3"<br>
-	 * scatter | "x vs y1", "x vs y2", "x vs y3"<br>
-	 * contour | "x vs y1", "x vs y2", "x vs y3"
-	 * </p>
+	 * Sets the title of the plot to the specified string.
 	 * 
-	 * @return The map of valid plot types this plot can be
-	 * @throws Exception
-	 *             This exception indicates that the IPlot was not able to
-	 *             retrieve the list of plot types and explains why.
+	 * @param title
+	 *            The new title for this plot
 	 */
-	public Map<String, String[]> getPlotTypes() throws Exception;
+	public void setPlotTitle(String title);
 
 	/**
-	 * This operation directs the IPlot to draw itself in its parent as the
-	 * specified plot type. The exact details of how the plot is drawn and what
-	 * is drawn inside the parent composite are left completely up to the
-	 * implementation.
-	 * <p>
-	 * This operation may be called multiple types to change its type. It is
-	 * expected that the implementation will know how to clear the parent, if
-	 * necessary, or to otherwise manage its own drawing service. There is no
-	 * guarantee that the caller will clear the parent.
-	 * </p>
+	 * Gets the title of the plot to be displayed in whatever visualization
+	 * service is rendering this plot
 	 * 
-	 * @param category
-	 *            The category of the plot to create. That is, the key in the
-	 *            map; something "line" or "scatter" using the example from
-	 *            getPlotTypes();
-	 * @param plotType
-	 *            The type of plot that this IPlot should show
-	 * @param parent
-	 *            The composite in which the plot should be drawn.
-	 * @return The primary child Composite used to draw the plot.
-	 * @throws Exception
-	 *             This exception indicates that they IPlot could not be drawn
-	 *             with either the given type or parent and explains why.
+	 * @return String The plot title
 	 */
-	public Composite draw(String category, String plotType, Composite parent)
-			throws Exception;
+	public String getPlotTitle();
 
 	/**
-	 * This operation returns the number of axes of the plot.
+	 * Sets the series that will be on the independent axis for this plot. All
+	 * other series will be plotted in reference to this series.
 	 * 
-	 * @return The number of axes or zero if the plot has not been drawn
+	 * @param series
+	 *            The independent series, used to plot the other independent
+	 *            series
 	 */
-	public int getNumberOfAxes();
+	public void setIndependentSeries(ISeries series);
 
 	/**
-	 * This operation returns properties of this IPlot that can be safely
-	 * modified and/or tuned by the client. These properties should contains
-	 * things such as, for example, the axis labels, the title, the subtitle,
-	 * etc.
+	 * Gets the independent series for the plot. This is the series that all the
+	 * other series should be plotted against.
 	 * 
-	 * @return A map of the properties.
+	 * @return ISeries the independent series.
 	 */
-	public Map<String, String> getProperties();
+	public ISeries getIndependentSeries();
 
 	/**
-	 * This operation updates the properties of the plot based on client-side
-	 * modifications. The IPlot should redraw itself as needed if the properties
-	 * changed.
+	 * | Adds the specified series to the list of series to plot.
 	 * 
-	 * @param props
-	 *            The updated properties
-	 * @throws Exception
-	 *             This exception indicates that the IPlot could not update its
-	 *             properties or redraw itself.
+	 * @param seriesToAdd
+	 *            The {@link ISeries} to add.
 	 */
-	public void setProperties(Map<String, String> props) throws Exception;
+	public void addDependentSeries(ISeries seriesToAdd);
 
 	/**
-	 * This operation returns the data source that is plotted/drawn by this
-	 * IPlot.
+	 * Removes the specified series from the dependent series list.
 	 * 
-	 * @return The data source
+	 * @param series
+	 *            The series to remove from the list.
 	 */
-	public URI getDataSource();
+	public void removeDependantSeries(ISeries series);
 
 	/**
-	 * This operation retrieves the hostname for this IPlot's data source.
+	 * Gets all of the dependent series specified for this IPlot, as a list.
 	 * 
-	 * @return the hostname
+	 * @return List<ISeries> all of the dependent series to be plotted.
 	 */
-	public String getSourceHost();
+	public List<ISeries> getAllDependentSeries();
 
-	/**
-	 * This operation signifies whether or not the IPlot's host is local or
-	 * remote.
-	 * 
-	 * @return True if the source is on a remote machine, false otherwise
-	 */
-	public boolean isSourceRemote();
-	
-	/**
-	 * This operation directs the IPlot to redraw its contents. This can be invoked 
-	 * when, for example, the data represented by this IPlot changes, and a change in 
-	 * the IPlot's UI must change accordingly.
-	 * 
-	 * The exact details of how this IPlot is redrawn after a valid draw is left 
-	 * completely to the implementation.
-	 *  
-	 */
-	public void redraw();
-	
-	
 }
