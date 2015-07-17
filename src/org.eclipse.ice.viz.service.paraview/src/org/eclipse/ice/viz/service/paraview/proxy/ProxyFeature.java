@@ -11,24 +11,83 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.proxy;
 
+/**
+ * This class provides a proxy property for "features", or properties that
+ * correspond to the names of data that can be rendered with the ParaView web
+ * client.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class ProxyFeature extends ProxyProperty {
 
+	/**
+	 * True if the view can be colored by the feature, false otherwise (in which
+	 * case a solid color should be used).
+	 */
 	protected final boolean canColorBy;
+	/**
+	 * The mode to use when coloring the visualization with this feature.
+	 */
 	protected final ColorByMode colorByMode;
+	/**
+	 * The "location" of the visualization data for this feature.
+	 */
 	protected final ColorByLocation colorByLocation;
 
+	/**
+	 * An enumeration for allowed values for the mode to use when coloring the
+	 * visualization with a feature.
+	 * 
+	 * @author Jordan Deyton
+	 *
+	 */
 	public enum ColorByMode {
 		SOLID, ARRAY;
 	}
 
+	/**
+	 * An enumeration for allowed values for the "location" of the visualization
+	 * data for this feature.
+	 * 
+	 * @author Jordan Deyton
+	 *
+	 */
 	public enum ColorByLocation {
 		POINTS, CELLS;
 	}
 
+	/**
+	 * The default constructor. A feature constructed with this method cannot be
+	 * visualized with colors.
+	 * 
+	 * @param name
+	 *            The name of the feature. This corresponds to the "name" value
+	 *            in the corresponding array element in the "ui" array.
+	 * @param index
+	 *            The index of the feature in its parent proxy's "ui" and
+	 *            "properties" JsonArrays.
+	 */
 	public ProxyFeature(String name, int index) {
 		this(name, index, null, null);
 	}
 
+	/**
+	 * The full constructor. If either the mode or the location are {@code null}
+	 * , the feature cannot be visualized with colors.
+	 * 
+	 * @param name
+	 *            The name of the feature. This corresponds to the "name" value
+	 *            in the corresponding array element in the "ui" array.
+	 * @param index
+	 *            The index of the feature in its parent proxy's "ui" and
+	 *            "properties" JsonArrays.
+	 * @param mode
+	 *            The mode to use when coloring the visualization with this
+	 *            feature.
+	 * @param location
+	 *            The "location" of the visualization data for this feature.
+	 */
 	public ProxyFeature(String name, int index, ColorByMode mode,
 			ColorByLocation location) {
 		super(name, index, PropertyType.DISCRETE_MULTI);
@@ -39,6 +98,9 @@ public class ProxyFeature extends ProxyProperty {
 				: ColorByLocation.POINTS);
 	}
 
+	/*
+	 * Implements an abstract method from ProxyProperty.
+	 */
 	@Override
 	protected int getProxyId() {
 		return proxy != null ? proxy.getFileId() : -1;

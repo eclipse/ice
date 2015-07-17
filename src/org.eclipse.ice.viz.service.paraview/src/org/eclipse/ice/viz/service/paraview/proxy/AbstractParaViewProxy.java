@@ -34,6 +34,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+/**
+ * This class provides a base implementation for {@link IParaViewProxy} and
+ * handles updating the ParaView web client when the proxy's information
+ * changes.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class AbstractParaViewProxy implements IParaViewProxy {
 
 	/**
@@ -93,9 +101,21 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 	 */
 	private int viewId;
 
+	/**
+	 * The target timestep. This is used in a worker thread when the timestep is
+	 * changed as there is no way to tell the web client to just change to a
+	 * specific timestep.
+	 */
 	private int targetTimestep = 0;
-	// TODO Make these properties.
+
+	/**
+	 * Whether or not the scalar bar should be based on the data range from all
+	 * timesteps or just the current timestep.
+	 */
 	private boolean scaleByAllTimes = false;
+	/**
+	 * Whether or not the scalar bar should be shown.
+	 */
 	private boolean showScalarBar = true;
 
 	/**
@@ -299,24 +319,9 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		Callable<Boolean> operation = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				boolean changed = false;
-
-				String category = getCategory();
-				String feature = getFeature();
-
-				// Only proceed if the feature and/or category changed. Also,
-				// the connection must be established.
-				if ((!newCategory.equals(category)
-						|| !newFeature.equals(feature))
-						&& connection.getState() == ConnectionState.Connected
-						&& setFeatureOnClient(newCategory, newFeature)) {
-
-					AbstractParaViewProxy.this.category = newCategory;
-					AbstractParaViewProxy.this.feature = newFeature;
-					changed = true;
-				}
-
-				return changed;
+				// We can only attempt the change if the connection is valid.
+				return connection.getState() == ConnectionState.Connected
+						? setFeatureOnClient(newCategory, newFeature) : false;
 			}
 		};
 
@@ -453,6 +458,15 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return feature;
 	}
 
+	/**
+	 * Sets the connection and updates the proxy's information and properties
+	 * based on the new connection.
+	 * 
+	 * @param connection
+	 *            The new connection.
+	 * @return True if the connection could be changed (the URI could be
+	 *         opened), false otherwise.
+	 */
 	private boolean setConnection(
 			IVizConnection<IParaViewWebClient> connection) {
 		boolean opened = false;
@@ -494,6 +508,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 				// one.
 				category = null;
 				feature = null;
+				// TODO
 				// -------------------------------------- //
 			}
 		}
@@ -501,6 +516,17 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return opened;
 	}
 
+	/**
+	 * Opens the specified file on the web client. This also sets the
+	 * {@link #fileId}, {@link #viewId}, and {@link #repId} if the file could be
+	 * opened.
+	 * 
+	 * @param client
+	 *            The web client that should try to open the file.
+	 * @param fullPath
+	 *            The full path to the file.
+	 * @return True if the file could be opened, false otherwise.
+	 */
 	private boolean openFile(IParaViewWebClient client, String fullPath) {
 		boolean opened = false;
 
@@ -533,6 +559,14 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return opened;
 	}
 
+	/**
+	 * Queries the client for the proxy object.
+	 * 
+	 * @param id
+	 *            The ID of the desired proxy object. This is usually either the
+	 *            file, view, or representation ID.
+	 * @return The proxy's JsonObject, or {@code null} if it could not be found.
+	 */
 	protected JsonObject getProxyObject(int id) {
 		JsonObject object = null;
 		JsonArray args = new JsonArray();
@@ -546,10 +580,26 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return object;
 	}
 
+	/**
+	 * Finds all features for this proxy. This method is intended to be
+	 * overridden by sub-classes to provide their own list of supported
+	 * features.
+	 * 
+	 * @return The list of supported features. The default list is empty.
+	 */
 	protected List<ProxyFeature> findFeatures() {
 		return new ArrayList<ProxyFeature>();
 	}
 
+	/**
+	 * Finds all properties for this proxy. This method is intended to be
+	 * overridden by sub-classes to provide their own list of supported
+	 * properties.
+	 * 
+	 * @return The list of supported properties. The default list includes a
+	 *         property for changing how the data is rendered (solid, wire,
+	 *         etc.).
+	 */
 	protected List<ProxyProperty> findProperties() {
 		List<ProxyProperty> properties = new ArrayList<ProxyProperty>();
 
@@ -565,7 +615,19 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return properties;
 	}
 
+	/**
+	 * Finds all available timesteps for this proxy.
+	 * 
+	 * @return A list containing all the timesteps from the proxy.
+	 */
 	private List<Double> findTimesteps() {
+
+		/*
+		 * To get the timesteps, we must query the "file" proxy's "data"
+		 * JsonObject. It has an entry "time" that is a JsonArray of double
+		 * values for all allowed times in the file.
+		 */
+
 		List<Double> timesteps = new ArrayList<Double>();
 		JsonObject proxyObject = getProxyObject(fileId);
 		try {
@@ -581,34 +643,63 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return timesteps;
 	}
 
+	/**
+	 * Attempts to set the new category and feature on the client.
+	 * 
+	 * @param category
+	 *            The new category.
+	 * @param feature
+	 *            The new feature.
+	 * @return True if they changed and the view was updated, false otherwise.
+	 */
 	private boolean setFeatureOnClient(String category, String feature) {
 		boolean updated = false;
 
-		// Get the previous feature.
 		String oldCategory = getCategory();
-		// Get the SiloFeature for the new feature.
-		ProxyFeature featureInfo = featureMap.get(category);
+		String oldFeature = getFeature();
 
-		// If the new feature is from a new category, unset the old feature from
-		// the old category if possible.
-		if (!category.equals(oldCategory) && oldCategory != null) {
-			ProxyFeature oldFeatureInfo = featureMap.get(oldCategory);
-			updated |= oldFeatureInfo.setValue(null);
-		}
+		// Only proceed if the feature and/or category changed. Also, the
+		// connection must be established.
+		if (!category.equals(oldCategory) || !feature.equals(oldFeature)) {
+			// Get the SiloFeature for the new feature.
+			ProxyFeature featureInfo = featureMap.get(category);
 
-		// Set the new feature.
-		updated |= featureInfo.setValue(feature);
+			// If the new feature is from a new category, unset the old feature
+			// from the old category if possible.
+			if (!category.equals(oldCategory) && oldCategory != null) {
+				ProxyFeature oldFeatureInfo = featureMap.get(oldCategory);
+				updated |= oldFeatureInfo.setValue(null);
+			}
 
-		// Refresh the view appropriately.
-		if (updated) {
-			setColorBy(featureInfo, feature);
-			rescale();
-			refreshScalarBar();
+			// Set the new feature.
+			updated |= featureInfo.setValue(feature);
+
+			if (updated) {
+				// Update the references to the category and feature.
+				this.category = category;
+				this.feature = feature;
+
+				// Refresh the view.
+				setColorBy(featureInfo, feature);
+				rescale();
+				refreshScalarBar();
+			}
 		}
 
 		return updated;
 	}
 
+	/**
+	 * Tells the client to color the visualization using the specified feature.
+	 * 
+	 * @param feature
+	 *            The feature's metadata. This comes from the category.
+	 * @param value
+	 *            The value to use from the feature metadata. This is equivalent
+	 *            to the category's feature.
+	 * @return A task for setting the visualization feature data on the web
+	 *         client.
+	 */
 	private Future<JsonObject> setColorBy(ProxyFeature feature, String value) {
 		IParaViewWebClient widget = connection.getWidget();
 		JsonArray args;
@@ -631,6 +722,12 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return widget.call("pv.color.manager.color.by", args);
 	}
 
+	/**
+	 * Tells the client to re-scale the data. This affects both the scalar bar
+	 * and the visualization colors.
+	 * 
+	 * @return A task for re-scaling the data on the web client.
+	 */
 	private Future<JsonObject> rescale() {
 		IParaViewWebClient widget = connection.getWidget();
 		JsonArray args;
@@ -646,6 +743,12 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return widget.call("pv.color.manager.rescale.transfer.function", args);
 	}
 
+	/**
+	 * Tells the client to refresh the scalar bar. This does not include scaling
+	 * it, but rather ensures that the scalar bar is visible as necessary.
+	 * 
+	 * @return A task for refreshing the scalar bar for the current feature.
+	 */
 	private Future<JsonObject> refreshScalarBar() {
 		IParaViewWebClient widget = connection.getWidget();
 		JsonArray args;
@@ -659,6 +762,14 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return widget.call("pv.color.manager.scalarbar.visibility.set", args);
 	}
 
+	/**
+	 * Sends a new command to the "VCR" on the web client. This is used to
+	 * update the timestep on the client.
+	 * 
+	 * @param action
+	 *            One of "first", "prev", "next", or "last".
+	 * @return A task for updating the timestep on the web client.
+	 */
 	private Future<JsonObject> setTimestep(String action) {
 		// FIXME This changes the time for ALL views, not just this one.
 		IParaViewWebClient widget = connection.getWidget();

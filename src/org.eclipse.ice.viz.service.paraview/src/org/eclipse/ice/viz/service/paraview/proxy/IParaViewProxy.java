@@ -29,6 +29,19 @@ import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
  * Furthermore, a proxy provides an interface to ParaViewPlots for access to the
  * contents of the file.
  * </p>
+ * <p>
+ * Under the hood, a proxy manages three separate "proxies" from the ParaView
+ * web client, each with its own ID:
+ * <ul>
+ * <li><b>{@link #getFileId() file}</b> - includes metadata about the file,
+ * including the data sets that are available and the available timesteps</li>
+ * <li><b>{@link #getViewId() view}</b> - includes properties that can be used
+ * to tweak how the visualized data is diplayed</li>
+ * <li><b>{@link #getRepresentationId() representation}</b> - includes metadata
+ * about how the visualization representation is handled, including what dataset
+ * is used to color it</li>
+ * </ul>
+ * </p>
  * 
  * @author Jordan Deyton
  *

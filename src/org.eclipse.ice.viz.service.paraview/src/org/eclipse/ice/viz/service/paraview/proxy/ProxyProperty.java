@@ -25,28 +25,155 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+/**
+ * This class provides basic functionality for accessing and modifying
+ * properties for a ParaView proxy (which is returned as a JsonObject when
+ * calling "pv.proxy.manager.get").
+ * <p>
+ * Before a property can be used, its {@link AbstractParaViewProxy} must be set
+ * by calling {@link #setProxy(AbstractParaViewProxy)}.
+ * </p>
+ * <p>
+ * This class helps deal with the structures in the ParaView web client's
+ * proxies. In general, a file, view, or representation proxy adheres to the
+ * format below:
+ * </p>
+ * <ol>
+ * <li><b>data - {@code JsonArray} -</b> Contains some useful metadata,
+ * including:
+ * <ul>
+ * <li><b>"time"</b> - {@code JsonArray} of doubles - The timesteps in the file.
+ * </li>
+ * </ul>
+ * </li>
+ * <li><b>ui - {@code JsonArray} -</b> Contains metadata about properties, which
+ * can be used to construct a UI for changing said properties. For example, each
+ * element may include:
+ * <ul>
+ * <li><b>"name"</b> - The name of the property.</li>
+ * <li><b>"widget"</b> - One of {@code { list-1, list-n, checkbox, textfield }}.
+ * </li>
+ * <li><b>"type"</b> - The primitive data type for the values (e.g., "str" or
+ * "float").</li>
+ * <li><b>"values"</b> - If the "widget" is {@code list-1} or {@code list-n},
+ * this is an array of the allowed values.</li>
+ * <li>(and more...)</li>
+ * </ul>
+ * </li>
+ * <li><b>properties - {@code JsonArray} -</b> Contains the current value(s) for
+ * the properties. This is indexed exactly the same as the "ui" array. Each
+ * element may include the following properties:
+ * <ul>
+ * <li><b>"name"</b> - The name of the property, used for lookup. This is
+ * usually different from the "name" in the "ui" array.</li>
+ * <li><b>"value"</b> - If the corresponding "widget" is {@code list-n}, this is
+ * an array of the selected values. Otherwise, it is the current value.</li>
+ * <li>(and more...)</li>
+ * <ul>
+ * </li>
+ * </ol>
+ * </p>
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public abstract class ProxyProperty {
 
+	/**
+	 * The associated proxy wrapper.
+	 */
 	protected AbstractParaViewProxy proxy;
 
+	/**
+	 * The name of the property. This corresponds to the "name" value in the
+	 * corresponding array element in the "ui" array.
+	 */
 	protected final String name;
+	/**
+	 * The index of the property in its parent proxy's "ui" and "properties"
+	 * JsonArrays.
+	 */
 	protected final int index;
+	/**
+	 * The type of property. This dictates the format of the "values" and
+	 * "value" JsonElements in its "ui" and "properties" entries, respectively.
+	 */
 	protected final PropertyType type;
 
+	/**
+	 * The allowed values. This is used for properties whose types are
+	 * {@link PropertyType#DISCRETE} or {@link PropertyType#DISCRETE_MULTI}.
+	 */
 	private final Set<String> allowedValues;
+	/**
+	 * The selected values. This is used for properties whose type is
+	 * {@link PropertyType#DISCRETE_MULTI}.
+	 */
 	private final Set<String> values;
+	/**
+	 * The selected value. This is used for properties whose type is
+	 * <b><i>not</i></b> {@link PropertyType#DISCRETE_MULTI}.
+	 */
 	private String value;
 
+	/**
+	 * The name of the property in the "properties" JsonArray.
+	 */
 	private String propertyName;
 
+	/**
+	 * This enumeration is used to determine how certain properties should be
+	 * treated.
+	 * 
+	 * @author Jordan Deyton
+	 *
+	 */
 	public enum PropertyType {
-		UNDEFINED, DISCRETE, DISCRETE_MULTI;
+		/**
+		 * There is generally no restriction on the property other than limits
+		 * imposed by {@link ProxyProperty#validateValue(String)}.
+		 */
+		UNDEFINED,
+
+		/**
+		 * The selected value must be exactly one of the allowed values.
+		 */
+		DISCRETE,
+
+		/**
+		 * Multiple allowed values may be selected.
+		 */
+		DISCRETE_MULTI;
 	}
 
+	/**
+	 * The default constructor.
+	 * 
+	 * @param name
+	 *            The name of the property. This corresponds to the "name" value
+	 *            in the corresponding array element in the "ui" array.
+	 * @param index
+	 *            The index of the property in its parent proxy's "ui" and
+	 *            "properties" JsonArrays.
+	 */
 	public ProxyProperty(String name, int index) {
 		this(name, index, null);
 	}
-	
+
+	/**
+	 * The full constructor.
+	 * 
+	 * @param name
+	 *            The name of the property. This corresponds to the "name" value
+	 *            in the corresponding array element in the "ui" array.
+	 * @param index
+	 *            The index of the property in its parent proxy's "ui" and
+	 *            "properties" JsonArrays.
+	 * @param type
+	 *            The type of property. This dictates the format of the "values"
+	 *            and "value" JsonElements in its "ui" and "properties" entries,
+	 *            respectively.
+	 */
 	public ProxyProperty(String name, int index, PropertyType type) {
 		proxy = null;
 
@@ -54,10 +181,21 @@ public abstract class ProxyProperty {
 		this.index = index;
 		this.type = (type != null ? type : PropertyType.DISCRETE);
 
+		// Initialize the hash maps.
 		allowedValues = new HashSet<String>();
 		values = new LinkedHashSet<String>();
+
+		return;
 	}
 
+	/**
+	 * Sets the proxy wrapper used for this property. This synchronizes this
+	 * data structure with the underlying proxy "ui" and "properties" arrays.
+	 * 
+	 * @param proxy
+	 *            The new abstract proxy wrapper.
+	 * @return True if the proxy changed, false otherwise.
+	 */
 	public boolean setProxy(AbstractParaViewProxy proxy) {
 		boolean changed = false;
 
@@ -91,8 +229,23 @@ public abstract class ProxyProperty {
 		return changed;
 	}
 
+	/**
+	 * Gets the ID of the array under which the property's "ui" and "properties"
+	 * arrays are found. This should be one of the file, view, or representation
+	 * proxy IDs.
+	 * 
+	 * @return The ID of the real ParaView proxy on the remote web client.
+	 */
 	protected abstract int getProxyId();
 
+	/**
+	 * Finds the allowed values from the "ui" array of the proxy object.
+	 * 
+	 * @param client
+	 *            The client used to fetch the allowed values.
+	 * @return A list of the allowed values from the corresponding element in
+	 *         the "ui" array.
+	 */
 	protected List<String> findAllowedValues(IParaViewWebClient client) {
 		List<String> allowedValues = null;
 
@@ -117,6 +270,14 @@ public abstract class ProxyProperty {
 		return allowedValues != null ? allowedValues : new ArrayList<String>(0);
 	}
 
+	/**
+	 * Finds the name of the property in the "properties" array of the proxy
+	 * object.
+	 * 
+	 * @param client
+	 *            The client used to fetch the allowed values.
+	 * @return The name of the corresponding element in the "properties" array.
+	 */
 	protected String findPropertyName(IParaViewWebClient client) {
 		String name = null;
 
@@ -136,6 +297,15 @@ public abstract class ProxyProperty {
 		return name;
 	}
 
+	/**
+	 * Finds the current value of the property from the "properties" array of
+	 * the proxy object. <i>This is only called if the {@link #type} is </i>not
+	 * <i> {@link PropertyType#DISCRETE_MULTI}.</i>
+	 * 
+	 * @param client
+	 *            The client used to fetch the allowed values.
+	 * @return The value of the corresponding element in the "properties" array.
+	 */
 	protected String findValue(IParaViewWebClient client) {
 		String value = null;
 
@@ -155,6 +325,15 @@ public abstract class ProxyProperty {
 		return value;
 	}
 
+	/**
+	 * Finds the current values of the property from the "properties" array of
+	 * the proxy object. <i>This is only called if the {@link #type} </i>is
+	 * <i> {@link PropertyType#DISCRETE_MULTI}.</i>
+	 * 
+	 * @param client
+	 *            The client used to fetch the allowed values.
+	 * @return The value of the corresponding element in the "properties" array.
+	 */
 	protected List<String> findValues(IParaViewWebClient client) {
 		List<String> values = null;
 
@@ -179,18 +358,48 @@ public abstract class ProxyProperty {
 		return values != null ? values : new ArrayList<String>(0);
 	}
 
+	/**
+	 * Gets the allowed values for the property.
+	 * 
+	 * @return A set containing all allowed values for the property.
+	 */
 	public Set<String> getAllowedValues() {
 		return new TreeSet<String>(allowedValues);
 	}
 
+	/**
+	 * Gets the current value for the property.
+	 * 
+	 * @return The current value of the property, or {@code null} if the
+	 *         property is unset or has the type
+	 *         {@link PropertyType#DISCRETE_MULTI}.
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Gets the currently selected values for the property.
+	 * 
+	 * @return The currently selected values for the property if the property
+	 *         has the type {@link PropertyType#DISCRETE_MULTI}, or an empty
+	 *         collection otherwise.
+	 */
 	public List<String> getValues() {
 		return new ArrayList<String>(values);
 	}
 
+	/**
+	 * Sets the value to the specified value.
+	 * <p>
+	 * If the property type is {@link PropertyType#DISCRETE_MULTI}, then the
+	 * selected values will be changed to the provided value.
+	 * </p>
+	 * 
+	 * @param value
+	 *            The new value of the property.
+	 * @return True if the value of the property changed.
+	 */
 	public boolean setValue(String value) {
 		boolean changed = false;
 		// If the type is undefined, any *different* value is allowed.
@@ -220,6 +429,7 @@ public abstract class ProxyProperty {
 			}
 		}
 
+		// Apply the changes to the client.
 		if (changed) {
 			applyChanges();
 		}
@@ -227,10 +437,35 @@ public abstract class ProxyProperty {
 		return changed;
 	}
 
+	/**
+	 * A utility method for checking if two possibly {@code null} strings are
+	 * equals.
+	 * 
+	 * @param one
+	 *            The first string.
+	 * @param two
+	 *            The second string.
+	 * @return True if the strings are equivalent (including if both are null),
+	 *         false otherwise.
+	 */
 	private boolean stringsEqual(String one, String two) {
 		return (one != null && one.equals(two)) || (one == null && two == null);
 	}
 
+	/**
+	 * Sets the selected values for the property. Duplicates and bad values are
+	 * ignored.
+	 * 
+	 * @param values
+	 *            The new selected values. May be an empty list.
+	 * @return True if the property changed.
+	 * @throws NullPointerException
+	 *             If the specified list is {@code null}.
+	 * @throws UnsupportedOperationException
+	 *             If the property type is not
+	 *             {@link PropertyType#DISCRETE_MULTI}, in which case multiple
+	 *             selections are not supported.
+	 */
 	public boolean setValues(List<String> values)
 			throws NullPointerException, UnsupportedOperationException {
 		// Check the type of property and the parameter.
@@ -246,11 +481,17 @@ public abstract class ProxyProperty {
 		boolean changed = false;
 
 		Set<String> oldValues = new HashSet<String>(this.values);
+
+		// Add all new valid values. Remove any added values from the temporary
+		// set.
 		for (String value : values) {
-			changed |= !oldValues.remove(value);
-			this.values.add(value);
+			if (allowedValues.contains(value)) {
+				changed |= !oldValues.remove(value);
+				this.values.add(value);
+			}
 		}
 
+		// Remove all old values that are not in the specified list.
 		if (!oldValues.isEmpty()) {
 			changed = true;
 			for (String oldValue : oldValues) {
@@ -258,6 +499,7 @@ public abstract class ProxyProperty {
 			}
 		}
 
+		// Apply any changes to the web client.
 		if (changed) {
 			applyChanges();
 		}
@@ -265,25 +507,61 @@ public abstract class ProxyProperty {
 		return changed;
 	}
 
+	/**
+	 * Determines whether the specified value is allowed.
+	 * 
+	 * @param value
+	 *            The value to test.
+	 * @return True if the value is valid, false otherwise.
+	 */
 	public boolean valueAllowed(String value) {
 		return type == PropertyType.UNDEFINED ? validateValue(value)
 				: allowedValues.contains(value);
 	}
 
+	/**
+	 * Used by sub-classes to provide custom validation of property values. This
+	 * method is called from {@link #valueAllowed(String)} when the property
+	 * type is {@link PropertyType#UNDEFINED}. The default behavior returns
+	 * true.
+	 * 
+	 * @param value
+	 *            The value to validate.
+	 * @return True if the value is valid, false otherwise.
+	 */
 	protected boolean validateValue(String value) {
 		return true;
 	}
 
+	/**
+	 * Applies the current selection to the web client.
+	 * 
+	 * @return True if the client successfully processed the changes, false
+	 *         otherwise.
+	 */
 	protected boolean applyChanges() {
 		boolean updated = false;
 
+		/*-
+		 * To do this, we need to call "pv.proxy.manager.update" where the
+		 * argument (an array) contains an array of updated properties.
+		 * 
+		 * Each property update element in the array must provide the following:
+		 *   "id" - the ID of the proxy object (file, view, or representation)
+		 *   "name" - the name of the property in the "properties" section
+		 *   "value" - a string containing the value or a JsonArray of selected 
+		 *      values if the widget type is "list-n"  
+		 */
+
 		IParaViewWebClient widget = proxy.getConnection().getWidget();
 
-		JsonArray args = new JsonArray();
+		// Set up the basic arguments for "id" and "name".
 		JsonArray updatedProperties = new JsonArray();
 		JsonObject repProperty = new JsonObject();
 		repProperty.addProperty("id", Integer.toString(getProxyId()));
 		repProperty.addProperty("name", propertyName);
+
+		// Determine the "value" property to be a string or a JsonArray.
 		if (type != PropertyType.DISCRETE_MULTI) {
 			repProperty.addProperty("value", value);
 		} else {
@@ -295,12 +573,13 @@ public abstract class ProxyProperty {
 		}
 		updatedProperties.add(repProperty);
 
-		// Update the properties that were configured.
-		args = new JsonArray();
+		// Send the request to the client.
+		JsonArray args = new JsonArray();
 		args.add(updatedProperties);
 		JsonObject response;
 		try {
 			response = widget.call("pv.proxy.manager.update", args).get();
+			// Get the response.
 			updated = response.get("success").getAsBoolean();
 			if (!updated) {
 				System.out.println(
