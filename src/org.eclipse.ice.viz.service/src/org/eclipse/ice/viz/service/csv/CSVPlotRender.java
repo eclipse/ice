@@ -1,6 +1,14 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2015- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Kasper Gammeltoft
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
 
 import java.util.HashMap;
@@ -21,9 +29,18 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 /**
+ * This class provides a {@link PlotRender} for a {@link CSVPlot}. This links
+ * the plot to the plot provider, which is used by the editor to draw the plot.
+ * Each plot render should be unique to a specific composite that it is being
+ * drawn on and the CSVPlot object that is being plotted. This plot render is
+ * also responsible for constructing a conxtext menu that allows for the user to
+ * add and remove plots. The plots that are initially drawn on the editor are
+ * those that are enabled on the plot when this plot render is constructed.
  * 
+ * TODO: Need to add listeners to the plot or series to see if they change, and
+ * update if so.
  * 
- * @author Kasper Gammeltoft
+ * @author Kasper Gammeltoft, Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  *
  */
 public class CSVPlotRender extends PlotRender {

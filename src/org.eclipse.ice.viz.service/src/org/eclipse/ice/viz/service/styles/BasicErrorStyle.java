@@ -3,6 +3,7 @@
  */
 package org.eclipse.ice.viz.service.styles;
 
+import org.eclipse.nebula.visualization.xygraph.figures.Trace.ErrorBarType;
 import org.eclipse.swt.graphics.Color;
 
 /**
@@ -18,8 +19,17 @@ import org.eclipse.swt.graphics.Color;
  */
 public class BasicErrorStyle extends AbstractSeriesStyle {
 
+	/**
+	 * This property sets the color for the error bars. Takes an swt color.
+	 */
 	public static final String COLOR = "color";
+
+	/**
+	 * This property sets the width of the error bar caps, in pixels.
+	 */
 	public static final String ERROR_BAR_CAP_WIDTH = "capWidth";
+
+	public static final String ERROR_BAR_TYPE = "errorType";
 
 	/**
 	 * Constructor, just calls super() to instantiate the properties and then
@@ -28,8 +38,8 @@ public class BasicErrorStyle extends AbstractSeriesStyle {
 	public BasicErrorStyle(Color color) {
 		super();
 		properties.put(COLOR, color);
-
 		properties.put(ERROR_BAR_CAP_WIDTH, 4);
+		properties.put(ERROR_BAR_TYPE, ErrorBarType.BOTH);
 	}
 
 }

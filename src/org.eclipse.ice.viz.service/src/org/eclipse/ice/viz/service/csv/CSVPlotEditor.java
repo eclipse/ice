@@ -115,12 +115,14 @@ public class CSVPlotEditor extends EditorPart {
 	private Map<ISeries, List<ISeries>> seriesMap;
 
 	/**
-	 * A map of existing traces that are tracing certain series.
+	 * A map of existing traces that are tracing certain series. This is useful
+	 * for not adding identical traces and being able to remove traces later
 	 */
 	private Map<ISeries, Trace> existingTraces;
 
 	/**
-	 * The independent series, to use as the x axis for plotting.
+	 * The independent series, to use as the x axis for plotting. Should be set
+	 * to non null {@link CSVSeries}
 	 */
 	private ISeries independentSeries;
 
@@ -240,6 +242,7 @@ public class CSVPlotEditor extends EditorPart {
 			seriesMap.remove(series);
 			// See if it is an error series to a parent in the map and remove it
 		} else if (seriesMap.containsKey(series.getParentSeries())) {
+			// Updates the trace for the parent, so that
 			seriesMap.get(series.getParentSeries()).remove(series);
 			// TODO- Refresh the plot that had this error series on it
 		}

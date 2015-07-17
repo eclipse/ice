@@ -24,7 +24,11 @@ import org.eclipse.ice.viz.service.ISeriesStyle;
  * is recommended to use this class with a modified constructor to set the
  * standard property key set to be used for different default cases. The methods
  * declared in the {@link ISeriesStyle} that are implemented here are not meant
- * to be overridden.
+ * to be overridden. From this, other classes do not have the rights to change
+ * the keys for the properties declared. All of the properties that should be
+ * available are to be set in the properties map in some constructor of the
+ * style. For the user's benefit, it is recommended to use public static final
+ * string variables to declare the keys for your properties.
  * 
  * @author Kasper Gammeltoft
  *
@@ -41,7 +45,8 @@ public abstract class AbstractSeriesStyle implements ISeriesStyle {
 	 */
 	public AbstractSeriesStyle() {
 		properties = new HashMap<String, Object>();
-
+		// Put whatever properties you want here! This class should not have
+		// any, as we do not know what kind of style we are defining yet
 	}
 
 	/*

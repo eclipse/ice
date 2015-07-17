@@ -17,7 +17,7 @@ import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * The base class for all series styles that deal with the xyz plot and editor
+ * The base class for all series styles that deal with the xy plot and editor
  * architecture.
  * 
  * @author Kasper Gammeltoft
@@ -25,13 +25,51 @@ import org.eclipse.swt.graphics.Color;
  */
 public class XYZSeriesStyle extends AbstractSeriesStyle {
 
+	/**
+	 * This property sets the color that will be used to draw the series on
+	 * screen. This has no effect if series is the independent variable
+	 */
 	public static final String COLOR = "color";
+
+	/**
+	 * This property sets the trace type that will be used to draw the series.
+	 * This should be set to a {@link TraceType} enum object.
+	 */
 	public static final String TYPE = "traceType";
+
+	/**
+	 * This property sets the line width that this series will be drawn with.
+	 * Should be an int value, in pixels.
+	 */
 	public static final String LINE_WIDTH = "lineWidth";
+
+	/**
+	 * This property sets the point style that this series will be drawn with.
+	 * Should be a {@link PointStyle} enum type.
+	 */
 	public static final String POINT = "pointStyle";
+
+	/**
+	 * This property sets the point size that this series will be drawn with.
+	 * This should be an int value, specifying the size of the point in pixels.
+	 */
 	public static final String POINT_SIZE = "pointSize";
+
+	/**
+	 * This property sets the baseline for this series. This should be a
+	 * {@link BaseLine} enum type.
+	 */
 	public static final String BASE_LINE = "baseLine";
+
+	/**
+	 * This property sets the area alpha value. Note- should be a number between
+	 * 0 and 100, where 100 is opaque and 0 is transparent.
+	 */
 	public static final String AREA_ALPHA = "areaAlpha";
+
+	/**
+	 * Sets whether to use anti aliasing to draw this series.
+	 */
 	public static final String ANTI_ALIASING = "antiAliasing";
 
 	/**

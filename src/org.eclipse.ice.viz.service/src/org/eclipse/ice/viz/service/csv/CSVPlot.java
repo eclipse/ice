@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014- UT-Battelle, LLC.
+ * Copyright (c) 2014-2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,16 @@ import org.slf4j.LoggerFactory;
  * plot using the existing CSV infrastructure in ICE.
  *
  * In addition to the IPlot operations it provides the load() operation that
- * should be called after construction.
+ * should be called after construction if you want to take the data and series
+ * information from the specified URI. Otherwise, it is necissary to manually
+ * add the series information. This second option is required to set custom
+ * settings for this plot, specifically for the style of the series and
+ * specifying which one is the independent variable.
  *
  * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
+ * @author Kasper Gammeltoft- Updated to extend MultiPlot, added ISeries
+ *         functionality, updated to use {@link CSVPlotRender}s rather than
+ *         DrawnPlots.
  *
  */
 public class CSVPlot extends MultiPlot {
@@ -98,12 +105,16 @@ public class CSVPlot extends MultiPlot {
 	}
 
 	/**
-	 * Attempts to load the specified file. This should populate the
-	 * {@link #baseProvider} as well as the map of {@link #types} or plot
-	 * series.
-	 *
+	 * Attepts to load the CSV series data from the specified file. This
+	 * operation ignores all data that is marked as comments (i.e. if the line
+	 * starts with #), and ignores comments after the data in a line as well.
+	 * This operation takes the first column of CSV data as the independent
+	 * series, and the rest as normal, dependent series to be added to the plot.
+	 * Note that only the first dependent series (the second column) will be
+	 * initially enabled to be drawn on the plot editor.
+	 * 
 	 * @param file
-	 *            The file to load. This is assumed to be a valid file.
+	 *            The file to load, assumed to be a valid file.
 	 */
 	private void load(File file) {
 		// Initially set the name to the file name.
@@ -193,6 +204,8 @@ public class CSVPlot extends MultiPlot {
 	}
 
 	/**
+	 * Always returns two as CSV plots are always 2D
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizCanvas#getNumberOfAxes()
 	 */
 	@Override
@@ -249,7 +262,8 @@ public class CSVPlot extends MultiPlot {
 	public Composite draw(Composite parent) throws Exception {
 
 		// Create the plot render if it doesn't exist and legitimize the parent
-		// composite for use with this plot using MultiPlot's draw method
+		// composite for use with this plot. Using the functionality of
+		// MultiPlot.draw(Composite) here
 		Composite child = null;
 
 		// Check the parameters.

@@ -52,15 +52,20 @@ public interface ISeries {
 	public Object[] getDataPoints();
 
 	/**
-	 * Gets all of the data points for the specified time, if this series has
-	 * multiple sets of data for a time range.
+	 * Sets the time for this series to the specified time. Should be greater
+	 * than or equal to 0.
 	 * 
 	 * @param time
-	 *            The time to retrieve this data.
-	 * @return Object[] An array of all of the data for this series at the
-	 *         specified time.
+	 *            The time for this series.
 	 */
-	public Object[] getDataPointsAtTime(double time);
+	public void setTime(double time);
+
+	/**
+	 * Gets the timestamp for this series.
+	 * 
+	 * @return int The time for this series.
+	 */
+	public double getTime();
 
 	/**
 	 * Gets the parent series for this series. This allows for grouping of

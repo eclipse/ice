@@ -22,6 +22,10 @@ import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.event.ListEvent;
 
 /**
+ * This is an implementation of {@link ISeries} that holds csv data to be
+ * plotted. The series should be given a label, and double values should be
+ * added via the standard collections methods.
+ * 
  * @author Kasper Gammeltoft
  *
  */
@@ -44,10 +48,23 @@ public class CSVSeries extends TransformedList<Double, Double>
 	protected String unit;
 
 	/**
+	 * The timestamp for this series, used by the editor for displaying time
+	 * varying data
+	 */
+	protected double time;
+
+	/**
 	 * A flag signifying if the series is enabled. This determines if the series
 	 * will be plotted or not.
 	 */
 	protected boolean isEnabled;
+
+	/**
+	 * The parent series to this one. If this is set, then this series is either
+	 * an error series or should be drawn in reference to the specified series.
+	 * The style of this series will determin the behavior.
+	 */
+	protected ISeries parent;
 
 	/**
 	 * Null constructor
@@ -71,6 +88,9 @@ public class CSVSeries extends TransformedList<Double, Double>
 	protected CSVSeries(EventList<Double> source, Color color) {
 		super(source);
 		style = new XYZSeriesStyle(color);
+		time = 0;
+		parent = null;
+		label = "unlabeled series";
 	}
 
 	@Override
@@ -118,14 +138,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	@Override
-	public Object[] getDataPointsAtTime(double time) {
-		return getDataPoints();
-	}
-
-	@Override
 	public ISeries getParentSeries() {
-		// TODO Should we have a parent/child architecture?
-		return null;
+		return parent;
 	}
 
 	@Override
@@ -136,6 +150,16 @@ public class CSVSeries extends TransformedList<Double, Double>
 	@Override
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	@Override
+	public void setTime(double time) {
+		this.time = time;
+	}
+
+	@Override
+	public double getTime() {
+		return time;
 	}
 
 	@Override
