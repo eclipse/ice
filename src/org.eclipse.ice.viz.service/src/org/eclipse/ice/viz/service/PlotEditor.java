@@ -370,6 +370,7 @@ public class PlotEditor extends EditorPart {
 					try {
 						// Adds the series to the editor and sets the plot to
 						// redraw.
+						series.setEnabled(true);
 						selectedService.getPlot().addDependentSeries(series);
 						selectedService.getPlot().draw(plotComposite);
 					} catch (Exception e) {

@@ -184,7 +184,7 @@ public class CreateCSVPlotAction extends Action {
 				// Set the title for the contour
 				newContourSeries.setSeriesTitle("Contour of " + yAxisFeature);
 				// Add the contour series to the plot provider
-				newPlotProvider.addSeries(plotTime, newContourSeries);
+				// newPlotProvider.addSeries(plotTime, newContourSeries);
 
 				// Send it to the TreeViewer to display it
 
@@ -197,8 +197,8 @@ public class CreateCSVPlotAction extends Action {
 
 				// Need to set the independent variables for the feature
 				// dialog
-				featureDialog.setXAxisFeatures(newDataProvider
-						.getIndependentVariables());
+				featureDialog.setXAxisFeatures(
+						newDataProvider.getIndependentVariables());
 				// Need to set the features to be plotted
 				featureDialog
 						.setYAxisFeatures(newDataProvider.getFeatureList());
@@ -243,8 +243,8 @@ public class CreateCSVPlotAction extends Action {
 							newSeriesProvider.setSeriesType(plotType);
 
 							// Add this new series to the plot provider
-							newPlotProvider.addSeries(plotTime,
-									newSeriesProvider);
+							// newPlotProvider.addSeries(plotTime,
+							// newSeriesProvider);
 						}
 					}
 					// Send it to the visualization view to display the
@@ -294,7 +294,8 @@ public class CreateCSVPlotAction extends Action {
 		// The selected plot types the user would like
 		String[] userSelectedPlotTypes = plotDialog.getSelections();
 
-		if (userSelectedPlotTypes == null || userSelectedPlotTypes.length == 0) {
+		if (userSelectedPlotTypes == null
+				|| userSelectedPlotTypes.length == 0) {
 			return;
 		}
 		final String plotType = userSelectedPlotTypes[0];
@@ -334,7 +335,7 @@ public class CreateCSVPlotAction extends Action {
 			// Set the title for the contour
 			newContourSeries.setSeriesTitle("Contour of " + yAxisFeature);
 			// Add the contour series to the plot provider
-			newPlotProvider.addSeries(plotTime, newContourSeries);
+			// newPlotProvider.addSeries(plotTime, newContourSeries);
 			// Add the new plot to the viewer
 			plotViewer.addPlot(newPlotProvider);
 		} else {
@@ -345,8 +346,8 @@ public class CreateCSVPlotAction extends Action {
 			SelectFeatureDialog featureDialog = new SelectFeatureDialog(shell);
 			// Set the independent variables from the provider
 			// to be plotted
-			featureDialog.setXAxisFeatures(newDataSetProvider
-					.getIndependentVariables());
+			featureDialog.setXAxisFeatures(
+					newDataSetProvider.getIndependentVariables());
 			// Set the features from the provider to be plotted
 			featureDialog.setYAxisFeatures(newDataSetProvider.getFeatureList());
 			// Open the dialog
@@ -421,8 +422,8 @@ public class CreateCSVPlotAction extends Action {
 							newSeriesProvider.setSeriesType(plotType);
 
 							// Add this new series to the plot provider
-							newPlotProvider.addSeries(currentTime,
-									newSeriesProvider);
+							// newPlotProvider.addSeries(currentTime,
+							// newSeriesProvider);
 						}
 					}
 				}
@@ -438,7 +439,8 @@ public class CreateCSVPlotAction extends Action {
 	 * @param shell
 	 * @param newDataProvider
 	 */
-	public void setIndependentVar(Shell shell, CSVDataProvider newDataProvider) {
+	public void setIndependentVar(Shell shell,
+			CSVDataProvider newDataProvider) {
 		// Open the dialog for selecting the independent variables
 		SelectIndependentVarDialog independentVarDialog = new SelectIndependentVarDialog(
 				shell);
