@@ -17,7 +17,7 @@ import org.eclipse.ice.client.widgets.geometry.ShapeTreeView;
 import org.eclipse.ice.client.widgets.geometry.TransformationView;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.viz.service.geometry.GeometryComponent;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;

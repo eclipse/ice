@@ -19,11 +19,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;
+import org.eclipse.ice.viz.service.geometry.Geometry;
 import org.junit.Test;
 
 /**
@@ -186,6 +187,7 @@ public class ShapeTreeContentProviderTest {
 		// Put them all in a GeometryComponent
 
 		GeometryComponent geometry = new GeometryComponent();
+		geometry.setGeometry(new Geometry());
 		geometry.getGeometry().addShape(sphere1);
 		geometry.getGeometry().addShape(cube1);
 		geometry.getGeometry().addShape(union1);

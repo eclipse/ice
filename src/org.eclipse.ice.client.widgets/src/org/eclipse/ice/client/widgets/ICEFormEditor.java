@@ -27,6 +27,7 @@ import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -34,8 +35,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.viz.service.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IGeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
@@ -43,6 +42,7 @@ import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.geometry.Geometry;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -398,6 +398,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Local Declarations
 		GeometryComponent geometryComponent = new GeometryComponent();
+		geometryComponent.setGeometry(new Geometry());
 
 		// Get the GeometryComponent and create the GeometryPage.
 		if (!(componentMap.get("geometry").isEmpty())) {
@@ -1127,7 +1128,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 * @see IComponentVisitor#visit(GeometryComponent component)
 	 */
 	@Override
-	public void visit(IGeometryComponent component) {
+	public void visit(GeometryComponent component) {
 
 		// Add the GeometryComponent to the map of components
 		addComponentToMap(component, "geometry");
