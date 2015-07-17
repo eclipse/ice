@@ -59,6 +59,7 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -66,7 +67,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
@@ -80,7 +80,6 @@ import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
