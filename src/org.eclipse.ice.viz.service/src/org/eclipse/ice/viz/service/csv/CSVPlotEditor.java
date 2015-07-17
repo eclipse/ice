@@ -504,8 +504,10 @@ public class CSVPlotEditor extends EditorPart {
 
 		// Get the x values and error for plotting
 		double[] xValues = getDoubleValue(independentSeries);
-		double[] xPlusError = null;
-		double[] xMinusError = null;
+		double[] xPlusError = new double[((CSVSeries) independentSeries)
+				.size()];
+		double[] xMinusError = new double[((CSVSeries) independentSeries)
+				.size()];
 		// Gets the error for the series, if there is any
 		if (seriesMap.containsKey(independentSeries)) {
 			List<ISeries> errors = seriesMap.get(independentSeries);

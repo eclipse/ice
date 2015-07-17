@@ -25,7 +25,6 @@ import org.eclipse.ice.viz.service.csv.SeriesProvider;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,10 +74,6 @@ public class CreateCSVPlotAction extends Action {
 	@Override
 	public void run() {
 
-		// Get the Shell of the workbench
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getShell();
-
 		// Get the viewer as a PlotViewer.
 		CSVPlotViewer plotViewer = (CSVPlotViewer) viewer;
 
@@ -90,13 +85,7 @@ public class CreateCSVPlotAction extends Action {
 			logger.info("CreateCSVPlotAction message: "
 					+ "The currently selected resource is \""
 					+ resource.getName() + "\".");
-			// Checking for a VizResource for a file set
-			if (resource instanceof VizResource
-					&& resource.getFileSet() != null) {
-				plotFileSet(shell, plotViewer, resource);
-			} else {
-				plotFile(shell, plotViewer, resource);
-			}
+
 		}
 		return;
 	}

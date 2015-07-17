@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  *
  * In addition to the IPlot operations it provides the load() operation that
  * should be called after construction if you want to take the data and series
- * information from the specified URI. Otherwise, it is necissary to manually
+ * information from the specified URI. Otherwise, it is necessary to manually
  * add the series information. This second option is required to set custom
  * settings for this plot, specifically for the style of the series and
  * specifying which one is the independent variable.
@@ -54,7 +54,14 @@ public class CSVPlot extends MultiPlot {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(CSVPlot.class);
 
+	/**
+	 * The axis style used to decorate the x axis for this plot
+	 */
 	private XYZAxisStyle xAxisStyle;
+
+	/**
+	 * The axis style used to decorate the y axis for this plot
+	 */
 	private XYZAxisStyle yAxisStyle;
 
 	/**
