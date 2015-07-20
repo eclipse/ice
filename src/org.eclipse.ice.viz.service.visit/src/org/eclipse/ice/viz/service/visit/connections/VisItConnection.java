@@ -39,6 +39,9 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 	 */
 	public VisItConnection() {
 
+		// Set read-only properties before their validators are set.
+		setProperty("password", "notused");
+
 		// Remove the description, as its property is not supported.
 		propertyHandlers.remove("Description");
 		// Replace default property names with custom ones.
@@ -49,52 +52,44 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 		// Add a property handler for the proxy name and port.
 		propertyHandlers.put("gateway", new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
+			public boolean validateValue(String value) {
 				// Accept any non-null strings.
-				String newValue = null;
-				if (value != null) {
-					newValue = value.trim();
-				}
-				return newValue;
+				return value != null;
 			}
 		});
 		propertyHandlers.put("localGatewayPort", propertyHandlers.get("port"));
 		// Add a property handler for the VisIt session username.
 		propertyHandlers.put("username", new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
+			public boolean validateValue(String value) {
 				// Accept any non-null strings.
-				String newValue = null;
-				if (value != null) {
-					newValue = value.trim();
-				}
-				return newValue;
+				return value != null;
 			}
 		});
 		// Add a property handler for the VisIt session password.
 		propertyHandlers.put("password", new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
-				return "notused";
+			public boolean validateValue(String value) {
+				return false;
 			}
 		});
 
 		// Set up a property handler that accepts positive, non-zero integers.
 		IPropertyHandler positiveIntHandler = new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
-				String newValue = null;
+			public boolean validateValue(String value) {
+				boolean valid = false;
 				if (value != null) {
 					String trimmedValue = value.trim();
 					try {
 						if (Integer.parseInt(trimmedValue) > 0) {
-							newValue = trimmedValue;
+							valid = true;
 						}
 					} catch (NumberFormatException e) {
 						// Invalid value.
 					}
 				}
-				return newValue;
+				return valid;
 			}
 		};
 		// Add a property handler for the window width and height.
@@ -103,8 +98,8 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 		// Add a property handler for the window ID.
 		propertyHandlers.put("windowId", new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
-				String newValue = null;
+			public boolean validateValue(String value) {
+				boolean valid = false;
 				if (value != null) {
 					String trimmedValue = value.trim();
 					try {
@@ -113,23 +108,22 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 						// a number between 1 and 16, inclusive.
 						if (intValue == -1
 								|| (intValue >= 1 && intValue <= 16)) {
-							newValue = trimmedValue;
+							valid = true;
 						}
 					} catch (NumberFormatException e) {
 						// Invalid value.
 					}
 				}
-				return newValue;
+				return valid;
 			}
 		});
 
-		// Set default values for additional properties.
+		// Set default values for additional properties. Do this before the
+		// validators are applied so that read-only properties will be set.
 		setProperty("localGatewayPort", "22");
-		setProperty("password", "notused");
 		setProperty("windowWidth", "1340");
 		setProperty("windowHeight", "1020");
 		setProperty("windowId", "1");
-
 		// Change the default port to 9600.
 		setPort(9600);
 

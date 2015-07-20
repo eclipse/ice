@@ -140,62 +140,50 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 		// be trimmed.
 		propertyHandlers.put("Name", new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
-				String newValue = null;
-				if (value != null) {
-					newValue = value.trim();
-				}
-				return newValue != null && !newValue.isEmpty() ? newValue
-						: null;
+			public boolean validateValue(String value) {
+				return value != null && !value.trim().isEmpty();
 			}
 		});
 		// The description property should only accept non-null strings. Values
 		// should be trimmed.
 		propertyHandlers.put("Description", new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
-				return value != null ? value.trim() : null;
+			public boolean validateValue(String value) {
+				return value != null;
 			}
 		});
 		// The name property should only accept non-empty strings. Values should
 		// be trimmed.
 		propertyHandlers.put("Host", new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
-				// Only accept non-empty strings. Also, trim the input value.
-				String newValue = null;
-				if (value != null) {
-					newValue = value.trim();
-				}
-				return newValue != null && !newValue.isEmpty() ? newValue
-						: null;
+			public boolean validateValue(String value) {
+				return value != null && !value.trim().isEmpty();
 			}
 		});
 		// The port property should only accept integers lying in the valid port
 		// range defined by the global min and max ports.
 		propertyHandlers.put("Port", new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
-				String newValue = null;
+			public boolean validateValue(String value) {
+				boolean valid = false;
 				try {
 					int port = Integer.parseInt(value);
 					if (port >= MIN_PORT && port <= MAX_PORT) {
-						newValue = Integer.toString(port);
+						valid = true;
 					}
 				} catch (NumberFormatException e) {
 					// The new value is invalid.
 				}
-
-				return newValue;
+				return valid;
 			}
 		});
 		// The description property should only accept non-null strings. Values
 		// should be trimmed.
 		propertyHandlers.put("Path", new IPropertyHandler() {
 			@Override
-			public String validateValue(String value) {
-				// Accept non-null strings. Also, trim the input value.
-				return value != null ? value.trim() : null;
+			public boolean validateValue(String value) {
+				// Accept non-null strings.
+				return value != null;
 			}
 		});
 
@@ -819,18 +807,9 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	public boolean setProperty(String name, String value) {
 		boolean changed = false;
 
-		// If a handler is not available, then assume the new value is valid.
-		boolean canChange = true;
-		String newValue = value;
-
 		// Validate the value through any available handler.
 		IPropertyHandler handler = propertyHandlers.get(name);
-		if (handler != null) {
-			newValue = handler.validateValue(value);
-			canChange = (newValue != null);
-		}
-
-		if (canChange) {
+		if (handler == null || handler.validateValue(value)) {
 			// If the value is not null, update the property in the map.
 			if (value != null) {
 				String oldValue = properties.put(name, value);
@@ -918,9 +897,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 		 * 
 		 * @param value
 		 *            The value to check.
-		 * @return An acceptable, validated value if it is allowed, or
-		 *         {@code null} if it is not allowed.
+		 * @return True if the value allowed, false otherwise.
 		 */
-		public String validateValue(String value);
+		public boolean validateValue(String value);
 	}
 }
