@@ -25,6 +25,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -135,104 +136,115 @@ public class PlotEditor extends EditorPart {
 	@Override
 	public void createPartControl(final Composite parent) {
 		setPartName("Plot Editor");
+
+		// The PlotEditorInput containing the IPlot rendered with the service
+		// selected for this editor.
+		PlotEditorInput selectedService;
+		// Composite to hold the editor
+		final Composite body = parent;
 		// form = new ManagedForm(parent);
-		plot = (FileEditorInput) getEditorInput();
-		final URI filepath = plot.getURI();
+		if (getEditorInput() instanceof FileEditorInput) {
+			plot = (FileEditorInput) getEditorInput();
+			final URI filepath = plot.getURI();
 
-		// Get the VizServiceFactory and all Viz Services
-		final IVizServiceFactory factory = (BasicVizServiceFactory) VizServiceFactoryHolder
-				.getFactory();
+			// Get the VizServiceFactory and all Viz Services
+			final IVizServiceFactory factory = (BasicVizServiceFactory) VizServiceFactoryHolder
+					.getFactory();
 
-		// An array of all registered service names.
-		String[] fullServiceNames = factory.getServiceNames();
+			// An array of all registered service names.
+			String[] fullServiceNames = factory.getServiceNames();
 
-		// An ArrayList of all registered service names.
-		final ArrayList<String> serviceNames = new ArrayList<String>();
-		AbstractVizService service = null;
+			// An ArrayList of all registered service names.
+			final ArrayList<String> serviceNames = new ArrayList<String>();
+			AbstractVizService service = null;
 
-		// An ArrayList of PlotEditorInputs, one created with each VizService
-		// capable of handling the file type.
-		ArrayList<PlotEditorInput> inputArray = new ArrayList<PlotEditorInput>();
+			// An ArrayList of PlotEditorInputs, one created with each
+			// VizService
+			// capable of handling the file type.
+			ArrayList<PlotEditorInput> inputArray = new ArrayList<PlotEditorInput>();
 
-		for (int i = 0; i < fullServiceNames.length; i++) {
+			for (int i = 0; i < fullServiceNames.length; i++) {
 
-			service = (AbstractVizService) factory.get(fullServiceNames[i]);
+				service = (AbstractVizService) factory.get(fullServiceNames[i]);
 
-			// If this service can handle the file extension, create a
-			// PlotEditorInput and add its name to the list of applicable
-			// services.
-			if (service != null && service.extensionSupported(filepath)) {
-				IPlot plot = null;
-				try {
-					plot = service.createPlot(filepath);
-					inputArray.add(new PlotEditorInput(plot));
-					serviceNames.add(fullServiceNames[i]);
-				} catch (Exception e1) {
-					System.out.println(
-							"Problem creating plot with visualization service "
-									+ fullServiceNames[i] + ".");
+				// If this service can handle the file extension, create a
+				// PlotEditorInput and add its name to the list of applicable
+				// services.
+				if (service != null && service.extensionSupported(filepath)) {
+					IPlot plot = null;
+					try {
+						plot = service.createPlot(filepath);
+						inputArray.add(new PlotEditorInput(plot));
+						serviceNames.add(fullServiceNames[i]);
+					} catch (Exception e1) {
+						System.out.println(
+								"Problem creating plot with visualization service "
+										+ fullServiceNames[i] + ".");
+					}
+
 				}
 
 			}
 
-		}
+			// If all available services failed to create a plot, give the user
+			// an
+			// error message.
+			if (serviceNames.isEmpty()) {
+				System.out.println(
+						"All available visualizaiton services failed to render a plot.");
+				Status status = new Status(IStatus.ERROR, "org.eclipse.ice", 0,
+						"No visualization service could render the file.",
+						null);
+				ErrorDialog.openError(Display.getCurrent().getActiveShell(),
+						"Visualization Failed",
+						"All visualization services failed to render a plot. \n"
+								+ "If you are using an external rendering program, "
+								+ "make sure it is connected to ICE.",
+						status);
+				return;
+			}
 
-		// If all available services failed to create a plot, give the user an
-		// error message.
-		if (serviceNames.isEmpty()) {
-			System.out.println(
-					"All available visualizaiton services failed to render a plot.");
-			Status status = new Status(IStatus.ERROR, "org.eclipse.ice", 0,
-					"No visualization service could render the file.", null);
-			ErrorDialog.openError(Display.getCurrent().getActiveShell(),
-					"Visualization Failed",
-					"All visualization services failed to render a plot. \n"
-							+ "If you are using an external rendering program, "
-							+ "make sure it is connected to ICE.",
-					status);
-			return;
-		}
+			// The number of services which succeeded in creating
+			// PlotEditorInputs
+			int numServices = serviceNames.size();
 
-		// The number of services which succeeded in creating PlotEditorInputs
-		int numServices = serviceNames.size();
+			GridLayout grid = new GridLayout();
+			grid.marginHeight = 0;
+			grid.marginWidth = 0;
+			body.setLayout(grid);
 
-		// Set up the editor window.
-		final Composite body = parent;// this. new
-										// Composite();//form.getForm().getBody();
-		GridLayout grid = new GridLayout();
-		grid.marginHeight = 0;
-		grid.marginWidth = 0;
-		body.setLayout(grid);
+			// Array of names of all services which succeeded in creating
+			// PlotEditorInputs
+			String[] serviceNamesArray = new String[serviceNames.size()];
+			serviceNames.toArray(serviceNamesArray);
 
-		// Array of names of all services which succeeded in creating
-		// PlotEditorInputs
-		String[] serviceNamesArray = new String[serviceNames.size()];
-		serviceNames.toArray(serviceNamesArray);
+			// If more than one service is applicable, create a dialog window to
+			// prompt the user for which is to be used. Else, use the single
+			// available service.
+			if (numServices == 1) {
+				selectedService = inputArray.get(0);
+			} else {
+				PlotEditorDialog dialog = new PlotEditorDialog(PlatformUI
+						.getWorkbench().getActiveWorkbenchWindow().getShell());
+				dialog.createDialogArea(new Shell(), serviceNamesArray);
+				selectedService = inputArray.get(dialog.getSelection());
+			}
 
-		// The PlotEditorInput containing the IPlot rendered with the service
-		// selected for this editor.
-		final PlotEditorInput selectedService;
-
-		// If more than one service is applicable, create a dialog window to
-		// prompt the user for which is to be used. Else, use the single
-		// available service.
-		if (numServices == 1) {
-			selectedService = inputArray.get(0);
+			// The plot was directly given to the editor, so set the input as
+			// the editor input
 		} else {
-			PlotEditorDialog dialog = new PlotEditorDialog(PlatformUI
-					.getWorkbench().getActiveWorkbenchWindow().getShell());
-			dialog.createDialogArea(new Shell(), serviceNamesArray);
-			selectedService = inputArray.get(dialog.getSelection());
+			selectedService = (PlotEditorInput) getEditorInput();
 		}
 
 		// Reference to this editor instance
 		final IEditorPart thisEditor = this;
+		final PlotEditorInput plotInput = selectedService;
 
 		// Finish loading and drawing the plot in a new thread.
 		Job drawPlot = new Job("Plot Editor Loading and Rendering") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				setUpEditor(body, selectedService, thisEditor);
+				setUpEditor(body, plotInput, thisEditor);
 				return Status.OK_STATUS;
 			}
 
@@ -336,10 +348,11 @@ public class PlotEditor extends EditorPart {
 	 * @param selectedPlotType
 	 *            The type of the initial plot to draw
 	 */
-	private void createUI(ToolBarManager barManager, Composite body,
+	private void createUI(ToolBarManager barManager, final Composite body,
 			final PlotEditorInput selectedService, final IEditorPart thisEditor,
 			final List<ISeries> seriesToPlot, final ISeries independentSeries) {
-
+		body.setLayout(new GridLayout());
+		body.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		// Finish setting up the editor window
 		ToolBar bar = barManager.createControl(body);
 		final Composite plotComposite = new Composite(body, SWT.NONE);
@@ -354,12 +367,6 @@ public class PlotEditor extends EditorPart {
 		ActionTree seriesTree = new ActionTree("Plot Series");
 		menuTree.add(seriesTree);
 
-		// Set the independent series for this editor
-		selectedService.getPlot().setIndependentSeries(independentSeries);
-
-		// Add the first series in the list so that we are plotting something
-		selectedService.getPlot().addDependentSeries(seriesToPlot.get(0));
-
 		for (final ISeries series : seriesToPlot) {
 
 			// A menu item to redraw the plot with the
@@ -370,8 +377,9 @@ public class PlotEditor extends EditorPart {
 					try {
 						// Adds the series to the editor and sets the plot to
 						// redraw.
-						selectedService.getPlot().addDependentSeries(series);
+						series.setEnabled(true);
 						selectedService.getPlot().draw(plotComposite);
+						body.layout();
 					} catch (Exception e) {
 						System.out.println("Error while drawing plot.");
 					}
@@ -405,13 +413,13 @@ public class PlotEditor extends EditorPart {
 		barManager.update(true);
 
 		plotComposite.setBackground(body.getBackground());
-		plotComposite
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		plotComposite.setLayout(new FillLayout());
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(plotComposite);
 
 		// Draw the plot
 		try {
 			selectedService.getPlot().draw(plotComposite);
+			body.layout();
 		} catch (Exception e) {
 			System.err.println("PlotEditor: Error while drawing plot.");
 		}

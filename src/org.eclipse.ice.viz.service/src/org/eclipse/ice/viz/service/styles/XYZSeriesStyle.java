@@ -12,6 +12,7 @@
 package org.eclipse.ice.viz.service.styles;
 
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.BaseLine;
+import org.eclipse.nebula.visualization.xygraph.figures.Trace.ErrorBarType;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.PointStyle;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.swt.graphics.Color;
@@ -68,9 +69,21 @@ public class XYZSeriesStyle extends AbstractSeriesStyle {
 	public static final String AREA_ALPHA = "areaAlpha";
 
 	/**
-	 * Sets whether to use anti aliasing to draw this series.
+	 * This property sets whether to use anti aliasing to draw this series.
 	 */
 	public static final String ANTI_ALIASING = "antiAliasing";
+
+	/**
+	 * This property sets whether to draw the error for this series, if it has
+	 * an associated error
+	 */
+	public static final String ERROR_ENABLED = "hasError";
+
+	/**
+	 * This property sets the type of error that is associated with this series.
+	 * Should be an {@link ErrorBarType} enum type.
+	 */
+	public static final String ERROR_TYPE = "errorType";
 
 	/**
 	 * The constructor, sets the keyset for the properties map
@@ -85,6 +98,8 @@ public class XYZSeriesStyle extends AbstractSeriesStyle {
 		properties.put(BASE_LINE, BaseLine.ZERO);
 		properties.put(AREA_ALPHA, 100);
 		properties.put(ANTI_ALIASING, true);
+		properties.put(ERROR_ENABLED, false);
+		properties.put(ERROR_TYPE, ErrorBarType.BOTH);
 	}
 
 }

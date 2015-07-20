@@ -36,13 +36,11 @@ import org.eclipse.nebula.visualization.xygraph.figures.Trace.ErrorBarType;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.PointStyle;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
-import org.eclipse.nebula.visualization.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -244,13 +242,13 @@ public class CSVPlotEditor extends EditorPart {
 		} else if (seriesMap.containsKey(series.getParentSeries())) {
 			// Updates the trace for the parent, so that
 			seriesMap.get(series.getParentSeries()).remove(series);
-			// TODO- Refresh the plot that had this error series on it
+			// TODO- Refresh the plot that had this error series on it!
 		}
 
 		// Remove the trace as well if it is being plotted on the graph
 		if (existingTraces.containsKey(series)) {
 			xyGraph.removeTrace(existingTraces.remove(series));
-			// TODO- Run on separate thread?
+			// TODO- Run on separate thread to not hang UI?
 			xyGraph.repaint();
 		}
 	}
@@ -327,10 +325,7 @@ public class CSVPlotEditor extends EditorPart {
 			}
 
 		} else {
-			// Plot as a contour plot
-			// Get the series list
-			ArrayList<ISeries> seriesProviderList = displayPlotProvider
-					.getSeriesAtTime(displayPlotProvider.getTimes().get(0));
+
 			// Get the first series
 			final ISeries plotSeries = displayPlotProvider
 					.getIndependentSeries();
@@ -506,221 +501,61 @@ public class CSVPlotEditor extends EditorPart {
 		if (seriesToPlot == null) {
 			seriesToPlot = new ArrayList<ISeries>();
 		}
-		// Local flag for signaling if there is x error
-		boolean xError = false;
-		// Only used locally. 0 is for no error, 1 is for plus error, 2 is for
-		// minus error, and 3 is for both.
-		int xErrorType = 0;
 
 		// Get the x values and error for plotting
 		double[] xValues = getDoubleValue(independentSeries);
-		double[] xPlusError = null;
-		double[] xMinusError = null;
+		double[] xPlusError = new double[((CSVSeries) independentSeries)
+				.size()];
+		double[] xMinusError = new double[((CSVSeries) independentSeries)
+				.size()];
+		// Gets the error for the series, if there is any
 		if (seriesMap.containsKey(independentSeries)) {
 			List<ISeries> errors = seriesMap.get(independentSeries);
-			if (errors.size() > 0) {
-				// TODO: Get the error arrays in a better way!!
-				ISeries error = errors.get(0);
-				// Gets the errors and sets local flags for error type
-				xPlusError = getDoubleValue(error);
-				xMinusError = getDoubleValue(error);
-				if (xPlusError != null) {
-					xError = true;
-					// There is plus error!
-					xErrorType = 1;
-				}
-				if (xMinusError != null) {
-					xError = true;
-					// If there is plus error, then the type is both plus and
-					// minus error
-					if (xErrorType == 1) {
-						xErrorType = 3;
-						// Otherwise, the type is just minus error
-					} else {
-						xErrorType = 2;
+			if (errors != null && errors.size() > 0) {
+				for (ISeries errSeries : errors) {
+					// Get the error style, and add the error to the
+					// appropriate series
+					BasicErrorStyle errStyle = (BasicErrorStyle) errSeries
+							.getStyle();
+					// If the style is positive error (the bars are above
+					// the point)
+					if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+							.equals(ErrorBarType.PLUS)) {
+						sumArrays(xPlusError, getDoubleValue(errSeries));
+						// If the style is negative error (the bars are
+						// below the point)
+					} else
+						if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+								.equals(ErrorBarType.MINUS)) {
+						sumArrays(xMinusError, getDoubleValue(errSeries));
+						// If the style is both (above and below the point)
+					} else if (errStyle
+							.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+							.equals(ErrorBarType.BOTH)) {
+						sumArrays(xPlusError, getDoubleValue(errSeries));
+						sumArrays(xMinusError, getDoubleValue(errSeries));
 					}
 				}
 			}
 
 		}
 
+		XYZSeriesStyle indepStyle = (XYZSeriesStyle) independentSeries
+				.getStyle();
 		// Iterate over all of the series and see if any need to be added or
 		// reset
 		for (ISeries iseries : seriesToPlot) {
 			CSVSeries series = (CSVSeries) iseries;
 
-			// Creates a new trace and adds it to the graph if it does not
-			// already exist
-			if (!existingTraces.containsKey(series)
-					&& !(series.getStyle() instanceof BasicErrorStyle)) {
-				final CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(
-						false);
-				// Sets the size of the buffer
-				traceDataProvider.setBufferSize(series.size());
-				double[] yValues = getDoubleValue(series);
-				double[] yPlusError = null;
-				double[] yMinusError = null;
-				// Flag to signal if there is y error for this series
-				boolean yError = false;
-				// Same error types as above for the x error
-				int yErrorType = 0;
+			// Creates a new trace with the name, axis,and provider to plot
+			Trace trace = configureTrace(series, xValues, xPlusError,
+					xMinusError);
 
-				if (seriesMap.containsKey(series)) {
-					List<ISeries> errors = seriesMap.get(series);
-					if (errors != null && errors.size() > 0) {
-						// TODO: Get the error arrays in a better way!!
-						ISeries error = errors.get(0);
-						yPlusError = getDoubleValue(error);
-						yMinusError = getDoubleValue(error);
-						if (yPlusError != null) {
-							yError = true;
-							// There is plus error!
-							yErrorType = 1;
-						}
-						if (yMinusError != null) {
-							yError = true;
-							// If there is plus error, then the type is both
-							// plus and
-							// minus error
-							if (yErrorType == 1) {
-								yErrorType = 3;
-								// Otherwise, the type is just minus error
-							} else {
-								yErrorType = 2;
-							}
-						}
-					}
-
-				}
-
-				// TODO Make some sort of better implementation for multiple
-				// error sets on one data set.
-
-				// Set the data to be plotted
-				for (int i = 0; i < series.size(); i++) {
-					double xPlus = 0;
-					double xMinus = 0;
-					double yPlus = 0;
-					double yMinus = 0;
-					// Get the error if it exists
-					if (xError) {
-						if (xErrorType == 1 || xErrorType == 3) {
-							xPlus = xPlusError[i];
-						}
-						if (xErrorType == 2 || xErrorType == 3) {
-							xMinus = xMinusError[i];
-						}
-					}
-					// If there is error, get it
-					if (yError) {
-						// Gets the error associated with the point
-						if (yErrorType == 1 || yErrorType == 3) {
-							yPlus = yPlusError[i];
-						}
-						// Gets the error associated with the point
-						if (yErrorType == 2 || yErrorType == 3) {
-							yMinus = yMinusError[i];
-						}
-					}
-					// Create the new point add add it to the trace
-					Sample point = new Sample(xValues[i], yValues[i], yPlus,
-							yMinus, xPlus, xMinus, Double.toString(xValues[i])
-									+ ", " + Double.toString(yValues[i]));
-
-					// Add the new point to the trace
-					traceDataProvider.addSample(point);
-				}
-
-				// Creates a new trace with the name, axis,and provider to plot
-				Trace trace = new Trace(series.getLabel(), xyGraph.primaryXAxis,
-						xyGraph.primaryYAxis, traceDataProvider);
-
-				// Get the series style to configure the trace
-				XYZSeriesStyle style = (XYZSeriesStyle) series.getStyle();
-
-				// Sets trace properties
-				trace.setAntiAliasing((boolean) style
-						.getProperty(XYZSeriesStyle.ANTI_ALIASING));
-				trace.setAreaAlpha(
-						(int) style.getProperty(XYZSeriesStyle.AREA_ALPHA));
-
-				// Sets the trace color if it is set in the style
-				if (style.getProperty(XYZSeriesStyle.COLOR) != null) {
-					trace.setTraceColor(
-							(Color) style.getProperty(XYZSeriesStyle.COLOR));
-				}
-
-				// Sets the trace type if it has been set
-				if (style.getProperty(XYZSeriesStyle.TYPE) != null) {
-					trace.setTraceType(
-							(TraceType) style.getProperty(XYZSeriesStyle.TYPE));
-				}
-
-				// Sets the point style for this trace
-				if (style.getProperty(XYZSeriesStyle.POINT) != null) {
-					trace.setPointStyle((PointStyle) style
-							.getProperty(XYZSeriesStyle.POINT));
-				}
-
-				// Sets the line's width for this trace.
-				trace.setLineWidth(
-						(int) style.getProperty(XYZSeriesStyle.LINE_WIDTH));
-
-				// Set the point size (radius) for the points on the trace
-				trace.setPointSize(
-						(int) style.getProperty(XYZSeriesStyle.POINT_SIZE));
-
-				// If there is error, then enable error bars and the proper
-				// error options on the trace
-				if (xError || yError) {
-					trace.setErrorBarEnabled(true);
-					// Get the error style from the series map
-					BasicErrorStyle errStyle = null;
-					errStyle = (BasicErrorStyle) (seriesMap.get(series)).get(0)
-							.getStyle();
-					trace.setErrorBarCapWidth((int) errStyle
-							.getProperty(BasicErrorStyle.ERROR_BAR_CAP_WIDTH));
-					// Set the error bar color if available
-					if (errStyle.getProperty(BasicErrorStyle.COLOR) != null) {
-						trace.setErrorBarColor((Color) errStyle
-								.getProperty(BasicErrorStyle.COLOR));
-					} else {
-						// Sets the color for the error bars to default to red
-						trace.setErrorBarColor(XYGraphMediaFactory.getInstance()
-								.getColor(new RGB(255, 50, 50)));
-					}
-					// Set the error bar type, dependent on which type of error
-					// is present for the series
-					switch (xErrorType) {
-					case 1:
-						trace.setXErrorBarType(ErrorBarType.PLUS);
-						break;
-					case 2:
-						trace.setXErrorBarType(ErrorBarType.MINUS);
-						break;
-					case 3:
-						trace.setXErrorBarType(ErrorBarType.BOTH);
-						break;
-					default:
-						trace.setXErrorBarType(ErrorBarType.NONE);
-					}
-
-					// Do the same for the y error
-					switch (yErrorType) {
-					case 1:
-						trace.setYErrorBarType(ErrorBarType.PLUS);
-						break;
-					case 2:
-						trace.setYErrorBarType(ErrorBarType.MINUS);
-						break;
-					case 3:
-						trace.setYErrorBarType(ErrorBarType.BOTH);
-						break;
-					default:
-						trace.setYErrorBarType(ErrorBarType.NONE);
-					}
-				}
-
+			// If the trace is not null, then add the new trace to the graph
+			if (trace != null) {
+				// Configure the x error for the series
+				trace.setXErrorBarType((ErrorBarType) indepStyle
+						.getProperty(XYZSeriesStyle.ERROR_TYPE));
 				// Add the trace that was just created
 				this.existingTraces.put(series, trace);
 				xyGraph.addTrace(trace);
@@ -730,15 +565,165 @@ public class CSVPlotEditor extends EditorPart {
 		}
 
 		// Repaint the figure
-		// TODO- Run on separate thread?
+		// TODO- Run on separate thread to not hang UI?
 		xyGraph.repaint();
-
-		// TODO Should we reset the scale of the graph? It has its perks but
-		// likely not
-		// newXYGraph.performAutoScale();
 
 		return;
 
+	}
+
+	/**
+	 * This operation returns the trace that is created with the given series.
+	 * Returns null if this series is not enabled or is an error series.
+	 * 
+	 * @param series
+	 *            The series to use when creating this trace.
+	 * @param xValues
+	 *            The x values, or independent series values for this trace.
+	 *            This variable is added so as to not calculate the array every
+	 *            time a trace is added (in cases where there might be many
+	 *            dependent series to add)
+	 * @param xPlusError
+	 *            The x plus error, this is an input so as to not have to
+	 *            recalculate the information for every trace, if adding
+	 *            multiple at a time
+	 * @param xMinusError
+	 *            The x minus error, this is an input so as to not have to
+	 *            recalculate the information for every trace, if adding
+	 *            multiple at a time
+	 * @return
+	 */
+	private Trace configureTrace(CSVSeries series, double[] xValues,
+			double[] xPlusError, double[] xMinusError) {
+
+		// Local declarations
+		Trace trace = null;
+
+		// Make sure it is a valid series for creating a trace
+		if (series != null && series.isEnabled
+				&& !(series.getStyle() instanceof BasicErrorStyle)
+				&& !existingTraces.containsKey(series)) {
+
+			// Create the data provider
+			final CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(
+					false);
+			// Sets the size of the buffer
+			traceDataProvider.setBufferSize(series.size());
+
+			// Get the data and create the new error arrays
+			double[] yValues = getDoubleValue(series);
+			double[] yPlusError = new double[series.size()];
+			double[] yMinusError = new double[series.size()];
+
+			// Gets the error for the series, if there is any
+			if (seriesMap.containsKey(series)) {
+				List<ISeries> errors = seriesMap.get(series);
+				if (errors != null && errors.size() > 0) {
+					for (ISeries errSeries : errors) {
+						// Get the error style, and add the error to the
+						// appropriate series
+						BasicErrorStyle errStyle = (BasicErrorStyle) errSeries
+								.getStyle();
+						// If the style is positive error (the bars are above
+						// the point)
+						if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+								.equals(ErrorBarType.PLUS)) {
+							sumArrays(yPlusError, getDoubleValue(errSeries));
+							// If the style is negative error (the bars are
+							// below the point)
+						} else if (errStyle
+								.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+								.equals(ErrorBarType.MINUS)) {
+							sumArrays(yMinusError, getDoubleValue(errSeries));
+							// If the style is both (above and below the point)
+						} else if (errStyle
+								.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+								.equals(ErrorBarType.BOTH)) {
+							sumArrays(yPlusError, getDoubleValue(errSeries));
+							sumArrays(yMinusError, getDoubleValue(errSeries));
+						}
+					}
+				}
+
+			}
+
+			// Set the data to be plotted
+			for (int i = 0; i < series.size(); i++) {
+				// Create the new point add add it to the trace
+				Sample point = new Sample(xValues[i], yValues[i], yPlusError[i],
+						yMinusError[i], xPlusError[i], xMinusError[i],
+						Double.toString(xValues[i]) + ", "
+								+ Double.toString(yValues[i]));
+
+				// Add the new point to the trace
+				traceDataProvider.addSample(point);
+			}
+
+			// Creates a new trace with the name, axis,and provider to plot
+			trace = new Trace(series.getLabel(), xyGraph.primaryXAxis,
+					xyGraph.primaryYAxis, traceDataProvider);
+
+			// Get the series style to configure the trace
+			XYZSeriesStyle style = (XYZSeriesStyle) series.getStyle();
+
+			// Sets trace properties
+			trace.setAntiAliasing(
+					(boolean) style.getProperty(XYZSeriesStyle.ANTI_ALIASING));
+			trace.setAreaAlpha(
+					(int) style.getProperty(XYZSeriesStyle.AREA_ALPHA));
+
+			// Sets the trace color if it is set in the style
+			if (style.getProperty(XYZSeriesStyle.COLOR) != null) {
+				trace.setTraceColor(
+						(Color) style.getProperty(XYZSeriesStyle.COLOR));
+			}
+
+			// Sets the trace type if it has been set
+			if (style.getProperty(XYZSeriesStyle.TYPE) != null) {
+				trace.setTraceType(
+						(TraceType) style.getProperty(XYZSeriesStyle.TYPE));
+			}
+
+			// Sets the point style for this trace
+			if (style.getProperty(XYZSeriesStyle.POINT) != null) {
+				trace.setPointStyle(
+						(PointStyle) style.getProperty(XYZSeriesStyle.POINT));
+			}
+
+			// Sets the line's width for this trace.
+			trace.setLineWidth(
+					(int) style.getProperty(XYZSeriesStyle.LINE_WIDTH));
+
+			// Set the point size (radius) for the points on the trace
+			trace.setPointSize(
+					(int) style.getProperty(XYZSeriesStyle.POINT_SIZE));
+
+			// Set the error to show up if this series has error
+			trace.setErrorBarEnabled(
+					(boolean) style.getProperty(XYZSeriesStyle.ERROR_ENABLED));
+
+			// Sets the error type for the error bars when drawing
+			trace.setYErrorBarType((ErrorBarType) style
+					.getProperty(XYZSeriesStyle.ERROR_TYPE));
+
+		}
+		// Finally, return the trace
+		return trace;
+
+	}
+
+	/**
+	 * Adds the second array to the first, element by element.
+	 * 
+	 * @param runningSum
+	 *            The array that is modified by adding the elements of the other
+	 * @param toAdd
+	 *            The array to add to runningSum
+	 */
+	private void sumArrays(double[] runningSum, double[] toAdd) {
+		for (int i = 0; i < runningSum.length && i < toAdd.length; i++) {
+			runningSum[i] += toAdd[i];
+		}
 	}
 
 	/**

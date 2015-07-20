@@ -52,6 +52,8 @@ import org.slf4j.LoggerFactory;
  * same plot can be added to the grid more than once.
  *
  * @author Jordan Deyton
+ * @author Kasper Gammeltoft- Refactored to work with {@link ISeries} rather
+ *         than SeriesProviders
  *
  */
 public class PlotGridComposite extends Composite {
@@ -402,7 +404,7 @@ public class PlotGridComposite extends Composite {
 				final DrawnPlot drawnPlot = new DrawnPlot(gridComposite, plot);
 				drawnPlot.setBackground(getBackground());
 
-				// Try to draw the category and type. If the underlying IPlot
+				// Try to draw the plot. If the underlying IPlot
 				// cannot draw, then dispose of the undrawn plot Composite.
 				try {
 					drawnPlot.draw();
