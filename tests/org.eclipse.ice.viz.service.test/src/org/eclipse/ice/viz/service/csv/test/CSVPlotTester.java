@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.viz.service.test;
+package org.eclipse.ice.viz.service.csv.test;
 
 import java.io.BufferedWriter;
 import java.io.File;

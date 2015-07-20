@@ -11,14 +11,15 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
@@ -36,7 +37,6 @@ public class AbstractVizServiceTester {
 	/**
 	 * This method checks that the {@code AbstractVizService}'s extension
 	 * checking code works correctly when calling either
-	 * {@link AbstractVizService#extensionSupported(URI)} or
 	 * {@link AbstractVizService#createPlot(URI)}.
 	 */
 	@Test
@@ -44,34 +44,37 @@ public class AbstractVizServiceTester {
 
 		FakeVizService service = new FakeVizService();
 
-		// When calling extensionSupported(URI), we only need to check whether
-		// it returns true (valid URI and extension) or false (invalid URI or
-		// extension).
-
-		// We also need to check that createPlot(URI)'s default implementation
-		// either returns null (in which case the URI is accepted) or throws an
-		// IllegalArgumentException (in which case the URI is invalid or has a
-		// bad extension).
+		/*- We must check two things:
+		 * 1 - The supported extension set from the IVizService method returns
+		 *     a copy of the sub-class' "found" extensions.
+		 * 2 - That attempting to create a plot with valid URIs should return
+		 *     null, while attempting to create a plot with an invalid URI
+		 *     should throw an exception.
+		 */
 
 		// Add some supported extensions.
-		Set<String> extensions = service.getExtensions();
+		Set<String> extensions = service.supportedExtensions;
 		extensions.add("txt");
 		extensions.add("tar");
 		extensions.add("whoosh");
 
 		URI uri;
 
+		// Check the set of supported extensions.
+		assertNotNull(service.getSupportedExtensions());
+		assertEquals(3, service.getSupportedExtensions().size());
+		assertTrue(service.getSupportedExtensions().contains("txt"));
+		assertTrue(service.getSupportedExtensions().contains("tar"));
+		assertTrue(service.getSupportedExtensions().contains("whoosh"));
+
 		try {
 			// ---- Try some valid URIs. ---- //
 			// These should throw no exception.
 			uri = new URI("/home/bob/file.txt");
-			assertTrue(service.extensionSupported(uri));
 			assertNull(service.createPlot(uri));
 			uri = new URI("file:/C:Users/user/folder//one.two.three.tar");
-			assertTrue(service.extensionSupported(uri));
 			assertNull(service.createPlot(uri));
 			uri = new URI("1.txt");
-			assertTrue(service.extensionSupported(uri));
 			assertNull(service.createPlot(uri));
 
 			// ---- Try invalid URIs. ---- //
@@ -79,7 +82,6 @@ public class AbstractVizServiceTester {
 
 			// Try a null URI (invalid).
 			uri = null;
-			assertFalse(service.extensionSupported(uri));
 			try {
 				service.createPlot(uri);
 				fail("AbstractVizService error: "
@@ -90,7 +92,6 @@ public class AbstractVizServiceTester {
 
 			// Try an opaque URI (invalid).
 			uri = new URI("mailto:foo@bar.com");
-			assertFalse(service.extensionSupported(uri));
 			try {
 				service.createPlot(uri);
 				fail("AbstractVizService error: "
@@ -101,7 +102,6 @@ public class AbstractVizServiceTester {
 
 			// Try an invalid (unsupported type) URI.
 			uri = new URI("/home/.bob/file.csv");
-			assertFalse(service.extensionSupported(uri));
 			try {
 				service.createPlot(uri);
 				fail("AbstractVizService error: "
@@ -112,7 +112,6 @@ public class AbstractVizServiceTester {
 
 			// Try an invalid (unsupported type) URI.
 			uri = new URI("file:/C:Users/user/folder/one.two.three");
-			assertFalse(service.extensionSupported(uri));
 			try {
 				service.createPlot(uri);
 				fail("AbstractVizService error: "
@@ -123,7 +122,6 @@ public class AbstractVizServiceTester {
 
 			// Try a URI that's too short (blank name).
 			uri = new URI(".txt");
-			assertFalse(service.extensionSupported(uri));
 			try {
 				service.createPlot(uri);
 				fail("AbstractVizService error: "
@@ -134,7 +132,6 @@ public class AbstractVizServiceTester {
 
 			// Try a URI that's missing an extension.
 			uri = new URI("/tmp/txt");
-			assertFalse(service.extensionSupported(uri));
 			try {
 				service.createPlot(uri);
 				fail("AbstractVizService error: "
@@ -145,7 +142,8 @@ public class AbstractVizServiceTester {
 			// --------------------------- //
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			fail("AbstractVizServiceTester error: " + "A test URI was invalid.");
+			fail("AbstractVizServiceTester error: "
+					+ "A test URI was invalid.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("AbstractVizServiceTester error: " + "Unknown exception!");
@@ -164,48 +162,34 @@ public class AbstractVizServiceTester {
 	private class FakeVizService extends AbstractVizService {
 
 		/**
-		 * Gets the set of supported extensions. This exposes the set so the
-		 * tester can add extensions as a normal sub-class of AbstractVizService
-		 * 
-		 * @return A reference to the {@code AbstractVizService}'s set of
-		 *         supported extensions.
+		 * A set of supported extensions. Starts off empty. This will be
+		 * returned when the super class requests the concrete class'
+		 * extensions.
 		 */
-		public Set<String> getExtensions() {
-			return supportedExtensions;
-		}
+		public final Set<String> supportedExtensions = new HashSet<String>();
 
+		/*
+		 * Implements a method from IVizService.
+		 */
 		@Override
 		public String getName() {
 			return null;
 		}
 
+		/*
+		 * Implements a method from IVizService.
+		 */
 		@Override
 		public String getVersion() {
 			return null;
 		}
 
+		/*
+		 * Implements an abstract method from AbstractVizService.
+		 */
 		@Override
-		public boolean hasConnectionProperties() {
-			return false;
-		}
-
-		@Override
-		public Map<String, String> getConnectionProperties() {
-			return null;
-		}
-
-		@Override
-		public void setConnectionProperties(Map<String, String> props) {
-		}
-
-		@Override
-		public boolean connect() {
-			return false;
-		}
-
-		@Override
-		public boolean disconnect() {
-			return false;
+		protected Set<String> findSupportedExtensions() {
+			return supportedExtensions;
 		}
 	}
 }

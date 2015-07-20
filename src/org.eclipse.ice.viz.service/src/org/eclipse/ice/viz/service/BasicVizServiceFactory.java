@@ -73,11 +73,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#register
-	 * (org.eclipse.ice.client.widgets.viz.service.IVizService)
+	 * Implements a method from IVizServiceFactory.
 	 */
 	@Override
 	public void register(IVizService service) {
@@ -111,50 +107,23 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 
 			logger.info("VizServiceFactory message: " + "Viz service \"" + name
 					+ "\" registered.");
-
-			// If the preference for automatically connecting to default viz
-			// service connections is set, establish default connections.
-			if (getPreferenceStore().getBoolean("autoConnectToDefaults")) {
-				if (service.connect()) {
-					logger.info("VizServiceFactory message: " + "Viz service \""
-							+ name + "\" connected.");
-				} else {
-					logger.info("VizServiceFactory message: " + "Viz service \""
-							+ name + "\" is connecting...");
-				}
-			}
 		}
+
 		return;
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#unregister
-	 * (org.eclipse.ice.client.widgets.viz.service.IVizService)
+	 * Implements a method from IVizServiceFactory.
 	 */
 	@Override
 	public void unregister(IVizService service) {
 		if (service != null) {
 			serviceMap.remove(service.getName());
-			// Try to disconnect the service.
-			if (service.disconnect()) {
-				logger.info("VizServiceFactory message: " + service.getName()
-						+ "unregistered and disconnected.");
-			} else {
-				logger.info("VizServiceFactory message: " + service.getName()
-						+ "unregistered and is currently disconnecting.");
-			}
 		}
-		return;
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#
-	 * getServiceNames ()
+	 * Implements a method from IVizServiceFactory.
 	 */
 	@Override
 	public String[] getServiceNames() {
@@ -166,11 +135,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#get(java
-	 * .lang.String)
+	 * Implements a method from IVizServiceFactory.
 	 */
 	@Override
 	public IVizService get(String serviceName) {
@@ -185,9 +150,7 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#get()
+	 * Implements a method from IVizServiceFactory.
 	 */
 	@Override
 	public IVizService get() {

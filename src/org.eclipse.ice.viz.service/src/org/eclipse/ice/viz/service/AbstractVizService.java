@@ -13,7 +13,6 @@ package org.eclipse.ice.viz.service;
 
 import java.net.URI;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -158,31 +157,6 @@ public abstract class AbstractVizService implements IVizService {
 		}
 		// Return an ordered set of the extensions.
 		return new TreeSet<String>(supportedExtensions);
-	}
-
-	// TODO Remove everything below this!
-	@Override
-	public boolean hasConnectionProperties() {
-		return false;
-	}
-
-	@Override
-	public Map<String, String> getConnectionProperties() {
-		return null;
-	}
-
-	@Override
-	public void setConnectionProperties(Map<String, String> props) {
-	}
-
-	@Override
-	public boolean connect() {
-		return false;
-	}
-
-	@Override
-	public boolean disconnect() {
-		return false;
 	}
 
 }
