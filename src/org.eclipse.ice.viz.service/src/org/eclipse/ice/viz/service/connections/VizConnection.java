@@ -105,15 +105,16 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	private ExecutorService executorService;
 
 	/**
+	 * A lock for accessing the notification thread ExecutorService. This allows
+	 * us to re-use the worker thread if a second notification arrives before
+	 * the current notification is processed.
+	 */
+	private final Lock notificationLock;
+	/**
 	 * A single thread executor service specifically for notifying listeners in
 	 * an orderly fashion.
 	 */
-	private final ExecutorService notificationExecutorService;
-	/**
-	 * A thread pool for worker threads in the notifications. This is used so
-	 * notifications are processed by listeners in parallel.
-	 */
-	private final ExecutorService notificationWorkerPool;
+	private ExecutorService notificationExecutorService;
 
 	/**
 	 * The default constructor. Initializes the connection to the default
@@ -144,7 +145,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				if (value != null) {
 					newValue = value.trim();
 				}
-				return newValue != null && !newValue.isEmpty() ? newValue : null;
+				return newValue != null && !newValue.isEmpty() ? newValue
+						: null;
 			}
 		});
 		// The description property should only accept non-null strings. Values
@@ -165,7 +167,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				if (value != null) {
 					newValue = value.trim();
 				}
-				return newValue != null && !newValue.isEmpty() ? newValue : null;
+				return newValue != null && !newValue.isEmpty() ? newValue
+						: null;
 			}
 		});
 		// The port property should only accept integers lying in the valid port
@@ -205,8 +208,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 
 		// Initialize the set of connection listeners.
 		listeners = new HashSet<IVizConnectionListener<T>>();
-		notificationExecutorService = Executors.newSingleThreadExecutor();
-		notificationWorkerPool = Executors.newCachedThreadPool();
+		notificationLock = new ReentrantLock(true);
 
 		// Create the lock for accessing certain connection thread variables.
 		connectionLock = new ReentrantLock(true);
@@ -381,13 +383,15 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 			}
 
 			@Override
-			public ConnectionState get() throws InterruptedException, ExecutionException {
+			public ConnectionState get()
+					throws InterruptedException, ExecutionException {
 				return stateRef;
 			}
 
 			@Override
 			public ConnectionState get(long timeout, TimeUnit unit)
-					throws InterruptedException, ExecutionException, TimeoutException {
+					throws InterruptedException, ExecutionException,
+					TimeoutException {
 				return stateRef;
 			}
 		};
@@ -420,7 +424,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				 */
 
 				// Set the initial task name.
-				monitor.beginTask("Viz connection \"" + VizConnection.this.getName() + "\"", 100);
+				monitor.beginTask("Viz connection \""
+						+ VizConnection.this.getName() + "\"", 100);
 
 				String message = null;
 				long timeout = 250;
@@ -457,10 +462,12 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				// Add a helpful message if the connection attempt failed.
 				if (state != ConnectionState.Connected) {
 					statusFlag = Status.ERROR;
-					message += "\nPlease check the settings for \"" + VizConnection.this.getName()
+					message += "\nPlease check the settings for \""
+							+ VizConnection.this.getName()
 							+ "\" under Windows > Preferences > Vizualization.";
 				}
-				return new Status(statusFlag, "org.eclipse.viz.service", 1, message, null);
+				return new Status(statusFlag, "org.eclipse.viz.service", 1,
+						message, null);
 			}
 		};
 		job.schedule();
@@ -606,7 +613,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				 */
 
 				// Set the initial task name.
-				monitor.beginTask("Viz connection \"" + VizConnection.this.getName() + "\"", 100);
+				monitor.beginTask("Viz connection \""
+						+ VizConnection.this.getName() + "\"", 100);
 
 				String message = null;
 				long timeout = 250;
@@ -626,9 +634,11 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				monitor.worked(100);
 
 				// Return the result.
-				int statusFlag = state == ConnectionState.Disconnected ? Status.OK : Status.ERROR;
+				int statusFlag = state == ConnectionState.Disconnected
+						? Status.OK : Status.ERROR;
 				message = VizConnection.this.getStatusMessage();
-				return new Status(statusFlag, "org.eclipse.viz.service", 1, message, null);
+				return new Status(statusFlag, "org.eclipse.viz.service", 1,
+						message, null);
 			}
 		};
 		job.schedule();
@@ -654,7 +664,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 
 				// If a previous task hasn't successfully disconnected, then try
 				// to disconnect.
-				if (threadState != ConnectionState.Disconnected && connectionWidget != null) {
+				if (threadState != ConnectionState.Disconnected
+						&& connectionWidget != null) {
 
 					// Try to disconnect.
 					boolean success = disconnectFromWidget(connectionWidget);
@@ -721,41 +732,74 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 		 * complete before the next set of notifications can be sent out.
 		 */
 
+		// If there are no listeners, don't send out notifications.
+		if (listeners.isEmpty()) {
+			return;
+		}
+
 		// Get final references to the arguments required to notify a given
 		// connection listener.
 		final IVizConnection<T> connRef = this;
 		final ConnectionState stateRef = state;
 		final String msgRef = message;
 
-		// Submit a new task to notify all listeners.
-		notificationExecutorService.submit(new Runnable() {
-			@Override
-			public void run() {
-				List<Future<?>> notifications;
-				notifications = new ArrayList<Future<?>>(listeners.size());
-
-				// Delegate each notification to the worker thread pool.
-				for (final IVizConnectionListener<T> listener : listeners) {
-					notifications.add(notificationWorkerPool.submit(new Runnable() {
-						@Override
-						public void run() {
-							listener.connectionStateChanged(connRef, stateRef, msgRef);
-						}
-					}));
-				}
-
-				// Wait for all notification requests to be completed.
-				for (Future<?> notification : notifications) {
-					try {
-						notification.get();
-					} catch (InterruptedException | ExecutionException e) {
-						e.printStackTrace();
-					}
-				}
-
-				return;
+		notificationLock.lock();
+		try {
+			// Create worker threads if necessary.
+			if (notificationExecutorService == null) {
+				notificationExecutorService = Executors
+						.newSingleThreadExecutor();
 			}
-		});
+
+			// Submit a new task to notify all listeners.
+			notificationExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					List<Future<?>> notifications;
+					notifications = new ArrayList<Future<?>>(listeners.size());
+
+					// Delegate each notification to a worker thread pool.
+					ExecutorService workers = Executors.newCachedThreadPool();
+					for (final IVizConnectionListener<T> listener : listeners) {
+						notifications.add(workers.submit(new Runnable() {
+							@Override
+							public void run() {
+								listener.connectionStateChanged(connRef,
+										stateRef, msgRef);
+							}
+						}));
+					}
+					// Shut down the worker thread pool used for this
+					// notification.
+					workers.shutdown();
+
+					// Wait for all notification requests to be completed.
+					for (Future<?> notification : notifications) {
+						try {
+							notification.get();
+						} catch (InterruptedException | ExecutionException e) {
+							e.printStackTrace();
+						}
+					}
+
+					// Stop the worker thread.
+					notificationLock.lock();
+					try {
+						if (notificationExecutorService != null) {
+							notificationExecutorService.shutdown();
+							notificationExecutorService = null;
+						}
+					} finally {
+						notificationLock.unlock();
+					}
+
+					return;
+				}
+			});
+
+		} finally {
+			notificationLock.unlock();
+		}
 
 		return;
 	}
@@ -775,8 +819,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	public boolean setProperty(String name, String value) {
 		boolean changed = false;
 
-		// If a handler is not available, then assume the new value is invalid.
-		boolean canChange = false;
+		// If a handler is not available, then assume the new value is valid.
+		boolean canChange = true;
 		String newValue = value;
 
 		// Validate the value through any available handler.
@@ -874,7 +918,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 		 * 
 		 * @param value
 		 *            The value to check.
-		 * @return True if the value is allowed, false otherwise.
+		 * @return An acceptable, validated value if it is allowed, or
+		 *         {@code null} if it is not allowed.
 		 */
 		public String validateValue(String value);
 	}

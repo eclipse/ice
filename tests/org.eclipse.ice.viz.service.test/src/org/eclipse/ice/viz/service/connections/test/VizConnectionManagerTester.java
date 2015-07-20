@@ -82,7 +82,8 @@ public class VizConnectionManagerTester {
 		// Initialize the connection manager.
 		manager = new VizConnectionManager<FakeClient>() {
 			@Override
-			protected VizConnection<FakeClient> createConnection(String name, String preferences) {
+			protected VizConnection<FakeClient> createConnection(String name,
+					String preferences) {
 				// Create a new fake connection and store it in the map.
 				FakeVizConnection fakeConnection = new FakeVizConnection();
 				fakeConnections.put(name, fakeConnection);
@@ -96,7 +97,7 @@ public class VizConnectionManagerTester {
 
 		return;
 	}
-
+	
 	/**
 	 * Checks the default connections (empty).
 	 */
@@ -130,7 +131,8 @@ public class VizConnectionManagerTester {
 		final String nullString = null;
 		try {
 			manager.getConnectionsForHost(nullString);
-			fail("VizConnectionManagerTester failure: " + "NullPointerException not thrown when requesting "
+			fail("VizConnectionManagerTester failure: "
+					+ "NullPointerException not thrown when requesting "
 					+ "connections for a null host.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
@@ -186,7 +188,8 @@ public class VizConnectionManagerTester {
 		long sleepTime = 0;
 		long threshold = 2000;
 		long interval = 50;
-		while (connection.getState() != ConnectionState.Connected && sleepTime < threshold) {
+		while (connection.getState() != ConnectionState.Connected
+				&& sleepTime < threshold) {
 			try {
 				Thread.sleep(interval);
 			} catch (InterruptedException e) {
@@ -226,7 +229,8 @@ public class VizConnectionManagerTester {
 		sleepTime = 0;
 		threshold = 2000;
 		interval = 50;
-		while (connection.getState() != ConnectionState.Connected && sleepTime < threshold) {
+		while (connection.getState() != ConnectionState.Connected
+				&& sleepTime < threshold) {
 			try {
 				Thread.sleep(interval);
 			} catch (InterruptedException e) {
@@ -324,8 +328,9 @@ public class VizConnectionManagerTester {
 		final Queue<ConnectionState> states = new ConcurrentLinkedQueue<ConnectionState>();
 		FakeVizConnectionListener listener = new FakeVizConnectionListener() {
 			@Override
-			public void connectionStateChanged(IVizConnection<FakeClient> connection, ConnectionState state,
-					String message) {
+			public void connectionStateChanged(
+					IVizConnection<FakeClient> connection,
+					ConnectionState state, String message) {
 				states.add(state);
 				super.connectionStateChanged(connection, state, message);
 			}
@@ -349,7 +354,8 @@ public class VizConnectionManagerTester {
 		long sleepTime = 0;
 		long threshold = 2000;
 		long interval = 50;
-		while (connection.getState() != ConnectionState.Connected && sleepTime < threshold) {
+		while (connection.getState() != ConnectionState.Connected
+				&& sleepTime < threshold) {
 			try {
 				Thread.sleep(interval);
 			} catch (InterruptedException e) {
@@ -379,6 +385,7 @@ public class VizConnectionManagerTester {
 		assertTrue(manager.getConnectionsForHost(host).contains(connection2));
 
 		// Update the first connection.
+		host = "electrodungeonmaster";
 		node.put(connection1, host + "," + port + "," + path);
 
 		// Check the first connections properties. They should have changed.
@@ -387,6 +394,17 @@ public class VizConnectionManagerTester {
 		assertEquals(host, connection.getHost());
 		assertEquals(port, connection.getPort());
 		assertEquals(path, connection.getPath());
+
+		// Check querying connections by host.
+		// "electrodungeon" should now only have one connection.
+		assertEquals(1, manager.getConnectionsForHost("electrodungeon").size());
+		assertTrue(manager.getConnectionsForHost("electrodungeon")
+				.contains(connection2));
+		// "electrodungeonmaster" should only have one connection.
+		assertEquals(1,
+				manager.getConnectionsForHost("electrodungeonmaster").size());
+		assertTrue(manager.getConnectionsForHost("electrodungeonmaster")
+				.contains(connection1));
 
 		// The connection should have been reset. To check this, check that the
 		// listener was notified of the changes.
@@ -430,14 +448,16 @@ public class VizConnectionManagerTester {
 		connection1Host = "electrodungeon";
 		connection1Port = 9000;
 		connection1Path = "/home/music";
-		node1.put(connection1Name, connection1Host + "," + connection1Port + "," + connection1Path);
+		node1.put(connection1Name, connection1Host + "," + connection1Port + ","
+				+ connection1Path);
 
 		// Add a connection to the second preference node.
 		connection2Name = "trevor something";
 		connection2Host = "electrodungeon";
 		connection2Port = 9001;
 		connection2Path = "/home/music/different/path";
-		node2.put(connection2Name, connection2Host + "," + connection2Port + "," + connection2Path);
+		node2.put(connection2Name, connection2Host + "," + connection2Port + ","
+				+ connection2Path);
 
 		// Set the preference store using the first node.
 		manager.setPreferenceStore(store, nodeId1);
@@ -448,7 +468,8 @@ public class VizConnectionManagerTester {
 		assertTrue(manager.getConnections().contains(connection1Name));
 		// Check getConnectionsForHost(String)
 		assertEquals(1, manager.getConnectionsForHost(connection1Host).size());
-		assertTrue(manager.getConnectionsForHost(connection1Host).contains(connection1Name));
+		assertTrue(manager.getConnectionsForHost(connection1Host)
+				.contains(connection1Name));
 		// Check getConnection(String)
 		assertNotNull(manager.getConnection(connection1Name));
 
@@ -468,7 +489,8 @@ public class VizConnectionManagerTester {
 		long sleepTime = 0;
 		long threshold = 2000;
 		long interval = 50;
-		while (connection1.getState() != ConnectionState.Connected && sleepTime < threshold) {
+		while (connection1.getState() != ConnectionState.Connected
+				&& sleepTime < threshold) {
 			try {
 				Thread.sleep(interval);
 			} catch (InterruptedException e) {
@@ -491,7 +513,8 @@ public class VizConnectionManagerTester {
 		assertTrue(manager.getConnections().contains(connection2Name));
 		// Check getConnectionsForHost(String)
 		assertEquals(1, manager.getConnectionsForHost(connection2Host).size());
-		assertTrue(manager.getConnectionsForHost(connection2Host).contains(connection2Name));
+		assertTrue(manager.getConnectionsForHost(connection2Host)
+				.contains(connection2Name));
 		// Check getConnection(String)
 		assertNotNull(manager.getConnection(connection2Name));
 
@@ -511,7 +534,8 @@ public class VizConnectionManagerTester {
 		sleepTime = 0;
 		threshold = 2000;
 		interval = 50;
-		while (connection2.getState() != ConnectionState.Connected && sleepTime < threshold) {
+		while (connection2.getState() != ConnectionState.Connected
+				&& sleepTime < threshold) {
 			try {
 				Thread.sleep(interval);
 			} catch (InterruptedException e) {
@@ -548,7 +572,8 @@ public class VizConnectionManagerTester {
 		// connection preference node.
 		try {
 			manager.setPreferenceStore(store, null);
-			fail("VizConnectionManagerTester failure: " + "NullPointerException not thrown when preference node ID "
+			fail("VizConnectionManagerTester failure: "
+					+ "NullPointerException not thrown when preference node ID "
 					+ "is null and store is not null.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.

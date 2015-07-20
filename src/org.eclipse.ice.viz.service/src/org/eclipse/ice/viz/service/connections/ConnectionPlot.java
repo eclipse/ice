@@ -127,7 +127,7 @@ public abstract class ConnectionPlot<T> extends MultiPlot {
 	 * exist or if there are read permission issues.
 	 * </p>
 	 * 
-	 * @param file
+	 * @param uri
 	 *            The new data source URI.
 	 * @throws NullPointerException
 	 *             if the specified file is null
@@ -139,12 +139,12 @@ public abstract class ConnectionPlot<T> extends MultiPlot {
 	 *             if there is some other unspecified problem with the file
 	 */
 	@Override
-	public void setDataSource(URI file) throws NullPointerException, IOException, IllegalArgumentException, Exception {
+	public void setDataSource(URI uri) throws NullPointerException, IOException, IllegalArgumentException, Exception {
 
 		// Check that the file's host matches the connection host. Also check
 		// that the file exists. We check that the file is not null so that the
 		// super method can throw the NPE for null files.
-		if (file != null) {
+		if (uri != null) {
 			// Check if the connection exists. If not, we need to throw an
 			// exception.
 			if (connection == null) {
@@ -156,7 +156,7 @@ public abstract class ConnectionPlot<T> extends MultiPlot {
 
 			// Get the hosts from the connection and the URI.
 			String connHost = connection.getHost();
-			String fileHost = file.getHost();
+			String fileHost = uri.getHost();
 			if (fileHost == null) {
 				fileHost = "localhost";
 			}
@@ -169,11 +169,11 @@ public abstract class ConnectionPlot<T> extends MultiPlot {
 			// If they do match and the file is local, check that the file
 			// exists and can be read.
 			else if ("localhost".equals(connHost)) {
-				File fileRef = new File(file);
+				File fileRef = new File(uri.getPath());
 				if (!fileRef.isFile()) {
-					message = "The path \"" + file + "\" does not exist or is not a file.";
+					message = "The path \"" + uri + "\" does not exist or is not a file.";
 				} else if (!fileRef.canRead()) {
-					message = "The file \"" + file + "\" cannot be read.";
+					message = "The file \"" + uri + "\" cannot be read.";
 				}
 				// Otherwise, there is no problem.
 				else {
@@ -194,7 +194,7 @@ public abstract class ConnectionPlot<T> extends MultiPlot {
 
 		// Proceed with the super class' methods for error checking and setting
 		// the data source.
-		super.setDataSource(file);
+		super.setDataSource(uri);
 	}
 
 }

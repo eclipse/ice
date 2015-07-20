@@ -37,7 +37,8 @@ import org.osgi.service.prefs.BackingStoreException;
  * @param <T>
  *            The type of the underlying connection widget.
  */
-public abstract class VizConnectionManager<T> implements IVizConnectionManager<T> {
+public abstract class VizConnectionManager<T>
+		implements IVizConnectionManager<T> {
 
 	/**
 	 * The listener that handles adding, updating, and removing viz connections
@@ -92,16 +93,18 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 	 * Implements a method from IVizConnectionManager.
 	 */
 	@Override
-	public Set<String> getConnectionsForHost(String host) throws NullPointerException {
+	public Set<String> getConnectionsForHost(String host)
+			throws NullPointerException {
 		// Throw an exception if the specified host name is null.
 		if (host == null) {
-			throw new NullPointerException(
-					"VizConnectionManager error: " + "Cannot find connections for null host name.");
+			throw new NullPointerException("VizConnectionManager error: "
+					+ "Cannot find connections for null host name.");
 		}
 		// Get the associated connection names. If the host is not recognized,
 		// return an empty set.
 		Set<String> connections = connectionsByHost.get(host);
-		return connections != null ? new TreeSet<String>(connections) : new TreeSet<String>();
+		return connections != null ? new TreeSet<String>(connections)
+				: new TreeSet<String>();
 	}
 
 	/*
@@ -116,19 +119,22 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 	 * Implements a method from IVizConnectionManager.
 	 */
 	@Override
-	public void setPreferenceStore(CustomScopedPreferenceStore store, String preferenceNodeId)
-			throws NullPointerException {
+	public void setPreferenceStore(CustomScopedPreferenceStore store,
+			String preferenceNodeId) throws NullPointerException {
 		// Throw an exception if the preference node ID is null. We must have a
 		// valid node ID if we have a store.
 		if (store != null && preferenceNodeId == null) {
-			throw new NullPointerException("VizConnectionManager error: " + "Preference node ID cannot be null.");
+			throw new NullPointerException("VizConnectionManager error: "
+					+ "Preference node ID cannot be null.");
 		}
 
-		if (store != preferenceStore || !preferenceNodeId.equals(connectionsNodeId)) {
+		if (store != preferenceStore
+				|| !preferenceNodeId.equals(connectionsNodeId)) {
 			// If the old store/node ID is valid, unregister the preferences
 			// listener and remove all current connections from the manager.
 			if (preferenceStore != null) {
-				preferenceStore.getNode(connectionsNodeId).removePreferenceChangeListener(preferenceListener);
+				preferenceStore.getNode(connectionsNodeId)
+						.removePreferenceChangeListener(preferenceListener);
 				preferenceStore = null;
 				connectionsNodeId = null;
 
@@ -176,14 +182,16 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 	 *            come straight from the {@link #preferenceStore}.
 	 */
 	private void addConnection(String name, String preferences) {
-		System.out.println("VizConnectionManager message: " + "Adding connection \"" + name
+		System.out.println("VizConnectionManager message: "
+				+ "Adding connection \"" + name
 				+ "\" using the preference string \"" + preferences + "\".");
 
 		VizConnection<T> connection = createConnection(name, preferences);
 
 		// Split the string using the delimiter. The -1 is necessary to include
 		// empty values from the split.
-		String[] split = preferences.split(getConnectionPreferenceDelimiter(), -1);
+		String[] split = preferences.split(getConnectionPreferenceDelimiter(),
+				-1);
 
 		try {
 			// Ensure the connection's basic preferences are set.
@@ -208,7 +216,8 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 			// Try to connect.
 			connection.connect();
 
-		} catch (IndexOutOfBoundsException | NullPointerException | NumberFormatException e) {
+		} catch (IndexOutOfBoundsException | NullPointerException
+				| NumberFormatException e) {
 			// Cannot add the connection.
 		}
 
@@ -223,7 +232,8 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 	 *            The name of the connection to remove.
 	 */
 	private void removeConnection(String name) {
-		System.out.println("VizConnectionManager message: " + "Removing connection \"" + name + "\".");
+		System.out.println("VizConnectionManager message: "
+				+ "Removing connection \"" + name + "\".");
 
 		// Remove the associated connection from the map of connections by name.
 		VizConnection<T> connection = connectionsByName.remove(name);
@@ -251,15 +261,45 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 	 *            should come straight from the {@link #preferenceStore}.
 	 */
 	private void updateConnection(String name, String preferences) {
-		System.out.println("VizConnectionManager message: " + "Updating connection \"" + name
+		System.out.println("VizConnectionManager message: "
+				+ "Updating connection \"" + name
 				+ "\" using the preference string \"" + preferences + "\".");
 
 		final VizConnection<T> connection = connectionsByName.get(name);
 
+		// Get the current host for the connection.
+		String oldHost = connection.getHost();
+
+		// Update the connection's preferences.
+		boolean requiresReset = updateConnectionPreferences(connection,
+				preferences);
+
+		// If the host changed, we need to update the connections-by-host map.
+		String newHost = connection.getHost();
+		if (!oldHost.equals(newHost)) {
+			// Dissociate the connection from the old host, deleting the map
+			// entry for the old host if it has no more associated connections.
+			Set<String> hosts = connectionsByHost.get(oldHost);
+			hosts.remove(name);
+			if (hosts.isEmpty()) {
+				connectionsByHost.remove(oldHost);
+			}
+			// Associate the connection with the new host, creating the map
+			// entry for the new host if it had no associated connections.
+			hosts = connectionsByHost.get(newHost);
+			if (hosts == null) {
+				hosts = new HashSet<String>();
+				connectionsByHost.put(newHost, hosts);
+			}
+			hosts.add(name);
+		}
+
 		// If the update requires a reset, reset the connection.
-		if (updateConnectionPreferences(connection, preferences)) {
-			final Future<ConnectionState> disconnectRequest = connection.disconnect();
-			final ExecutorService executor = Executors.newSingleThreadExecutor();
+		if (requiresReset) {
+			final Future<ConnectionState> disconnectRequest = connection
+					.disconnect();
+			final ExecutorService executor = Executors
+					.newSingleThreadExecutor();
 			executor.submit(new Runnable() {
 				@Override
 				public void run() {
@@ -271,6 +311,9 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 					}
 					// Try to re-connect.
 					connection.connect();
+
+					// Stop the executor service.
+					executor.shutdown();
 				}
 			});
 		}
@@ -331,7 +374,8 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 	 *         preferences, or {@code null} if the properties could not be
 	 *         sufficiently read from the string to create a connection.
 	 */
-	protected abstract VizConnection<T> createConnection(String name, String preferences);
+	protected abstract VizConnection<T> createConnection(String name,
+			String preferences);
 
 	/**
 	 * Gets the delimiter used to separate a connection's individual
@@ -348,7 +392,7 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 	 * possible, and updates the connection based on them.
 	 * <p>
 	 * <b>Note:</b> If overridden, it is recommended to call the super method so
-	 * that teh host, port, and path will be updated. This method will return
+	 * that the host, port, and path will be updated. This method will return
 	 * true if any of those three properties change.
 	 * </p>
 	 * 
@@ -360,12 +404,14 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 	 * @return True if one of the properties changed and a reset of the
 	 *         connection is required, false if a reset is <i>not</i> required.
 	 */
-	protected boolean updateConnectionPreferences(VizConnection<T> connection, String preferences) {
+	protected boolean updateConnectionPreferences(VizConnection<T> connection,
+			String preferences) {
 		boolean requiresReset = false;
 
 		// Split the string using the delimiter. The -1 is necessary to include
 		// empty values from the split.
-		String[] split = preferences.split(getConnectionPreferenceDelimiter(), -1);
+		String[] split = preferences.split(getConnectionPreferenceDelimiter(),
+				-1);
 
 		try {
 			// Get the host, port, and path, if possible.
@@ -377,7 +423,8 @@ public abstract class VizConnectionManager<T> implements IVizConnectionManager<T
 			requiresReset |= connection.setHost(host);
 			requiresReset |= connection.setPort(port);
 			requiresReset |= connection.setPath(path);
-		} catch (IndexOutOfBoundsException | NullPointerException | NumberFormatException e) {
+		} catch (IndexOutOfBoundsException | NullPointerException
+				| NumberFormatException e) {
 			// Cannot update the connection.
 			requiresReset = false;
 		}

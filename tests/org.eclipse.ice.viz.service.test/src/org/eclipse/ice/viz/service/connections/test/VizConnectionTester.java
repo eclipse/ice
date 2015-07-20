@@ -92,8 +92,9 @@ public class VizConnectionTester {
 		// the queue.
 		fakeListener1 = new FakeVizConnectionListener() {
 			@Override
-			public void connectionStateChanged(IVizConnection<FakeClient> connection, ConnectionState state,
-					String message) {
+			public void connectionStateChanged(
+					IVizConnection<FakeClient> connection,
+					ConnectionState state, String message) {
 				notificationLock.lock();
 				try {
 					notificationQueue.add(connection);
@@ -124,7 +125,8 @@ public class VizConnectionTester {
 
 		// Check the default getters.
 		assertEquals(ConnectionState.Disconnected, connection.getState());
-		assertEquals("The connection has not been configured.", connection.getStatusMessage());
+		assertEquals("The connection has not been configured.",
+				connection.getStatusMessage());
 		assertNull(connection.getWidget());
 		// Check the convenient getters.
 		assertEquals("Connection1", connection.getName());
@@ -449,7 +451,8 @@ public class VizConnectionTester {
 			state = connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The state should be "failed" and the widget should still be null.
 		assertEquals(ConnectionState.Failed, state);
@@ -461,7 +464,8 @@ public class VizConnectionTester {
 			state = connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The state should be "connected" and the widget should be set.
 		assertEquals(ConnectionState.Connected, state);
@@ -472,7 +476,8 @@ public class VizConnectionTester {
 			state = connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The state should *still* be "connected" and the widget should be set.
 		assertEquals(ConnectionState.Connected, state);
@@ -494,7 +499,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check that the client's implementation was called and that the
 		// connection's widget was set to null.
@@ -507,7 +513,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check that the client's implementation was called and that the
 		// connection's widget was set to the returned widget.
@@ -520,7 +527,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check that the client's implementation was *not* called and that the
 		// connection's widget is the same as the returned widget.
@@ -544,7 +552,8 @@ public class VizConnectionTester {
 			state = connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// The state returned should be "disconnected" and the widget should
 		// still be unset.
@@ -556,7 +565,8 @@ public class VizConnectionTester {
 			state = connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The state should be "connected".
 		assertEquals(ConnectionState.Connected, state);
@@ -567,7 +577,8 @@ public class VizConnectionTester {
 			state = connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// The state returned should be "failed", and the widget should remain
 		// the same.
@@ -580,7 +591,8 @@ public class VizConnectionTester {
 			state = connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// The state returned should be "disconnected", and the widget should be
 		// unset.
@@ -593,7 +605,8 @@ public class VizConnectionTester {
 			state = connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// The state returned should be "disconnected" and the widget should
 		// still be unset.
@@ -615,7 +628,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Check that the client's implementation was *not* called and that the
 		// connection's widget is still null.
@@ -627,7 +641,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// The connection's widget should not be null.
 		assertNotNull(connection.getWidget());
@@ -638,7 +653,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Check that the client's implementation was called but the connection
 		// widget was not unset (for diagnostic purposes).
@@ -651,7 +667,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Check that the client's implementation was called and the connection
 		// widget was unset.
@@ -664,7 +681,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Check that the client's implementation was *not* called and that the
 		// connection's widget is still null.
@@ -686,7 +704,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Only the first listener will be notified.
 		assertFalse(fakeListener2.wasNotified());
@@ -702,7 +721,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 		// Both listeners should be notified.
 		assertTrue(fakeListener1.wasNotified());
@@ -720,7 +740,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Only the first listener will be notified.
 		assertFalse(fakeListener2.wasNotified());
@@ -749,7 +770,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check the "connecting" status update.
 		assertTrue(fakeListener1.wasNotified());
@@ -757,7 +779,8 @@ public class VizConnectionTester {
 		try {
 			assertSame(connection, notificationQueue.poll());
 			assertEquals(ConnectionState.Connecting, notificationQueue.poll());
-			assertEquals("The connection is being established.", notificationQueue.poll());
+			assertEquals("The connection is being established.",
+					notificationQueue.poll());
 			size = notificationQueue.size();
 		} finally {
 			notificationLock.unlock();
@@ -773,7 +796,8 @@ public class VizConnectionTester {
 		try {
 			assertSame(connection, notificationQueue.poll());
 			assertEquals(ConnectionState.Connected, notificationQueue.poll());
-			assertEquals("The connection is established.", notificationQueue.poll());
+			assertEquals("The connection is established.",
+					notificationQueue.poll());
 			assertTrue(notificationQueue.isEmpty());
 		} finally {
 			notificationLock.unlock();
@@ -802,7 +826,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 		// Check the "connecting" status update.
 		assertTrue(fakeListener1.wasNotified());
@@ -810,7 +835,8 @@ public class VizConnectionTester {
 		try {
 			assertSame(connection, notificationQueue.poll());
 			assertEquals(ConnectionState.Connecting, notificationQueue.poll());
-			assertEquals("The connection is being established.", notificationQueue.poll());
+			assertEquals("The connection is being established.",
+					notificationQueue.poll());
 			size = notificationQueue.size();
 		} finally {
 			notificationLock.unlock();
@@ -826,7 +852,8 @@ public class VizConnectionTester {
 		try {
 			assertSame(connection, notificationQueue.poll());
 			assertEquals(ConnectionState.Failed, notificationQueue.poll());
-			assertEquals("The connection failed to connect.", notificationQueue.poll());
+			assertEquals("The connection failed to connect.",
+					notificationQueue.poll());
 			assertTrue(notificationQueue.isEmpty());
 		} finally {
 			notificationLock.unlock();
@@ -854,7 +881,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 
 		// ---- Ignore the Connecting and Connected notifications. ---- //
@@ -875,7 +903,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 
 		// Wait for the listener to be notified.
@@ -885,7 +914,8 @@ public class VizConnectionTester {
 		notificationLock.lock();
 		try {
 			assertSame(connection, notificationQueue.poll());
-			assertEquals(ConnectionState.Disconnected, notificationQueue.poll());
+			assertEquals(ConnectionState.Disconnected,
+					notificationQueue.poll());
 			assertEquals("The connection is closed.", notificationQueue.poll());
 			assertTrue(notificationQueue.isEmpty());
 		} finally {
@@ -913,7 +943,8 @@ public class VizConnectionTester {
 			connection.connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing connect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing connect operation.");
 		}
 
 		// ---- Ignore the Connecting and Connected notifications. ---- //
@@ -937,7 +968,8 @@ public class VizConnectionTester {
 			connection.disconnect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			fail("VizConnection error: " + "Failure while performing disconnect operation.");
+			fail("VizConnection error: "
+					+ "Failure while performing disconnect operation.");
 		}
 
 		// Wait for the listener to be notified.
@@ -948,7 +980,8 @@ public class VizConnectionTester {
 		try {
 			assertSame(connection, notificationQueue.poll());
 			assertEquals(ConnectionState.Failed, notificationQueue.poll());
-			assertEquals("The connection failed while disconnecting.", notificationQueue.poll());
+			assertEquals("The connection failed while disconnecting.",
+					notificationQueue.poll());
 			assertTrue(notificationQueue.isEmpty());
 		} finally {
 			notificationLock.unlock();
