@@ -23,32 +23,72 @@ import gov.lbnl.visit.swt.VisItSwtConnection;
  * @author Jordan Deyton
  *
  */
-public class VisItConnectionManager extends VizConnectionManager<VisItSwtConnection> {
+public class VisItConnectionManager
+		extends VizConnectionManager<VisItSwtConnection> {
 
 	/*
 	 * Implements an abstract method from VizConnectionManager.
 	 */
 	@Override
-	protected VizConnection<VisItSwtConnection> createConnection(String name, String preferences) {
+	protected VizConnection<VisItSwtConnection> createConnection(String name,
+			String preferences) {
 		VisItConnection connection = new VisItConnection();
 
 		// Split the string using the delimiter. The -1 is necessary to include
 		// empty values from the split.
-		String[] split = preferences.split(getConnectionPreferenceDelimiter(), -1);
+		String[] split = preferences.split(getConnectionPreferenceDelimiter(),
+				-1);
 
 		try {
-			// The name, host, port, and path will be taken care of by the super
-			// class.
+			// Get the additional properties, if possible.
+			String gateway = split[3];
+			int gatewayPort = Integer.parseInt(split[4]);
+			String username = split[5];
 
-			// Ensure the additional custom preferences are set.
-			connection.setProperty("gateway", split[3]);
-			connection.setProperty("localGatewayPort", split[4]);
-			connection.setProperty("username", split[5]);
-		} catch (IndexOutOfBoundsException | NullPointerException | NumberFormatException e) {
+			// Set the connection's properties.
+			connection.setProperty("gateway", gateway);
+			connection.setProperty("localGatewayPort",
+					Integer.toString(gatewayPort));
+			connection.setProperty("username", username);
+		} catch (IndexOutOfBoundsException | NullPointerException
+				| NumberFormatException e) {
 			// Cannot add the connection.
 			connection = null;
 		}
 
 		return connection;
+	}
+
+	/*
+	 * Overrides a method from VizConnectionManager.
+	 */
+	@Override
+	protected boolean updateConnectionPreferences(
+			VizConnection<VisItSwtConnection> connection, String preferences) {
+		boolean requiresReset = super.updateConnectionPreferences(connection,
+				preferences);
+
+		// Split the string using the delimiter. The -1 is necessary to include
+		// empty values from the split.
+		String[] split = preferences.split(getConnectionPreferenceDelimiter(),
+				-1);
+		try {
+			// Get the additional properties, if possible.
+			String gateway = split[3];
+			int gatewayPort = Integer.parseInt(split[4]);
+			String username = split[5];
+
+			// If any of these change, the connection will need to be reset.
+			requiresReset |= connection.setProperty("gateway", gateway);
+			requiresReset |= connection.setProperty("localGatewayPort",
+					Integer.toString(gatewayPort));
+			requiresReset |= connection.setProperty("username", username);
+		} catch (IndexOutOfBoundsException | NullPointerException
+				| NumberFormatException e) {
+			// Cannot update the connection.
+			requiresReset = false;
+		}
+
+		return requiresReset;
 	}
 }

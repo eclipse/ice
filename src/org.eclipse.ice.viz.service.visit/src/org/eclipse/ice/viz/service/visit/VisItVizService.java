@@ -8,6 +8,7 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Jordan Deyton
+ *   Jordan Deyton - bug 469997
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
@@ -64,10 +65,11 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	@Override
 	protected ConnectionPlot<VisItSwtConnection> createConnectionPlot() {
 		return new VisItPlot(this);
-	} /*
-		 * Implements an abstract method from AbstractVizService.
-		 */
+	}
 
+	/*
+	 * Implements an abstract method from AbstractVizService.
+	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {
 		Set<String> extensions = new HashSet<String>();

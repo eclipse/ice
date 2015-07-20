@@ -137,7 +137,7 @@ public class ConnectionVizServiceTester {
 		try {
 			uri = new URI("file://" + host + path);
 		} catch (URISyntaxException e) {
-			System.err.println("bad");
+			fail("ConnectionVizServiceTester error: " + "Invalid URI.");
 		}
 
 		// Creating a plot with a valid URI should work (since the fake
@@ -190,7 +190,7 @@ public class ConnectionVizServiceTester {
 
 		// Creating a plot with an unknown host should throw an exception.
 		try {
-			plot = service.createPlot(uri);
+			service.createPlot(uri);
 			fail("ConnectionVizServiceTester error: "
 					+ "Exception not thrown for URI whose host has no "
 					+ "configured viz connection.");
@@ -240,6 +240,43 @@ public class ConnectionVizServiceTester {
 		}
 		assertNotNull(plot);
 		// ------------------------------------------------------ //
+
+		// ---- Try a null URI. ---- //
+		uri = null;
+		try {
+			service.createPlot(uri);
+			fail("ConnectionVizServiceTester error: "
+					+ "Did not throw an exception for a null URI.");
+		} catch (NullPointerException e) {
+			// Exception thrown as expected.
+		} catch (Exception e) {
+			fail("ConnectionVizServiceTester error: "
+					+ "Did not throw a NullPointerException for a null URI.");
+		}
+		// ------------------------- //
+
+		// ---- Try a URI with a bad extension. ---- //
+		host = "megadrive";
+		path = "/some_file.bad";
+		try {
+			uri = new URI("file://" + host + path);
+		} catch (URISyntaxException e) {
+			fail("ConnectionVizServiceTester error: " + "Invalid URI.");
+			e.printStackTrace();
+		}
+		try {
+			service.createPlot(uri);
+			fail("ConnectionVizServiceTester error: "
+					+ "Did not throw an exception for a URI with an "
+					+ "unsupported extension.");
+		} catch (IllegalArgumentException e) {
+			// Exception thrown as expected.
+		} catch (Exception e) {
+			fail("ConnectionVizServiceTester error: "
+					+ "Did not throw an IllegalArgumentException for a URI "
+					+ "with an unsupported extension.");
+		}
+		// ----------------------------------------- //
 
 		return;
 	}

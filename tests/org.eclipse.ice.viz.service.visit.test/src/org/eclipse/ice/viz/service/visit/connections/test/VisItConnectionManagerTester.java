@@ -56,6 +56,7 @@ public class VisItConnectionManagerTester {
 
 		// Create a new, empty preference store.
 		store = new CustomScopedPreferenceStore(getClass());
+		store.removeNode(NODE_ID);
 		manager.setPreferenceStore(store, NODE_ID);
 
 		// Add a host.
@@ -66,6 +67,9 @@ public class VisItConnectionManagerTester {
 		int port;
 		String path;
 		IVizConnection<VisItSwtConnection> connection;
+		String gateway;
+		String gatewayPort;
+		String username;
 
 		// Add a new connection. The property name is the connection name, while
 		// the value is a delimited string containing its properties.
@@ -73,8 +77,11 @@ public class VisItConnectionManagerTester {
 		host = "electrodungeon";
 		port = 9000;
 		path = "/home/music";
-		// TODO Add additional preferences.
-		node.put(name, host + "," + port + "," + path);
+		gateway = "";
+		gatewayPort = "22";
+		username = "";
+		node.put(name, host + "," + port + "," + path + "," + gateway + ","
+				+ gatewayPort + "," + username);
 
 		// Check the new connection's properties.
 		connection = manager.getConnection(name);
@@ -83,13 +90,95 @@ public class VisItConnectionManagerTester {
 		assertEquals(host, connection.getHost());
 		assertEquals(port, connection.getPort());
 		assertEquals(path, connection.getPath());
-
-		// Check for additional properties as they are added.
+		// Check the VisIt-specific properties.
+		assertEquals(name, connection.getProperty("connId"));
+		assertEquals(host, connection.getProperty("url"));
+		assertEquals(Integer.toString(port), connection.getProperty("port"));
+		assertEquals(path, connection.getProperty("visDir"));
+		assertEquals(gateway, connection.getProperty("gateway"));
+		assertEquals(gatewayPort, connection.getProperty("localGatewayPort"));
+		assertEquals(username, connection.getProperty("username"));
+		assertEquals("notused", connection.getProperty("password"));
+		assertEquals("1340", connection.getProperty("windowWidth"));
+		assertEquals("1020", connection.getProperty("windowHeight"));
+		assertEquals("1", connection.getProperty("windowId"));
 
 		// Clean up the store.
 		store.removeNode(NODE_ID);
 
 		return;
 	}
-	
+
+	/**
+	 * Checks that all of the properties specific to VisIt can be properly
+	 * updated based on the preference store.
+	 */
+	@Test
+	public void checkUpdateConnection() {
+
+		// Create a new empty manager.
+		VisItConnectionManager manager = new VisItConnectionManager();
+
+		// Create a new, empty preference store.
+		store = new CustomScopedPreferenceStore(getClass());
+		store.removeNode(NODE_ID);
+		manager.setPreferenceStore(store, NODE_ID);
+
+		// Add a host.
+		IEclipsePreferences node = store.getNode(NODE_ID);
+
+		String name;
+		String host;
+		int port;
+		String path;
+		IVizConnection<VisItSwtConnection> connection;
+		String gateway;
+		String gatewayPort;
+		String username;
+
+		// Add a new connection. The property name is the connection name, while
+		// the value is a delimited string containing its properties.
+		name = "magic sword";
+		host = "electrodungeon";
+		port = 9000;
+		path = "/home/music";
+		gateway = "";
+		gatewayPort = "22";
+		username = "";
+		node.put(name, host + "," + port + "," + path + "," + gateway + ","
+				+ gatewayPort + "," + username);
+
+		// Change the VisIt-specific properties.
+		gateway = "stargate";
+		gatewayPort = "10";
+		username = "teal'c";
+		node.put(name, host + "," + port + "," + path + "," + gateway + ","
+				+ gatewayPort + "," + username);
+
+		// Check the new connection's properties.
+		connection = manager.getConnection(name);
+		assertNotNull(connection);
+		assertEquals(name, connection.getName());
+		assertEquals(host, connection.getHost());
+		assertEquals(port, connection.getPort());
+		assertEquals(path, connection.getPath());
+		// Check the VisIt-specific properties.
+		assertEquals(name, connection.getProperty("connId"));
+		assertEquals(host, connection.getProperty("url"));
+		assertEquals(Integer.toString(port), connection.getProperty("port"));
+		assertEquals(path, connection.getProperty("visDir"));
+		assertEquals(gateway, connection.getProperty("gateway"));
+		assertEquals(gatewayPort, connection.getProperty("localGatewayPort"));
+		assertEquals(username, connection.getProperty("username"));
+		assertEquals("notused", connection.getProperty("password"));
+		assertEquals("1340", connection.getProperty("windowWidth"));
+		assertEquals("1020", connection.getProperty("windowHeight"));
+		assertEquals("1", connection.getProperty("windowId"));
+
+		// Clean up the store.
+		store.removeNode(NODE_ID);
+
+		return;
+	}
+
 }

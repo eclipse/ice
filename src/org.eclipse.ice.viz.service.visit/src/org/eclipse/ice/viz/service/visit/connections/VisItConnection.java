@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.connections;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.swt.widgets.Display;
@@ -98,13 +101,37 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 		propertyHandlers.put("windowWidth", positiveIntHandler);
 		propertyHandlers.put("windowHeight", positiveIntHandler);
 		// Add a property handler for the window ID.
-		propertyHandlers.put("windowId", positiveIntHandler);
+		propertyHandlers.put("windowId", new IPropertyHandler() {
+			@Override
+			public String validateValue(String value) {
+				String newValue = null;
+				if (value != null) {
+					String trimmedValue = value.trim();
+					try {
+						int intValue = Integer.parseInt(trimmedValue);
+						// The window ID can be -1 (lets the manager decided) or
+						// a number between 1 and 16, inclusive.
+						if (intValue == -1
+								|| (intValue >= 1 && intValue <= 16)) {
+							newValue = trimmedValue;
+						}
+					} catch (NumberFormatException e) {
+						// Invalid value.
+					}
+				}
+				return newValue;
+			}
+		});
 
 		// Set default values for additional properties.
+		setProperty("localGatewayPort", "22");
 		setProperty("password", "notused");
 		setProperty("windowWidth", "1340");
 		setProperty("windowHeight", "1020");
 		setProperty("windowId", "1");
+
+		// Change the default port to 9600.
+		setPort(9600);
 
 		return;
 	}
@@ -121,9 +148,11 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 		// Add fixed properties that are only required for connecting and cannot
 		// be changed.
 		properties.put("isLaunch", "true");
-		properties.put("useTunneling", "localhost".equals(getHost()) ? "false" : "true");
+		properties.put("useTunneling",
+				"localhost".equals(getHost()) ? "false" : "true");
 
-		return VisItSwtConnectionManager.createConnection(key, shell, properties);
+		return VisItSwtConnectionManager.createConnection(key, shell,
+				properties);
 	}
 
 	/*
@@ -131,8 +160,12 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 	 */
 	@Override
 	protected boolean disconnectFromWidget(VisItSwtConnection widget) {
-		widget.close();
-		return true;
+		boolean closed = false;
+		if (widget != null) {
+			widget.close();
+			closed = true;
+		}
+		return closed;
 	}
 
 	/**
@@ -268,17 +301,17 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 		// working as expected. For now, just return 1. A bug ticket has been
 		// filed.
 		int windowId = 1;
-		// if (getState() == ConnectionState.Connected) {
-		// // The order of the returned list is not guaranteed. Throw it into
-		// // an ordered set and get the lowest positive ID not in the set.
-		// Set<Integer> ids = new HashSet<Integer>(getWidget().getWindowIds());
-		// // Find the first integer not in the set.
-		// while (ids.contains(windowId)) {
-		// windowId++;
-		// }
-		// } else {
-		// windowId = -1;
-		// }
+		if (getState() == ConnectionState.Connected) {
+			// The order of the returned list is not guaranteed. Throw it into
+			// an ordered set and get the lowest positive ID not in the set.
+			Set<Integer> ids = new HashSet<Integer>(getWidget().getWindowIds());
+			// Find the first integer not in the set.
+			while (ids.contains(windowId)) {
+				windowId++;
+			}
+		} else {
+			windowId = -1;
+		}
 		return windowId;
 	}
 }
