@@ -498,7 +498,6 @@ public class VizFileViewer extends ViewPart
 							page.openEditor(new PlotEditorInput(plot),
 									PlotEditor.ID);
 						} catch (PartInitException e) {
-							System.err.println("COULD NOT OPEN EDITOR!");
 							logger.error("Could not open editor for CSV file: "
 									+ file.getAbsolutePath(), e);
 						}

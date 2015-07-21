@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +33,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
+import gov.lbnl.visit.swt.VisItSwtWidget;
 import visit.java.client.ViewerMethods;
 
 public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
@@ -177,10 +176,10 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		canvas = new VisItSwtWidget(container, SWT.DOUBLE_BUFFERED);
 		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		canvas.setBackground(parent.getBackground());
-		int windowWidth = Integer.parseInt(adapter
-				.getConnectionProperty("windowWidth"));
-		int windowHeight = Integer.parseInt(adapter
-				.getConnectionProperty("windowHeight"));
+		int windowWidth = Integer
+				.parseInt(adapter.getConnectionProperty("windowWidth"));
+		int windowHeight = Integer
+				.parseInt(adapter.getConnectionProperty("windowHeight"));
 
 		// Establish the canvas' connection to the VisIt server. This may throw
 		// an exception.
@@ -304,8 +303,8 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// Check that the type is non-null and new. Then do the same for the
 		// representation and category.
 		boolean plotTypeChanged = (type != null && !type.equals(plotType));
-		plotTypeChanged |= (representation != null && !representation
-				.equals(plotRepresentation));
+		plotTypeChanged |= (representation != null
+				&& !representation.equals(plotRepresentation));
 		plotTypeChanged |= (category != null && !category.equals(plotCategory));
 		// Now check the validity of each property.
 		if (plotTypeChanged && type != null) {

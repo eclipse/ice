@@ -14,6 +14,8 @@ package org.eclipse.ice.viz.service.connections;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.viz.service.IPlot;
@@ -31,8 +33,10 @@ import org.eclipse.ice.viz.service.PlotRender;
  * @param <T>
  *            The type of the connection object.
  */
-public abstract class ConnectionPlot<T> extends MultiPlot implements
-		IConnectionClient<T> {
+public abstract class ConnectionPlot<T> extends MultiPlot
+		implements IConnectionClient<T> {
+
+	protected Map<String, String[]> plotTypes;
 
 	/**
 	 * The current connection adapter associated with this client.
@@ -47,6 +51,7 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 	 */
 	public ConnectionPlot(IVizService vizService) {
 		super(vizService);
+		plotTypes = new HashMap<String, String[]>();
 
 		// Nothing else to do yet.
 	}
@@ -83,8 +88,8 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 			// Check if the connection exists. If not, we need to throw an
 			// exception.
 			if (adapter == null) {
-				throw new NullPointerException("IPlot error: "
-						+ "The plot's connection is not set.");
+				throw new NullPointerException(
+						"IPlot error: " + "The plot's connection is not set.");
 			}
 
 			// Set up a message in case the file cannot be read by this plot.
@@ -136,6 +141,17 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 		// Proceed with the super class' methods for error checking and setting
 		// the data source.
 		super.setDataSource(file);
+
+		// Finds the plot types
+		Map<String, String[]> newPlotTypes = findPlotTypes(file);
+		plotTypes.putAll(newPlotTypes);
+
+	}
+
+	@Override
+	public void clearCache() {
+		super.clearCache();
+		plotTypes.clear();
 	}
 
 	// ---- Implements IConnectionClient (and IUpdateableListener) ---- //
@@ -163,6 +179,20 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 			}
 		}
 		return;
+	}
+
+	// -------- Methods for VisIt Plot --------//
+
+	/**
+	 * Leave for later implementation, by visItPlot, etc
+	 * 
+	 * @param file
+	 *            The file that will be searched for plot types
+	 * @return A map of plot types specified by the category as the key
+	 */
+	protected Map<String, String[]> findPlotTypes(URI file)
+			throws IOException, Exception {
+		return new HashMap<String, String[]>();
 	}
 
 	/**

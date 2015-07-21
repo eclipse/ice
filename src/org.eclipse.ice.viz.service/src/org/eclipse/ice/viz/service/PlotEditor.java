@@ -283,7 +283,7 @@ public class PlotEditor extends EditorPart {
 		// Temporary holder for the independent series for the plot
 		ISeries tempIndSeries = null;
 		try {
-			tempSeries = selectedService.getPlot().getAllDependentSeries();
+			tempSeries = selectedService.getPlot().getAllDependentSeries(null);
 			tempIndSeries = selectedService.getPlot().getIndependentSeries();
 		} catch (Exception e2) {
 			System.out.println("Error reading plot types.");
@@ -297,7 +297,7 @@ public class PlotEditor extends EditorPart {
 				Thread.sleep(500);
 				if (tempSeries == null || tempSeries.isEmpty()) {
 					tempSeries = selectedService.getPlot()
-							.getAllDependentSeries();
+							.getAllDependentSeries(null);
 				}
 				if (tempIndSeries == null) {
 					tempIndSeries = selectedService.getPlot()
@@ -422,6 +422,7 @@ public class PlotEditor extends EditorPart {
 			body.layout();
 		} catch (Exception e) {
 			System.err.println("PlotEditor: Error while drawing plot.");
+			e.printStackTrace();
 		}
 
 		body.layout();

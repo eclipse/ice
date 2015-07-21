@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014- UT-Battelle, LLC.
+ * Copyright (c) 2014-2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  *   Jay Jay Billings, Jordan Deyton
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
-
-import gov.lbnl.visit.swt.VisItSwtConnection;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,6 +25,7 @@ import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
 import org.eclipse.swt.widgets.Composite;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
 import visit.java.client.FileInfo;
 import visit.java.client.ViewerMethods;
 
@@ -34,11 +33,17 @@ import visit.java.client.ViewerMethods;
  * This class provides the VisIt implementation for an IPlot.
  * 
  * @author Jay Jay Billings, Jordan Deyton
+ * @author Kasper Gammeltoft- Refactor to handle new updates to IPlot
  * 
  */
 public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 	// TODO We should manage the window IDs here.
+
+	/**
+	 * A map of the available plot types for this plot to render
+	 */
+	private Map<String, String[]> plotTypes;
 
 	/**
 	 * A map of allowed representations, keyed on the category. Instead of
@@ -96,14 +101,25 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 		return new VisItPlotRender(parent, this);
 	}
 
+	protected Map<String, String[]> getPlotTypes() throws Exception {
+		// If needed, rebuild the plot type map
+		if (plotTypes == null) {
+			plotTypes = new HashMap<String, String[]>();
+
+			Map<String, String[]> newPlotTypes = findPlotTypes(source);
+			plotTypes.putAll(newPlotTypes);
+		}
+		return plotTypes;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ice.viz.service.MultiPlot#findPlotTypes(java.net.URI)
 	 */
 	@Override
-	protected Map<String, String[]> findPlotTypes(URI file) throws IOException,
-			Exception {
+	protected Map<String, String[]> findPlotTypes(URI file)
+			throws IOException, Exception {
 
 		// Set the default return value.
 		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
@@ -165,9 +181,8 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 			String host = source.getHost();
 			// TODO VisIt should just be able to handle a raw URI... The code
 			// below can't handle remote Windows machines.
-			if ((host == null || "localhost".equals(host))
-					&& System.getProperty("os.name").toLowerCase()
-							.contains("windows")) {
+			if ((host == null || "localhost".equals(host)) && System
+					.getProperty("os.name").toLowerCase().contains("windows")) {
 				if (path.startsWith("/")) {
 					path = path.substring(1);
 					path = path.replace("/",
@@ -200,7 +215,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	@Override
 	public void redraw() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -69,7 +69,7 @@ public abstract class MultiPlot implements IPlot {
 	/**
 	 * The list of ISeries series for this plot to render
 	 */
-	private List<ISeries> series;
+	private Map<String, List<ISeries>> series;
 
 	/**
 	 * The title of the plot
@@ -110,7 +110,8 @@ public abstract class MultiPlot implements IPlot {
 		this.vizService = null;
 		this.plotRenders = new HashMap<Composite, PlotRender>();
 		properties = new HashMap<String, String>();
-		this.series = new ArrayList<ISeries>();
+		this.series = new HashMap<String, List<ISeries>>();
+		this.series.put(IPlot.DEFAULT_CATEGORY, new ArrayList<ISeries>());
 		return;
 	}
 
@@ -132,7 +133,7 @@ public abstract class MultiPlot implements IPlot {
 		// Initialize any final collections.
 		plotRenders = new HashMap<Composite, PlotRender>();
 		properties = new HashMap<String, String>();
-		this.series = new ArrayList<ISeries>();
+		this.series = new HashMap<String, List<ISeries>>();
 		return;
 	}
 
@@ -247,8 +248,21 @@ public abstract class MultiPlot implements IPlot {
 	 * service.ISeries)
 	 */
 	@Override
+	public void addDependentSeries(String catagory, ISeries series) {
+		if (this.series.get(catagory) == null) {
+			ArrayList<ISeries> newList = new ArrayList<ISeries>();
+			this.series.put(catagory, newList);
+		}
+		this.series.get(catagory).add(series);
+	}
+
+	/**
+	 * Adds a series to this plot, under the default category entitled "Other"
+	 * 
+	 * @param series
+	 */
 	public void addDependentSeries(ISeries series) {
-		this.series.add(series);
+		this.addDependentSeries(IPlot.DEFAULT_CATEGORY, series);
 	}
 
 	/*
@@ -260,7 +274,17 @@ public abstract class MultiPlot implements IPlot {
 	 */
 	@Override
 	public void removeDependantSeries(ISeries series) {
-		this.series.remove(series);
+		// If this series is in the list
+		if (this.series.containsValue(series)) {
+			// Iterate to find the right key
+			for (String key : this.series.keySet()) {
+				// Remove the series for the first category it is in in the map
+				if (this.series.get(key).contains(series)) {
+					this.series.get(key).remove(series);
+					break;
+				}
+			}
+		}
 	}
 
 	/*
@@ -269,24 +293,17 @@ public abstract class MultiPlot implements IPlot {
 	 * @see org.eclipse.ice.viz.service.IPlot#getAllDependentSeries()
 	 */
 	@Override
-	public List<ISeries> getAllDependentSeries() {
-		return series;
+	public List<ISeries> getAllDependentSeries(String category) {
+		List<ISeries> depSeries = null;
+		if (category == null) {
+			depSeries = series.get(IPlot.DEFAULT_CATEGORY);
+		} else {
+			depSeries = series.get(category);
+		}
+		return depSeries;
 	}
 
 	// --------------------------- //
-
-	/**
-	 * Adds a dependent series to the plot. This should be plotted against the
-	 * independent series specified.
-	 * 
-	 * @param series
-	 *            The ISeries to be plotted.
-	 */
-	public void addDependantSeries(ISeries series) {
-		if (!this.series.contains(series)) {
-			this.series.add(series);
-		}
-	}
 
 	// -- Implements IVizCanvas -- //
 
@@ -408,7 +425,10 @@ public abstract class MultiPlot implements IPlot {
 
 		// Clear any cached meta data and rebuild the cache of plot types.
 		clearCache();
-		series.addAll(newSeries);
+		if (series.get(IPlot.DEFAULT_CATEGORY) == null) {
+			series.put(IPlot.DEFAULT_CATEGORY, new ArrayList<ISeries>());
+		}
+		series.get(IPlot.DEFAULT_CATEGORY).addAll(newSeries);
 
 		// Update the reference to the data source.
 		source = file;

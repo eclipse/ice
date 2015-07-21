@@ -55,7 +55,8 @@ Export-Package: org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.connections,
  org.eclipse.ice.viz.service.csv,
  org.eclipse.ice.viz.service.internal,
- org.eclipse.ice.viz.service.preferences
+ org.eclipse.ice.viz.service.preferences,
+ org.eclipse.ice.viz.service.styles
 Service-Component: OSGI-INF/vizFactory.xml, OSGI-INF/VizServiceFactoryHolder.xml
 Require-Bundle: org.eclipse.nebula.visualization.widgets;bundle-version="1.0.0",
  org.eclipse.nebula.visualization.xygraph;bundle-version="1.0.0"

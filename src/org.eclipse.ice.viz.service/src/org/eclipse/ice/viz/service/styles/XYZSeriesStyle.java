@@ -102,4 +102,15 @@ public class XYZSeriesStyle extends AbstractSeriesStyle {
 		properties.put(ERROR_TYPE, ErrorBarType.BOTH);
 	}
 
+	/**
+	 * Gets a clone of this style
+	 */
+	public Object clone() {
+		XYZSeriesStyle newStyle = new XYZSeriesStyle(null);
+		newStyle.properties.clear();
+		newStyle.properties.putAll(properties);
+		return newStyle;
+
+	}
+
 }

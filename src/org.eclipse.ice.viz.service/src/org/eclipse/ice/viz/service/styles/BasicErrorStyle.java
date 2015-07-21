@@ -79,4 +79,15 @@ public class BasicErrorStyle extends AbstractSeriesStyle {
 		}
 	}
 
+	/**
+	 * Gets a clone of this style
+	 */
+	public Object clone() {
+		BasicErrorStyle newStyle = new BasicErrorStyle();
+		newStyle.properties.clear();
+		newStyle.properties.putAll(properties);
+		return newStyle;
+
+	}
+
 }

@@ -122,7 +122,7 @@ public class CSVPlotRender extends PlotRender {
 
 		// Fill out the add series tree. This tree will never need to be
 		// updated.
-		for (ISeries series : plot.getAllDependentSeries()) {
+		for (ISeries series : plot.getAllDependentSeries(null)) {
 			if (series != null) {
 				// Create Actions for all the types. Each Action should call
 				// addSeries(...) with the specified series

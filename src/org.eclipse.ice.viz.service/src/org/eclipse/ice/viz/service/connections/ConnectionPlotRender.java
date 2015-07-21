@@ -28,6 +28,16 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	// TODO Make the image/icon in the PlotRender class customizable.
 
 	/**
+	 * The current plot category
+	 */
+	private String category;
+
+	/**
+	 * The current plot type
+	 */
+	private String type;
+
+	/**
 	 * The rendered {@code ConnectionPlot}. This cannot be changed.
 	 */
 	public final ConnectionPlot<T> plot;
@@ -70,9 +80,10 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	protected Composite createInfoComposite(Composite parent, int style) {
 
 		// Get the info Composite and its child with the message label.
-		final Composite infoComposite = super
-				.createInfoComposite(parent, style);
-		final Composite msgComposite = (Composite) infoComposite.getChildren()[1];
+		final Composite infoComposite = super.createInfoComposite(parent,
+				style);
+		final Composite msgComposite = (Composite) infoComposite
+				.getChildren()[1];
 
 		// Get a Display and Shell used to create the hyperlink.
 		final Display display = infoComposite.getDisplay();
@@ -85,7 +96,8 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 		// Create a link to the preference page.
 		link = new Hyperlink(msgComposite, SWT.NONE);
 		link.setText(linkText);
-		link.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		link.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		link.setUnderlined(true);
 		link.setForeground(display.getSystemColor(SWT.COLOR_LINK_FOREGROUND));
 		// Add the listener to redirect the user to the preferences.
@@ -116,7 +128,8 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 * update behavior.
 	 */
 	@Override
-	protected void updateInfoComposite(Composite infoComposite, String message) {
+	protected void updateInfoComposite(Composite infoComposite,
+			String message) {
 
 		// Set the link's visibility.
 		link.setVisible(showLink);
@@ -291,4 +304,23 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 	 */
 	protected abstract void updatePlotComposite(Composite plotComposite,
 			T connection) throws Exception;
+
+	// -------- Methods for VisIt Plot --------//
+
+	public String getPlotCategory() {
+		return category;
+	}
+
+	public void setPlotCategory(String category) {
+		this.category = category;
+	}
+
+	public String getPlotType() {
+		return type;
+	}
+
+	public void setPlotType(String type) {
+		this.type = type;
+	}
+
 }

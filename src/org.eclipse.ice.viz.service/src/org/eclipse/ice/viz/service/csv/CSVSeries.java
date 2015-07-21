@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.csv;
 
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.ISeriesStyle;
+import org.eclipse.ice.viz.service.styles.AbstractSeriesStyle;
 import org.eclipse.ice.viz.service.styles.XYZSeriesStyle;
 import org.eclipse.swt.graphics.Color;
 
@@ -205,6 +206,77 @@ public class CSVSeries extends TransformedList<Double, Double>
 	 */
 	public String getUnit() {
 		return unit;
+	}
+
+	@Override
+	public Object clone() {
+		CSVSeries clone = new CSVSeries();
+		clone.copy(this);
+		return clone;
+	}
+
+	/**
+	 * Makes this series copy exactly the series provided, to have the same
+	 * values and styles.
+	 * 
+	 * @param other
+	 */
+	public void copy(CSVSeries other) {
+		// Go through and set all instance variables to the other series' values
+		isEnabled = other.isEnabled;
+		label = other.label;
+		// Do not copy here is ok! This means that the parent is equal to the
+		// other parent by reference
+		parent = other.parent;
+		// All series should inherit from this class, so this SHOULD be ok
+		((AbstractSeriesStyle) style).copy((AbstractSeriesStyle) other.style);
+		time = other.time;
+		unit = other.unit;
+		this.clear();
+		this.addAll(other);
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		// Local declarations
+		boolean isEqual = false;
+		// If the other object is not null and this type of object, and the
+		// lists are the same, do the comparison
+		if (other != null
+				|| (other instanceof CSVSeries) && super.equals(other)) {
+			// If they are the same reference, must be the same
+			if (other == this) {
+				isEqual = true;
+				// Compare the series based on the instance variables
+			} else {
+				CSVSeries series = (CSVSeries) other;
+				// Get the equality of the series
+				isEqual = this.isEnabled == series.isEnabled
+						&& label == series.label
+						&& (parent == null ? parent == series.parent
+								: parent.equals(series.parent))
+						&& style.equals(series.style) && time == series.time
+						&& unit.equals(series.unit);
+
+			}
+		}
+		// Finally return the equality of the series
+		return isEqual;
+	}
+
+	@Override
+	public int hashCode() {
+		// Local Declarations
+		int hash = super.hashCode();
+
+		// Compute the hash code
+		hash = 31 * hash + (label == null ? 0 : label.hashCode());
+		hash = 31 * hash + (isEnabled ? hash : 0);
+		hash = 31 * hash + (parent == null ? 0 : parent.hashCode());
+		hash = 31 * hash + (style == null ? 0 : style.hashCode());
+		hash = 31 * hash + (unit == null ? 0 : unit.hashCode());
+
+		return hash;
 	}
 
 }
