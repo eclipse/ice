@@ -36,7 +36,7 @@ public class TestUtils {
 	 *            no extension.
 	 * @return A correctly formed URI with the provided extension.
 	 */
-	protected static URI createURI(String extension) {
+	public static URI createURI(String extension) {
 		return createURI(extension, null);
 	}
 
@@ -52,7 +52,7 @@ public class TestUtils {
 	 *            created, otherwise the host name will be used.
 	 * @return A correctly formed URI with the provided extension.
 	 */
-	protected static URI createURI(String extension, String host) {
+	public static URI createURI(String extension, String host) {
 		String filename = (extension != null ? "kung_fury." + extension
 				: "future_cop");
 

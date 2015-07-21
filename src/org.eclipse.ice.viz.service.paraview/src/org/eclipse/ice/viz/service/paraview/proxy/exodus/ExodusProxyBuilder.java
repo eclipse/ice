@@ -12,6 +12,8 @@
 package org.eclipse.ice.viz.service.paraview.proxy.exodus;
 
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
@@ -37,14 +39,20 @@ import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
  */
 public class ExodusProxyBuilder extends AbstractParaViewProxyBuilder {
 
-	/**
-	 * The default constructor.
-	 * <p>
-	 * <b>Note:</b> This class should be instantiated by OSGi!
-	 * </p>
+	/*
+	 * Implements an abstract method from AbstractParaViewProxyBuilder.
 	 */
-	public ExodusProxyBuilder() {
-		// Populate the set of supported extensions.
+	@Override
+	protected IParaViewProxy createConcreteProxy(URI uri) {
+		return new ExodusProxy(uri);
+	}
+
+	/*
+	 * Implements an abstract method from AbstractParaViewProxyBuilder.
+	 */
+	@Override
+	protected Set<String> findExtensions() {
+		Set<String> extensions = new HashSet<String>();
 		extensions.add("e");
 		extensions.add("ex");
 		extensions.add("exo");
@@ -53,8 +61,7 @@ public class ExodusProxyBuilder extends AbstractParaViewProxyBuilder {
 		extensions.add("gen");
 		extensions.add("exodus");
 		extensions.add("nemesis");
-
-		return;
+		return extensions;
 	}
 
 	/*
@@ -63,13 +70,5 @@ public class ExodusProxyBuilder extends AbstractParaViewProxyBuilder {
 	@Override
 	public String getName() {
 		return "Default Exodus Proxy Builder";
-	}
-
-	/*
-	 * Overrides a method from AbstractParaViewProxyBuilder.
-	 */
-	@Override
-	protected IParaViewProxy createConcreteProxy(URI uri) {
-		return new ExodusProxy(uri);
 	}
 }

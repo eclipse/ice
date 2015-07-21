@@ -10,7 +10,7 @@
  *   and/or initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.viz.service.paraview.test;
+package org.eclipse.ice.viz.service.paraview.proxy.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
@@ -25,33 +25,34 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
-import org.eclipse.ice.viz.service.paraview.proxy.silo.SiloProxy;
-import org.eclipse.ice.viz.service.paraview.proxy.silo.SiloProxyBuilder;
+import org.eclipse.ice.viz.service.paraview.proxy.exodus.ExodusProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.exodus.ExodusProxyBuilder;
+import org.eclipse.ice.viz.service.paraview.test.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This class tests the {@link SiloProxyBuilder}'s implementation of
+ * This class tests the {@link ExodusProxyBuilder}'s implementation of
  * {@link IParaViewProxyBuilder}.
  * 
  * @author Jordan Deyton
  *
  */
-public class SiloProxyBuilderTester {
+public class ExodusProxyBuilderTester {
 
 	/**
 	 * The proxy builder that will be tested. This is re-initialized before each
 	 * test.
 	 */
-	private SiloProxyBuilder proxyBuilder;
+	private ExodusProxyBuilder proxyBuilder;
 
 	/**
 	 * Sets up the {@link #proxyBuilder} before each test.
 	 */
 	@Before
 	public void beforeEachTest() {
-		proxyBuilder = new SiloProxyBuilder();
+		proxyBuilder = new ExodusProxyBuilder();
 	}
 
 	/**
@@ -68,16 +69,18 @@ public class SiloProxyBuilderTester {
 	 */
 	@Test
 	public void checkName() {
-		assertEquals("Default Silo Proxy Builder", proxyBuilder.getName());
+		assertEquals("Default Exodus Proxy Builder", proxyBuilder.getName());
 	}
 
 	/**
-	 * Checks that the proxy builder supports the correct Silo file extensions.
+	 * Checks that the proxy builder supports the correct Exodus file
+	 * extensions.
 	 */
 	@Test
 	public void checkExtensions() {
 		// Set up an array containing all supported extensions.
-		String[] extensions = new String[] { "silo" };
+		String[] extensions = new String[] { "e", "ex", "exo", "ex2", "exii",
+				"gen", "exodus", "nemesis" };
 
 		// Get the set of supported extensions from the proxy builder.
 		Set<String> supportedExtensions = proxyBuilder.getExtensions();
@@ -120,7 +123,7 @@ public class SiloProxyBuilderTester {
 		// Re-create the proxy builder to set the reference to the created proxy
 		// based on the createProxyImpl(URI) method inherited from
 		// AbstractParaViewProxyBuilder.
-		proxyBuilder = new SiloProxyBuilder() {
+		proxyBuilder = new ExodusProxyBuilder() {
 			@Override
 			protected IParaViewProxy createConcreteProxy(URI uri) {
 				IParaViewProxy proxy = super.createConcreteProxy(uri);
@@ -132,7 +135,7 @@ public class SiloProxyBuilderTester {
 		// Passing a null URI should throw an exception.
 		try {
 			proxyBuilder.createProxy(nullURI);
-			fail("SiloProxyBuilder failure: "
+			fail("ExodusProxyBuilderTester failure: "
 					+ "NullPointerException not thrown when URI is null.");
 		} catch (NullPointerException e) {
 			// Exception thrown as expected.
@@ -145,7 +148,7 @@ public class SiloProxyBuilderTester {
 		uri = TestUtils.createURI("fail");
 		try {
 			proxyBuilder.createProxy(uri);
-			fail("SiloProxyBuilder failure: "
+			fail("ExodusProxyBuilderTester failure: "
 					+ "IllegalArgumentException not thrown when URI extension "
 					+ "is not supported.");
 		} catch (IllegalArgumentException e) {
@@ -158,7 +161,7 @@ public class SiloProxyBuilderTester {
 		uri = TestUtils.createURI(null);
 		try {
 			proxyBuilder.createProxy(uri);
-			fail("SiloProxyBuilder failure: "
+			fail("ExodusProxyBuilderTester failure: "
 					+ "IllegalArgumentException not thrown when URI has no "
 					+ "extension.");
 		} catch (IllegalArgumentException e) {
@@ -175,7 +178,7 @@ public class SiloProxyBuilderTester {
 			proxy = proxyBuilder.createProxy(uri);
 			assertSame(createdProxy.getAndSet(null), proxy);
 			// Check the type of the proxy.
-			assertTrue(proxy instanceof SiloProxy);
+			assertTrue(proxy instanceof ExodusProxy);
 			// Check the proxy's URI. It should be the same.
 			assertEquals(uri, proxy.getURI());
 		}

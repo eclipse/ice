@@ -14,8 +14,11 @@ package org.eclipse.ice.viz.service.paraview.test;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,6 +27,8 @@ import java.util.concurrent.Future;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 
+import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty;
+import org.eclipse.ice.viz.service.paraview.proxy.test.FakeProxyFeature;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
@@ -47,12 +52,15 @@ public class FakeParaViewWebClient implements IParaViewWebClient {
 	 * response for a particular RPC method in lieu of having a running client.
 	 */
 	public final Map<String, Callable<JsonObject>> responseMap;
-
+	
 	/**
 	 * This is used to queue tasks for the client to perform.
 	 */
 	private ExecutorService requestExecutor;
 
+	private final List<Double> times;
+	private final List<FakeProxyFeature> properties;
+	
 	/**
 	 * The default constructor. {@link #responseMap} is initialized, but left
 	 * empty.
@@ -61,6 +69,98 @@ public class FakeParaViewWebClient implements IParaViewWebClient {
 		requestExecutor = Executors.newSingleThreadExecutor();
 
 		responseMap = new HashMap<String, Callable<JsonObject>>();
+		properties = new ArrayList<FakeProxyFeature>();
+		times = new ArrayList<Double>();
+		times.add(0.0);
+		
+		responseMap.put("createView", new Callable<JsonObject>() {
+			@Override
+			public JsonObject call() throws Exception {
+				JsonObject object = new JsonObject();
+				object.addProperty("proxyId", 1);
+				object.addProperty("repId", 2);
+				object.addProperty("viewId", 3);
+				return object;
+			}
+		});
+		
+		responseMap.put("pv.proxy.manager.get", new Callable<JsonObject>() {
+			@Override
+			public JsonObject call() throws Exception {
+				JsonObject proxyObject = new JsonObject();
+				
+				JsonObject object;
+				JsonArray array;
+				
+				JsonObject dataObject = new JsonObject();
+				JsonArray uiArray = new JsonArray();
+				JsonArray propertiesArray = new JsonArray();
+				
+				proxyObject.add("data", dataObject);
+				proxyObject.add("ui", uiArray);
+				proxyObject.add("properties", propertiesArray);
+				
+				// Add the "time" array to the "data" object.
+				JsonArray timeArray = new JsonArray();
+				for (Double time : times) {
+					timeArray.add(new JsonPrimitive(time));
+				}
+				dataObject.add("time", timeArray);
+								
+				// Add a placeholder property for the first space.
+				uiArray.add(new JsonObject());
+				propertiesArray.add(new JsonObject());
+				
+				// Add the representation property to the "ui" and "properties".
+				object = new JsonObject();
+				object.addProperty("name", "Representation");
+				array = new JsonArray();
+				array.add(new JsonPrimitive("Surface"));
+				array.add(new JsonPrimitive("Wireframe"));
+				object.add("values", array);
+				uiArray.add(object);
+				object = new JsonObject();
+				object.addProperty("name", "Representation");
+				object.addProperty("value", "Surface");
+				propertiesArray.add(object);
+				
+				// Add the "ui" and "properties" objects for each property.
+				Map<Integer, FakeProxyFeature> map = new TreeMap<Integer, FakeProxyFeature>();
+				for (FakeProxyFeature property : properties) {
+					map.put(property.index, property);
+				}
+				for (FakeProxyFeature property : map.values()) {
+					// Add the property to the "ui" array.
+					object = new JsonObject();
+					object.addProperty("name", property.name);
+					array = new JsonArray();
+					for (String allowedValue : property.allowedValues) {
+						array.add(new JsonPrimitive(allowedValue));
+					}
+					object.add("values", array);
+					uiArray.add(object);
+					
+					// Add the property to the "properties" array.
+					object = new JsonObject();
+					object.addProperty("name", property.propertyName);
+					object.addProperty("value", property.initialValue);
+					propertiesArray.add(object);
+				}
+				
+				return proxyObject;
+			}
+		});
+	}
+	
+	public void setTimes(double... times) {
+		this.times.clear();
+		for (double time : times) {
+			this.times.add(time);
+		}
+	}
+	
+	public void addProxyProperty(FakeProxyFeature property) {
+		properties.add(property);
 	}
 
 	/**

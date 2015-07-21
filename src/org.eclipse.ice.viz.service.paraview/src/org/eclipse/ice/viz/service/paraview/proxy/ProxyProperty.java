@@ -88,12 +88,12 @@ public abstract class ProxyProperty {
 	 * The name of the property. This corresponds to the "name" value in the
 	 * corresponding array element in the "ui" array.
 	 */
-	protected final String name;
+	public final String name;
 	/**
 	 * The index of the property in its parent proxy's "ui" and "properties"
 	 * JsonArrays.
 	 */
-	protected final int index;
+	public final int index;
 	/**
 	 * The type of property. This dictates the format of the "values" and
 	 * "value" JsonElements in its "ui" and "properties" entries, respectively.

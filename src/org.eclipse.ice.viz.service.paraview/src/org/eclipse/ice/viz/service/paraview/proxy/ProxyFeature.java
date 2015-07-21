@@ -69,12 +69,12 @@ public class ProxyFeature extends ProxyProperty {
 	 *            "properties" JsonArrays.
 	 */
 	public ProxyFeature(String name, int index) {
-		this(name, index, null, null);
+		this(name, index, null, null, null);
 	}
 
 	/**
-	 * The full constructor. If either the mode or the location are {@code null}
-	 * , the feature cannot be visualized with colors.
+	 * The most commonly-used constructor. If either the mode or the location
+	 * are {@code null} , the feature cannot be visualized with colors.
 	 * 
 	 * @param name
 	 *            The name of the feature. This corresponds to the "name" value
@@ -90,7 +90,33 @@ public class ProxyFeature extends ProxyProperty {
 	 */
 	public ProxyFeature(String name, int index, ColorByMode mode,
 			ColorByLocation location) {
-		super(name, index, PropertyType.DISCRETE_MULTI);
+		this(name, index, null, mode, location);
+	}
+
+	/**
+	 * The full constructor. If the property type is null, it defauls to
+	 * discrete with multi-select enabled. If either the mode or the location
+	 * are {@code null} , the feature cannot be visualized with colors.
+	 * 
+	 * @param name
+	 *            The name of the feature. This corresponds to the "name" value
+	 *            in the corresponding array element in the "ui" array.
+	 * @param index
+	 *            The index of the feature in its parent proxy's "ui" and
+	 *            "properties" JsonArrays.
+	 * @param type
+	 *            The type of property. This dictates the format of the "values"
+	 *            and "value" JsonElements in its "ui" and "properties" entries,
+	 *            respectively.
+	 * @param mode
+	 *            The mode to use when coloring the visualization with this
+	 *            feature.
+	 * @param location
+	 *            The "location" of the visualization data for this feature.
+	 */
+	public ProxyFeature(String name, int index, PropertyType type,
+			ColorByMode mode, ColorByLocation location) {
+		super(name, index, type != null ? type : PropertyType.DISCRETE_MULTI);
 
 		canColorBy = (mode != null && location != null);
 		colorByMode = (mode != null ? mode : ColorByMode.SOLID);

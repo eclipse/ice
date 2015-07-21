@@ -10,7 +10,7 @@
  *   and/or initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.viz.service.paraview.test;
+package org.eclipse.ice.viz.service.paraview.proxy.test;
 
 import org.junit.Ignore;
 import org.junit.Test;

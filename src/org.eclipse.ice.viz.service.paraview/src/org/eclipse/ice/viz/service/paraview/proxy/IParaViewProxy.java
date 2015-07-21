@@ -93,8 +93,7 @@ public interface IParaViewProxy {
 	 * @return The current value of the property, or {@code null} if the
 	 *         property name is invalid.
 	 */
-	public String getProperty(String name)
-			throws NullPointerException, IllegalArgumentException;
+	public String getProperty(String name);
 
 	/**
 	 * Gets the set of allowed values for the specified property.
@@ -146,11 +145,8 @@ public interface IParaViewProxy {
 	 *            {@code null}.
 	 * @return True if the proxy could be opened using the connection (also when
 	 *         it is already open), false otherwise.
-	 * @throws NullPointerException
-	 *             If the specified connection is {@code null}.
 	 */
-	public Future<Boolean> open(IVizConnection<IParaViewWebClient> connection)
-			throws NullPointerException;
+	public Future<Boolean> open(IVizConnection<IParaViewWebClient> connection);
 
 	/**
 	 * Sets the current feature that is rendered via ParaView.
@@ -162,14 +158,8 @@ public interface IParaViewProxy {
 	 *            The feature or "type" to be rendered. This should be in the
 	 *            set (from the feature map) associated with the category key.
 	 * @return True if the feature was changed, false otherwise.
-	 * @throws NullPointerException
-	 *             If either of the specified arguments are {@code null}.
-	 * @throws IllegalArgumentException
-	 *             If either the category is invalid or the feature is not valid
-	 *             for the category.
 	 */
-	public Future<Boolean> setFeature(String category, String feature)
-			throws NullPointerException, IllegalArgumentException;
+	public Future<Boolean> setFeature(String category, String feature);
 
 	/**
 	 * Sets the specified property to the new value.
@@ -181,14 +171,8 @@ public interface IParaViewProxy {
 	 *            The new value of the property. Allowed values can be retrieved
 	 *            via {@link #getPropertyAllowedValues(String)}.
 	 * @return True if the property was changed, false otherwise.
-	 * @throws NullPointerException
-	 *             If either of the specified arguments are null.
-	 * @throws IllegalArgumentException
-	 *             If either the property name is invalid or the value is not
-	 *             valid for the property.
 	 */
-	public Future<Boolean> setProperty(String name, String value)
-			throws NullPointerException, IllegalArgumentException;
+	public Future<Boolean> setProperty(String name, String value);
 
 	/**
 	 * Updates the proxy's current properties to include all properties listed
@@ -203,11 +187,8 @@ public interface IParaViewProxy {
 	 *            The new properties to set.
 	 * @return The number of properties that were <i>updated</i>. Properties
 	 *         whose values were already set do not count.
-	 * @throws NullPointerException
-	 *             If the map is {@code null}.
 	 */
-	public Future<Integer> setProperties(Map<String, String> properties)
-			throws NullPointerException;
+	public Future<Integer> setProperties(Map<String, String> properties);
 
 	/**
 	 * Sets the timestep for the loaded proxy.

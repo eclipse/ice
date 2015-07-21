@@ -20,45 +20,42 @@ import java.util.TreeSet;
  * This provides a base class for implementing an {@link IParaViewProxyBuilder}.
  * Sub-classes need only do the following:
  * <ol>
- * <li>In their constructor, add supported extensions to {@link #extensions}.</li>
+ * <li>In their constructor, add supported extensions to {@link #extensions}.
+ * </li>
  * <li>Implement {@link #createConcreteProxy(URI)}.</li>
  * </ol>
  * 
  * @author Jordan Deyton
  *
  */
-public abstract class AbstractParaViewProxyBuilder implements
-		IParaViewProxyBuilder {
+public abstract class AbstractParaViewProxyBuilder
+		implements IParaViewProxyBuilder {
 
 	/**
 	 * The set of extensions supported by this proxy builder.
 	 */
-	protected final Set<String> extensions;
+	private Set<String> extensions;
 
 	/**
-	 * The default constructor. Initializes an empty map of supported
-	 * {@link #extensions}.
+	 * Creates a specialized proxy for the file. When this method is called, the
+	 * URI's extension will have already been validated.
+	 * 
+	 * @param uri
+	 *            The uri that needs a new proxy. Implementations may assume
+	 *            that this is not {@code null} and that its extension is in
+	 *            {@link #extensions}.
+	 * @return The new, specialized proxy, or {@code null} if the proxy cannot
+	 *         be created for any particular reason.
+	 * @see #createProxy(URI)
 	 */
-	protected AbstractParaViewProxyBuilder() {
-		// Create an populate the set of supported extensions.
-		extensions = new HashSet<String>();
-	}
+	protected abstract IParaViewProxy createConcreteProxy(URI uri);
 
 	/*
 	 * Implements a method from IParaViewProxyBuilder.
 	 */
 	@Override
-	public Set<String> getExtensions() {
-		// Return a lexicographically ordered set.
-		return new TreeSet<String>(extensions);
-	}
-
-	/*
-	 * Implements a method from IParaViewProxyBuilder.
-	 */
-	@Override
-	public IParaViewProxy createProxy(URI uri) throws NullPointerException,
-			IllegalArgumentException {
+	public IParaViewProxy createProxy(URI uri)
+			throws NullPointerException, IllegalArgumentException {
 		// Throw an NPE for null URIs.
 		if (uri == null) {
 			throw new NullPointerException("ParaViewProxyBuilder error: "
@@ -73,6 +70,11 @@ public abstract class AbstractParaViewProxyBuilder implements
 			extension = path.substring(path.lastIndexOf(".") + 1).toLowerCase();
 		} catch (IndexOutOfBoundsException e) {
 			// Nothing to do.
+		}
+
+		// Lazily load the set of supported extensions if necessary.
+		if (extensions == null) {
+			getExtensions();
 		}
 
 		// Throw an exception if the extension is not supported or could not be
@@ -95,16 +97,31 @@ public abstract class AbstractParaViewProxyBuilder implements
 	}
 
 	/**
-	 * Creates a specialized proxy for the file. When this method is called, the
-	 * URI's extension will have already been validated.
+	 * Finds the set of supported file extensions for the concrete class.
+	 * <p>
+	 * Extensions in this set are expected to be:
+	 * <ul>
+	 * <li>simple (tar and gz, but not tar.gz),</li>
+	 * <li>should not include the leading period (doc, not .doc), and</li>
+	 * <li>should be lower case (txt, not TXT).</li>
+	 * </ul>
+	 * </p>
 	 * 
-	 * @param uri
-	 *            The uri that needs a new proxy. Implementations may assume
-	 *            that this is not {@code null} and that its extension is in
-	 *            {@link #extensions}.
-	 * @return The new, specialized proxy, or {@code null} if the proxy cannot
-	 *         be created for any particular reason.
-	 * @see #createProxy(URI)
+	 * @return A set containing the supported extensions.
 	 */
-	protected abstract IParaViewProxy createConcreteProxy(URI uri);
+	protected abstract Set<String> findExtensions();
+
+	/*
+	 * Implements a method from IParaViewProxyBuilder.
+	 */
+	@Override
+	public Set<String> getExtensions() {
+		// Lazily load the set of supported extensions.
+		if (extensions == null) {
+			extensions = new HashSet<String>();
+			extensions.addAll(findExtensions());
+		}
+		return new TreeSet<String>(extensions);
+	}
+
 }

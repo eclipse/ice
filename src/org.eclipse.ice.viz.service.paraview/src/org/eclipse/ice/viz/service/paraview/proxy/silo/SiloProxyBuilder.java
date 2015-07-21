@@ -12,6 +12,8 @@
 package org.eclipse.ice.viz.service.paraview.proxy.silo;
 
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
@@ -30,17 +32,22 @@ import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
  */
 public class SiloProxyBuilder extends AbstractParaViewProxyBuilder {
 
-	/**
-	 * The default constructor.
-	 * <p>
-	 * <b>Note:</b> This class should be instantiated by OSGi!
-	 * </p>
+	/*
+	 * Implements an abstract method from AbstractParaViewProxyBuilder.
 	 */
-	public SiloProxyBuilder() {
-		// Populate the set of supported extensions.
-		extensions.add("silo");
+	@Override
+	protected IParaViewProxy createConcreteProxy(URI uri) {
+		return new SiloProxy(uri);
+	}
 
-		return;
+	/*
+	 * Implements an abstract method from AbstractParaViewProxyBuilder.
+	 */
+	@Override
+	protected Set<String> findExtensions() {
+		Set<String> extensions = new HashSet<String>(1);
+		extensions.add("silo");
+		return extensions;
 	}
 
 	/*
@@ -49,13 +56,5 @@ public class SiloProxyBuilder extends AbstractParaViewProxyBuilder {
 	@Override
 	public String getName() {
 		return "Default Silo Proxy Builder";
-	}
-
-	/*
-	 * Overrides a method from AbstractParaViewProxyBuilder.
-	 */
-	@Override
-	protected IParaViewProxy createConcreteProxy(URI uri) {
-		return new SiloProxy(uri);
 	}
 }

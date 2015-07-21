@@ -10,7 +10,7 @@
  *   and/or initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.viz.service.paraview.test;
+package org.eclipse.ice.viz.service.paraview.proxy.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,16 +21,17 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.test.TestUtils;
 import org.junit.Test;
 
 /**
@@ -137,7 +138,7 @@ public class AbstractParaViewProxyBuilderTester {
 
 		// Now try a builder with some extensions.
 		fakeProxyBuilder = new FakeParaViewProxyBuilder("one", "two", "one",
-				null, "three");
+				"three");
 		proxyBuilder = fakeProxyBuilder;
 
 		// Passing a null URI should throw an exception.
@@ -204,13 +205,19 @@ public class AbstractParaViewProxyBuilderTester {
 	 * @author Jordan Deyton
 	 *
 	 */
-	private class FakeParaViewProxyBuilder extends AbstractParaViewProxyBuilder {
+	private class FakeParaViewProxyBuilder
+			extends AbstractParaViewProxyBuilder {
 
 		/**
 		 * The proxy that was created. If set to a non-null value, then
 		 * {@link #createConcreteProxy(URI)} was, in fact, called.
 		 */
 		public final AtomicReference<IParaViewProxy> createdProxy;
+
+		/**
+		 * A collection of supported extensions provided to the constructor.
+		 */
+		private final List<String> extensions;
 
 		/**
 		 * The default constructor. Adds all specified extensions to the set of
@@ -220,44 +227,40 @@ public class AbstractParaViewProxyBuilderTester {
 		 *            The supported extensions. May be any strings.
 		 */
 		public FakeParaViewProxyBuilder(String... extensions) {
-			// Add all extensions.
-			for (String extension : extensions) {
-				super.extensions.add(extension);
-			}
-			// Initialize the reference to the created proxy.
 			createdProxy = new AtomicReference<IParaViewProxy>();
+			this.extensions = new ArrayList<String>();
+			for (String extension : extensions) {
+				this.extensions.add(extension);
+			}
 		}
 
-		/**
-		 * Returns a dummy name.
-		 */
-		@Override
-		public String getName() {
-			return "Fake ParaView Proxy Builder";
-		}
-
-		/**
-		 * Sets {@link #proxyCreated} to true when called. Returns {@code null}.
+		/*
+		 * Implements an abstract method from AbstractParaViewProxyBuilder.
 		 */
 		@Override
 		protected IParaViewProxy createConcreteProxy(URI uri) {
 			// Create a proxy. What's in it doesn't matter for these tests.
 			IParaViewProxy proxy = new AbstractParaViewProxy(uri) {
-				@Override
-				protected Map<String, Set<String>> findFeatures(
-						ParaViewConnection connection) {
-					return new HashMap<String, Set<String>>();
-				}
-
-				@Override
-				protected boolean setFeatureOnClient(
-						ParaViewConnection connection, String category,
-						String feature) {
-					return false;
-				}
+				// Nothing to add.
 			};
 			createdProxy.set(proxy);
 			return proxy;
+		}
+
+		/*
+		 * Implements an abstract method from AbstractParaViewProxyBuilder.
+		 */
+		@Override
+		protected Set<String> findExtensions() {
+			return new HashSet<String>(extensions);
+		}
+
+		/*
+		 * Implements a method from IParaViewProxyBuilder.
+		 */
+		@Override
+		public String getName() {
+			return "Fake ParaView Proxy Builder";
 		}
 	}
 }

@@ -264,14 +264,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public Future<Boolean> open(IVizConnection<IParaViewWebClient> connection)
-			throws NullPointerException {
-		// Throw an exception if the argument is null.
-		if (connection == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Cannot open a proxy with a null connection.");
-		}
-
+	public Future<Boolean> open(IVizConnection<IParaViewWebClient> connection) {
 		final IVizConnection<IParaViewWebClient> conn = connection;
 
 		// Create a new callable to open the connection. This will need to be
@@ -279,7 +272,9 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		Callable<Boolean> operation = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				return setConnection(conn);
+				// Attempt to connect if the connection is not null, otherwise
+				// just return false.
+				return conn != null ? setConnection(conn) : false;
 			}
 		};
 
@@ -292,24 +287,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public Future<Boolean> setFeature(String category, String feature)
-			throws NullPointerException, IllegalArgumentException {
-		// Check for null arguments.
-		if (category == null || feature == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Null categories and features are not supported.");
-		}
-
-		// Validate the category and feature.
-		final ProxyFeature featureInfo = featureMap.get(category);
-		if (featureInfo == null) {
-			throw new IllegalArgumentException("ParaViewProxyError: "
-					+ "The category \"" + category + "\" is invalid.");
-		} else if (!featureInfo.valueAllowed(feature)) {
-			throw new IllegalArgumentException("ParaViewwProxyError: "
-					+ "The feature \"" + feature
-					+ "\" is invalid for the category \"" + category + "\".");
-		}
+	public Future<Boolean> setFeature(String category, String feature) {
 
 		final String newCategory = category;
 		final String newFeature = feature;
@@ -319,9 +297,17 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		Callable<Boolean> operation = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				// We can only attempt the change if the connection is valid.
-				return connection.getState() == ConnectionState.Connected
-						? setFeatureOnClient(newCategory, newFeature) : false;
+				boolean changed = false;
+				ProxyFeature featureInfo = featureMap.get(newCategory);
+				// We can only attempt to set the feature if (A) the connection
+				// is connected and (B) the category and feature are valid.
+				if (connection != null
+						&& connection.getState() == ConnectionState.Connected
+						&& featureInfo != null
+						&& featureInfo.valueAllowed(newFeature)) {
+					changed = setFeatureOnClient(newCategory, newFeature);
+				}
+				return changed;
 			}
 		};
 
@@ -334,8 +320,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public Future<Integer> setProperties(Map<String, String> properties)
-			throws NullPointerException {
+	public Future<Integer> setProperties(Map<String, String> properties) {
 
 		final Map<String, String> newProperties = properties;
 
@@ -347,24 +332,28 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 
 				int count = 0;
 
-				// Try to update all properties specified in the map.
-				for (Entry<String, String> entry : newProperties.entrySet()) {
-					String name = entry.getKey();
-					String value = entry.getValue();
+				if (newProperties != null) {
+					// Try to update all properties specified in the map.
+					for (Entry<String, String> entry : newProperties
+							.entrySet()) {
+						String name = entry.getKey();
+						String value = entry.getValue();
 
-					try {
-						// Fetch the property first. This may throw an exception
-						// if the property is invalid.
-						ProxyProperty property = propertyMap.get(name);
-						// Attempt to set the value. This may throw an exception
-						// if the value is invalid or the property is read-only.
-						if (property != null && property.setValue(value)) {
-							// If the value changed, increment the count.
-							count++;
+						try {
+							// Fetch the property first. This may throw an
+							// exception if the property is invalid.
+							ProxyProperty property = propertyMap.get(name);
+							// Attempt to set the value. This may throw an
+							// exception if the value is invalid or the property
+							// is read-only.
+							if (property != null && property.setValue(value)) {
+								// If the value changed, increment the count.
+								count++;
+							}
+						} catch (NullPointerException | IllegalArgumentException
+								| UnsupportedOperationException e) {
+							System.err.println(e.getMessage());
 						}
-					} catch (NullPointerException | IllegalArgumentException
-							| UnsupportedOperationException e) {
-						System.err.println(e.getMessage());
 					}
 				}
 
@@ -382,8 +371,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 	 * Implements a method from IParaViewProxy.
 	 */
 	@Override
-	public Future<Boolean> setProperty(String name, String value)
-			throws NullPointerException, IllegalArgumentException {
+	public Future<Boolean> setProperty(String name, String value) {
 
 		final String newName = name;
 		final String newValue = value;
@@ -393,13 +381,17 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		Callable<Boolean> operation = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				// Get the property from the map. This handles error checking
-				// for the property name.
+				boolean changed = false;
+				// We can only attempt to set the property if (A) the connection
+				// is connected and (B) the property name and value are valid.
 				ProxyProperty property = propertyMap.get(newName);
-
-				// Attempt to set the value. This handles error checking for the
-				// property value.
-				return property.setValue(newValue);
+				if (connection != null
+						&& connection.getState() == ConnectionState.Connected
+						&& property != null
+						&& property.valueAllowed(newValue)) {
+					changed = property.setValue(newValue);
+				}
+				return changed;
 			}
 		};
 
@@ -413,29 +405,38 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 	 */
 	@Override
 	public Future<Boolean> setTimestep(int step) {
-		this.targetTimestep = step;
+
+		if (step >= 0 && step < times.size()) {
+			this.targetTimestep = step;
+		}
 
 		return requestExecutor.submit(new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				// FIXME We need a way to just go straight to the desired time.
-				while (timestep != targetTimestep) {
-					if (timestep < targetTimestep) {
-						setTimestep("next");
-						timestep++;
-					} else {
-						setTimestep("prev");
-						timestep--;
+				boolean changed = true;
+				if (!times.isEmpty()) {
+					// FIXME We need a way to just go straight to the desired
+					// time.
+					while (timestep != targetTimestep) {
+						if (timestep < targetTimestep) {
+							setTimestep("next");
+							timestep++;
+						} else {
+							setTimestep("prev");
+							timestep--;
+						}
 					}
+
+					// If we scale by the current time, then we need to refresh
+					// the scale.
+					if (!scaleByAllTimes) {
+						rescale();
+					}
+				} else {
+					changed = false;
 				}
 
-				// If we scale by the current time, then we need to refresh the
-				// scale.
-				if (!scaleByAllTimes) {
-					rescale();
-				}
-
-				return true;
+				return changed;
 			}
 		});
 	}
