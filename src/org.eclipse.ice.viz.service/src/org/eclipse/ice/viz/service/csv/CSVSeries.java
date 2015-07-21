@@ -240,10 +240,11 @@ public class CSVSeries extends TransformedList<Double, Double>
 	public boolean equals(Object other) {
 		// Local declarations
 		boolean isEqual = false;
+
 		// If the other object is not null and this type of object, and the
 		// lists are the same, do the comparison
-		if (other != null
-				|| (other instanceof CSVSeries) && super.equals(other)) {
+		if (other != null && (other instanceof CSVSeries)
+				&& super.equals(other)) {
 			// If they are the same reference, must be the same
 			if (other == this) {
 				isEqual = true;
@@ -253,13 +254,14 @@ public class CSVSeries extends TransformedList<Double, Double>
 				// Get the equality of the series
 				isEqual = this.isEnabled == series.isEnabled
 						&& label == series.label
-						&& (parent == null ? parent == series.parent
+						&& (parent == null ? series.parent == null
 								: parent.equals(series.parent))
 						&& style.equals(series.style) && time == series.time
 						&& unit.equals(series.unit);
 
 			}
 		}
+
 		// Finally return the equality of the series
 		return isEqual;
 	}

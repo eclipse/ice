@@ -249,15 +249,15 @@ public class CSVPlotRender extends PlotRender {
 			ActionTree tree = new ActionTree(new Action(series.getLabel()) {
 				@Override
 				public void run() {
-					finSeries.setEnabled(false);
 					removeSeries(finSeries);
+					finSeries.setEnabled(false);
 					refresh();
 				}
 			});
 			removeSeriesTree.add(tree);
 
 			// Store the series and ActionTree for later reference.
-			seriesMap.put(series, tree);
+			seriesMap.put(finSeries, tree);
 		}
 
 		return;
@@ -276,6 +276,7 @@ public class CSVPlotRender extends PlotRender {
 			removeSeriesTree.remove(tree);
 			plotProvider.removeSeries(plotTime, series);
 			editor.removeSeries(series);
+			seriesMap.remove(series);
 		}
 		return;
 	}
